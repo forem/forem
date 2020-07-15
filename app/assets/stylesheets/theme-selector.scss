@@ -153,6 +153,36 @@
       font-size: 0.5em;
     }
   }
+
+  @media screen and (max-width: 810px) {
+    .level_tag {
+      display: none;
+    }
+  }
+}
+
+.level-bar__labels {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 0.3rem var(--su-5);
+  color: white;
+  border-radius: 20px;
+
+  background: black;
+  background: -moz-linear-gradient(left, #6ebc25 0%, #e0c22a 50%, #c16868 100%);
+  background: -webkit-linear-gradient(
+    left,
+    #6ebc25 0%,
+    #e0c22a 50%,
+    #c16868 100%
+  );
+  background: linear-gradient(to right, #6ebc25 0%, #e0c22a 50%, #c16868 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6ebc25', endColorstr='#c16868',GradientType=1 );
+
+  @media (min-width: 810px) {
+    display: none;
+  }
 }
 
 .rich-selector-radio {

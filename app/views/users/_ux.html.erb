@@ -51,6 +51,19 @@
           <%= render partial: "experience_selector", locals: { f: f, exp: exp, i: i, label: user_experience_labels } %>
         <% end %>
       </div>
+      <div class="level-bar">
+        <div class="level-bar__labels">
+          <div class="level-bar__label">
+            <%= user_experience_labels[0] %>
+          </div>
+          <div class="level-bar__label">
+            <%= user_experience_labels[user_experience_labels.size / 2] %>
+          </div>
+          <div class="level-bar__label">
+            <%= user_experience_labels[-1] %>
+          </div>
+        </div>
+      </div>
       <p>This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.</p>
     </div>
   </div>
