@@ -138,4 +138,12 @@ class SiteConfig < RailsSettings::Base
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
+
+  # Credits
+  field :credit_prices_in_cents, type: :hash, default: {
+    small: 500,
+    medium: 400,
+    large: 300,
+    xlarge: 250
+  }
 end
