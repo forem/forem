@@ -4,6 +4,12 @@ module Api
       before_action :authenticate!, only: %i[me]
       before_action -> { doorkeeper_authorize! :public }, only: :me, if: -> { doorkeeper_token }
 
+      SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id username name summary twitter_username github_username website_url
+        location created_at profile_image
+      ].freeze
+      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
+
       def show
         relation = User.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
 
@@ -17,12 +23,6 @@ module Api
       def me
         render :show
       end
-
-      SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id username name summary twitter_username github_username website_url
-        location created_at profile_image
-      ].freeze
-      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
     end
   end
 end

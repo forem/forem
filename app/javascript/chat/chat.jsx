@@ -453,6 +453,7 @@ export default class Chat extends Component {
     }
     let newMessages = [];
     if (
+      activeChannelId &&
       message.temp_id &&
       messages[activeChannelId].findIndex(
         (oldmessage) => oldmessage.temp_id === message.temp_id,
