@@ -1,6 +1,3 @@
-# rubocop:disable MixinUsage
-include CloudinaryHelper
-
 module Users
   module ProfileImageGenerator
     EMOJI_IMAGES =
@@ -21,13 +18,9 @@ module Users
          wolf_1f43a.png].freeze
     BACKGROUND_HEXES = %w[#f68d8e #fce289 #f3f096 #55c1ae #88aedc #f8b4d0].freeze
     def self.call
-      source = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/248/" + EMOJI_IMAGES.sample
-      cl_image_path(
-        source,
-        type: "fetch",
-        background: BACKGROUND_HEXES.sample,
-        sign_url: true,
-      )
+      # This pulls from emojipedia source for the liberally open source twemoji lib.
+      # TODO: Make this much more interesting than just emojis.
+      "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/248/" + EMOJI_IMAGES.sample
     end
   end
 end
