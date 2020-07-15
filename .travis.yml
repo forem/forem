@@ -78,6 +78,7 @@ jobs:
     - stage: Warm cache
       install: skip
       before_script: skip
+      script: skip
       after_script: skip
       workspaces:
         create:
