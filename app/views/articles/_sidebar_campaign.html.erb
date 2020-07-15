@@ -1,6 +1,6 @@
 <% campaign = CampaignDecorator.new(Campaign.current) %>
 <section class="crayons-card crayons-card--secondary">
-  <%= campaign.sidebar_image %>
+  <%= campaign.sidebar_image(class: "block w-100 h-auto radius-default", width: 1000, height: 420) %>
   <header class="crayons-card__header">
     <h3 class="crayons-card__header__headline"><%= link_to "Stories (#{@campaign_articles_count})", "/t/#{campaign.main_tag}" %></h3>
   </header>
