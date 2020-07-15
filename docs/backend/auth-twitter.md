@@ -62,7 +62,7 @@ application.
 
    ![twitter-3](https://user-images.githubusercontent.com/22895284/51078799-9a9a2700-16bb-11e9-8e88-0393260449c7.png)
 
-5. Fill in the DEV information, **Terms of Service** `http://dev.to/terms` and
+5. Fill in the information, **Terms of Service** `http://dev.to/terms` and
    **Privacy policy** `http://dev.to/privacy`.
 
    ![twitter-4](https://user-images.githubusercontent.com/22895284/51078800-9a9a2700-16bb-11e9-9b36-d325a2624f5a.png)
