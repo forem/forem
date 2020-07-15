@@ -397,7 +397,15 @@ var instantClick
         parentNode = script.parentNode
         nextSibling = script.nextSibling
         parentNode.removeChild(script)
-        parentNode.insertBefore(copy, nextSibling)
+        try {
+          parentNode.insertBefore(copy, nextSibling)
+        } catch(err) {
+          Honeybadger.notify(err, {
+            component: 'instantClick',
+            params: { copy: copy, nextSibling: nextSibling }
+          })
+          throw(err)
+        }
       }
     }
   }

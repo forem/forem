@@ -94,11 +94,12 @@ class Message < ApplicationRecord
   def target_blank_links(html)
     return html if html.blank?
 
-    html = html.gsub("<a href", "<a target='_blank' rel='noopener nofollow' href")
-    html
+    html.gsub("<a href", "<a target='_blank' rel='noopener nofollow' href")
   end
 
   # rubocop:disable Layout/LineLength
+  # rubocop:disable Metrics/BlockLength
+  # rubocop:disable Rails/OutputSafety
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
     doc.css("a").each do |anchor|
@@ -145,7 +146,10 @@ class Message < ApplicationRecord
     html
   end
   # rubocop:enable Layout/LineLength
+  # rubocop:enable Metrics/BlockLength
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def handle_slash_command(html)
     response = if html.to_s.strip == "<p>/call</p>"
                  "<a href='/video_chats/#{chat_channel_id}'
@@ -167,6 +171,7 @@ class Message < ApplicationRecord
     html = response if response
     html
   end
+  # rubocop:enable Rails/OutputSafety
 
   def cl_path(img_src)
     ActionController::Base.helpers.

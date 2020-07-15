@@ -8,7 +8,7 @@ RSpec.describe "/internal/config", type: :request do
     "My username is @#{admin_plus_config.username} and this action is 100% safe and appropriate."
   end
 
-  describe "POST internal/events as a user" do
+  describe "POST internal/config as a user" do
     before do
       sign_in(user)
     end
@@ -19,7 +19,7 @@ RSpec.describe "/internal/config", type: :request do
   end
 
   # rubocop:disable RSpec/NestedGroups
-  describe "POST internal/events" do
+  describe "POST internal/config" do
     context "when admin has typical admin permissions but not single resource" do
       before do
         sign_in(admin)
@@ -204,14 +204,18 @@ RSpec.describe "/internal/config", type: :request do
         end
 
         it "updates left_navbar_svg_icon" do
-          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' stroke='black' stroke-width='3'/></svg>"
-          post "/internal/config", params: { site_config: { left_navbar_svg_icon: expected_svg }, confirmation: confirmation_message }
+          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' " \
+            "stroke='black' stroke-width='3'/></svg>"
+          post "/internal/config", params: { site_config: { left_navbar_svg_icon: expected_svg },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.left_navbar_svg_icon).to eq(expected_svg)
         end
 
         it "updates right_navbar_svg_icon" do
-          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' stroke='black' stroke-width='1'/></svg>"
-          post "/internal/config", params: { site_config: { right_navbar_svg_icon: expected_svg }, confirmation: confirmation_message }
+          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' " \
+            "stroke='black' stroke-width='1'/></svg>"
+          post "/internal/config", params: { site_config: { right_navbar_svg_icon: expected_svg },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.right_navbar_svg_icon).to eq(expected_svg)
         end
 
@@ -461,6 +465,15 @@ RSpec.describe "/internal/config", type: :request do
             post "/internal/config", params: params
             expect(SiteConfig.twitter_hashtag.to_s).to eq twitter_hashtag
           end
+        end
+      end
+
+      describe "Sponsors" do
+        it "updates the sponsor_headline" do
+          headline = "basic"
+          post "/internal/config", params: { site_config: { sponsor_headline: headline },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.sponsor_headline).to eq(headline)
         end
       end
 

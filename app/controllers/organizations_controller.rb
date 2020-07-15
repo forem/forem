@@ -60,7 +60,7 @@ class OrganizationsController < ApplicationController
   private
 
   def permitted_params
-    accessible = %i[
+    %i[
       id
       name
       summary
@@ -84,7 +84,6 @@ class OrganizationsController < ApplicationController
       cta_button_url
       cta_body_markdown
     ]
-    accessible
   end
 
   def organization_params

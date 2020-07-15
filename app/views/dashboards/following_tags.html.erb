@@ -15,7 +15,11 @@
 
     <div class="crayons-layout__content" id="user-dashboard">
       <% if @followed_tags.any? %>
-        <div class="crayons-card crayons-card--secondary p-4 px-6 fs-s mb-2 mx-2 m:mx-0">Adjust <strong>Follow Weight</strong> to make a tag show up less or more in your feed (default 1.0)</div>
+        <div class="crayons-card crayons-card--secondary p-4 px-6 fs-s mb-2 mx-2 m:mx-0">
+          <i>
+            Adjust <strong>Follow Weight</strong> to make a tag show up less or more in your feed (default 1.0). Raising the number will make it so that a tag appears more in your feed, while lowering the number will make a tag less followed. Note that you can even make the follow weight negative for tags that you want to avoid seeing.
+          </i>
+        </div>
         <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
           <% negative_follow_shown_once = false %>
           <% @followed_tags.each do |follow| %>
