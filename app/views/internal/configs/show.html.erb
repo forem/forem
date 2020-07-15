@@ -21,7 +21,7 @@
       </button>
     </div>
 
-    <div id="getStartedBodyContainer" class="collapse hide p-3" aria-labelledby="siteConfigHeader">
+    <div id="getStartedBodyContainer" class="expand show p-3" aria-labelledby="siteConfigHeader">
       <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
 
         <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
