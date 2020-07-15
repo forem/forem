@@ -63,7 +63,6 @@ before_script:
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 after_script:
   - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./travis-coverage/spec/.resultset.json
-  - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL travis-coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
 notifications:
   slack:
     if: branch = master
@@ -106,6 +105,16 @@ jobs:
       env: KNAPSACK_PRO_CI_NODE_INDEX=2
       script:
         - bin/test-console-check
+
+    - stage: Coverage
+      name: "Upload coverage"
+      install: skip
+      before_script: skip
+      script:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL travis-coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+      after_script: skip
 
     - stage: Deploy
       if: type != pull_request
