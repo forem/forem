@@ -49,6 +49,12 @@
   &lt;img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30"&gt;
 &lt;/a&gt;
         </pre>
+      <p>
+        You can embed the <%= community_name %> badge in markdown with this snippet:
+      </p>
+      <pre class="embed-code">
+[![<%= current_user.name %>'s <%= community_name %> Profile](https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg)](<%= user_url(current_user) %>)
+    </pre>
       <p>You can add the <%= community_name %> badge via
         <b><a href="https://fontawesome.com/icons/dev?style=brands" target="_blank" rel="noopener">Font Awesome</a></b> with this snippet:
       </p>

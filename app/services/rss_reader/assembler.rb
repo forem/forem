@@ -54,7 +54,7 @@ class RssReader
     end
 
     def get_content
-      @item.content || @item.summary || @item.description
+      @item[:content] || @item[:summary] || @item[:description]
     end
 
     def thorough_parsing(content, feed_url)
