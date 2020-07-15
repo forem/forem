@@ -10,11 +10,11 @@ project.
 
 # Running the documentation locally
 
-Like DEV, this site is open source and the code is [hosted on GitHub][docs]. If
-you find any incorrect information, or a even a typo, we'd love to see a pull
+Like Forem, this site is open source and the code is [hosted on GitHub][docs].
+If you find any incorrect information, or a even a typo, we'd love to see a pull
 request. Follow these steps to get the documentation site running locally.
 
-DEV's documentation is built with [GitDocs NodeJS library][gitdocs].
+Forem's documentation is built with [GitDocs NodeJS library][gitdocs].
 
 The first step to running the documentations locally is to install the `GitDocs`
 package globally.
