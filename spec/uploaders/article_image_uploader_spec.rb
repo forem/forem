@@ -64,7 +64,13 @@ describe ArticleImageUploader, type: :uploader do
     it "raises an error if frame count is > FRAME_MAX" do
       stub_const("BaseUploader::FRAME_MAX", 20)
 
-      expect { uploader.store!(high_frame_count) }.to raise_error(CarrierWave::IntegrityError)
+      expect { uploader.store!(high_frame_count) }.to raise_error(CarrierWave::IntegrityError, /too many frames/)
+    end
+
+    it "raises a CarrierWave error which can be parsed if MiniMagick timeout occurs" do
+      allow(MiniMagick::Image).to receive(:new).and_raise(TimeoutError)
+
+      expect { uploader.store!(image_jpg) }.to raise_error(CarrierWave::IntegrityError, /Image processing timed out/)
     end
   end
 

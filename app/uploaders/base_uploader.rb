@@ -33,8 +33,12 @@ class BaseUploader < CarrierWave::Uploader::Base
   end
 
   def validate_frame_count
-    return unless MiniMagick::Image.new(file.path).frames.count > FRAME_MAX
+    begin
+      return unless MiniMagick::Image.new(file.path).frames.count > FRAME_MAX
+    rescue Timeout::Error
+      raise CarrierWave::IntegrityError, "Image processing timed out."
+    end
 
-    raise CarrierWave::IntegrityError, "GIF contains too many frames. Max frame count allowed is #{FRAME_MAX}"
+    raise CarrierWave::IntegrityError, "GIF contains too many frames. Max frame count allowed is #{FRAME_MAX}."
   end
 end
