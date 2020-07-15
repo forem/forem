@@ -20,27 +20,23 @@ async function confirmFlagUser({ reactableType, category, reactableId }) {
     const outcome = await response.json();
 
     if (outcome.result === 'create') {
-      // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
         message: 'All posts by this author will be less visible.',
         addCloseButton: true,
       });
     } else if (outcome.result === null) {
-      // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
         message:
           "It seems you've already reduced the visibility of this author's posts.",
         addCloseButton: true,
       });
     } else {
-      // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
         message: `Response from server: ${JSON.stringify(outcome)}`,
         addCloseButton: true,
       });
     }
   } catch (error) {
-    // eslint-disable-next-line no-restricted-globals
     top.addSnackbarItem({
       message: error,
       addCloseButton: true,
