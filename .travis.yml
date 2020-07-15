@@ -74,24 +74,17 @@ notifications:
 
 jobs:
   include:
-    - stage: Warm cache
-      install: skip
-      before_script: skip
-      script: skip
-      after_script: skip
-      workspaces:
-        create:
-          name: ws1
-          paths: ./coverage
-
     - stage: Test
-      workspaces:
-        use: ws0
       name: "Node 0"
       env: KNAPSACK_PRO_CI_NODE_INDEX=0
       script:
         - yarn test --colors
         - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json
+      workspaces:
+        create: ws1
+        paths:
+          - ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
+          - ./coverage/codeclimate.lcov.json
 
     - stage: Test
       workspaces:
@@ -101,6 +94,9 @@ jobs:
       script:
         - bundle exec bundle-audit check --update --ignore CVE-2015-9284
         - yarn build-storybook
+      workspaces:
+        create: ws2
+        paths: ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
 
     - stage: Test
       workspaces:
@@ -109,10 +105,16 @@ jobs:
       env: KNAPSACK_PRO_CI_NODE_INDEX=2
       script:
         - bin/test-console-check
+      workspaces:
+        create: ws3
+        paths: ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
 
     - stage: Coverage
       workspaces:
-        use: ws1
+        use:
+          - ws1
+          - ws2
+          - ws3
       name: "Upload coverage"
       install: skip
       before_script: skip
