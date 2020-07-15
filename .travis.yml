@@ -62,7 +62,7 @@ before_script:
   - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 after_script:
-  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./travis-coverage/spec/.resultset.json
+  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
 notifications:
   slack:
     if: branch = master
@@ -82,16 +82,16 @@ jobs:
       workspaces:
         create:
           name: ws1
-          paths: ./travis-coverage
+          paths: ./coverage
 
     - stage: Test
       workspaces:
-        use: ws1
+        use: ws0
       name: "Node 0"
       env: KNAPSACK_PRO_CI_NODE_INDEX=0
       script:
         - yarn test --colors
-        - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json ./travis-coverage/codeclimate.lcov.json
+        - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json
 
     - stage: Test
       workspaces:
@@ -119,7 +119,7 @@ jobs:
       script:
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         - chmod +x ./cc-test-reporter
-        - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL travis-coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+        - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
       after_script: skip
 
     - stage: Deploy
