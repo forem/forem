@@ -1,5 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+
+import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
 import Membership from './Membership';
 
 const ActiveMembershipSection = ({
@@ -8,10 +10,6 @@ const ActiveMembershipSection = ({
   currentMembershipRole,
   toggleScreens,
 }) => {
-  const RenderActiveMembershipManager = () => {
-    toggleScreens();
-  };
-
   const activeMembershipList = activeMemberships.slice(0, 4);
 
   return (
@@ -32,10 +30,10 @@ const ActiveMembershipSection = ({
             />
           ))
         : null}
-      <div className="row view-membership-btn">
+      <div className="row align-center">
         <button
           className="crayons-btn align-center crayons-btn--s view-all-memberships"
-          onClick={() => RenderActiveMembershipManager()}
+          onClick={toggleScreens}
           type="button"
         >
           View All
@@ -46,17 +44,7 @@ const ActiveMembershipSection = ({
 };
 
 ActiveMembershipSection.propTypes = {
-  activeMemberships: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      membership_id: PropTypes.number.isRequired,
-      user_id: PropTypes.number.isRequired,
-      role: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-      status: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
+  activeMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
   toggleScreens: PropTypes.func.isRequired,

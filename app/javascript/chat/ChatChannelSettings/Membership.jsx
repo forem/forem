@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
 
 const Membership = ({
   membership,
@@ -52,17 +53,7 @@ const Membership = ({
 };
 
 Membership.propTypes = {
-  membership: PropTypes.objectOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      membership_id: PropTypes.number.isRequired,
-      user_id: PropTypes.number.isRequired,
-      role: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-      status: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
+  membership: PropTypes.objectOf(defaulMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   membershipType: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
