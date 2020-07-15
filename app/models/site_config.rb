@@ -125,6 +125,9 @@ class SiteConfig < RailsSettings::Base
   }
   field :twitter_hashtag, type: :string
 
+  # Sponsors
+  field :sponsor_headline, default: "Community Sponsors"
+
   # Tags
   field :sidebar_tags, type: :array, default: %w[]
 
