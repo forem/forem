@@ -246,9 +246,13 @@ module ApplicationHelper
   end
 
   def internal_config_label(method, content = nil)
-    content ||= "<span>#{method.to_s.humanize}</span>"
-    content << "<span class='site-config__required'>Required</span>" if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-    label_tag("site_config_#{method}", raw(content),  class: 'site-config__label')
+    content ||= raw("<span>#{method.to_s.humanize}</span>")
+
+    if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+       content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+    end
+
+    content_tag(:label, content, class: 'site-config__label')
   end
 
 end
