@@ -85,7 +85,6 @@ gem "recaptcha", "~> 5.5", require: "recaptcha/rails" # Helpers for the reCAPTCH
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.2.1" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
-gem "redis-store", "~> 1.9.0" # Redis storage options for Rails (listed here to lock version above 1.9.0 - see https://github.com/redis-store/redis-store/pull/333)
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
 gem "rolify", "~> 5.3" # Very simple Roles library
 gem "rouge", "~> 3.20" # A pure-ruby code highlighter
