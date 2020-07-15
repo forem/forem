@@ -17,7 +17,7 @@ module Internal
                    username: username,
                    remote_profile_image_url: Users::ProfileImageGenerator.call,
                    registered: false)
-      redirect_to "/internal/invitations"
+      redirect_to internal_invitations_path
     end
   end
 end
