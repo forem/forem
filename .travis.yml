@@ -80,10 +80,11 @@ jobs:
         - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
         - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json
       workspaces:
-        create: ws1
-        paths:
-          - ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
-          - ./coverage/codeclimate.lcov.json
+        create:
+          name: ws1
+          paths:
+            - ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
+            - ./coverage/codeclimate.lcov.json
 
     - stage: Test
       workspaces:
@@ -95,8 +96,9 @@ jobs:
         - bundle exec bundle-audit check --update --ignore CVE-2015-9284
         - yarn build-storybook
       workspaces:
-        create: ws2
-        paths: ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
+        create:
+          name: ws2
+          paths: ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
 
     - stage: Test
       workspaces:
@@ -107,8 +109,9 @@ jobs:
         - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
         - bin/test-console-check
       workspaces:
-        create: ws3
-        paths: ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
+        create:
+          name: ws3
+          paths: ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
 
     - stage: Coverage
       workspaces:
