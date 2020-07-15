@@ -114,7 +114,7 @@ module BadgeRewarder
 
   def self.award_badges(usernames, slug, message_markdown)
     badge_id = Badge.find_by!(slug: slug).id
-    User.where(username: usernames).find_each do |user|
+    User.registered.where(username: usernames).find_each do |user|
       BadgeAchievement.create(
         user_id: user.id,
         badge_id: badge_id,
