@@ -1,6 +1,7 @@
 class InvitationsController < Devise::InvitationsController
   def update
-    # Copied from https://github.com/scambra/devise_invitable/blob/master/app/controllers/devise/invitations_controller.rb and edited
+    # Copied from https://github.com/scambra/devise_invitable/blob/master/app/controllers/devise/invitations_controller.rb
+    # And edited. This is a common devise pattern, similar to OmniauthCallbacksController.
     raw_invitation_token = update_resource_params[:invitation_token]
     self.resource = accept_resource
     invitation_accepted = resource.errors.empty?
