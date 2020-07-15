@@ -15,7 +15,7 @@ module Internal
       User.invite!(email: email,
                    name: name,
                    username: username,
-                   remote_profile_image_url: "https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/1/f451a206-11c8-4e3d-8936-143d0a7e65bb.png",
+                   remote_profile_image_url: Users::ProfileImageGenerator.call,
                    registered: false)
       redirect_to "/internal/invitations"
     end

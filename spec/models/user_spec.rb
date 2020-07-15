@@ -907,6 +907,11 @@ RSpec.describe User, type: :model do
       expect(identity.auth_data_dump.provider).to eq(identity.provider)
     end
 
+    it "marks registered_at for newly registered user" do
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
+      expect(new_user.registered_at).not_to be nil
+    end
+
     it "persists extracts relevant identity data from new twitter user" do
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       expect(new_user.twitter_followers_count).to eq(100)
