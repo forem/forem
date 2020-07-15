@@ -50,7 +50,6 @@ install:
   - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
-  - 'bin/setup_elasticsearch'
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
@@ -63,8 +62,8 @@ script:
   - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 after_script:
-  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
-  - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+  - ./cc-test-reporter format-coverage -t simplecov -o ./travis-coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./travis-coverage/spec/.resultset.json
+  - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL travis-coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
 notifications:
   slack:
     if: branch = master
@@ -83,6 +82,7 @@ jobs:
       workspaces:
         create:
           name: ws1
+          paths: ./travis-coverage
 
     - stage: Test
       workspaces:
@@ -91,7 +91,7 @@ jobs:
       env: KNAPSACK_PRO_CI_NODE_INDEX=0
       script:
         - yarn test --colors
-        - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json
+        - ./cc-test-reporter format-coverage -t lcov -o travis-coverage/codeclimate.lcov.json
 
     - stage: Test
       name: "Node 1"
