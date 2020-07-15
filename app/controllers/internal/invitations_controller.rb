@@ -11,7 +11,7 @@ module Internal
     def create
       email = params[:user][:email]
       name = params[:user][:name]
-      username = name.downcase.tr(" ", "_") + rand(1000).to_s
+      username = "#{name.downcase.tr(" ", "_")}#{rand(1000)}"
       User.invite!(email: email,
                    name: name,
                    username: username,
