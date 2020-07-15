@@ -9,6 +9,7 @@ describe ArticleImageUploader, type: :uploader do
   let_it_be(:image_png) { fixture_file_upload("files/800x600.png", "image/png") }
   let_it_be(:image_webp) { fixture_file_upload("files/800x600.webp", "image/webp") }
   let_it_be(:image_with_gps) { fixture_file_upload("files/image_gps_data.jpg", "image/jpeg") }
+  let_it_be(:high_frame_count) { fixture_file_upload("files/high_frame_count.gif", "image/gif") }
 
   # we need a new uploader before each test, and since the uploader is not a model
   # we can recreate it quickly in memory with `let!`
@@ -59,13 +60,36 @@ describe ArticleImageUploader, type: :uploader do
     end
   end
 
+  describe "frame validation" do
+    it "raises an error if frame count is > FRAME_MAX" do
+      stub_const("BaseUploader::FRAME_MAX", 20)
+
+      expect { uploader.store!(high_frame_count) }.to raise_error(CarrierWave::IntegrityError, /too many frames/)
+    end
+
+    it "raises a CarrierWave error which can be parsed if MiniMagick timeout occurs" do
+      allow(MiniMagick::Image).to receive(:new).and_raise(TimeoutError)
+
+      expect { uploader.store!(image_jpg) }.to raise_error(CarrierWave::IntegrityError, /Image processing timed out/)
+    end
+  end
+
   describe "exif removal" do
-    it "removes EXIF and GPS data on upload" do
+    it "removes EXIF and GPS data on single frame image upload" do
       expect(EXIFR::JPEG.new(image_with_gps.path).exif?).to be(true)
       expect(EXIFR::JPEG.new(image_with_gps.path).gps.present?).to be(true)
       uploader.store!(image_with_gps)
       expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(false)
       expect(EXIFR::JPEG.new(uploader.file.path).gps.present?).to be(false)
+    end
+
+    it "does NOT remove EXIF and GPS data if frame count is > FRAME_STRIP_MAX" do
+      stub_const("BaseUploader::FRAME_STRIP_MAX", 0)
+      expect(EXIFR::JPEG.new(image_with_gps.path).exif?).to be(true)
+      expect(EXIFR::JPEG.new(image_with_gps.path).gps.present?).to be(true)
+      uploader.store!(image_with_gps)
+      expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(true)
+      expect(EXIFR::JPEG.new(uploader.file.path).gps.present?).to be(true)
     end
   end
 end
