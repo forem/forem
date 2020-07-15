@@ -113,34 +113,34 @@ module Constants
     },
     main_social_image: {
       description: "Used as the main image in social networks and OpenGraph",
-      placeholder: "",
+      placeholder: ""
     },
     logo_png: {
       description: "Minimum 1024px, used for PWA etc.",
-      placeholder: "https://image.url/image.png",
+      placeholder: "https://image.url/image.png"
     },
     mascot_user_id: {
       description: "User ID of the Mascot account",
-      placeholder: "1",
+      placeholder: "1"
     },
     mascot_image_url: {
       description: "Used as the mascot image.",
-      placeholder: "https://image.url",
+      placeholder: "https://image.url"
     },
     meta_keywords: {
       description: "",
-      placeholder: "",
+      placeholder: ""
     },
     suggested_tags: {
       description: "Determines which tags are suggested to new users during onboarding (comma
         separated, letters only)",
-      placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin",
+      placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin"
     },
     suggested_users: {
       description: "Determines which users are suggested to follow to new users during onboarding (comma
         separated, letters only). Please note that these users will be shown as a fallback if no recently-active commenters or producers can be suggested",
-      placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana",
+      placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
     }
-  }
+  }.freeze
 
 end
