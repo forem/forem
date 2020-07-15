@@ -73,11 +73,11 @@ module Constants
   SITE_CONFIG_DETAILS = {
     authentication: {
       description: "How can users sign in?",
-      placeholder: "",
+      placeholder: ""
     },
     campaign_hero_html_variant_name: {
       description: "Hero HtmlVariant name",
-      placeholder: "",
+      placeholder: ""
     },
     campaign_articles_require_approval: {
       description: "",
@@ -85,15 +85,15 @@ module Constants
     },
     campaign_sidebar_enabled: {
       description: "",
-      placeholder: "Campaign sidebar enabled or not",
+      placeholder: "Campaign sidebar enabled or not"
     },
     campaign_sidebar_image: {
       description: "https://image.url",
-      placeholder: "Used at the top of the campaign sidebar",
+      placeholder: "Used at the top of the campaign sidebar"
     },
     campaign_featured_tags: {
       description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
-      placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded",
+      placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded"
     },
     community_description: {
       description: "Used in meta description tags etc.",
@@ -109,7 +109,7 @@ module Constants
     },
     tagline: {
       description: "Used in signup modal.",
-      placeholder: "We're a place where coders share, stay up-to-date and grow their careers.",
+      placeholder: "We're a place where coders share, stay up-to-date and grow their careers."
     },
     main_social_image: {
       description: "Used as the main image in social networks and OpenGraph",
