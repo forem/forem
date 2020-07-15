@@ -82,7 +82,7 @@ jobs:
       workspaces:
         create:
           name: ws1
-          paths: ./travis-coverage
+          paths: /travis-coverage
 
     - stage: Test
       workspaces:
