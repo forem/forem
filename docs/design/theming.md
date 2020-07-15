@@ -4,7 +4,7 @@ title: Theming Guidelines
 
 # Theming Guidelines
 
-DEV supports different themes, such as Default, Night, Pink.
+Forem supports different themes, such as Default, Night, Pink.
 
 You can switch the theme at <http://localhost:3000/settings/ux> in the "Style
 Customization" section.

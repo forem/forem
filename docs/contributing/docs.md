@@ -2,7 +2,7 @@
 title: Contributing to the Docs
 ---
 
-# Contributing to DEV's developer documentation
+# Contributing to Forem's developer documentation
 
 Contributions to the documentation are always appreciated! Thank you for making
 an effort to improve the developer experience of contributing to the DEV
@@ -31,7 +31,7 @@ Alternatively, you can use Yarn:
 yarn global add gitdocs
 ```
 
-Once installed, you should run `gitdocs serve` from the root of the dev.to
+Once installed, you should run `gitdocs serve` from the root of the `forem`
 project or from the `/docs` directory.
 
 ```shell
@@ -84,7 +84,7 @@ lost over time.
 For more information on effective technical writing, check out
 [writethedocs.org][writethedocs].
 
-[docs]: https://github.com/thepracticaldev/dev.to/tree/master/docs/
+[docs]: https://github.com/forem/forem/tree/master/docs/
 [gitdocs]: https://www.npmjs.com/package/gitdocs/
 [markdown]: https://en.wikipedia.org/wiki/Markdown
 [frontmatter]: https://jekyllrb.com/docs/front-matter/
