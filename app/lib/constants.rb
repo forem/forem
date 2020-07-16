@@ -235,7 +235,7 @@ module Constants
     suggested_users: {
       description: "Determines which users are suggested to follow to new users during onboarding (comma" \
       "separated, letters only). Please note that these users will be shown as a fallback if no" \
-      recently-active commenters or producers can be suggested",
+      "recently-active commenters or producers can be suggested",
       placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
     },
     twitter_hashtag: {
