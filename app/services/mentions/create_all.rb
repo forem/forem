@@ -28,7 +28,7 @@ module Mentions
     end
 
     def collect_existing_users(usernames)
-      User.where(username: usernames)
+      User.registered.where(username: usernames)
     end
 
     def create_mentions_for(users)

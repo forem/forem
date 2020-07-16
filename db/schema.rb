@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_06_184804) do
+ActiveRecord::Schema.define(version: 2020_07_12_150048) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,12 @@ ActiveRecord::Schema.define(version: 2020_07_06_184804) do
     t.string "visitor_token"
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
+  end
+
+  create_table "announcements", force: :cascade do |t|
+    t.string "banner_style"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "api_secrets", force: :cascade do |t|
@@ -293,11 +299,14 @@ ActiveRecord::Schema.define(version: 2020_07_06_184804) do
     t.datetime "active_status_updated_at"
     t.string "banner_style"
     t.text "body_markdown"
+    t.integer "broadcastable_id"
+    t.string "broadcastable_type"
     t.datetime "created_at"
     t.text "processed_html"
     t.string "title"
     t.string "type_of"
     t.datetime "updated_at"
+    t.index ["broadcastable_type", "broadcastable_id"], name: "index_broadcasts_on_broadcastable_type_and_broadcastable_id", unique: true
     t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
   end
 
@@ -483,6 +492,7 @@ ActiveRecord::Schema.define(version: 2020_07_06_184804) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
+    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -1235,6 +1245,14 @@ ActiveRecord::Schema.define(version: 2020_07_06_184804) do
     t.string "inbox_guidelines"
     t.string "inbox_type", default: "private"
     t.string "instagram_url"
+    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_created_at"
+    t.integer "invitation_limit"
+    t.datetime "invitation_sent_at"
+    t.string "invitation_token"
+    t.integer "invitations_count", default: 0
+    t.bigint "invited_by_id"
+    t.string "invited_by_type"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
@@ -1265,6 +1283,8 @@ ActiveRecord::Schema.define(version: 2020_07_06_184804) do
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
+    t.boolean "registered", default: true
+    t.datetime "registered_at"
     t.datetime "remember_created_at"
     t.string "remember_token"
     t.float "reputation_modifier", default: 1.0
@@ -1299,6 +1319,10 @@ ActiveRecord::Schema.define(version: 2020_07_06_184804) do
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
+    t.index ["invitations_count"], name: "index_users_on_invitations_count"
+    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
+    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -1324,6 +1348,11 @@ ActiveRecord::Schema.define(version: 2020_07_06_184804) do
     t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
     t.index ["target_url"], name: "index_webhook_endpoints_on_target_url", unique: true
     t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
+  end
+
+  create_table "welcome_notifications", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "api_secrets", "users", on_delete: :cascade

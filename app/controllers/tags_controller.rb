@@ -3,6 +3,8 @@ class TagsController < ApplicationController
   before_action :authenticate_user!, only: %i[edit update]
   after_action :verify_authorized
 
+  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
+
   def index
     skip_authorization
     @tags_index = true
@@ -62,6 +64,5 @@ class TagsController < ApplicationController
     params.require(:tag).permit(accessible)
   end
 
-  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
   private_constant :ATTRIBUTES_FOR_SERIALIZATION
 end

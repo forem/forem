@@ -112,7 +112,7 @@ class User < ApplicationRecord
 
   mount_uploader :profile_image, ProfileImageUploader
 
-  devise :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable
+  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable, :recoverable
 
   validates :behance_url, length: { maximum: 100 }, allow_blank: true, format: BEHANCE_URL_REGEXP
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
@@ -164,6 +164,7 @@ class User < ApplicationRecord
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
+  scope :registered, -> { where(registered: true) }
 
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
@@ -385,6 +386,7 @@ class User < ApplicationRecord
   end
 
   def subscribe_to_mailchimp_newsletter
+    return unless registered
     return unless email.present? && email.include?("@")
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
     return unless saved_changes.key?(:email) || saved_changes.key?(:email_newsletter)

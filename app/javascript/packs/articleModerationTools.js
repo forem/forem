@@ -9,7 +9,7 @@ const initializeModerationsTools = async () => {
   const { default: initializeActionsPanel } = await import(
     '../actionsPanel/initializeActionsPanelToggle'
   );
-  const { default: initializeFlagUserModal } = await import('./flagUserModal');
+  const { initializeFlagUserModal } = await import('./flagUserModal');
 
   // article show page
   if (

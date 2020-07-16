@@ -11,10 +11,10 @@ article_methods_to_include = %i[
 
 json.array!(@stories) do |article|
   json.extract! article, *article_attributes_to_include
-  json.user article.cached_user.as_json
+  json.user article.cached_user.as_json["table"]
 
   if article.cached_organization?
-    json.organization article.cached_organization.as_json
+    json.organization article.cached_organization.as_json["table"]
   end
 
   if article.main_image?

@@ -3,6 +3,11 @@ module Api
     class VideosController < ApiController
       before_action :set_cache_control_headers, only: %i[index]
 
+      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id video path title video_thumbnail_url user_id video_duration_in_seconds
+      ].freeze
+      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
+
       def index
         page = params[:page]
         per_page = (params[:per_page] || 24).to_i
@@ -16,11 +21,6 @@ module Api
 
         set_surrogate_key_header "videos", Article.table_key, @video_articles.map(&:record_key)
       end
-
-      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id video path title video_thumbnail_url user_id video_duration_in_seconds
-      ].freeze
-      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
     end
   end
 end

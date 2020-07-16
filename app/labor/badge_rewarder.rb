@@ -14,7 +14,7 @@ module BadgeRewarder
       message = "Happy #{ApplicationConfig['COMMUNITY_NAME']} birthday! " \
         "Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
       badge = Badge.find_by!(slug: "#{YEARS[i]}-year-club")
-      User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
+      User.registered.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
         achievement = BadgeAchievement.create(
           user_id: user.id,
           badge_id: badge.id,
@@ -114,7 +114,7 @@ module BadgeRewarder
 
   def self.award_badges(usernames, slug, message_markdown)
     badge_id = Badge.find_by!(slug: slug).id
-    User.where(username: usernames).find_each do |user|
+    User.registered.where(username: usernames).find_each do |user|
       BadgeAchievement.create(
         user_id: user.id,
         badge_id: badge_id,

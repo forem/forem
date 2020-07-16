@@ -1,7 +1,6 @@
 module Exporter
   class Comments
-    attr_reader :name
-    attr_reader :user
+    attr_reader :name, :user
 
     def initialize(user)
       @name = :comments

@@ -1,12 +1,12 @@
 {
-  "name": "DEV Docs",
+  "name": "Forem Docs",
   "root": "./",
-  "logo": "devblacksquarelogo.svg",
+  "logo": "seedling.png",
   "host": "0.0.0.0",
   "header_links": [
     {
       "title": "Repo",
-      "href": "https://github.com/thepracticaldev/dev.to",
+      "href": "https://github.com/forem/forem",
       "target": "_blank",
       "rel": "noopener noreferrer nofollow"
     },
@@ -18,13 +18,13 @@
     },
     {
       "title": "Ruby doc",
-      "href": "http://docs.dev.to/ruby-doc",
+      "href": "http://docs.forem.com/ruby-doc",
       "target": "_blank",
       "rel": "noopener noreferrer nofollow"
     },
     {
       "title": "API doc",
-      "href": "http://docs.dev.to/api",
+      "href": "http://docs.forem.com/api",
       "target": "_blank",
       "rel": "noopener noreferrer nofollow"
     }

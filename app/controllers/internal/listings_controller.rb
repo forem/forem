@@ -1,6 +1,9 @@
 module Internal
   class ListingsController < Internal::ApplicationController
     include ListingsToolkit
+    ALLOWED_PARAMS = %i[
+      published body_markdown title category listing_category_id tag_list action
+    ].freeze
     layout "internal"
 
     def index
@@ -35,9 +38,6 @@ module Internal
 
     private
 
-    ALLOWED_PARAMS = %i[
-      published body_markdown title category listing_category_id tag_list action
-    ].freeze
     private_constant :ALLOWED_PARAMS
 
     def listing_params

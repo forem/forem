@@ -3,6 +3,11 @@ module Api
     class CommentsController < ApiController
       before_action :set_cache_control_headers, only: %i[index show]
 
+      ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id processed_html user_id ancestry deleted hidden_by_commentable_user
+      ].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
+
       def index
         article = Article.find(params[:a_id])
 
@@ -26,11 +31,6 @@ module Api
 
         set_surrogate_key_header Comment.table_key, edge_cache_keys(tree_with_root_comment)
       end
-
-      ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id processed_html user_id ancestry deleted hidden_by_commentable_user
-      ].freeze
-      private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       private
 
