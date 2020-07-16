@@ -4,7 +4,6 @@ import { fetchSearch } from '../utilities/search';
 import ModalBackground from './components/ModalBackground';
 import Modal from './components/Modal';
 import AllListings from './components/AllListings';
-import NextPageButton from './components/NextPageButton';
 import ListingFilters from './components/ListingFilters';
 import {
   LISTING_PAGE_SIZE,
@@ -308,8 +307,9 @@ export class Listings extends Component {
           onChangeCategory={this.selectCategory}
           currentUserId={currentUserId}
           onOpenModal={this.handleOpenModal}
+          showNextPageButton={showNextPageButton}
+          loadNextPage={this.loadNextPage}
         />
-        {showNextPageButton && <NextPageButton onClick={this.loadNextPage} />}
         {shouldRenderModal && (
           <div className="crayons-modal">
             <Modal

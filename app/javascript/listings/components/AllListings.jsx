@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { SingleListing } from '../singleListing/SingleListing';
+import NextPageButton from './NextPageButton';
 
 const AllListings = ({
   listings,
@@ -8,6 +9,8 @@ const AllListings = ({
   onChangeCategory,
   currentUserId,
   onOpenModal,
+  showNextPageButton,
+  loadNextPage,
 }) => {
   return (
     <main class="crayons-layout__content">
@@ -23,6 +26,8 @@ const AllListings = ({
           />
         ))}
       </div>
+
+      {showNextPageButton && <NextPageButton onClick={loadNextPage} />}
     </main>
   );
 };
@@ -33,6 +38,8 @@ AllListings.propTypes = {
   onAddTag: PropTypes.func.isRequired,
   onChangeCategory: PropTypes.func.isRequired,
   onOpenModal: PropTypes.func.isRequired,
+  showNextPageButton: PropTypes.bool.isRequired,
+  loadNextPage: PropTypes.func.isRequired,
 };
 
 AllListings.defaultProps = {

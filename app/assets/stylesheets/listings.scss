@@ -160,22 +160,6 @@
       }
     }
   }
-  .listings-load-more-button {
-    text-align: center;
-
-    button {
-      background: var(--theme-container-background);
-      color: var(--body-color);
-      border: 1px solid var(--card-color-tertiary);
-      font-size: 17px;
-      padding: 14px 5px;
-      margin: 40px auto 70px;
-      width: 320px;
-      max-width: 80%;
-      border-radius: 100px;
-      font-weight: bold;
-    }
-  }
 }
 
 .listingform__bodymarkdown {
