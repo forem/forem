@@ -1,3 +1,11 @@
+require "mini_magick"
+
+# Carrierwave uses MiniMagick for image processing. To prevent server timeouts
+# we are setting the MiniMagick timeout lower.
+MiniMagick.configure do |config|
+  config.timeout = 10
+end
+
 CarrierWave.configure do |config|
   if Rails.env.test?
     config.storage = :file

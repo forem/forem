@@ -4,7 +4,7 @@ title: Webpacker
 
 # Webpacker
 
-DEV has two JavaScript codebases.
+Forem has two JavaScript codebases.
 
 One contains plain JavaScript,
 [which you can read more about in this guide](/frontend/plain-js).
@@ -18,8 +18,8 @@ integrated into the Rails app using `Webpacker`.
 There is a packs directory `/app/javascript/packs` where you can create new
 "pack" files. Pack files are initializers for Webpacker.
 
-Since DEV is not a Single Page Application (SPA), Preact components are mounted
-as needed by including the pack file in the view files.
+Since Forem is not a Single Page Application (SPA), Preact components are
+mounted as needed by including the pack file in the view files.
 
 For example:
 
