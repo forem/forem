@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const CategoryLinks = ({ categories, onClick, selectedCategory }) => {
   return (
-    <div>
+    <section>
       {categories.map((category) => {
         const dataTestIdProp =
           category.slug === selectedCategory
@@ -25,7 +25,7 @@ const CategoryLinks = ({ categories, onClick, selectedCategory }) => {
           </a>
         );
       })}
-    </div>
+    </section>
   );
 };
 

@@ -42,7 +42,7 @@ export function getQueryParams() {
 function resizeMasonryItem(item) {
   /* Get the grid object, its row-gap, and the size of its implicit rows */
   const grid = document.getElementsByClassName('listings-columns')[0];
-  const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-gap'), 10);
+  const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-row-gap'), 10);
   const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'), 10);
   const rowSpan = Math.ceil(
     (item.querySelector('.listing-content').getBoundingClientRect().height + rowGap) / (rowHeight + rowGap),
