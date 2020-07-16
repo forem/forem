@@ -60,7 +60,9 @@ export default class SingleArticle extends Component {
         <span className="article-title">
           <header>
             <h3 className="fs-base fw-bold lh-tight">
-              <a href={path}>{title}</a>
+              <a className="article-title-link" href={path}>
+                {title}
+              </a>
             </h3>
           </header>
           {tags}
