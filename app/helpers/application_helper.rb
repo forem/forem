@@ -252,6 +252,6 @@ module ApplicationHelper
       content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
     end
 
-    label_tag("site_config_#{method}", content, class: "site-config__label")
+    content_tag(:label, content,  class: "site-config__label", for: "site_config_#{method}")
   end
 end
