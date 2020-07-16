@@ -2,6 +2,18 @@ class Follow < ApplicationRecord
   extend ActsAsFollower::FollowerLib
   extend ActsAsFollower::FollowScopes
 
+  COUNTER_CULTURE_COLUMN_NAME_BY_TYPE = {
+    "User" => "following_users_count",
+    "Organization" => "following_orgs_count",
+    "ActsAsTaggableOn::Tag" => "following_tags_count"
+  }.freeze
+
+  COUNTER_CULTURE_COLUMNS_NAMES = {
+    ["follows.followable_type = ?", "User"] => "following_users_count",
+    ["follows.followable_type = ?", "Organization"] => "following_orgs_count",
+    ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count"
+  }.freeze
+
   # Follows belong to the "followable" interface, and also to followers
   belongs_to :followable, polymorphic: true
   belongs_to :follower,   polymorphic: true
@@ -14,21 +26,8 @@ class Follow < ApplicationRecord
   scope :follower_podcast, ->(id) { where(follower_id: id, followable_type: "Podcast") }
   scope :follower_tag, ->(id) { where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag") }
 
-  counter_culture :follower, column_name: proc { |follow|
-    case follow.followable_type
-    when "User"
-      "following_users_count"
-    when "Organization"
-      "following_orgs_count"
-    when "ActsAsTaggableOn::Tag"
-      "following_tags_count"
-      # add more whens if we add more follow types
-    end
-  }, column_names: {
-    ["follows.followable_type = ?", "User"] => "following_users_count",
-    ["follows.followable_type = ?", "Organization"] => "following_orgs_count",
-    ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count"
-  }
+  counter_culture :follower, column_name: proc { |follow| COUNTER_CULTURE_COLUMN_NAME_BY_TYPE[follow.followable_type] },
+                             column_names: COUNTER_CULTURE_COLUMNS_NAMES
   after_save :touch_follower
   after_create :send_email_notification
   after_create_commit :create_chat_channel
