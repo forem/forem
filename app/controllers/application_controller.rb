@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   skip_before_action :track_ahoy_visit
+  before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
 
   include SessionCurrentUser
@@ -13,6 +14,13 @@ class ApplicationController < ActionController::Base
 
   rescue_from RateLimitChecker::LimitReached do |exc|
     error_too_many_requests(exc)
+  end
+
+  def verify_private_forem
+    if SiteConfig.access == "private"
+      render template: "devise/registrations/new"
+      return
+    end
   end
 
   def not_found
