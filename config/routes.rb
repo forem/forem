@@ -23,7 +23,7 @@ Rails.application.routes.draw do
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
     Sidekiq::Web.class_eval do
-      use Rack::Protection, origin_whitelist: ["https://dev.to"] # resolve Rack Protection HttpOrigin
+      use Rack::Protection, origin_whitelist: [URL.url] # resolve Rack Protection HttpOrigin
     end
     mount Sidekiq::Web => "/sidekiq"
     mount FieldTest::Engine, at: "abtests"
@@ -43,7 +43,14 @@ Rails.application.routes.draw do
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
-      mount Flipper::UI.app(Flipper, { rack_protection: {} }), at: "feature_flags"
+
+      flipper_ui = Flipper::UI.app(Flipper) do |builder|
+        builder.use Rack::Protection, origin_whitelist: [URL.url]
+        # Requires redis-store > 1.9: https://github.com/redis-store/redis-store/pull/333
+        builder.use Rack::Session::Cookie,
+                    secret: Rails.application.secrets[:secret_key_base]
+      end
+      mount flipper_ui, at: "feature_flags"
     end
 
     resources :articles, only: %i[index show update]
