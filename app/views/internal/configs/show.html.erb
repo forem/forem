@@ -579,7 +579,7 @@
               <%= f.text_field :mailchimp_newsletter_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_newsletter_id %>
-              <div class="alert alert-info">Main Newsletter ID</div>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mailchimp_newsletter_id][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -587,7 +587,7 @@
               <%= f.text_field :mailchimp_sustaining_members_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_sustaining_members_id %>
-              <div class="alert alert-info">Sustaining Members Newsletter ID</div>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mailchimp_sustaining_members_id][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -595,7 +595,7 @@
               <%= f.text_field :mailchimp_tag_moderators_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_tag_moderators_id %>
-              <div class="alert alert-info">Tag Moderators Newsletter ID</div>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mailchimp_tag_moderators_id][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -603,7 +603,7 @@
               <%= f.text_field :mailchimp_community_moderators_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_community_moderators_id %>
-              <div class="alert alert-info">Community Moderators Newsletter ID</div>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mailchimp_community_moderators_id][:description] %></div>
             </div>
           </div>
         </div>
@@ -622,13 +622,13 @@
               <%= f.text_field :onboarding_logo_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_logo_image,
-                               placeholder: "https://image.url" %>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:onboarding_logo_image][:placeholder] %>
               <div class="row mt-2">
                 <div class="col-12">
                   <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" />
                 </div>
                 <div class="col-12">
-                  <div class="alert alert-info"> Main onboarding display logo image </div>
+                  <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:onboarding_logo_image][:description] %></div>
                 </div>
               </div>
             </div>
@@ -638,13 +638,13 @@
               <%= f.text_field :onboarding_background_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_background_image,
-                               placeholder: "https://image.url" %>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:onboarding_background_image][:placeholder]  %>
               <div class="row mt-2">
                 <div class="col-12">
                   <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
                 </div>
                 <div class="col-12">
-                  <div class="alert alert-info"> Background for onboarding splash page </div>
+                  <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:onboarding_background_image][:description] %></div>
                 </div>
               </div>
             </div>
@@ -654,13 +654,13 @@
               <%= f.text_field :onboarding_taskcard_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_taskcard_image,
-                               placeholder: "https://image.url" %>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:onboarding_taskcard_image][:placeholder] %>
               <div class="row mt-2">
                 <div class="col-12">
                   <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
                 </div>
                 <div class="col-12">
-                  <div class="alert alert-info"> Used as the onboarding task-card image </div>
+                  <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:onboarding_taskcard_image][:description] %></div>
                 </div>
               </div>
             </div>
@@ -670,9 +670,8 @@
               <%= f.text_field :suggested_users,
                                class: "form-control",
                                value: SiteConfig.suggested_users.join(","),
-                               placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana" %>
-              <div class="alert alert-info">Determines which users are suggested to follow to new users during onboarding (comma
-                separated, letters only). Please note that these users will be shown as a fallback if no recently-active commenters or producers can be suggested.</div>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:suggested_users][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:suggested_users][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -680,9 +679,8 @@
               <%= f.text_field :suggested_tags,
                                class: "form-control",
                                value: SiteConfig.suggested_tags.join(","),
-                               placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin" %>
-              <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma
-                separated, letters only)</div>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:suggested_tags][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:suggested_tags][:description] %></div>
             </div>
           </div>
         </div>
@@ -724,8 +722,8 @@
               <%= f.text_field :twitter_hashtag,
                                class: "form-control",
                                value: SiteConfig.twitter_hashtag.to_s,
-                               placeholder: "#DEVCommunity" %>
-              <div class="alert alert-info">Used as the twitter hashtag of the community</div>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:twitter_hashtag][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:twitter_hashtag][:description] %></div>
             </div>
             <div class="form-group">
               <%= f.fields_for :social_media_handles do |social_media_field| %>
@@ -758,8 +756,8 @@
               <%= f.text_field :sponsor_headline,
                                class: "form-control",
                                value: SiteConfig.sponsor_headline,
-                               placeholder: "Community Sponsors" %>
-              <div class="alert alert-info">Determines the heading text of the main sponsors sidebar above the list of sponsors.</div>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:sponsor_headline][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:sponsor_headline][:description] %></div>
             </div>
           </div>
         </div>
@@ -778,8 +776,8 @@
               <%= f.text_field :sidebar_tags,
                                class: "form-control",
                                value: SiteConfig.sidebar_tags.join(","),
-                               placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta" %>
-              <div class="alert alert-info">Determines which tags are shown on the homepage righthand sidebar</div>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:sidebar_tags][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:sidebar_tags][:description] %></div>
             </div>
           </div>
         </div>
@@ -798,8 +796,8 @@
               <%= f.text_field :feed_style,
                                class: "form-control",
                                value: SiteConfig.feed_style,
-                               placeholder: "basic, rich, or compact" %>
-              <div class="alert alert-info">Determines which default feed the users sees (rich content, more minimal, etc.)</div>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:feed_style][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:feed_style][:description] %></div>
             </div>
           </div>
         </div>

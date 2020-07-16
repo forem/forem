@@ -199,8 +199,33 @@ module Constants
       description: "Used for site-wide web monetization (<a href='https://github.com/thepracticaldev/dev.to/pull/6345'>experimental</a>)",
       placeholder: "$pay.somethinglikethis.co/value"
     },
-      description: "",
+    mailchimp_newsletter_id: {
+      description: "Main Newsletter ID",
       placeholder: ""
+    },
+    mailchimp_sustaining_members_id: {
+      description: "Sustaining Members Newsletter ID",
+      placeholder: ""
+    },
+    mailchimp_tag_moderators_id: {
+      description: "Tag Moderators Newsletter ID",
+      placeholder: ""
+    },
+    mailchimp_community_moderators_id: {
+      description: "Community Moderators Newsletter ID",
+      placeholder: ""
+    },
+    onboarding_logo_image: {
+      description: "Main onboarding display logo image",
+      placeholder: "https://image.url"
+    },
+    onboarding_background_image: {
+      description: "Background for onboarding splash page",
+      placeholder: "https://image.url"
+    },
+    onboarding_taskcard_image: {
+      description: "Used as the onboarding task-card image",
+      placeholder: "https://image.url"
     },
     suggested_tags: {
       description: "Determines which tags are suggested to new users during onboarding (comma
@@ -211,6 +236,25 @@ module Constants
       description: "Determines which users are suggested to follow to new users during onboarding (comma
         separated, letters only). Please note that these users will be shown as a fallback if no recently-active commenters or producers can be suggested",
       placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
+    },
+    twitter_hashtag: {
+      description: "Used as the twitter hashtag of the community",
+      placeholder: "#DEVCommunity"
+    },
+    sponsor_headline: {
+      description: "Determines the heading text of the main sponsors sidebar above the list of sponsors.",
+      placeholder: "Community Sponsors"
+    },
+    sidebar_tags: {
+      description: "Determines which tags are shown on the homepage righthand sidebar",
+      placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta"
+    },
+    feed_style: {
+      description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
+      placeholder: "basic, rich, or compact"
     }
   }.freeze
 end
+
+# configurable_rate_limits
+# social_media_handles
