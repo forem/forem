@@ -44,6 +44,17 @@ export default class ChatChannelSettings extends Component {
   }
 
   componentDidMount() {
+    this.updateChannelDetails();
+  }
+
+  componentWillReceiveProps() {
+    const { activeMembershipId } = this.props;
+    this.setState({
+      activeMembershipId,
+    });
+  }
+
+  updateChannelDetails = () => {
     const { activeMembershipId } = this.props;
 
     getChannelDetails(activeMembershipId)
@@ -75,14 +86,7 @@ export default class ChatChannelSettings extends Component {
           errorMessages: error.message,
         });
       });
-  }
-
-  componentWillReceiveProps() {
-    const { activeMembershipId } = this.props;
-    this.setState({
-      activeMembershipId,
-    });
-  }
+  };
 
   handleDescriptionChange = (e) => {
     const description = e.target.value;
@@ -157,7 +161,7 @@ export default class ChatChannelSettings extends Component {
 
   updateMemberships = (membershipId, response, membershipStatus) => {
     if (response.success) {
-      this.componentDidMount();
+      this.updateChannelDetails();
       this.setState((prevState) => {
         return {
           errorMessages: null,
@@ -245,7 +249,7 @@ export default class ChatChannelSettings extends Component {
     const { message } = response;
 
     if (response.success) {
-      this.componentDidMount();
+      this.updateChannelDetails();
       this.setState((prevState) => {
         return {
           errorMessages: null,
@@ -280,7 +284,7 @@ export default class ChatChannelSettings extends Component {
     const response = await sendChatChannelInvitation(id, invitationUsernames);
     const { message } = response;
     if (response.success) {
-      this.componentDidMount();
+      this.updateChannelDetails();
       this.setState({
         errorMessages: null,
         successMessages: response.message,
@@ -304,7 +308,7 @@ export default class ChatChannelSettings extends Component {
     if (actionStatus) {
       const response = await leaveChatChannelMembership(currentMembership.id);
       if (response.success) {
-        this.componentDidMount();
+        this.updateChannelDetails();
       } else {
         this.setState({
           successMessages: null,
@@ -333,7 +337,7 @@ export default class ChatChannelSettings extends Component {
     );
     const { message } = response;
     if (response.success) {
-      this.componentDidMount();
+      this.updateChannelDetails();
       this.setState((prevState) => {
         const { activeMemberships } = prevState;
         const updatedActiveMemberships = activeMemberships.map(
