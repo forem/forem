@@ -81,11 +81,12 @@ class ArticleApiIndexService
   def state_articles(state)
     articles = Article.published.includes(:user, :organization)
 
-    articles = if state == "fresh"
+    articles = case state
+               when "fresh"
                  articles.where(
                    "public_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2
                  )
-               elsif state == "rising"
+               when "rising"
                  articles.where(
                    "public_reactions_count > ? AND public_reactions_count < ? AND featured_number > ?",
                    19, 33, 3.days.ago.to_i

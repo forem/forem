@@ -1,4 +1,4 @@
-require_relative "../lib/acts_as_taggable_on/tag.rb"
+require_relative "../lib/acts_as_taggable_on/tag"
 
 class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points, :tag_moderator_id, :remove_moderator_id

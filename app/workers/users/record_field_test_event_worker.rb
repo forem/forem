@@ -9,9 +9,10 @@ module Users
       user = User.find_by(id: user_id)
       return unless user
 
-      if goal == "user_views_article_four_days_in_week"
+      case goal
+      when "user_views_article_four_days_in_week"
         determine_weekly_pageview_goal(user, experiment)
-      elsif goal == "user_views_article_four_hours_in_day"
+      when "user_views_article_four_hours_in_day"
         determine_daily_pageview_goal(user, experiment)
       else
         field_test_converted(experiment, participant: user, goal: goal)

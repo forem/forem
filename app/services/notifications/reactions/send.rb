@@ -37,9 +37,10 @@ module Notifications
           notifiable_id: reaction.reactable_id,
           action: "Reaction"
         }
-        if receiver.is_a?(User)
+        case receiver
+        when User
           notification_params[:user_id] = receiver.id
-        elsif receiver.is_a?(Organization)
+        when Organization
           notification_params[:organization_id] = receiver.id
         end
 
