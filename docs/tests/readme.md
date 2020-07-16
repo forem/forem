@@ -34,8 +34,8 @@ a bug. Ideally, we test the functionality of the frontend and the backend.
 If you'd like to help us improve our test coverage, we recommend checking out
 our total coverage and writing tests for selected files based on SimpleCov's
 test coverage results. You can also check out
-[Code Climate summary](https://codeclimate.com/github/thepracticaldev/dev.to)
-which includes the test coverage.
+[Code Climate summary](https://codeclimate.com/github/forem/forem) which
+includes the test coverage.
 
 If you're new to writing tests in general or with Rails, we recommend reading
 about
@@ -59,7 +59,7 @@ run into any issues. Strive to write good tests for the code you wish to
 contribute.
 
 Travis will deploy your pull request to production after CI passes and a member
-of the DEV team has approved it.
+of the Forem team has approved it.
 
 Our test suite is not perfect and sometimes a re-run is needed. If you encounter
 a "flaky spec" that fails intermittently please open an issue so we can address
