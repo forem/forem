@@ -11,40 +11,45 @@ RSpec.describe Honeycomb::NoiseCancellingSampler do
   end
 
   context "with a redis command" do
-    before { allow(described_class).to receive(:should_sample) }
-
-    it "samples if its a NOISY_COMMANDS" do
-      described_class.sample({ "redis.command" => "TIME", "trace.trace_id" => trace_id })
-      expect(described_class).to have_received(:should_sample).with(100, trace_id)
+    it "samples if its in NOISY_REDIS_COMMANDS" do
+      is_sampled, rate = described_class.sample({ "redis.command" => "TIME", "trace.trace_id" => trace_id })
+      expect(is_sampled).to be_in [true, false]
+      expect(rate).to match(100)
     end
 
     it "samples if the command is BRPOP" do
-      described_class.sample({ "redis.command" => "BRPOP", "trace.trace_id" => trace_id })
-      expect(described_class).to have_received(:should_sample).with(1000, trace_id)
+      is_sampled, rate = described_class.sample({ "redis.command" => "BRPOP", "trace.trace_id" => trace_id })
+      expect(is_sampled).to be_in [true, false]
+      expect(rate).to match(1000)
     end
 
     it "samples if the command starts with TTL" do
-      described_class.sample({ "redis.command" => "TTL this and that", "trace.trace_id" => trace_id })
-      expect(described_class).to have_received(:should_sample).with(100, trace_id)
+      is_sampled, rate = described_class.sample({ "redis.command" => "TTL this and that",
+                                                  "trace.trace_id" => trace_id })
+      expect(is_sampled).to be_in [true, false]
+      expect(rate).to match(100)
     end
 
     it "samples if the command starts with GET rack:" do
-      described_class.sample({ "redis.command" => "GET rack::something", "trace.trace_id" => trace_id })
-      expect(described_class).to have_received(:should_sample).with(100, trace_id)
+      is_sampled, rate = described_class.sample({ "redis.command" => "GET rack::something",
+                                                  "trace.trace_id" => trace_id })
+      expect(is_sampled).to be_in [true, false]
+      expect(rate).to match(100)
     end
 
     it "samples if the command starts with SET rack:" do
-      described_class.sample({ "redis.command" => "SET rack::something", "trace.trace_id" => trace_id })
-      expect(described_class).to have_received(:should_sample).with(100, trace_id)
+      is_sampled, rate = described_class.sample({ "redis.command" => "SET rack::something",
+                                                  "trace.trace_id" => trace_id })
+      expect(is_sampled).to be_in [true, false]
+      expect(rate).to match(100)
     end
   end
 
   context "with a active_record SQL command" do
-    before { allow(described_class).to receive(:should_sample) }
-
-    it "samples if its a NOISY_COMMANDS" do
-      described_class.sample({ "sql.active_record.sql" => "COMMIT", "trace.trace_id" => trace_id })
-      expect(described_class).to have_received(:should_sample).with(100, trace_id)
+    it "samples if its in NOISY_SQL_COMMANDS" do
+      is_sampled, rate = described_class.sample({ "sql.active_record.sql" => "COMMIT", "trace.trace_id" => trace_id })
+      expect(is_sampled).to be_in [true, false]
+      expect(rate).to match(100)
     end
   end
 end
