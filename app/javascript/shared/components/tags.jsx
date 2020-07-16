@@ -467,6 +467,7 @@ Tags.propTypes = {
   listing: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   onFocus: PropTypes.func.isRequired,
+  pattern: PropTypes.string.isRequired,
 };
 
 export default Tags;
