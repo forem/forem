@@ -45,7 +45,8 @@ Rails.application.routes.draw do
       mount Blazer::Engine, at: "blazer"
 
       flipper_ui = Flipper::UI.app(Flipper,
-                                   { rack_protection: { except: %i[authenticity_token form_token json_csrf] } })
+                                   { rack_protection: { except: %i[authenticity_token form_token json_csrf
+                                                                   remote_token http_origin session_hijacking] } })
       mount flipper_ui, at: "feature_flags"
     end
 
