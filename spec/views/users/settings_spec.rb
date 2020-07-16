@@ -30,7 +30,7 @@ RSpec.describe "users/edit", type: :view do
         render
         expect(rendered).to have_css(".crayons-btn--danger")
       end
-      
+
       it "shows the proper message if the org has more than one member" do
         second_user = create(:user)
         create(:organization_membership, user: second_user, organization: org)
@@ -38,7 +38,7 @@ RSpec.describe "users/edit", type: :view do
         render
         expect(rendered).to have_text("Your organization currently does not meet the above requirements.")
       end
-  
+
       it "shows the proper message if the org has an article" do
         allow(org).to receive(:articles_count).and_return(1)
         render
