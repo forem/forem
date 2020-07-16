@@ -1,0 +1,28 @@
+@import '../variables';
+@import '../config/import';
+
+.listings-columns {
+  margin-bottom: var(--su-6);
+
+  @media (min-width: $breakpoint-m) {
+    display: grid;
+    grid-gap: var(--su-4);
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    grid-auto-rows: 0;
+  }
+}
+
+.single-listing {
+  $el: &;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  &__dropdown {
+    display: none;
+
+    #{$el}:hover & {
+      display: block;
+    }
+  }
+
+}

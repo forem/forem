@@ -289,10 +289,7 @@ export class Listings extends Component {
       this.triggerMasonry();
     }
     return (
-      <div className="listings__container">
-        {shouldRenderModal && (
-          <ModalBackground onClick={this.handleCloseModal} />
-        )}
+      <div className="crayons-layout crayons-layout--2-cols">
         <ListingFilters
           categories={allCategories}
           category={category}
@@ -314,17 +311,20 @@ export class Listings extends Component {
         />
         {showNextPageButton && <NextPageButton onClick={this.loadNextPage} />}
         {shouldRenderModal && (
-          <Modal
-            currentUserId={currentUserId}
-            onAddTag={this.addTag}
-            onChangeDraftingMessage={this.handleDraftingMessage}
-            onClick={this.handleCloseModal}
-            onChangeCategory={this.selectCategory}
-            onOpenModal={this.handleOpenModal}
-            onSubmit={this.handleSubmitMessage}
-            listing={openedListing}
-            message={message}
-          />
+          <div className="crayons-modal">
+            <Modal
+              currentUserId={currentUserId}
+              onAddTag={this.addTag}
+              onChangeDraftingMessage={this.handleDraftingMessage}
+              onClick={this.handleCloseModal}
+              onChangeCategory={this.selectCategory}
+              onOpenModal={this.handleOpenModal}
+              onSubmit={this.handleSubmitMessage}
+              listing={openedListing}
+              message={message}
+            />
+            <ModalBackground onClick={this.handleCloseModal} />
+          </div>
         )}
       </div>
     );
