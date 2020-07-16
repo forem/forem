@@ -54,14 +54,15 @@
     <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
       <span class="how-this-works-section">
         How does this work?
-        <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
       </span>
     </a>
   </div>
 
   <div class="other-things-container">
     <header class="other-things">
-      <h1>Other things you can do</h1>
+      <h3>
+        Other things you can do
+      </h3>
     </header>
 
     <% if current_user.any_admin? || @should_show_adjust_tags %>
@@ -115,7 +116,6 @@
         <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
           <span class="how-this-works-section">
             How does this work?
-            <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
           </span>
         </a>
       </div>
@@ -158,7 +158,6 @@
       <a href="<%= URL.url %>/community-moderation#how-to-rate-the-experience-level-of-a-post" target="_blank" rel="noopener">
         <span class="how-this-works-section">
           How does this work?
-          <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
         </span>
       </a>
     </div>

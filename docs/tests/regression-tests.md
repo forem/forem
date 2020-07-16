@@ -22,12 +22,12 @@ breaking previously functional software.
 
 There is no perfect prescribed method for Regression testing, and it has evolved
 with the introduction of [Continuous Integration][ci] practices like the ones
-that DEV uses. However, CI doesn't replace the need for Regression testing.
+that Forem uses. However, CI doesn't replace the need for Regression testing.
 Regression tests should still be added to the codebase when bugs are discovered.
 
-If you submit a bug patch to the DEV application, you might be asked to write a
-Regression test around your patch to help warn future DEV contributors if that
-bug ever makes another appearance. This practice has the added benefit of
+If you submit a bug patch to the Forem application, you might be asked to write
+a Regression test around your patch to help warn future Forem contributors if
+that bug ever makes another appearance. This practice has the added benefit of
 helping to ensure your patch fixes the bug.
 
 [acceptance_tests]: /tests/acceptance-tests/

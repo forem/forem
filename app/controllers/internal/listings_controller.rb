@@ -8,8 +8,8 @@ module Internal
 
     def index
       @listings =
-        Listing.includes(%i[user listing_category]).
-          page(params[:page]).order("bumped_at DESC").per(50)
+        Listing.includes(%i[user listing_category])
+          .page(params[:page]).order("bumped_at DESC").per(50)
 
       @listings = @listings.published unless include_unpublished?
       @listings = @listings.in_category(params[:filter]) if params[:filter].present?

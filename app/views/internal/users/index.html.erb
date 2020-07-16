@@ -1,5 +1,5 @@
 <div class="row my-3">
-  <div class="col">
+  <div class="col-8">
     <ul class="nav nav-pills">
       <li class="nav-item">
         <%= link_to "All", internal_users_path, class: "nav-link #{'active' if params[:role].blank?}" %>
@@ -15,6 +15,9 @@
       </li>
       <li class="nav-item">
         <%= link_to "Tag Mods", internal_users_path(role: :tag_moderator), class: "nav-link #{'active' if params[:role] == 'tag_moderator'}" %>
+      </li>
+      <li class="nav-item">
+        <%= link_to "Invitations", internal_invitations_path, class: "nav-link" %>
       </li>
     </ul>
   </div>

@@ -35,28 +35,28 @@ class DashboardsController < ApplicationController
   end
 
   def following_tags
-    @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").
-      order("points DESC").includes(:followable).limit(@follows_limit)
+    @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag")
+      .order("points DESC").includes(:followable).limit(@follows_limit)
   end
 
   def following_users
-    @follows = @user.follows_by_type("User").
-      order("created_at DESC").includes(:followable).limit(@follows_limit)
+    @follows = @user.follows_by_type("User")
+      .order("created_at DESC").includes(:followable).limit(@follows_limit)
   end
 
   def following_organizations
-    @followed_organizations = @user.follows_by_type("Organization").
-      order("created_at DESC").includes(:followable).limit(@follows_limit)
+    @followed_organizations = @user.follows_by_type("Organization")
+      .order("created_at DESC").includes(:followable).limit(@follows_limit)
   end
 
   def following_podcasts
-    @followed_podcasts = @user.follows_by_type("Podcast").
-      order("created_at DESC").includes(:followable).limit(@follows_limit)
+    @followed_podcasts = @user.follows_by_type("Podcast")
+      .order("created_at DESC").includes(:followable).limit(@follows_limit)
   end
 
   def followers
-    @follows = Follow.followable_user(@user.id).
-      includes(:follower).order("created_at DESC").limit(@follows_limit)
+    @follows = Follow.followable_user(@user.id)
+      .includes(:follower).order("created_at DESC").limit(@follows_limit)
   end
 
   def pro
@@ -73,8 +73,8 @@ class DashboardsController < ApplicationController
 
   def subscriptions
     authorize @source
-    @subscriptions = @source.user_subscriptions.
-      includes(:subscriber).order(created_at: :desc).page(params[:page]).per(100)
+    @subscriptions = @source.user_subscriptions
+      .includes(:subscriber).order(created_at: :desc).page(params[:page]).per(100)
   end
 
   private

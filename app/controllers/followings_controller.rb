@@ -6,30 +6,30 @@ class FollowingsController < ApplicationController
   TAGS_ATTRIBUTES_FOR_SERIALIZATION = [*ATTRIBUTES_FOR_SERIALIZATION, :points].freeze
 
   def users
-    relation = current_user.follows_by_type("User").
-      select(ATTRIBUTES_FOR_SERIALIZATION).
-      order(created_at: :desc)
+    relation = current_user.follows_by_type("User")
+      .select(ATTRIBUTES_FOR_SERIALIZATION)
+      .order(created_at: :desc)
     @follows = load_follows_and_paginate(relation)
   end
 
   def tags
-    relation = current_user.follows_by_type("ActsAsTaggableOn::Tag").
-      select(TAGS_ATTRIBUTES_FOR_SERIALIZATION).
-      order(points: :desc)
+    relation = current_user.follows_by_type("ActsAsTaggableOn::Tag")
+      .select(TAGS_ATTRIBUTES_FOR_SERIALIZATION)
+      .order(points: :desc)
     @followed_tags = load_follows_and_paginate(relation)
   end
 
   def organizations
-    relation = current_user.follows_by_type("Organization").
-      select(ATTRIBUTES_FOR_SERIALIZATION).
-      order(created_at: :desc)
+    relation = current_user.follows_by_type("Organization")
+      .select(ATTRIBUTES_FOR_SERIALIZATION)
+      .order(created_at: :desc)
     @followed_organizations = load_follows_and_paginate(relation)
   end
 
   def podcasts
-    relation = current_user.follows_by_type("Podcast").
-      select(ATTRIBUTES_FOR_SERIALIZATION).
-      order(created_at: :desc)
+    relation = current_user.follows_by_type("Podcast")
+      .select(ATTRIBUTES_FOR_SERIALIZATION)
+      .order(created_at: :desc)
     @followed_podcasts = load_follows_and_paginate(relation)
   end
 

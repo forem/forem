@@ -13,8 +13,8 @@ class ReactionsController < ApplicationController
       id = params[:article_id]
 
       reactions = if session_current_user_id
-                    Reaction.public_category.
-                      where(
+                    Reaction.public_category
+                      .where(
                         reactable_id: id,
                         reactable_type: "Article",
                         user_id: session_current_user_id,
@@ -25,9 +25,9 @@ class ReactionsController < ApplicationController
 
       result = { article_reaction_counts: Reaction.count_for_article(id) }
     else
-      comments = Comment.
-        where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type]).
-        select(%i[id public_reactions_count])
+      comments = Comment
+        .where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type])
+        .select(%i[id public_reactions_count])
 
       reaction_counts = comments.map do |comment|
         { id: comment.id, count: comment.public_reactions_count }

@@ -13,13 +13,13 @@ That is a bit of refactoring that needs to be done. PRs welcome!
 Important files when working with SASS in the project:
 
 - variables:
-  [/app/assets/stylesheets/variables.scss](https://github.com/thepracticaldev/dev.to/blob/master/app/assets/stylesheets/variables.scss)
+  [/app/assets/stylesheets/variables.scss](https://github.com/forem/forem/blob/master/app/assets/stylesheets/variables.scss)
 - mixins:
-  [/app/assets/stylesheets/_mixins.scss](https://github.com/thepracticaldev/dev.to/blob/master/app/assets/stylesheets/_mixins.scss)
+  [/app/assets/stylesheets/\_mixins.scss](https://github.com/forem/forem/blob/master/app/assets/stylesheets/_mixins.scss)
 
 SASS is compiled and served using
 [Sprockets](https://github.com/rails/sprockets-rails) which packages static
 assets in Rails.
 
-For more about branding, theming or design in general in regards to DEV, refer
+For more about branding, theming or design in general in regards to Forem, refer
 to the [Design Guide](/design) documentation.
