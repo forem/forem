@@ -10,10 +10,10 @@ RSpec.describe Streams::TwitchAccessToken::Get, type: :service do
       }
     end
     let!(:twitch_token_stubbed_route) do
-      stub_request(:post, "https://id.twitch.tv/oauth2/token").
-        with(body: expected_twitch_token_body).
-        and_return(body: { access_token: "FAKE_BRAND_NEW_TWITCH_TOKEN",
-                           expires_in: 5_184_000 }.to_json, headers: { "Content-Type" => "application/json" })
+      stub_request(:post, "https://id.twitch.tv/oauth2/token")
+        .with(body: expected_twitch_token_body)
+        .and_return(body: { access_token: "FAKE_BRAND_NEW_TWITCH_TOKEN",
+                            expires_in: 5_184_000 }.to_json, headers: { "Content-Type" => "application/json" })
     end
 
     before do

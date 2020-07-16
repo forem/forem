@@ -21,13 +21,13 @@ module Internal
       @user = User.find(params[:id])
       @organizations = @user.organizations.order(:name)
       @notes = @user.notes.order(created_at: :desc).limit(10)
-      @organization_memberships = @user.organization_memberships.
-        joins(:organization).
-        order("organizations.name ASC").
-        includes(:organization)
-      @last_email_verification_date = @user.email_authorizations.
-        where.not(verified_at: nil).
-        order("created_at DESC").first&.verified_at || "Never"
+      @organization_memberships = @user.organization_memberships
+        .joins(:organization)
+        .order("organizations.name ASC")
+        .includes(:organization)
+      @last_email_verification_date = @user.email_authorizations
+        .where.not(verified_at: nil)
+        .order("created_at DESC").first&.verified_at || "Never"
     end
 
     def update
