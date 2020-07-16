@@ -26,11 +26,11 @@ class ChatChannelsController < ApplicationController
   end
 
   def show
-    @chat_messages = @chat_channel.messages.
-      includes(:user).
-      order(created_at: :desc).
-      offset(params[:message_offset]).
-      limit(50)
+    @chat_messages = @chat_channel.messages
+      .includes(:user)
+      .order(created_at: :desc)
+      .offset(params[:message_offset])
+      .limit(50)
   end
 
   def create
@@ -147,9 +147,9 @@ class ChatChannelsController < ApplicationController
     skip_authorization
 
     @chat_channel =
-      ChatChannel.
-        select(CHANNEL_ATTRIBUTES_FOR_SERIALIZATION).
-        find_by(id: params[:id])
+      ChatChannel
+        .select(CHANNEL_ATTRIBUTES_FOR_SERIALIZATION)
+        .find_by(id: params[:id])
 
     return if @chat_channel&.has_member?(current_user)
 
@@ -169,12 +169,12 @@ class ChatChannelsController < ApplicationController
 
   def render_unopened_json_response
     @chat_channels_memberships = if session_current_user_id
-                                   ChatChannelMembership.where(user_id: session_current_user_id).
-                                     where(has_unopened_messages: true).
-                                     where(show_global_badge_notification: true).
-                                     where.not(status: %w[removed_from_channel left_channel]).
-                                     includes(%i[chat_channel user]).
-                                     order("chat_channel_memberships.updated_at DESC")
+                                   ChatChannelMembership.where(user_id: session_current_user_id)
+                                     .where(has_unopened_messages: true)
+                                     .where(show_global_badge_notification: true)
+                                     .where.not(status: %w[removed_from_channel left_channel])
+                                     .includes(%i[chat_channel user])
+                                     .order("chat_channel_memberships.updated_at DESC")
                                  else
                                    []
                                  end
@@ -183,10 +183,10 @@ class ChatChannelsController < ApplicationController
 
   def render_pending_json_response
     @chat_channels_memberships = if current_user
-                                   current_user.
-                                     chat_channel_memberships.includes(:chat_channel).
-                                     where(status: "pending").
-                                     order("chat_channel_memberships.updated_at DESC")
+                                   current_user
+                                     .chat_channel_memberships.includes(:chat_channel)
+                                     .where(status: "pending")
+                                     .order("chat_channel_memberships.updated_at DESC")
                                  else
                                    []
                                  end
@@ -194,25 +194,25 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_unopened_ids_response
-    @unopened_ids = ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
-      where(has_unopened_messages: true).where.not(status: %w[removed_from_channel
-                                                              left_channel]).pluck(:chat_channel_id)
+    @unopened_ids = ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel)
+      .where(has_unopened_messages: true).where.not(status: %w[removed_from_channel
+                                                               left_channel]).pluck(:chat_channel_id)
     render json: { unopened_ids: @unopened_ids }
   end
 
   def render_joining_request_json_response
-    requested_memberships_id = current_user.
-      chat_channel_memberships.
-      includes(:chat_channel).
-      where(chat_channels: { discoverable: true }, role: "mod").
-      pluck(:chat_channel_id).
-      map { |membership_id| ChatChannel.find_by(id: membership_id).requested_memberships }.
-      flatten.
-      map(&:id)
+    requested_memberships_id = current_user
+      .chat_channel_memberships
+      .includes(:chat_channel)
+      .where(chat_channels: { discoverable: true }, role: "mod")
+      .pluck(:chat_channel_id)
+      .map { |membership_id| ChatChannel.find_by(id: membership_id).requested_memberships }
+      .flatten
+      .map(&:id)
 
-    @chat_channels_memberships = ChatChannelMembership.
-      includes(%i[user chat_channel]).
-      where(id: requested_memberships_id)
+    @chat_channels_memberships = ChatChannelMembership
+      .includes(%i[user chat_channel])
+      .where(id: requested_memberships_id)
 
     render "index.json"
   end

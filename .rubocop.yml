@@ -37,9 +37,7 @@ Layout/ClassStructure:
 Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   StyleGuide: '#consistent-multi-line-chains'
-  # TODO: [@thepracticaldev/oss] enable leading?
-  EnforcedStyle: trailing
-
+  EnforcedStyle: leading
 
 Layout/EmptyLinesAroundAttributeAccessor:
   Description: "Keep blank lines around attribute accessors."

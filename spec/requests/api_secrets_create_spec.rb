@@ -10,8 +10,8 @@ RSpec.describe "ApiSecretsCreate", type: :request do
       let(:valid_params) { { description: "My Test 3rd Party App" } }
 
       it "creates an ApiSecret for the user" do
-        expect { post "/users/api_secrets", params: { api_secret: valid_params } }.
-          to change { user.api_secrets.count }.by 1
+        expect { post "/users/api_secrets", params: { api_secret: valid_params } }
+          .to change { user.api_secrets.count }.by 1
       end
 
       it "sets the description" do
@@ -30,8 +30,8 @@ RSpec.describe "ApiSecretsCreate", type: :request do
       let(:invalid_params) { { description: nil } } # Force model validation error
 
       it "does not create the ApiSecret" do
-        expect { post "/users/api_secrets", params: { api_secret: invalid_params } }.
-          not_to(change { user.api_secrets.count })
+        expect { post "/users/api_secrets", params: { api_secret: invalid_params } }
+          .not_to(change { user.api_secrets.count })
       end
 
       it "flashes an error message" do

@@ -40,17 +40,17 @@ class ArticleApiIndexService
           end
 
     if (user = User.find_by(username: username))
-      user.articles.published.
-        includes(:organization).
-        order("published_at DESC").
-        page(page).
-        per(per_page || num)
+      user.articles.published
+        .includes(:organization)
+        .order("published_at DESC")
+        .page(page)
+        .per(per_page || num)
     elsif (organization = Organization.find_by(slug: username))
-      organization.articles.published.
-        includes(:user).
-        order("published_at DESC").
-        page(page).
-        per(per_page || num)
+      organization.articles.published
+        .includes(:user)
+        .order("published_at DESC")
+        .page(page)
+        .per(per_page || num)
     else
       Article.none
     end
@@ -62,8 +62,8 @@ class ArticleApiIndexService
     articles = if Tag.find_by(name: tag)&.requires_approval
                  articles.where(approved: true).order("featured_number DESC")
                elsif top.present?
-                 articles.where("published_at > ?", top.to_i.days.ago).
-                   order("public_reactions_count DESC")
+                 articles.where("published_at > ?", top.to_i.days.ago)
+                   .order("public_reactions_count DESC")
                else
                  articles.order("hotness_score DESC")
                end
@@ -72,10 +72,10 @@ class ArticleApiIndexService
   end
 
   def top_articles
-    Article.published.includes(:user, :organization).
-      where("published_at > ?", top.to_i.days.ago).
-      order("public_reactions_count DESC").
-      page(page).per(per_page || DEFAULT_PER_PAGE)
+    Article.published.includes(:user, :organization)
+      .where("published_at > ?", top.to_i.days.ago)
+      .order("public_reactions_count DESC")
+      .page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
   def state_articles(state)
@@ -98,20 +98,20 @@ class ArticleApiIndexService
   end
 
   def collection_articles(collection_id)
-    Article.published.
-      where(collection_id: collection_id).
-      includes(:user, :organization).
-      order("published_at").
-      page(page).
-      per(per_page || DEFAULT_PER_PAGE)
+    Article.published
+      .where(collection_id: collection_id)
+      .includes(:user, :organization)
+      .order("published_at")
+      .page(page)
+      .per(per_page || DEFAULT_PER_PAGE)
   end
 
   def base_articles
-    Article.published.
-      where(featured: true).
-      includes(:user, :organization).
-      order("hotness_score DESC").
-      page(page).
-      per(per_page || DEFAULT_PER_PAGE)
+    Article.published
+      .where(featured: true)
+      .includes(:user, :organization)
+      .order("hotness_score DESC")
+      .page(page)
+      .per(per_page || DEFAULT_PER_PAGE)
   end
 end

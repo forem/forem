@@ -312,13 +312,13 @@ RSpec.describe "ChatChannels", type: :request do
     end
 
     it "does not block when channel is open" do
-      expect { post "/chat_channels/block_chat", params: { chat_id: chat_channel.id } }.
-        to raise_error(Pundit::NotAuthorizedError)
+      expect { post "/chat_channels/block_chat", params: { chat_id: chat_channel.id } }
+        .to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "does not block when user does not have permissions" do
-      expect { post "/chat_channels/block_chat", params: { chat_id: direct_channel.id } }.
-        to raise_error(Pundit::NotAuthorizedError)
+      expect { post "/chat_channels/block_chat", params: { chat_id: direct_channel.id } }
+        .to raise_error(Pundit::NotAuthorizedError)
     end
   end
 

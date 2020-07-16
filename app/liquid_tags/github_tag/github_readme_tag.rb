@@ -67,9 +67,9 @@ class GithubTag
     end
 
     def sanitize_input(input)
-      ActionController::Base.helpers.strip_tags(input).
-        gsub(GITHUB_DOMAIN_REGEXP, "").
-        strip
+      ActionController::Base.helpers.strip_tags(input)
+        .gsub(GITHUB_DOMAIN_REGEXP, "")
+        .strip
     end
 
     def raise_error

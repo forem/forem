@@ -57,79 +57,79 @@ RSpec.describe User, type: :model do
 
       # rubocop:disable RSpec/NamedSubject
       it do
-        expect(subject).to have_many(:access_grants).
-          class_name("Doorkeeper::AccessGrant").
-          with_foreign_key("resource_owner_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:access_grants)
+          .class_name("Doorkeeper::AccessGrant")
+          .with_foreign_key("resource_owner_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:access_tokens).
-          class_name("Doorkeeper::AccessToken").
-          with_foreign_key("resource_owner_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:access_tokens)
+          .class_name("Doorkeeper::AccessToken")
+          .with_foreign_key("resource_owner_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:affected_feedback_messages).
-          class_name("FeedbackMessage").
-          with_foreign_key("affected_id").
-          dependent(:nullify)
+        expect(subject).to have_many(:affected_feedback_messages)
+          .class_name("FeedbackMessage")
+          .with_foreign_key("affected_id")
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:authored_notes).
-          class_name("Note").
-          with_foreign_key("author_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:authored_notes)
+          .class_name("Note")
+          .with_foreign_key("author_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:backup_data).
-          class_name("BackupData").
-          with_foreign_key("instance_user_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:backup_data)
+          .class_name("BackupData")
+          .with_foreign_key("instance_user_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:blocked_blocks).
-          class_name("UserBlock").
-          with_foreign_key("blocked_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:blocked_blocks)
+          .class_name("UserBlock")
+          .with_foreign_key("blocked_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:blocker_blocks).
-          class_name("UserBlock").
-          with_foreign_key("blocker_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:blocker_blocks)
+          .class_name("UserBlock")
+          .with_foreign_key("blocker_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:created_podcasts).
-          class_name("Podcast").
-          with_foreign_key(:creator_id).
-          dependent(:nullify)
+        expect(subject).to have_many(:created_podcasts)
+          .class_name("Podcast")
+          .with_foreign_key(:creator_id)
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:offender_feedback_messages).
-          class_name("FeedbackMessage").
-          with_foreign_key(:offender_id).
-          dependent(:nullify)
+        expect(subject).to have_many(:offender_feedback_messages)
+          .class_name("FeedbackMessage")
+          .with_foreign_key(:offender_id)
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:reporter_feedback_messages).
-          class_name("FeedbackMessage").
-          with_foreign_key(:reporter_id).
-          dependent(:nullify)
+        expect(subject).to have_many(:reporter_feedback_messages)
+          .class_name("FeedbackMessage")
+          .with_foreign_key(:reporter_id)
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:webhook_endpoints).
-          class_name("Webhook::Endpoint").
-          dependent(:delete_all)
+        expect(subject).to have_many(:webhook_endpoints)
+          .class_name("Webhook::Endpoint")
+          .dependent(:delete_all)
       end
       # rubocop:enable RSpec/NamedSubject
 
