@@ -450,7 +450,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(ListingCategory) do
+seeder.create_if_none(Listing) do
   users_in_random_order = User.order(Arel.sql("RANDOM()"))
   users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
   users = users_in_random_order.to_a
