@@ -165,4 +165,29 @@ RSpec.describe "UserOrganization", type: :request do
         to raise_error Pundit::NotAuthorizedError
     end
   end
+
+  context "when deleting an organization" do
+    let(:org_admin) { create(:user, :org_admin) }
+    let(:org_member) { create(:user, :org_member) }
+    let(:user) { create(:user) }
+
+    it "deletes the organization" do
+      org_id = org_admin.organizations.first.id
+      sign_in org_admin
+      delete "/organizations/#{org_id}"
+      expect { Organization.find(org_id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "does not delete the organization if the user is only an org member" do
+      org_id = org_member.organizations.first.id
+      sign_in org_member
+      expect { delete "/organizations/#{org_id}" }.to raise_error Pundit::NotAuthorizedError
+    end
+
+    it "does not delete the organization if the user is not a part of the org" do
+      org = create(:organization)
+      sign_in user
+      expect { delete "/organizations/#{org.id}" }.to raise_error Pundit::NotAuthorizedError
+    end
+  end
 end

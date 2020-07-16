@@ -58,6 +58,7 @@ class Organization < ApplicationRecord
   before_validation :evaluate_markdown
 
   after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
+  after_commit :bust_cache, on: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
