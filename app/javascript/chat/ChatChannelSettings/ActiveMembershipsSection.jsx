@@ -31,7 +31,8 @@ const ActiveMembershipSection = ({
       ))}
       <div className="row align-center">
         <Button
-          className="crayons-btn align-center crayons-btn--s view-all-memberships"
+          className="align-center view-all-memberships"
+          size="s"
           onClick={toggleScreens}
           type="button"
         >

@@ -12,8 +12,8 @@ const Membership = ({
   const addAsModButton =
     membership.role === 'member' ? (
       <Button
-        className="crayons-btn crayons-btn--s"
         type="button"
+        size="s"
         onClick={handleUpdateMembershipRole}
         data-membership-id={membership.membership_id}
         data-role="mod"
@@ -25,8 +25,8 @@ const Membership = ({
   const addAsMemberButton =
     membership.role === 'mod' ? (
       <Button
-        className="crayons-btn crayons-btn--s"
         type="button"
+        size="s"
         onClick={handleUpdateMembershipRole}
         data-membership-id={membership.membership_id}
         data-role="member"
@@ -38,8 +38,9 @@ const Membership = ({
   const removeMembershipButton =
     membership.role === 'member' ? (
       <Button
-        className="crayons-btn crayons-btn--s crayons-btn--ghost-danger crayons-btn--ghost"
         type="button"
+        size="s"
+        variant="ghost-danger"
         onClick={removeMembership}
         data-membership-id={membership.membership_id}
         data-membership-status={membership.status}

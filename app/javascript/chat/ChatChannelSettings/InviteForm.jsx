@@ -27,11 +27,7 @@ const InviteForm = ({
         />
       </div>
       <div>
-        <Button
-          className="crayons-btn"
-          type="submit"
-          onClick={handleChannelInvitations}
-        >
+        <Button type="submit" onClick={handleChannelInvitations}>
           Submit
         </Button>
       </div>

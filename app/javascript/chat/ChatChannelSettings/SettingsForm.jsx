@@ -43,11 +43,7 @@ const SettingsFrom = ({
         </label>
       </div>
       <div>
-        <Button
-          className="crayons-btn"
-          type="submit"
-          onClick={handleChannelDescriptionChanges}
-        >
+        <Button type="submit" onClick={handleChannelDescriptionChanges}>
           Submit
         </Button>
       </div>

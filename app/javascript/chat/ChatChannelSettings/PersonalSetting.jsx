@@ -25,7 +25,6 @@ const PersonalSettings = ({
       </div>
       <div>
         <Button
-          className="crayons-btn"
           type="submit"
           onClick={updateCurrentMembershipNotificationSettings}
         >
