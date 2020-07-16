@@ -39,7 +39,7 @@ env:
     - KNAPSACK_PRO_LOG_LEVEL=info
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
-install:
+before_script:
   - date --rfc-3339=seconds
   - nvm install
   - pkill -9 -f elasticsearch || true
@@ -55,7 +55,6 @@ install:
   - bundle config set path 'vendor/bundle'
   - bundle install --local --jobs=2
   - yarn install --frozen-lockfile
-before_script:
   - bundle exec rails db:create db:schema:load
   - bundle exec rails webpacker:compile
   - './cc-test-reporter before-build'
@@ -120,7 +119,6 @@ jobs:
           - ws2
           - ws3
       name: "Upload coverage"
-      install: skip
       before_script: skip
       script:
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
