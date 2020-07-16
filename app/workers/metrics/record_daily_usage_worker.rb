@@ -27,7 +27,7 @@ module Metrics
       DatadogStatsClient.count("articles.first_past_24h", first_articles_past_24h, tags: ["resource:articles"])
 
       # Users who signed up in the past 24 hours who have made at least 1 comment so far
-      new_users_min_1_comment_past_24h = User.where("comments_count >= ? AND created_at > ?", 1, 24.hours.ago).size
+      new_users_min_1_comment_past_24h = User.where("comments_count >= ? AND registered_at > ?", 1, 24.hours.ago).size
       DatadogStatsClient.count(
         "users.new_min_1_comment_past_24h",
         new_users_min_1_comment_past_24h,
@@ -64,8 +64,8 @@ module Metrics
         ids_by_day << id
       end
       flat_id_list = ids_by_day.flatten.uniq
-      non_new_user_ids = User.where("created_at < ?", 7.days.ago).where(id: flat_id_list).pluck(:id)
-      new_user_ids = User.where("created_at > ? AND created_at < ?", 8.days.ago,
+      non_new_user_ids = User.where("registered_at < ?", 7.days.ago).where(id: flat_id_list).pluck(:id)
+      new_user_ids = User.where("registered_at > ? AND registered_at < ?", 8.days.ago,
                                 7.days.ago).where(id: flat_id_list).pluck(:id)
       record_active_days_of_group(ids_by_day, non_new_user_ids, "established")
       record_active_days_of_group(ids_by_day, new_user_ids, "new")

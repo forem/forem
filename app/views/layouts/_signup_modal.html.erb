@@ -9,19 +9,22 @@
                   class: "mascot-image",
                   alt: SiteConfig.mascot_image_description,
                   loading: "lazy") %>
+    <% if any_selfserve_auth? %>
+      <h1>Join our <%= community_qualified_name %> :)</h1>
 
-    <h1>Join our <%= community_qualified_name %> :)</h1>
+      <% if SiteConfig.tagline.present? %>
+        <p><%= SiteConfig.tagline %></p>
+      <% end %>
 
-    <% if SiteConfig.tagline.present? %>
-      <p><%= SiteConfig.tagline %></p>
+      <div class="flex flex-col l:flex-row justify-center">
+        <%= render partial: "shared/authentication/providers_signup_modal" %>
+      </div>
+
+      <p>
+        <em>We strive for transparency and don't collect excess data.</em>
+      </p>
+    <% else %>
+      <h1><a href="/enter" data-no-instant>Sign in</a> to <%= community_qualified_name %> :)</h1>
     <% end %>
-
-    <div class="flex flex-col l:flex-row justify-center">
-      <%= render partial: "shared/authentication/providers_signup_modal" %>
-    </div>
-
-    <p>
-      <em>We strive for transparency and don't collect excess data.</em>
-    </p>
   </div>
 </div>

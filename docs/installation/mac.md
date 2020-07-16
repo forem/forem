@@ -2,7 +2,7 @@
 title: macOS
 ---
 
-# Installing DEV on macOS
+# Installing Forem on macOS
 
 ## Installing prerequisites
 
@@ -20,7 +20,7 @@ Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
 
-DEV requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher.
 
 The easiest way to get started is to use
 [Postgres.app](https://postgresapp.com/). Alternatively, check out the official
@@ -31,13 +31,14 @@ For additional configuration options, check our
 
 ### ImageMagick
 
-DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+Forem uses [ImageMagick](https://imagemagick.org/) to manipulate images on
+upload.
 
 You can install ImageMagick with `brew install imagemagick`.
 
 ### Redis
 
-DEV requires Redis version 4.0 or higher.
+Forem requires Redis version 4.0 or higher.
 
 We recommend using [Homebrew](https://brew.sh):
 
@@ -60,8 +61,8 @@ redis-cli ping
 
 ### Elasticsearch
 
-DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
-supported. We recommend version 7.5.2.
+Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
+not supported. We recommend version 7.5.2.
 
 You have the option of installing Elasticsearch with Homebrew or through an
 archive. We recommend installing from archive on Mac.
@@ -192,13 +193,13 @@ your local Elasticsearch installation, for example:
 }
 ```
 
-## Installing DEV
+## Installing Forem
 
-1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
+1. Fork Forem's repository, e.g. <https://github.com/forem/forem/fork>
 2. Clone your forked repository in one of two ways:
 
-   - e.g. with HTTPS: `git clone https://github.com/<your-username>/dev.to.git`
-   - e.g. with SSH: `git clone git@github.com:<your-username>/dev.to.git`
+   - e.g. with HTTPS: `git clone https://github.com/<your-username>/forem.git`
+   - e.g. with SSH: `git clone git@github.com:<your-username>/forem.git`
 
 3. Install bundler with `gem install bundler`
 4. Set up your environment variables/secrets

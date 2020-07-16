@@ -10,7 +10,7 @@ provides a fake default for any missing keys.
 The [backend guide][backend_guide] will show you how to get free API keys for
 additional services that may be required to run certain parts of the app.
 
-To set up keys for your local instance of DEV, you'll need to create an
+To set up keys for your local instance of Forem, you'll need to create an
 `application.yml` file. You can do this by copying the file called
 `sample_application.yml` in the `config` directory:
 

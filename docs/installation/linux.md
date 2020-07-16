@@ -2,7 +2,7 @@
 title: Linux
 ---
 
-# Installing DEV on Linux
+# Installing Forem on Linux
 
 ## Installing prerequisites
 
@@ -36,7 +36,7 @@ There are two ways to install Yarn.
 
 ### PostgreSQL
 
-DEV requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher.
 
 1. Run
    `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`.
@@ -51,7 +51,8 @@ check out our [PostgreSQL setup guide](/installation/postgresql) or the official
 
 ### ImageMagick
 
-DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+Forem uses [ImageMagick](https://imagemagick.org/) to manipulate images on
+upload.
 
 Please refer to ImageMagick's
 [instructions](https://imagemagick.org/script/download.php) on how to install
@@ -59,7 +60,7 @@ it.
 
 ### Redis
 
-DEV requires Redis version 4.0 or higher.
+Forem requires Redis version 4.0 or higher.
 
 We recommend following Digital Ocean's extensive
 [How To Install and Configure Redis on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-16-04)
@@ -67,8 +68,8 @@ We recommend following Digital Ocean's extensive
 
 ### Elasticsearch
 
-DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
-supported. We recommend version 7.5.2.
+Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
+not supported. We recommend version 7.5.2.
 
 We recommend following
 [Elasticsearch's guide for installing on Linux](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux).
@@ -80,11 +81,11 @@ or a
 
 NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
-## Installing DEV
+## Installing Forem
 
-1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
+1. Fork Forem's repository, e.g. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, e.g.
-   `git clone https://github.com/<your-username>/dev.to.git`
+   `git clone https://github.com/<your-username>/forem.git`
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
