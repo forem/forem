@@ -49,6 +49,7 @@ Rails.application.routes.draw do
         # Requires redis-store > 1.9: https://github.com/redis-store/redis-store/pull/333
         builder.use Rack::Session::Cookie,
                     secret: Rails.application.secrets[:secret_key_base]
+        builder.use Rack::CommonLogger, STDOUT
       end
       mount flipper_ui, at: "feature_flags"
     end

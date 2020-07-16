@@ -39,6 +39,21 @@ RSpec.describe "ChatChannels", type: :request do
         expect(response.body).to include("chat-page-wrapper")
       end
     end
+
+    context "when active membership is pending" do
+      before do
+        invite_channel.add_users [user]
+        invite_channel.chat_channel_memberships.last.update(status: "pending")
+
+        sign_in user
+        get "/connect/#{invite_channel.slug}"
+      end
+
+      it "have no active channel" do
+        expect(response).not_to(redirect_to(connect_path(invite_channel.slug)))
+        expect(response.body).not_to include(invite_channel.slug)
+      end
+    end
   end
 
   describe "get /chat_channels?state=unopened" do

@@ -151,7 +151,8 @@ class Message < ApplicationRecord
 
   # rubocop:disable Rails/OutputSafety
   def handle_slash_command(html)
-    response = if html.to_s.strip == "<p>/call</p>"
+    response = case html.to_s.strip
+               when "<p>/call</p>"
                  "<a href='/video_chats/#{chat_channel_id}'
                     class='chatchannels__richlink chatchannels__richlink--base'
                     target='_blank' rel='noopener' data-content='sidecar-video'>
@@ -159,7 +160,7 @@ class Message < ApplicationRecord
                       Let's video chat 😄
                     </h1>
                     </a>".html_safe
-               elsif html.to_s.strip == "<p>/play codenames</p>" # proof of concept
+               when "<p>/play codenames</p>" # proof of concept
                  "<a href='https://www.horsepaste.com/connect-channel-#{rand(1_000_000_000)}'
                     class='chatchannels__richlink chatchannels__richlink--base'
                     target='_blank' rel='noopener' data-content='sidecar-content-plus-video'>

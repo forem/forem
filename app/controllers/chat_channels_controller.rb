@@ -7,16 +7,17 @@ class ChatChannelsController < ApplicationController
   private_constant :CHANNEL_ATTRIBUTES_FOR_SERIALIZATION
 
   def index
-    if params[:state] == "unopened"
+    case params[:state]
+    when "unopened"
       authorize ChatChannel
       render_unopened_json_response
-    elsif params[:state] == "unopened_ids"
+    when "unopened_ids"
       authorize ChatChannel
       render_unopened_ids_response
-    elsif params[:state] == "pending"
+    when "pending"
       authorize ChatChannel
       render_pending_json_response
-    elsif params[:state] == "joining_request"
+    when "joining_request"
       authorize ChatChannel
       render_joining_request_json_response
     else
@@ -225,8 +226,9 @@ class ChatChannelsController < ApplicationController
            else
              params[:slug]
            end
-    @active_channel = ChatChannel.find_by(slug: slug)
-    @active_channel.current_user = current_user if @active_channel
+    chat_channel = ChatChannel.find_by(slug: slug)
+    membership = chat_channel.chat_channel_memberships.find_by(user_id: current_user.id)
+    @active_channel = membership&.status == "active" ? chat_channel : nil
   end
 
   def render_chat_channel
