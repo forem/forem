@@ -73,6 +73,8 @@ within our community. ❤️
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
+    - [Local](#local)
+    - [Containers](#containers)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
 - [Core team](#core-team)
@@ -81,8 +83,8 @@ within our community. ❤️
 
 ## Contributing
 
-We encourage you to contribute to dev.to! Please check out the
-[Contributing to dev.to guide](CONTRIBUTING.md) for guidelines about how to
+We encourage you to contribute to Forem! Please check out the
+[Contributing to Forem guide](CONTRIBUTING.md) for guidelines about how to
 proceed.
 
 ## Getting Started
@@ -155,6 +157,8 @@ A more complete overview of our stack is available in
 
 ## Vulnerability disclosure
 
+Forem is the open source software which powers [DEV](https://dev.to).
+
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
 
@@ -167,7 +171,7 @@ later version. Please see the [LICENSE](./LICENSE.md) file in our repository for
 the full text.
 
 Like many open source projects, we require that contributors provide us with a
-Contributor License Agreement (CLA). By submitting code to the DEV project, you
+Contributor License Agreement (CLA). By submitting code to the Forem project, you
 are granting us a right to use that code under the terms of the CLA.
 
 Our version of the CLA was adapted from the Microsoft Contributor License
