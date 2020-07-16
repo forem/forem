@@ -60,7 +60,7 @@ where people need to come together to be part of a collective.
 for a higher level overview of what Forem is.
 
 [dev.to](https://dev.to) (or just DEV) is hosted by Forem. It is a community of
-software developers who articles, take part in discussions, and build their
+software developers who write articles, take part in discussions, and build their
 professional profiles. We value supportive and constructive dialogue in the
 pursuit of great code and career growth for all members. The ecosystem spans
 from beginner to advanced developers, and all are welcome to find their place
