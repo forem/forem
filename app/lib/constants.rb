@@ -132,7 +132,8 @@ module Constants
       placeholder: "Jobs URL"
     },
     display_jobs_banner: {
-      description: "Display a jobs banner that points users to the jobs page when they type 'job' or 'jobs' in the search box",
+      description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
+      "or 'jobs' in the search box",
       placeholder: ""
     },
     ga_view_id: {
@@ -196,7 +197,8 @@ module Constants
       placeholder: "https://shop.url"
     },
     payment_pointer: {
-      description: "Used for site-wide web monetization (<a href='https://github.com/thepracticaldev/dev.to/pull/6345'>experimental</a>)",
+      description: "Used for site-wide web monetization. " \
+      "See: https://github.com/thepracticaldev/dev.to/pull/6345",
       placeholder: "$pay.somethinglikethis.co/value"
     },
     mailchimp_newsletter_id: {
