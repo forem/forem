@@ -386,7 +386,7 @@ Style/ClassAndModuleChildren:
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
   StyleGuide: '#no-nested-conditionals'
-  Enabled: false
+  Enabled: true
 
 Style/RedundantAssignment:
   Description: 'Checks for redundant assignment before returning.'
