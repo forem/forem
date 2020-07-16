@@ -4,7 +4,7 @@ module DateHelper
 
     tag.time(
       datetime.strftime("%b %e#{', %Y' if show_year}"),
-      datetime: datetime.iso8601,
+      datetime: datetime.utc.iso8601,
       class: "date#{'-no-year' unless show_year}",
     )
   end
