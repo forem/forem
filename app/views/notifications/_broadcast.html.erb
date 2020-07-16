@@ -9,7 +9,7 @@
   <div class="content notification-content broadcast-content" id="<%= sanitized_broadcast_id(json_data['broadcast']['title']) %>">
     <%= json_data["broadcast"]["processed_html"].html_safe %>
 
-    <% if notification.json_data['broadcast']['broadcastable_type'] == "Welcome" %>
+    <% if notification.json_data['broadcast']['broadcastable_type'] == "WelcomeNotification" %>
       <div class="opt-out"><a href="<%= user_settings_path(tab: :notifications) %>">Go to your settings to manage your notification settings.</a></div>
     <% end %>
   </div>
