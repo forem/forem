@@ -12,9 +12,9 @@ class ModerationsController < ApplicationController
     skip_authorization
     return unless current_user&.trusted
 
-    articles = Article.published.
-      where("score > -5 AND score < 5").
-      order("published_at DESC").limit(70)
+    articles = Article.published
+      .where("score > -5 AND score < 5")
+      .order("published_at DESC").limit(70)
     articles = articles.cached_tagged_with(params[:tag]) if params[:tag].present?
     if params[:state] == "new-authors"
       articles = articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4 AND published_at > ?",

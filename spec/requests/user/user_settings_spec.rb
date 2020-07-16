@@ -22,8 +22,8 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "handles unknown settings tab properly" do
-        expect { get "/settings/does-not-exist" }.
-          to raise_error(ActiveRecord::RecordNotFound)
+        expect { get "/settings/does-not-exist" }
+          .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "displays content on ux tab properly" do

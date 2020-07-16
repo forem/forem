@@ -22,9 +22,9 @@ module Api
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       def index
-        @listings = Listing.published.
-          select(ATTRIBUTES_FOR_SERIALIZATION).
-          includes(:user, :organization, :taggings, :listing_category)
+        @listings = Listing.published
+          .select(ATTRIBUTES_FOR_SERIALIZATION)
+          .includes(:user, :organization, :taggings, :listing_category)
 
         if params[:category].present?
           @listings = @listings.in_category(params[:category])

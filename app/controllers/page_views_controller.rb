@@ -56,12 +56,12 @@ class PageViewsController < ApplicationMetalController
                              organic_count)
     end
 
-    organic_count_past_week_count = page_views_from_google_com.
-      where("created_at > ?", 1.week.ago).sum(:counts_for_number_of_views)
+    organic_count_past_week_count = page_views_from_google_com
+      .where("created_at > ?", 1.week.ago).sum(:counts_for_number_of_views)
     @article.update_column(:organic_page_views_past_week_count, organic_count_past_week_count)
 
-    organic_count_past_month_count = page_views_from_google_com.
-      where("created_at > ?", 1.month.ago).sum(:counts_for_number_of_views)
+    organic_count_past_month_count = page_views_from_google_com
+      .where("created_at > ?", 1.month.ago).sum(:counts_for_number_of_views)
     @article.update_column(:organic_page_views_past_month_count, organic_count_past_month_count)
   end
 end

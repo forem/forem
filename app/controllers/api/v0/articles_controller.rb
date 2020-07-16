@@ -41,20 +41,20 @@ module Api
       end
 
       def show
-        @article = Article.published.
-          includes(:user).
-          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
-          find(params[:id]).
-          decorate
+        @article = Article.published
+          .includes(:user)
+          .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+          .find(params[:id])
+          .decorate
 
         set_surrogate_key_header @article.record_key
       end
 
       def show_by_slug
-        @article = Article.published.
-          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
-          find_by!(path: "/#{params[:username]}/#{params[:slug]}").
-          decorate
+        @article = Article.published
+          .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+          .find_by!(path: "/#{params[:username]}/#{params[:slug]}")
+          .decorate
 
         set_surrogate_key_header @article.record_key
         render "show"
@@ -95,13 +95,13 @@ module Api
                       @user.articles.published
                     end
 
-        @articles = @articles.
-          includes(:organization).
-          select(ME_ATTRIBUTES_FOR_SERIALIZATION).
-          order(published_at: :desc, created_at: :desc).
-          page(params[:page]).
-          per(num).
-          decorate
+        @articles = @articles
+          .includes(:organization)
+          .select(ME_ATTRIBUTES_FOR_SERIALIZATION)
+          .order(published_at: :desc, created_at: :desc)
+          .page(params[:page])
+          .per(num)
+          .decorate
       end
 
       private

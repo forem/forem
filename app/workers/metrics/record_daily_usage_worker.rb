@@ -13,9 +13,9 @@ module Metrics
       )
 
       # Articles published in the past 24 hours with at least 15 "score" (positive/negative reactions)
-      articles_min_15_comment_score_past_24h = Article.published.
-        where("comment_score >= ? AND published_at > ?", 15, 1.day.ago).
-        size
+      articles_min_15_comment_score_past_24h = Article.published
+        .where("comment_score >= ? AND published_at > ?", 15, 1.day.ago)
+        .size
       DatadogStatsClient.count(
         "articles.min_15_comment_score_past_24h",
         articles_min_15_comment_score_past_24h,
@@ -57,10 +57,10 @@ module Metrics
     def get_days_active_past_week_counts
       ids_by_day = []
       7.times do |i|
-        id = PageView.
-          where("created_at > ? AND created_at < ?", (i + 1).days.ago, i.days.ago).
-          where.not(user_id: nil).
-          pluck(:user_id).uniq
+        id = PageView
+          .where("created_at > ? AND created_at < ?", (i + 1).days.ago, i.days.ago)
+          .where.not(user_id: nil)
+          .pluck(:user_id).uniq
         ids_by_day << id
       end
       flat_id_list = ids_by_day.flatten.uniq
