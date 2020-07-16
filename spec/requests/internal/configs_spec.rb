@@ -500,17 +500,17 @@ RSpec.describe "/internal/config", type: :request do
         end
 
         it "updates public to true" do
-          is_private = true
-          post "/internal/config", params: { site_config: { private: is_private },
+          is_public = true
+          post "/internal/config", params: { site_config: { private: is_public },
                                              confirmation: confirmation_message }
-          expect(SiteConfig.private).to eq(is_private)
+          expect(SiteConfig.public).to eq(is_public)
         end
 
         it "updates public to false" do
-          is_private = false
-          post "/internal/config", params: { site_config: { private: is_private },
+          is_public = false
+          post "/internal/config", params: { site_config: { private: is_public },
                                              confirmation: confirmation_message }
-          expect(SiteConfig.private).to eq(is_private)
+          expect(SiteConfig.public).to eq(is_public)
         end
       end
     end
