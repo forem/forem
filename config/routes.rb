@@ -114,7 +114,6 @@ Rails.application.routes.draw do
     resource :config
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
-    resources :path_redirects, only: %i[new create index edit update destroy]
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
   end
