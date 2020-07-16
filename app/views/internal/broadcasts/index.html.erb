@@ -5,10 +5,10 @@
         <%= link_to "All", internal_broadcasts_path, class: "nav-link #{'active' if params[:broadcastable_type].blank?}" %>
       </li>
       <li class="nav-item">
-        <%= link_to "Announcement", internal_broadcasts_path(broadcastable_type: :announcement), class: "nav-link #{'active' if params[:broadcastable_type] == 'announcement'}" %>
+        <%= link_to "Announcement", internal_broadcasts_path(broadcastable_type: :announcement), class: "nav-link #{'active' if params[:broadcastable_type] == 'Announcement'}" %>
       </li>
       <li class="nav-item">
-        <%= link_to "Welcome", internal_broadcasts_path(broadcastable_type: :welcome), class: "nav-link #{'active' if params[:broadcastable_type] == 'welcome'}" %>
+        <%= link_to "Welcome Notification", internal_broadcasts_path(broadcastable_type: :welcome_notification), class: "nav-link #{'active' if params[:broadcastable_type] == 'WelcomeNotification'}" %>
       </li>
     </ul>
   </div>

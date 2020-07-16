@@ -291,7 +291,6 @@ seeder.create_if_none(Broadcast) do
     Broadcast.create!(
       title: "Welcome Notification: #{type}",
       processed_html: message,
-      broadcastable_type: "Welcome",
       active: true,
       broadcastable: broadcastable,
     )

@@ -1,4 +1,5 @@
 class Broadcast < ApplicationRecord
+  ALLOWED_TYPES = %w[Announcement WelcomeNotification].freeze
   resourcify
 
   belongs_to :broadcastable, polymorphic: true
@@ -7,14 +8,14 @@ class Broadcast < ApplicationRecord
 
   validates :title, uniqueness: { scope: :broadcastable_type }, presence: true
   validates :processed_html, :broadcastable_type, :broadcastable_id, presence: true
-  validates :broadcastable_type, inclusion: { in: %w[Announcement Welcome] }
+  validates :broadcastable_type, inclusion: { in: ALLOWED_TYPES }
   validate  :single_active_announcement_broadcast
 
   before_save :update_active_status_updated_at, if: :will_save_change_to_active?
 
   scope :active, -> { where(active: true) }
   scope :announcement, -> { where(broadcastable_type: "Announcement") }
-  scope :welcome, -> { where(broadcastable_type: "Welcome") }
+  scope :welcome_notification, -> { where(broadcastable_type: "WelcomeNotification") }
 
   def get_inner_body(content)
     Nokogiri::HTML(content).at("body").inner_html
