@@ -74,7 +74,8 @@ jobs:
     - stage: Test
       name: "Node 0"
       env: KNAPSACK_PRO_CI_NODE_INDEX=0
-      script: skip
+      script:
+        - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
       workspaces:
         create:
           name: ws1
