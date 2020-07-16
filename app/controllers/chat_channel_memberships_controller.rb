@@ -163,10 +163,10 @@ class ChatChannelMembershipsController < ApplicationController
           "joined",
         )
 
-        NotifyMailer.
-          with(membership: @chat_channel_membership, inviter: @chat_channel_membership.user).
-          channel_invite_email.
-          deliver_later
+        NotifyMailer
+          .with(membership: @chat_channel_membership, inviter: @chat_channel_membership.user)
+          .channel_invite_email
+          .deliver_later
 
         notice = "Accepted request of #{@chat_channel_membership.user.username} to join #{channel_name}."
       end

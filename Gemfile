@@ -30,6 +30,7 @@ gem "cloudinary", "~> 1.16" # Client library for easily using the Cloudinary ser
 gem "counter_culture", "~> 2.5" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.37.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
+gem "devise_invitable", "~> 2.0.0" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.4" # Oauth 2 provider
 gem "dry-struct", "~> 1.2" # Typed structs and value objects
@@ -139,10 +140,10 @@ group :development, :test do
   gem "knapsack_pro", "~> 2.0.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.87.1", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.88.0", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.7", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.6", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 1.41", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 1.42", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end

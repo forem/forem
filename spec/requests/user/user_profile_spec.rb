@@ -46,6 +46,11 @@ RSpec.describe "UserProfiles", type: :request do
       expect { get "/#{banishable_user.reload.username}" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    it "raises not found if user not registered" do
+      user.update_column(:registered, false)
+      expect { get "/#{user.username}" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it "renders noindex meta if banned" do
       user.add_role(:banned)
       get "/#{user.username}"

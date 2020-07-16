@@ -45,10 +45,10 @@ RSpec.describe "/internal/privileged_reactions", type: :request do
     describe "GETS /internal/privileged_reactions" do
       it "renders to appropriate page" do
         get "/internal/privileged_reactions"
-        expect(response.body).to include(CGI.escapeHTML(moderator.username)).
-          and include(CGI.escapeHTML(user_reaction.reactable.username)).
-          and include(CGI.escapeHTML(comment_reaction.reactable.user.username)).
-          and include(CGI.escapeHTML(article_reaction.reactable.title))
+        expect(response.body).to include(CGI.escapeHTML(moderator.username))
+          .and include(CGI.escapeHTML(user_reaction.reactable.username))
+          .and include(CGI.escapeHTML(comment_reaction.reactable.user.username))
+          .and include(CGI.escapeHTML(article_reaction.reactable.title))
       end
     end
   end

@@ -1,47 +1,49 @@
 <div class="crayons-layout__sidebar-left">
-  <p class="fw-heavy fs-3xl mod-center-heading">Mod Center</p>
-  <div class="fw-bold fs-s mod-center-section-title">
-    INBOX
-  </div>
-  <div id="mod-center-inbox" class="mod-center-inbox">
-    <% if @current_user_tags.any? %>
-      <% @current_user_tags.each do |tag| %>
-        <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block inbox-tags<%= " crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
-          #<%= tag %>
-          <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
+  <h1 class="fw-heavy fs-3xl mod-center-heading">
+    Mod Center
+  </h1>
+  <nav class="mod-center--nav">
+    <h3 class="fw-bold fs-s mod-center--nav__title">
+      Inbox
+    </h3>
+    <div id="mod-center-inbox" class="mod-center-inbox">
+      <% if @current_user_tags.any? %>
+        <% @current_user_tags.each do |tag| %>
+          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block inbox-tags<%= " crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
+            #<%= tag %>
+            <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
+          </a>
+        <% end %>
+      <% end %>
+      <a
+        href="<%= "#{URL.url}/mod" %>"
+        class="crayons-link crayons-link--block inbox-tags<%= " crayons-link--current" if @tag.blank? %>"
+        data-tag-name="All topics">
+        All topics
+      </a>
+    </div>
+  </nav>
+  <nav class="mod-center--nav">
+    <h3 class="fw-bold fs-s mod-center--nav__title">
+      Resources
+    </h3>
+    <div id="mod-center-other-options">
+      <% if @community_mod_channel %>
+        <a href="/connect/<%= @community_mod_channel.slug %>" target="_blank" rel="noopener noreferrer nofollow" class="crayons-link crayons-link--block mod-center--nav__item">
+          Connect Channel
+          <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
         </a>
       <% end %>
-    <% end %>
-    <a
-      href="<%= "#{URL.url}/mod" %>"
-      class="crayons-link crayons-link--block inbox-tags<%= " crayons-link--current" if @tag.blank? %>"
-      data-tag-name="All topics">
-      All topics
-    </a>
-  </div>
-  <div class="fw-bold fs-s mod-center-section-title resources">RESOURCES</div>
-  <div id="mod-center-other-options">
-    <% if @community_mod_channel %>
-      <a href="/connect/<%= @community_mod_channel.slug %>" target="_blank" rel="noopener noreferrer nofollow" class="crayons-link crayons-link--block">
-        Connect Channel
-        <span class="crayons-icon">
-          <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
-        </span>
+      <a href="<%= URL.url %>/community-moderation" class="crayons-link crayons-link--block mod-center--nav__item">
+        Moderator Guide
+        <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
       </a>
-    <% end %>
-    <a href="<%= URL.url %>/community-moderation" class="crayons-link crayons-link--block">
-      Moderator Guide
-      <span class="crayons-icon">
-        <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
-      </span>
-    </a>
-    <a href="<%= URL.url %>/terms" class="crayons-link crayons-link--block">
-      Terms Of Conduct
-      <span class="crayons-icon">
-        <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
-      </span>
-    </a>
-  </div>
+      <a href="<%= URL.url %>/terms" class="crayons-link crayons-link--block mod-center--nav__item">
+        Terms Of Conduct
+        <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
+      </a>
+    </div>
+  </nav>
   <% if @community_mod_channel %>
     <div class="fs-s mod-feedback">
       <span class="fw-medium">Have feedback to improve your Mod experience?</span>
