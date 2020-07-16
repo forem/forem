@@ -4,6 +4,13 @@ class GlitchTag < LiquidTagBase
   PARTIAL = "liquids/glitch".freeze
   ID_REGEXP = /\A[a-zA-Z0-9\-]{1,110}\z/.freeze
   OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file=\w(\.\w)?)/.freeze
+  OPTIONS_TO_QUERY_PAIR = {
+    "app" => %w[previewSize 100],
+    "code" => %w[previewSize 0],
+    "no-files" => %w[sidebarCollapsed true],
+    "preview-first" => %w[previewFirst true],
+    "no-attribution" => %w[attributionHidden true]
+  }.freeze
 
   def initialize(_tag_name, id, _parse_context)
     super
@@ -38,24 +45,9 @@ class GlitchTag < LiquidTagBase
     option.match(OPTION_REGEXP)
   end
 
-  def option_to_query_pair(option)
-    case option
-    when "app"
-      %w[previewSize 100]
-    when "code"
-      %w[previewSize 0]
-    when "no-files"
-      %w[sidebarCollapsed true]
-    when "preview-first"
-      %w[previewFirst true]
-    when "no-attribution"
-      %w[attributionHidden true]
-    end
-  end
-
   def build_options(options)
     # Convert options to query param pairs
-    params = options.map { |option| option_to_query_pair(option) }.compact
+    params = options.map { |option| OPTIONS_TO_QUERY_PAIR[option] }.compact
 
     # Deal with the file option if present or use default
     file_option = options.detect { |option| option.start_with?("file=") }
