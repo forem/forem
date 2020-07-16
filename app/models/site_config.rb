@@ -136,7 +136,6 @@ class SiteConfig < RailsSettings::Base
   # a public forem could have more fine-grained authentication (listings ar private etc.) in future
   field :public, type: :boolean, default: 1
 
-
   # Broadcast
   field :welcome_notifications_live_at, type: :date
 end
