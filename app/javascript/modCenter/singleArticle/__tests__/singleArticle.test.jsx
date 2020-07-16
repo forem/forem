@@ -56,6 +56,12 @@ describe('<SingleArticle />', () => {
     expect(queryByText(testArticle1.title)).toBeDefined();
   });
 
+  it('renders the new clickable article title', () => {
+    const { container } = renderSingleArticle();
+    const text = getNodeText(container.querySelector('.article-title-link'));
+    expect(text).toContain(testArticle1.title);
+  });
+
   it('renders the tags', () => {
     const { queryByText } = renderSingleArticle();
 
