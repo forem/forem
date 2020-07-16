@@ -132,6 +132,7 @@ class SiteConfig < RailsSettings::Base
   # These are the default UX settings, which can be overridded by individual user preferences.
   # basic (current default), rich (cover image on all posts), compact (more minimal)
   field :feed_style, type: :string, default: "basic"
+  field :access, type: :string, default: "public"
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
