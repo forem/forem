@@ -17,9 +17,13 @@ class ApplicationController < ActionController::Base
   end
 
   def verify_private_forem
-    if SiteConfig.access == "private"
+    return if %w[shell async_info ga_events].include?(controller_name)
+    return if user_signed_in? || SiteConfig.public
+
+    if api_action?
+      authenticate!
+    else
       render template: "devise/registrations/new"
-      return
     end
   end
 
@@ -114,5 +118,9 @@ class ApplicationController < ActionController::Base
 
   def anonymous_user
     User.new(ip_address: request.env["HTTP_FASTLY_CLIENT_IP"])
+  end
+
+  def api_action?
+    self.class.to_s.start_with?("Api::")
   end
 end

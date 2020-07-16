@@ -498,6 +498,20 @@ RSpec.describe "/internal/config", type: :request do
                                              confirmation: confirmation_message }
           expect(SiteConfig.feed_style).to eq(feed_style)
         end
+
+        it "updates public to true" do
+          is_private = true
+          post "/internal/config", params: { site_config: { private: is_private },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.private).to eq(is_private)
+        end
+
+        it "updates public to false" do
+          is_private = false
+          post "/internal/config", params: { site_config: { private: is_private },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.private).to eq(is_private)
+        end
       end
     end
   end
