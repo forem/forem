@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_13_215731) do
+ActiveRecord::Schema.define(version: 2020_07_16_125857) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -1318,11 +1318,6 @@ ActiveRecord::Schema.define(version: 2020_07_13_215731) do
 
   create_table "welcome_notifications", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "cta_text"
-    t.string "cta_url"
-    t.string "headline"
-    t.string "secondary_cta_text"
-    t.string "secondary_cta_url"
     t.datetime "updated_at", precision: 6, null: false
   end
 
