@@ -7,16 +7,17 @@ class ChatChannelsController < ApplicationController
   private_constant :CHANNEL_ATTRIBUTES_FOR_SERIALIZATION
 
   def index
-    if params[:state] == "unopened"
+    case params[:state]
+    when "unopened"
       authorize ChatChannel
       render_unopened_json_response
-    elsif params[:state] == "unopened_ids"
+    when "unopened_ids"
       authorize ChatChannel
       render_unopened_ids_response
-    elsif params[:state] == "pending"
+    when "pending"
       authorize ChatChannel
       render_pending_json_response
-    elsif params[:state] == "joining_request"
+    when "joining_request"
       authorize ChatChannel
       render_joining_request_json_response
     else

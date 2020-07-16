@@ -13,9 +13,10 @@ class UsersController < ApplicationController
 
   def index
     @users =
-      if params[:state] == "follow_suggestions"
+      case params[:state]
+      when "follow_suggestions"
         determine_follow_suggestions(current_user)
-      elsif params[:state] == "sidebar_suggestions"
+      when "sidebar_suggestions"
         Suggester::Users::Sidebar.new(current_user, params[:tag]).suggest.sample(3)
       else
         User.none

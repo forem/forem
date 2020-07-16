@@ -142,6 +142,10 @@ Lint/DeprecatedOpenSSLConstant:
   Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
   Enabled: true
 
+Lint/DuplicateElsifCondition:
+  Description: 'Do not repeat conditions used in if `elsif`.'
+  Enabled: true
+
 # Lint/HeredocMethodCallPosition:
 #   Description: >-
 #                  Checks for the ordering of a method call where
@@ -240,6 +244,13 @@ Style/AccessorGrouping:
   Description: 'Checks for grouping of accessors in `class` and `module` bodies.'
   Enabled: true
 
+Style/ArrayCoercion:
+  Description: >-
+                  Use Array() instead of explicit Array check or [*var], when dealing
+                  with a variable you want to treat as an Array, but you're not certain it's an array.
+  StyleGuide: '#array-coercion'
+  Enabled: true
+
 # Style/AutoResourceCleanup:
 #   Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'
 #   Enabled: false
@@ -248,6 +259,11 @@ Style/BisectedAttrAccessor:
   Description: >-
                 Checks for places where `attr_reader` and `attr_writer`
                 for the same method can be combined into single `attr_accessor`.
+  Enabled: true
+
+Style/CaseLikeIf:
+  Description: 'This cop identifies places where `if-elsif` constructions can be replaced with `case-when`.'
+  StyleGuide: '#case-vs-if-else'
   Enabled: true
 
 Style/CollectionMethods:
@@ -289,6 +305,25 @@ Style/FrozenStringLiteralComment:
   Enabled: true
   EnforcedStyle: never
 
+Style/HashAsLastArrayItem:
+  Description: >-
+                 Checks for presence or absence of braces around hash literal as a last
+                 array item depending on configuration.
+  StyleGuide: '#hash-literal-as-last-array-item'
+  Enabled: true
+  EnforcedStyle: braces
+
+Style/HashEachMethods:
+  Description: 'Use Hash#each_key and Hash#each_value.'
+  StyleGuide: '#hash-each'
+  Enabled: true
+
+Style/HashLikeCase:
+  Description: >-
+                  Checks for places where `case-when` represents a simple 1:1
+                  mapping and can be replaced with a hash lookup.
+  Enabled: true
+
 Style/HashSyntax:
   Description: >-
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
@@ -296,11 +331,6 @@ Style/HashSyntax:
   StyleGuide: '#hash-literals'
   Enabled: true
   EnforcedStyle: ruby19_no_mixed_keys
-
-Style/HashEachMethods:
-  Description: 'Use Hash#each_key and Hash#each_value.'
-  StyleGuide: '#hash-each'
-  Enabled: true
 
 Style/HashTransformKeys:
   Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
@@ -367,6 +397,13 @@ Style/RedundantFetchBlock:
     Use `fetch(key, value)` instead of `fetch(key) { value }`
     when value has Numeric, Rational, Complex, Symbol or String type, `false`, `true`, `nil` or is a constant.
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code'
+  Enabled: true
+
+Style/RedundantFileExtensionInRequire:
+  Description: >-
+                  Checks for the presence of superfluous `.rb` extension in
+                  the filename provided to `require` and `require_relative`.
+  StyleGuide: '#no-explicit-rb-to-require'
   Enabled: true
 
 Style/RedundantRegexpCharacterClass:
