@@ -119,6 +119,7 @@ jobs:
           - ws2
           - ws3
       name: "Upload coverage"
+      install: skip
       before_script: skip
       script:
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
