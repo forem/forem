@@ -86,8 +86,6 @@ jobs:
             - ./coverage/codeclimate.lcov.json
 
     - stage: Test
-      workspaces:
-        use: ws1
       name: "Node 1"
       env: KNAPSACK_PRO_CI_NODE_INDEX=1
       script:
@@ -100,8 +98,6 @@ jobs:
           paths: ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json
 
     - stage: Test
-      workspaces:
-        use: ws1
       name: "Node 2"
       env: KNAPSACK_PRO_CI_NODE_INDEX=2
       script:
