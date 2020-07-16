@@ -2,7 +2,9 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import Tags from '../../shared/components/tags';
 
-export const TagsField = ({ defaultValue, onInput, switchHelpContext }) => {
+export const DEFAULT_TAG_FORMAT = '[0-9A-Za-z, ]+';
+
+export const TagsField = ({ defaultValue, onInput, switchHelpContext, tagFormat = DEFAULT_TAG_FORMAT }) => {
   const TAG_FORMAT = '[0-9A-Za-z, ]+';
 
   return (
