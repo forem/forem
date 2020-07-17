@@ -11,6 +11,17 @@ export default class SingleArticle extends Component {
     };
   }
 
+  tagsFormat = (tag, key) => {
+    if (tag) {
+      return (
+        <span className="crayons-tag" key={key}>
+          <span className="crayons-tag__prefix">#</span>
+          {tag}
+        </span>
+      );
+    }
+  };
+
   toggleArticle = (e) => {
     e.preventDefault();
 
@@ -39,14 +50,7 @@ export default class SingleArticle extends Component {
       key,
     } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
-      if (tag) {
-        return (
-          <span className="crayons-tag" key={key}>
-            <span className="crayons-tag__prefix">#</span>
-            {tag}
-          </span>
-        );
-      }
+      this.tagsFormat(tag, key);
     });
 
     const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
