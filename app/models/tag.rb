@@ -1,4 +1,4 @@
-require_relative "../lib/acts_as_taggable_on/tag.rb"
+require_relative "../lib/acts_as_taggable_on/tag"
 
 class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points, :tag_moderator_id, :remove_moderator_id
@@ -97,12 +97,12 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def calculate_hotness_score
-    self.hotness_score = Article.tagged_with(name).
-      where("articles.featured_number > ?", 7.days.ago.to_i).
-      map do |article|
+    self.hotness_score = Article.tagged_with(name)
+      .where("articles.featured_number > ?", 7.days.ago.to_i)
+      .map do |article|
         (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
-      end.
-      sum
+      end
+      .sum
   end
 
   def bust_cache

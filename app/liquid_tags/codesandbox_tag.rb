@@ -4,8 +4,8 @@ class CodesandboxTag < LiquidTagBase
     /\A(initialpath=([a-zA-Z0-9\-_\/.@%])+)\Z|
       \A(module=([a-zA-Z0-9\-_\/.@%])+)\Z|
       \A(runonclick=((0|1){1}))\Z|
-      \Aview=(editor|split|preview)\Z/x.
-      freeze
+      \Aview=(editor|split|preview)\Z/x
+      .freeze
 
   def initialize(_tag_name, id, _parse_context)
     super

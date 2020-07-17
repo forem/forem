@@ -31,11 +31,11 @@ class Message < ApplicationRecord
   end
 
   def update_all_has_unopened_messages_statuses
-    chat_channel.
-      chat_channel_memberships.
-      where("last_opened_at < ?", 10.seconds.ago).
-      where.not(user_id: user_id).
-      update_all(has_unopened_messages: true)
+    chat_channel
+      .chat_channel_memberships
+      .where("last_opened_at < ?", 10.seconds.ago)
+      .where.not(user_id: user_id)
+      .update_all(has_unopened_messages: true)
   end
 
   def evaluate_markdown
@@ -151,7 +151,8 @@ class Message < ApplicationRecord
 
   # rubocop:disable Rails/OutputSafety
   def handle_slash_command(html)
-    response = if html.to_s.strip == "<p>/call</p>"
+    response = case html.to_s.strip
+               when "<p>/call</p>"
                  "<a href='/video_chats/#{chat_channel_id}'
                     class='chatchannels__richlink chatchannels__richlink--base'
                     target='_blank' rel='noopener' data-content='sidecar-video'>
@@ -159,7 +160,7 @@ class Message < ApplicationRecord
                       Let's video chat 😄
                     </h1>
                     </a>".html_safe
-               elsif html.to_s.strip == "<p>/play codenames</p>" # proof of concept
+               when "<p>/play codenames</p>" # proof of concept
                  "<a href='https://www.horsepaste.com/connect-channel-#{rand(1_000_000_000)}'
                     class='chatchannels__richlink chatchannels__richlink--base'
                     target='_blank' rel='noopener' data-content='sidecar-content-plus-video'>
@@ -174,14 +175,14 @@ class Message < ApplicationRecord
   # rubocop:enable Rails/OutputSafety
 
   def cl_path(img_src)
-    ActionController::Base.helpers.
-      cl_image_path(img_src,
-                    type: "fetch",
-                    width: 725,
-                    crop: "limit",
-                    flags: "progressive",
-                    fetch_format: "auto",
-                    sign_url: true)
+    ActionController::Base.helpers
+      .cl_image_path(img_src,
+                     type: "fetch",
+                     width: 725,
+                     crop: "limit",
+                     flags: "progressive",
+                     fetch_format: "auto",
+                     sign_url: true)
   end
 
   def determine_user_validity
@@ -223,8 +224,8 @@ class Message < ApplicationRecord
     recipient = direct_receiver
     return if !chat_channel.direct? ||
       recipient.updated_at > 1.hour.ago ||
-      recipient.chat_channel_memberships.order("last_opened_at DESC").
-        first.last_opened_at > 15.hours.ago ||
+      recipient.chat_channel_memberships.order("last_opened_at DESC")
+        .first.last_opened_at > 15.hours.ago ||
       chat_channel.last_message_at > 30.minutes.ago ||
       recipient.email_connect_messages == false
 

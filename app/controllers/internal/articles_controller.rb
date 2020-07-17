@@ -52,70 +52,70 @@ module Internal
     private
 
     def articles_not_buffered(days_ago)
-      Article.published.
-        where(last_buffered: nil).
-        where("published_at > ? OR crossposted_at > ?", days_ago.days.ago, days_ago.days.ago).
-        includes(:user).
-        limited_columns_internal_select.
-        order("public_reactions_count DESC").
-        page(params[:page]).
-        per(50)
+      Article.published
+        .where(last_buffered: nil)
+        .where("published_at > ? OR crossposted_at > ?", days_ago.days.ago, days_ago.days.ago)
+        .includes(:user)
+        .limited_columns_internal_select
+        .order("public_reactions_count DESC")
+        .page(params[:page])
+        .per(50)
     end
 
     def articles_top(months_ago)
-      Article.published.
-        where("published_at > ?", months_ago).
-        includes(user: [:notes]).
-        limited_columns_internal_select.
-        order("public_reactions_count DESC").
-        page(params[:page]).
-        per(50)
+      Article.published
+        .where("published_at > ?", months_ago)
+        .includes(user: [:notes])
+        .limited_columns_internal_select
+        .order("public_reactions_count DESC")
+        .page(params[:page])
+        .per(50)
     end
 
     def articles_satellite
-      Article.published.where(last_buffered: nil).
-        includes(:user, :buffer_updates).
-        tagged_with(Tag.bufferized_tags, any: true).
-        limited_columns_internal_select.
-        order("hotness_score DESC").
-        page(params[:page]).
-        per(60)
+      Article.published.where(last_buffered: nil)
+        .includes(:user, :buffer_updates)
+        .tagged_with(Tag.bufferized_tags, any: true)
+        .limited_columns_internal_select
+        .order("hotness_score DESC")
+        .page(params[:page])
+        .per(60)
     end
 
     def articles_boosted_additional
-      Article.boosted_via_additional_articles.
-        includes(:user, :buffer_updates).
-        limited_columns_internal_select.
-        order("published_at DESC").
-        page(params[:page]).
-        per(100)
+      Article.boosted_via_additional_articles
+        .includes(:user, :buffer_updates)
+        .limited_columns_internal_select
+        .order("published_at DESC")
+        .page(params[:page])
+        .per(100)
     end
 
     def articles_chronological
-      Article.published.
-        includes(user: [:notes]).
-        limited_columns_internal_select.
-        order("published_at DESC").
-        page(params[:page]).
-        per(50)
+      Article.published
+        .includes(user: [:notes])
+        .limited_columns_internal_select
+        .order("published_at DESC")
+        .page(params[:page])
+        .per(50)
     end
 
     def articles_mixed
-      Article.published.
-        includes(user: [:notes]).
-        limited_columns_internal_select.
-        order("hotness_score DESC").
-        page(params[:page]).
-        per(30)
+      Article.published
+        .includes(user: [:notes])
+        .limited_columns_internal_select
+        .order("hotness_score DESC")
+        .page(params[:page])
+        .per(30)
     end
 
     def articles_featured
-      Article.published.or(Article.where(published_from_feed: true)).
-        where(featured: true).
-        where("featured_number > ?", Time.current.to_i).
-        includes(:user, :buffer_updates).
-        limited_columns_internal_select.
-        order("featured_number DESC")
+      Article.published.or(Article.where(published_from_feed: true))
+        .where(featured: true)
+        .where("featured_number > ?", Time.current.to_i)
+        .includes(:user, :buffer_updates)
+        .limited_columns_internal_select
+        .order("featured_number DESC")
     end
 
     def article_params

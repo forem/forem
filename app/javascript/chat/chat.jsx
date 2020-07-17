@@ -756,14 +756,14 @@ export default class Chat extends Component {
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     }
   };
-
+  hideChannelList = () => {
+    const chatContainer = document.querySelector('.chat__activechat');
+    chatContainer.classList.remove('chat__activechat--hidden');
+  };
   handleSwitchChannel = (e) => {
     e.preventDefault();
     let { target } = e;
-
-    const chatContainer = document.querySelector('.chat__activechat');
-    chatContainer.classList.remove('chat__activechat--hidden');
-
+    this.hideChannelList();
     if (!target.dataset.channelId) {
       target = target.parentElement;
     }
@@ -911,6 +911,7 @@ export default class Chat extends Component {
     if (content) {
       e.preventDefault();
       e.stopPropagation();
+      this.hideChannelList();
 
       const { activeChannelId, activeChannel } = this.state;
 
