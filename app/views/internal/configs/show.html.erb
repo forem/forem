@@ -11,6 +11,7 @@
   </h2>
 </div>
 
+
 <div class="row my-3" id="getStarted">
   <div class="card w-100">
     <div class="card-header" id="getStartedHeader" data-toggle="collapse"
@@ -21,7 +22,7 @@
       </button>
     </div>
 
-    <div id="getStartedBodyContainer" class="expand show p-3" aria-labelledby="siteConfigHeader">
+    <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? 'hide collapse': 'show expand' %> p-3" aria-labelledby="siteConfigHeader">
       <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
 
         <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>

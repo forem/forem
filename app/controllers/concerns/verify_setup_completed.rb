@@ -1,5 +1,6 @@
 module VerifySetupCompleted
   extend ActiveSupport::Concern
+  module_function 
 
   MANDATORY_CONFIGS = %i[
     community_description
@@ -24,6 +25,10 @@ module VerifySetupCompleted
     # rubocop:enable Rails/LexicallyScopedActionFilter
   end
 
+  def setup_completed?
+    MANDATORY_CONFIGS.all? { |config| SiteConfig.public_send(config).present? }
+  end
+
   private
 
   def verify_setup_completed
@@ -35,9 +40,7 @@ module VerifySetupCompleted
     # rubocop:enable Rails/OutputSafety
   end
 
-  def setup_completed?
-    MANDATORY_CONFIGS.all? { |config| SiteConfig.public_send(config).present? }
-  end
+
 
   def config_path?
     request.env["PATH_INFO"] == internal_config_path
