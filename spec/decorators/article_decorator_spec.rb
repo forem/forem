@@ -185,37 +185,22 @@ RSpec.describe ArticleDecorator, type: :decorator do
   end
 
   describe "#video_metadata" do
-    let(:article_with_video) { create(:article) }
-    let(:video_data) do
-      {
-        id: article_with_video.id,
-        video_code: "ABC",
-        video_source_url: "https://cdn.com/ABC.m3u8",
-        video_thumbnail_url: "https://cdn.com/ABC.png",
-        video_closed_caption_track_url: "https://cdn.com/ABC_captions"
-      }
-    end
-
     it "responds with a hash representation of video metadata" do
-      caption_track_url = video_data[:video_closed_caption_track_url]
+      article_with_video = create(:article,
+                                  video_code: "ABC",
+                                  video_source_url: "https://cdn.com/ABC.m3u8",
+                                  video_thumbnail_url: "https://cdn.com/ABC.png",
+                                  video_closed_caption_track_url: "https://cdn.com/ABC_captions")
 
-      allow(article_with_video).to receive(:video_code).
-        and_return(video_data[:video_code])
-      allow(article_with_video).to receive(:video_source_url).
-        and_return(video_data[:video_source_url])
-      allow(article_with_video).to receive(:cloudinary_video_url).
-        and_return(video_data[:video_thumbnail_url])
-      allow(article_with_video).to receive(:video_closed_caption_track_url).
-        and_return(caption_track_url)
-
-      metadata = article_with_video.decorate.video_metadata
-      expect(metadata).to be_instance_of(Hash)
-
-      # Compare the hash
-      expect(metadata.keys).to eq(video_data.keys)
-      metadata.each_key do |k|
-        expect(metadata[k]).to eq(video_data[k])
-      end
+      expect(article_with_video.decorate.video_metadata).to eq(
+        {
+          id: article_with_video.id,
+          video_code: article_with_video.video_code,
+          video_source_url: article_with_video.video_source_url,
+          video_thumbnail_url: article_with_video.cloudinary_video_url,
+          video_closed_caption_track_url: article_with_video.video_closed_caption_track_url
+        },
+      )
     end
   end
 end
