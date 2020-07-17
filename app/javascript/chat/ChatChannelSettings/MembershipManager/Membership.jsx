@@ -8,6 +8,7 @@ const Membership = ({
   currentMembership,
   removeMembership,
   handleUpdateMembershipRole,
+  showActionButton,
 }) => {
   const addAsModButton =
     membership.role === 'member' ? (
@@ -65,7 +66,7 @@ const Membership = ({
     ) : null;
 
   const dropdown =
-    currentMembership.role === 'mod' ? (
+    currentMembership.role === 'mod' && showActionButton ? (
       <span className="membership-actions">
         {removeMembershipButton}
         {addAsModButton}

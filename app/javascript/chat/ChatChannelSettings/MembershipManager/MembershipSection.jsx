@@ -12,6 +12,8 @@ const MembershipSection = ({
     return <p className="lh-base">No membership</p>;
   }
 
+  const membershipCount = memberships.length;
+
   return (
     <div className="membership-section">
       {memberships.map((activeMembership) => (
@@ -23,6 +25,7 @@ const MembershipSection = ({
           currentMembership={currentMembership}
           removeMembership={removeMembership}
           handleUpdateMembershipRole={handleUpdateMembershipRole}
+          showActionButton={membershipCount > 1}
         />
       ))}
     </div>
