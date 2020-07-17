@@ -31,7 +31,9 @@ def deployment_specific_credentials
     }
   else # jdoss's special sauce
     {
-      use_iam_profile: true
+      provider: "AWS",
+      use_iam_profile: true,
+      region: region
     }
   end
 end
