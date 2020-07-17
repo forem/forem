@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_17_203432) do
+ActiveRecord::Schema.define(version: 2020_07_17_220654) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -273,7 +273,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_203432) do
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
   end
 
-  create_table "broadcasts", id: :serial, force: :cascade do |t|
+  create_table "broadcasts", force: :cascade do |t|
     t.boolean "active", default: false
     t.datetime "active_status_updated_at"
     t.string "banner_style"
@@ -559,7 +559,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_203432) do
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end
 
-  create_table "github_issues", id: :serial, force: :cascade do |t|
+  create_table "github_issues", force: :cascade do |t|
     t.string "category"
     t.datetime "created_at", null: false
     t.string "issue_serialized", default: "--- {}\n"
