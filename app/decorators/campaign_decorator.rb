@@ -3,7 +3,7 @@ class CampaignDecorator < ApplicationDecorator
   include ActionView::Helpers::UrlHelper
 
   def sidebar_image(options)
-    return unless active?
+    return unless show_in_sidebar?
 
     img = image_tag(object.sidebar_image, options)
     return link_to(img, url) if url

@@ -21,7 +21,7 @@ class Campaign
   # Define delegate methods for SiteConfig
   METHODS.each { |m| define_method(m) { SiteConfig.public_send("campaign_#{m}") } }
 
-  def active?
-    sidebar_enabled?
+  def show_in_sidebar?
+    sidebar_enabled? && sidebar_image.present?
   end
 end

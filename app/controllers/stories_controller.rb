@@ -175,7 +175,7 @@ class StoriesController < ApplicationController
     assign_hero_html
     assign_podcasts
     assign_listings
-    get_latest_campaign_articles if Campaign.current.active?
+    get_latest_campaign_articles if Campaign.current.show_in_sidebar?
     @article_index = true
     @featured_story = (featured_story || Article.new)&.decorate
     @stories = ArticleDecorator.decorate_collection(@stories)
