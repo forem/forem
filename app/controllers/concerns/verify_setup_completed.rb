@@ -1,6 +1,6 @@
 module VerifySetupCompleted
   extend ActiveSupport::Concern
-  module_function 
+  module_function
 
   MANDATORY_CONFIGS = %i[
     community_description
@@ -39,8 +39,6 @@ module VerifySetupCompleted
     flash[:global_notice] = "Setup not completed yet, please visit #{link}.".html_safe
     # rubocop:enable Rails/OutputSafety
   end
-
-
 
   def config_path?
     request.env["PATH_INFO"] == internal_config_path
