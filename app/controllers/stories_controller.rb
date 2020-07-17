@@ -63,15 +63,15 @@ class StoriesController < ApplicationController
   def assign_hero_html
     return if Campaign.current.hero_html_variant_name.blank?
 
-    @hero_area = HtmlVariant.relevant.select(:name, :html).
-      find_by(group: "campaign", name: Campaign.current.hero_html_variant_name)
+    @hero_area = HtmlVariant.relevant.select(:name, :html)
+      .find_by(group: "campaign", name: Campaign.current.hero_html_variant_name)
     @hero_html = @hero_area&.html
   end
 
   def get_latest_campaign_articles
-    campaign_articles_scope = Article.tagged_with(Campaign.current.featured_tags, any: true).
-      where("published_at > ? AND score > ?", 4.weeks.ago, 0).
-      order("hotness_score DESC")
+    campaign_articles_scope = Article.tagged_with(Campaign.current.featured_tags, any: true)
+      .where("published_at > ? AND score > ?", 4.weeks.ago, 0)
+      .order("hotness_score DESC")
 
     requires_approval = Campaign.current.articles_require_approval?
     campaign_articles_scope = campaign_articles_scope.where(approved: true) if requires_approval
