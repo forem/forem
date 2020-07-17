@@ -21,14 +21,14 @@ module Mentions
     def users_mentioned_in_text_excluding_author
       mentioned_usernames = extract_usernames_from_mentions_in_text
 
-      collect_existing_users(mentioned_usernames).
-        yield_self do |existing_mentioned_users|
+      collect_existing_users(mentioned_usernames)
+        .yield_self do |existing_mentioned_users|
           reject_notifiable_author(existing_mentioned_users)
         end
     end
 
     def collect_existing_users(usernames)
-      User.where(username: usernames)
+      User.registered.where(username: usernames)
     end
 
     def create_mentions_for(users)

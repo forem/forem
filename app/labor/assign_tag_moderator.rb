@@ -18,9 +18,9 @@ module AssignTagModerator
       add_trusted_role(user)
       add_to_chat_channels(user, tag)
 
-      NotifyMailer.with(user: user, tag: tag, channel_slug: chat_channel_slug(tag)).
-        tag_moderator_confirmation_email.
-        deliver_now
+      NotifyMailer.with(user: user, tag: tag, channel_slug: chat_channel_slug(tag))
+        .tag_moderator_confirmation_email
+        .deliver_now
     end
   end
 

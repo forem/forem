@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
-    <% unless user_signed_in? %>
+    <% unless user_signed_in? || !any_selfserve_auth? %>
       <section class="crayons-card crayons-card--secondary signin-cta-widget">
         <header class="crayons-card__header">
           <h3 class="crayons-card__header__headline">Join <%= community_name %></h3>

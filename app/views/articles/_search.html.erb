@@ -16,13 +16,13 @@
 
   var params = getQueryParams(document.location.search);
 
-  function searchMain() {
+  function searchMain(substories) {
     var query = filterXSS(params.q);
     var filters = filterXSS(params.filters || "");
     var sortBy = filterXSS(params.sort_by || "");
     var sortDirection = filterXSS(params.sort_direction || "");
 
-    document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
+    substories.innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>';
     if (document.getElementById("query-wrapper")) {
       search(query, filters, sortBy, sortDirection);
       initializeFilters(query, filters);
@@ -189,8 +189,9 @@
   var waitingOnSearch = setInterval(function () {
     if (typeof search == 'function' && typeof filterXSS == 'function' && typeof buildArticleHTML == 'function') {
       clearInterval(waitingOnSearch);
-      if (document.querySelectorAll('.search-results-loaded').length == 0) {
-        searchMain();
+      const substories = document.getElementById("substories");
+      if (document.querySelectorAll('.search-results-loaded').length == 0 && substories) {
+        searchMain(substories);
       }
     }
   }, 1);

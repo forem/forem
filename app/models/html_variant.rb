@@ -36,13 +36,13 @@ class HtmlVariant < ApplicationRecord
     private
 
     def find_top_for_test(tags_array, group)
-      where(group: group, approved: true, published: true, target_tag: tags_array).
-        order("success_rate DESC").limit(rand(1..20)).sample
+      where(group: group, approved: true, published: true, target_tag: tags_array)
+        .order("success_rate DESC").limit(rand(1..20)).sample
     end
 
     def find_random_for_test(tags_array, group)
-      where(group: group, approved: true, published: true, target_tag: tags_array).
-        order(Arel.sql("RANDOM()")).first
+      where(group: group, approved: true, published: true, target_tag: tags_array)
+        .order(Arel.sql("RANDOM()")).first
     end
   end
 

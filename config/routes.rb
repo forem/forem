@@ -7,7 +7,8 @@ Rails.application.routes.draw do
 
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
-    registrations: "registrations"
+    registrations: "registrations",
+    invitations: "invitations"
   }
 
   devise_scope :user do
@@ -22,7 +23,7 @@ Rails.application.routes.draw do
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
     Sidekiq::Web.class_eval do
-      use Rack::Protection, origin_whitelist: ["https://dev.to"] # resolve Rack Protection HttpOrigin
+      use Rack::Protection, origin_whitelist: [URL.url] # resolve Rack Protection HttpOrigin
     end
     mount Sidekiq::Web => "/sidekiq"
     mount FieldTest::Engine, at: "abtests"
@@ -42,7 +43,11 @@ Rails.application.routes.draw do
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
-      mount Flipper::UI.app(Flipper, { rack_protection: {} }), at: "feature_flags"
+
+      flipper_ui = Flipper::UI.app(Flipper,
+                                   { rack_protection: { except: %i[authenticity_token form_token json_csrf
+                                                                   remote_token http_origin session_hijacking] } })
+      mount flipper_ui, at: "feature_flags"
     end
 
     resources :articles, only: %i[index show update]
@@ -52,6 +57,7 @@ Rails.application.routes.draw do
     resources :comments, only: [:index]
     resources :events, only: %i[index create update]
     resources :feedback_messages, only: %i[index show]
+    resources :invitations, only: %i[index new create]
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]
@@ -105,7 +111,6 @@ Rails.application.routes.draw do
     resource :config
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
-    resources :path_redirects, only: %i[new create index edit update destroy]
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
   end
@@ -310,6 +315,7 @@ Rails.application.routes.draw do
   get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
   get "/future", to: redirect("devteam/the-future-of-dev-160n")
+  get "/forem", to: redirect("devteam/for-empowering-community-2k6h")
 
   # Settings
   post "users/update_language_settings" => "users#update_language_settings"

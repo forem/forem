@@ -36,8 +36,8 @@ RSpec.describe "Admin awards badges", type: :system do
   end
 
   it "awards badges" do
-    expect { award_two_badges }.to change { user.badges.count }.by(1).
-      and change { user2.badges.count }.by(1)
+    expect { award_two_badges }.to change { user.badges.count }.by(1)
+      .and change { user2.badges.count }.by(1)
     expect(page).to have_content("BadgeRewarder task ran!")
 
     visit "/#{user.username}/"

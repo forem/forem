@@ -60,7 +60,7 @@ class OrganizationsController < ApplicationController
   private
 
   def permitted_params
-    accessible = %i[
+    %i[
       id
       name
       summary
@@ -84,12 +84,11 @@ class OrganizationsController < ApplicationController
       cta_button_url
       cta_body_markdown
     ]
-    accessible
   end
 
   def organization_params
-    params.require(:organization).permit(permitted_params).
-      transform_values do |value|
+    params.require(:organization).permit(permitted_params)
+      .transform_values do |value|
         if value.class.name == "String"
           ActionController::Base.helpers.strip_tags(value)
         else

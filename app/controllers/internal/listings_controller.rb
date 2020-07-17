@@ -1,12 +1,15 @@
 module Internal
   class ListingsController < Internal::ApplicationController
     include ListingsToolkit
+    ALLOWED_PARAMS = %i[
+      published body_markdown title category listing_category_id tag_list action
+    ].freeze
     layout "internal"
 
     def index
       @listings =
-        Listing.includes(%i[user listing_category]).
-          page(params[:page]).order("bumped_at DESC").per(50)
+        Listing.includes(%i[user listing_category])
+          .page(params[:page]).order("bumped_at DESC").per(50)
 
       @listings = @listings.published unless include_unpublished?
       @listings = @listings.in_category(params[:filter]) if params[:filter].present?
@@ -35,9 +38,6 @@ module Internal
 
     private
 
-    ALLOWED_PARAMS = %i[
-      published body_markdown title category listing_category_id tag_list action
-    ].freeze
     private_constant :ALLOWED_PARAMS
 
     def listing_params

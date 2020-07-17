@@ -29,9 +29,9 @@ class Podcast < ApplicationRecord
   alias_attribute :name, :title
 
   def existing_episode(item)
-    episode = PodcastEpisode.where(media_url: item.enclosure_url).
-      or(PodcastEpisode.where(title: item.title)).
-      or(PodcastEpisode.where(guid: item.guid.to_s)).presence
+    episode = PodcastEpisode.where(media_url: item.enclosure_url)
+      .or(PodcastEpisode.where(title: item.title))
+      .or(PodcastEpisode.where(guid: item.guid.to_s)).presence
     # if unique_website_url? is set to true (the default value), we try to find an episode by website_url as well
     # if unique_website_url? is set to false it usually means that website_url is the same for different episodes
     episode ||= PodcastEpisode.where(website_url: item.link).presence if item.link.present? && unique_website_url?

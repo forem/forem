@@ -13,3 +13,7 @@ namespace :app_initializer do
     SiteConfig.health_check_token ||= SecureRandom.hex(10)
   end
 end
+
+if ENV["ENABLE_HYPERSHIELD"].present?
+  Rake::Task["db:prepare"].enhance(["hypershield:refresh"])
+end

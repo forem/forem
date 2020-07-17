@@ -1,6 +1,8 @@
 # To go through a markdown document. Mainly used to decide if we are in
 # code blocks to decide if we should escape underscored usernames.
 class MarkdownTraverser
+  CODEBLOCK_MARKER = "```".freeze
+
   def initialize(markdown)
     @lines = markdown.dup.lines
     init_position
@@ -19,7 +21,6 @@ class MarkdownTraverser
 
   private
 
-  CODEBLOCK_MARKER = "```".freeze
   private_constant :CODEBLOCK_MARKER
 
   attr_reader :lines

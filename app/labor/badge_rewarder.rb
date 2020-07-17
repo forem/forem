@@ -14,7 +14,7 @@ module BadgeRewarder
       message = "Happy #{ApplicationConfig['COMMUNITY_NAME']} birthday! " \
         "Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
       badge = Badge.find_by!(slug: "#{YEARS[i]}-year-club")
-      User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
+      User.registered.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
         achievement = BadgeAchievement.create(
           user_id: user.id,
           badge_id: badge.id,
@@ -53,12 +53,12 @@ module BadgeRewarder
   def self.award_tag_badges
     Tag.where.not(badge_id: nil).find_each do |tag|
       past_winner_user_ids = BadgeAchievement.where(badge_id: tag.badge_id).pluck(:user_id)
-      winning_article = Article.where("score > 100").
-        published.
-        where.not(user_id: past_winner_user_ids).
-        order(score: :desc).
-        where("published_at > ?", 7.5.days.ago). # More than seven days, to have some wiggle room.
-        cached_tagged_with(tag).first
+      winning_article = Article.where("score > 100")
+        .published
+        .where.not(user_id: past_winner_user_ids)
+        .order(score: :desc)
+        .where("published_at > ?", 7.5.days.ago) # More than seven days, to have some wiggle room.
+        .cached_tagged_with(tag).first
       if winning_article
         award_badges(
           [winning_article.user.username],
@@ -89,9 +89,9 @@ module BadgeRewarder
 
   def self.award_streak_badge(num_weeks)
     # No credit for super low quality
-    article_user_ids = Article.published.
-      where("published_at > ? AND score > ?", 1.week.ago, MINIMUM_QUALITY).
-      pluck(:user_id)
+    article_user_ids = Article.published
+      .where("published_at > ? AND score > ?", 1.week.ago, MINIMUM_QUALITY)
+      .pluck(:user_id)
     message = if num_weeks == LONGEST_STREAK_WEEKS
                 LONGEST_STREAK_MESSAGE
               else
@@ -114,7 +114,7 @@ module BadgeRewarder
 
   def self.award_badges(usernames, slug, message_markdown)
     badge_id = Badge.find_by!(slug: slug).id
-    User.where(username: usernames).find_each do |user|
+    User.registered.where(username: usernames).find_each do |user|
       BadgeAchievement.create(
         user_id: user.id,
         badge_id: badge_id,

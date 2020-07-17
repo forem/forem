@@ -39,7 +39,6 @@ RSpec.describe "Views an article", type: :system do
 
     it "embeds the published timestamp" do
       visit article.path
-
       selector = "article time[datetime='#{timestamp}']"
       expect(page).to have_selector(selector)
     end
