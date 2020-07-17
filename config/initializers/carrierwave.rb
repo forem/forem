@@ -14,14 +14,24 @@ CarrierWave.configure do |config|
     config.storage = :file
   else
     config.fog_provider = "fog/aws"
-    region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
-    config.fog_credentials = {
+    config.fog_credentials = deployment_specific_credentials
+    config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
+    config.storage = :fog
+  end
+end
+
+def deployment_specific_credentials
+  region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
+  if ENV["HEROKU_APP_ID"].present? # Present if Heroku meta info is present.
+    {
       provider: "AWS",
       aws_access_key_id: ApplicationConfig["AWS_ID"],
       aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
       region: region
     }
-    config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
-    config.storage = :fog
+  else # jdoss's special sauce
+    {
+      use_iam_profile: true
+    }
   end
 end
