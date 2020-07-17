@@ -25,6 +25,8 @@ CarrierWave.configure do |config|
                              else # jdoss's special sauce
                                {
                                  provider: "AWS",
+                                 aws_access_key_id: nil,
+                                 aws_secret_access_key: nil,
                                  use_iam_profile: true,
                                  region: region
                                }
