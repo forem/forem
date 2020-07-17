@@ -44,13 +44,9 @@ Rails.application.routes.draw do
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
 
-      flipper_ui = Flipper::UI.app(Flipper) do |builder|
-        builder.use Rack::Protection, origin_whitelist: [URL.url]
-        # Requires redis-store > 1.9: https://github.com/redis-store/redis-store/pull/333
-        builder.use Rack::Session::Cookie,
-                    secret: Rails.application.secrets[:secret_key_base]
-        builder.use Rack::CommonLogger, STDOUT
-      end
+      flipper_ui = Flipper::UI.app(Flipper,
+                                   { rack_protection: { except: %i[authenticity_token form_token json_csrf
+                                                                   remote_token http_origin session_hijacking] } })
       mount flipper_ui, at: "feature_flags"
     end
 
