@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_16_125857) do
+ActiveRecord::Schema.define(version: 2020_07_17_203432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -271,27 +271,6 @@ ActiveRecord::Schema.define(version: 2020_07_16_125857) do
     t.text "statement"
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
-  end
-
-  create_table "blocks", id: :serial, force: :cascade do |t|
-    t.text "body_html"
-    t.text "body_markdown"
-    t.datetime "created_at", null: false
-    t.boolean "featured"
-    t.integer "featured_number"
-    t.integer "index_position"
-    t.text "input_css"
-    t.text "input_html"
-    t.text "input_javascript"
-    t.text "processed_css"
-    t.text "processed_html"
-    t.text "processed_javascript"
-    t.text "published_css"
-    t.text "published_html"
-    t.text "published_javascript"
-    t.string "title"
-    t.datetime "updated_at", null: false
-    t.integer "user_id"
   end
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
