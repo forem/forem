@@ -256,8 +256,6 @@ module Constants
       description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
       placeholder: "basic, rich, or compact"
     }
-    # Dynamic values:
-      # configurable_rate_limits
-      # social_media_handles
+    # Dynamic values ommitted: configurable_rate_limits and social_media_handles
   }.freeze
 end

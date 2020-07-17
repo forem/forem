@@ -1,5 +1,6 @@
 module VerifySetupCompleted
   extend ActiveSupport::Concern
+
   module_function
 
   MANDATORY_CONFIGS = %i[
