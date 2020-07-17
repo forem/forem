@@ -349,6 +349,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
     context "when user role is member" do
       it "update the membership role to mod" do
+        allow(Pusher).to receive(:trigger).and_return(true)
         membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: second_user.id)
 
         patch "/chat_channel_memberships/update_membership_role/#{chat_channel.id}", params: {
@@ -364,6 +365,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
     context "when user is mod" do
       it "update the membership role to member" do
+        allow(Pusher).to receive(:trigger).and_return(true)
         membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
 
         patch "/chat_channel_memberships/update_membership_role/#{chat_channel.id}", params: {

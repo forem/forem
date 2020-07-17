@@ -149,6 +149,13 @@ class ChatChannelMembershipsController < ApplicationController
         errors: chat_channel_membership.errors.full_messages
       }, status: :bad_request
     else
+      role = membership.reload.role
+      send_chat_action_message(
+        "@#{membership.user.username} role is updated as #{role}",
+        current_user, @chat_channel.id,
+        "updated"
+      )
+
       render json: { success: true, message: "User Membership is updated" }, status: :ok
     end
   end
