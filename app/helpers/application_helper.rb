@@ -245,6 +245,7 @@ module ApplicationHelper
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
 
+  # rubocop:disable Rails/OutputSafety
   def internal_config_label(method, content = nil)
     content ||= raw("<span>#{method.to_s.humanize}</span>")
 
@@ -252,6 +253,7 @@ module ApplicationHelper
       content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
     end
 
-    content_tag(:label, content,  class: "site-config__label", for: "site_config_#{method}")
+    tag.label(content, class: "site-config__label", for: "site_config_#{method}")
   end
+  # rubocop:enable Rails/OutputSafety
 end
