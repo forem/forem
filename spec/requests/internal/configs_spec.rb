@@ -499,6 +499,15 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.feed_style).to eq(feed_style)
         end
       end
+
+      describe "Credits" do
+        it "updates the credit prices", :aggregate_failures do
+          SiteConfig.credit_prices_in_cents.each_key do |size|
+            post "/internal/config", params: { site_config: { credit_prices_in_cents: { size => 1000 } } }
+            expect(SiteConfig.credit_prices_in_cents[size]).to eq 1000
+          end
+        end
+      end
     end
   end
   # rubocop:enable RSpec/NestedGroups

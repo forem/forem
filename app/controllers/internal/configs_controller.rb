@@ -55,6 +55,7 @@ module Internal
         social_media_handles: SiteConfig.social_media_handles.keys,
         email_addresses: SiteConfig.email_addresses.keys,
         meta_keywords: SiteConfig.meta_keywords.keys,
+        credit_prices_in_cents: SiteConfig.credit_prices_in_cents.keys,
       )
     end
 
