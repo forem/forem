@@ -139,3 +139,9 @@ $input-width: 650px;
 .crayons-notice--danger h3 {
   color: var(--accent-danger-darker);
 }
+
+.sticky-save-footer {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  bottom: 0;
+}
