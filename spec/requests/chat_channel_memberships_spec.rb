@@ -424,6 +424,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     context "when user accept the request" do
       it "will create membership" do
         allow(Pusher).to receive(:trigger).and_return(true)
+
         sign_in second_user
         chat_channel.update(discoverable: true)
 
