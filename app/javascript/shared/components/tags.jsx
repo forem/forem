@@ -374,6 +374,7 @@ class Tags extends Component {
       listing,
       fieldClassName,
       onFocus,
+      pattern,
     } = this.props;
     const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
@@ -449,7 +450,7 @@ class Tags extends Component {
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
           onFocus={onFocus}
-          pattern={`${LETTERS_NUMBERS}`}
+          pattern={pattern}
         />
         {searchResultsHTML}
       </div>

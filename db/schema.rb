@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_12_150048) do
+ActiveRecord::Schema.define(version: 2020_07_17_203432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -271,27 +271,6 @@ ActiveRecord::Schema.define(version: 2020_07_12_150048) do
     t.text "statement"
     t.datetime "updated_at", null: false
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
-  end
-
-  create_table "blocks", id: :serial, force: :cascade do |t|
-    t.text "body_html"
-    t.text "body_markdown"
-    t.datetime "created_at", null: false
-    t.boolean "featured"
-    t.integer "featured_number"
-    t.integer "index_position"
-    t.text "input_css"
-    t.text "input_html"
-    t.text "input_javascript"
-    t.text "processed_css"
-    t.text "processed_html"
-    t.text "processed_javascript"
-    t.text "published_css"
-    t.text "published_html"
-    t.text "published_javascript"
-    t.string "title"
-    t.datetime "updated_at", null: false
-    t.integer "user_id"
   end
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
@@ -842,19 +821,6 @@ ActiveRecord::Schema.define(version: 2020_07_12_150048) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
-  end
-
-  create_table "path_redirects", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "new_path", null: false
-    t.string "old_path", null: false
-    t.string "source"
-    t.datetime "updated_at", null: false
-    t.integer "version", default: 0, null: false
-    t.index ["new_path"], name: "index_path_redirects_on_new_path"
-    t.index ["old_path"], name: "index_path_redirects_on_old_path", unique: true
-    t.index ["source"], name: "index_path_redirects_on_source"
-    t.index ["version"], name: "index_path_redirects_on_version"
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|

@@ -736,6 +736,11 @@
                                placeholder: "basic, rich, or compact" %>
               <div class="alert alert-info">Determines which default feed the users sees (rich content, more minimal, etc.)</div>
             </div>
+            <div class="form-group">
+              <%= internal_config_label :public %>
+              <%= f.check_box :public, checked: SiteConfig.public %>
+              <div class="alert alert-info">Are most of the site pages (posts, profiles, etc. public?) — BE VERY CAUTIOUS IN CHANGING THIS</div>
+            </div>
           </div>
         </div>
 

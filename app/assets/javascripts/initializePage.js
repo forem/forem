@@ -10,7 +10,8 @@
   initializeUserProfilePage, initializePodcastPlayback, initializeDrawerSliders,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast
+  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast,
+  initializeDateHelpers
 */
 
 function callInitializers() {
@@ -60,6 +61,7 @@ function callInitializers() {
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
+  initializeDateHelpers();
 
   function freezeScrolling(event) {
     event.preventDefault();

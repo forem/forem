@@ -76,8 +76,8 @@ module CacheBuster
       bust("/videos?i=i")
     end
     TIMEFRAMES.each do |timestamp, interval|
-      if Article.published.where("published_at > ?", timestamp).
-          order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
+      if Article.published.where("published_at > ?", timestamp)
+          .order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
         bust("/top/#{interval}")
         bust("/top/#{interval}?i=i")
         bust("/top/#{interval}/?i=i")
@@ -99,8 +99,8 @@ module CacheBuster
         bust("/t/#{tag}/latest?i=i")
       end
       TIMEFRAMES.each do |timestamp, interval|
-        if Article.published.where("published_at > ?", timestamp).tagged_with(tag).
-            order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
+        if Article.published.where("published_at > ?", timestamp).tagged_with(tag)
+            .order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
           bust("/top/#{interval}")
           bust("/top/#{interval}?i=i")
           bust("/top/#{interval}/?i=i")
@@ -110,8 +110,8 @@ module CacheBuster
         end
       end
       if rand(2) == 1 &&
-          Article.published.tagged_with(tag).
-              order("hotness_score DESC").limit(2).pluck(:id).include?(article.id)
+          Article.published.tagged_with(tag)
+              .order("hotness_score DESC").limit(2).pluck(:id).include?(article.id)
         bust("/t/#{tag}")
         bust("/t/#{tag}?i=i")
       end

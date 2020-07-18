@@ -61,6 +61,8 @@ export default class ListingForm extends Component {
       expireDate,
     } = this.state;
 
+    const TAG_FORMAT = '[0-9A-Za-z, ]+';
+
     const selectOrg =
       organizations && organizations.length > 0 ? (
         <div className="field">
@@ -100,6 +102,7 @@ export default class ListingForm extends Component {
             maxTags={8}
             autocomplete="off"
             listing
+            pattern={TAG_FORMAT}
           />
           <ExpireDate
             defaultValue={expireDate}
