@@ -259,8 +259,8 @@ RSpec.describe MarkdownParser, type: :labor do
     end
 
     it "wraps the image with Cloudinary" do
-      expect(generate_and_parse_markdown(markdown_with_img)).
-        to include("https://res.cloudinary.com")
+      expect(generate_and_parse_markdown(markdown_with_img))
+        .to include("https://res.cloudinary.com")
     end
   end
 

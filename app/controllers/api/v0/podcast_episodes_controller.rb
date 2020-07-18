@@ -15,10 +15,10 @@ module Api
           relation = PodcastEpisode.includes(:podcast).reachable
         end
 
-        @podcast_episodes = relation.
-          select(:id, :slug, :title, :podcast_id).
-          order(published_at: :desc).
-          page(page).per(num)
+        @podcast_episodes = relation
+          .select(:id, :slug, :title, :podcast_id)
+          .order(published_at: :desc)
+          .page(page).per(num)
 
         set_surrogate_key_header PodcastEpisode.table_key, @podcast_episodes.map(&:record_key)
       end

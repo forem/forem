@@ -19,6 +19,12 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
+    it "renders registration page if site config is private" do
+      SiteConfig.public = false
+      get "/"
+      expect(response.body).to include("Great to have you")
+    end
+
     it "renders proper description" do
       get "/"
       expect(response.body).to include(SiteConfig.community_description)
@@ -330,6 +336,12 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "shows tags to signed-in users" do
+        get "/t/#{tag.name}"
+        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+      end
+
+      it "renders properly even if site config is private" do
+        SiteConfig.public = false
         get "/t/#{tag.name}"
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
       end

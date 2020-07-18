@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   skip_before_action :track_ahoy_visit
+  before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
 
   include SessionCurrentUser
@@ -13,6 +14,17 @@ class ApplicationController < ActionController::Base
 
   rescue_from RateLimitChecker::LimitReached do |exc|
     error_too_many_requests(exc)
+  end
+
+  def verify_private_forem
+    return if %w[shell async_info ga_events].include?(controller_name)
+    return if user_signed_in? || SiteConfig.public
+
+    if api_action?
+      authenticate!
+    else
+      render template: "devise/registrations/new"
+    end
   end
 
   def not_found
@@ -106,5 +118,9 @@ class ApplicationController < ActionController::Base
 
   def anonymous_user
     User.new(ip_address: request.env["HTTP_FASTLY_CLIENT_IP"])
+  end
+
+  def api_action?
+    self.class.to_s.start_with?("Api::")
   end
 end

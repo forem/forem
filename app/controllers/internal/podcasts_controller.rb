@@ -6,10 +6,10 @@ module Internal
     before_action :find_user, only: %i[remove_admin add_admin]
 
     def index
-      @podcasts = Podcast.left_outer_joins(:podcast_episodes).
-        select("podcasts.*, count(podcast_episodes) as episodes_count").
-        group("podcasts.id").order("podcasts.created_at DESC").
-        page(params[:page]).per(50)
+      @podcasts = Podcast.left_outer_joins(:podcast_episodes)
+        .select("podcasts.*, count(podcast_episodes) as episodes_count")
+        .group("podcasts.id").order("podcasts.created_at DESC")
+        .page(params[:page]).per(50)
 
       return if params[:search].blank?
 
