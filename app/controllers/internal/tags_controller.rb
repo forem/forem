@@ -7,9 +7,10 @@ module Internal
     end
 
     def index
-      @tags = if params[:state] == "supported"
+      @tags = case params[:state]
+              when "supported"
                 Tag.where(supported: true).order("taggings_count DESC").page(params[:page]).per(50)
-              elsif params[:state] == "unsupported"
+              when "unsupported"
                 Tag.where(supported: false).order("taggings_count DESC").page(params[:page]).per(50)
               else
                 Tag.order("taggings_count DESC").page(params[:page]).per(50)

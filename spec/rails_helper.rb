@@ -140,27 +140,27 @@ RSpec.configure do |config|
 
     stub_request(:any, /emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/).to_rack("stubbed-emoji")
 
-    stub_request(:post, /api.fastly.com/).
-      to_return(status: 200, body: "".to_json, headers: {})
+    stub_request(:post, /api.fastly.com/)
+      .to_return(status: 200, body: "".to_json, headers: {})
 
-    stub_request(:post, /api.bufferapp.com/).
-      to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
+    stub_request(:post, /api.bufferapp.com/)
+      .to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
 
     # for twitter image cdn
-    stub_request(:get, /twimg.com/).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:get, /twimg.com/)
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /api.mailchimp.com/).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:any, /api.mailchimp.com/)
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /dummyimage.com/).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:any, /dummyimage.com/)
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:post, "http://www.google-analytics.com/collect").
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:post, "http://www.google-analytics.com/collect")
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /robohash.org/).
-      with(headers:
+    stub_request(:any, /robohash.org/)
+      .with(headers:
             {
               "Accept" => "*/*",
               "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",

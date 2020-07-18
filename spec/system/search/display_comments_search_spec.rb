@@ -9,7 +9,7 @@ RSpec.describe "Display articles search spec", type: :system, js: true, elastics
     url_encoded_query = CGI.escape(query)
     visit "/search?q=#{url_encoded_query}&filters=class_name:Comment"
 
-    expect(page.find(".crayons-story__snippet")["innerHTML"]).
-      to eq("…&lt;<mark>marquee</mark>='<mark>alert</mark>(<mark>document.cookie</mark>)'&gt;<mark>XSS</mark>…")
+    expect(page.find(".crayons-story__snippet")["innerHTML"])
+      .to eq("…&lt;<mark>marquee</mark>='<mark>alert</mark>(<mark>document.cookie</mark>)'&gt;<mark>XSS</mark>…")
   end
 end

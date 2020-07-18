@@ -28,21 +28,21 @@ class ArticleSuggester
 
   def other_suggestions(max: 4, ids_to_ignore: [])
     ids_to_ignore << article.id
-    Article.published.
-      where.not(id: ids_to_ignore).
-      where.not(user_id: article.user_id).
-      order("hotness_score DESC").
-      offset(rand(0..offset)).
-      first(max)
+    Article.published
+      .where.not(id: ids_to_ignore)
+      .where.not(user_id: article.user_id)
+      .order("hotness_score DESC")
+      .offset(rand(0..offset))
+      .first(max)
   end
 
   def suggestions_by_tag(max: 4)
-    Article.published.tagged_with(cached_tag_list_array, any: true).
-      where.not(user_id: article.user_id).
-      where("organic_page_views_past_month_count > 5").
-      order("hotness_score DESC").
-      offset(rand(0..offset)).
-      first(max)
+    Article.published.tagged_with(cached_tag_list_array, any: true)
+      .where.not(user_id: article.user_id)
+      .where("organic_page_views_past_month_count > 5")
+      .order("hotness_score DESC")
+      .offset(rand(0..offset))
+      .first(max)
   end
 
   def offset
