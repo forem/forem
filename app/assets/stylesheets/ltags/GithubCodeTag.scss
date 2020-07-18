@@ -2,13 +2,13 @@
 .ltag-github-code-tag {
   border: 1px solid $light-medium-gray;
   border-radius: 3px;
-  margin:1.1em auto 1.30em;
+  margin: 1.1em auto 1.3em;
 
   .code-snippet-info {
     padding: 0.8em;
     border-bottom: 1px solid $light-medium-gray;
 
-    img{
+    img {
       width: 1.15em !important;
       max-width: 1.1em !important;
       display: inline-block;
@@ -16,7 +16,7 @@
       margin-right: 0.3em;
       vertical-align: -0.18em;
       filter: invert(0);
-      filter: var(--theme-social-icon-invert, invert(0));  
+      filter: var(--theme-social-icon-invert, invert(0));
     }
   }
 
@@ -30,9 +30,11 @@
       margin-left: unset !important;
       margin-right: unset !important;
       padding: 1em !important;
+      flex-grow: 1;
     }
 
     .lineno {
+      flex-grow: 0;
       width: 10% !important;
       text-align: right;
     }
