@@ -172,4 +172,14 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.cloudinary(Faker::Placeholdit.image)).to start_with("https://res.cloudinary.com")
     end
   end
+
+  describe "#idn_domain_fix" do
+    it "returns an ASCII domain for Unicode input" do
+      expect(helper.idn_domain_fix("https://www.火.dev")).to eql("https://www.xn--vnx.dev")
+    end
+
+    it "preserves an ASCII domain as ASCII" do
+      expect(helper.idn_domain_fix("https://www.xn--vnx.dev")).to eql("https://www.xn--vnx.dev")
+    end
+  end
 end
