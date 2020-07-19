@@ -74,11 +74,11 @@ module Search
       end
 
       def range_keys
-        RANGE_KEYS.map do |range_key|
+        RANGE_KEYS.filter_map do |range_key|
           next unless @params.key? range_key
 
           { range: { range_key => @params[range_key] } }
-        end.compact
+        end
       end
 
       def range_keys_present?
