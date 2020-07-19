@@ -798,7 +798,7 @@ GEM
       stripe (> 5, < 6)
     strong_migrations (0.6.8)
       activerecord (>= 5)
-    test-prof (0.11.3)
+    test-prof (0.12.0)
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -1017,7 +1017,7 @@ DEPENDENCIES
   stripe (~> 5.22)
   stripe-ruby-mock (~> 3.0)
   strong_migrations (~> 0.6)
-  test-prof (~> 0.11)
+  test-prof (~> 0.12)
   timber (~> 3.0)
   timber-rails!
   timecop (~> 0.9)
