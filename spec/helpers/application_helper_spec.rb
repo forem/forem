@@ -178,7 +178,7 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.idn_domain_fix("https://www.火.dev")).to eql("https://www.xn--vnx.dev")
     end
 
-    it "preserves an ASCII domain as ASCII" do
+    it "keeps an ASCII domain as ASCII" do
       expect(helper.idn_domain_fix("https://www.xn--vnx.dev")).to eql("https://www.xn--vnx.dev")
     end
   end
