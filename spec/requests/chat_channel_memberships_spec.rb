@@ -16,7 +16,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         user.add_role(:super_admin)
 
         membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
-        get "/chat_channel_memberships/chat_channel_info/#{membership.id}"
+        get "/chat_channel_memberships/chat_channel_info/#{membership.id}", as: :json
       end
 
       it "return all details of chat channel" do
@@ -31,7 +31,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         chat_channel.add_users([second_user])
 
         membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: second_user.id)
-        get "/chat_channel_memberships/chat_channel_info/#{membership.id}"
+        get "/chat_channel_memberships/chat_channel_info/#{membership.id}", as: :json
       end
 
       it "return only channel info and current membership" do
@@ -76,6 +76,62 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
       it "user not authorized" do
         expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe "PATCH /update_membership_role" do
+    before do
+      user.add_role(:super_admin)
+      chat_channel.add_users([second_user])
+    end
+
+    context "when user role is member" do
+      it "update the membership role to mod" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: second_user.id)
+
+        patch "/chat_channel_memberships/update_membership_role/#{chat_channel.id}", params: {
+          chat_channel_membership: {
+            membership_id: membership.id,
+            role: "mod"
+          }
+        }
+        expect(response.status).to eq(200)
+        expect(membership.reload.role).to eq("mod")
+      end
+    end
+
+    context "when user is mod" do
+      it "update the membership role to member" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
+
+        patch "/chat_channel_memberships/update_membership_role/#{chat_channel.id}", params: {
+          chat_channel_membership: {
+            membership_id: membership.id,
+            role: "member"
+          }
+        }
+
+        expect(response.status).to eq(200)
+        expect(membership.reload.role).to eq("member")
+      end
+    end
+
+    context "when there is no channel id" do
+      it "channel not found" do
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: second_user.id)
+
+        patch "/chat_channel_memberships/update_membership_role/", params: {
+          chat_channel_membership: {
+            membership_id: membership.id,
+            role: "member"
+          }
+        }
+
+        expect(response.status).to eq(404)
+        expect(membership.reload.role).to eq("member")
       end
     end
   end

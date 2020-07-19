@@ -25,15 +25,12 @@ class ChatChannelMembershipsController < ApplicationController
     @membership = ChatChannelMembership.find(params[:id])
     authorize @membership
     @channel = @membership.chat_channel
-    data = ChatChannelDetailPresenter.new(@channel, @membership).as_json
-
-    render json: { success: true, result: data, message: "" }, success: :ok
   end
 
   def create_membership_request
-    chat_channel = ChatChannel.find_by(id: channel_membership_request_params[:chat_channel_id])
+    chat_channel = ChatChannel.find_by(id: channel_membership_params[:chat_channel_id])
     authorize chat_channel, :update?
-    usernames = channel_membership_request_params[:invitation_usernames].split(",").map do |username|
+    usernames = channel_membership_params[:invitation_usernames].split(",").map do |username|
       username.strip.delete("@")
     end
     users = User.where(username: usernames)
@@ -45,6 +42,33 @@ class ChatChannelMembershipsController < ApplicationController
               end
 
     render json: { success: true, message: message, data: {} }, status: :ok
+  end
+
+  def update_membership_role
+    @chat_channel = ChatChannel.find_by(id: params[:id])
+    authorize @chat_channel, :update?
+    membership = ChatChannelMembership.find_by(
+      id: channel_membership_params[:membership_id],
+      chat_channel_id: @chat_channel.id,
+    )
+
+    membership.update(role: channel_membership_params[:role])
+    if membership.errors.any?
+      render json: {
+        success: false,
+        message: "Failed to update membership",
+        errors: chat_channel_membership.errors.full_messages
+      }, status: :bad_request
+    else
+      role = membership.reload.role
+      send_chat_action_message(
+        "@#{membership.user.username} role is updated as #{role}",
+        current_user, @chat_channel.id,
+        "updated"
+      )
+
+      render json: { success: true, message: "User Membership is updated" }, status: :ok
+    end
   end
 
   def join_channel
@@ -137,8 +161,8 @@ class ChatChannelMembershipsController < ApplicationController
     params.require(:chat_channel_membership).permit(:user_action, :show_global_badge_notification)
   end
 
-  def channel_membership_request_params
-    params.require(:chat_channel_membership).permit(:chat_channel_id, :invitation_usernames)
+  def channel_membership_params
+    params.require(:chat_channel_membership).permit(:chat_channel_id, :invitation_usernames, :membership_id, :role)
   end
 
   def respond_to_invitation(previous_status)
@@ -176,9 +200,8 @@ class ChatChannelMembershipsController < ApplicationController
       notice = "Invitation rejected."
     end
 
+    membership_user = helpers.format_membership(@chat_channel_membership)
     flash[:settings_notice] = notice
-
-    membership_user = MembershipUserPresenter.new(@chat_channel_membership).as_json
 
     respond_to do |format|
       format.html { redirect_to chat_channel_memberships_path }

@@ -1,15 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import Membership from '../ChatChannelSettings/MembershipManager/Membership';
-
-const membershipData = {
-  name: 'dummy Name',
-  user_id: 1,
-  chat_channel_id: 2,
-  membership_id: 1,
-  username: 'dummyuser',
-};
+import ManageActiveMembership from '../ChatChannelSettings/MembershipManager/ManageActiveMembership';
 
 const currentModMembership = {
   name: 'dummy user',
@@ -20,12 +12,13 @@ const currentModMembership = {
   role: 'mod',
 };
 
-describe('<Membership />', () => {
+describe('<ManageActiveMembership />', () => {
   it('should have no a11y violations', async () => {
     const { container } = render(
-      <Membership
+      <ManageActiveMembership
+        invitationLink={'https://dummy-invitation.link'}
         currentMembership={currentModMembership}
-        membership={membershipData}
+        activeMemberships={[]}
       />,
     );
     const results = await axe(container);
@@ -34,13 +27,15 @@ describe('<Membership />', () => {
   });
 
   it('should render', () => {
-    const { queryByText } = render(
-      <Membership
+    const { queryByText, queryByPlaceholderText } = render(
+      <ManageActiveMembership
+        invitationLink={'https://dummy-invitation.link'}
         currentMembership={currentModMembership}
-        membership={membershipData}
+        activeMemberships={[]}
       />,
     );
 
-    expect(queryByText('dummy user')).toBeDefined();
+    expect(queryByText('Chat Channel Membership manager')).toBeDefined();
+    expect(queryByPlaceholderText('Search Member...')).toBeDefined();
   });
 });
