@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_17_220654) do
+ActiveRecord::Schema.define(version: 2020_07_19_205123) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -633,7 +633,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_220654) do
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
   end
 
-  create_table "mentions", id: :serial, force: :cascade do |t|
+  create_table "mentions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "mentionable_id"
     t.string "mentionable_type"
@@ -655,7 +655,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_220654) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
-  create_table "notes", id: :serial, force: :cascade do |t|
+  create_table "notes", force: :cascade do |t|
     t.integer "author_id"
     t.text "content"
     t.datetime "created_at", null: false
