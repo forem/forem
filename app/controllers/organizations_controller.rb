@@ -52,16 +52,15 @@ class OrganizationsController < ApplicationController
   def destroy
     organization = Organization.find_by(id: params[:id])
     authorize organization
-    if destroyable_organization?(organization)
-      organization.destroy
-      current_user.touch(:organization_info_updated_at)
-      CacheBuster.bust_user(current_user)
-      flash[:settings_notice] = "Your organization: \"#{organization.name}\" was successfully deleted."
-    else
-      flash[:settings_notice] = "Your organization was not deleted; it must have only one member and no articles."
-    end
-
+    organization.destroy
+    current_user.touch(:organization_info_updated_at)
+    CacheBuster.bust_user(current_user)
+    flash[:settings_notice] = "Your organization: \"#{organization.name}\" was successfully deleted."
     redirect_to user_settings_path(:organization)
+  rescue Pundit::NotAuthorizedError
+    flash[:error] = "Your organization was not deleted; you must be an admin, the only member in the organization,
+      and have no articles connected to the organization."
+    redirect_to user_settings_path(:organization, id: organization.id)
   end
 
   def generate_new_secret
@@ -110,10 +109,6 @@ class OrganizationsController < ApplicationController
           value
         end
       end
-  end
-
-  def destroyable_organization?(organization)
-    organization.organization_memberships.count == 1 && organization.articles.count.zero?
   end
 
   def set_organization

@@ -181,13 +181,27 @@ RSpec.describe "UserOrganization", type: :request do
     it "does not delete the organization if the user is only an org member" do
       org_id = org_member.organizations.first.id
       sign_in org_member
-      expect { delete "/organizations/#{org_id}" }.to raise_error Pundit::NotAuthorizedError
+      expect(Organization.find(org_id).persisted?).to eq true
     end
 
     it "does not delete the organization if the user is not a part of the org" do
       org = create(:organization)
       sign_in user
-      expect { delete "/organizations/#{org.id}" }.to raise_error Pundit::NotAuthorizedError
+      expect(org.persisted?).to eq true
+    end
+
+    it "does not delete the organization if the organization has an article associated to it" do
+      org_id = org_admin.organizations.first.id
+      create(:article, user: org_admin, organization_id: org_id)
+      sign_in org_admin
+      expect(Organization.find(org_id).persisted?).to eq true
+    end
+
+    it "does not delete the organization if the organization has more than one member" do
+      org_id = org_admin.organizations.first.id
+      create(:organization_membership, user: user, organization_id: org_id, type_of_user: "member")
+      sign_in org_admin
+      expect(Organization.find(org_id).persisted?).to eq true
     end
   end
 end
