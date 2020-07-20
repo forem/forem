@@ -34,15 +34,15 @@ class Sponsorship < ApplicationRecord
   private
 
   def validate_tag_uniqueness
-    return unless self.class.where(sponsorable: sponsorable, level: :tag).
-      where("expires_at > ? AND id != ?", Time.current, id.to_i).exists?
+    return unless self.class.where(sponsorable: sponsorable, level: :tag)
+      .where("expires_at > ? AND id != ?", Time.current, id.to_i).exists?
 
     errors.add(:level, "The tag is already sponsored")
   end
 
   def validate_level_uniqueness
-    return unless self.class.where(organization: organization).
-      where("level IN (?) AND expires_at > ? AND id != ?", METAL_LEVELS, Time.current, id.to_i).exists?
+    return unless self.class.where(organization: organization)
+      .where("level IN (?) AND expires_at > ? AND id != ?", METAL_LEVELS, Time.current, id.to_i).exists?
 
     errors.add(:level, "You can have only one sponsorship of #{METAL_LEVELS.join(', ')}")
   end

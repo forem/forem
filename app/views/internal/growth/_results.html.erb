@@ -1,4 +1,4 @@
-<h3 class="m-4">Past <%= num_days %> day new users (<%= User.where("created_at > ?", num_days.day.ago).count %>)</h3>
+<h3 class="m-4">Past <%= num_days %> day new users (<%= User.where("registered_at > ?", num_days.day.ago).count %>)</h3>
 <div class="row">
   <div class="col">
     <div class="card">
@@ -7,13 +7,13 @@
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">
-          Average comments: <%= User.where("created_at > ?", num_days.day.ago).average(:comments_count) %>
+          Average comments: <%= User.where("registered_at > ?", num_days.day.ago).average(:comments_count) %>
         </li>
         <li class="list-group-item">
-          Average articles: <%= User.where("created_at > ?", num_days.day.ago).average(:articles_count) %>
+          Average articles: <%= User.where("registered_at > ?", num_days.day.ago).average(:articles_count) %>
         </li>
         <li class="list-group-item">
-          Average reactions: <%= User.where("created_at > ?", num_days.day.ago).average(:reactions_count) %>
+          Average reactions: <%= User.where("registered_at > ?", num_days.day.ago).average(:reactions_count) %>
         </li>
       </ul>
     </div>

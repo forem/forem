@@ -70,4 +70,14 @@ class ArticleDecorator < ApplicationDecorator
 
     modified_description + " Tagged with #{cached_tag_list}."
   end
+
+  def video_metadata
+    {
+      id: id,
+      video_code: video_code,
+      video_source_url: video_source_url,
+      video_thumbnail_url: cloudinary_video_url,
+      video_closed_caption_track_url: video_closed_caption_track_url
+    }
+  end
 end

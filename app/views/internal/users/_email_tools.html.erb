@@ -24,7 +24,7 @@
   <div class="col-12">
     <h3>Recent Emails</h3>
     <div class="list-group-flush">
-      <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
+      <% @user.email_messages.order(sent_at: :desc).limit(50).each do |email| %>
         <a href="/admin/email_messages/<%= email.id %>" class="list-group-item list-group-item-action">
           <%= email.subject %>
           <em> - <%= email.sent_at&.strftime("%b %e '%y") %></em>

@@ -152,7 +152,7 @@
 
               <span class="fs-s mb-4 s:mb-0">
                 <% if @article.published_timestamp.present? %>
-                  <time datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
+                  <%= local_date(@article.published_timestamp, show_year: false) %>
                 <% end %>
                 <% if @second_user.present? %>
                   <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
@@ -243,7 +243,7 @@
 
 <div class="mod-actions-menu"></div>
 <div id="mod-actions-menu-btn-area"></div>
-<div class="flag-user-modal-container hidden"></div>
+<div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>

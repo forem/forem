@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_10_174257) do
+ActiveRecord::Schema.define(version: 2020_07_19_205123) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -273,28 +273,7 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
   end
 
-  create_table "blocks", id: :serial, force: :cascade do |t|
-    t.text "body_html"
-    t.text "body_markdown"
-    t.datetime "created_at", null: false
-    t.boolean "featured"
-    t.integer "featured_number"
-    t.integer "index_position"
-    t.text "input_css"
-    t.text "input_html"
-    t.text "input_javascript"
-    t.text "processed_css"
-    t.text "processed_html"
-    t.text "processed_javascript"
-    t.text "published_css"
-    t.text "published_html"
-    t.text "published_javascript"
-    t.string "title"
-    t.datetime "updated_at", null: false
-    t.integer "user_id"
-  end
-
-  create_table "broadcasts", id: :serial, force: :cascade do |t|
+  create_table "broadcasts", force: :cascade do |t|
     t.boolean "active", default: false
     t.datetime "active_status_updated_at"
     t.string "banner_style"
@@ -492,6 +471,7 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
+    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -579,7 +559,7 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end
 
-  create_table "github_issues", id: :serial, force: :cascade do |t|
+  create_table "github_issues", force: :cascade do |t|
     t.string "category"
     t.datetime "created_at", null: false
     t.string "issue_serialized", default: "--- {}\n"
@@ -653,7 +633,7 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
   end
 
-  create_table "mentions", id: :serial, force: :cascade do |t|
+  create_table "mentions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "mentionable_id"
     t.string "mentionable_type"
@@ -675,7 +655,7 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
-  create_table "notes", id: :serial, force: :cascade do |t|
+  create_table "notes", force: :cascade do |t|
     t.integer "author_id"
     t.text "content"
     t.datetime "created_at", null: false
@@ -841,19 +821,6 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
-  end
-
-  create_table "path_redirects", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "new_path", null: false
-    t.string "old_path", null: false
-    t.string "source"
-    t.datetime "updated_at", null: false
-    t.integer "version", default: 0, null: false
-    t.index ["new_path"], name: "index_path_redirects_on_new_path"
-    t.index ["old_path"], name: "index_path_redirects_on_old_path", unique: true
-    t.index ["source"], name: "index_path_redirects_on_source"
-    t.index ["version"], name: "index_path_redirects_on_version"
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
@@ -1244,6 +1211,14 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.string "inbox_guidelines"
     t.string "inbox_type", default: "private"
     t.string "instagram_url"
+    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_created_at"
+    t.integer "invitation_limit"
+    t.datetime "invitation_sent_at"
+    t.string "invitation_token"
+    t.integer "invitations_count", default: 0
+    t.bigint "invited_by_id"
+    t.string "invited_by_type"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
@@ -1274,6 +1249,8 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
+    t.boolean "registered", default: true
+    t.datetime "registered_at"
     t.datetime "remember_created_at"
     t.string "remember_token"
     t.float "reputation_modifier", default: 1.0
@@ -1308,6 +1285,10 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
+    t.index ["invitations_count"], name: "index_users_on_invitations_count"
+    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
+    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

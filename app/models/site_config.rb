@@ -1,9 +1,6 @@
 # Site configuration based on RailsSettings models,
 # see <https://github.com/huacnlee/rails-settings-cached> for further info
 
-# Defaults are currently very DEV-oriented.
-# Should change to more truly generic values in future.
-
 class SiteConfig < RailsSettings::Base
   self.table_name = "site_configs"
 
@@ -135,6 +132,9 @@ class SiteConfig < RailsSettings::Base
   # These are the default UX settings, which can be overridded by individual user preferences.
   # basic (current default), rich (cover image on all posts), compact (more minimal)
   field :feed_style, type: :string, default: "basic"
+  # a non-public forem will redirect all unauthenticated pages to the registration page.
+  # a public forem could have more fine-grained authentication (listings ar private etc.) in future
+  field :public, type: :boolean, default: 1
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date

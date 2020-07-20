@@ -1,0 +1,31 @@
+<% title "Set your Password to Join" %>
+<div class="crayons-layout crayons-layout--limited mb-10" style="max-width:640px">
+  <div class="crayons-notice mt-4">
+    <h1>Welcome to <%= community_name %></h1>
+    <h3><%= SiteConfig.tagline %></h3>
+  </div>
+  <div class="mt-3 crayons-card p-7 align-left">
+    <h2>Set a password to access your account</h2>
+
+    <%= form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :put }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+      <%= f.hidden_field :invitation_token, readonly: true %>
+
+      <% if f.object.class.require_password_on_accepting %>
+        <div class="crayons-field mt-5">
+          <%= f.label :password, class: "crayons-field__label" %>
+          <%= f.password_field :password, class: "crayons-textfield" %>
+        </div>
+
+        <div class="crayons-field">
+          <%= f.label :password_confirmation, class: "crayons-field__label" %>
+          <%= f.password_field :password_confirmation, class: "crayons-textfield" %>
+        </div>
+      <% end %>
+
+      <div class="mt-6">
+        <%= f.submit t("devise.invitations.edit.submit_button"), class: "crayons-btn" %>
+      </div>
+    <% end %>
+  </div>
+</div>
