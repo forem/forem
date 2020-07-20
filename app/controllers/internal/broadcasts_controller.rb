@@ -1,7 +1,6 @@
 module Internal
   class BroadcastsController < Internal::ApplicationController
     layout "internal"
-    before_action :find_broadcastable, only: %i[create update]
 
     def index
       @broadcasts = if params[:broadcastable_type]
@@ -24,30 +23,16 @@ module Internal
     end
 
     def create
-      # broadcast = Broadcast.new(broadcast_params)
+      @broadcast = Broadcast.new(broadcast_params)
+      broadcastable_type = broadcast_params[:broadcastable_type]
 
-      # broadcastable = case params[:broadcastable_type]
-      #                 when "WelcomeNotification"
-      #                   WelcomeNotification.create
-      #                 when "Announcement"
-      #                   Announcement.create
-      #                 end
+      unless Broadcast::ALLOWED_TYPES.include?(broadcastable_type)
+        flash[:danger] = "Invalid broadcast type. Broadcast type must be #{Broadcast::ALLOWED_TYPES.join(', ')}."
+        render :edit
+        return
+      end
 
-      # @broadcast = Broadcast.create(
-      #   title: broadcast.title,
-      #   processed_html: broadcast.processed_html,
-      #   active: broadcast.active,
-      #   banner_style: broadcast.banner_style,
-      #   broadcastable: broadcastable,
-      # )
-      # @broadcast = @broadcastable.broadcasts.new(broadcast_params[:broadcasts])
-      # @broadcast = broadcastable.broadcast.new(broadcast_params)
-      # @broadcast = Broadcast.create(
-      #   broadcast_params,
-      #   broadcastable,
-      # )
-      # @broadcast = broadcast_params[:broadcastable_type].constantize.create
-      @broadcast = @broadcastable.new(broadcast_params)
+      @broadcast.broadcastable = create_broadcastable(broadcastable_type)
 
       if @broadcast.save
         flash[:success] = "Broadcast has been created!"
@@ -59,19 +44,22 @@ module Internal
     end
 
     def update
-      # @broadcast = Broadcast.find(params[:id])
-      # @broadcast = Broadcast.find_by(broadcast_params[:broadcastable_id][:broadcastable_type])
-      # @broadcast = @broadcastable.broadcast
+      @broadcast = Broadcast.find(params[:id])
+      broadcastable = @broadcast.broadcastable
 
-      # broadcastable_type = case params[:broadcastable_type]
-      #                      when "WelcomeNotification"
-      #                        WelcomeNotification.find(params[:id])
-      #                      when "Announcement"
-      #                        Announcement.find(params[:id])
-      #                      end
+      broadcastable_type = broadcast_params[:broadcastable_type]
 
-      # @broadcast = Broadcast.find(params[broadcastable])
-      @broadcast = broadcastable_type.constantize.find_by(id: broadcastable_id)
+      unless Broadcast::ALLOWED_TYPES.include?(broadcastable_type)
+        flash[:danger] = "Invalid broadcast type. Broadcast type must be #{Broadcast::ALLOWED_TYPES.join(', ')}."
+        render :edit
+        return
+      end
+
+      if broadcastable.class.name == broadcastable_type
+        broadcastable.update(banner_style: broadcast_params[:banner_style]) if broadcastable_type == "Announcement"
+      else
+        @broadcast.update(broadcastable: create_broadcastable(broadcastable_type))
+      end
 
       if @broadcast.update(broadcast_params)
         flash[:success] = "Broadcast has been updated!"
@@ -96,32 +84,12 @@ module Internal
 
     private
 
-    def find_broadcastable
-      broadcastable_type = case params[:broadcastable_type]
-                           when "WelcomeNotification"
-                             # WelcomeNotification.create
-                             broadcast_params[:broadcastable_type].constantize.create
-                           #  byebug
-                           when "Announcement"
-                             # Announcement.create
-                             broadcast_params[:broadcastable_type].constantize.create
-                           end
-
-      # klass = broadcast_params[:broadcastable_type].constantize.create
-      # byebug
-      # @broadcastable = broadcastable_type.find(broadcastable_type.id)
-      # @broadcastable = broadcastable_type.find(broadcast_params[:id])
-      @broadcastable = broadcastable_type.where(id: broadcastable_type.id)
+    def create_broadcastable(broadcastable_type)
+      broadcastable = broadcastable_type.constantize.new
+      broadcastable.banner_style = broadcast_params[:banner_style] if broadcastable_type == "Announcement"
+      broadcastable.save!
+      broadcastable
     end
-
-    # def set_broadcastable
-    #   @broadcastable = case params[:broadcastable_type]
-    #                    when "WelcomeNotification"
-    #                     WelcomeNotification.find(params[:welcome_notification_id])
-    #                    when "Announcement"
-    #                     Announcement.find(params[:announcement_id])
-    #                    end
-    # end
 
     def broadcast_params
       params.permit(:title, :processed_html, :broadcastable_type, :broadcastable_id, :banner_style, :active)
