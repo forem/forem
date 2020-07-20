@@ -2,6 +2,11 @@ class MarkdownParser
   include ApplicationHelper
   include CloudinaryHelper
 
+  BAD_XSS_REGEX = [
+    /src=[\"'](data|&)/i,
+    %r{data:text/html[,;][\sa-z0-9]*}i,
+  ].freeze
+
   WORDS_READ_PER_MINUTE = 275.0
 
   def initialize(content)
@@ -138,13 +143,9 @@ class MarkdownParser
   end
 
   def catch_xss_attempts(markdown)
-    bad_xss_regex = [
-      Regexp.new("src=[\"'](data|&)", Regexp::IGNORECASE),
-      Regexp.new("data:text/html[,;][\sa-z0-9]*", Regexp::IGNORECASE),
-    ]
-    bad_xss_regex.each do |xss_attempt|
-      raise ArgumentError, "Invalid markdown detected" if xss_attempt.match(markdown)
-    end
+    return unless markdown.match?(Regexp.union(BAD_XSS_REGEX))
+
+    raise ArgumentError, "Invalid markdown detected"
   end
 
   def allowed_image_host?(src)
