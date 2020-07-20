@@ -102,9 +102,9 @@ class PodcastEpisode < ApplicationRecord
   def process_html_and_prefix_all_images
     return if body.blank?
 
-    self.processed_html = body.
-      gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<p>&nbsp;</p>\r\n", "").
-      gsub("\r\n<h3>&nbsp;</h3>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "")
+    self.processed_html = body
+      .gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<p>&nbsp;</p>\r\n", "")
+      .gsub("\r\n<h3>&nbsp;</h3>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "")
 
     self.processed_html = "<p>#{processed_html}</p>" unless processed_html.include?("<p>")
 
@@ -112,21 +112,21 @@ class PodcastEpisode < ApplicationRecord
     doc.css("img").each do |img|
       img_src = img.attr("src")
 
-      if img_src
-        quality = "auto"
-        quality = 66 if img_src.include?(".gif")
+      next unless img_src
 
-        cloudinary_img_src = ActionController::Base.helpers.
-          cl_image_path(img_src,
-                        type: "fetch",
-                        width: 725,
-                        crop: "limit",
-                        quality: quality,
-                        flags: "progressive",
-                        fetch_format: "auto",
-                        sign_url: true)
-        self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
-      end
+      quality = "auto"
+      quality = 66 if img_src.include?(".gif")
+
+      cloudinary_img_src = ActionController::Base.helpers
+        .cl_image_path(img_src,
+                       type: "fetch",
+                       width: 725,
+                       crop: "limit",
+                       quality: quality,
+                       flags: "progressive",
+                       fetch_format: "auto",
+                       sign_url: true)
+      self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
     end
   end
 end

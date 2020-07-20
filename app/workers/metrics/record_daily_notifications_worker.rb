@@ -19,9 +19,9 @@ module Metrics
     def perform
       # Welcome Notification click events created in the past day, logged by title.
       EVENT_TITLES.each do |title|
-        event = Ahoy::Event.where(name: "Clicked Welcome Notification").
-          where("time > ?", 1.day.ago).
-          where("properties->>'title' = ?", title)
+        event = Ahoy::Event.where(name: "Clicked Welcome Notification")
+          .where("time > ?", 1.day.ago)
+          .where("properties->>'title' = ?", title)
 
         DatadogStatsClient.count(
           "ahoy_events",

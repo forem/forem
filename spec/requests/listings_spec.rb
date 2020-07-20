@@ -169,8 +169,8 @@ RSpec.describe "/listings", type: :request do
       it "does not subtract credits or create a listing if the listing is not valid" do
         expect do
           post "/listings", params: invalid_params
-        end.to change(Listing, :count).by(0).
-          and change(user.credits.spent, :size).by(0)
+        end.to change(Listing, :count).by(0)
+          .and change(user.credits.spent, :size).by(0)
       end
     end
 
@@ -248,16 +248,16 @@ RSpec.describe "/listings", type: :request do
         allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post "/listings", params: draft_params
-        end.to change(Listing, :count).by(1).
-          and change(user.credits.spent, :size).by(0)
+        end.to change(Listing, :count).by(1)
+          .and change(user.credits.spent, :size).by(0)
       end
 
       it "does not create a listing or subtract credits if the purchase does not go through" do
         allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post "/listings", params: listing_params
-        end.to change(Listing, :count).by(0).
-          and change(user.credits.spent, :size).by(0)
+        end.to change(Listing, :count).by(0)
+          .and change(user.credits.spent, :size).by(0)
       end
     end
 

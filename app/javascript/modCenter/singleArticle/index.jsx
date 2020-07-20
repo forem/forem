@@ -1,15 +1,17 @@
+
 import PropTypes from 'prop-types';
 import { h, Component } from 'preact';
+import { createPortal } from 'preact/compat';
+import { toggleFlagUserModal, FlagUserModal } from '../../packs/flagUserModal';
 import { formatDate } from './util';
 
 export default class SingleArticle extends Component {
-  constructor(props) {
-    super(props);
+  activateToggle = (e) => {
+    e.preventDefault();
+    const { id, path, toggleArticle } = this.props;
 
-    this.state = {
-      articleOpened: false,
-    };
-  }
+    toggleArticle(id, path);
+  };
 
   tagsFormat = (tag, key) => {
     if (tag) {
@@ -22,69 +24,73 @@ export default class SingleArticle extends Component {
     }
   };
 
-  toggleArticle = (e) => {
-    e.preventDefault();
-
-    const { id, path } = this.props;
-    const { articleOpened } = this.state;
-    if (articleOpened) {
-      this.setState({ articleOpened: false });
-      document.getElementById(`article-iframe-${id}`).innerHTML = '';
-    } else {
-      this.setState({ articleOpened: true });
-      document.getElementById(
-        `article-iframe-${id}`,
-      ).innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe class="actions-panel-iframe" src="${path}/actions_panel"></iframe>`;
-    }
-  };
-
   render() {
-    const { articleOpened } = this.state;
     const {
-      path,
       id,
       title,
       publishedAt,
       cachedTagList,
       user,
       key,
+      articleOpened,
+      path,
     } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
       this.tagsFormat(tag, key);
     });
 
     const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
+    const modContainer = id
+      ? document.getElementById(`mod-iframe-${id}`)
+      : document.getElementById('mod-container');
+
+    // Check whether context is ModCenter or Friday-Night-Mode
+    if (modContainer) {
+      modContainer.addEventListener('load', () => {
+        modContainer.contentWindow.document
+          .getElementById('open-flag-user-modal')
+          .addEventListener('click', toggleFlagUserModal);
+      });
+    }
 
     return (
-      <button
-        type="button"
-        className="moderation-single-article"
-        onClick={this.toggleArticle}
-      >
-        <span className="article-title">
-          <header>
-            <h3 className="fs-base fw-bold lh-tight">
-              <a className="article-title-link" href={path}>
-                {title}
-              </a>
-            </h3>
-          </header>
-          {tags}
-        </span>
-        <span className="article-author fs-s lw-medium lh-tight">
-          {newAuthorNotification}
-          {user.name}
-        </span>
-        <span className="article-published-at fs-s fw-bold lh-tight">
-          <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
-        </span>
-        <div
-          className={`article-iframes-container ${
-            articleOpened ? 'opened' : ''
-          }`}
-          id={`article-iframe-${id}`}
-        />
-      </button>
+      <>
+        {modContainer &&
+          createPortal(
+            <FlagUserModal moderationUrl={path} authorId={user.id} />,
+            document.querySelector('.flag-user-modal-container'),
+          )}
+        <button
+          data-testid={`mod-article-${id}`}
+          type="button"
+          className="moderation-single-article"
+          onClick={this.activateToggle}
+        >
+          <span className="article-title">
+            <header>
+              <h3 className="fs-base fw-bold lh-tight">
+                <a className="article-title-link" href={path}>
+                  {title}
+                </a>
+              </h3>
+            </header>
+            {tags}
+          </span>
+          <span className="article-author fs-s lw-medium lh-tight">
+            {newAuthorNotification}
+            {user.name}
+          </span>
+          <span className="article-published-at fs-s fw-bold lh-tight">
+            <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
+          </span>
+          <div
+            className={`article-iframes-container ${
+              articleOpened ? 'opened' : ''
+            }`}
+            id={`article-iframe-${id}`}
+          />
+        </button>
+      </>
     );
   }
 }
