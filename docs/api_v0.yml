@@ -852,6 +852,7 @@ components:
           nullable: true          
         github_username:
           type: string
+          nullable: true
         website_url:
           type: string
           format: url
@@ -932,6 +933,7 @@ components:
           nullable: true
         github_username:
           type: string
+          nullable: true
         website_url:
           type: string
           format: url
