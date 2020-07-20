@@ -856,6 +856,7 @@ components:
         website_url:
           type: string
           format: url
+          nullable: true          
         profile_image:
           description: Profile image (640x640)
           type: string
@@ -937,6 +938,7 @@ components:
         website_url:
           type: string
           format: url
+          nullable: true          
         location:
           type: string
         joined_at:
