@@ -12,22 +12,10 @@
   <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
     <% if @collections.present? %>
       <% @collections.each do |collection| %>
-        <% size_string = "#{collection.articles.size} Part Series" %>
-
         <div class="crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative">
           <h3 class="mb-2">
-            <a href="<%= collection.path %>" class="crayons-link">
-              <% if collection.slug.present? %>
-                <%= collection.slug %>
-              <% else %>
-                <%= size_string %>
-              <% end %>
-            </a>
+            <%= collection_link(collection, class: "crayons-link") %>
           </h3>
-
-          <% if collection.slug.present? %>
-            <p class="mb-2 color-base-70 truncate-at-3"><%= size_string %></p>
-          <% end %>
         </div>
       <% end %>
     <% else %>

@@ -2,17 +2,8 @@
 <% slugs = articles.pluck(:slug) %>
 
 <% if collection && collection_size > 1 %>
-  <% size_string = "#{collection_size} Part Series" %>
   <div class="article-collection-wrapper article-collection-wrapper-<%= position %>">
-    <p>
-      <a href="<%= collection.path %>">
-        <% if collection.slug.present? %>
-          <%= collection.slug %> (<%= size_string %>)
-        <% else %>
-          <%= size_string %>
-        <% end %>
-      </a>
-    </p>
+    <p><%= collection_link(collection) %></p>
 
     <div class="article-collection">
       <% articles.each_with_index do |article, i| %>
