@@ -76,12 +76,8 @@ module ApplicationHelper
     "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
-  def idn_domain_fix(url)
-    SimpleIDN.to_ascii(url)
-  end
-
   def cloudinary(url, width = "500", quality = 80, format = "auto")
-    cl_image_path(idn_domain_fix(url) || asset_path("#{rand(1..40)}.png"),
+    cl_image_path(SimpleIDN.to_ascii(url) || asset_path("#{rand(1..40)}.png"),
                   type: "fetch",
                   width: width,
                   crop: "limit",
