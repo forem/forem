@@ -76,12 +76,12 @@ module CacheBuster
       bust("/videos?i=i")
     end
     TIMEFRAMES.each do |timestamp, interval|
-      if Article.published.where("published_at > ?", timestamp)
-          .order(public_reactions_count: :desc).limit(3).pluck(:id).include?(article.id)
-        bust("/top/#{interval}")
-        bust("/top/#{interval}?i=i")
-        bust("/top/#{interval}/?i=i")
-      end
+      next unless Article.published.where("published_at > ?", timestamp)
+        .order(public_reactions_count: :desc).limit(3).pluck(:id).include?(article.id)
+
+      bust("/top/#{interval}")
+      bust("/top/#{interval}?i=i")
+      bust("/top/#{interval}/?i=i")
     end
     if article.published && article.published_at > 1.hour.ago
       bust("/latest")
@@ -99,22 +99,23 @@ module CacheBuster
         bust("/t/#{tag}/latest?i=i")
       end
       TIMEFRAMES.each do |timestamp, interval|
-        if Article.published.where("published_at > ?", timestamp).tagged_with(tag)
-            .order(public_reactions_count: :desc).limit(3).pluck(:id).include?(article.id)
-          bust("/top/#{interval}")
-          bust("/top/#{interval}?i=i")
-          bust("/top/#{interval}/?i=i")
-          12.times do |i|
-            bust("/api/articles?tag=#{tag}&top=#{i}")
-          end
+        next unless Article.published.where("published_at > ?", timestamp).tagged_with(tag)
+          .order(public_reactions_count: :desc).limit(3).pluck(:id).include?(article.id)
+
+        bust("/top/#{interval}")
+        bust("/top/#{interval}?i=i")
+        bust("/top/#{interval}/?i=i")
+        12.times do |i|
+          bust("/api/articles?tag=#{tag}&top=#{i}")
         end
       end
-      if rand(2) == 1 &&
-          Article.published.tagged_with(tag)
-              .order(hotness_score: :desc).limit(2).pluck(:id).include?(article.id)
-        bust("/t/#{tag}")
-        bust("/t/#{tag}?i=i")
-      end
+
+      next unless rand(2) == 1 &&
+        Article.published.tagged_with(tag)
+          .order(hotness_score: :desc).limit(2).pluck(:id).include?(article.id)
+
+      bust("/t/#{tag}")
+      bust("/t/#{tag}?i=i")
     end
   end
 
