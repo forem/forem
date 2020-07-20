@@ -111,7 +111,7 @@
     </style>
     <% font_size *= 0.9 %>
     <div class="preview-info-header">
-      <%= (@article.tag_list & SiteConfig.campaign_featured_tags).map { |tag| "##{tag}" }.join(" ") %>
+      <%= (@article.tag_list & Campaign.current.featured_tags).map { |tag| "##{tag}" }.join(" ") %>
     </div>
     <div class="title-area">
       <h1 style="font-size:<%= font_size %>vw;"><%= @article.title %></h1>
