@@ -277,17 +277,15 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
   create_table "broadcasts", force: :cascade do |t|
     t.boolean "active", default: false
     t.datetime "active_status_updated_at"
-    t.string "banner_style"
     t.text "body_markdown"
     t.integer "broadcastable_id"
     t.string "broadcastable_type"
     t.datetime "created_at"
     t.text "processed_html"
     t.string "title"
-    t.string "type_of"
     t.datetime "updated_at"
     t.index ["broadcastable_type", "broadcastable_id"], name: "index_broadcasts_on_broadcastable_type_and_broadcastable_id", unique: true
-    t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
+    t.index ["title", "broadcastable_type"], name: "index_broadcasts_on_title_and_broadcastable_type", unique: true
   end
 
   create_table "buffer_updates", force: :cascade do |t|
@@ -1224,7 +1222,7 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
-    t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
+    t.datetime "last_moderation_notification", default: "2017-01-01 07:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
     t.datetime "last_sign_in_at"
@@ -1293,6 +1291,7 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["twitch_username"], name: "index_users_on_twitch_username"
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
