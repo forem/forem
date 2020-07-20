@@ -12,7 +12,7 @@ module Internal
                    relation.where(
                      "id NOT IN (SELECT user_id FROM users_roles WHERE role_id = ?)",
                      role_id_for(:trusted),
-                   ).order("users.comments_count DESC")
+                   ).order("users.comments_count" => :desc)
                  else
                    relation.joins(:roles)
                      .where(users_roles: { role_id: role_id_for(state) })

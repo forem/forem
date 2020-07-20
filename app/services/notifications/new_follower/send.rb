@@ -25,7 +25,7 @@ module Notifications
 
       def call
         recent_follows = Follow.where(followable_type: followable_type, followable_id: followable_id)
-          .where("created_at > ?", 24.hours.ago).order("created_at DESC")
+          .where("created_at > ?", 24.hours.ago).order(created_at: :desc)
 
         notification_params = { action: "Follow" }
         case followable_type
