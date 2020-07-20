@@ -36,11 +36,11 @@ module Internal
     end
 
     def user_by_param
-      User.where(username: chat_channel_params[:usernames_string])
+      User.find_by(username: chat_channel_params[:username_string])
     end
 
     def chat_channel_params
-      allowed_params = %i[usernames_string channel_name]
+      allowed_params = %i[usernames_string channel_name username_string]
       params.require(:chat_channel).permit(allowed_params)
     end
   end
