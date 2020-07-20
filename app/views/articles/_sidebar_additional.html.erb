@@ -19,7 +19,7 @@
         </div>
       <% end %>
 
-      <%= render "articles/sidebar_campaign" if SiteConfig.campaign_sidebar_enabled? %>
+      <%= render "articles/sidebar_campaign" if Campaign.current.show_in_sidebar? %>
 
       <% if params[:timeframe].blank? && @listings.any? %>
         <section class="crayons-card crayons-card--secondary">
