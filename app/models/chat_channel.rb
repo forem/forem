@@ -155,7 +155,7 @@ class ChatChannel < ApplicationRecord
 
   def pusher_channels
     if invite_only?
-      "presence-channel-#{id}"
+      "private-channel-#{id}"
     elsif open?
       "open-channel-#{id}"
     else
