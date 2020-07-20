@@ -929,6 +929,7 @@ components:
           type: string
         summary:
           type: string
+          nullable: true
         twitter_username:
           type: string
           nullable: true
