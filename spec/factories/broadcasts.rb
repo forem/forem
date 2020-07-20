@@ -5,7 +5,7 @@ FactoryBot.define do
 
     factory :set_up_profile_broadcast do
       title { "Welcome Notification: set_up_profile" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "Welcome to DEV! 👋 I'm <a href='https://dev.to/sloan'>Sloan</a>, " \
         "the community mascot and I'm here to help get you started. " \
@@ -15,7 +15,7 @@ FactoryBot.define do
 
     factory :welcome_broadcast do
       title { "Welcome Notification: welcome_thread" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "Sloan here again! 👋 DEV is a friendly community. " \
         "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!"
@@ -24,7 +24,7 @@ FactoryBot.define do
 
     factory :twitter_connect_broadcast do
       title { "Welcome Notification: twitter_connect" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "You're on a roll! 🎉 Do you have a Twitter account? Consider " \
         "<a href='/settings'>connecting it</a> so we can @mention you if we share " \
@@ -34,7 +34,7 @@ FactoryBot.define do
 
     factory :github_connect_broadcast do
       title { "Welcome Notification: github_connect" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "You're on a roll! 🎉  Do you have a GitHub account? Consider " \
         "<a href='/settings'>connecting it</a> so you can pin any of your repos to your profile."
@@ -43,7 +43,7 @@ FactoryBot.define do
 
     factory :customize_ux_broadcast do
       title { "Welcome Notification: customize_experience" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
         "Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!"
@@ -52,7 +52,7 @@ FactoryBot.define do
 
     factory :customize_feed_broadcast do
       title { "Welcome Notification: customize_feed" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "Hi, it's me again! 👋 Now that you're a part of the DEV community, " \
         "let's focus on personalizing your content. You can start by " \
@@ -62,7 +62,7 @@ FactoryBot.define do
 
     factory :start_discussion_broadcast do
       title { "Welcome Notification: start_discussion" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
         "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. " \
@@ -73,7 +73,7 @@ FactoryBot.define do
 
     factory :ask_question_broadcast do
       title { "Welcome Notification: ask_question" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
         "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. " \
@@ -83,7 +83,7 @@ FactoryBot.define do
 
     factory :discuss_and_ask_broadcast do
       title { "Welcome Notification: discuss_and_ask" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
         "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
@@ -94,7 +94,7 @@ FactoryBot.define do
 
     factory :download_app_broadcast do
       title { "Welcome Notification: download_app" }
-      broadcastable_type { "Welcome" }
+      association :broadcastable, factory: :welcome_notification, strategy: :create
       processed_html do
         "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile " \
         "app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it " \
@@ -104,7 +104,7 @@ FactoryBot.define do
 
     factory :announcement_broadcast do
       title { "A Very Important Announcement" }
-      broadcastable_type { "Announcement" }
+      association :broadcastable, factory: :announcement, strategy: :create
       processed_html { "<p>Hello, World!</p>" }
     end
 
