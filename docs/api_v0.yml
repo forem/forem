@@ -175,6 +175,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         readable_publish_date:
           type: string
         social_image:
@@ -271,6 +272,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         readable_publish_date:
           type: string
         social_image:
@@ -497,6 +499,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         published:
           type: boolean
         published_at:
