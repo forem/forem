@@ -57,6 +57,16 @@
 
   <div class="crayons-card mb-6 grid gap-6 p-6">
     <header>
+      <h3 class="mb-2">General Notification Settings</h3>
+    </header>
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box :article_reaction_notifications, class: "crayons-checkbox" %>
+      <%= f.label :article_reaction_notifications, "Send notifications when someone reacts to my comments or posts", class: "crayons-field__label" %>
+    </div>
+  </div>
+
+  <div class="crayons-card mb-6 grid gap-6 p-6">
+    <header>
       <h3 class="mb-2">Mobile Notification Settings (Beta)</h3>
       <p>Additional settings will be rolled out as new notification features are made available.</p>
     </header>
