@@ -132,7 +132,7 @@
           <div class="col-12">
             <h3>Notes:</h3>
             <div class="notes__container" id="notes__<%= feedback_message.id %>">
-              <% feedback_message.notes&.order("created_at")&.each do |note| %>
+              <% feedback_message.notes&.order(:created_at)&.each do |note| %>
                 <div class="border border-info bg-light rounded my-2 p-2">
                   <span class="badge badge-info float-right">
                     <%= time_ago_in_words note.created_at %> ago

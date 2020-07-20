@@ -18,21 +18,6 @@ describe('<Tags />', () => {
   });
 
   describe('handleKeyDown', () => {
-    it('calls preventDefault on unused keyCode', () => {
-      const { getByTestId } = render(
-        <Tags defaultValue="defaultValue" listing />,
-      );
-
-      Event.prototype.preventDefault = jest.fn();
-
-      fireEvent.keyDown(getByTestId('tag-input'), {
-        key: '§',
-        code: '192',
-      });
-
-      expect(Event.prototype.preventDefault).toHaveBeenCalledTimes(1);
-    });
-
     it('does not call preventDefault on used keyCode', () => {
       const { getByTestId } = render(
         <Tags defaultValue="defaultValue" listing />,

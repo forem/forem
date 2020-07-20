@@ -13,7 +13,7 @@ RSpec.describe "Admin manages configuration", type: :system do
   (VerifySetupCompleted::MANDATORY_CONFIGS - [:meta_keywords]).each do |option|
     it "marks #{option} as required" do
       selector = "label[for='site_config_#{option}']"
-      expect(find(selector).text).to end_with("*")
+      expect(first(selector).text).to include("Required")
     end
   end
 

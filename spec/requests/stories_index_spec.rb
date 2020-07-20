@@ -188,6 +188,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "doesn't display unapproved posts" do
         SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
         SiteConfig.campaign_articles_require_approval = true
         Article.last.update_column(:score, -2)
         get "/"
@@ -196,6 +197,8 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "displays unapproved post if approval is not required" do
         SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
+        SiteConfig.campaign_articles_require_approval = false
         get "/"
         expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
       end
