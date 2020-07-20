@@ -24,13 +24,14 @@ module Notifications
       end
 
       def call
-        recent_follows = Follow.where(followable_type: followable_type, followable_id: followable_id).
-          where("created_at > ?", 24.hours.ago).order("created_at DESC")
+        recent_follows = Follow.where(followable_type: followable_type, followable_id: followable_id)
+          .where("created_at > ?", 24.hours.ago).order("created_at DESC")
 
         notification_params = { action: "Follow" }
-        if followable_type == "User"
+        case followable_type
+        when "User"
           notification_params[:user_id] = followable_id
-        elsif followable_type == "Organization"
+        when "Organization"
           notification_params[:organization_id] = followable_id
         end
 

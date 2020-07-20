@@ -53,8 +53,8 @@ RSpec.describe CommentPolicy, type: :policy do
       it { is_expected.to permit_actions(%i[create moderator_create]) }
 
       it do
-        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_moderator_create).
-          for_action(:moderator_create)
+        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_moderator_create)
+          .for_action(:moderator_create)
       end
     end
 
@@ -64,8 +64,8 @@ RSpec.describe CommentPolicy, type: :policy do
       it { is_expected.to permit_actions(%i[create moderator_create]) }
 
       it do
-        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_moderator_create).
-          for_action(:moderator_create)
+        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_moderator_create)
+          .for_action(:moderator_create)
       end
     end
   end
@@ -111,8 +111,8 @@ RSpec.describe CommentPolicy, type: :policy do
 
       it do
         expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
-        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_moderator_create).
-          for_action(:moderator_create)
+        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_moderator_create)
+          .for_action(:moderator_create)
       end
     end
   end

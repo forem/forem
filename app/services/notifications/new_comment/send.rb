@@ -54,9 +54,9 @@ module Notifications
       attr_reader :comment
 
       def user_ids_for(config_name)
-        NotificationSubscription.
-          where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: config_name).
-          pluck(:user_id)
+        NotificationSubscription
+          .where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: config_name)
+          .pluck(:user_id)
       end
 
       def comment_user_ids

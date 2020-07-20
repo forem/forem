@@ -27,23 +27,23 @@ module Articles
     end
 
     def published_articles_by_tag
-      articles = Article.published.limited_column_select.
-        includes(top_comments: :user).
-        page(@page).per(@number_of_articles)
+      articles = Article.published.limited_column_select
+        .includes(top_comments: :user)
+        .page(@page).per(@number_of_articles)
       articles = articles.cached_tagged_with(@tag) if @tag.present? # More efficient than tagged_with
       articles
     end
 
     # Timeframe values from Timeframer::DATETIMES
     def top_articles_by_timeframe(timeframe:)
-      published_articles_by_tag.where("published_at > ?", Timeframer.new(timeframe).datetime).
-        order("score DESC").page(@page).per(@number_of_articles)
+      published_articles_by_tag.where("published_at > ?", Timeframer.new(timeframe).datetime)
+        .order("score DESC").page(@page).per(@number_of_articles)
     end
 
     def latest_feed
-      published_articles_by_tag.order("published_at DESC").
-        where("featured_number > ? AND score > ?", 1_449_999_999, -20).
-        page(@page).per(@number_of_articles)
+      published_articles_by_tag.order("published_at DESC")
+        .where("featured_number > ? AND score > ?", 1_449_999_999, -20)
+        .page(@page).per(@number_of_articles)
     end
 
     def default_home_feed_and_featured_story(user_signed_in: false, ranking: true)
@@ -236,9 +236,9 @@ module Articles
     end
 
     def globally_hot_articles(user_signed_in)
-      hot_stories = published_articles_by_tag.
-        where("score > ? OR featured = ?", 7, true).
-        order("hotness_score DESC")
+      hot_stories = published_articles_by_tag
+        .where("score > ? OR featured = ?", 7, true)
+        .order("hotness_score DESC")
       featured_story = hot_stories.where.not(main_image: nil).first
       if user_signed_in
         hot_story_count = hot_stories.count
@@ -246,9 +246,9 @@ module Articles
           i < hot_story_count
         end.sample # random offset, weighted more towards zero
         hot_stories = hot_stories.offset(offset)
-        new_stories = Article.published.
-          where("score > ?", -15).
-          limited_column_select.includes(top_comments: :user).order("published_at DESC").limit(rand(15..80))
+        new_stories = Article.published
+          .where("score > ?", -15)
+          .limited_column_select.includes(top_comments: :user).order("published_at DESC").limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
       [featured_story, hot_stories.to_a]

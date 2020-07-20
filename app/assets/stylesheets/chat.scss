@@ -282,6 +282,7 @@
   @include themeable(border, theme-border, 1px solid $outline-color);
   padding: 13px;
   min-width: 50%;
+  overflow-x: hidden;
   @media screen and (min-width: 1440px) {
     min-width: 45%;
   }
@@ -1163,4 +1164,67 @@
 
 .channel_details {
   margin-top: 30px;
+}
+
+.chat_channel-member-list {
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.member-list-item {
+  justify-content: space-between;
+
+  .admin-emoji {
+    width: 6%;
+  }
+
+  .admin-emoji-button {
+    width: 10%;
+  }
+}
+
+.membership-section {
+  position: relative;
+
+  .membership-actions {
+    position: relative;
+
+    .membership-management__dropdown-memu {
+      display: none;
+      position: absolute;
+      background-color: var(--theme-container-background, #fff);
+      border-style: solid;
+      border-color: var(--theme-color, #0a0a0a);
+      border-radius: 5px;
+      border-width: 1px;
+      z-index: 100;
+      width: 200px;
+      right: 78px;
+      top: 20px;
+
+      button {
+        width: 100%;
+        text-align: left;
+      }
+
+      &:hover {
+        display: block;
+      }
+    }
+
+    .membership-management__dropdown-button {
+      height: 17px;
+      cursor: pointer;
+      color: var(--theme-color, #0a0a0a);
+
+      &:hover + .membership-management__dropdown-memu {
+        display: block;
+      }
+
+      img {
+        height: 100%;
+        opacity: 0.6;
+      }
+    }
+  }
 }

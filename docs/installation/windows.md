@@ -2,7 +2,7 @@
 title: Windows
 ---
 
-# Installing DEV on Windows 10
+# Installing Forem on Windows 10
 
 ## Installing prerequisites
 
@@ -11,7 +11,7 @@ system machine._
 
 ### Installing WSL
 
-Since DEV's codebase is using the Ruby on Rails framework, we will need to
+Since Forem's codebase is using the Ruby on Rails framework, we will need to
 install Windows Subsystem for Linux. Some dependencies used by the source code
 triggered errors when installing on Windows, so using WSL allows you to work on
 the software and not having to fix gem incompatibilities.
@@ -108,7 +108,7 @@ work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
-DEV requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher.
 
 If you don't have PostgreSQL installed on your Windows system, you can do so
 right now. WSL is able to connect to a PostgreSQL instance on your Windows
@@ -126,7 +126,8 @@ For additional configuration options, check our
 
 ### ImageMagick
 
-DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+Forem uses [ImageMagick](https://imagemagick.org/) to manipulate images on
+upload.
 
 Please refer to ImageMagick's
 [instructions](https://imagemagick.org/script/download.php) on how to install
@@ -134,7 +135,7 @@ it.
 
 ### Redis
 
-DEV requires Redis version 4.0 or higher.
+Forem requires Redis version 4.0 or higher.
 
 We recommend to follow
 [this guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under
@@ -142,8 +143,8 @@ WSL.
 
 ### Elasticsearch
 
-DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
-supported. We recommend version 7.5.2.
+Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
+not supported. We recommend version 7.5.2.
 
 We recommend following the install guide
 [in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
@@ -151,13 +152,13 @@ for installing on Windows machines.
 
 NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
-## Installing DEV
+## Installing Forem
 
-1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
+1. Fork Forem's repository, eg. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, eg.
-   `git clone https://github.com/<your-username>/dev.to.git`
-1. Open the cloned dev.to folder in terminal with `cd dev.to`. Next, install
-   Ruby with the following commands:
+   `git clone https://github.com/<your-username>/forem.git`
+1. Open the cloned forem folder in terminal with `cd forem`. Next, install Ruby
+   with the following commands:
 
    ```shell
    rbenv install $(cat .ruby-version)

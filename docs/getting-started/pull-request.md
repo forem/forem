@@ -10,7 +10,7 @@ title: Preparing a Pull Request
   [Draft PR](https://github.blog/2019-02-14-introducing-draft-pull-requests/)
   feature.
 - Make sure all tests pass and add additional tests for the code you submit.
-  [More info here](https://docs.dev.to/tests/).
+  [More info here](https://docs.forem.com/tests/).
 - Document your reasoning behind the changes. Explain why you wrote the code in
   the way you did. The code should explain what it does.
 - If there's an existing issue related to the pull request, reference to it by
@@ -21,6 +21,6 @@ title: Preparing a Pull Request
 - All commits in a pull request will be squashed when merged, but when your PR
   is approved and passes our CI, it will eventually be live on production!
 
-If the pull request affects the public API in any way, a post on DEV from the
-DEV Team account should accompany it. This is the duty of the core team to carry
-out.
+If the pull request affects the public API in any way, a post on Forem from the
+Forem Team account should accompany it. This is the duty of the core team to
+carry out.

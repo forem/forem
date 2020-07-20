@@ -19,13 +19,12 @@ module Notifications
           reason_for_adjustment: tag_adjustment.reason_for_adjustment,
           tag_name: tag_adjustment.tag_name
         }
-        notification = Notification.create(
+        Notification.create(
           user_id: article.user_id,
           notifiable_id: tag_adjustment.id,
           notifiable_type: tag_adjustment.class.name,
           json_data: json_data,
         )
-        notification
       end
 
       private
