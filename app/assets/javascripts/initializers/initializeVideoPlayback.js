@@ -9,14 +9,14 @@
  * interact and update the UI, therefore a MutationObserver is registered.
  */
 
- /* eslint no-use-before-define: 0 */
- /* eslint no-param-reassign: 0 */
- /* eslint no-useless-escape: 0 */
- /* global jwplayer */
+/* eslint no-use-before-define: 0 */
+/* eslint no-param-reassign: 0 */
+/* eslint no-useless-escape: 0 */
+/* global jwplayer */
 
 function initializeVideoPlayback() {
   var nativeBridgeMessage;
-  var currentTime = "0";
+  var currentTime = '0';
 
   function getById(name) {
     return document.getElementById(name);
@@ -43,24 +43,24 @@ function initializeVideoPlayback() {
 
   function getParameterByName(name, url) {
     if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
       results = regex.exec(url);
     if (!results) return null;
     if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
   }
 
   function timeToSeconds(hms) {
     var a;
     if (hms.length < 3) {
-      return hms
+      return hms;
     } else if (hms.length < 6) {
-      a = hms.split(':')
-      return hms = (+a[0]) * 60 + (+a[1])
+      a = hms.split(':');
+      return (hms = +a[0] * 60 + +a[1]);
     } else {
-      a = hms.split(':')
-      return hms = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2])
+      a = hms.split(':');
+      return (hms = +a[0] * 60 * 60 + +a[1] * 60 + +a[2]);
     }
   }
 
@@ -75,19 +75,21 @@ function initializeVideoPlayback() {
           autostart: true,
           image: metadata.video_thumbnail_url,
           playbackRateControls: true,
-          tracks: [{
-            file: metadata.video_closed_caption_track_url,
-            label: "English",
-            kind: "captions",
-            "default": false
-          }]
+          tracks: [
+            {
+              file: metadata.video_closed_caption_track_url,
+              label: 'English',
+              kind: 'captions',
+              default: false,
+            },
+          ],
         });
         if (seconds) {
           jwplayer().on('ready', function (event) {
             jwplayer().play();
           });
           jwplayer().on('firstFrame', function () {
-            jwplayer().seek(timeToSeconds(seconds))
+            jwplayer().seek(seconds);
           });
         }
       }
@@ -139,25 +141,25 @@ function initializeVideoPlayback() {
   }
 
   function initializePlayer(videoSource) {
-    var seconds = getParameterByName('t') || '0';
+    var seconds = timeToSeconds(getParameterByName('t') || '0');
     var metadata = videoMetadata(videoSource);
 
     if (isNativeIOS()) {
-      nativeBridgeMessage = function(message) {
+      nativeBridgeMessage = function (message) {
         try {
           window.webkit.messageHandlers.video.postMessage(message);
         } catch (err) {
           console.log(err.message); // eslint-disable-line no-console
         }
-      }
-    } else if(isNativeAndroid()) {
-      nativeBridgeMessage = function(message) {
+      };
+    } else if (isNativeAndroid()) {
+      nativeBridgeMessage = function (message) {
         try {
           AndroidBridge.videoMessage(JSON.stringify(message));
         } catch (err) {
           console.log(err.message); // eslint-disable-line no-console
         }
-      }
+      };
     } else {
       // jwplayer is initialized and no further interaction is needed
       initWebPlayer(seconds, metadata);
@@ -177,17 +179,17 @@ function initializeVideoPlayback() {
     });
     mutationObserver.observe(videoSource, { attributes: true });
 
-    currentTime = seconds;
+    currentTime = `${seconds}`;
     nativeBridgeMessage({
       action: 'play',
       url: metadata.video_source_url,
-      seconds: seconds,
+      seconds: currentTime,
     });
   }
 
   // If an video player element is found initialize it
   var videoSource = getById('video-player-source');
   if (videoSource !== null) {
-    initializePlayer(videoSource)
+    initializePlayer(videoSource);
   }
 }
