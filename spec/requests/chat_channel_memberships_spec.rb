@@ -22,7 +22,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       it "return all details of chat channel" do
         expect(response.status).to eq(200)
         expect(response.parsed_body["result"].keys).to eq(%w[chat_channel memberships current_membership
-                                                             invitation_link])
+                                                             invitation_link is_org_channel])
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       it "return only channel info and current membership" do
         expect(response.status).to eq(200)
         expect(response.parsed_body["result"].keys).to eq(%w[chat_channel memberships current_membership
-                                                             invitation_link])
+                                                             invitation_link is_org_channel])
         expect(response.parsed_body["result"]["memberships"]["pending"].length).to eq(0)
         expect(response.parsed_body["result"]["memberships"]["requested"].length).to eq(0)
       end
