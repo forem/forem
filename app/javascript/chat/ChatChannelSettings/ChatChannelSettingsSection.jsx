@@ -29,6 +29,7 @@ const ChatChannelSettingsSection = ({
   requestedMemberships,
   invitationUsernames,
   showGlobalBadgeNotification,
+  isPrivateOrgChannel
 }) => (
   <div>
     <ChannelDescriptionSection
@@ -58,6 +59,7 @@ const ChatChannelSettingsSection = ({
       handleChannelDescriptionChanges={handleChannelDescriptionChanges}
       currentMembershipRole={currentMembership.role}
       className="channel-mod-section"
+      isPrivateOrgChannel={isPrivateOrgChannel}
     />
     <PersonalSettings
       updateCurrentMembershipNotificationSettings={
@@ -101,6 +103,7 @@ ChatChannelSettingsSection.propTypes = {
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
   handlePersonChannelSetting: PropTypes.func.isRequired,
   updateCurrentMembershipNotificationSettings: PropTypes.func.isRequired,
+  isPrivateOrgChannel: PropTypes.bool.isRequired
 };
 
 export default ChatChannelSettingsSection;

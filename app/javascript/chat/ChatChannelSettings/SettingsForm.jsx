@@ -8,6 +8,7 @@ const SettingsFrom = ({
   channelDiscoverable,
   handleChannelDiscoverableStatus,
   handleChannelDescriptionChanges,
+  isPrivateOrgChannel
 }) => {
   return (
     <div
@@ -30,18 +31,21 @@ const SettingsFrom = ({
           onChange={handleDescriptionChange}
         />
       </div>
-      <div className="crayons-field crayons-field--checkbox">
-        <input
-          type="checkbox"
-          id="c2"
-          className="crayons-checkbox"
-          checked={channelDiscoverable}
-          onChange={handleChannelDiscoverableStatus}
-        />
-        <label htmlFor="c2" className="crayons-field__label">
-          Channel Discoverable
-        </label>
-      </div>
+      { isPrivateOrgChannel ? null : (
+          <div className="crayons-field crayons-field--checkbox">
+          <input
+            type="checkbox"
+            id="c2"
+            className="crayons-checkbox"
+            checked={channelDiscoverable}
+            onChange={handleChannelDiscoverableStatus}
+          />
+          <label htmlFor="c2" className="crayons-field__label">
+            Channel Discoverable
+          </label>
+        </div>
+        )
+      }
       <div>
         <Button type="submit" onClick={handleChannelDescriptionChanges}>
           Submit
@@ -57,6 +61,7 @@ SettingsFrom.propTypes = {
   handleChannelDiscoverableStatus: PropTypes.func.isRequired,
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,
+  isPrivateOrgChannel: PropTypes.bool.isRequired,
 };
 
 export default SettingsFrom;

@@ -14,6 +14,7 @@ const ModSection = ({
   handleChannelDiscoverableStatus,
   handleChannelDescriptionChanges,
   currentMembershipRole,
+  isPrivateOrgChannel
 }) => {
   if (currentMembershipRole === 'member') {
     return null;
@@ -32,6 +33,7 @@ const ModSection = ({
         channelDiscoverable={channelDiscoverable}
         handleChannelDiscoverableStatus={handleChannelDiscoverableStatus}
         handleChannelDescriptionChanges={handleChannelDescriptionChanges}
+        isPrivateOrgChannel={isPrivateOrgChannel}
       />
     </div>
   );
@@ -46,6 +48,7 @@ ModSection.propTypes = {
   handleChannelDiscoverableStatus: PropTypes.func.isRequired,
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,
+  isPrivateOrgChannel: PropTypes.bool.isRequired,
 };
 
 export default ModSection;

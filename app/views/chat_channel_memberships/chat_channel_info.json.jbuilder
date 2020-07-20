@@ -17,4 +17,5 @@ json.result do
   end
   json.current_membership @membership
   json.invitation_link URL.url(@invitation_link)
+  json.is_org_channel @channel.private_org_channel?
 end

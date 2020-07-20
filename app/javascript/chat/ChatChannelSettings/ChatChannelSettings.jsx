@@ -40,6 +40,7 @@ export default class ChatChannelSettings extends Component {
       displaySettings: true,
       displayMembershipManager: false,
       invitationLink: null,
+      isPrivateOrgChannel: false
     };
   }
 
@@ -72,6 +73,7 @@ export default class ChatChannelSettings extends Component {
             showGlobalBadgeNotification:
               result.current_membership.show_global_badge_notification,
             invitationLink: result.invitation_link,
+            isPrivateOrgChannel: result.is_org_channel
           });
         } else {
           this.setState({
@@ -378,6 +380,7 @@ export default class ChatChannelSettings extends Component {
       showGlobalBadgeNotification,
       displaySettings,
       invitationLink,
+      isPrivateOrgChannel
     } = this.state;
 
     if (!chatChannel) {
@@ -415,6 +418,7 @@ export default class ChatChannelSettings extends Component {
               requestedMemberships={requestedMemberships}
               invitationUsernames={invitationUsernames}
               showGlobalBadgeNotification={showGlobalBadgeNotification}
+              isPrivateOrgChannel={isPrivateOrgChannel}
             />
           ) : (
             <ManageActiveMembership
