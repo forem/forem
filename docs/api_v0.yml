@@ -209,6 +209,7 @@ components:
         edited_at:
           type: string
           format: date-time
+          nullable: true          
         crossposted_at:
           type: string
           format: date-time
@@ -304,6 +305,7 @@ components:
         edited_at:
           type: string
           format: date-time
+          nullable: true
         crossposted_at:
           type: string
           format: date-time
