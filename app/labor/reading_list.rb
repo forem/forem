@@ -10,7 +10,7 @@ class ReadingList
       .joins(:reactions)
       .includes(:user)
       .where(reactions: reaction_criteria)
-      .order("reactions.created_at DESC")
+      .order("reactions.created_at" => :desc)
   end
 
   def cached_ids_of_articles

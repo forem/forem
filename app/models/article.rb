@@ -34,7 +34,7 @@ class Article < ApplicationRecord
              where(
                "comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE",
                10,
-             ).order("comments.score DESC")
+             ).order("comments.score" => :desc)
            },
            as: :commentable,
            inverse_of: :commentable,
