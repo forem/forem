@@ -77,7 +77,7 @@ module CacheBuster
     end
     TIMEFRAMES.each do |timestamp, interval|
       if Article.published.where("published_at > ?", timestamp)
-          .order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
+          .order(public_reactions_count: :desc).limit(3).pluck(:id).include?(article.id)
         bust("/top/#{interval}")
         bust("/top/#{interval}?i=i")
         bust("/top/#{interval}/?i=i")
@@ -87,7 +87,7 @@ module CacheBuster
       bust("/latest")
       bust("/latest?i=i")
     end
-    bust("/") if Article.published.order("hotness_score DESC").limit(4).pluck(:id).include?(article.id)
+    bust("/") if Article.published.order(hotness_score: :desc).limit(4).pluck(:id).include?(article.id)
   end
 
   def self.bust_tag_pages(article)
@@ -100,7 +100,7 @@ module CacheBuster
       end
       TIMEFRAMES.each do |timestamp, interval|
         if Article.published.where("published_at > ?", timestamp).tagged_with(tag)
-            .order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
+            .order(public_reactions_count: :desc).limit(3).pluck(:id).include?(article.id)
           bust("/top/#{interval}")
           bust("/top/#{interval}?i=i")
           bust("/top/#{interval}/?i=i")
@@ -111,7 +111,7 @@ module CacheBuster
       end
       if rand(2) == 1 &&
           Article.published.tagged_with(tag)
-              .order("hotness_score DESC").limit(2).pluck(:id).include?(article.id)
+              .order(hotness_score: :desc).limit(2).pluck(:id).include?(article.id)
         bust("/t/#{tag}")
         bust("/t/#{tag}?i=i")
       end
@@ -195,7 +195,7 @@ module CacheBuster
 
   # bust commentable if it's an article
   def self.bust_article_comment(commentable)
-    bust("/") if Article.published.order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
+    bust("/") if Article.published.order(hotness_score: :desc).limit(3).pluck(:id).include?(commentable.id)
     if commentable.decorate.cached_tag_list_array.include?("discuss") &&
         commentable.featured_number.to_i > 35.hours.ago.to_i
       bust("/")

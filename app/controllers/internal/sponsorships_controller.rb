@@ -3,7 +3,7 @@ module Internal
     layout "internal"
 
     def index
-      @sponsorships = Sponsorship.includes(:organization, :user).order("created_at desc").page(params[:page]).per(50)
+      @sponsorships = Sponsorship.includes(:organization, :user).order(created_at: :desc).page(params[:page]).per(50)
     end
 
     def edit

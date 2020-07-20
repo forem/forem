@@ -31,7 +31,7 @@
           </header>
 
           <div>
-            <% @listings.order("bumped_at DESC").limit(5).each do |listing| %>
+            <% @listings.order(bumped_at: :desc).limit(5).each do |listing| %>
               <a class="crayons-link crayons-link--contentful" href="<%= listing.path %>">
                 <div><%= listing.title %></div>
                 <div class="crayons-link__secondary"><%= listing.category %></div>
