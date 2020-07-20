@@ -4,9 +4,9 @@ class Poll < ApplicationRecord
   serialize :voting_data
 
   belongs_to :article
-  has_many :poll_options
-  has_many :poll_skips
-  has_many :poll_votes
+  has_many :poll_options, dependent: :destroy
+  has_many :poll_skips, dependent: :destroy
+  has_many :poll_votes, dependent: :destroy
 
   validates :prompt_markdown, presence: true,
                               length: { maximum: 128 }

@@ -524,16 +524,6 @@ Performance/StringInclude:
 Rails/FilePath:
   EnforcedStyle: slashes
 
-Rails/HasManyOrHasOneDependent:
-  Description: 'Define the dependent option to the has_many and has_one associations.'
-  StyleGuide: 'https://rails.rubystyle.guide#has_many-has_one-dependent-option'
-  Enabled: false
-
-Rails/SaveBang:
-  Description: 'Identifies possible cases where Active Record save! or related should be used.'
-  StyleGuide: 'https://rails.rubystyle.guide#save-bang'
-  Enabled: false
-
 Rails/SkipsModelValidations:
   Description: >-
                  Use methods that skips model validations with caution.

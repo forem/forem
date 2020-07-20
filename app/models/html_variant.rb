@@ -10,8 +10,8 @@ class HtmlVariant < ApplicationRecord
   validate  :no_edits
 
   belongs_to :user, optional: true
-  has_many :html_variant_trials
-  has_many :html_variant_successes
+  has_many :html_variant_trials, dependent: :destroy
+  has_many :html_variant_successes, dependent: :destroy
 
   before_save :prefix_all_images
 

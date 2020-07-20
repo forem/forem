@@ -19,16 +19,22 @@ class Article < ApplicationRecord
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
 
-  belongs_to :user
-  belongs_to :organization, optional: true
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
   belongs_to :collection, optional: true
+  belongs_to :organization, optional: true
+  belongs_to :user
 
   counter_culture :user
   counter_culture :organization
 
-  has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :buffer_updates, dependent: :destroy
+  has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
+  has_many :page_views, dependent: :destroy
+  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :destroy
+  has_many :rating_votes, dependent: :destroy
   has_many :top_comments,
            lambda {
              where(
@@ -39,12 +45,6 @@ class Article < ApplicationRecord
            as: :commentable,
            inverse_of: :commentable,
            class_name: "Comment"
-  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
-  has_many :buffer_updates, dependent: :destroy
-  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
-  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
-  has_many :rating_votes
-  has_many :page_views
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/,
                    uniqueness: { scope: :user_id }

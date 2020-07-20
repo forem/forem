@@ -15,7 +15,7 @@ class PodcastEpisode < ApplicationRecord
   delegate :published, to: :podcast
 
   belongs_to :podcast
-  has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
