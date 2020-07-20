@@ -53,7 +53,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def tag_moderator_ids
-    User.with_role(:tag_moderator, self).order("id ASC").pluck(:id)
+    User.with_role(:tag_moderator, self).order(id: :asc).pluck(:id)
   end
 
   def self.bufferized_tags
