@@ -7,12 +7,12 @@ items:
 
 # Internal Guide
 
-The DEV application contains a rudimentary administration dashboard that lives
+The Forem application contains a rudimentary administration dashboard that lives
 behind the internal route.
 
 The internal dashboard is made up of a series of views that range from
 administration tools to simplified reports. These tools are used by users with
-the `admin` or `super_admin` roles to administrate the DEV application.
+the `admin` or `super_admin` roles to administrate the Forem application.
 
 Authorization for these tools is handled by the [Rolify][rolify] gem.
 

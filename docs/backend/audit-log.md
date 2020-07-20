@@ -4,7 +4,7 @@ title: Audit Log
 
 # Audit Log
 
-To help maintain accountability for users with elevated permissions the DEV
+To help maintain accountability for users with elevated permissions the Forem
 application has a special model that records certain actions.
 
 For example, when a user with the `trusted` role creates a negative reaction on

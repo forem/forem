@@ -80,9 +80,9 @@ class Comment < ApplicationRecord
   end
 
   def parent_type
-    parent_or_root_article.class.name.downcase.
-      gsub("article", "post").
-      gsub("podcastepisode", "episode")
+    parent_or_root_article.class.name.downcase
+      .gsub("article", "post")
+      .gsub("podcastepisode", "episode")
   end
 
   def id_code_generated
@@ -123,7 +123,7 @@ class Comment < ApplicationRecord
   end
 
   def safe_processed_html
-    processed_html.html_safe
+    processed_html.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def root_exists?
@@ -177,7 +177,7 @@ class Comment < ApplicationRecord
         anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img")
       end
     end
-    self.processed_html = doc.to_html.html_safe
+    self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def calculate_score

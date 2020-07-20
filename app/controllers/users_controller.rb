@@ -13,9 +13,10 @@ class UsersController < ApplicationController
 
   def index
     @users =
-      if params[:state] == "follow_suggestions"
+      case params[:state]
+      when "follow_suggestions"
         determine_follow_suggestions(current_user)
-      elsif params[:state] == "sidebar_suggestions"
+      when "sidebar_suggestions"
         Suggester::Users::Sidebar.new(current_user, params[:tag]).suggest.sample(3)
       else
         User.none
@@ -303,7 +304,7 @@ class UsersController < ApplicationController
   end
 
   def handle_organization_tab
-    @organizations = @current_user.organizations.order("name ASC")
+    @organizations = @current_user.organizations.order(name: :asc)
     if params[:org_id] == "new" || params[:org_id].blank? && @organizations.size.zero?
       @organization = Organization.new
     elsif params[:org_id].blank? || params[:org_id].match?(/\d/)

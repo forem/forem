@@ -101,6 +101,10 @@ module ApplicationHelper
     end
   end
 
+  def any_selfserve_auth?
+    authentication_enabled_providers.any?
+  end
+
   def beautified_url(url)
     url.sub(/\A((https?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
@@ -155,7 +159,7 @@ module ApplicationHelper
 
   def logo_svg
     if SiteConfig.logo_svg.present?
-      SiteConfig.logo_svg.html_safe
+      SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
     else
       inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end
@@ -245,9 +249,14 @@ module ApplicationHelper
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
 
+  # rubocop:disable Rails/OutputSafety
   def internal_config_label(method, content = nil)
-    content ||= method.to_s.humanize
-    content << "*" if method.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-    label_tag("site_config_#{method}", content)
+    content ||= raw("<span>#{method.to_s.humanize}</span>")
+    if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+      content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+    end
+
+    tag.label(content, class: "site-config__label", for: "site_config_#{method}")
   end
+  # rubocop:enable Rails/OutputSafety
 end

@@ -16,12 +16,13 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         user.add_role(:super_admin)
 
         membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
-        get "/chat_channel_memberships/chat_channel_info/#{membership.id}"
+        get "/chat_channel_memberships/chat_channel_info/#{membership.id}", as: :json
       end
 
       it "return all details of chat channel" do
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body["result"].keys).to eq(%w[chat_channel memberships current_membership])
+        expect(response.status).to eq(200)
+        expect(response.parsed_body["result"].keys).to eq(%w[chat_channel memberships current_membership
+                                                             invitation_link])
       end
     end
 
@@ -31,14 +32,15 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         chat_channel.add_users([second_user])
 
         membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: second_user.id)
-        get "/chat_channel_memberships/chat_channel_info/#{membership.id}"
+        get "/chat_channel_memberships/chat_channel_info/#{membership.id}", as: :json
       end
 
       it "return only channel info and current membership" do
         expect(response.status).to eq(200)
-        expect(JSON.parse(response.body)["result"].keys).to eq(%w[chat_channel memberships current_membership])
-        expect(JSON.parse(response.body)["result"]["memberships"]["pending"].length).to eq(0)
-        expect(JSON.parse(response.body)["result"]["memberships"]["requested"].length).to eq(0)
+        expect(response.parsed_body["result"].keys).to eq(%w[chat_channel memberships current_membership
+                                                             invitation_link])
+        expect(response.parsed_body["result"]["memberships"]["pending"].length).to eq(0)
+        expect(response.parsed_body["result"]["memberships"]["requested"].length).to eq(0)
       end
     end
   end
@@ -335,6 +337,122 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
       it "returns in json" do
         expect(response.media_type).to eq("application/json")
+      end
+    end
+  end
+
+  describe "PATCH /update_membership_role" do
+    before do
+      user.add_role(:super_admin)
+      chat_channel.add_users([second_user])
+    end
+
+    context "when user role is member" do
+      it "update the membership role to mod" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: second_user.id)
+
+        patch "/chat_channel_memberships/update_membership_role/#{chat_channel.id}", params: {
+          chat_channel_membership: {
+            membership_id: membership.id,
+            role: "mod"
+          }
+        }
+        expect(response.status).to eq(200)
+        expect(membership.reload.role).to eq("mod")
+      end
+    end
+
+    context "when user is mod" do
+      it "update the membership role to member" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
+
+        patch "/chat_channel_memberships/update_membership_role/#{chat_channel.id}", params: {
+          chat_channel_membership: {
+            membership_id: membership.id,
+            role: "member"
+          }
+        }
+
+        expect(response.status).to eq(200)
+        expect(membership.reload.role).to eq("member")
+      end
+    end
+
+    context "when there is no channel id" do
+      it "channel not found" do
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: second_user.id)
+
+        patch "/chat_channel_memberships/update_membership_role/", params: {
+          chat_channel_membership: {
+            membership_id: membership.id,
+            role: "member"
+          }
+        }
+
+        expect(response.status).to eq(404)
+        expect(membership.reload.role).to eq("member")
+      end
+    end
+  end
+
+  describe "GET /join_channel_invitation" do
+    context "when user is not member" do
+      it "render the page" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        sign_in second_user
+        chat_channel.update(discoverable: true)
+
+        get "/join_channel_invitation/#{chat_channel.slug}"
+
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context "when user is not logged-in" do
+      it "not allowed to create membership" do
+        sign_out second_user
+
+        get "/join_channel_invitation/#{chat_channel.slug}"
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe "POST /joining_invitation_response" do
+    context "when user accept the request" do
+      it "will create membership" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+
+        sign_in second_user
+        chat_channel.update(discoverable: true)
+
+        post "/joining_invitation_response", params: {
+          user_action: "accept",
+          chat_channel_id: chat_channel.id
+        }
+        membership = ChatChannelMembership.last
+
+        expect(response.status).to eq(302)
+        expect(membership.user_id).to eq(second_user.id)
+      end
+    end
+
+    context "when user decline the request" do
+      it "will not create the membership" do
+        sign_in second_user
+        chat_channel.update(discoverable: true)
+
+        post "/joining_invitation_response", params: {
+          user_action: "decline",
+          chat_channel_id: chat_channel.id
+        }
+
+        membership = ChatChannelMembership.last
+
+        expect(response.status).to eq(302)
+        expect(membership.user_id).not_to eq(second_user.id)
       end
     end
   end

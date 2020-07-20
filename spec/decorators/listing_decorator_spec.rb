@@ -14,8 +14,8 @@ RSpec.describe ListingDecorator, type: :decorator do
     end
 
     it "returns the category's social preview descripton if available" do
-      expect(decorated_listing.social_preview_category).
-        to eq(category.social_preview_description)
+      expect(decorated_listing.social_preview_category)
+        .to eq(category.social_preview_description)
     end
   end
 
@@ -23,20 +23,20 @@ RSpec.describe ListingDecorator, type: :decorator do
     it "returns the default color if social preview color is blank" do
       allow(category).to receive(:social_preview_color).and_return(nil)
 
-      expect(decorated_listing.social_preview_color).
-        to eq(ListingDecorator::DEFAULT_COLOR)
+      expect(decorated_listing.social_preview_color)
+        .to eq(ListingDecorator::DEFAULT_COLOR)
     end
 
     it "returns the category's social preview color if available" do
-      expect(decorated_listing.social_preview_color).
-        to eq(category.social_preview_color)
+      expect(decorated_listing.social_preview_color)
+        .to eq(category.social_preview_color)
     end
 
     it "can modify the brightness" do
       color = category.social_preview_color
 
-      expect(decorated_listing.social_preview_color(brightness: 0.8)).
-        to eq(HexComparer.new([color]).brightness(0.8))
+      expect(decorated_listing.social_preview_color(brightness: 0.8))
+        .to eq(HexComparer.new([color]).brightness(0.8))
     end
   end
 end

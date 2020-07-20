@@ -94,11 +94,11 @@ class PagesController < ApplicationController
 
   def checkin
     daily_thread =
-      Article.
-        published.
-        where(user: User.find_by(username: "codenewbiestaff")).
-        order("articles.published_at" => :desc).
-        first
+      Article
+        .published
+        .where(user: User.find_by(username: "codenewbiestaff"))
+        .order("articles.published_at" => :desc)
+        .first
 
     if daily_thread
       redirect_to daily_thread.path

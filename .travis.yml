@@ -7,7 +7,7 @@ cache:
 rvm:
   - 2.7.1
 addons:
-  postgresql: '9.6'
+  postgresql: '10' # Travis does not work out of the box with Postgres 11 yet
   chrome: 'stable'
   artifacts:
     paths:
