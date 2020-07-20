@@ -1996,7 +1996,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+            curl https://dev.to/api/articles/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
 
   /articles/me:
     get:
