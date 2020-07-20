@@ -70,6 +70,7 @@ module Internal
       %i[sidebar_tags suggested_tags suggested_users].each do |param|
         config[param] = config[param].downcase.delete(" ") if config[param]
       end
+      config[:credit_prices_in_cents]&.transform_values!(&:to_i)
     end
 
     def bust_relevant_caches

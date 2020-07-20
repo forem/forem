@@ -502,9 +502,20 @@ RSpec.describe "/internal/config", type: :request do
 
       describe "Credits" do
         it "updates the credit prices", :aggregate_failures do
+          original_prices = {
+            small: 500,
+            medium: 400,
+            large: 300,
+            xlarge: 250
+          }
+          SiteConfig.credit_prices_in_cents = original_prices
+
           SiteConfig.credit_prices_in_cents.each_key do |size|
-            post "/internal/config", params: { site_config: { credit_prices_in_cents: { size => 1000 } } }
-            expect(SiteConfig.credit_prices_in_cents[size]).to eq 1000
+            new_prices = original_prices.merge(size => 123)
+            expect do
+              post "/internal/config", params: { site_config: { credit_prices_in_cents: new_prices },
+                                                 confirmation: confirmation_message }
+            end.to change { SiteConfig.credit_prices_in_cents[size] }.from(original_prices[size.to_sym]).to(123)
           end
         end
       end
