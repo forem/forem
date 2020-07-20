@@ -449,7 +449,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
         get notifications_path(filter: :org)
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.map(&:organization_id).compact.size).to eq(0)
+        expect(notifications.filter_map(&:organization_id).size).to eq(0)
       end
 
       it "does not render notifications belonging to other orgs" do

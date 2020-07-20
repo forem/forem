@@ -47,7 +47,7 @@ class GlitchTag < LiquidTagBase
 
   def build_options(options)
     # Convert options to query param pairs
-    params = options.map { |option| OPTIONS_TO_QUERY_PAIR[option] }.compact
+    params = options.filter_map { |option| OPTIONS_TO_QUERY_PAIR[option] }
 
     # Deal with the file option if present or use default
     file_option = options.detect { |option| option.start_with?("file=") }
