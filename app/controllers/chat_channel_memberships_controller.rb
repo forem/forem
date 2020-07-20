@@ -22,7 +22,7 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def chat_channel_info
-    @membership = ChatChannelMembership.find(params[:id])
+    @membership = ChatChannelMembership.find(params[:membership_id])
     authorize @membership
     @channel = @membership.chat_channel
     invite_cache_key = "chat-channel-invite-#{@channel.id}"
@@ -34,7 +34,7 @@ class ChatChannelMembershipsController < ApplicationController
 
   def create_membership_request
     chat_channel = ChatChannel.find_by(id: channel_membership_params[:chat_channel_id])
-    authorize chat_channel, :update?
+    authorize chat_channel, :can_update_chat_channel?
     usernames = channel_membership_params[:invitation_usernames].split(",").map do |username|
       username.strip.delete("@")
     end
@@ -69,7 +69,7 @@ class ChatChannelMembershipsController < ApplicationController
 
   def remove_membership
     @chat_channel = ChatChannel.find(params[:chat_channel_id])
-    authorize @chat_channel, :update?
+    authorize @chat_channel, :can_update_chat_channel?
     @chat_channel_membership = @chat_channel.chat_channel_memberships.find(params[:membership_id])
     if params[:status] == "pending"
       @chat_channel_membership.destroy
@@ -91,7 +91,7 @@ class ChatChannelMembershipsController < ApplicationController
 
   def add_membership
     @chat_channel = ChatChannel.find(params[:chat_channel_id])
-    authorize @chat_channel, :update?
+    authorize @chat_channel, :can_update_chat_channel?
     @chat_channel_membership = @chat_channel.chat_channel_memberships.find(params[:membership_id])
 
     return unless permitted_params[:user_action].present? && @chat_channel_membership.status == "joining_request"
@@ -106,7 +106,7 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def update_membership
-    @chat_channel_membership = ChatChannelMembership.find(params[:id])
+    @chat_channel_membership = ChatChannelMembership.find(params[:membership_id])
     authorize @chat_channel_membership
     @chat_channel_membership.update(permitted_params)
     if @chat_channel_membership.errors.any?
@@ -118,7 +118,7 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def leave_membership
-    chat_channel_membership = ChatChannelMembership.find_by(id: params[:id])
+    chat_channel_membership = ChatChannelMembership.find_by(id: params[:membership_id])
     authorize chat_channel_membership
     channel_name = chat_channel_membership.chat_channel.channel_name
     send_chat_action_message("@#{current_user.username} left #{chat_channel_membership.channel_name}", current_user,
@@ -134,8 +134,8 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def update_membership_role
-    @chat_channel = ChatChannel.find_by(id: params[:id])
-    authorize @chat_channel, :update?
+    @chat_channel = ChatChannel.find_by(id: params[:chat_channel_id])
+    authorize @chat_channel, :can_update_chat_channel?
     membership = ChatChannelMembership.find_by(
       id: channel_membership_params[:membership_id],
       chat_channel_id: @chat_channel.id,

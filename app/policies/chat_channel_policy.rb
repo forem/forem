@@ -51,6 +51,10 @@ class ChatChannelPolicy < ApplicationPolicy
     record.present?
   end
 
+  def can_update_chat_channel?
+    record.present? && (user.has_role?(:super_admin) || record.channel_mod_ids.include?(user.id))
+  end
+
   private
 
   def user_can_edit_channel
