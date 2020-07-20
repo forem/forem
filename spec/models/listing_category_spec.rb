@@ -2,16 +2,20 @@ require "rails_helper"
 
 RSpec.describe ListingCategory, type: :model do
   describe "validations" do
-    # The uniqueness validation didn't work without this, see section "Caveat" at
-    # https://www.rubydoc.info/github/thoughtbot/shoulda-matchers/Shoulda%2FMatchers%2FActiveRecord:validate_uniqueness_of
-    subject { create(:listing_category) }
+    describe "builtin validations" do
+      # The uniqueness validation didn't work without this, see section "Caveat" at
+      # https://www.rubydoc.info/github/thoughtbot/shoulda-matchers/Shoulda%2FMatchers%2FActiveRecord:validate_uniqueness_of
+      subject { create(:listing_category) }
 
-    it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_presence_of(:cost) }
-    it { is_expected.to validate_presence_of(:rules) }
-    it { is_expected.to validate_presence_of(:slug) }
-    it { is_expected.to validate_uniqueness_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:slug) }
+      it { is_expected.to have_many(:listings).dependent(:restrict_with_exception) }
+
+      it { is_expected.to validate_presence_of(:name) }
+      it { is_expected.to validate_presence_of(:cost) }
+      it { is_expected.to validate_presence_of(:rules) }
+      it { is_expected.to validate_presence_of(:slug) }
+      it { is_expected.to validate_uniqueness_of(:name) }
+      it { is_expected.to validate_uniqueness_of(:slug) }
+    end
 
     context "when validating social preview colors" do
       let(:category) { build(:listing_category) }
