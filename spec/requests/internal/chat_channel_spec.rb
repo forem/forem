@@ -24,11 +24,27 @@ RSpec.describe "/internal/chat_channels", type: :request do
 
   describe "DELETE /internal/chat_channels/remove_user/:id" do
     it "removes the user from the chat channel" do
+      no_user_chat_channel = create(:chat_channel)
+      mult_users_chat_channel = create(:chat_channel)
+      user2 = create(:user)
       user.add_role(:super_admin)
       sign_in user
       chat_channel.invite_users(users: user)
+      mult_users_chat_channel.invite_users(users: user)
+      mult_users_chat_channel.invite_users(users: user2)
+
       delete "/internal/chat_channels/#{chat_channel.id}/remove_user",
              params: { chat_channel: { username_string: user.username } }
+      expect(user.chat_channel_memberships.count).to eq 1
+      expect(chat_channel.users.count).to eq 0
+
+      delete "/internal/chat_channels/#{no_user_chat_channel.id}/remove_user",
+             params: { chat_channel: { username_string: user.username } }
+      expect(no_user_chat_channel.users.count).to eq 0
+
+      delete "/internal/chat_channels/#{mult_users_chat_channel.id}/remove_user",
+             params: { chat_channel: { username_string: user.username } }
+      expect(mult_users_chat_channel.users.count).to eq 1
       expect(user.chat_channel_memberships.count).to eq 0
     end
   end
