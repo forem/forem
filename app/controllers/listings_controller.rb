@@ -39,7 +39,7 @@ class ListingsController < ApplicationController
     @listings =
       if params[:category].blank?
         published_listings
-          .order("bumped_at DESC")
+          .order(bumped_at: :desc)
           .includes(:user, :organization, :taggings)
           .limit(12)
       else

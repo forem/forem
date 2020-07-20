@@ -71,7 +71,7 @@ class StoriesController < ApplicationController
   def get_latest_campaign_articles
     campaign_articles_scope = Article.tagged_with(Campaign.current.featured_tags, any: true)
       .where("published_at > ? AND score > ?", 4.weeks.ago, 0)
-      .order("hotness_score DESC")
+      .order(hotness_score: :desc)
 
     requires_approval = Campaign.current.articles_require_approval?
     campaign_articles_scope = campaign_articles_scope.where(approved: true) if requires_approval
@@ -195,7 +195,7 @@ class StoriesController < ApplicationController
     @podcast_index = true
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes
-      .reachable.order("published_at DESC").limit(30).decorate
+      .reachable.order(published_at: :desc).limit(30).decorate
     set_surrogate_key_header "podcast_episodes"
     render template: "podcast_episodes/index"
   end
@@ -204,7 +204,7 @@ class StoriesController < ApplicationController
     @user = @organization
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published
       .limited_column_select
-      .order("published_at DESC").page(@page).per(8))
+      .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
@@ -314,7 +314,7 @@ class StoriesController < ApplicationController
     comment_count = params[:view] == "comments" ? 250 : 8
     @comments = if @user.comments_count.positive?
                   @user.comments.where(deleted: false)
-                    .order("created_at DESC").includes(:commentable).limit(comment_count)
+                    .order(created_at: :desc).includes(:commentable).limit(comment_count)
                 else
                   []
                 end
@@ -323,11 +323,11 @@ class StoriesController < ApplicationController
   def assign_user_stories
     @pinned_stories = Article.published.where(id: @user.profile_pins.select(:pinnable_id))
       .limited_column_select
-      .order("published_at DESC").decorate
+      .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published
       .limited_column_select
       .where.not(id: @pinned_stories.pluck(:id))
-      .order("published_at DESC").page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
+      .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
   end
 
   def assign_user_github_repositories
@@ -337,11 +337,11 @@ class StoriesController < ApplicationController
   def stories_by_timeframe
     if %w[week month year infinity].include?(params[:timeframe])
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime)
-        .order("public_reactions_count DESC")
+        .order(public_reactions_count: :desc)
     elsif params[:timeframe] == "latest"
-      @stories.where("score > ?", -20).order("published_at DESC")
+      @stories.where("score > ?", -20).order(published_at: :desc)
     else
-      @stories.order("hotness_score DESC").where("score > 2")
+      @stories.order(hotness_score: :desc).where("score > 2")
     end
   end
 
@@ -351,7 +351,7 @@ class StoriesController < ApplicationController
     num_hours = Rails.env.production? ? 24 : 2400
     @podcast_episodes = PodcastEpisode
       .includes(:podcast)
-      .order("published_at desc")
+      .order(published_at: :desc)
       .where("published_at > ?", num_hours.hours.ago)
       .select(:slug, :title, :podcast_id, :image)
   end
