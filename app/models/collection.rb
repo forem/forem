@@ -13,7 +13,7 @@ class Collection < ApplicationRecord
   end
 
   def path
-    "/#{user.username}/series/#{slug}"
+    "/#{user.username}/series/#{id}"
   end
 
   private

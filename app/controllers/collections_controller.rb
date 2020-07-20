@@ -5,8 +5,8 @@ class CollectionsController < ApplicationController
   end
 
   def show
-    @user = User.find_by!(username: params[:username])
-    @collection = @user.collections.find_by!(slug: params[:slug])
+    @collection = Collection.find(params[:id])
+    @user = @collection.user
     @articles = @collection.articles.published.order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
   end
 end
