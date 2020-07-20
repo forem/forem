@@ -942,6 +942,7 @@ components:
           nullable: true          
         location:
           type: string
+          nullable: true
         joined_at:
           description: Date of joining (formatted with strftime `"%b %e, %Y"`)
           type: string
