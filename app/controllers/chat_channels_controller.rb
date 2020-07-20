@@ -1,6 +1,6 @@
 class ChatChannelsController < ApplicationController
   before_action :authenticate_user!, only: %i[moderate]
-  before_action :set_channel, only: %i[show update update_channel open moderate]
+  before_action :set_channel, only: %i[show update open moderate]
   after_action :verify_authorized
 
   CHANNEL_ATTRIBUTES_FOR_SERIALIZATION = %i[id description channel_name].freeze
@@ -59,6 +59,8 @@ class ChatChannelsController < ApplicationController
   end
 
   def update_channel
+    @chat_channel = ChatChannel.find_by(id: params[:id]) || not_found
+    authorize @chat_channel, :can_update_chat_channel?
     chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
     if chat_channel.errors.any?
       render json: { success: false, errors: chat_channel.errors.full_messages,
