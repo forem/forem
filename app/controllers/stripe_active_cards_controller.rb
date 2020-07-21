@@ -1,7 +1,7 @@
 class StripeActiveCardsController < ApplicationController
   before_action :authenticate_user!
 
-  AUDIT_LOG_CATEGORY = "user.creditcard.modification".freeze
+  AUDIT_LOG_CATEGORY = "user.credit_card.edit".freeze
   private_constant :AUDIT_LOG_CATEGORY
 
   def create
@@ -94,7 +94,7 @@ class StripeActiveCardsController < ApplicationController
       category: AUDIT_LOG_CATEGORY,
       user: current_user,
       roles: current_user.roles_name,
-      slug: "creditcard_#{user_action}",
+      slug: "credit_card_#{user_action}",
       data: {
         action: action_name,
         controller: controller_name,
