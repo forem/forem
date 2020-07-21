@@ -9,9 +9,10 @@ module Reactions
       return unless reaction&.reactable
 
       CacheBuster.bust(reaction.user.path)
-      if reaction.reactable_type == "Article"
+      case reaction.reactable_type
+      when "Article"
         CacheBuster.bust("/reactions?article_id=#{reaction.reactable_id}")
-      elsif reaction.reactable_type == "Comment"
+      when "Comment"
         path = "/reactions?commentable_id=#{reaction.reactable.commentable_id}&" \
           "commentable_type=#{reaction.reactable.commentable_type}"
         CacheBuster.bust(path)

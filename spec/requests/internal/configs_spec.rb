@@ -8,7 +8,7 @@ RSpec.describe "/internal/config", type: :request do
     "My username is @#{admin_plus_config.username} and this action is 100% safe and appropriate."
   end
 
-  describe "POST internal/events as a user" do
+  describe "POST internal/config as a user" do
     before do
       sign_in(user)
     end
@@ -19,7 +19,7 @@ RSpec.describe "/internal/config", type: :request do
   end
 
   # rubocop:disable RSpec/NestedGroups
-  describe "POST internal/events" do
+  describe "POST internal/config" do
     context "when admin has typical admin permissions but not single resource" do
       before do
         sign_in(admin)
@@ -468,6 +468,15 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
+      describe "Sponsors" do
+        it "updates the sponsor_headline" do
+          headline = "basic"
+          post "/internal/config", params: { site_config: { sponsor_headline: headline },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.sponsor_headline).to eq(headline)
+        end
+      end
+
       describe "Tags" do
         it "removes space sidebar_tags" do
           post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoho, bobo fofo" },
@@ -488,6 +497,20 @@ RSpec.describe "/internal/config", type: :request do
           post "/internal/config", params: { site_config: { mascot_user_id: feed_style },
                                              confirmation: confirmation_message }
           expect(SiteConfig.feed_style).to eq(feed_style)
+        end
+
+        it "updates public to true" do
+          is_public = true
+          post "/internal/config", params: { site_config: { public: is_public },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.public).to eq(is_public)
+        end
+
+        it "updates public to false" do
+          is_public = false
+          post "/internal/config", params: { site_config: { public: is_public },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.public).to eq(is_public)
         end
       end
     end

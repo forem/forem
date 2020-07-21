@@ -5,13 +5,13 @@ title: Liquid Tags
 # Liquid Tags
 
 Liquid tags are special elements of the
-[DEV Markdown editor](https://dev.to/new).
+[Forem Markdown editor](https://dev.to/new).
 
 They are custom embeds that are added via a `{% %}` syntax.
 [Liquid](https://shopify.github.io/liquid/) is a templating language developed
 by Shopify.
 
-Liquid embeds are for tweets, like `{% tweet 765282762081329153 %}` or a DEV
+Liquid embeds are for tweets, like `{% tweet 765282762081329153 %}` or a Forem
 user profile preview, like `{% user jess %}` etc.
 
 They make for good community contributions because they can be extended and
@@ -27,7 +27,7 @@ arguments they take. Currently, this could use improvements.
 _Note: Liquid tags are "compiled" when an article is saved. So you will need to
 re-save articles to see HTML changes._
 
-Here is a bunch of liquid tags supported on DEV:
+Here is a bunch of liquid tags supported on Forem:
 
 ```liquid
 {% link https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}
@@ -37,7 +37,7 @@ Here is a bunch of liquid tags supported on DEV:
 {% podcast https://dev.to/basecspodcast/s2e2--queues-irl %}
 {% twitter 834439977220112384 %}
 {% glitch earthy-course %}
-{% github thepracticaldev/dev.to %}
+{% github forem/forem %}
 {% youtube dQw4w9WgXcQ %}
 {% vimeo 193110695 %}
 {% slideshare rdOzN9kr1yK5eE %}
@@ -107,7 +107,7 @@ classes should generally be prepended by `ltag__`. e.g. `ltag__tag__content`
 etc.
 
 Here is an example of a good Liquid Tag pull request...
-https://github.com/thepracticaldev/dev.to/pull/3801
+https://github.com/forem/forem/pull/3801
 
 ### Restricting liquid tags by roles
 

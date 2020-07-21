@@ -2,14 +2,17 @@ module Honeycomb
   class NoiseCancellingSampler
     extend Honeycomb::DeterministicSampler
 
-    NOISY_COMMANDS = [
+    NOISY_REDIS_COMMANDS = [
       "GET rails-settings-cached/v1",
       "TIME",
-      "BEGIN",
-      "COMMIT",
     ].freeze
 
-    NOISY_PREFIXES = [
+    NOISY_SQL_COMMANDS = %w[
+      BEGIN
+      COMMIT
+    ].freeze
+
+    NOISY_REDIS_PREFIXES = [
       "INCRBY",
       "TTL",
       "GET rack:",
@@ -18,18 +21,20 @@ module Honeycomb
     ].freeze
 
     def self.sample(fields)
-      if (NOISY_COMMANDS & [fields["redis.command"], fields["sql.active_record.sql"]]).any?
+      rate = 1 # include everything by default
+      # should_sample is a no-op if the rate is 1
+
+      if fields["redis.command"].in? NOISY_REDIS_COMMANDS
         rate = 100
-        [should_sample(rate, fields["trace.trace_id"]), rate]
+      elsif fields["sql.active_record.sql"].in? NOISY_SQL_COMMANDS
+        rate = 100
       elsif fields["redis.command"]&.start_with?("BRPOP")
+        # BRPOP is disproportionately noisy and not really interesting
         rate = 1000
-        [should_sample(rate, fields["trace.trace_id"]), rate]
-      elsif fields["redis.command"]&.start_with?(*NOISY_PREFIXES)
+      elsif fields["redis.command"]&.start_with?(*NOISY_REDIS_PREFIXES)
         rate = 100
-        [should_sample(rate, fields["trace.trace_id"]), rate]
-      else
-        [true, 1]
       end
+      [should_sample(rate, fields["trace.trace_id"]), rate]
     end
   end
 end

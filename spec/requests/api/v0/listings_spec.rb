@@ -294,8 +294,8 @@ RSpec.describe "Api::V0::Listings", type: :request do
       it "fails if category is invalid" do
         post_listing(title: "Title", body_markdown: "body", category: "unknown")
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body.dig("errors", "listing_category").first).
-          to match(/must exist/)
+        expect(response.parsed_body.dig("errors", "listing_category").first)
+          .to match(/must exist/)
       end
 
       it "does not subtract credits or create a listing if the listing is not valid" do
@@ -358,8 +358,8 @@ RSpec.describe "Api::V0::Listings", type: :request do
       it "cannot create a draft due to internal error" do
         allow(Organization).to receive(:find_by)
         post_listing(draft_params.except(:category))
-        expect(response.parsed_body.dig("errors", "listing_category").first).
-          to match(/must exist/)
+        expect(response.parsed_body.dig("errors", "listing_category").first)
+          .to match(/must exist/)
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -367,16 +367,16 @@ RSpec.describe "Api::V0::Listings", type: :request do
         allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post_listing(draft_params)
-        end.to change(Listing, :count).by(1).
-          and change(user.credits.spent, :size).by(0)
+        end.to change(Listing, :count).by(1)
+          .and change(user.credits.spent, :size).by(0)
       end
 
       it "does not create a listing or subtract credits if the purchase does not go through" do
         allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post_listing(listing_params)
-        end.to change(Listing, :count).by(0).
-          and change(user.credits.spent, :size).by(0)
+        end.to change(Listing, :count).by(0)
+          .and change(user.credits.spent, :size).by(0)
       end
 
       it "creates a listing belonging to the user" do
@@ -610,8 +610,8 @@ RSpec.describe "Api::V0::Listings", type: :request do
         max_id = ListingCategory.maximum(:id)
         put_listing(listing.id, title: "New title", listing_category_id: max_id + 1)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body.dig("errors", "listing_category").first).
-          to match(/must exist/)
+        expect(response.parsed_body.dig("errors", "listing_category").first)
+          .to match(/must exist/)
       end
 
       it "updates the title of his listing" do

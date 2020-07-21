@@ -14,9 +14,10 @@ class GithubTag < LiquidTagBase
   end
 
   def pre_render
-    if issue_or_readme == "issue"
+    case issue_or_readme
+    when "issue"
       GithubTag::GithubIssueTag.new(@link).render
-    elsif issue_or_readme == "readme"
+    when "readme"
       gt = GithubTag::GithubReadmeTag.new(@link)
       gt.render
     end

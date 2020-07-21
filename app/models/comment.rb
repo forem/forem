@@ -80,9 +80,9 @@ class Comment < ApplicationRecord
   end
 
   def parent_type
-    parent_or_root_article.class.name.downcase.
-      gsub("article", "post").
-      gsub("podcastepisode", "episode")
+    parent_or_root_article.class.name.downcase
+      .gsub("article", "post")
+      .gsub("podcastepisode", "episode")
   end
 
   def id_code_generated

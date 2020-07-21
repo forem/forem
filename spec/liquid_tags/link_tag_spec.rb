@@ -69,8 +69,8 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   it "does not raise an error when invalid" do
-    expect { generate_new_liquid("fake_username/fake_article_slug") }.
-      not_to raise_error("Invalid link URL or link URL does not exist")
+    expect { generate_new_liquid("fake_username/fake_article_slug") }
+      .not_to raise_error("Invalid link URL or link URL does not exist")
   end
 
   it "renders a proper link tag" do

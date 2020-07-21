@@ -1,8 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 const PersonalSettings = ({
-  handlePersonChatChennelSetting,
+  handlePersonChannelSetting,
   showGlobalBadgeNotification,
   updateCurrentMembershipNotificationSettings,
 }) => {
@@ -16,20 +17,19 @@ const PersonalSettings = ({
           id="c3"
           className="crayons-checkbox"
           checked={showGlobalBadgeNotification}
-          onChange={handlePersonChatChennelSetting}
+          onChange={handlePersonChannelSetting}
         />
         <label htmlFor="c3" className="crayons-field__label">
           Receive Notifications for New Messages
         </label>
       </div>
       <div>
-        <button
-          className="crayons-btn"
+        <Button
           type="submit"
           onClick={updateCurrentMembershipNotificationSettings}
         >
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -38,7 +38,7 @@ const PersonalSettings = ({
 PersonalSettings.propTypes = {
   updateCurrentMembershipNotificationSettings: PropTypes.func.isRequired,
   showGlobalBadgeNotification: PropTypes.bool.isRequired,
-  handlePersonChatChennelSetting: PropTypes.func.isRequired,
+  handlePersonChannelSetting: PropTypes.func.isRequired,
 };
 
 export default PersonalSettings;

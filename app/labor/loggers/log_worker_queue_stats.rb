@@ -15,7 +15,7 @@ module Loggers
       end
 
       def record_queue_stats(queues)
-        queue_hash = queues.map { |queue| [queue.name, size: queue.size, latency: queue.latency] }.to_h
+        queue_hash = queues.map { |queue| [queue.name, { size: queue.size, latency: queue.latency }] }.to_h
         queue_hash.each do |queue_name, queue_values|
           latency = queue_values.fetch(:latency, 0)
           size = queue_values.fetch(:size, 0)

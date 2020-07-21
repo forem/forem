@@ -21,7 +21,20 @@
     </div>
   <% else %>
     <div class="border-0 border-b-1 border-solid border-base-20 p-2 grid gap-2">
-      <%= render partial: "shared/authentication/providers_nav_menu" %>
+      <% if any_selfserve_auth? %>
+        <%= render partial: "shared/authentication/providers_nav_menu" %>
+        <a
+          href="/enter"
+          class="crayons-btn crayons-btn--secondary">
+          More Sign In Options
+        </a>
+      <% else %>
+        <a
+          href="/enter"
+          class="crayons-btn crayons-btn--secondary">
+          Sign In
+        </a>
+      <% end %>
     </div>
     <div class="p-1">
       <a href="<%= information_path %>" class="crayons-link crayons-link--block" id="last-nav-link">All about <%= community_name %></a>
