@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_17_203432) do
+ActiveRecord::Schema.define(version: 2020_07_20_143134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -273,7 +273,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_203432) do
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
   end
 
-  create_table "broadcasts", id: :serial, force: :cascade do |t|
+  create_table "broadcasts", force: :cascade do |t|
     t.boolean "active", default: false
     t.datetime "active_status_updated_at"
     t.string "banner_style"
@@ -559,7 +559,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_203432) do
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end
 
-  create_table "github_issues", id: :serial, force: :cascade do |t|
+  create_table "github_issues", force: :cascade do |t|
     t.string "category"
     t.datetime "created_at", null: false
     t.string "issue_serialized", default: "--- {}\n"
@@ -633,7 +633,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_203432) do
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
   end
 
-  create_table "mentions", id: :serial, force: :cascade do |t|
+  create_table "mentions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "mentionable_id"
     t.string "mentionable_type"
@@ -655,7 +655,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_203432) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
-  create_table "notes", id: :serial, force: :cascade do |t|
+  create_table "notes", force: :cascade do |t|
     t.integer "author_id"
     t.text "content"
     t.datetime "created_at", null: false
@@ -977,7 +977,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_203432) do
     t.index ["user_id"], name: "index_response_templates_on_user_id"
   end
 
-  create_table "roles", id: :serial, force: :cascade do |t|
+  create_table "roles", force: :cascade do |t|
     t.datetime "created_at"
     t.string "name"
     t.integer "resource_id"
@@ -1297,7 +1297,7 @@ ActiveRecord::Schema.define(version: 2020_07_17_203432) do
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
-    t.integer "role_id"
+    t.bigint "role_id"
     t.integer "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end

@@ -36,27 +36,27 @@ class DashboardsController < ApplicationController
 
   def following_tags
     @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag")
-      .order("points DESC").includes(:followable).limit(@follows_limit)
+      .order(points: :desc).includes(:followable).limit(@follows_limit)
   end
 
   def following_users
     @follows = @user.follows_by_type("User")
-      .order("created_at DESC").includes(:followable).limit(@follows_limit)
+      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
   end
 
   def following_organizations
     @followed_organizations = @user.follows_by_type("Organization")
-      .order("created_at DESC").includes(:followable).limit(@follows_limit)
+      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
   end
 
   def following_podcasts
     @followed_podcasts = @user.follows_by_type("Podcast")
-      .order("created_at DESC").includes(:followable).limit(@follows_limit)
+      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
   end
 
   def followers
     @follows = Follow.followable_user(@user.id)
-      .includes(:follower).order("created_at DESC").limit(@follows_limit)
+      .includes(:follower).order(created_at: :desc).limit(@follows_limit)
   end
 
   def pro

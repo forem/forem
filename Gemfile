@@ -88,7 +88,7 @@ gem "redis", "~> 4.2.1" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
 gem "rolify", "~> 5.3" # Very simple Roles library
-gem "rouge", "~> 3.20" # A pure-ruby code highlighter
+gem "rouge", "~> 3.21" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
@@ -137,7 +137,7 @@ group :development, :test do
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.33" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.13" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.0.0" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 2.1.1" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.88.0", require: false # Automatic Ruby code style checking tool
@@ -161,7 +161,7 @@ group :test do
   gem "simplecov", "0.17.1", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 3.0", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
-  gem "test-prof", "~> 0.11" # Ruby Tests Profiling Toolbox
+  gem "test-prof", "~> 0.12" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 4.4" # Run Selenium tests more easily with install and updates for all supported webdrivers

@@ -9,7 +9,7 @@ module Internal
         .includes(:user,
                   :reactable)
         .where("category IN (?)", PRIVILEGED_REACTION_CATEGORIES)
-        .order("reactions.created_at DESC")
+        .order("reactions.created_at" => :desc)
         .ransack(params[:q])
       @privileged_reactions = @q.result.page(params[:page] || 1).per(25)
     end

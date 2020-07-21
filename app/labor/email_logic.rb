@@ -40,7 +40,7 @@ class EmailLogic
                    .where("score > ?", 12)
                    .where("experience_level_rating > ? AND experience_level_rating < ?",
                           experience_level_rating_min, experience_level_rating_max)
-                   .order("score DESC")
+                   .order(score: :desc)
                    .limit(8)
                else
                  Article.published
@@ -48,7 +48,7 @@ class EmailLogic
                    .where(featured: true, email_digest_eligible: true)
                    .where.not(user_id: @user.id)
                    .where("score > ?", 25)
-                   .order("score DESC")
+                   .order(score: :desc)
                    .limit(8)
                end
 

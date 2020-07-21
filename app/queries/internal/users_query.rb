@@ -6,7 +6,7 @@ module Internal
       relation = relation.with_role(role, :any) if role.presence
       relation = search_relation(relation, search) if search.presence
 
-      relation.order("created_at DESC")
+      relation.order(created_at: :desc)
     end
 
     def self.search_relation(relation, search)
