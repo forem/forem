@@ -166,19 +166,18 @@
   justify-content: space-between;
   flex-direction: row;
   padding: 0.3rem var(--su-5);
-  color: white;
+  color: black;
   border-radius: 20px;
 
   background: black;
-  background: -moz-linear-gradient(left, #6ebc25 0%, #e0c22a 50%, #c16868 100%);
+  background: -moz-linear-gradient(left, #66e2d5 0%, #fefa87 50%, #ff0000 100%);
   background: -webkit-linear-gradient(
     left,
-    #6ebc25 0%,
-    #e0c22a 50%,
-    #c16868 100%
+    #66e2d5 0%,
+    #fefa87 50%,
+    #ff0000 100%
   );
-  background: linear-gradient(to right, #6ebc25 0%, #e0c22a 50%, #c16868 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6ebc25', endColorstr='#c16868',GradientType=1 );
+  background: linear-gradient(to right, #66e2d5 0%, #fefa87 50%, #ff0000 100%);
 
   @media (min-width: 810px) {
     display: none;
