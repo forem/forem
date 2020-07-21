@@ -9,7 +9,8 @@ class ChatChannelMembershipsController < ApplicationController
 
   def index
     skip_authorization
-    @pending_invites = current_user.chat_channel_memberships.includes(:chat_channel).where(status: "pending")
+    memberships = current_user.chat_channel_memberships.includes(:chat_channel)
+    @pending_invites = memberships.filter_by_status("pending")
   end
 
   def find_by_chat_channel_id
@@ -56,8 +57,11 @@ class ChatChannelMembershipsController < ApplicationController
     if existing_membership.present? && %w[active joining_request].exclude?(existing_membership.status)
       status = existing_membership.update(status: "joining_request", role: "member")
     else
-      membership = ChatChannelMembership.new(user_id: current_user.id, chat_channel_id: chat_channel.id,
-                                             role: "member", status: "joining_request")
+      membership = ChatChannelMembership.new(
+        user_id: current_user.id,
+        chat_channel_id: chat_channel.id,
+      ).filter_by_status("joining_request").filter_by_role("member")
+
       status = membership.save
     end
     if status
@@ -134,8 +138,9 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def request_details
-    mod_memberships = ChatChannelMembership.where(user_id: current_user.id, role: "mod", status: "active")
-    user_chat_channels = mod_memberships.map(&:chat_channel)
+    user_chat_channels = ChatChannel.includes(:chat_channel_memberships).where(
+      chat_channel_memberships: { user_id: current_user.id, role: "mod", status: "active" },
+    )
     @memberships = user_chat_channels.map(&:requested_memberships).flatten
     @user_invitations = ChatChannelMembership.where(
       user_id: current_user.id,

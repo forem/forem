@@ -945,8 +945,6 @@ export default class Chat extends Component {
           data: {},
           type_of: 'channel-request-manager',
           updateRequestCount: this.handleUpdateRequestCount,
-          handleRequestRejection: this.handleRequestRejection,
-          handleRequestApproval: this.handleRequestApproval,
         });
       } else if (content === 'sidecar_all') {
         this.setActiveContentState(activeChannelId, {
