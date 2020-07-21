@@ -30,6 +30,7 @@ CarrierWave.configure do |config|
                                }
                              end
     config.fog_directory = "forem-12345-uploads"
+    config.fog_public    = false
     config.storage = :fog
   end
 end
