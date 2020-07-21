@@ -307,7 +307,6 @@ Rails.application.routes.draw do
   get "/join_channel_invitation/:channel_slug" => "chat_channel_memberships#join_channel_invitation"
   post "/joining_invitation_response" => "chat_channel_memberships#joining_invitation_response"
 
-
   get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
   get "/social_previews/user/:id" => "social_previews#user", :as => :user_social_preview
   get "/social_previews/organization/:id" => "social_previews#organization", :as => :organization_social_preview

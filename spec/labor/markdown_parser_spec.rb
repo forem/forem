@@ -173,19 +173,19 @@ RSpec.describe MarkdownParser, type: :labor do
 
   context "when checking XSS attempt in markdown content" do
     it "raises an error if XSS attempt detected" do
-      expect {
+      expect do
         generate_and_parse_markdown("src='DatA:text/html;base64:xxxx'")
-      }.to raise_error(ArgumentError)
+      end.to raise_error(ArgumentError)
 
-      expect {
+      expect do
         generate_and_parse_markdown("src=\"&\"")
-      }.to raise_error(ArgumentError)
+      end.to raise_error(ArgumentError)
     end
 
     it "does not raise error if no XSS attempt detected" do
-       expect {
+      expect do
         generate_and_parse_markdown("```const data = 'data:text/html';```")
-      }.not_to raise_error(ArgumentError)
+      end.not_to raise_error(ArgumentError)
     end
   end
 

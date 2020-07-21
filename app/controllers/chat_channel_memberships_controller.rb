@@ -60,8 +60,7 @@ class ChatChannelMembershipsController < ApplicationController
       status = existing_membership.update(status: "joining_request", role: "member")
     else
       membership = ChatChannelMembership.new(user_id: current_user.id, chat_channel_id: chat_channel.id,
-                                              role: "member", status: "joining_request")
-
+                                             role: "member", status: "joining_request")
       status = membership.save
     end
     if status
@@ -262,7 +261,6 @@ class ChatChannelMembershipsController < ApplicationController
     end
 
     membership_user = helpers.format_membership(@chat_channel_membership)
-
     flash[:settings_notice] = notice
 
     respond_to do |format|
