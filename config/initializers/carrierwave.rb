@@ -25,10 +25,8 @@ CarrierWave.configure do |config|
                              else # jdoss's special sauce
                                {
                                  provider: "AWS",
-                                 aws_access_key_id: ApplicationConfig["AWS_ID"],
-                                 aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
                                  use_iam_profile: true,
-                                 region: region
+                                 region: "us-east-2"
                                }
                              end
     config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]

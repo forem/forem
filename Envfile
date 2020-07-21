@@ -68,31 +68,32 @@ variable :TWITTER_SECRET, :String, default: ""
 variable :HONEYBADGER_API_KEY, :String, default: "Optional"
 variable :HONEYBADGER_JS_API_KEY, :String, default: "Optional"
 
-# AWS for images storages
-variable :AWS_ID, :String, default: "Optional"
-variable :AWS_SECRET, :String, default: "Optional"
-variable :AWS_BUCKET_NAME, :String, default: "Optional"
-variable :AWS_UPLOAD_REGION, :String, default: ""
+# Commented out for jdoss
+# # AWS for images storages
+# variable :AWS_ID, :String, default: "Optional"
+# variable :AWS_SECRET, :String, default: "Optional"
+# variable :AWS_BUCKET_NAME, :String, default: "Optional"
+# variable :AWS_UPLOAD_REGION, :String, default: ""
 
-# AWS SDK
-# (https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html)
-variable :AWS_DEFAULT_REGION, :String, default: "us-east-1"
-variable :AWS_SDK_KEY, :String, default: "Optional"
-variable :AWS_SDK_SECRET, :String, default: "Optional"
+# # AWS SDK
+# # (https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html)
+# variable :AWS_DEFAULT_REGION, :String, default: "us-east-1"
+# variable :AWS_SDK_KEY, :String, default: "Optional"
+# variable :AWS_SDK_SECRET, :String, default: "Optional"
 
-# AWS for video storage
-variable :AWS_S3_INPUT_BUCKET, :String, default: "Optional"
-variable :AWS_S3_VIDEO_ID, :String, default: "Optional"
-variable :AWS_S3_VIDEO_KEY, :String, default: "Optional"
+# # AWS for video storage
+# variable :AWS_S3_INPUT_BUCKET, :String, default: "Optional"
+# variable :AWS_S3_VIDEO_ID, :String, default: "Optional"
+# variable :AWS_S3_VIDEO_KEY, :String, default: "Optional"
 
 # Buffer for sending to buffer
 # (https://buffer.com/developers/api)
-variable :BUFFER_ACCESS_TOKEN, :String, default: "Optional"
-variable :BUFFER_FACEBOOK_ID, :String, default: "Optional"
-variable :BUFFER_LINKEDIN_ID, :String, default: "Optional"
-variable :BUFFER_PROFILE_ID, :Integer, default: 0
-variable :BUFFER_TWITTER_ID, :String, default: "Optional"
-variable :BUFFER_LISTINGS_PROFILE, :String, default: "Optional"
+# variable :BUFFER_ACCESS_TOKEN, :String, default: "Optional"
+# variable :BUFFER_FACEBOOK_ID, :String, default: "Optional"
+# variable :BUFFER_LINKEDIN_ID, :String, default: "Optional"
+# variable :BUFFER_PROFILE_ID, :Integer, default: 0
+# variable :BUFFER_TWITTER_ID, :String, default: "Optional"
+# variable :BUFFER_LISTINGS_PROFILE, :String, default: "Optional"
 
 # Cloudinary for image resizing and cache??
 # (https://cloudinary.com/documentation/rails_integration)
