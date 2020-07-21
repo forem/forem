@@ -29,7 +29,7 @@ CarrierWave.configure do |config|
                                  region: "us-east-2"
                                }
                              end
-    config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
+    config.fog_directory = "forem-12345-uploads"
     config.storage = :fog
   end
 end
