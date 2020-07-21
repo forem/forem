@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
+import { Button } from '@crayons';
+
 const RequestListItem = ({
   request,
   handleRequestRejection,
@@ -9,27 +11,29 @@ const RequestListItem = ({
   <div className="crayons-card mb-6">
     <div className="crayons-card__body channel-request-card">
       <div className="request-message d-flex flex-wrap">
-        <b>{request.name}</b> wanted to join <b>{request.chat_channel_name}</b>
+        <b>{request.name}</b> requested to join{' '}
+        <b>{request.chat_channel_name}</b>
       </div>
       <div className="request-actions">
-        <button
-          type="button"
-          className="crayons-btn  crayons-btn--s crayons-btn--danger  m-2"
+        <Button
+          className="m-2"
+          variant="danger"
+          size="s"
           onClick={handleRequestRejection}
           data-channel-id={request.chat_channel_id}
           data-membership-id={request.membership_id}
         >
           Reject
-        </button>
-        <button
-          type="button"
-          className="crayons-btn crayons-btn--s  m-2"
+        </Button>
+        <Button
+          className="m-2"
+          size="s"
           onClick={handleRequestApproval}
           data-channel-id={request.chat_channel_id}
           data-membership-id={request.membership_id}
         >
           Accept
-        </button>
+        </Button>
       </div>
     </div>
   </div>

@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
+import { Button } from '@crayons';
+
 const RequestListItem = ({ request, updateMembership }) => (
   <div className="crayons-card mb-6">
     <div className="crayons-card__body channel-request-card">
@@ -8,9 +10,10 @@ const RequestListItem = ({ request, updateMembership }) => (
         You got invitation to join <b>{request.chat_channel_name}</b>.
       </div>
       <div className="request-actions">
-        <button
-          type="button"
-          className="crayons-btn  crayons-btn--s crayons-btn--danger m-2"
+        <Button
+          className="m-2"
+          size="s"
+          variant="danger"
           onClick={updateMembership}
           data-channel-id={request.chat_channel_id}
           data-membership-id={request.membership_id}
@@ -18,10 +21,10 @@ const RequestListItem = ({ request, updateMembership }) => (
         >
           {' '}
           Reject
-        </button>
-        <button
-          type="button"
-          className="crayons-btn crayons-btn--s m-2"
+        </Button>
+        <Button
+          className="m-2"
+          size="s"
           onClick={updateMembership}
           data-channel-id={request.chat_channel_id}
           data-membership-id={request.membership_id}
@@ -29,7 +32,7 @@ const RequestListItem = ({ request, updateMembership }) => (
         >
           {' '}
           Accept
-        </button>
+        </Button>
       </div>
     </div>
   </div>
