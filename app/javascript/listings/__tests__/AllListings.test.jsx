@@ -19,6 +19,20 @@ const firstListing = {
     profile_image_90:
       '/uploads/user/profile_image/7/4b1c980a-beb0-4a5f-b3f2-acc91adc503c.png',
   },
+  listing_endorsements: [
+    {
+      content: 'I endorse you',
+      user_id: 4,
+      author_profile_image_90:
+        '/uploads/user/profile_image/4/3a46d85d-1a6f-4502-b1f1-5e2d9110760f.png',
+    },
+    {
+      content: 'I endorse you the second time',
+      user_id: 2,
+      author_profile_image_90:
+        '/uploads/user/profile_image/4/3a46d85d-1a6f-4502-b1f1-5e2d9110760f.png',
+    },
+  ],
 };
 
 const secondListing = {
@@ -37,6 +51,20 @@ const secondListing = {
     profile_image_90:
       '/uploads/user/profile_image/7/4b1c980a-beb0-4a5f-b3f2-acc91adc503c.png',
   },
+  listing_endorsements: [
+    {
+      content: 'I endorse you',
+      user_id: 4,
+      author_profile_image_90:
+        '/uploads/user/profile_image/4/3a46d85d-1a6f-4502-b1f1-5e2d9110760f.png',
+    },
+    {
+      content: 'I endorse you the second time',
+      user_id: 2,
+      author_profile_image_90:
+        '/uploads/user/profile_image/4/3a46d85d-1a6f-4502-b1f1-5e2d9110760f.png',
+    },
+  ],
 };
 
 const thirdListing = {
@@ -55,6 +83,20 @@ const thirdListing = {
     profile_image_90:
       '/uploads/user/profile_image/7/4b1c980a-beb0-4a5f-b3f2-acc91adc503c.png',
   },
+  listing_endorsements: [
+    {
+      content: 'I endorse you',
+      user_id: 4,
+      author_profile_image_90:
+        '/uploads/user/profile_image/4/3a46d85d-1a6f-4502-b1f1-5e2d9110760f.png',
+    },
+    {
+      content: 'I endorse you the second time',
+      user_id: 2,
+      author_profile_image_90:
+        '/uploads/user/profile_image/4/3a46d85d-1a6f-4502-b1f1-5e2d9110760f.png',
+    },
+  ],
 };
 
 const listings = [firstListing, secondListing, thirdListing];

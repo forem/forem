@@ -48,6 +48,8 @@ export class Listings extends Component {
     const query = params.q || '';
 
     if (tags.length === 0 && query === '') {
+      console.log('yooo noowwwwwwwwwwwwwwwwwwwwwwwwwwwwwww');
+      console.log(container.dataset.listings);
       listings = JSON.parse(container.dataset.listings);
     }
 

@@ -1,0 +1,2 @@
+module ListingEndorsementsHelper
+end

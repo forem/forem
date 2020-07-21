@@ -5,6 +5,7 @@ import Header from './Header';
 import TagLinks from './TagLinks';
 import AuthorInfo from './AuthorInfo';
 import listingPropTypes from './listingPropTypes';
+import EndorseAvatar from './EndorseAvatar';
 
 const SingleListing = ({
   listing,
@@ -36,6 +37,20 @@ const SingleListing = ({
         />
         <TagLinks tags={listing.tags} onClick={onAddTag} />
         <AuthorInfo listing={listing} onCategoryClick={onChangeCategory} />
+      </div>
+      <div className="endorsement-comp">
+        <span>
+          {listing.listing_endorsements.map((endorsement, idx) => {
+            return (
+              <EndorseAvatar
+                avatar={endorsement.author_profile_image_90}
+                key={`end-${idx}`}
+              />
+            );
+          })}
+        </span>
+
+        <span>endorsement</span>
       </div>
     </div>
   );

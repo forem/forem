@@ -7,7 +7,8 @@ class ListingsController < ApplicationController
       title processed_html tag_list category id user_id slug contact_via_connect location
     ],
     include: {
-      author: { only: %i[username name], methods: %i[username profile_image_90] }
+      author: { only: %i[username name], methods: %i[username profile_image_90] },
+      listing_endorsements: { only: %i[content user_id], methods: %i[author_profile_image_90] }
     }
   }.freeze
 
@@ -39,7 +40,7 @@ class ListingsController < ApplicationController
       if params[:category].blank?
         published_listings.
           order("bumped_at DESC").
-          includes(:user, :organization, :taggings).
+          includes(:user, :organization, :taggings, :listing_endorsements).
           limit(12)
       else
         Listing.none

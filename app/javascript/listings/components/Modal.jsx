@@ -15,7 +15,7 @@ const Modal = ({
   message,
 }) => {
   const shouldRenderMessageModal = listing && listing.contact_via_connect;
-
+  console.log(currentUserId, listing, message);
   return (
     <div className="single-listing-container">
       <div
