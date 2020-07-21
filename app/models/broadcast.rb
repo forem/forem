@@ -24,6 +24,8 @@ class Broadcast < ApplicationRecord
   private
 
   def single_active_announcement_broadcast
+    # TODO: [@thepracticaldev/delightful]: Move this logic into the Announcement model
+
     # Only add errors if we are trying to modify an announcement
     # broadcast while another announcement broadcast is already
     # active to ensure that only one can be active at a time.

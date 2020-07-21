@@ -41,7 +41,7 @@ class AsyncInfoController < ApplicationController
   end
 
   def broadcast_data
-    broadcast = Broadcast.announcement.active.first.presence
+    broadcast = Broadcast.active.first.presence
     return unless broadcast
 
     {
