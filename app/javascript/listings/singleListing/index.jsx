@@ -38,20 +38,24 @@ const SingleListing = ({
         <TagLinks tags={listing.tags} onClick={onAddTag} />
         <AuthorInfo listing={listing} onCategoryClick={onChangeCategory} />
       </div>
-      <div className="endorsement-comp">
-        <span>
-          {listing.listing_endorsements.map((endorsement, idx) => {
-            return (
-              <EndorseAvatar
-                avatar={endorsement.author_profile_image_90}
-                key={`end-${idx}`}
-              />
-            );
-          })}
-        </span>
+      {listing.listing_endorsements.length ? (
+        <div className="endorsement-comp">
+          <span>
+            {listing.listing_endorsements.map((endorsement, idx) => {
+              return (
+                <EndorseAvatar
+                  avatar={endorsement.author_profile_image_90}
+                  key={`end-${idx}`}
+                />
+              );
+            })}
+          </span>
 
-        <span>endorsement</span>
-      </div>
+          <span>{`${listing.listing_endorsements.length} endorsement`}</span>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   );
 };
