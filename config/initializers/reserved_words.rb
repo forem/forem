@@ -220,6 +220,9 @@ class ReservedWords
     image
     asset
     config
+    styles
+    members
+    uploads
   ].freeze
 
   class << self
