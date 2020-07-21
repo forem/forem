@@ -212,6 +212,14 @@ class ReservedWords
     welcome
     work
     yes
+    images
+    assets
+    meta
+    guides
+    guide
+    image
+    asset
+    config
   ].freeze
 
   class << self
