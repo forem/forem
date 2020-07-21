@@ -72,7 +72,7 @@ variable :HONEYBADGER_JS_API_KEY, :String, default: "Optional"
 # # AWS for images storages
 # variable :AWS_ID, :String, default: "Optional"
 # variable :AWS_SECRET, :String, default: "Optional"
-# variable :AWS_BUCKET_NAME, :String, default: "Optional"
+variable :AWS_BUCKET_NAME, :String, default: "Optional"
 # variable :AWS_UPLOAD_REGION, :String, default: ""
 
 # # AWS SDK
