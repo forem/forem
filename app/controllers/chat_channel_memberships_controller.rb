@@ -83,9 +83,7 @@ class ChatChannelMembershipsController < ApplicationController
       send_chat_action_message(
         message, current_user, @chat_channel_membership.chat_channel_id, "removed_from_channel"
       )
-
       @chat_channel_membership.update(status: "removed_from_channel")
-
       message = "Removed #{@chat_channel_membership.user.name}"
     end
 
@@ -256,7 +254,6 @@ class ChatChannelMembershipsController < ApplicationController
       end
     else
       @chat_channel_membership.update(status: "rejected")
-
       notice = "Invitation rejected."
     end
 
