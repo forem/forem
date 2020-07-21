@@ -9,6 +9,21 @@ export const EditorBody = ({
   switchHelpContext,
   version,
 }) => {
+  let inputText = document.getElementById('article_body_markdown');
+
+  let wordCount = document.getElementById('count');
+
+  if (inputText) {
+    inputText.addEventListener('keyup', function () {
+      let words = inputText.value.match(/\b[-?(\w+)?]+\b/gi);
+      if (words) {
+        wordCount.innerHTML = words.length;
+      } else {
+        wordCount.innerHTML = 0;
+      }
+    });
+  }
+
   return (
     <div
       data-testid="article-form__body"
@@ -28,6 +43,18 @@ export const EditorBody = ({
         }}
         name="body_markdown"
       />
+
+      <div class="crayons-card" style="width:20%; margin-top:30px;">
+        <div class="crayons-card crayons-card--secondary">
+          <div style="color:grey;">
+            {' '}
+            Words:{' '}
+            <span id="count" style="color:grey;">
+              {' '}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
