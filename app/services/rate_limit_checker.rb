@@ -40,7 +40,7 @@ class RateLimitChecker
 
   def limit_by_action(action)
     check_method = "check_#{action}_limit"
-    result = respond_to?(check_method, true) ? send(check_method) : false
+    result = respond_to?(check_method, true) ? __send__(check_method) : false
 
     if result
       @action = action

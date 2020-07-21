@@ -281,7 +281,7 @@ export default class Chat extends Component {
     );
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('invite_only')),
-      (channel) => `presence-channel-${channel.chat_channel_id}`,
+      (channel) => `private-channel-${channel.chat_channel_id}`,
     );
     const chatChannelsList = document.getElementById(
       'chatchannels__channelslist',
@@ -360,7 +360,7 @@ export default class Chat extends Component {
       if (activeChannel.channel_type === 'open')
         this.subscribePusher(`open-channel-${channelId}`);
     }
-    this.subscribePusher(`presence-channel-${channelId}`);
+    this.subscribePusher(`private-channel-${channelId}`);
   };
 
   setOpenChannelUsers = (res) => {
@@ -756,14 +756,14 @@ export default class Chat extends Component {
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     }
   };
-
+  hideChannelList = () => {
+    const chatContainer = document.querySelector('.chat__activechat');
+    chatContainer.classList.remove('chat__activechat--hidden');
+  };
   handleSwitchChannel = (e) => {
     e.preventDefault();
     let { target } = e;
-
-    const chatContainer = document.querySelector('.chat__activechat');
-    chatContainer.classList.remove('chat__activechat--hidden');
-
+    this.hideChannelList();
     if (!target.dataset.channelId) {
       target = target.parentElement;
     }
@@ -919,6 +919,7 @@ export default class Chat extends Component {
     if (content) {
       e.preventDefault();
       e.stopPropagation();
+      this.hideChannelList();
 
       const { activeChannelId, activeChannel } = this.state;
 
@@ -1767,6 +1768,11 @@ export default class Chat extends Component {
         ? 'sidecar-user'
         : `chat_channel_setting`;
 
+    const contentLink =
+      activeChannel.channel_type === 'direct'
+        ? `/${activeChannel.channel_username}`
+        : '#/';
+
     return (
       <a
         className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
@@ -1775,7 +1781,7 @@ export default class Chat extends Component {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
         tabIndex="0"
-        href={path}
+        href={contentLink}
         data-content={dataContent}
       >
         <svg
@@ -1784,8 +1790,12 @@ export default class Chat extends Component {
           width="24"
           height="24"
           className="crayons-icon"
+          data-content={dataContent}
         >
-          <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM11 7h2v2h-2V7zm0 4h2v6h-2v-6z" />
+          <path
+            data-content={dataContent}
+            d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM11 7h2v2h-2V7zm0 4h2v6h-2v-6z"
+          />
         </svg>
       </a>
     );

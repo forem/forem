@@ -191,6 +191,6 @@ class MailchimpBot
   end
 
   def previously_subcribed?(error)
-    error.title.match?(/Member In Compliance State/)
+    error.title.include?("Member In Compliance State")
   end
 end

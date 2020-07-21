@@ -1692,7 +1692,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -1854,7 +1854,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -1996,7 +1996,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+            curl https://dev.to/api/articles/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
 
   /articles/me:
     get:
@@ -2407,7 +2407,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Listings API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/listings_spec.rb)
+        - [Rails tests for Listings API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/listings_spec.rb)
       tags:
         - listings
       requestBody:
