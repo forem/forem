@@ -2,6 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import SingleListing from '../singleListing';
 import MessageModal from './MessageModal';
+import EndorseMessageModal from './EndorseMessageModal';
 
 const Modal = ({
   currentUserId,
@@ -34,6 +35,13 @@ const Modal = ({
           onOpenModal={onOpenModal}
           isOpen
         />
+        {shouldRenderMessageModal && (
+          <EndorseMessageModal
+            onSubmit={onSubmit}
+            message={message}
+            listing={listing}
+          />
+        )}
         {shouldRenderMessageModal && (
           <MessageModal
             onSubmit={onSubmit}

@@ -9,7 +9,6 @@ const MessageModal = ({
   onChangeDraftingMessage,
 }) => {
   const isCurrentUserOnListing = listing.user_id === currentUserId;
-
   return (
     <form
       data-testid="listings-message-modal"
@@ -44,24 +43,20 @@ const MessageModal = ({
       </button>
       <p>
         {isCurrentUserOnListing ? (
-          <em data-testid="personal-message-about-interactions" id="personal-message-about-interactions">
-            All private interactions
-            {' '}
-            <b>must</b>
-            {' '}
-            abide by the
-            {' '}
+          <em
+            data-testid="personal-message-about-interactions"
+            id="personal-message-about-interactions"
+          >
+            All private interactions <b>must</b> abide by the{' '}
             <a href="/code-of-conduct">code of conduct</a>
           </em>
         ) : (
-          <em data-testid="generic-message-about-interactions" id="generic-message-about-interactions">
+          <em
+            data-testid="generic-message-about-interactions"
+            id="generic-message-about-interactions"
+          >
             Message must be relevant and on-topic with the listing. All private
-            interactions
-            {' '}
-            <b>must</b>
-            {' '}
-            abide by the
-            {' '}
+            interactions <b>must</b> abide by the{' '}
             <a href="/code-of-conduct">code of conduct</a>
           </em>
         )}
