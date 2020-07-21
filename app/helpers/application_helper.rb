@@ -194,7 +194,7 @@ module ApplicationHelper
   end
 
   def collection_link(collection, options = {})
-    size_string = "#{collection.articles.size} Part Series"
+    size_string = "#{collection.articles.published.size} Part Series"
     body = collection.slug.present? ? "#{collection.slug} (#{size_string})" : size_string
 
     link_to body, collection.path, options
