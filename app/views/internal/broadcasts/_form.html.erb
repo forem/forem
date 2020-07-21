@@ -11,7 +11,7 @@
 </div>
 <div class="form-group">
   <%= label_tag :banner_style, "Banner Style:" %>
-  <%= select_tag "banner_style", options_for_select(%w[default brand success warning error], selected: @broadcast.banner_style), include_blank: true %>
+  <%= select_tag "banner_style", options_for_select(%w[default brand success warning error], selected: @broadcast.broadcastable.banner_style), include_blank: true %>
 </div>
 <div class="form-group">
   <%= label_tag :active, "Active:" %>
