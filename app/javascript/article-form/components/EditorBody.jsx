@@ -44,14 +44,11 @@ export const EditorBody = ({
         name="body_markdown"
       />
 
-      <div class="crayons-card" style="width:20%; margin-top:30px;">
+      <div class="crayons-card" id="word-count-container">
         <div class="crayons-card crayons-card--secondary">
-          <div style="color:grey;">
+          <div id="word-count-text">
             {' '}
-            Words:{' '}
-            <span id="count" style="color:grey;">
-              {' '}
-            </span>
+            Words: <span id="count"> </span>
           </div>
         </div>
       </div>
