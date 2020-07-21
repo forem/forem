@@ -219,8 +219,6 @@ class ReservedWords
     guide
     image
     asset
-    config
-    styles
     members
     uploads
   ].freeze
