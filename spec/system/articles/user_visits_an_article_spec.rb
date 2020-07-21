@@ -49,8 +49,8 @@ RSpec.describe "Views an article", type: :system do
 
       before do
         [first_article, second_article].each do |article|
-          additional_characters_for_long_markdown = (ArticlesHelper::LONG_MARKDOWN_THRESHOULD + 1) - article.body_markdown.length
-          article.body_markdown += Faker::Hipster.paragraph_by_chars(characters: additional_characters_for_long_markdown)
+          additional_characters_length = (ArticleDecorator::LONG_MARKDOWN_THRESHOLD + 1) - article.body_markdown.length
+          article.body_markdown << Faker::Hipster.paragraph_by_chars(characters: additional_characters_length)
           article.save!
         end
       end

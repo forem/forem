@@ -1,6 +1,4 @@
 module ArticlesHelper
-  LONG_MARKDOWN_THRESHOULD = 900
-
   def sort_options
     [
       ["Recently Created", "creation-desc"],
@@ -17,10 +15,6 @@ module ArticlesHelper
     article.processed_html.include?("youtube.com/embed/") ||
       article.processed_html.include?("player.vimeo.com") ||
       article.comments_blob.include?("youtube")
-  end
-
-  def has_long_markdown?(article)
-    article.body_markdown && article.body_markdown.size > LONG_MARKDOWN_THRESHOULD
   end
 
   def collection_link_class(current_article, linked_article)
