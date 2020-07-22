@@ -72,7 +72,11 @@ Rails.application.routes.draw do
     end
     resources :reactions, only: [:update]
     resources :response_templates, only: %i[index new edit create update destroy]
-    resources :chat_channels, only: %i[index create update]
+    resources :chat_channels, only: %i[index create update] do
+      member do
+        delete :remove_user
+      end
+    end
     resources :reports, only: %i[index show], controller: "feedback_messages" do
       collection do
         post "send_email"
@@ -302,6 +306,10 @@ Rails.application.routes.draw do
   post "/chat_channel_memberships/create_membership_request" => "chat_channel_memberships#create_membership_request"
   patch "/chat_channel_memberships/leave_membership/:id" => "chat_channel_memberships#leave_membership"
   patch "/chat_channel_memberships/update_membership/:id" => "chat_channel_memberships#update_membership"
+  get "/channel_request_info/" => "chat_channel_memberships#request_details"
+  patch "/chat_channel_memberships/update_membership_role/:id" => "chat_channel_memberships#update_membership_role"
+  get "/join_channel_invitation/:channel_slug" => "chat_channel_memberships#join_channel_invitation"
+  post "/joining_invitation_response" => "chat_channel_memberships#joining_invitation_response"
 
   get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
   get "/social_previews/user/:id" => "social_previews#user", :as => :user_social_preview

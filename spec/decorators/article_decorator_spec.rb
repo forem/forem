@@ -183,4 +183,24 @@ RSpec.describe ArticleDecorator, type: :decorator do
         .description_and_tags).to eq(search_optimized_description_replacement)
     end
   end
+
+  describe "#video_metadata" do
+    it "responds with a hash representation of video metadata" do
+      article_with_video = create(:article,
+                                  video_code: "ABC",
+                                  video_source_url: "https://cdn.com/ABC.m3u8",
+                                  video_thumbnail_url: "https://cdn.com/ABC.png",
+                                  video_closed_caption_track_url: "https://cdn.com/ABC_captions")
+
+      expect(article_with_video.decorate.video_metadata).to eq(
+        {
+          id: article_with_video.id,
+          video_code: article_with_video.video_code,
+          video_source_url: article_with_video.video_source_url,
+          video_thumbnail_url: article_with_video.cloudinary_video_url,
+          video_closed_caption_track_url: article_with_video.video_closed_caption_track_url
+        },
+      )
+    end
+  end
 end

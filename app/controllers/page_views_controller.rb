@@ -19,7 +19,7 @@ class PageViewsController < ApplicationMetalController
 
   def update
     if session_current_user_id
-      page_view = PageView.order("created_at DESC").find_or_create_by(article_id: params[:id],
+      page_view = PageView.order(created_at: :desc).find_or_create_by(article_id: params[:id],
                                                                       user_id: session_current_user_id)
       unless page_view.new_record?
         page_view.update_column(:time_tracked_in_seconds, page_view.time_tracked_in_seconds + 15)

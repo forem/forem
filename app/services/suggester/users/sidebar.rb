@@ -32,7 +32,7 @@ module Suggester
       end
 
       def reputable_user_ids
-        User.where(id: active_authors_for_given_tags).order("reputation_modifier DESC").limit(20).pluck(:id)
+        User.where(id: active_authors_for_given_tags).order(reputation_modifier: :desc).limit(20).pluck(:id)
       end
 
       def random_user_ids

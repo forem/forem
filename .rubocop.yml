@@ -386,7 +386,7 @@ Style/ClassAndModuleChildren:
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
   StyleGuide: '#no-nested-conditionals'
-  Enabled: false
+  Enabled: true
 
 Style/RedundantAssignment:
   Description: 'Checks for redundant assignment before returning.'
@@ -423,10 +423,10 @@ Style/ReturnNil:
   Description: 'Use return instead of return nil.'
   Enabled: true
 
-# Style/Send:
-#   Description: 'Prefer `Object#__send__` or `Object#public_send` to `send`, as `send` may overlap with existing methods.'
-#   StyleGuide: '#prefer-public-send'
-#   Enabled: false
+Style/Send:
+  Description: 'Prefer `Object#__send__` or `Object#public_send` to `send`, as `send` may overlap with existing methods.'
+  StyleGuide: '#prefer-public-send'
+  Enabled: true
 
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
@@ -455,9 +455,9 @@ Style/TrailingCommaInArrayLiteral:
   Enabled: true
   EnforcedStyleForMultiline: comma
 
-# Style/TrailingCommaInBlockArgs:
-#   Description: 'Checks for useless trailing commas in block arguments.'
-#   Enabled: false
+Style/TrailingCommaInBlockArgs:
+  Description: 'Checks for useless trailing commas in block arguments.'
+  Enabled: true
 
 # Performance cops from rubocop-performance
 # https://github.com/rubocop-hq/rubocop-performance/blob/master/config/default.yml
