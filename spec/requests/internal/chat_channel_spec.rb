@@ -14,11 +14,24 @@ RSpec.describe "/internal/chat_channels", type: :request do
       sign_in user
       expect do
         post "/internal/chat_channels",
-             params: { chat_channel: { channel_name: "Hello Channel", usernames_string: user.username.to_s } },
+             params: { chat_channel: { channel_name: "Hello Channel", usernames_string: user.username } },
              headers: { HTTP_ACCEPT: "application/json" }
       end.to change(ActionMailer::Base.deliveries, :length)
       expect(ChatChannel.last.channel_name).to eq("Hello Channel")
       expect(ChatChannel.last.pending_users).to include(user)
+    end
+  end
+
+  describe "PATCH /chat_channels" do
+    it "adds the user as a member to the chat channel" do
+      user.add_role(:super_admin)
+      second_user = create(:user)
+      sign_in user
+      patch "/internal/chat_channels/#{chat_channel.id}",
+            params: { chat_channel: { usernames_string: second_user.username } },
+            headers: { HTTP_ACCEPT: "application/json" }
+      expect(second_user.chat_channel_memberships.last).not_to be_blank
+      expect(second_user.chat_channel_memberships.last.role).to eq "member"
     end
   end
 
