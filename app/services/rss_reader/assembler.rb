@@ -77,14 +77,14 @@ class RssReader
         next if a_tag.empty?
 
         possible_link = a_tag[0].inner_html
-        if /medium\.com\/media\/.+\/href/.match?(possible_link)
-          real_link = HTTParty.head(possible_link).request.last_uri.to_s
-          return nil unless real_link.include?("gist.github.com")
+        next unless /medium\.com\/media\/.+\/href/.match?(possible_link)
 
-          iframe.name = "p"
-          iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
-          iframe.inner_html = "{% gist #{real_link} %}"
-        end
+        real_link = HTTParty.head(possible_link).request.last_uri.to_s
+        return nil unless real_link.include?("gist.github.com")
+
+        iframe.name = "p"
+        iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
+        iframe.inner_html = "{% gist #{real_link} %}"
       end
       html_doc
     end
@@ -94,14 +94,14 @@ class RssReader
       html_doc.search("script").remove
       html_doc.css("blockquote").each do |bq|
         bq_with_p = bq.css("p")
-        next if bq_with_p.empty?
 
-        if (tweet_link = bq_with_p.css("a[href*='twitter.com']"))
-          bq.name = "p"
-          tweet_url = tweet_link.attribute("href").value
-          tweet_id = tweet_url.split("/status/").last
-          bq.inner_html = "{% tweet #{tweet_id} %}"
-        end
+        next if bq_with_p.empty?
+        next unless (tweet_link = bq_with_p.css("a[href*='twitter.com']"))
+
+        bq.name = "p"
+        tweet_url = tweet_link.attribute("href").value
+        tweet_id = tweet_url.split("/status/").last
+        bq.inner_html = "{% tweet #{tweet_id} %}"
       end
     end
 
@@ -115,12 +115,12 @@ class RssReader
 
     def parse_and_translate_youtube_iframe!(html_doc)
       html_doc.css("iframe").each do |iframe|
-        if /youtube\.com/.match?(iframe.attributes["src"].value)
-          iframe.name = "p"
-          youtube_id = iframe.attributes["src"].value.scan(/embed%2F(.{4,11})/).flatten.first
-          iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
-          iframe.inner_html = "{% youtube #{youtube_id} %}"
-        end
+        next unless /youtube\.com/.match?(iframe.attributes["src"].value)
+
+        iframe.name = "p"
+        youtube_id = iframe.attributes["src"].value.scan(/embed%2F(.{4,11})/).flatten.first
+        iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
+        iframe.inner_html = "{% youtube #{youtube_id} %}"
       end
     end
 

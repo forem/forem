@@ -155,7 +155,7 @@ class ChatChannel < ApplicationRecord
 
   def pusher_channels
     if invite_only?
-      "presence-channel-#{id}"
+      "private-channel-#{id}"
     elsif open?
       "open-channel-#{id}"
     else
@@ -180,7 +180,7 @@ class ChatChannel < ApplicationRecord
 
   def channel_human_names
     active_memberships
-      .order("last_opened_at DESC").limit(5).includes(:user).map do |membership|
+      .order(last_opened_at: :desc).limit(5).includes(:user).map do |membership|
         membership.user.name
       end
   end

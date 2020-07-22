@@ -57,7 +57,7 @@ module Internal
         .where("published_at > ? OR crossposted_at > ?", days_ago.days.ago, days_ago.days.ago)
         .includes(:user)
         .limited_columns_internal_select
-        .order("public_reactions_count DESC")
+        .order(public_reactions_count: :desc)
         .page(params[:page])
         .per(50)
     end
@@ -67,7 +67,7 @@ module Internal
         .where("published_at > ?", months_ago)
         .includes(user: [:notes])
         .limited_columns_internal_select
-        .order("public_reactions_count DESC")
+        .order(public_reactions_count: :desc)
         .page(params[:page])
         .per(50)
     end
@@ -77,7 +77,7 @@ module Internal
         .includes(:user, :buffer_updates)
         .tagged_with(Tag.bufferized_tags, any: true)
         .limited_columns_internal_select
-        .order("hotness_score DESC")
+        .order(hotness_score: :desc)
         .page(params[:page])
         .per(60)
     end
@@ -86,7 +86,7 @@ module Internal
       Article.boosted_via_additional_articles
         .includes(:user, :buffer_updates)
         .limited_columns_internal_select
-        .order("published_at DESC")
+        .order(published_at: :desc)
         .page(params[:page])
         .per(100)
     end
@@ -95,7 +95,7 @@ module Internal
       Article.published
         .includes(user: [:notes])
         .limited_columns_internal_select
-        .order("published_at DESC")
+        .order(published_at: :desc)
         .page(params[:page])
         .per(50)
     end
@@ -104,7 +104,7 @@ module Internal
       Article.published
         .includes(user: [:notes])
         .limited_columns_internal_select
-        .order("hotness_score DESC")
+        .order(hotness_score: :desc)
         .page(params[:page])
         .per(30)
     end
@@ -115,7 +115,7 @@ module Internal
         .where("featured_number > ?", Time.current.to_i)
         .includes(:user, :buffer_updates)
         .limited_columns_internal_select
-        .order("featured_number DESC")
+        .order(featured_number: :desc)
     end
 
     def article_params

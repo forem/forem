@@ -20,11 +20,11 @@ SitemapGenerator::Sitemap.create do
     add article.path, lastmod: article.last_comment_at, changefreq: "daily"
   end
 
-  User.order("comments_count DESC").where("updated_at > ?", 5.days.ago).limit(8000).find_each do |user|
+  User.order(comments_count: :desc).where("updated_at > ?", 5.days.ago).limit(8000).find_each do |user|
     add "/#{user.username}", changefreq: "daily"
   end
 
-  Tag.order("hotness_score DESC").limit(250).find_each do |tag|
+  Tag.order(hotness_score: :desc).limit(250).find_each do |tag|
     add "/t/#{tag.name}", changefreq: "daily"
   end
 end
