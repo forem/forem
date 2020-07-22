@@ -29,7 +29,7 @@ class ChatChannelMembershipsController < ApplicationController
     authorize @membership
     @channel = @membership.chat_channel
     invite_cache_key = "chat-channel-invite-#{@channel.id}"
-    invitation_slug = Rails.cache.fetch(invite_cache_key, expires_in: 12.hours) do
+    invitation_slug = Rails.cache.fetch(invite_cache_key, expires_in: 80.hours) do
       "invitation-link-#{SecureRandom.hex(3)}"
     end
     @invitation_link = "/join_channel_invitation/#{@channel.slug}?invitation_slug=#{invitation_slug}"
