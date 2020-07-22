@@ -175,6 +175,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         readable_publish_date:
           type: string
         social_image:
@@ -209,9 +210,11 @@ components:
         edited_at:
           type: string
           format: date-time
+          nullable: true          
         crossposted_at:
           type: string
           format: date-time
+          nullable: true          
         published_at:
           type: string
           format: date-time
@@ -269,6 +272,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         readable_publish_date:
           type: string
         social_image:
@@ -303,9 +307,11 @@ components:
         edited_at:
           type: string
           format: date-time
+          nullable: true
         crossposted_at:
           type: string
           format: date-time
+          nullable: true          
         published_at:
           type: string
           format: date-time
@@ -493,6 +499,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         published:
           type: boolean
         published_at:
@@ -842,11 +849,14 @@ components:
           type: string
         twitter_username:
           type: string
+          nullable: true          
         github_username:
           type: string
+          nullable: true
         website_url:
           type: string
           format: url
+          nullable: true          
         profile_image:
           description: Profile image (640x640)
           type: string
@@ -919,15 +929,20 @@ components:
           type: string
         summary:
           type: string
+          nullable: true
         twitter_username:
           type: string
+          nullable: true
         github_username:
           type: string
+          nullable: true
         website_url:
           type: string
           format: url
+          nullable: true          
         location:
           type: string
+          nullable: true
         joined_at:
           description: Date of joining (formatted with strftime `"%b %e, %Y"`)
           type: string
