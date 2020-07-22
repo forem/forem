@@ -42,12 +42,14 @@ module Authentication
         SETTINGS_URL
       end
 
+      # rubocop:disable Style/OptionHash
       def self.sign_in_path(params = {})
         ::Authentication::Paths.sign_in_path(
           provider_name,
           params,
         )
       end
+      # rubocop:enable Style/OptionHash
 
       protected
 

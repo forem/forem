@@ -11,6 +11,7 @@ RSpec.describe "CommentsCreate", type: :request do
     sign_in user
   end
 
+  # rubocop:disable Style/OptionHash
   def comment_params(params = {})
     {
       comment: {
@@ -20,6 +21,7 @@ RSpec.describe "CommentsCreate", type: :request do
       }.merge(params)
     }
   end
+  # rubocop:enable Style/OptionHash
 
   it "creates a comment with proper params" do
     expect do

@@ -379,9 +379,9 @@ Style/ClassAndModuleChildren:
   Enabled: true
   SafeAutoCorrect: true
 
-# Style/OptionHash:
-#   Description: "Don't use option hashes when you can use keyword arguments."
-#   Enabled: false
+Style/OptionHash:
+  Description: "Don't use option hashes when you can use keyword arguments."
+  Enabled: true
 
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
