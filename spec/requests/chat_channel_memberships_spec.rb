@@ -341,6 +341,26 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
   end
 
+  describe "GET /request_details" do
+    context "when user signed in" do
+      it "return success" do
+        sign_in second_user
+        ChatChannelMembership.create(user_id: second_user.id, chat_channel_id: chat_channel.id, status: "pending")
+        get "/channel_request_info", as: :json
+
+        expect(response.status).to eq(200)
+        expect(response.parsed_body["result"].keys).to eq(%w[channel_joining_memberships user_joining_requests])
+      end
+    end
+
+    context "when user is logged out" do
+      it "return not authorized" do
+        sign_out second_user
+        get "/channel_request_info", as: :json
+      end
+    end
+  end
+
   describe "PATCH /update_membership_role" do
     before do
       user.add_role(:super_admin)
@@ -415,7 +435,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         sign_out second_user
 
         get "/join_channel_invitation/#{chat_channel.slug}"
-        expect(response.status).to eq(401)
+        expect(response.status).to eq(302)
       end
     end
   end

@@ -8,24 +8,50 @@
   background: var(--base-90);
   color: var(--base-0);
 
+  a {
+    color: var(--body-color-inverted);
+  }
+
   &--brand {
     background: var(--accent-brand);
     border-bottom-color: var(--accent-brand-darker);
+
+    a {
+      color: var(--body-color-inverted);
+    }
   }
 
   &--success {
     background: var(--accent-success);
     border-bottom-color: var(--accent-success-darker);
+    color: var(--body-color);
+
+    a {
+      color: var(--body-color);
+    }
   }
 
   &--warning {
     background: var(--accent-warning);
     border-bottom-color: var(--accent-warning-darker);
+    color: var(--body-color);
+
+    a {
+      color: var(--body-color);
+    }
   }
 
   &--error {
     background: var(--accent-danger);
     border-bottom-color: var(--accent-danger-darker);
     color: var(--body-color-inverted);
+
+    a {
+      color: var(--body-color-inverted);
+    }
+  }
+
+  a {
+    text-decoration: underline;
   }
 }

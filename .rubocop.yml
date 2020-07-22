@@ -414,11 +414,6 @@ Style/RedundantRegexpEscape:
   Description: 'Checks for redundant escapes in Regexps.'
   Enabled: true
 
-Style/RegexpLiteral:
-  Description: 'Use / or %r around regular expressions.'
-  StyleGuide: '#percent-r'
-  Enabled: false
-
 Style/ReturnNil:
   Description: 'Use return instead of return nil.'
   Enabled: true

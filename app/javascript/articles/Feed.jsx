@@ -146,6 +146,7 @@ export class Feed extends Component {
 
     return (
       <div
+        id='rendered-article-feed'
         ref={(element) => {
           this.feedContainer = element;
         }}
