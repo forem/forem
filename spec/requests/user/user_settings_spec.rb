@@ -239,6 +239,12 @@ RSpec.describe "UserSettings", type: :request do
       expect(response).to have_http_status(:bad_request)
     end
 
+    it "returns error message if user can't be saved" do
+      put "/users/#{user.id}", params: { user: { password: "1", password_confirmation: "1" } }
+
+      expect(flash[:error]).to include("Password is too short")
+    end
+
     context "when requesting an export of the articles" do
       def send_request(flag = true)
         put "/users/#{user.id}", params: {

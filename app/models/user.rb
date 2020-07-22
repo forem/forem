@@ -140,6 +140,7 @@ class User < ApplicationRecord
   validates :medium_url, length: { maximum: 200 }, allow_blank: true, format: MEDIUM_URL_REGEXP
   validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for, length: { maximum: 500 }
   validates :name, length: { in: 1..100 }
+  validates :password, length: { in: 8..100 }, allow_nil: true
   validates :stackoverflow_url, length: { maximum: 150 }, allow_blank: true, format: STACKOVERFLOW_URL_REGEXP
   validates :summary, length: { maximum: 1300 }, allow_nil: true
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
