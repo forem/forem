@@ -19,7 +19,7 @@ module Internal
 
     def update
       @chat_channel = ChatChannel.find(params[:id])
-      @chat_channel.invite_users(users: users_by_param, membership_role: "mod")
+      @chat_channel.invite_users(users: users_by_param)
       redirect_back(fallback_location: "/internal/chat_channels")
     end
 
