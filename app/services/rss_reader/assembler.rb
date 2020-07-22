@@ -77,7 +77,7 @@ class RssReader
         next if a_tag.empty?
 
         possible_link = a_tag[0].inner_html
-        next unless /medium\.com\/media\/.+\/href/.match?(possible_link)
+        next unless %r{medium\.com/media/.+/href}.match?(possible_link)
 
         real_link = HTTParty.head(possible_link).request.last_uri.to_s
         return nil unless real_link.include?("gist.github.com")

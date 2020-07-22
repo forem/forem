@@ -203,4 +203,22 @@ RSpec.describe ArticleDecorator, type: :decorator do
       )
     end
   end
+
+  describe "#long_markdown?" do
+    it "returns false if body_markdown is nil" do
+      article.body_markdown = nil
+      expect(article.decorate.long_markdown?).to eq false
+    end
+
+    it "returns false if body_markdown has fewer characters than LONG_MARKDOWN_THRESHOLD" do
+      article.body_markdown = "---\ntitle: Title\n---\n\nHey this is the article"
+      expect(article.decorate.long_markdown?).to eq false
+    end
+
+    it "returns true if body_markdown has more characters than LONG_MARKDOWN_THRESHOLD" do
+      additional_characters_length = (ArticleDecorator::LONG_MARKDOWN_THRESHOLD + 1) - article.body_markdown.length
+      article.body_markdown << Faker::Hipster.paragraph_by_chars(characters: additional_characters_length)
+      expect(article.decorate.long_markdown?).to eq true
+    end
+  end
 end

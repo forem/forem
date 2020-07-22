@@ -85,8 +85,6 @@
   <% end %>
 <% end %>
 
-<% has_long_markdown = @article.body_markdown && @article.body_markdown.size > 900 %>
-
 <div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
   <aside class="crayons-layout__sidebar-left" aria-label="Article actions">
     <%= render "articles/actions" %>
@@ -194,7 +192,7 @@
           <%= @article.processed_html.html_safe %>
         </div>
 
-        <% if has_long_markdown && @collection %>
+        <% if @article.long_markdown? && @collection %>
           <%= render "articles/collection",
                      rendered_article: @article,
                      collection: @collection,
@@ -203,12 +201,12 @@
         <% end %>
       </article>
 
-      <% if has_long_markdown || @organization %>
+      <% if @article.long_markdown? || @organization %>
         <section class="crayons-card crayons-card--secondary text-padding mb-4">
-          <% if has_long_markdown %>
+          <% if @article.long_markdown? %>
             <%= render "articles/about_author", published: @article.readable_publish_date %>
           <% end %>
-          <%= render "articles/org_branding", organization: @organization, author: has_long_markdown %>
+          <%= render "articles/org_branding", organization: @organization, author: @article.long_markdown? %>
         </section>
       <% end %>
 
