@@ -89,8 +89,20 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  database: PracticalDeveloper_production
-  pool: <%= ENV['DATABASE_POOL_SIZE'] %>
-  username: PracticalDeveloper
-  password: <%= ENV['PRACTICALDEVELOPER_DATABASE_PASSWORD'] %>
+  primary:
+    <<: *default
+    database: PracticalDeveloper_production
+    pool: <%= ENV['DATABASE_POOL_SIZE'] %>
+    username: PracticalDeveloper
+    password: <%= ENV['PRACTICALDEVELOPER_DATABASE_PASSWORD'] %>
+  # Temporary, will be used to benchmark migrations against production data
+  # for transitioning from int to bigint primary keys
+  migration-test:
+    <<: *default
+    url: <%= ENV['DATABASE_MIGRATION_TEST_URL'] || '' %>
+    database: PracticalDeveloper_production
+    pool: <%= ENV['DATABASE_POOL_SIZE'] %>
+    username: PracticalDeveloper
+    password: <%= ENV['PRACTICALDEVELOPER_DATABASE_PASSWORD'] %>
+    variables:
+      statement_timeout: <%= 5_000_000 %>
