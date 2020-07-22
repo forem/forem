@@ -110,6 +110,11 @@ export class EditorActions extends Component {
             Revert <span className="hidden s:inline">new changes</span>
           </Button>
         )}
+
+        <div id="word-count-text">
+          {' '}
+          Words: <span id="count"> </span>
+        </div>
       </div>
     );
   }
