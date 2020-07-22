@@ -5,27 +5,27 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
-  BEHANCE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\z/.freeze
+  BEHANCE_URL_REGEXP = %r{\A(http(s)?://)?(www.behance.net|behance.net)/.*\z}.freeze
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
-  DRIBBBLE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\z/.freeze
+  DRIBBBLE_URL_REGEXP = %r{\A(http(s)?://)?(www.dribbble.com|dribbble.com)/.*\z}.freeze
   EDITORS = %w[v1 v2].freeze
-  FACEBOOK_URL_REGEXP = /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\z/.freeze
+  FACEBOOK_URL_REGEXP = %r{\A(http(s)?://)?(www.facebook.com|facebook.com)/.*\z}.freeze
   FONTS = %w[default sans_serif monospace comic_sans open_dyslexic].freeze
-  GITLAB_URL_REGEXP = /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\z/.freeze
+  GITLAB_URL_REGEXP = %r{\A(http(s)?://)?(www.gitlab.com|gitlab.com)/.*\z}.freeze
   INBOXES = %w[open private].freeze
   INSTAGRAM_URL_REGEXP =
-    /\A(http(s)?:\/\/)?(?:www.)?instagram.com\/(?=.{1,30}\/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+\/?\z/.freeze
+    %r{\A(http(s)?://)?(?:www.)?instagram.com/(?=.{1,30}/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+/?\z}.freeze
 
-  LINKEDIN_URL_REGEXP = /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\z/.freeze
-  MEDIUM_URL_REGEXP = /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\z/.freeze
+  LINKEDIN_URL_REGEXP = %r{\A(http(s)?://)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)/.*\z}.freeze
+  MEDIUM_URL_REGEXP = %r{\A(http(s)?://)?(www.medium.com|medium.com)/.*\z}.freeze
   NAVBARS = %w[default static].freeze
   STACKOVERFLOW_URL_REGEXP =
-    /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\z/.freeze
+    %r{\A(http(s)?://)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)/.*\z}.freeze
 
-  YOUTUBE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.youtube.com|youtube.com)\/.*\z/.freeze
+  YOUTUBE_URL_REGEXP = %r{\A(http(s)?://)?(www.youtube.com|youtube.com)/.*\z}.freeze
   STREAMING_PLATFORMS = %w[twitch].freeze
   THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
-  TWITCH_URL_REGEXP = /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\z/.freeze
+  TWITCH_URL_REGEXP = %r{\A(http(s)?://)?(www.twitch.tv|twitch.tv)/.*\z}.freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
   MESSAGES = {
@@ -140,6 +140,7 @@ class User < ApplicationRecord
   validates :medium_url, length: { maximum: 200 }, allow_blank: true, format: MEDIUM_URL_REGEXP
   validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for, length: { maximum: 500 }
   validates :name, length: { in: 1..100 }
+  validates :password, length: { in: 8..100 }, allow_nil: true
   validates :stackoverflow_url, length: { maximum: 150 }, allow_blank: true, format: STACKOVERFLOW_URL_REGEXP
   validates :summary, length: { maximum: 1300 }, allow_nil: true
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true

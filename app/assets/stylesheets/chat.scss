@@ -8,7 +8,7 @@
   width: 100%;
   max-width: calc(1540px + 10vw);
 
-  --layout-chat-left-sidebar-width: 240px;
+  --layout-chat-left-sidebar-width: 260px;
 }
 
 .live-chat {
@@ -1158,12 +1158,38 @@
   grid-template-columns: 200px 1fr;
 }
 
-.action button:nth-child(2n) {
-  margin-left: 10px;
+.request-actions {
+  justify-content: space-between;
+  display: flex;
+}
+
+.request-message {
+  width: 100%;
+
+  @media screen and (min-width: $breakpoint-s) {
+    width: 60%;
+  }
 }
 
 .channel_details {
   margin-top: 30px;
+}
+.channel-request-card {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.request_manager_header {
+  margin-top: 30px;
+}
+
+.requests-badge {
+  position: absolute;
+  height: 17px;
+  width: 17px;
+  padding: 2px;
+  margin-left: -10px;
+  margin-top: -2px;
 }
 
 .chat_channel-member-list {

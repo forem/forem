@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_20_213710) do
+ActiveRecord::Schema.define(version: 2020_07_21_213341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -823,7 +823,7 @@ ActiveRecord::Schema.define(version: 2020_07_20_213710) do
     t.index ["slug"], name: "index_pages_on_slug", unique: true
   end
 
-  create_table "podcast_episodes", id: :serial, force: :cascade do |t|
+  create_table "podcast_episodes", force: :cascade do |t|
     t.boolean "any_comments_hidden", default: false
     t.text "body"
     t.integer "comments_count", default: 0, null: false
@@ -834,7 +834,7 @@ ActiveRecord::Schema.define(version: 2020_07_20_213710) do
     t.string "image"
     t.string "itunes_url"
     t.string "media_url", null: false
-    t.integer "podcast_id"
+    t.bigint "podcast_id"
     t.text "processed_html"
     t.datetime "published_at"
     t.text "quote"
@@ -855,7 +855,7 @@ ActiveRecord::Schema.define(version: 2020_07_20_213710) do
     t.index ["website_url"], name: "index_podcast_episodes_on_website_url"
   end
 
-  create_table "podcasts", id: :serial, force: :cascade do |t|
+  create_table "podcasts", force: :cascade do |t|
     t.string "android_url"
     t.datetime "created_at", null: false
     t.integer "creator_id"

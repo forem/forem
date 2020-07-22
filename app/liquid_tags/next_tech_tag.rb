@@ -30,7 +30,7 @@ class NextTechTag < LiquidTagBase
   #   - http://nt.dev/s/123456abcdef/
   #   - nt.dev/s/123456abcdef
   def valid_share_url?(share_url)
-    (share_url =~ /^(?:(?:http|https):\/\/)?nt\.dev\/s\/[a-z0-9]{12}\/{0,1}$/)&.zero?
+    (share_url =~ %r{^(?:(?:http|https)://)?nt\.dev/s/[a-z0-9]{12}/{0,1}$})&.zero?
   end
 end
 

@@ -26,4 +26,8 @@ class ChatChannelMembershipPolicy < ApplicationPolicy
   def chat_channel_info?
     record.present? && user.id == record.user_id
   end
+
+  def request_details?
+    record.present? && user.id == record.user_id
+  end
 end
