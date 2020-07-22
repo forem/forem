@@ -6,7 +6,7 @@ FactoryBot.define do
       title { generate :title }
       published { true }
       date { "01/01/2015" }
-      tags { "javascript, html, css" }
+      tags { "#{Faker::Lorem.characters(number: 10)}, #{Faker::Lorem.characters(number: 10)}" }
       canonical_url { Faker::Internet.url }
       with_canonical_url { false }
       with_main_image { true }
