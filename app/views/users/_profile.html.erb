@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", "stickySaveFooter", defer: true %>
 
 <%= render "users/additional_authentication" %>
 
@@ -186,7 +186,7 @@
     </div>
   </div>
 
-  <div class="mb-6 grid gap-6 p-6">
+  <div class="save-footer crayons-card mb-6 grid gap-6 p-6">
     <%= f.hidden_field :tab, value: @tab %>
     <div>
       <button type="submit" class="crayons-btn">Save</button>
