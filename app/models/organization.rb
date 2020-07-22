@@ -9,6 +9,8 @@ class Organization < ApplicationRecord
     reserved_word: "%<value>s is a reserved word. Contact site admins for help registering your organization."
   }.freeze
 
+  CachedOrganization = Struct.new(:name, :username, :slug, :profile_image_90, :profile_image_url)
+
   acts_as_followable
 
   has_many :api_secrets, through: :users
@@ -122,14 +124,14 @@ class Organization < ApplicationRecord
   def update_articles
     return unless saved_change_to_slug || saved_change_to_name || saved_change_to_profile_image
 
-    cached_org_object = {
-      name: name,
-      username: username,
-      slug: slug,
-      profile_image_90: profile_image_90,
-      profile_image_url: profile_image_url
-    }
-    articles.update(cached_organization: OpenStruct.new(cached_org_object))
+    cached_org_object = CachedOrganization.new(
+      name,
+      username,
+      slug,
+      profile_image_90,
+      profile_image_url,
+    )
+    articles.update(cached_organization: cached_org_object)
   end
 
   def bust_cache
