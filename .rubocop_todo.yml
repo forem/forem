@@ -17,7 +17,6 @@ Performance/OpenStruct:
   Exclude:
     - 'app/models/article.rb'
     - 'app/models/organization.rb'
-    - 'app/services/notifications/reactions/send.rb'
     - 'spec/models/github_repo_spec.rb'
     - 'spec/requests/github_repos_spec.rb'
 
