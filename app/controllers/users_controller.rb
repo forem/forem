@@ -61,7 +61,13 @@ class UsersController < ApplicationController
     else
       Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
       Honeycomb.add_field("errored", true)
-      render :edit, status: :bad_request
+
+      if @tab
+        render :edit, status: :bad_request
+      else
+        flash[:error] = @user.errors.full_messages.join(", ")
+        redirect_to "/settings"
+      end
     end
   end
 

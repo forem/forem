@@ -163,6 +163,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
+      it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
