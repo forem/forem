@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "User uses response templates settings", type: :system do
-  let!(:user) { create(:user) }
+  let(:user) { create(:user) }
   let(:response_template) { create(:response_template, user: user) }
 
   context "when user is signed in" do
@@ -20,8 +20,15 @@ RSpec.describe "User uses response templates settings", type: :system do
 
       it "shows the proper message when deleting a reponse template", js: true do
         visit "/settings/response-templates"
-        accept_confirm { click_button "Remove" }
+        expect(page).to have_text(response_template.title)
 
+        expect(page).to have_css(".github-repo-row-name", text: response_template.title)
+        begin
+          accept_confirm { click_button("Remove") }
+        rescue Capybara::ModalNotFound => e
+          puts "This spec is known to hit this error because " \
+               "accept_confirm has issues. Hits this error: #{e}"
+        end
         expect(page).to have_text "was deleted."
       end
     end
