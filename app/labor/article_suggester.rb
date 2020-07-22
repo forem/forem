@@ -31,7 +31,7 @@ class ArticleSuggester
     Article.published
       .where.not(id: ids_to_ignore)
       .where.not(user_id: article.user_id)
-      .order("hotness_score DESC")
+      .order(hotness_score: :desc)
       .offset(rand(0..offset))
       .first(max)
   end
@@ -40,7 +40,7 @@ class ArticleSuggester
     Article.published.tagged_with(cached_tag_list_array, any: true)
       .where.not(user_id: article.user_id)
       .where("organic_page_views_past_month_count > 5")
-      .order("hotness_score DESC")
+      .order(hotness_score: :desc)
       .offset(rand(0..offset))
       .first(max)
   end

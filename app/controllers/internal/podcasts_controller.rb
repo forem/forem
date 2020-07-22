@@ -8,7 +8,7 @@ module Internal
     def index
       @podcasts = Podcast.left_outer_joins(:podcast_episodes)
         .select("podcasts.*, count(podcast_episodes) as episodes_count")
-        .group("podcasts.id").order("podcasts.created_at DESC")
+        .group("podcasts.id").order("podcasts.created_at" => :desc)
         .page(params[:page]).per(50)
 
       return if params[:search].blank?

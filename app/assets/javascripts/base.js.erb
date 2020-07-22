@@ -397,15 +397,7 @@ var instantClick
         parentNode = script.parentNode
         nextSibling = script.nextSibling
         parentNode.removeChild(script)
-        try {
-          parentNode.insertBefore(copy, nextSibling)
-        } catch(err) {
-          Honeybadger.notify(err, {
-            component: 'instantClick',
-            params: { copy: copy, nextSibling: nextSibling }
-          })
-          throw(err)
-        }
+        parentNode.insertBefore(copy, nextSibling)
       }
     }
   }
@@ -684,7 +676,7 @@ var instantClick
     apiKey: "<%= ApplicationConfig['HONEYBADGER_JS_API_KEY'] %>",
     environment: "<%= Rails.env %>",
     revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>",
-    ignorePatterns: [/ResizeObserver/i, /MetaMask detected another web3/i],
+    ignorePatterns: [/ResizeObserver/i, /MetaMask/i],
   });
 
 // INITIALIZE AHOY TRACKING

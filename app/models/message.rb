@@ -224,7 +224,7 @@ class Message < ApplicationRecord
     recipient = direct_receiver
     return if !chat_channel.direct? ||
       recipient.updated_at > 1.hour.ago ||
-      recipient.chat_channel_memberships.order("last_opened_at DESC")
+      recipient.chat_channel_memberships.order(last_opened_at: :desc)
         .first.last_opened_at > 15.hours.ago ||
       chat_channel.last_message_at > 30.minutes.ago ||
       recipient.email_connect_messages == false

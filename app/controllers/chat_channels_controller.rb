@@ -175,7 +175,7 @@ class ChatChannelsController < ApplicationController
                                      .where(show_global_badge_notification: true)
                                      .where.not(status: %w[removed_from_channel left_channel])
                                      .includes(%i[chat_channel user])
-                                     .order("chat_channel_memberships.updated_at DESC")
+                                     .order("chat_channel_memberships.updated_at" => :desc)
                                  else
                                    []
                                  end
@@ -187,7 +187,7 @@ class ChatChannelsController < ApplicationController
                                    current_user
                                      .chat_channel_memberships.includes(:chat_channel)
                                      .where(status: "pending")
-                                     .order("chat_channel_memberships.updated_at DESC")
+                                     .order("chat_channel_memberships.updated_at" => :desc)
                                  else
                                    []
                                  end

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import Tags from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
+import { DEFAULT_TAG_FORMAT } from '../article-form/components/TagsField';
 import Title from './components/Title';
 import BodyMarkdown from './components/BodyMarkdown';
 import Categories from './components/Categories';
@@ -61,8 +62,6 @@ export default class ListingForm extends Component {
       expireDate,
     } = this.state;
 
-    const TAG_FORMAT = '[0-9A-Za-z, ]+';
-
     const selectOrg =
       organizations && organizations.length > 0 ? (
         <div className="field">
@@ -102,7 +101,7 @@ export default class ListingForm extends Component {
             maxTags={8}
             autocomplete="off"
             listing
-            pattern={TAG_FORMAT}
+            pattern={DEFAULT_TAG_FORMAT}
           />
           <ExpireDate
             defaultValue={expireDate}

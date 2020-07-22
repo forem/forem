@@ -34,7 +34,7 @@ module Suggester
         relation = User.where(id: tagged_article_user_ids(num_weeks))
         relation = relation.select(attributes_to_select) if attributes_to_select
 
-        relation.order("updated_at DESC").limit(80).to_a
+        relation.order(updated_at: :desc).limit(80).to_a
       end
 
       def recent_top_producers
@@ -44,14 +44,14 @@ module Suggester
         )
         relation = relation.select(attributes_to_select) if attributes_to_select
 
-        relation.order("updated_at DESC").limit(50).to_a
+        relation.order(updated_at: :desc).limit(50).to_a
       end
 
       def recent_commenters(num_comments = 2, limit = 8)
         relation = User.where("comments_count > ?", num_comments)
         relation = relation.select(attributes_to_select) if attributes_to_select
 
-        relation.order("updated_at DESC").limit(limit).to_a
+        relation.order(updated_at: :desc).limit(limit).to_a
       end
 
       def established_user_article_count

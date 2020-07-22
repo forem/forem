@@ -273,7 +273,7 @@ export default class Chat extends Component {
     );
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('invite_only')),
-      (channel) => `presence-channel-${channel.chat_channel_id}`,
+      (channel) => `private-channel-${channel.chat_channel_id}`,
     );
     const chatChannelsList = document.getElementById(
       'chatchannels__channelslist',
@@ -352,7 +352,7 @@ export default class Chat extends Component {
       if (activeChannel.channel_type === 'open')
         this.subscribePusher(`open-channel-${channelId}`);
     }
-    this.subscribePusher(`presence-channel-${channelId}`);
+    this.subscribePusher(`private-channel-${channelId}`);
   };
 
   setOpenChannelUsers = (res) => {
