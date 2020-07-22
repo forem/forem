@@ -106,7 +106,7 @@ RSpec.configure do |config|
     Search::Cluster.recreate_indexes
     example.run
     Search::Cluster.recreate_indexes
-    Rails.logger.info("in around: #{system('ps aux | grep postgres')}")
+    Rails.logger.info("IN around: #{system('ps aux | grep postgres')}")
   end
 
   config.around(:each, :elasticsearch) do |ex|
