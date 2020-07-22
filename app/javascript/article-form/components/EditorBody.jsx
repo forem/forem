@@ -15,7 +15,8 @@ export const EditorBody = ({
 
   if (inputText) {
     inputText.addEventListener('keyup', function () {
-      let words = inputText.value.match(/\b[-?(\w+)?]+\b/gi);
+      let words = inputText.value.match(/([\p{L}\p{N}-]+)/gu);
+
       if (words) {
         wordCount.innerHTML = words.length;
       } else {
