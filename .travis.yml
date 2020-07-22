@@ -7,7 +7,6 @@ cache:
 rvm:
   - 2.7.1
 addons:
-  postgresql: '10' # Travis does not work out of the box with Postgres 11 yet
   chrome: 'stable'
   artifacts:
     paths:
@@ -37,9 +36,16 @@ env:
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
   jobs:
-    - KNAPSACK_PRO_CI_NODE_INDEX=0
-    - KNAPSACK_PRO_CI_NODE_INDEX=1
-    - KNAPSACK_PRO_CI_NODE_INDEX=2
+    include:
+      - addons:
+        postgresql: '10'
+        env: KNAPSACK_PRO_CI_NODE_INDEX=0
+      - addons:
+        postgresql: '10'
+        env: KNAPSACK_PRO_CI_NODE_INDEX=1
+      - addons:
+        postgresql: '10'
+        env: KNAPSACK_PRO_CI_NODE_INDEX=2
 branches:
   only:
     - master
