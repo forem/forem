@@ -87,6 +87,10 @@ RSpec.configure do |config|
     Warden::Manager._on_request.clear
   end
 
+  config.after do
+    Rails.logger.info("In after each: #{system('ps aux')}")
+  end
+
   config.before(:suite) do
     Search::Cluster.recreate_indexes
   end
@@ -106,6 +110,7 @@ RSpec.configure do |config|
     Search::Cluster.recreate_indexes
     example.run
     Search::Cluster.recreate_indexes
+    Rails.logger.info("In around: #{system('ps aux')}")
   end
 
   config.around(:each, :elasticsearch) do |ex|
@@ -183,7 +188,8 @@ RSpec.configure do |config|
 
   OmniAuth.config.test_mode = true
   OmniAuth.config.logger = Rails.logger
-
+  Rails.logger = Logger.new(STDOUT)
+  Rails.logger.level = 3
   config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
