@@ -12,7 +12,6 @@ class ReservedWords
     advertising
     amp
     anal
-    async_info
     analysis
     analytics
     answers
@@ -20,6 +19,9 @@ class ReservedWords
     app
     article
     articles
+    asset
+    assets
+    async_info
     binary
     bit
     bits
@@ -79,11 +81,15 @@ class ReservedWords
     gags
     getting-started
     gigs
+    guide
+    guides
     hack
     hackers
     haskell
     help
     history
+    image
+    images
     infinite
     infiniteloop
     internal
@@ -123,9 +129,11 @@ class ReservedWords
     medium
     mega
     megabyte
+    members
     membership
     merch
     merchandise
+    meta
     new
     new
     news
@@ -205,6 +213,7 @@ class ReservedWords
     twilio_tokens
     twitter
     update
+    uploads
     user
     users
     video_states
