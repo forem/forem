@@ -409,7 +409,8 @@ export default class Chat extends Component {
   };
 
   removeMessage = (message) => {
-    const { activeChannelId } = this.state;
+    const { activeChannelId, messages } = this.state;
+    console.log(messages);
     this.setState((prevState) => ({
       messages: {
         [activeChannelId]: [
@@ -443,19 +444,23 @@ export default class Chat extends Component {
       chatChannels,
       unopenedChannelIds,
     } = this.state;
+
     const receivedChatChannelId = message.chat_channel_id;
     const messageList = document.getElementById('messagelist');
+    let newMessages = [];
+
     const nearBottom =
       messageList.scrollTop + messageList.offsetHeight + 400 >
       messageList.scrollHeight;
+
     if (nearBottom) {
       scrollToBottom();
     }
-    let newMessages = [];
+    // Remove reduntant messages
     if (
-      activeChannelId &&
       message.temp_id &&
-      messages[activeChannelId].findIndex(
+      messages[receivedChatChannelId] &&
+      messages[receivedChatChannelId].findIndex(
         (oldmessage) => oldmessage.temp_id === message.temp_id,
       ) > -1
     ) {
@@ -469,10 +474,13 @@ export default class Chat extends Component {
         newMessages.shift();
       }
     }
+
+    //Show alert if message received and you have scrolled up
     const newShowAlert =
       activeChannelId === receivedChatChannelId
         ? { showAlert: !nearBottom }
         : {};
+
     let newMessageChannelIndex = 0;
     let newMessageChannel = null;
     const newChannelsObj = chatChannels.map((channel, index) => {
@@ -489,6 +497,7 @@ export default class Chat extends Component {
       newChannelsObj.unshift(newMessageChannel);
     }
 
+    // Mark messages read
     if (receivedChatChannelId === activeChannelId) {
       sendOpen(receivedChatChannelId, this.handleChannelOpenSuccess, null);
     } else {
@@ -501,6 +510,7 @@ export default class Chat extends Component {
       });
     }
 
+    // Updating the messages
     this.setState((prevState) => ({
       ...newShowAlert,
       chatChannels: newChannelsObj,
