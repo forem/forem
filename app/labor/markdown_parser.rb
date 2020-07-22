@@ -3,7 +3,7 @@ class MarkdownParser
   include CloudinaryHelper
 
   BAD_XSS_REGEX = [
-    /src=[\"'](data|&)/i,
+    /src=["'](data|&)/i,
     %r{data:text/html[,;][\sa-z0-9]*}i,
   ].freeze
 
