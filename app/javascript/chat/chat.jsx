@@ -1194,7 +1194,7 @@ export default class Chat extends Component {
         searchType: '',
         paginationNumber: 0,
       };
-      getChannels(searchParams, this.loadChannels);
+      getChannels(searchParams, 'all', this.loadChannels);
       this.setState({ filterQuery: '' });
     }
     this.setState({ searchShowing: !this.state.searchShowing });
@@ -1699,7 +1699,7 @@ export default class Chat extends Component {
     sendChannelRequest(
       e.target.dataset.channelId,
       this.handleJoiningRequestSuccess,
-      null,
+      this.handleFailure,
     );
   };
 
