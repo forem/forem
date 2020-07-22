@@ -409,8 +409,7 @@ export default class Chat extends Component {
   };
 
   removeMessage = (message) => {
-    const { activeChannelId, messages } = this.state;
-    console.log(messages);
+    const { activeChannelId } = this.state;
     this.setState((prevState) => ({
       messages: {
         [activeChannelId]: [
