@@ -14,7 +14,7 @@ RSpec.describe Comment, type: :model do
     it { is_expected.to have_many(:mentions).dependent(:destroy) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
-    it { is_expected.to validate_presence_of(:commentable_id) }
+    it { is_expected.to validate_presence_of(:commentable_id).allow_nil }
     it { is_expected.to validate_presence_of(:body_markdown) }
 
     it do
@@ -28,7 +28,7 @@ RSpec.describe Comment, type: :model do
     end
 
     it { is_expected.to validate_length_of(:body_markdown).is_at_least(1).is_at_most(25_000) }
-    it { is_expected.to validate_inclusion_of(:commentable_type).in_array(%w[Article PodcastEpisode]) }
+    it { is_expected.to validate_inclusion_of(:commentable_type).in_array(%w[Article PodcastEpisode]).allow_nil }
 
     it "is invalid if commentable is unpublished article" do
       # rubocop:disable RSpec/NamedSubject

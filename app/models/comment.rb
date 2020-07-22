@@ -25,8 +25,13 @@ class Comment < ApplicationRecord
   validate :permissions, if: :commentable
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
-  validates :commentable_id, presence: true
-  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }
+
+  # As commentable is declared optional (a comment survives the destruction of the commentable it once belonged to),
+  # we should check commentable_id for the presence only with commentable_type, as a comment can be orphaned in time and
+  # we should allow commentable_type to be nil as it's going to be set to nil when the commentable is destroyed
+  validates :commentable_id, presence: true, allow_nil: true
+  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }, allow_nil: true
+
   validates :user_id, presence: true
 
   before_create :adjust_comment_parent_based_on_depth
