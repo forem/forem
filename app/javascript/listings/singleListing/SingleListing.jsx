@@ -7,13 +7,14 @@ import listingPropTypes from './listingPropTypes';
 
 export class SingleListing extends Component {
 
-  listingContent = (listing, currentUserId, onChangeCategory, onOpenModal) => {
+  listingContent = (listing, currentUserId, onChangeCategory, onOpenModal, onAddTag) => {
     return (
       <div className="relative">
         <Header
           listing={listing}
           currentUserId={currentUserId}
           onTitleClick={onOpenModal}
+          onAddTag={onAddTag}
         />
         <div
           className="mb-4"
@@ -24,7 +25,7 @@ export class SingleListing extends Component {
     );
   };
 
-  listingInline = (listing, currentUserId, onChangeCategory, onOpenModal) => {
+  listingInline = (listing, currentUserId, onChangeCategory, onOpenModal, onAddTag) => {
     return (
       <div
         className="single-listing relative crayons-card"
@@ -37,13 +38,14 @@ export class SingleListing extends Component {
             currentUserId,
             onChangeCategory,
             onOpenModal,
+            onAddTag
           )}
         </div>
       </div>
     );
   };
 
-  listingModal = (listing, currentUserId, onChangeCategory, onOpenModal) => {
+  listingModal = (listing, currentUserId, onChangeCategory, onOpenModal, onAddTag) => {
     return (
       <div
         className="single-listing relative"
@@ -56,6 +58,7 @@ export class SingleListing extends Component {
             currentUserId,
             onChangeCategory,
             onOpenModal,
+            onAddTag,
           )}
         </div>
       </div>
@@ -63,21 +66,23 @@ export class SingleListing extends Component {
   };
 
   render() {
-    const { listing, currentUserId, onChangeCategory, onOpenModal, isOpen } = this.props;
+    const { listing, currentUserId, onChangeCategory, onOpenModal, isOpen, onAddTag } = this.props;
     return (
       isOpen ?
         this.listingModal(
           listing,
           currentUserId,
           onChangeCategory,
-          onOpenModal
+          onOpenModal,
+          onAddTag
         )
         :
         this.listingInline(
           listing,
           currentUserId,
           onChangeCategory,
-          onOpenModal
+          onOpenModal,
+          onAddTag
         )
     );
   }
@@ -89,6 +94,7 @@ SingleListing.propTypes = {
   onChangeCategory: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   currentUserId: PropTypes.number,
+  onAddTag: PropTypes.func.isRequired
 };
 
 SingleListing.defaultProps = {

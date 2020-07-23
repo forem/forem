@@ -16,7 +16,6 @@
   overflow-wrap: anywhere;
   word-break: break-word;
   overflow: hidden;
-  min-height: 150px;
 
   &__dropdown {
     display: none;
@@ -24,5 +23,9 @@
     #{$el}:hover & {
       display: block;
     }
+  }
+
+  &__tags {
+    min-height: var(--su-4);
   }
 }

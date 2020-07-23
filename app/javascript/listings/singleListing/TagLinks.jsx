@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { h } from 'preact';
 
 const TagLinks = ({ tags, onClick }) => (
-  <div className="-ml-1">
+  <div className="-ml-1 single-listing__tags">
     {tags.length
       ? tags.map((tag) => {
           return (
