@@ -15,7 +15,7 @@
   height: calc(100vh - 56px);
 
   &.live-chat--iossafari {
-    height: calc(100vh - 190px);
+    height: calc(100vh - 56px);
   }
 
   overflow-y: hidden;
@@ -34,7 +34,7 @@
   overflow-y: hidden;
 
   &.chat--iossafari {
-    height: calc(100vh - 201px);
+    height: 100%;
   }
 }
 
