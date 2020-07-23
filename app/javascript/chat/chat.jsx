@@ -8,6 +8,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
 import debounceAction from '../utilities/debounceAction';
+import { addSnackbarItem } from '../Snackbar';
 import {
   conductModeration,
   getAllMessages,
@@ -737,6 +738,13 @@ export default class Chat extends Component {
         path: `/search?q=${message.replace('/s ', '')}`,
         type_of: 'article',
       });
+    } else if (message.startsWith('/ban ')) {
+      conductModeration(
+        activeChannelId,
+        message,
+        this.handleSuccess,
+        this.handleFailure,
+      );
     } else if (message.startsWith('/')) {
       this.setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
@@ -748,13 +756,6 @@ export default class Chat extends Component {
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim();
       this.setActiveContentState(activeChannelId, { type_of: 'github', args });
-    } else if (message[0] === '/') {
-      conductModeration(
-        activeChannelId,
-        message,
-        this.handleSuccess,
-        this.handleFailure,
-      );
     } else {
       const messageObject = {
         activeChannelId,
@@ -882,7 +883,7 @@ export default class Chat extends Component {
         });
       }
     } else if (response.status === 'error') {
-      this.receiveNewMessage(response.message);
+      addSnackbarItem({ message: response.message });
     }
   };
 

@@ -82,22 +82,27 @@ class ChatChannelsController < ApplicationController
   end
 
   def moderate
-    command = chat_channel_params[:command].split
-    case command[0]
+    chat_channel = ChatChannel.find_by(id: params[:id])
+    authorize chat_channel
+    command, username = chat_channel_params[:command].split
+    case command
     when "/ban"
-      banned_user = User.find_by(username: command[1])
-      if banned_user
-        banned_user.add_role :banned
-        banned_user.messages.delete_all
-        Pusher.trigger(@chat_channel.pusher_channels, "user-banned", { userId: banned_user.id }.to_json)
+      user = User.find_by(username: username)
+      if user&.chat_channel_memberships&.exists?(chat_channel: chat_channel)
+        user.add_role :banned
+        user.messages.where(chat_channel: chat_channel).delete_all
+        Pusher.trigger(chat_channel.pusher_channels, "user-banned", { userId: user.id }.to_json)
         render json: { status: "success", message: "suspended!" }, status: :ok
       else
-        render json: { status: "error", message: "username not found" }, status: :bad_request
+        render json: {
+          status: "error",
+          message: "Error: user with username '#{username}' not found."
+        }, status: :bad_request
       end
     when "/unban"
-      banned_user = User.find_by(username: command[1])
-      if banned_user
-        banned_user.remove_role :banned
+      user = User.find_by(username: username)
+      if user
+        user.remove_role :banned
         render json: { status: "success", message: "unsuspended!" }, status: :ok
       else
         render json: { status: "error", message: "username not found" }, status: :bad_request
