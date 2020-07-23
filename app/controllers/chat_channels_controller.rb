@@ -94,22 +94,23 @@ class ChatChannelsController < ApplicationController
         user.messages.where(chat_channel: chat_channel).delete_all
         membership.update(status: "removed_from_channel")
         Pusher.trigger(chat_channel.pusher_channels, "user-banned", { userId: user.id }.to_json)
-        render json: { status: "success", message: "suspended!" }, status: :ok
+        render json: { status: "moderation-success", message: "#{username} was suspended.", userId: user.id,
+                       chatChannelId: chat_channel.id }, status: :ok
       else
         render json: {
           status: "error",
-          message: "Ban failed. user with username '#{username}' not found."
+          message: "Ban failed. user with username '#{username}' not found in this channel."
         }, status: :bad_request
       end
     when "/unban"
       user = User.find_by(username: username)
       if user
         user.remove_role :banned
-        render json: { status: "success", message: "unsuspended!" }, status: :ok
+        render json: { status: "moderation-success", message: "#{username} was unsuspended." }, status: :ok
       else
         render json: {
           status: "error",
-          message: "Unban failed. User with username '#{username}' not found"
+          message: "Unban failed. User with username '#{username}' not found in this channel."
         }, status: :bad_request
       end
     when "/clearchannel"

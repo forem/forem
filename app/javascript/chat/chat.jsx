@@ -882,6 +882,8 @@ export default class Chat extends Component {
           return { messages: newMessages };
         });
       }
+    } else if (response.status === 'moderation-success') {
+      addSnackbarItem({ message: response.message, addCloseButton: true });
     } else if (response.status === 'error') {
       addSnackbarItem({ message: response.message, addCloseButton: true });
     }
