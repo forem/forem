@@ -160,6 +160,8 @@ class User < ApplicationRecord
   validate :validate_mastodon_url
   validate :can_send_confirmation_email
   validate :update_rate_limit
+  # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
+  # field will be marked as dirty, not :password.
   validate :password_matches_confirmation, if: :encrypted_password_changed?
 
   alias_attribute :public_reactions_count, :reactions_count
