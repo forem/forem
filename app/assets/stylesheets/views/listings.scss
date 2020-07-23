@@ -8,7 +8,6 @@
     display: grid;
     grid-gap: var(--su-4);
     grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    grid-auto-rows: 0;
   }
 }
 
@@ -16,6 +15,8 @@
   $el: &;
   overflow-wrap: anywhere;
   word-break: break-word;
+  overflow: hidden;
+  min-height: 150px;
 
   &__dropdown {
     display: none;
@@ -24,5 +25,4 @@
       display: block;
     }
   }
-
 }
