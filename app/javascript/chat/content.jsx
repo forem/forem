@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import Article from './article';
 import ChannelRequest from './channelRequest';
-import RequestManager from './requestManager';
+import RequestManager from './RequestManager/RequestManager';
 import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
 
 const smartSvgIcon = (content, d) => (
@@ -30,6 +30,7 @@ export default class Content extends Component {
     }).isRequired,
     fullscreen: PropTypes.bool.isRequired,
     onTriggerContent: PropTypes.func.isRequired,
+    updateRequestCount: PropTypes.func.isRequired,
   };
 
   render() {
@@ -40,13 +41,13 @@ export default class Content extends Component {
     return (
       // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
       // TODO: These should have key click events as well.
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <div
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
         id="chat_activecontent"
         onClick={onTriggerContent}
         role="button"
         tabIndex="0"
+        aria-hidden="true"
       >
         <button
           type="button"
@@ -100,8 +101,7 @@ const Display = ({ resource }) => {
       return (
         <RequestManager
           resource={resource.data}
-          handleRequestRejection={resource.handleRequestRejection}
-          handleRequestApproval={resource.handleRequestApproval}
+          updateRequestCount={resource.updateRequestCount}
         />
       );
     case 'chat-channel-setting':

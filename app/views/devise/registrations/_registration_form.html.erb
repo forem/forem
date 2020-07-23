@@ -17,14 +17,42 @@
       <img class="secondary-logo" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
            alt="Secondary <%= community_name %> logo" />
     </div>
-    <h1>Great to have you</h1>
+    <% if any_selfserve_auth? %>
+      <h1>Great to have you</h1>
+    <% else %>
+      <h1>Registration is by invitation only</h1>
+    <% end %>
   <% end %>
   <div class="links">
-    <div class="flex flex-col m:flex-row justify-center">
-      <%= render partial: "shared/authentication/providers_registration_form" %>
-    </div>
+    <%= render partial: "shared/authentication/providers_registration_form" %>
 
-    <p class="pt-4"><em>We require social login to prevent abuse.</em></p>
+    <div id="sign-in-password-form" class="mt-1 crayons-card p-7 align-left mx-auto" style="max-width:490px;">
+      <p class="pb-4 fw-bold">If you have a password...</p>
+      <%= form_for(User.new, as: :user, url: session_path(:user)) do |f| %>
+        <div class="crayons-field">
+          <%= f.label :email, class: "crayons-field__label" %>
+          <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :password, class: "crayons-field__label" %>
+          <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
+        </div>
+
+        <div class="field">
+          <%= f.check_box :remember_me %>
+          <%= f.label :remember_me %>
+        </div>
+
+        <div class="actions pt-3">
+          <%= f.submit "Log in", class: "crayons-btn" %>
+        </div>
+      <% end %>
+      <% if any_selfserve_auth? %>
+        <p class="pt-6 fs-s"><em>Sign in by social auth if you don't have a password set.</em></p>
+      <% end %>
+        <p class="pt-6 fs-s"><em><a href="<%= new_password_path(:user) %>">Forgot password?</a></em></p>
+    </div>
   </div>
   <p>Open Source 😇</p>
   <p>Free Forever ❤️</p>

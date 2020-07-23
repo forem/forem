@@ -34,6 +34,8 @@ module Internal
         payment_pointer
         health_check_token
         feed_style
+        sponsor_headline
+        public
       ]
 
       allowed_params = allowed_params |

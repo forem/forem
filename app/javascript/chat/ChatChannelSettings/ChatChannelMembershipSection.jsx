@@ -1,8 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
+import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
 import ActiveMembershipSection from './ActiveMembershipsSection';
-import PendingMembershipSection from './PendingMembershipSection'
+import PendingMembershipSection from './PendingMembershipSection';
 import RequestedMembershipSection from './RequestedMembershipSection';
 
 const ChatChannelMembershipSection = ({
@@ -11,7 +12,8 @@ const ChatChannelMembershipSection = ({
   chatChannelAcceptMembership,
   activeMemberships,
   removeMembership,
-  currentMembershipRole
+  currentMembershipRole,
+  toggleScreens,
 }) => {
   return (
     <div className="membership-list">
@@ -19,6 +21,7 @@ const ChatChannelMembershipSection = ({
         activeMemberships={activeMemberships}
         removeMembership={removeMembership}
         currentMembershipRole={currentMembershipRole}
+        toggleScreens={toggleScreens}
       />
       <PendingMembershipSection
         pendingMemberships={pendingMemberships}
@@ -32,38 +35,17 @@ const ChatChannelMembershipSection = ({
         currentMembershipRole={currentMembershipRole}
       />
     </div>
-  )
-}
+  );
+};
 
 ChatChannelMembershipSection.propTypes = {
-  pendingMemberships: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    membership_id: PropTypes.number.isRequired,
-    user_id: PropTypes.number.isRequired,
-    role: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-  })).isRequired,
-  requestedMemberships: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    membership_id: PropTypes.number.isRequired,
-    user_id: PropTypes.number.isRequired,
-    role: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-  })).isRequired,
-  activeMemberships: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    membership_id: PropTypes.number.isRequired,
-    user_id: PropTypes.number.isRequired,
-    role: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-  })).isRequired,
+  pendingMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
+  requestedMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
+  activeMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
-  currentMembershipRole: PropTypes.string.isRequired
-}
+  currentMembershipRole: PropTypes.string.isRequired,
+  toggleScreens: PropTypes.func.isRequired,
+};
 
 export default ChatChannelMembershipSection;

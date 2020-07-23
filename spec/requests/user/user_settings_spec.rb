@@ -22,8 +22,8 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "handles unknown settings tab properly" do
-        expect { get "/settings/does-not-exist" }.
-          to raise_error(ActiveRecord::RecordNotFound)
+        expect { get "/settings/does-not-exist" }
+          .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "displays content on ux tab properly" do
@@ -237,6 +237,12 @@ RSpec.describe "UserSettings", type: :request do
       put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
 
       expect(response).to have_http_status(:bad_request)
+    end
+
+    it "returns error message if user can't be saved" do
+      put "/users/#{user.id}", params: { user: { password: "1", password_confirmation: "1" } }
+
+      expect(flash[:error]).to include("Password is too short")
     end
 
     context "when requesting an export of the articles" do

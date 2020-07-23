@@ -59,9 +59,9 @@ class BufferUpdate < ApplicationRecord
   def validate_body_text_recent_uniqueness
     return if persisted?
 
-    relation = BufferUpdate.
-      where(body_text: body_text, article_id: article_id, tag_id: tag_id, social_service_name: social_service_name).
-      where("created_at > ?", 2.minutes.ago)
+    relation = BufferUpdate
+      .where(body_text: body_text, article_id: article_id, tag_id: tag_id, social_service_name: social_service_name)
+      .where("created_at > ?", 2.minutes.ago)
 
     return unless relation.any?
 
