@@ -49,6 +49,7 @@ export default class ManageActiveMembership extends Component {
       invitationLink,
       removeMembership,
       activeMemberships,
+      searchMembers: null,
     });
   }
 
@@ -78,8 +79,10 @@ export default class ManageActiveMembership extends Component {
       invitationLink,
       removeMembership,
       handleUpdateMembershipRole,
+      activeMemberships,
     } = this.state;
 
+    const membershipCount = activeMemberships.length;
     return (
       <div className="pt-3">
         <div className="p-4 grid gap-2 crayons-card my-4 mx-auto membership-manager">
@@ -105,6 +108,7 @@ export default class ManageActiveMembership extends Component {
               currentMembership={currentMembership}
               removeMembership={removeMembership}
               handleUpdateMembershipRole={handleUpdateMembershipRole}
+              membershipCount={membershipCount}
             />
           </div>
         </div>
