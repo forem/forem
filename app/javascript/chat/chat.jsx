@@ -738,7 +738,7 @@ export default class Chat extends Component {
         path: `/search?q=${message.replace('/s ', '')}`,
         type_of: 'article',
       });
-    } else if (message.startsWith('/ban ')) {
+    } else if (message.startsWith('/ban ') || message.startsWith('/unban ')) {
       conductModeration(
         activeChannelId,
         message,
