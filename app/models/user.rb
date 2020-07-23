@@ -160,6 +160,7 @@ class User < ApplicationRecord
   validate :validate_mastodon_url
   validate :can_send_confirmation_email
   validate :update_rate_limit
+  validate :password_matches_confirmation, if: :encrypted_password_changed?
 
   alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
@@ -644,5 +645,11 @@ class User < ApplicationRecord
     rate_limiter.check_limit!(:user_update)
   rescue RateLimitChecker::LimitReached => e
     errors.add(:base, "User could not be saved. #{e.message}")
+  end
+
+  def password_matches_confirmation
+    return true if password == password_confirmation
+
+    errors.add(:password, "doesn't match password confirmation")
   end
 end
