@@ -883,7 +883,7 @@ export default class Chat extends Component {
         });
       }
     } else if (response.status === 'error') {
-      addSnackbarItem({ message: response.message });
+      addSnackbarItem({ message: response.message, addCloseButton: true });
     }
   };
 
@@ -1071,6 +1071,7 @@ export default class Chat extends Component {
   handleFailure = (err) => {
     // eslint-disable-next-line no-console
     console.error(err);
+    addSnackbarItem({ message: err, addCloseButton: true });
   };
 
   renderMessages = () => {
