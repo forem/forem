@@ -5,7 +5,7 @@ import InviteForm from './InviteForm';
 import SettingsForm from './SettingsForm';
 
 const ModSection = ({
-  handleChatChannelInvitations,
+  handleChannelInvitations,
   invitationUsernames,
   handleInvitationUsernames,
   channelDescription,
@@ -13,13 +13,18 @@ const ModSection = ({
   channelDiscoverable,
   handleChannelDiscoverableStatus,
   handleChannelDescriptionChanges,
+  currentMembershipRole,
 }) => {
+  if (currentMembershipRole === 'member') {
+    return null;
+  }
+
   return (
     <div className="mod-section">
       <InviteForm
         handleInvitationUsernames={handleInvitationUsernames}
         invitationUsernames={invitationUsernames}
-        handleChatChannelInvitations={handleChatChannelInvitations}
+        handleChannelInvitations={handleChannelInvitations}
       />
       <SettingsForm
         channelDescription={channelDescription}
@@ -34,7 +39,7 @@ const ModSection = ({
 
 ModSection.propTypes = {
   handleInvitationUsernames: PropTypes.func.isRequired,
-  handleChatChannelInvitations: PropTypes.func.isRequired,
+  handleChannelInvitations: PropTypes.func.isRequired,
   invitationUsernames: PropTypes.func.isRequired,
   channelDescription: PropTypes.string.isRequired,
   handleDescriptionChange: PropTypes.func.isRequired,

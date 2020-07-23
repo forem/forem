@@ -57,79 +57,79 @@ RSpec.describe User, type: :model do
 
       # rubocop:disable RSpec/NamedSubject
       it do
-        expect(subject).to have_many(:access_grants).
-          class_name("Doorkeeper::AccessGrant").
-          with_foreign_key("resource_owner_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:access_grants)
+          .class_name("Doorkeeper::AccessGrant")
+          .with_foreign_key("resource_owner_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:access_tokens).
-          class_name("Doorkeeper::AccessToken").
-          with_foreign_key("resource_owner_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:access_tokens)
+          .class_name("Doorkeeper::AccessToken")
+          .with_foreign_key("resource_owner_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:affected_feedback_messages).
-          class_name("FeedbackMessage").
-          with_foreign_key("affected_id").
-          dependent(:nullify)
+        expect(subject).to have_many(:affected_feedback_messages)
+          .class_name("FeedbackMessage")
+          .with_foreign_key("affected_id")
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:authored_notes).
-          class_name("Note").
-          with_foreign_key("author_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:authored_notes)
+          .class_name("Note")
+          .with_foreign_key("author_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:backup_data).
-          class_name("BackupData").
-          with_foreign_key("instance_user_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:backup_data)
+          .class_name("BackupData")
+          .with_foreign_key("instance_user_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:blocked_blocks).
-          class_name("UserBlock").
-          with_foreign_key("blocked_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:blocked_blocks)
+          .class_name("UserBlock")
+          .with_foreign_key("blocked_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:blocker_blocks).
-          class_name("UserBlock").
-          with_foreign_key("blocker_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:blocker_blocks)
+          .class_name("UserBlock")
+          .with_foreign_key("blocker_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:created_podcasts).
-          class_name("Podcast").
-          with_foreign_key(:creator_id).
-          dependent(:nullify)
+        expect(subject).to have_many(:created_podcasts)
+          .class_name("Podcast")
+          .with_foreign_key(:creator_id)
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:offender_feedback_messages).
-          class_name("FeedbackMessage").
-          with_foreign_key(:offender_id).
-          dependent(:nullify)
+        expect(subject).to have_many(:offender_feedback_messages)
+          .class_name("FeedbackMessage")
+          .with_foreign_key(:offender_id)
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:reporter_feedback_messages).
-          class_name("FeedbackMessage").
-          with_foreign_key(:reporter_id).
-          dependent(:nullify)
+        expect(subject).to have_many(:reporter_feedback_messages)
+          .class_name("FeedbackMessage")
+          .with_foreign_key(:reporter_id)
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:webhook_endpoints).
-          class_name("Webhook::Endpoint").
-          dependent(:delete_all)
+        expect(subject).to have_many(:webhook_endpoints)
+          .class_name("Webhook::Endpoint")
+          .dependent(:delete_all)
       end
       # rubocop:enable RSpec/NamedSubject
 
@@ -163,6 +163,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
+      it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
@@ -724,6 +725,12 @@ RSpec.describe User, type: :model do
         end
       end
 
+      it "does not enqueue with a non-registered user" do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(registered: false)
+        end
+      end
+
       it "does not enqueue when the email address or subscription status has not changed" do
         # The trait replaces the method with a dummy, but we need the actual method for this test.
         user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
@@ -899,6 +906,11 @@ RSpec.describe User, type: :model do
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       identity = new_user.identities.first
       expect(identity.auth_data_dump.provider).to eq(identity.provider)
+    end
+
+    it "marks registered_at for newly registered user" do
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
+      expect(new_user.registered_at).not_to be nil
     end
 
     it "persists extracts relevant identity data from new twitter user" do

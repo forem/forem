@@ -40,13 +40,13 @@ module Search
       end
 
       def query_conditions
-        self.class::QUERY_KEYS.map do |query_key, query_fields|
+        self.class::QUERY_KEYS.filter_map do |query_key, query_fields|
           next if @params[query_key].blank?
 
           fields = query_fields.presence || [query_key]
 
           query_hash(@params[query_key], fields)
-        end.compact
+        end
       end
 
       def query_hash(key, fields)

@@ -16,8 +16,8 @@ RSpec.describe UserSubscription, type: :model do
 
     # rubocop:disable RSpec/NamedSubject
     it {
-      expect(subject).to validate_uniqueness_of(:subscriber_id).
-        scoped_to(%i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id])
+      expect(subject).to validate_uniqueness_of(:subscriber_id)
+        .scoped_to(%i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id])
     }
     # rubocop:enable RSpec/NamedSubject
 

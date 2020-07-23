@@ -9,12 +9,12 @@ module Internal
         location_url: app_url,
         description_markdown: "*Description* *Pre-requisites:* *Bio*",
       )
-      @events = Event.order("starts_at DESC")
+      @events = Event.order(starts_at: :desc)
     end
 
     def create
       @event = Event.new(event_params)
-      @events = Event.order("starts_at DESC")
+      @events = Event.order(starts_at: :desc)
       if @event.save
         flash[:success] = "Successfully created event: #{@event.title}"
         redirect_to(action: :index)
@@ -26,7 +26,7 @@ module Internal
 
     def update
       @event = Event.find(params[:id])
-      @events = Event.order("starts_at DESC")
+      @events = Event.order(starts_at: :desc)
       if @event.update(event_params)
         flash[:success] = "#{@event.title} was successfully updated"
         redirect_to "/internal/events"

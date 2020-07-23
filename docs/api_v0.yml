@@ -175,6 +175,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         readable_publish_date:
           type: string
         social_image:
@@ -209,9 +210,11 @@ components:
         edited_at:
           type: string
           format: date-time
+          nullable: true          
         crossposted_at:
           type: string
           format: date-time
+          nullable: true          
         published_at:
           type: string
           format: date-time
@@ -269,6 +272,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         readable_publish_date:
           type: string
         social_image:
@@ -303,9 +307,11 @@ components:
         edited_at:
           type: string
           format: date-time
+          nullable: true
         crossposted_at:
           type: string
           format: date-time
+          nullable: true          
         published_at:
           type: string
           format: date-time
@@ -493,6 +499,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         published:
           type: boolean
         published_at:
@@ -842,11 +849,14 @@ components:
           type: string
         twitter_username:
           type: string
+          nullable: true          
         github_username:
           type: string
+          nullable: true
         website_url:
           type: string
           format: url
+          nullable: true          
         profile_image:
           description: Profile image (640x640)
           type: string
@@ -919,15 +929,20 @@ components:
           type: string
         summary:
           type: string
+          nullable: true
         twitter_username:
           type: string
+          nullable: true
         github_username:
           type: string
+          nullable: true
         website_url:
           type: string
           format: url
+          nullable: true          
         location:
           type: string
+          nullable: true
         joined_at:
           description: Date of joining (formatted with strftime `"%b %e, %Y"`)
           type: string
@@ -1692,7 +1707,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -1854,7 +1869,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -1996,7 +2011,7 @@ paths:
         - lang: Shell
           label: curl
           source: |
-            curl https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
+            curl https://dev.to/api/articles/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
 
   /articles/me:
     get:
@@ -2407,7 +2422,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Listings API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/listings_spec.rb)
+        - [Rails tests for Listings API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/listings_spec.rb)
       tags:
         - listings
       requestBody:

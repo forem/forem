@@ -25,7 +25,7 @@ class UserTag < LiquidTagBase
   private
 
   def parse_username_to_user(user)
-    User.find_by(username: user) || DELETED_USER
+    User.find_by(username: user, registered: true) || DELETED_USER
   end
 
   def path_to_profile(user)

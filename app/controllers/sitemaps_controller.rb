@@ -12,9 +12,9 @@ class SitemapsController < ApplicationController
       not_found
     end
 
-    @articles = Article.published.
-      where("published_at > ? AND published_at < ? AND score > ?", date, date.end_of_month, 3).
-      pluck(:path, :last_comment_at)
+    @articles = Article.published
+      .where("published_at > ? AND published_at < ? AND score > ?", date, date.end_of_month, 3)
+      .pluck(:path, :last_comment_at)
 
     set_surrogate_controls(date)
     set_cache_control_headers(@max_age,

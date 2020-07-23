@@ -4,7 +4,7 @@ title: JavaScript and Initializers
 
 # JavaScript and Initializers
 
-DEV has two JavaScript codebases.
+Forem has two JavaScript codebases.
 
 One is located in the directory `app/assets/javascripts` and contains plain
 JavaScript (mostly ES5+) being served using
