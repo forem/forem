@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_21_213341) do
+ActiveRecord::Schema.define(version: 2020_07_23_180841) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "ahoy_events", force: :cascade do |t|
@@ -406,8 +407,8 @@ ActiveRecord::Schema.define(version: 2020_07_21_213341) do
     t.integer "spaminess_rating", default: 0
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
     t.index ["ancestry"], name: "index_comments_on_ancestry"
-    t.index ["body_markdown", "user_id", "ancestry", "commentable_id", "commentable_type"], name: "index_comments_on_body_markdown_user_id_ancestry_commentable", unique: true
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["score"], name: "index_comments_on_score"
