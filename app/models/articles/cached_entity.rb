@@ -1,5 +1,5 @@
 module Articles
-  # NOTE: articles cache either users or organization, but they have the same attributes
+  # NOTE: articles cache either users or organizations, but they have the same attributes.
   CachedEntity = Struct.new(:name, :username, :slug, :profile_image_90, :profile_image_url) do
     def self.from_object(object)
       new(
