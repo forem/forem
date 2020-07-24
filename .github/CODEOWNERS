@@ -2,36 +2,34 @@
 # see https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
 # for further details
 
-/*.md                                               @thepracticaldev/oss
-/app/assets/stylesheets/internal/                   @thepracticaldev/snackcase
-/app/controllers/articles_controller.rb             @thepracticaldev/hells-bells
-/app/controllers/internal/                          @thepracticaldev/snackcase
-/app/services/notifications/                        @thepracticaldev/delightful
-/app/controllers/notifications/                     @thepracticaldev/delightful
-/app/workers/notifications/                         @thepracticaldev/delightful
-/app/controllers/internal/broadcasts_controller.rb  @thepracticaldev/delightful
-/app/controllers/async_info_controller.rb           @thepracticaldev/sre
-/app/controllers/pages_controller.rb                @thepracticaldev/cool
-/app/controllers/stories_controller.rb              @thepracticaldev/hells-bells
-/app/services/search/                               @thepracticaldev/sre
-/app/views/articles/                                @thepracticaldev/hells-bells
-/app/views/internal/                                @thepracticaldev/snackcase
-/app/views/moderation/                              @thepracticaldev/snackcase
-/app/views/notifications/                           @thepracticaldev/delightful
-/app/views/partnerships/                            @thepracticaldev/cool
-/app/views/stories/                                 @thepracticaldev/hells-bells
-/app/workers/                                       @thepracticaldev/sre
-/config/                                            @thepracticaldev/sre
-/db/                                                @thepracticaldev/sre
-/docs/                                              @thepracticaldev/oss    @jacobherrington
-/lib/data_update_scripts/                           @thepracticaldev/sre
-/lib/sidekiq/                                       @thepracticaldev/sre
-/spec/rails_helper.rb                               @thepracticaldev/sre
-/spec/requests/internal/                            @thepracticaldev/snackcase
-/spec/support/                                      @thepracticaldev/sre
-/spec/system/internal/                              @thepracticaldev/snackcase
-Gemfile                                             @thepracticaldev/sre    @thepracticaldev/oss
-Gemfile.lock                                        @thepracticaldev/sre    @thepracticaldev/oss
-package.json                                        @thepracticaldev/oss    @nickytonline
-yarn.lock                                           @thepracticaldev/oss    @nickytonline
-.travis.yml                                         @thepracticaldev/sre
+/*.md                                               @forem/oss
+/app/assets/stylesheets/internal/                   @forem/snackcase
+/app/controllers/articles_controller.rb             @forem/hells-bells
+/app/controllers/internal/                          @forem/snackcase
+/app/services/notifications/                        @forem/delightful
+/app/controllers/notifications/                     @forem/delightful
+/app/workers/notifications/                         @forem/delightful
+/app/controllers/internal/broadcasts_controller.rb  @forem/delightful
+/app/controllers/async_info_controller.rb           @forem/sre
+/app/controllers/stories_controller.rb              @forem/hells-bells
+/app/services/search/                               @forem/sre
+/app/views/articles/                                @forem/hells-bells
+/app/views/internal/                                @forem/snackcase
+/app/views/moderation/                              @forem/snackcase
+/app/views/notifications/                           @forem/delightful
+/app/views/stories/                                 @forem/hells-bells
+/app/workers/                                       @forem/sre
+/config/                                            @forem/sre
+/db/                                                @forem/sre
+/docs/                                              @forem/oss    @jacobherrington
+/lib/data_update_scripts/                           @forem/sre
+/lib/sidekiq/                                       @forem/sre
+/spec/rails_helper.rb                               @forem/sre
+/spec/requests/internal/                            @forem/snackcase
+/spec/support/                                      @forem/sre
+/spec/system/internal/                              @forem/snackcase
+Gemfile                                             @forem/sre    @forem/oss
+Gemfile.lock                                        @forem/sre    @forem/oss
+package.json                                        @forem/oss    @nickytonline
+yarn.lock                                           @forem/oss    @nickytonline
+.travis.yml                                         @forem/sre

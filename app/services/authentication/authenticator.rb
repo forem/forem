@@ -1,5 +1,5 @@
 module Authentication
-  # TODO: [thepracticaldev/oss] use strategy pattern for the three cases
+  # TODO: [@forem/oss] use strategy pattern for the three cases
   #   described below.
   #   Make the decision early which one of the 3 cases we're dealing with
   #   and then call either NewUserStrategy, UpdateUserStrategy or

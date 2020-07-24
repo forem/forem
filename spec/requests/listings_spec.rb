@@ -518,7 +518,7 @@ RSpec.describe "/listings", type: :request do
   end
 end
 
-# TODO: [thepracticaldev/oss] We used to have 2 request spec files, listing_spec.rb
+# TODO: [@forem/oss] We used to have 2 request spec files, listing_spec.rb
 # and classified_listing_spec.rb. This context contains the specs of the former,
 # but we should eventually unify them into one set to remove some redundancy.
 context "when running the specs that were previously in another file" do
