@@ -16,26 +16,11 @@ request. Follow these steps to get the documentation site running locally.
 
 Forem's documentation is built with [GitDocs NodeJS library][gitdocs].
 
-The first step to running the documentations locally is to install the `GitDocs`
-package globally.
-
-With npm:
-
-```shell
-npm install gitdocs -g
-```
-
-Alternatively, you can use Yarn:
-
-```shell
-yarn global add gitdocs
-```
-
-Once installed, you should run `gitdocs serve` from the root of the `forem`
+Once installed, you should run `yarn gitdocs serve` from the root of the `forem`
 project or from the `/docs` directory.
 
 ```shell
-gitdocs serve
+yarn gitdocs serve
 ```
 
 This will start a server where you can browse the documentation:

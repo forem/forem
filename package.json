@@ -111,6 +111,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.3",
     "faker": "^4.1.0",
+    "gitdocs": "^2.0.0",
     "husky": "^4.2.5",
     "ibm-openapi-validator": "0.28.0",
     "jest": "26.1.0",
