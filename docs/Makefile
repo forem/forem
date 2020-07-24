@@ -15,4 +15,4 @@ ruby-doc:
 	cd .. && yard doc -o docs/.static/ruby-doc
 
 gitdocs:
-	npm install -g gitdocs@latest && gitdocs build
+	cd .. && yarn gitdocs build
