@@ -7,16 +7,7 @@
 
   @media (min-width: $breakpoint-s) {
     --modal-body-padding: var(--su-4);
-    --modal-header-padding: var(--su-4);
-  }
-
-  @media (min-width: $breakpoint-m) {
-    --modal-body-padding: var(--su-6);
-    --modal-header-padding: var(--su-4) var(--su-4) var(--su-4) var(--su-6);
-  }
-
-  @media (min-width: $breakpoint-l) {
-    --modal-body-padding: var(--su-7) var(--su-8);
+    --modal-header-padding: var(--su-2) var(--su-4);
   }
 
   position: fixed;
@@ -91,6 +82,15 @@
   &--m {
     @media (min-width: $breakpoint-m) {
       --modal-max-width: 640px;
+      --modal-body-padding: var(--su-5);
+      --modal-header-padding: var(--su-3) var(--su-5);
+    }
+  }
+
+  &--l {
+    @media (min-width: $breakpoint-m) {
+      --modal-body-padding: var(--su-6);
+      --modal-header-padding: var(--su-3) var(--su-6);
     }
   }
 }
