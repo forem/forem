@@ -30,6 +30,7 @@ const MessageModal = ({
         </p>
       )}
       <textarea
+        name="message"
         value={message}
         onChange={onChangeDraftingMessage}
         data-testid="listing-new-message"

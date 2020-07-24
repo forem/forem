@@ -12,7 +12,9 @@ const Modal = ({
   onChangeCategory,
   onOpenModal,
   onSubmit,
+  onEndorseSubmit,
   listing,
+  endorseMessage,
   message,
 }) => {
   const shouldRenderMessageModal = listing && listing.contact_via_connect;
@@ -37,8 +39,9 @@ const Modal = ({
         />
         {shouldRenderMessageModal && (
           <EndorseMessageModal
-            onSubmit={onSubmit}
-            message={message}
+            onSubmit={onEndorseSubmit}
+            onChangeDraftingMessage={onChangeDraftingMessage}
+            endorseMessage={endorseMessage}
             listing={listing}
           />
         )}
@@ -67,8 +70,10 @@ Modal.propTypes = {
   onChangeCategory: PropTypes.func.isRequired,
   onOpenModal: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  onEndorseSubmit: PropTypes.func.isRequired,
   currentUserId: PropTypes.number,
-  message: PropTypes.string.isRequired,
+  endorseMessage: PropTypes.string,
+  message: PropTypes.string,
 };
 
 Modal.defaultProps = {

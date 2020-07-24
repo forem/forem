@@ -26,6 +26,7 @@ export class Listings extends Component {
     currentUserId: null,
     openedListing: null,
     message: '',
+    endorseMessage: '',
     slug: null,
     page: 0,
     showNextPageButton: false,
@@ -167,7 +168,25 @@ export class Listings extends Component {
 
   handleDraftingMessage = (e) => {
     e.preventDefault();
-    this.setState({ message: e.target.value });
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  handleEndorsementSubmit = (e) => {
+    e.preventDefault();
+    const { endorseMessage, openedListing } = this.state;
+    const metaTag = document.querySelector("meta[name='csrf-token']");
+    const formData = new FormData();
+    formData.append('content', endorseMessage);
+    formData.append('classified_listing_id', openedListing.id);
+
+    window.fetch('/listing_endorsements', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': metaTag.getAttribute('content'),
+      },
+      body: formData,
+      credentials: 'same-origin',
+    });
   };
 
   handleSubmitMessage = (e) => {
@@ -281,6 +300,7 @@ export class Listings extends Component {
       openedListing,
       showNextPageButton,
       initialFetch,
+      endorseMessage,
       message,
     } = this.state;
 
@@ -324,8 +344,10 @@ export class Listings extends Component {
             onChangeCategory={this.selectCategory}
             onOpenModal={this.handleOpenModal}
             onSubmit={this.handleSubmitMessage}
+            onEndorseSubmit={this.handleEndorsementSubmit}
             listing={openedListing}
             message={message}
+            endorseMessage={endorseMessage}
           />
         )}
       </div>

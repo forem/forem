@@ -1,7 +1,13 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const EndorseMessageModal = ({ currentUserId, message, listing, onSubmit }) => {
+const EndorseMessageModal = ({
+  currentUserId,
+  endorseMessage,
+  listing,
+  onSubmit,
+  onChangeDraftingMessage,
+}) => {
   const isCurrentUserOnListing = listing.user_id === currentUserId;
   console.log(isCurrentUserOnListing);
   return (
@@ -12,8 +18,10 @@ const EndorseMessageModal = ({ currentUserId, message, listing, onSubmit }) => {
       onSubmit={onSubmit}
     >
       <textarea
-        value={message}
+        name="endorseMessage"
+        value={endorseMessage}
         data-testid="listing-endorse-new-message"
+        onChange={onChangeDraftingMessage}
         id="new-endorse-message"
         rows="4"
         cols="70"
@@ -28,7 +36,7 @@ const EndorseMessageModal = ({ currentUserId, message, listing, onSubmit }) => {
 
 EndorseMessageModal.propTypes = {
   currentUserId: PropTypes.number.isRequired,
-  message: PropTypes.string.isRequired,
+  endorseMessage: PropTypes.string.isRequired,
   listing: PropTypes.shape({
     author: PropTypes.shape({
       name: PropTypes.string.isRequired,
@@ -36,6 +44,7 @@ EndorseMessageModal.propTypes = {
     user_id: PropTypes.number.isRequired,
   }).isRequired,
   onSubmit: PropTypes.func.isRequired,
+  onChangeDraftingMessage: PropTypes.func.isRequired,
 };
 
 export default EndorseMessageModal;
