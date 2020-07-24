@@ -35,7 +35,7 @@ request. Follow these steps to get the documentation site running locally.
 
 Forem's documentation is built with [GitDocs NodeJS library][gitdocs].
 
-To start the gitdocs server, you should run `yarn run gitdocs serve` from the
+To start the gitdocs server, you should run `yarn gitdocs serve` from the
 root of the `forem` project or from the `/docs` directory.
 
 ```shell
