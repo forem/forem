@@ -124,7 +124,7 @@ class ReactionsController < ApplicationController
       reactable_type: params[:reactable_type],
       category: category
     }
-    if NEGATIVE_CATEGORIES.include?(category) && current_user&.any_admin?
+    if current_user&.any_admin? && NEGATIVE_CATEGORIES.include?(category)
       create_params[:status] = "confirmed"
     end
     Reaction.new(create_params)
