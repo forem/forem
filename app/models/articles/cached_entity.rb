@@ -5,7 +5,7 @@ module Articles
       new(
         object.name,
         object.username,
-        object.is_a?(Organization) ? object.slug : object.username,
+        object.respond_to?(:slug) ? object.slug : object.username,
         object.profile_image_90,
         object.profile_image_url,
       )
