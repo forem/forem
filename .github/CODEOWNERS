@@ -11,14 +11,12 @@
 /app/workers/notifications/                         @forem/delightful
 /app/controllers/internal/broadcasts_controller.rb  @forem/delightful
 /app/controllers/async_info_controller.rb           @forem/sre
-/app/controllers/pages_controller.rb                @forem/cool
 /app/controllers/stories_controller.rb              @forem/hells-bells
 /app/services/search/                               @forem/sre
 /app/views/articles/                                @forem/hells-bells
 /app/views/internal/                                @forem/snackcase
 /app/views/moderation/                              @forem/snackcase
 /app/views/notifications/                           @forem/delightful
-/app/views/partnerships/                            @forem/cool
 /app/views/stories/                                 @forem/hells-bells
 /app/workers/                                       @forem/sre
 /config/                                            @forem/sre
