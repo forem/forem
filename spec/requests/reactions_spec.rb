@@ -275,7 +275,7 @@ RSpec.describe "Reactions", type: :request do
         sign_in admin
       end
 
-      it "automatically approves vomits on users" do
+      it "automatically confirms vomits on users" do
         post "/reactions", params: user_params
 
         reaction = Reaction.find_by(reactable_id: user.id)
@@ -283,12 +283,20 @@ RSpec.describe "Reactions", type: :request do
         expect(reaction.status).to eq("confirmed")
       end
 
-      it "automatically approves vomits on articles" do
+      it "automatically confirms vomits on articles" do
         post "/reactions", params: article_params.merge(category: "vomit")
 
         reaction = Reaction.find_by(reactable_id: article.id)
         expect(reaction.category).to eq("vomit")
         expect(reaction.status).to eq("confirmed")
+      end
+
+      it "does not automatically confirm positive reactions" do
+        post "/reactions", params: article_params
+
+        reaction = Reaction.find_by(reactable_id: article.id)
+        expect(reaction.category).to eq("like")
+        expect(reaction.status).to eq("valid")
       end
     end
 
