@@ -113,8 +113,10 @@ module Authentication
     end
 
     def default_user_fields
+      password = Devise.friendly_token(20)
       {
-        password: Devise.friendly_token(20),
+        password: password,
+        password_confirmation: password,
         signup_cta_variant: cta_variant,
         registered: true,
         registered_at: Time.current,
