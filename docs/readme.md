@@ -39,7 +39,7 @@ To start the gitdocs server, you should run `yarn gitdocs serve` from the
 root of the `forem` project or from the `/docs` directory.
 
 ```shell
-yarn run gitdocs serve
+yarn gitdocs serve
 ```
 
 This will start a server where you can browse the documentation:
