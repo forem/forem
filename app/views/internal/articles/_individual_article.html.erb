@@ -115,7 +115,7 @@
     <% if article.last_buffered %>
     <div class="mt-5">
       <em>Last Buffered <%= article.last_buffered %></em>
-      <% article.buffer_updates.order("created_at ASC").each do |buffer_update| %>
+      <% article.buffer_updates.order(created_at: :asc).each do |buffer_update| %>
       <h5>
         <a href="https://buffer.com/app/profile/<%= buffer_update.buffer_profile_id_code %>/buffer/queue/list">
           <%= buffer_update.social_service_name %>

@@ -19,7 +19,6 @@ module Internal
       { name: "mods",               controller: "mods" },
       { name: "privileged_reactions", controller: "privileged_reactions" },
       { name: "organizations",      controller: "organizations" },
-      { name: "path_redirects",     controller: "path_redirects" },
       { name: "pages",              controller: "pages" },
       { name: "permissions",        controller: "permissions" },
       { name: "podcasts",           controller: "podcasts" },

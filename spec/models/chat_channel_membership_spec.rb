@@ -15,8 +15,8 @@ RSpec.describe ChatChannelMembership, type: :model do
 
       # rubocop:disable RSpec/NamedSubject
       it {
-        expect(subject).to validate_inclusion_of(:status).
-          in_array(%w[active inactive pending rejected left_channel removed_from_channel joining_request])
+        expect(subject).to validate_inclusion_of(:status)
+          .in_array(%w[active inactive pending rejected left_channel removed_from_channel joining_request])
       }
       # rubocop:enable RSpec/NamedSubject
 

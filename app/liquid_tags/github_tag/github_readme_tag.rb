@@ -67,9 +67,9 @@ class GithubTag
     end
 
     def sanitize_input(input)
-      ActionController::Base.helpers.strip_tags(input).
-        gsub(GITHUB_DOMAIN_REGEXP, "").
-        strip
+      ActionController::Base.helpers.strip_tags(input)
+        .gsub(GITHUB_DOMAIN_REGEXP, "")
+        .strip
     end
 
     def raise_error
@@ -82,7 +82,7 @@ class GithubTag
         attribute = element.name == "img" ? "src" : "href"
         element["href"] = "" if attribute == "href" && element.attributes[attribute].blank?
         path = element.attributes[attribute].value
-        element.attributes[attribute].value = url.gsub(/\/README.md/, "") + "/" + path if path[0, 4] != "http"
+        element.attributes[attribute].value = url.gsub(%r{/README.md}, "") + "/" + path if path[0, 4] != "http"
       end
       readme.to_html
     end
