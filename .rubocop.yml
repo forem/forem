@@ -15,10 +15,6 @@ AllCops:
     - node_modules/**/*
     - tmp/**/*
     - vendor/**/*
-    - app/views/dashboards/subscriptions.html.erb
-    - app/views/internal/configs/show.html.erb
-    - app/views/moderations/_mod_sidebar_left.html.erb
-    - app/views/notifications/index.html.erb
   DisplayStyleGuide: true
   ExtraDetails: true
   TargetRubyVersion: 2.7
