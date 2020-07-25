@@ -99,14 +99,17 @@ class CreditsController < ApplicationController
   end
 
   def cost_per_credit
-    if @number_to_purchase < 10
-      500
-    elsif @number_to_purchase < 100
-      400
-    elsif @number_to_purchase < 1000
-      300
+    prices = SiteConfig.credit_prices_in_cents
+
+    case @number_to_purchase
+    when ..9
+      prices[:small]
+    when 10..99
+      prices[:medium]
+    when 100..999
+      prices[:large]
     else
-      250
+      prices[:xlarge]
     end
   end
 end

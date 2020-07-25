@@ -12,7 +12,7 @@ module ListingsToolkit
   end
 
   def update_listing_details
-    # [thepracticaldev/oss] Not entirely sure what the intention behind the
+    # [@forem/oss] Not entirely sure what the intention behind the
     # original code was, but at least this is more compact.
     filtered_params = listing_params.reject { |_k, v| v.nil? }
     @listing.update(filtered_params)
