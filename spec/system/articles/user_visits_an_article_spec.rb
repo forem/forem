@@ -118,4 +118,51 @@ RSpec.describe "Views an article", type: :system do
       # rubocop:enable RSpec/ExampleLength
     end
   end
+
+  describe "when an article is not published" do
+    let(:article) { create(:article, user: article_user, published: false) }
+    let(:article_path) { article.path << query_params }
+    let(:selector) { ".article-wrapper .crayons-notice--danger strong" }
+    let(:text) { "Unpublished Post." }
+
+    context "with the article password, and the logged-in user is the article author" do
+      let(:query_params) { "?preview=#{article.password}" }
+      let(:article_user) { user }
+
+      it "shows the message" do
+        visit article_path
+        expect(page).to have_selector(selector, text: text)
+      end
+    end
+
+    context "with the article password, and the logged-in user is not the article author" do
+      let(:query_params) { "?preview=#{article.password}" }
+      let(:article_user) { create(:user) }
+
+      it "does not show the message" do
+        visit article_path
+        expect(page).not_to have_selector(selector, text: text)
+      end
+    end
+
+    context "with the article password, and the user does not log in" do
+      let(:query_params) { "?preview=#{article.password}" }
+      let(:article_user) { user }
+
+      it "does not show the message" do
+        sign_out user
+        visit article_path
+        expect(page).not_to have_selector(selector, text: text)
+      end
+    end
+
+    context "without the article password" do
+      let(:query_params) { "" }
+      let(:article_user) { user }
+
+      it "raises ActiveRecord::RecordNotFound" do
+        expect { visit article_path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 end
