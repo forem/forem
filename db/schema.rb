@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_23_180841) do
+ActiveRecord::Schema.define(version: 2020_07_23_203155) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -639,7 +639,7 @@ ActiveRecord::Schema.define(version: 2020_07_23_180841) do
     t.integer "mentionable_id"
     t.string "mentionable_type"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["user_id", "mentionable_id", "mentionable_type"], name: "index_mentions_on_user_id_and_mentionable_id_mentionable_type", unique: true
   end
 
@@ -657,10 +657,10 @@ ActiveRecord::Schema.define(version: 2020_07_23_180841) do
   end
 
   create_table "notes", force: :cascade do |t|
-    t.integer "author_id"
+    t.bigint "author_id"
     t.text "content"
     t.datetime "created_at", null: false
-    t.integer "noteable_id"
+    t.bigint "noteable_id"
     t.string "noteable_type"
     t.string "reason"
     t.datetime "updated_at", null: false
@@ -859,7 +859,7 @@ ActiveRecord::Schema.define(version: 2020_07_23_180841) do
   create_table "podcasts", force: :cascade do |t|
     t.string "android_url"
     t.datetime "created_at", null: false
-    t.integer "creator_id"
+    t.bigint "creator_id"
     t.text "description"
     t.string "feed_url", null: false
     t.string "image", null: false
@@ -981,7 +981,7 @@ ActiveRecord::Schema.define(version: 2020_07_23_180841) do
   create_table "roles", force: :cascade do |t|
     t.datetime "created_at"
     t.string "name"
-    t.integer "resource_id"
+    t.bigint "resource_id"
     t.string "resource_type"
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
