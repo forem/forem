@@ -21,16 +21,16 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
     let(:expected_twitch_user_params) { { login: "test-username" } }
 
     let!(:twitch_webhook_registration_stubbed_route) do
-      stub_request(:post, "https://api.twitch.tv/helix/webhooks/hub").
-        with(body: URI.encode_www_form(expected_twitch_webhook_params), headers: expected_headers).
-        and_return(status: 204)
+      stub_request(:post, "https://api.twitch.tv/helix/webhooks/hub")
+        .with(body: URI.encode_www_form(expected_twitch_webhook_params), headers: expected_headers)
+        .and_return(status: 204)
     end
 
     context "when twitch returns data" do
       let!(:twitch_user_stubbed_route) do
-        stub_request(:get, "https://api.twitch.tv/helix/users").
-          with(query: expected_twitch_user_params, headers: expected_headers).
-          and_return(body: { data: [{ id: 654_321 }] }.to_json, headers: { "Content-Type" => "application/json" })
+        stub_request(:get, "https://api.twitch.tv/helix/users")
+          .with(query: expected_twitch_user_params, headers: expected_headers)
+          .and_return(body: { data: [{ id: 654_321 }] }.to_json, headers: { "Content-Type" => "application/json" })
       end
 
       it "registers for webhooks" do
@@ -43,9 +43,9 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
 
     context "when twitch return no data" do
       let!(:twitch_user_stubbed_route) do
-        stub_request(:get, "https://api.twitch.tv/helix/users").
-          with(query: expected_twitch_user_params, headers: expected_headers).
-          and_return(body: {}.to_json, headers: { "Content-Type" => "application/json" })
+        stub_request(:get, "https://api.twitch.tv/helix/users")
+          .with(query: expected_twitch_user_params, headers: expected_headers)
+          .and_return(body: {}.to_json, headers: { "Content-Type" => "application/json" })
       end
 
       it "doesn't fail when twitch doesn't return data" do
@@ -61,9 +61,9 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
 
     context "when twitch returns empty data" do
       let!(:twitch_user_stubbed_route) do
-        stub_request(:get, "https://api.twitch.tv/helix/users").
-          with(query: expected_twitch_user_params, headers: expected_headers).
-          and_return(body: { "data" => [] }.to_json, headers: { "Content-Type" => "application/json" })
+        stub_request(:get, "https://api.twitch.tv/helix/users")
+          .with(query: expected_twitch_user_params, headers: expected_headers)
+          .and_return(body: { "data" => [] }.to_json, headers: { "Content-Type" => "application/json" })
       end
 
       it "doesn't fail" do

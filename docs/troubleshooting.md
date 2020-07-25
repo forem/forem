@@ -65,6 +65,12 @@ Search::Client.cluster.put_settings(body: {
 })
 ```
 
+Alternatively you can use the following command in a terminal session:
+
+```shell
+curl -XPUT -H "Content-Type: application/json" http://localhost:9200/_all/_settings -d '{"index.blocks.read_only_allow_delete": null}'
+```
+
 To disable the "read only" mode to allow operations on the Elasticsearch indexes
 you can issue the following command, similary in the Rails console:
 
@@ -75,6 +81,12 @@ Search::Client.indices.get(index: "*").keys.each do |index_name|
     body: { "index.blocks.read_only_allow_delete" => nil }
   )
 end
+```
+
+Or alternatively:
+
+```shell
+curl -XPUT -H "Content-Type: application/json" http://localhost:9200/_cluster/settings -d '{ "transient": { "cluster.routing.allocation.disk.threshold_enabled": false } }'
 ```
 
 If instead you want to tune the Elasticsearch disk allocator's settings, please

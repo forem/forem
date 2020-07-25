@@ -2,7 +2,7 @@
 title: Contributing to the Docs
 ---
 
-# Contributing to DEV's developer documentation
+# Contributing to Forem's developer documentation
 
 Contributions to the documentation are always appreciated! Thank you for making
 an effort to improve the developer experience of contributing to the DEV
@@ -10,32 +10,17 @@ project.
 
 # Running the documentation locally
 
-Like DEV, this site is open source and the code is [hosted on GitHub][docs]. If
-you find any incorrect information, or a even a typo, we'd love to see a pull
+Like Forem, this site is open source and the code is [hosted on GitHub][docs].
+If you find any incorrect information, or a even a typo, we'd love to see a pull
 request. Follow these steps to get the documentation site running locally.
 
-DEV's documentation is built with [GitDocs NodeJS library][gitdocs].
+Forem's documentation is built with [GitDocs NodeJS library][gitdocs].
 
-The first step to running the documentations locally is to install the `GitDocs`
-package globally.
-
-With npm:
-
-```shell
-npm install gitdocs -g
-```
-
-Alternatively, you can use Yarn:
-
-```shell
-yarn global add gitdocs
-```
-
-Once installed, you should run `gitdocs serve` from the root of the dev.to
+Once installed, you should run `yarn gitdocs serve` from the root of the `forem`
 project or from the `/docs` directory.
 
 ```shell
-gitdocs serve
+yarn gitdocs serve
 ```
 
 This will start a server where you can browse the documentation:
@@ -84,7 +69,7 @@ lost over time.
 For more information on effective technical writing, check out
 [writethedocs.org][writethedocs].
 
-[docs]: https://github.com/thepracticaldev/dev.to/tree/master/docs/
+[docs]: https://github.com/forem/forem/tree/master/docs/
 [gitdocs]: https://www.npmjs.com/package/gitdocs/
 [markdown]: https://en.wikipedia.org/wiki/Markdown
 [frontmatter]: https://jekyllrb.com/docs/front-matter/

@@ -107,8 +107,9 @@ class MessagesController < ApplicationController
   def notify_users(user_ids, type)
     return unless user_ids
 
+    message_json = create_pusher_payload(@message, @temp_message_id)
+
     user_ids.each do |id|
-      message_json = create_pusher_payload(@message, @temp_message_id)
       if type == "mention"
         Pusher.trigger("private-message-notifications-#{id}", "mentioned", message_json)
       else

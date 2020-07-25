@@ -17,8 +17,9 @@ export function addCloseListener() {
 }
 
 export function initializeHeight() {
+
   document.documentElement.style.height = '100%';
-  document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0;';
+  document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0; overflow-y: hidden';
   document.getElementById('page-content').style.cssText =
     'margin-top: 0 !important; margin-bottom: 0;';
 }
@@ -32,6 +33,7 @@ function toggleDropdown(type) {
     document.querySelector('.adjust-tags-options').classList.toggle('hidden');
   }
 }
+
 
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
