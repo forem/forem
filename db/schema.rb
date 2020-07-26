@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_25_215546) do
+ActiveRecord::Schema.define(version: 2020_07_26_215928) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -1021,24 +1021,24 @@ ActiveRecord::Schema.define(version: 2020_07_25_215546) do
 
   create_table "tag_adjustments", force: :cascade do |t|
     t.string "adjustment_type"
-    t.integer "article_id"
+    t.bigint "article_id"
     t.datetime "created_at", null: false
     t.string "reason_for_adjustment"
     t.string "status"
-    t.integer "tag_id"
+    t.bigint "tag_id"
     t.string "tag_name"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["tag_name", "article_id"], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
   end
 
-  create_table "taggings", id: :serial, force: :cascade do |t|
+  create_table "taggings", force: :cascade do |t|
     t.string "context", limit: 128
     t.datetime "created_at"
-    t.integer "tag_id"
-    t.integer "taggable_id"
+    t.bigint "tag_id"
+    t.bigint "taggable_id"
     t.string "taggable_type"
-    t.integer "tagger_id"
+    t.bigint "tagger_id"
     t.string "tagger_type"
     t.index ["context"], name: "index_taggings_on_context"
     t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
@@ -1051,16 +1051,16 @@ ActiveRecord::Schema.define(version: 2020_07_25_215546) do
     t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
   end
 
-  create_table "tags", id: :serial, force: :cascade do |t|
+  create_table "tags", force: :cascade do |t|
     t.string "alias_for"
-    t.integer "badge_id"
+    t.bigint "badge_id"
     t.string "bg_color_hex"
     t.string "buffer_profile_id_code"
     t.string "category", default: "uncategorized", null: false
     t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
-    t.integer "mod_chat_channel_id"
+    t.bigint "mod_chat_channel_id"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"
