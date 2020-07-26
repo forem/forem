@@ -121,17 +121,17 @@ RSpec.describe "Views an article", type: :system do
 
   describe "when an article is not published" do
     let(:article) { create(:article, user: article_user, published: false) }
-    let(:article_path) { article.path << query_params }
-    let(:selector) { ".article-wrapper .crayons-notice--danger strong" }
-    let(:text) { "Unpublished Post." }
+    let(:article_path) { article.path + query_params }
+    let(:href) { "#{article.path}/edit" }
+    let(:link_text) { "Click to edit" }
 
     context "with the article password, and the logged-in user is the article author" do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "shows the message" do
+      it "shows the article edit link" do
         visit article_path
-        expect(page).to have_selector(selector, text: text)
+        expect(page).to have_link(link_text, href: href)
       end
     end
 
@@ -139,20 +139,20 @@ RSpec.describe "Views an article", type: :system do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { create(:user) }
 
-      it "does not show the message" do
+      it "does not the article edit link" do
         visit article_path
-        expect(page).not_to have_selector(selector, text: text)
+        expect(page).not_to have_link(link_text, href: href)
       end
     end
 
-    context "with the article password, and the user does not log in" do
+    context "with the article password, and the user is not logged-in" do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "does not show the message" do
+      it "does not the article edit link" do
         sign_out user
         visit article_path
-        expect(page).not_to have_selector(selector, text: text)
+        expect(page).not_to have_link(link_text, href: href)
       end
     end
 
