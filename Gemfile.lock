@@ -808,7 +808,7 @@ GEM
       rack (>= 1.2, < 3.0)
       timber (~> 3.0)
     timecop (0.9.1)
-    twilio-ruby (5.39.1)
+    twilio-ruby (5.39.2)
       faraday (>= 0.9, < 2.0)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
