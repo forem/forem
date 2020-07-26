@@ -147,7 +147,7 @@ GEM
     bindex (0.8.1)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    blazer (2.2.5)
+    blazer (2.2.6)
       activerecord (>= 5)
       chartkick (>= 3.2)
       railties (>= 5)
@@ -195,7 +195,7 @@ GEM
       fastimage
     caze (0.2.2)
       activesupport (>= 3)
-    chartkick (3.3.1)
+    chartkick (3.3.2)
     childprocess (3.0.0)
     cld (0.8.0)
       ffi
@@ -437,7 +437,7 @@ GEM
     httpclient (2.8.3)
     hypershield (0.2.0)
       activerecord (>= 5)
-    i18n (1.8.3)
+    i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     image_processing (1.10.3)
@@ -877,7 +877,7 @@ GEM
       yard (>= 0.8.3)
     yard-activesupport-concern (0.0.1)
       yard (>= 0.8)
-    zeitwerk (2.3.1)
+    zeitwerk (2.4.0)
     zonebie (0.6.1)
 
 PLATFORMS
@@ -898,7 +898,7 @@ DEPENDENCIES
   aws-sdk-lambda (~> 1.46)
   better_errors (~> 2.7)
   binding_of_caller (~> 0.8)
-  blazer (~> 2.2.5)
+  blazer (~> 2.2.6)
   bootsnap (>= 1.1.0)
   brakeman (~> 4.8)
   buffer (~> 0.1)
