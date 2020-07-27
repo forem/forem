@@ -1,6 +1,4 @@
 require "mini_magick"
-require "fog"
-
 # Carrierwave uses MiniMagick for image processing. To prevent server timeouts
 # we are setting the MiniMagick timeout lower.
 MiniMagick.configure do |config|
@@ -35,22 +33,6 @@ CarrierWave.configure do |config|
       config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
       config.fog_directory = "forem-12345-uploads"
       config.fog_public    = false
-    end
-  end
-end
-
-# @forem/systems Force "public_url" even when fog_public is false via this monkeypatch
-# Because we still want the "public" version path in all current scenarios.
-
-module CarrierWave
-  module Storage
-    class Fog < Abstract
-      class File
-        include CarrierWave::Utilities::Uri
-        def url
-          public_url
-        end
-      end
     end
   end
 end
