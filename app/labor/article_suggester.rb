@@ -14,7 +14,7 @@ class ArticleSuggester
       num_remaining_needed = max - tagged_suggestions.size
       other_articles = other_suggestions(
         max: num_remaining_needed,
-        ids_to_ignore: tagged_suggestions.ids,
+        ids_to_ignore: tagged_suggestions.pluck(:id), # rubocop:disable Rails/PluckId
       )
       tagged_suggestions.union(other_articles)
     else

@@ -53,7 +53,7 @@ module Mentions
 
     def delete_mentions_removed_from_notifiable_text(users)
       mentions = @notifiable.mentions.where.not(user_id: users).destroy_all
-      Notification.remove_all(notifiable_ids: mentions.ids, notifiable_type: "Mention") if mentions.present?
+      Notification.remove_all(notifiable_ids: mentions.pluck(:id), notifiable_type: "Mention") if mentions.present? # rubocop:disable Rails/PluckId
     end
 
     def user_has_comment_notifications?(user)
