@@ -75,6 +75,10 @@ class Notification < ApplicationRecord
       Notifications::MentionWorker.perform_async(mention.id)
     end
 
+    # def send_endorsement_notification(listing_endorsement)
+
+    # end
+
     def send_welcome_notification(receiver_id, broadcast_id)
       Notifications::WelcomeNotificationWorker.perform_async(receiver_id, broadcast_id)
     end

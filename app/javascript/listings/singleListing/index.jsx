@@ -5,7 +5,7 @@ import Header from './Header';
 import TagLinks from './TagLinks';
 import AuthorInfo from './AuthorInfo';
 import listingPropTypes from './listingPropTypes';
-import EndorseAvatar from './EndorseAvatar';
+import Endorsement from './Endorsement';
 
 const SingleListing = ({
   listing,
@@ -43,7 +43,7 @@ const SingleListing = ({
           <span>
             {listing.listing_endorsements.map((endorsement, idx) => {
               return (
-                <EndorseAvatar
+                <Endorsement
                   avatar={endorsement.author_profile_image_90}
                   content={endorsement.content}
                   key={`end-${idx}`}
@@ -52,8 +52,9 @@ const SingleListing = ({
               );
             })}
           </span>
-
-          <span>{`${listing.listing_endorsements.length} endorsement`}</span>
+          {!isOpen && (
+            <span>{`${listing.listing_endorsements.length} endorsement`}</span>
+          )}
         </div>
       ) : (
         ''

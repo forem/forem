@@ -389,6 +389,7 @@
   font-size: 0.9em;
   break-inside: avoid;
   background: var(--card-bg);
+  padding-bottom: 2em;
   h3 {
     display: flex;
     justify-content: space-between;
@@ -575,17 +576,15 @@ form.listings-contact-via-connect {
   }
 }
 
+div.endorsement-comp {
+  display: flex;
+  justify-content: space-between;
+  vertical-align: baseline;
+}
+
 input.endorsement_content {
   width: 90%;
   border: 0;
-}
-
-span.show_full_endorsement {
-  display: block;
-}
-
-span.show_avatar_endorsement {
-  display: inline;
 }
 
 .listings-modal-background {

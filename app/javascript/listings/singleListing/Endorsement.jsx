@@ -1,15 +1,21 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 
-const EndorseAvatar = ({ avatar, content, isOpen }) => {
+const Endorsement = ({ avatar, content, isOpen }) => {
   const showEndorsement = isOpen
     ? 'show_full_endorsement'
     : 'show_avatar_endorsement';
   const showContent = isOpen ? 'inline' : 'none';
   return (
     <span className={showEndorsement}>
-      <img src={avatar} width={40} height={40} alt="end_img" />
-      <label>
+      <img
+        src={avatar}
+        width={40}
+        height={40}
+        alt="end_img"
+        style={{ display: 'inline' }}
+      />
+      <label style={{ display: 'inline' }}>
         <input
           type="text"
           value={content}
@@ -21,8 +27,10 @@ const EndorseAvatar = ({ avatar, content, isOpen }) => {
   );
 };
 
-EndorseAvatar.propTypes = {
+Endorsement.propTypes = {
   avatar: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
 };
 
-export default EndorseAvatar;
+export default Endorsement;
