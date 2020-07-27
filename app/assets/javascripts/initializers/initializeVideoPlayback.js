@@ -13,10 +13,12 @@
 /* eslint no-param-reassign: 0 */
 /* eslint no-useless-escape: 0 */
 /* global jwplayer */
+/* global ahoy */
 
 function initializeVideoPlayback() {
   var nativeBridgeMessage;
   var currentTime = '0';
+  var deviceType = 'web';
 
   function getById(name) {
     return document.getElementById(name);
@@ -116,6 +118,9 @@ function initializeVideoPlayback() {
       url: metadata.video_source_url,
       seconds: currentTime,
     });
+
+    var properties = { article: metadata.id, deviceType: deviceType };
+    ahoy.track('Article video play', properties);
   }
 
   function handleVideoMessages(mutation) {
@@ -145,6 +150,7 @@ function initializeVideoPlayback() {
     var metadata = videoMetadata(videoSource);
 
     if (isNativeIOS()) {
+      deviceType = 'iOS';
       nativeBridgeMessage = function (message) {
         try {
           window.webkit.messageHandlers.video.postMessage(message);
@@ -153,6 +159,7 @@ function initializeVideoPlayback() {
         }
       };
     } else if (isNativeAndroid()) {
+      deviceType = 'Android';
       nativeBridgeMessage = function (message) {
         try {
           AndroidBridge.videoMessage(JSON.stringify(message));
@@ -170,7 +177,7 @@ function initializeVideoPlayback() {
     playerElement.addEventListener('click', requestFocus);
 
     playerElement.classList.add('native');
-    getById('pause-butt').classList.add('active');
+    getById('play-butt').classList.add('active');
 
     var mutationObserver = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
@@ -180,11 +187,6 @@ function initializeVideoPlayback() {
     mutationObserver.observe(videoSource, { attributes: true });
 
     currentTime = `${seconds}`;
-    nativeBridgeMessage({
-      action: 'play',
-      url: metadata.video_source_url,
-      seconds: currentTime,
-    });
   }
 
   // If an video player element is found initialize it
