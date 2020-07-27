@@ -569,7 +569,7 @@ Rails/Pluck:
 Rails/PluckId:
   Description: 'Use `ids` instead of `pluck(:id)` or `pluck(primary_key)`.'
   StyleGuide: 'https://rails.rubystyle.guide/#ids'
-  Enabled: false
+  Enabled: true
 
 Rails/PluckInWhere:
   Description: 'Use `select` instead of `pluck` in `where` query methods.'

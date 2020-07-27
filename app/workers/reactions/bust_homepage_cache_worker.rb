@@ -9,7 +9,7 @@ module Reactions
       reaction = Reaction.find_by(id: reaction_id, reactable_type: "Article")
       return unless reaction&.reactable
 
-      featured_articles_ids = Article.where(featured: true).order(hotness_score: :desc).limit(3).pluck(:id)
+      featured_articles_ids = Article.where(featured: true).order(hotness_score: :desc).limit(3).ids
       return unless featured_articles_ids.include?(reaction.reactable_id)
 
       reaction.reactable.touch
