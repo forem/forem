@@ -13,10 +13,13 @@
 /* eslint no-param-reassign: 0 */
 /* eslint no-useless-escape: 0 */
 /* global jwplayer */
+/* global ahoy */
 
 function initializeVideoPlayback() {
   var nativeBridgeMessage;
   var currentTime = '0';
+  var deviceType = 'web';
+  var lastEvent = '';
 
   function getById(name) {
     return document.getElementById(name);
@@ -64,6 +67,24 @@ function initializeVideoPlayback() {
     }
   }
 
+  function videoPlayerEvent(isPlaying) {
+    // jwtplayer tends to send multiple 'play' actions. This check makes sure
+    // we're not tracking repeated 'play' events for a single interaction.
+    var eventName = isPlaying ? 'play' : 'pause';
+    if (lastEvent === eventName) {
+      return;
+    }
+    lastEvent = eventName;
+
+    var metadata = videoMetadata(getById('video-player-source'));
+    var properties = {
+      article: metadata.id,
+      deviceType: deviceType,
+      action: eventName,
+    };
+    ahoy.track('Video Player Streaming', properties);
+  }
+
   function initWebPlayer(seconds, metadata) {
     var waitingOnJWP = setInterval(function () {
       if (typeof jwplayer !== 'undefined') {
@@ -91,6 +112,12 @@ function initializeVideoPlayback() {
           jwplayer().on('firstFrame', function () {
             jwplayer().seek(seconds);
           });
+          jwplayer().on('play', function () {
+            videoPlayerEvent(true);
+          });
+          jwplayer().on('pause', function () {
+            videoPlayerEvent(false);
+          });
         }
       }
     }, 2);
@@ -116,6 +143,8 @@ function initializeVideoPlayback() {
       url: metadata.video_source_url,
       seconds: currentTime,
     });
+
+    videoPlayerEvent(true);
   }
 
   function handleVideoMessages(mutation) {
@@ -135,6 +164,7 @@ function initializeVideoPlayback() {
     if (message.action == 'pause') {
       getById('pause-butt').classList.remove('active');
       getById('play-butt').classList.add('active');
+      videoPlayerEvent(false);
     } else if (message.action == 'tick') {
       currentTime = message.currentTime;
     }
@@ -145,6 +175,7 @@ function initializeVideoPlayback() {
     var metadata = videoMetadata(videoSource);
 
     if (isNativeIOS()) {
+      deviceType = 'iOS';
       nativeBridgeMessage = function (message) {
         try {
           window.webkit.messageHandlers.video.postMessage(message);
@@ -153,6 +184,7 @@ function initializeVideoPlayback() {
         }
       };
     } else if (isNativeAndroid()) {
+      deviceType = 'Android';
       nativeBridgeMessage = function (message) {
         try {
           AndroidBridge.videoMessage(JSON.stringify(message));
@@ -170,7 +202,7 @@ function initializeVideoPlayback() {
     playerElement.addEventListener('click', requestFocus);
 
     playerElement.classList.add('native');
-    getById('pause-butt').classList.add('active');
+    getById('play-butt').classList.add('active');
 
     var mutationObserver = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
@@ -180,11 +212,6 @@ function initializeVideoPlayback() {
     mutationObserver.observe(videoSource, { attributes: true });
 
     currentTime = `${seconds}`;
-    nativeBridgeMessage({
-      action: 'play',
-      url: metadata.video_source_url,
-      seconds: currentTime,
-    });
   }
 
   // If an video player element is found initialize it
