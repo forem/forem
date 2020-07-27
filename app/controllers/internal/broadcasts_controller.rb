@@ -26,12 +26,6 @@ module Internal
       @broadcast = Broadcast.new(broadcast_params)
       broadcastable_type = broadcast_params[:broadcastable_type]
 
-      unless Broadcast::ALLOWED_TYPES.include?(broadcastable_type)
-        flash[:danger] = "Invalid broadcast type. Broadcast type must be #{Broadcast::ALLOWED_TYPES.join(', ')}."
-        render :edit
-        return
-      end
-
       @broadcast.broadcastable = create_broadcastable(broadcastable_type)
 
       if @broadcast.save
@@ -48,12 +42,6 @@ module Internal
       broadcastable = @broadcast.broadcastable
 
       broadcastable_type = broadcast_params[:broadcastable_type]
-
-      unless Broadcast::ALLOWED_TYPES.include?(broadcastable_type)
-        flash[:danger] = "Invalid broadcast type. Broadcast type must be #{Broadcast::ALLOWED_TYPES.join(', ')}."
-        render :edit
-        return
-      end
 
       if broadcastable.class.name == broadcastable_type
         broadcastable.update(banner_style: broadcast_params[:banner_style]) if broadcastable_type == "Announcement"
