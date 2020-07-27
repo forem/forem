@@ -78,11 +78,13 @@ RSpec.describe "StoriesShow", type: :request do
     ###
 
     it "renders date-no-year if article published this year" do
+      get article.path
       expect(response.body).to include "date-no-year"
     end
 
     it "renders date with year if article published last year" do
       article.update_column(:published_at, 1.year.ago)
+      get article.path
       expect(response.body).not_to include "date-no-year"
     end
 
