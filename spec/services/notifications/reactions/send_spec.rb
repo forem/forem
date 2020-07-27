@@ -15,6 +15,15 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
     }
   end
 
+  context "when data is invalid" do
+    it "raises an exception" do
+      invalid_data = reaction_data(article_reaction).except(:reactable_id)
+      expect do
+        described_class.call(invalid_data, user)
+      end.to raise_error(Notifications::Reactions::ReactionData::DataError)
+    end
+  end
+
   context "when a reaction is ok" do
     it "creates a notification" do
       expect do
