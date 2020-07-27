@@ -170,6 +170,8 @@ function initializeVideoPlayback() {
     } else {
       // jwplayer is initialized and no further interaction is needed
       initWebPlayer(seconds, metadata);
+      var properties = { article: metadata.id, deviceType: deviceType };
+      ahoy.track('Article video play', properties);
       return;
     }
 
