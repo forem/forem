@@ -575,6 +575,19 @@ form.listings-contact-via-connect {
   }
 }
 
+input.endorsement_content {
+  width: 90%;
+  border: 0;
+}
+
+span.show_full_endorsement {
+  display: block;
+}
+
+span.show_avatar_endorsement {
+  display: inline;
+}
+
 .listings-modal-background {
   z-index: 15;
   position: fixed;

@@ -45,7 +45,9 @@ const SingleListing = ({
               return (
                 <EndorseAvatar
                   avatar={endorsement.author_profile_image_90}
+                  content={endorsement.content}
                   key={`end-${idx}`}
+                  isOpen={isOpen}
                 />
               );
             })}
