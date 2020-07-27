@@ -394,7 +394,6 @@ var instantClick
       for (i = 0; i < scriptElementsToCopy.length; i++) {
         originalElement = scriptElementsToCopy[i]
         if (!originalElement) { // Might have disappeared, see previous comment
-          console.log("gone")
           continue
         }
         if (originalElement.hasAttribute('data-no-instant')) {
@@ -403,7 +402,6 @@ var instantClick
 
         copyElement = document.createElement('script')
         for (var j = 0; j < originalElement.attributes.length; j++) {
-          console.log("moving property")
           copyElement.setAttribute(originalElement.attributes[j].name, originalElement.attributes[j].value)
         }
         copyElement.textContent = originalElement.textContent
@@ -412,7 +410,6 @@ var instantClick
         nextSibling = originalElement.nextSibling
         parentNode.removeChild(originalElement)
         parentNode.insertBefore(copyElement, nextSibling)
-        console.log("done")
       }
     }
   }
