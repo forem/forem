@@ -34,7 +34,6 @@ RSpec.describe "Videos", type: :request do
 
     context "when authorized" do
       it "allows authorized user when env var present" do
-        ENV["AWS_S3_VIDEO_ID"] = "available"
         sign_in authorized_user
         get "/videos/new"
         expect(response.body).to include "Upload Video File"
@@ -42,6 +41,9 @@ RSpec.describe "Videos", type: :request do
 
       it "allows authorized user but does not display form without env var present" do
         sign_in authorized_user
+        ENV["AWS_S3_VIDEO_ID"] = nil
+        ENV["AWS_S3_VIDEO_KEY"] = nil
+        ENV["AWS_S3_INPUT_BUCKET"] = nil
         get "/videos/new"
         expect(response.body).to include "Native video upload not available"
       end
