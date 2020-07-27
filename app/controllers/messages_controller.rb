@@ -13,8 +13,7 @@ class MessagesController < ApplicationController
     pusher_message_created(true, @message, @temp_message_id)
     if @message.save
       pusher_message_created(false, @message, @temp_message_id)
-      notify_users(@message.chat_channel.channel_users_ids, "all")
-      notify_users(@mentioned_users_id, "mention")
+      notify_mentioned_users(@mentioned_users_id)
       render json: { status: "success", message: { temp_id: @temp_message_id, id: @message.id } }, status: :created
     else
       render json: {
@@ -104,17 +103,15 @@ class MessagesController < ApplicationController
     end
   end
 
-  def notify_users(user_ids, type)
+  def notify_mentioned_users(user_ids)
+    # If @all is mentioned then we get an array of all of the channel's users IDs from the channel
+    # https://github.com/forem/forem/blob/9bdef4d4ae0b41612001a62c2409121b654bf71f/app/javascript/chat/chat.jsx#L1562
     return unless user_ids
 
     message_json = create_pusher_payload(@message, @temp_message_id)
 
     user_ids.each do |id|
-      if type == "mention"
-        Pusher.trigger("private-message-notifications-#{id}", "mentioned", message_json)
-      else
-        Pusher.trigger("private-message-notifications-#{id}", "message-created", message_json)
-      end
+      Pusher.trigger("private-message-notifications-#{id}", "mentioned", message_json)
     end
   end
 end
