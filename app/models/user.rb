@@ -112,7 +112,8 @@ class User < ApplicationRecord
 
   mount_uploader :profile_image, ProfileImageUploader
 
-  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable, :recoverable
+  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
+         :recoverable, :lockable
 
   validates :behance_url, length: { maximum: 100 }, allow_blank: true, format: BEHANCE_URL_REGEXP
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
