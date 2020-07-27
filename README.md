@@ -91,13 +91,13 @@ proceed.
 
 This section provides a high-level quick start guide. If you're looking for the
 [installation guide](https://docs.dev.to/installation/), you'll want to refer to
-our complete [Developer Documentation](https://docs.dev.to).
+our complete [Developer Documentation](https://docs.forem.com/).
 
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
 transitioning to a [Preact](https://preactjs.com/)-first frontend.
 
 A more complete overview of our stack is available in
-[our docs](https://docs.dev.to/technical-overview/).
+[our docs](https://docs.forem.com/technical-overview/).
 
 ### Prerequisites
 
