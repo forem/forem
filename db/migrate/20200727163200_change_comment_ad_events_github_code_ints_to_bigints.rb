@@ -20,6 +20,7 @@ class ChangeCommentAdEventsGithubCodeIntsToBigints < ActiveRecord::Migration[6.0
       SQL
     )
 
+    ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS hypershield.github_repos")
     safety_assured { change_column :github_repos, :github_id_code, :bigint }
   end
 
@@ -44,6 +45,7 @@ class ChangeCommentAdEventsGithubCodeIntsToBigints < ActiveRecord::Migration[6.0
       SQL
     )
 
+    ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS hypershield.github_repos")
     safety_assured { change_column :github_repos, :github_id_code, :int }
   end
 end
