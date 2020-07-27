@@ -15,5 +15,7 @@ namespace :app_initializer do
 end
 
 if ENV["ENABLE_HYPERSHIELD"].present?
-  Rake::Task["db:prepare"].enhance(["hypershield:refresh"])
+  Rake::Task["db:prepare"].enhance do
+    Rake::Task["hypershield:refresh"]
+  end
 end
