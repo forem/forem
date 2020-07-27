@@ -9,8 +9,8 @@ class GithubRepo < ApplicationRecord
 
   scope :featured, -> { where(featured: true) }
 
-  after_save :clear_caches
   before_destroy :clear_caches
+  after_save :clear_caches
 
   # Update existing repository or create a new one with given params.
   # Repository is searched by either GitHub ID or URL.
