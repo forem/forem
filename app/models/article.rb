@@ -317,7 +317,7 @@ class Article < ApplicationRecord
   end
 
   def readable_publish_date
-    relevant_date = crossposted_at.presence || published_at
+    relevant_date = displayable_published_at
     if relevant_date && relevant_date.year == Time.current.year
       relevant_date&.strftime("%b %e")
     else
@@ -329,7 +329,11 @@ class Article < ApplicationRecord
     return "" unless published
     return "" unless crossposted_at || published_at
 
-    (crossposted_at || published_at).utc.iso8601
+    displayable_published_at.utc.iso8601
+  end
+
+  def displayable_published_at
+    crossposted_at.presence || published_at
   end
 
   def series
