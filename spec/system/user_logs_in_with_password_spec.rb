@@ -1,17 +1,17 @@
 require "rails_helper"
 
 RSpec.describe "Authenticating with a password" do
+  def submit_login_form(email, password)
+    fill_in "Email", with: email
+    fill_in "Password", with: password
+    click_button "Log in"
+  end
+
   let(:password) { "p4assw0rd" }
   let!(:user) { create(:user, password: password, password_confirmation: password) }
 
   before do
     visit sign_up_path
-  end
-
-  def submit_login_form(email, password)
-    fill_in "Email", with: email
-    fill_in "Password", with: password
-    click_button "Log in"
   end
 
   context "when logging in with incorrect credentials" do
