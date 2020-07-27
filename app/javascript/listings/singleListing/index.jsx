@@ -43,12 +43,14 @@ const SingleListing = ({
           <span>
             {listing.listing_endorsements.map((endorsement, idx) => {
               return (
-                <Endorsement
-                  avatar={endorsement.author_profile_image_90}
-                  content={endorsement.content}
-                  key={`end-${idx}`}
-                  isOpen={isOpen}
-                />
+                endorsement.approved && (
+                  <Endorsement
+                    avatar={endorsement.author_profile_image_90}
+                    content={endorsement.content}
+                    key={`end-${idx}`}
+                    isOpen={isOpen}
+                  />
+                )
               );
             })}
           </span>

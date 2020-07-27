@@ -8,7 +8,7 @@ class ListingsController < ApplicationController
     ],
     include: {
       author: { only: %i[username name], methods: %i[username profile_image_90] },
-      listing_endorsements: { only: %i[content user_id], methods: %i[author_profile_image_90] }
+      listing_endorsements: { only: %i[content user_id approved], methods: %i[author_profile_image_90] }
     }
   }.freeze
 
