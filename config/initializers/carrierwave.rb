@@ -25,11 +25,11 @@ CarrierWave.configure do |config|
         region: region
       }
       config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
-    else #SYSTEMSNOTE Non-Heroku for our WIP container
+    else # @forem/systems Non-Heroku for our WIP container
       config.fog_credentials = {
         provider: "AWS",
         use_iam_profile: true,
-        region: "us-east-2"
+        region: region
       }
       config.fog_directory = "forem-12345-uploads"
       config.fog_public    = false

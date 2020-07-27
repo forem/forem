@@ -1,4 +1,4 @@
-# SYSTEMSNOTE Only currently configured properly for Heroku target
+# @forem/systems Only currently configured properly for Heroku target
 
 if Rails.env.production? && ENV["HEROKU_APP_ID"].present?
   region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
