@@ -70,6 +70,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
       password: "password",
+      password_confirmation: "password",
     )
 
     if i.zero?
