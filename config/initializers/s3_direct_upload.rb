@@ -1,4 +1,4 @@
-# @forem/systems: We only can load this if we everything working with AWS.
+# @forem/systems: We only can load this if cideo flow is entirely configured in AWS.
 # Which is something we're currently punting on to rethink.
 
 if ENV["AWS_S3_VIDEO_ID"].present?
