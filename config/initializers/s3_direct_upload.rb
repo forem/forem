@@ -1,5 +1,6 @@
-# @forem/systems: We only can load this if cideo flow is entirely configured in AWS.
+# @forem/systems: We only can load this if video flow is entirely configured in AWS.
 # Which is something we're currently punting on to rethink.
+# As far as we know this only works and is supported on dev.to and not other forems.
 
 S3DirectUpload.config do |c|
   c.access_key_id = ENV["AWS_S3_VIDEO_ID"] # your access key id

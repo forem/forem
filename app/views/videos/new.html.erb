@@ -10,32 +10,37 @@
   }
 </style>
 <center style="margin-top:200px">
-  <%= stylesheet_link_tag "s3_direct_upload", media: "all" %>
-  <h1>🎥 Upload Video File 🙌</h1>
-  <%= s3_uploader_form callback_url: "/videos",
-                       callback_method: "POST",
-                       callback_param: "article[video]",
-                       key: "video-upload__#{SecureRandom.hex}",
-                       key_starts_with: "video-upload__",
-                       acl: "public-read",
-                       max_file_size: (current_user.has_role?(:super_admin) ? 20_000 : 6000).megabytes,
-                       id: "s3-uploader",
-                       class: "upload-form",
-                       data: { key: :val } do %>
-    <%= file_field_tag :file, accept: "video/mp4,video/x-m4v,video/*" %>
-    <script id="template-upload" type="text/x-tmpl">
-    <div id="file-{%=o.unique_id%}" class="upload">
-      {%=o.name%}
-      <div class="progress"><div class="bar" style="width: 0%"></div></div>
-      <br/><br/><br/>
+  <% if ENV["AWS_S3_VIDEO_ID"].present? %>
+    <%= stylesheet_link_tag "s3_direct_upload", media: "all" %>
+    <h1>🎥 Upload Video File 🙌</h1>
+    <%= s3_uploader_form callback_url: "/videos",
+                        callback_method: "POST",
+                        callback_param: "article[video]",
+                        key: "video-upload__#{SecureRandom.hex}",
+                        key_starts_with: "video-upload__",
+                        acl: "public-read",
+                        max_file_size: (current_user.has_role?(:super_admin) ? 20_000 : 6000).megabytes,
+                        id: "s3-uploader",
+                        class: "upload-form",
+                        data: { key: :val } do %>
+      <%= file_field_tag :file, accept: "video/mp4,video/x-m4v,video/*" %>
+      <script id="template-upload" type="text/x-tmpl">
+      <div id="file-{%=o.unique_id%}" class="upload">
+        {%=o.name%}
+        <div class="progress"><div class="bar" style="width: 0%"></div></div>
+        <br/><br/><br/>
+      </div>
+      </script>
+    <% end %>
+    <div style="margin:50px auto;max-width:80%;font-size:0.86em;">
+      <p>
+        <strong>Video is beta:</strong> Email <%= email_link %> if you have any problems.
+      </p>
     </div>
-    </script>
+  <% else %>
+    <h1>Native video upload not available in this Forem</h1>
+    <h2 class="mb-10">Consider embedding a YouTube video within a post</h2>
   <% end %>
-  <div style="margin:50px auto;max-width:80%;font-size:0.86em;">
-    <p>
-      <strong>Video is beta:</strong> Email <%= email_link %> if you have any problems.
-    </p>
-  </div>
 </center>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
