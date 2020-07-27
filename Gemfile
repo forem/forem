@@ -33,7 +33,6 @@ gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.0" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.4" # Oauth 2 provider
-gem "dry-struct", "~> 1.2" # Typed structs and value objects
 gem "elasticsearch", "~> 7.8" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
