@@ -71,7 +71,7 @@ function initializeVideoPlayback() {
     // jwtplayer tends to send multiple 'play' actions. This check makes sure
     // we're not tracking repeated 'play' events for a single interaction.
     var eventName = isPlaying ? 'play' : 'pause';
-    if (lastEvent == eventName) {
+    if (lastEvent === eventName) {
       return;
     }
     lastEvent = eventName;
