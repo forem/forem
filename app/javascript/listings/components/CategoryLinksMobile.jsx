@@ -11,7 +11,7 @@ export class CategoryLinks extends Component {
 
   render() {
     const { categories, selectedCategory } = this.props;
-    
+
     this.triggerMobileNavigation();
 
     return (
@@ -19,11 +19,9 @@ export class CategoryLinks extends Component {
         <select
           id="mobile_nav_listings"
           class="crayons-select"
+          aria-label="Listings"
         >
-          <option
-            value="/listings"
-            selected={selectedCategory === '' && true}
-          >
+          <option value="/listings" selected={selectedCategory === ''}>
             All listings
           </option>
 
@@ -31,7 +29,7 @@ export class CategoryLinks extends Component {
             return (
               <option
                 value={`/listings/${category.slug}`}
-                selected={category.slug === selectedCategory && true}
+                selected={category.slug === selectedCategory}
               >
                 {category.name}
               </option>
@@ -41,7 +39,7 @@ export class CategoryLinks extends Component {
       </div>
     );
   }
-};
+}
 
 CategoryLinks.propTypes = {
   categories: PropTypes.arrayOf(
