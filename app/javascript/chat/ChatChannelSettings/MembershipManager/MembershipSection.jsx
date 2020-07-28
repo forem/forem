@@ -7,12 +7,11 @@ const MembershipSection = ({
   currentMembership,
   removeMembership,
   handleUpdateMembershipRole,
+  membershipCount,
 }) => {
   if (!memberships || memberships.length === 0) {
     return <p className="lh-base">No membership</p>;
   }
-
-  const membershipCount = memberships.length;
 
   return (
     <div className="membership-section">
@@ -47,6 +46,7 @@ MembershipSection.propType = {
   currentMembership: PropTypes.isRequired,
   removeMembership: PropTypes.func.isRequired,
   handleUpdateMembershipRole: PropTypes.func.isRequired,
+  membershipCount: PropTypes.number.isRequired,
 };
 
 export default MembershipSection;

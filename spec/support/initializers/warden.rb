@@ -1,6 +1,7 @@
 module Warden
   module Test
     module Helpers
+      # rubocop:disable Style/OptionHash
       # Override Warden Test Helper login and logout methods with on_request
       # instead of on_next_request in order to prevent the race condition where
       # we make a request before the user is finished authenticating
@@ -11,6 +12,7 @@ module Warden
           proxy.set_user(user, opts)
         end
       end
+      # rubocop:enable Style/OptionHash
 
       def logout(*scopes)
         Warden::Manager.on_request do |proxy|

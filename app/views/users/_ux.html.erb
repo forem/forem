@@ -1,4 +1,6 @@
-<%= form_for @user, html: { id: "ux-customization-form", class: "grid gap-6" } do |f| %>
+<%= javascript_packs_with_chunks_tag "stickySaveFooter", defer: true %>
+
+<%= form_for @user, html: { id: "ux-customization-form", class: "sticky-footer-form grid gap-6" } do |f| %>
   <div class="crayons-card grid gap-6 p-6">
     <h2>Style Customization</h2>
 
@@ -55,7 +57,7 @@
     </div>
   </div>
 
-  <div class="mb-6 grid gap-6 p-6">
+  <div class="save-footer crayons-card mb-6 grid gap-6 p-6">
   <%= f.hidden_field :tab, value: @tab, id: nil %>
     <div>
       <button class="crayons-btn" type="submit">Save</button>

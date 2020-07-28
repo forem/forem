@@ -25,7 +25,7 @@ RSpec.describe UserSubscriptions::CreateFromControllerParams, type: :service do
     expect(user_subscription.error).to eq "Source not found."
   end
 
-  # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation is re-enabled
+  # TODO: [@forem/delightful]: re-enable this once email confirmation is re-enabled
   xit "returns an error for an email mismatch" do
     source = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
     user_subscription_params = { source_type: source.class.name, source_id: source.id,

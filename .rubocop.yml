@@ -379,9 +379,9 @@ Style/ClassAndModuleChildren:
   Enabled: true
   SafeAutoCorrect: true
 
-# Style/OptionHash:
-#   Description: "Don't use option hashes when you can use keyword arguments."
-#   Enabled: false
+Style/OptionHash:
+  Description: "Don't use option hashes when you can use keyword arguments."
+  Enabled: true
 
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
@@ -413,11 +413,6 @@ Style/RedundantRegexpCharacterClass:
 Style/RedundantRegexpEscape:
   Description: 'Checks for redundant escapes in Regexps.'
   Enabled: true
-
-Style/RegexpLiteral:
-  Description: 'Use / or %r around regular expressions.'
-  StyleGuide: '#percent-r'
-  Enabled: false
 
 Style/ReturnNil:
   Description: 'Use return instead of return nil.'

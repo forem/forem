@@ -27,7 +27,7 @@ class Message < ApplicationRecord
 
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
-    chat_channel.chat_channel_memberships.each(&:index_to_elasticsearch)
+    ChatChannels::IndexesMembershipsWorker.perform_async(chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses
@@ -195,7 +195,7 @@ class Message < ApplicationRecord
   def channel_permission
     errors.add(:base, "Must be part of channel.") if chat_channel_id.blank?
 
-    channel = ChatChannel.find(chat_channel_id)
+    channel = chat_channel || ChatChannel.find(chat_channel_id)
     return if channel.open?
 
     errors.add(:base, "You are not a participant of this chat channel.") unless channel.has_member?(user)
