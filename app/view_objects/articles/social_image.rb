@@ -7,7 +7,7 @@ module Articles
 
     def initialize(article, **options)
       @article = article
-      @height = options[:height] || 500
+      @height = options[:height] || 420
       @width = options[:width] || 1000
     end
 
@@ -43,7 +43,7 @@ module Articles
         cl_image_path(src,
                       type: "fetch",
                       width: "1000",
-                      height: "500",
+                      height: "420",
                       crop: "imagga_scale",
                       quality: "auto",
                       flags: "progressive",
