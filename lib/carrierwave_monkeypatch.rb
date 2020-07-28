@@ -2,7 +2,6 @@
 # Because we still want the "public" version path in all current scenarios.
 
 if Rails.env.production? && ENV["HEROKU_APP_ID"].blank?
-  require "fog"
   module CarrierWave
     module Storage
       class Fog < Abstract
