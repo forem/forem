@@ -1,15 +1,25 @@
 # @forem/systems Only currently configured properly for Heroku target
 
-if Rails.env.production? && ENV["HEROKU_APP_ID"].present?
+if Rails.env.production?
   region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
-  SitemapGenerator::Sitemap.adapter = SitemapGenerator::S3Adapter.new(
-    fog_provider: "AWS",
-    aws_access_key_id: ApplicationConfig["AWS_ID"],
-    aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
-    fog_directory: ApplicationConfig["AWS_BUCKET_NAME"],
-    fog_region: region,
-  )
-  SitemapGenerator::Sitemap.sitemaps_host = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/"
+  if ENV["HEROKU_APP_ID"].present?
+    SitemapGenerator::Sitemap.adapter = SitemapGenerator::S3Adapter.new(
+      fog_provider: "AWS",
+      aws_access_key_id: ApplicationConfig["AWS_ID"],
+      aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
+      fog_directory: ApplicationConfig["AWS_BUCKET_NAME"],
+      fog_region: region,
+    )
+    SitemapGenerator::Sitemap.sitemaps_host = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/"
+  else
+    SitemapGenerator::Sitemap.adapter = SitemapGenerator::S3Adapter.new(
+      fog_provider: "AWS",
+      use_iam_profile: true,
+      fog_directory: ApplicationConfig["AWS_BUCKET_NAME"],
+      fog_region: region,
+    )
+    SitemapGenerator::Sitemap.sitemaps_host = "https://forem-12345-uploads.s3.amazonaws.com/"
+  end
   SitemapGenerator::Sitemap.public_path = "tmp/"
   SitemapGenerator::Sitemap.sitemaps_path = "sitemaps/"
 end
