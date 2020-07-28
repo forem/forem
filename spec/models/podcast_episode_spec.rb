@@ -62,7 +62,7 @@ RSpec.describe PodcastEpisode, type: :model do
   end
 
   describe ".available" do
-    let_it_be(:podcast) { create(:podcast) }
+    let(:podcast) { create(:podcast) }
 
     it "is available when reachable and published" do
       expect do
@@ -85,7 +85,7 @@ RSpec.describe PodcastEpisode, type: :model do
   end
 
   context "when callbacks are triggered before validation" do
-    let_it_be(:podcast_episode) { build(:podcast_episode) }
+    let(:podcast_episode) { build(:podcast_episode) }
 
     describe "paragraphs cleanup" do
       it "removes empty paragraphs" do

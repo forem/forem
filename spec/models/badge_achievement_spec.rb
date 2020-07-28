@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe BadgeAchievement, type: :model do
-  let_it_be(:achievement) { create(:badge_achievement) }
+  let(:achievement) { create(:badge_achievement) }
 
   describe "validations" do
     describe "builtin validations" do

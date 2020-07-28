@@ -7,9 +7,9 @@ RSpec.describe Follows::CreateChatChannelWorker, type: :worker do
     let(:worker) { subject }
 
     context "with follow" do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:user2) { create(:user) }
-      let_it_be(:follow) { create(:follow, follower: user, followable: user2) }
+      let(:user) { create(:user) }
+      let(:user2) { create(:user) }
+      let(:follow) { create(:follow, follower: user, followable: user2) }
 
       it "creates a chat channel when mutual followers" do
         follow2 = create(:follow, follower: user2, followable: user)

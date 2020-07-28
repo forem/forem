@@ -1,16 +1,16 @@
 require "rails_helper"
 
 RSpec.describe Credit, type: :model do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:organization) { create(:organization) }
+  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
 
   it { is_expected.to belong_to(:user).optional }
   it { is_expected.to belong_to(:organization).optional }
   it { is_expected.to belong_to(:purchase).optional }
 
   context "when caching counters" do
-    let_it_be(:user_credits) { create_list(:credit, 2, user: user) }
-    let_it_be(:org_credits) { create_list(:credit, 1, organization: organization) }
+    let(:user_credits) { create_list(:credit, 2, user: user) }
+    let(:org_credits) { create_list(:credit, 1, organization: organization) }
 
     describe "#credits_count" do
       it "counts credits for user" do
@@ -49,7 +49,7 @@ RSpec.describe Credit, type: :model do
   end
 
   describe "#purchase" do
-    let_it_be(:credit) { build(:credit) }
+    let(:credit) { build(:credit) }
 
     it "is valid with a purchase" do
       credit.purchase = build(:listing)
@@ -77,8 +77,8 @@ RSpec.describe Credit, type: :model do
   end
 
   describe "#remove_from" do
-    let_it_be(:user_credits) { create_list(:credit, 2, user: user) }
-    let_it_be(:org_credits) { create_list(:credit, 1, organization: organization) }
+    let(:user_credits) { create_list(:credit, 2, user: user) }
+    let(:org_credits) { create_list(:credit, 1, organization: organization) }
 
     it "adds the credits to the user" do
       expect do

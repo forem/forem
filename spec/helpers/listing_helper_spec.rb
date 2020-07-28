@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ListingHelper, type: :helper do
-  let_it_be_readonly(:cat1) { create(:listing_category, cost: 1) }
-  let_it_be_readonly(:cat2) { create(:listing_category, :cfp, cost: 5) }
+  let(:cat1) { create(:listing_category, cost: 1) }
+  let(:cat2) { create(:listing_category, :cfp, cost: 5) }
 
   describe "select_options_for_categories" do
     it "returns the correct options array" do

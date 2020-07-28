@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe CommentDecorator, type: :decorator do
   context "with serialization" do
-    let_it_be_readonly(:comment) { create(:comment).decorate }
+    let(:comment) { create(:comment).decorate }
 
     it "serializes both the decorated object IDs and decorated methods" do
       expected_result = { "id" => comment.id, "published_timestamp" => comment.published_timestamp }

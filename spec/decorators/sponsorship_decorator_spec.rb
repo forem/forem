@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SponsorshipDecorator, type: :decorator do
   context "with serialization" do
-    let_it_be_readonly(:sponsorship) { create(:sponsorship).decorate }
+    let(:sponsorship) { create(:sponsorship).decorate }
 
     it "serializes both the decorated object IDs and decorated methods" do
       expected_result = { "id" => sponsorship.id, "level_background_color" => sponsorship.level_background_color }

@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Collection, type: :model do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:collection) { create(:collection, :with_articles, user: user) }
+  let(:user) { create(:user) }
+  let(:collection) { create(:collection, :with_articles, user: user) }
 
   describe "validations" do
     it { is_expected.to belong_to(:user) }
@@ -15,8 +15,8 @@ RSpec.describe Collection, type: :model do
   end
 
   describe ".find_series" do
-    let_it_be(:other_user) { create(:user) }
-    let_it_be(:series) { collection }
+    let(:other_user) { create(:user) }
+    let(:series) { collection }
 
     it "returns an existing series" do
       expect do

@@ -107,7 +107,7 @@ RSpec.describe BadgeRewarder, type: :labor do
   describe "::award_contributor_badges_from_github", vcr: true do
     let(:user) { create(:user, :with_identity, identities: ["github"]) }
 
-    let_it_be_readonly(:badge) { create(:badge, title: "DEV Contributor") }
+    let(:badge) { create(:badge, title: "DEV Contributor") }
 
     before do
       omniauth_mock_github_payload

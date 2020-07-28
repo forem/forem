@@ -1,12 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Articles", type: :request do
-  let_it_be_readonly(:organization) { create(:organization) } # not used by every spec but lower times overall
-  let_it_be_readonly(:tag) { create(:tag, name: "discuss") }
-  let_it_be_changeable(:article) { create(:article, featured: true, tags: "discuss") }
+  let(:organization) { create(:organization) } # not used by every spec but lower times overall
+  let(:tag) { create(:tag, name: "discuss") }
+  let(:article) { create(:article, featured: true, tags: "discuss") }
+
   before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
   describe "GET /api/articles" do
+    before { article }
+
     it "returns CORS headers" do
       origin = "http://example.com"
       get api_articles_path, headers: { "origin": origin }
@@ -425,8 +428,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     context "when request is authenticated" do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:access_token) { create :doorkeeper_access_token, resource_owner: user, scopes: "public read_articles" }
+      let(:user) { create(:user) }
+      let(:access_token) { create :doorkeeper_access_token, resource_owner: user, scopes: "public read_articles" }
 
       it "works with bearer authorization" do
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }

@@ -19,7 +19,7 @@ RSpec.describe Badge, type: :model do
   end
 
   context "when callbacks are triggered after save" do
-    let_it_be_changeable(:badge) { create(:badge) }
+    let(:badge) { create(:badge) }
 
     describe "cache busting" do
       before do

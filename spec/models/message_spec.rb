@@ -39,7 +39,7 @@ RSpec.describe Message, type: :model do
   end
 
   context "when callbacks are triggered before validation" do
-    let_it_be(:article) { create(:article) }
+    let(:article) { create(:article) }
 
     describe "#message_html" do
       it "creates rich link with proper link for article" do

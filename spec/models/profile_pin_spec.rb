@@ -1,12 +1,12 @@
 require "rails_helper"
 
 RSpec.describe ProfilePin, type: :model do
-  let_it_be(:user) { create(:user) }
+  let(:user) { create(:user) }
 
   describe "validations" do
     describe "number of pins" do
-      let_it_be(:articles) { create_list(:article, 4, user: user) }
-      let_it_be(:pins) do
+      let(:articles) { create_list(:article, 4, user: user) }
+      let(:pins) do
         articles.each { |article| create(:profile_pin, pinnable: article, profile: user) }
       end
 
@@ -28,7 +28,7 @@ RSpec.describe ProfilePin, type: :model do
     end
 
     describe "#profile" do
-      let_it_be(:article) { create(:article, user: user) }
+      let(:article) { create(:article, user: user) }
 
       it "ensures pinnable belongs to the same profile" do
         pin = build(:profile_pin, pinnable: article, profile: create(:user))

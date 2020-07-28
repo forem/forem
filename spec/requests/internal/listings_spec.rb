@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "/internal/listings", type: :request do
-  let_it_be(:admin) { create(:user, :super_admin) }
-  let_it_be(:listing) { create(:listing, user_id: admin.id) }
+  let(:admin) { create(:user, :super_admin) }
+  let(:listing) { create(:listing, user_id: admin.id) }
 
   before do
     allow(CacheBuster).to receive(:bust_listings)

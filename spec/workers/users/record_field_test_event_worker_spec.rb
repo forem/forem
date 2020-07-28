@@ -7,7 +7,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
   describe "#perform" do
     let(:worker) { subject }
 
-    let_it_be(:user) { create(:user) }
+    let(:user) { create(:user) }
 
     context "with user who is part of field test" do
       before do
