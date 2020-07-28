@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_26_215928) do
+ActiveRecord::Schema.define(version: 2020_07_27_163200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -385,11 +385,11 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
-  create_table "comments", id: :serial, force: :cascade do |t|
+  create_table "comments", force: :cascade do |t|
     t.string "ancestry"
     t.text "body_html"
     t.text "body_markdown"
-    t.integer "commentable_id"
+    t.bigint "commentable_id"
     t.string "commentable_type"
     t.datetime "created_at", null: false
     t.boolean "deleted", default: false
@@ -406,7 +406,7 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
     t.integer "score", default: 0
     t.integer "spaminess_rating", default: 0
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
@@ -443,9 +443,9 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
     t.string "category"
     t.string "context_type"
     t.datetime "created_at", null: false
-    t.integer "display_ad_id"
+    t.bigint "display_ad_id"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["display_ad_id"], name: "index_display_ad_events_on_display_ad_id"
     t.index ["user_id"], name: "index_display_ad_events_on_user_id"
   end
@@ -577,7 +577,7 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
     t.string "description"
     t.boolean "featured", default: false
     t.boolean "fork", default: false
-    t.integer "github_id_code"
+    t.bigint "github_id_code"
     t.text "info_hash", default: "--- {}\n"
     t.string "language"
     t.string "name"
