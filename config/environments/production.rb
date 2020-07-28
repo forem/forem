@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -31,7 +32,7 @@ Rails.application.configure do
   }
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = Uglifier.new(harmony: true)
+  config.assets.js_compressor = :uglify_with_source_maps
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -55,7 +56,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :debug
+  config.log_level = ENV["LOG_LEVEL"] || :info
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -84,26 +85,35 @@ Rails.application.configure do
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
 
+  # Filter sensitive information from production logs
+  config.filter_parameters += %i[
+    auth_data_dump email encrypted
+    encrypted_password message_html message_markdown
+    password previous_refresh_token refresh_token secret
+    token current_sign_in_ip last_sign_in_ip
+    reset_password_token remember_token unconfirmed_email
+  ]
+
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  # config.log_formatter = ::Logger::Formatter.new
   config.log_formatter = ::Logger::Formatter.new
 
-  # Use a different logger for distributed setups.
-  # require 'syslog/logger'
-  # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
-
   if ENV["RAILS_LOG_TO_STDOUT"].present?
+    # Use a different logger for distributed setups.
+    # require 'syslog/logger'
+    # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
+
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
-  # Timber.io logger
-  send_logs_to_timber = ENV["SEND_LOGS_TO_TIMBER"] || "true" # <---- production should send timber logs by default
-  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ENV["TIMBER"]) : STDOUT
-  logger = Timber::Logger.new(log_device)
-  logger.level = config.log_level
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
+  if (ENV["SEND_LOGS_TO_TIMBER"] || "true") == "true"
+    # Timber.io logger
+    log_device = Timber::LogDevices::HTTP.new(ENV["TIMBER"])
+    logger = Timber::Logger.new(log_device)
+    logger.level = config.log_level
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
+  end
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
@@ -128,6 +138,7 @@ Rails.application.configure do
                           ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 Rails.application.routes.default_url_options = {
   host: Rails.application.config.app_domain,

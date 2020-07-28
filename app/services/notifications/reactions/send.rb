@@ -2,6 +2,8 @@
 module Notifications
   module Reactions
     class Send
+      Response = Struct.new(:action, :notification_id)
+
       # @param reaction_data [Hash]
       #   * :reactable_id [Integer] - article or comment id
       #   * :reactable_type [String] - "Article" or "Comment"
@@ -22,27 +24,31 @@ module Notifications
       def call
         return unless receiver.is_a?(User) || receiver.is_a?(Organization)
 
-        reaction_siblings = Reaction.public_category.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
-          where.not(reactions: { user_id: reaction.reactable_user_id }).
-          preload(:reactable).includes(:user).where.not(users: { id: nil }).
-          order("reactions.created_at DESC")
+        reaction_siblings = Reaction.public_category.where(reactable_id: reaction.reactable_id,
+                                                           reactable_type: reaction.reactable_type)
+          .where.not(reactions: { user_id: reaction.reactable_user_id })
+          .preload(:reactable).includes(:user).where.not(users: { id: nil })
+          .order("reactions.created_at" => :desc)
 
-        aggregated_reaction_siblings = reaction_siblings.map { |reaction| { category: reaction.category, created_at: reaction.created_at, user: user_data(reaction.user) } }
+        aggregated_reaction_siblings = reaction_siblings.map do |reaction|
+          { category: reaction.category, created_at: reaction.created_at, user: user_data(reaction.user) }
+        end
 
         notification_params = {
           notifiable_type: reaction.reactable_type,
           notifiable_id: reaction.reactable_id,
           action: "Reaction"
         }
-        if receiver.is_a?(User)
+        case receiver
+        when User
           notification_params[:user_id] = receiver.id
-        elsif receiver.is_a?(Organization)
+        when Organization
           notification_params[:organization_id] = receiver.id
         end
 
         if aggregated_reaction_siblings.size.zero?
           Notification.where(notification_params).delete_all
-          OpenStruct.new(action: :deleted)
+          Response.new(:deleted)
         else
           recent_reaction = reaction_siblings.first
 
@@ -50,14 +56,17 @@ module Notifications
 
           previous_siblings_size = 0
           notification = Notification.find_or_initialize_by(notification_params)
-          previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data
+
+          old_json_data = notification.json_data
+          previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if old_json_data
+
           notification.json_data = json_data
           notification.notified_at = Time.current
           notification.read = false if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
 
           notification_id = save_notification(notification_params, notification)
 
-          OpenStruct.new(action: :saved, notification_id: notification_id)
+          Response.new(:saved, notification_id)
         end
       end
 

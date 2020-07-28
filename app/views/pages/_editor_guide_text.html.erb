@@ -126,17 +126,17 @@
     </dl>
     <h3><strong>GitHub Repo Embed</strong></h3>
     <p>All you need is the GitHub username and repo:</p>
-    <code>{% github thepracticaldev/dev.to %}</code>
+    <code>{% github forem/forem %}</code>
     <dl>
       <dt><code>no-readme</code></dt>
       <dd>
         You can add a no-readme option to your GitHub tag to hide the readme file from the preview.<br>
-        <code>{% github thepracticaldev/dev.to no-readme %}</code>
+        <code>{% github forem/forem no-readme %}</code>
       </dd>
     </dl>
     <h3><strong>GitHub Issue, Pull request or Comment Embed</strong></h3>
     <p>All you need is the GitHub issue, PR or comment URL:</p>
-    <code>{% github https://github.com/thepracticaldev/dev.to/issues/9 %}</code>
+    <code>{% github https://github.com/forem/forem/issues/9 %}</code>
     <h3><strong>GitHub Gist Embed</strong></h3>
     <p>All you need is the gist link:</p>
     <code>
@@ -274,6 +274,14 @@
         <h3><strong>repl.it Embed</strong></h3>
         <p>All you need is the URL after the domain name:</p>
         <code>{% replit @WigWog/PositiveFineOpensource %}</code>
+
+        <h3><strong>Stackery Embed</strong></h3>
+        <p>Visualize your AWS Serverless Application Model templates with <a href="https://www.stackery.io/">Stackery's</a> visualizer embed</p>
+        <p>All you need is the repository owner, repository name, and branch that you would like visualized</p>
+        <code>{% stackery deeheber lambda-layer-example master %}</code>
+        <br/>
+        <p>The repository must be a public GitHub repository and have a valid AWS SAM template in the project root titled template.yaml</p>
+
         <h3><strong>Next Tech Embed</strong></h3>
         <p>All you need is the share URL for your sandbox. You can get the share URL by clicking
         the "Share" button in the top right when the sandbox is open.</p>

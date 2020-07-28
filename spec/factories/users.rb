@@ -20,6 +20,7 @@ FactoryBot.define do
     checked_code_of_conduct      { true }
     checked_terms_and_conditions { true }
     display_announcements        { true }
+    registered_at                { Time.current }
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
     bg_color_hex                 { Faker::Color.hex_color }
@@ -53,6 +54,14 @@ FactoryBot.define do
       end
 
       after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
+    end
+
+    trait :restricted_liquid_tag do
+      transient do
+        resource { nil }
+      end
+
+      after(:build) { |user, options| user.add_role(:restricted_liquid_tag, options.resource) }
     end
 
     trait :super_plus_single_resource_admin do

@@ -22,8 +22,8 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "handles unknown settings tab properly" do
-        expect { get "/settings/does-not-exist" }.
-          to raise_error(ActiveRecord::RecordNotFound)
+        expect { get "/settings/does-not-exist" }
+          .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "displays content on ux tab properly" do
@@ -239,6 +239,18 @@ RSpec.describe "UserSettings", type: :request do
       expect(response).to have_http_status(:bad_request)
     end
 
+    it "returns error message if user can't be saved" do
+      put "/users/#{user.id}", params: { user: { password: "1", password_confirmation: "1" } }
+
+      expect(flash[:error]).to include("Password is too short")
+    end
+
+    it "returns an error message if the passwords do not match" do
+      put "/users/#{user.id}", params: { user: { password: "asdfghjk", password_confirmation: "qwertyui" } }
+
+      expect(flash[:error]).to include("Password doesn't match password confirmation")
+    end
+
     context "when requesting an export of the articles" do
       def send_request(flag = true)
         put "/users/#{user.id}", params: {
@@ -399,8 +411,8 @@ RSpec.describe "UserSettings", type: :request do
         delete "/users/remove_identity", params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
 
-        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
-        expect(flash[:error]).to eq(expected_error)
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(error)
       end
 
       it "does not show the 'Remove OAuth' section afterwards if only one identity remains" do
@@ -423,8 +435,8 @@ RSpec.describe "UserSettings", type: :request do
       it "sets the proper flash error message" do
         delete "/users/remove_identity", params: { provider: provider }
 
-        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
-        expect(flash[:error]).to eq(expected_error)
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(error)
       end
 
       it "does not delete any identities" do

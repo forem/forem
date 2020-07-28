@@ -2,16 +2,16 @@ require "rails_helper"
 require "sidekiq/testing"
 
 RSpec.describe Notification, type: :model do
-  let_it_be_readonly(:user)            { create(:user) }
-  let_it_be_readonly(:user2)           { create(:user) }
-  let_it_be_readonly(:user3)           { create(:user) }
-  let_it_be_readonly(:organization)    { create(:organization) }
-  let_it_be_changeable(:article) do
+  let(:user)            { create(:user) }
+  let(:user2)           { create(:user) }
+  let(:user3)           { create(:user) }
+  let(:organization)    { create(:organization) }
+  let(:article) do
     create(:article, :with_notification_subscription, user: user, page_views_count: 4000, public_reactions_count: 70)
   end
-  let_it_be_readonly(:user_follows_user2) { user.follow(user2) }
-  let_it_be_changeable(:comment) { create(:comment, user: user2, commentable: article) }
-  let_it_be_readonly(:badge_achievement) { create(:badge_achievement) }
+  let(:user_follows_user2) { user.follow(user2) }
+  let(:comment) { create(:comment, user: user2, commentable: article) }
+  let(:badge_achievement) { create(:badge_achievement) }
 
   it do
     scopes = %i[organization_id notifiable_id notifiable_type action]
@@ -113,7 +113,7 @@ RSpec.describe Notification, type: :model do
     end
 
     context "when a user follows an organization" do
-      let_it_be_readonly(:user_follows_organization) { user.follow(organization) }
+      let(:user_follows_organization) { user.follow(organization) }
 
       it "creates a notification belonging to the organization" do
         expect do
@@ -164,8 +164,8 @@ RSpec.describe Notification, type: :model do
   end
 
   describe "#send_new_comment_notifications_without_delay" do
-    let_it_be_changeable(:comment) { create(:comment, user: user2, commentable: article) }
-    let_it_be_readonly(:child_comment) { create(:comment, user: user3, commentable: article, parent: comment) }
+    let(:comment) { create(:comment, user: user2, commentable: article) }
+    let(:child_comment) { create(:comment, user: user3, commentable: article, parent: comment) }
 
     context "when all commenters are subscribed" do
       it "sends a notification to the author of the article" do
@@ -406,7 +406,7 @@ RSpec.describe Notification, type: :model do
     end
 
     context "when the notifiable is an article from an organization" do
-      let_it_be_readonly(:org_article) { create(:article, organization: organization, user: user) }
+      let(:org_article) { create(:article, organization: organization, user: user) }
 
       it "sends a notification to author's followers" do
         user2.follow(user)
@@ -439,7 +439,8 @@ RSpec.describe Notification, type: :model do
 
       it "updates the notification with the new article title" do
         new_title = "hehehe hohoho!"
-        article.update_attribute(:title, new_title)
+        new_body_markdown = article.body_markdown.gsub(article.title, new_title)
+        article.update(title: new_title, body_markdown: new_body_markdown)
         described_class.update_notifications(article, "Published")
 
         sidekiq_perform_enqueued_jobs
@@ -461,7 +462,8 @@ RSpec.describe Notification, type: :model do
   end
 
   describe "#aggregated?" do
-    let_it_be_readonly(:notification) { build(:notification) }
+    let(:notification) { build(:notification) }
+
     it "returns true if a notification's action is 'Reaction'" do
       notification.action = "Reaction"
       expect(notification.aggregated?).to be(true)

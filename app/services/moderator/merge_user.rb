@@ -31,9 +31,15 @@ module Moderator
     private
 
     def handle_identities
-      raise "The user being deleted already has two identities. Are you sure this is the right user to be deleted? If so, a super admin will need to do this from the console to be safe." if @delete_user.identities.count > 1
+      error_message = "The user being deleted already has two identities. " \
+        "Are you sure this is the right user to be deleted? " \
+        "If so, a super admin will need to do this from the console to be safe."
+      raise error_message if @delete_user.identities.count.positive?
 
-      return true if @keep_user.identities.count > 1 || @delete_user.identities.none? || @keep_user.identities.last.provider == @delete_user.identities.last.provider
+      return true if
+        @keep_user.identities.count.positive? ||
+          @delete_user.identities.none? ||
+          @keep_user.identities.last.provider == @delete_user.identities.last.provider
 
       @delete_user.identities.first.update_columns(user_id: @keep_user.id)
     end
@@ -63,7 +69,8 @@ module Moderator
     end
 
     def merge_chat_mentions
-      @delete_user.chat_channel_memberships.update_all(user_id: @keep_user.id) if @delete_user.chat_channel_memberships.any?
+      any_memberships = @delete_user.chat_channel_memberships.any?
+      @delete_user.chat_channel_memberships.update_all(user_id: @keep_user.id) if any_memberships
       @delete_user.mentions.update_all(user_id: @keep_user.id) if @delete_user.mentions.any?
     end
 

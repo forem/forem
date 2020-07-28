@@ -1,9 +1,9 @@
 class JsitorTag < LiquidTagBase
   PARTIAL = "liquids/jsitor".freeze
-  URL_REGEXP = /\A(https|http):\/\/jsitor\.com\/embed\/\w+[-?a-zA-Z&]*\Z/.freeze
+  URL_REGEXP = %r{\A(https|http)://jsitor\.com/embed/\w+[-?a-zA-Z&]*\Z}.freeze
   ID_REGEXP = /\A[\w&?-]+\Z/.freeze
 
-  def initialize(tag_name, link, token)
+  def initialize(_tag_name, link, _parse_context)
     super
     @link = jsitor_link_parser(link)
   end

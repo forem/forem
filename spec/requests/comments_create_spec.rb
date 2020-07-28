@@ -11,6 +11,7 @@ RSpec.describe "CommentsCreate", type: :request do
     sign_in user
   end
 
+  # rubocop:disable Style/OptionHash
   def comment_params(params = {})
     {
       comment: {
@@ -20,6 +21,7 @@ RSpec.describe "CommentsCreate", type: :request do
       }.merge(params)
     }
   end
+  # rubocop:enable Style/OptionHash
 
   it "creates a comment with proper params" do
     expect do
@@ -35,9 +37,9 @@ RSpec.describe "CommentsCreate", type: :request do
 
   it "returns 429 Too Many Requests when a user reaches their rate limit" do
     allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
-    allow(rate_limit_checker).to receive(:limit_by_action).
-      with(:comment_creation).
-      and_return(true)
+    allow(rate_limit_checker).to receive(:limit_by_action)
+      .with(:comment_creation)
+      .and_return(true)
 
     post comments_path, params: comment_params
 
@@ -144,8 +146,8 @@ RSpec.describe "CommentsCreate", type: :request do
     end
 
     def reply_and_mention_comment_author_as_moderator(comment)
-      allow(SiteConfig).to receive(:mascot_user_id).
-        and_return(moderator_replier.id)
+      allow(SiteConfig).to receive(:mascot_user_id)
+        .and_return(moderator_replier.id)
 
       sign_in moderator_replier
       post moderator_create_comments_path, params: comment_params(

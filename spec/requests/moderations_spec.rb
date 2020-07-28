@@ -76,7 +76,9 @@ RSpec.describe "Moderations", type: :request do
     end
 
     it "renders not_found when an article can't be found" do
-      expect { get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/" }.to raise_exception(ActiveRecord::RecordNotFound)
+      expect do
+        get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/"
+      end.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
 

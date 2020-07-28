@@ -2,7 +2,7 @@
 title: Deployment Guide
 ---
 
-# Deploying DEV
+# Deploying Forem
 
 Anyone with the ability to merge PRs on GitHub can deploy the application.
 Remember that this is a shared responsibility, so everyone should deploy code
@@ -24,7 +24,7 @@ any deployment!
 
 ## Overview
 
-DEV relies on GitHub and Travis to deploy continuously to Heroku. If a Pull
+Forem relies on GitHub and Travis to deploy continuously to Heroku. If a Pull
 Request is merged with a `[deploy]` in its title, it will be automatically
 deployed to production once the build steps complete successfully. The process
 currently takes about 20 minutes to complete and will need a few additional
@@ -33,9 +33,9 @@ minutes before the change goes live.
 ## Travis Stages
 
 The following stages can be explored in our
-[.travis.yml](https://github.com/thepracticaldev/dev.to/blob/master/.travis.yml)
-and [Procfile](https://github.com/thepracticaldev/dev.to/blob/master/Procfile).
-Our Travis CI process consists of 2 stages.
+[.travis.yml](https://github.com/forem/forem/blob/master/.travis.yml) and
+[Procfile](https://github.com/forem/forem/blob/master/Procfile). Our Travis CI
+process consists of 2 stages.
 
 1. Running our test suite in 3 parallel jobs.
 2. Deploying the application if we have merged with the master branch and the
@@ -50,7 +50,7 @@ tests, we then run a series of other checks. These additional checks are split
 up between the different jobs. Here is a list of those additional checks that
 are run.
 
-- Job 0 is where we run Javascript tests, Preact tests, and coverage checks.
+- Job 0 is where we run JavaScript tests, Preact tests, and coverage checks.
 - Job 1 is where Travis builds Storybook to ensure its integrity, and where we
   check for any known vulnerabilities using `bundle-audit`.
 - Job 2 is where Travis fires up a Rails console to ensure the application loads

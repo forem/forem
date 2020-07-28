@@ -16,48 +16,60 @@
     border-radius: 3px;
   }
 </style>
-<%= form_for feedback_message do |f| %>
+
+<% if flash[:notice] %>
+  <div class="crayons-notice crayons-notice--danger mb-6">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+
+<%= form_for(feedback_message, html: { class: "overwrite-article-styling grid gap-4 m:gap-6" }) do |f| %>
   <input name="utf8" type="hidden" value="&#x2713;" />
   <%= f.hidden_field :feedback_type, value: "abuse-reports" %>
-  <div class="field">
-    <ul style="list-style-type:none; margin-left:0px;">
-      <li>
-        <%= f.radio_button :category, "rude or vulgar", required: "required" %>
-        <%= label_tag(:feedback_message_category_rude_or_vulgar, "Rude or vulgar") %>
-      </li>
-      <li>
-        <%= f.radio_button :category, "harassment" %>
-        <%= label_tag(:feedback_message_category_harassment, "Harassment or hate speech") %>
-      </li>
-      <li>
-        <%= f.radio_button :category, "spam" %>
-        <%= label_tag(:feedback_message_category_spam, "Spam or copyright issue") %>
-      </li>
-      <li>
-        <%= f.radio_button :category, "listings" %>
-        <%= label_tag(:feedback_message_category_listings, "Inappropriate listings message/category") %>
-      </li>
-      <li>
-        <%= f.radio_button :category, "other" %>
-        <%= label_tag(:feedback_message_category_other, "Other") %>
-      </li>
-    </ul>
-    Reported URL:
-    <%= f.text_field :reported_url, class: "reportedurlfield", value: feedback_message.reported_url, style: "width:100%;font-size: 18px; border-radius:3px;", required: true %>
-    <p style="margin-bottom:0px;">
-      <%= f.label :message %>:
-      <%= f.text_area :message, class: "messagefield", placeholder: "Please provide any additional information or context that will help us understand and handle the situation.", value: @previous_message %>
-    </p>
+
+  <div class="crayons-fields">
+    <div class="crayons-field crayons-field--radio">
+      <%= f.radio_button :category, "rude or vulgar", required: "required", class: "crayons-radio" %>
+      <%= label_tag(:feedback_message_category_rude_or_vulgar, "Rude or vulgar", class: "crayons-field__label") %>
+    </div>
+
+    <div class="crayons-field crayons-field--radio">
+      <%= f.radio_button :category, "harassment", class: "crayons-radio" %>
+      <%= label_tag(:feedback_message_category_harassment, "Harassment or hate speech", class: "crayons-field__label") %>
+    </div>
+
+    <div class="crayons-field crayons-field--radio">
+      <%= f.radio_button :category, "spam", class: "crayons-radio" %>
+      <%= label_tag(:feedback_message_category_spam, "Spam or copyright issue", class: "crayons-field__label") %>
+    </div>
+
+    <div class="crayons-field crayons-field--radio">
+      <%= f.radio_button :category, "listings", class: "crayons-radio" %>
+      <%= label_tag(:feedback_message_category_listings, "Inappropriate listings message/category", class: "crayons-field__label") %>
+    </div>
+
+    <div class="crayons-field crayons-field--radio">
+      <%= f.radio_button :category, "other", class: "crayons-radio" %>
+      <%= label_tag(:feedback_message_category_other, "Other", class: "crayons-field__label") %>
+    </div>
   </div>
+
+  <div class="crayons-field">
+    <label for="feedback_message_reported_url" class="crayons-field__label">Reported URL</label>
+    <%= f.text_field :reported_url, value: feedback_message.reported_url, class: "crayons-textfield", required: true %>
+  </div>
+
+  <div class="crayons-field">
+    <label for="feedback_message_message">
+      Message
+      <p class="crayons-field__description m-0">Please provide any additional information or context that will help us understand and handle the situation.</p>
+    </label>
+    <%= f.text_area :message, class: "crayons-textfield", placeholder: "...", value: @previous_message %>
+  </div>
+
   <div>
-  </div>
-  <div class="actions">
-    <% if flash[:notice] %>
-      <div class="notice" id="notice">
-        <%= flash[:notice] %>
-      </div>
-    <% end %>
     <%= recaptcha_tags site_key: ApplicationConfig["RECAPTCHA_SITE"] %>
-    <input type="submit" name="commit" value="Send Feedback" style="margin-top: 40px;" />
   </div>
+
+  <div><button type="submit" name="commit" class="crayons-btn">Send Feedback</button></div>
 <% end %>

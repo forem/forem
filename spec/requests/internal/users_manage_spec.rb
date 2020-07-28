@@ -23,7 +23,8 @@ RSpec.describe "Internal::Users", type: :request do
     # create user3 reaction to user2 comment
     create(:reaction, reactable: comment, reactable_type: "Comment", user: user3)
     # create user3 comment response to user2 comment
-    comment2 = create(:comment, commentable_type: "Article", commentable: article, user: user3, ancestry: comment.id, body_markdown: "Hello @#{user2.username}, you are cool.")
+    comment2 = create(:comment, commentable_type: "Article", commentable: article, user: user3, ancestry: comment.id,
+                                body_markdown: "Hello @#{user2.username}, you are cool.")
     # create user2 reaction to user3 comment response
     create(:reaction, reactable: comment2, reactable_type: "Comment", user: user2)
     # create user3 reaction to offending article
@@ -118,7 +119,9 @@ RSpec.describe "Internal::Users", type: :request do
 
   context "when managing activity and roles" do
     it "adds comment ban role" do
-      patch "/internal/users/#{user.id}/user_status", params: { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+      params = { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+      patch "/internal/users/#{user.id}/user_status", params: params
+
       expect(user.roles.first.name).to eq("comment_banned")
       expect(Note.first.content).to eq("comment ban this user")
     end
@@ -126,7 +129,10 @@ RSpec.describe "Internal::Users", type: :request do
     it "selects new role for user" do
       user.add_role :trusted
       user.reload
-      patch "/internal/users/#{user.id}/user_status", params: { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+
+      params = { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+      patch "/internal/users/#{user.id}/user_status", params: params
+
       expect(user.roles.count).to eq(1)
       expect(user.roles.last.name).to eq("comment_banned")
     end

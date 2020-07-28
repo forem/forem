@@ -137,13 +137,15 @@ RSpec.describe "Partnerships", type: :request do
             end
 
             it "displays info about an existing sponsorship" do
-              create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.from_now)
+              create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby,
+                                   expires_at: 3.days.from_now)
               get "/partnerships/tag-sponsor"
               expect(response.body).to include("You are Subscribed as the sponsor of #ruby")
             end
 
             it "doesn't display info about an expired sponsorship" do
-              create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.ago)
+              create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby,
+                                   expires_at: 3.days.ago)
               get "/partnerships/tag-sponsor"
               expect(response.body).not_to include("You are Subscribed as the sponsor of #ruby")
             end
@@ -155,7 +157,8 @@ RSpec.describe "Partnerships", type: :request do
             end
 
             it "displays info about an existing sponsorship" do
-              create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.from_now)
+              create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby,
+                                   expires_at: 3.days.from_now)
               get "/partnerships/tag-sponsor"
               expect(response.body).to include("You are Subscribed as the sponsor of #ruby")
             end

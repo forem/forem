@@ -56,8 +56,8 @@ describe ArticlesHelper do
 
   describe "#utc_iso_timestamp" do
     it "correctly formats the date when present" do
-      expect(helper.utc_iso_timestamp(Time.current)).
-        to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
+      expect(helper.utc_iso_timestamp(Time.current))
+        .to match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)
     end
 
     it "returns nil if there is no timestamp" do

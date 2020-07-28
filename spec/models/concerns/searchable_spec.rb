@@ -31,7 +31,8 @@ RSpec.describe Searchable do
 
   describe "#remove_from_elasticsearch" do
     it "enqueues job to delete model document from elasticsearch" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [SearchableModel::SEARCH_CLASS.to_s, searchable_model.search_id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [SearchableModel::SEARCH_CLASS.to_s, searchable_model.search_id]) do
         searchable_model.remove_from_elasticsearch
       end
     end
@@ -49,7 +50,8 @@ RSpec.describe Searchable do
     it "indexes a document to elasticsearch inline" do
       allow(model_class::SEARCH_CLASS).to receive(:index)
       searchable_model.index_to_elasticsearch_inline
-      expect(model_class::SEARCH_CLASS).to have_received(:index).with(searchable_model.search_id, id: searchable_model.search_id)
+      expect(model_class::SEARCH_CLASS).to have_received(:index).with(searchable_model.search_id,
+                                                                      id: searchable_model.search_id)
     end
   end
 

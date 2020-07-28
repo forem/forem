@@ -1,3 +1,4 @@
+# rubocop:disable Style/OptionHash
 module Authentication
   # These are meant to be called from the specific providers
   module Paths
@@ -21,3 +22,4 @@ module Authentication
     end
   end
 end
+# rubocop:enable Style/OptionHash

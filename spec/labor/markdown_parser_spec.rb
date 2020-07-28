@@ -140,7 +140,11 @@ RSpec.describe MarkdownParser, type: :labor do
           - `@#{user.username}`
       DOC
       result = generate_and_parse_markdown(mention)
-      expect(result).to eq("<p><code>@#{user.username}</code> one two, <a class=\"comment-mentioned-user\" href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n")
+
+      expected_result = "<p><code>@#{user.username}</code> one two, <a class=\"comment-mentioned-user\" " \
+        "href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">" \
+        "@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n"
+      expect(result).to eq(expected_result)
     end
 
     it "will not work in code tag" do
@@ -167,8 +171,22 @@ RSpec.describe MarkdownParser, type: :labor do
     expect(generate_and_parse_markdown(inline_code)).to include(inline_code[1..-2])
   end
 
-  it "raises an error if it detects a XSS attempt" do
-    expect { generate_and_parse_markdown("data:text/html") }.to raise_error(ArgumentError)
+  context "when checking XSS attempt in markdown content" do
+    it "raises an error if XSS attempt detected" do
+      expect do
+        generate_and_parse_markdown("src='DatA:text/html;base64:xxxx'")
+      end.to raise_error(ArgumentError)
+
+      expect do
+        generate_and_parse_markdown("src=\"&\"")
+      end.to raise_error(ArgumentError)
+    end
+
+    it "does not raise error if no XSS attempt detected" do
+      expect do
+        generate_and_parse_markdown("```const data = 'data:text/html';```")
+      end.not_to raise_error(ArgumentError)
+    end
   end
 
   context "when provided with an @username" do
@@ -255,8 +273,8 @@ RSpec.describe MarkdownParser, type: :labor do
     end
 
     it "wraps the image with Cloudinary" do
-      expect(generate_and_parse_markdown(markdown_with_img)).
-        to include("https://res.cloudinary.com")
+      expect(generate_and_parse_markdown(markdown_with_img))
+        .to include("https://res.cloudinary.com")
     end
   end
 

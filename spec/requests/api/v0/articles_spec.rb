@@ -518,8 +518,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "fails with a failing secure compare" do
-        allow(ActiveSupport::SecurityUtils).
-          to receive(:secure_compare).and_return(false)
+        allow(ActiveSupport::SecurityUtils)
+          .to receive(:secure_compare).and_return(false)
         post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
@@ -546,7 +546,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
 
-        post api_articles_path, params: { article: { title: Faker::Book.title, body_markdown: "" } }.to_json, headers: headers
+        post api_articles_path, params: { article: { title: Faker::Book.title,
+                                                     body_markdown: "" } }.to_json, headers: headers
         expect(response).to have_http_status(:created)
       end
 
@@ -829,8 +830,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "fails with a failing secure compare" do
-        allow(ActiveSupport::SecurityUtils).
-          to receive(:secure_compare).and_return(false)
+        allow(ActiveSupport::SecurityUtils)
+          .to receive(:secure_compare).and_return(false)
         put path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end

@@ -11,6 +11,28 @@ module Api
 
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
+      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id collection_id
+        title description main_image published_at crossposted_at social_image
+        cached_tag_list slug path canonical_url comments_count
+        public_reactions_count created_at edited_at last_comment_at published
+        updated_at video_thumbnail_url
+      ].freeze
+      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
+
+      SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
+        *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html
+      ].freeze
+      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
+
+      ME_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id
+        title description main_image published published_at cached_tag_list
+        slug path canonical_url comments_count public_reactions_count
+        page_views_count crossposted_at body_markdown updated_at
+      ].freeze
+      private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
+
       def index
         @articles = ArticleApiIndexService.new(params).get
         @articles = @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
@@ -19,20 +41,20 @@ module Api
       end
 
       def show
-        @article = Article.published.
-          includes(:user).
-          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
-          find(params[:id]).
-          decorate
+        @article = Article.published
+          .includes(:user)
+          .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+          .find(params[:id])
+          .decorate
 
         set_surrogate_key_header @article.record_key
       end
 
       def show_by_slug
-        @article = Article.published.
-          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
-          find_by!(path: "/#{params[:username]}/#{params[:slug]}").
-          decorate
+        @article = Article.published
+          .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+          .find_by!(path: "/#{params[:username]}/#{params[:slug]}")
+          .decorate
 
         set_surrogate_key_header @article.record_key
         render "show"
@@ -73,43 +95,21 @@ module Api
                       @user.articles.published
                     end
 
-        @articles = @articles.
-          includes(:organization).
-          select(ME_ATTRIBUTES_FOR_SERIALIZATION).
-          order(published_at: :desc, created_at: :desc).
-          page(params[:page]).
-          per(num).
-          decorate
+        @articles = @articles
+          .includes(:organization)
+          .select(ME_ATTRIBUTES_FOR_SERIALIZATION)
+          .order(published_at: :desc, created_at: :desc)
+          .page(params[:page])
+          .per(num)
+          .decorate
       end
-
-      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id user_id organization_id collection_id
-        title description main_image published_at crossposted_at social_image
-        cached_tag_list slug path canonical_url comments_count
-        public_reactions_count created_at edited_at last_comment_at published
-        updated_at video_thumbnail_url
-      ].freeze
-      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
-
-      SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
-        *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html
-      ].freeze
-      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
-
-      ME_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id user_id organization_id
-        title description main_image published published_at cached_tag_list
-        slug path canonical_url comments_count public_reactions_count
-        page_views_count crossposted_at body_markdown updated_at
-      ].freeze
-      private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 
       private
 
       def article_params
         allowed_params = [
           :title, :body_markdown, :published, :series,
-          :main_image, :canonical_url, :description, tags: []
+          :main_image, :canonical_url, :description, { tags: [] }
         ]
         allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
         params.require(:article).permit(allowed_params)
@@ -117,8 +117,10 @@ module Api
 
       def allowed_to_change_org_id?
         potential_user = @article&.user || @user
-        if @article.nil? || OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
-          OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
+        if @article.nil? || OrganizationMembership.exists?(user: potential_user,
+                                                           organization_id: params.dig("article", "organization_id"))
+          OrganizationMembership.exists?(user: potential_user,
+                                         organization_id: params.dig("article", "organization_id"))
         elsif potential_user == @user
           potential_user.org_admin?(params.dig("article", "organization_id")) ||
             @user.any_admin?

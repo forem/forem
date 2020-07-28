@@ -34,7 +34,9 @@ RSpec.describe "UserOrganization", type: :request do
 
     before do
       sign_in user
-      org_params["profile_image"] = Rack::Test::UploadedFile.new(Rails.root.join("app/assets/images/android-icon-36x36.png"), "image/jpeg")
+      org_params["profile_image"] = Rack::Test::UploadedFile.new(
+        Rails.root.join("app/assets/images/android-icon-36x36.png"), "image/jpeg"
+      )
       allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
       allow(rate_limiter).to receive(:limit_by_action).and_return(false)
     end
@@ -131,8 +133,8 @@ RSpec.describe "UserOrganization", type: :request do
     it "raises not_authorized if user is not org_admin" do
       org_member_org_id = org_member.organizations.first.id
       sign_in org_member
-      expect { post "/users/add_org_admin", params: { user_id: user2.id, organization_id: org_member_org_id } }.
-        to raise_error Pundit::NotAuthorizedError
+      expect { post "/users/add_org_admin", params: { user_id: user2.id, organization_id: org_member_org_id } }
+        .to raise_error Pundit::NotAuthorizedError
     end
   end
 
@@ -159,8 +161,8 @@ RSpec.describe "UserOrganization", type: :request do
 
     it "remove_org_admin raises if user not org_admin" do
       org_admin.organization_memberships.update_all(type_of_user: "member")
-      expect { post "/users/remove_org_admin", params: { user_id: second_org_admin.id, organization_id: org_id } }.
-        to raise_error Pundit::NotAuthorizedError
+      expect { post "/users/remove_org_admin", params: { user_id: second_org_admin.id, organization_id: org_id } }
+        .to raise_error Pundit::NotAuthorizedError
     end
   end
 end

@@ -23,7 +23,8 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
 
     it "assigns implicit readinglist_reaction score" do
       create(:rating_vote, article_id: article.id, user_id: user.id, rating: 4.0)
-      create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 2.0, context: "readinglist_reaction")
+      create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 2.0,
+                           context: "readinglist_reaction")
       worker.perform(article.id)
       expect(article.reload.experience_level_rating).to eq(3.0)
       expect(article.reload.experience_level_rating_distribution).to eq(2.0)

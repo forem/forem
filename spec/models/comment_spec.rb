@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Comment, type: :model do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:article) { create(:article, user: user) }
-  let_it_be_changeable(:comment) { create(:comment, user: user, commentable: article) }
+  let(:user) { create(:user) }
+  let(:article) { create(:article, user: user) }
+  let(:comment) { create(:comment, user: user, commentable: article) }
 
   include_examples "#sync_reactions_count", :article_comment
 
@@ -47,7 +47,8 @@ RSpec.describe Comment, type: :model do
       it "on destroy enqueues job to delete comment from elasticsearch" do
         comment = create(:comment)
 
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, comment.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                     args: [described_class::SEARCH_CLASS.to_s, comment.search_id]) do
           comment.destroy
         end
       end
@@ -121,6 +122,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.size < 450).to be(true)
       end
 
+      # rubocop:disable RSpec/ExampleLength
       it "adds timestamp url if commentable has video and timestamp", :aggregate_failures do
         article.video = "https://example.com"
 
@@ -145,6 +147,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.include?(">1:52:30</a>")).to eq(true)
         expect(comment.processed_html.include?(">1:20</a>")).to eq(true)
       end
+      # rubocop:enable RSpec/ExampleLength
 
       it "does not add timestamp if commentable does not have video" do
         article.video = nil
@@ -252,8 +255,8 @@ RSpec.describe Comment, type: :model do
   end
 
   describe ".tree_for" do
-    let_it_be(:other_comment) { create(:comment, commentable: article, user: user) }
-    let_it_be(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
+    let!(:other_comment) { create(:comment, commentable: article, user: user) }
+    let!(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
 
     before { comment.update_column(:score, 1) }
 
@@ -323,6 +326,8 @@ RSpec.describe Comment, type: :model do
       let!(:user) { create(:user) }
 
       before do
+        article
+        comment
         # making sure there are no other enqueued jobs from other tests
         sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end
