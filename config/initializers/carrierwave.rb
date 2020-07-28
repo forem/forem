@@ -30,7 +30,7 @@ CarrierWave.configure do |config|
         use_iam_profile: true,
         region: region
       }
-      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
+      # config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
       config.fog_directory = "forem-12345-uploads"
       config.fog_public    = false
     end
