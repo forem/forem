@@ -6,6 +6,7 @@ MiniMagick.configure do |config|
   config.timeout = 10
 end
 
+# rubocop:disable Metrics/BlockLength
 CarrierWave.configure do |config|
   if Rails.env.test?
     config.storage = :file
@@ -31,6 +32,7 @@ CarrierWave.configure do |config|
                                  region: "us-east-2"
                                }
                              end
+    config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
     config.fog_directory = "forem-12345-uploads"
     config.fog_public    = false
     config.storage = :fog
