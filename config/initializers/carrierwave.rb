@@ -16,25 +16,26 @@ CarrierWave.configure do |config|
   else
     # region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
     config.fog_provider = "fog/aws"
-    config.fog_credentials = if ENV["HEROKU_APP_ID"].present? # Present if Heroku meta info is present.
-                               {
+    if ENV["HEROKU_APP_ID"].present? # Present if Heroku meta info is present.
+      config.fog_credentials = {
                                  provider: "AWS",
                                  aws_access_key_id: ApplicationConfig["AWS_ID"],
                                  aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
                                  region: "us-east-2"
                                }
-                             else # jdoss's special sauce
-                               {
+      config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
+    else # jdoss's special sauce
+      config.fog_credentials = {
                                  provider: "AWS",
                                  aws_access_key_id: ApplicationConfig["AWS_ID"],
                                  aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
                                  use_iam_profile: true,
                                  region: "us-east-2"
                                }
-                             end
-    config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
-    config.fog_directory = "forem-12345-uploads"
-    config.fog_public    = false
+      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
+      config.fog_directory = "forem-12345-uploads"
+      config.fog_public    = false
+    end
     config.storage = :fog
   end
 end
