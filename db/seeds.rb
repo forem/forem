@@ -286,7 +286,7 @@ seeder.create_if_none(Broadcast) do
   }
 
   broadcast_messages.each do |type, message|
-    broadcastable = WelcomeNotification.new
+    broadcastable = WelcomeNotification.create
 
     Broadcast.create!(
       title: "Welcome Notification: #{type}",
