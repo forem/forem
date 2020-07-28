@@ -15,7 +15,7 @@ class Organization < ApplicationRecord
   has_many :articles
   has_many :listings
   has_many :collections
-  has_many :credits
+  has_many :credits, dependent: :restrict_with_error
   has_many :display_ads
   has_many :notifications
   has_many :organization_memberships, dependent: :delete_all

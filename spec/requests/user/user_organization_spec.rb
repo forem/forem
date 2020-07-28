@@ -181,12 +181,14 @@ RSpec.describe "UserOrganization", type: :request do
     it "does not delete the organization if the user is only an org member" do
       org_id = org_member.organizations.first.id
       sign_in org_member
+      delete "/organizations/#{org_id}"
       expect(Organization.find(org_id).persisted?).to eq true
     end
 
     it "does not delete the organization if the user is not a part of the org" do
       org = create(:organization)
       sign_in user
+      delete "/organizations/#{org.id}"
       expect(org.persisted?).to eq true
     end
 
@@ -194,6 +196,7 @@ RSpec.describe "UserOrganization", type: :request do
       org_id = org_admin.organizations.first.id
       create(:article, user: org_admin, organization_id: org_id)
       sign_in org_admin
+      delete "/organizations/#{org_id}"
       expect(Organization.find(org_id).persisted?).to eq true
     end
 
@@ -201,7 +204,16 @@ RSpec.describe "UserOrganization", type: :request do
       org_id = org_admin.organizations.first.id
       create(:organization_membership, user: user, organization_id: org_id, type_of_user: "member")
       sign_in org_admin
+      delete "/organizations/#{org_id}"
       expect(Organization.find(org_id).persisted?).to eq true
+    end
+
+    it "does not delete the organization if the organization has credits" do
+      org = org_admin.organizations.first
+      sign_in org_admin
+      Credit.add_to(org, 1)
+      delete "/organizations/#{org.id}"
+      expect(org.persisted?).to eq true
     end
   end
 end
