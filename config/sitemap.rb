@@ -14,8 +14,10 @@ if Rails.env.production?
   else
     SitemapGenerator::Sitemap.adapter = SitemapGenerator::S3Adapter.new(
       fog_provider: "AWS",
+      aws_access_key_id: "placeholder", # @forem/systems - Obviously this is temporary to get things working :)
+      aws_secret_access_key: "placeholder",
       use_iam_profile: true,
-      fog_directory: ApplicationConfig["AWS_BUCKET_NAME"],
+      fog_directory: "forem-12345-uploads",
       fog_region: region,
     )
     SitemapGenerator::Sitemap.sitemaps_host = "https://forem-12345-uploads.s3.amazonaws.com/"
