@@ -14,7 +14,6 @@ CarrierWave.configure do |config|
     config.storage = :file
   else
     config.fog_provider = "fog/aws"
-    config.storage = :fog
     region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
     if ENV["HEROKU_APP_ID"].present?
       config.fog_credentials = {
@@ -34,5 +33,6 @@ CarrierWave.configure do |config|
       config.fog_directory = "forem-12345-uploads"
       config.fog_public    = false
     end
+    config.storage = :fog
   end
 end
