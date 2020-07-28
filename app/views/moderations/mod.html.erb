@@ -96,6 +96,20 @@
       This is the equivalent of vomiting on <b>all</b> of this user's articles.
     </p>
   </div>
+  <div class="crayons-card crayons-card--secondary p-4 flex items-center">
+    <div class="fw-medium flex-1" style="text-align: left;">
+      <p>
+        <span class="fw-bold fs-xl">Delete This Comment</span>
+        <br />
+        <span><em>Warning: This action is destructive</em></span>
+      </span>
+    </div>
+    <div class="flex">
+      <button class="crayons-btn crayons-btn--secondary ml-2" title="Delete Comment">
+        Delete Comment
+      </button>
+    </div>
+  </div>
   <% if @hidden_comments.present? %>
     <div class="tag-mod-form">
       <h2>Hidden Comments</h2>
