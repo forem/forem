@@ -9,7 +9,7 @@ module DataUpdateScripts
           next if result
 
           Honeybadger.context(broadcast_id: cast.id, errors: cast.errors_as_sentence)
-          Honeybadger.nofity("Broadcast Update Failed")
+          Honeybadger.notify("Broadcast Update Failed")
         when "Announcement"
           broadcastable = Announcement.create(banner_style: cast.banner_style)
           cast.update!(broadcastable: broadcastable)
