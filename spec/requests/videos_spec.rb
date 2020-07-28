@@ -46,6 +46,9 @@ RSpec.describe "Videos", type: :request do
         ENV["AWS_S3_INPUT_BUCKET"] = nil
         get "/videos/new"
         expect(response.body).to include "Native video upload not available"
+        ENV["AWS_S3_VIDEO_ID"] = "available"
+        ENV["AWS_S3_VIDEO_KEY"] = "available"
+        ENV["AWS_S3_INPUT_BUCKET"] = "available"
       end
     end
   end
