@@ -9,9 +9,10 @@ RSpec.describe ProfilePin, type: :model do
       let(:pins) do
         articles.each { |article| create(:profile_pin, pinnable: article, profile: user) }
       end
-
       let(:fifth_article) { create(:article, user: user) }
       let(:sixth_article) { create(:article, user: user) }
+
+      before { pins }
 
       it "allows up to five pins per user" do
         pin = build(:profile_pin, pinnable: fifth_article, profile: user)

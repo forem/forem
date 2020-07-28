@@ -202,8 +202,8 @@ RSpec.describe Reaction, type: :model do
 
   context "when callbacks are called after create" do
     describe "slack messages" do
-      let(:user) { create(:user, :trusted) }
-      let(:article) { create(:article, user: user) }
+      let!(:user) { create(:user, :trusted) }
+      let!(:article) { create(:article, user: user) }
 
       before do
         # making sure there are no other enqueued jobs from other tests

@@ -17,6 +17,8 @@ RSpec.describe Articles::ScoreCalcWorker, type: :worker do
       let(:comment) { create(:comment, commentable: article, score: 5) }
       let(:second_comment) { create(:comment, commentable: article, score: 7) }
 
+      before { [comment, second_comment] }
+
       it "updates article scores", :aggregate_failures do
         allow(Article).to receive(:find_by).and_return(article)
         allow(article.reactions).to receive(:sum).and_return(7)

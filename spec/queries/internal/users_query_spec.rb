@@ -3,12 +3,12 @@ require "rails_helper"
 RSpec.describe Internal::UsersQuery, type: :query do
   subject { described_class.call(options: options) }
 
-  let(:user)  { create(:user, :trusted, name: "Greg") }
-  let(:user2) { create(:user, :trusted, name: "Gregory") }
-  let(:user3) { create(:user, :tag_moderator, name: "Paul") }
-  let(:user4) { create(:user, :admin, name: "Susi") }
-  let(:user5) { create(:user, :trusted, :admin, name: "Beth") }
-  let(:user6) { create(:user, :super_admin, name: "Jean") }
+  let!(:user)  { create(:user, :trusted, name: "Greg") }
+  let!(:user2) { create(:user, :trusted, name: "Gregory") }
+  let!(:user3) { create(:user, :tag_moderator, name: "Paul") }
+  let!(:user4) { create(:user, :admin, name: "Susi") }
+  let!(:user5) { create(:user, :trusted, :admin, name: "Beth") }
+  let!(:user6) { create(:user, :super_admin, name: "Jean") }
 
   describe ".call" do
     context "when no arguments are given" do

@@ -80,6 +80,8 @@ RSpec.describe Credit, type: :model do
     let(:user_credits) { create_list(:credit, 2, user: user) }
     let(:org_credits) { create_list(:credit, 1, organization: organization) }
 
+    before { [user_credits, org_credits] }
+
     it "adds the credits to the user" do
       expect do
         described_class.remove_from(user, 1)

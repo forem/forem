@@ -15,8 +15,8 @@ RSpec.describe Collection, type: :model do
   end
 
   describe ".find_series" do
-    let(:other_user) { create(:user) }
-    let(:series) { collection }
+    let!(:other_user) { create(:user) }
+    let!(:series) { collection }
 
     it "returns an existing series" do
       expect do
