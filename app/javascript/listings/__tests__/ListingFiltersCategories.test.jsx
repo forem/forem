@@ -58,14 +58,6 @@ describe('<ListingFiltersCategories />', () => {
       const createListing = getByText(/create a listing/i);
       expect(createListing.getAttribute('href')).toContain('/listings/new');
     });
-
-    it('should render a manage listings link', () => {
-      const { getByText } = renderListingFilterCategories();
-      const manageListing = getByText(/manage listings/i);
-      expect(manageListing.getAttribute('href')).toContain(
-        '/listings/dashboard',
-      );
-    });
   });
 
   describe('should render all the categories links', () => {
