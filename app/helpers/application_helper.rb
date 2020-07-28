@@ -193,11 +193,11 @@ module ApplicationHelper
     "#{start_year} - #{current_year}"
   end
 
-  def collection_link(collection, options = {})
+  def collection_link(collection, **kwargs)
     size_string = "#{collection.articles.published.size} Part Series"
     body = collection.slug.present? ? "#{collection.slug} (#{size_string})" : size_string
 
-    link_to body, collection.path, options
+    link_to body, collection.path, **kwargs
   end
 
   def email_link(type = :default, text: nil, additional_info: nil)
