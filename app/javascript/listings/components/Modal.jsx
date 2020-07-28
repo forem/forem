@@ -29,16 +29,15 @@ const Modal = ({
     </svg>
   );
 
+  // TODO: a11y needs to be fixed here. we currently have a button within a button.
+  // Also, why are we not using the crayons modal component and instead recreating it here?
   return (
-    <div
+    <dialog
+      open
       id="single-listing-container__inner"
       className="single-listing-container__inner crayons-modal__box"
-      onClick={onClick}
-      role="button"
-      onKeyPress={onClick}
-      tabIndex="0"
     >
-      <header className="crayons-modal__box__header flex s:hidden">
+      <div className="crayons-modal__box__header flex s:hidden">
         <Button
           type="button"
           id="close-listing-modal"
@@ -48,8 +47,9 @@ const Modal = ({
           className="ml-auto"
           icon={Icon}
           onClick={onClick}
+          aria-label="Close listing"
         />
-      </header>
+      </div>
       <div className="crayons-modal__box__body p-0">
         <div className="p-3 m:p-6 l:p-8">
           <SingleListing
@@ -72,7 +72,7 @@ const Modal = ({
           </div>
         )}
       </div>
-    </div>
+    </dialog>
   );
 };
 
