@@ -75,6 +75,20 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).not_to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
     end
 
+    ###
+
+    it "renders date-no-year if article published this year" do
+      get article.path
+      expect(response.body).to include "date-no-year"
+    end
+
+    it "renders date with year if article published last year" do
+      article.update_column(:published_at, 1.year.ago)
+      get article.path
+      expect(response.body).not_to include "date-no-year"
+    end
+
+
     it "renders user payment pointer if set" do
       article.user.update_column(:payment_pointer, "this-is-a-pointer")
       get article.path
