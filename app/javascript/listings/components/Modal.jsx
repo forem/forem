@@ -29,8 +29,7 @@ const Modal = ({
     </svg>
   );
 
-  // TODO: a11y needs to be fixed here. we currently have a button within a button.
-  // Also, why are we not using the crayons modal component and instead recreating it here?
+  // TODO: Why are we not using the crayons modal component and instead recreating it here?
   return (
     <dialog
       open
