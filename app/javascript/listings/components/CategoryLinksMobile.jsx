@@ -5,14 +5,12 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 export class CategoryLinks extends Component {
-  triggerMobileNavigation = () => {
+  componentDidMount() {
     selectNavigation('mobile_nav_listings');
-  };
+  }
 
   render() {
     const { categories, selectedCategory } = this.props;
-
-    this.triggerMobileNavigation();
 
     return (
       <div className="block m:hidden">
