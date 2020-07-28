@@ -8,7 +8,7 @@
   width: 100%;
   max-width: calc(1540px + 10vw);
 
-  --layout-chat-left-sidebar-width: 260px;
+  --layout-chat-left-sidebar-width: 250px;
 }
 
 .live-chat {
@@ -283,6 +283,7 @@
   padding: 13px;
   min-width: 50%;
   overflow-x: hidden;
+  // font-size: 1.5em;
   @media screen and (min-width: 1440px) {
     min-width: 45%;
   }
