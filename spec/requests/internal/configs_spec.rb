@@ -498,6 +498,40 @@ RSpec.describe "/internal/config", type: :request do
                                              confirmation: confirmation_message }
           expect(SiteConfig.feed_style).to eq(feed_style)
         end
+
+        it "updates public to true" do
+          is_public = true
+          post "/internal/config", params: { site_config: { public: is_public },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.public).to eq(is_public)
+        end
+
+        it "updates public to false" do
+          is_public = false
+          post "/internal/config", params: { site_config: { public: is_public },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.public).to eq(is_public)
+        end
+      end
+
+      describe "Credits" do
+        it "updates the credit prices", :aggregate_failures do
+          original_prices = {
+            small: 500,
+            medium: 400,
+            large: 300,
+            xlarge: 250
+          }
+          SiteConfig.credit_prices_in_cents = original_prices
+
+          SiteConfig.credit_prices_in_cents.each_key do |size|
+            new_prices = original_prices.merge(size => 123)
+            expect do
+              post "/internal/config", params: { site_config: { credit_prices_in_cents: new_prices },
+                                                 confirmation: confirmation_message }
+            end.to change { SiteConfig.credit_prices_in_cents[size] }.from(original_prices[size.to_sym]).to(123)
+          end
+        end
       end
     end
   end

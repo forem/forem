@@ -53,11 +53,12 @@ class FollowsController < ApplicationController
   def create
     authorize Follow
 
-    followable = if params[:followable_type] == "Organization"
+    followable = case params[:followable_type]
+                 when "Organization"
                    Organization.find(params[:followable_id])
-                 elsif params[:followable_type] == "Tag"
+                 when "Tag"
                    Tag.find(params[:followable_id])
-                 elsif params[:followable_type] == "Podcast"
+                 when "Podcast"
                    Podcast.find(params[:followable_id])
                  else
                    User.find(params[:followable_id])

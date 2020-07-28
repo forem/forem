@@ -7,17 +7,17 @@ class MarkdownFixer
         add_quotes_to_title add_quotes_to_description
         modify_hr_tags convert_new_lines split_tags underscores_in_usernames
       ]
-      methods.reduce(markdown) { |acc, elem| send(elem, acc) }
+      methods.reduce(markdown) { |acc, elem| public_send(elem, acc) }
     end
 
     def fix_for_preview(markdown)
       methods = %i[add_quotes_to_title add_quotes_to_description modify_hr_tags underscores_in_usernames]
-      methods.reduce(markdown) { |acc, elem| send(elem, acc) }
+      methods.reduce(markdown) { |acc, elem| public_send(elem, acc) }
     end
 
     def fix_for_comment(markdown)
       methods = %I[modify_hr_tags underscores_in_usernames]
-      methods.reduce(markdown) { |acc, elem| send(elem, acc) }
+      methods.reduce(markdown) { |acc, elem| public_send(elem, acc) }
     end
 
     def add_quotes_to_title(markdown)

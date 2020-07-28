@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Views an article", type: :system do
-  let_it_be(:user) { create(:user) }
-  let_it_be_changeable(:article) do
+  let(:user) { create(:user) }
+  let(:article) do
     create(:article, :with_notification_subscription, user: user)
   end
   let(:timestamp) { "2019-03-04T10:00:00Z" }
@@ -39,14 +39,35 @@ RSpec.describe "Views an article", type: :system do
 
     it "embeds the published timestamp" do
       visit article.path
-
       selector = "article time[datetime='#{timestamp}']"
       expect(page).to have_selector(selector)
+    end
+
+    context "when articles have long markdowns and different published dates" do
+      let(:first_article) { build(:article, published_at: "2019-03-04T10:00:00Z") }
+      let(:second_article) { build(:article, published_at: "2019-03-05T10:00:00Z") }
+
+      before do
+        [first_article, second_article].each do |article|
+          additional_characters_length = (ArticleDecorator::LONG_MARKDOWN_THRESHOLD + 1) - article.body_markdown.length
+          article.body_markdown << Faker::Hipster.paragraph_by_chars(characters: additional_characters_length)
+          article.save!
+        end
+      end
+
+      it "shows the identical readable publish dates in each page", js: true do
+        visit first_article.path
+        expect(page).to have_selector("article time", text: "Mar 4")
+        expect(page).to have_selector(".crayons-card--secondary time", text: "Mar 4")
+        visit second_article.path
+        expect(page).to have_selector("article time", text: "Mar 5")
+        expect(page).to have_selector(".crayons-card--secondary time", text: "Mar 5")
+      end
     end
   end
 
   describe "when articles belong to a collection" do
-    let_it_be_readonly(:collection) { create(:collection) }
+    let(:collection) { create(:collection) }
     let(:articles_selector) { "//div[@class='article-collection']//a" }
 
     context "with regular articles" do

@@ -1,7 +1,9 @@
 class NoOpHTTPClient
+  # rubocop:disable Style/OptionHash
   def self.post(uri, params = {})
     # bonus, you could log or observe posted params here
   end
+  # rubocop:enable Style/OptionHash
 end
 
 def create_normal_notifier

@@ -77,9 +77,9 @@ RSpec.describe "TwitchStramUpdates", type: :request do
           post "/users/#{user.id}/twitch_stream_updates", params: twitch_webhook_params, headers: {
             "Content-Type" => "application/json", "X-Hub-Signature" => twitch_webhook_secret_sha
           }
-        end.
-          to change { user.reload.currently_streaming? }.from(false).to(true).
-          and change { user.reload.currently_streaming_on_twitch? }.from(false).to(true)
+        end
+          .to change { user.reload.currently_streaming? }.from(false).to(true)
+          .and change { user.reload.currently_streaming_on_twitch? }.from(false).to(true)
       end
     end
 
@@ -91,9 +91,9 @@ RSpec.describe "TwitchStramUpdates", type: :request do
           post "/users/#{user.id}/twitch_stream_updates", params: twitch_webhook_params, headers: {
             "Content-Type" => "application/json", "X-Hub-Signature" => twitch_webhook_secret_sha
           }
-        end.
-          to not_change { user.reload.currently_streaming? }.from(false).
-          and not_change { user.reload.currently_streaming_on_twitch? }.from(false)
+        end
+          .to not_change { user.reload.currently_streaming? }.from(false)
+          .and not_change { user.reload.currently_streaming_on_twitch? }.from(false)
       end
     end
 
@@ -112,9 +112,9 @@ RSpec.describe "TwitchStramUpdates", type: :request do
           post "/users/#{user.id}/twitch_stream_updates", params: twitch_webhook_params, headers: {
             "Content-Type" => "application/json", "X-Hub-Signature" => twitch_webhook_secret_sha
           }
-        end.
-          to change { user.reload.currently_streaming? }.from(true).to(false).
-          and change { user.reload.currently_streaming_on_twitch? }.from(true).to(false)
+        end
+          .to change { user.reload.currently_streaming? }.from(true).to(false)
+          .and change { user.reload.currently_streaming_on_twitch? }.from(true).to(false)
       end
     end
   end

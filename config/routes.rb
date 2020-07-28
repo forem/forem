@@ -23,7 +23,7 @@ Rails.application.routes.draw do
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
     Sidekiq::Web.class_eval do
-      use Rack::Protection, origin_whitelist: ["https://dev.to"] # resolve Rack Protection HttpOrigin
+      use Rack::Protection, origin_whitelist: [URL.url] # resolve Rack Protection HttpOrigin
     end
     mount Sidekiq::Web => "/sidekiq"
     mount FieldTest::Engine, at: "abtests"
@@ -43,7 +43,11 @@ Rails.application.routes.draw do
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
-      mount Flipper::UI.app(Flipper, { rack_protection: {} }), at: "feature_flags"
+
+      flipper_ui = Flipper::UI.app(Flipper,
+                                   { rack_protection: { except: %i[authenticity_token form_token json_csrf
+                                                                   remote_token http_origin session_hijacking] } })
+      mount flipper_ui, at: "feature_flags"
     end
 
     resources :articles, only: %i[index show update]
@@ -68,7 +72,11 @@ Rails.application.routes.draw do
     end
     resources :reactions, only: [:update]
     resources :response_templates, only: %i[index new edit create update destroy]
-    resources :chat_channels, only: %i[index create update]
+    resources :chat_channels, only: %i[index create update] do
+      member do
+        delete :remove_user
+      end
+    end
     resources :reports, only: %i[index show], controller: "feedback_messages" do
       collection do
         post "send_email"
@@ -107,7 +115,6 @@ Rails.application.routes.draw do
     resource :config
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
-    resources :path_redirects, only: %i[new create index edit update destroy]
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
   end
@@ -200,7 +207,6 @@ Rails.application.routes.draw do
     end
   end
   resources :image_uploads, only: [:create]
-  resources :blocks
   resources :notifications, only: [:index]
   resources :tags, only: [:index] do
     collection do
@@ -300,6 +306,10 @@ Rails.application.routes.draw do
   post "/chat_channel_memberships/create_membership_request" => "chat_channel_memberships#create_membership_request"
   patch "/chat_channel_memberships/leave_membership/:id" => "chat_channel_memberships#leave_membership"
   patch "/chat_channel_memberships/update_membership/:id" => "chat_channel_memberships#update_membership"
+  get "/channel_request_info/" => "chat_channel_memberships#request_details"
+  patch "/chat_channel_memberships/update_membership_role/:id" => "chat_channel_memberships#update_membership_role"
+  get "/join_channel_invitation/:channel_slug" => "chat_channel_memberships#join_channel_invitation"
+  post "/joining_invitation_response" => "chat_channel_memberships#joining_invitation_response"
 
   get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
   get "/social_previews/user/:id" => "social_previews#user", :as => :user_social_preview

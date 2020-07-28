@@ -49,9 +49,11 @@ module Authentication
         raise SubclassResponsibility
       end
 
+      # rubocop:disable Style/OptionHash
       def self.authentication_path(params = {})
         ::Authentication::Paths.authentication_path(provider_name, params)
       end
+      # rubocop:enable Style/OptionHash
 
       def self.sign_in_path(_params = {})
         raise SubclassResponsibility

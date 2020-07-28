@@ -1,4 +1,6 @@
 class ArticleDecorator < ApplicationDecorator
+  LONG_MARKDOWN_THRESHOLD = 900
+
   def current_state_path
     published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end
@@ -69,5 +71,19 @@ class ArticleDecorator < ApplicationDecorator
     return modified_description if cached_tag_list.blank?
 
     modified_description + " Tagged with #{cached_tag_list}."
+  end
+
+  def video_metadata
+    {
+      id: id,
+      video_code: video_code,
+      video_source_url: video_source_url,
+      video_thumbnail_url: cloudinary_video_url,
+      video_closed_caption_track_url: video_closed_caption_track_url
+    }
+  end
+
+  def long_markdown?
+    body_markdown.present? && body_markdown.size > LONG_MARKDOWN_THRESHOLD
   end
 end
