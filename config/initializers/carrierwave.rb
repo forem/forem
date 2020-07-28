@@ -11,7 +11,7 @@ CarrierWave.configure do |config|
   if Rails.env.test?
     config.storage = :file
     config.enable_processing = false
-  elsif Rails.env.development?
+  elsif Rails.env.development? || ENV["FILE_STORAGE_LOCATION"] == "file"
     config.storage = :file
   else
     # region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
