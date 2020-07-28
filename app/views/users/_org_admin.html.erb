@@ -198,3 +198,45 @@
     <div><button class="crayons-btn" type="submit">Save</button></div>
   <% end %>
 </div>
+
+<div class="crayons-card grid gap-6 p-6 mb-6">
+  <header>
+    <h2 class="color-accent-danger">Danger Zone</h2>
+  </header>
+  <div class="crayons-field">
+    <div class="grid gap-2">
+      <header>
+        <h3>Delete Organization</h3>
+      </header>
+      <p>
+        You can delete your organization if you:
+        <ul>
+          <li>are the only member in the organization</li>
+          <li>are an admin of the organization</li>
+          <li>the organization has no posts</li>
+          <li>and the organization has no credits</li>
+        </ul>
+      </p>
+      <% if @org_organization_memberships.size === 1 && @organization.articles_count.zero? %>
+        <% onsubmit = "return confirm('Are you absolutely sure you want to delete your organization: #{@organization.name}?');" %>
+        <%= form_tag organization_path(@organization.id), method: :delete, onsubmit: onsubmit do %>
+          <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
+            Delete "<%= @organization.name %>"
+          </button>
+        <% end %>
+      <% else %>
+        <div class="crayons-card crayons-card--secondary">
+          <div class="crayons-card__body">
+            Your organization currently does not meet the above requirements.
+            Please remove all other members and organization posts first.
+          </div>
+        </div>
+      <% end %>
+      <p>
+        Questions? Email us at
+        <a href="<%= SiteConfig.email_addresses[:default] %>"><%= SiteConfig.email_addresses[:default] %></a>
+        for help.
+      </p>
+    </div>
+  </div>
+</div>
