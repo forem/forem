@@ -4,6 +4,10 @@ import { axe } from 'jest-axe';
 import ListingFiltersCategories from '../components/ListingFiltersCategories';
 
 describe('<ListingFiltersCategories />', () => {
+  beforeEach(() => {
+    global.selectNavigation = jest.fn();
+  });
+
   const firstCategory = {
     slug: 'clojure',
     name: 'Clojure',
