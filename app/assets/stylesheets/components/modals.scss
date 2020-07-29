@@ -6,8 +6,26 @@
   --modal-header-padding: var(--su-2);
 
   @media (min-width: $breakpoint-s) {
-    --modal-body-padding: var(--su-4);
     --modal-header-padding: var(--su-2) var(--su-4);
+    --modal-body-padding: var(--su-4);
+
+    --modal-header-font-size: var(--fs-l);
+    --modal-body-font-size: var(--fs-base);
+  }
+
+  @media (min-width: $breakpoint-m) {
+    --modal-header-padding: var(--su-3) var(--su-6);
+    --modal-body-padding: var(--su-6);
+
+    --modal-header-font-size: var(--fs-xl);
+    --modal-body-font-size: var(--fs-l);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --modal-body-padding: var(--su-8);
+
+    --modal-header-font-size: var(--fs-2xl);
+    --modal-body-font-size: var(--fs-xl);
   }
 
   position: fixed;
@@ -63,10 +81,15 @@
       align-items: center;
       justify-content: space-between;
       padding: var(--modal-header-padding);
+
+      &__title {
+        font-size: var(--modal-header-font-size);
+      }
     }
 
     &__body {
       flex: 1 auto;
+      font-size: var(--modal-body-font-size);
       padding: var(--modal-body-padding);
       max-height: 100%;
       overflow-y: auto;
@@ -94,3 +117,4 @@
     }
   }
 }
+

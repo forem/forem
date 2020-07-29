@@ -106,7 +106,9 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
     >
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header flag-user-modal-header">
-          <h2>Flag User</h2>
+          <h2 class="crayons-modal__box__header__title">
+            Flag User
+          </h2>
           <button
             type="button"
             class="crayons-btn crayons-btn--icon crayons-btn--ghost modal-header-close-icon"
@@ -124,10 +126,10 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
           </button>
         </header>
         <div class="crayons-modal__box__body flag-user-modal-body">
-          <span>
+          <p>
             Thanks for keeping DEV safe. Here is what you can do to flag this
             user:
-          </span>
+          </p>
           <div class="crayons-fields">
             <div class="crayons-field crayons-field--radio">
               <input
