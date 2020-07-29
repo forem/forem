@@ -150,7 +150,7 @@
 
               <span class="fs-s mb-4 s:mb-0">
                 <% if @article.published_timestamp.present? %>
-                  <%= local_date(@article.published_timestamp, show_year: false) %>
+                  <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
                 <% end %>
                 <% if @second_user.present? %>
                   <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>

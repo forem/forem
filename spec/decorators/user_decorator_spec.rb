@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe UserDecorator, type: :decorator do
-  let_it_be_changeable(:saved_user) { create(:user) }
+  let(:saved_user) { create(:user) }
   let(:user) { build(:user) }
 
   context "with serialization" do

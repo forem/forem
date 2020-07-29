@@ -56,7 +56,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :info
+  config.log_level = ENV["LOG_LEVEL"] || :info
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -105,14 +105,6 @@ Rails.application.configure do
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
-  end
-
-  if (ENV["SEND_LOGS_TO_TIMBER"] || "true") == "true"
-    # Timber.io logger
-    log_device = Timber::LogDevices::HTTP.new(ENV["TIMBER"])
-    logger = Timber::Logger.new(log_device)
-    logger.level = config.log_level
-    config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 
   # Do not dump schema after migrations.

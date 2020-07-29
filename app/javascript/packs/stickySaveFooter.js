@@ -1,4 +1,4 @@
-const form = document.querySelector('.edit_user');
+const form = document.querySelector('.sticky-footer-form');
 
 form.addEventListener('change', () => {
     const saveFooter = document.getElementsByClassName('save-footer');
