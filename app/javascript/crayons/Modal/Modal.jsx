@@ -42,12 +42,13 @@ export const Modal = ({
 }) => {
   return (
     <div
+      data-testid="modal-container"
       className={`crayons-modal${getAdditionalClassNames({
         size,
         className,
       })}`}
     >
-      <dialog open className="crayons-modal__box">
+      <div role="dialog" aria-modal="true" className="crayons-modal__box">
         {title.length > 0 && title && (
           <div className="crayons-modal__box__header">
             <h2>{title}</h2>
@@ -55,14 +56,16 @@ export const Modal = ({
               icon={CloseIcon}
               variant="ghost"
               contentType="icon"
-              title="Close"
+              aria-label="Close"
               onClick={onClose}
             />
           </div>
         )}
         <div className="crayons-modal__box__body">{children}</div>
-      </dialog>
-      {overlay && <div className="crayons-modal__overlay" />}
+      </div>
+      {overlay && (
+        <div data-testid="modal-overlay" className="crayons-modal__overlay" />
+      )}
     </div>
   );
 };
