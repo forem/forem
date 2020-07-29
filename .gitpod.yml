@@ -1,8 +1,9 @@
 image:
   file: .gitpod.dockerfile
+
 ports:
   - port: 3000
-    onOpen: open-preview
+    onOpen: ignore
   - port: 3035
     onOpen: ignore
   - port: 5432
@@ -13,14 +14,24 @@ ports:
     onOpen: ignore
   - port: 9300
     onOpen: ignore
+
 tasks:
-  - command: redis-server
-  - command: /home/gitpod/elasticsearch-7.5.2/bin/elasticsearch
-  - init: cp config/sample_application.yml config/application.yml
+  - name: Forem Server
+    before: |
+      redis-server &
+      /home/gitpod/elasticsearch-7.5.2/bin/elasticsearch &
+    init: >
+      cp config/sample_application.yml config/application.yml &&
+      gem install solargraph &&
+      bin/setup
     command: >
-      gem install solargraph;
-      bin/setup &&
       bin/startup
+  - command: >
+      gp await-port 3000 &&
+      printf "Waiting for Forem server ..." &&
+      until $(curl -sNL $(gp url 3000) | grep -q "DEV"); do printf '.'; sleep 5; done && echo "" &&
+      gp preview $(gp url 3000)
+
 github:
   prebuilds:
     # enable for the master/default branch (defaults to true)
