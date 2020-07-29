@@ -108,6 +108,22 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
+  describe "#collection_link" do
+    let(:collection) { create(:collection, :with_articles) }
+
+    it "returns an 'a' tag" do
+      expect(helper.collection_link(collection)).to have_selector("a")
+    end
+
+    it "sets the correct href" do
+      expect(helper.collection_link(collection)).to have_link(href: collection.path)
+    end
+
+    it "has the correct text in the a tag" do
+      expect(helper.collection_link(collection)).to have_text("#{collection.slug} (#{collection.articles.published.size} Part Series)")
+    end
+  end
+
   describe "#email_link" do
     before do
       allow(SiteConfig).to receive(:email_addresses).and_return(

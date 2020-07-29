@@ -193,6 +193,13 @@ module ApplicationHelper
     "#{start_year} - #{current_year}"
   end
 
+  def collection_link(collection, **kwargs)
+    size_string = "#{collection.articles.published.size} Part Series"
+    body = collection.slug.present? ? "#{collection.slug} (#{size_string})" : size_string
+
+    link_to body, collection.path, **kwargs
+  end
+
   def email_link(type = :default, text: nil, additional_info: nil)
     # The allowed types for type is :default, :business, :privacy, and members.
     # These options can be found in field :email_addresses of models/site_config.rb

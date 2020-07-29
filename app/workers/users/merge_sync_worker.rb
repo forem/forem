@@ -14,7 +14,7 @@ module Users
       resave_content(user.articles)
       resave_content(user.comments)
       resave_content(user.reactions.readinglist)
-      resave_content(Reaction.for_articles(user.articles.pluck(:id)).readinglist)
+      resave_content(Reaction.for_articles(user.articles.ids).readinglist)
     end
 
     private

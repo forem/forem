@@ -76,7 +76,7 @@ class AnalyticsService
 
       article_ids = [@article_id]
     else
-      article_ids = @article_data.pluck(:id)
+      article_ids = @article_data.ids
     end
 
     # prepare relations for metrics

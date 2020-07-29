@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe OrganizationDecorator, type: :decorator do
   context "with serialization" do
-    let_it_be_readonly(:organization) { create(:organization).decorate }
+    let!(:organization) { create(:organization).decorate }
 
     it "serializes both the decorated object IDs and decorated methods" do
       expected_result = { "id" => organization.id, "fully_banished?" => organization.fully_banished? }

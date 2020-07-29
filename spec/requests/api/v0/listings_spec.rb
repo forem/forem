@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Listings", type: :request do
-  let_it_be_readonly(:cfp_category) do
+  let(:cfp_category) do
     create(:listing_category, :cfp)
   end
-  let_it_be_readonly(:edu_category) do
+  let(:edu_category) do
     create(:listing_category)
   end
 
@@ -155,7 +155,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
     end
 
     context "when unauthorized" do
-      let_it_be_readonly(:headers) { { "api-key" => "invalid api key" } }
+      let(:headers) { { "api-key" => "invalid api key" } }
 
       it "returns a published listing" do
         listing.update(published: true)
