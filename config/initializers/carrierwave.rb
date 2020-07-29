@@ -11,7 +11,11 @@ CarrierWave.configure do |config|
   if Rails.env.test?
     config.storage = :file
     config.enable_processing = false
-  elsif Rails.env.development? || ENV["FILE_STORAGE_LOCATION"] == "file"
+  elsif Rails.env.development?
+    # config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}"
+    config.storage = :file
+  elsif ENV["FILE_STORAGE_LOCATION"] == "file" # @forem/systems production version of file store
+    config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
     config.storage = :file
   else
     config.fog_provider = "fog/aws"
