@@ -457,6 +457,9 @@ Rails.application.routes.draw do
 
   get "/:timeframe" => "stories#index", :constraints => { timeframe: /latest/ }
 
+  get "/:username/series" => "collections#index", :as => "user_series"
+  get "/:username/series/:id" => "collections#show"
+
   # Legacy comment format (might still be floating around app, and external links)
   get "/:username/:slug/comments" => "comments#index"
   get "/:username/:slug/comments/:id_code" => "comments#index"
