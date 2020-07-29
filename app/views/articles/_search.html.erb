@@ -48,10 +48,10 @@
         var sortString = buildSortString(sortBy, sortDirection);
 
         if (filters) {
-          window.history.requestState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
+          window.history.pushState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
           search(query, filters, sortBy, sortDirection);
         } else {
-          window.history.requestState(null, null, "/search?q=" + query + sortString);
+          window.history.pushState(null, null, "/search?q=" + query + sortString);
           search(query, "", sortBy, sortDirection);
         }
 
