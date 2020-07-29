@@ -25,7 +25,6 @@ Performance/OpenStruct:
 # Include: app/models/**/*.rb
 Rails/HasManyOrHasOneDependent:
   Exclude:
-    - 'app/models/ahoy/visit.rb'
     - 'app/models/article.rb'
     - 'app/models/badge.rb'
     - 'app/models/broadcast.rb'
