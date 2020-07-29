@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "/listings", type: :request do
-  let_it_be_readonly(:edu_category) do
+  let(:edu_category) do
     create(:listing_category, cost: 1)
   end
   let(:user) { create(:user) }
@@ -147,7 +147,7 @@ RSpec.describe "/listings", type: :request do
       create_list(:credit, 25, user: user)
     end
 
-    let_it_be_readonly(:cfp_category) { create(:listing_category, :cfp) }
+    let(:cfp_category) { create(:listing_category, :cfp) }
 
     context "when the listing is invalid" do
       let(:invalid_params) do

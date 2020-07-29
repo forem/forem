@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "/internal/config", type: :request do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:admin) { create(:user, :super_admin) }
-  let_it_be(:admin_plus_config) { create(:user, :super_plus_single_resource_admin, resource: Config) }
-  let_it_be(:confirmation_message) do
+  let(:user) { create(:user) }
+  let(:admin) { create(:user, :super_admin) }
+  let(:admin_plus_config) { create(:user, :super_plus_single_resource_admin, resource: Config) }
+  let(:confirmation_message) do
     "My username is @#{admin_plus_config.username} and this action is 100% safe and appropriate."
   end
 

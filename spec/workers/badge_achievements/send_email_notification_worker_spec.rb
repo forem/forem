@@ -17,7 +17,7 @@ RSpec.describe BadgeAchievements::SendEmailNotificationWorker, type: :worker do
     end
 
     context "with badge achievement" do
-      let_it_be(:badge_achievement) { double }
+      let(:badge_achievement) { double }
 
       before do
         allow(BadgeAchievement).to receive(:find_by).with(id: 1).and_return(badge_achievement)
