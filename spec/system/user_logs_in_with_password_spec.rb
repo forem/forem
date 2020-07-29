@@ -48,6 +48,22 @@ RSpec.describe "Authenticating with a password" do
     end
   end
 
+  context "when the user's account is locked" do
+    it "allows the user to unlock their account via social logins" do
+      omniauth_mock_github_payload
+      auth_payload = OmniAuth.config.mock_auth[:github]
+      create(:user, :with_identity, identities: [:github])
+      auth_payload.info.email = user.email
+      user.lock_access!
+
+      visit root_path
+      click_link("Sign In with GitHub", match: :first)
+
+      expect(page).to have_current_path("/dashboard?signin=true")
+      expect(page).not_to have_text("Your account is locked.")
+    end
+  end
+
   context "when logging in with the correct credentials" do
     it "allows the user to sign in with the correct password" do
       submit_login_form(user.email, password)
