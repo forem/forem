@@ -19,7 +19,7 @@ RSpec.describe FieldTests::PruneOldExperimentsWorker, type: :worker do
 
       expect(FieldTest::Membership.count).to eq(38)
       expect(FieldTest::Event.count).to eq(38)
-      expect(FieldTest::Event.pluck(:field_test_membership_id).sort).to eq(FieldTest::Membership.pluck(:id).sort)
+      expect(FieldTest::Event.pluck(:field_test_membership_id).sort).to eq(FieldTest::Membership.ids.sort)
     end
   end
 end
