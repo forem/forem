@@ -47,17 +47,15 @@ module Authentication
         SETTINGS_URL
       end
 
-      # rubocop:disable Style/OptionHash
-      def self.sign_in_path(params = {})
+      def self.sign_in_path(**kwargs)
         # see https://github.com/arunagw/omniauth-twitter#authentication-options
         mandatory_params = { secure_image_url: true }
 
         ::Authentication::Paths.sign_in_path(
           provider_name,
-          params.merge(mandatory_params),
+          **kwargs.merge(mandatory_params),
         )
       end
-      # rubocop:enable Style/OptionHash
 
       protected
 
