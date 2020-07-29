@@ -125,7 +125,7 @@ RSpec.describe "Views an article", type: :system do
     let(:href) { "#{article.path}/edit" }
     let(:link_text) { "Click to edit" }
 
-    context "with the article password, and the logged-in user is the article author" do
+    context "with the article password, and the logged-in user is authorized to update the article" do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
@@ -135,7 +135,7 @@ RSpec.describe "Views an article", type: :system do
       end
     end
 
-    context "with the article password, and the logged-in user is not the article author" do
+    context "with the article password, and the logged-in user is not authorized to update the article" do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { create(:user) }
 
