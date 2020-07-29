@@ -49,7 +49,7 @@ RSpec.describe RatingVote, type: :model do
   end
 
   describe "permissions" do
-    let_it_be(:untrusted_user) { create(:user) }
+    let(:untrusted_user) { create(:user) }
 
     it "allows untrusted user to leave readinglist_reaction context rating" do
       rating = build(:rating_vote, article_id: article.id, user_id: untrusted_user.id, context: "readinglist_reaction")

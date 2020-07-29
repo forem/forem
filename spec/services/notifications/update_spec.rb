@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Notifications::Update, type: :service do
-  let_it_be(:article) { create(:article) }
+  let(:article) { create(:article) }
 
   context "when updating notifications of an article" do
     it "updates all notifications with the same action", :aggregate_failures do
@@ -37,8 +37,8 @@ RSpec.describe Notifications::Update, type: :service do
   end
 
   context "when updating notifications of an organization article" do
-    let_it_be(:organization) { create(:organization) }
-    let_it_be(:article) { create(:article, organization: organization) }
+    let(:organization) { create(:organization) }
+    let(:article) { create(:article, organization: organization) }
 
     it "updates all notifications with the same action", :aggregate_failures do
       notifications = create_list(:notification, 2, notifiable: article, action: "Published")
@@ -73,7 +73,7 @@ RSpec.describe Notifications::Update, type: :service do
   end
 
   context "when updating notifications on a comment" do
-    let_it_be(:comment) { create(:comment, commentable: article) }
+    let(:comment) { create(:comment, commentable: article) }
 
     it "updates all notifications", :aggregate_failures do
       notifications = create_list(:notification, 2, notifiable: comment)
@@ -94,7 +94,7 @@ RSpec.describe Notifications::Update, type: :service do
   end
 
   context "when updating notifications on a reaction" do
-    let_it_be(:reaction) { create(:reaction, reactable: article) }
+    let(:reaction) { create(:reaction, reactable: article) }
 
     it "does not update notifications", :aggregate_failures do
       notifications = create_list(:notification, 2, notifiable: reaction)

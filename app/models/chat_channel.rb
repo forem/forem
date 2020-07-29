@@ -198,7 +198,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def channel_mod_ids
-    mod_users.pluck(:id)
+    mod_users.ids
   end
 
   def pending_users_select_fields
