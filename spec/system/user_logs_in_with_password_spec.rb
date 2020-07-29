@@ -59,7 +59,7 @@ RSpec.describe "Authenticating with a password" do
       visit root_path
       click_link("Sign In with GitHub", match: :first)
 
-      expect(page).to have_current_path("/dashboard?signin=true")
+      expect(page).to have_current_path("/?signin=true")
       expect(page).not_to have_text("Your account is locked.")
     end
   end
