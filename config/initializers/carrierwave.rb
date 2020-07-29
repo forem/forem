@@ -26,7 +26,6 @@ CarrierWave.configure do |config|
         region: "us-east-2"
       }
       config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
-      config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
       config.fog_public    = false
     else
       region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
@@ -36,8 +35,8 @@ CarrierWave.configure do |config|
                                  aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
                                  region: region
                                }
-      config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
     end
+    config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
     config.storage = :fog
   end
 end
