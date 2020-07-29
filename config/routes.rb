@@ -95,6 +95,7 @@ Rails.application.routes.draw do
         post "recover_identity"
         post "send_email"
         post "verify_email_ownership"
+        patch "unlock_access"
       end
     end
     resources :organization_memberships, only: %i[update destroy create]
