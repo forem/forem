@@ -34,6 +34,12 @@ RSpec.describe Collection, type: :model do
     end
   end
 
+  describe "path" do
+    it "returns the correct path" do
+      expect(collection.path).to eq("/#{collection.user.username}/series/#{collection.id}")
+    end
+  end
+
   context "when callbacks are triggered after touch" do
     it "touches all articles in the collection" do
       before_times = collection.articles.order(updated_at: :desc).pluck(:updated_at).map(&:to_i)
