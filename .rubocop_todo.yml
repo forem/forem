@@ -26,7 +26,6 @@ Performance/OpenStruct:
 Rails/HasManyOrHasOneDependent:
   Exclude:
     - 'app/models/article.rb'
-    - 'app/models/badge.rb'
     - 'app/models/broadcast.rb'
     - 'app/models/collection.rb'
     - 'app/models/concerns/user_subscription_sourceable.rb'
