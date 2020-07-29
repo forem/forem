@@ -4,7 +4,7 @@ RSpec.describe "Broadcasts tasks", type: :task do
   let(:service) { Broadcasts::WelcomeNotification::Generator }
   let(:one_week_from_today) { 1.week.since }
 
-  let_it_be_readonly(:default_config_date) { SiteConfig.welcome_notifications_live_at }
+  let(:default_config_date) { SiteConfig.welcome_notifications_live_at }
 
   before do
     # Set date to a week from today

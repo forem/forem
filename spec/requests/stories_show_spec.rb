@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "StoriesShow", type: :request do
-  let_it_be(:user)                  { create(:user) }
-  let_it_be(:org, reload: true)     { create(:organization) }
-  let_it_be(:article, reload: true) { create(:article, user: user) }
+  let(:user) { create(:user) }
+  let(:org)     { create(:organization) }
+  let(:article) { create(:article, user: user) }
 
   describe "GET /:username/:slug (articles)" do
     it "renders proper title" do
