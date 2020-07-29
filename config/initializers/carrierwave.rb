@@ -19,7 +19,7 @@ CarrierWave.configure do |config|
     config.storage = :file
   else
     config.fog_provider = "fog/aws"
-    if ENV["HEROKU_APP_ID"].present? # Present if Heroku meta info is present.
+    if ENV["AWS_SECRET"].present? # Present if Heroku meta info is present.
       region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
       config.fog_credentials = {
                                  provider: "AWS",
