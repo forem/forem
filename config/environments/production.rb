@@ -133,10 +133,10 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
-  # if ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
-  #   config.middleware.use Rack::HostRedirect,
-  #                         ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
-  # end
+  if ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
+    config.middleware.use Rack::HostRedirect,
+                          ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
+  end
 end
 # rubocop:enable Metrics/BlockLength
 
