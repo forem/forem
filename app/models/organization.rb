@@ -15,7 +15,7 @@ class Organization < ApplicationRecord
   has_many :articles
   has_many :listings
   has_many :collections
-  has_many :credits
+  has_many :credits, dependent: :restrict_with_error
   has_many :display_ads
   has_many :notifications
   has_many :organization_memberships, dependent: :delete_all
@@ -58,6 +58,7 @@ class Organization < ApplicationRecord
   before_validation :evaluate_markdown
 
   after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
+  after_commit :bust_cache, on: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -102,6 +103,10 @@ class Organization < ApplicationRecord
 
   def banned
     false
+  end
+
+  def destroyable?
+    organization_memberships.count == 1 && articles.count.zero?
   end
 
   private

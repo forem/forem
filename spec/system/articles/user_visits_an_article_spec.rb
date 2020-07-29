@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Views an article", type: :system do
-  let_it_be(:user) { create(:user) }
-  let_it_be_changeable(:article) do
+  let(:user) { create(:user) }
+  let(:article) do
     create(:article, :with_notification_subscription, user: user)
   end
   let(:timestamp) { "2019-03-04T10:00:00Z" }
@@ -67,7 +67,7 @@ RSpec.describe "Views an article", type: :system do
   end
 
   describe "when articles belong to a collection" do
-    let_it_be_readonly(:collection) { create(:collection) }
+    let(:collection) { create(:collection) }
     let(:articles_selector) { "//div[@class='article-collection']//a" }
 
     context "with regular articles" do
