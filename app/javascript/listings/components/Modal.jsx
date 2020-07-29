@@ -31,8 +31,9 @@ const Modal = ({
 
   // TODO: Why are we not using the crayons modal component and instead recreating it here?
   return (
-    <dialog
-      open
+    <div
+      role="dialog"
+      aria-modal="true"
       id="single-listing-container__inner"
       className="single-listing-container__inner crayons-modal__box"
     >
@@ -71,7 +72,7 @@ const Modal = ({
           </div>
         )}
       </div>
-    </dialog>
+    </div>
   );
 };
 
