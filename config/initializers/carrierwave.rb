@@ -31,8 +31,6 @@ CarrierWave.configure do |config|
     else # jdoss's special sauce
       config.fog_credentials = {
                                  provider: "AWS",
-                                 aws_access_key_id: "placeholder",
-                                 aws_secret_access_key: "placeholder",
                                  use_iam_profile: true,
                                  region: "us-east-2"
                                }
