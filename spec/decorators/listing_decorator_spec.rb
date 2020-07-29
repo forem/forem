@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe ListingDecorator, type: :decorator do
-  let_it_be_readonly(:category) { create(:listing_category) }
+  let(:category) { create(:listing_category) }
   let(:decorated_listing) do
     build(:listing, listing_category: category).decorate
   end

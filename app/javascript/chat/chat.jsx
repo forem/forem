@@ -8,6 +8,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
 import debounceAction from '../utilities/debounceAction';
+import { addSnackbarItem } from '../Snackbar';
 import {
   conductModeration,
   getAllMessages,
@@ -451,19 +452,23 @@ export default class Chat extends Component {
       chatChannels,
       unopenedChannelIds,
     } = this.state;
+
     const receivedChatChannelId = message.chat_channel_id;
     const messageList = document.getElementById('messagelist');
+    let newMessages = [];
+
     const nearBottom =
       messageList.scrollTop + messageList.offsetHeight + 400 >
       messageList.scrollHeight;
+
     if (nearBottom) {
       scrollToBottom();
     }
-    let newMessages = [];
+    // Remove reduntant messages
     if (
-      activeChannelId &&
       message.temp_id &&
-      messages[activeChannelId].findIndex(
+      messages[receivedChatChannelId] &&
+      messages[receivedChatChannelId].findIndex(
         (oldmessage) => oldmessage.temp_id === message.temp_id,
       ) > -1
     ) {
@@ -477,10 +482,13 @@ export default class Chat extends Component {
         newMessages.shift();
       }
     }
+
+    //Show alert if message received and you have scrolled up
     const newShowAlert =
       activeChannelId === receivedChatChannelId
         ? { showAlert: !nearBottom }
         : {};
+
     let newMessageChannelIndex = 0;
     let newMessageChannel = null;
     const newChannelsObj = chatChannels.map((channel, index) => {
@@ -497,6 +505,7 @@ export default class Chat extends Component {
       newChannelsObj.unshift(newMessageChannel);
     }
 
+    // Mark messages read
     if (receivedChatChannelId === activeChannelId) {
       sendOpen(receivedChatChannelId, this.handleChannelOpenSuccess, null);
     } else {
@@ -509,6 +518,7 @@ export default class Chat extends Component {
       });
     }
 
+    // Updating the messages
     this.setState((prevState) => ({
       ...newShowAlert,
       chatChannels: newChannelsObj,
@@ -728,6 +738,13 @@ export default class Chat extends Component {
         path: `/search?q=${message.replace('/s ', '')}`,
         type_of: 'article',
       });
+    } else if (message.startsWith('/ban ') || message.startsWith('/unban ')) {
+      conductModeration(
+        activeChannelId,
+        message,
+        this.handleSuccess,
+        this.handleFailure,
+      );
     } else if (message.startsWith('/')) {
       this.setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
@@ -739,13 +756,6 @@ export default class Chat extends Component {
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim();
       this.setActiveContentState(activeChannelId, { type_of: 'github', args });
-    } else if (message[0] === '/') {
-      conductModeration(
-        activeChannelId,
-        message,
-        this.handleSuccess,
-        this.handleFailure,
-      );
     } else {
       const messageObject = {
         activeChannelId,
@@ -872,8 +882,10 @@ export default class Chat extends Component {
           return { messages: newMessages };
         });
       }
+    } else if (response.status === 'moderation-success') {
+      addSnackbarItem({ message: response.message, addCloseButton: true });
     } else if (response.status === 'error') {
-      this.receiveNewMessage(response.message);
+      addSnackbarItem({ message: response.message, addCloseButton: true });
     }
   };
 
@@ -1061,6 +1073,7 @@ export default class Chat extends Component {
   handleFailure = (err) => {
     // eslint-disable-next-line no-console
     console.error(err);
+    addSnackbarItem({ message: err, addCloseButton: true });
   };
 
   renderMessages = () => {
@@ -1185,7 +1198,7 @@ export default class Chat extends Component {
         searchType: '',
         paginationNumber: 0,
       };
-      getChannels(searchParams, this.loadChannels);
+      getChannels(searchParams, 'all', this.loadChannels);
       this.setState({ filterQuery: '' });
     }
     this.setState({ searchShowing: !this.state.searchShowing });
@@ -1690,7 +1703,7 @@ export default class Chat extends Component {
     sendChannelRequest(
       e.target.dataset.channelId,
       this.handleJoiningRequestSuccess,
-      null,
+      this.handleFailure,
     );
   };
 

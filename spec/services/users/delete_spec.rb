@@ -164,7 +164,7 @@ RSpec.describe Users::Delete, type: :service do
   end
 
   context "when cleaning up chat channels" do
-    let_it_be(:other_user) { create(:user) }
+    let(:other_user) { create(:user) }
 
     it "deletes the user's private chat channels" do
       chat_channel = ChatChannel.create_with_users(users: [user, other_user])

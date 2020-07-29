@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Webhooks", type: :request do
-  let_it_be_changeable(:user) { create(:user) }
-  let_it_be_changeable(:webhook) do
+  let(:user) { create(:user) }
+  let!(:webhook) do
     create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go")
   end
 
   describe "GET /api/v0/webhooks" do
-    let_it_be_readonly(:webhook2) do
+    let(:webhook2) do
       create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook")
     end
 
@@ -55,6 +55,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       end
 
       it "returns json on success" do
+        webhook2
         get api_webhooks_path
 
         expect(response.parsed_body).to include(

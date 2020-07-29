@@ -49,11 +49,11 @@ module Authentication
         raise SubclassResponsibility
       end
 
-      def self.authentication_path(params = {})
-        ::Authentication::Paths.authentication_path(provider_name, params)
+      def self.authentication_path(**kwargs)
+        ::Authentication::Paths.authentication_path(provider_name, **kwargs)
       end
 
-      def self.sign_in_path(_params = {})
+      def self.sign_in_path(**_kwargs)
         raise SubclassResponsibility
       end
 

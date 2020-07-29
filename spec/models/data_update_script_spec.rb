@@ -5,12 +5,6 @@ RSpec.describe DataUpdateScript do
 
   it { is_expected.to validate_uniqueness_of(:file_name) }
 
-  it "default orders scripts by name" do
-    script1 = create(:data_update_script, file_name: "456_test_script")
-    script2 = create(:data_update_script, file_name: "123_test_script")
-    expect(described_class.pluck(:id)).to eq([script2.id, script1.id])
-  end
-
   describe ".scripts_to_run" do
     before { stub_const "#{described_class}::DIRECTORY", test_directory }
 
@@ -28,6 +22,12 @@ RSpec.describe DataUpdateScript do
     it "does not return script ids that are running" do
       script = create(:data_update_script, run_at: Time.current, status: :working)
       expect(described_class.scripts_to_run).not_to include(script)
+    end
+
+    it "orders scripts by name" do
+      create(:data_update_script, file_name: "456_test_script")
+      create(:data_update_script, file_name: "123_test_script")
+      expect(described_class.scripts_to_run.ids).to eq(described_class.scripts_to_run.order(file_name: :asc).ids)
     end
   end
 

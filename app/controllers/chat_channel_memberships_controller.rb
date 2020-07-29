@@ -29,7 +29,7 @@ class ChatChannelMembershipsController < ApplicationController
     authorize @membership
     @channel = @membership.chat_channel
     invite_cache_key = "chat-channel-invite-#{@channel.id}"
-    invitation_slug = Rails.cache.fetch(invite_cache_key, expires_in: 12.hours) do
+    invitation_slug = Rails.cache.fetch(invite_cache_key, expires_in: 80.hours) do
       "invitation-link-#{SecureRandom.hex(3)}"
     end
     @invitation_link = "/join_channel_invitation/#{@channel.slug}?invitation_slug=#{invitation_slug}"
@@ -178,7 +178,7 @@ class ChatChannelMembershipsController < ApplicationController
     invite_cache_key = "chat-channel-invite-#{@chat_channel.id}"
     invitation_slug = Rails.cache.read(invite_cache_key)
     existing_membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: @chat_channel.id)
-    redirect_to connect_path(@chat_channel.slug) if existing_membership && existing_membership.status == "active"
+    redirect_to "/connect/#{@chat_channel.slug}" if existing_membership && existing_membership.status == "active"
     @link_expired = true if invitation_slug != params[:invitation_slug]
   end
 
