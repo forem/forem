@@ -5,13 +5,13 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let!(:welcome_thread) { create(:article, user: mascot_account, published: true, tags: "welcome") }
 
   # welcome_broadcast is explicitly not readonly so that we can test against an inactive broadcast
-  let_it_be(:welcome_broadcast)                  { create(:welcome_broadcast) }
-  let_it_be_readonly(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
-  let_it_be_readonly(:github_connect_broadcast)  { create(:github_connect_broadcast) }
-  let_it_be_readonly(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
-  let_it_be_readonly(:discuss_and_ask_broadcast) { create(:discuss_and_ask_broadcast) }
-  let_it_be_readonly(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
-  let_it_be_readonly(:download_app_broadcast)    { create(:download_app_broadcast) }
+  let!(:welcome_broadcast)         { create(:welcome_broadcast) }
+  let!(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
+  let!(:github_connect_broadcast)  { create(:github_connect_broadcast) }
+  let!(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
+  let!(:discuss_and_ask_broadcast) { create(:discuss_and_ask_broadcast) }
+  let!(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
+  let!(:download_app_broadcast)    { create(:download_app_broadcast) }
 
   before do
     omniauth_mock_providers_payload
@@ -225,8 +225,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   describe "#send_discuss_and_ask_notification" do
     let!(:user) { create(:user, :with_identity, identities: %w[twitter github], created_at: 6.days.ago) }
 
-    let_it_be_readonly(:ask_question_broadcast) { create(:ask_question_broadcast) }
-    let_it_be_readonly(:start_discussion_broadcast) { create(:start_discussion_broadcast) }
+    let!(:ask_question_broadcast) { create(:ask_question_broadcast) }
+    let!(:start_discussion_broadcast) { create(:start_discussion_broadcast) }
 
     context "with a user who has asked a question" do
       it "generates the correct broadcast type and sends the notification to the user" do

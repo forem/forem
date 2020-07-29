@@ -6,8 +6,8 @@ RSpec.describe Follows::SendEmailNotificationWorker, type: :worker do
   let(:mailer) { double }
   let(:message_delivery) { double }
 
-  let_it_be(:user) { create(:user) }
-  let_it_be(:user2) { create(:user) }
+  let(:user) { create(:user) }
+  let(:user2) { create(:user) }
 
   describe "#perform" do
     before do

@@ -285,7 +285,7 @@ class ArticlesController < ApplicationController
       Notification.remove_all_by_action_without_delay(notifiable_ids: @article.id, notifiable_type: "Article",
                                                       action: "Published")
       if @article.comments.exists?
-        Notification.remove_all(notifiable_ids: @article.comments.pluck(:id),
+        Notification.remove_all(notifiable_ids: @article.comments.ids,
                                 notifiable_type: "Comment")
       end
     end

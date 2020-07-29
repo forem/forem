@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
-  let_it_be_readonly(:dev_account) { create(:user) }
-  let_it_be_readonly(:mascot_account) { create(:user) }
-  let_it_be_changeable(:user) { create(:user) }
-  let_it_be_changeable(:organization) { create(:organization) }
+  let(:dev_account) { create(:user) }
+  let(:mascot_account) { create(:user) }
+  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)

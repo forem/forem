@@ -5,7 +5,7 @@ class SocialPreviewsController < ApplicationController
 
   def article
     @article = Article.find(params[:id])
-    @tag_badges = Badge.where(id: Tag.where(name: @article.decorate.cached_tag_list_array).pluck(:badge_id))
+    @tag_badges = Badge.where(id: Tag.where(name: @article.decorate.cached_tag_list_array).select(:badge_id))
     not_found unless @article.published
 
     template = @article.tags
@@ -21,7 +21,7 @@ class SocialPreviewsController < ApplicationController
 
   def user
     @user = User.find(params[:id])
-    @tag_badges = Badge.where(id: @user.badge_achievements.pluck(:badge_id))
+    @tag_badges = Badge.where(id: @user.badge_achievements.select(:badge_id))
     set_respond
   end
 

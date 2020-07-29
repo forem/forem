@@ -125,6 +125,7 @@ Membership.propTypes = {
   currentMembership: PropTypes.isRequired,
   removeMembership: PropTypes.func.isRequired,
   handleUpdateMembershipRole: PropTypes.func.isRequired,
+  showActionButton: PropTypes.bool.isRequired,
 };
 
 export default Membership;

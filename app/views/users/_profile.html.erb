@@ -11,7 +11,7 @@
   </div>
 </div>
 
-<%= form_for @user do |f| %>
+<%= form_for @user, html: { class: "sticky-footer-form" } do |f| %>
   <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
     <div class="crayons-field">
       <%= f.label :email, class: "crayons-field__label" %>

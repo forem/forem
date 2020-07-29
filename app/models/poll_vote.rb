@@ -12,8 +12,8 @@ class PollVote < ApplicationRecord
   validates :poll_option_id, presence: true, uniqueness: { scope: :user_id }
   validate :one_vote_per_poll_per_user
 
-  after_save :touch_poll_votes_count
   after_destroy :touch_poll_votes_count
+  after_save :touch_poll_votes_count
 
   delegate :poll, to: :poll_option, allow_nil: true
 
