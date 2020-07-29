@@ -38,6 +38,14 @@ RSpec.describe "Authenticating with a password" do
       submit_login_form(user.email, "wr0ng")
       expect(page).to have_text("Your account is locked.")
     end
+
+    it "sends an email with the unlock link if the uset gets locked out" do
+      allow(User).to receive(:maximum_attempts).and_return(1)
+
+      expect do
+        submit_login_form(user.email, "wr0ng")
+      end.to change { Devise.mailer.deliveries.count }.by(1)
+    end
   end
 
   context "when logging in with the correct credentials" do
