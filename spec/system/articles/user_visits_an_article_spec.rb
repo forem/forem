@@ -79,7 +79,7 @@ RSpec.describe "Views an article", type: :system do
         visit articles.first.path
 
         elements = page.all(:xpath, articles_selector)
-        paths = elements.map { |e| e[:href] }
+        paths = elements.pluck(:href)
         expect(paths).to eq([articles.first.path, articles.second.path])
       end
     end
@@ -112,7 +112,7 @@ RSpec.describe "Views an article", type: :system do
         expected_paths = [article1.path, crossposted_article.path, article2.path]
 
         elements = page.all(:xpath, articles_selector)
-        paths = elements.map { |e| e[:href] }
+        paths = elements.pluck(:href)
         expect(paths).to eq(expected_paths)
       end
       # rubocop:enable RSpec/ExampleLength

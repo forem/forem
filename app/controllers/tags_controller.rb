@@ -17,7 +17,7 @@ class TagsController < ApplicationController
   end
 
   def update
-    @tag = Tag.find_by!(id: params[:id])
+    @tag = Tag.find(params[:id])
     authorize @tag
     if @tag.errors.messages.blank? && @tag.update(tag_params)
       flash[:success] = "Tag successfully updated! 👍 "

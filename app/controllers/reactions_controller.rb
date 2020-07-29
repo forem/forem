@@ -34,7 +34,7 @@ class ReactionsController < ApplicationController
       end
 
       reactions = if session_current_user_id
-                    comment_ids = reaction_counts.map { |rc| rc[:id] }
+                    comment_ids = reaction_counts.pluck(:id) # rubocop:disable Rails/PluckId
                     cached_user_public_comment_reactions(current_user, comment_ids)
                   else
                     Reaction.none

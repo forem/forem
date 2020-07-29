@@ -482,7 +482,6 @@ Performance/IoReadlines:
   Description: 'Use `IO.each_line` (`IO#each_line`) instead of `IO.readlines` (`IO#readlines`).'
   Reference: 'https://docs.gitlab.com/ee/development/performance.html#reading-from-files-and-other-data-sources'
   Enabled: true
-  VersionAdded: '1.7'
 
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
@@ -516,18 +515,85 @@ Performance/StringInclude:
 # Rails cops from rubocop-rails
 # https://github.com/rubocop-hq/rubocop-rails/blob/master/config/default.yml
 # TODO: [@thepracticaldev/oss] enable these Rails cops
+
+Rails/ActiveRecordCallbacksOrder:
+  Description: 'Order callback declarations in the order in which they will be executed.'
+  StyleGuide: 'https://rails.rubystyle.guide/#callbacks-order'
+  Enabled: true
+
+Rails/DefaultScope:
+  Description: 'Avoid use of `default_scope`.'
+  StyleGuide: 'https://rails.rubystyle.guide#avoid-default-scope'
+  Enabled: true
+
 Rails/FilePath:
   EnforcedStyle: slashes
+
+Rails/FindById:
+  Description: >-
+                Favor the use of `find` over `where.take!`, `find_by!`, and `find_by_id!` when you
+                need to retrieve a single record by primary key when you expect it to be found.
+  StyleGuide: 'https://rails.rubystyle.guide/#find'
+  Enabled: true
 
 Rails/HasManyOrHasOneDependent:
   Description: 'Define the dependent option to the has_many and has_one associations.'
   StyleGuide: 'https://rails.rubystyle.guide#has_many-has_one-dependent-option'
   Enabled: false
 
+Rails/Inquiry:
+  Description: "Prefer Ruby's comparison operators over Active Support's `Array#inquiry` and `String#inquiry`."
+  StyleGuide: 'https://rails.rubystyle.guide/#inquiry'
+  Enabled: true
+
+Rails/MailerName:
+  Description: 'Mailer should end with `Mailer` suffix.'
+  StyleGuide: 'https://rails.rubystyle.guide/#mailer-name'
+  Enabled: true
+
+Rails/MatchRoute:
+  Description: >-
+                  Don't use `match` to define any routes unless there is a need to map multiple request types
+                  among [:get, :post, :patch, :put, :delete] to a single action using the `:via` option.
+  StyleGuide: 'https://rails.rubystyle.guide/#no-match-routes'
+  Enabled: true
+
+Rails/NegateInclude:
+  Description: 'Prefer `collection.exclude?(obj)` over `!collection.include?(obj)`.'
+  Enabled: true
+
+Rails/Pluck:
+  Description: 'Prefer `pluck` over `map { ... }`.'
+  Enabled: true
+
+Rails/PluckId:
+  Description: 'Use `ids` instead of `pluck(:id)` or `pluck(primary_key)`.'
+  StyleGuide: 'https://rails.rubystyle.guide/#ids'
+  Enabled: true
+
+Rails/PluckInWhere:
+  Description: 'Use `select` instead of `pluck` in `where` query methods.'
+  Enabled: true
+
+Rails/RenderInline:
+  Description: 'Prefer using a template over inline rendering.'
+  StyleGuide: 'https://rails.rubystyle.guide/#inline-rendering'
+  Enabled: true
+
+Rails/RenderPlainText:
+  Description: 'Prefer `render plain:` over `render text:`.'
+  StyleGuide: 'https://rails.rubystyle.guide/#plain-text-rendering'
+  Enabled: true
+
 Rails/SaveBang:
   Description: 'Identifies possible cases where Active Record save! or related should be used.'
   StyleGuide: 'https://rails.rubystyle.guide#save-bang'
   Enabled: false
+
+Rails/ShortI18n:
+  Description: 'Use the short form of the I18n methods: `t` instead of `translate` and `l` instead of `localize`.'
+  StyleGuide: 'https://rails.rubystyle.guide/#short-i18n'
+  Enabled: true
 
 Rails/SkipsModelValidations:
   Description: >-
@@ -535,6 +601,10 @@ Rails/SkipsModelValidations:
                  See reference for more information.
   Reference: 'https://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: false
+
+Rails/WhereExists:
+  Description: 'Prefer `exists?(...)` over `where(...).exists?`.'
+  Enabled: true
 
 # RSpec cops from rubocop-rspec
 # https://github.com/rubocop-hq/rubocop-rspec/blob/master/config/default.yml

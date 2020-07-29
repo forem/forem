@@ -49,13 +49,13 @@ class Organization < ApplicationRecord
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
 
-  after_save :bust_cache
-  before_save :generate_secret
-  before_save :remove_at_from_usernames
-  before_save :update_articles
-  before_validation :check_for_slug_change
   before_validation :downcase_slug
+  before_validation :check_for_slug_change
   before_validation :evaluate_markdown
+  before_save :update_articles
+  before_save :remove_at_from_usernames
+  before_save :generate_secret
+  after_save :bust_cache
 
   after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
   after_commit :bust_cache, on: :destroy

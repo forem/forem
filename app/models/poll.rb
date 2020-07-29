@@ -13,8 +13,8 @@ class Poll < ApplicationRecord
   validates :poll_options_input_array, presence: true,
                                        length: { minimum: 2, maximum: 15 }
 
-  after_create :create_poll_options
   before_save :evaluate_markdown
+  after_create :create_poll_options
 
   def voting_data
     { votes_count: poll_votes_count, votes_distribution: poll_options.pluck(:id, :poll_votes_count) }
