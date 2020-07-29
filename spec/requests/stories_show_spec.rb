@@ -88,7 +88,6 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).not_to include "date-no-year"
     end
 
-
     it "renders user payment pointer if set" do
       article.user.update_column(:payment_pointer, "this-is-a-pointer")
       get article.path

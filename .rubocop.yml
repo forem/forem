@@ -536,11 +536,6 @@ Rails/FindById:
   StyleGuide: 'https://rails.rubystyle.guide/#find'
   Enabled: true
 
-Rails/HasManyOrHasOneDependent:
-  Description: 'Define the dependent option to the has_many and has_one associations.'
-  StyleGuide: 'https://rails.rubystyle.guide#has_many-has_one-dependent-option'
-  Enabled: false
-
 Rails/Inquiry:
   Description: "Prefer Ruby's comparison operators over Active Support's `Array#inquiry` and `String#inquiry`."
   StyleGuide: 'https://rails.rubystyle.guide/#inquiry'
@@ -584,11 +579,6 @@ Rails/RenderPlainText:
   Description: 'Prefer `render plain:` over `render text:`.'
   StyleGuide: 'https://rails.rubystyle.guide/#plain-text-rendering'
   Enabled: true
-
-Rails/SaveBang:
-  Description: 'Identifies possible cases where Active Record save! or related should be used.'
-  StyleGuide: 'https://rails.rubystyle.guide#save-bang'
-  Enabled: false
 
 Rails/ShortI18n:
   Description: 'Use the short form of the I18n methods: `t` instead of `translate` and `l` instead of `localize`.'
