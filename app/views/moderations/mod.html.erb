@@ -313,21 +313,22 @@
 
     async function adminDeleteComment(commentId){
       try {
-        const response = await fetch('/admin_delete', {
+        const response = await fetch(`/comments/${commentId}/admin_delete`, {
           method: 'PATCH',
           headers: {
-            Accept: 'application/json',
             'X-CSRF-Token': window.csrfToken,
-            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            comment_id: commentId,
-          }),
-          credentials: 'same-origin',
         });
 
         const outcome = await response.json();
-        alert(`OUTCOME Result: ${outcome.result}\nOUTCOME Error: ${outcome.error}`);
+        let message;
+        if (outcome.result === 'success') {
+          message = 'Comment has been deleted.';
+        } else if (outcome.error) {
+          message = `Error: ${outcome.error}`;
+        }
+        // eslint-disable-next-line no-alert
+        alert(message);
       } catch (error) {
         // eslint-disable-next-line no-alert
         alert(error);
@@ -347,7 +348,9 @@
 
     deleteCommentBtn.addEventListener('click', () => {
       const { commentId } = deleteCommentBtn.dataset;
-      adminDeleteComment(commentId);
+      if (confirm('You are deleting this comment; are you sure?')) {
+        adminDeleteComment(commentId);
+      }
     });
   }, 200)
 </script>
