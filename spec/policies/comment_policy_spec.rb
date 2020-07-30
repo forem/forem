@@ -29,6 +29,7 @@ RSpec.describe CommentPolicy, type: :policy do
 
     it { is_expected.to permit_actions(%i[create]) }
     it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm hide unhide moderator_create]) }
+    it { is_expected.to forbid_actions(%i[admin_delete]) }
 
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
 
@@ -61,7 +62,7 @@ RSpec.describe CommentPolicy, type: :policy do
     context "when user is an admin" do
       before { user.add_role :admin }
 
-      it { is_expected.to permit_actions(%i[create moderator_create]) }
+      it { is_expected.to permit_actions(%i[create moderator_create admin_delete]) }
 
       it do
         expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_moderator_create)
