@@ -588,22 +588,12 @@ class Article < ApplicationRecord
 
   def update_cached_user
     if organization
-      self.cached_organization = OpenStruct.new(set_cached_object(organization))
+      self.cached_organization = Articles::CachedEntity.from_object(organization)
     end
 
     return unless user
 
-    self.cached_user = OpenStruct.new(set_cached_object(user))
-  end
-
-  def set_cached_object(object)
-    {
-      name: object.name,
-      username: object.username,
-      slug: object == organization ? object.slug : object.username,
-      profile_image_90: object.profile_image_90,
-      profile_image_url: object.profile_image_url
-    }
+    self.cached_user = Articles::CachedEntity.from_object(user)
   end
 
   def set_all_dates

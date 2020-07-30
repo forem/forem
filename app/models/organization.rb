@@ -127,14 +127,7 @@ class Organization < ApplicationRecord
   def update_articles
     return unless saved_change_to_slug || saved_change_to_name || saved_change_to_profile_image
 
-    cached_org_object = {
-      name: name,
-      username: username,
-      slug: slug,
-      profile_image_90: profile_image_90,
-      profile_image_url: profile_image_url
-    }
-    articles.update(cached_organization: OpenStruct.new(cached_org_object))
+    articles.update(cached_organization: Articles::CachedEntity.from_object(self))
   end
 
   def bust_cache
