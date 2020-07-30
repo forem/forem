@@ -107,14 +107,6 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
-  if (ENV["SEND_LOGS_TO_TIMBER"] || "true") == "true"
-    # Timber.io logger
-    log_device = Timber::LogDevices::HTTP.new(ENV["TIMBER"])
-    logger = Timber::Logger.new(log_device)
-    logger.level = config.log_level
-    config.logger = ActiveSupport::TaggedLogging.new(logger)
-  end
-
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 

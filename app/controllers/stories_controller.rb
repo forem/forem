@@ -326,7 +326,7 @@ class StoriesController < ApplicationController
       .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published
       .limited_column_select
-      .where.not(id: @pinned_stories.pluck(:id))
+      .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
   end
 

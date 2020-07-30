@@ -6,21 +6,36 @@ MiniMagick.configure do |config|
   config.timeout = 10
 end
 
+# rubocop:disable Metrics/BlockLength
 CarrierWave.configure do |config|
   if Rails.env.test?
     config.storage = :file
     config.enable_processing = false
   elsif Rails.env.development?
+    # config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}"
+    config.storage = :file
+  elsif ENV["FILE_STORAGE_LOCATION"] == "file" # @forem/systems production version of file store
+    config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
     config.storage = :file
   else
     config.fog_provider = "fog/aws"
-    region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
-    config.fog_credentials = {
-      provider: "AWS",
-      aws_access_key_id: ApplicationConfig["AWS_ID"],
-      aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
-      region: region
-    }
+    if ENV["FOREM_CONTEXT"] == "forem_cloud" # @forem/systems jdoss's special sauce.
+      config.fog_credentials = {
+        provider: "AWS",
+        use_iam_profile: true,
+        region: "us-east-2"
+      }
+      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
+      config.fog_public    = false
+    else
+      region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
+      config.fog_credentials = {
+                                 provider: "AWS",
+                                 aws_access_key_id: ApplicationConfig["AWS_ID"],
+                                 aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
+                                 region: region
+                               }
+    end
     config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
     config.storage = :fog
   end

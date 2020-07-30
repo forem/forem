@@ -6,16 +6,6 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
-GIT
-  remote: https://github.com/timberio/timber-ruby-rails.git
-  revision: 250326b0926d33207f0e1147a594dd8fe4487466
-  branch: master
-  specs:
-    timber-rails (1.0.2)
-      rails (>= 3.0.0)
-      timber (~> 3.0)
-      timber-rack (~> 1.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -775,11 +765,6 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.10)
-    timber (3.0.1)
-      msgpack (~> 1.0)
-    timber-rack (1.0.1)
-      rack (>= 1.2, < 3.0)
-      timber (~> 3.0)
     timecop (0.9.1)
     twilio-ruby (5.39.2)
       faraday (>= 0.9, < 2.0)
@@ -990,8 +975,6 @@ DEPENDENCIES
   stripe-ruby-mock (~> 3.0)
   strong_migrations (~> 0.7)
   test-prof (~> 0.12)
-  timber (~> 3.0)
-  timber-rails!
   timecop (~> 0.9)
   twilio-ruby (~> 5.39)
   twitter (~> 7.0)

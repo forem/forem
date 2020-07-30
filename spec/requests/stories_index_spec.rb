@@ -129,7 +129,7 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     context "with campaign hero" do
-      let_it_be_readonly(:hero_html) do
+      let!(:hero_html) do
         create(
           :html_variant,
           group: "campaign",

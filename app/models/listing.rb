@@ -15,9 +15,9 @@ class Listing < ApplicationRecord
   belongs_to :listing_category, inverse_of: :listings, foreign_key: :classified_listing_category_id
   belongs_to :user
   belongs_to :organization, optional: true
+  before_validation :modify_inputs
   before_save :evaluate_markdown
   before_create :create_slug
-  before_validation :modify_inputs
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
   acts_as_taggable_on :tags

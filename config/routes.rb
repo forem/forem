@@ -199,7 +199,7 @@ Rails.application.routes.draw do
   resources :reactions, only: %i[index create]
   resources :response_templates, only: %i[index create edit update destroy]
   resources :feedback_messages, only: %i[index create]
-  resources :organizations, only: %i[update create]
+  resources :organizations, only: %i[update create destroy]
   resources :followed_articles, only: [:index]
   resources :follows, only: %i[show create update] do
     collection do
@@ -457,6 +457,9 @@ Rails.application.routes.draw do
   get "/top/:timeframe" => "stories#index"
 
   get "/:timeframe" => "stories#index", :constraints => { timeframe: /latest/ }
+
+  get "/:username/series" => "collections#index", :as => "user_series"
+  get "/:username/series/:id" => "collections#show"
 
   # Legacy comment format (might still be floating around app, and external links)
   get "/:username/:slug/comments" => "comments#index"

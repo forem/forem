@@ -55,7 +55,7 @@ module Users
     end
 
     def remove_reactions(user)
-      readinglist_ids = user.reactions.readinglist.pluck(:id)
+      readinglist_ids = user.reactions.readinglist.ids
       user.reactions.delete_all
       readinglist_ids.each do |id|
         Search::RemoveFromIndexWorker.perform_async("Search::Reaction", id)
