@@ -25,10 +25,10 @@ Follow the instructions for
 Once you've installed WSL, complete all the instructions under the following
 sections in the link above:
 
-- [Update to WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2).
-- [Enable the "Virtual Machine Platform" optional component](https://docs.microsoft.com/en-us/windows/wsl/install-win10#enable-the-virtual-machine-platform-optional-component).
-  Be sure to Reboot your machine after this step.
-- [Set WSL 2 as your default version](https://docs.microsoft.com/en-us/windows/wsl/install-win10#set-wsl-2-as-your-default-version).
+1. [Update to WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2).
+2. [Enable the "Virtual Machine Platform" optional component](https://docs.microsoft.com/en-us/windows/wsl/install-win10#enable-the-virtual-machine-platform-optional-component).
+   Be sure to reboot your machine after this step.
+3. [Set WSL 2 as your default version](https://docs.microsoft.com/en-us/windows/wsl/install-win10#set-wsl-2-as-your-default-version).
 
 Once all the steps mentioned above are completed,
 [install Ubuntu 18.04 on Windows](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q).
@@ -171,26 +171,49 @@ WSL.
 Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
 not supported. We recommend version 7.5.2.
 
-We recommend following the install guide
-[in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux)
-for installing on Windows machines.
+The following directions were taken from
+[the Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux),
+check them out to learn more about the installation process and troubleshooting
+issues. Make sure to refer to **the OSS version**, `elasticsearch-oss` while
+going through the Elasticsearch docs.
 
-_NOTE:_ Make sure to download **the OSS version**, `elasticsearch-oss` by
-following the following steps:
+To install Elasticsearch perform the following steps:
 
-1. Replace the link in the first `wget` command with the Apache 2.0 licensed
-   code link listed below the code-block.
-2. For the second `wget` command add `.sha512` to the end of the Apache 2.0
-   licensed code link in order to download the correct checksum file.
-3. For the `shasum` command, replace the file name with the new file downloaded
-   by the second wget command.
+1. Execute the following commands:
 
-Follow steps under
-[run the Elasticsearch server from command line](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#targz-running)
-to run the server from within the unzipped Elasticsearch directory.
+   ```shell
+   cd
+   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
+   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
+   shasum -a 512 -c elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
+   tar -xzf elasticsearch-7.5.2-linux-x86_64.tar.gz
+   ```
 
-[Verify Elasticsearch's installation](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#_checking_that_elasticsearch_is_running)
-by executing the `cURL` command which can be copied from the `GET /` code block.
+2. Next, switch to the correct directory with:
+
+   ```shell
+   cd elasticsearch-7.5.2/
+   ```
+
+3. To start Elasticsearch, run the following command:
+
+   ```shell
+   ./bin/elasticsearch
+   ```
+
+   or, start it as a daemonized process with:
+
+   ```shell
+   ./bin/elasticsearch -d
+   ```
+
+4. Once Elasticsearch is running,
+   [verify Elasticsearch's installation](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#_checking_that_elasticsearch_is_running)
+   by executing the `cURL` command as follows:
+
+   ```shell
+   curl -X GET "localhost:9200/?pretty"
+   ```
 
 ## Installing Forem
 
