@@ -186,6 +186,7 @@ Rails.application.routes.draw do
   resources :comments, only: %i[create update destroy] do
     patch "/hide", to: "comments#hide"
     patch "/unhide", to: "comments#unhide"
+    patch "/admin_delete", to: "comments#admin_delete"
     collection do
       post "/moderator_create", to: "comments#moderator_create"
     end
