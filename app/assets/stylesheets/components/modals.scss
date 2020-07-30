@@ -3,17 +3,17 @@
 .crayons-modal {
   --modal-max-width: 768px;
   --modal-body-padding: var(--su-3);
-  --modal-header-padding: var(--su-2) var(--su-3);
+  --modal-header-padding: var(--su-2) var(--su-2) var(--su-2) var(--su-3);
   --modal-header-font-size: var(--fs-l);
   --modal-body-font-size: var(--fs-base);
 
   @media (min-width: $breakpoint-s) {
-    --modal-header-padding: var(--su-2) var(--su-4);
+    --modal-header-padding: var(--su-2) var(--su-2) var(--su-2) var(--su-4);
     --modal-body-padding: var(--su-4);
   }
 
   @media (min-width: $breakpoint-m) {
-    --modal-header-padding: var(--su-3) var(--su-6);
+    --modal-header-padding: var(--su-3) var(--su-3) var(--su-3) var(--su-6);
     --modal-body-padding: var(--su-6);
     --modal-header-font-size: var(--fs-xl);
     --modal-body-font-size: var(--fs-l);
@@ -110,4 +110,3 @@
     }
   }
 }
-

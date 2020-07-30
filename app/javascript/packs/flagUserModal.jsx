@@ -123,71 +123,73 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
             </svg>
           </button>
         </header>
-        <div class="crayons-modal__box__body flag-user-modal-body grid gap-4">
-          <p>
-            Thanks for keeping DEV safe. Here is what you can do to flag this
-            user:
-          </p>
-          <div class="crayons-field crayons-field--radio">
-            <input
-              type="radio"
-              id="vomit-all"
-              ref={vomitAllRef}
-              name="flag-user"
-              class="crayons-radio"
-              data-reactable-id={authorId}
-              data-category="vomit"
-              data-reactable-type="User"
-              checked={isConfirmButtonEnabled}
-              onClick={(event) => {
-                const { target } = event;
+        <div class="crayons-modal__box__body">
+          <div class="grid gap-4">
+            <p>
+              Thanks for keeping DEV safe. Here is what you can do to flag this
+              user:
+            </p>
+            <div class="crayons-field crayons-field--radio">
+              <input
+                type="radio"
+                id="vomit-all"
+                ref={vomitAllRef}
+                name="flag-user"
+                class="crayons-radio"
+                data-reactable-id={authorId}
+                data-category="vomit"
+                data-reactable-type="User"
+                checked={isConfirmButtonEnabled}
+                onClick={(event) => {
+                  const { target } = event;
 
-                enableConfirmButton(target.checked);
-              }}
-            />
-            <label htmlFor="vomit-all" class="crayons-field__label">
-              Make all posts by this author less visible
-              <p class="crayons-field__description">
-                This author consistently posts content that violates DEV's code
-                of conduct because it is harassing, offensive or spammy.
-              </p>
-            </label>
-          </div>
-          <p>
-            <a
-              href={`/report-abuse?url=${
-                modCenterArticleUrl
-                  ? `${document.location.origin}${modCenterArticleUrl}`
-                  : document.location
-              }`}
-              className="crayons-link crayons-link--brand"
-            >
-              Report other inappropriate conduct
-            </a>
-          </p>
-          <div>
-            <Button
-              class="crayons-btn crayons-btn--danger mr-2"
-              id="confirm-flag-user-action"
-              onClick={(_event) => {
-                const {
-                  current: { dataset: adminVomitReaction },
-                } = vomitAllRef;
+                  enableConfirmButton(target.checked);
+                }}
+              />
+              <label htmlFor="vomit-all" class="crayons-field__label">
+                Make all posts by this author less visible
+                <p class="crayons-field__description">
+                  This author consistently posts content that violates DEV's
+                  code of conduct because it is harassing, offensive or spammy.
+                </p>
+              </label>
+            </div>
+            <p>
+              <a
+                href={`/report-abuse?url=${
+                  modCenterArticleUrl
+                    ? `${document.location.origin}${modCenterArticleUrl}`
+                    : document.location
+                }`}
+                className="crayons-link crayons-link--brand"
+              >
+                Report other inappropriate conduct
+              </a>
+            </p>
+            <div>
+              <Button
+                class="crayons-btn crayons-btn--danger mr-2"
+                id="confirm-flag-user-action"
+                onClick={(_event) => {
+                  const {
+                    current: { dataset: adminVomitReaction },
+                  } = vomitAllRef;
 
-                confirmFlagUser(adminVomitReaction);
-                enableConfirmButton(false);
-              }}
-              disabled={!isConfirmButtonEnabled}
-            >
-              Confirm action
-            </Button>
-            <Button
-              class="crayons-btn crayons-btn--secondary"
-              id="cancel-flag-user-action"
-              onClick={toggleFlagUserModal}
-            >
-              Cancel
-            </Button>
+                  confirmFlagUser(adminVomitReaction);
+                  enableConfirmButton(false);
+                }}
+                disabled={!isConfirmButtonEnabled}
+              >
+                Confirm action
+              </Button>
+              <Button
+                class="crayons-btn crayons-btn--secondary"
+                id="cancel-flag-user-action"
+                onClick={toggleFlagUserModal}
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
         </div>
       </div>
