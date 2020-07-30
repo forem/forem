@@ -4,7 +4,9 @@ import { ReadingList } from '../readingList/readingList';
 
 function loadElement() {
   getUserDataAndCsrfToken().then(({ currentUser }) => {
-    const followedTagNames = JSON.parse(currentUser.followed_tags).map(t => t.name);
+    const followedTagNames = JSON.parse(currentUser.followed_tags).map(
+      (t) => t.name,
+    );
     const root = document.getElementById('reading-list');
     if (root) {
       render(
@@ -13,7 +15,6 @@ function loadElement() {
           statusView={root.dataset.view}
         />,
         root,
-        root.firstElementChild,
       );
     }
   });

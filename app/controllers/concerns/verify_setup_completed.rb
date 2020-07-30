@@ -1,6 +1,8 @@
 module VerifySetupCompleted
   extend ActiveSupport::Concern
 
+  module_function
+
   MANDATORY_CONFIGS = %i[
     community_description
     community_action
@@ -24,6 +26,10 @@ module VerifySetupCompleted
     # rubocop:enable Rails/LexicallyScopedActionFilter
   end
 
+  def setup_completed?
+    MANDATORY_CONFIGS.all? { |config| SiteConfig.public_send(config).present? }
+  end
+
   private
 
   def verify_setup_completed
@@ -33,10 +39,6 @@ module VerifySetupCompleted
     # rubocop:disable Rails/OutputSafety
     flash[:global_notice] = "Setup not completed yet, please visit #{link}.".html_safe
     # rubocop:enable Rails/OutputSafety
-  end
-
-  def setup_completed?
-    MANDATORY_CONFIGS.all? { |config| SiteConfig.public_send(config).present? }
   end
 
   def config_path?

@@ -13,8 +13,8 @@ class ReactionsController < ApplicationController
       id = params[:article_id]
 
       reactions = if session_current_user_id
-                    Reaction.public_category.
-                      where(
+                    Reaction.public_category
+                      .where(
                         reactable_id: id,
                         reactable_type: "Article",
                         user_id: session_current_user_id,
@@ -25,16 +25,16 @@ class ReactionsController < ApplicationController
 
       result = { article_reaction_counts: Reaction.count_for_article(id) }
     else
-      comments = Comment.
-        where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type]).
-        select(%i[id public_reactions_count])
+      comments = Comment
+        .where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type])
+        .select(%i[id public_reactions_count])
 
       reaction_counts = comments.map do |comment|
         { id: comment.id, count: comment.public_reactions_count }
       end
 
       reactions = if session_current_user_id
-                    comment_ids = reaction_counts.map { |rc| rc[:id] }
+                    comment_ids = reaction_counts.pluck(:id) # rubocop:disable Rails/PluckId
                     cached_user_public_comment_reactions(current_user, comment_ids)
                   else
                     Reaction.none
@@ -124,7 +124,9 @@ class ReactionsController < ApplicationController
       reactable_type: params[:reactable_type],
       category: category
     }
-    create_params[:status] = "confirmed" if current_user&.any_admin?
+    if current_user&.any_admin? && NEGATIVE_CATEGORIES.include?(category)
+      create_params[:status] = "confirmed"
+    end
     Reaction.new(create_params)
   end
 

@@ -13,9 +13,9 @@ module Metrics
       )
 
       # Articles published in the past 24 hours with at least 15 "score" (positive/negative reactions)
-      articles_min_15_comment_score_past_24h = Article.published.
-        where("comment_score >= ? AND published_at > ?", 15, 1.day.ago).
-        size
+      articles_min_15_comment_score_past_24h = Article.published
+        .where("comment_score >= ? AND published_at > ?", 15, 1.day.ago)
+        .size
       DatadogStatsClient.count(
         "articles.min_15_comment_score_past_24h",
         articles_min_15_comment_score_past_24h,
@@ -27,7 +27,7 @@ module Metrics
       DatadogStatsClient.count("articles.first_past_24h", first_articles_past_24h, tags: ["resource:articles"])
 
       # Users who signed up in the past 24 hours who have made at least 1 comment so far
-      new_users_min_1_comment_past_24h = User.where("comments_count >= ? AND created_at > ?", 1, 24.hours.ago).size
+      new_users_min_1_comment_past_24h = User.where("comments_count >= ? AND registered_at > ?", 1, 24.hours.ago).size
       DatadogStatsClient.count(
         "users.new_min_1_comment_past_24h",
         new_users_min_1_comment_past_24h,
@@ -57,16 +57,16 @@ module Metrics
     def get_days_active_past_week_counts
       ids_by_day = []
       7.times do |i|
-        id = PageView.
-          where("created_at > ? AND created_at < ?", (i + 1).days.ago, i.days.ago).
-          where.not(user_id: nil).
-          pluck(:user_id).uniq
+        id = PageView
+          .where("created_at > ? AND created_at < ?", (i + 1).days.ago, i.days.ago)
+          .where.not(user_id: nil)
+          .pluck(:user_id).uniq
         ids_by_day << id
       end
       flat_id_list = ids_by_day.flatten.uniq
-      non_new_user_ids = User.where("created_at < ?", 7.days.ago).where(id: flat_id_list).pluck(:id)
-      new_user_ids = User.where("created_at > ? AND created_at < ?", 8.days.ago,
-                                7.days.ago).where(id: flat_id_list).pluck(:id)
+      non_new_user_ids = User.where("registered_at < ?", 7.days.ago).where(id: flat_id_list).ids
+      new_user_ids = User.where("registered_at > ? AND registered_at < ?", 8.days.ago,
+                                7.days.ago).where(id: flat_id_list).ids
       record_active_days_of_group(ids_by_day, non_new_user_ids, "established")
       record_active_days_of_group(ids_by_day, new_user_ids, "new")
     end

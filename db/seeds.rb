@@ -70,6 +70,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
       password: "password",
+      password_confirmation: "password",
     )
 
     if i.zero?
@@ -450,12 +451,12 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(ListingCategory) do
+seeder.create_if_none(Listing) do
   users_in_random_order = User.order(Arel.sql("RANDOM()"))
   users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
   users = users_in_random_order.to_a
 
-  listings_categories = ListingCategory.pluck(:id)
+  listings_categories = ListingCategory.ids
   listings_categories.each.with_index(1) do |category_id, index|
     # rotate users if they are less than the categories
     user = users.at(index % users.length)
@@ -487,21 +488,6 @@ seeder.create_if_none(Page) do
       description: Faker::Books::Dune.quote,
       template: %w[contained full_within_layout].sample,
     )
-  end
-end
-
-##############################################################################
-
-num_path_redirects = 2 * SEEDS_MULTIPLIER
-
-seeder.create_if_none(PathRedirect, num_path_redirects) do
-  articles_for_old_paths = Article.where(published: true).order(Arel.sql("RANDOM()")).limit(num_path_redirects)
-  articles_for_new_paths = Article.where.not(id: articles_for_old_paths.map(&:id),
-                                             published: false).order(Arel.sql("RANDOM()")).limit(num_path_redirects)
-
-  articles_for_old_paths.each_with_index do |old_article, i|
-    new_article = articles_for_new_paths[i]
-    PathRedirect.create!(old_path: old_article.path, new_path: new_article.path)
   end
 end
 

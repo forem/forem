@@ -46,25 +46,35 @@
   </a>
 </p>
 
-Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
-With your help, we can build out DEV to be more stable and better serve our
-community.
+Welcome to the [Forem](https://forem.com) codebase, the platform that powers
+[dev.to](https://dev.to). We are so excited to have you. With your help, we can
+build out Forem’s usability, scalability, and stability to better serve our
+communities.
 
-## What is dev.to?
+## What is Forem?
 
-[dev.to](https://dev.to) (or just DEV) is a platform where software developers
-write articles, take part in discussions, and build their professional profiles.
-We value supportive and constructive dialogue in the pursuit of great code and
-career growth for all members. The ecosystem spans from beginner to advanced
-developers, and all are welcome to find their place within our community. ❤️
+Forem is open source software for building communities. Communities for your
+peers, customers, fanbases, families, friends, and any other time and space
+where people need to come together to be part of a collective.
+[See our announcement post](https://dev.to/devteam/for-empowering-community-2k6h)
+for a higher level overview of what Forem is.
+
+[dev.to](https://dev.to) (or just DEV) is hosted by Forem. It is a community of
+software developers who write articles, take part in discussions, and build their
+professional profiles. We value supportive and constructive dialogue in the
+pursuit of great code and career growth for all members. The ecosystem spans
+from beginner to advanced developers, and all are welcome to find their place
+within our community. ❤️
 
 ## Table of Contents
 
-- [What is dev.to?](#what-is-devto)
+- [What is Forem?](#what-is-forem)
 - [Table of Contents](#table-of-contents)
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
+    - [Local](#local)
+    - [Containers](#containers)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
 - [Core team](#core-team)
@@ -73,21 +83,21 @@ developers, and all are welcome to find their place within our community. ❤️
 
 ## Contributing
 
-We encourage you to contribute to dev.to! Please check out the
-[Contributing to dev.to guide](CONTRIBUTING.md) for guidelines about how to
+We encourage you to contribute to Forem! Please check out the
+[Contributing to Forem guide](CONTRIBUTING.md) for guidelines about how to
 proceed.
 
 ## Getting Started
 
 This section provides a high-level quick start guide. If you're looking for the
 [installation guide](https://docs.dev.to/installation/), you'll want to refer to
-our complete [Developer Documentation](https://docs.dev.to).
+our complete [Developer Documentation](https://docs.forem.com/).
 
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
 transitioning to a [Preact](https://preactjs.com/)-first frontend.
 
 A more complete overview of our stack is available in
-[our docs](https://docs.dev.to/technical-overview/).
+[our docs](https://docs.forem.com/technical-overview/).
 
 ### Prerequisites
 
@@ -147,6 +157,8 @@ A more complete overview of our stack is available in
 
 ## Vulnerability disclosure
 
+Forem is the open source software which powers [DEV](https://dev.to).
+
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
 
@@ -159,7 +171,7 @@ later version. Please see the [LICENSE](./LICENSE.md) file in our repository for
 the full text.
 
 Like many open source projects, we require that contributors provide us with a
-Contributor License Agreement (CLA). By submitting code to the DEV project, you
+Contributor License Agreement (CLA). By submitting code to the Forem project, you
 are granting us a right to use that code under the terms of the CLA.
 
 Our version of the CLA was adapted from the Microsoft Contributor License

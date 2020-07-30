@@ -7,6 +7,10 @@ class OrganizationPolicy < ApplicationPolicy
     user.org_admin?(record)
   end
 
+  def destroy?
+    user.org_admin?(record) && record.destroyable?
+  end
+
   def leave_org?
     part_of_org?
   end

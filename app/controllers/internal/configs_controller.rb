@@ -35,6 +35,7 @@ module Internal
         health_check_token
         feed_style
         sponsor_headline
+        public
       ]
 
       allowed_params = allowed_params |
@@ -55,6 +56,7 @@ module Internal
         social_media_handles: SiteConfig.social_media_handles.keys,
         email_addresses: SiteConfig.email_addresses.keys,
         meta_keywords: SiteConfig.meta_keywords.keys,
+        credit_prices_in_cents: SiteConfig.credit_prices_in_cents.keys,
       )
     end
 
@@ -69,6 +71,7 @@ module Internal
       %i[sidebar_tags suggested_tags suggested_users].each do |param|
         config[param] = config[param].downcase.delete(" ") if config[param]
       end
+      config[:credit_prices_in_cents]&.transform_values!(&:to_i)
     end
 
     def bust_relevant_caches

@@ -105,7 +105,7 @@ module OmniauthHelpers
     class_name = error.present? ? error.class.name : ""
 
     [
-      tags: [
+      { tags: [
         "class:#{class_name}",
         "message:#{error&.message}",
         "reason:#{error.try(:error_reason)}",
@@ -114,7 +114,7 @@ module OmniauthHelpers
         "provider:#{provider}",
         "origin:",
         "params:#{params}",
-      ],
+      ] },
     ]
   end
 

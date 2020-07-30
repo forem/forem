@@ -5,13 +5,13 @@ class SocialPreviewsController < ApplicationController
 
   def article
     @article = Article.find(params[:id])
-    @tag_badges = Badge.where(id: Tag.where(name: @article.decorate.cached_tag_list_array).pluck(:badge_id))
+    @tag_badges = Badge.where(id: Tag.where(name: @article.decorate.cached_tag_list_array).select(:badge_id))
     not_found unless @article.published
 
-    template = @article.tags.
-      where.not(social_preview_template: nil).
-      where.not(social_preview_template: "article").
-      select(:social_preview_template).first&.social_preview_template
+    template = @article.tags
+      .where.not(social_preview_template: nil)
+      .where.not(social_preview_template: "article")
+      .select(:social_preview_template).first&.social_preview_template
 
     # make sure that the template exists
     template = "article" unless Tag.social_preview_templates.include?(template)
@@ -21,7 +21,7 @@ class SocialPreviewsController < ApplicationController
 
   def user
     @user = User.find(params[:id])
-    @tag_badges = Badge.where(id: @user.badge_achievements.pluck(:badge_id))
+    @tag_badges = Badge.where(id: @user.badge_achievements.select(:badge_id))
     set_respond
   end
 

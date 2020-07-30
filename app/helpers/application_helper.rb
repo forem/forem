@@ -101,8 +101,12 @@ module ApplicationHelper
     end
   end
 
+  def any_selfserve_auth?
+    authentication_enabled_providers.any?
+  end
+
   def beautified_url(url)
-    url.sub(/\A((https?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end
@@ -189,6 +193,13 @@ module ApplicationHelper
     "#{start_year} - #{current_year}"
   end
 
+  def collection_link(collection, **kwargs)
+    size_string = "#{collection.articles.published.size} Part Series"
+    body = collection.slug.present? ? "#{collection.slug} (#{size_string})" : size_string
+
+    link_to body, collection.path, **kwargs
+  end
+
   def email_link(type = :default, text: nil, additional_info: nil)
     # The allowed types for type is :default, :business, :privacy, and members.
     # These options can be found in field :email_addresses of models/site_config.rb
@@ -245,9 +256,14 @@ module ApplicationHelper
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
 
+  # rubocop:disable Rails/OutputSafety
   def internal_config_label(method, content = nil)
-    content ||= method.to_s.humanize
-    content << "*" if method.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-    label_tag("site_config_#{method}", content)
+    content ||= raw("<span>#{method.to_s.humanize}</span>")
+    if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+      content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+    end
+
+    tag.label(content, class: "site-config__label", for: "site_config_#{method}")
   end
+  # rubocop:enable Rails/OutputSafety
 end

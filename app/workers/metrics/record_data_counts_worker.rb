@@ -12,7 +12,7 @@ module Metrics
                      model.estimated_count
                    end
 
-        Rails.logger.info("db_table_size", table_info: { table_name: model.table_name, table_size: db_count })
+        Rails.logger.info(message: "db_table_size", table_info: { table_name: model.table_name, table_size: db_count })
         DatadogStatsClient.gauge("postgres.db_table_size", db_count, tags: ["table_name:#{model.table_name}"])
 
         next unless model.const_defined?(:SEARCH_CLASS)

@@ -17,7 +17,7 @@ class TagsController < ApplicationController
   end
 
   def update
-    @tag = Tag.find_by!(id: params[:id])
+    @tag = Tag.find(params[:id])
     authorize @tag
     if @tag.errors.messages.blank? && @tag.update(tag_params)
       flash[:success] = "Tag successfully updated! 👍 "
@@ -37,8 +37,8 @@ class TagsController < ApplicationController
   def onboarding
     skip_authorization
 
-    @tags = Tag.where(name: SiteConfig.suggested_tags).
-      select(ATTRIBUTES_FOR_SERIALIZATION)
+    @tags = Tag.where(name: SiteConfig.suggested_tags)
+      .select(ATTRIBUTES_FOR_SERIALIZATION)
 
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
   end

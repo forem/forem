@@ -5,7 +5,7 @@
 
     <h2>
       <a href="/"><%= community_name %></a> is a community of <br />
-      <%= number_with_delimiter User.estimated_count %> amazing <%= community_members_label %>
+      <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
     </h2>
 
     <h3>

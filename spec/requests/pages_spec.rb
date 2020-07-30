@@ -18,8 +18,8 @@ RSpec.describe "Pages", type: :request do
     end
 
     context "when json template" do
-      let_it_be(:json_text) { "{\"foo\": \"bar\"}" }
-      let_it_be(:page) do
+      let(:json_text) { "{\"foo\": \"bar\"}" }
+      let(:page) do
         create(:page, title: "sample_data", template: "json", body_json: json_text, body_html: nil, body_markdown: nil)
       end
 
@@ -143,7 +143,7 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /checkin" do
-    let_it_be(:user) { create(:user, username: "codenewbiestaff") }
+    let(:user) { create(:user, username: "codenewbiestaff") }
 
     it "redirects to the latest CodeNewbie staff thread" do
       earlier_staff_thread = create(:article, user: user, tags: "staff")

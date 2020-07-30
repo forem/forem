@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Comment, type: :model do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:article) { create(:article, user: user) }
-  let_it_be_changeable(:comment) { create(:comment, user: user, commentable: article) }
+  let(:user) { create(:user) }
+  let(:article) { create(:article, user: user) }
+  let(:comment) { create(:comment, user: user, commentable: article) }
 
   include_examples "#sync_reactions_count", :article_comment
 
@@ -255,8 +255,8 @@ RSpec.describe Comment, type: :model do
   end
 
   describe ".tree_for" do
-    let_it_be(:other_comment) { create(:comment, commentable: article, user: user) }
-    let_it_be(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
+    let!(:other_comment) { create(:comment, commentable: article, user: user) }
+    let!(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
 
     before { comment.update_column(:score, 1) }
 
@@ -326,6 +326,8 @@ RSpec.describe Comment, type: :model do
       let!(:user) { create(:user) }
 
       before do
+        article
+        comment
         # making sure there are no other enqueued jobs from other tests
         sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end

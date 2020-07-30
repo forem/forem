@@ -27,7 +27,7 @@ class DisplayAd < ApplicationRecord
     markdown = Redcarpet::Markdown.new(renderer)
     initial_html = markdown.render(body_markdown)
     # Temporarily disable the sanitisation in order to launch the SheCoded Campaign.
-    # TODO: [@thepracticaldev/cool] find an alternate solution.
+    # TODO: find an alternate solution.
 
     # stripped_html = ActionController::Base.helpers.sanitize initial_html,
     #                                                         tags: %w[a em i b u br img h1 h2 h3 h4 div style],
