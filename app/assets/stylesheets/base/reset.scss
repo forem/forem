@@ -58,12 +58,6 @@ main {
   display: block;
 }
 
-// Get rid of default padding from Dialog element since we overwrite that
-// with our .crayons-modal component
-dialog {
-  padding: 0;
-}
-
 // Remove list styles on ul, ol elements with a class attribute
 ul[class],
 ol[class] {
