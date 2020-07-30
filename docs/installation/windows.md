@@ -6,28 +6,37 @@ title: Windows
 
 ## Installing prerequisites
 
-_These prerequisites assume you're working on a 64bit Windows 10 operating
-system machine._
+These prerequisites assume you're working on a `64-bit Windows 10` operating
+system machine updated to _version 2004, Build 19041_ or _higher_. To check your
+Windows version, press `Win Logo key` + `R`, type `winver`, then click OK.
+
+There are other ways to get Forem running on lower versions, but we recommend a
+complete WSL 2 installation.
 
 ### Installing WSL
 
 Since Forem's codebase is using the Ruby on Rails framework, we will need to
-install Windows Subsystem for Linux. Some dependencies used by the source code
-triggered errors when installing on Windows, so using WSL allows you to work on
-the software and not having to fix gem incompatibilities.
+install the Windows Subsystem for Linux (WSL). Some dependencies used by the
+source code triggered errors when installing on Windows, so using WSL allows you
+to work on the software and not having to fix gem incompatibilities.
 
-First, let's enable Windows Subsystem for Linux in your machine. You can do this
-by opening `Control Panel`, going to `Programs`, and then clicking
-`Turn Windows Features On or Off`. Look for the `Windows Subsystem for Linux`
-option and check the box next to it. Windows will ask for a reboot.
+Follow the instructions for
+[Installing the Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+Once you've installed WSL, complete all the instructions under the following
+sections in the link above:
 
-![Enable WSL on Windows](/wsl-feature.png 'Enable WSL on Windows')
+- [Update to WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2).
+- [Enable the "Virtual Machine Platform" optional component](https://docs.microsoft.com/en-us/windows/wsl/install-win10#enable-the-virtual-machine-platform-optional-component).
+  Be sure to Reboot your machine after this step.
+- [Set WSL 2 as your default version](https://docs.microsoft.com/en-us/windows/wsl/install-win10#set-wsl-2-as-your-default-version).
 
-Once you've got this installed and after rebooting,
+Once all the steps mentioned above are completed,
 [install Ubuntu 18.04 on Windows](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q).
 
 On your first run, the system will ask for username and password. Take note of
-both since it will be used for `sudo` commands.
+both since it will be used for `sudo` commands. More information about the
+process can be found at
+[create a user account and password for your new Linux distribution](https://docs.microsoft.com/en-us/windows/wsl/user-support)
 
 ### Installing rbenv
 
