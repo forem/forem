@@ -1,7 +1,8 @@
 <div class="comment-date">
   <a href="<%= decorated_comment.path %>">
     <time datetime="<%= decorated_comment.published_timestamp %>">
-      <%= decorated_comment.readable_publish_date %>
+      <%= local_date(decorated_comment.readable_publish_date,
+      show_year: decorated_comment.created_at.year != Time.current.year) %>
     </time>
   </a>
 </div>
