@@ -18,8 +18,10 @@ RSpec.describe "Pages", type: :request do
     end
 
     context "when json template" do
-      let_it_be(:json_text) { "{\"foo\": \"bar\"}" }
-      let_it_be(:page) { create(:page, title: "sample_data", template: "json", body_json: json_text, body_html: nil, body_markdown: nil) }
+      let(:json_text) { "{\"foo\": \"bar\"}" }
+      let(:page) do
+        create(:page, title: "sample_data", template: "json", body_json: json_text, body_html: nil, body_markdown: nil)
+      end
 
       before do
         page.save! # Trigger processing of page.body_html
@@ -87,6 +89,7 @@ RSpec.describe "Pages", type: :request do
 
   describe "GET /privacy" do
     it "has proper headline" do
+      allow(SiteConfig).to receive(:shop_url).and_return("some-shop-url")
       get "/privacy"
       expect(response.body).to include("Privacy Policy")
       expect(response.body).to include(SiteConfig.shop_url)
@@ -115,13 +118,6 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-  describe "GET /rly" do
-    it "has proper headline" do
-      get "/rly"
-      expect(response.body).to include("O RLY Cover Generator")
-    end
-  end
-
   describe "GET /welcome" do
     it "redirects to the latest welcome thread" do
       user = create(:user, id: 1)
@@ -147,7 +143,7 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /checkin" do
-    let_it_be(:user) { create(:user, username: "codenewbiestaff") }
+    let(:user) { create(:user, username: "codenewbiestaff") }
 
     it "redirects to the latest CodeNewbie staff thread" do
       earlier_staff_thread = create(:article, user: user, tags: "staff")
@@ -176,7 +172,9 @@ RSpec.describe "Pages", type: :request do
   describe "GET /robots.txt" do
     it "has proper text" do
       get "/robots.txt"
-      expect(response.body).to include("Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz")
+
+      text = "Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz"
+      expect(response.body).to include(text)
     end
   end
 

@@ -1,4 +1,4 @@
-/* global swipeState InstantClick initializeSwipeGestures slideSidebar */
+/* global swipeState: true, InstantClick, initializeSwipeGestures, slideSidebar */
 
 function listenForNarrowMenuClick(event) {
   let navLinks = document.getElementsByClassName('narrow-nav-menu');
@@ -21,26 +21,26 @@ function listenForNarrowMenuClick(event) {
 
 function initializeDrawerSliders() {
   if (!initializeSwipeGestures.called) {
-    swipeState = 'middle'; // eslint-disable-line no-global-assign
+    swipeState = 'middle';
     initializeSwipeGestures();
   }
   if (document.getElementById('on-page-nav-controls')) {
     if (document.getElementById('sidebar-bg-left')) {
       document.getElementById('sidebar-bg-left').onclick = (_event) => {
-        swipeState = 'middle'; // eslint-disable-line no-global-assign
+        swipeState = 'middle';
         slideSidebar('left', 'outOfView');
       };
     }
     if (document.getElementById('sidebar-bg-right')) {
       document.getElementById('sidebar-bg-right').onclick = (_event) => {
-        swipeState = 'middle'; // eslint-disable-line no-global-assign
+        swipeState = 'middle';
         slideSidebar('right', 'outOfView');
       };
     }
 
     if (document.getElementById('on-page-nav-butt-left')) {
       document.getElementById('on-page-nav-butt-left').onclick = (_event) => {
-        swipeState = 'left'; // eslint-disable-line no-global-assign
+        swipeState = 'left';
         slideSidebar('left', 'intoView');
       };
     }

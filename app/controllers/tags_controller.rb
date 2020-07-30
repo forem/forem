@@ -3,6 +3,8 @@ class TagsController < ApplicationController
   before_action :authenticate_user!, only: %i[edit update]
   after_action :verify_authorized
 
+  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
+
   def index
     skip_authorization
     @tags_index = true
@@ -15,7 +17,7 @@ class TagsController < ApplicationController
   end
 
   def update
-    @tag = Tag.find_by!(id: params[:id])
+    @tag = Tag.find(params[:id])
     authorize @tag
     if @tag.errors.messages.blank? && @tag.update(tag_params)
       flash[:success] = "Tag successfully updated! 👍 "
@@ -35,8 +37,8 @@ class TagsController < ApplicationController
   def onboarding
     skip_authorization
 
-    @tags = Tag.where(name: SiteConfig.suggested_tags).
-      select(ATTRIBUTES_FOR_SERIALIZATION)
+    @tags = Tag.where(name: SiteConfig.suggested_tags)
+      .select(ATTRIBUTES_FOR_SERIALIZATION)
 
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
   end
@@ -62,6 +64,5 @@ class TagsController < ApplicationController
     params.require(:tag).permit(accessible)
   end
 
-  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze
   private_constant :ATTRIBUTES_FOR_SERIALIZATION
 end

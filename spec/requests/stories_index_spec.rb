@@ -16,8 +16,13 @@ RSpec.describe "StoriesIndex", type: :request do
       article = create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include(CGI.escapeHTML(article.title))
+    end
+
+    it "renders registration page if site config is private" do
+      SiteConfig.public = false
+      get "/"
+      expect(response.body).to include("Great to have you")
     end
 
     it "renders proper description" do
@@ -29,7 +34,6 @@ RSpec.describe "StoriesIndex", type: :request do
       create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include("min read")
     end
 
@@ -125,7 +129,7 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     context "with campaign hero" do
-      let_it_be_readonly(:hero_html) do
+      let!(:hero_html) do
         create(
           :html_variant,
           group: "campaign",
@@ -184,6 +188,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "doesn't display unapproved posts" do
         SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
         SiteConfig.campaign_articles_require_approval = true
         Article.last.update_column(:score, -2)
         get "/"
@@ -192,6 +197,8 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "displays unapproved post if approval is not required" do
         SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
+        SiteConfig.campaign_articles_require_approval = false
         get "/"
         expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
       end
@@ -336,6 +343,12 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
       end
 
+      it "renders properly even if site config is private" do
+        SiteConfig.public = false
+        get "/t/#{tag.name}"
+        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+      end
+
       it "has mod-action-button" do
         get "/t/#{tag.name}"
         expect(response.body).to include('<a class="cta mod-action-button"')
@@ -409,7 +422,9 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "renders proper canonical url for page 2" do
         get "/t/#{tag.name}/page/2"
-        expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />")
+
+        expected_tag = "<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />"
+        expect(response.body).to include(expected_tag)
       end
     end
   end

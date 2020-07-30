@@ -2,7 +2,7 @@
 title: Windows
 ---
 
-# Installing DEV on Windows 10
+# Installing Forem on Windows 10
 
 ## Installing prerequisites
 
@@ -11,7 +11,7 @@ system machine._
 
 ### Installing WSL
 
-Since DEV's codebase is using the Ruby on Rails framework, we will need to
+Since Forem's codebase is using the Ruby on Rails framework, we will need to
 install Windows Subsystem for Linux. Some dependencies used by the source code
 triggered errors when installing on Windows, so using WSL allows you to work on
 the software and not having to fix gem incompatibilities.
@@ -62,26 +62,27 @@ following commands:
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
 ```
 
-### Installing Node
+### Installing nvm
 
-As a pre-requisite to install Rails, we're going to need to install a JavaScript
-runtime like Node.js.
+As a pre-requisite to install Rails, Node.js needs to be installed.
+[nvm](https://github.com/nvm-sh/nvm) is a Node.js version manager that helps a
+developer select a specific Node.js version for development.
 
-To install Node.js, we're going to add it using the official repository:
+To install `nvm`, follow the instructions outlined in the
+[official nvm documentation](https://github.com/nvm-sh/nvm#install--update-script).
+
+Be sure to reload the shell with the command `exec $SHELL` after the
+installation is complete.
+
+Run the following command to verify that `nvm` is installed:
 
 ```shell
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
-node -v
-npm -v
+command -v nvm
 ```
 
-Please refer to
-[NodeSource installation instructions](https://github.com/nodesource/distributions#installation-instructions)
-for further details.
-
-If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the
-terminal and try again.
+If the shell outputs `nvm`, the installation is successful. Installation of the
+correct Node.js version will be done in a later part of the installation
+process.
 
 ### Yarn
 
@@ -93,17 +94,21 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 ```
 
-Then you can simply issue:
+Since we do not have Node.js installed yet, we will be installing Yarn without
+the default Node.js with the following command:
 
 ```shell
-sudo apt-get update && sudo apt-get install yarn
+sudo apt update && sudo apt install --no-install-recommends yarn
 ```
 
-Make sure that Yarn is installed with `yarn -v`
+To verify Yarn's installation, run the command `yarn -v`. It should print
+`Yarn requires Node.js 4.0 or higher to be installed.`. This indicates that the
+Yarn installation succeeded but Node.js still needs to be installed for it to
+work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
-DEV requires PostgreSQL version 9.5 or higher.
+Forem requires PostgreSQL version 11 or higher.
 
 If you don't have PostgreSQL installed on your Windows system, you can do so
 right now. WSL is able to connect to a PostgreSQL instance on your Windows
@@ -121,7 +126,8 @@ For additional configuration options, check our
 
 ### ImageMagick
 
-DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+Forem uses [ImageMagick](https://imagemagick.org/) to manipulate images on
+upload.
 
 Please refer to ImageMagick's
 [instructions](https://imagemagick.org/script/download.php) on how to install
@@ -129,7 +135,7 @@ it.
 
 ### Redis
 
-DEV requires Redis version 4.0 or higher.
+Forem requires Redis version 4.0 or higher.
 
 We recommend to follow
 [this guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under
@@ -137,8 +143,8 @@ WSL.
 
 ### Elasticsearch
 
-DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
-supported. We recommend version 7.5.2.
+Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
+not supported. We recommend version 7.5.2.
 
 We recommend following the install guide
 [in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
@@ -146,18 +152,29 @@ for installing on Windows machines.
 
 NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
-## Installing DEV
+## Installing Forem
 
-1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
+1. Fork Forem's repository, eg. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, eg.
-   `git clone https://github.com/<your-username>/dev.to.git`
-1. Open the cloned dev.to folder in terminal with `cd dev.to`. Next, install
-   Ruby with the following commands:
+   `git clone https://github.com/<your-username>/forem.git`
+1. Open the cloned forem folder in terminal with `cd forem`. Next, install Ruby
+   with the following commands:
+
    ```shell
    rbenv install $(cat .ruby-version)
    rbenv global $(cat .ruby-version)
    ruby -v
    ```
+
+1. Install Node.js with the following set of commands:
+
+   ```shell
+   nvm install $(cat .nvmrc)
+   nvm use $(cat .nvmrc)
+   node -v
+   yarn -v
+   ```
+
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
@@ -188,7 +205,8 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. Run `bin/setup`
+1. Run `bin/setup`.
+
    > The `bin/setup` script is responsible for installing a varienty of
    > dependencies. One can find it inside the `bin` folder by the name of
    > `setup`.
@@ -196,7 +214,7 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    > - Its first task is to install the `bundler` gem. Next, it will make
    >   `bundler` install all the gems, including `Rails`, located in `Gemfile`
    >   in the root of the repository. It also installs `foreman`.
-   > - It then installs javascript dependencies using the script in `bin/yarn`
+   > - It then installs JavaScript dependencies using the script in `bin/yarn`
    >   file. These dependencies are located in `package.json` in the root of the
    >   repository.
    > - Next, it uses various Rake files located inside the `lib` folder to setup

@@ -1,5 +1,10 @@
 class Reaction < ApplicationRecord
   include Searchable
+  BASE_POINTS = {
+    "vomit" => -50.0,
+    "thumbsup" => 5.0,
+    "thumbsdown" => -10.0
+  }.freeze
 
   SEARCH_SERIALIZER = Search::ReactionSerializer
   SEARCH_CLASS = Search::Reaction
@@ -29,16 +34,15 @@ class Reaction < ApplicationRecord
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
-  after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_save :assign_points
+  after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
+  before_destroy :bust_reactable_cache_without_delay
+  before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   after_create_commit :record_field_test_event
   after_commit :async_bust
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
   after_commit :index_to_elasticsearch, if: :indexable?, on: %i[create update]
   after_commit :remove_from_elasticsearch, if: :indexable?, on: [:destroy]
-
-  before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
-  before_destroy :bust_reactable_cache_without_delay
 
   class << self
     def count_for_article(id)
@@ -54,7 +58,8 @@ class Reaction < ApplicationRecord
 
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
-      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
+      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
+        "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
@@ -158,12 +163,6 @@ class Reaction < ApplicationRecord
   def viewable_by
     user_id
   end
-
-  BASE_POINTS = {
-    "vomit" => -50.0,
-    "thumbsup" => 5.0,
-    "thumbsdown" => -10.0
-  }.freeze
 
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)

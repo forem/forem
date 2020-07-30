@@ -13,6 +13,12 @@ RSpec.describe "AsyncInfo", type: :request do
         get "/async_info/base_data"
         expect(response.parsed_body.keys).to match_array(%w[broadcast param token])
       end
+
+      it "renders normal response even if site config is private" do
+        SiteConfig.public = false
+        get "/async_info/base_data"
+        expect(response.parsed_body.keys).to match_array(%w[broadcast param token])
+      end
     end
 
     context "when logged in" do
@@ -39,7 +45,7 @@ RSpec.describe "AsyncInfo", type: :request do
     it "requires remember_user_token cookie to be present" do
       get "/async_info/base_data"
       token = "a_token"
-      controller.send("cookies")[:remember_user_token] = "a_token"
+      controller.__send__("cookies")[:remember_user_token] = "a_token"
       expect(controller.remember_user_token).to eq(token)
     end
   end

@@ -85,8 +85,6 @@
   <% end %>
 <% end %>
 
-<% has_long_markdown = @article.body_markdown && @article.body_markdown.size > 900 %>
-
 <div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
   <aside class="crayons-layout__sidebar-left" aria-label="Article actions">
     <%= render "articles/actions" %>
@@ -145,14 +143,14 @@
             <% end %>
 
             <div class="crayons-article__subheader">
-              <a href="/<%= @user.username %>" class="flex items-center mr-4 fw-medium crayons-link">
+              <a href="/<%= @user.username %>" class="flex items-center mr-4 mb-4 s:mb-0 fw-medium crayons-link">
                 <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" /></span>
                 <%= @user.name %>
               </a>
 
-              <span class="fs-s">
+              <span class="fs-s mb-4 s:mb-0">
                 <% if @article.published_timestamp.present? %>
-                  <time datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
+                  <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
                 <% end %>
                 <% if @second_user.present? %>
                   <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
@@ -174,9 +172,9 @@
                   </em>
                 <% end %>
 
-                <span class="mr-2">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
+                <span class="mr-4">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
               </span>
-              <span id="action-space"></span>
+              <span id="action-space" class="mb-4 s:mb-0"></span>
             </div>
 
           </div>
@@ -190,11 +188,11 @@
                      position: :top %>
         <% end %>
 
-        <div class="crayons-article__body spec__body" data-article-id="<%= @article.id %>" id="article-body">
+        <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
           <%= @article.processed_html.html_safe %>
         </div>
 
-        <% if has_long_markdown && @collection %>
+        <% if @article.long_markdown? && @collection %>
           <%= render "articles/collection",
                      rendered_article: @article,
                      collection: @collection,
@@ -203,14 +201,12 @@
         <% end %>
       </article>
 
-      <% if has_long_markdown || @organization %>
+      <% if @article.long_markdown? || @organization %>
         <section class="crayons-card crayons-card--secondary text-padding mb-4">
-          <% if has_long_markdown %>
-            <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", expires_in: 100.hours) do %>
-              <%= render "articles/about_author", published: @article.readable_publish_date %>
-            <% end %>
+          <% if @article.long_markdown? %>
+            <%= render "articles/about_author", published: @article.readable_publish_date %>
           <% end %>
-          <%= render "articles/org_branding", organization: @organization, author: has_long_markdown %>
+          <%= render "articles/org_branding", organization: @organization, author: @article.long_markdown? %>
         </section>
       <% end %>
 
@@ -245,7 +241,7 @@
 
 <div class="mod-actions-menu"></div>
 <div id="mod-actions-menu-btn-area"></div>
-<div class="flag-user-modal-container hidden"></div>
+<div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
@@ -254,6 +250,6 @@
     <%== PollTag.script %>
     <%== RunkitTag.script %>
     <%== TweetTag.script %>
-    <%#== UserSubscriptionTag.script %>
+    <%== UserSubscriptionTag.script %>
   </script>
 <% end %>

@@ -21,9 +21,7 @@ describe('<LeaveMembershipSection />', () => {
   it('should have user leave channel when leave button is clicked', () => {
     const leaveHandler = jest.fn();
     const { getByText } = render(
-      <LeaveMembershipSection
-        handleleaveChatChannelMembership={leaveHandler}
-      />,
+      <LeaveMembershipSection handleleaveChannelMembership={leaveHandler} />,
     );
     const leaveButton = getByText('Leave Channel');
 

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "/listings", type: :request do
-  let_it_be_readonly(:edu_category) do
+  let(:edu_category) do
     create(:listing_category, cost: 1)
   end
   let(:user) { create(:user) }
@@ -147,7 +147,7 @@ RSpec.describe "/listings", type: :request do
       create_list(:credit, 25, user: user)
     end
 
-    let_it_be_readonly(:cfp_category) { create(:listing_category, :cfp) }
+    let(:cfp_category) { create(:listing_category, :cfp) }
 
     context "when the listing is invalid" do
       let(:invalid_params) do
@@ -169,8 +169,8 @@ RSpec.describe "/listings", type: :request do
       it "does not subtract credits or create a listing if the listing is not valid" do
         expect do
           post "/listings", params: invalid_params
-        end.to change(Listing, :count).by(0).
-          and change(user.credits.spent, :size).by(0)
+        end.to change(Listing, :count).by(0)
+          .and change(user.credits.spent, :size).by(0)
       end
     end
 
@@ -248,16 +248,16 @@ RSpec.describe "/listings", type: :request do
         allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post "/listings", params: draft_params
-        end.to change(Listing, :count).by(1).
-          and change(user.credits.spent, :size).by(0)
+        end.to change(Listing, :count).by(1)
+          .and change(user.credits.spent, :size).by(0)
       end
 
       it "does not create a listing or subtract credits if the purchase does not go through" do
         allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post "/listings", params: listing_params
-        end.to change(Listing, :count).by(0).
-          and change(user.credits.spent, :size).by(0)
+        end.to change(Listing, :count).by(0)
+          .and change(user.credits.spent, :size).by(0)
       end
     end
 
@@ -518,7 +518,7 @@ RSpec.describe "/listings", type: :request do
   end
 end
 
-# TODO: [thepracticaldev/oss] We used to have 2 request spec files, listing_spec.rb
+# TODO: [@forem/oss] We used to have 2 request spec files, listing_spec.rb
 # and classified_listing_spec.rb. This context contains the specs of the former,
 # but we should eventually unify them into one set to remove some redundancy.
 context "when running the specs that were previously in another file" do

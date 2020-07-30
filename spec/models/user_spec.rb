@@ -57,85 +57,86 @@ RSpec.describe User, type: :model do
 
       # rubocop:disable RSpec/NamedSubject
       it do
-        expect(subject).to have_many(:access_grants).
-          class_name("Doorkeeper::AccessGrant").
-          with_foreign_key("resource_owner_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:access_grants)
+          .class_name("Doorkeeper::AccessGrant")
+          .with_foreign_key("resource_owner_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:access_tokens).
-          class_name("Doorkeeper::AccessToken").
-          with_foreign_key("resource_owner_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:access_tokens)
+          .class_name("Doorkeeper::AccessToken")
+          .with_foreign_key("resource_owner_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:affected_feedback_messages).
-          class_name("FeedbackMessage").
-          with_foreign_key("affected_id").
-          dependent(:nullify)
+        expect(subject).to have_many(:affected_feedback_messages)
+          .class_name("FeedbackMessage")
+          .with_foreign_key("affected_id")
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:authored_notes).
-          class_name("Note").
-          with_foreign_key("author_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:authored_notes)
+          .class_name("Note")
+          .with_foreign_key("author_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:backup_data).
-          class_name("BackupData").
-          with_foreign_key("instance_user_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:backup_data)
+          .class_name("BackupData")
+          .with_foreign_key("instance_user_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:blocked_blocks).
-          class_name("UserBlock").
-          with_foreign_key("blocked_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:blocked_blocks)
+          .class_name("UserBlock")
+          .with_foreign_key("blocked_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:blocker_blocks).
-          class_name("UserBlock").
-          with_foreign_key("blocker_id").
-          dependent(:delete_all)
+        expect(subject).to have_many(:blocker_blocks)
+          .class_name("UserBlock")
+          .with_foreign_key("blocker_id")
+          .dependent(:delete_all)
       end
 
       it do
-        expect(subject).to have_many(:created_podcasts).
-          class_name("Podcast").
-          with_foreign_key(:creator_id).
-          dependent(:nullify)
+        expect(subject).to have_many(:created_podcasts)
+          .class_name("Podcast")
+          .with_foreign_key(:creator_id)
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:offender_feedback_messages).
-          class_name("FeedbackMessage").
-          with_foreign_key(:offender_id).
-          dependent(:nullify)
+        expect(subject).to have_many(:offender_feedback_messages)
+          .class_name("FeedbackMessage")
+          .with_foreign_key(:offender_id)
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:reporter_feedback_messages).
-          class_name("FeedbackMessage").
-          with_foreign_key(:reporter_id).
-          dependent(:nullify)
+        expect(subject).to have_many(:reporter_feedback_messages)
+          .class_name("FeedbackMessage")
+          .with_foreign_key(:reporter_id)
+          .dependent(:nullify)
       end
 
       it do
-        expect(subject).to have_many(:webhook_endpoints).
-          class_name("Webhook::Endpoint").
-          dependent(:delete_all)
+        expect(subject).to have_many(:webhook_endpoints)
+          .class_name("Webhook::Endpoint")
+          .dependent(:delete_all)
       end
       # rubocop:enable RSpec/NamedSubject
 
       it "has at most three optional fields" do
         expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
-        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field", value: "some value")
+        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field",
+                                                                                  value: "some value")
         expect(fourth_field).not_to be_valid
       end
 
@@ -162,6 +163,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
+      it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
@@ -241,7 +243,8 @@ RSpec.describe User, type: :model do
 
     it "on destroy enqueues job to delete user from elasticsearch" do
       user.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [described_class::SEARCH_CLASS.to_s, user.id]) do
         user.destroy
       end
     end
@@ -595,7 +598,7 @@ RSpec.describe User, type: :model do
   end
 
   context "when callbacks are triggered before and after create" do
-    let_it_be(:user) { create(:user, email: nil) }
+    let(:user) { create(:user, email: nil) }
 
     describe "#language_settings" do
       it "sets correct language_settings by default" do
@@ -719,6 +722,12 @@ RSpec.describe User, type: :model do
       it "does not enqueue with an unconfirmed email" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
+        end
+      end
+
+      it "does not enqueue with a non-registered user" do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(registered: false)
         end
       end
 
@@ -899,6 +908,11 @@ RSpec.describe User, type: :model do
       expect(identity.auth_data_dump.provider).to eq(identity.provider)
     end
 
+    it "marks registered_at for newly registered user" do
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
+      expect(new_user.registered_at).not_to be nil
+    end
+
     it "persists extracts relevant identity data from new twitter user" do
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       expect(new_user.twitter_followers_count).to eq(100)
@@ -954,8 +968,8 @@ RSpec.describe User, type: :model do
   end
 
   describe "#followed_articles" do
-    let_it_be(:another_user) { create(:user) }
-    let_it_be(:articles) { create_list(:article, 2, user: another_user) }
+    let!(:another_user) { create(:user) }
+    let!(:articles) { create_list(:article, 2, user: another_user) }
 
     before do
       user.follow(another_user)
@@ -972,7 +986,8 @@ RSpec.describe User, type: :model do
 
   describe "theming properties" do
     it "creates proper body class with defaults" do
-      expect(user.decorate.config_body_class).to eq("default default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+      classes = "default default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "determines dark theme if night theme" do
@@ -992,22 +1007,30 @@ RSpec.describe User, type: :model do
 
     it "creates proper body class with sans serif config" do
       user.config_font = "sans_serif"
-      expect(user.decorate.config_body_class).to eq("default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.config_font = "open_dyslexic"
-      expect(user.decorate.config_body_class).to eq("default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
-      expect(user.decorate.config_body_class).to eq("night-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "night-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
-      expect(user.decorate.config_body_class).to eq("pink-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "pink-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
   end
 

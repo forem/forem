@@ -22,7 +22,7 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
       tag_follow = user.follow(tag)
       expect do
         described_class.call(follow_data(tag_follow))
-      end.to raise_error(Dry::Struct::Error)
+      end.to raise_error(Notifications::NewFollower::FollowData::DataError)
     end
   end
 

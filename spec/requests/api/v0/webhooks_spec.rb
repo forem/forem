@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Webhooks", type: :request do
-  let_it_be_changeable(:user) { create(:user) }
-  let_it_be_changeable(:webhook) do
+  let(:user) { create(:user) }
+  let!(:webhook) do
     create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go")
   end
 
   describe "GET /api/v0/webhooks" do
-    let_it_be_readonly(:webhook2) do
+    let(:webhook2) do
       create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook")
     end
 
@@ -27,7 +27,8 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
 
       it "returns a 200 if authorized" do
         access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "public")
-        webhook = create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go2", oauth_application_id: access_token.application_id)
+        webhook = create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go2",
+                                            oauth_application_id: access_token.application_id)
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
         get api_webhooks_path, headers: headers
         expect(response).to have_http_status(:ok)
@@ -54,6 +55,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       end
 
       it "returns json on success" do
+        webhook2
         get api_webhooks_path
 
         expect(response.parsed_body).to include(
@@ -201,7 +203,9 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
   describe "authorized with doorkeeper" do
     let!(:oauth_app) { create(:application) }
     let!(:oauth_app2) { create(:application) }
-    let(:access_token) { create :doorkeeper_access_token, resource_owner: user, application: oauth_app2, scopes: "public" }
+    let(:access_token) do
+      create :doorkeeper_access_token, resource_owner: user, application: oauth_app2, scopes: "public"
+    end
 
     it "renders index successfully" do
       get api_webhooks_path, params: { access_token: access_token.token }

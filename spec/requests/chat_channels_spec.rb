@@ -39,6 +39,21 @@ RSpec.describe "ChatChannels", type: :request do
         expect(response.body).to include("chat-page-wrapper")
       end
     end
+
+    context "when active membership is pending" do
+      before do
+        invite_channel.add_users [user]
+        invite_channel.chat_channel_memberships.last.update(status: "pending")
+
+        sign_in user
+        get "/connect/#{invite_channel.slug}"
+      end
+
+      it "have no active channel" do
+        expect(response).not_to(redirect_to(connect_path(invite_channel.slug)))
+        expect(response.body).not_to include(invite_channel.slug)
+      end
+    end
   end
 
   describe "get /chat_channels?state=unopened" do
@@ -53,7 +68,8 @@ RSpec.describe "ChatChannels", type: :request do
 
   describe "get /chat_channels?state=joining_request" do
     it "returns joining request channels" do
-      membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "joining_request", role: "mod")
+      membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id,
+                                                status: "joining_request", role: "mod")
       membership.chat_channel.update(discoverable: true)
       sign_in user
       get "/chat_channels?state=joining_request"
@@ -235,7 +251,8 @@ RSpec.describe "ChatChannels", type: :request do
 
     context "when user is logged-in and authorized" do
       before do
-        user.add_role :super_admin
+        user.add_role :codeland_admin
+        chat_channel.add_users([user, test_subject])
         sign_in user
         allow(Pusher).to receive(:trigger).and_return(true)
       end
@@ -311,13 +328,13 @@ RSpec.describe "ChatChannels", type: :request do
     end
 
     it "does not block when channel is open" do
-      expect { post "/chat_channels/block_chat", params: { chat_id: chat_channel.id } }.
-        to raise_error(Pundit::NotAuthorizedError)
+      expect { post "/chat_channels/block_chat", params: { chat_id: chat_channel.id } }
+        .to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "does not block when user does not have permissions" do
-      expect { post "/chat_channels/block_chat", params: { chat_id: direct_channel.id } }.
-        to raise_error(Pundit::NotAuthorizedError)
+      expect { post "/chat_channels/block_chat", params: { chat_id: direct_channel.id } }
+        .to raise_error(Pundit::NotAuthorizedError)
     end
   end
 

@@ -4,7 +4,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
   describe "GET /tags" do
     it "returns proper page" do
       get "/tags"
-      expect(response.body).to include("Top 100 Tags")
+      expect(response.body).to include("Top tags")
     end
   end
 
@@ -14,6 +14,10 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     let(:unauthorized_user)    { create(:user) }
     let(:tag_moderator)        { create(:user) }
     let(:super_admin)          { create(:user, :super_admin) }
+
+    before do
+      allow(SiteConfig).to receive(:suggested_tags).and_return(%w[beginners javascript career])
+    end
 
     it "does not allow not logged-in users" do
       get "/t/#{tag}/edit"
@@ -113,6 +117,10 @@ RSpec.describe "Tags", type: :request, proper_status: true do
         Accept: "application/json",
         "Content-Type": "application/json"
       }
+    end
+
+    before do
+      allow(SiteConfig).to receive(:suggested_tags).and_return(%w[beginners javascript career])
     end
 
     it "returns tags" do

@@ -85,7 +85,7 @@ module Search
       end
 
       def add_highlight_fields
-        highlight_fields = { encoder: "html", fields: {} }
+        highlight_fields = { encoder: "html", pre_tags: "<mark>", post_tags: "</mark>", fields: {} }
         HIGHLIGHT_FIELDS.each do |field_name|
           # This hash can be filled with options to further customize our highlighting
           # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
@@ -126,19 +126,19 @@ module Search
       end
 
       def term_keys
-        TERM_KEYS.map do |term_key, search_key|
+        TERM_KEYS.filter_map do |term_key, search_key|
           next unless @params.key? term_key
 
           { terms: { search_key => Array.wrap(@params[term_key]) } }
-        end.compact
+        end
       end
 
       def range_keys
-        RANGE_KEYS.map do |range_key|
+        RANGE_KEYS.filter_map do |range_key|
           next unless @params.key? range_key
 
           { range: { range_key => @params[range_key] } }
-        end.compact
+        end
       end
 
       def query_hash(key, fields)

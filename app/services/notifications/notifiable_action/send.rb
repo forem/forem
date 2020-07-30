@@ -55,7 +55,12 @@ module Notifications
 
       def followers
         followers = notifiable.user.followers_scoped.where(subscription_status: "all_articles").map(&:follower)
-        followers += notifiable.organization.followers_scoped.where(subscription_status: "all_articles").map(&:follower) if notifiable.organization_id
+
+        if notifiable.organization_id
+          org_followers = notifiable.organization.followers_scoped.where(subscription_status: "all_articles")
+          followers += org_followers.map(&:follower)
+        end
+
         followers.uniq.compact
       end
 

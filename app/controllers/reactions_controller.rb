@@ -13,8 +13,8 @@ class ReactionsController < ApplicationController
       id = params[:article_id]
 
       reactions = if session_current_user_id
-                    Reaction.public_category.
-                      where(
+                    Reaction.public_category
+                      .where(
                         reactable_id: id,
                         reactable_type: "Article",
                         user_id: session_current_user_id,
@@ -25,16 +25,16 @@ class ReactionsController < ApplicationController
 
       result = { article_reaction_counts: Reaction.count_for_article(id) }
     else
-      comments = Comment.
-        where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type]).
-        select(%i[id public_reactions_count])
+      comments = Comment
+        .where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type])
+        .select(%i[id public_reactions_count])
 
       reaction_counts = comments.map do |comment|
         { id: comment.id, count: comment.public_reactions_count }
       end
 
       reactions = if session_current_user_id
-                    comment_ids = reaction_counts.map { |rc| rc[:id] }
+                    comment_ids = reaction_counts.pluck(:id) # rubocop:disable Rails/PluckId
                     cached_user_public_comment_reactions(current_user, comment_ids)
                   else
                     Reaction.none
@@ -83,7 +83,10 @@ class ReactionsController < ApplicationController
         Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
 
         Notification.send_reaction_notification(reaction, reaction.target_user)
-        Notification.send_reaction_notification(reaction, reaction.reactable.organization) if reaction.reaction_on_organization_article?
+        if reaction.reaction_on_organization_article?
+          Notification.send_reaction_notification(reaction,
+                                                  reaction.reactable.organization)
+        end
 
         result = "create"
 
@@ -103,7 +106,8 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_public_comment_reactions(user, comment_ids)
-    cache = Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}", expires_in: 24.hours) do
+    cache = Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}",
+                              expires_in: 24.hours) do
       user.reactions.public_category.where(reactable_type: "Comment").each_with_object({}) do |r, h|
         h[r.reactable_id] = r.attributes
       end
@@ -120,7 +124,9 @@ class ReactionsController < ApplicationController
       reactable_type: params[:reactable_type],
       category: category
     }
-    create_params[:status] = "confirmed" if current_user&.any_admin?
+    if current_user&.any_admin? && NEGATIVE_CATEGORIES.include?(category)
+      create_params[:status] = "confirmed"
+    end
     Reaction.new(create_params)
   end
 
@@ -128,7 +134,10 @@ class ReactionsController < ApplicationController
     reaction.destroy
     Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
     Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
-    Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if reaction.reaction_on_organization_article?
+    if reaction.reaction_on_organization_article?
+      Notification.send_reaction_notification_without_delay(reaction,
+                                                            reaction.reactable.organization)
+    end
     "destroy"
   end
 

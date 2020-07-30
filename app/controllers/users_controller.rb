@@ -13,9 +13,10 @@ class UsersController < ApplicationController
 
   def index
     @users =
-      if params[:state] == "follow_suggestions"
+      case params[:state]
+      when "follow_suggestions"
         determine_follow_suggestions(current_user)
-      elsif params[:state] == "sidebar_suggestions"
+      when "sidebar_suggestions"
         Suggester::Users::Sidebar.new(current_user, params[:tag]).suggest.sample(3)
       else
         User.none
@@ -60,7 +61,13 @@ class UsersController < ApplicationController
     else
       Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
       Honeycomb.add_field("errored", true)
-      render :edit, status: :bad_request
+
+      if @tab
+        render :edit, status: :bad_request
+      else
+        flash[:error] = @user.errors.full_messages.join(", ")
+        redirect_to "/settings"
+      end
     end
   end
 
@@ -93,11 +100,13 @@ class UsersController < ApplicationController
     set_tabs("account")
 
     if destroy_request_in_progress?
-      flash[:settings_notice] = "You have already requested account deletion. Please, check your email for further instructions."
+      notice = "You have already requested account deletion. Please, check your email for further instructions."
+      flash[:settings_notice] = notice
       redirect_to user_settings_path(@tab)
     elsif @user.email?
       Users::RequestDestroy.call(@user)
-      flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
+      notice = "You have requested account deletion. Please, check your email for further instructions."
+      flash[:settings_notice] = notice
       redirect_to user_settings_path(@tab)
     else
       flash[:settings_notice] = "Please, provide an email to delete your account."
@@ -204,7 +213,8 @@ class UsersController < ApplicationController
     adminable = User.find(params[:user_id])
     org = Organization.find_by(id: params[:organization_id])
 
-    not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exists?(user: adminable, organization: org)
+    not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exists?(user: adminable,
+                                                                                         organization: org)
 
     OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
     flash[:settings_notice] = "#{adminable.name} is now an admin."
@@ -240,6 +250,8 @@ class UsersController < ApplicationController
     return unless user.looking_for_work?
 
     hiring_tag = Tag.find_by(name: "hiring")
+    return if !hiring_tag || user.following?(hiring_tag)
+
     Users::FollowWorker.perform_async(user.id, hiring_tag.id, "Tag")
   end
 
@@ -298,7 +310,7 @@ class UsersController < ApplicationController
   end
 
   def handle_organization_tab
-    @organizations = @current_user.organizations.order("name ASC")
+    @organizations = @current_user.organizations.order(name: :asc)
     if params[:org_id] == "new" || params[:org_id].blank? && @organizations.size.zero?
       @organization = Organization.new
     elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
@@ -306,7 +318,8 @@ class UsersController < ApplicationController
       authorize @organization, :part_of_org?
 
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
-      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: @organization.id)
+      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id,
+                                                                organization_id: @organization.id)
     end
   end
 

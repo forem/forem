@@ -2,6 +2,11 @@ class MarkdownParser
   include ApplicationHelper
   include CloudinaryHelper
 
+  BAD_XSS_REGEX = [
+    /src=["'](data|&)/i,
+    %r{data:text/html[,;][\sa-z0-9]*}i,
+  ].freeze
+
   WORDS_READ_PER_MINUTE = 275.0
 
   def initialize(content, source: nil, user: nil)
@@ -142,10 +147,9 @@ class MarkdownParser
   end
 
   def catch_xss_attempts(markdown)
-    bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
-    bad_xss.each do |xss_attempt|
-      raise ArgumentError, "Invalid markdown detected" if markdown.include?(xss_attempt)
-    end
+    return unless markdown.match?(Regexp.union(BAD_XSS_REGEX))
+
+    raise ArgumentError, "Invalid markdown detected"
   end
 
   def allowed_image_host?(src)
@@ -273,7 +277,9 @@ class MarkdownParser
   def wrap_all_images_in_links(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("p img").each do |image|
-      image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>") unless image.parent.name == "a"
+      next if image.parent.name == "a"
+
+      image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>")
     end
     doc.to_html
   end

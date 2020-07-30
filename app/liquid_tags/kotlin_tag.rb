@@ -2,7 +2,7 @@ class KotlinTag < LiquidTagBase
   PARTIAL = "liquids/kotlin".freeze
   PARAM_REGEXP = /\A[a-zA-Z0-9]+\z/.freeze
 
-  def initialize(tag_name, link, tokens)
+  def initialize(_tag_name, link, _parse_context)
     super
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split(" ").first

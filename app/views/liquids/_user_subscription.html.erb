@@ -43,7 +43,7 @@
         </div>
 
         <div class="ltag__user-subscription-tag__apple-auth fs-s hidden" id="subscriber-apple-auth">
-          <button disabled class="crayons-btn" id="subscribe-btn">Subscribe</button>
+          <button disabled class="crayons-btn" id="apple-subscribe-btn">Subscribe</button>
           <div class="fs-s" id="apple-auth-message">
             Hey, there! It looks like when you created your DEV account you signed
             up with Apple using a private relay email address. If you'd like to
@@ -71,9 +71,8 @@
           </header>
           <div class="crayons-modal__box__body">
             <p id="confirmation-text" class="fs-base mb-4 mt-0">
-              You'll share your email address
-              <span class="ltag__user-subscription-tag__subscriber-email"></span>
-              with
+              You'll share your email address<span class="ltag__user-subscription-tag__subscriber-email"></span>,
+              username, name, and DEV profile URL with
               <span class="ltag__user-subscription-tag__author-username fw-medium"><%= author_username %></span>.
               Once you do this, you cannot undo this.
             <p>

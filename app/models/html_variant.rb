@@ -18,7 +18,8 @@ class HtmlVariant < ApplicationRecord
   scope :relevant, -> { where(approved: true, published: true) }
 
   def calculate_success_rate!
-    self.success_rate = html_variant_successes.size.to_f / (html_variant_trials.size * 10.0) # x10 because we only capture every 10th
+    # x10 because we only capture every 10th
+    self.success_rate = html_variant_successes.size.to_f / (html_variant_trials.size * 10.0)
     save!
   end
 
@@ -35,13 +36,13 @@ class HtmlVariant < ApplicationRecord
     private
 
     def find_top_for_test(tags_array, group)
-      where(group: group, approved: true, published: true, target_tag: tags_array).
-        order("success_rate DESC").limit(rand(1..20)).sample
+      where(group: group, approved: true, published: true, target_tag: tags_array)
+        .order(success_rate: :desc).limit(rand(1..20)).sample
     end
 
     def find_random_for_test(tags_array, group)
-      where(group: group, approved: true, published: true, target_tag: tags_array).
-        order(Arel.sql("RANDOM()")).first
+      where(group: group, approved: true, published: true, target_tag: tags_array)
+        .order(Arel.sql("RANDOM()")).first
     end
   end
 

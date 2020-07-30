@@ -9,13 +9,13 @@ RSpec.describe FeedbackMessage, type: :model do
   it { is_expected.to validate_length_of(:message).is_at_most(2500) }
 
   it do
-    expect(feedback_message).to validate_inclusion_of(:category).
-      in_array(["spam", "other", "rude or vulgar", "harassment", "bug"])
+    expect(feedback_message).to validate_inclusion_of(:category)
+      .in_array(["spam", "other", "rude or vulgar", "harassment", "bug"])
   end
 
   it do
-    expect(feedback_message).to validate_inclusion_of(:status).
-      in_array(%w[Open Invalid Resolved])
+    expect(feedback_message).to validate_inclusion_of(:status)
+      .in_array(%w[Open Invalid Resolved])
   end
 
   describe "validations for an abuse report" do
