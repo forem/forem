@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
 import debounceAction from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
+import { Modal } from '../crayons/Modal';
 import {
   conductModeration,
   getAllMessages,
@@ -97,6 +98,7 @@ export default class Chat extends Component {
       memberFilterQuery: null,
       rerenderIfUnchangedCheck: null,
       userRequestCount: 0,
+      openModal: false,
     };
     if (chatOptions.activeChannelId) {
       getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
@@ -1243,35 +1245,17 @@ export default class Chat extends Component {
       return (
         <div className="chat__channels">
           {notificationsButton}
-          {state.searchShowing ? (
-            <input
-              placeholder="Search Channels"
-              onKeyUp={this.debouncedChannelFilter}
-              id="chatchannelsearchbar"
-              className="crayons-textfield"
-              aria-label="Search Channels"
-            />
-          ) : (
-            ''
-          )}
+
+          <input
+            placeholder="Search Channels"
+            onKeyUp={this.debouncedChannelFilter}
+            id="chatchannelsearchbar"
+            className="crayons-textfield"
+            aria-label="Search Channels"
+          />
           {invitesButton}
           {joiningRequestButton}
           <div className="chat__channeltypefilter">
-            <button
-              className="chat__channelssearchtoggle"
-              onClick={this.toggleSearchShowing}
-              aria-label="Toggle channel search"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="17"
-                height="17"
-              >
-                <path fill="none" d="M0 0h24v24H0z" />
-                <path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
-              </svg>
-            </button>
             {this.renderChannelFilterButton(
               'all',
               'all',
@@ -1314,6 +1298,73 @@ export default class Chat extends Component {
                 ) : null}
               </span>
             </button>
+            <button
+              className="chat__channelssearchtoggle "
+              aria-label="Toggle request manager"
+              onClick={this.toggleModalCreateChannel}
+              data-content="sidecar-joining-request-manager"
+            >
+              <span
+                data-content="sidecar-joining-request-manager"
+                role="button"
+                aria-hidden="true"
+              >
+                <svg
+                  version="1.1"
+                  id="Capa_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 512 512"
+                  style="enable-background:new 0 0 512 512;"
+                >
+                  <path
+                    d="M492,236H276V20c0-11.046-8.954-20-20-20c-11.046,0-20,8.954-20,20v216H20c-11.046,0-20,8.954-20,20s8.954,20,20,20h216
+                  v216c0,11.046,8.954,20,20,20s20-8.954,20-20V276h216c11.046,0,20-8.954,20-20C512,244.954,503.046,236,492,236z"
+                  />
+                </svg>
+              </span>
+            </button>
+            {this.state.openModal ? (
+              <Modal
+                title="Create A Channel"
+                size="s"
+                onClose={this.toggleModalCreateChannel}
+              >
+                <div className="crayons-field">
+                  <label htmlFor="t1" className="crayons-field__label">
+                    Channel Name
+                  </label>
+                  <input
+                    type="text"
+                    id="t1"
+                    className="crayons-textfield"
+                    placeholder="Enter name here..."
+                  />
+                  <label htmlFor="t2" className="crayons-field__label">
+                    Invite Users
+                  </label>
+                  <input
+                    type="text"
+                    id="t2"
+                    className="crayons-textfield"
+                    placeholder="Separate username with comma"
+                  />
+
+                  <button
+                    href="#"
+                    className="crayons-btn"
+                    style="margin-top:20px"
+                  >
+                    Create
+                  </button>
+                </div>
+              </Modal>
+            ) : (
+              ''
+            )}
           </div>
           <Channels
             activeChannelId={state.activeChannelId}
@@ -1334,6 +1385,10 @@ export default class Chat extends Component {
     return '';
   };
 
+  toggleModalCreateChannel = () => {
+    const { openModal } = this.state;
+    this.setState({ openModal: !openModal });
+  };
   navigateToChannelsList = () => {
     const chatContainer = document.querySelector('.chat__activechat');
 
