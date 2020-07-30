@@ -230,6 +230,17 @@ class CommentsController < ApplicationController
     end
   end
 
+  def admin_delete
+    @comment = Comment.find(params[:comment_id])
+    authorize @comment
+    @comment.deleted = true
+    if @comment.save
+      render json: { result: "success" }, status: :ok
+    else
+      render json: { error: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
