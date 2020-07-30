@@ -166,10 +166,25 @@ Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
 not supported. We recommend version 7.5.2.
 
 We recommend following the install guide
-[in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
+[in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux)
 for installing on Windows machines.
 
-NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
+_NOTE:_ Make sure to download **the OSS version**, `elasticsearch-oss` by
+following the following steps:
+
+1. Replace the link in the first `wget` command with the Apache 2.0 licensed
+   code link listed below the code-block.
+2. For the second `wget` command add `.sha512` to the end of the Apache 2.0
+   licensed code link in order to download the correct checksum file.
+3. For the `shasum` command, replace the file name with the new file downloaded
+   by the second wget command.
+
+Follow steps under
+[run the Elasticsearch server from command line](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#targz-running)
+to run the server from within the unzipped Elasticsearch directory.
+
+[Verify Elasticsearch's installation](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#_checking_that_elasticsearch_is_running)
+by executing the `cURL` command which can be copied from the `GET /` code block.
 
 ## Installing Forem
 
