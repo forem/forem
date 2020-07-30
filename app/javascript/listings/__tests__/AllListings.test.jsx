@@ -89,7 +89,7 @@ describe('<AllListings />', () => {
 
     // Ensure each listing is present
     const titleOptions = {
-      selector: 'h3 > a',
+      selector: 'h2 > a',
     };
 
     // 1st listings
