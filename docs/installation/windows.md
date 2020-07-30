@@ -148,9 +148,15 @@ For additional configuration options, check our
 Forem uses [ImageMagick](https://imagemagick.org/) to manipulate images on
 upload.
 
-Please refer to ImageMagick's
-[instructions](https://imagemagick.org/script/download.php) on how to install
-it.
+ImageMagick can be installed to WSL via installing its
+[imagemagick](https://packages.ubuntu.com/bionic/imagemagick) package with the
+following command:
+
+```shell
+sudo apt update && sudo apt install imagemagick
+```
+
+To verify its installation, run `identify -version` command.
 
 ### Redis
 
