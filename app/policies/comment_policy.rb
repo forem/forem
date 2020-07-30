@@ -39,6 +39,10 @@ class CommentPolicy < ApplicationPolicy
     user_is_commentable_author?
   end
 
+  def admin_delete?
+    user_is_admin?
+  end
+
   def permitted_attributes_for_update
     %i[body_markdown receive_notifications]
   end
@@ -77,5 +81,9 @@ class CommentPolicy < ApplicationPolicy
 
   def user_is_commentable_author?
     record.commentable.present? && record.commentable.user_id == user.id
+  end
+
+  def user_is_admin?
+    user.any_admin? || user.tech_admin?
   end
 end
