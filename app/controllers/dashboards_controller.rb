@@ -35,11 +35,6 @@ class DashboardsController < ApplicationController
     Articles::UpdateAnalyticsWorker.perform_async(current_user.id) if update_analytics
   end
 
-  def series
-    @collections = @user.collections
-    @collections_count = @user.collections.count
-  end
-
   def following_tags
     @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag")
       .order(points: :desc).includes(:followable).limit(@follows_limit)
