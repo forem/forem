@@ -311,21 +311,23 @@
       }
     }
 
-    async function deleteComment(commentId){
+    async function adminDeleteComment(commentId){
       try {
-        const response = await fetch(`/comments/${commentId}`, {
-          method: 'DELETE',
+        const response = await fetch('/admin_delete', {
+          method: 'PATCH',
           headers: {
             Accept: 'application/json',
             'X-CSRF-Token': window.csrfToken,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({}),
+          body: JSON.stringify({
+            comment_id: commentId,
+          }),
           credentials: 'same-origin',
         });
 
         const outcome = await response.json();
-        alert(`OUTCOME: ${outcome.result}`);
+        alert(`OUTCOME Result: ${outcome.result}\nOUTCOME Error: ${outcome.error}`);
       } catch (error) {
         // eslint-disable-next-line no-alert
         alert(error);
@@ -345,7 +347,7 @@
 
     deleteCommentBtn.addEventListener('click', () => {
       const { commentId } = deleteCommentBtn.dataset;
-      deleteComment(commentId);
+      adminDeleteComment(commentId);
     });
   }, 200)
 </script>
