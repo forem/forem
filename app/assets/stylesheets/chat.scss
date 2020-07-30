@@ -106,10 +106,12 @@
 
 .chat__channels input {
   width: 100%;
+  outline: none;
 }
 
 .chat__channeltypefilter {
   width: 100%;
+  margin-top: 15px;
 }
 
 .chat__channeltypefilterbutton {
