@@ -106,9 +106,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
     >
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header flag-user-modal-header">
-          <h2 class="crayons-modal__box__header__title">
-            Flag User
-          </h2>
+          <h2 class="crayons-modal__box__header__title">Flag User</h2>
           <button
             type="button"
             class="crayons-btn crayons-btn--icon crayons-btn--ghost modal-header-close-icon"
@@ -125,49 +123,49 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
             </svg>
           </button>
         </header>
-        <div class="crayons-modal__box__body flag-user-modal-body">
+        <div class="crayons-modal__box__body flag-user-modal-body grid gap-4">
           <p>
             Thanks for keeping DEV safe. Here is what you can do to flag this
             user:
           </p>
-          <div class="crayons-fields">
-            <div class="crayons-field crayons-field--radio">
-              <input
-                type="radio"
-                id="vomit-all"
-                ref={vomitAllRef}
-                name="flag-user"
-                class="crayons-radio"
-                data-reactable-id={authorId}
-                data-category="vomit"
-                data-reactable-type="User"
-                checked={isConfirmButtonEnabled}
-                onClick={(event) => {
-                  const { target } = event;
+          <div class="crayons-field crayons-field--radio">
+            <input
+              type="radio"
+              id="vomit-all"
+              ref={vomitAllRef}
+              name="flag-user"
+              class="crayons-radio"
+              data-reactable-id={authorId}
+              data-category="vomit"
+              data-reactable-type="User"
+              checked={isConfirmButtonEnabled}
+              onClick={(event) => {
+                const { target } = event;
 
-                  enableConfirmButton(target.checked);
-                }}
-              />
-              <label htmlFor="vomit-all" class="crayons-field__label">
-                Make all posts by this author less visible
-                <p class="crayons-field__description">
-                  This author consistently posts content that violates DEV's
-                  code of conduct because it is harassing, offensive or spammy.
-                </p>
-              </label>
-            </div>
+                enableConfirmButton(target.checked);
+              }}
+            />
+            <label htmlFor="vomit-all" class="crayons-field__label">
+              Make all posts by this author less visible
+              <p class="crayons-field__description">
+                This author consistently posts content that violates DEV's code
+                of conduct because it is harassing, offensive or spammy.
+              </p>
+            </label>
+          </div>
+          <p>
             <a
               href={`/report-abuse?url=${
                 modCenterArticleUrl
                   ? `${document.location.origin}${modCenterArticleUrl}`
                   : document.location
               }`}
-              class="fs-base abuse-report-link"
+              className="crayons-link crayons-link--brand"
             >
               Report other inappropriate conduct
             </a>
-          </div>
-          <div class="buttons-container">
+          </p>
+          <div>
             <Button
               class="crayons-btn crayons-btn--danger mr-2"
               id="confirm-flag-user-action"
