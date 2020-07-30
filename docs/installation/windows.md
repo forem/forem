@@ -117,18 +117,28 @@ work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
-Forem requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher. To Install PostgreSQL on WSL,
+follow steps under the
+[PostgreSQL APT Repository](https://www.postgresql.org/download/linux/ubuntu/)
+section.
 
-If you don't have PostgreSQL installed on your Windows system, you can do so
-right now. WSL is able to connect to a PostgreSQL instance on your Windows
-machine.
+Once Installed, perform the following steps in order to set up a username and
+password for PostgreSQL:
 
-Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/)
-and install it.
+1. Use `sudo -i service postgresql start` to start the server.
+2. Next, replace `$YOUR_USERNAME` in the following commands with your Linux
+   Username and execute them:
 
-Pay attention to the username and password you setup during installation of
-PostgreSQL as you will use this to configure your Rails applications to login to
-the database later.
+   ```shell
+   sudo -u postgres createuser -s $YOUR_USERNAME
+   createdb
+   sudo -u $YOUR_USERNAME psql
+   ```
+
+3. You should now be in PostgreSQL's shell interface. Execute `\password` to set
+   a password for your PostgreSQL user.
+4. Be sure to make a note of your username and password for future use. Exit
+   PostgreSQL by executing the command `\quit`.
 
 For additional configuration options, check our
 [PostgreSQL setup guide](/installation/postgresql).
