@@ -1,5 +1,5 @@
-module Admin
-  class CommentsController < Admin::ApplicationController
+module ResourceAdmin
+  class CommentsController < ResourceAdmin::ApplicationController
     def update
       comment = Comment.find(params[:id])
       if comment.update(comment_params)

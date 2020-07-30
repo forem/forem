@@ -1,21 +1,19 @@
-module Admin
-  class EmailMessagesController < Admin::ApplicationController
+module ResourceAdmin
+  class ReactionsController < ResourceAdmin::ApplicationController
     # To customize the behavior of this controller,
     # simply overwrite any of the RESTful actions. For example:
     #
     # def index
     #   super
-    #   @resources = Ahoy::Message.
-    #     page(params[:page]).
-    #     per(8)
+    #   @resources = Reaction.all.paginate(10, params[:page])
     # end
 
     # Define a custom finder by overriding the `find_resource` method:
     # def find_resource(param)
-    #   Ahoy::Message.find_by!(slug: param)
+    #   Reaction.find_by!(slug: param)
     # end
 
-    # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
+    # See https://administrate-docs.herokuapp.com/customizing_controller_actions
     # for more information
   end
 end

@@ -1,10 +1,10 @@
-module Admin
-  class UsersController < Admin::ApplicationController
+module ResourceAdmin
+  class UsersController < ResourceAdmin::ApplicationController
     def update
       user = User.find(params[:id])
       if user.errors.messages.blank? && user.update(user_params)
         flash[:notice] = "User successfully updated"
-        redirect_to "/admin/users/#{params[:id]}"
+        redirect_to "/ResourceAdmin/users/#{params[:id]}"
       else
         render :new, locals: { page: Administrate::Page::Form.new(dashboard, user) }
       end

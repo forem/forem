@@ -1,5 +1,5 @@
-module Admin
-  class TagsController < Admin::ApplicationController
+module ResourceAdmin
+  class TagsController < ResourceAdmin::ApplicationController
     def update
       @tag = Tag.find(params[:id])
       if @tag.update(tag_params) && @tag.errors.messages.blank?
