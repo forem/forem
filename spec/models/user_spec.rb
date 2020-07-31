@@ -168,10 +168,10 @@ RSpec.describe User, type: :model do
     it "validates the presence of the email if the user has not persisted" do
       user = build(:user, email: "")
       user.valid?
-      expect(user.errors[:email]).to include("can't be blank")
+      expect(user.errors[:email][0]).to include("can't be blank")
       user.email = nil
       user.valid?
-      expect(user.errors[:email]).to include("can't be blank")
+      expect(user.errors[:email][0]).to include("can't be blank")
     end
 
     it "validates username against reserved words" do
