@@ -284,6 +284,7 @@ RSpec.describe User, type: :model do
 
     describe "#email" do
       it "sets email to nil if empty" do
+        user.save
         user.email = ""
         user.validate!
         expect(user.email).to eq(nil)
@@ -599,8 +600,6 @@ RSpec.describe User, type: :model do
   end
 
   context "when callbacks are triggered before and after create" do
-    let(:user) { create(:user, email: nil) }
-
     describe "#language_settings" do
       it "sets correct language_settings by default" do
         expect(user.language_settings).to eq("preferred_languages" => %w[en])
