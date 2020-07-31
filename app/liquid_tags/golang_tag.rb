@@ -1,10 +1,12 @@
 class GolangTag < LiquidTagBase
   PARTIAL = "liquids/golang".freeze
-  URL_REGEXP = %r{(http|https)://play.golang.com/p/[a-zA-Z0-9\-/]*}.freeze
+  URL_REGEXP = %r{\Ahttps?://play.golang.org/p/[a-zA-Z0-9\-/]+\z}.freeze
 
   def initialize(_tag_name, link, _parse_context)
     super
-    @link = parse_link(link)
+    stripped_link = ActionController::Base.helpers.strip_tags(link)
+    the_link = stripped_link.split(" ").first
+    @embedded_url = valid_link?(the_link)
   end
 
   def render(_context)
@@ -18,20 +20,9 @@ class GolangTag < LiquidTagBase
 
   private
 
-  def parse_link(link)
-    stripped_link = ActionController::Base.helpers.strip_tags(link)
-    the_link = stripped_link.split(" ").first
-    raise_error unless valid_link?(the_link)
-    the_link
-  end
-
   def valid_link?(link)
     link_no_space = link.delete(" ")
-    (link_no_space =~ URL_REGEXP)&.zero?
-  end
-
-  def raise_error
-    raise StandardError, "Invalid Golang Playground URL"
+    link_no_space.match?(URL_REGEXP)
   end
 end
 
