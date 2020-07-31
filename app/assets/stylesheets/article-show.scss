@@ -319,10 +319,6 @@ article {
           color: var(--body-color-inverted);
         }
 
-        &.coming-soon {
-          pointer-events: none;
-          color: lighten($black, 78%);
-        }
         &.collection-link-hidden {
           display: none;
         }

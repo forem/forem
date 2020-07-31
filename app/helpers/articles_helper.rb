@@ -17,14 +17,6 @@ module ArticlesHelper
       article.comments_blob.include?("youtube")
   end
 
-  def collection_link_class(current_article, linked_article)
-    if current_article.id == linked_article.id
-      "current-article"
-    elsif !linked_article.published
-      "coming-soon"
-    end
-  end
-
   def image_tag_or_inline_svg_tag(service_name, width: nil, height: nil)
     name = "#{service_name}-logo.svg"
 

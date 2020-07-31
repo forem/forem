@@ -17,6 +17,8 @@
       <dd><%= @user.name %></dd>
       <dt>Email:</dt>
       <dd><%= @user.email %></dd>
+      <dt>Access Locked:</dt>
+      <dd><%= @user.access_locked? %></dd>
       <dt>Twitter:</dt>
       <% if @user.twitter_username %>
         <dd><%= link_to @user.twitter_username, "https://twitter.com/#{@user.twitter_username}" %></dd>

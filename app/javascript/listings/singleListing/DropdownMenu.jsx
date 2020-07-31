@@ -1,27 +1,23 @@
 import PropTypes from 'prop-types';
 import { h, Component, createRef } from 'preact';
-// eslint-disable-next-line import/no-unresolved
-import ThreeDotsIcon from 'images/overflow-horizontal.svg';
 import listingPropTypes from './listingPropTypes';
+import { Button } from '@crayons';
 
-const MenuButton = ({ onClick }) => (
-  <button
-    type="button"
-    className="dropdown-btn"
-    aria-label="Toggle dropdown menu"
-    onClick={onClick}
+const Icon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    className="crayons-icon"
+    xmlns="http://www.w3.org/2000/svg"
   >
-    <img
-      src={ThreeDotsIcon}
-      className="dropdown-icon"
-      alt="Dropdown menu icon"
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M7 12a2 2 0 11-4 0 2 2 0 014 0zm7 0a2 2 0 11-4 0 2 2 0 014 0zm5 2a2 2 0 100-4 2 2 0 000 4z"
     />
-  </button>
+  </svg>
 );
-
-MenuButton.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
 
 class DropdownMenu extends Component {
   componentRef = createRef();
@@ -68,20 +64,29 @@ class DropdownMenu extends Component {
     const reportUrl = `/report-abuse?url=https://dev.to/listings/${category}/${slug}`;
 
     return (
-      <div className="dropdown-menu" ref={this.componentRef}>
-        <MenuButton onClick={this.toggleMenu} />
-        <div className="dropdown">
-          <div
-            className={['dropdown-content', isOpen ? 'showing' : ''].join(' ')}
-          >
-            {isOwner ? (
-              <a href={editUrl} className="listing-edit-button">
-                Edit
-              </a>
-            ) : (
-              <a href={reportUrl}>Report Abuse</a>
-            )}
-          </div>
+      <div className="single-listing__dropdown absolute right-0 top-0" ref={this.componentRef}>
+        <Button
+          variant="ghost"
+          contentType="icon"
+          tagName="button"
+          aria-label="Toggle dropdown menu"
+          icon={Icon}
+          onClick={this.toggleMenu}
+        />
+        <div
+          className={`crayons-dropdown absolute right-0 top-100 p-1 ${
+            isOpen ? 'block' : ''
+          }`}
+        >
+          {isOwner ? (
+            <a href={editUrl} className="crayons-link crayons-link--block">
+              Edit
+            </a>
+          ) : (
+            <a href={reportUrl} className="crayons-link crayons-link--block">
+              Report Abuse
+            </a>
+          )}
         </div>
       </div>
     );

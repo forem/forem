@@ -72,13 +72,14 @@ class Article < ApplicationRecord
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
 
   before_validation :evaluate_markdown, :create_slug
-  before_create :create_password
-  before_save :set_all_dates
-  before_save :calculate_base_scores
-  before_save :set_caches
-  before_save :fetch_video_duration
-  before_save :clean_data
   before_save :update_cached_user
+  before_save :set_all_dates
+  before_save :clean_data
+  before_save :calculate_base_scores
+  before_save :fetch_video_duration
+  before_save :set_caches
+  before_create :create_password
+  before_destroy :before_destroy_actions, prepend: true
 
   after_save :bust_cache, :detect_human_language
   after_save :notify_slack_channel_about_publication
@@ -90,8 +91,6 @@ class Article < ApplicationRecord
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
-
-  before_destroy :before_destroy_actions, prepend: true
 
   serialize :cached_user
   serialize :cached_organization
@@ -589,22 +588,12 @@ class Article < ApplicationRecord
 
   def update_cached_user
     if organization
-      self.cached_organization = OpenStruct.new(set_cached_object(organization))
+      self.cached_organization = Articles::CachedEntity.from_object(organization)
     end
 
     return unless user
 
-    self.cached_user = OpenStruct.new(set_cached_object(user))
-  end
-
-  def set_cached_object(object)
-    {
-      name: object.name,
-      username: object.username,
-      slug: object == organization ? object.slug : object.username,
-      profile_image_90: object.profile_image_90,
-      profile_image_url: object.profile_image_url
-    }
+    self.cached_user = Articles::CachedEntity.from_object(user)
   end
 
   def set_all_dates
@@ -638,7 +627,7 @@ class Article < ApplicationRecord
   def set_nth_published_at
     return unless nth_published_by_author.zero? && published
 
-    published_article_ids = user.articles.published.order(published_at: :asc).pluck(:id)
+    published_article_ids = user.articles.published.order(published_at: :asc).ids
     index = published_article_ids.index(id)
 
     self.nth_published_by_author = (index || published_article_ids.size) + 1

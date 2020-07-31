@@ -105,4 +105,13 @@ RSpec.describe "internal/users", type: :request do
       expect { backup.reload }.to raise_error ActiveRecord::RecordNotFound
     end
   end
+
+  describe "PATCH internal/users/:id/unlock_access" do
+    it "unlocks a locked user account" do
+      user.lock_access!
+      expect do
+        patch unlock_access_internal_user_path(user)
+      end.to change { user.reload.access_locked? }.from(true).to(false)
+    end 
+  end
 end
