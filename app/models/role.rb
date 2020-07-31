@@ -3,6 +3,7 @@ class Role < ApplicationRecord
     admin
     banned
     chatroom_beta_tester
+    codeland_admin
     comment_banned
     podcast_admin
     pro

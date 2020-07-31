@@ -7,12 +7,16 @@ openapi: "3.0.3"
 info:
   title: DEV API (beta)
   description: |
-    Access DEV articles, users and other resources via API.
+ 
+    Access Forem articles, users and other resources via API.
+
+    For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
 
     All endpoints that don't require authentication are CORS enabled.
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
+    
   version: "0.7.0"
   termsOfService: https://dev.to/terms
   contact:

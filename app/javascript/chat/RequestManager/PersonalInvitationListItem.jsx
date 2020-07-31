@@ -17,6 +17,7 @@ const RequestListItem = ({ request, updateMembership }) => (
           onClick={updateMembership}
           data-channel-id={request.chat_channel_id}
           data-membership-id={request.membership_id}
+          data-channel-slug={request.channel_modified_slug}
           data-user-action="reject"
         >
           {' '}
@@ -28,6 +29,7 @@ const RequestListItem = ({ request, updateMembership }) => (
           onClick={updateMembership}
           data-channel-id={request.chat_channel_id}
           data-membership-id={request.membership_id}
+          data-channel-slug={request.channel_modified_slug}
           data-user-action="accept"
         >
           {' '}

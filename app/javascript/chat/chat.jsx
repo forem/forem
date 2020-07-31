@@ -8,6 +8,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
 import debounceAction from '../utilities/debounceAction';
+import { addSnackbarItem } from '../Snackbar';
 import {
   conductModeration,
   getAllMessages,
@@ -737,6 +738,13 @@ export default class Chat extends Component {
         path: `/search?q=${message.replace('/s ', '')}`,
         type_of: 'article',
       });
+    } else if (message.startsWith('/ban ') || message.startsWith('/unban ')) {
+      conductModeration(
+        activeChannelId,
+        message,
+        this.handleSuccess,
+        this.handleFailure,
+      );
     } else if (message.startsWith('/')) {
       this.setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
@@ -748,13 +756,6 @@ export default class Chat extends Component {
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim();
       this.setActiveContentState(activeChannelId, { type_of: 'github', args });
-    } else if (message[0] === '/') {
-      conductModeration(
-        activeChannelId,
-        message,
-        this.handleSuccess,
-        this.handleFailure,
-      );
     } else {
       const messageObject = {
         activeChannelId,
@@ -881,8 +882,10 @@ export default class Chat extends Component {
           return { messages: newMessages };
         });
       }
+    } else if (response.status === 'moderation-success') {
+      addSnackbarItem({ message: response.message, addCloseButton: true });
     } else if (response.status === 'error') {
-      this.receiveNewMessage(response.message);
+      addSnackbarItem({ message: response.message, addCloseButton: true });
     }
   };
 
@@ -904,7 +907,21 @@ export default class Chat extends Component {
     );
   };
 
-  handleUpdateRequestCount = () => {
+  handleUpdateRequestCount = (isAccepted = false, acceptedInfo) => {
+    if (isAccepted) {
+      const searchParams = {
+        query: '',
+        retrievalID: null,
+        searchType: '',
+        paginationNumber: 0,
+      };
+      getChannels(searchParams, 'all', this.loadChannels);
+      this.triggerSwitchChannel(
+        parseInt(acceptedInfo.channelId, 10),
+        acceptedInfo.channelSlug,
+      );
+    }
+
     this.setState((prevState) => {
       return {
         userRequestCount: prevState.userRequestCount - 1,
@@ -1070,6 +1087,7 @@ export default class Chat extends Component {
   handleFailure = (err) => {
     // eslint-disable-next-line no-console
     console.error(err);
+    addSnackbarItem({ message: err, addCloseButton: true });
   };
 
   renderMessages = () => {

@@ -112,7 +112,8 @@ class User < ApplicationRecord
 
   mount_uploader :profile_image, ProfileImageUploader
 
-  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable, :recoverable
+  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
+         :recoverable, :lockable
 
   validates :behance_url, length: { maximum: 100 }, allow_blank: true, format: BEHANCE_URL_REGEXP
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
@@ -160,6 +161,9 @@ class User < ApplicationRecord
   validate :validate_mastodon_url
   validate :can_send_confirmation_email
   validate :update_rate_limit
+  # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
+  # field will be marked as dirty, not :password.
+  validate :password_matches_confirmation, if: :encrypted_password_changed?
 
   alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
@@ -167,19 +171,18 @@ class User < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
 
+  before_validation :check_for_username_change
+  before_validation :downcase_email
+  before_validation :set_config_input
+  # make sure usernames are not empty, to be able to use the database unique index
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
+  before_validation :set_username
+  before_create :set_default_language
+  before_destroy :unsubscribe_from_newsletters, prepend: true
+  before_destroy :destroy_follows, prepend: true
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
   after_save :conditionally_resave_articles
-
-  before_create :set_default_language
-  before_validation :set_username
-  # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
-  before_validation :set_config_input
-  before_validation :downcase_email
-  before_validation :check_for_username_change
-  before_destroy :destroy_follows, prepend: true
-  before_destroy :unsubscribe_from_newsletters, prepend: true
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
@@ -275,7 +278,7 @@ class User < ApplicationRecord
         id: Follow.where(
           follower_id: id,
           followable_type: "ActsAsTaggableOn::Tag",
-        ).pluck(:followable_id),
+        ).select(:followable_id),
       ).pluck(:name)
     end
   end
@@ -644,5 +647,11 @@ class User < ApplicationRecord
     rate_limiter.check_limit!(:user_update)
   rescue RateLimitChecker::LimitReached => e
     errors.add(:base, "User could not be saved. #{e.message}")
+  end
+
+  def password_matches_confirmation
+    return true if password == password_confirmation
+
+    errors.add(:password, "doesn't match password confirmation")
   end
 end

@@ -6,28 +6,37 @@ title: Windows
 
 ## Installing prerequisites
 
-_These prerequisites assume you're working on a 64bit Windows 10 operating
-system machine._
+These prerequisites assume you're working on a `64-bit Windows 10` operating
+system machine updated to _version 2004, Build 19041_ or _higher_. To check your
+Windows version, press `Win Logo key` + `R`, type `winver`, then click OK.
+
+There are other ways to get Forem running on lower versions, but we recommend a
+complete WSL 2 installation.
 
 ### Installing WSL
 
 Since Forem's codebase is using the Ruby on Rails framework, we will need to
-install Windows Subsystem for Linux. Some dependencies used by the source code
-triggered errors when installing on Windows, so using WSL allows you to work on
-the software and not having to fix gem incompatibilities.
+install the Windows Subsystem for Linux (WSL). Some dependencies used by the
+source code triggered errors when installing on Windows, so using WSL allows you
+to work on the software and not having to fix gem incompatibilities.
 
-First, let's enable Windows Subsystem for Linux in your machine. You can do this
-by opening `Control Panel`, going to `Programs`, and then clicking
-`Turn Windows Features On or Off`. Look for the `Windows Subsystem for Linux`
-option and check the box next to it. Windows will ask for a reboot.
+Follow the instructions for
+[Installing the Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+Once you've installed WSL, complete all the instructions under the following
+sections in the link above:
 
-![Enable WSL on Windows](/wsl-feature.png 'Enable WSL on Windows')
+1. [Update to WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2).
+2. [Enable the "Virtual Machine Platform" optional component](https://docs.microsoft.com/en-us/windows/wsl/install-win10#enable-the-virtual-machine-platform-optional-component).
+   Be sure to reboot your machine after this step.
+3. [Set WSL 2 as your default version](https://docs.microsoft.com/en-us/windows/wsl/install-win10#set-wsl-2-as-your-default-version).
 
-Once you've got this installed and after rebooting,
+Once all the steps mentioned above are completed,
 [install Ubuntu 18.04 on Windows](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q).
 
 On your first run, the system will ask for username and password. Take note of
-both since it will be used for `sudo` commands.
+both since it will be used for `sudo` commands. More information about the
+process can be found at
+[create a user account and password for your new Linux distribution](https://docs.microsoft.com/en-us/windows/wsl/user-support)
 
 ### Installing rbenv
 
@@ -108,18 +117,28 @@ work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
-Forem requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher. To Install PostgreSQL on WSL,
+follow steps under the
+[PostgreSQL APT Repository](https://www.postgresql.org/download/linux/ubuntu/)
+section.
 
-If you don't have PostgreSQL installed on your Windows system, you can do so
-right now. WSL is able to connect to a PostgreSQL instance on your Windows
-machine.
+Once Installed, perform the following steps in order to set up a username and
+password for PostgreSQL:
 
-Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/)
-and install it.
+1. Use `sudo -i service postgresql start` to start the server.
+2. Next, replace `$YOUR_USERNAME` in the following commands with your Linux
+   Username and execute them:
 
-Pay attention to the username and password you setup during installation of
-PostgreSQL as you will use this to configure your Rails applications to login to
-the database later.
+   ```shell
+   sudo -u postgres createuser -s $YOUR_USERNAME
+   createdb
+   sudo -u $YOUR_USERNAME psql
+   ```
+
+3. You should now be in PostgreSQL's shell interface. Execute `\password` to set
+   a password for your PostgreSQL user.
+4. Be sure to make a note of your username and password for future use. Exit
+   PostgreSQL by executing the command `\quit`.
 
 For additional configuration options, check our
 [PostgreSQL setup guide](/installation/postgresql).
@@ -129,9 +148,15 @@ For additional configuration options, check our
 Forem uses [ImageMagick](https://imagemagick.org/) to manipulate images on
 upload.
 
-Please refer to ImageMagick's
-[instructions](https://imagemagick.org/script/download.php) on how to install
-it.
+ImageMagick can be installed to WSL via installing its
+[imagemagick](https://packages.ubuntu.com/bionic/imagemagick) package with the
+following command:
+
+```shell
+sudo apt update && sudo apt install imagemagick
+```
+
+To verify its installation, run `identify -version` command.
 
 ### Redis
 
@@ -146,11 +171,49 @@ WSL.
 Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
 not supported. We recommend version 7.5.2.
 
-We recommend following the install guide
-[in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
-for installing on Windows machines.
+The following directions were taken from
+[the Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux),
+check them out to learn more about the installation process and troubleshooting
+issues. Make sure to refer to **the OSS version**, `elasticsearch-oss` while
+going through the Elasticsearch docs.
 
-NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
+To install Elasticsearch perform the following steps:
+
+1. Execute the following commands:
+
+   ```shell
+   cd
+   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
+   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
+   shasum -a 512 -c elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
+   tar -xzf elasticsearch-7.5.2-linux-x86_64.tar.gz
+   ```
+
+2. Next, switch to the correct directory with:
+
+   ```shell
+   cd elasticsearch-7.5.2/
+   ```
+
+3. To start Elasticsearch, run the following command:
+
+   ```shell
+   ./bin/elasticsearch
+   ```
+
+   or, start it as a daemonized process with:
+
+   ```shell
+   ./bin/elasticsearch -d
+   ```
+
+4. Once Elasticsearch is running,
+   [verify Elasticsearch's installation](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#_checking_that_elasticsearch_is_running)
+   by executing the `cURL` command as follows:
+
+   ```shell
+   curl -X GET "localhost:9200/?pretty"
+   ```
 
 ## Installing Forem
 

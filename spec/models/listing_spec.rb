@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Listing, type: :model do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:organization) { create(:organization) }
+  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
   let(:listing) { create(:listing, user: user) }
 
   # TODO: Remove setting of default parser from a model's callback

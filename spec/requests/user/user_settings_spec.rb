@@ -48,14 +48,6 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include error_message
       end
 
-      it "renders the proper organization page" do
-        first_org, second_org = create_list(:organization, 2)
-        create(:organization_membership, user: user, organization: first_org)
-        create(:organization_membership, user: user, organization: second_org, type_of_user: "admin")
-        get user_settings_path(tab: "organization", org_id: second_org.id) # /settings/organization/:org_id
-        expect(response.body).to include "Grow the team"
-      end
-
       it "renders the proper response template" do
         response_template = create(:response_template, user: user)
         get user_settings_path(tab: "response-templates", id: response_template.id)
@@ -243,6 +235,12 @@ RSpec.describe "UserSettings", type: :request do
       put "/users/#{user.id}", params: { user: { password: "1", password_confirmation: "1" } }
 
       expect(flash[:error]).to include("Password is too short")
+    end
+
+    it "returns an error message if the passwords do not match" do
+      put "/users/#{user.id}", params: { user: { password: "asdfghjk", password_confirmation: "qwertyui" } }
+
+      expect(flash[:error]).to include("Password doesn't match password confirmation")
     end
 
     context "when requesting an export of the articles" do

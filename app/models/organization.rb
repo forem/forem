@@ -15,7 +15,7 @@ class Organization < ApplicationRecord
   has_many :articles
   has_many :listings
   has_many :collections
-  has_many :credits
+  has_many :credits, dependent: :restrict_with_error
   has_many :display_ads
   has_many :notifications
   has_many :organization_memberships, dependent: :delete_all
@@ -49,15 +49,16 @@ class Organization < ApplicationRecord
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
 
-  after_save :bust_cache
-  before_save :generate_secret
-  before_save :remove_at_from_usernames
-  before_save :update_articles
-  before_validation :check_for_slug_change
   before_validation :downcase_slug
+  before_validation :check_for_slug_change
   before_validation :evaluate_markdown
+  before_save :update_articles
+  before_save :remove_at_from_usernames
+  before_save :generate_secret
+  after_save :bust_cache
 
   after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
+  after_commit :bust_cache, on: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -104,6 +105,10 @@ class Organization < ApplicationRecord
     false
   end
 
+  def destroyable?
+    organization_memberships.count == 1 && articles.count.zero?
+  end
+
   private
 
   def evaluate_markdown
@@ -122,14 +127,7 @@ class Organization < ApplicationRecord
   def update_articles
     return unless saved_change_to_slug || saved_change_to_name || saved_change_to_profile_image
 
-    cached_org_object = {
-      name: name,
-      username: username,
-      slug: slug,
-      profile_image_90: profile_image_90,
-      profile_image_url: profile_image_url
-    }
-    articles.update(cached_organization: OpenStruct.new(cached_org_object))
+    articles.update(cached_organization: Articles::CachedEntity.from_object(self))
   end
 
   def bust_cache

@@ -42,10 +42,10 @@ module Authentication
         SETTINGS_URL
       end
 
-      def self.sign_in_path(params = {})
+      def self.sign_in_path(**kwargs)
         ::Authentication::Paths.sign_in_path(
           provider_name,
-          params,
+          **kwargs,
         )
       end
 
