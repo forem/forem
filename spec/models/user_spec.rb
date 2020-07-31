@@ -165,6 +165,15 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_url_of(:website_url) }
     end
 
+    it "validates the presence of the email if the user has not persisted" do
+      user = build(:user, email: "")
+      user.valid?
+      expect(user.errors[:email]).to include("can't be blank")
+      user.email = nil
+      user.valid?
+      expect(user.errors[:email]).to include("can't be blank")
+    end
+
     it "validates username against reserved words" do
       user = build(:user, username: "readinglist")
       expect(user).not_to be_valid

@@ -123,6 +123,7 @@ class User < ApplicationRecord
   validates :dribbble_url, length: { maximum: 100 }, allow_blank: true, format: DRIBBBLE_URL_REGEXP
   validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
+  validates :email, presence: true, unless: :persisted?
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :employer_name, :employer_url, length: { maximum: 100 }
   validates :employment_title, :education, :location, length: { maximum: 100 }
