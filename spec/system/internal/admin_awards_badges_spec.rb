@@ -36,25 +36,20 @@ RSpec.describe "Admin awards badges", type: :system do
   end
 
   it "awards badges" do
-    expect { award_two_badges }.to change { user.badges.count }.by(1)
-      .and change { user2.badges.count }.by(1)
-    expect(page).to have_content("BadgeRewarder task ran!")
+    expect do
+      sidekiq_perform_enqueued_jobs { award_two_badges }
+    end.to change { user.badges.count }.by(1).and change { user2.badges.count }.by(1)
+    expect(page).to have_content("Badges are being rewarded. The task will finish shortly")
 
     visit "/#{user.username}/"
 
     expect(page).to have_link(href: "/badge/#{Badge.last.slug}")
   end
 
-  it "notifies users of new badges" do
-    sidekiq_assert_enqueued_jobs(2, only: BadgeAchievements::SendEmailNotificationWorker) do
-      sidekiq_assert_enqueued_jobs(2, only: Notifications::NewBadgeAchievementWorker) do
-        award_two_badges
-      end
-    end
-  end
-
   it "does not award badges if no badge is selected", js: true do
-    expect { award_no_badges }.to change { user.badges.count }.by(0)
+    expect do
+      sidekiq_perform_enqueued_jobs { award_no_badges }
+    end.to change { user.badges.count }.by(0)
 
     expect(page).to have_content("Please choose a badge to award")
   end
