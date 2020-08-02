@@ -141,7 +141,7 @@
     "ahoy.js": "^0.3.7",
     "babel-preset-preact": "^2.0.0",
     "chart.js": "^2.9.3",
-    "clipboard-polyfill": "^3.0.0",
+    "clipboard-polyfill": "^3.0.1",
     "core-js": "3",
     "file-loader": "^6.0.0",
     "focus-visible": "^5.1.0",
