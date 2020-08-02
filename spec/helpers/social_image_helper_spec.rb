@@ -62,5 +62,16 @@ describe SocialImageHelper do
 
       expect(url).to eq article_social_preview_url(article, format: :png)
     end
+
+    it "returns correct manipulation of cloudinary links" do
+      article.update_column(
+        :main_image,
+        "https://res.cloudinary.com/practicaldev/image/fetch/s--A-gun7rr--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://res.cloudinary.com/practicaldev/image/fetch/s--hcD8ZkbP--/c_imagga_scale%2Cf_auto%2Cfl_progressive%2Ch_420%2Cq_auto%2Cw_1000/https://dev-to-uploads.s3.amazonaws.com/i/th93d625o27nuz63oeen.png")
+      url = helper.article_social_image_url(article.decorate, width: 1600, height: 900)
+
+      expect(url.scan(/res.cloudinary.com/).length).to be 1
+      expect(url.scan(/w_1600/).length).to be 1
+      expect(url.scan(/w_1000/).length).to be 0
+    end
   end
 end
