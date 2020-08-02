@@ -98,7 +98,7 @@
     "@testing-library/preact": "^2.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
-    "babel-jest": "^26.1.0",
+    "babel-jest": "^26.2.2",
     "babel-loader": "^8.1.0",
     "css-loader": "^4.2.0",
     "eslint": "^7.6.0",
