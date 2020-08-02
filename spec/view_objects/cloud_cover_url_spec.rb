@@ -5,7 +5,7 @@ RSpec.describe CloudCoverUrl, type: :view_object do
 
   it "returns proper url" do
     expect(described_class.new(article.main_image).call).to start_with("https://res.cloudinary.com/TEST-CLOUD/image/fetch/")
-    expect(described_class.new(article.main_image).call).to end_with("/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://robohash.org/maioresfugiterror.png%3Fsize%3D300x300%26set%3Dset1")
+    expect(described_class.new(article.main_image).call).to include("/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://robohash.org/")
   end
 
   it "returns proper url when nested cloudinary" do
