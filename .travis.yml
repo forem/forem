@@ -22,8 +22,6 @@ env:
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
     - DATABASE_URL=postgres://postgres@localhost/
     # Dummy values needed to verify the app boots via "rails runner"
-    - APP_PROTOCOL=http://
-    - APP_DOMAIN=localhost:3000
     - SENDGRID_USERNAME_ACCEL=dummy
     - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
@@ -45,6 +43,7 @@ install: true
 script:
   - date --rfc-3339=seconds
   - nvm install
+  - cp config/sample_application.yml config/application.yml
   - pkill -9 -f elasticsearch || true
   - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
   - sudo dpkg -i --force-confnew elasticsearch-7.5.2-amd64.deb
