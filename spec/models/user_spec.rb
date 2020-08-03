@@ -12,7 +12,6 @@ end
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
-  let(:user_with_user_optional_fields) { create(:user, :with_user_optional_fields) }
   let(:org) { create(:organization) }
 
   before { omniauth_mock_providers_payload }
@@ -133,13 +132,6 @@ RSpec.describe User, type: :model do
       end
       # rubocop:enable RSpec/NamedSubject
 
-      it "has at most three optional fields" do
-        expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
-        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field",
-                                                                                  value: "some value")
-        expect(fourth_field).not_to be_valid
-      end
-
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
       it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
@@ -171,6 +163,15 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
       it { is_expected.to validate_url_of(:employer_url) }
       it { is_expected.to validate_url_of(:website_url) }
+    end
+
+    it "validates the presence of the email if the user has not persisted" do
+      user = build(:user, email: "")
+      user.valid?
+      expect(user.errors[:email][0]).to include("can't be blank")
+      user.email = nil
+      user.valid?
+      expect(user.errors[:email][0]).to include("can't be blank")
     end
 
     it "validates username against reserved words" do
@@ -283,6 +284,7 @@ RSpec.describe User, type: :model do
 
     describe "#email" do
       it "sets email to nil if empty" do
+        user.save
         user.email = ""
         user.validate!
         expect(user.email).to eq(nil)
@@ -598,8 +600,6 @@ RSpec.describe User, type: :model do
   end
 
   context "when callbacks are triggered before and after create" do
-    let(:user) { create(:user, email: nil) }
-
     describe "#language_settings" do
       it "sets correct language_settings by default" do
         expect(user.language_settings).to eq("preferred_languages" => %w[en])

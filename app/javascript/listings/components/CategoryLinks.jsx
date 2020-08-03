@@ -14,7 +14,9 @@ const CategoryLinks = ({ categories, onClick, selectedCategory }) => {
           <a
             href={`/listings/${category.slug}`}
             id={`category-link-${category.slug}`}
-            className={category.slug === selectedCategory ? 'selected' : ''}
+            className={`crayons-link crayons-link--block ${
+              category.slug === selectedCategory ? 'crayons-link--current' : ''
+            }`}
             onClick={(e) => onClick(e, category.slug)}
             data-no-instant
             {...dataTestIdProp}

@@ -11,7 +11,8 @@ RSpec.describe "UserDestroy", type: :request do
     end
 
     it "offers to set an email when user doesn't have an email" do
-      shallow_user = create(:user, email: nil)
+      shallow_user = create(:user)
+      shallow_user.update(email: nil)
       sign_in shallow_user
       get "/settings/account"
       expect(response.body).not_to include("Deleting your account will")
@@ -44,10 +45,11 @@ RSpec.describe "UserDestroy", type: :request do
     end
 
     context "when user doesn't have an email" do
-      let!(:shallow_user) { create(:user, email: nil) }
+      let!(:shallow_user) { create(:user) }
 
       before do
         sign_in shallow_user
+        shallow_user.update(email: nil)
       end
 
       it "redirects to account page" do
@@ -97,9 +99,10 @@ RSpec.describe "UserDestroy", type: :request do
     end
 
     context "when user doesn't have an email" do
-      let!(:shallow_user) { create(:user, email: nil) }
+      let!(:shallow_user) { create(:user) }
 
       before do
+        shallow_user.update(email: nil)
         sign_in shallow_user
       end
 
