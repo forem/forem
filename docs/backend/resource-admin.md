@@ -1,18 +1,19 @@
 ---
-title: Admin Panel
+title: Resource Admin Panel
 ---
 
-# What is the admin panel?
+# What is the resource admin panel?
 
-The admin panel is a CRUD interface generated via the
+The resource admin panel is a CRUD interface generated via the
 [Administrate gem](https://github.com/thoughtbot/administrate). In production,
 this is generally not used often and will be deprecated in favor of the internal
 panel (`http://localhost:3000/internal/*`). For more details, see
 [the internal guide](/internal).
 
-# Accessing the admin panel
+# Accessing the resource admin panel
 
-There is an admin panel located at <http://localhost:3000/admin>.
+There is an resource admin panel located at
+<http://localhost:3000/resource_admin>.
 
 To access the panel, you must be logged with a user with the `admin` role
 activated.
@@ -35,4 +36,4 @@ Loading development environment (Rails 5.2.3)
 ```
 
 Now you'll be able to access the
-[administration panel](http://localhost:3000/admin).
+[resource administration panel](http://localhost:3000/resource_admin).

@@ -1,5 +1,5 @@
-module Admin
-  class ArticlesController < Admin::ApplicationController
+module ResourceAdmin
+  class ArticlesController < ResourceAdmin::ApplicationController
     def create
       resource = resource_class.new(resource_params)
       authorize_resource(resource)

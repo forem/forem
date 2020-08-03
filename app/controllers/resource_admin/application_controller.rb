@@ -4,7 +4,7 @@
 #
 # If you want to add pagination or other controller-level concerns,
 # you're free to overwrite the RESTful controller actions.
-module Admin
+module ResourceAdmin
   class ApplicationController < Administrate::ApplicationController
     include Pundit
     before_action :authorize_admin
