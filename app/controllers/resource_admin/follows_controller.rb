@@ -1,5 +1,5 @@
-module Admin
-  class FollowsController < Admin::ApplicationController
+module ResourceAdmin
+  class FollowsController < ResourceAdmin::ApplicationController
     # To customize the behavior of this controller,
     # simply overwrite any of the RESTful actions. For example:
     #

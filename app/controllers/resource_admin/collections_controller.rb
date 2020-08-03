@@ -1,5 +1,5 @@
-module Admin
-  class CollectionsController < Admin::ApplicationController
+module ResourceAdmin
+  class CollectionsController < ResourceAdmin::ApplicationController
     # To customize the behavior of this controller,
     # simply overwrite any of the RESTful actions. For example:
     #
