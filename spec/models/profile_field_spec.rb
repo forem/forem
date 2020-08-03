@@ -9,7 +9,7 @@ RSpec.describe ProfileField, type: :model do
 
       it { is_expected.to validate_presence_of(:label) }
       it { is_expected.to validate_uniqueness_of(:label).case_insensitive }
-      it { is_expected.to validate_presence_of(:active) }
+      it { is_expected.to validate_inclusion_of(:active).in_array([true, false]) }
     end
   end
 end

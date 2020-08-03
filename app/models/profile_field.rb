@@ -8,5 +8,5 @@ class ProfileField < ApplicationRecord
   }
 
   validates :label, presence: true, uniqueness: { case_sensitive: false }
-  validates :active, presence: true
+  validates :active, inclusion: { in: [true, false] }
 end
