@@ -33,8 +33,7 @@ class User < ApplicationRecord
     invalid_config_navbar: "%<value>s is not a valid navbar value",
     invalid_config_theme: "%<value>s is not a valid theme",
     invalid_editor_version: "%<value>s must be either v1 or v2",
-    reserved_username: "username is reserved",
-    blank_email: "can't be blank. Your social account must have an email associated with it."
+    reserved_username: "username is reserved"
   }.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
@@ -124,7 +123,6 @@ class User < ApplicationRecord
   validates :dribbble_url, length: { maximum: 100 }, allow_blank: true, format: DRIBBBLE_URL_REGEXP
   validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
-  validates :email, presence: { message: MESSAGES[:blank_email] }, unless: :persisted?
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :employer_name, :employer_url, length: { maximum: 100 }
   validates :employment_title, :education, :location, length: { maximum: 100 }
