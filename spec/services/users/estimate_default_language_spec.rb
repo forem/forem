@@ -2,8 +2,7 @@ require "rails_helper"
 
 RSpec.describe Users::EstimateDefaultLanguage, type: :service do
   it "estimates default language when the email is nil" do
-    no_email_user = create(:user)
-    no_email_user.update(email: nil)
+    no_email_user = create(:user, email: nil)
     described_class.call(no_email_user)
     no_email_user.reload
     expect(no_email_user.estimated_default_language).to eq(nil)
@@ -61,8 +60,7 @@ RSpec.describe Users::EstimateDefaultLanguage, type: :service do
   end
 
   it "sets correct language_settings for no lang" do
-    user = create(:user)
-    user.update(email: nil)
+    user = create(:user, email: nil)
     described_class.call(user)
     expect(user.language_settings).to eq("preferred_languages" => %w[en], "estimated_default_language" => nil)
   end
