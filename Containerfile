@@ -45,7 +45,7 @@ COPY ./package.json ./yarn.lock ./.yarnrc "${APP_HOME}"
 COPY ./.yarn "${APP_HOME}"/.yarn
 RUN yarn install
 
-RUN mkdir -p "${APP_HOME}"/public/{uploads,images,podcasts}
+RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
 COPY . "${APP_HOME}"
 
