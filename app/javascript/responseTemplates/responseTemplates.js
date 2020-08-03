@@ -30,10 +30,14 @@ function buildHTML(response, typeOf) {
     return response
       .map((obj) => {
         return `
-          <div class="mod-response-wrapper">
-            <span>${obj.title}</span>
-            <p>${obj.content}</p>
-            <button class="insert-template-button" type="button" data-content="${obj.content}">INSERT</button>
+          <div class="mod-response-wrapper flex mb-4">
+            <div class="flex-1">
+              <h4>${obj.title}</h4>
+              <p>${obj.content}</p>
+            </div>
+            <div class="pl-2">
+              <button class="crayons-btn crayons-btn--secondary crayons-btn--s" type="button" data-content="${obj.content}">Insert</button>
+            </div>
           </div>
         `;
       })
@@ -43,11 +47,15 @@ function buildHTML(response, typeOf) {
     return response
       .map((obj) => {
         return `
-            <div class="mod-response-wrapper">
-              <span>${obj.title}</span>
-              <p>${obj.content}</p>
-              <button class="insert-template-button" type="button" data-content="${obj.content}">INSERT</button>
-              <button class="moderator-submit-button" type="submit" data-response-template-id="${obj.id}">SEND AS MOD</button>
+            <div class="mod-response-wrapper mb-4 flex">
+              <div class="flex-1">
+                <h4>${obj.title}</h4>
+                <p>${obj.content}</p>
+              </div>
+              <div class="flex flex-nowrap pl-2">
+                <button class="crayons-btn crayons-btn--s crayons-btn--secondary" type="submit" data-response-template-id="${obj.id}">Send as Mod</button>
+                <button class="crayons-btn crayons-btn--s crayons-btn--outlined" type="button" data-content="${obj.content}">Insert</button>
+              </div>
             </div>
           `;
       })

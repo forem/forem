@@ -57,6 +57,231 @@
 
 <div class="container">
   <div class="body">
+    <h2>Comments</h2>
+  </div>
+
+  <section>
+    <ol class="comments">
+      <li class="comment">
+        <header class="comment__header">
+          <a href="#" class="flex items-center mr-2">
+            <span href="#" class="crayons-avatar mr-1 m:mr-2 shrink-0">
+              <img src="http://placehold.it/32" width="32" height="32" class="crayons-avatar__image" alt="username">
+            </span>
+            <strong class="fw-medium">Marvin McKinney</strong>
+          </a>
+          <a href="#" class="fs-s color-base-50">1h ago</a>
+
+          <div class="ml-auto relative comment__dropdown">
+            <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon -my-2 m:-my-1 comment__dropdown__trigger">
+              <%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon") %>
+            </button>
+          </div>
+        </header>
+        <div class="comment__body">
+          <button class="comment__toggle" style="--comment-brand-hover-color: blue;">
+            <span class="comment__toggle__icon">
+              <%= inline_svg_tag("collapse.svg", class: "crayons-icon") %>
+            </span>
+            <span class="comment__toggle__stripe"></span>
+          </button>
+
+          <div class="comment__main">
+            <div class="comment__content">
+              <p>As you can see in the diagram below, this copies the Remote Repository into two places, your Working Directory and the Local Repository. Now you see how git is distributed version control. The Local Repository is a copy of the Remote one, and acts just like it. The only difference is that you don't share it with anyone.</p>
+            </div>
+
+            <footer class="comment__footer">
+              <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                <%= inline_svg_tag("small-heart.svg", class: "crayons-icon") %>34
+              </button>
+
+              <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Reply...
+              </button>
+            </footer>
+
+            <ol class="comments">
+              <li class="comment" style="--comment-brand-hover-color: red;">
+                <header class="comment__header">
+                  <a href="#" class="flex items-center mr-2">
+                    <span href="#" class="crayons-avatar mr-1 m:mr-2 shrink-0">
+                      <img src="http://placehold.it/32" width="32" height="32" class="crayons-avatar__image" alt="username">
+                    </span>
+                    <strong class="fw-medium">Marvin McKinney</strong>
+                  </a>
+                  <a href="#" class="fs-s color-base-50">1h ago</a>
+
+                  <div class="ml-auto relative comment__dropdown">
+                    <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon -my-2 m:-my-1 comment__dropdown__trigger">
+                      <%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon") %>
+                    </button>
+                  </div>
+                </header>
+                <div class="comment__body">
+                  <button class="comment__toggle">
+                    <span class="comment__toggle__icon">
+                      <%= inline_svg_tag("collapse.svg", class: "crayons-icon") %>
+                    </span>
+                    <span class="comment__toggle__stripe"></span>
+                  </button>
+
+                  <div class="comment__main">
+                    <div class="comment__content">
+                      <p>As you can see in the diagram below, this copies the Remote Repository into two places, your Working Directory and the Local Repository. Now you see how git is distributed version control. The Local Repository is a copy of the Remote one, and acts just like it. The only difference is that you don't share it with anyone.</p>
+                    </div>
+
+                    <footer class="comment__footer">
+                      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                        <%= inline_svg_tag("small-heart.svg", class: "crayons-icon") %>34
+                      </button>
+
+                      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                        <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Reply...
+                      </button>
+                    </footer>
+
+                    <ol class="comments">
+                      <li class="comment" style="--comment-brand-hover-color: green;">
+                        <header class="comment__header">
+                          <a href="#" class="flex items-center mr-2">
+                            <span href="#" class="crayons-avatar mr-1 m:mr-2 shrink-0">
+                              <img src="http://placehold.it/32" width="32" height="32" class="crayons-avatar__image" alt="username">
+                            </span>
+                            <strong class="fw-medium">Marvin McKinney</strong>
+                          </a>
+                          <a href="#" class="fs-s color-base-50">1h ago</a>
+
+                          <div class="ml-auto relative comment__dropdown">
+                            <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon -my-2 m:-my-1 comment__dropdown__trigger">
+                              <%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon") %>
+                            </button>
+                          </div>
+                        </header>
+                        <div class="comment__body">
+                          <button class="comment__toggle">
+                            <span class="comment__toggle__icon">
+                              <%= inline_svg_tag("collapse.svg", class: "crayons-icon") %>
+                            </span>
+                            <span class="comment__toggle__stripe"></span>
+                          </button>
+
+                          <div class="comment__main">
+                            <div class="comment__content">
+                              <p>As you can see in the diagram below, this copies the Remote Repository into two places, your Working Directory and the Local Repository. Now you see how git is distributed version control. The Local Repository is a copy of the Remote one, and acts just like it. The only difference is that you don't share it with anyone.</p>
+                            </div>
+
+                            <footer class="comment__footer">
+                              <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                                <%= inline_svg_tag("small-heart.svg", class: "crayons-icon") %>34
+                              </button>
+
+                              <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                                <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Reply...
+                              </button>
+                            </footer>
+
+                            <ol class="comments">
+                              <li class="comment" style="--comment-brand-hover-color: purple;">
+                                <header class="comment__header">
+                                  <a href="#" class="flex items-center mr-2">
+                                    <span href="#" class="crayons-avatar mr-1 m:mr-2 shrink-0">
+                                      <img src="http://placehold.it/32" width="32" height="32" class="crayons-avatar__image" alt="username">
+                                    </span>
+                                    <strong class="fw-medium">Marvin McKinney</strong>
+                                  </a>
+                                  <a href="#" class="fs-s color-base-50">1h ago</a>
+
+                                  <div class="ml-auto relative comment__dropdown">
+                                    <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon -my-2 m:-my-1 comment__dropdown__trigger">
+                                      <%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon") %>
+                                    </button>
+                                  </div>
+                                </header>
+                                <div class="comment__body">
+                                  <button class="comment__toggle">
+                                    <span class="comment__toggle__icon">
+                                      <%= inline_svg_tag("collapse.svg", class: "crayons-icon") %>
+                                    </span>
+                                    <span class="comment__toggle__stripe"></span>
+                                  </button>
+
+                                  <div class="comment__main">
+                                    <div class="comment__content">
+                                      <p>As you can see in the diagram below, this copies the Remote Repository into two places, your Working Directory and the Local Repository. Now you see how git is distributed version control. The Local Repository is a copy of the Remote one, and acts just like it. The only difference is that you don't share it with anyone.</p>
+                                    </div>
+
+                                    <footer class="comment__footer">
+                                      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                                        <%= inline_svg_tag("small-heart.svg", class: "crayons-icon") %>34
+                                      </button>
+
+                                      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                                        <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Reply...
+                                      </button>
+                                    </footer>
+                                  </div>
+                                </div>
+                              </li>
+                            </ol>
+                          </div>
+                        </div>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+              </li>
+              <li class="comment" style="--comment-brand-hover-color: yellow;">
+                <header class="comment__header">
+                  <a href="#" class="flex items-center mr-2">
+                    <span href="#" class="crayons-avatar mr-1 m:mr-2 shrink-0">
+                      <img src="http://placehold.it/32" width="32" height="32" class="crayons-avatar__image" alt="username">
+                    </span>
+                    <strong class="fw-medium">Marvin McKinney</strong>
+                  </a>
+                  <a href="#" class="fs-s color-base-50">1h ago</a>
+
+                  <div class="ml-auto relative comment__dropdown">
+                    <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon -my-2 m:-my-1 comment__dropdown__trigger">
+                      <%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon") %>
+                    </button>
+                  </div>
+                </header>
+                <div class="comment__body">
+                  <button class="comment__toggle">
+                    <span class="comment__toggle__icon">
+                      <%= inline_svg_tag("collapse.svg", class: "crayons-icon") %>
+                    </span>
+                    <span class="comment__toggle__stripe"></span>
+                  </button>
+
+                  <div class="comment__main">
+                    <div class="comment__content">
+                      <p>As you can see in the diagram below, this copies the Remote Repository into two places, your Working Directory and the Local Repository. Now you see how git is distributed version control. The Local Repository is a copy of the Remote one, and acts just like it. The only difference is that you don't share it with anyone.</p>
+                    </div>
+
+                    <footer class="comment__footer">
+                      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                        <%= inline_svg_tag("small-heart.svg", class: "crayons-icon") %>34
+                      </button>
+
+                      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
+                        <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Reply...
+                      </button>
+                    </footer>
+                  </div>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+</div>
+
+<div class="container">
+  <div class="body">
     <h2>Main Typography</h2>
     <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
     <p>XS size should be used as little as possible in edge cases. Even though it’s readable we could consider it not meeting <%= community_name %>’s standards. So keep it for like “asterisk copy” etc.</p>

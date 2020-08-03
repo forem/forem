@@ -274,6 +274,8 @@ function handleFocus(event) {
       showModal('reply-to-comment');
     }, 100);
   } else {
+    var formWrapper = document.querySelector(".comment-form");
+    formWrapper.classList.add("comment-form--initiated");
     handleSizeChange(event);
   }
 }
@@ -282,7 +284,7 @@ function handleBlur(event) {
   setTimeout(function () {
     var el = document.getElementById('text-area');
     if (el.value.length == 0) {
-      el.className = '';
+      el.classList.remove('embiggened-max', 'embiggened-more', 'embiggened');
     }
   }, 100);
 }
@@ -402,11 +404,14 @@ function handleSizeChange(event) {
   var lines = event.target.value.split(/\r*\n/);
   var lineCount = lines.length;
   if (lineCount > 11) {
-    document.getElementById('text-area').className = 'embiggened-max';
+    document.getElementById('text-area').classList.add('embiggened-max');
+    document.getElementById('text-area').classList.remove('embiggened-more', 'embiggened');
   } else if (lineCount > 6) {
-    document.getElementById('text-area').className = 'embiggened-more';
+    document.getElementById('text-area').classList.add('embiggened-more');
+    document.getElementById('text-area').classList.remove('embiggened-max', 'embiggened');
   } else {
-    document.getElementById('text-area').className = 'embiggened';
+    document.getElementById('text-area').classList.add('embiggened');
+    document.getElementById('text-area').classList.remove('embiggened-more', 'embiggened-max');
   }
 }
 

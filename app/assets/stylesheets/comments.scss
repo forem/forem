@@ -258,138 +258,6 @@ a.header-link {
     }
   }
   form {
-    overflow: auto;
-    position: relative;
-    z-index: 4;
-
-    .field {
-      margin-bottom: 0px;
-    }
-    .response-templates-container {
-      display: flex;
-      max-height: calc(40vh + 80px);
-      margin-bottom: var(--su-4);
-      padding-bottom: var(--su-4);
-      flex-direction: column;
-      overflow-y: auto;
-      font-size: var(--fs-base);
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        $light-gray
-      );
-      @include themeable(color, theme-color, $black);
-
-      .loading-img {
-        display: inline-block;
-        margin: 0 auto;
-        width: 75px;
-      }
-
-      header > button {
-        font-family: $helvetica-condensed;
-        font-stretch: condensed;
-        color: $bold-blue;
-        border: 1px solid $bold-blue;
-        font-size: 13px;
-        font-weight: 500;
-        padding: 5px 0px;
-        border-radius: 3px;
-        background: none;
-        width: 125px;
-        margin: 5px;
-        float: left;
-        &.active {
-          background: $bold-blue;
-          color: white;
-        }
-        &.hidden {
-          display: none;
-        }
-      }
-
-      .mod-response-wrapper {
-        text-align: left;
-        padding: 10px;
-        position: relative;
-        @include themeable(background, theme-container-background, white);
-        margin: 5px auto;
-        border-radius: 8px;
-        width: calc(100% - 20px);
-        box-sizing: border-box;
-        span {
-          font-weight: bold;
-          display: block;
-          width: calc(100% - 140px);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        p {
-          font-weight: normal;
-          display: block;
-          width: calc(100% - 140px);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          margin: 0.5em 0;
-          @include themeable(color, theme-secondary-color, $medium-gray);
-        }
-        &.mod-response-wrapper-empty {
-          text-align: center;
-          p {
-            width: 100%;
-            font-size: 1.05em;
-            font-weight: bold;
-            margin: 1.5em 0;
-            @include themeable(color, theme-color, $black);
-          }
-        }
-
-        button {
-          font-family: $helvetica-condensed;
-          font-stretch: condensed;
-          color: white;
-          border: 0px;
-          font-size: 13px;
-          font-weight: 500;
-          margin-top: 3px;
-          padding: 5px 0px;
-          border-radius: 3px;
-          cursor: pointer;
-          margin-right: 10px;
-          background: $bold-blue;
-          position: absolute;
-          top: 5px;
-          right: 0px;
-          width: 125px;
-        }
-        .moderator-submit-button {
-          background: $green;
-          color: $black;
-          top: 36px;
-        }
-      }
-
-      a {
-        text-align: left;
-        padding: var(--su-3);
-        font-weight: bold;
-        svg {
-          width: 20px;
-          height: 20px;
-          position: relative;
-          top: 4px;
-          left: 3px;
-          @include themeable(fill, link-branded-color, #3b49df);
-        }
-      }
-      p {
-        align-self: flex-start;
-        padding: 0 var(--su-3);
-      }
-    }
     .article-comment-form-preamble {
       font-size: 0.7em;
       margin-left: 20px;
@@ -397,30 +265,22 @@ a.header-link {
       margin-bottom: -5px;
     }
     textarea {
-      width: 100%;
-      display: block;
-      resize: vertical;
-      border-radius: 3px;
-      border: 1px solid var(--form-border);
-      height: 125px;
-      font-size: 16px;
-      padding: 6px;
-      cursor: text;
-      background: var(--form-bg);
-      color: var(--body-color);
-      box-sizing: border-box;
-      &::placeholder {
-        color: var(--form-placeholder);
-      }
-      &.embiggened {
-        height: calc(2vw + 115px);
-      }
-      &.embiggened-more {
-        height: calc(5vw + 118px);
-      }
-      &.embiggened-max {
-        height: calc(10vw + 118px);
-      }
+      // width: 100%;
+      // display: block;
+      // resize: vertical;
+      // border-radius: 3px;
+      // border: 1px solid var(--form-border);
+      // height: 125px;
+      // font-size: 16px;
+      // padding: 6px;
+      // cursor: text;
+      // background: var(--form-bg);
+      // color: var(--body-color);
+      // box-sizing: border-box;
+      // &::placeholder {
+      //   color: var(--form-placeholder);
+      // }
+
       &.preview-loading {
         background: white url(image-src('loading-ellipsis.svg')) no-repeat
           center center;
