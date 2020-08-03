@@ -154,7 +154,7 @@
     "preact": "^10.4.6",
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.7.2",
-    "pusher-js": "^5.1.1",
+    "pusher-js": "^7.0.0",
     "rails-erb-loader": "^5.5.2",
     "stimulus": "^1.1.1",
     "twilio-video": "^2.7.1",
