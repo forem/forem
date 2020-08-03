@@ -9,9 +9,10 @@ module Authentication
 
       def new_user_data
         name = raw_info.name.presence || info.name
+        email = auth_payload.extra.all_emails.detect(&:primary).email
 
         {
-          email: info.email.to_s,
+          email: email,
           github_created_at: raw_info.created_at,
           github_username: info.nickname,
           name: name,
