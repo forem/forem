@@ -5,7 +5,7 @@ RSpec.describe "Admin manages configuration", type: :system do
 
   before do
     sign_in admin
-    visit internal_config_path
+    visit admin_config_path
   end
 
   # Note: The :meta_keywords are handled slightly differently in the view, so we

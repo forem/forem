@@ -38,8 +38,8 @@ Rails.application.routes.draw do
     root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
   end
 
-  namespace :internal do
-    get "/", to: redirect("/internal/articles")
+  namespace :admin do
+    get "/", to: redirect("/admin/articles")
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
