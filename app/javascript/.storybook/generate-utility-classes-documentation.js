@@ -9,6 +9,8 @@ const stylesheetsDirectory = path.resolve(
   '../../assets/stylesheets',
 );
 
+// TODO: Clean this up once things are working.
+
 async function generateDocumentation(themeFiles) {
   const generatedStoriesFolder = path.join(
     __dirname,
