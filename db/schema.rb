@@ -472,6 +472,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
+    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -631,17 +632,6 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.integer "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
-  end
-
-  create_table "listing_endorsements", force: :cascade do |t|
-    t.boolean "approved"
-    t.bigint "classified_listing_id"
-    t.string "content"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
-    t.index ["classified_listing_id"], name: "index_listing_endorsements_on_classified_listing_id"
-    t.index ["user_id"], name: "index_listing_endorsements_on_user_id"
   end
 
   create_table "mentions", force: :cascade do |t|
@@ -1342,8 +1332,6 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
   add_foreign_key "classified_listings", "users", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
-  add_foreign_key "listing_endorsements", "classified_listings"
-  add_foreign_key "listing_endorsements", "users"
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
