@@ -432,6 +432,7 @@ function generateUploadFormdata(image) {
 }
 
 function handleImageUpload(event, randomIdNumber) {
+  console.log('test');
   var commentableId = document.getElementById('comments-container').dataset.commentableId;
   event.preventDefault();
   document.getElementById('image-upload-' + randomIdNumber).click();
@@ -463,7 +464,7 @@ function handleImageUpload(event, randomIdNumber) {
                 // button.style.display = "none";
                 messageContainer.style.display = "none";
                 address.value = json.links[0];
-                address.classList.add("showing");
+                address.classList.remove("hidden");
                 address.select();
 
                 var uploadedMessage = 'Uploaded! Paste into editor';
