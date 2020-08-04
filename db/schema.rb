@@ -924,7 +924,7 @@ ActiveRecord::Schema.define(version: 2020_08_04_035648) do
   create_table "profile_fields", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.datetime "created_at", precision: 6, null: false
-    t.string "explanation"
+    t.string "description"
     t.integer "input_type", default: 0, null: false
     t.citext "label", null: false
     t.string "placeholder_text"
