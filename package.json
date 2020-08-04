@@ -15,7 +15,7 @@
   "scripts": {
     "api-docs:lint": "spectral lint -F hint -v docs/api_v0.yml && lint-openapi -e docs/api_v0.yml",
     "api-docs:serve": "redoc-cli serve docs/api_v0.yml --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs --watch",
-    "generate-themes-storybook": "node-sass app/assets/stylesheets/themes -o app/javascript/storybook-static/themes",
+    "generate-themes-storybook": "node-sass app/assets/stylesheets/themes -o app/javascript/storybook-static/themes && node app/javascript/.storybook/generate-utility-classes-documentation.js",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets -o app/javascript/storybook-static --quiet",
     "postbuild-storybook": "npm run generate-themes-storybook",
     "prestorybook": "npm run generate-themes-storybook",
