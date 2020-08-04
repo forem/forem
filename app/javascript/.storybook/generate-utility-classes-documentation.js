@@ -2,6 +2,7 @@ const path = require('path');
 const util = require('util');
 const fs = require('fs');
 const sass = require('node-sass');
+const CSSOM = require('cssom');
 const renderCss = util.promisify(sass.render);
 const file = fs.promises;
 const stylesheetsDirectory = path.resolve(
@@ -48,32 +49,61 @@ async function generateDocumentation(themeFiles) {
 
 async function generateUtilityClassesDocumentation(utilityClassesFilename) {
   try {
-    const storybookContent = [];
-    storybookContent.push(`import { h } from 'preact';
-
-  import '../../crayons/storybook-utilities/designSystem.scss';
-
-  export default {
-    title: '2_Base',
-  };`);
-
     const { css: bytes } = await renderCss({
       file: utilityClassesFilename,
     });
     const utilityClassesContent = new TextDecoder('utf-8').decode(bytes);
+    const stylesheet = CSSOM.parse(utilityClassesContent);
+    const rulesForStorybook = stylesheet.cssRules.reduce((acc, rule) => {
+      if (rule.media) {
+        return acc;
+      }
 
-    storybookContent.push(`
-  export const UtilityClasses = () => <div class="container">
-    <pre><code>{\`${utilityClassesContent}\`}</code></pre>
+      const cssProperty = rule.style['0'];
+
+      acc[cssProperty] = acc[cssProperty] || {};
+      acc[cssProperty][rule.selectorText] = rule;
+
+      return acc;
+    }, {});
+
+    for (const [cssProperty, cssRules] of Object.entries(rulesForStorybook)) {
+      const storybookContent = [];
+      storybookContent.push(`import { h } from 'preact';
+
+  import '../../crayons/storybook-utilities/designSystem.scss';
+
+  export default {
+    title: '5_CSS Utility classes/${cssProperty}',
+  };`);
+
+      for (const [className, cssRule] of Object.entries(cssRules)) {
+        const sanitizedCssClassName = className.replace(/[.-]/g, '_');
+        const value = cssRule.style[cssRule.style['0']];
+        const isImportant =
+          cssRule.style._importants[cssRule.style['0']] === 'important';
+        storybookContent.push(`
+  export const ${sanitizedCssClassName} = () => <div class="container">
+    <p>CSS utility class for the <strong>${cssProperty}</strong> CSS property to set it's value to <strong>${value}</strong>. ${
+          isImportant
+            ? 'Note that <strong>!important</strong> is being used to override pre-design system CSS.'
+            : ''
+        }</p>
+    <pre><code>{\`${cssRule.cssText}\`}</code></pre>
   </div>
 
-  UtilityClasses.story = { name: 'Utility classes' };
+  ${sanitizedCssClassName}.story = { name: '${className}' };
   `);
+      }
 
-    await file.writeFile(
-      path.join(generatedStoriesFolder, `utilityClasses.stories.jsx`),
-      storybookContent.join(''),
-    );
+      await file.writeFile(
+        path.join(
+          generatedStoriesFolder,
+          `${cssProperty}_utilityClasses.stories.jsx`,
+        ),
+        storybookContent.join(''),
+      );
+    }
   } catch (error) {
     console.error(error);
   }
