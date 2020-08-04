@@ -6,7 +6,7 @@ class GolangTag < LiquidTagBase
     super
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split(" ").first
-    raise "Invalid URL" valid_link?(the_link)
+    raise "Invalid URL" unless valid_link?(the_link)
     @embedded_url = the_link
   end
 
