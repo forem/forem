@@ -14,6 +14,7 @@ module Articles
     def url
       image = user_defined_image
       if image.present?
+        image = image.split("w_1000/").last if image.include?("w_1000/https://")
         return cl_image_path(image,
                              type: "fetch",
                              width: width,
