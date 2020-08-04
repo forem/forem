@@ -44,7 +44,7 @@
   <% end %>
 
   <% if !@root_comment %>
-    <article class="crayons-article crayons-card">
+    <article class="crayons-article crayons-card crayons-card--secondary s:mx-2 m:mx-4 -mb-1 z-0 pb-4">
       <header class="crayons-article__header">
         <% if @commentable.respond_to?(:main_image) && @commentable.main_image.present? %>
           <div class="crayons-article__cover">
@@ -53,7 +53,7 @@
         <% end %>
 
         <div class="crayons-article__header__meta">
-          <h1 class="fs-2xl s:fs-3xl l:fs-4xl fw-bold s:fw-heavy lh-tight mb-4">
+          <h1 class="fs-2xl s:fs-3xl l:fs-4xl fw-bold s:fw-heavy lh-tight mb-1">
             <%= @commentable.title %>
           </h1>
           <p class="color-base-60">
@@ -64,7 +64,7 @@
       </header>
 
       <% if @commentable.processed_html.present? %>
-        <div class="crayons-article__body text-styles spec__body">
+        <div class="crayons-article__body text-styles -mt-1 m:-mt-2">
           <% if @commentable.processed_html.size < 350 %>
             <%= sanitize_rendered_markdown(@commentable.processed_html) %>
           <% else %>
@@ -76,39 +76,43 @@
         </div>
       <% end %>
     </article>
+  <% else %>
+    <div id="response-templates-data"></div>
+    <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
+    <header class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary s:mx-2 m:mx-4 -mb-1 z-0">
+      <h1 class="fs-xl l:fs-2xl fw-medium s:fw-bold lh-tight mb-4">
+        <span class="fw-normal color-base-60">Discussion on: </span>
+        <%= @commentable.title %>
+      </h1>
+      <div class="flex">
+        <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %>">View post</a>
+        <% unless @root_comment.is_root? %>
+          <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @root_comment.root.path %>">Top of thread</a>
+        <% end %>
+        <a class="crayons-btn crayons-btn--outlined mr-2" href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">Full discussion</a>
+      </div>
+    </header>
   <% end %>
 
-  <section class="crayons-card text-padding"
+  <section class="crayons-card text-padding z-1 relative"
       id="comments-container"
       data-commentable-id="<%= @commentable.id %>"
       data-commentable-type="<%= @commentable.class.name %>">
-    <% if @root_comment %>
-      <div id="response-templates-data"></div>
-      <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
-      <div class="top-level-actions">
-        <h3>Discussion on: <%= @commentable.title %> <a href="<%= @commentable.path %>">View post</a></h3>
-        <span class="comment-action-buttons">
-          <% unless @root_comment.is_root? %>
-            <a href="<%= @root_comment.root.path %>">Top of thread</a>
-          <% end %>
-          <a href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">Full discussion</a>
-        </span>
-      </div>
-    <% else %>
-      <% if @root_comment.present? %>
-        <header class="root-comment">
-          <% if @root_comment.depth > 0 && parent = @root_comment.parent %>
-            <a href="<%= parent.path %>" class="comment-parent-link">
-              Discussion on: <%= parent.title(150) %>
-            </a>
-          <% end %>
-        </header>
-      <% end %>
+    <% if @root_comment.present? && (@root_comment.depth > 0 && parent = @root_comment.parent) %>
+      <h2 class="fs-base l:fs-l mb-6 fw-medium border-0 border-b-1 border-solid border-base-10 pb-6">
+        <a href="<%= parent.path %>" class="crayons-link">
+          <span class="fw-normal opacity-75">Replies for:</span> <%= parent.title(150) %>
+        </a>
+      </h2>
+    <% end %>
+
+    <% if !@root_comment %>
       <%= render "form",
                 commentable: @commentable,
                 commentable_type: "Article" %>
     <% end %>
-    <ol id="comments" class="comments comment-trees" id="comment-trees-container">
+
+    <ol class="comments" id="comment-trees-container">
       <% if @root_comment.present? %>
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
           <%= tree_for(@root_comment, @root_comment.subtree.includes(:user).arrange[@root_comment], @commentable) %>

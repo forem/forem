@@ -1,6 +1,6 @@
 @import '../config/import';
 
-#comments {
+.comments {
   --comments-gap: var(--su-4);
   --comment-header-font-size: var(--fs-s);
   --comment-body-font-size: var(--fs-base);
@@ -19,11 +19,16 @@
 }
 
 .comment {
-  .comments .comment {
-    --comment-rail-width: var(--su-4);
-
+  .comments {
     @media (min-width: $breakpoint-m) {
-      --comment-rail-width: var(--su-6);
+      margin-left: calc(var(--su-2) * -1);
+    }
+    .comment {
+      --comment-rail-width: var(--su-4);
+
+      @media (min-width: $breakpoint-m) {
+        --comment-rail-width: var(--su-6);
+      }
     }
   }
 
@@ -75,8 +80,7 @@
     border: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
+    display: block;
     color: var(--comment-brand-color);
 
     &:hover {
@@ -96,9 +100,10 @@
     }
 
     &__icon {
-      position: relative;
+      position: absolute;
       z-index: 2;
-      margin-top: var(--su-2);
+      top: var(--su-2);
+      left: 0;
       display: inline-flex;
       width: var(--su-6);
       height: var(--su-6);
@@ -109,6 +114,7 @@
 
       @media (min-width: $breakpoint-m) {
         display: none;
+        left: var(--su-1);
       }
     }
 
@@ -135,6 +141,14 @@
   .comments {
     padding-top: var(--comments-gap);
     margin-bottom: calc(var(--comments-gap) * -1);
+
+    .comment__toggle__icon {
+      left: calc(var(--su-1) * -1);
+
+      @media (min-width: $breakpoint-m) {
+        left: 0;
+      }
+    }
   }
 }
 
