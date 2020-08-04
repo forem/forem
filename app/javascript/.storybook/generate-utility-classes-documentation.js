@@ -40,7 +40,7 @@ const themeFiles = [
 
       storybookContent.push(`
   export const ${theme}ThemeColors = () => <div class="container">
-    <code><pre>{\`${colorFileContents}\`}</pre></code>
+    <pre><code>{\`${colorFileContents}\`}</code></pre>
   </div>
 
   ${theme}ThemeColors.story = { name: '${theme} theme colors' };
