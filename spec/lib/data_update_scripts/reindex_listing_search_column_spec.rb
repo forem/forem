@@ -1,7 +1,7 @@
 require "rails_helper"
-require Rails.root.join("lib/data_update_scripts/20200217215802_index_listings_to_elasticsearch.rb")
+require Rails.root.join("lib/data_update_scripts/20200803142830_reindex_listing_search_column.rb")
 
-describe DataUpdateScripts::IndexListingsToElasticsearch, elasticsearch: "Listing" do
+describe DataUpdateScripts::ReindexListingSearchColumn, elasticsearch: "Listing" do
   it "indexes listings to Elasticsearch" do
     listing = create(:listing)
     expect { listing.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)

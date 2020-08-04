@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_31_033002) do
+ActiveRecord::Schema.define(version: 2020_07_31_041554) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -918,6 +919,16 @@ ActiveRecord::Schema.define(version: 2020_07_31_033002) do
     t.string "prompt_html"
     t.string "prompt_markdown"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "profile_fields", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.integer "input_type", default: 0, null: false
+    t.citext "label", null: false
+    t.string "placeholder_text"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["label"], name: "index_profile_fields_on_label", unique: true
   end
 
   create_table "profile_pins", force: :cascade do |t|

@@ -1,18 +1,18 @@
-FROM quay.io/devto/ruby:2.7.1
+FROM quay.io/forem/ruby:2.7.1
 
 USER root
 
 RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
-    dnf install -y bash git ImageMagick iproute less libcurl libcurl-devel \
+    dnf install -y bash curl git ImageMagick iproute less libcurl libcurl-devel \
                    libffi-devel libxml2-devel libxslt-devel nodejs pcre-devel \
                    postgresql postgresql-devel ruby-devel tzdata yarn \
                    && dnf -y clean all \
                    && rm -rf /var/cache/yum
 
-ENV APP_USER=devto
+ENV APP_USER=forem
 ENV APP_UID=1000
 ENV APP_GID=1000
-ENV APP_HOME=/opt/apps/devto/
+ENV APP_HOME=/opt/apps/forem/
 RUN mkdir -p ${APP_HOME} && chown "${APP_UID}":"${APP_GID}" "${APP_HOME}"
 RUN groupadd -g "${APP_GID}" "${APP_USER}" && \
     adduser -u "${APP_UID}" -g "${APP_GID}" -d "${APP_HOME}" "${APP_USER}"
@@ -31,11 +31,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/"${DOCKERIZE_VER
 
 WORKDIR "${APP_HOME}"
 
-# As soon as this:
-# https://github.com/containers/libpod/issues/6153
-# issue is fixed for Linux users we can uncomment the line below so we are not
-# running the app as the root user. :toot:
-# USER "${APP_USER}"
+USER "${APP_USER}"
 
 COPY ./.ruby-version "${APP_HOME}"
 COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"
@@ -49,7 +45,7 @@ COPY ./package.json ./yarn.lock ./.yarnrc "${APP_HOME}"
 COPY ./.yarn "${APP_HOME}"/.yarn
 RUN yarn install
 
-RUN mkdir -p "${APP_HOME}"/public/{uploads,images,podcasts}
+RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
 COPY . "${APP_HOME}"
 

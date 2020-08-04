@@ -20,7 +20,7 @@
     },
     "body_markdown": {
       "type": "text",
-      "copy_to": "classified_listing_search"
+      "copy_to": "listing_search"
     },
     "bumped_at": {
       "type": "date"
@@ -28,7 +28,7 @@
     "category": {
       "type": "keyword"
     },
-    "classified_listing_search": {
+    "listing_search": {
       "type": "text"
     },
     "contact_via_connect": {
@@ -42,7 +42,7 @@
     },
     "location": {
       "type": "text",
-      "copy_to": "classified_listing_search",
+      "copy_to": "listing_search",
       "fields": {
         "raw": {
           "type": "keyword"
@@ -57,7 +57,7 @@
     },
     "slug": {
       "type": "text",
-      "copy_to": "classified_listing_search",
+      "copy_to": "listing_search",
       "fields": {
         "raw": {
           "type": "keyword"
@@ -66,11 +66,11 @@
     },
     "tags": {
       "type": "keyword",
-      "copy_to": "classified_listing_search"
+      "copy_to": "listing_search"
     },
     "title": {
       "type": "text",
-      "copy_to": "classified_listing_search",
+      "copy_to": "listing_search",
       "fields": {
         "raw": {
           "type": "keyword"

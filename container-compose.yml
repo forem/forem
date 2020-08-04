@@ -1,9 +1,9 @@
 version: "3"
 services:
-  web:
+  rails:
     build: .
-    image: devto-web:latest
-    container_name: dev_web
+    image: forem-rails:latest
+    container_name: forem_rails
     ports:
       - "3000:3000"
     depends_on:
@@ -14,68 +14,69 @@ services:
       - yarn
     environment:
       RAILS_ENV: development
-      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
       REDIS_URL: redis://redis:6379
       REDIS_SESSIONS_URL: redis://redis:6379
       RACK_TIMEOUT_WAIT_TIMEOUT: 10000
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
+      APP_DOMAIN: rails
     volumes:
-      - .:/opt/apps/devto:z
+      - .:/opt/apps/forem:z
       - ./.gems:/opt/apps/bundle:z
     entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/bundle/bundle_finished", "-timeout", "300s", "./scripts/entrypoint.sh"]
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
   bundle:
-    image: devto-web:latest
-    container_name: dev_bundle
+    image: forem-rails:latest
+    container_name: forem_bundle
     environment:
       RAILS_ENV: development
       REDIS_SIDEKIQ_URL: redis://redis:6379
-      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:z
+      - .:/opt/apps/forem:z
       - ./.gems:/opt/apps/bundle:z
     entrypoint: ["bash"]
     command: ["./scripts/bundle.sh"]
 
   yarn:
-    image: devto-web:latest
-    container_name: dev_yarn
+    image: forem-rails:latest
+    container_name: forem_yarn
     environment:
       RAILS_ENV: development
       REDIS_SIDEKIQ_URL: redis://redis:6379
-      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:z
+      - .:/opt/apps/forem:z
     entrypoint: ["bash", "-c"]
     command: ["yarn install --dev"]
 
   webpacker:
-    image: devto-web:latest
-    container_name: dev_webpacker
+    image: forem-rails:latest
+    container_name: forem_webpacker
     depends_on:
-      - web
+      - rails
       - yarn
     environment:
       RAILS_ENV: development
       REDIS_SIDEKIQ_URL: redis://redis:6379
-      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:z
+      - .:/opt/apps/forem:z
       - ./.gems:/opt/apps/bundle:z
-    entrypoint: ["dockerize", "-wait", "file:///opt/apps/devto/node_modules/.bin/webpack-dev-server", "-timeout", "300s"]
+    entrypoint: ["dockerize", "-wait", "file:///opt/apps/forem/node_modules/.bin/webpack-dev-server", "-timeout", "300s"]
     command: ["./bin/webpack-dev-server"]
 
   seed:
-    image: devto-web:latest
-    container_name: dev_seed
+    image: forem-rails:latest
+    container_name: forem_seed
     depends_on:
-      - web
+      - rails
       - redis
       - db
       - elasticsearch
@@ -84,39 +85,39 @@ services:
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
       REDIS_SESSIONS_URL: redis://redis:6379
-      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:z
+      - .:/opt/apps/forem:z
       - ./.gems:/opt/apps/bundle:z
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://web:3000", "-timeout", "300s"]
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "300s"]
     command: ["bundle", "exec", "rake","db:seed"]
 
   sidekiq:
-    image: devto-web:latest
-    container_name: dev_sidekiq
+    image: forem-rails:latest
+    container_name: forem_sidekiq
     depends_on:
-      - web
+      - rails
       - redis
       - db
       - elasticsearch
     environment:
       RAILS_ENV: development
       REDIS_SIDEKIQ_URL: redis://redis:6379
-      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:z
+      - .:/opt/apps/forem:z
       - ./.gems:/opt/apps/bundle:z
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://web:3000", "-timeout", "300s"]
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "300s"]
     command: ["bundle", "exec", "sidekiq","-c","2"]
 
   db:
     image: postgres:11-alpine
-    container_name: dev_postgresql
+    container_name: forem_postgresql
     environment:
-      POSTGRES_USER: devto
-      POSTGRES_PASSWORD: devto
+      POSTGRES_USER: forem
+      POSTGRES_PASSWORD: forem
       POSTGRES_DB: PracticalDeveloper_development
     ports:
       - "5432:5432"
@@ -125,15 +126,15 @@ services:
 
   redis:
     image: "redis"
-    container_name: dev_redis
+    container_name: forem_redis
     ports:
       - "6379:6379"
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
-    container_name: dev_elasticsearch
+    container_name: forem_elasticsearch
     environment:
-      - cluster.name=devto
+      - cluster.name=forem
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "discovery.type=single-node"
