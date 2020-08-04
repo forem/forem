@@ -12,15 +12,6 @@ const stylesheetsDirectory = path.resolve(
 // TODO: Clean this up once things are working.
 
 async function generateDocumentation(themeFiles) {
-  const generatedStoriesFolder = path.join(
-    __dirname,
-    '../../javascript/generated_stories/__stories__',
-  );
-
-  if (!fs.existsSync(generatedStoriesFolder)) {
-    fs.mkdirSync(generatedStoriesFolder, { recursive: true });
-  }
-
   try {
     const storybookContent = [];
     storybookContent.push(`import { h } from 'preact';
@@ -55,6 +46,48 @@ async function generateDocumentation(themeFiles) {
   }
 }
 
+async function generateUtilityClassesDocumentation(utilityClassesFilename) {
+  try {
+    const storybookContent = [];
+    storybookContent.push(`import { h } from 'preact';
+
+  import '../../crayons/storybook-utilities/designSystem.scss';
+
+  export default {
+    title: '2_Base',
+  };`);
+
+    const { css: bytes } = await renderCss({
+      file: utilityClassesFilename,
+    });
+    const utilityClassesContent = new TextDecoder('utf-8').decode(bytes);
+
+    storybookContent.push(`
+  export const UtilityClasses = () => <div class="container">
+    <pre><code>{\`${utilityClassesContent}\`}</code></pre>
+  </div>
+
+  UtilityClasses.story = { name: 'Utility classes' };
+  `);
+
+    await file.writeFile(
+      path.join(generatedStoriesFolder, `utilityClasses.stories.jsx`),
+      storybookContent.join(''),
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const generatedStoriesFolder = path.join(
+  __dirname,
+  '../../javascript/generated_stories/__stories__',
+);
+
+if (!fs.existsSync(generatedStoriesFolder)) {
+  fs.mkdirSync(generatedStoriesFolder, { recursive: true });
+}
+
 fs.readdir(
   path.join(stylesheetsDirectory, 'themes'),
   async (err, themeFiles) => {
@@ -78,5 +111,8 @@ fs.readdir(
     });
 
     await generateDocumentation(themes.concat(additionalThemes));
+    await generateUtilityClassesDocumentation(
+      path.join(stylesheetsDirectory, 'config/_generator.scss'),
+    );
   },
 );
