@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe DisplayAd, type: :model do
-  let_it_be(:organization) { create(:organization) }
-  let_it_be(:display_ad) { create(:display_ad, organization_id: organization.id) }
+  let(:organization) { create(:organization) }
+  let(:display_ad) { create(:display_ad, organization_id: organization.id) }
 
   it { is_expected.to validate_presence_of(:organization_id) }
   it { is_expected.to validate_presence_of(:placement_area) }

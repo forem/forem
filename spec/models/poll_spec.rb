@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe Poll, type: :model do
-  let_it_be(:article) { create(:article, featured: true) }
+  let(:article) { create(:article, featured: true) }
 
   describe "validations" do
-    let_it_be(:poll) { build(:poll, article: article) }
+    let(:poll) { build(:poll, article: article) }
 
     describe "#prompt_markdown" do
       it "is valid up to 128 chars" do

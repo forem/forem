@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe ChatChannel, type: :model do
   let(:chat_channel) { create(:chat_channel) }
 
-  let_it_be(:users) { create_list(:user, 2) }
+  let(:users) { create_list(:user, 2) }
 
   describe "validations" do
     describe "builtin validations" do

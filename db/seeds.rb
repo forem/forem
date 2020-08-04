@@ -456,7 +456,7 @@ seeder.create_if_none(Listing) do
   users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
   users = users_in_random_order.to_a
 
-  listings_categories = ListingCategory.pluck(:id)
+  listings_categories = ListingCategory.ids
   listings_categories.each.with_index(1) do |category_id, index|
     # rotate users if they are less than the categories
     user = users.at(index % users.length)

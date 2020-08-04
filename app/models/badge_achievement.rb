@@ -10,10 +10,10 @@ class BadgeAchievement < ApplicationRecord
 
   validates :badge_id, uniqueness: { scope: :user_id }
 
+  before_validation :render_rewarding_context_message_html
   after_create :award_credits
   after_create_commit :notify_recipient
   after_create_commit :send_email_notification
-  before_validation :render_rewarding_context_message_html
 
   private
 

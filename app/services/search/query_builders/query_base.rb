@@ -49,6 +49,22 @@ module Search
         end
       end
 
+      def match_phrase_conditions
+        self.class::QUERY_KEYS.filter_map do |query_key, _fields|
+          next if @params[query_key].blank?
+
+          match_phrase(@params[query_key], query_key)
+        end
+      end
+
+      def match_phrase(phrase, query_key)
+        {
+          match_phrase: {
+            query_key => { query: phrase, slop: 0 }
+          }
+        }
+      end
+
       def query_hash(key, fields)
         {
           simple_query_string: {

@@ -3,11 +3,8 @@
 
 <% if collection && collection_size > 1 %>
   <div class="article-collection-wrapper article-collection-wrapper-<%= position %>">
-    <% if collection.slug.present? %>
-      <p><%= collection.slug %> (<%= collection_size %> Part Series)</p>
-    <% else %>
-      <p><%= collection_size %> Part Series</p>
-    <% end %>
+    <p><%= collection_link(collection) %></p>
+
     <div class="article-collection">
       <% articles.each_with_index do |article, i| %>
         <% if collection_size > 5 && i == 2 %>
@@ -24,7 +21,7 @@
 
         <a
           href="<%= article.path %>"
-          class="<%= collection_link_class(rendered_article, article) %> <%= "collection-link-hidden" if collection_size > 5 && (i > 1 && i < collection_size - 2) %>"
+          class="<%= "current-article" if rendered_article.id == article.id %> <%= "collection-link-hidden" if collection_size > 5 && (i > 1 && i < collection_size - 2) %>"
           data-preload-image="<%= cloud_cover_url(article.main_image) %>"
           title="Published <%= article.readable_publish_date %>">
           <%= i + 1 %>) <%= article.title %>

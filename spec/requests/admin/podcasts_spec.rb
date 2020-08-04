@@ -23,20 +23,20 @@ RSpec.describe "Admin::Podcasts", type: :request do
 
     it "creates a podcast" do
       expect do
-        post "/admin/podcasts", params: { podcast: valid_attributes }
+        post "/resource_admin/podcasts", params: { podcast: valid_attributes }
       end.to change(Podcast, :count).by(1)
     end
 
     it "enqueues a job after creating a podcast" do
       sidekiq_assert_enqueued_jobs(1, only: Podcasts::GetEpisodesWorker) do
-        post "/admin/podcasts", params: { podcast: valid_attributes }
+        post "/resource_admin/podcasts", params: { podcast: valid_attributes }
       end
     end
 
     it "doesn't enqueue a job when creating an unpublished podcast" do
       valid_attributes[:published] = false
       sidekiq_assert_no_enqueued_jobs(only: Podcasts::GetEpisodesWorker) do
-        post "/admin/podcasts", params: { podcast: valid_attributes }
+        post "/resource_admin/podcasts", params: { podcast: valid_attributes }
       end
     end
   end

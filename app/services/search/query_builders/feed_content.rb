@@ -101,7 +101,13 @@ module Search
       def build_queries
         @body[:query] = { bool: {} }
         @body[:query][:bool][:filter] = filter_conditions if filter_keys_present?
-        @body[:query][:bool][:must] = query_conditions if query_keys_present?
+        return unless query_keys_present?
+
+        @body[:query][:bool][:must] = query_conditions
+        # Boost the score of queries that match these conditions but if they dont match any,
+        # minimum_should_match: 0, then that is OK
+        @body[:query][:bool][:should] = match_phrase_conditions
+        @body[:query][:bool][:minimum_should_match] = 0
       end
 
       def filter_conditions

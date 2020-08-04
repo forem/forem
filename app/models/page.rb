@@ -8,9 +8,9 @@ class Page < ApplicationRecord
   validate :body_present
   validate :unique_slug_including_users_and_orgs, if: :slug_changed?
 
+  before_validation :set_default_template
   before_save :evaluate_markdown
   after_save :bust_cache
-  before_validation :set_default_template
 
   mount_uploader :social_image, ProfileImageUploader
   resourcify

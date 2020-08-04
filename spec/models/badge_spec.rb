@@ -7,8 +7,8 @@ RSpec.describe Badge, type: :model do
     describe "builtin validations" do
       subject { badge }
 
-      it { is_expected.to have_many(:badge_achievements) }
-      it { is_expected.to have_many(:tags) }
+      it { is_expected.to have_many(:badge_achievements).dependent(:restrict_with_error) }
+      it { is_expected.to have_many(:tags).dependent(:restrict_with_error) }
       it { is_expected.to have_many(:users).through(:badge_achievements) }
 
       it { is_expected.to validate_presence_of(:title) }
@@ -19,7 +19,7 @@ RSpec.describe Badge, type: :model do
   end
 
   context "when callbacks are triggered after save" do
-    let_it_be_changeable(:badge) { create(:badge) }
+    let!(:badge) { create(:badge) }
 
     describe "cache busting" do
       before do

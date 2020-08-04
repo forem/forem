@@ -3,13 +3,18 @@
     <h2 class="d-inline">
       <%= @user.name %><%= link_to "@#{@user.username}", @user.path, class: "ml-2", target: "_blank", rel: "noopener" %>
     </h2>
+
+    <% if @user.access_locked? %>
+      <div>
+        <%= link_to "Unlock access", unlock_access_internal_user_path(@user), method: :patch, class: "btn btn-success" %>
+      </div>
+    <% end %>
     <a href="<%= internal_user_path(@user) %>" class="btn btn-primary float-right">Internal Profile</a>
     <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
   </div>
 </div>
 
 <%= render "activity" %>
-
 <div class="row">
   <div class="col-12">
     <h2 class="d-inline">User Status</h2>
