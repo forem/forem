@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     mount FieldTest::Engine, at: "abtests"
   end
 
-  namespace :admin do
+  namespace :resource_admin do
     # Check administrate gem docs
     DashboardManifest::DASHBOARDS.each do |dashboard_resource|
       resources dashboard_resource

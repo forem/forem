@@ -1,8 +1,11 @@
 module ProfileFields
-  class AddBaseFields < AddFields
-    field "Name", :text_field, "John Doe"
-    field "Website URL", :text_field, "https://yoursite.com"
-    field "Summary", :text_area, "A short bio..."
-    field "Location", :text_field, "Halifax, Nova Scotia"
+  class AddBaseFields
+    include FieldDefinition
+
+    field "Display email on profile", :check_box
+    field "Name", :text_field, placeholder: "John Doe"
+    field "Website URL", :text_field, placeholder: "https://yoursite.com"
+    field "Summary", :text_area, placeholder: "A short bio..."
+    field "Location", :text_field, placeholder: "Halifax, Nova Scotia"
   end
 end

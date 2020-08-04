@@ -10,5 +10,5 @@ class ProfileField < ApplicationRecord
   enum input_type: INPUT_TYPES
 
   validates :label, presence: true, uniqueness: { case_sensitive: false }
-  validates :active, :inclusion => { :in => [true, false] }
+  validates :active, inclusion: { in: [true, false] }
 end
