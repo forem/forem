@@ -3,7 +3,7 @@
     <div class="form-group">
       <div class="crayons-card grid p-6 mb-6 gap-1">
         <%= render "form", form: form %>
-        <%= form.submit class: "btn btn-primary float-right" %>
+        <%= form.submit class: "btn btn-primary" %>
       </div>
     </div>
   <% end %>
@@ -14,8 +14,8 @@
     <%= form_for [:internal, field] do |form| %>
       <div class="crayons-card grid p-6 mb-6 gap-1">
         <%= render "form", form: form %>
-        <%= form.submit class: "btn btn-primary float-right" %>
-        <%= button_to "Delete", internal_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete %>
+        <%= form.submit class: "btn btn-primary" %>
+        <%= button_to "Delete", internal_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
       </div>
     <% end %>
   <% end %>
