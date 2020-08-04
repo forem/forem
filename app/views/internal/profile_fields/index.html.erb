@@ -1,29 +1,60 @@
-<div class="row">
-  <div class="col-12">
-
-    <% @profile_fields.each do |field| %>
-      <%= form_for [:internal, field] do |form| %>
-        <div class="crayons-card grid p-6 mb-6 gap-1">
-          <div class="form-group">
-            <%= form.label :label %>
-            <%= form.text_field :label, class: "form-control" %>
-          </div>
-          <div class="form-group">
-            <%= form.label :placeholder_text %>
-            <%= form.text_field :placeholder_text, class: "form-control" %>
-          </div>
-          <div class="form-group">
-            <%= form.label :input_type %>
-            <%= form.select :input_type, ProfileField::INPUT_TYPES.keys, class: "form-control" %>
-          </div>
-          <div class="form-group">
-            <%= form.label :active %>
-            <%= form.check_box :active, checked: field.active? %>
-          </div>
-          <%= form.submit class: "btn btn-primary float-right" %>
+<div>
+  <%= form_for [:internal, ProfileField.new], html: { class: "inline-form" } do |f| %>
+    <div class="form-group">
+      <div class="crayons-card grid p-6 mb-6 gap-1">
+        <div class="form-group">
+          <%= f.label :label %>
+          <%= f.text_field :label, class: "form-control" %>
         </div>
-      <% end %>
-    <% end %>
+        <div class="form-group">
+          <%= f.label :explanation %>
+          <%= f.text_field :explanation, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :placeholder_text %>
+          <%= f.text_field :placeholder_text, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :input_type %>
+          <%= f.select :input_type, ProfileField::INPUT_TYPES.keys, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= f.label :active %>
+          <%= f.check_box :active %>
+        </div>
+        <%= f.submit class: "btn btn-primary float-right" %>
+      </div>
+    </div>
+  <% end %>
+</div>
 
-  </div>
+<div>
+  <% @profile_fields.each do |field| %>
+    <%= form_for [:internal, field] do |form| %>
+      <div class="crayons-card grid p-6 mb-6 gap-1">
+        <div class="form-group">
+          <%= form.label :label %>
+          <%= form.text_field :label, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= form.label :explanation %>
+          <%= form.text_field :explanation, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= form.label :placeholder_text %>
+          <%= form.text_field :placeholder_text, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= form.label :input_type %>
+          <%= form.select :input_type, ProfileField::INPUT_TYPES.keys, class: "form-control" %>
+        </div>
+        <div class="form-group">
+          <%= form.label :active %>
+          <%= form.check_box :active %>
+        </div>
+        <%= form.submit class: "btn btn-primary float-right" %>
+         <%= button_to "Delete", internal_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete %>
+      </div>
+    <% end %>
+  <% end %>
 </div>
