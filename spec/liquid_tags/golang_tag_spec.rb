@@ -15,7 +15,7 @@ RSpec.describe GolangTag, type: :liquid_tag do
 
     it "renders valid input" do
       template = generate_tag(valid_link)
-      expected = 'src="true"'
+      expected = 'src="#{valid_link}"'
       expect(template.render).to include(expected)
     end
 
