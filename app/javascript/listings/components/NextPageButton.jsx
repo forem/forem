@@ -1,11 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 const NextPageButton = ({ onClick }) => (
-  <div className="listings-load-more-button">
-    <button onClick={onClick} type="button">
-      Load More Listings
-    </button>
+  <div className="flex justify-center">
+    <Button variant="secondary" onClick={onClick} type="button">
+      Load more...
+    </Button>
   </div>
 );
 

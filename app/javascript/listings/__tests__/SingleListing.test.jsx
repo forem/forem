@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { axe } from 'jest-axe';
 import { render } from '@testing-library/preact';
 
-import SingleListing from '../singleListing';
+import { SingleListing } from '../singleListing/SingleListing';
 
 const listing = {
   id: 22,

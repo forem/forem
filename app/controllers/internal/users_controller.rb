@@ -122,6 +122,13 @@ module Internal
       end
     end
 
+    def unlock_access
+      @user = User.find(params[:id])
+      @user.unlock_access!
+      flash[:success] = "Unlocked User account!"
+      redirect_to internal_user_path(@user)
+    end
+
     private
 
     def manage_credits

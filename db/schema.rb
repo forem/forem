@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_163200) do
+ActiveRecord::Schema.define(version: 2020_07_31_033002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -1131,16 +1131,6 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
   end
 
-  create_table "user_optional_fields", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "label", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.string "value", null: false
-    t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
-    t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
-  end
-
   create_table "user_subscriptions", force: :cascade do |t|
     t.bigint "author_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -1207,6 +1197,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
     t.string "facebook_url"
+    t.integer "failed_attempts", default: 0
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
@@ -1241,6 +1232,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
     t.string "location"
+    t.datetime "locked_at"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
     t.string "mastodon_url"
@@ -1285,6 +1277,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.integer "twitter_following_count"
     t.string "twitter_username"
     t.string "unconfirmed_email"
+    t.string "unlock_token"
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "username"
@@ -1361,7 +1354,6 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
-  add_foreign_key "user_optional_fields", "users"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "users_roles", "users", on_delete: :cascade

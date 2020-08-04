@@ -537,25 +537,6 @@ context "when running the specs that were previously in another file" do
     }
   end
 
-  describe "GET /listings" do
-    it "has page content" do
-      get "/listings"
-      expect(response.body).to include("listing-filters")
-    end
-
-    it "has page content for category page" do
-      get "/listings/saas"
-      expect(response.body).to include("listing-filters")
-    end
-  end
-
-  describe "GETS /listings/new" do
-    it "has page content" do
-      get "/listings"
-      expect(response.body).to include("listing-filters")
-    end
-  end
-
   describe "POST /listings" do
     before do
       create_list(:credit, 20, user_id: user.id)
