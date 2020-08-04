@@ -49,6 +49,8 @@ RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
 COPY . "${APP_HOME}"
 
+VOLUME "${APP_HOME}"/public/
+
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
