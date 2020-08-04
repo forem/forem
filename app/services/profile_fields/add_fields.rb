@@ -11,11 +11,12 @@ module ProfileFields
 
       private
 
-      def field(label, input_type, placeholder: nil)
+      def field(label, input_type, placeholder: nil, explanation: nil)
         fields << {
           label: label,
           input_type: input_type,
-          placeholder_text: placeholder
+          placeholder_text: placeholder,
+          explanation: explanation
         }.compact
       end
     end
