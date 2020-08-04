@@ -1,20 +1,15 @@
 const path = require('path');
+const util = require('util');
 const fs = require('fs');
+const sass = require('node-sass');
+const renderCss = util.promisify(sass.render);
 const file = fs.promises;
 const stylesheetsDirectory = path.resolve(
   __dirname,
   '../../assets/stylesheets',
 );
 
-const themeFiles = [
-  { theme: 'default', themeFile: 'config/_colors.scss' },
-  { theme: 'hacker', themeFile: 'themes/hacker.scss' },
-  { theme: 'minimal', themeFile: 'themes/minimal.scss' },
-  { theme: 'night', themeFile: 'themes/night.scss' },
-  { theme: 'pink', themeFile: 'themes/pink.scss' },
-];
-
-(async () => {
+async function generateDocumentation(themeFiles) {
   const generatedStoriesFolder = path.join(
     __dirname,
     '../../javascript/generated_stories/__stories__',
@@ -35,8 +30,10 @@ const themeFiles = [
   };`);
 
     for (const { theme, themeFile } of themeFiles) {
-      const colorFile = path.join(stylesheetsDirectory, themeFile);
-      const colorFileContents = await file.readFile(colorFile);
+      const { css: bytes } = await renderCss({
+        file: themeFile,
+      });
+      const colorFileContents = new TextDecoder('utf-8').decode(bytes);
 
       storybookContent.push(`
   export const ${theme}ThemeColors = () => <div class="container">
@@ -54,4 +51,30 @@ const themeFiles = [
   } catch (error) {
     console.error(error);
   }
-})();
+}
+
+fs.readdir(
+  path.join(stylesheetsDirectory, 'themes'),
+  async (err, themeFiles) => {
+    if (err) {
+      throw new Error(
+        'Unable to read theme files. Ensure that the path to theme files is correct.',
+      );
+    }
+
+    const themes = [
+      {
+        theme: 'default',
+        themeFile: path.join(stylesheetsDirectory, 'config/_colors.scss'),
+      },
+    ];
+    const additionalThemes = themeFiles.map((filename) => {
+      return {
+        theme: filename.replace('.scss', ''),
+        themeFile: path.join(stylesheetsDirectory, 'themes', filename),
+      };
+    });
+
+    await generateDocumentation(themes.concat(additionalThemes));
+  },
+);
