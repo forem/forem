@@ -23,7 +23,7 @@ RSpec.describe GolangTag, type: :liquid_tag do
       badurl = "https://example.com"
       expect do
         generate_new_liquid(badurl)
-      end.to raise_error(StandardError)
+      end.to raise_error(RuntimeError)
     end
 
     it "invalid URL format" do
