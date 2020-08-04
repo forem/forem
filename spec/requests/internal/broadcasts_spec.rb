@@ -69,7 +69,7 @@ RSpec.describe "/internal/broadcasts", type: :request do
         expect do
           delete "/internal/broadcasts/#{broadcast.id}"
         end.to change { Broadcast.all.count }.by(-1)
-        expect(response.body).to redirect_to "/internal/broadcasts"
+        expect(response.body).to redirect_to "/admin/broadcasts"
       end
     end
   end
@@ -101,7 +101,7 @@ RSpec.describe "/internal/broadcasts", type: :request do
         expect do
           delete "/internal/broadcasts/#{broadcast.id}"
         end.to change { Broadcast.all.count }.by(-1)
-        expect(response.body).to redirect_to "/internal/broadcasts"
+        expect(response.body).to redirect_to "/admin/broadcasts"
       end
     end
   end
