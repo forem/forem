@@ -59,6 +59,16 @@ Ghost.story = {
   name: 'Ghost',
 };
 
+export const GhostDimmed = () => (
+  <button type="button" className="crayons-btn crayons-btn--ghost-dimmed">
+    Ghost Dimmed Button label
+  </button>
+);
+
+Ghost.story = {
+  name: 'Ghost Dimmed',
+};
+
 export const GhostBrand = () => (
   <button type="button" className="crayons-btn crayons-btn--ghost-brand">
     Ghost Brand Button label

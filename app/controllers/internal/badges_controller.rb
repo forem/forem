@@ -11,8 +11,9 @@ module Internal
 
       usernames = permitted_params[:usernames].split(/\s*,\s*/)
       message = permitted_params[:message_markdown].presence || "Congrats!"
-      BadgeRewarder.award_badges(usernames, permitted_params[:badge], message)
-      flash[:success] = "BadgeRewarder task ran!"
+      BadgeAchievements::BadgeAwardWorker.perform_async(usernames, permitted_params[:badge], message)
+
+      flash[:success] = "Badges are being rewarded. The task will finish shortly."
       redirect_to internal_badges_url
     rescue ArgumentError => e
       flash[:danger] = e.message
