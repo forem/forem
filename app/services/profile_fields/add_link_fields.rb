@@ -1,5 +1,7 @@
 module ProfileFields
-  class AddLinkFields < AddFields
+  class AddLinkFields
+    include FieldDefinition
+
     field "Facebook profile URL", :text_field, placeholder: "https://facebook.com/..."
     field "Youtube URL", :text_field, placeholder: "https://www.youtube.com/channel/..."
     field "StackOverflow profile URL", :text_field, placeholder: "https://stackoverflow.com/users/..."

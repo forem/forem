@@ -1,5 +1,7 @@
 module ProfileFields
-  class AddCodingFields < AddFields
+  class AddCodingFields
+    include FieldDefinition
+
     field "Skills/Languages", :text_area, explanation: <<~EXPLANATION
       What tools and languages are you most experienced with? Are you specialized or more of a generalist?
     EXPLANATION

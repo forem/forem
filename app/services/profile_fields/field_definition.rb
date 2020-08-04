@@ -1,6 +1,8 @@
 module ProfileFields
-  class AddFields
-    class << self
+  module FieldDefinition
+    extend ActiveSupport::Concern
+
+    class_methods do
       def call
         new.add_fields
       end

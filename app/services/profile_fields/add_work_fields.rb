@@ -1,5 +1,7 @@
 module ProfileFields
-  class AddWorkFields < AddFields
+  class AddWorkFields
+    include FieldDefinition
+
     field "Education", :text_field
     field "Employer name", :text_field, placeholder: "Acme Inc."
     field "Employer URL", :text_field, placeholder: "https://dev.com"

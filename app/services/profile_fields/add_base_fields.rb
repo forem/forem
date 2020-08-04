@@ -1,5 +1,7 @@
 module ProfileFields
-  class AddBaseFields < AddFields
+  class AddBaseFields
+    include FieldDefinition
+
     field "Name", :text_field, placeholder: "John Doe"
     field "Website URL", :text_field, placeholder: "https://yoursite.com"
     field "Summary", :text_area, placeholder: "A short bio..."
