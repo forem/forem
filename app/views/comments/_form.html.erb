@@ -29,7 +29,13 @@
   <% end %>
   
   <div class="comment-form" id="comment-form-wrapper">
-    <span class="crayons-avatar crayons-avatar--l mr-2 shrink-0"><img src="http://placehold.it/32" width="32" height="32" alt="pic" class="crayons-avatar__image"></span>
+    <span class="crayons-avatar crayons-avatar--l mr-2 shrink-0">
+      <% if user_signed_in? %>
+        <img src="<%= ProfileImage.new(current_user).get(width: 50) %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
+      <% else %>
+        <img src="<%= image_path("android-icon-128x128.png") %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
+      <% end %>
+    </span>
     <div class="flex-1 flex flex-col">
       <div class="mb-2">
         <%= f.text_area :body_markdown,
@@ -44,16 +50,27 @@
                     class: "crayons-textfield",
                     'aria-label': "Add a comment to the discussion" %>
         <div class="comment-form__toolbar">
-          <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost">
-            <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") %>
-            Upload image
-          </button>
-          <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost response-templates-button" title="Use a response template" data-has-listener="false" data-form-id="new_comment">
+          <div class="editor-image-upload">
+            <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
+            
+            <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed">
+              <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") %>
+              Upload image
+            </button>
+
+            <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
+            <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
+            <input class="uploaded-image" id="uploaded-image-main" />
+          </div>
+
+
+
+          <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed response-templates-button" title="Use a response template" data-has-listener="false" data-form-id="new_comment">
             <%= inline_svg_tag("templates.svg", aria: true, class: "crayons-icon", title: "Templates") %>
             Templates
           </button>
 
-          <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost crayons-btn--icon crayons-btn--s ml-auto" target="_blank" rel="noopener" title="Markdown Guide">
+          <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon crayons-btn--s ml-auto" target="_blank" rel="noopener" title="Markdown Guide">
             <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon", title: "Editor guide") %>
           </a>
         </div>
@@ -94,15 +111,7 @@
   <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
   </div>
 
-  <div class="editor-image-upload">
-    <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
-    <button class="image-upload-button" id="image-upload-button-main" onclick="handleImageUpload(event,'main')" title="Upload Image">
-      <img alt="upload image" class="icon-image" src="<%= asset_path("image-upload.svg") %>" />
-    </button>
-    <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
-    <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
-    <input class="uploaded-image" id="uploaded-image-main" />
-  </div>
+    
 
 <% end %>
 
