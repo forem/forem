@@ -4,7 +4,7 @@ module ResourceAdmin
       comment = Comment.find(params[:id])
       if comment.update(comment_params)
         flash[:notice] = "Comment successfully updated"
-        redirect_to "/admin/comments/#{comment.id}"
+        redirect_to "/resource_admin/comments/#{comment.id}"
       else
         flash.now[:error] = comment.errors.full_messages
         render :new, locals: { page: Administrate::Page::Form.new(dashboard, comment) }
