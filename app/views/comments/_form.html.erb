@@ -53,7 +53,7 @@
             Templates
           </button>
 
-          <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost crayons-btn--icon crayons-btn--s ml-auto">
+          <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost crayons-btn--icon crayons-btn--s ml-auto" target="_blank" rel="noopener" title="Markdown Guide">
             <%= inline_svg_tag("info.svg", aria: true, class: "crayons-icon", title: "Editor guide") %>
           </a>
         </div>
@@ -78,18 +78,11 @@
           Create new template
         </a>
         <p>Create templates to quickly answer FAQs or store snippets for re-use.</p>
-    </div>
+      </div>
 
-      <div class="comment-form__buttons">
+      <div class="comment-form__buttons mb-4">
         <button type="submit" class="crayons-btn mr-2" onclick="validateField(event)">Submit</button>
-        <button type="button" class="crayons-btn mr-2 crayons-btn--secondary comment-action-preview" id="preview-button">Preview</button>
-        <%# See https://github.com/thepracticaldev/dev.to/issues/7081 %>
-        <%= link_to((:back if sanitized_referer(request.referer)) || commentable&.path || @comment.path, "aria-label": "Dismiss", class: "crayons-btn crayons-btn--ghost hidden m:inline-block") do %>
-          Dismiss
-        <% end %>
-        <%= link_to((:back if sanitized_referer(request.referer)) || commentable&.path || @comment.path, "aria-label": "Dismiss", class: "crayons-btn crayons-btn--ghost crayons-btn--icon m:hidden") do %>
-          <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Dismiss") %>
-        <% end %>
+        <button type="button" class="crayons-btn crayons-btn--secondary comment-action-preview" id="preview-button">Preview</button>
       </div>
     </div>
   </div>
@@ -118,7 +111,7 @@
     if (document.getElementById("edit_comment_<%= @comment&.id %>")) {
       document.getElementById("edit_comment_<%= @comment&.id %>").onsubmit = function (e) {
         e.preventDefault();
-        document.getElementById("comment-form-wrapper").classList.add("comment-form-wrapper--submitting");
+        document.querySelector(".comment-form").classList.add("comment-form--submitting");
         var form = this;
         var waitingOnCSRF = setInterval(function () {
           var metaTag = document.querySelector("meta[name='csrf-token']")

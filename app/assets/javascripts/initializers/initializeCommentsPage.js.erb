@@ -119,7 +119,6 @@ function initializeCommentsPage() {
           }
           var actionNode = event.target.parentNode;
           var parentId = actionNode.dataset.commentId;
-          document.getElementById("button-for-comment-" + actionNode.dataset.commentId).style.zIndex = "5";
           var waitingOnCSRF = setInterval(function () {
             var metaTag = document.querySelector("meta[name='csrf-token']");
             if (metaTag) {
@@ -403,10 +402,10 @@ function handleKeyDown(event) {
 function handleSizeChange(event) {
   var lines = event.target.value.split(/\r*\n/);
   var lineCount = lines.length;
-  if (lineCount > 11) {
+  if (lineCount > 10) {
     document.getElementById('text-area').classList.add('embiggened-max');
     document.getElementById('text-area').classList.remove('embiggened-more', 'embiggened');
-  } else if (lineCount > 6) {
+  } else if (lineCount > 3) {
     document.getElementById('text-area').classList.add('embiggened-more');
     document.getElementById('text-area').classList.remove('embiggened-max', 'embiggened');
   } else {

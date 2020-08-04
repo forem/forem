@@ -47,6 +47,7 @@
             </span>
             <span class="mod-actions hidden mod-actions-comment-button" data-path="<%= comment.path %>/mod"></span>
             <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= comment_url(comment) %>"></span>
+            <span class="current-user-actions hidden"></span>
           </div>
         </div>
       </div>
@@ -76,14 +77,20 @@
           <%= comment.safe_processed_html %>
         </div>
 
-        <footer class="comment__footer">
+        <footer class="comment__footer" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">
           <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
             <%= inline_svg_tag("small-heart.svg", class: "crayons-icon") %>34
           </button>
-
-          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
-            <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Reply...
-          </button>
+          
+          <% if comment.depth < 2 || is_childless %>
+            <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form crayons-btn crayons-btn--ghost crayons-btn--icon-left" rel="nofollow">
+              <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Reply
+            </a>
+          <% else %>
+            <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication crayons-btn crayons-btn--ghost crayons-btn--icon-left" rel="nofollow">
+              <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Thread
+            </a>
+          <% end %>
         </footer>
       <% end %>
 

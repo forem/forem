@@ -158,13 +158,19 @@
 
   .crayons-textfield {
     &.embiggened {
-      height: 100px
+      height: 96px
     }
     &.embiggened-more {
-      height: 200px;
+      height: 256px;
     }
     &.embiggened-max {
-      height: 300px;
+      height: 384px;
+    }
+  }
+  
+  &--initiated {
+    .crayons-textfield {
+      height: 96px;
     }
   }
 

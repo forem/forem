@@ -61,66 +61,7 @@ a.header-link {
       height: 0px;
     }
   }
-  .article-header {
-    width: 820px;
-    max-width: 100%;
-    margin: 50px auto 10px;
-    padding: 0px 0px 90px;
-    background: var(--card-bg);
-    z-index: 3;
-    position: relative;
-    @media screen and (min-width: 820px) {
-      margin: 72px auto 10px;
-      border-radius: 5px;
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid darken($lightest-gray, 4%)
-      );
-    }
-    h3 {
-      width: 94%;
-      margin: 12px 0 5px;
-      margin-left: 1.8%;
-      font-weight: 500;
-      font-size: calc(1.5vw + 22px);
-    }
-    h4 {
-      margin: 0;
-      font-weight: 300;
-      color: rgb(195, 195, 195);
-      font-size: 17px;
-      width: 96%;
-      margin: auto;
-      margin-bottom: -40px;
-      a {
-        color: rgb(105, 103, 103);
-      }
-    }
-    .body {
-      padding: 60px 0px 0px;
-      width: 96%;
-      margin: auto;
-      margin-bottom: -35px;
-      .read-more {
-        color: var(--link-brand-color);
-        display: inline-block;
-        &:hover {
-          opacity: 0.96;
-        }
-      }
-      img {
-        max-width: 100%;
-        max-height: 350px;
-      }
-      kbd {
-        @extend %kbd;
-      }
-    }
-  }
-  .single-comment-header {
-    height: 10px;
-  }
+
 }
 
 .comments-container {

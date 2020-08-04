@@ -37,93 +37,103 @@
   <% end %>
 <% end %>
 
-<% if @commentable.class.name == "Article" %>
-  <%= render "shared/payment_pointer", user: @commentable.user %>
-  <div id="comment-article-indicator" data-article-id="<%= @commentable.id %>">
-<% end %>
-<% if @root_comment %>
-  <div class="single-comment-header"></div>
-<% else %>
-  <div class="article-header">
-    <a href="<%= @commentable.path %>" class="header-link">
-      <% if @commentable.respond_to?(:main_image) && @commentable.main_image.present? %>
-        <div class="picture" style="background-image:url(<%= cloud_cover_url(@commentable.main_image) %>)"></div>
-      <% else %>
-        <div class="blank-comment-space"></div>
-      <% end %>
-      <h3 id="comments-header"><%= @commentable.title %></h3>
-      <h4>
-        <%= @commentable.is_a?(PodcastEpisode) ? @commentable.podcast.name : @commentable.user.name %>
-        <span class="published-at"><%= "on " + @commentable.published_at.strftime("%B %d, %Y") if @commentable.published_at %></span>
-      </h4>
-    </a>
-    <% if @commentable.processed_html.present? %>
-      <% if @commentable.processed_html.size < 350 %>
-        <div class="body">
-          <%= sanitize_rendered_markdown(@commentable.processed_html) %>
-        </div>
-      <% else %>
-        <div class="body">
-          <%= truncate(sanitize(@commentable.processed_html, tags: []), length: 150) %>
-          <a href="<%= @commentable.path %>"><span class="read-more">[Read Full]</span></a>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
-<% end %>
-<div class="comments-container comments-dedicated-page-container"
-     id="comments-container"
-     data-commentable-id="<%= @commentable.id %>"
-     data-commentable-type="<%= @commentable.class.name %>">
-  <% if @root_comment %>
-    <div id="response-templates-data"></div>
-    <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
-    <div class="top-level-actions">
-      <h3>re: <%= @commentable.title %> <a href="<%= @commentable.path %>">VIEW POST</a></h3>
-      <span class="comment-action-buttons">
-        <% unless @root_comment.is_root? %>
-          <a href="<%= @root_comment.root.path %>">TOP OF THREAD</a>
-        <% end %>
-        <a href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">FULL DISCUSSION</a>
-      </span>
-    </div>
-  <% else %>
-    <%= render "form",
-               commentable: @commentable,
-               commentable_type: "Article" %>
+<div class="crayons-layout crayons-layout--limited">
+  <% if @commentable.class.name == "Article" %>
+    <%= render "shared/payment_pointer", user: @commentable.user %>
+    <div id="comment-article-indicator" data-article-id="<%= @commentable.id %>">
   <% end %>
-  <div class="comment-trees" id="comment-trees-container">
-    <% if @root_comment.present? %>
-      <div class="root-comment">
-        <% if @root_comment.depth > 0 && parent = @root_comment.parent %>
-          <a href="<%= parent.path %>" class="comment-parent-link">
-            re: <%= parent.title(150) %>
-          </a>
+
+  <% if !@root_comment %>
+    <article class="crayons-article crayons-card">
+      <header class="crayons-article__header">
+        <% if @commentable.respond_to?(:main_image) && @commentable.main_image.present? %>
+          <div class="crayons-article__cover">
+            <img src="<%= cloud_cover_url(@commentable.main_image) %>" width="1000" height="420" style="background-color:<%= @commentable.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= sanitize_and_decode @commentable.title %>">
+          </div>
         <% end %>
+
+        <div class="crayons-article__header__meta">
+          <h1 class="fs-2xl s:fs-3xl l:fs-4xl fw-bold s:fw-heavy lh-tight mb-4">
+            <%= @commentable.title %>
+          </h1>
+          <p class="color-base-60">
+            <%= @commentable.is_a?(PodcastEpisode) ? @commentable.podcast.name : @commentable.user.name %>
+            <%= "on " + @commentable.published_at.strftime("%B %d, %Y") if @commentable.published_at %></span>
+          </p>
+        </div>
+      </header>
+
+      <% if @commentable.processed_html.present? %>
+        <div class="crayons-article__body text-styles spec__body">
+          <% if @commentable.processed_html.size < 350 %>
+            <%= sanitize_rendered_markdown(@commentable.processed_html) %>
+          <% else %>
+            <%= truncate(sanitize(@commentable.processed_html, tags: []), length: 150) %>
+            <div class="pt-6">
+              <a class="crayons-btn crayons-btn--outlined" href="<%= @commentable.path %>">Read full post</a>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </article>
+  <% end %>
+
+  <section class="crayons-card text-padding"
+      id="comments-container"
+      data-commentable-id="<%= @commentable.id %>"
+      data-commentable-type="<%= @commentable.class.name %>">
+    <% if @root_comment %>
+      <div id="response-templates-data"></div>
+      <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
+      <div class="top-level-actions">
+        <h3>Discussion on: <%= @commentable.title %> <a href="<%= @commentable.path %>">View post</a></h3>
+        <span class="comment-action-buttons">
+          <% unless @root_comment.is_root? %>
+            <a href="<%= @root_comment.root.path %>">Top of thread</a>
+          <% end %>
+          <a href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">Full discussion</a>
+        </span>
+      </div>
+    <% else %>
+      <% if @root_comment.present? %>
+        <header class="root-comment">
+          <% if @root_comment.depth > 0 && parent = @root_comment.parent %>
+            <a href="<%= parent.path %>" class="comment-parent-link">
+              Discussion on: <%= parent.title(150) %>
+            </a>
+          <% end %>
+        </header>
+      <% end %>
+      <%= render "form",
+                commentable: @commentable,
+                commentable_type: "Article" %>
+    <% end %>
+    <ol id="comments" class="comments comment-trees" id="comment-trees-container">
+      <% if @root_comment.present? %>
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
           <%= tree_for(@root_comment, @root_comment.subtree.includes(:user).arrange[@root_comment], @commentable) %>
         <% end %>
-      </div>
-    <% else %>
-      <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
-        <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-          <%= tree_for(comment, sub_comments, @commentable) %>
+      <% else %>
+        <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
+          <% cache ["comment_root_#{user_signed_in?}", comment] do %>
+            <%= tree_for(comment, sub_comments, @commentable) %>
+          <% end %>
         <% end %>
       <% end %>
+    </ol>
+    <% if @commentable.any_comments_hidden %>
+      <div class="crayons-notice crayons-notice--warning">
+        <p>
+          Some comments have been hidden by the post's author - <a href="/faq#what-does-comment-hidden-by-post-author-mean">find out more</a>
+        </p>
+      </div>
     <% end %>
-  </div>
-  <% if @commentable.any_comments_hidden %>
-    <div class="crayons-notice crayons-notice--warning">
-      <p>
-        Some comments have been hidden by the post's author - <a href="/faq#what-does-comment-hidden-by-post-author-mean">find out more</a>
-      </p>
-    </div>
+    <%= render "articles/conduct_and_abuse_actions", page: "comments_index" %>
+  </section>
+  <% if has_vid?(@commentable) %>
+    <%= render "articles/fitvids" %>
   <% end %>
-  <%= render "articles/conduct_and_abuse_actions", page: "comments_index" %>
 </div>
-<% if has_vid?(@commentable) %>
-  <%= render "articles/fitvids" %>
-<% end %>
 
 <script async>
   <%== TweetTag.script %>
