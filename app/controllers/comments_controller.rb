@@ -234,15 +234,11 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:comment_id])
     authorize @comment
     @comment.deleted = true
-    respond_to do |format|
-      if @comment.save
-        format.json { render json: { result: "success" }, status: :ok }
-        format.html do
-          redirect_to URI.parse(@comment.path).path, notice: "Comment was successfully deleted."
-        end
-      else
-        format.json { render json: { error: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity }
-      end
+
+    if @comment.save
+      redirect_to "#{URI.parse(@comment.path).path}/mod", notice: "Comment was successfully deleted."
+    else
+      redirect_to "#{URI.parse(@comment.path).path}/mod", alert: "Something went wrong; comment NOT deleted."
     end
   end
 

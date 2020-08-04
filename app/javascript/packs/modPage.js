@@ -1,7 +1,4 @@
-// import { addSnackbarItem, Snackbar } from '../Snackbar';
-
 const buttons = document.querySelectorAll('.reaction-button, .reaction-vomit-button');
-const deleteCommentBtn = document.querySelector('#delete-comment-btn');
 
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
@@ -91,30 +88,6 @@ async function updateExperienceLevel(currentUserId, articleId, rating, group) {
   }
 }
 
-async function adminDeleteComment(commentId){
-  try {
-    const response = await fetch(`/comments/${commentId}/admin_delete`, {
-      method: 'PATCH',
-      headers: {
-        'X-CSRF-Token': window.csrfToken,
-      },
-    });
-
-    const outcome = await response.json();
-    let message;
-    if (outcome.result === 'success') {
-      message = 'Comment has been deleted.';
-    } else if (outcome.error) {
-      message = `Error: ${outcome.error}`;
-    }
-    // eslint-disable-next-line no-alert
-    // alert(message);
-  } catch (error) {
-    // eslint-disable-next-line no-alert
-    alert(error);
-  }
-}
-
 document.querySelectorAll('.level-rating-button').forEach((btn) => {
   btn.addEventListener('click', () => {
     updateExperienceLevel(
@@ -124,11 +97,4 @@ document.querySelectorAll('.level-rating-button').forEach((btn) => {
       btn.dataset.group,
     );
   });
-});
-
-deleteCommentBtn.addEventListener('click', () => {
-  const { commentId } = deleteCommentBtn.dataset;
-  if (confirm('You are deleting this comment; are you sure?')) {
-    adminDeleteComment(commentId);
-  }
 });
