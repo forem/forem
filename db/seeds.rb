@@ -495,6 +495,7 @@ end
 
 seeder.create_if_none(ProfileField) do
   ProfileFields::AddBaseFields.call
+  ProfileFields::AddLinkFields.call
 end
 
 ##############################################################################
