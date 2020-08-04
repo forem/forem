@@ -51,6 +51,10 @@ class Notification < ApplicationRecord
       Notifications::NewComment::Send.call(comment)
     end
 
+    def send_endorsement_notification(listing_endorsement)
+      Notifications::NewEndorsementWorker.perform_async(listing_endorsement.id)
+    end
+
     def send_new_badge_achievement_notification(badge_achievement)
       Notifications::NewBadgeAchievementWorker.perform_async(badge_achievement.id)
     end
@@ -74,10 +78,6 @@ class Notification < ApplicationRecord
 
       Notifications::MentionWorker.perform_async(mention.id)
     end
-
-    # def send_endorsement_notification(listing_endorsement)
-
-    # end
 
     def send_welcome_notification(receiver_id, broadcast_id)
       Notifications::WelcomeNotificationWorker.perform_async(receiver_id, broadcast_id)
