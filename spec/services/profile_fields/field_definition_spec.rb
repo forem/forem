@@ -4,7 +4,7 @@ RSpec.describe ProfileFields::FieldDefinition, type: :service do
   let(:test_class) do
     Class.new do
       include ProfileFields::FieldDefinition
-      field "Test 1", :text_area, placeholder: "Test", explanation: "For testing"
+      field "Test 1", :text_area, placeholder: "Test", description: "For testing"
       field "Test 2", :check_box
     end
   end
