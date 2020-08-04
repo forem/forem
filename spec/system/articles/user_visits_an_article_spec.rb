@@ -118,4 +118,51 @@ RSpec.describe "Views an article", type: :system do
       # rubocop:enable RSpec/ExampleLength
     end
   end
+
+  describe "when an article is not published" do
+    let(:article) { create(:article, user: article_user, published: false) }
+    let(:article_path) { article.path + query_params }
+    let(:href) { "#{article.path}/edit" }
+    let(:link_text) { "Click to edit" }
+
+    context "with the article password, and the logged-in user is authorized to update the article" do
+      let(:query_params) { "?preview=#{article.password}" }
+      let(:article_user) { user }
+
+      it "shows the article edit link" do
+        visit article_path
+        expect(page).to have_link(link_text, href: href)
+      end
+    end
+
+    context "with the article password, and the logged-in user is not authorized to update the article" do
+      let(:query_params) { "?preview=#{article.password}" }
+      let(:article_user) { create(:user) }
+
+      it "does not the article edit link" do
+        visit article_path
+        expect(page).not_to have_link(link_text, href: href)
+      end
+    end
+
+    context "with the article password, and the user is not logged-in" do
+      let(:query_params) { "?preview=#{article.password}" }
+      let(:article_user) { user }
+
+      it "does not the article edit link" do
+        sign_out user
+        visit article_path
+        expect(page).not_to have_link(link_text, href: href)
+      end
+    end
+
+    context "without the article password" do
+      let(:query_params) { "" }
+      let(:article_user) { user }
+
+      it "raises ActiveRecord::RecordNotFound" do
+        expect { visit article_path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 end

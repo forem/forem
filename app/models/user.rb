@@ -92,7 +92,6 @@ class User < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
   has_many :notification_subscriptions, dependent: :destroy
-  has_many :user_optional_fields, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :offender_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
@@ -112,7 +111,8 @@ class User < ApplicationRecord
 
   mount_uploader :profile_image, ProfileImageUploader
 
-  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable, :recoverable
+  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
+         :recoverable, :lockable
 
   validates :behance_url, length: { maximum: 100 }, allow_blank: true, format: BEHANCE_URL_REGEXP
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
