@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
 import debounceAction from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
-import { Modal } from '../crayons/Modal';
 import {
   conductModeration,
   getAllMessages,
@@ -21,6 +20,7 @@ import {
   deleteMessage,
   editMessage,
 } from './actions/actions';
+import CreateChatModal from './components/createChatModal';
 import {
   sendChannelRequest,
   rejectJoiningRequest,
@@ -1327,41 +1327,12 @@ export default class Chat extends Component {
                 </svg>
               </span>
             </button>
-            {this.state.openModal ? (
-              <Modal
-                title="Create A Channel"
-                size="s"
-                onClose={this.toggleModalCreateChannel}
-              >
-                <div className="crayons-field">
-                  <label htmlFor="t1" className="crayons-field__label">
-                    Channel Name
-                  </label>
-                  <input
-                    type="text"
-                    id="t1"
-                    className="crayons-textfield"
-                    placeholder="Enter name here..."
-                  />
-                  <label htmlFor="t2" className="crayons-field__label">
-                    Invite Users
-                  </label>
-                  <input
-                    type="text"
-                    id="t2"
-                    className="crayons-textfield"
-                    placeholder="Separate username with comma"
-                  />
 
-                  <button
-                    href="#"
-                    className="crayons-btn"
-                    style="margin-top:20px"
-                  >
-                    Create
-                  </button>
-                </div>
-              </Modal>
+            {this.state.openModal ? (
+              <CreateChatModal
+                toggleModalCreateChannel={this.toggleModalCreateChannel}
+                handleCreateChannelSuccess={this.handleCreateChannelSuccess}
+              />
             ) : (
               ''
             )}
@@ -1389,10 +1360,21 @@ export default class Chat extends Component {
     const { openModal } = this.state;
     this.setState({ openModal: !openModal });
   };
+
   navigateToChannelsList = () => {
     const chatContainer = document.querySelector('.chat__activechat');
-
     chatContainer.classList.add('chat__activechat--hidden');
+  };
+
+  handleCreateChannelSuccess = () => {
+    this.toggleModalCreateChannel();
+    const searchParams = {
+      query: '',
+      retrievalID: null,
+      searchType: '',
+      paginationNumber: 0,
+    };
+    getChannels(searchParams, 'all', this.loadChannels);
   };
 
   handleMessageScroll = () => {
