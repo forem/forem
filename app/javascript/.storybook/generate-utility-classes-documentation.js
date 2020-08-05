@@ -122,7 +122,7 @@ function generateUtilityClassStories(cssProperty, cssRules) {
       </ul>
       <p>${
         isImportant
-          ? 'Note that <strong>!important</strong> is being used to override pre-design system CSS.'
+          ? 'Note that <code>!important</code> is being used to override pre-design system CSS.'
           : ''
       }</p>
       <pre><code>{\`${prettier.format(cssRule.cssText, {
