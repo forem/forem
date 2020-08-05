@@ -3,6 +3,7 @@ const util = require('util');
 const fs = require('fs');
 const sass = require('node-sass');
 const CSSOM = require('cssom');
+const prettier = require('prettier');
 const renderCss = util.promisify(sass.render);
 const folderExists = util.promisify(fs.exists);
 const mkdir = util.promisify(fs.mkdir);
@@ -124,7 +125,9 @@ function generateUtilityClassStories(cssProperty, cssRules) {
           ? 'Note that <strong>!important</strong> is being used to override pre-design system CSS.'
           : ''
       }</p>
-      <pre><code>{\`${cssRule.cssText}\`}</code></pre>
+      <pre><code>{\`${prettier.format(cssRule.cssText, {
+        parser: 'css',
+      })}\`}</code></pre>
     </div>
 
     ${sanitizedCssClassName}.story = { name: '${className.replace(
