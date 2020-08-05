@@ -114,7 +114,8 @@ Rails.application.routes.draw do
     end
     resources :webhook_endpoints, only: :index
     resource :config
-    resources :badges, only: :index
+    resources :badges, only: %i[index], path: "/badges/award"
+    get "/badges", to: redirect("/internal/badges/award")
     post "badges/award_badges", to: "badges#award_badges"
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
