@@ -13,8 +13,7 @@ module Internal
     end
 
     def create
-      @profile_field = ProfileField.new(profile_field_params)
-      @profile_field.save!
+      @profile_field = ProfileField.create(profile_field_params)
       redirect_to "/internal/profile_fields"
     end
 
