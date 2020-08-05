@@ -1,0 +1,4 @@
+Name,text_field,John Doe,
+Skills/Languages,text_area,,Programming languages
+
+Color,color_field,#000000,"Used for backgrounds, borders etc."
