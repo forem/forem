@@ -1,9 +1,9 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/internal/badges/award", type: :request do
+RSpec.describe "/internal/badge_achievements", type: :request do
   it_behaves_like "an InternalPolicy dependant request", Badge do
-    let(:request) { get "/internal/badges/award" }
+    let(:request) { get "/internal/badge_achievements" }
   end
 
   describe "POST /internal/badges/award_badges" do
