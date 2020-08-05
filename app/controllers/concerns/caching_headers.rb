@@ -18,7 +18,8 @@ module CachingHeaders
 
     # TODO: [@forem/delightful]: Once we've tested that removing `no-cache` from the Cache-Control headers
     # does not adversely affect fastly, we should remove this specific check entirely.
-    article_requested = request.env["REQUEST_PATH"].include?("the-3-biggest-misconceptions-about-diversity-3hkm")
+    article_requested = request.env["REQUEST_PATH"].present? &&
+      request.env["REQUEST_PATH"].include?("the-3-biggest-misconceptions-about-diversity-3hkm")
     cache_control = if article_requested
                       "public, max-age=86400"
                     else
