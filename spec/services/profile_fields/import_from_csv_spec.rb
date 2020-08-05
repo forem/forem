@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe ProfileFields::ImportFromCsv do
+  # Importing is slow, so we only do it once and then clean up after outselves.
   # rubocop:disable RSpec/BeforeAfterAll
   before(:all) { described_class.call(file_fixture("profile_fields.csv")) }
 
