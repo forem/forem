@@ -27,7 +27,7 @@ module Internal
     private
 
     def profile_field_params
-      allowed_params = %i[input_type label active placeholder_text explanation]
+      allowed_params = %i[input_type label active placeholder_text description]
       params.require(:profile_field).permit(allowed_params)
     end
   end
