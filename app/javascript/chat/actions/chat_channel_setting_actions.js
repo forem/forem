@@ -173,3 +173,30 @@ export async function updateMembershipRole(membershipId, chatChannelId, role) {
 
   return response.json();
 }
+
+/**
+ * Create Chat Channel
+ * @param {string} channelName
+ * @param {string} userNames
+ */
+
+export async function createChannel(channelName, userNames) {
+  const response = await request(
+    `/create_channel`,{
+      method: 'POST',
+      body: {
+        chat_channel: {
+          channel_name: channelName,
+          invitation_usernames: userNames,
+        },
+      },
+      credentials: 'same-origin',
+    }
+  )
+
+  return response.json();
+}
+
+// let result = createChannel('demo-channel', 'narender2031')
+
+// console.log(result)

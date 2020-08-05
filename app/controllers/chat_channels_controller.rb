@@ -3,6 +3,8 @@ class ChatChannelsController < ApplicationController
   before_action :set_channel, only: %i[show update update_channel open moderate]
   after_action :verify_authorized
 
+  include MessagesHelper
+
   CHANNEL_ATTRIBUTES_FOR_SERIALIZATION = %i[id description channel_name].freeze
   private_constant :CHANNEL_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -41,11 +43,11 @@ class ChatChannelsController < ApplicationController
   end
 
   def update
-    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
+    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_param)
     if chat_channel.errors.any?
       flash[:error] = chat_channel.errors.full_messages.to_sentence
     else
-      if chat_channel_params[:discoverable].to_i.zero?
+      if chat_channel_param[:discoverable].to_i.zero?
         ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
                                      role: "member", status: "active")
       else
@@ -168,6 +170,40 @@ class ChatChannelsController < ApplicationController
     render json: { error: "not found", status: 404 }, status: :not_found
   end
 
+  def create_channel
+    chat_channel_param = params[:chat_channel]
+    chat_channel = ChatChannel.new(
+      channel_type: "invite_only",
+      channel_name: chat_channel_param[:channel_name],
+      slug: "#{chat_channel_param[:channel_name]}-#{rand(100_000).to_s(26)}",
+    )
+    chat_channel.save
+    authorize chat_channel
+    membership = chat_channel.chat_channel_memberships.new(user_id: current_user.id, role: "mod")
+    if membership.save
+      message = SendChannelInvitationService.new(
+        chat_channel_param[:invitation_usernames],
+        current_user,
+        chat_channel,
+      ).send_invitations
+
+      send_chat_action_message(
+        "channel is created by #{current_user.username}",
+        current_user, membership.chat_channel_id,
+        "chat channel is created"
+      )
+      render json: {
+        success: true,
+        message: "Channel is created #{message ? "& #{message}" : nil}"
+      }, status: :ok
+    else
+      render json: {
+        success: false,
+        message: membership.errors.full_messages
+      }, status: 445
+    end
+  end
+
   private
 
   def set_channel
@@ -175,7 +211,7 @@ class ChatChannelsController < ApplicationController
     authorize @chat_channel
   end
 
-  def chat_channel_params
+  def chat_channel_param
     params.require(:chat_channel).permit(policy(ChatChannel).permitted_attributes)
   end
 
@@ -260,5 +296,12 @@ class ChatChannelsController < ApplicationController
                     end
     Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened",
                    { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
+  end
+
+  def send_chat_action_message(message, user, channel_id, action)
+    temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
+    message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
+                             "chat_action" => action)
+    pusher_message_created(false, message, temp_message_id)
   end
 end
