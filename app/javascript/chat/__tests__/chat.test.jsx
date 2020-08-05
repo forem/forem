@@ -176,15 +176,12 @@ describe('<Chat />', () => {
 
   it('should render expanded', () => {
     fetch.mockResponse(getMockResponse());
-    const { getByTestId, getByText, getByLabelText, getByRole } = render(
+    const { getByTestId, getByText, getByRole } = render(
       <Chat {...getRootData()} />,
     );
     const chat = getByTestId('chat');
 
     expect(chat.getAttribute('aria-expanded')).toEqual('true');
-
-    // renderChatChannels
-    getByLabelText('Toggle channel search');
 
     // chat filtering
     getByText('all', { selector: 'button' });
