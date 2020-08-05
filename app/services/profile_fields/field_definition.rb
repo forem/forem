@@ -8,18 +8,25 @@ module ProfileFields
         new.add_fields
       end
 
+      def group(group = nil)
+        @group = group
+        yield if block_given?
+        @group = nil
+      end
+
       def fields
         @fields ||= []
       end
 
       private
 
-      def field(label, input_type, placeholder: nil, description: nil)
+      def field(label, input_type, placeholder: nil, description: nil, group: @group)
         fields << {
           label: label,
           input_type: input_type,
           placeholder_text: placeholder,
-          description: description
+          description: description,
+          group: group
         }.compact
       end
     end
