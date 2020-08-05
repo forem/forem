@@ -16,6 +16,7 @@ if Rails.env.production?
           # matches table.column
           hide: %w[
             auth_data_dump
+            content
             email
             encrypted
             encrypted_password
