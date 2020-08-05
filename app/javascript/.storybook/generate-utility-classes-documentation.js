@@ -100,18 +100,13 @@ function generateUtilityClassStories(cssProperty, cssRules) {
         isImportant = cssRule.style._importants[styleProperty] === 'important';
       }
 
-      propertiesAndValues.push(`
-        <li>
+      propertiesAndValues.push(`<li>
           <a
             href="https://developer.mozilla.org/en-US/docs/Web/CSS/${styleProperty}"
             target="_blank"
             rel="noopener noreferrer"
-          >
-            ${styleProperty}
-          </a>{' '}
-          set to <code>${value}</code>
-        </li>
-      `);
+          >${styleProperty}</a> set to <code>${value}</code>
+        </li>`);
     }
 
     storybookStories.push(`
