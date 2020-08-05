@@ -21,7 +21,7 @@ const generatedStoriesFolder = path.join(
  *
  * @param {string} file The file to load as a style sheet.
  *
- * @returns {object} The stylesheet for the given file.
+ * @returns {CSSStyleSheet} The stylesheet for the given file.
  */
 async function getStyleSheet(file) {
   const { css: bytes } = await renderCss({
@@ -48,10 +48,15 @@ function groupCssRulesByCssProperty(rules) {
       return acc;
     }
 
-    const cssProperty = rule.style['0'];
+    // Utility classes can modify more than one property, so we classify the CSS rule under
+    // more than one CSS property potentially.
+    // It means things will be repeated in Storybook, but it's all auto-generated, so no biggie.
+    for (let i = 0; i < rule.style.length; i++) {
+      const cssProperty = rule.style[i];
 
-    acc[cssProperty] = acc[cssProperty] || {};
-    acc[cssProperty][rule.selectorText] = rule;
+      acc[cssProperty] = acc[cssProperty] || {};
+      acc[cssProperty][rule.selectorText] = rule;
+    }
 
     return acc;
   }, {});
@@ -83,16 +88,42 @@ function generateUtilityClassStories(cssProperty, cssRules) {
 
   for (const [className, cssRule] of Object.entries(cssRules)) {
     const sanitizedCssClassName = className.replace(/[.-]/g, '_');
-    const value = cssRule.style[cssRule.style['0']];
-    const isImportant =
-      cssRule.style._importants[cssRule.style['0']] === 'important';
+    const propertiesAndValues = [];
+    let isImportant = false;
+
+    for (let i = 0; i < cssRule.style.length; i++) {
+      const styleProperty = cssRule.style[i];
+      const value = cssRule.style[styleProperty];
+
+      if (!isImportant) {
+        isImportant = cssRule.style._importants[styleProperty] === 'important';
+      }
+
+      propertiesAndValues.push(`
+        <li>
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/CSS/${styleProperty}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ${styleProperty}
+          </a>{' '}
+          set to <code>${value}</code>
+        </li>
+      `);
+    }
+
     storybookStories.push(`
     export const ${sanitizedCssClassName} = () => <div class="container">
-      <p>CSS utility class for the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/${cssProperty}" target="_blank" rel="noopener noreferrer">${cssProperty}</a> CSS property that sets its value to <strong>${value}</strong>. ${
-      isImportant
-        ? 'Note that <strong>!important</strong> is being used to override pre-design system CSS.'
-        : ''
-    }</p>
+      <p>CSS utility class for the following CSS properties:</p>
+      <ul>
+        ${propertiesAndValues.join('')}
+      </ul>
+      <p>${
+        isImportant
+          ? 'Note that <strong>!important</strong> is being used to override pre-design system CSS.'
+          : ''
+      }</p>
       <pre><code>{\`${cssRule.cssText}\`}</code></pre>
     </div>
 
