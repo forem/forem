@@ -85,7 +85,7 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
           cssRule.style._importants[cssRule.style['0']] === 'important';
         storybookContent.push(`
   export const ${sanitizedCssClassName} = () => <div class="container">
-    <p>CSS utility class for the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/${cssProperty}" target="_blank" rel="noopener noreferrer">${cssProperty}</a> CSS property to set it's value to <strong>${value}</strong>. ${
+    <p>CSS utility class for the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/${cssProperty}" target="_blank" rel="noopener noreferrer">${cssProperty}</a> CSS property that sets its value to <strong>${value}</strong>. ${
           isImportant
             ? 'Note that <strong>!important</strong> is being used to override pre-design system CSS.'
             : ''
