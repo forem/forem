@@ -1,28 +1,28 @@
 require "rails_helper"
 
-RSpec.describe "/internal/sponsorships", type: :request do
+RSpec.describe "/admin/sponsorships", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let(:org) { create(:organization, username: "super-community") }
 
-  describe "GET /internal/sponsorships" do
+  describe "GET /admin/sponsorships" do
     before do
       sign_in admin
       create(:sponsorship, organization: org, level: :gold)
     end
 
     it "renders successfully" do
-      get "/internal/sponsorships"
+      get "/admin/sponsorships"
       expect(response).to be_successful
     end
 
     it "shows sponsorship" do
-      get "/internal/sponsorships"
+      get "/admin/sponsorships"
       expect(response.body).to include(org.username)
       expect(response.body).to include("gold")
     end
   end
 
-  describe "GET /internal/sponsorships/:id/edit" do
+  describe "GET /admin/sponsorships/:id/edit" do
     let(:ruby) { build_stubbed(:tag, name: "ruby") }
     let!(:sponsorship) do
       create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending",
@@ -34,12 +34,12 @@ RSpec.describe "/internal/sponsorships", type: :request do
     end
 
     it "renders successfully" do
-      get edit_internal_sponsorship_path(sponsorship.id)
+      get edit_admin_sponsorship_path(sponsorship.id)
       expect(response).to be_successful
     end
   end
 
-  describe "PUT /internal/sponsorships/:id" do
+  describe "PUT /admin/sponsorships/:id" do
     let(:ruby) { build_stubbed(:tag, name: "ruby") }
     let!(:sponsorship) do
       create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending",
@@ -53,12 +53,12 @@ RSpec.describe "/internal/sponsorships", type: :request do
     end
 
     it "redirects to index" do
-      put "/internal/sponsorships/#{sponsorship.id}", params: { sponsorship: valid_attributes }
-      expect(response).to redirect_to(internal_sponsorships_path)
+      put "/admin/sponsorships/#{sponsorship.id}", params: { sponsorship: valid_attributes }
+      expect(response).to redirect_to(admin_sponsorships_path)
     end
 
     it "updates the sponsorship" do
-      put "/internal/sponsorships/#{sponsorship.id}", params: { sponsorship: valid_attributes }
+      put "/admin/sponsorships/#{sponsorship.id}", params: { sponsorship: valid_attributes }
       sponsorship.reload
       expect(sponsorship.status).to eq("live")
       expect(sponsorship.expires_at).to be > Time.current
@@ -66,18 +66,18 @@ RSpec.describe "/internal/sponsorships", type: :request do
     end
 
     it "doesn't update when attributes are invalid" do
-      put "/internal/sponsorships/#{sponsorship.id}", params: { sponsorship: invalid_attributes }
+      put "/admin/sponsorships/#{sponsorship.id}", params: { sponsorship: invalid_attributes }
       sponsorship.reload
       expect(sponsorship.status).to eq("pending")
     end
 
     it "shows errors when attributes are invalid" do
-      put "/internal/sponsorships/#{sponsorship.id}", params: { sponsorship: invalid_attributes }
+      put "/admin/sponsorships/#{sponsorship.id}", params: { sponsorship: invalid_attributes }
       expect(response.body).to include("Status is not included in the list")
     end
   end
 
-  describe "DELETE /internal/sponsorships/:id" do
+  describe "DELETE /admin/sponsorships/:id" do
     let!(:sponsorship) do
       create(:sponsorship, organization: org, level: :silver, status: "live", expires_at: Time.current)
     end
@@ -85,7 +85,7 @@ RSpec.describe "/internal/sponsorships", type: :request do
     it "destroys a sponsorship" do
       sign_in admin
       expect do
-        delete internal_sponsorship_path(sponsorship.id)
+        delete admin_sponsorship_path(sponsorship.id)
       end.to change(Sponsorship, :count).by(-1)
     end
   end

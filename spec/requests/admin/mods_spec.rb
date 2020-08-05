@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "/internal/mods", type: :request do
+RSpec.describe "/admin/mods", type: :request do
   let!(:admin) { create(:user, :admin) }
   let!(:regular_user) { create(:user) }
   let!(:moderator) { create(:user, :trusted) }
 
-  describe "GET /internal/mods" do
+  describe "GET /admin/mods" do
     before do
       sign_in admin
     end
@@ -15,7 +15,7 @@ RSpec.describe "/internal/mods", type: :request do
 
       before do
         sign_in single_resource_admin
-        get "/internal/mods"
+        get "/admin/mods"
       end
 
       it "allows the request" do
@@ -30,39 +30,39 @@ RSpec.describe "/internal/mods", type: :request do
 
       it "blocks the request" do
         expect do
-          get "/internal/mods"
+          get "/admin/mods"
         end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
     it "displays mod user" do
-      get "/internal/mods"
+      get "/admin/mods"
       expect(response.body).to include(moderator.username)
     end
 
     it "does not display non-mod" do
-      get "/internal/mods"
+      get "/admin/mods"
       expect(response.body).not_to include(regular_user.username)
     end
 
     it "lists regular users as potential mods" do
-      get "/internal/mods?state=potential"
+      get "/admin/mods?state=potential"
       expect(response.body).to include(regular_user.username)
     end
 
     it "does not list mods as potential mods" do
-      get "/internal/mods?state=potential"
+      get "/admin/mods?state=potential"
       expect(response.body).not_to include(moderator.username)
     end
   end
 
-  describe "PUT /internal/mods" do
+  describe "PUT /admin/mods" do
     before do
       sign_in admin
     end
 
     it "displays mod user" do
-      put "/internal/mods/#{regular_user.id}"
+      put "/admin/mods/#{regular_user.id}"
       expect(regular_user.reload.has_role?(:trusted)).to eq true
     end
   end

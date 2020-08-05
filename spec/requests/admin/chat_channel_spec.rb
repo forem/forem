@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/internal/chat_channels", type: :request do
+RSpec.describe "/admin/chat_channels", type: :request do
   include ActiveJob::TestHelper
 
   let(:user) { create(:user) }
@@ -13,7 +13,7 @@ RSpec.describe "/internal/chat_channels", type: :request do
       user.add_role(:super_admin)
       sign_in user
       expect do
-        post "/internal/chat_channels",
+        post "/admin/chat_channels",
              params: { chat_channel: { channel_name: "Hello Channel", usernames_string: user.username } },
              headers: { HTTP_ACCEPT: "application/json" }
       end.to change(ActionMailer::Base.deliveries, :length)
@@ -27,7 +27,7 @@ RSpec.describe "/internal/chat_channels", type: :request do
       user.add_role(:super_admin)
       second_user = create(:user)
       sign_in user
-      patch "/internal/chat_channels/#{chat_channel.id}",
+      patch "/admin/chat_channels/#{chat_channel.id}",
             params: { chat_channel: { usernames_string: second_user.username } },
             headers: { HTTP_ACCEPT: "application/json" }
       expect(second_user.chat_channel_memberships.last).not_to be_blank
@@ -35,13 +35,13 @@ RSpec.describe "/internal/chat_channels", type: :request do
     end
   end
 
-  describe "DELETE /internal/chat_channels/remove_user/:id" do
+  describe "DELETE /admin/chat_channels/remove_user/:id" do
     it "removes the user from the chat channel" do
       user.add_role(:super_admin)
       sign_in user
       chat_channel.invite_users(users: user)
 
-      delete "/internal/chat_channels/#{chat_channel.id}/remove_user",
+      delete "/admin/chat_channels/#{chat_channel.id}/remove_user",
              params: { chat_channel: { username_string: user.username } }
       expect(user.chat_channel_memberships.count).to eq 0
       expect(chat_channel.users.count).to eq 0

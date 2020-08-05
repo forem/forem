@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/internal/privileged_reactions", type: :request do
+RSpec.describe "/admin/privileged_reactions", type: :request do
   context "when the user is not an admin" do
     let(:user) { create(:user) }
 
@@ -10,7 +10,7 @@ RSpec.describe "/internal/privileged_reactions", type: :request do
 
     it "blocks the request" do
       expect do
-        get "/internal/privileged_reactions"
+        get "/admin/privileged_reactions"
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -20,7 +20,7 @@ RSpec.describe "/internal/privileged_reactions", type: :request do
 
     it "renders with status 200" do
       sign_in single_resource_admin
-      get internal_moderator_actions_path
+      get admin_moderator_actions_path
       expect(response.status).to eq 200
     end
   end
@@ -38,13 +38,13 @@ RSpec.describe "/internal/privileged_reactions", type: :request do
 
     it "does not block the request" do
       expect do
-        get "/internal/privileged_reactions"
+        get "/admin/privileged_reactions"
       end.not_to raise_error
     end
 
-    describe "GETS /internal/privileged_reactions" do
+    describe "GETS /admin/privileged_reactions" do
       it "renders to appropriate page" do
-        get "/internal/privileged_reactions"
+        get "/admin/privileged_reactions"
         expect(response.body).to include(CGI.escapeHTML(moderator.username))
           .and include(CGI.escapeHTML(user_reaction.reactable.username))
           .and include(CGI.escapeHTML(comment_reaction.reactable.user.username))

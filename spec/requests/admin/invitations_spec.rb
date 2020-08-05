@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/internal/invitations", type: :request do
+RSpec.describe "/admin/invitations", type: :request do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :super_admin) }
 
@@ -8,24 +8,24 @@ RSpec.describe "/internal/invitations", type: :request do
     sign_in(admin)
   end
 
-  describe "GETS /internal/invitations" do
+  describe "GETS /admin/invitations" do
     it "renders to appropriate page" do
       user.update_column(:registered, false)
-      get "/internal/invitations"
+      get "/admin/invitations"
       expect(response.body).to include(user.username)
     end
   end
 
-  describe "GETS /internal/invitations/new" do
+  describe "GETS /admin/invitations/new" do
     it "renders to appropriate page" do
-      get "/internal/invitations/new"
+      get "/admin/invitations/new"
       expect(response.body).to include("Email:")
     end
   end
 
-  describe "POST /internal/invitations" do
+  describe "POST /admin/invitations" do
     it "creates new invitation" do
-      post "/internal/invitations",
+      post "/admin/invitations",
            params: { user: { email: "hey#{rand(1000)}@email.co", name: "Roger #{rand(1000)}" } }
       expect(User.last.registered).to be false
     end

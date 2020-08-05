@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Internal::Users", type: :request do
+RSpec.describe "Admin::Users", type: :request do
   let!(:user) { create(:user, twitter_username: nil, old_username: "username") }
   let!(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
@@ -64,7 +64,7 @@ RSpec.describe "Internal::Users", type: :request do
 
   def call_ghost
     ghost
-    post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
+    post "/admin/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
   end
 
   context "when merging users" do
@@ -73,7 +73,7 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "deletes duplicate user" do
-      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+      post "/admin/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
 
       expect { User.find(user2.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
@@ -83,7 +83,7 @@ RSpec.describe "Internal::Users", type: :request do
       expected_comments_count = user.comments.count + user2.comments.count
       expected_reactions_count = user.reactions.count + user2.reactions.count
 
-      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+      post "/admin/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
 
       expect(user.comments.count).to eq(expected_articles_count)
       expect(user.articles.count).to eq(expected_comments_count)
@@ -95,7 +95,7 @@ RSpec.describe "Internal::Users", type: :request do
       expected_channel_memberships_count = user.chat_channel_memberships.count + user2.chat_channel_memberships.count
       expected_mentions_count = user.mentions.count + user2.mentions.count
 
-      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+      post "/admin/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
 
       expect(user.follows.count).to eq(expected_follows_count)
       expect(Follow.followable_user(user.id).count).to eq(1)
@@ -104,14 +104,14 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "merges misc profile info" do
-      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+      post "/admin/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
 
       expect(user.github_repos.any?).to be true
       expect(user.badge_achievements.any?).to be true
     end
 
     it "merges social identities and usernames" do
-      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+      post "/admin/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
 
       expect(user.reload.twitter_username).to eq("Twitter")
     end
@@ -120,7 +120,7 @@ RSpec.describe "Internal::Users", type: :request do
   context "when managing activity and roles" do
     it "adds comment ban role" do
       params = { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
-      patch "/internal/users/#{user.id}/user_status", params: params
+      patch "/admin/users/#{user.id}/user_status", params: params
 
       expect(user.roles.first.name).to eq("comment_banned")
       expect(Note.first.content).to eq("comment ban this user")
@@ -131,20 +131,20 @@ RSpec.describe "Internal::Users", type: :request do
       user.reload
 
       params = { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
-      patch "/internal/users/#{user.id}/user_status", params: params
+      patch "/admin/users/#{user.id}/user_status", params: params
 
       expect(user.roles.count).to eq(1)
       expect(user.roles.last.name).to eq("comment_banned")
     end
 
     it "creates a general note on the user" do
-      put "/internal/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
+      put "/admin/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
       expect(Note.last.content).to eq("general note about whatever")
     end
 
     it "remove credits from account" do
       create_list(:credit, 5, user: user)
-      put "/internal/users/#{user.id}", params: { user: { remove_credits: "3" } }
+      put "/admin/users/#{user.id}", params: { user: { remove_credits: "3" } }
       expect(user.credits.size).to eq(2)
     end
   end
@@ -194,13 +194,13 @@ RSpec.describe "Internal::Users", type: :request do
 
     it "raises a 'record not found' error after deletion" do
       sidekiq_perform_enqueued_jobs do
-        post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+        post "/admin/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
       end
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "expect flash message" do
-      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      post "/admin/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
       expect(request.flash["success"]).to include("fully deleted")
     end
   end
@@ -211,7 +211,7 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "adds the proper amount of credits for organizations" do
-      put "/internal/users/#{super_admin.id}", params: {
+      put "/admin/users/#{super_admin.id}", params: {
         user: {
           add_org_credits: 5,
           organization_id: organization.id
@@ -223,7 +223,7 @@ RSpec.describe "Internal::Users", type: :request do
 
     it "removes the proper amount of credits for organizations" do
       Credit.add_to(organization, 10)
-      put "/internal/users/#{super_admin.id}", params: {
+      put "/admin/users/#{super_admin.id}", params: {
         user: {
           remove_org_credits: 5,
           organization_id: organization.id
@@ -234,7 +234,7 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "add the proper amount of credits to a user" do
-      put "/internal/users/#{super_admin.id}", params: {
+      put "/admin/users/#{super_admin.id}", params: {
         user: {
           add_credits: 5
         }
@@ -245,7 +245,7 @@ RSpec.describe "Internal::Users", type: :request do
 
     it "removes the proper amount of credits from a user" do
       Credit.add_to(super_admin, 10)
-      put "/internal/users/#{super_admin.id}", params: {
+      put "/admin/users/#{super_admin.id}", params: {
         user: {
           remove_credits: 5
         }

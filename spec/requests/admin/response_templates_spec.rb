@@ -1,20 +1,20 @@
 require "rails_helper"
 
-RSpec.describe "/internal/response_templates", type: :request do
+RSpec.describe "/admin/response_templates", type: :request do
   let(:admin) { create(:user, :admin) }
 
   before { sign_in admin }
 
-  describe "GET /internal/response_templates" do
+  describe "GET /admin/response_templates" do
     it "renders with status 200" do
-      get internal_response_templates_path
+      get admin_response_templates_path
       expect(response.status).to eq 200
     end
 
     context "when there are response templates to render" do
       it "renders with status 200" do
         create(:response_template)
-        get internal_response_templates_path
+        get admin_response_templates_path
         expect(response.status).to eq 200
       end
     end
@@ -24,22 +24,22 @@ RSpec.describe "/internal/response_templates", type: :request do
 
       it "renders with status 200" do
         sign_in single_resource_admin
-        get internal_response_templates_path
+        get admin_response_templates_path
         expect(response.status).to eq 200
       end
     end
   end
 
-  describe "GET /internal/response_templates/new" do
+  describe "GET /admin/response_templates/new" do
     it "renders with status 200" do
-      get internal_response_templates_path
+      get admin_response_templates_path
       expect(response.status).to eq 200
     end
   end
 
-  describe "POST /internal/response_templates" do
+  describe "POST /admin/response_templates" do
     it "successfully creates a response template" do
-      post internal_response_templates_path, params: {
+      post admin_response_templates_path, params: {
         response_template: {
           type_of: "mod_comment",
           content_type: "body_markdown",
@@ -51,7 +51,7 @@ RSpec.describe "/internal/response_templates", type: :request do
     end
 
     it "shows a proper error message if the request was invalid" do
-      post internal_response_templates_path, params: {
+      post admin_response_templates_path, params: {
         response_template: {
           type_of: "mod_comment",
           content_type: "html",
@@ -63,16 +63,16 @@ RSpec.describe "/internal/response_templates", type: :request do
     end
   end
 
-  describe "GET /internal/response_templates/:id/edit" do
+  describe "GET /admin/response_templates/:id/edit" do
     let(:response_template) { create(:response_template) }
 
     it "renders successfully if a valid response template was found" do
-      get edit_internal_response_template_path(response_template.id)
+      get edit_admin_response_template_path(response_template.id)
       expect(response).to have_http_status(:ok)
     end
 
     it "renders the response template's attributes" do
-      get edit_internal_response_template_path(response_template.id)
+      get edit_admin_response_template_path(response_template.id)
 
       expect(response.body).to include(
         CGI.escapeHTML(response_template.content),
@@ -83,11 +83,11 @@ RSpec.describe "/internal/response_templates", type: :request do
     end
   end
 
-  describe "PATCH /internal/response_templates/:id" do
+  describe "PATCH /admin/response_templates/:id" do
     it "successfully updates with a valid request" do
       response_template = create(:response_template)
       new_title = generate(:title)
-      patch internal_response_template_path(response_template.id), params: {
+      patch admin_response_template_path(response_template.id), params: {
         response_template: {
           title: new_title
         }
@@ -97,7 +97,7 @@ RSpec.describe "/internal/response_templates", type: :request do
 
     it "renders an error if the request was invalid" do
       response_template = create(:response_template)
-      patch internal_response_template_path(response_template.id), params: {
+      patch admin_response_template_path(response_template.id), params: {
         response_template: {
           content_type: "html"
         }
@@ -106,10 +106,10 @@ RSpec.describe "/internal/response_templates", type: :request do
     end
   end
 
-  describe "DELETE /internal/response_templates/:id" do
+  describe "DELETE /admin/response_templates/:id" do
     it "successfully deletes the response template" do
       response_template = create(:response_template)
-      delete internal_response_template_path(response_template.id)
+      delete admin_response_template_path(response_template.id)
       expect { response_template.reload }.to raise_error ActiveRecord::RecordNotFound
     end
   end

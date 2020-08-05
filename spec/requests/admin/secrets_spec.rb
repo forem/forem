@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/internal/secrets", type: :request do
+RSpec.describe "/admin/secrets", type: :request do
   before do
     allow(AppSecrets).to receive(:vault_enabled?).and_return(true)
     allow(AppSecrets).to receive(:[]=)
@@ -12,7 +12,7 @@ RSpec.describe "/internal/secrets", type: :request do
       sign_in user
 
       expect do
-        get internal_secrets_path
+        get admin_secrets_path
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -22,40 +22,40 @@ RSpec.describe "/internal/secrets", type: :request do
 
     before { sign_in admin }
 
-    describe "GET /internal/secrets" do
+    describe "GET /admin/secrets" do
       it "renders with status 200" do
-        get internal_secrets_path
+        get admin_secrets_path
         expect(response.status).to eq 200
       end
 
       it "displays an alert when Vault is not enabled" do
         allow(AppSecrets).to receive(:vault_enabled?).and_return(false)
-        get internal_secrets_path
+        get admin_secrets_path
         expect(response.body).to include("Vault is not currently setup for your application")
       end
     end
 
-    describe "PUT /internal/secrets" do
+    describe "PUT /admin/secrets" do
       let(:valid_secret) { AppSecrets::SETTABLE_SECRETS.first }
       let(:valid_params) { { valid_secret => "SECRET_VALUE" } }
 
       it "successfully sets a secret and shows flash message" do
         allow(AppSecrets).to receive(:[]=)
-        put internal_secrets_path, params: valid_params
+        put admin_secrets_path, params: valid_params
         expect(response.status).to eq 302
         expect(AppSecrets).to have_received(:[]=).with(valid_secret, "SECRET_VALUE")
         expect(flash[:success]).to include("Secret #{valid_secret} was successfully updated in Vault")
       end
 
       it "returns a bad_request with invalid params" do
-        put internal_secrets_path, params: {}
+        put admin_secrets_path, params: {}
         expect(response.status).to eq 400
       end
 
       it "creates an audit log" do
         Audit::Subscribe.listen :internal
         expect do
-          put internal_secrets_path, params: valid_params
+          put admin_secrets_path, params: valid_params
         end.to change(AuditLog, :count).by(1)
         Audit::Subscribe.forget :internal
       end

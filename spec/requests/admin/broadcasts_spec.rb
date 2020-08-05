@@ -1,10 +1,10 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/internal/broadcasts", type: :request do
-  let(:get_resource) { get "/internal/broadcasts" }
+RSpec.describe "/admin/broadcasts", type: :request do
+  let(:get_resource) { get "/admin/broadcasts" }
   let(:params) { { title: "Hello!", processed_html: "<p>Hello!</p>", type_of: "Welcome", active: true } }
-  let(:post_resource) { post "/internal/broadcasts", params: params }
+  let(:post_resource) { post "/admin/broadcasts", params: params }
 
   it_behaves_like "an InternalPolicy dependant request", Broadcast do
     let(:request) { get_resource }
@@ -15,13 +15,13 @@ RSpec.describe "/internal/broadcasts", type: :request do
 
     before { sign_in user }
 
-    describe "GET /internal/broadcasts" do
+    describe "GET /admin/broadcasts" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST /internal/broadcasts" do
+    describe "POST /admin/broadcasts" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
@@ -33,14 +33,14 @@ RSpec.describe "/internal/broadcasts", type: :request do
 
     before { sign_in super_admin }
 
-    describe "GET /internal/broadcasts" do
+    describe "GET /admin/broadcasts" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST /internal/broadcasts" do
+    describe "POST /admin/broadcasts" do
       it "creates a new broadcast" do
         expect do
           post_resource
@@ -48,26 +48,26 @@ RSpec.describe "/internal/broadcasts", type: :request do
       end
     end
 
-    describe "PUT /internal/broadcasts" do
+    describe "PUT /admin/broadcasts" do
       let!(:broadcast) { create(:welcome_broadcast, active: false) }
 
       it "updates the Broadcast's active_status_updated_at timestamp" do
         old_time = broadcast.active_status_updated_at
         Timecop.freeze(Time.current) do
           expect do
-            put "/internal/broadcasts/#{broadcast.id}", params: params
+            put "/admin/broadcasts/#{broadcast.id}", params: params
           end.to change { broadcast.reload.active }.from(false).to(true)
           expect(broadcast.active_status_updated_at).not_to eq(old_time)
         end
       end
     end
 
-    describe "DELETE /internal/broadcasts/:id" do
+    describe "DELETE /admin/broadcasts/:id" do
       let!(:broadcast) { create(:welcome_broadcast) }
 
       it "deletes the broadcast" do
         expect do
-          delete "/internal/broadcasts/#{broadcast.id}"
+          delete "/admin/broadcasts/#{broadcast.id}"
         end.to change { Broadcast.all.count }.by(-1)
         expect(response.body).to redirect_to "/admin/broadcasts"
       end
@@ -79,14 +79,14 @@ RSpec.describe "/internal/broadcasts", type: :request do
 
     before { sign_in single_resource_admin }
 
-    describe "GET /internal/broadcasts" do
+    describe "GET /admin/broadcasts" do
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
     end
 
-    describe "POST /internal/broadcasts" do
+    describe "POST /admin/broadcasts" do
       it "creates a new broadcast" do
         expect do
           post_resource
@@ -94,12 +94,12 @@ RSpec.describe "/internal/broadcasts", type: :request do
       end
     end
 
-    describe "DELETE /internal/broadcasts/:id" do
+    describe "DELETE /admin/broadcasts/:id" do
       let!(:broadcast) { create(:welcome_broadcast) }
 
       it "deletes the broadcast" do
         expect do
-          delete "/internal/broadcasts/#{broadcast.id}"
+          delete "/admin/broadcasts/#{broadcast.id}"
         end.to change { Broadcast.all.count }.by(-1)
         expect(response.body).to redirect_to "/admin/broadcasts"
       end
@@ -111,13 +111,13 @@ RSpec.describe "/internal/broadcasts", type: :request do
 
     before { sign_in single_resource_admin }
 
-    describe "GET /internal/broadcasts" do
+    describe "GET /admin/broadcasts" do
       it "blocks the request" do
         expect { get_resource }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
-    describe "POST /internal/broadcasts" do
+    describe "POST /admin/broadcasts" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
       end

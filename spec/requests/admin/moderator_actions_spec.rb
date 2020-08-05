@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/internal/moderator_reactions", type: :request do
+RSpec.describe "/admin/moderator_reactions", type: :request do
   context "when the user is not an admin" do
     let(:user) { create(:user) }
 
@@ -10,7 +10,7 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
 
     it "blocks the request" do
       expect do
-        get internal_moderator_actions_path
+        get admin_moderator_actions_path
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -23,7 +23,7 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
     it "renders the page" do
       sign_in single_resource_admin
 
-      get internal_moderator_actions_path
+      get admin_moderator_actions_path
       expect(response).to have_http_status(:ok)
     end
   end
@@ -36,7 +36,7 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
     end
 
     it "does not block the request" do
-      get internal_moderator_actions_path
+      get admin_moderator_actions_path
       expect(response).to have_http_status(:ok)
     end
 
@@ -48,7 +48,7 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
         roles: admin.roles.pluck(:name),
       )
 
-      get internal_moderator_actions_path
+      get admin_moderator_actions_path
 
       expect(response.body).to include(admin.username)
       expect(response.body).to include(audit_log.id.to_s)
@@ -61,7 +61,7 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
         user: nil,
       )
 
-      get internal_moderator_actions_path
+      get admin_moderator_actions_path
 
       expect(response.body).not_to include(admin.username)
       expect(response.body).to include(audit_log.id.to_s)
