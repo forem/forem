@@ -9,18 +9,18 @@ module Internal
     def update
       @profile_fields = ProfileField.find(params[:id])
       @profile_fields.update!(profile_field_params)
-      redirect_to "/internal/profile_fields"
+      redirect_to internal_profile_fields_path
     end
 
     def create
       @profile_field = ProfileField.create(profile_field_params)
-      redirect_to "/internal/profile_fields"
+      redirect_to internal_profile_fields_path
     end
 
     def destroy
       @profile_field = ProfileField.find(params[:id])
       @profile_field.destroy
-      redirect_to "/internal/profile_fields"
+      redirect_to internal_profile_fields_path
     end
 
     private
