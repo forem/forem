@@ -1,4 +1,4 @@
-module Internal
+module Admin
   class ModeratorsQuery
     DEFAULT_OPTIONS = {
       state: :trusted

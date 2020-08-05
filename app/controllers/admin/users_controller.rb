@@ -7,7 +7,7 @@ module Admin
     end
 
     def index
-      @users = Internal::UsersQuery.call(
+      @users = Admin::UsersQuery.call(
         options: params.permit(:role, :search),
       ).page(params[:page]).per(50)
     end

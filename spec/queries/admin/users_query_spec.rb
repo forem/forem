@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Internal::UsersQuery, type: :query do
+RSpec.describe Admin::UsersQuery, type: :query do
   subject { described_class.call(options: options) }
 
   let!(:user)  { create(:user, :trusted, name: "Greg") }

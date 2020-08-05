@@ -1,4 +1,4 @@
-module Internal
+module Admin
   class UsersQuery
     def self.call(relation: User.registered, options: {})
       role, search = options.values_at(:role, :search)

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Internal::ModeratorsQuery, type: :query do
+RSpec.describe Admin::ModeratorsQuery, type: :query do
   subject { described_class.call(options: options) }
 
   let!(:user) { create(:user, :trusted, name: "Greg") }
