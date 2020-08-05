@@ -11,6 +11,7 @@ const stylesheetsDirectory = path.resolve(
 );
 
 // TODO: Clean this up once things are working.
+// TODO: Log what's going on.
 
 async function generateDocumentation(themeFiles) {
   try {
@@ -69,8 +70,8 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
 
     for (const [cssProperty, cssRules] of Object.entries(rulesForStorybook)) {
       const storybookContent = [];
-      storybookContent.push(`import { h } from 'preact';
-
+      storybookContent.push(`  // This is an auto-generated file. DO NOT EDIT
+  import { h } from 'preact';
   import '../../crayons/storybook-utilities/designSystem.scss';
 
   export default {
@@ -84,7 +85,7 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
           cssRule.style._importants[cssRule.style['0']] === 'important';
         storybookContent.push(`
   export const ${sanitizedCssClassName} = () => <div class="container">
-    <p>CSS utility class for the <strong>${cssProperty}</strong> CSS property to set it's value to <strong>${value}</strong>. ${
+    <p>CSS utility class for the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/${cssProperty}" target="_blank" rel="noopener noreferrer">${cssProperty}</a> CSS property to set it's value to <strong>${value}</strong>. ${
           isImportant
             ? 'Note that <strong>!important</strong> is being used to override pre-design system CSS.'
             : ''
@@ -92,7 +93,7 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
     <pre><code>{\`${cssRule.cssText}\`}</code></pre>
   </div>
 
-  ${sanitizedCssClassName}.story = { name: '${className}' };
+  ${sanitizedCssClassName}.story = { name: '${className.replace(/^\./, '')}' };
   `);
       }
 
