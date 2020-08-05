@@ -7,7 +7,7 @@ export default class ReactionController extends Controller {
   // eslint-disable-next-line class-methods-use-this
   /* eslint no-alert: "error" */
   updateReaction(id, status) {
-    fetch(`/internal/reactions/${id}`, {
+    fetch(`/admin/reactions/${id}`, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',

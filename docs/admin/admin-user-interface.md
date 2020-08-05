@@ -1,11 +1,11 @@
 ---
-title: Internal User Interface
+title: Admin User Interface
 ---
 
 # User Interface
 
-Our internal dashboard is primarily ERB views that render on the server.
-Largely, we try to adhere to
+Our admin dashboard is primarily ERB views that render on the server. Largely,
+we try to adhere to
 [ActionView](https://guides.rubyonrails.org/action_view_overview.html)'s
 conventions in these views.
 
@@ -18,11 +18,11 @@ know.
 When a view requires some custom interactivity, we've historically leaned on
 vanilla JavaScript or jQuery, but going forward we've elected to use
 [StimulusJS](https://stimulusjs.org/) for DOM manipulation and interactivity
-inside of internal.
+inside of admin.
 
 # Forms
 
-Inside of the internal views, we're
+Inside of the admin views, we're
 [actively moving from the old ERB syntax for forms](https://m.patrikonrails.com/rails-5-1s-form-with-vs-old-form-helpers-3a5f72a8c78a).
 We tend to prefer the `form_with` helper over the previous `form_for` and
 `form_tag` helpers.
@@ -36,6 +36,6 @@ In the Forem application, [Webpacker](/frontend/webpacker/) is used to load
 Stimulus controllers. Ideally, controllers serve as an abstraction for shared
 functionality between views.
 
-New controllers can be added in `/app/javascript/internal/controllers`. Unit
-tests should exist for each controller in the adjacent
-`/app/javascript/internal/__tests__/contollers` directory.
+New controllers can be added in `/app/javascript/admin/controllers`. Unit tests
+should exist for each controller in the adjacent
+`/app/javascript/admin/__tests__/contollers` directory.
