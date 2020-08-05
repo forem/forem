@@ -21,6 +21,7 @@ services:
       RACK_TIMEOUT_WAIT_TIMEOUT: 10000
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
+      APP_DOMAIN: rails
     volumes:
       - .:/opt/apps/forem:z
       - ./.gems:/opt/apps/bundle:z
