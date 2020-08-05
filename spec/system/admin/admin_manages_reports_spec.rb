@@ -11,7 +11,7 @@ RSpec.describe "Admin manages reports", type: :system do
 
   before do
     sign_in admin
-    visit internal_feedback_messages_path
+    visit admin_feedback_messages_path
   end
 
   it "loads the view" do

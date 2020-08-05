@@ -6,11 +6,11 @@ RSpec.describe "Admin bans user", type: :system do
 
   before do
     sign_in admin
-    visit "/internal/users/#{user.id}/edit"
+    visit "/admin/users/#{user.id}/edit"
   end
 
   def ban_user
-    visit "/internal/users/#{user.id}/edit"
+    visit "/admin/users/#{user.id}/edit"
     select("Ban", from: "user_user_status")
     fill_in("user_note_for_current_role", with: "something")
     click_button("Update User Status")
@@ -18,7 +18,7 @@ RSpec.describe "Admin bans user", type: :system do
   end
 
   def warn_user
-    visit "/internal/users/#{user.id}/edit"
+    visit "/admin/users/#{user.id}/edit"
     select("Warn", from: "user_user_status")
     fill_in("user_note_for_current_role", with: "something")
     click_button("Update User Status")
@@ -31,7 +31,7 @@ RSpec.describe "Admin bans user", type: :system do
   end
 
   def unban_user
-    visit "/internal/users/#{user.id}/edit"
+    visit "/admin/users/#{user.id}/edit"
     select("Regular Member", from: "user_user_status")
     fill_in("user_note_for_current_role", with: "good user")
     click_button("Update User Status")

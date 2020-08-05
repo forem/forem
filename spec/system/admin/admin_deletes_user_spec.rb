@@ -6,7 +6,7 @@ RSpec.describe "Admin deletes user", type: :system do
 
   before do
     sign_in admin
-    visit "/internal/users/#{user.id}/edit"
+    visit "/admin/users/#{user.id}/edit"
   end
 
   it "enqueues a job for deleting the user" do

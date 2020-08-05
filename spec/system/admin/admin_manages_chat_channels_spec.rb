@@ -9,7 +9,7 @@ RSpec.describe "Admin manages chat channels", type: :system do
 
   before do
     sign_in admin
-    visit internal_chat_channels_path
+    visit admin_chat_channels_path
   end
 
   it "loads the view" do

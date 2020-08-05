@@ -9,7 +9,7 @@ RSpec.describe "Admin manages organizations", type: :system do
   context "when searching for organizations" do
     it "searches for organizations" do
       create_list :organization, 5
-      visit internal_organizations_path
+      visit admin_organizations_path
 
       fill_in "search", with: organization.name.to_s
       click_on "Search"
@@ -19,7 +19,7 @@ RSpec.describe "Admin manages organizations", type: :system do
   end
 
   context "when managing credits for a single organization" do
-    before { visit internal_organization_path(organization) }
+    before { visit admin_organization_path(organization) }
 
     it "does not show the remove form when there are no credits" do
       expect(page).to have_button("Add Org Credits")
