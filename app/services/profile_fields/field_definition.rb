@@ -1,4 +1,5 @@
 module ProfileFields
+  # This module defines a tiny DSL for declarative profile field seeders.
   module FieldDefinition
     extend ActiveSupport::Concern
 
