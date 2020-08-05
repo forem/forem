@@ -18,7 +18,7 @@ const generatedStoriesFolder = path.join(
 );
 
 /**
- * Generates a style sheet object for the give SASS/CSS file.
+ * Generates a style sheet object for the given SASS/CSS file.
  *
  * @param {string} file The file to load as a style sheet.
  *
@@ -37,9 +37,9 @@ async function getStyleSheet(file) {
 /**
  * Groups CSS rules by CSS property.
  *
- * @param {CSSRule} rules a set of CSS rules
+ * @param {CSSRule} rules A set of CSS rules
  *
- * @returns {object} a lookup whose keys are CSS properties
+ * @returns {object} A lookup whose keys are CSS properties
  * and the values are a lookup whose keys are CSS utility class names
  * and the values are the associated CSS rule.
  */
@@ -69,11 +69,11 @@ function groupCssRulesByCssProperty(rules) {
  * Generates the content for Storybook stories for all the CSS utility
  * classes associated to the given CSS property.
  *
- * @param {string} cssProperty a CSS property
- * @param {object} cssRules a lookup whose keys are CSS utility class
+ * @param {string} cssProperty A CSS property
+ * @param {object} cssRules A lookup whose keys are CSS utility class
  * names and the values are CSS rules.action-space
  *
- * @returns {string} the content for Storybook stories for all the CSS
+ * @returns {string} The content for Storybook stories for all the CSS
  * utility classes associated to the given CSS property
  */
 function generateUtilityClassStories(cssProperty, cssRules) {
