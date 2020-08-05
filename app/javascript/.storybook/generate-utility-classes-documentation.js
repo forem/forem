@@ -116,7 +116,7 @@ function generateUtilityClassStories(cssProperty, cssRules) {
 
     storybookStories.push(`
     export const ${sanitizedCssClassName} = () => <div class="container">
-      <p>CSS utility class for the following CSS properties:</p>
+      <p><code>${className}</code> utility class for the following CSS properties:</p>
       <ul>
         ${propertiesAndValues.join('')}
       </ul>
