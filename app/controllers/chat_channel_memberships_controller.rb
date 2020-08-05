@@ -38,16 +38,11 @@ class ChatChannelMembershipsController < ApplicationController
   def create_membership_request
     chat_channel = ChatChannel.find_by(id: channel_membership_params[:chat_channel_id])
     authorize chat_channel, :update?
-    usernames = channel_membership_params[:invitation_usernames].split(",").map do |username|
-      username.strip.delete("@")
-    end
-    users = User.where(username: usernames)
-    invitations_sent = chat_channel.invite_users(users: users, membership_role: "member", inviter: current_user)
-    message = if invitations_sent.zero?
-                "No invitations sent. Check for username typos."
-              else
-                "#{invitations_sent} #{'invitation'.pluralize(invitations_sent)} sent."
-              end
+    message = SendChannelInvitationService.new(
+      channel_membership_params[:invitation_usernames],
+      current_user,
+      chat_channel
+    ).send_invitations
 
     render json: { success: true, message: message, data: {} }, status: :ok
   end

@@ -51,6 +51,10 @@ class ChatChannelPolicy < ApplicationPolicy
     record.present?
   end
 
+  def create_channel?
+    record.present? && user.id
+  end
+
   private
 
   def user_can_edit_channel
