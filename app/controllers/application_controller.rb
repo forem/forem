@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   include SessionCurrentUser
   include ValidRequest
   include Pundit
-  include FastlyHeaders
+  include CachingHeaders
   include ImageUploads
   include VerifySetupCompleted
 
