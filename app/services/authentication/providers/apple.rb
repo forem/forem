@@ -7,14 +7,12 @@ module Authentication
       def new_user_data
         # Apple sends `first_name` and `last_name` as separate fields
         name = "#{info.first_name} #{info.last_name}"
-
-        # Apple has no concept of username, so we use the first name
-        apple_username = info.first_name.downcase
+        timestamp = raw_info.auth_time || raw_info.id_info.auth_time
 
         {
           email: info.email,
-          apple_created_at: Time.zone.at(raw_info.auth_time),
-          apple_username: apple_username,
+          apple_created_at: Time.zone.at(timestamp),
+          apple_username: user_nickname,
           name: name,
           remote_profile_image_url: SiteConfig.mascot_image_url
         }
@@ -26,20 +24,32 @@ module Authentication
         # Apple authorization, signs in again and then changes their name,
         # we update the username only if the name is not nil
         apple_username = info.first_name.present? ? info.first_name.downcase : nil
+        timestamp = raw_info.auth_time || raw_info.id_info.auth_time
 
-        data = { apple_created_at: Time.zone.at(raw_info.auth_time) }
+        data = { apple_created_at: Time.zone.at(timestamp) }
         data[:apple_username] = apple_username if apple_username
         data
+      end
+
+      # For Apple we override this method because the `info` payload doesn't
+      # include `nickname`. On top of not having a username, Apple allows users
+      # to 'choose' the first_name & last_name sent our way so they are
+      # definitely not assured to be unique. We still need `user_nickname` to
+      # always be the same on each login so we use the email hash as suffix to
+      # avoid collisions with other registrations with the same first_name
+      def user_nickname
+        email_digest = Digest::SHA512.hexdigest(info.email)
+        "#{info.first_name&.downcase}_#{email_digest}"[0...25]
       end
 
       def self.settings_url
         SETTINGS_URL
       end
 
-      def self.sign_in_path(params = {})
+      def self.sign_in_path(**kwargs)
         ::Authentication::Paths.sign_in_path(
           provider_name,
-          params,
+          **kwargs,
         )
       end
 

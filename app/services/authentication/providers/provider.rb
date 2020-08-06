@@ -22,8 +22,7 @@ module Authentication
       end
 
       def user_nickname
-        # Apple doesn't have the `nickname` field in the `info` payload
-        (info.first_name&.downcase || info.nickname).to_s
+        info.nickname.to_s
       end
 
       def name
