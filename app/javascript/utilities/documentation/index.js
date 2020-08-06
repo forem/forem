@@ -138,8 +138,7 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
   const rulesForStorybook = groupCssRulesByCssProperty(styleSheet.cssRules);
 
   for (const [cssProperty, cssRules] of Object.entries(rulesForStorybook)) {
-    const storybookContent = [];
-    storybookContent.push(generateUtilityClassStories(cssProperty, cssRules));
+    const storybookContent = generateUtilityClassStories(cssProperty, cssRules);
 
     console.log(
       `Persisting Storybook stories for CSS utility classes related to the ${cssProperty} property.`,
@@ -149,7 +148,7 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
         GENERATED_STORIES_FOLDER,
         `${cssProperty}_utilityClasses.stories.jsx`,
       ),
-      storybookContent.join(''),
+      storybookContent,
     );
   }
 }
