@@ -4,7 +4,7 @@ const {
   GENERATED_STORIES_FOLDER,
 } = require('../documentation');
 
-function createFileWriter() {
+function createMockFileWriter() {
   const files = {};
   async function fileWriter(file, content) {
     files[file] = content;
@@ -68,7 +68,7 @@ ${'      '}
       ],
     };
 
-    const { files, fileWriter } = createFileWriter();
+    const { files, fileWriter } = createMockFileWriter();
     const filePath = getStorybookFilePath('color');
 
     generateUtilityClassesDocumentation(styleSheet, fileWriter);
@@ -128,7 +128,7 @@ ${'      '}
       ],
     };
 
-    const { files, fileWriter } = createFileWriter();
+    const { files, fileWriter } = createMockFileWriter();
     const filePath = getStorybookFilePath('color');
 
     generateUtilityClassesDocumentation(styleSheet, fileWriter);
@@ -179,7 +179,7 @@ ${'      '}
       ],
     };
 
-    const { files, fileWriter } = createFileWriter();
+    const { files, fileWriter } = createMockFileWriter();
     const filePath = getStorybookFilePath('color');
 
     generateUtilityClassesDocumentation(styleSheet, fileWriter);
@@ -238,7 +238,7 @@ ${'      '}
       ],
     };
 
-    const { files, fileWriter } = createFileWriter();
+    const { files, fileWriter } = createMockFileWriter();
 
     generateUtilityClassesDocumentation(styleSheet, fileWriter);
     const filePath = getStorybookFilePath('color');
