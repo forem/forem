@@ -4,6 +4,7 @@ const util = require('util');
 
 const {
   GENERATED_STORIES_FOLDER,
+  getStyleSheet,
   generateUtilityClassesDocumentation,
 } = require('./documentation');
 
@@ -15,15 +16,26 @@ const stylesheetsDirectory = path.resolve(
 );
 
 (async () => {
-  // ensure the auto-generated Storybook folder exists.
+  console.log('Ensuring the auto-generated Storybook folder exists.');
+
   if (!(await folderExists(GENERATED_STORIES_FOLDER))) {
+    console.log(
+      'The auto-generated Storybook folder does not exist. Creating it.',
+    );
     await mkdir(GENERATED_STORIES_FOLDER, { recursive: true });
   }
 
+  const utilityClassesFilename = path.join(
+    stylesheetsDirectory,
+    'config/_generator.scss',
+  );
+
+  console.log(`Generating the style sheet for ${utilityClassesFilename}`);
+
   try {
-    await generateUtilityClassesDocumentation(
-      path.join(stylesheetsDirectory, 'config/_generator.scss'),
-    );
+    const styleSheet = await getStyleSheet(utilityClassesFilename);
+
+    await generateUtilityClassesDocumentation(styleSheet);
   } catch (error) {
     throw new Error('Error generating the CSS utilty class Storybook stories');
   }

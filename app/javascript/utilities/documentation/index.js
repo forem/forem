@@ -110,11 +110,11 @@ function generateUtilityClassStories(cssProperty, cssRules) {
       <ul>
         ${propertiesAndValues.join('')}
       </ul>
-      <p>${
+      ${
         isImportant
-          ? 'Note that <code>!important</code> is being used to override pre-design system CSS.'
+          ? '<p>Note that <code>!important</code> is being used to override pre-design system CSS.</p>'
           : ''
-      }</p>
+      }
       <pre><code>{\`${prettier.format(cssRule.cssText, {
         parser: 'css',
       })}\`}</code></pre>
@@ -130,10 +130,10 @@ function generateUtilityClassStories(cssProperty, cssRules) {
   return storybookStories.join('');
 }
 
-async function generateUtilityClassesDocumentation(utilityClassesFilename) {
-  console.log(`Generating the style sheet for ${utilityClassesFilename}`);
-  const styleSheet = await getStyleSheet(utilityClassesFilename);
-
+async function generateUtilityClassesDocumentation(
+  styleSheet,
+  fileWriter = file.writeFile,
+) {
   console.log('Grouping stylesheet rules by CSS property');
   const rulesForStorybook = groupCssRulesByCssProperty(styleSheet.cssRules);
 
@@ -143,7 +143,7 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
     console.log(
       `Persisting Storybook stories for CSS utility classes related to the ${cssProperty} property.`,
     );
-    await file.writeFile(
+    await fileWriter(
       path.join(
         GENERATED_STORIES_FOLDER,
         `${cssProperty}_utilityClasses.stories.jsx`,
@@ -155,5 +155,6 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
 
 module.exports = {
   GENERATED_STORIES_FOLDER,
+  getStyleSheet,
   generateUtilityClassesDocumentation,
 };
