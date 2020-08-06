@@ -255,9 +255,8 @@ To install Elasticsearch perform the following steps:
    - For any key that you wish to enter/replace:
 
      1. Create `config/application.yml` by copying from the provided template
-        (ie. with bash:
-        `cp config/sample_application.yml config/application.yml`). This is a
-        personal file that is ignored in git.
+        (ie. with bash: `cp config/.env_sample .env`). This is a personal file
+        that is ignored in git.
      1. Obtain the development variable and apply the key you wish to
         enter/replace. ie:
 

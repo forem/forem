@@ -15,7 +15,7 @@ To set up keys for your local instance of Forem, you'll need to create an
 `sample_application.yml` in the `config` directory:
 
 ```shell
-cp config/sample_application.yml config/application.yml
+cp config/.env_sample .env
 ```
 
 Then, add each key you need to the `application.yml` file. For example, if
