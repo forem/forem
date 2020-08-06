@@ -2,26 +2,35 @@ module Admin
   class BadgesController < Admin::ApplicationController
     layout "admin"
 
+    ALLOWED_PARAMS = %i[
+      title slug description
+    ].freeze
+
     def index
       @badges = Badge.all
     end
 
-    def new
-      @badge = Badge.new
-    end
+    # def award
+    #   @badge = Badge.all
+    # end
+    # def new; end
 
     def edit
       @badge = Badge.find(params[:id])
     end
 
-    def create; end
+    # def create
+    #   render :award
+    #   # award_badges
+    # end
+    # def create; end
 
     def update
       @badge = Badge.find(params[:id])
 
-      if @badge.update(permitted_params)
+      if @badge.update(badge_params)
         flash[:success] = "Badge has been updated!"
-        redirect_to internal_badge_path(@badge)
+        redirect_to internal_badges_path
       else
         flash[:danger] = @badge.errors.full_messages.to_sentence
         render :edit
@@ -43,6 +52,13 @@ module Admin
     end
 
     private
+
+    private_constant :ALLOWED_PARAMS
+
+    def badge_params
+      allowed_params = ALLOWED_PARAMS
+      params.require(:badge).permit(allowed_params)
+    end
 
     def permitted_params
       params.permit(:usernames, :badge, :message_markdown)
