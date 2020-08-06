@@ -6,6 +6,28 @@ module Admin
       @badges = Badge.all
     end
 
+    def new
+      @badge = Badge.new
+    end
+
+    def edit
+      @badge = Badge.find(params[:id])
+    end
+
+    def create; end
+
+    def update
+      @badge = Badge.find(params[:id])
+
+      if @badge.update(permitted_params)
+        flash[:success] = "Badge has been updated!"
+        redirect_to internal_badge_path(@badge)
+      else
+        flash[:danger] = @badge.errors.full_messages.to_sentence
+        render :edit
+      end
+    end
+
     def award_badges
       raise ArgumentError, "Please choose a badge to award" if permitted_params[:badge].blank?
 
