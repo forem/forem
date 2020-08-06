@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
-  let_it_be_readonly(:dev_account) { create(:user) }
-  let_it_be_readonly(:mascot_account) { create(:user) }
-  let_it_be_changeable(:user) { create(:user) }
-  let_it_be_changeable(:organization) { create(:organization) }
+  let(:dev_account) { create(:user) }
+  let(:mascot_account) { create(:user) }
+  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)
@@ -449,7 +449,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
         get notifications_path(filter: :org)
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.map(&:organization_id).compact.size).to eq(0)
+        expect(notifications.filter_map(&:organization_id).size).to eq(0)
       end
 
       it "does not render notifications belonging to other orgs" do

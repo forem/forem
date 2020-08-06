@@ -12,7 +12,6 @@ end
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
-  let(:user_with_user_optional_fields) { create(:user, :with_user_optional_fields) }
   let(:org) { create(:organization) }
 
   before { omniauth_mock_providers_payload }
@@ -133,13 +132,6 @@ RSpec.describe User, type: :model do
       end
       # rubocop:enable RSpec/NamedSubject
 
-      it "has at most three optional fields" do
-        expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
-        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field",
-                                                                                  value: "some value")
-        expect(fourth_field).not_to be_valid
-      end
-
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
       it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
@@ -163,6 +155,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
+      it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
@@ -597,7 +590,7 @@ RSpec.describe User, type: :model do
   end
 
   context "when callbacks are triggered before and after create" do
-    let_it_be(:user) { create(:user, email: nil) }
+    let(:user) { create(:user, email: nil) }
 
     describe "#language_settings" do
       it "sets correct language_settings by default" do
@@ -967,8 +960,8 @@ RSpec.describe User, type: :model do
   end
 
   describe "#followed_articles" do
-    let_it_be(:another_user) { create(:user) }
-    let_it_be(:articles) { create_list(:article, 2, user: another_user) }
+    let!(:another_user) { create(:user) }
+    let!(:articles) { create_list(:article, 2, user: another_user) }
 
     before do
       user.follow(another_user)

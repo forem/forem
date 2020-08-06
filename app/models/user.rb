@@ -5,27 +5,27 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
-  BEHANCE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\z/.freeze
+  BEHANCE_URL_REGEXP = %r{\A(http(s)?://)?(www.behance.net|behance.net)/.*\z}.freeze
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
-  DRIBBBLE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\z/.freeze
+  DRIBBBLE_URL_REGEXP = %r{\A(http(s)?://)?(www.dribbble.com|dribbble.com)/.*\z}.freeze
   EDITORS = %w[v1 v2].freeze
-  FACEBOOK_URL_REGEXP = /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\z/.freeze
+  FACEBOOK_URL_REGEXP = %r{\A(http(s)?://)?(www.facebook.com|facebook.com)/.*\z}.freeze
   FONTS = %w[default sans_serif monospace comic_sans open_dyslexic].freeze
-  GITLAB_URL_REGEXP = /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\z/.freeze
+  GITLAB_URL_REGEXP = %r{\A(http(s)?://)?(www.gitlab.com|gitlab.com)/.*\z}.freeze
   INBOXES = %w[open private].freeze
   INSTAGRAM_URL_REGEXP =
-    /\A(http(s)?:\/\/)?(?:www.)?instagram.com\/(?=.{1,30}\/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+\/?\z/.freeze
+    %r{\A(http(s)?://)?(?:www.)?instagram.com/(?=.{1,30}/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+/?\z}.freeze
 
-  LINKEDIN_URL_REGEXP = /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\z/.freeze
-  MEDIUM_URL_REGEXP = /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\z/.freeze
+  LINKEDIN_URL_REGEXP = %r{\A(http(s)?://)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)/.*\z}.freeze
+  MEDIUM_URL_REGEXP = %r{\A(http(s)?://)?(www.medium.com|medium.com)/.*\z}.freeze
   NAVBARS = %w[default static].freeze
   STACKOVERFLOW_URL_REGEXP =
-    /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\z/.freeze
+    %r{\A(http(s)?://)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)/.*\z}.freeze
 
-  YOUTUBE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.youtube.com|youtube.com)\/.*\z/.freeze
+  YOUTUBE_URL_REGEXP = %r{\A(http(s)?://)?(www.youtube.com|youtube.com)/.*\z}.freeze
   STREAMING_PLATFORMS = %w[twitch].freeze
   THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
-  TWITCH_URL_REGEXP = /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\z/.freeze
+  TWITCH_URL_REGEXP = %r{\A(http(s)?://)?(www.twitch.tv|twitch.tv)/.*\z}.freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
   MESSAGES = {
@@ -92,7 +92,6 @@ class User < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
   has_many :notification_subscriptions, dependent: :destroy
-  has_many :user_optional_fields, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :offender_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
@@ -112,7 +111,8 @@ class User < ApplicationRecord
 
   mount_uploader :profile_image, ProfileImageUploader
 
-  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable, :recoverable
+  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
+         :recoverable, :lockable
 
   validates :behance_url, length: { maximum: 100 }, allow_blank: true, format: BEHANCE_URL_REGEXP
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
@@ -140,6 +140,7 @@ class User < ApplicationRecord
   validates :medium_url, length: { maximum: 200 }, allow_blank: true, format: MEDIUM_URL_REGEXP
   validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for, length: { maximum: 500 }
   validates :name, length: { in: 1..100 }
+  validates :password, length: { in: 8..100 }, allow_nil: true
   validates :stackoverflow_url, length: { maximum: 150 }, allow_blank: true, format: STACKOVERFLOW_URL_REGEXP
   validates :summary, length: { maximum: 1300 }, allow_nil: true
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
@@ -159,6 +160,9 @@ class User < ApplicationRecord
   validate :validate_mastodon_url
   validate :can_send_confirmation_email
   validate :update_rate_limit
+  # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
+  # field will be marked as dirty, not :password.
+  validate :password_matches_confirmation, if: :encrypted_password_changed?
 
   alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
@@ -166,19 +170,18 @@ class User < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
 
+  before_validation :check_for_username_change
+  before_validation :downcase_email
+  before_validation :set_config_input
+  # make sure usernames are not empty, to be able to use the database unique index
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
+  before_validation :set_username
+  before_create :set_default_language
+  before_destroy :unsubscribe_from_newsletters, prepend: true
+  before_destroy :destroy_follows, prepend: true
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
   after_save :conditionally_resave_articles
-
-  before_create :set_default_language
-  before_validation :set_username
-  # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
-  before_validation :set_config_input
-  before_validation :downcase_email
-  before_validation :check_for_username_change
-  before_destroy :destroy_follows, prepend: true
-  before_destroy :unsubscribe_from_newsletters, prepend: true
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
@@ -274,7 +277,7 @@ class User < ApplicationRecord
         id: Follow.where(
           follower_id: id,
           followable_type: "ActsAsTaggableOn::Tag",
-        ).pluck(:followable_id),
+        ).select(:followable_id),
       ).pluck(:name)
     end
   end
@@ -643,5 +646,11 @@ class User < ApplicationRecord
     rate_limiter.check_limit!(:user_update)
   rescue RateLimitChecker::LimitReached => e
     errors.add(:base, "User could not be saved. #{e.message}")
+  end
+
+  def password_matches_confirmation
+    return true if password == password_confirmation
+
+    errors.add(:password, "doesn't match password confirmation")
   end
 end

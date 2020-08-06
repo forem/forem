@@ -1,5 +1,5 @@
 class NoOpHTTPClient
-  def self.post(uri, params = {})
+  def self.post(uri, **kwargs)
     # bonus, you could log or observe posted params here
   end
 end

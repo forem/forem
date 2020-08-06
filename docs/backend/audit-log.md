@@ -43,3 +43,23 @@ the internal controller.
 
 It's a good idea to add a similar `after_action` to any controller action that
 might benefit from increased transparency.
+
+Additionally, the `AuditLog` is used to track important actions performed on a
+user's account, e.g. adding or removing a credit card:
+
+```ruby
+#<AuditLog:0x00000001193ce348> {
+    category: "user.credit_card.edit",
+  created_at: Tue, 21 Jul 2020 06:35:13 +03 +03:00,
+        data: {
+         "action" => "create",
+     "controller" => "stripe_active_cards",
+    "user_action" => "add"
+  },
+          id: 4,
+       roles: [],
+        slug: "credit_card_add",
+  updated_at: Tue, 21 Jul 2020 06:35:13 +03 +03:00,
+     user_id: 53
+}
+```

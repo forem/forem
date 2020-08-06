@@ -7,7 +7,7 @@ RSpec.describe Article, type: :model do
     article
   end
 
-  let_it_be(:user) { create(:user) }
+  let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
 
   include_examples "#sync_reactions_count", :article

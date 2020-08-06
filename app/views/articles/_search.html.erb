@@ -48,10 +48,10 @@
         var sortString = buildSortString(sortBy, sortDirection);
 
         if (filters) {
-          window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
+          window.history.pushState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
           search(query, filters, sortBy, sortDirection);
         } else {
-          window.history.replaceState(null, null, "/search?q=" + query + sortString);
+          window.history.pushState(null, null, "/search?q=" + query + sortString);
           search(query, "", sortBy, sortDirection);
         }
 
@@ -83,7 +83,7 @@
           return;
         }
         var filters = e.target.dataset.filter;
-        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
+        window.history.pushState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
         var className = e.target.className;
         for (var i = 0; i < filterButts.length; i++) {
           filterButts[i].classList.remove("selected");

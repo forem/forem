@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe SocialLinkHelper do
-  let_it_be_readonly(:user) { create(:user) }
+  let(:user) { create(:user) }
 
   describe ".user_twitter_link" do
     let(:value) { helper.user_twitter_link(user) }

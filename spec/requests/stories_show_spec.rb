@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "StoriesShow", type: :request do
-  let_it_be(:user)                  { create(:user) }
-  let_it_be(:org, reload: true)     { create(:organization) }
-  let_it_be(:article, reload: true) { create(:article, user: user) }
+  let(:user) { create(:user) }
+  let(:org)     { create(:organization) }
+  let(:article) { create(:article, user: user) }
 
   describe "GET /:username/:slug (articles)" do
     it "renders proper title" do
@@ -73,6 +73,19 @@ RSpec.describe "StoriesShow", type: :request do
     it "does not render title tag with search_optimized_title_preamble not signed in but not set" do
       get article.path
       expect(response.body).not_to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
+    end
+
+    ###
+
+    it "renders date-no-year if article published this year" do
+      get article.path
+      expect(response.body).to include "date-no-year"
+    end
+
+    it "renders date with year if article published last year" do
+      article.update_column(:published_at, 1.year.ago)
+      get article.path
+      expect(response.body).not_to include "date-no-year"
     end
 
     it "renders user payment pointer if set" do

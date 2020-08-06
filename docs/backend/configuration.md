@@ -22,7 +22,7 @@ credentials and third party services. Examples:
 Settings managed via ENVied can be found in
 [`Envfile`](https://github.com/forem/forem/blob/master/Envfile) (see
 [Configuring Environment Variables](../getting-started/config-env.md)) and
-viewed at `/internal/config` (see [Accessing the admin panel](./admin.md)):
+viewed at `/internal/config` (see [the Internal guide](../internal/readme.md)):
 
 ![Screenshot of env variable admin interface](https://user-images.githubusercontent.com/47985/73627243-67d41f80-467e-11ea-9121-221275ff8a89.png)
 
@@ -38,9 +38,9 @@ Examples:
 These settings can be accessed via the
 [`SiteConfig`](https://github.com/forem/forem/blob/master/app/models/site_config.rb)
 object and viewed / modified via `/internal/config` (see
-[Accessing the admin panel](./admin.md)).
+[the Internal guide](../internal/readme.md)).
 
-![Screenshot of site configuration admin interface](https://user-images.githubusercontent.com/47985/73627238-6276d500-467e-11ea-8724-afb703f056bc.png)
+![Screenshot of site configuration internal interface](https://user-images.githubusercontent.com/47985/73627238-6276d500-467e-11ea-8724-afb703f056bc.png)
 
 ## Vault
 
