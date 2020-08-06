@@ -4,7 +4,7 @@ module Admin
     ALLOWED_PARAMS = %i[
       published body_markdown title category listing_category_id tag_list action
     ].freeze
-    layout "internal"
+    layout "admin"
 
     def index
       @listings =

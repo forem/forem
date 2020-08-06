@@ -1,6 +1,6 @@
 module Admin
   class FeedbackMessagesController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @q = FeedbackMessage.includes(:reporter, :offender, :affected)

@@ -1,6 +1,6 @@
 module Admin
   class ToolsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index; end
 

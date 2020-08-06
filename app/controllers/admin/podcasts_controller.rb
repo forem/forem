@@ -1,6 +1,6 @@
 module Admin
   class PodcastsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     before_action :find_podcast, only: %i[edit update fetch remove_admin add_admin]
     before_action :find_user, only: %i[remove_admin add_admin]

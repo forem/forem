@@ -1,6 +1,6 @@
 module Admin
   class TagsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     after_action only: [:update] do
       Audit::Logger.log(:moderator, current_user, params.dup)

@@ -1,6 +1,6 @@
 module Admin
   class WebhookEndpointsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @endpoints = Webhook::Endpoint.includes(:user)

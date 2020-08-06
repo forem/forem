@@ -1,6 +1,6 @@
 module Admin
   class SponsorshipsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @sponsorships = Sponsorship.includes(:organization, :user).order(created_at: :desc).page(params[:page]).per(50)

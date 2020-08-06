@@ -1,6 +1,6 @@
 module Admin
   class OrganizationMembershipsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def update
       organization_membership = OrganizationMembership.find_by(id: params[:id])

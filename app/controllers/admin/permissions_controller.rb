@@ -1,6 +1,6 @@
 module Admin
   class PermissionsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @users = User.with_role(:admin)

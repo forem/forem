@@ -1,6 +1,6 @@
 module Admin
   class EventsController < ApplicationController
-    layout "internal"
+    layout "admin"
     include ApplicationHelper
 
     def index

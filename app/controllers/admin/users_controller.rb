@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     after_action only: %i[update user_status banish full_delete merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)

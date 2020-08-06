@@ -1,6 +1,6 @@
 module Admin
   class InvitationsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @invitations = User.where(registered: false).page(params[:page]).per(50)

@@ -1,5 +1,5 @@
 module Admin
   class GrowthController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
   end
 end

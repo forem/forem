@@ -1,6 +1,6 @@
 module Admin
   class BadgesController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @badges = Badge.all

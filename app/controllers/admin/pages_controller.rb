@@ -1,6 +1,6 @@
 module Admin
   class PagesController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @pages = Page.all

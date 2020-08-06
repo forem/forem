@@ -1,6 +1,6 @@
 module Admin
   class ModsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     INDEX_ATTRIBUTES = %i[
       id

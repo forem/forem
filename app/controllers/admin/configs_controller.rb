@@ -1,6 +1,6 @@
 module Admin
   class ConfigsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     before_action :extra_authorization_and_confirmation, only: [:create]
 

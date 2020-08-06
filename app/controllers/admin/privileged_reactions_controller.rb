@@ -1,6 +1,6 @@
 module Admin
   class PrivilegedReactionsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     PRIVILEGED_REACTION_CATEGORIES = %i[thumbsup thumbsdown vomit].freeze
 

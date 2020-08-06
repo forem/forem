@@ -1,6 +1,6 @@
 module Admin
   class WelcomeController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @daily_threads = Article.where("title LIKE 'Welcome Thread - %'")

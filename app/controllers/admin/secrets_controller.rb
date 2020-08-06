@@ -1,6 +1,6 @@
 module Admin
   class SecretsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     before_action :validate_settable_secret, only: [:update]
     after_action only: [:update] do

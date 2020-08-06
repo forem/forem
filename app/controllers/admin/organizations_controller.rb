@@ -1,6 +1,6 @@
 module Admin
   class OrganizationsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     CREDIT_ACTIONS = {
       add: :add_to,

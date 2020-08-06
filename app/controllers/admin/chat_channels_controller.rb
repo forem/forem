@@ -1,6 +1,6 @@
 module Admin
   class ChatChannelsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @q = ChatChannel.where(channel_type: "invite_only").includes(:users).ransack(params[:q])

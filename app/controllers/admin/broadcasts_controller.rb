@@ -1,6 +1,6 @@
 module Admin
   class BroadcastsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @broadcasts = if params[:type_of]

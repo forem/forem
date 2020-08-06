@@ -1,6 +1,6 @@
 module Admin
   class CommentsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @comments = if params[:state]&.start_with?("toplast-")

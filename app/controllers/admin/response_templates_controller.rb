@@ -1,6 +1,6 @@
 module Admin
   class ResponseTemplatesController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
     after_action only: %i[create update destroy] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end

@@ -1,6 +1,6 @@
 module Admin
   class ModeratorActionsController < Admin::ApplicationController
-    layout "internal"
+    layout "admin"
 
     def index
       @q = AuditLog
