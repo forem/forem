@@ -31,7 +31,7 @@ RSpec.describe "Articles", type: :request do
       get "/feed"
       expect(response.status).to eq(200)
 
-      expected_cache_control_headers = %w[public no-cache]
+      expected_cache_control_headers = %w[max-age=600 public]
       expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
     end
 

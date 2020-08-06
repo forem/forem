@@ -39,7 +39,7 @@ RSpec.describe "Reactions", type: :request do
 
       it "does not set Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).not_to include(
-          "Cache-Control" => "public, no-cache",
+          "Cache-Control" => "max-age=86400, public",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
@@ -67,7 +67,7 @@ RSpec.describe "Reactions", type: :request do
 
       it "sets Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).to include(
-          "Cache-Control" => "public, no-cache",
+          "Cache-Control" => "max-age=86400, public",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
@@ -100,7 +100,7 @@ RSpec.describe "Reactions", type: :request do
 
       it "does not set Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).not_to include(
-          "Cache-Control" => "public, no-cache",
+          "Cache-Control" => "max-age=86400, public",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
@@ -123,7 +123,7 @@ RSpec.describe "Reactions", type: :request do
 
       it "sets Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).to include(
-          "Cache-Control" => "public, no-cache",
+          "Cache-Control" => "max-age=86400, public",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
