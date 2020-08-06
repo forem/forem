@@ -29,8 +29,12 @@
 body {
   --content-font-family: var(--ff-serif);
 
+  &.serif-article-body {
+    --content-font-family: var(--ff-serif);
+  }
+
   &.sans-serif-article-body {
-    --content-font-family: var(--ff-default);
+    --content-font-family: var(--ff-sans-serif);
   }
 
   &.comic-sans-article-body {
@@ -38,7 +42,7 @@ body {
   }
 
   &.monospace-article-body {
-    --content-font-family: var(--ff-accent);
+    --content-font-family: var(--ff-monospace);
   }
 
   &.open-dyslexic-article-body {
