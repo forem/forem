@@ -1,15 +1,21 @@
 module ImageResizer
-  def self.call(img_src, height:, width:, crop:, quality:, flags:)
-    options =  {
-      type: "fetch",
-      height: height,
-      width: width,
-      sign_url: true,
-      crop: crop || "limit",
-      quality: quality || "auto",
-      fetch_format: "auto",
-      flags: flags || "progressive"
-    }.reject { |_, v| v.blank? }
+  DEFAULT_CL_OPTIONS = {
+    type: "fetch",
+    height: nil,
+    width: nil,
+    crop: "limit",
+    quality: "auto",
+    flags: "progressive",
+    fetch_format: "auto",
+    sign_url: true
+  }.freeze
+
+  def self.call(img_src, **kwargs)
+    options = DEFAULT_CL_OPTIONS.merge(kwargs).reject { |_, v| v.blank? }
+
+    if img_src&.include?(".gif")
+      options[:quality] = 66
+    end
 
     ActionController::Base.helpers.cl_image_path(img_src, options)
   end
