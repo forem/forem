@@ -40,7 +40,6 @@ RSpec.describe HtmlVariant, type: :model do
   it "prefixes an image with cloudinary" do
     html = "<div><img src='https://devimages.com/image.jpg' /></div>"
     html_variant.update(approved: false, html: html)
-    prefixed_url = "https://res.cloudinary.com/TEST-CLOUD/image/fetch/s--ClQDkKvF--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_420/https://devimages.com/image.jpg"
-    expect(html_variant.html).to include(prefixed_url)
+    expect(html_variant.html).to include("/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_420/https://devimages.com/image.jpg")
   end
 end
