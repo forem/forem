@@ -24,3 +24,24 @@
   font-weight: bold;
   font-style: italic;
 }
+
+// Content fonts
+body {
+  --content-font-family: var(--ff-serif);
+
+  &.sans-serif-article-body {
+    --content-font-family: var(--ff-default);
+  }
+
+  &.comic-sans-article-body {
+    --content-font-family: var(--ff-comic);
+  }
+
+  &.monospace-article-body {
+    --content-font-family: var(--ff-accent);
+  }
+
+  &.open-dyslexic-article-body {
+    --content-font-family: var(--ff-dyslexic);
+  }
+}
