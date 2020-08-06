@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+/* global require, __dirname */
+
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
@@ -6,13 +10,13 @@ const {
   GENERATED_STORIES_FOLDER,
   getStyleSheet,
   generateUtilityClassesDocumentation,
-} = require('./documentation');
+} = require('../app/javascript/utilities/documentation');
 
 const folderExists = util.promisify(fs.exists);
 const mkdir = util.promisify(fs.mkdir);
 const stylesheetsDirectory = path.resolve(
   __dirname,
-  '../../assets/stylesheets',
+  '../app/assets/stylesheets',
 );
 
 (async () => {
