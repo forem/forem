@@ -12,9 +12,9 @@ module Internal
     def update
       profile_field = ProfileField.find(params[:id])
       if profile_field.update(profile_field_params)
-        flash[:success] = "Profile Field updated"
+        flash[:success] = "Profile field #{profile_field.label} updated"
       else
-        flash[:error] = "Profile Field error: #{profile_field.errors_as_sentence}"
+        flash[:error] = "Error: #{profile_field.errors_as_sentence}"
       end
       redirect_to internal_profile_fields_path
     end
@@ -22,9 +22,9 @@ module Internal
     def create
       profile_field = ProfileField.new(profile_field_params)
       if profile_field.save
-        flash[:success] = "Profile Field created"
+        flash[:success] = "Profile field #{profile_field.label} created"
       else
-        flash[:error] = "Profile Field error: #{profile_field.errors_as_sentence}"
+        flash[:error] = "Error: #{profile_field.errors_as_sentence}"
       end
       redirect_to internal_profile_fields_path
     end
@@ -32,9 +32,9 @@ module Internal
     def destroy
       profile_field = ProfileField.find(params[:id])
       if profile_field.destroy
-        flash[:success] = "Profile Field destroyed"
+        flash[:success] = "Profile field #{profile_field.label} deleted"
       else
-        flash[:error] = "Profile Field error: #{profile_field.errors_as_sentence}"
+        flash[:error] = "Error: #{profile_field.errors_as_sentence}"
       end
       redirect_to internal_profile_fields_path
     end
