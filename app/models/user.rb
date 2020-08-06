@@ -245,21 +245,10 @@ class User < ApplicationRecord
     end
   end
 
-  # handles both old (prefer_language_*) and new (Array of language codes) formats
   def preferred_languages_array
     return @preferred_languages_array if defined?(@preferred_languages_array)
 
-    if language_settings["preferred_languages"].present?
-      @preferred_languages_array = language_settings["preferred_languages"].to_a
-    else
-      languages = []
-      language_settings.each_key do |setting|
-        to_split = language_settings[setting] && setting.include?("prefer_language_")
-        languages << setting.split("prefer_language_")[1] if to_split
-      end
-      @preferred_languages_array = languages
-    end
-    @preferred_languages_array
+    @preferred_languages_array = language_settings["preferred_languages"]
   end
 
   def processed_website_url

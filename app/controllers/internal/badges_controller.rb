@@ -17,7 +17,7 @@ module Internal
       redirect_to internal_badges_url
     rescue ArgumentError => e
       flash[:danger] = e.message
-      redirect_to "/internal/badges"
+      redirect_to "/internal/badge_achievements"
     end
 
     private
