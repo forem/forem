@@ -12,7 +12,7 @@
 </div>
 <div class="form-group">
   <%= form.label :input_type %>
-  <%= form.select :input_type, ProfileField::INPUT_TYPES.keys, class: "form-control" %>
+  <%= form.select :input_type, ProfileField.input_types.keys, class: "form-control" %>
 </div>
 <div class="form-group">
   <%= form.label :active %>
