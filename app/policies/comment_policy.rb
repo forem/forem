@@ -40,7 +40,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def admin_delete?
-    user_admin?
+    minimal_admin?
   end
 
   def permitted_attributes_for_update

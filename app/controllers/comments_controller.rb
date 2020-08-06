@@ -234,11 +234,12 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:comment_id])
     authorize @comment
     @comment.deleted = true
+    redirect = @comment.commentable&.path
 
-    if @comment.save
-      redirect_to "#{URI.parse(@comment.path).path}/mod", notice: "Comment was successfully deleted."
+    if @comment.save && redirect
+      redirect_to URI.parse(redirect).path, notice: "Comment was successfully deleted."
     else
-      redirect_to "#{URI.parse(@comment.path).path}/mod", alert: "Something went wrong; comment NOT deleted."
+      redirect_to "#{@comment.path}/mod", alert: "Something went wrong; Comment NOT deleted."
     end
   end
 
