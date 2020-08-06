@@ -13,6 +13,11 @@
     </div>
     <hr>
     <div class="form-group">
+      <%= form.label :description, "Description:" %>
+      <%= form.text_field :description, class: "form-control" %>
+    </div>
+    <hr>
+    <div class="form-group">
       <%= form.label :badge_image, "Badge Image:" %>
       <br>
       <img class="mx-auto mt-3" width="60" height="60" src="<%= @badge.badge_image %>" alt="badge image">
