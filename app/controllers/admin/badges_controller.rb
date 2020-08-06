@@ -36,10 +36,10 @@ module Admin
       BadgeAchievements::BadgeAwardWorker.perform_async(usernames, permitted_params[:badge], message)
 
       flash[:success] = "Badges are being rewarded. The task will finish shortly."
-      redirect_to admin_badges_url
+      redirect_to internal_badges_path
     rescue ArgumentError => e
       flash[:danger] = e.message
-      redirect_to "/admin/badge_achievements"
+      redirect_to internal_badges_path
     end
 
     private
