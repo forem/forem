@@ -22,6 +22,7 @@ module Internal
       { name: "pages",              controller: "pages" },
       { name: "permissions",        controller: "permissions" },
       { name: "podcasts",           controller: "podcasts" },
+      { name: "profile setup",      controller: "profile_fields" },
       { name: "reports",            controller: "reports" },
       { name: "response_templates", controller: "response_templates" },
       { name: "sponsorships",       controller: "sponsorships" },

@@ -70,6 +70,7 @@ Rails.application.routes.draw do
         delete :remove_admin
       end
     end
+    resources :profile_fields, only: %i[index update create destroy]
     resources :reactions, only: [:update]
     resources :response_templates, only: %i[index new edit create update destroy]
     resources :chat_channels, only: %i[index create update] do
