@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/internal/profile_fields", type: :request do
+RSpec.describe "/admin/profile_fields", type: :request do
   include ActiveJob::TestHelper
   let(:user) { create(:user) }
 
@@ -9,27 +9,27 @@ RSpec.describe "/internal/profile_fields", type: :request do
       sign_in user
     end
 
-  describe "GET /internal/profile_fields" do
+  describe "GET /admin/profile_fields" do
     let(:profile_field) { create(:profile_field) }
 
     it "renders successfully" do
-      get internal_profile_fields_path
+      get admin_profile_fields_path
       expect(response).to be_successful
     end
 
     it "lists the profile fields" do
       profile_field
-      get internal_profile_fields_path
+      get admin_profile_fields_path
       expect(response.body).to include(
         profile_field.label,
         profile_field.input_type,
         profile_field.description,
-        profile_field.placeholder_text
+        profile_field.placeholder_text,
       )
     end
   end
 
-  describe "POST /internal/profile_fields" do
+  describe "POST /admin/profile_fields" do
 
     let(:new_profile_field) do
       {
@@ -42,13 +42,13 @@ RSpec.describe "/internal/profile_fields", type: :request do
     end
 
     it "redirects successfully" do
-      post internal_profile_fields_path, params: { profile_field: new_profile_field }
-      expect(response).to redirect_to internal_profile_fields_path
+      post admin_profile_fields_path, params: { profile_field: new_profile_field }
+      expect(response).to redirect_to admin_profile_fields_path
     end
 
     it "creates a profile_field" do
       expect do
-        post internal_profile_fields_path, params: { profile_field: new_profile_field }
+        post admin_profile_fields_path, params: { profile_field: new_profile_field }
       end.to change { ProfileField.all.count }.by(1)
 
       last_profile_field_record = ProfileField.last
@@ -60,36 +60,35 @@ RSpec.describe "/internal/profile_fields", type: :request do
     end
   end
 
-  describe "PUT /internal/profile_fields/:id" do
+  describe "PUT /admin/profile_fields/:id" do
     let(:profile_field) { create(:profile_field) }
 
     it "redirects successfully" do
-      put "#{internal_profile_fields_path}/#{profile_field.id}",
-            params: { profile_field: { active: false }}
-      expect(response).to redirect_to internal_profile_fields_path
+      put "#{admin_profile_fields_path}/#{profile_field.id}",
+          params: { profile_field: { active: false }}
+      expect(response).to redirect_to admin_profile_fields_path
     end
 
     it "updates the profile field values" do
-      put "#{internal_profile_fields_path}/#{profile_field.id}",
-            params: { profile_field: { active: false }}
+      put "#{admin_profile_fields_path}/#{profile_field.id}",
+          params: { profile_field: { active: false }}
 
       changed_profile_record = ProfileField.find(profile_field.id)
       expect(changed_profile_record.active).to be(false)
     end
   end
 
-  describe "DELETE /internal/profile_fields/:id" do
+  describe "DELETE /admin/profile_fields/:id" do
     let(:profile_field) { create(:profile_field) }
 
     it "redirects successfully" do
-      delete "#{internal_profile_fields_path}/#{profile_field.id}"
-      expect(response).to redirect_to internal_profile_fields_path
+      delete "#{admin_profile_fields_path}/#{profile_field.id}"
+      expect(response).to redirect_to admin_profile_fields_path
     end
 
     it "removes a profile field" do
-      delete "#{internal_profile_fields_path}/#{profile_field.id}"
+      delete "#{admin_profile_fields_path}/#{profile_field.id}"
       expect(ProfileField.count).to eq(0)
     end
   end
-
 end

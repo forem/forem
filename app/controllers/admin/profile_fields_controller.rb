@@ -1,6 +1,6 @@
-module Internal
-  class ProfileFieldsController < Internal::ApplicationController
-    layout "internal"
+module Admin
+  class ProfileFieldsController < Admin::ApplicationController
+    layout "admin"
 
     def index
       @profile_fields = ProfileField.all
@@ -9,18 +9,18 @@ module Internal
     def update
       @profile_fields = ProfileField.find(params[:id])
       @profile_fields.update!(profile_field_params)
-      redirect_to internal_profile_fields_path
+      redirect_to admin_profile_fields_path
     end
 
     def create
       @profile_field = ProfileField.create(profile_field_params)
-      redirect_to internal_profile_fields_path
+      redirect_to admin_profile_fields_path
     end
 
     def destroy
       @profile_field = ProfileField.find(params[:id])
       @profile_field.destroy
-      redirect_to internal_profile_fields_path
+      redirect_to admin_profile_fields_path
     end
 
     private
