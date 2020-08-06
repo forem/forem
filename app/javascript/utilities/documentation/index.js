@@ -1,20 +1,15 @@
+const fs = require('fs');
 const path = require('path');
 const util = require('util');
-const fs = require('fs');
 const sass = require('node-sass');
 const CSSOM = require('cssom');
 const prettier = require('prettier');
 const renderCss = util.promisify(sass.render);
-const folderExists = util.promisify(fs.exists);
-const mkdir = util.promisify(fs.mkdir);
 const file = fs.promises;
-const stylesheetsDirectory = path.resolve(
+
+const GENERATED_STORIES_FOLDER = path.join(
   __dirname,
-  '../../assets/stylesheets',
-);
-const generatedStoriesFolder = path.join(
-  __dirname,
-  '../../javascript/generated_stories/__stories__',
+  '../../generated_stories/__stories__',
 );
 
 /**
@@ -136,7 +131,7 @@ function generateUtilityClassStories(cssProperty, cssRules) {
 }
 
 async function generateUtilityClassesDocumentation(utilityClassesFilename) {
-  console.log('Generating the style sheet for ' + utilityClassesFilename);
+  console.log(`Generating the style sheet for ${utilityClassesFilename}`);
   const styleSheet = await getStyleSheet(utilityClassesFilename);
 
   console.log('Grouping stylesheet rules by CSS property');
@@ -151,7 +146,7 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
     );
     await file.writeFile(
       path.join(
-        generatedStoriesFolder,
+        GENERATED_STORIES_FOLDER,
         `${cssProperty}_utilityClasses.stories.jsx`,
       ),
       storybookContent.join(''),
@@ -159,17 +154,7 @@ async function generateUtilityClassesDocumentation(utilityClassesFilename) {
   }
 }
 
-(async () => {
-  // ensure the auto-generated Storybook folder exists.
-  if (!(await folderExists(generatedStoriesFolder))) {
-    await mkdir(generatedStoriesFolder, { recursive: true });
-  }
-
-  try {
-    await generateUtilityClassesDocumentation(
-      path.join(stylesheetsDirectory, 'config/_generator.scss'),
-    );
-  } catch (error) {
-    throw new Error('Error generating the CSS utilty class Storybook stories');
-  }
-})();
+module.exports = {
+  GENERATED_STORIES_FOLDER,
+  generateUtilityClassesDocumentation,
+};
