@@ -16,6 +16,7 @@ if Rails.env.production?
           # matches table.column
           hide: %w[
             auth_data_dump
+            content
             email
             encrypted
             encrypted_password
@@ -25,6 +26,7 @@ if Rails.env.production?
             previous_refresh_token
             refresh_token
             secret
+            to
             token
             current_sign_in_ip
             last_sign_in_ip

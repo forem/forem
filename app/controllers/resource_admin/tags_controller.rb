@@ -4,7 +4,7 @@ module ResourceAdmin
       @tag = Tag.find(params[:id])
       if @tag.update(tag_params) && @tag.errors.messages.blank?
         flash[:notice] = "Tag successfully updated"
-        redirect_to "/admin/tags/#{@tag.id}"
+        redirect_to "/resource_admin/tags/#{@tag.id}"
       else
         render :new, locals: { page: Administrate::Page::Form.new(dashboard, @tag) }
       end

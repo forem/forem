@@ -7,7 +7,7 @@
 <% if current_user&.trusted %>
   <div class="crayons-layout crayons-layout--2-cols" id="mod-center">
     <%= render "moderations/mod_sidebar_left" %>
-    <div class="mod-index-container articles-list crayons-layout__content">
+    <main class="mod-index-container articles-list crayons-layout__content">
       <div class="mod-index-header">
         <h2 class="tag-view fs-3xl fw-bold lh-base">
           <%= @tag ? "##{@tag.name}" : "All topics" %>
@@ -18,11 +18,12 @@
         <h2 class="fs-xs fw-medium">Author</h2>
         <h2 class="fs-xs fw-medium">Date</h2>
       </div>
-      <main class="mod-index-list" id="mod-index-list" data-articles="<%= @articles %>">
-      </main>
+      <div class="mod-index-list" id="mod-index-list" data-articles="<%= @articles %>">
+      </div>
     </div>
-    <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
-  </div>
+    <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden">
+    </div>
+  </main>
 <% else %>
   <div class="container" style="margin-top: 90px;">
     <h1 style="text-align: center"><%= community_name %> Mods</h1>

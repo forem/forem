@@ -87,10 +87,10 @@ Rails.application.configure do
 
   # Filter sensitive information from production logs
   config.filter_parameters += %i[
-    auth_data_dump email encrypted
+    auth_data_dump content email encrypted
     encrypted_password message_html message_markdown
     password previous_refresh_token refresh_token secret
-    token current_sign_in_ip last_sign_in_ip
+    to token current_sign_in_ip last_sign_in_ip
     reset_password_token remember_token unconfirmed_email
   ]
 

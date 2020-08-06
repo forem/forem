@@ -92,6 +92,7 @@
     --font-size: var(--fs-s);
     --with-icon-padding: var(--su-2);
     --icon-margin: var(--su-1);
+    font-weight: normal;
   }
 
   &--l {
@@ -172,6 +173,19 @@
     --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
     --color-inverted: var(--accent-brand-lighter);
     --color-inverted-hover: var(--accent-brand-lighter);
+  }
+
+  &-dimmed {
+    --bg: var(--button-ghost-bg);
+    --bg-hover: var(--button-ghost-bg-hover);
+    --color: var(--button-ghost-dimmed-color);
+    --color-hover: var(--button-ghost-dimmed-color-hover);
+    --shadow: none;
+    --shadow-hover: none;
+    --bg-inverted: var(--button-ghost-inverted-bg);
+    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
+    --color-inverted: var(--accent-ghost-dimmed-inverted-color);
+    --color-inverted-hover: var(--accent-ghost-dimmed-inverted-color-hover);
   }
 
   &-success {
