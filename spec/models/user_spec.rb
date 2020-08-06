@@ -670,21 +670,10 @@ RSpec.describe User, type: :model do
         expect(user.reload.preferred_languages_array).to eq(%w[en ja])
       end
 
-      it "returns a correct array when language settings are in a new format" do
+      it "returns a correct array for language settings" do
         language_settings = { estimated_default_language: "en", preferred_languages: %w[en ru it] }
         user = build(:user, language_settings: language_settings)
         expect(user.preferred_languages_array).to eq(%w[en ru it])
-      end
-
-      it "returns a correct array when language settings are in the old format" do
-        language_settings = {
-          estimated_default_language: "en",
-          prefer_language_en: true,
-          prefer_language_ja: false,
-          prefer_language_es: true
-        }
-        user = build(:user, language_settings: language_settings)
-        expect(user.preferred_languages_array).to eq(%w[en es])
       end
     end
   end
