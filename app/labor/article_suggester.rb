@@ -50,7 +50,7 @@ class ArticleSuggester
       .first(max)
   end
 
-  def calculate_offset
+  def offset
     @total_articles_count > 1000 ? 200 : (@total_articles_count / 10)
   end
 
