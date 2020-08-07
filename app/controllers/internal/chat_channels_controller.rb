@@ -8,7 +8,7 @@ module Internal
     end
 
     def create
-      ChatChannel.create_with_users(
+      ChatChannels::CreateWithUsers.call(
         users: users_by_param,
         channel_type: "invite_only",
         contrived_name: chat_channel_params[:channel_name],
