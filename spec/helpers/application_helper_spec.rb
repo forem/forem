@@ -120,8 +120,8 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "has the correct text in the a tag" do
-      expect(helper.collection_link(collection)).to
-      have_text("#{collection.slug} (#{collection.articles.published.size} Part Series)")
+      expect(helper.collection_link(collection))
+        .to have_text("#{collection.slug} (#{collection.articles.published.size} Part Series)")
     end
   end
 
