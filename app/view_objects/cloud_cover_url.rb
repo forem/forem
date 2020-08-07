@@ -1,5 +1,4 @@
 class CloudCoverUrl
-  include CloudinaryHelper
   include ActionView::Helpers::AssetUrlHelper
 
   def initialize(url)
@@ -11,18 +10,9 @@ class CloudCoverUrl
     return url if Rails.env.development?
 
     width = 1000
-    height = 420
-    quality = "auto"
+    img_src = url_without_prefix_nesting(url, width)
 
-    cl_image_path(url_without_prefix_nesting(url, width),
-                  type: "fetch",
-                  width: width,
-                  height: height,
-                  crop: "imagga_scale",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: "auto",
-                  sign_url: true)
+    ImageResizer.call(img_src, width: width, height: 420, crop: "imagga_scale")
   end
 
   private
