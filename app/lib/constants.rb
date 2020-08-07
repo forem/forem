@@ -258,4 +258,21 @@ module Constants
     }
     # Dynamic values ommitted: configurable_rate_limits and social_media_handles
   }.freeze
+
+  BASE_ROLES = ["Warn",
+                "Comment Ban",
+                "Ban",
+                "Regular Member",
+                "Trusted", "Pro"].freeze
+
+  SPECIAL_ROLES = ["──────────",
+                   "Admin",
+                   "Super Admin",
+                   "Resource Admin: Article",
+                   "Resource Admin: Comment",
+                   "Resource Admin: BufferUpdate",
+                   "Resource Admin: ChatChannel",
+                   "Resource Admin: Page",
+                   "Resource Admin: FeedbackMessage",
+                   "Resource Admin: Broadcast"].freeze
 end
