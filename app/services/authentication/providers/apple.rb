@@ -14,7 +14,7 @@ module Authentication
           apple_created_at: Time.zone.at(timestamp),
           apple_username: user_nickname,
           name: name,
-          remote_profile_image_url: SiteConfig.mascot_image_url
+          remote_profile_image_url: Users::ProfileImageGenerator.call
         }
       end
 
