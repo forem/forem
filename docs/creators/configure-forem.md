@@ -1,5 +1,5 @@
 ---
-title: Setting Up
+title: Configuring Forem
 ---
 
 #Basic Site Configuration Guide for Forem
