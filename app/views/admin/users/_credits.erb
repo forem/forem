@@ -34,7 +34,7 @@
       </div>
       <%= f.submit "Add Org Credits", class: "btn btn-primary" %>
     <% end %>
-    <%= form_with scope: :user, url: internal_user_path(@user), method: :patch, local: true, html: { class: "form-inline justify-content-between mb-2" } do |f| %>
+    <%= form_with scope: :user, url: admin_user_path(@user), method: :patch, local: true, html: { class: "form-inline justify-content-between mb-2" } do |f| %>
       <div class="form-group">
         <%= f.number_field :remove_org_credits, in: 1...10_000, required: true, class: "form-control mr-3", size: 5 %>
         <%= f.text_field :new_note, placeholder: "Why are you removing these credits?", size: 50, required: true, class: "form-control mr-3" %>
