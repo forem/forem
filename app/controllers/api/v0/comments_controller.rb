@@ -9,7 +9,7 @@ module Api
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       def index
-        article = Article.find(params[:a_id])
+        article = params[:a_id] ? Article.find(params[:a_id]) : PodcastEpisode.find(params[:p_id])
 
         @comments = article.comments
           .includes(:user)
