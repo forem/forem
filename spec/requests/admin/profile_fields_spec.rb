@@ -1,16 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "/admin/profile_fields", type: :request do
-  include ActiveJob::TestHelper
-  let(:user) { create(:user) }
+  let(:admin) { create(:user, :super_admin) }
 
-    before do
-      user.add_role(:super_admin)
-      sign_in user
-    end
+  before do
+    sign_in admin
+  end
 
   describe "GET /admin/profile_fields" do
-    let(:profile_field) { create(:profile_field) }
 
     it "renders successfully" do
       get admin_profile_fields_path
@@ -18,7 +15,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
     end
 
     it "lists the profile fields" do
-      profile_field
+      profile_field = create(:profile_field)
       get admin_profile_fields_path
       expect(response.body).to include(
         profile_field.label,
