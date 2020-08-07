@@ -175,14 +175,7 @@ class Message < ApplicationRecord
   # rubocop:enable Rails/OutputSafety
 
   def cl_path(img_src)
-    ActionController::Base.helpers
-      .cl_image_path(img_src,
-                     type: "fetch",
-                     width: 725,
-                     crop: "limit",
-                     flags: "progressive",
-                     fetch_format: "auto",
-                     sign_url: true)
+    ImageResizer.call(img_src, width: 725)
   end
 
   def determine_user_validity
