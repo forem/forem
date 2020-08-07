@@ -49,7 +49,7 @@ RSpec.describe "Internal::Users", type: :request do
       badge_id: badge.id,
       rewarding_context_message_markdown: "message",
     )
-    ChatChannel.create_with_users(users: [user2, user3], channel_type: "direct")
+    ChatChannels::CreateWithUsers.call(users: [user2, user3], channel_type: "direct")
     user2.follow(user3)
     user.follow(super_admin)
     user3.follow(user2)
