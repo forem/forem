@@ -81,7 +81,7 @@ module Moderator
       when /^(Resource Admin: )/
         check_super_admin
         remove_negative_roles
-        user.add_role(:single_resource_admin, role.split("Resource Admin: ").last.safe_constantize.new.class)
+        user.add_role(:single_resource_admin, role.split("Resource Admin: ").last.safe_constantize)
       when "Pro"
         remove_negative_roles
         add_trusted_role
