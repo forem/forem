@@ -11,7 +11,6 @@
   </h2>
 </div>
 
-
 <div class="row my-3" id="getStarted">
   <div class="card w-100">
     <div class="card-header" id="getStartedHeader" data-toggle="collapse"
@@ -22,23 +21,23 @@
       </button>
     </div>
 
-    <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? 'hide collapse': 'show expand' %> p-3" aria-labelledby="siteConfigHeader">
+    <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3" aria-labelledby="siteConfigHeader">
       <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
 
         <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
           <!-- we need to list the config as separate fields if the data structure is a Hash -->
           <% if SiteConfig.public_send(config_key).is_a?(Hash) %>
-            <%= internal_config_label "#{config_key.to_s}" %>
+            <%= internal_config_label config_key.to_s %>
             <div class="form-group">
               <%= f.fields_for config_key do |a_field| %>
                 <% SiteConfig.public_send(config_key).each do |key, value| %>
                   <div>
-                    <%= internal_config_label "#{key}" %>
+                    <%= internal_config_label key.to_s %>
                     <%= a_field.text_field key,
                                            class: "form-control",
                                            value: SiteConfig.public_send(config_key)[key],
                                            placeholder: Constants::SITE_CONFIG_DETAILS[config_key][:placeholder] %>
-                    <div class="alert alert-info"><%= "#{key} #{config_key.to_s.gsub! '_', ' '}" %></div>
+                    <div class="alert alert-info"><%= "#{key} #{config_key.to_s.tr! '_', ' '}" %></div>
                   </div>
                   <% end %>
               <% end %>
@@ -76,7 +75,6 @@
     </div>
   </div>
 </div>
-
 
 <div class="row my-3" id="siteConfig">
   <div class="card w-100">
@@ -264,13 +262,11 @@
                 <%= price_field.number_field :small,
                                              class: "form-control",
                                              value: SiteConfig.credit_prices_in_cents[:small] %>
-                <div class="alert alert-info">Price for small credit purchase (< 10 credits).</div>
-              </div>
-              <div class="form-group">
+                <div class="alert alert-info">Price for small credit purchase (&lt;10 credits).</div>
                 <%= price_field.label "Credit price in cents (M)" %>
                 <%= price_field.number_field :medium,
                                              class: "form-control",
-                                            value: SiteConfig.credit_prices_in_cents[:medium] %>
+                                             value: SiteConfig.credit_prices_in_cents[:medium] %>
                 <div class="alert alert-info">Price for medium credit purchase (10 - 99 credits).</div>
               </div>
               <div class="form-group">
@@ -290,7 +286,7 @@
             <% end %>
           </div>
         </div>
- 
+
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
@@ -366,12 +362,12 @@
                                class: "form-control",
                                value: SiteConfig.jobs_url,
                                placeholder: Constants::SITE_CONFIG_DETAILS[:jobs_url][:placeholder] %>
-              <div class="alert alert-info"><%=Constants::SITE_CONFIG_DETAILS[:jobs_url][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:jobs_url][:description] %></div>
             </div>
             <div class="form-group">
               <%= internal_config_label :display_jobs_banner %>
               <%= f.check_box :display_jobs_banner, checked: SiteConfig.display_jobs_banner %>
-              <div class="alert alert-info"><%=Constants::SITE_CONFIG_DETAILS[:display_jobs_banner][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:display_jobs_banner][:description] %></div>
             </div>
           </div>
         </div>
@@ -390,7 +386,7 @@
               <%= f.text_field :ga_view_id,
                                class: "form-control",
                                value: SiteConfig.ga_view_id %>
-              <div class="alert alert-info"><%=Constants::SITE_CONFIG_DETAILS[:ga_view_id][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:ga_view_id][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -400,7 +396,7 @@
                                  value: SiteConfig.ga_fetch_rate,
                                  min: 1,
                                  placeholder: Constants::SITE_CONFIG_DETAILS[:ga_fetch_rate][:placeholder] %>
-              <div class="alert alert-info"><%=Constants::SITE_CONFIG_DETAILS[:ga_fetch_rate][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:ga_fetch_rate][:description] %></div>
             </div>
           </div>
         </div>
@@ -682,7 +678,7 @@
               <%= f.text_field :onboarding_background_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_background_image,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:onboarding_background_image][:placeholder]  %>
+                               placeholder: Constants::SITE_CONFIG_DETAILS[:onboarding_background_image][:placeholder] %>
               <div class="row mt-2">
                 <div class="col-12">
                   <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />

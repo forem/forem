@@ -7,7 +7,7 @@
         <p>
           <em>
             <%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username if note.author_id.present? %>
-          </em> - 
+          </em> -
           <% unless note.reason.blank? %>
             <strong><%= note.reason %>:</strong>
           <% end %>
