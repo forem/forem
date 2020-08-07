@@ -19,7 +19,7 @@ module Admin
 
       if @badge.update(badge_params)
         flash[:success] = "Badge has been updated!"
-        redirect_to internal_badges_path
+        redirect_to admin_badges_path
       else
         flash[:danger] = @badge.errors.full_messages.to_sentence
         render :edit
@@ -34,10 +34,10 @@ module Admin
       BadgeAchievements::BadgeAwardWorker.perform_async(usernames, permitted_params[:badge], message)
 
       flash[:success] = "Badges are being rewarded. The task will finish shortly."
-      redirect_to internal_badges_path
+      redirect_to admin_badges_path
     rescue ArgumentError => e
       flash[:danger] = e.message
-      redirect_to internal_badges_path
+      redirect_to admin_badges_path
     end
 
     def award

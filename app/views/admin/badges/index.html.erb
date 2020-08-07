@@ -1,7 +1,7 @@
 <h3>Badge Achievements</h3>
  <div class="col">
     <div class="row justify-content-end">
-      <%= link_to "Award Badge", internal_badges_award_badges_path, class: "btn btn-primary" %>
+      <%= link_to "Award Badge", admin_badges_award_badges_path, class: "btn btn-primary" %>
     </div>
   </div>
 <table class="table">
@@ -15,7 +15,7 @@
   <tbody>
     <% @badges.each do |badge| %>
       <tr>
-        <td><%= link_to badge.title, edit_internal_badge_path(badge.id) %></td>
+        <td><%= link_to badge.title, edit_admin_badge_path(badge.id) %></td>
         <h5>
           <td class="justify-content-center"><%= badge.slug %></td>
           <td class="justify-content-center">

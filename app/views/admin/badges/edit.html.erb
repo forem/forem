@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-12">
     <h3><%= "Edit Badge #{@badge.id}" %></h3>
-    <%= form_for [:internal, @badge], method: :patch do |form| %>
+    <%= form_for [:admin, @badge], method: :patch do |form| %>
     <div class="form-group">
       <%= form.label :title %>
       <%= form.text_field :title, class: "form-control" %>
@@ -29,6 +29,6 @@
     <hr>
       <%= form.submit "Update Badge", class: "btn btn-primary float-right" %>
     <% end %>
-    <%= link_to "Back to All Badges", internal_badges_path, class: "btn btn-primary float-left" %>
+    <%= link_to "Back to All Badges", admin_badges_path, class: "btn btn-primary float-left" %>
   </div>
 </div>
