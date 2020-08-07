@@ -7,7 +7,7 @@
     <p>Available User Credits: <%= current_credits %></p>
     <%= form_with scope: :user, url: internal_user_path(@user), method: :patch, local: true, html: { class: "form-inline justify-content-between mb-2" } do |f| %>
       <div class="form-group">
-        <%= f.number_field :add_credits, in: 1...10000, required: true, class: "form-control mr-3", size: 5 %>
+        <%= f.number_field :add_credits, in: 1...10_000, required: true, class: "form-control mr-3", size: 5 %>
         <%= f.text_field :new_note, placeholder: "Why are you adding these credits?", size: 50, required: true, class: "form-control" %>
       </div>
       <%= f.submit "Add Credits", class: "btn btn-primary" %>
@@ -28,17 +28,17 @@
     <h4>Organizations</h4>
     <%= form_with scope: :user, url: internal_user_path(@user), method: :patch, local: true, html: { class: "form-inline justify-content-between mb-2" } do |f| %>
       <div class="form-group">
-        <%= f.number_field :add_org_credits, in: 1...10000, required: true, class: "form-control mr-3", size: 5 %>
+        <%= f.number_field :add_org_credits, in: 1...10_000, required: true, class: "form-control mr-3", size: 5 %>
         <%= f.text_field :new_note, placeholder: "Why are you adding these credits?", size: 50, required: true, class: "form-control mr-3" %>
-        <%= f.select :organization_id, orgs_with_credits(@organizations), {}, { class: 'form-control' } %>
+        <%= f.select :organization_id, orgs_with_credits(@organizations), {}, { class: "form-control" } %>
       </div>
       <%= f.submit "Add Org Credits", class: "btn btn-primary" %>
-    <% end %> 
+    <% end %>
     <%= form_with scope: :user, url: internal_user_path(@user), method: :patch, local: true, html: { class: "form-inline justify-content-between mb-2" } do |f| %>
       <div class="form-group">
-        <%= f.number_field :remove_org_credits, in: 1...10000, required: true, class: "form-control mr-3", size: 5 %>
+        <%= f.number_field :remove_org_credits, in: 1...10_000, required: true, class: "form-control mr-3", size: 5 %>
         <%= f.text_field :new_note, placeholder: "Why are you removing these credits?", size: 50, required: true, class: "form-control mr-3" %>
-        <%= f.select :organization_id, orgs_with_credits(@organizations), {}, { class: 'form-control' } %>
+        <%= f.select :organization_id, orgs_with_credits(@organizations), {}, { class: "form-control" } %>
       </div>
       <%= f.submit "Remove Org Credits", class: "btn btn-danger" %>
     <% end %>
