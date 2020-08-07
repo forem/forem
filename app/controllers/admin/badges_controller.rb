@@ -29,7 +29,7 @@ module Admin
     def award_badges
       raise ArgumentError, "Please choose a badge to award" if permitted_params[:badge].blank?
 
-      usernames = permitted_params[:usernames].split(/\s*,\s*/)
+      usernames = permitted_params[:usernames].downcase.split(/\s*,\s*/)
       message = permitted_params[:message_markdown].presence || "Congrats!"
       BadgeAchievements::BadgeAwardWorker.perform_async(usernames, permitted_params[:badge], message)
 
