@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "/admin/chat_channels", type: :request do
-  include ActiveJob::TestHelper
 
   let(:user) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }
