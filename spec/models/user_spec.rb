@@ -17,6 +17,12 @@ def mock_username(provider_name, username)
   end
 end
 
+def provider_username(service_name)
+  auth_payload = OmniAuth.config.mock_auth[service_name]
+  provider_class = Authentication::Providers.get!(auth_payload.provider)
+  provider_class.new(auth_payload).user_nickname
+end
+
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
@@ -852,10 +858,13 @@ RSpec.describe User, type: :model do
 
       it "assigns proper social username based on authentication for #{provider_name}" do
         mock_username(provider_name, "valid_username")
-
         new_user = user_from_authorization_service(provider_name)
 
-        expect(new_user.username).to eq("valid_username")
+        if provider_name == :apple
+          expect(new_user.username).to match(/valid_username_\w+/)
+        else
+          expect(new_user.username).to eq("valid_username")
+        end
       end
 
       it "marks registered_at for newly registered user" do
@@ -866,7 +875,12 @@ RSpec.describe User, type: :model do
       it "assigns modified username if the username is invalid for #{provider_name}" do
         mock_username(provider_name, "invalid.username")
         new_user = user_from_authorization_service(provider_name)
-        expect(new_user.username).to eq("invalidusername")
+
+        if provider_name == :apple
+          expect(new_user.username).to match(/invalidusername_\w+/)
+        else
+          expect(new_user.username).to eq("invalidusername")
+        end
       end
 
       it "serializes the authentication payload for #{provider_name}" do
@@ -878,10 +892,9 @@ RSpec.describe User, type: :model do
 
       it "does not allow previously banished users to sign up again for #{provider_name}" do
         banished_name = "SpammyMcSpamface"
-        create(:banished_user, username: banished_name)
-
         mock_username(provider_name, banished_name)
 
+        create(:banished_user, username: provider_username(provider_name))
         expect do
           user_from_authorization_service(provider_name, nil, "navbar_basic")
         end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
