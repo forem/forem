@@ -20,11 +20,15 @@
     <div class="form-group">
       <%= form.label :badge_image, "Badge Image:" %>
       <br>
+      <% if @badge.badge_image %>
       <img class="mx-auto mt-3" width="60" height="60" src="<%= @badge.badge_image %>" alt="badge image">
+      <% end %>
+      <%= form.file_field :badge_image, class: "form-control" %>
+      <br>
     </div>
     <hr>
-      <%= form.submit "Update Badge", class: "btn btn-primary float-left" %>
+      <%= form.submit "Update Badge", class: "btn btn-primary float-right" %>
     <% end %>
-    <%= link_to "Back to All Badges", internal_badges_path, class: "btn btn-primary float-right" %>
+    <%= link_to "Back to All Badges", internal_badges_path, class: "btn btn-primary float-left" %>
   </div>
 </div>
