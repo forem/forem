@@ -211,14 +211,6 @@ module ApplicationHelper
     SiteConfig.community_member_label.pluralize
   end
 
-  # Creates an app internal URL
-  #
-  # @note Uses protocol and domain specified in the environment, ensure they are set.
-  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
-  # @example Retrieve the base URL
-  #  app_url #=> "https://dev.to"
-  # @example Add a path
-  #  app_url("internal") #=> "https://dev.to/internal"
   def app_url(uri = nil)
     URL.url(uri)
   end
