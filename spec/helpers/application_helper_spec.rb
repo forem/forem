@@ -81,16 +81,16 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "creates a URL with a path" do
-      expect(app_url("internal")).to eq("https://dev.to/internal")
+      expect(app_url("admin")).to eq("https://dev.to/admin")
     end
 
     it "creates the correct URL even if the path starts with a slash" do
-      expect(app_url("/internal")).to eq("https://dev.to/internal")
+      expect(app_url("/admin")).to eq("https://dev.to/admin")
     end
 
     it "works when called with an URI object" do
-      uri = URI::Generic.build(path: "internal", fragment: "test")
-      expect(app_url(uri)).to eq("https://dev.to/internal#test")
+      uri = URI::Generic.build(path: "resource_admin", fragment: "test")
+      expect(app_url(uri)).to eq("https://dev.to/resource_admin#test")
     end
   end
 
@@ -120,7 +120,8 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "has the correct text in the a tag" do
-      expect(helper.collection_link(collection)).to have_text("#{collection.slug} (#{collection.articles.published.size} Part Series)")
+      expect(helper.collection_link(collection))
+        .to have_text("#{collection.slug} (#{collection.articles.published.size} Part Series)")
     end
   end
 
