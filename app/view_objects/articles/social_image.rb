@@ -1,7 +1,6 @@
 module Articles
   class SocialImage
     include Rails.application.routes.url_helpers
-    include CloudinaryHelper
 
     SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-04-22T00:00:00Z")
 
@@ -15,15 +14,7 @@ module Articles
       image = user_defined_image
       if image.present?
         image = image.split("w_1000/").last if image.include?("w_1000/https://")
-        return cl_image_path(image,
-                             type: "fetch",
-                             width: width,
-                             height: height,
-                             crop: "imagga_scale",
-                             quality: "auto",
-                             flags: "progressive",
-                             fetch_format: "auto",
-                             sign_url: true)
+        return ImageResizer.call(image, width: width, height: height, crop: "imagga_scale")
       end
       return legacy_article_social_image unless use_new_social_url?
 
@@ -41,15 +32,7 @@ module Articles
         src = GeneratedImage.new(article).social_image
         return src if src.start_with? "https://res.cloudinary.com/"
 
-        cl_image_path(src,
-                      type: "fetch",
-                      width: "1000",
-                      height: "500",
-                      crop: "imagga_scale",
-                      quality: "auto",
-                      flags: "progressive",
-                      fetch_format: "auto",
-                      sign_url: true)
+        ImageResizer.call(src, width: "1000", height: "500", crop: "imagga_scale")
       end
     end
 
