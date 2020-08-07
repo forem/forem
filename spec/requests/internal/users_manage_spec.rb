@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin::Users", type: :request do
+RSpec.describe "Internal::Users", type: :request do
   let!(:user) { create(:user, twitter_username: nil, old_username: "username") }
   let!(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
@@ -49,7 +49,7 @@ RSpec.describe "Admin::Users", type: :request do
       badge_id: badge.id,
       rewarding_context_message_markdown: "message",
     )
-    ChatChannels::CreateWithUsers.call(users: [user2, user3], channel_type: "direct")
+    ChatChannel.create_with_users(users: [user2, user3], channel_type: "direct")
     user2.follow(user3)
     user.follow(super_admin)
     user3.follow(user2)
