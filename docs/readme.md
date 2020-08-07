@@ -14,6 +14,8 @@ items:
   - licensing.md
   - self-hosting.md
   - maintainers
+  - component: Divider
+  - creators
 ---
 
 # Welcome to Forem's developer documentation
