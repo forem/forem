@@ -112,7 +112,7 @@
         !url.href.includes('/feed') && // Skip the RSS feed
         !url.href.includes('/rss') && // Skip the RSS feed alternative path
         !url.href.includes('/future') && // Skip for /future.
-        !url.href.includes('/internal') && // Don't fetch for internal dashboard.
+        !url.href.includes('/admin') && // Don't fetch for admin dashboard.
         !url.href.includes('/oauth/') && // Skip oauth apps
         !url.href.includes('/onboarding') && // Don't run on onboarding.
         !url.href.includes('/rails/mailers') && // Skip for mailers previews in development mode

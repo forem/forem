@@ -271,10 +271,11 @@ GEM
       thor (~> 0.15)
     environs (1.1.0)
     equalizer (0.0.11)
-    erb_lint (0.0.34)
+    erb_lint (0.0.35)
       activesupport
       better_html (~> 1.0.7)
       html_tokenizer
+      parser (>= 2.7.1.4)
       rainbow
       rubocop (~> 0.79)
       smart_properties
@@ -668,8 +669,8 @@ GEM
       rubocop-ast (>= 0.1.0, < 1.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (0.2.0)
-      parser (>= 2.7.0.1)
+    rubocop-ast (0.3.0)
+      parser (>= 2.7.1.4)
     rubocop-performance (1.7.1)
       rubocop (>= 0.82.0)
     rubocop-rails (2.7.1)
