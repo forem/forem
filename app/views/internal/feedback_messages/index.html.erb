@@ -22,9 +22,9 @@
 <% end %>
 
 <div class="row mt-4 justify-content-center">
-  <%= content_tag :span, sort_link(@q, :reporter_username, "Reporter"), class: "mx-2" %>
-  <%= content_tag :span, sort_link(@q, :reported_url, "Reported URL"), class: "mx-2" %>
-  <%= content_tag :span, sort_link(@q, :created_at, "Creation Date"), class: "ml-2" %>
+  <%= tag.span(sort_link(@q, :reporter_username, "Reporter"), class: "mx-2") %>
+  <%= tag.span(sort_link(@q, :reported_url, "Reported URL"), class: "mx-2") %>
+  <%= tag.span(sort_link(@q, :created_at, "Creation Date"), class: "ml-2") %>
 </div>
 
 <%= paginate @feedback_messages %>
