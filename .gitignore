@@ -42,6 +42,9 @@ latest.dump
 yarn-debug.log*
 .yarn-integrity
 
+# Ignore elasticsearch installations
+/elasticsearch-7.5.2
+
 # Ignore storybook static site generation
 app/javascript/storybook-static/
 yarn-error.log
