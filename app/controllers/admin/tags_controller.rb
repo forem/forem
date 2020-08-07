@@ -1,43 +1,58 @@
 module Admin
   class TagsController < Admin::ApplicationController
+    layout "admin"
+
+    after_action only: [:update] do
+      Audit::Logger.log(:moderator, current_user, params.dup)
+    end
+
+    def index
+      @tags = case params[:state]
+              when "supported"
+                Tag.where(supported: true).order(taggings_count: :desc).page(params[:page]).per(50)
+              when "unsupported"
+                Tag.where(supported: false).order(taggings_count: :desc).page(params[:page]).per(50)
+              else
+                Tag.order(taggings_count: :desc).page(params[:page]).per(50)
+              end
+      @tags = @tags.where("tags.name ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?
+    end
+
+    def show
+      @tag = Tag.find(params[:id])
+    end
+
     def update
       @tag = Tag.find(params[:id])
-      if @tag.update(tag_params) && @tag.errors.messages.blank?
-        flash[:notice] = "Tag successfully updated"
-        redirect_to "/admin/tags/#{@tag.id}"
-      else
-        render :new, locals: { page: Administrate::Page::Form.new(dashboard, @tag) }
-      end
+      @add_user_id = params[:tag][:tag_moderator_id]
+      @remove_user_id = params[:tag][:remove_moderator_id]
+      add_moderator if @add_user_id
+      remove_moderator if @remove_user_id
+      @tag.update!(tag_params)
+
+      redirect_to "/admin/tags/#{params[:id]}"
     end
 
     private
 
-    def convert_empty_string_to_nil
-      # nil plays nicely with our hex colors, whereas empty string doesn't
-      params[:tag][:text_color_hex] = nil if params[:tag][:text_color_hex] == ""
-      params[:tag][:bg_color_hex] = nil if params[:tag][:bg_color_hex] == ""
+    def remove_moderator
+      user = User.find(@remove_user_id)
+      user.update(email_tag_mod_newsletter: false)
+      AssignTagModerator.remove_tag_moderator(user, @tag)
+    end
+
+    def add_moderator
+      User.find(@add_user_id).update(email_tag_mod_newsletter: true)
+      AssignTagModerator.add_tag_moderators([@add_user_id], [@tag.id])
     end
 
     def tag_params
-      accessible = %i[
-        name
-        category
-        badge_id
-        supported
-        alias_for
-        wiki_body_markdown
-        rules_markdown
-        short_summary
-        requires_approval
-        submission_template
-        pretty_name
-        bg_color_hex
-        text_color_hex
-        keywords_for_search
-        buffer_profile_id_code
+      allowed_params = %i[
+        supported rules_markdown short_summary pretty_name bg_color_hex
+        text_color_hex tag_moderator_id remove_moderator_id alias_for badge_id
+        category social_preview_template
       ]
-      convert_empty_string_to_nil
-      params.require(:tag).permit(accessible)
+      params.require(:tag).permit(allowed_params)
     end
   end
 end

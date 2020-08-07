@@ -257,7 +257,7 @@ module ApplicationHelper
   end
 
   # rubocop:disable Rails/OutputSafety
-  def internal_config_label(method, content = nil)
+  def admin_config_label(method, content = nil)
     content ||= raw("<span>#{method.to_s.humanize}</span>")
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
       content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])

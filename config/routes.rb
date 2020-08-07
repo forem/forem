@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     mount FieldTest::Engine, at: "abtests"
   end
 
-  namespace :admin do
+  namespace :resource_admin do
     # Check administrate gem docs
     DashboardManifest::DASHBOARDS.each do |dashboard_resource|
       resources dashboard_resource
@@ -38,8 +38,8 @@ Rails.application.routes.draw do
     root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
   end
 
-  namespace :internal do
-    get "/", to: redirect("/internal/articles")
+  namespace :admin do
+    get "/", to: redirect("/admin/articles")
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
@@ -70,6 +70,7 @@ Rails.application.routes.draw do
         delete :remove_admin
       end
     end
+    resources :profile_fields, only: %i[index update create destroy]
     resources :reactions, only: [:update]
     resources :response_templates, only: %i[index new edit create update destroy]
     resources :chat_channels, only: %i[index create update] do
@@ -114,7 +115,8 @@ Rails.application.routes.draw do
     end
     resources :webhook_endpoints, only: :index
     resource :config
-    resources :badges, only: :index
+    resources :badges, only: %i[index], path: "/badge_achievements"
+    get "/badges", to: redirect("/admin/badge_achievements")
     post "badges/award_badges", to: "badges#award_badges"
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
@@ -346,7 +348,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root
   get "/robots.:format" => "pages#robots"
-  get "/api", to: redirect("https://docs.dev.to/api")
+  get "/api", to: redirect("https://docs.forem.com/api")
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"

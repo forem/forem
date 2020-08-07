@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_31_033002) do
+ActiveRecord::Schema.define(version: 2020_08_05_050048) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -544,12 +545,12 @@ ActiveRecord::Schema.define(version: 2020_07_31_033002) do
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
   end
 
-  create_table "follows", id: :serial, force: :cascade do |t|
+  create_table "follows", force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
-    t.integer "followable_id", null: false
+    t.bigint "followable_id", null: false
     t.string "followable_type", null: false
-    t.integer "follower_id", null: false
+    t.bigint "follower_id", null: false
     t.string "follower_type", null: false
     t.float "points", default: 1.0
     t.string "subscription_status", default: "all_articles", null: false
@@ -621,7 +622,7 @@ ActiveRecord::Schema.define(version: 2020_07_31_033002) do
     t.index ["name"], name: "index_html_variants_on_name", unique: true
   end
 
-  create_table "identities", id: :serial, force: :cascade do |t|
+  create_table "identities", force: :cascade do |t|
     t.text "auth_data_dump"
     t.datetime "created_at", null: false
     t.string "provider"
@@ -629,7 +630,7 @@ ActiveRecord::Schema.define(version: 2020_07_31_033002) do
     t.string "token"
     t.string "uid"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
   end
@@ -920,6 +921,18 @@ ActiveRecord::Schema.define(version: 2020_07_31_033002) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "profile_fields", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.string "description"
+    t.string "group"
+    t.integer "input_type", default: 0, null: false
+    t.citext "label", null: false
+    t.string "placeholder_text"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["label"], name: "index_profile_fields_on_label", unique: true
+  end
+
   create_table "profile_pins", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "pinnable_id"
@@ -945,15 +958,15 @@ ActiveRecord::Schema.define(version: 2020_07_31_033002) do
     t.index ["user_id"], name: "index_rating_votes_on_user_id"
   end
 
-  create_table "reactions", id: :serial, force: :cascade do |t|
+  create_table "reactions", force: :cascade do |t|
     t.string "category"
     t.datetime "created_at", null: false
     t.float "points", default: 1.0
-    t.integer "reactable_id"
+    t.bigint "reactable_id"
     t.string "reactable_type"
     t.string "status", default: "valid"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["category"], name: "index_reactions_on_category"
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
@@ -1136,7 +1149,7 @@ ActiveRecord::Schema.define(version: 2020_07_31_033002) do
     t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
   end
 
-  create_table "users", id: :serial, force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false

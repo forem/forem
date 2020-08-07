@@ -106,13 +106,13 @@
         !url.href.includes('?preview=') && // Skip for preview pages.
         !url.href.includes('?signin') && // Don't run on sign in.
 
-        !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
+        !url.href.includes('/resource_admin') && // Don't fetch for administrate dashboard.
         !url.href.includes('/api/') && // Don't run on API endpoints.
         !url.href.includes('/embed/') && // Don't fetch for embeded content.
         !url.href.includes('/feed') && // Skip the RSS feed
         !url.href.includes('/rss') && // Skip the RSS feed alternative path
         !url.href.includes('/future') && // Skip for /future.
-        !url.href.includes('/internal') && // Don't fetch for internal dashboard.
+        !url.href.includes('/admin') && // Don't fetch for admin dashboard.
         !url.href.includes('/oauth/') && // Skip oauth apps
         !url.href.includes('/onboarding') && // Don't run on onboarding.
         !url.href.includes('/rails/mailers') && // Skip for mailers previews in development mode

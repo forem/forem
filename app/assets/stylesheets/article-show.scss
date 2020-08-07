@@ -99,29 +99,6 @@ article {
     max-width: 710px;
     margin: auto;
 
-    .org-branded-title-link {
-      color: var(--card-color-secondary);
-      .org-branded-title {
-        font-size: calc(0.9em + 0.3vw);
-        padding: 8px 0 6px;
-        margin-bottom: -8px;
-
-        @media screen and (min-width: 1600px) {
-          font-size: 20px;
-        }
-
-        .org-pic {
-          height: calc(27px + 0.5vw);
-          width: calc(27px + 0.5vw);
-          display: inline;
-          vertical-align: calc(-8px - 0.1vw);
-          border-radius: 100px;
-          margin-right: 0.2vw;
-          background: $light-gray;
-        }
-      }
-    }
-
     h1 {
       margin: 0 auto;
       padding: 14px 0 7px;
@@ -132,17 +109,6 @@ article {
       line-height: 1.28em;
       @media screen and (min-width: 1600px) {
         font-size: 57px;
-      }
-
-      .article-title-preamble {
-        display: block;
-        color: var(--base-60);
-        font-size: calc(16px + 0.2vw);
-        margin-bottom: -1.25vw;
-        @media screen and (min-width: 1600px) {
-          font-size: 18px;
-          margin-bottom: -18px;
-        }
       }
 
       .title-block {

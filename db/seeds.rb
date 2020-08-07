@@ -492,6 +492,18 @@ seeder.create_if_none(Page) do
 end
 
 ##############################################################################
+
+seeder.create_if_none(ProfileField) do
+  ProfileFields::AddBaseFields.call
+  ProfileFields::AddLinkFields.call
+  ProfileFields::AddWorkFields.call
+  coding_fields_csv = Rails.root.join("lib/data/coding_profile_fields.csv")
+  ProfileFields::ImportFromCsv.call(coding_fields_csv)
+  ProfileFields::AddBrandingFields.call
+end
+
+##############################################################################
+
 puts <<-ASCII
 
   ```````````````````````````````````````````````````````````````````````````

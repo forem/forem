@@ -14,23 +14,25 @@ if Rails.env.production?
         hypershield: {
           # columns to hide
           # matches table.column
-          hide: %w[
-            auth_data_dump
-            email
-            encrypted
-            encrypted_password
-            message_html
-            message_markdown
-            password
-            previous_refresh_token
-            refresh_token
-            secret
-            token
-            current_sign_in_ip
-            last_sign_in_ip
-            reset_password_token
-            remember_token
-            unconfirmed_email
+          hide: [
+            "ahoy_messages.content",
+            "ahoy_messages.to",
+            "email",
+            "encrypted",
+            "encrypted_password",
+            "identities.auth_data_dump",
+            "messages.message_html",
+            "messages.message_markdown",
+            "oauth_access_tokens.previous_refresh_token",
+            "oauth_access_tokens.refresh_token",
+            "password",
+            "secret",
+            "token",
+            "users.current_sign_in_ip",
+            "users.last_sign_in_ip",
+            "users.remember_token",
+            "users.reset_password_token",
+            "users.unconfirmed_email",
           ]
         }
       }
