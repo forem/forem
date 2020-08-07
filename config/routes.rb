@@ -38,8 +38,8 @@ Rails.application.routes.draw do
     root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
   end
 
-  namespace :internal do
-    get "/", to: redirect("/internal/articles")
+  namespace :admin do
+    get "/", to: redirect("/admin/articles")
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
@@ -115,7 +115,8 @@ Rails.application.routes.draw do
     end
     resources :webhook_endpoints, only: :index
     resource :config
-    resources :badges, only: :index
+    resources :badges, only: %i[index], path: "/badge_achievements"
+    get "/badges", to: redirect("/admin/badge_achievements")
     post "badges/award_badges", to: "badges#award_badges"
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
