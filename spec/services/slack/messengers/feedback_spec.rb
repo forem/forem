@@ -41,7 +41,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
 
     message = get_argument_from_last_job("message")
     url = URL.url(
-      Rails.application.routes.url_helpers.internal_reports_path,
+      Rails.application.routes.url_helpers.admin_reports_path,
     )
 
     [
