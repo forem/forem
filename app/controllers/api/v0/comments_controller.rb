@@ -9,7 +9,11 @@ module Api
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       def index
+<<<<<<< HEAD
         commentable = params[:a_id] ? Article.find(params[:a_id]) : PodcastEpisode.find(params[:p_id])
+=======
+        article = params[:a_id] ? Article.find(params[:a_id]) : PodcastEpisode.find(params[:p_id])
+>>>>>>> modified index to allow retreival of comments belonging to either articles or podcast episodes
 
         @comments = commentable.comments
           .includes(:user)
