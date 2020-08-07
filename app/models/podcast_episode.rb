@@ -113,7 +113,7 @@ class PodcastEpisode < ApplicationRecord
 
       next unless img_src
 
-      cloudinary_img_src = ImageResizer.call(img_src, width: 725)
+      cloudinary_img_src = Images::Optimizer.call(img_src, width: 725)
       self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
     end
   end

@@ -10,6 +10,6 @@ class ProfileImage
   end
 
   def get(width: 120)
-    ImageResizer.call(image_link || BACKUP_LINK, width: width, height: width, crop: "fill")
+    Images::Optimizer.call(image_link || BACKUP_LINK, width: width, height: width, crop: "fill")
   end
 end
