@@ -3,27 +3,16 @@ module Admin
     layout "admin"
 
     ALLOWED_PARAMS = %i[
-      title slug description
+      title slug description badge_image
     ].freeze
 
     def index
       @badges = Badge.all
     end
 
-    # def award
-    #   @badge = Badge.all
-    # end
-    # def new; end
-
     def edit
       @badge = Badge.find(params[:id])
     end
-
-    # def create
-    #   render :award
-    #   # award_badges
-    # end
-    # def create; end
 
     def update
       @badge = Badge.find(params[:id])
@@ -49,6 +38,10 @@ module Admin
     rescue ArgumentError => e
       flash[:danger] = e.message
       redirect_to internal_badges_path
+    end
+
+    def award
+      @badge = Badge.all
     end
 
     private
