@@ -1,6 +1,6 @@
 class LargeTablePrimaryKeysToBigints < ActiveRecord::Migration[6.0]
   def up
-    puts "ahoy_messages"
+    puts "migrating ahoy_message PKs to bigints"
     ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS hypershield.ahoy_messages")
     ActiveRecord::Base.connection.execute(
       <<-SQL
@@ -11,7 +11,7 @@ class LargeTablePrimaryKeysToBigints < ActiveRecord::Migration[6.0]
       SQL
     )
 
-    puts "articles"
+    puts "migrating article PKs to bigints"
     ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS hypershield.articles")
     ActiveRecord::Base.connection.execute(
       <<-SQL
@@ -25,7 +25,7 @@ class LargeTablePrimaryKeysToBigints < ActiveRecord::Migration[6.0]
       SQL
     )
 
-    puts "notifications"
+    puts "migrating notification PKs to bigints"
     ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS hypershield.notifications")
     ActiveRecord::Base.connection.execute(
       <<-SQL
