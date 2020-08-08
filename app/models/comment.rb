@@ -223,10 +223,16 @@ class Comment < ApplicationRecord
   end
 
   def synchronous_bust
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    async_touch_commentable_last_comment_at
     user.touch(:last_comment_at)
     CacheBuster.bust(commentable.path.to_s) if commentable
     expire_root_fragment
+  end
+
+  def async_touch_commentable_last_comment_at
+    return unless commentable
+
+    Comments::UpdateCommentableLastCommentAtWorker.perform_async(commentable.id, commentable.class.name)
   end
 
   def send_email_notification
