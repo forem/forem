@@ -1,7 +1,5 @@
 module Search
-  class ArticleSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class ArticleSerializer < ApplicationSerializer
     attribute :id, &:search_id
 
     attributes :approved, :body_text, :class_name, :cloudinary_video_url,
