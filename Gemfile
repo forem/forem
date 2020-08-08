@@ -38,7 +38,6 @@ gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
 gem "faraday-http-cache", "~> 2.2" # Middleware to handle HTTP caching
-gem "fast_jsonapi", "~> 1.5" # Serializer for Ruby objects
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
@@ -58,6 +57,7 @@ gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web se
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.4" #  A gem to automate using jQuery with Rails
+gem "jsonapi-serializer", "~> 2.0" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.6.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
