@@ -265,11 +265,12 @@ RSpec.describe "Comments", type: :request do
       it "updates body markdown" do
         article = create(:article, user: user)
         comment = create(:comment, commentable: article, user: user)
-
+        sidekiq_perform_enqueued_jobs
         article.destroy
 
         params = { comment: { body_markdown: "{edited comment}" } }
         put "/comments/#{comment.id}", params: params
+        sidekiq_perform_enqueued_jobs
 
         comment.reload
         expect(comment.processed_html).to include("edited comment")
