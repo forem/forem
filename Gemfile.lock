@@ -218,7 +218,7 @@ GEM
       database_cleaner (~> 1.8.0)
     datetime_picker_rails (0.0.7)
       momentjs-rails (>= 2.8.1)
-    ddtrace (0.38.0)
+    ddtrace (0.39.0)
       msgpack
     debug_inspector (0.0.3)
     derailed_benchmarks (1.7.0)
@@ -870,7 +870,7 @@ DEPENDENCIES
   cloudinary (~> 1.16)
   counter_culture (~> 2.6)
   database_cleaner-active_record (~> 1.8.0)
-  ddtrace (~> 0.38.0)
+  ddtrace (~> 0.39.0)
   derailed_benchmarks (~> 1.7)
   devise (~> 4.7)
   devise_invitable (~> 2.0.0)
