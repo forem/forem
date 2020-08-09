@@ -17,5 +17,9 @@
     <div>
       <small><%= time_ago_in_words json_data["endorsement"]["created_at"] %> ago</small>
     </div>
+    <div class="comment-text">
+      <%= json_data["endorsement"]["content"] %>
+    </div>
+    <a href="/notifications/update">Approve</a>
   <% end %>
 </div>
