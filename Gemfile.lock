@@ -144,7 +144,7 @@ GEM
       safely_block (>= 0.1.1)
     bootsnap (1.4.7)
       msgpack (~> 1.0)
-    brakeman (4.8.2)
+    brakeman (4.9.0)
     browser (4.2.0)
     buffer (0.1.3)
       addressable
@@ -859,7 +859,7 @@ DEPENDENCIES
   binding_of_caller (~> 0.8)
   blazer (~> 2.2.6)
   bootsnap (>= 1.1.0)
-  brakeman (~> 4.8)
+  brakeman (~> 4.9)
   buffer (~> 0.1)
   bullet (~> 6.1)
   bundler-audit (~> 0.7)
