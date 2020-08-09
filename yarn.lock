@@ -8441,10 +8441,10 @@ husky@^4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-ibm-openapi-validator@0.28.0:
-  version "0.28.0"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.28.0.tgz#60e87c31747c895047feea9cc323998d52e01461"
-  integrity sha512-ifxagTanBZ8Pz/5IwFFy0Su/BgZkE8x4ASgPHs3JH6y8FPoMWpugM7a5VDgb0MWSOnmkqR63waFCbZTjyuY+gw==
+ibm-openapi-validator@0.28.1:
+  version "0.28.1"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.28.1.tgz#7c0d92d8a01966ad03cab03e769bc62b04e6afa4"
+  integrity sha512-M5aHKS/oAcQTFv2L2fJ619DTBDsr11M0DNB1irVpc0QF5HNXlCdxMWok7+QbEDhd0XzUP4jM8evUzOtUjc9bXA==
   dependencies:
     chalk "^2.4.1"
     commander "^2.17.1"
@@ -8455,7 +8455,7 @@ ibm-openapi-validator@0.28.0:
     json-dup-key-validator "^1.0.2"
     json-schema-ref-parser "^5.1.3"
     jsonschema "^1.2.4"
-    lodash "^4.17.15"
+    lodash "^4.17.19"
     matcher "^1.1.1"
     pad "^2.2.1"
     require-all "^3.0.0"
