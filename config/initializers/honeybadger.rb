@@ -16,6 +16,7 @@ Honeybadger.configure do |config|
   config.env = "#{ApplicationConfig['APP_DOMAIN']}-#{Rails.env}"
   config.api_key = ApplicationConfig["HONEYBADGER_API_KEY"]
   config.revision = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+  config.send_data_at_exit = false
   config.exceptions.ignore += [
     Pundit::NotAuthorizedError,
     ActiveRecord::RecordNotFound,
