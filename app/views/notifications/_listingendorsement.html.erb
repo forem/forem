@@ -1,0 +1,21 @@
+<% json_data = notification.json_data %>
+<% cache "activity-profile-pic-#{json_data['user']['id']}-#{json_data['user']['profile_image_90']}" do %>
+  <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
+    <div class="small-pic">
+      <img src="<%= json_data["user"]["profile_image_90"] %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
+    </div>
+  </a>
+<% end %>
+<div class="content notification-content comment-content">
+  <% if notification.action.blank? %>
+    <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
+    <% if json_data["endorsement"]["approved"] == false %>
+      endorsed your <a href="<%= json_data["endorsement"]["path"] %>">listing</a>
+    <% end %>
+  <% end %>
+  <% if json_data["endorsement"]["created_at"] %>
+    <div>
+      <small><%= time_ago_in_words json_data["endorsement"]["created_at"] %> ago</small>
+    </div>
+  <% end %>
+</div>

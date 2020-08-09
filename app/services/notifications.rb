@@ -39,9 +39,10 @@ module Notifications
       id: endorsement.id,
       class: { name: "ListingEndorsement" },
       content: endorsement.content,
-      updated_at: endorsement.updated_at,
+      created_at: endorsement.created_at,
       approved: endorsement.approved,
-      author_profile_image_90: endorsement.author_profile_image_90
+      author_profile_image_90: endorsement.author_profile_image_90,
+      path: "/listings/undefined/#{endorsement.listing.slug}"
     }
   end
 

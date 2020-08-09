@@ -20,13 +20,18 @@ class NotificationsController < ApplicationController
     end
 
     @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?
+                        puts "yupp in organnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
                        organization_notifications
                      elsif params[:org_id].blank? && params[:filter].present?
-                       filtered_notifications
+                        puts "yup in filterrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
+                       @user.notifications
+                       #filtered_notifications
                      else
+                       puts "yup normallllllllllllllllllllllllllllllllllllllllllllllllllll"
                        @user.notifications
                      end
-
+    puts @notifications
+    puts "testingggggggggggggggggggggggggggggggggggg notiffffffffffffff"
     @notifications = @notifications.order(notified_at: :desc)
 
     # if offset based pagination is invoked by the frontend code, we filter out all earlier ones
