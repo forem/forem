@@ -29,7 +29,6 @@ RSpec.describe "CommentsCreate", type: :request do
 
   it "creates NotificationSubscription for comment" do
     post comments_path, params: comment_params
-    sidekiq_perform_enqueued_jobs
 
     expect(NotificationSubscription.last.notifiable).to eq(Comment.last)
   end
