@@ -56,7 +56,7 @@ script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
-  - bundle install --local --jobs=2
+  - bin/ci-bundle
   - yarn install --frozen-lockfile
   - bundle exec rails db:create
   - bundle exec rails webpacker:compile
