@@ -33,6 +33,7 @@ class MarkdownParser
     html = remove_nested_linebreak_in_list(html)
     html = prefix_all_images(html)
     html = wrap_all_images_in_links(html)
+    html = add_clipboard_to_codeblock(html)
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
     html = escape_colon_emojis_in_codeblock(html)
@@ -280,6 +281,14 @@ class MarkdownParser
       next if image.parent.name == "a"
 
       image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>")
+    end
+    doc.to_html
+  end
+
+  def add_clipboard_to_codeblock(html)
+    doc = Nokogiri::HTML.fragment(html)
+    doc.search("div.highlight").each do |codeblock|
+      codeblock.prepend_child("<div class='copy-icon'>Copy</div>")
     end
     doc.to_html
   end
