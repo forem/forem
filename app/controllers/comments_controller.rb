@@ -240,7 +240,8 @@ class CommentsController < ApplicationController
     if @comment.save
       redirect_url = @comment.commentable&.path
       if redirect_url
-        redirect_to redirect_url, notice: "Comment was successfully deleted."
+        flash[:success] = "Comment was successfully deleted."
+        redirect_to redirect_url
       else
         redirect_to_comment_path
       end
@@ -258,6 +259,7 @@ class CommentsController < ApplicationController
 
   def redirect_to_comment_path
     redirect_url = @comment.path
-    redirect_to "#{redirect_url}/mod", alert: "Something went wrong; Comment NOT deleted."
+    flash[:error] = "Something went wrong; Comment NOT deleted."
+    redirect_to "#{redirect_url}/mod"
   end
 end

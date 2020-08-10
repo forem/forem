@@ -8,6 +8,12 @@
   </style>
 <% end %>
 
+<% if flash[:error].present? %>
+  <div class="crayons-banner crayons-banner--error">
+    <%= flash[:error] %>
+  </div>
+<% end %>
+
 <div class="container mod-container" style="text-align: center">
   <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
   <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
