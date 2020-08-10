@@ -336,7 +336,7 @@ Style/ExplicitBlockArgument:
                   Consider using explicit block argument to avoid writing block literal
                   that just passes its arguments to another block.
   StyleGuide: '#block-argument'
-  Enabled: pending
+  Enabled: true
 
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
@@ -354,7 +354,7 @@ Style/FrozenStringLiteralComment:
 Style/GlobalStdStream:
   Description: 'Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.'
   StyleGuide: '#global-stdout'
-  Enabled: pending
+  Enabled: true
 
 Style/HashAsLastArrayItem:
   Description: >-
