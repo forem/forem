@@ -1,5 +1,3 @@
-const buttons = document.querySelectorAll('.reaction-button, .reaction-vomit-button');
-
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
   const downVote = document.querySelector("[data-category='thumbsdown']");
@@ -13,35 +11,35 @@ function applyReactedClass(category) {
   }
 }
 
-for (let i = 0; i < buttons.length; i++) {
-  let button = buttons[i];
-  button.onclick = function (event) {
-    event.preventDefault();
-    let thisButton = this;
-    applyReactedClass(thisButton.dataset.category);
-    thisButton.classList.add('reacted');
+async function updateMainReactions(reactableType, category, reactableId) {
+  const clickedBtn = document.querySelector(`[data-category="${category}"]`);
+  try {
+    const response = await fetch('/reactions', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'X-CSRF-Token': window.csrfToken,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        reactable_type: reactableType,
+        category,
+        reactable_id: reactableId,
+      }),
+    });
 
-    function successCb(response) {
-      if (response.result === 'create') {
-        thisButton.classList.add('reacted');
-      } else {
-        thisButton.classList.remove('reacted');
-      }
+    const outcome = await response.json();
+
+    if (outcome.result === 'create') {
+      clickedBtn.classList.add('reacted');
+    } else {
+      clickedBtn.classList.remove('reacted');
     }
-
-    let formData = new FormData();
-    formData.append('reactable_type', thisButton.dataset.reactableType);
-    formData.append('category', thisButton.dataset.category);
-    formData.append('reactable_id', thisButton.dataset.reactableId);
-
-    getCsrfToken()
-      .then(sendFetch('reaction-creation', formData))
-      .then(function (response) {
-        if (response.status === 200) {
-          response.json().then(successCb);
-        }
-      });
-  };
+  } catch (error) {
+    // eslint-disable-next-line no-alert
+    alert(error);
+  }
 }
 
 // Experience-Level JS
@@ -95,6 +93,17 @@ document.querySelectorAll('.level-rating-button').forEach((btn) => {
       btn.dataset.articleId,
       btn.value,
       btn.dataset.group,
+    );
+  });
+});
+
+document.querySelectorAll('.reaction-button, .reaction-vomit-button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    applyReactedClass(btn.dataset.category);
+    updateMainReactions(
+      btn.dataset.reactableType,
+      btn.dataset.category,
+      btn.reactableId,
     );
   });
 });

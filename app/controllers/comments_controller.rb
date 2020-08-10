@@ -237,12 +237,13 @@ class CommentsController < ApplicationController
 
     if @comment.save
       redirect_url = @comment.commentable&.path
-      if redirect
+      if redirect_url
         redirect_to redirect_url, notice: "Comment was successfully deleted."
+      else
+        redirect_to_comment_path
       end
     else
-      redirect = @comment.path
-      redirect_to "#{URI.parse(redirect).path}/mod", alert: "Something went wrong; Comment NOT deleted."
+      redirect_to_comment_path
     end
   end
 
@@ -251,5 +252,10 @@ class CommentsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])
+  end
+
+  def redirect_to_comment_path
+    redirect_url = @comment.path
+    redirect_to "#{redirect_url}/mod", alert: "Something went wrong; Comment NOT deleted."
   end
 end
