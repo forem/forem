@@ -430,6 +430,11 @@ Style/ClassAndModuleChildren:
   Enabled: true
   SafeAutoCorrect: true
 
+Style/FormatStringToken:
+  Description: 'Use a consistent style for format string tokens.'
+  Exclude:
+    - 'config/routes.rb'
+
 Style/OptionalBooleanParameter:
   Description: 'Use keyword arguments when defining method with boolean argument.'
   StyleGuide: '#boolean-keyword-arguments'
