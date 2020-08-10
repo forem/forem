@@ -12,7 +12,7 @@ module DataUpdateScripts
         language_settings["preferred_languages"] << "ja" if language_settings["prefer_language_ja"]
         language_settings["preferred_languages"] << "pt" if language_settings["prefer_language_pt"]
 
-        user.update(language_settings: language_settings)
+        user.update_column(:language_settings, language_settings)
       end
     end
   end
