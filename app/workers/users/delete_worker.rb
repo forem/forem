@@ -4,7 +4,7 @@ module Users
 
     sidekiq_options queue: :high_priority, retry: 10
 
-    def perform(user_id, admin_delete = false)
+    def perform(user_id, admin_delete: false)
       user = User.find_by(id: user_id)
       return unless user
 
