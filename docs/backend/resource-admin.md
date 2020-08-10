@@ -6,9 +6,9 @@ title: Resource Admin Panel
 
 The resource admin panel is a CRUD interface generated via the
 [Administrate gem](https://github.com/thoughtbot/administrate). In production,
-this is generally not used often and will be deprecated in favor of the internal
-panel (`http://localhost:3000/internal/*`). For more details, see
-[the internal guide](/internal).
+this is generally not used often and will be deprecated in favor of the admin
+panel (`http://localhost:3000/admin/*`). For more details, see
+[the admin guide](/admin).
 
 # Accessing the resource admin panel
 

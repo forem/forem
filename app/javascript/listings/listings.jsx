@@ -178,7 +178,7 @@ export class Listings extends Component {
     formData.append('message', `**re: ${openedListing.title}** ${message}`);
     formData.append('controller', 'chat_channels');
 
-    const destination = `/connect/@${openedListing.author.username}`;
+    const destination = `/connect/@${openedListing.user.username}`;
     const metaTag = document.querySelector("meta[name='csrf-token']");
     window
       .fetch('/chat_channels/create_chat', {

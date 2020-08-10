@@ -26,7 +26,7 @@ RSpec.describe Slack::Messengers::CommentUserWarned, type: :service do
       message = job["args"].first["message"]
 
       internal_user_url = URL.url(
-        Rails.application.routes.url_helpers.internal_user_path(user),
+        Rails.application.routes.url_helpers.admin_user_path(user),
       )
 
       expect(message).to include(URL.comment(comment))

@@ -33,8 +33,7 @@ class User < ApplicationRecord
     invalid_config_navbar: "%<value>s is not a valid navbar value",
     invalid_config_theme: "%<value>s is not a valid theme",
     invalid_editor_version: "%<value>s must be either v1 or v2",
-    reserved_username: "username is reserved",
-    blank_email: "can't be blank. Your social account must have an email associated with it."
+    reserved_username: "username is reserved"
   }.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
@@ -124,7 +123,6 @@ class User < ApplicationRecord
   validates :dribbble_url, length: { maximum: 100 }, allow_blank: true, format: DRIBBBLE_URL_REGEXP
   validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
-  validates :email, presence: { message: MESSAGES[:blank_email] }, unless: :persisted?
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :employer_name, :employer_url, length: { maximum: 100 }
   validates :employment_title, :education, :location, length: { maximum: 100 }
@@ -247,21 +245,10 @@ class User < ApplicationRecord
     end
   end
 
-  # handles both old (prefer_language_*) and new (Array of language codes) formats
   def preferred_languages_array
     return @preferred_languages_array if defined?(@preferred_languages_array)
 
-    if language_settings["preferred_languages"].present?
-      @preferred_languages_array = language_settings["preferred_languages"].to_a
-    else
-      languages = []
-      language_settings.each_key do |setting|
-        to_split = language_settings[setting] && setting.include?("prefer_language_")
-        languages << setting.split("prefer_language_")[1] if to_split
-      end
-      @preferred_languages_array = languages
-    end
-    @preferred_languages_array
+    @preferred_languages_array = language_settings["preferred_languages"]
   end
 
   def processed_website_url

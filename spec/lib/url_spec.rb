@@ -24,16 +24,16 @@ RSpec.describe URL, type: :lib do
     end
 
     it "creates a URL with a path" do
-      expect(described_class.url("internal")).to eq("https://dev.to/internal")
+      expect(described_class.url("admin")).to eq("https://dev.to/admin")
     end
 
     it "creates the correct URL even if the path starts with a slash" do
-      expect(described_class.url("/internal")).to eq("https://dev.to/internal")
+      expect(described_class.url("/admin")).to eq("https://dev.to/admin")
     end
 
     it "works when called with an URI object" do
-      uri = URI::Generic.build(path: "internal", fragment: "test")
-      expect(described_class.url(uri)).to eq("https://dev.to/internal#test")
+      uri = URI::Generic.build(path: "admin", fragment: "test")
+      expect(described_class.url(uri)).to eq("https://dev.to/admin#test")
     end
   end
 
