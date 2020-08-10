@@ -1,14 +1,13 @@
 module Moderator
   class BanishUser < ManageActivityAndRoles
+    attr_reader :user, :admin
+
     def self.call(admin:, user:)
       new(user: user, admin: admin).banish
     end
 
-    attr_reader :user, :admin
-
     def initialize(admin:, user:)
-      @user = user
-      @admin = admin
+      super(user: user, admin: admin, user_params: {})
     end
 
     def banish

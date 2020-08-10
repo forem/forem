@@ -40,6 +40,8 @@ module Search
       attr_accessor :params, :body
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
 
         # Default to only readinglist reactions

@@ -1,0 +1,88 @@
+<div class="row">
+  <div class="col-12">
+    <%= form_for [:admin, @page] do |form| %>
+      <div class="form-group">
+        <%= form.label :title %>
+        <%= form.text_field :title, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :slug %>
+        <%= form.text_field :slug, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :description %>
+        <%= form.text_field :description, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :template %>
+        <%= form.select :template, Page::TEMPLATE_OPTIONS, class: "form-control" %>
+        <p>(Determines the way page's body will be embedded in the layout)</p>
+      </div>
+      <div class="form-group optional html">
+        <%= form.label :body_markdown %>
+        <%= form.text_area :body_markdown, class: "form-control" %>
+      </div>
+      <div class="form-group optional html">
+        <%= form.label :body_html %> (Only if not using markdown. HTML is dangerous ⚠️)
+        <%= form.text_area :body_html, class: "form-control" %>
+      </div>
+      <div class="form-group optional json">
+        <%= form.label :body_json %> (For use with template type <code>json</code>)
+        <%= form.text_area :body_json, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <% if @page.social_image_url %>
+          <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" />
+        <% end %>
+        <%= form.label :social_image %>
+        <%= form.file_field :social_image, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :is_top_level_path %>
+        <%= form.check_box :is_top_level_path %>
+        <p>(Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️</p>
+      </div>
+      <div class="form-group">
+        <p>
+          <b><%= link_to "Feature Flag", "/admin/feature_flags" %></b>
+          <span class="badge badge-<%= FeatureFlag.exist?(@page.feature_flag_name) ? "success" : "warning" %>">
+            <%= FeatureFlag.exist?(@page.feature_flag_name) ? "Present" : "Not Present" %>
+          </span>
+          <br>
+          <% if FeatureFlag.exist?(@page.feature_flag_name) %>
+            Access to this page is being guarded by the feature flag <code><%= @page.feature_flag_name %></code>.
+            <%= link_to "Modify flag here", "/admin/feature_flags/features/#{@page.feature_flag_name}" %>
+          <% else %>
+            Everyone has access. Optionally guard access to this page by creating feature <code><%= @page.feature_flag_name %></code>
+            <%= link_to "here", "/admin/feature_flags/features" %>
+          <% end %>
+          <br>
+        </p>
+      </div>
+      <%= form.submit class: "btn btn-primary float-right" %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+function showBodyFields() {
+    // hide all optional elements
+    $('.optional').css('display','none');
+
+    $("select option:selected").each(function () {
+      if($(this).val() == "json") {
+        $('.json').css('display','block');
+      } else {
+        $('.html').css('display','block');
+      }
+    });
+  };
+
+window.addEventListener('load', function() {
+  document.getElementById("page_template").onchange = function() {
+    showBodyFields();
+  };
+
+  showBodyFields();
+});
+</script>

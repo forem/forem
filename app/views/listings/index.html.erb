@@ -40,8 +40,7 @@
   data-allcategories="<%= categories_for_display.to_json %>"
   <% if @displayed_listing %>
   data-displayedlisting="<%= @displayed_listing_json %> "
-  <% end %>
->
+  <% end %>>
 </div>
 
 <%= javascript_packs_with_chunks_tag "listings", defer: true %>
