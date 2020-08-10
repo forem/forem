@@ -3,6 +3,8 @@ module Authentication
     # Apple authentication provider, uses omniauth-apple as backend
     class Apple < Provider
       SETTINGS_URL = "https://appleid.apple.com/account/manage".freeze
+      TRUSTED_CALLBACK_ORIGIN = "https://appleid.apple.com".freeze
+      CALLBACK_PATH = "/users/auth/apple/callback".freeze
 
       def new_user_data
         # Apple sends `first_name` and `last_name` as separate fields
@@ -43,8 +45,11 @@ module Authentication
       # always be the same on each login so we use the email hash as suffix to
       # avoid collisions with other registrations with the same first_name
       def user_nickname
-        email_digest = Digest::SHA512.hexdigest(info.email)
-        "#{info.first_name&.downcase}_#{email_digest}"[0...25]
+        [
+          info.first_name&.downcase,
+          info.last_name&.downcase,
+          Digest::SHA512.hexdigest(info.email),
+        ].join("_")[0...25]
       end
 
       def self.settings_url

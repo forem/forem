@@ -1,7 +1,14 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
 
-  skip_before_action :verify_authenticity_token, only: %i[apple] # rubocop:disable Rails/LexicallyScopedActionFilter
+  # Rails actionpack only allows POST requests that come with an ORIGIN header
+  # that matches `request.base_url`, it raises CSRF exception otherwise.
+  # There is no way to allow specific ORIGIN values in order to securely bypass
+  # trusted origins (i.e. Apple OAuth) so `protect_from_forgery` is skipped
+  # ONLY when it's safe to do so (i.e. ORIGIN == 'https://appleid.apple.com').
+  # The hardcoded CSRF check can be found in the method `valid_request_origin?`:
+  # https://github.com/rails/rails/blob/master/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L453-L463
+  protect_from_forgery unless: -> { safe_apple_callback_request? }
 
   # Each available authentication method needs a related action that will be called
   # as a callback on successful redirect from the upstream OAuth provider
@@ -97,5 +104,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def user_persisted_but_username_taken?
     @user.persisted? && @user.errors_as_sentence.include?("username has already been taken")
+  end
+
+  # We only bypass CSRF checks on Apple callback path & Apple trusted ORIGIN
+  def safe_apple_callback_request?
+    trusted_origin = Authentication::Providers::Apple::TRUSTED_CALLBACK_ORIGIN
+    request.fullpath == Authentication::Providers::Apple::CALLBACK_PATH &&
+      request.headers["ORIGIN"] == trusted_origin
   end
 end
