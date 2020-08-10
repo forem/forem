@@ -64,8 +64,8 @@
                                           flags: "progressive",
                                           fetch_format: "auto",
                                           sign_url: true),
-                                          class: "sloan mb-7",
-                                          alt: "#{SiteConfig.mascot_image_description}") %>
+                            class: "sloan mb-7",
+                            alt: SiteConfig.mascot_image_description.to_s) %>
             <% end %>
             <p class="mb-6">This is where you can manage your posts, but you haven't written anything yet.</p>
             <p><a href="/new" class="crayons-btn crayons-btn--l">Write your first post now</a></p>

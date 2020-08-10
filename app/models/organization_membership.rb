@@ -25,7 +25,7 @@ class OrganizationMembership < ApplicationRecord
     name = "@#{organization.slug} private group chat"
     channel = ChatChannel.find_by(channel_name: name)
 
-    channel ||= ChatChannel.find_or_create_chat_channel("invite_only", "#{organization.slug}-private-group-chat", name)
+    channel ||= ChatChannels::FindOrCreate.call("invite_only", "#{organization.slug}-private-group-chat", name)
 
     add_chat_channel_membership(user, channel, role)
   end

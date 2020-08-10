@@ -46,8 +46,11 @@ RSpec.describe Message, type: :model do
         message.message_markdown = "hello http://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
         message.validate!
 
-        expect(message.message_html).to include(article.title)
-        expect(message.message_html).to include("sidecar-article")
+        expect(message.message_html).to include(
+          article.title,
+          "sidecar-article",
+          "/c_limit,f_auto,fl_progressive,q_auto,w_725/",
+        )
       end
 
       it "creates target blank link" do
