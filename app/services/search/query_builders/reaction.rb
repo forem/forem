@@ -40,7 +40,7 @@ module Search
       attr_accessor :params, :body
 
       def initialize(params:)
-        super
+        super()
 
         @params = params.deep_symbolize_keys
 

@@ -29,7 +29,7 @@ module Search
       }.freeze
 
       def initialize(params:)
-        super
+        super()
 
         @params = params.deep_symbolize_keys
 
