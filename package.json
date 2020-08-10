@@ -113,7 +113,7 @@
     "faker": "^4.1.0",
     "gitdocs": "^2.0.0",
     "husky": "^4.2.5",
-    "ibm-openapi-validator": "0.28.0",
+    "ibm-openapi-validator": "0.28.1",
     "jest": "26.2.2",
     "jest-axe": "^3.5.0",
     "jest-fetch-mock": "^3.0.3",
