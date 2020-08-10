@@ -36,13 +36,13 @@ RSpec.describe CommentPolicy, type: :policy do
     context "with banned status" do
       before { user.add_role(:banned) }
 
-      it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide]) }
+      it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide admin_delete]) }
     end
 
     context "with banned_comment status" do
       before { user.add_role(:comment_banned) }
 
-      it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide]) }
+      it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide admin_delete]) }
     end
 
     context "when user is a tag moderator" do
