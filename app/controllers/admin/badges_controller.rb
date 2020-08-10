@@ -2,10 +2,6 @@ module Admin
   class BadgesController < Admin::ApplicationController
     layout "admin"
 
-    ALLOWED_PARAMS = %i[
-      title slug description badge_image
-    ].freeze
-
     def index
       @badges = Badge.all
     end
@@ -46,11 +42,8 @@ module Admin
 
     private
 
-    private_constant :ALLOWED_PARAMS
-
     def badge_params
-      allowed_params = ALLOWED_PARAMS
-      params.require(:badge).permit(allowed_params)
+      params.require(:badge).permit(:title, :slug, :description, :badge_image)
     end
 
     def permitted_params
