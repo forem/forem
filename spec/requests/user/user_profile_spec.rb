@@ -193,7 +193,7 @@ RSpec.describe "UserProfiles", type: :request do
     it "redirects to moderate" do
       user = create(:user)
       get "/#{user.username}/moderate"
-      expect(response.body).to redirect_to "/internal/users/#{user.id}"
+      expect(response.body).to redirect_to "/admin/users/#{user.id}"
     end
   end
 end

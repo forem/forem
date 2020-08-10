@@ -16,8 +16,7 @@
   data-community-name="<%= community_name %>"
   data-community-description="<%= SiteConfig.community_description %>"
   data-community-logo="<%= cloudinary safe_logo_url(SiteConfig.onboarding_logo_image) %>"
-  data-community-background="<%= cloudinary(SiteConfig.onboarding_background_image, "1680", 75) %>"
->
+  data-community-background="<%= cloudinary(SiteConfig.onboarding_background_image, "1680", 75) %>">
   <%= javascript_packs_with_chunks_tag "Onboarding", defer: true %>
 </div>
 

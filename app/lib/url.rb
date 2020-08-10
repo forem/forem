@@ -10,14 +10,6 @@ module URL
     ApplicationConfig["APP_DOMAIN"]
   end
 
-  # Creates an app URL
-  #
-  # @note Uses protocol and domain specified in the environment, ensure they are set.
-  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
-  # @example Retrieve the base URL
-  #  app_url #=> "https://dev.to"
-  # @example Add a path
-  #  app_url("internal") #=> "https://dev.to/internal"
   def self.url(uri = nil)
     base_url = "#{protocol}#{domain}"
     return base_url unless uri
