@@ -298,6 +298,8 @@ Rails.application.routes.draw do
   delete "/messages/:id" => "messages#destroy"
   patch "/messages/:id" => "messages#update"
   get "/live/:username" => "twitch_live_streams#show"
+  get "/internal", to: redirect("/admin")
+  get "/internal/:path", to: redirect("/admin/%{path}")
 
   post "/pusher/auth" => "pusher#auth"
 
