@@ -29,6 +29,8 @@ module Search
       }.freeze
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
 
         # For now, we're not allowing searches for Listings that are
