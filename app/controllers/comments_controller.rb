@@ -236,9 +236,9 @@ class CommentsController < ApplicationController
     @comment.deleted = true
 
     if @comment.save
-      redirect = @comment.commentable&.path
+      redirect_url = @comment.commentable&.path
       if redirect
-        redirect_to redirect, notice: "Comment was successfully deleted."
+        redirect_to redirect_url, notice: "Comment was successfully deleted."
       end
     else
       redirect = @comment.path
