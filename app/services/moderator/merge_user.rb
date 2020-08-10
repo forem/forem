@@ -21,7 +21,7 @@ module Moderator
       merge_chat_mentions
       merge_profile
       update_social
-      Users::DeleteWorker.new.perform(@delete_user.id, admin_delete: true)
+      Users::DeleteWorker.new.perform(@delete_user.id, true)
       @keep_user.touch(:profile_updated_at)
       Users::MergeSyncWorker.perform_async(@keep_user.id)
 
