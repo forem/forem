@@ -185,7 +185,7 @@ GEM
       fastimage
     caze (0.2.2)
       activesupport (>= 3)
-    chartkick (3.3.2)
+    chartkick (3.4.0)
     childprocess (3.0.0)
     cld (0.8.0)
       ffi

@@ -433,7 +433,7 @@ Style/ClassAndModuleChildren:
 Style/OptionalBooleanParameter:
   Description: 'Use keyword arguments when defining method with boolean argument.'
   StyleGuide: '#boolean-keyword-arguments'
-  Enabled: pending
+  Enabled: true
 
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
