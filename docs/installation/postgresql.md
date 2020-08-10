@@ -38,7 +38,7 @@ connection string.
 
 1. Add the following:
 
-```yml
+```shell
 export DATABASE_URL=postgresql://USERNAME:PASSWORD@localhost
 
 # Optional: If your test database is in a different url, be sure to set this.

@@ -12,6 +12,8 @@ class ApplicationConfig
 
   def self.app_domain_no_port
     app_domain = self["APP_DOMAIN"]
-    app_domain&.match(URI_REGEXP)&.[](:host)
+    return unless app_domain
+
+    app_domain.match(URI_REGEXP)[:host]
   end
 end

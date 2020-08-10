@@ -101,7 +101,7 @@ The `token` output from above is what you will use in your application to access
 Vault. All that is left to do is set the appropriate ENV variables in your
 `.env` file.
 
-```yml
+```shell
 export VAULT_TOKEN=important-policy-token export VAULT_SECRET_NAMESPACE=<your
 namespace from above>
 ```

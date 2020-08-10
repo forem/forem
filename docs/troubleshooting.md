@@ -98,6 +98,6 @@ refer to
 If you are experiencing CORS issues locally or need to display more information
 about the CORS headers, add the following variable to your `.env`:
 
-```yml
+```shell
 export DEBUG_CORS=true
 ```
