@@ -211,14 +211,6 @@ module ApplicationHelper
     SiteConfig.community_member_label.pluralize
   end
 
-  # Creates an app internal URL
-  #
-  # @note Uses protocol and domain specified in the environment, ensure they are set.
-  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
-  # @example Retrieve the base URL
-  #  app_url #=> "https://dev.to"
-  # @example Add a path
-  #  app_url("internal") #=> "https://dev.to/internal"
   def app_url(uri = nil)
     URL.url(uri)
   end
@@ -257,7 +249,7 @@ module ApplicationHelper
   end
 
   # rubocop:disable Rails/OutputSafety
-  def internal_config_label(method, content = nil)
+  def admin_config_label(method, content = nil)
     content ||= raw("<span>#{method.to_s.humanize}</span>")
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
       content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])

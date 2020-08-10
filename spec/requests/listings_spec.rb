@@ -70,7 +70,7 @@ RSpec.describe "/listings", type: :request do
     context "when view is moderate" do
       it "redirects to internal/listings/:id/edit" do
         get "/listings", params: { view: "moderate", slug: listing.slug }
-        expect(response.redirect_url).to include("/internal/listings/#{listing.id}/edit")
+        expect(response.redirect_url).to include("/admin/listings/#{listing.id}/edit")
       end
 
       it "without a slug raises an ActiveRecord::RecordNotFound error" do
