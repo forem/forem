@@ -52,5 +52,48 @@ RSpec.describe "/admin/badge_achievements", type: :request do
       expect(BadgeAchievements::BadgeAwardWorker).not_to have_received(:perform_async).with(usernames_array,
                                                                                             badge.slug, "")
     end
+
+    it "does not award a badge if the username provided is not lowercase" do
+      post admin_badges_award_badges_path, params: {
+        badge: badge.slug,
+        usernames: user.username.upcase,
+        message_markdown: ""
+      }
+      expect(BadgeAchievements::BadgeAwardWorker).not_to have_received(:perform_async).with(user.username.upcase,
+                                                                                            badge.slug, "")
+    end
+  end
+
+  describe "GET /admin/badge_achievements" do
+    it "redirects from /admin/badges" do
+      get "/admin/badges"
+      expect(response).to redirect_to("/admin/badge_achievements")
+    end
+  end
+
+  describe "POST /admin/badge_achievements" do
+    let(:admin) { create(:user, :super_admin) }
+    let(:user) { create(:user) }
+    let!(:badge) { create(:badge, title: "Not 'Hello, world!'") }
+    let(:params) do
+      {
+        badge: {
+          title: "Hello, world!",
+          slug: "greeting-badge",
+          description: "Awarded to welcoming users",
+          badge_image: Rack::Test::UploadedFile.new("spec/support/fixtures/images/image1.jpeg", "image/jpeg")
+        }
+      }
+    end
+
+    before do
+      sign_in admin
+    end
+
+    it "successfully updates the badge" do
+      expect do
+        patch "/admin/badge_achievements/#{badge.id}", params: params
+      end.to change { badge.reload.title }.to("Hello, world!")
+    end
   end
 end
