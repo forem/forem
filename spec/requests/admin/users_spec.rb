@@ -112,6 +112,6 @@ RSpec.describe "admin/users", type: :request do
       expect do
         patch unlock_access_admin_user_path(user)
       end.to change { user.reload.access_locked? }.from(true).to(false)
-    end 
+    end
   end
 end
