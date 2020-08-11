@@ -244,9 +244,9 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     context "when requesting an export of the articles" do
-      def send_request(flag = true)
+      def send_request(export_requested: true)
         put "/users/#{user.id}", params: {
-          user: { tab: "misc", export_requested: flag }
+          user: { tab: "misc", export_requested: export_requested }
         }
       end
 
@@ -282,7 +282,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "does not send an email if there was no request" do
         sidekiq_perform_enqueued_jobs do
-          expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
+          expect { send_request(export_requested: false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end
     end

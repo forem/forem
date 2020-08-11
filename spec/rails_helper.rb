@@ -67,7 +67,6 @@ RSpec.configure do |config|
 
   config.include ApplicationHelper
   config.include ActionMailer::TestHelper
-  config.include ActiveJob::TestHelper
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :request

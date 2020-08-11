@@ -1,7 +1,5 @@
 module Webhook
-  class UserSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class UserSerializer < ApplicationSerializer
     attributes :name, :username, :twitter_username, :github_username
     attribute :website_url, &:processed_website_url
     attribute :profile_image do |user|

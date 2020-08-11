@@ -24,7 +24,7 @@ class Notification < ApplicationRecord
   scope :unread, -> { where(read: false) }
 
   class << self
-    def send_new_follower_notification(follow, is_read = false)
+    def send_new_follower_notification(follow, is_read: false)
       return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
@@ -32,7 +32,7 @@ class Notification < ApplicationRecord
       Notifications::NewFollowerWorker.perform_async(follow_data, is_read)
     end
 
-    def send_new_follower_notification_without_delay(follow, is_read = false)
+    def send_new_follower_notification_without_delay(follow, is_read: false)
       return unless follow && Follow.need_new_follower_notification_for?(follow.followable_type)
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 

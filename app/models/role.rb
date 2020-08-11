@@ -12,6 +12,7 @@ class Role < ApplicationRecord
     super_admin
     tag_moderator
     mod_relations_admin
+    support_admin
     tech_admin
     trusted
     warned

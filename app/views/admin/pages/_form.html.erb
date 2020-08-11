@@ -48,7 +48,7 @@
           <span class="badge badge-<%= FeatureFlag.exist?(@page.feature_flag_name) ? "success" : "warning" %>">
             <%= FeatureFlag.exist?(@page.feature_flag_name) ? "Present" : "Not Present" %>
           </span>
-          </br>
+          <br>
           <% if FeatureFlag.exist?(@page.feature_flag_name) %>
             Access to this page is being guarded by the feature flag <code><%= @page.feature_flag_name %></code>.
             <%= link_to "Modify flag here", "/admin/feature_flags/features/#{@page.feature_flag_name}" %>
@@ -56,7 +56,7 @@
             Everyone has access. Optionally guard access to this page by creating feature <code><%= @page.feature_flag_name %></code>
             <%= link_to "here", "/admin/feature_flags/features" %>
           <% end %>
-          </br>
+          <br>
         </p>
       </div>
       <%= form.submit class: "btn btn-primary float-right" %>

@@ -1,24 +1,20 @@
 require "rails_helper"
 
 RSpec.describe "/admin/profile_fields", type: :request do
-  include ActiveJob::TestHelper
-  let(:user) { create(:user) }
+  let(:admin) { create(:user, :super_admin) }
 
-    before do
-      user.add_role(:super_admin)
-      sign_in user
-    end
+  before do
+    sign_in admin
+  end
 
   describe "GET /admin/profile_fields" do
-    let(:profile_field) { create(:profile_field) }
-
     it "renders successfully" do
       get admin_profile_fields_path
       expect(response).to be_successful
     end
 
     it "lists the profile fields" do
-      profile_field
+      profile_field = create(:profile_field)
       get admin_profile_fields_path
       expect(response.body).to include(
         profile_field.label,
@@ -30,7 +26,6 @@ RSpec.describe "/admin/profile_fields", type: :request do
   end
 
   describe "POST /admin/profile_fields" do
-
     let(:new_profile_field) do
       {
         label: "Location",
@@ -65,13 +60,13 @@ RSpec.describe "/admin/profile_fields", type: :request do
 
     it "redirects successfully" do
       put "#{admin_profile_fields_path}/#{profile_field.id}",
-          params: { profile_field: { active: false }}
+          params: { profile_field: { active: false } }
       expect(response).to redirect_to admin_profile_fields_path
     end
 
     it "updates the profile field values" do
       put "#{admin_profile_fields_path}/#{profile_field.id}",
-          params: { profile_field: { active: false }}
+          params: { profile_field: { active: false } }
 
       changed_profile_record = ProfileField.find(profile_field.id)
       expect(changed_profile_record.active).to be(false)
