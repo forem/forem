@@ -1,8 +1,9 @@
+/* globals require beforeEach jest describe it expect */
 const path = require('path');
 const {
   generateUtilityClassesDocumentation,
   GENERATED_STORIES_FOLDER,
-} = require('../documentation');
+} = require('../generate-css-utility-classes-docs');
 
 function createMockFileWriter() {
   const files = {};

@@ -22,8 +22,8 @@
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets,app/javascript/storybook-static",
     "lint:frontend": "eslint app/assets/javascripts/**/*.js app/javascript/**/*.jsx app/javascript/**/*.js",
     "pretest": "npm run lint:frontend",
-    "test": "jest app/javascript/ --coverage",
-    "test:watch": "jest app/javascript/ --watch"
+    "test": "jest app/javascript/ bin/ --coverage",
+    "test:watch": "jest app/javascript/ bin/ --watch"
   },
   "husky": {
     "hooks": {
