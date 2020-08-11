@@ -277,6 +277,7 @@ Rails.application.routes.draw do
       :constraints => { view: /moderate/ }
   get "/listings/:category/:slug/delete_confirm" => "listings#delete_confirm"
   delete "/listings/:category/:slug" => "listings#destroy"
+  patch "listing_endorsement/:id" => "listing_endorsements#update", :as => :approve_endorsement
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   get "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#show"

@@ -24,8 +24,7 @@ class NotificationsController < ApplicationController
                        organization_notifications
                      elsif params[:org_id].blank? && params[:filter].present?
                         puts "yup in filterrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
-                       @user.notifications
-                       #filtered_notifications
+                       filtered_notifications
                      else
                        puts "yup normallllllllllllllllllllllllllllllllllllllllllllllllllll"
                        @user.notifications

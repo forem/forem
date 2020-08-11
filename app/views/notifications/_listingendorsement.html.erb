@@ -20,6 +20,7 @@
     <div class="comment-text">
       <%= json_data["endorsement"]["content"] %>
     </div>
-    <a href="/notifications/update">Approve</a>
+    <button onclick="approveEndorsement('/lisiting_endorsement/31', {id: 31})">Approve</button>
+    <%= link_to 'Approve', approve_endorsement_path(json_data["endorsement"]["id"]), method: :patch %>
   <% end %>
 </div>
