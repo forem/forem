@@ -1,6 +1,6 @@
 module Constants
-  module AllowedMastodon
-    INSTANCES = [
+  module Mastodon
+    ALLOWED_INSTANCES = [
       "101010.pl",
       "4estate.media",
       "acg.mn",
