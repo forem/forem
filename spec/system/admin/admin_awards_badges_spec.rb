@@ -22,7 +22,7 @@ RSpec.describe "Admin awards badges", type: :system do
   before do
     create_list :badge, 5
     sign_in admin
-    visit "/admin/badges/award_badges"
+    visit "/admin/badge_achievements/award_badges"
   end
 
   it "loads the view" do

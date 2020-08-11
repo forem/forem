@@ -19,7 +19,7 @@ RSpec.describe "/admin/badge_achievements", type: :request do
     let(:request) { get "/admin/badge_achievements" }
   end
 
-  describe "POST /admin/badges/award_badges" do
+  describe "POST /admin/badge_achievements/award_badges" do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
     let(:usernames_string) { "#{user.username}, #{user2.username}" }
