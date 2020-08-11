@@ -62,7 +62,7 @@ RSpec.describe "/admin/podcasts", type: :request do
   describe "Updating" do
     it "updates" do
       put admin_podcast_path(podcast), params: { podcast: { title: "hello",
-                                                               feed_url: "https://pod.example.com/rss.rss" } }
+                                                            feed_url: "https://pod.example.com/rss.rss" } }
       podcast.reload
       expect(podcast.title).to eq("hello")
       expect(podcast.feed_url).to eq("https://pod.example.com/rss.rss")
@@ -70,7 +70,7 @@ RSpec.describe "/admin/podcasts", type: :request do
 
     it "redirects after update" do
       put admin_podcast_path(podcast), params: { podcast: { title: "hello",
-                                                               feed_url: "https://pod.example.com/rss.rss" } }
+                                                            feed_url: "https://pod.example.com/rss.rss" } }
       expect(response).to redirect_to(admin_podcasts_path)
     end
   end

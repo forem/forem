@@ -8,7 +8,6 @@ RSpec.describe "/admin/profile_fields", type: :request do
   end
 
   describe "GET /admin/profile_fields" do
-
     it "renders successfully" do
       get admin_profile_fields_path
       expect(response).to be_successful
@@ -27,7 +26,6 @@ RSpec.describe "/admin/profile_fields", type: :request do
   end
 
   describe "POST /admin/profile_fields" do
-
     let(:new_profile_field) do
       {
         label: "Location",
@@ -62,13 +60,13 @@ RSpec.describe "/admin/profile_fields", type: :request do
 
     it "redirects successfully" do
       put "#{admin_profile_fields_path}/#{profile_field.id}",
-          params: { profile_field: { active: false }}
+          params: { profile_field: { active: false } }
       expect(response).to redirect_to admin_profile_fields_path
     end
 
     it "updates the profile field values" do
       put "#{admin_profile_fields_path}/#{profile_field.id}",
-          params: { profile_field: { active: false }}
+          params: { profile_field: { active: false } }
 
       changed_profile_record = ProfileField.find(profile_field.id)
       expect(changed_profile_record.active).to be(false)
