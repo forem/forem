@@ -1,11 +1,7 @@
 module DataUpdateScripts
   class RemoveOrphanedAhoyEvents
     def run
-      Ahoy::Event.find_each do |event|
-        next if event.visit.blank?
-
-        event.destroy
-      end
+      # Deleted the script as it was not necessary
     end
   end
 end
