@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/badge_achievements", type: :request do
+RSpec.describe "/admin/badges", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let!(:badge) { create(:badge, title: "Not 'Hello, world!'") }
   let(:params) do
@@ -16,7 +16,7 @@ RSpec.describe "/admin/badge_achievements", type: :request do
   end
 
   it_behaves_like "an InternalPolicy dependant request", Badge do
-    let(:request) { get "/admin/badge_achievements" }
+    let(:request) { get "/admin/badges" }
   end
 
   describe "POST /admin/badge_achievements/award_badges" do
@@ -75,15 +75,8 @@ RSpec.describe "/admin/badge_achievements", type: :request do
     end
   end
 
-  describe "GET /admin/badge_achievements" do
-    it "redirects from /admin/badges" do
-      get "/admin/badges"
-      expect(response).to redirect_to("/admin/badge_achievements")
-    end
-  end
-
-  describe "POST /admin/badge_achievements" do
-    let(:post_resource) { post "/admin/badge_achievements", params: params }
+  describe "POST /admin/badges" do
+    let(:post_resource) { post "/admin/badges", params: params }
 
     before { sign_in admin }
 
@@ -94,12 +87,12 @@ RSpec.describe "/admin/badge_achievements", type: :request do
     end
   end
 
-  describe "PUT /admin/badge_achievements" do
+  describe "PUT /admin/badges" do
     before { sign_in admin }
 
     it "successfully updates the badge" do
       expect do
-        patch "/admin/badge_achievements/#{badge.id}", params: params
+        patch "/admin/badges/#{badge.id}", params: params
       end.to change { badge.reload.title }.to("Hello, world!")
     end
   end
