@@ -947,7 +947,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
 
   create_table "profiles", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.jsonb "data"
+    t.jsonb "data", default: {}, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_profiles_on_user_id"
@@ -1355,7 +1355,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
-  add_foreign_key "profiles", "users"
+  add_foreign_key "profiles", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
