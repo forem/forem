@@ -1336,6 +1336,10 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "ahoy_events", "ahoy_visits", column: "visit_id", on_delete: :cascade
+  add_foreign_key "ahoy_events", "users", on_delete: :cascade
+  add_foreign_key "ahoy_messages", "users", on_delete: :cascade
+  add_foreign_key "ahoy_visits", "users", on_delete: :cascade
   add_foreign_key "api_secrets", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
