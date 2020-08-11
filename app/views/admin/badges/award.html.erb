@@ -1,5 +1,5 @@
 <h3>Award Badges</h3>
-<div class="alert alert-warning"><strong>Warning: Usernames are case-sensitive and must be lowercase! This task will fail silently when supplied with incorrect
+<div class="alert alert-warning"><strong>Warning: Usernames are case-sensitive and must be all lowercase! This task will fail silently when supplied with incorrect
     usernames.<strong></div>
 <%= form_with(url: admin_badge_achievements_award_badges_path, local: true) do |f| %>
 <div class="form-group">
@@ -7,7 +7,7 @@
   <%= f.select("badge", @badge.map { |badge| [badge.title, badge.slug] }, include_blank: true, class: "form-control") %>
 </div>
 <div class="form-group">
-  <%= f.label :usernames, "Usernames (Comma Delimited)*" %>
+  <%= f.label :usernames, "Usernames (Comma Delimited and All Lowercase)*" %>
   <%= f.text_area :usernames, placeholder: "username1, username2, username3", required: true, size: "40x10", class: "form-control" %>
 </div>
 <div class="form-group">
