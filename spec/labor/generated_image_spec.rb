@@ -19,8 +19,7 @@ RSpec.describe GeneratedImage, type: :labor do
     article.main_image = nil
     article.social_image = nil
     article.cached_tag_list = "discuss, hello, goodbye"
-    something = described_class.new(article).social_image
-    expect(something).to include(
+    expect(described_class.new(article).social_image).to include(
       "article/#{article.id}",
       "image/url2png",
       "c_fill,g_north,h_400,w_800/",
