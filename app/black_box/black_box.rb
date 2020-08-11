@@ -35,7 +35,8 @@ class BlackBox
     def calculate_spaminess(story, function_caller = FunctionCaller)
       # accepts comment or article as story
       return 100 unless story.user
-      return 100 unless ENV["AWS_SDK_KEY"].present? # Skip this if we don't have a private spam score for now
+      return 100 if ENV["AWS_SDK_KEY"].blank? # Skip this if we don't have a private spam score for now
+      return 100 if ENV["AWS_SDK_KEY"] == "foobarbaz" # Also skip if placeholder
 
       function_caller.call("blackbox-production-spamScore",
                            { story: story, user: story.user }.to_json).to_i
