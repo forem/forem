@@ -33,6 +33,10 @@ module Purgeable
 
       Fastly::Service.new({ id: ApplicationConfig["FASTLY_SERVICE_ID"] }, fastly)
     end
+
+    def no_fastly?
+      Rails.env.development? || ENV["FASTLY_API_KEY"].blank? || ENV["FASTLY_API_KEY"] == "foobarbaz"
+    end
   end
 
   # Instance methods
@@ -45,13 +49,13 @@ module Purgeable
   end
 
   def purge
-    return if no_fastly?
+    return if self.class.no_fastly?
 
     service.purge_by_key(record_key)
   end
 
   def soft_purge
-    return if no_fastly?
+    return if self.class.no_fastly?
 
     service.purge_by_key(record_key, true)
   end
@@ -70,11 +74,5 @@ module Purgeable
 
   def service
     self.class.service
-  end
-
-  private
-
-  def no_fastly?
-    Rails.env.development? || ENV["FASTLY_API_KEY"].blank? || ENV["FASTLY_API_KEY"] == "foobarbaz"
   end
 end
