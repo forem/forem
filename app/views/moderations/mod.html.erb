@@ -110,7 +110,7 @@
         <p class="fw-bold fs-xl">Delete This Comment</p>
       </div>
       <div class="flex">
-      <%= button_to "Delete Comment", comment_admin_delete_path(@moderatable.id), method: :patch, class: "crayons-btn crayons-btn--secondary ml-2", data: { confirm: "Are you sure you want to delete this comment?" } %>
+        <%= button_to "Delete Comment", comment_admin_delete_path(@moderatable.id), method: :patch, class: "crayons-btn crayons-btn--secondary ml-2" %>
       </div>
     </div>
   <% end %>
