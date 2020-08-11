@@ -907,7 +907,21 @@ export default class Chat extends Component {
     );
   };
 
-  handleUpdateRequestCount = () => {
+  handleUpdateRequestCount = (isAccepted = false, acceptedInfo) => {
+    if (isAccepted) {
+      const searchParams = {
+        query: '',
+        retrievalID: null,
+        searchType: '',
+        paginationNumber: 0,
+      };
+      getChannels(searchParams, 'all', this.loadChannels);
+      this.triggerSwitchChannel(
+        parseInt(acceptedInfo.channelId, 10),
+        acceptedInfo.channelSlug,
+      );
+    }
+
     this.setState((prevState) => {
       return {
         userRequestCount: prevState.userRequestCount - 1,

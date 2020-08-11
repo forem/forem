@@ -69,6 +69,11 @@ archive. We recommend installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
 
+We recommend that you **do not** install Elasticsearch in the app directory.
+Instead, we recommend installing it in your home directory (for example,
+`cd $HOME`). (This also ensures that we don't accidentally commit Elasticsearch
+code to the project's repository!)
+
 The following directions were
 [taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-macos),
 so check those out if you run into any issues or want further information. Make

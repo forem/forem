@@ -49,6 +49,7 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
+  has_one :profile, dependent: :destroy
   has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
                                                 foreign_key: :author_id, inverse_of: :author, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
@@ -92,7 +93,6 @@ class User < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
   has_many :notification_subscriptions, dependent: :destroy
-  has_many :user_optional_fields, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :offender_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
@@ -112,7 +112,8 @@ class User < ApplicationRecord
 
   mount_uploader :profile_image, ProfileImageUploader
 
-  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable, :recoverable
+  devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
+         :recoverable, :lockable
 
   validates :behance_url, length: { maximum: 100 }, allow_blank: true, format: BEHANCE_URL_REGEXP
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
@@ -170,19 +171,18 @@ class User < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
 
+  before_validation :check_for_username_change
+  before_validation :downcase_email
+  before_validation :set_config_input
+  # make sure usernames are not empty, to be able to use the database unique index
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
+  before_validation :set_username
+  before_create :set_default_language
+  before_destroy :unsubscribe_from_newsletters, prepend: true
+  before_destroy :destroy_follows, prepend: true
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
   after_save :conditionally_resave_articles
-
-  before_create :set_default_language
-  before_validation :set_username
-  # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
-  before_validation :set_config_input
-  before_validation :downcase_email
-  before_validation :check_for_username_change
-  before_destroy :destroy_follows, prepend: true
-  before_destroy :unsubscribe_from_newsletters, prepend: true
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
@@ -246,21 +246,10 @@ class User < ApplicationRecord
     end
   end
 
-  # handles both old (prefer_language_*) and new (Array of language codes) formats
   def preferred_languages_array
     return @preferred_languages_array if defined?(@preferred_languages_array)
 
-    if language_settings["preferred_languages"].present?
-      @preferred_languages_array = language_settings["preferred_languages"].to_a
-    else
-      languages = []
-      language_settings.each_key do |setting|
-        to_split = language_settings[setting] && setting.include?("prefer_language_")
-        languages << setting.split("prefer_language_")[1] if to_split
-      end
-      @preferred_languages_array = languages
-    end
-    @preferred_languages_array
+    @preferred_languages_array = language_settings["preferred_languages"]
   end
 
   def processed_website_url
@@ -278,7 +267,7 @@ class User < ApplicationRecord
         id: Follow.where(
           follower_id: id,
           followable_type: "ActsAsTaggableOn::Tag",
-        ).pluck(:followable_id),
+        ).select(:followable_id),
       ).pluck(:name)
     end
   end
@@ -604,7 +593,7 @@ class User < ApplicationRecord
     return if mastodon_url.blank?
 
     uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+    return if uri.host&.in?(Constants::Mastodon::ALLOWED_INSTANCES)
 
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   rescue URI::InvalidURIError

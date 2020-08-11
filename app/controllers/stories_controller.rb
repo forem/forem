@@ -244,12 +244,12 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_view_param
-    redirect_to "/internal/users/#{@user.id}" if params[:view] == "moderate"
-    redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
+    redirect_to "/admin/users/#{@user.id}" if params[:view] == "moderate"
+    redirect_to "/resource_admin/users/#{@user.id}/edit" if params[:view] == "admin"
   end
 
   def redirect_if_show_view_param
-    redirect_to "/internal/articles/#{@article.id}" if params[:view] == "moderate"
+    redirect_to "/admin/articles/#{@article.id}" if params[:view] == "moderate"
   end
 
   def handle_article_show
@@ -326,7 +326,7 @@ class StoriesController < ApplicationController
       .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published
       .limited_column_select
-      .where.not(id: @pinned_stories.pluck(:id))
+      .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
   end
 

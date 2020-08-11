@@ -36,17 +36,21 @@ class ChatChannelsController < ApplicationController
 
   def create
     authorize ChatChannel
-    @chat_channel = ChatChannelCreationService.new(current_user, params[:chat_channel]).create
+    @chat_channel = current_user.chat_channels.create(
+      channel_type: "invite_only",
+      channel_name: chat_channel_params[:channel_name],
+      slug: chat_channel_params[:slug],
+    )
     render_chat_channel
   end
 
   def update
-    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
-    if chat_channel.errors.any?
-      flash[:error] = chat_channel.errors.full_messages.to_sentence
+    @chat_channel.update(chat_channel_params)
+    if @chat_channel.errors.any?
+      flash[:error] = @chat_channel.errors.full_messages.to_sentence
     else
       if chat_channel_params[:discoverable].to_i.zero?
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: @chat_channel.id,
                                      role: "member", status: "active")
       else
         ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
@@ -59,13 +63,13 @@ class ChatChannelsController < ApplicationController
   end
 
   def update_channel
-    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
-    if chat_channel.errors.any?
-      render json: { success: false, errors: chat_channel.errors.full_messages,
+    @chat_channel.update(chat_channel_params)
+    if @chat_channel.errors.any?
+      render json: { success: false, errors: @chat_channel.errors.full_messages,
                      message: "Channel settings updation failed. Try again later." }, success: :bad_request
     else
       if chat_channel_params[:discoverable]
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: @chat_channel.id,
                                      role: "member", status: "active")
       else
         ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
@@ -127,7 +131,7 @@ class ChatChannelsController < ApplicationController
     authorize ChatChannel
 
     if chat_recipient.inbox_type == "open" || valid_listing.length == 1
-      chat = ChatChannel.create_with_users(users: [current_user, chat_recipient], channel_type: "direct")
+      chat = ChatChannels::CreateWithUsers.call(users: [current_user, chat_recipient], channel_type: "direct")
       message_markdown = params[:message]
       message = Message.new(
         chat_channel: chat,
@@ -238,6 +242,8 @@ class ChatChannelsController < ApplicationController
              params[:slug]
            end
     chat_channel = ChatChannel.find_by(slug: slug)
+    return unless chat_channel
+
     membership = chat_channel.chat_channel_memberships.find_by(user_id: current_user.id)
     @active_channel = membership&.status == "active" ? chat_channel : nil
   end

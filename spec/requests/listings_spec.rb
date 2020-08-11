@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "/listings", type: :request do
-  let_it_be_readonly(:edu_category) do
+  let(:edu_category) do
     create(:listing_category, cost: 1)
   end
   let(:user) { create(:user) }
@@ -70,7 +70,7 @@ RSpec.describe "/listings", type: :request do
     context "when view is moderate" do
       it "redirects to internal/listings/:id/edit" do
         get "/listings", params: { view: "moderate", slug: listing.slug }
-        expect(response.redirect_url).to include("/internal/listings/#{listing.id}/edit")
+        expect(response.redirect_url).to include("/admin/listings/#{listing.id}/edit")
       end
 
       it "without a slug raises an ActiveRecord::RecordNotFound error" do
@@ -147,7 +147,7 @@ RSpec.describe "/listings", type: :request do
       create_list(:credit, 25, user: user)
     end
 
-    let_it_be_readonly(:cfp_category) { create(:listing_category, :cfp) }
+    let(:cfp_category) { create(:listing_category, :cfp) }
 
     context "when the listing is invalid" do
       let(:invalid_params) do
@@ -535,25 +535,6 @@ context "when running the specs that were previously in another file" do
         tag_list: "ruby, rails, go"
       }
     }
-  end
-
-  describe "GET /listings" do
-    it "has page content" do
-      get "/listings"
-      expect(response.body).to include("listing-filters")
-    end
-
-    it "has page content for category page" do
-      get "/listings/saas"
-      expect(response.body).to include("listing-filters")
-    end
-  end
-
-  describe "GETS /listings/new" do
-    it "has page content" do
-      get "/listings"
-      expect(response.body).to include("listing-filters")
-    end
   end
 
   describe "POST /listings" do

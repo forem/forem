@@ -39,7 +39,7 @@ as any relevant images for UI changes._
 
 ## Added to documentation?
 
-- [ ] docs.dev.to
+- [ ] docs.forem.com
 - [ ] readme
 - [ ] no documentation needed
 

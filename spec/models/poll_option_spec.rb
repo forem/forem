@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe PollOption, type: :model do
-  let_it_be(:article) { build(:article, featured: true) }
-  let_it_be(:poll) { build(:poll, article: article) }
-  let_it_be(:poll_option) { build(:poll_option, poll: poll) }
+  let(:article) { build(:article, featured: true) }
+  let(:poll) { build(:poll, article: article) }
+  let(:poll_option) { build(:poll_option, poll: poll) }
 
   describe "validations" do
     it "allows up to 128 markdown characters" do

@@ -1,7 +1,5 @@
 module Search
-  class UserSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class UserSerializer < ApplicationSerializer
     attributes :id,
                :available_for,
                :comments_count,

@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_27_163200) do
+ActiveRecord::Schema.define(version: 2020_08_06_193438) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -28,17 +29,17 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["visit_id"], name: "index_ahoy_events_on_visit_id"
   end
 
-  create_table "ahoy_messages", id: :serial, force: :cascade do |t|
+  create_table "ahoy_messages", force: :cascade do |t|
     t.datetime "clicked_at"
     t.text "content"
-    t.integer "feedback_message_id"
+    t.bigint "feedback_message_id"
     t.string "mailer"
     t.datetime "opened_at"
     t.datetime "sent_at"
     t.text "subject"
     t.text "to"
     t.string "token"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.string "user_type"
     t.string "utm_campaign"
     t.string "utm_content"
@@ -75,7 +76,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["user_id"], name: "index_api_secrets_on_user_id"
   end
 
-  create_table "articles", id: :serial, force: :cascade do |t|
+  create_table "articles", force: :cascade do |t|
     t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
@@ -88,7 +89,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
-    t.integer "collection_id"
+    t.bigint "collection_id"
     t.integer "comment_score", default: 0
     t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
@@ -114,7 +115,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0
     t.integer "organic_page_views_past_week_count", default: 0
-    t.integer "organization_id"
+    t.bigint "organization_id"
     t.datetime "originally_published_at"
     t.integer "page_views_count", default: 0
     t.string "password"
@@ -134,15 +135,15 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.integer "score", default: 0
     t.string "search_optimized_description_replacement"
     t.string "search_optimized_title_preamble"
-    t.integer "second_user_id"
+    t.bigint "second_user_id"
     t.boolean "show_comments", default: true
     t.text "slug"
     t.string "social_image"
     t.integer "spaminess_rating", default: 0
-    t.integer "third_user_id"
+    t.bigint "third_user_id"
     t.string "title"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.integer "user_subscriptions_count", default: 0, null: false
     t.string "video"
     t.string "video_closed_caption_track_url"
@@ -544,12 +545,12 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
   end
 
-  create_table "follows", id: :serial, force: :cascade do |t|
+  create_table "follows", force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
-    t.integer "followable_id", null: false
+    t.bigint "followable_id", null: false
     t.string "followable_type", null: false
-    t.integer "follower_id", null: false
+    t.bigint "follower_id", null: false
     t.string "follower_type", null: false
     t.float "points", default: 1.0
     t.string "subscription_status", default: "all_articles", null: false
@@ -621,7 +622,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["name"], name: "index_html_variants_on_name", unique: true
   end
 
-  create_table "identities", id: :serial, force: :cascade do |t|
+  create_table "identities", force: :cascade do |t|
     t.text "auth_data_dump"
     t.datetime "created_at", null: false
     t.string "provider"
@@ -629,7 +630,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.string "token"
     t.string "uid"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
   end
@@ -677,17 +678,17 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["user_id", "notifiable_type", "notifiable_id"], name: "idx_notification_subs_on_user_id_notifiable_type_notifiable_id", unique: true
   end
 
-  create_table "notifications", id: :serial, force: :cascade do |t|
+  create_table "notifications", force: :cascade do |t|
     t.string "action"
     t.datetime "created_at", null: false
     t.jsonb "json_data"
-    t.integer "notifiable_id"
+    t.bigint "notifiable_id"
     t.string "notifiable_type"
     t.datetime "notified_at"
     t.bigint "organization_id"
     t.boolean "read", default: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
@@ -920,6 +921,18 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "profile_fields", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.string "description"
+    t.string "group"
+    t.integer "input_type", default: 0, null: false
+    t.citext "label", null: false
+    t.string "placeholder_text"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["label"], name: "index_profile_fields_on_label", unique: true
+  end
+
   create_table "profile_pins", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "pinnable_id"
@@ -930,6 +943,14 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["pinnable_id", "profile_id", "profile_type", "pinnable_type"], name: "idx_pins_on_pinnable_id_profile_id_profile_type_pinnable_type", unique: true
     t.index ["pinnable_id"], name: "index_profile_pins_on_pinnable_id"
     t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
+  end
+
+  create_table "profiles", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
   create_table "rating_votes", force: :cascade do |t|
@@ -945,15 +966,15 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["user_id"], name: "index_rating_votes_on_user_id"
   end
 
-  create_table "reactions", id: :serial, force: :cascade do |t|
+  create_table "reactions", force: :cascade do |t|
     t.string "category"
     t.datetime "created_at", null: false
     t.float "points", default: 1.0
-    t.integer "reactable_id"
+    t.bigint "reactable_id"
     t.string "reactable_type"
     t.string "status", default: "valid"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["category"], name: "index_reactions_on_category"
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
@@ -1121,16 +1142,6 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
   end
 
-  create_table "user_optional_fields", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "label", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.string "value", null: false
-    t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
-    t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
-  end
-
   create_table "user_subscriptions", force: :cascade do |t|
     t.bigint "author_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -1146,7 +1157,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
   end
 
-  create_table "users", id: :serial, force: :cascade do |t|
+  create_table "users", force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
@@ -1197,6 +1208,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
     t.string "facebook_url"
+    t.integer "failed_attempts", default: 0
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
@@ -1231,6 +1243,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
     t.string "location"
+    t.datetime "locked_at"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
     t.string "mastodon_url"
@@ -1275,6 +1288,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
     t.integer "twitter_following_count"
     t.string "twitter_username"
     t.string "unconfirmed_email"
+    t.string "unlock_token"
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "username"
@@ -1341,6 +1355,7 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
+  add_foreign_key "profiles", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
@@ -1349,7 +1364,6 @@ ActiveRecord::Schema.define(version: 2020_07_27_163200) do
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
-  add_foreign_key "user_optional_fields", "users"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "users_roles", "users", on_delete: :cascade

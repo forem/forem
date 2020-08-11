@@ -1,0 +1,25 @@
+<% title_string = "#{@user.name}'s Series" %>
+
+<%= content_for :page_meta do %>
+  <%= render "collections/meta", title_string: title_string %>
+<% end %>
+
+<div class="crayons-layout crayons-layout--1-col">
+  <header class="px-2 m:px-0">
+    <h1><%= title_string %></h1>
+  </header>
+
+  <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
+    <% if @collections.present? %>
+      <% @collections.each do |collection| %>
+        <div class="crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative">
+          <h3 class="mb-2">
+            <%= collection_link(collection, class: "crayons-link") %>
+          </h3>
+        </div>
+      <% end %>
+    <% else %>
+      <p>This user doesn't have any series</p>
+    <% end %>
+  </div>
+</div>

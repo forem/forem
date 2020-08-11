@@ -7,7 +7,8 @@ class ListingsController < ApplicationController
       title processed_html tag_list category id user_id slug contact_via_connect location
     ],
     include: {
-      author: { only: %i[username name], methods: %i[username profile_image_90] }
+      author: { only: %i[username name], methods: %i[username profile_image_90] },
+      user: { only: %i[username], methods: %i[username] }
     }
   }.freeze
 
@@ -33,7 +34,7 @@ class ListingsController < ApplicationController
 
     if params[:view] == "moderate"
       not_found unless @displayed_listing
-      return redirect_to edit_internal_listing_path(id: @displayed_listing.id)
+      return redirect_to edit_admin_listing_path(id: @displayed_listing.id)
     end
 
     @listings =

@@ -26,6 +26,8 @@ FactoryBot.define do
     bg_color_hex                 { Faker::Color.hex_color }
     text_color_hex               { Faker::Color.hex_color }
 
+    after(:create) { |user| create(:profile, user: user) }
+
     trait :with_identity do
       transient { identities { Authentication::Providers.available } }
 
@@ -136,14 +138,6 @@ FactoryBot.define do
       after(:create) do |user|
         tag = create(:tag)
         user.add_role :tag_moderator, tag
-      end
-    end
-
-    trait :with_user_optional_fields do
-      after(:create) do |user|
-        create(:user_optional_field, user: user)
-        create(:user_optional_field, user: user, label: "another field1", value: "another value1")
-        create(:user_optional_field, user: user, label: "another field2", value: "another value2")
       end
     end
 

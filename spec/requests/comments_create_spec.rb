@@ -11,17 +11,15 @@ RSpec.describe "CommentsCreate", type: :request do
     sign_in user
   end
 
-  # rubocop:disable Style/OptionHash
-  def comment_params(params = {})
+  def comment_params(**kwargs)
     {
       comment: {
         body_markdown: new_body.call,
         commentable_id: article.id,
         commentable_type: "Article"
-      }.merge(params)
+      }.merge(kwargs)
     }
   end
-  # rubocop:enable Style/OptionHash
 
   it "creates a comment with proper params" do
     expect do

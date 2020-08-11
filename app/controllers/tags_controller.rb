@@ -17,7 +17,7 @@ class TagsController < ApplicationController
   end
 
   def update
-    @tag = Tag.find_by!(id: params[:id])
+    @tag = Tag.find(params[:id])
     authorize @tag
     if @tag.errors.messages.blank? && @tag.update(tag_params)
       flash[:success] = "Tag successfully updated! 👍 "
@@ -31,7 +31,7 @@ class TagsController < ApplicationController
   def admin
     tag = Tag.find_by!(name: params[:tag])
     authorize tag
-    redirect_to "/admin/tags/#{tag.id}/edit"
+    redirect_to "/resource_admin/tags/#{tag.id}/edit"
   end
 
   def onboarding
