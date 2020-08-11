@@ -593,7 +593,7 @@ class User < ApplicationRecord
     return if mastodon_url.blank?
 
     uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+    return if uri.host&.in?(Constants::Mastodon::ALLOWED_INSTANCES)
 
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   rescue URI::InvalidURIError
