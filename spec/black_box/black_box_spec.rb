@@ -95,9 +95,18 @@ RSpec.describe BlackBox, type: :black_box do
       ENV["AWS_SDK_KEY"] = nil
     end
 
-    it "returns the value that the caller returns" do
+    it "returns the function_caller spaminess if AWS_SDK_KEY present" do
+      ENV["AWS_SDK_KEY"] = "valid_key"
       spaminess = described_class.calculate_spaminess(comment, function_caller)
       expect(spaminess).to eq(1)
+      ENV["AWS_SDK_KEY"] = nil
+    end
+
+    it "returns the default retrun value if AWS_SDK_KEY is placeholder" do
+      ENV["AWS_SDK_KEY"] = "foobarbaz"
+      spaminess = described_class.calculate_spaminess(comment, function_caller)
+      expect(spaminess).to eq(0)
+      ENV["AWS_SDK_KEY"] = nil
     end
   end
 end
