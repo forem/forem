@@ -6,8 +6,24 @@ module Admin
       @badges = Badge.all
     end
 
+    def new
+      @badge = Badge.new
+    end
+
     def edit
       @badge = Badge.find(params[:id])
+    end
+
+    def create
+      @badge = Badge.new(badge_params)
+
+      if @badge.save
+        flash[:success] = "Badge has been created!"
+        redirect_to admin_badges_path
+      else
+        flash[:danger] = @badge.errors.full_messages.to_sentence
+        render new_admin_badge_path
+      end
     end
 
     def update

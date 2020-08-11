@@ -1,7 +1,7 @@
 <h3>Badge Achievements</h3>
  <div class="col">
     <div class="row justify-content-end">
-      <%= link_to "Award Badge", admin_badges_award_badges_path, class: "btn btn-primary" %>
+      <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>
     </div>
   </div>
 <table class="table">
@@ -26,3 +26,8 @@
     <% end %>
   </tbody>
 </table>
+<div class="col">
+  <div class="row justify-content-end">
+    <%= link_to "Award Badge", admin_badges_award_badges_path, class: "btn btn-primary" %>
+  </div>
+</div>
