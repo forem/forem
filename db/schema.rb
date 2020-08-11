@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_06_193438) do
+ActiveRecord::Schema.define(version: 2020_08_09_200631) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.string "description", null: false
     t.string "secret"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["secret"], name: "index_api_secrets_on_secret", unique: true
     t.index ["user_id"], name: "index_api_secrets_on_user_id"
   end
@@ -189,7 +189,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
   create_table "badge_achievements", force: :cascade do |t|
     t.bigint "badge_id", null: false
     t.datetime "created_at", null: false
-    t.integer "rewarder_id"
+    t.bigint "rewarder_id"
     t.text "rewarding_context_message"
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", null: false
@@ -280,7 +280,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.datetime "active_status_updated_at"
     t.string "banner_style"
     t.text "body_markdown"
-    t.integer "broadcastable_id"
+    t.bigint "broadcastable_id"
     t.string "broadcastable_type"
     t.datetime "created_at"
     t.text "processed_html"
@@ -457,7 +457,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.integer "clicks_count", default: 0
     t.datetime "created_at", null: false
     t.integer "impressions_count", default: 0
-    t.integer "organization_id"
+    t.bigint "organization_id"
     t.string "placement_area"
     t.text "processed_html"
     t.boolean "published", default: false
@@ -496,14 +496,14 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
   end
 
   create_table "feedback_messages", force: :cascade do |t|
-    t.integer "affected_id"
+    t.bigint "affected_id"
     t.string "category"
     t.datetime "created_at"
     t.string "feedback_type"
     t.text "message"
-    t.integer "offender_id"
+    t.bigint "offender_id"
     t.string "reported_url"
-    t.integer "reporter_id"
+    t.bigint "reporter_id"
     t.string "status", default: "Open"
     t.datetime "updated_at"
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
@@ -593,17 +593,17 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
   end
 
   create_table "html_variant_successes", force: :cascade do |t|
-    t.integer "article_id"
+    t.bigint "article_id"
     t.datetime "created_at", null: false
-    t.integer "html_variant_id"
+    t.bigint "html_variant_id"
     t.datetime "updated_at", null: false
     t.index ["html_variant_id", "article_id"], name: "index_html_variant_successes_on_html_variant_id_and_article_id"
   end
 
   create_table "html_variant_trials", force: :cascade do |t|
-    t.integer "article_id"
+    t.bigint "article_id"
     t.datetime "created_at", null: false
-    t.integer "html_variant_id"
+    t.bigint "html_variant_id"
     t.datetime "updated_at", null: false
     t.index ["html_variant_id", "article_id"], name: "index_html_variant_trials_on_html_variant_id_and_article_id"
   end
@@ -1313,7 +1313,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
 
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "role_id"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
