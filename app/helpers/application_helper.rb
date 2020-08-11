@@ -77,14 +77,9 @@ module ApplicationHelper
   end
 
   def cloudinary(url, width = "500", quality = 80, format = "auto")
-    cl_image_path(url || asset_path("#{rand(1..40)}.png"),
-                  type: "fetch",
-                  width: width,
-                  crop: "limit",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: format,
-                  sign_url: true)
+    image_url = url || asset_path("#{rand(1..40)}.png")
+
+    Images::Optimizer.call(image_url, width: width, quality: quality, fetch_format: format)
   end
 
   def cloud_cover_url(url)
