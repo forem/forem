@@ -35,8 +35,8 @@ class BlackBox
     def calculate_spaminess(story, function_caller = FunctionCaller)
       # accepts comment or article as story
       return 100 unless story.user
-      return 100 if ENV["AWS_SDK_KEY"].blank? # Skip this if we don't have a private spam score for now
-      return 100 if ENV["AWS_SDK_KEY"] == "foobarbaz" # Also skip if placeholder
+      return 0 if ENV["AWS_SDK_KEY"].blank? # Skip this if we don't have a private spam score for now
+      return 0 if ENV["AWS_SDK_KEY"] == "foobarbaz" # Also skip if placeholder
 
       function_caller.call("blackbox-production-spamScore",
                            { story: story, user: story.user }.to_json).to_i
@@ -60,9 +60,9 @@ class BlackBox
         # Simple calculation that takes in published at time and scores
         # Same order of magnitude calculation as existing private function
         # Gives credit to new articles and articles which score well from users and mods
-        article.published_at.to_i/10000 +
-        (article.score * 5000) +
-        (article.comment_score * 5000)
+        article.published_at.to_i / 10_000 +
+          (article.score * 5000) +
+          (article.comment_score * 5000)
       end
     end
   end
