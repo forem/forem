@@ -16,7 +16,7 @@ class BlackBox
         reaction_points = (reaction_points * 0.8).to_i # watercooler posts shouldn't get as much love in feed
       end
 
-      article_hotness = last_mile_hotness_calc(function_caller)
+      article_hotness = last_mile_hotness_calc(article, function_caller)
 
       (
         article_hotness + reaction_points + recency_bonus + super_recent_bonus +
@@ -50,7 +50,7 @@ class BlackBox
       size_bonus + code_bonus
     end
 
-    def last_mile_hotness_calc(function_caller)
+    def last_mile_hotness_calc(article, function_caller)
       if ENV["AWS_SDK_KEY"].present? && ENV["AWS_SDK_KEY"] != "foobarbaz"
         function_caller.call(
           "blackbox-production-articleHotness",
