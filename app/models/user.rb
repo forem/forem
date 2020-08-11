@@ -49,6 +49,7 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
+  has_one :profile, dependent: :destroy
   has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
                                                 foreign_key: :author_id, inverse_of: :author, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy

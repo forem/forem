@@ -9,4 +9,16 @@ class ProfileField < ApplicationRecord
 
   validates :label, presence: true, uniqueness: { case_sensitive: false }
   validates :active, inclusion: { in: [true, false] }
+
+  scope :active, -> { where(active: true) }
+
+  def attribute_name
+    label.titleize.delete(" ").underscore
+  end
+
+  def type
+    return :boolean if check_box?
+
+    :string
+  end
 end

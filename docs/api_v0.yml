@@ -2221,7 +2221,7 @@ paths:
       summary: Comments
       description: |
         This endpoint allows the client to retrieve all comments belonging to an
-        article as threaded conversations.
+        article or podcast episode as threaded conversations.
 
         It will return the all top level comments with their nested comments as
         threads. See the format specification for further details.
@@ -2236,6 +2236,14 @@ paths:
             format: int32
             minimum: 1
           example: 270180
+        - name: p_id
+          in: query
+          description: Podcast Episode identifier.
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          example: 124
       responses:
         "200":
           description: A list of threads of comments
@@ -2266,6 +2274,10 @@ paths:
           label: curl (all comments of an article)
           source: |
             curl https://dev.to/api/comments?a_id=270180
+        - lang: Shell
+          label: curl (all comments of a podcast episode)
+          source: |
+            curl https://dev.to/api/comments?p_id=124
 
   /comments/{id}:
     get:
