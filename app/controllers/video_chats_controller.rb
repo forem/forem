@@ -23,7 +23,6 @@ class VideoChatsController < ApplicationController
     grant.room = params[:id]
     token.add_grant(grant)
 
-    @username = @username
     @token = token.to_jwt
   end
 

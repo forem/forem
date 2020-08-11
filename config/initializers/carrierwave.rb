@@ -26,17 +26,18 @@ CarrierWave.configure do |config|
         region: "us-east-2"
       }
       config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
-      config.fog_public    = false
+      config.fog_public = false
     else
       region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
       config.fog_credentials = {
-                                 provider: "AWS",
-                                 aws_access_key_id: ApplicationConfig["AWS_ID"],
-                                 aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
-                                 region: region
-                               }
+        provider: "AWS",
+        aws_access_key_id: ApplicationConfig["AWS_ID"],
+        aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
+        region: region
+      }
     end
     config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
     config.storage = :fog
   end
 end
+# rubocop:enable Metrics/BlockLength

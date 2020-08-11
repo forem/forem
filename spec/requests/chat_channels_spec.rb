@@ -54,6 +54,15 @@ RSpec.describe "ChatChannels", type: :request do
         expect(response.body).not_to include(invite_channel.slug)
       end
     end
+
+    context "when logged in and chat channel doesnt exist" do
+      it "renders chat page" do
+        sign_in user
+        get "/connect/@#{user.username}"
+        expect(response.status).to eq(200)
+        expect(response.body).to include("chat-page-wrapper")
+      end
+    end
   end
 
   describe "get /chat_channels?state=unopened" do
@@ -305,7 +314,7 @@ RSpec.describe "ChatChannels", type: :request do
     end
 
     it "returns error message if create_with_users fails" do
-      allow(ChatChannel).to receive(:create_with_users).and_raise(StandardError.new("Blocked"))
+      allow(ChatChannels::CreateWithUsers).to receive(:call).and_raise(StandardError.new("Blocked"))
       post "/chat_channels/create_chat",
            params: { user_id: user_open_inbox.id }
       expect(response.parsed_body["message"]).to eq("Blocked")

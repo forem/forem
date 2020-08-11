@@ -10,6 +10,7 @@ class CommentsController < ApplicationController
   # GET /comments
   # GET /comments.json
   # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def index
     skip_authorization
     @on_comments_page = true
@@ -39,6 +40,7 @@ class CommentsController < ApplicationController
     render :deleted_commentable_comment unless @commentable
   end
   # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   # GET /comments/1
   # GET /comments/1.json
