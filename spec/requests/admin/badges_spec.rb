@@ -32,7 +32,7 @@ RSpec.describe "/admin/badge_achievements", type: :request do
 
     it "awards badges" do
       allow(BadgeAchievements::BadgeAwardWorker).to receive(:perform_async)
-      post admin_badges_award_badges_path, params: {
+      post admin_badge_achievements_award_badges_path, params: {
         badge: badge.slug,
         usernames: usernames_string,
         message_markdown: "Hinder me? Thou fool. No living man may hinder me!"
@@ -45,7 +45,7 @@ RSpec.describe "/admin/badge_achievements", type: :request do
 
     it "awards badges with default a message" do
       allow(BadgeAchievements::BadgeAwardWorker).to receive(:perform_async)
-      post admin_badges_award_badges_path, params: {
+      post admin_badge_achievements_award_badges_path, params: {
         badge: badge.slug,
         usernames: usernames_string,
         message_markdown: ""
@@ -56,7 +56,7 @@ RSpec.describe "/admin/badge_achievements", type: :request do
     end
 
     it "does not award a badge and raises an error if a badge is not specified" do
-      post admin_badges_award_badges_path, params: {
+      post admin_badge_achievements_award_badges_path, params: {
         usernames: usernames_string,
         message_markdown: ""
       }
@@ -65,7 +65,7 @@ RSpec.describe "/admin/badge_achievements", type: :request do
     end
 
     it "does not award a badge if the username provided is not lowercase" do
-      post admin_badges_award_badges_path, params: {
+      post admin_badge_achievements_award_badges_path, params: {
         badge: badge.slug,
         usernames: user.username.upcase,
         message_markdown: ""
