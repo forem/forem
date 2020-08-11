@@ -30,11 +30,11 @@
     <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
     Listings
   </a>
-  <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
+  <a href="<%= pod_path %>" class="crayons-link crayons-link--block" style="display:none">
     <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
     Podcasts
   </a>
-  <a href="<%= videos_path %>" class="crayons-link crayons-link--block">
+  <a href="<%= videos_path %>" class="crayons-link crayons-link--block" style="display:none">
     <%= inline_svg_tag("twemoji/camera.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Videos") %>
     Videos
   </a>
@@ -60,7 +60,7 @@
       <%= community_name %> Shop
     </a>
     <% end %>
-    <a href="/sponsors" class="crayons-link crayons-link--block">
+    <a href="/sponsors" class="crayons-link crayons-link--block" style="display:none">
       <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sponsors") %>
       Sponsors
     </a>
