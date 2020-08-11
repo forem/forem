@@ -102,7 +102,7 @@ class FollowsController < ApplicationController
 
   def unfollow(followable, need_notification: false)
     user_follow = current_user.stop_following(followable)
-    Notification.send_new_follower_notification_without_delay(user_follow, true) if need_notification
+    Notification.send_new_follower_notification_without_delay(user_follow, is_read: true) if need_notification
 
     "unfollowed"
   end

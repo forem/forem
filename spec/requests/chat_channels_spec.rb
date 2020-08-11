@@ -54,6 +54,15 @@ RSpec.describe "ChatChannels", type: :request do
         expect(response.body).not_to include(invite_channel.slug)
       end
     end
+
+    context "when logged in and chat channel doesnt exist" do
+      it "renders chat page" do
+        sign_in user
+        get "/connect/@#{user.username}"
+        expect(response.status).to eq(200)
+        expect(response.body).to include("chat-page-wrapper")
+      end
+    end
   end
 
   describe "get /chat_channels?state=unopened" do
