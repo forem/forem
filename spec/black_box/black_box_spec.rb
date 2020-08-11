@@ -16,6 +16,8 @@ RSpec.describe BlackBox, type: :black_box do
 
     it "does not call function caller if AWS_SDK_KEY is placeholder" do
       ENV["AWS_SDK_KEY"] = "foobarbaz"
+      allow(function_caller).to receive(:call).and_return(5)
+      described_class.article_hotness_score(article, function_caller)
       expect(function_caller).not_to have_received(:call)
       ENV["AWS_SDK_KEY"] = nil
     end
@@ -89,7 +91,7 @@ RSpec.describe BlackBox, type: :black_box do
       ENV["AWS_SDK_KEY"] = "foobarbaz"
       described_class.calculate_spaminess(comment, function_caller)
       expect(function_caller).not_to have_received(:call).with("blackbox-production-spamScore",
-                                                               { story: comment, user: user }.to_json).once
+                                                               { story: comment, user: user }.to_json)
       ENV["AWS_SDK_KEY"] = nil
     end
 
