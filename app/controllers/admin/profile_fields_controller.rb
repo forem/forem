@@ -1,12 +1,12 @@
 module Admin
   class ProfileFieldsController < Admin::ApplicationController
     ALLOWED_PARAMS = %i[
-      input_type label active placeholder_text description
+      input_type label active placeholder_text description group
     ].freeze
     layout "admin"
 
     def index
-      @profile_fields = ProfileField.all
+      @profile_fields = ProfileField.all.group_by(&:group)
     end
 
     def update
