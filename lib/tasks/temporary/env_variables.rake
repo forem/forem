@@ -1,11 +1,11 @@
 # Create a .env file from your application.yml file
 task create_dot_env_file: :environment do
-  exit unless File.file?("config/application.yml")
+  exit if File.file?(".env")
 
   File.open(".env", "w") do |env_file|
     File.open("config/application.yml", 'r') do |file|
       file.each_line do |line|
-        new_line = line.gsub(": ", "=")
+        new_line = line.gsub(%r{\:\s?}, "=")
         unless new_line.blank? || new_line.starts_with?("#")
           new_line.prepend("export ")
         end
@@ -13,6 +13,4 @@ task create_dot_env_file: :environment do
       end
     end
   end
-
-  File.delete("config/application.yml")
 end
