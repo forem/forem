@@ -37,6 +37,8 @@ class MarkdownParser
     html = escape_colon_emojis_in_codeblock(html)
     html = unescape_raw_tag_in_codeblocks(html)
     html = wrap_all_figures_with_tags(html)
+    html = remove_tag_br_pre_code(html)
+
     wrap_mentions_with_links!(html)
   end
 
@@ -160,6 +162,13 @@ class MarkdownParser
     html_doc = Nokogiri::HTML(html)
     html_doc.xpath("//*[self::ul or self::ol or self::li]/br").each(&:remove)
     html_doc.to_html
+  end
+
+  # check if there exists html tag <br>
+  def remove_tag_br_pre_code(html)
+    parse = Nokogiri::HTML(html)
+    parse.search("//br").remove if parse.search("//pre/code/br")
+    parse.to_html
   end
 
   def escape_liquid_tags_in_codeblock(content)
