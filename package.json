@@ -15,15 +15,15 @@
   "scripts": {
     "api-docs:lint": "spectral lint -F hint -v docs/api_v0.yml && lint-openapi -e docs/api_v0.yml",
     "api-docs:serve": "redoc-cli serve docs/api_v0.yml --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs --watch",
-    "generate-themes-storybook": "node-sass app/assets/stylesheets/themes -o app/javascript/storybook-static/themes",
+    "storybook-prerequisites": "node-sass app/assets/stylesheets/themes -o app/javascript/storybook-static/themes && bin/generate-css-utility-classes-docs.js",
+    "prebuild-storybook": "npm run storybook-prerequisites",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets -o app/javascript/storybook-static --quiet",
-    "postbuild-storybook": "npm run generate-themes-storybook",
-    "prestorybook": "npm run generate-themes-storybook",
+    "prestorybook": "npm run storybook-prerequisites",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets,app/javascript/storybook-static",
     "lint:frontend": "eslint app/assets/javascripts/**/*.js app/javascript/**/*.jsx app/javascript/**/*.js",
     "pretest": "npm run lint:frontend",
-    "test": "jest app/javascript/ --coverage",
-    "test:watch": "jest app/javascript/ --watch"
+    "test": "jest app/javascript/ bin/ --coverage",
+    "test:watch": "jest app/javascript/ bin/ --watch"
   },
   "husky": {
     "hooks": {
@@ -101,6 +101,7 @@
     "babel-jest": "^26.2.2",
     "babel-loader": "^8.1.0",
     "css-loader": "^4.2.1",
+    "cssom": "^0.4.4",
     "eslint": "^7.6.0",
     "eslint-config-preact": "^1.1.1",
     "eslint-config-prettier": "^6.11.0",
