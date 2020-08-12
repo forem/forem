@@ -53,7 +53,8 @@ class Notification < ApplicationRecord
 
     def send_new_endorsement_notifications_without_delay(listing_endorsement)
       return if listing_endorsement.approved == true
-
+      
+      puts "the notifcationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn for endorsementtttttttttttttttt"
       Notifications::NewEndorsement::Send.call(listing_endorsement)
     end
 

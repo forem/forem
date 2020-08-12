@@ -23,7 +23,7 @@ module Notifications
 
         targets = []
         #user_ids.delete(comment.user_id).each do |user_id|
-        user_id = 3
+        user_id = 11
         Notification.create(
           user_id: user_id,
           notifiable_id: endorsement.id,

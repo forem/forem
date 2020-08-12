@@ -9,9 +9,7 @@
 <div class="content notification-content comment-content">
   <% if notification.action.blank? %>
     <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
-    <% if json_data["endorsement"]["approved"] == false %>
-      endorsed your <a href="<%= json_data["endorsement"]["path"] %>">listing</a>
-    <% end %>
+    endorsed your <a href="<%= json_data["endorsement"]["path"] %>">listing</a>
   <% end %>
   <% if json_data["endorsement"]["created_at"] %>
     <div>
@@ -20,7 +18,10 @@
     <div class="comment-text">
       <%= json_data["endorsement"]["content"] %>
     </div>
-    <button onclick="approveEndorsement('/lisiting_endorsement/31', {id: 31})">Approve</button>
-    <%= link_to 'Approve', approve_endorsement_path(json_data["endorsement"]["id"]), method: :patch %>
+    <% puts 'fffggggggggggggggggggggggggggggggggghgggggggggggggggggghgggggggggggghhhhhhhhhhhh'%>
+    <div><%= json_data["endorsement"]["approved"] %></div>
+    <% if json_data["endorsement"]["approved"] == "false" %>
+      <button onclick="approveEndorsement('/listing_endorsement', <%= json_data['endorsement']['id'] %>)">Approve</button>
+    <% end %>
   <% end %>
 </div>

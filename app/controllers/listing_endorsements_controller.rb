@@ -16,9 +16,10 @@ class ListingEndorsementsController < ApplicationController
 
     puts "fffffffffffffffffffffffffffffffffggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhh"
     puts params
-    binding.pry
 
     @endorsement = @endorsement.update(approved: true) unless @endorsement.approved
+    
+    puts @endorsement
 
     if @endorsement.save
       redirect_back(fallback_location: root_path)
