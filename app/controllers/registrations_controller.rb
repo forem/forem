@@ -11,7 +11,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     build_resource(sign_up_params)
-
+    resource.saw_onboarding = false
+    resource.editor_version = "v2"
     resource.save
     yield resource if block_given?
     if resource.persisted?
