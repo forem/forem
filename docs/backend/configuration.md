@@ -6,13 +6,14 @@ title: Configuration
 
 We currently use the following gems for configuring the application:
 
+- [dotenv](https://github.com/bkeepers/dotenv)
 - [rails-settings-cached](https://github.com/huacnlee/rails-settings-cached)
 - [vault](https://github.com/hashicorp/vault-ruby)
 
-## ENVied
+## dotenv
 
-This gem is primarily used for configuring environment variables related to
-credentials and third party services. Examples:
+This gem is used for configuring environment variables for test and development
+environments. Examples:
 
 - `REDIS_URL`
 - `FASTLY_API_KEY`
