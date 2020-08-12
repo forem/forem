@@ -884,11 +884,13 @@
             </tr>
           </thead>
           <tbody>
-            <% ENV.sort.each do |key, value| %>
-              <tr>
-                <td><%= key %></td>
-                <td style="max-width: 750px;"><%= value %></td>
-              </tr>
+            <% ENVied.config.variables.each do |v| %>
+            <% if v.group.in?(ENVied.required_groups) %>
+            <tr>
+              <td><%= v.name %></td>
+              <td style="max-width: 750px;"><%= ApplicationConfig[v.name] %></td>
+            </tr>
+            <% end %>
             <% end %>
           </tbody>
         </table>

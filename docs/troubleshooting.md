@@ -96,8 +96,8 @@ refer to
 ## CORS
 
 If you are experiencing CORS issues locally or need to display more information
-about the CORS headers, add the following variable to your `.env`:
+about the CORS headers, add the following variable to your `application.yml`:
 
-```shell
-export DEBUG_CORS=true
+```yml
+DEBUG_CORS: true
 ```
