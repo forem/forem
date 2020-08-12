@@ -29,6 +29,7 @@ class MarkdownParser
     rescue Liquid::SyntaxError => e
       html = e.message
     end
+    html = remove_tag_br_pre_code(html)
     html = remove_nested_linebreak_in_list(html)
     html = prefix_all_images(html)
     html = wrap_all_images_in_links(html)
@@ -37,7 +38,6 @@ class MarkdownParser
     html = escape_colon_emojis_in_codeblock(html)
     html = unescape_raw_tag_in_codeblocks(html)
     html = wrap_all_figures_with_tags(html)
-    html = remove_tag_br_pre_code(html)
 
     wrap_mentions_with_links!(html)
   end
