@@ -64,7 +64,7 @@
     </div>
 
     <div class="crayons-field">
-      <%= f.label :education, class: "crayons-field__label" %>
+      <%= f.label :education, "Industry", class: "crayons-field__label" %>
       <%= f.text_field :education, maxlength: 100, class: "crayons-textfield" %>
     </div>
 
@@ -83,25 +83,25 @@
       <%= f.text_field :employment_title, maxlength: 100, class: "crayons-textfield", placeholder: "Junior Frontend Engineer" %>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :mostly_work_with, "Skills/Languages", class: "crayons-field__label" %>
       <%= f.text_area :mostly_work_with, maxlength: 500, class: "crayons-textfield", rows: 5 %>
       <p class="crayons-field__description">What tools and languages are you most experienced with? Are you specialized or more of a generalist?</p>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :currently_learning, "I'm getting into", class: "crayons-field__label" %>
       <%= f.text_area :currently_learning, maxlength: 500, class: "crayons-textfield", rows: 5 %>
       <p class="crayons-field__description">What are you learning right now? What are the new tools and languages you're picking up in <%= Time.zone.now.year %>?</p>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :currently_hacking_on, "My projects and hacks", class: "crayons-field__label" %>
       <%= f.text_area :currently_hacking_on, maxlength: 500, class: "crayons-textfield", rows: 5 %>
       <p class="crayons-field__description">What projects are currently occupying most of your time?</p>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :available_for, class: "crayons-field__label" %>
       <%= f.text_area :available_for, maxlength: 500, class: "crayons-textfield", rows: 5 %>
       <p class="crayons-field__description">What kinds of collaborations or discussions are you available for? What's a good reason to say <em>Hey!</em> to you these days?</p>
@@ -113,24 +113,6 @@
     <%= render partial: "shared/logo_design", locals: { f: f, account: @user } %>
   </div>
 
-  <div class="crayons-card mb-6 grid gap-4 p-6">
-    <h2>Work opportunities settings</h2>
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :looking_for_work, class: "crayons-checkbox" %>
-      <%= f.label :looking_for_work, class: "crayons-field__label" %>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :looking_for_work_publicly, class: "crayons-checkbox" %>
-      <%= f.label :looking_for_work_publicly, "Display \"looking for work\" on profile", class: "crayons-field__label" %>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :contact_consent, class: "crayons-checkbox" %>
-      <%= f.label :contact_consent, "Recruiters can contact me about job opportunities", class: "crayons-field__label" %>
-    </div>
-  </div>
-
   <div class="crayons-card mb-6 grid gap-6 p-6">
     <h2>Links</h2>
 
@@ -139,12 +121,12 @@
       <%= f.url_field :facebook_url, class: "crayons-textfield", placeholder: "https://facebook.com/..." %>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :youtube_url, "Youtube URL", class: "crayons-field__label" %>
       <%= f.url_field :youtube_url, class: "crayons-textfield", placeholder: "https://www.youtube.com/channel/..." %>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :stackoverflow_url, "Stack Overflow profile URL", class: "crayons-field__label" %>
       <%= f.url_field :stackoverflow_url, class: "crayons-textfield", placeholder: "https://stackoverflow.com/users/..." %>
     </div>
@@ -154,22 +136,22 @@
       <%= f.url_field :linkedin_url, class: "crayons-textfield", placeholder: "https://..." %>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :behance_url, "Behance profile URL", class: "crayons-field__label" %>
       <%= f.url_field :behance_url, class: "crayons-textfield", placeholder: "https://..." %>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :dribbble_url, "Dribbble profile URL", class: "crayons-field__label" %>
       <%= f.url_field :dribbble_url, class: "crayons-textfield", placeholder: "https://dribbble.com/..." %>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :medium_url, "Medium profile URL", class: "crayons-field__label" %>
       <%= f.url_field :medium_url, class: "crayons-textfield", placeholder: "https://..." %>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :gitlab_url, "GitLab profile URL", class: "crayons-field__label" %>
       <%= f.url_field :gitlab_url, class: "crayons-textfield", placeholder: "https://..." %>
     </div>
@@ -179,12 +161,12 @@
       <%= f.url_field :instagram_url, class: "crayons-textfield", placeholder: "https://..." %>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :mastodon_url, "Mastodon profile URL", class: "crayons-field__label" %>
       <%= f.url_field :mastodon_url, class: "crayons-textfield", placeholder: "https://..." %>
     </div>
 
-    <div class="crayons-field">
+    <div class="crayons-field" style="display:none">
       <%= f.label :twitch_url, "Twitch profile URL", class: "crayons-field__label" %>
       <%= f.url_field :twitch_url, class: "crayons-textfield", placeholder: "https://..." %>
     </div>
