@@ -104,7 +104,7 @@
       This is the equivalent of vomiting on <b>all</b> of this user's articles.
     </p>
   </div>
-  <% if (current_user.any_admin? || current_user.tech_admin?) && @moderatable.class.name == "Comment" && !@moderatable.deleted %>
+  <% if current_user.any_admin? && @moderatable.class.name == "Comment" && !@moderatable.deleted %>
     <div class="crayons-card crayons-card--secondary p-4 flex items-center">
       <div class="fw-medium flex-1" style="text-align: left;">
         <p class="fw-bold fs-xl">Delete This Comment</p>

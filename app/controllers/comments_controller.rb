@@ -258,8 +258,7 @@ class CommentsController < ApplicationController
   end
 
   def redirect_to_comment_path
-    redirect_url = @comment.path
     flash[:error] = "Something went wrong; Comment NOT deleted."
-    redirect_to "#{redirect_url}/mod"
+    redirect_to "#{@comment.path}/mod"
   end
 end
