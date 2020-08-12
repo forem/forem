@@ -373,7 +373,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   end
 
   describe "#account_deleted_email" do
-    let(:email) { described_class.with(user: user).account_deleted_email }
+    let(:email) { described_class.with(name: user.name, email: user.email).account_deleted_email }
 
     it "renders proper subject" do
       expect(email.subject).to eq("#{ApplicationConfig['COMMUNITY_NAME']} - Account Deletion Confirmation")
