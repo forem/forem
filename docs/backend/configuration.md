@@ -6,20 +6,21 @@ title: Configuration
 
 We currently use the following gems for configuring the application:
 
-- [dotenv](https://github.com/bkeepers/dotenv)
+- [ENVied](https://github.com/eval/envied)
 - [rails-settings-cached](https://github.com/huacnlee/rails-settings-cached)
 - [vault](https://github.com/hashicorp/vault-ruby)
 
-## dotenv
+## ENVied
 
-This gem is used for configuring environment variables for test and development
-environments. Examples:
+This gem is primarily used for configuring environment variables related to
+credentials and third party services. Examples:
 
 - `REDIS_URL`
 - `FASTLY_API_KEY`
 - `STRIPE_SECRET_KEY`
 
-Settings managed via your ENV can be found in
+Settings managed via ENVied can be found in
+[`Envfile`](https://github.com/forem/forem/blob/master/Envfile) (see
 [Configuring Environment Variables](../getting-started/config-env.md)) and
 viewed at `/admin/config` (see [the Admin guide](../admin/readme.md)):
 
