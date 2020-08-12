@@ -19,7 +19,8 @@ module CachingHeaders
   )
     request.session_options[:skip] = true # no cookies
 
-    response.headers["Cache-Control"] = "public, max-age=#{max_age}"
+    response.headers["Cache-Control"] = "public, no-cache"
+    response.headers["X-Accel-Expires"] = max_age.to_s
     response.headers["Surrogate-Control"] = surrogate_control.presence || build_surrogate_control(
       max_age, stale_while_revalidate: stale_while_revalidate, stale_if_error: stale_if_error
     )

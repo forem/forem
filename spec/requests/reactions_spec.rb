@@ -67,7 +67,7 @@ RSpec.describe "Reactions", type: :request do
 
       it "sets Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).to include(
-          "Cache-Control" => "max-age=86400, public",
+          "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
@@ -123,7 +123,7 @@ RSpec.describe "Reactions", type: :request do
 
       it "sets Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).to include(
-          "Cache-Control" => "max-age=86400, public",
+          "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
