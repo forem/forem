@@ -27,7 +27,7 @@ CarrierWave.configure do |config|
       }
       config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
       config.fog_public = false
-    else
+    elsif ApplicationConfig["AWS_ID"].present?
       region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
       config.fog_credentials = {
         provider: "AWS",
@@ -35,6 +35,10 @@ CarrierWave.configure do |config|
         aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
         region: region
       }
+    else
+      # Fallback on file storage if AWS creds are not present
+      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
+      config.storage = :file
     end
     config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
     config.storage = :fog
