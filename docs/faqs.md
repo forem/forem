@@ -20,8 +20,8 @@ By default Rails logs to `log.development.log`.
 
 If, instead, you wish to log to `STDOUT` you can add the variable:
 
-```yaml
-RAILS_LOG_TO_STDOUT: true
+```shell
+export RAILS_LOG_TO_STDOUT=true
 ```
 
-to your own `config/application.yml` file.
+to your own `.env` file.

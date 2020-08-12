@@ -49,6 +49,7 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
+  has_one :profile, dependent: :destroy
   has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
                                                 foreign_key: :author_id, inverse_of: :author, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
@@ -245,21 +246,10 @@ class User < ApplicationRecord
     end
   end
 
-  # handles both old (prefer_language_*) and new (Array of language codes) formats
   def preferred_languages_array
     return @preferred_languages_array if defined?(@preferred_languages_array)
 
-    if language_settings["preferred_languages"].present?
-      @preferred_languages_array = language_settings["preferred_languages"].to_a
-    else
-      languages = []
-      language_settings.each_key do |setting|
-        to_split = language_settings[setting] && setting.include?("prefer_language_")
-        languages << setting.split("prefer_language_")[1] if to_split
-      end
-      @preferred_languages_array = languages
-    end
-    @preferred_languages_array
+    @preferred_languages_array = language_settings["preferred_languages"]
   end
 
   def processed_website_url
@@ -603,7 +593,7 @@ class User < ApplicationRecord
     return if mastodon_url.blank?
 
     uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+    return if uri.host&.in?(Constants::Mastodon::ALLOWED_INSTANCES)
 
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   rescue URI::InvalidURIError

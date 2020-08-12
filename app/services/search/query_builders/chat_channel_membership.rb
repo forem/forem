@@ -19,6 +19,8 @@ module Search
       }.freeze
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
         @params[:viewable_by] = @params[:user_id]
 

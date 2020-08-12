@@ -4,7 +4,7 @@
     <span class="crayons-indicator"><%= @user.articles_count %></span>
   </a>
 
-  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) %>" href="/<%=current_user.username%>/series">
+  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "series" && (params[:which] == "organization" || params[:which].blank?) %>" href="/<%= current_user.username %>/series">
     Series
     <span class="crayons-indicator"><%= @user.collections.count %></span>
   </a>

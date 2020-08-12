@@ -181,10 +181,10 @@ Example: "This user was warned for spammy content".
 
 ## Pages
 
-`Pages` in the [internal dashboard](/internal/) represent static pages to be
-served on the site. Admins are in full control to create and customize them to
-their needs using markdown or custom HTML. Pages are configured with a `slug`
-and they will be served on either the `/page/slug` or `/slug` path.
+`Pages` in the [admin dashboard](/admin/) represent static pages to be served on
+the site. Admins are in full control to create and customize them to their needs
+using markdown or custom HTML. Pages are configured with a `slug` and they will
+be served on either the `/page/slug` or `/slug` path.
 
 In order to ease development of custom HTML Pages in local environments the rake
 task `pages:sync` is available. It will listen to changes made to a local HTML

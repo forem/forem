@@ -9,14 +9,14 @@ module Api
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       def index
-        article = Article.find(params[:a_id])
+        commentable = params[:a_id] ? Article.find(params[:a_id]) : PodcastEpisode.find(params[:p_id])
 
-        @comments = article.comments
+        @comments = commentable.comments
           .includes(:user)
           .select(ATTRIBUTES_FOR_SERIALIZATION)
           .arrange
 
-        set_surrogate_key_header article.record_key, Comment.table_key, edge_cache_keys(@comments)
+        set_surrogate_key_header commentable.record_key, Comment.table_key, edge_cache_keys(@comments)
       end
 
       def show
