@@ -82,3 +82,6 @@ gem_cache
 
 # Ignore self signed SSL certificates
 *.pem
+
+# Auto-generated Storybook stories
+app/javascript/generated_stories/
