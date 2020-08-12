@@ -24,8 +24,6 @@ env:
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
     - APP_DOMAIN=localhost:3000
-    - SENDGRID_USERNAME_ACCEL=dummy
-    - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
     - GITHUB_KEY=dummy
