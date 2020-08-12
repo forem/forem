@@ -21,6 +21,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
         profile_field.input_type,
         profile_field.description,
         profile_field.placeholder_text,
+        profile_field.group
       )
     end
   end
@@ -32,7 +33,8 @@ RSpec.describe "/admin/profile_fields", type: :request do
         input_type: "text_field",
         description: "users' location",
         placeholder_text: "new york",
-        active: false
+        active: false,
+        group: "Location"
       }
     end
 
@@ -52,6 +54,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
       expect(last_profile_field_record.description).to eq(new_profile_field[:description])
       expect(last_profile_field_record.placeholder_text).to eq(new_profile_field[:placeholder_text])
       expect(last_profile_field_record.active).to eq(new_profile_field[:active])
+      expect(last_profile_field_record.group).to eq(new_profile_field[:group])
     end
   end
 
