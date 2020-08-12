@@ -49,6 +49,7 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
+  has_one :profile, dependent: :destroy
   has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
                                                 foreign_key: :author_id, inverse_of: :author, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
@@ -592,7 +593,7 @@ class User < ApplicationRecord
     return if mastodon_url.blank?
 
     uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+    return if uri.host&.in?(Constants::Mastodon::ALLOWED_INSTANCES)
 
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   rescue URI::InvalidURIError
