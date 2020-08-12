@@ -41,7 +41,6 @@ latest.dump
 /node_modules
 yarn-debug.log*
 .yarn-integrity
-.env
 
 # Ignore storybook static site generation
 app/javascript/storybook-static/
