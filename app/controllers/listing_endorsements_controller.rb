@@ -4,7 +4,9 @@ class ListingEndorsementsController < ApplicationController
   after_action :verify_authorized, only: %i[update]
 
   def create
-    @endorsement = ListingEndorsement.create(content: params[:content], user_id: current_user.id, classified_listing_id: params[:classified_listing_id])
+    @endorsement = ListingEndorsement.create(content: params[:content],
+                                            user_id: current_user.id,
+                                            classified_listing_id: params[:classified_listing_id])
     @endorsement.save
 
     Notification.send_new_endorsement_notifications_without_delay(@endorsement)
