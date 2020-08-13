@@ -8,7 +8,7 @@ module Internal
     end
 
     def create
-      ChatChannel.create_with_users(
+      ChatChannels::CreateWithUsers.call(
         users: users_by_param,
         channel_type: "invite_only",
         contrived_name: chat_channel_params[:channel_name],
@@ -19,7 +19,13 @@ module Internal
 
     def update
       @chat_channel = ChatChannel.find(params[:id])
-      @chat_channel.invite_users(users: users_by_param, membership_role: "mod")
+      @chat_channel.invite_users(users: users_by_param)
+      redirect_back(fallback_location: "/internal/chat_channels")
+    end
+
+    def remove_user
+      @chat_channel = ChatChannel.find(params[:id])
+      @chat_channel.remove_user(user_by_param)
       redirect_back(fallback_location: "/internal/chat_channels")
     end
 
@@ -29,8 +35,12 @@ module Internal
       User.where(username: chat_channel_params[:usernames_string].downcase.delete(" ").split(","))
     end
 
+    def user_by_param
+      User.find_by(username: chat_channel_params[:username_string])
+    end
+
     def chat_channel_params
-      allowed_params = %i[usernames_string channel_name]
+      allowed_params = %i[usernames_string channel_name username_string]
       params.require(:chat_channel).permit(allowed_params)
     end
   end

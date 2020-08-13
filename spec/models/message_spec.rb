@@ -39,7 +39,7 @@ RSpec.describe Message, type: :model do
   end
 
   context "when callbacks are triggered before validation" do
-    let_it_be(:article) { create(:article) }
+    let(:article) { create(:article) }
 
     describe "#message_html" do
       it "creates rich link with proper link for article" do
@@ -141,6 +141,17 @@ RSpec.describe Message, type: :model do
       expect do
         create(:message, chat_channel: chat_channel, user: user)
       end.to change(EmailMessage, :count).by(0)
+    end
+  end
+
+  describe "#after_create" do
+    it "enqueues ChatChannels::IndexesMembershipsWorker" do
+      chat_channel.add_users([user])
+      allow(ChatChannels::IndexesMembershipsWorker).to receive(:perform_async)
+
+      create(:message, chat_channel: chat_channel, user: user)
+
+      expect(ChatChannels::IndexesMembershipsWorker).to have_received(:perform_async)
     end
   end
 end

@@ -4,7 +4,7 @@ class ApplicationConfig
   URI_REGEXP = %r{(?<scheme>https?://)?(?<host>.+?)(?<port>:\d+)?$}.freeze
 
   def self.[](key)
-    ENVied.send(key)
+    ENVied.public_send(key)
   end
 
   def self.app_domain_no_port

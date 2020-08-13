@@ -1,15 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Comments", type: :request do
-  let_it_be(:article) { create(:article) }
-  let_it_be(:root_comment) { create(:comment, commentable: article) }
-  let_it_be_changeable(:child_comment) do
+  let(:article) { create(:article) }
+  let!(:root_comment) { create(:comment, commentable: article) }
+  let!(:child_comment) do
     create(:comment, commentable: article, parent: root_comment)
   end
-  let_it_be(:grandchild_comment) do
+  let!(:grandchild_comment) do
     create(:comment, commentable: article, parent: child_comment)
   end
-  let_it_be(:great_grandchild_comment) do
+  let!(:great_grandchild_comment) do
     create(:comment, commentable: article, parent: grandchild_comment)
   end
 

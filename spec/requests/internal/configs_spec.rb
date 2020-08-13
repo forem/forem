@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "/internal/config", type: :request do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:admin) { create(:user, :super_admin) }
-  let_it_be(:admin_plus_config) { create(:user, :super_plus_single_resource_admin, resource: Config) }
-  let_it_be(:confirmation_message) do
+  let(:user) { create(:user) }
+  let(:admin) { create(:user, :super_admin) }
+  let(:admin_plus_config) { create(:user, :super_plus_single_resource_admin, resource: Config) }
+  let(:confirmation_message) do
     "My username is @#{admin_plus_config.username} and this action is 100% safe and appropriate."
   end
 
@@ -511,6 +511,26 @@ RSpec.describe "/internal/config", type: :request do
           post "/internal/config", params: { site_config: { public: is_public },
                                              confirmation: confirmation_message }
           expect(SiteConfig.public).to eq(is_public)
+        end
+      end
+
+      describe "Credits" do
+        it "updates the credit prices", :aggregate_failures do
+          original_prices = {
+            small: 500,
+            medium: 400,
+            large: 300,
+            xlarge: 250
+          }
+          SiteConfig.credit_prices_in_cents = original_prices
+
+          SiteConfig.credit_prices_in_cents.each_key do |size|
+            new_prices = original_prices.merge(size => 123)
+            expect do
+              post "/internal/config", params: { site_config: { credit_prices_in_cents: new_prices },
+                                                 confirmation: confirmation_message }
+            end.to change { SiteConfig.credit_prices_in_cents[size] }.from(original_prices[size.to_sym]).to(123)
+          end
         end
       end
     end

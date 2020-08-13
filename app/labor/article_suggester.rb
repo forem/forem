@@ -14,7 +14,7 @@ class ArticleSuggester
       num_remaining_needed = max - tagged_suggestions.size
       other_articles = other_suggestions(
         max: num_remaining_needed,
-        ids_to_ignore: tagged_suggestions.pluck(:id),
+        ids_to_ignore: tagged_suggestions.map(&:id),
       )
       tagged_suggestions.union(other_articles)
     else
@@ -31,7 +31,7 @@ class ArticleSuggester
     Article.published
       .where.not(id: ids_to_ignore)
       .where.not(user_id: article.user_id)
-      .order("hotness_score DESC")
+      .order(hotness_score: :desc)
       .offset(rand(0..offset))
       .first(max)
   end
@@ -40,7 +40,7 @@ class ArticleSuggester
     Article.published.tagged_with(cached_tag_list_array, any: true)
       .where.not(user_id: article.user_id)
       .where("organic_page_views_past_month_count > 5")
-      .order("hotness_score DESC")
+      .order(hotness_score: :desc)
       .offset(rand(0..offset))
       .first(max)
   end

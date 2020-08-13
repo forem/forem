@@ -25,6 +25,7 @@ class PodcastEpisode < ApplicationRecord
   validates :media_url, presence: true, uniqueness: true
   validates :guid, presence: true, uniqueness: true
 
+  before_validation :process_html_and_prefix_all_images
   # NOTE: Any create callbacks will not be run since we use activerecord-import to create episodes
   # https://github.com/zdennis/activerecord-import#callbacks
   after_update :purge
@@ -33,8 +34,6 @@ class PodcastEpisode < ApplicationRecord
 
   after_commit :index_to_elasticsearch, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
-
-  before_validation :process_html_and_prefix_all_images
 
   scope :reachable, -> { where(reachable: true) }
   scope :published, -> { joins(:podcast).where(podcasts: { published: true }) }
@@ -112,21 +111,21 @@ class PodcastEpisode < ApplicationRecord
     doc.css("img").each do |img|
       img_src = img.attr("src")
 
-      if img_src
-        quality = "auto"
-        quality = 66 if img_src.include?(".gif")
+      next unless img_src
 
-        cloudinary_img_src = ActionController::Base.helpers
-          .cl_image_path(img_src,
-                         type: "fetch",
-                         width: 725,
-                         crop: "limit",
-                         quality: quality,
-                         flags: "progressive",
-                         fetch_format: "auto",
-                         sign_url: true)
-        self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
-      end
+      quality = "auto"
+      quality = 66 if img_src.include?(".gif")
+
+      cloudinary_img_src = ActionController::Base.helpers
+        .cl_image_path(img_src,
+                       type: "fetch",
+                       width: 725,
+                       crop: "limit",
+                       quality: quality,
+                       flags: "progressive",
+                       fetch_format: "auto",
+                       sign_url: true)
+      self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
     end
   end
 end

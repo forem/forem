@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 const MessageModal = ({
   currentUserId,
@@ -14,58 +15,48 @@ const MessageModal = ({
     <form
       data-testid="listings-message-modal"
       id="listings-message-form"
-      className="listings-contact-via-connect"
       onSubmit={onSubmit}
     >
-      {isCurrentUserOnListing ? (
-        <p id="personal-contact-message">
-          This is your active listing. Any member can contact you via this form.
-        </p>
-      ) : (
-        <p>
-          <b id="generic-contact-message">
-            Contact
-            {` ${listing.author.name} `}
-            via DEV Connect
-          </b>
-        </p>
-      )}
+      <header className="mb-4">
+        <h2 className="fs-xl fw-bold lh-tight">Interested?</h2>
+        {isCurrentUserOnListing ? (
+          <p className="color-base-70">
+            This is your active listing. Any member can contact you via this
+            form.
+          </p>
+        ) : (
+          <p className="color-base-70">Message {` ${listing.author.name} `}</p>
+        )}
+      </header>
       <textarea
         value={message}
         onChange={onChangeDraftingMessage}
         data-testid="listing-new-message"
         id="new-message"
-        rows="4"
-        cols="70"
+        className="crayons-textfield mb-0"
         placeholder="Enter your message here..."
       />
-      <button type="submit" value="Submit" className="submit-button cta">
-        SEND
-      </button>
-      <p>
-        {isCurrentUserOnListing ? (
-          <em data-testid="personal-message-about-interactions" id="personal-message-about-interactions">
-            All private interactions
-            {' '}
-            <b>must</b>
-            {' '}
-            abide by the
-            {' '}
-            <a href="/code-of-conduct">code of conduct</a>
-          </em>
-        ) : (
-          <em data-testid="generic-message-about-interactions" id="generic-message-about-interactions">
-            Message must be relevant and on-topic with the listing. All private
-            interactions
-            {' '}
-            <b>must</b>
-            {' '}
-            abide by the
-            {' '}
-            <a href="/code-of-conduct">code of conduct</a>
-          </em>
-        )}
+      <p
+        className="mb-4 fs-s color-base-60"
+      >
+        {isCurrentUserOnListing &&
+          'Message must be relevant and on-topic with the listing.'}
+        All private interactions <b>must</b> abide by the{' '}
+        <a href="/code-of-conduct" className="crayons-link crayons-link--brand">
+          Code of Conduct
+        </a>
+        .
       </p>
+      <div className="flex">
+        <Button
+          variant="primary"
+          className="mr-2"
+          tagName="button"
+          type="submit"
+        >
+          Send
+        </Button>
+      </div>
     </form>
   );
 };

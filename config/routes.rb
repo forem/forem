@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     mount FieldTest::Engine, at: "abtests"
   end
 
-  namespace :admin do
+  namespace :resource_admin do
     # Check administrate gem docs
     DashboardManifest::DASHBOARDS.each do |dashboard_resource|
       resources dashboard_resource
@@ -70,9 +70,14 @@ Rails.application.routes.draw do
         delete :remove_admin
       end
     end
+    resources :profile_fields, only: %i[index update create destroy]
     resources :reactions, only: [:update]
     resources :response_templates, only: %i[index new edit create update destroy]
-    resources :chat_channels, only: %i[index create update]
+    resources :chat_channels, only: %i[index create update] do
+      member do
+        delete :remove_user
+      end
+    end
     resources :reports, only: %i[index show], controller: "feedback_messages" do
       collection do
         post "send_email"
@@ -91,6 +96,7 @@ Rails.application.routes.draw do
         post "recover_identity"
         post "send_email"
         post "verify_email_ownership"
+        patch "unlock_access"
       end
     end
     resources :organization_memberships, only: %i[update destroy create]
@@ -109,7 +115,8 @@ Rails.application.routes.draw do
     end
     resources :webhook_endpoints, only: :index
     resource :config
-    resources :badges, only: :index
+    resources :badges, only: %i[index], path: "/badge_achievements"
+    get "/badges", to: redirect("/internal/badge_achievements")
     post "badges/award_badges", to: "badges#award_badges"
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
@@ -195,7 +202,7 @@ Rails.application.routes.draw do
   resources :reactions, only: %i[index create]
   resources :response_templates, only: %i[index create edit update destroy]
   resources :feedback_messages, only: %i[index create]
-  resources :organizations, only: %i[update create]
+  resources :organizations, only: %i[update create destroy]
   resources :followed_articles, only: [:index]
   resources :follows, only: %i[show create update] do
     collection do
@@ -302,6 +309,10 @@ Rails.application.routes.draw do
   post "/chat_channel_memberships/create_membership_request" => "chat_channel_memberships#create_membership_request"
   patch "/chat_channel_memberships/leave_membership/:id" => "chat_channel_memberships#leave_membership"
   patch "/chat_channel_memberships/update_membership/:id" => "chat_channel_memberships#update_membership"
+  get "/channel_request_info/" => "chat_channel_memberships#request_details"
+  patch "/chat_channel_memberships/update_membership_role/:id" => "chat_channel_memberships#update_membership_role"
+  get "/join_channel_invitation/:channel_slug" => "chat_channel_memberships#join_channel_invitation"
+  post "/joining_invitation_response" => "chat_channel_memberships#joining_invitation_response"
 
   get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
   get "/social_previews/user/:id" => "social_previews#user", :as => :user_social_preview
@@ -448,6 +459,9 @@ Rails.application.routes.draw do
   get "/top/:timeframe" => "stories#index"
 
   get "/:timeframe" => "stories#index", :constraints => { timeframe: /latest/ }
+
+  get "/:username/series" => "collections#index", :as => "user_series"
+  get "/:username/series/:id" => "collections#show"
 
   # Legacy comment format (might still be floating around app, and external links)
   get "/:username/:slug/comments" => "comments#index"

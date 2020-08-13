@@ -251,7 +251,8 @@ RSpec.describe "ChatChannels", type: :request do
 
     context "when user is logged-in and authorized" do
       before do
-        user.add_role :super_admin
+        user.add_role :codeland_admin
+        chat_channel.add_users([user, test_subject])
         sign_in user
         allow(Pusher).to receive(:trigger).and_return(true)
       end
@@ -304,7 +305,7 @@ RSpec.describe "ChatChannels", type: :request do
     end
 
     it "returns error message if create_with_users fails" do
-      allow(ChatChannel).to receive(:create_with_users).and_raise(StandardError.new("Blocked"))
+      allow(ChatChannels::CreateWithUsers).to receive(:call).and_raise(StandardError.new("Blocked"))
       post "/chat_channels/create_chat",
            params: { user_id: user_open_inbox.id }
       expect(response.parsed_body["message"]).to eq("Blocked")

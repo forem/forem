@@ -11,7 +11,7 @@ RSpec.describe "Follows #show", type: :request do
 
   def get_following_status
     %w[User Organization Tag Podcast].map do |type|
-      get "/follows/#{send(type.downcase).id}", params: { followable_type: type }
+      get "/follows/#{__send__(type.downcase).id}", params: { followable_type: type }
       response.body
     end
   end
@@ -27,7 +27,7 @@ RSpec.describe "Follows #show", type: :request do
   end
 
   it "returns true when is following" do
-    %w[user organization tag].each { |followable| current_user.follow(send(followable)) }
+    %w[user organization tag].each { |followable| current_user.follow(__send__(followable)) }
     expect(get_following_status.uniq[0]).to eq("true")
   end
 

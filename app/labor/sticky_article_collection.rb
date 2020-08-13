@@ -12,7 +12,7 @@ class StickyArticleCollection
     author.articles.published
       .limited_column_select
       .tagged_with(article_tags, any: true)
-      .where.not(id: article.id).order("published_at DESC")
+      .where.not(id: article.id).order(published_at: :desc)
       .limit(3)
   end
 

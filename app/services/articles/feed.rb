@@ -37,11 +37,11 @@ module Articles
     # Timeframe values from Timeframer::DATETIMES
     def top_articles_by_timeframe(timeframe:)
       published_articles_by_tag.where("published_at > ?", Timeframer.new(timeframe).datetime)
-        .order("score DESC").page(@page).per(@number_of_articles)
+        .order(score: :desc).page(@page).per(@number_of_articles)
     end
 
     def latest_feed
-      published_articles_by_tag.order("published_at DESC")
+      published_articles_by_tag.order(published_at: :desc)
         .where("featured_number > ? AND score > ?", 1_449_999_999, -20)
         .page(@page).per(@number_of_articles)
     end
@@ -238,7 +238,7 @@ module Articles
     def globally_hot_articles(user_signed_in)
       hot_stories = published_articles_by_tag
         .where("score > ? OR featured = ?", 7, true)
-        .order("hotness_score DESC")
+        .order(hotness_score: :desc)
       featured_story = hot_stories.where.not(main_image: nil).first
       if user_signed_in
         hot_story_count = hot_stories.count
@@ -248,7 +248,7 @@ module Articles
         hot_stories = hot_stories.offset(offset)
         new_stories = Article.published
           .where("score > ?", -15)
-          .limited_column_select.includes(top_comments: :user).order("published_at DESC").limit(rand(15..80))
+          .limited_column_select.includes(top_comments: :user).order(published_at: :desc).limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
       [featured_story, hot_stories.to_a]

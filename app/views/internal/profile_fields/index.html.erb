@@ -1,0 +1,18 @@
+<div class="crayons-card grid p-6 mb-6 gap-1">
+  <%= form_for [:internal, ProfileField.new], html: { class: "inline-form" } do |form| %>
+    <div class="form-group">
+        <%= render "form", form: form %>
+        <%= form.submit class: "btn btn-primary" %>
+      </div>
+  <% end %>
+</div>
+
+<% @profile_fields.each do |field| %>
+  <div class="crayons-card grid p-6 mb-6 gap-1">
+    <%= form_for [:internal, field] do |form| %>
+      <%= render "form", form: form %>
+      <%= form.submit class: "btn btn-primary" %>
+    <% end %>
+    <%= button_to "Delete", internal_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
+  </div>
+<% end %>
