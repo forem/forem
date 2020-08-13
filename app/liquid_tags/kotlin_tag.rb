@@ -49,7 +49,7 @@ class KotlinTag < LiquidTagBase
   end
 
   def raise_error
-    raise ApplicationError, "Invalid Kotlin Playground URL"
+    raise StandardError, "Invalid Kotlin Playground URL"
   end
 end
 

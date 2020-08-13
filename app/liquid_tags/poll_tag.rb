@@ -111,7 +111,7 @@ class PollTag < LiquidTagBase
   def find_poll(id_code)
     Poll.find(id_code.to_i(26))
   rescue ActiveRecord::RecordNotFound
-    raise ApplicationError, "Invalid poll ID"
+    raise StandardError, "Invalid poll ID"
   end
 
   def self.script

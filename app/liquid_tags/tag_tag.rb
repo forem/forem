@@ -28,7 +28,7 @@ class TagTag < LiquidTagBase
 
   def parse_tag_name_to_tag(input)
     tag = Tag.find_by(name: input)
-    raise ApplicationError, "invalid tag name" if tag.nil?
+    raise StandardError, "invalid tag name" if tag.nil?
 
     tag
   end

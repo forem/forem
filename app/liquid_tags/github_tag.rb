@@ -23,7 +23,7 @@ class GithubTag < LiquidTagBase
       gt.render
     end
   rescue StandardError => e
-    raise ApplicationError, e.message
+    raise StandardError, e.message
   end
 
   def render(*)

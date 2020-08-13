@@ -67,7 +67,7 @@ class PodcastTag < LiquidTagBase
   end
 
   def raise_error
-    raise ApplicationError, "Invalid podcast link"
+    raise StandardError, "Invalid podcast link"
   end
 end
 Liquid::Template.register_tag("podcast", PodcastTag)

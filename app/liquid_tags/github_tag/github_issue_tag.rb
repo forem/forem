@@ -95,7 +95,7 @@ class GithubTag
     end
 
     def raise_error
-      raise ApplicationError, "Invalid GitHub issue, pull request or comment link"
+      raise StandardError, "Invalid GitHub issue, pull request or comment link"
     end
 
     def title
