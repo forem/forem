@@ -1,6 +1,5 @@
 class MarkdownParser
   include ApplicationHelper
-  include CloudinaryHelper
 
   BAD_XSS_REGEX = [
     /src=["'](data|&)/i,

@@ -1,6 +1,4 @@
 class ProfileImage
-  include CloudinaryHelper
-
   BACKUP_LINK = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png".freeze
 
   attr_accessor :image_link
