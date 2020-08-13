@@ -6,8 +6,8 @@
      commits if your PR already received reviews or comments.
 
      Before submitting a Pull Request, please ensure you've done the following:
-     - 📖 Read the DEV Contributing Guide: https://github.com/thepracticaldev/dev.to/blob/master/CONTRIBUTING.md#create-a-pull-request.
-     - 📖 Read the DEV Code of Conduct: https://github.com/thepracticaldev/dev.to/blob/master/CODE_OF_CONDUCT.md.
+     - 📖 Read the Forem Contributing Guide: https://github.com/forem/forem/blob/master/CONTRIBUTING.md#create-a-pull-request.
+     - 📖 Read the Forem Code of Conduct: https://github.com/forem/forem/blob/master/CODE_OF_CONDUCT.md.
      - 👷‍♀️ Create small PRs. In most cases this will be possible.
      - ✅ Provide tests for your changes.
      - 📝 Use descriptive commit messages.
@@ -39,7 +39,7 @@ as any relevant images for UI changes._
 
 ## Added to documentation?
 
-- [ ] docs.dev.to
+- [ ] docs.forem.com
 - [ ] readme
 - [ ] no documentation needed
 

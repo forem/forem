@@ -34,7 +34,7 @@ class ListingsController < ApplicationController
 
     if params[:view] == "moderate"
       not_found unless @displayed_listing
-      return redirect_to edit_internal_listing_path(id: @displayed_listing.id)
+      return redirect_to edit_admin_listing_path(id: @displayed_listing.id)
     end
 
     @listings =

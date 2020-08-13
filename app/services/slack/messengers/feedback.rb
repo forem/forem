@@ -30,7 +30,7 @@ module Slack
 
       def call
         reports_url = URL.url(
-          Rails.application.routes.url_helpers.internal_reports_path,
+          Rails.application.routes.url_helpers.admin_reports_path,
         )
 
         final_message = format(

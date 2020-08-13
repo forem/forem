@@ -26,6 +26,8 @@ FactoryBot.define do
     bg_color_hex                 { Faker::Color.hex_color }
     text_color_hex               { Faker::Color.hex_color }
 
+    after(:create) { |user| create(:profile, user: user) }
+
     trait :with_identity do
       transient { identities { Authentication::Providers.available } }
 

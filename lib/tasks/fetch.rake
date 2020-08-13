@@ -8,7 +8,8 @@ end
 
 task fetch_all_rss: :environment do
   Rails.application.eager_load!
-  RssReader.get_all_articles(false) # False means don't force fetch. Fetch "random" subset instead of all of them.
+
+  RssReader.get_all_articles(force: false) # don't force fetch. Fetch "random" subset instead of all of them.
 end
 
 task resave_supported_tags: :environment do

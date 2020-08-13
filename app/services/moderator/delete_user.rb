@@ -10,12 +10,6 @@ module Moderator
       end
     end
 
-    def initialize(admin:, user:, user_params:)
-      @user = user
-      @admin = admin
-      @user_params = user_params
-    end
-
     def ghostify
       @ghost = User.find_by(username: "ghost")
       reassign_articles
