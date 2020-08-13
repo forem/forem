@@ -7,13 +7,21 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
+  # rubocop:disable Metrics/BlockLength
   concerning :ProfileMigration do
     included do
+      PROFIE_FIELDS =
+        (Profiles::ExtractData::DIRECT_ATTRIBUTES + Profiles::ExtractData::MAPPED_ATTRIBUTES.values).freeze
+
       # All new users should automatically have a profile
       after_create_commit { Profile.create(user: self, data: Profiles::ExtractData.call(self)) }
 
       # Keep saving changes locally for the time being, but propagate them to profiles.
-      after_update_commit { profile.update(data: Profiles::ExtractData.call(self)) }
+      after_update_commit do
+        if (previous_changes.keys.map(&:to_sym) & User::PROFIE_FIELDS).present?
+          profile.update(data: Profiles::ExtractData.call(self))
+        end
+      end
 
       # Define wrapped getters for profile attributes. We first try to get the
       # value from the profile and if it doesn't exist there we move retrieve it
@@ -39,6 +47,7 @@ class User < ApplicationRecord
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   BEHANCE_URL_REGEXP = %r{\A(http(s)?://)?(www.behance.net|behance.net)/.*\z}.freeze
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
