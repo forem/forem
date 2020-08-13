@@ -10,6 +10,7 @@ class CommentsController < ApplicationController
   # GET /comments
   # GET /comments.json
   # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def index
     skip_authorization
     @on_comments_page = true
@@ -39,6 +40,7 @@ class CommentsController < ApplicationController
     render :deleted_commentable_comment unless @commentable
   end
   # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   # GET /comments/1
   # GET /comments/1.json
@@ -230,10 +232,33 @@ class CommentsController < ApplicationController
     end
   end
 
+  def admin_delete
+    @comment = Comment.find(params[:comment_id])
+    authorize @comment
+    @comment.deleted = true
+
+    if @comment.save
+      redirect_url = @comment.commentable&.path
+      if redirect_url
+        flash[:success] = "Comment was successfully deleted."
+        redirect_to redirect_url
+      else
+        redirect_to_comment_path
+      end
+    else
+      redirect_to_comment_path
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])
+  end
+
+  def redirect_to_comment_path
+    flash[:error] = "Something went wrong; Comment NOT deleted."
+    redirect_to "#{@comment.path}/mod"
   end
 end

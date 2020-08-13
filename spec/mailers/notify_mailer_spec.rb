@@ -343,7 +343,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   end
 
   describe "#new_message_email" do
-    let(:direct_channel) { ChatChannel.create_with_users(users: [user, user2], channel_type: "direct") }
+    let(:direct_channel) { ChatChannels::CreateWithUsers.call(users: [user, user2], channel_type: "direct") }
     let(:direct_message) { create(:message, user: user, chat_channel: direct_channel) }
     let(:email) { described_class.with(message: direct_message).new_message_email }
 
@@ -373,7 +373,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   end
 
   describe "#account_deleted_email" do
-    let(:email) { described_class.with(user: user).account_deleted_email }
+    let(:email) { described_class.with(name: user.name, email: user.email).account_deleted_email }
 
     it "renders proper subject" do
       expect(email.subject).to eq("#{ApplicationConfig['COMMUNITY_NAME']} - Account Deletion Confirmation")

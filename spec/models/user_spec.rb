@@ -165,15 +165,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_url_of(:website_url) }
     end
 
-    it "validates the presence of the email if the user has not persisted" do
-      user = build(:user, email: "")
-      user.valid?
-      expect(user.errors[:email][0]).to include("can't be blank")
-      user.email = nil
-      user.valid?
-      expect(user.errors[:email][0]).to include("can't be blank")
-    end
-
     it "validates username against reserved words" do
       user = build(:user, username: "readinglist")
       expect(user).not_to be_valid
@@ -284,7 +275,6 @@ RSpec.describe User, type: :model do
 
     describe "#email" do
       it "sets email to nil if empty" do
-        user.save
         user.email = ""
         user.validate!
         expect(user.email).to eq(nil)
@@ -600,6 +590,8 @@ RSpec.describe User, type: :model do
   end
 
   context "when callbacks are triggered before and after create" do
+    let(:user) { create(:user, email: nil) }
+
     describe "#language_settings" do
       it "sets correct language_settings by default" do
         expect(user.language_settings).to eq("preferred_languages" => %w[en])
@@ -678,21 +670,10 @@ RSpec.describe User, type: :model do
         expect(user.reload.preferred_languages_array).to eq(%w[en ja])
       end
 
-      it "returns a correct array when language settings are in a new format" do
+      it "returns a correct array for language settings" do
         language_settings = { estimated_default_language: "en", preferred_languages: %w[en ru it] }
         user = build(:user, language_settings: language_settings)
         expect(user.preferred_languages_array).to eq(%w[en ru it])
-      end
-
-      it "returns a correct array when language settings are in the old format" do
-        language_settings = {
-          estimated_default_language: "en",
-          prefer_language_en: true,
-          prefer_language_ja: false,
-          prefer_language_es: true
-        }
-        user = build(:user, language_settings: language_settings)
-        expect(user.preferred_languages_array).to eq(%w[en es])
       end
     end
   end
