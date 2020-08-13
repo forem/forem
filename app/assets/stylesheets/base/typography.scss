@@ -1,4 +1,4 @@
-@import './mixins';
+@import '../mixins';
 
 @font-face {
   font-family: OpenDyslexic;
@@ -27,8 +27,6 @@
 
 // Content fonts
 body {
-  --content-font-family: var(--ff-serif);
-
   &.serif-article-body {
     --content-font-family: var(--ff-serif);
   }
