@@ -15,7 +15,7 @@ RSpec.describe FeedbackMessage, type: :model do
 
   it do
     expect(feedback_message).to validate_inclusion_of(:status)
-      .in_array(%w[Open Invalid Resolved])
+      .in_array(%w[Open Invalid Resolved Valid])
   end
 
   describe "validations for an abuse report" do

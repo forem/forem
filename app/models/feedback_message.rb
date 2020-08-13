@@ -15,7 +15,7 @@ class FeedbackMessage < ApplicationRecord
             }
   validates :status,
             inclusion: {
-              in: %w[Open Invalid Resolved]
+              in: %w[Open Invalid Resolved Valid]
             }
   validates :reporter_id, uniqueness: { scope: %i[reported_url feedback_type] }, if: :abuse_report? && :reporter_id
 
