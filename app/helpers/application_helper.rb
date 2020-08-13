@@ -77,7 +77,7 @@ module ApplicationHelper
   end
 
   def cloudinary(url, width = "500", quality = 80, format = "auto")
-    cl_image_path(url || asset_path("#{rand(1..40)}.png"),
+    cl_image_path(SimpleIDN.to_ascii(url) || asset_path("#{rand(1..40)}.png"),
                   type: "fetch",
                   width: width,
                   crop: "limit",
