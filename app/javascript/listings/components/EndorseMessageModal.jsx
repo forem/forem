@@ -27,7 +27,7 @@ const EndorseMessageModal = ({
         cols="70"
         placeholder="Endorse this listing here"
       />
-      <button type="submit" value="Endorse" className="submit-button cta">
+      <button type="submit" value="Endorse" className="submit-button cta endorse-button">
         ENDORSE
       </button>
     </form>

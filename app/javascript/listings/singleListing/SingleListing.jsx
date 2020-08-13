@@ -8,6 +8,7 @@ import Endorsement from './Endorsement';
 export class SingleListing extends Component {
 
   listingContent = (listing, currentUserId, onChangeCategory, onOpenModal, onAddTag, isOpen) => {
+    const endorsements = listing.listing_endorsements.length;
     return (
       <div className="relative">
         <Header
@@ -24,6 +25,7 @@ export class SingleListing extends Component {
         {listing.listing_endorsements.length ? (
       <div className="endorsement-comp">
         <span>
+          
           {listing.listing_endorsements.map((endorsement, idx) => {
             return (
               endorsement.approved && (
@@ -38,7 +40,7 @@ export class SingleListing extends Component {
           })}
         </span>
         {!isOpen && (
-          <span>{`${listing.listing_endorsements.length} endorsement`}</span>
+          <span>{ endorsements > 1 ?  `${endorsements} endorsements` : `${endorsements} endorsement`}</span>
         )}
       </div>
     ) : (

@@ -235,13 +235,20 @@ div.endorsement-comp {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  vertical-align: baseline;
+  vertical-align: middle;
   margin-top: .5em;
 }
 
 input.endorsement_content {
-  width: 90%;
+  width: 95%;
   border: 0;
+  vertical-align: top;
+  background-color: #fff;
+  color: #000;
+}
+
+button.endorse-button {
+  background-color: rgb(59, 73, 223);
 }
 
 .listings-modal-background {

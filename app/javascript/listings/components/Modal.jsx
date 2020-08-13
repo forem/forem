@@ -21,8 +21,6 @@ const Modal = ({
   const shouldRenderMessageModal = listing && listing.contact_via_connect;
   const notListingAuthor = currentUserId !== listing.user_id;
 
-  console.log(currentUserId, listing, message);
-
   const Icon = () => (
     <svg
       width="24"

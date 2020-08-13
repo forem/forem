@@ -12,7 +12,7 @@ class ListingEndorsement < ApplicationRecord
   def author_profile_image_90
     ProfileImage.new(user).get(width: 90)
   end
-  
+
   private
 
   def default_approved

@@ -26,6 +26,7 @@ const Endorsement = ({ avatar, content, isOpen }) => {
           value={content}
           style={{ display: showContent }}
           className="endorsement_content"
+          disabled
         />
       </label>
     </span>

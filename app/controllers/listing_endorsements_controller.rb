@@ -14,17 +14,6 @@ class ListingEndorsementsController < ApplicationController
     @endorsement = ListingEndorsement.find(params[:id])
     return unless @endorsement
 
-    puts "fffffffffffffffffffffffffffffffffggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhh"
-    puts params
-
     @endorsement = @endorsement.update(approved: true) unless @endorsement.approved
-    
-    puts @endorsement
-
-    if @endorsement.save
-      redirect_back(fallback_location: root_path)
-    else
-      redirect_to root_path
-    end
   end
 end
