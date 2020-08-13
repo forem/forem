@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 
+const img_style = {
+  display: 'inline', 
+  borderRadius: '50%' 
+}
+
 const Endorsement = ({ avatar, content, isOpen }) => {
   const showEndorsement = isOpen
     ? 'show_full_endorsement'
@@ -10,10 +15,10 @@ const Endorsement = ({ avatar, content, isOpen }) => {
     <span className={showEndorsement}>
       <img
         src={avatar}
-        width={40}
-        height={40}
+        width={30}
+        height={30}
         alt="end_img"
-        style={{ display: 'inline' }}
+        style={img_style}
       />
       <label style={{ display: 'inline' }}>
         <input

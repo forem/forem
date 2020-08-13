@@ -19,6 +19,8 @@ const Modal = ({
   message,
 }) => {
   const shouldRenderMessageModal = listing && listing.contact_via_connect;
+  const notListingAuthor = currentUserId !== listing.user_id;
+
   console.log(currentUserId, listing, message);
 
   const Icon = () => (
@@ -65,7 +67,7 @@ const Modal = ({
             isOpen
           />
         </div>
-        {shouldRenderMessageModal && (
+        {shouldRenderMessageModal && notListingAuthor && (
           <EndorseMessageModal
             onSubmit={onEndorseSubmit}
             onChangeDraftingMessage={onChangeDraftingMessage}

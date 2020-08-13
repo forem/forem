@@ -18,9 +18,8 @@
     <div class="comment-text">
       <%= json_data["endorsement"]["content"] %>
     </div>
-    <% puts 'fffggggggggggggggggggggggggggggggggghgggggggggggggggggghgggggggggggghhhhhhhhhhhh'%>
     <div><%= json_data["endorsement"]["approved"] %></div>
-    <% if json_data["endorsement"]["approved"] == "false" %>
+    <% if json_data["endorsement"]["approved"] == false %>
       <button onclick="approveEndorsement('/listing_endorsement', <%= json_data['endorsement']['id'] %>)">Approve</button>
     <% end %>
   <% end %>

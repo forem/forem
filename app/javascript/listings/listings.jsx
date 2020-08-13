@@ -34,6 +34,7 @@ export class Listings extends Component {
   componentWillMount() {
     const params = getQueryParams();
     const container = document.getElementById('listings-index-container');
+    const currentUserId = container.dataset.currentuserid;
     const category = container.dataset.category || '';
     const allCategories = JSON.parse(container.dataset.allcategories || []);
     let tags = [];
@@ -48,8 +49,6 @@ export class Listings extends Component {
     const query = params.q || '';
 
     if (tags.length === 0 && query === '') {
-      console.log('yooo noowwwwwwwwwwwwwwwwwwwwwwwwwwwwwww');
-      console.log(container.dataset.listings);
       listings = JSON.parse(container.dataset.listings);
     }
 
@@ -74,7 +73,7 @@ export class Listings extends Component {
       slug,
     });
     this.listingSearch(query, tags, category, slug);
-    this.setUser();
+    this.setUser(currentUserId);
 
     document.body.addEventListener('keydown', this.handleKeyDown);
 
@@ -234,11 +233,11 @@ export class Listings extends Component {
     this.listingSearch(query, tags, category, slug);
   };
 
-  setUser = () => {
+  setUser = ( currentUser ) => {
     const { currentUserId } = this.state;
     setTimeout(() => {
       if (window.currentUser && currentUserId === null) {
-        this.setState({ currentUserId: window.currentUser.id });
+        this.setState({ currentUserId: window.currentUser.id || currentUser });
       }
     }, 1000);
   };

@@ -223,7 +223,7 @@ textarea#new-message {
   }
 }
 textarea#new-endorse-message {
-  height: 100px;
+  height: 70px;
   margin: 5px auto 10px auto;
   font-size: 15px;
   @media screen and (min-width: 950px) {
@@ -233,8 +233,10 @@ textarea#new-endorse-message {
 
 div.endorsement-comp {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   vertical-align: baseline;
+  margin-top: .5em;
 }
 
 input.endorsement_content {

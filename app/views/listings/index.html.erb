@@ -37,6 +37,7 @@
 
 <div class="listings-container" id="listings-index-container"
   data-category="<%= params[:category] %>" data-listings="<%= @listings_json %>"
+  data-currentUserId="<%= current_user.id %>"
   data-allcategories="<%= categories_for_display.to_json %>"
   <% if @displayed_listing %>
   data-displayedlisting="<%= @displayed_listing_json %> "
