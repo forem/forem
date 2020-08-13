@@ -40,7 +40,7 @@
   </style>
   <div style="overflow: visible;padding-top:20px;">
     <div class="widget-body badge-widget">
-      <% @user.badge_achievements.order("id DESC").includes(:badge).each do |achievement| %>
+      <% @user.badge_achievements.order(id: :desc).includes(:badge).each do |achievement| %>
         <a class="badge-achievement" href="/badge/<%= achievement.badge.slug %>">
           <img
             src="<%= cloudinary achievement.badge.badge_image_url, 180 %>"

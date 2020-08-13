@@ -27,7 +27,7 @@ class Message < ApplicationRecord
 
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
-    chat_channel.chat_channel_memberships.each(&:index_to_elasticsearch)
+    ChatChannels::IndexesMembershipsWorker.perform_async(chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses
@@ -175,14 +175,7 @@ class Message < ApplicationRecord
   # rubocop:enable Rails/OutputSafety
 
   def cl_path(img_src)
-    ActionController::Base.helpers
-      .cl_image_path(img_src,
-                     type: "fetch",
-                     width: 725,
-                     crop: "limit",
-                     flags: "progressive",
-                     fetch_format: "auto",
-                     sign_url: true)
+    ImageResizer.call(img_src, width: 725)
   end
 
   def determine_user_validity
@@ -195,7 +188,7 @@ class Message < ApplicationRecord
   def channel_permission
     errors.add(:base, "Must be part of channel.") if chat_channel_id.blank?
 
-    channel = ChatChannel.find(chat_channel_id)
+    channel = chat_channel || ChatChannel.find(chat_channel_id)
     return if channel.open?
 
     errors.add(:base, "You are not a participant of this chat channel.") unless channel.has_member?(user)
@@ -224,7 +217,7 @@ class Message < ApplicationRecord
     recipient = direct_receiver
     return if !chat_channel.direct? ||
       recipient.updated_at > 1.hour.ago ||
-      recipient.chat_channel_memberships.order("last_opened_at DESC")
+      recipient.chat_channel_memberships.order(last_opened_at: :desc)
         .first.last_opened_at > 15.hours.ago ||
       chat_channel.last_message_at > 30.minutes.ago ||
       recipient.email_connect_messages == false

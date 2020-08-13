@@ -99,7 +99,7 @@
         DESIGN YOUR EXPERIENCE
       <% end %>
     </header>
-    <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
+    <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
       <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
         <a class="crayons-link crayons-link--block" href="<%= tag_path(tag_array.second) %>">
           #<%= tag_array.second %>

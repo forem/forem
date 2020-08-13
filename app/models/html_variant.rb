@@ -1,6 +1,4 @@
 class HtmlVariant < ApplicationRecord
-  include CloudinaryHelper
-
   GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign].freeze
 
   validates :html, presence: true
@@ -37,7 +35,7 @@ class HtmlVariant < ApplicationRecord
 
     def find_top_for_test(tags_array, group)
       where(group: group, approved: true, published: true, target_tag: tags_array)
-        .order("success_rate DESC").limit(rand(1..20)).sample
+        .order(success_rate: :desc).limit(rand(1..20)).sample
     end
 
     def find_random_for_test(tags_array, group)
@@ -66,7 +64,7 @@ class HtmlVariant < ApplicationRecord
       img["src"] = if Giphy::Image.valid_url?(src)
                      src.gsub("https://media.", "https://i.")
                    else
-                     img_of_size(src, 420)
+                     ImageResizer.call(src, width: 420).gsub(",", "%2C")
                    end
     end
     self.html = doc.to_html
@@ -74,21 +72,5 @@ class HtmlVariant < ApplicationRecord
 
   def allowed_image_host?(src)
     src.start_with?("https://res.cloudinary.com/")
-  end
-
-  def img_of_size(source, width = 420)
-    quality = if source && (source.include? ".gif")
-                66
-              else
-                "auto"
-              end
-    cl_image_path(source,
-                  type: "fetch",
-                  width: width,
-                  crop: "limit",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: "auto",
-                  sign_url: true).gsub(",", "%2C")
   end
 end

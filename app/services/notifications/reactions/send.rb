@@ -2,6 +2,8 @@
 module Notifications
   module Reactions
     class Send
+      Response = Struct.new(:action, :notification_id)
+
       # @param reaction_data [Hash]
       #   * :reactable_id [Integer] - article or comment id
       #   * :reactable_type [String] - "Article" or "Comment"
@@ -26,7 +28,7 @@ module Notifications
                                                            reactable_type: reaction.reactable_type)
           .where.not(reactions: { user_id: reaction.reactable_user_id })
           .preload(:reactable).includes(:user).where.not(users: { id: nil })
-          .order("reactions.created_at DESC")
+          .order("reactions.created_at" => :desc)
 
         aggregated_reaction_siblings = reaction_siblings.map do |reaction|
           { category: reaction.category, created_at: reaction.created_at, user: user_data(reaction.user) }
@@ -46,7 +48,7 @@ module Notifications
 
         if aggregated_reaction_siblings.size.zero?
           Notification.where(notification_params).delete_all
-          OpenStruct.new(action: :deleted)
+          Response.new(:deleted)
         else
           recent_reaction = reaction_siblings.first
 
@@ -64,7 +66,7 @@ module Notifications
 
           notification_id = save_notification(notification_params, notification)
 
-          OpenStruct.new(action: :saved, notification_id: notification_id)
+          Response.new(:saved, notification_id)
         end
       end
 

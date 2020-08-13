@@ -77,7 +77,8 @@ class NotifyMailerPreview < ActionMailer::Preview
   end
 
   def account_deleted_email
-    NotifyMailer.with(user: User.last).account_deleted_email
+    user = User.last
+    NotifyMailer.with(name: user.name, email: user.email).account_deleted_email
   end
 
   def export_email

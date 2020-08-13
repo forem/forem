@@ -19,6 +19,8 @@ module Search
       }.freeze
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
         @params[:viewable_by] = @params[:user_id]
 
@@ -38,7 +40,7 @@ module Search
       end
 
       def filter_conditions
-        FILTER_KEYS.map do |filter_key|
+        FILTER_KEYS.filter_map do |filter_key|
           next if @params[filter_key].blank? || @params[filter_key] == "all"
 
           if %i[viewable_by status].include? filter_key
@@ -46,7 +48,7 @@ module Search
           else
             { term: { filter_key => @params[filter_key] } }
           end
-        end.compact
+        end
       end
     end
   end

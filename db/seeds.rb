@@ -70,6 +70,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
       password: "password",
+      password_confirmation: "password",
     )
 
     if i.zero?
@@ -455,7 +456,7 @@ seeder.create_if_none(Listing) do
   users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
   users = users_in_random_order.to_a
 
-  listings_categories = ListingCategory.pluck(:id)
+  listings_categories = ListingCategory.ids
   listings_categories.each.with_index(1) do |category_id, index|
     # rotate users if they are less than the categories
     user = users.at(index % users.length)
@@ -491,6 +492,18 @@ seeder.create_if_none(Page) do
 end
 
 ##############################################################################
+
+seeder.create_if_none(ProfileField) do
+  ProfileFields::AddBaseFields.call
+  ProfileFields::AddLinkFields.call
+  ProfileFields::AddWorkFields.call
+  coding_fields_csv = Rails.root.join("lib/data/coding_profile_fields.csv")
+  ProfileFields::ImportFromCsv.call(coding_fields_csv)
+  ProfileFields::AddBrandingFields.call
+end
+
+##############################################################################
+
 puts <<-ASCII
 
   ```````````````````````````````````````````````````````````````````````````

@@ -26,11 +26,8 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
 
   describe "#as_hash" do
     let(:query_fields) { described_class::QUERY_KEYS[:search_fields] }
-
-    it "applies QUERY_KEYS from params" do
-      params = { search_fields: "test" }
-      filter = described_class.new(params: params)
-      expected_query = [{
+    let(:expected_query) do
+      [{
         "simple_query_string" => {
           "query" => "test",
           "fields" => query_fields,
@@ -39,7 +36,24 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
           "minimum_should_match" => 2
         }
       }]
+    end
+    let(:expected_match_phrase) do
+      [{
+        "match_phrase" => {
+          "search_fields" => {
+            "query" => "test",
+            "slop" => 0
+          }
+        }
+      }]
+    end
+
+    it "applies QUERY_KEYS from params" do
+      params = { search_fields: "test" }
+      filter = described_class.new(params: params)
       expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
+      expect(search_bool_clause(filter)["should"]).to match_array(expected_match_phrase)
+      expect(search_bool_clause(filter)["minimum_should_match"]).to eq(0)
     end
 
     it "applies TERM_KEYS from params" do

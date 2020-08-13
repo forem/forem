@@ -106,7 +106,7 @@ module ApplicationHelper
   end
 
   def beautified_url(url)
-    url.sub(/\A((https?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end
@@ -193,6 +193,13 @@ module ApplicationHelper
     "#{start_year} - #{current_year}"
   end
 
+  def collection_link(collection, **kwargs)
+    size_string = "#{collection.articles.published.size} Part Series"
+    body = collection.slug.present? ? "#{collection.slug} (#{size_string})" : size_string
+
+    link_to body, collection.path, **kwargs
+  end
+
   def email_link(type = :default, text: nil, additional_info: nil)
     # The allowed types for type is :default, :business, :privacy, and members.
     # These options can be found in field :email_addresses of models/site_config.rb
@@ -204,14 +211,6 @@ module ApplicationHelper
     SiteConfig.community_member_label.pluralize
   end
 
-  # Creates an app internal URL
-  #
-  # @note Uses protocol and domain specified in the environment, ensure they are set.
-  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
-  # @example Retrieve the base URL
-  #  app_url #=> "https://dev.to"
-  # @example Add a path
-  #  app_url("internal") #=> "https://dev.to/internal"
   def app_url(uri = nil)
     URL.url(uri)
   end
@@ -249,9 +248,14 @@ module ApplicationHelper
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
 
-  def internal_config_label(method, content = nil)
-    content ||= method.to_s.humanize
-    content << "*" if method.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-    label_tag("site_config_#{method}", content)
+  # rubocop:disable Rails/OutputSafety
+  def admin_config_label(method, content = nil)
+    content ||= raw("<span>#{method.to_s.humanize}</span>")
+    if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+      content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+    end
+
+    tag.label(content, class: "site-config__label", for: "site_config_#{method}")
   end
+  # rubocop:enable Rails/OutputSafety
 end

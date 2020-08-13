@@ -1,7 +1,5 @@
 module Search
-  class ListingSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class ListingSerializer < ApplicationSerializer
     attributes :id,
                :body_markdown,
                :bumped_at,

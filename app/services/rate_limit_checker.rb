@@ -22,7 +22,7 @@ class RateLimitChecker
   class LimitReached < StandardError
     attr_reader :retry_after
 
-    def initialize(retry_after)
+    def initialize(retry_after) # rubocop:disable Lint/MissingSuper
       @retry_after = retry_after
     end
 
@@ -40,7 +40,7 @@ class RateLimitChecker
 
   def limit_by_action(action)
     check_method = "check_#{action}_limit"
-    result = respond_to?(check_method, true) ? send(check_method) : false
+    result = respond_to?(check_method, true) ? __send__(check_method) : false
 
     if result
       @action = action

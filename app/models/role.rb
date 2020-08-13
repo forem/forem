@@ -3,6 +3,7 @@ class Role < ApplicationRecord
     admin
     banned
     chatroom_beta_tester
+    codeland_admin
     comment_banned
     podcast_admin
     pro
@@ -11,6 +12,7 @@ class Role < ApplicationRecord
     super_admin
     tag_moderator
     mod_relations_admin
+    support_admin
     tech_admin
     trusted
     warned

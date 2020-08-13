@@ -1,15 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Comments", type: :request do
-  let_it_be(:article) { create(:article) }
-  let_it_be(:root_comment) { create(:comment, commentable: article) }
-  let_it_be_changeable(:child_comment) do
+  let(:article) { create(:article) }
+  let!(:root_comment) { create(:comment, commentable: article) }
+  let!(:child_comment) do
     create(:comment, commentable: article, parent: root_comment)
   end
-  let_it_be(:grandchild_comment) do
+  let!(:grandchild_comment) do
     create(:comment, commentable: article, parent: child_comment)
   end
-  let_it_be(:great_grandchild_comment) do
+  let!(:great_grandchild_comment) do
     create(:comment, commentable: article, parent: grandchild_comment)
   end
 
@@ -154,6 +154,22 @@ RSpec.describe "Api::V0::Comments", type: :request do
         get api_comments_path(a_id: article.id)
 
         expect(find_child_comment(response)["children"]).not_to be_empty
+      end
+    end
+
+    context "when getting by podcast episode id" do
+      let(:podcast) { create(:podcast) }
+      let(:podcast_episode) { create(:podcast_episode, podcast: podcast) }
+      let!(:comment) { create(:comment, commentable: podcast_episode) }
+
+      it "not found if bad podcast episode id" do
+        get api_comments_path(p_id: "asdfghjkl")
+        expect(response).to have_http_status(:not_found)
+      end
+      it "returns comment if good podcast episode id" do
+        get api_comments_path(p_id: podcast_episode.id)
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
       end
     end
   end

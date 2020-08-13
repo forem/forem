@@ -7,3 +7,16 @@
 
 [build]
   command = "make"
+
+# See <https://docs.netlify.com/routing/redirects/redirect-options/> for more options
+[[redirects]]
+from = "http://docs.dev.to"
+to = "http://docs.forem.com"
+status = 301
+force = true
+
+[[redirects]]
+from = "http://docs.dev.to/*"
+to = "http://docs.forem.com/:splat"
+status = 301
+force = true

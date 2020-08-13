@@ -35,6 +35,5 @@ RSpec.describe "Shells", type: :request do
       get "/shell_bottom"
       expect(response.body).to include("footer-container")
     end
-
   end
 end

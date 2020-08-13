@@ -41,16 +41,16 @@ RSpec.describe Webhook::Endpoint, type: :model do
 
     it "finds for events" do
       d_points = described_class.for_events("article_destroyed")
-      expect(d_points.pluck(:id).sort).to eq([endpoint, epoint2, epoint3].map(&:id).sort)
+      expect(d_points.ids.sort).to eq([endpoint, epoint2, epoint3].map(&:id).sort)
     end
 
     it "finds for_events array" do
       endpoints = described_class.for_events(%w[article_created article_destroyed])
-      expect(endpoints.pluck(:id)).to eq([endpoint.id])
+      expect(endpoints.ids).to eq([endpoint.id])
     end
 
     it "belongs to user" do
-      expect(user.webhook_endpoints.pluck(:id).sort).to eq([endpoint, epoint2].map(&:id).sort)
+      expect(user.webhook_endpoints.ids.sort).to eq([endpoint, epoint2].map(&:id).sort)
     end
   end
 end

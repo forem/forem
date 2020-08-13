@@ -13,9 +13,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
-require "test_prof/recipes/rspec/before_all"
-require "test_prof/recipes/rspec/let_it_be"
-require "test_prof/recipes/rspec/sample"
 require "sidekiq/testing"
 require "validate_url/rspec_matcher"
 
@@ -70,7 +67,6 @@ RSpec.configure do |config|
 
   config.include ApplicationHelper
   config.include ActionMailer::TestHelper
-  config.include ActiveJob::TestHelper
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :request

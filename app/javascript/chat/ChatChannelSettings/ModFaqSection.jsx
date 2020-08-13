@@ -1,7 +1,11 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ModFaqSection = ({ email }) => {
+const ModFaqSection = ({ email, currentMembershipRole }) => {
+  if (currentMembershipRole === 'member') {
+    return null;
+  }
+
   return (
     <div className="crayons-card grid gap-2 p-4 faq-section">
       <p className="contact-details">
@@ -21,6 +25,7 @@ const ModFaqSection = ({ email }) => {
 
 ModFaqSection.propTypes = {
   email: PropTypes.string.isRequired,
+  currentMembershipRole: PropTypes.string.isRequired,
 };
 
 export default ModFaqSection;

@@ -13,7 +13,7 @@ class ApplicationPolicy
   end
 
   def show?
-    scope.where(id: record.id).exists?
+    scope.exists?(id: record.id)
   end
 
   def create?
@@ -65,6 +65,10 @@ class ApplicationPolicy
 
   def user_admin?
     user.has_role?(:super_admin)
+  end
+
+  def support_admin?
+    user.has_role?(:support_admin)
   end
 
   def user_is_banned?
