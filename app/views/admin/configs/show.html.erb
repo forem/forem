@@ -843,7 +843,7 @@
               <%= f.label :default_font %>
               <%= select_tag "site_config[default_font]",
                              options_for_select(
-                               User::FONTS.map { |font| [font.tr("_", "-"), font] },
+                               [%w[sans-serif sans_serif], %w[serif serif], %w[open-dyslexic open_dyslexic]],
                                SiteConfig.default_font,
                              ),
                              multiple: false,

@@ -108,7 +108,7 @@ RSpec.describe UserDecorator, type: :decorator do
   describe "#config_font_name" do
     it "replaces 'default' with font configured for the site in SiteConfig" do
       expect(user.config_font).to eq("default")
-      User::FONTS.each do |font|
+      %w[sans_serif serif open_dyslexic].each do |font|
         allow(SiteConfig).to receive(:default_font).and_return(font)
         expect(user.decorate.config_font_name).to eq(font)
       end
