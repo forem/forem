@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
-import { withA11y } from '@storybook/addon-a11y';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/crayons.scss';
@@ -66,9 +65,16 @@ const themeSwitcherDecorator = (storyFn) => {
 };
 
 addDecorator(themeSwitcherDecorator);
-addDecorator(withA11y);
 
 addParameters({
+  docs: {
+    extractComponentDescription: (component, { notes }) => {
+      if (notes) {
+        return typeof notes === 'string' ? notes : notes.markdown || notes.text;
+      }
+      return null;
+    },
+  },
   options: {
     storySort: (a, b) =>
       a[1].kind === b[1].kind
