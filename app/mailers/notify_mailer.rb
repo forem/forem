@@ -104,11 +104,10 @@ class NotifyMailer < ApplicationMailer
   end
 
   def account_deleted_email
-    user = params[:user]
-    @name = user.name
+    @name = params[:name]
 
     subject = "#{ApplicationConfig['COMMUNITY_NAME']} - Account Deletion Confirmation"
-    mail(to: user.email, subject: subject)
+    mail(to: params[:email], subject: subject)
   end
 
   def account_deletion_requested_email
