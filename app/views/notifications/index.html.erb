@@ -73,9 +73,16 @@
                 </a>
               </li>
               <li>
-              </li>
                 <a class="notifications-filter__list--item <%= "selected" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
                   Posts
+                  <div class="notifications-filter__icon">
+                    <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="notifications-filter__list--item <%= "selected" if params[:filter].to_s.casecmp("endorsements").zero? && params[:org_id].blank? %>" href="/notifications/endorsements">
+                  Endorsements
                   <div class="notifications-filter__icon">
                     <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
                   </div>

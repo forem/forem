@@ -65,6 +65,8 @@ class NotificationsController < ApplicationController
       @user.notifications.for_published_articles
     elsif params[:filter].to_s.casecmp("comments").zero?
       @user.notifications.for_comments.or(@user.notifications.for_mentions)
+    elsif params[:filter].to_s.casecmp("endorsements").zero?
+      @user.notifications.for_endorsements
     else
       @user.notifications
     end

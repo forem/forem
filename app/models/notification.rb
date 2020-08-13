@@ -12,6 +12,7 @@ class Notification < ApplicationRecord
   scope :for_published_articles, -> { where(notifiable_type: "Article", action: "Published") }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
   scope :for_mentions, -> { where(notifiable_type: "Mention") }
+  scope :for_endorsements, -> { where(notifiable_type: "ListingEndorsement") }
 
   scope :for_organization, ->(org_id) { where(organization_id: org_id, user_id: nil) }
   scope :for_organization_comments, lambda { |org_id|
