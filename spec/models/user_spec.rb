@@ -1192,10 +1192,13 @@ RSpec.describe User, type: :model do
       expect(user.profile).to respond_to(:available_for)
     end
 
-    it "propagates changes to the profile model" do
+    it "propagates changes to the profile model", :aggregate_failures do
       expect do
         user.update(available_for: "profile migrations")
       end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
+
+      # Changes were also persisted in the users table
+      expect(user.reload.available_for).to eq "profile migrations"
     end
 
     it "reads from the profile model, not the user", :aggregate_failures do
