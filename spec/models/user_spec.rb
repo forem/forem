@@ -1179,4 +1179,30 @@ RSpec.describe User, type: :model do
       expect(user.authenticated_with_all_providers?).to be(true)
     end
   end
+
+  describe "profiles" do
+    before do
+      create(:profile_field, label: "Available for")
+      Profile.define_store_accessors!
+    end
+
+    it "automatically creates a profile for new users", :aggregate_failures do
+      user = create(:user)
+      expect(user.profile).to be_present
+      expect(user.profile).to respond_to(:available_for)
+    end
+
+    it "propagates changes to the profile model" do
+      expect do
+        user.update(available_for: "profile migrations")
+      end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
+    end
+
+    it "reads from the profile model, not the user", :aggregate_failures do
+      user.profile.update(available_for: "Well, actually...")
+
+      expect(user.available_for).to eq "Well, actually..."
+      expect(user[:available_for]).to be nil
+    end
+  end
 end

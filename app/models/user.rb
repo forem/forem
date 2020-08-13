@@ -5,6 +5,41 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  # NOTE: @citizen428 This is temporary code during profile migration and will
+  # be removed.
+  concerning :ProfileMigration do
+    included do
+      # All new users should automatically have a profile
+      after_create_commit { Profile.create(user: self, data: Profiles::ExtractData.call(self)) }
+
+      # Keep saving changes locally for the time being, but propagate them to profiles.
+      after_update_commit { profile.update(data: Profiles::ExtractData.call(self)) }
+
+      # Define wrapped getters for profile attributes. We first try to get the
+      # value from the profile and if it doesn't exist there we move retrieve it
+      # from here.
+      Profiles::ExtractData::DIRECT_ATTRIBUTES.each do |attribute|
+        define_method(attribute) do
+          if profile.respond_to?(attribute)
+            profile.public_send(attribute)
+          else
+            self[attribute]
+          end
+        end
+      end
+
+      Profiles::ExtractData::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
+        define_method(user_attribute) do
+          if profile.respond_to?(profile_attribute)
+            profile.public_send(profile_attribute)
+          else
+            self[user_attribute]
+          end
+        end
+      end
+    end
+  end
+
   BEHANCE_URL_REGEXP = %r{\A(http(s)?://)?(www.behance.net|behance.net)/.*\z}.freeze
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
   DRIBBBLE_URL_REGEXP = %r{\A(http(s)?://)?(www.dribbble.com|dribbble.com)/.*\z}.freeze
