@@ -4,8 +4,8 @@
           alt="Secondary <%= community_name %> logo" />
     <div class="authentication-feed__content">
       <h2 class="authentication-feed__title">
-community_members_label
-                                                                %>
+<a href="/"><%= community_name %></a> is a community of <br />
+        <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
       </h2>
       <p class="authentication-feed__description">
         Log in to customize your experience and get involved.
