@@ -21,7 +21,7 @@ module Admin
         flash[:success] = "Badge has been created!"
         redirect_to admin_badges_path
       else
-        flash[:danger] = @badge.errors.full_messages.to_sentence
+        flash[:danger] = @badge.errors_as_sentence
         render new_admin_badge_path
       end
     end
@@ -33,7 +33,7 @@ module Admin
         flash[:success] = "Badge has been updated!"
         redirect_to admin_badges_path
       else
-        flash[:danger] = @badge.errors.full_messages.to_sentence
+        flash[:danger] = @badge.errors_as_sentence
         render :edit
       end
     end
