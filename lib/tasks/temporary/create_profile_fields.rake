@@ -4,3 +4,4 @@ namespace :temporary do
     csv = Rails.root.join("lib/data/dev_profile_fields.csv")
     ProfileFields::ImportFromCsv.call(csv)
   end
+end
