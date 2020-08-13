@@ -6,6 +6,10 @@ import { podcastArticle } from '../../articles/__tests__/utilities/articleUtilit
 import { TodaysPodcasts } from '../TodaysPodcasts';
 
 describe('<TodaysPodcasts /> component', () => {
+  beforeEach(() => {
+    global.filterXSS = jest.fn();
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(
       <TodaysPodcasts>

@@ -1,9 +1,12 @@
 import { h } from 'preact';
-
 import '../../storybook-utilities/designSystem.scss';
+import notes from './buttons.md';
 
 export default {
   title: '3_Components/Buttons/HTML',
+  parameter: {
+    notes,
+  },
 };
 
 export const Default = () => (

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Deleting Comment", type: :system, js: true do
+RSpec.describe "Deleting Comment", type: :system, js: true, elasticsearch: "FeedContent" do
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
   let(:article) do
@@ -13,7 +13,6 @@ RSpec.describe "Deleting Comment", type: :system, js: true do
   end
 
   it "works" do
-    # TODO: Add Percy snapshot?
     visit "/"
     visit comment.path + "/delete_confirm"
 

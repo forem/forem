@@ -12,12 +12,12 @@ describe('<InviteForm />', () => {
   });
 
   it('should render with no usernames', () => {
-    const { getByLabelText, getByText } = render(
+    const { queryByLabelText, queryByText } = render(
       <InviteForm invitationUsernames="" />,
     );
 
-    getByLabelText('Usernames to invite');
-    getByText('Submit');
+    expect(queryByLabelText('Usernames to invite')).toBeDefined();
+    expect(queryByText('Submit')).toBeDefined();
   });
 
   it('should render with usernames to invite', () => {

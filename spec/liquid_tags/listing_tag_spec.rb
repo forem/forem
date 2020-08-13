@@ -98,8 +98,8 @@ RSpec.describe ListingTag, type: :liquid_tag do
   end
 
   it "raises an error when invalid" do
-    expect { generate_new_liquid("/listings/fakecategory/fakeslug") }.
-      to raise_error("Invalid URL or slug. Listing not found.")
+    expect { generate_new_liquid("/listings/fakecategory/fakeslug") }
+      .to raise_error("Invalid URL or slug. Listing not found.")
   end
 
   it "displays expired message when listing is expired" do

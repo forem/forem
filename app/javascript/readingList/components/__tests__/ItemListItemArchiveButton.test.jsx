@@ -12,8 +12,11 @@ describe('<ItemListItemArchiveButton />', () => {
   });
 
   it('renders the Archive button', () => {
-    const { getByText } = render(<ItemListItemArchiveButton text="archive" />);
-    getByText(/archive/i);
+    const { queryByText } = render(
+      <ItemListItemArchiveButton text="archive" />,
+    );
+
+    expect(queryByText(/archive/i)).toBeDefined();
   });
 
   it('triggers the onClick if the Enter key is pressed', () => {

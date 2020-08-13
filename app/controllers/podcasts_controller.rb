@@ -9,7 +9,7 @@ class PodcastsController < ApplicationController
 
   def new
     @podcast = Podcast.new
-    @podcasts = Podcast.available.order("title asc")
+    @podcasts = Podcast.available.order(title: :asc)
     @podcast_index = true
   end
 

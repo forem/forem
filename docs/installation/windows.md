@@ -2,43 +2,55 @@
 title: Windows
 ---
 
-# Installing DEV on Windows 10
+# Installing Forem on Windows 10
 
 ## Installing prerequisites
 
-_These prerequisites assume you're working on a 64bit Windows 10 operating
-system machine._
+These prerequisites assume you're working on a `64-bit Windows 10` operating
+system machine updated to _version 2004, Build 19041_ or _higher_. To check your
+Windows version, press `Win Logo key` + `R`, type `winver`, then click OK.
+
+There are other ways to get Forem running on lower versions, but we recommend a
+complete WSL 2 installation.
 
 ### Installing WSL
 
-Since DEV's codebase is using the Ruby on Rails framework, we will need to
-install Windows Subsystem for Linux. Some dependencies used by the source code
-triggered errors when installing on Windows, so using WSL allows you to work on
-the software and not having to fix gem incompatibilities.
+Since Forem's codebase is using the Ruby on Rails framework, we will need to
+install the Windows Subsystem for Linux (WSL). Some dependencies used by the
+source code triggered errors when installing on Windows, so using WSL allows you
+to work on the software and not having to fix gem incompatibilities.
 
-First, let's enable Windows Subsystem for Linux in your machine. You can do this
-by opening `Control Panel`, going to `Programs`, and then clicking
-`Turn Windows Features On or Off`. Look for the `Windows Subsystem for Linux`
-option and check the box next to it. Windows will ask for a reboot.
+Follow the instructions for
+[Installing the Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+Once you've installed WSL, complete all the instructions under the following
+sections in the link above:
 
-![Enable WSL on Windows](/wsl-feature.png 'Enable WSL on Windows')
+1. [Update to WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2).
+2. [Enable the "Virtual Machine Platform" optional component](https://docs.microsoft.com/en-us/windows/wsl/install-win10#enable-the-virtual-machine-platform-optional-component).
+   Be sure to reboot your machine after this step.
+3. [Set WSL 2 as your default version](https://docs.microsoft.com/en-us/windows/wsl/install-win10#set-wsl-2-as-your-default-version).
 
-Once you've got this installed and after rebooting,
+Once all the steps mentioned above are completed,
 [install Ubuntu 18.04 on Windows](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q).
 
 On your first run, the system will ask for username and password. Take note of
-both since it will be used for `sudo` commands.
+both since it will be used for `sudo` commands. More information about the
+process can be found at
+[create a user account and password for your new Linux distribution](https://docs.microsoft.com/en-us/windows/wsl/user-support)
 
-### Ruby on WSL
+### Installing rbenv
 
-First, install Ruby language dependencies:
+`rbenv` is a version manager for Ruby applications which allows one to guarantee
+that the Ruby version in development environment matches production. First,
+install Ruby language dependencies before installing `rbenv`:
 
 ```shell
 sudo apt-get update
 sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
 ```
 
-For installing Ruby, we recommend using [rbenv](https://github.com/rbenv/rbenv):
+Now, we install [rbenv](https://github.com/rbenv/rbenv) using the following
+commands:
 
 ```shell
 cd
@@ -50,46 +62,36 @@ exec $SHELL
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
-
-rbenv install $(cat .ruby-version)
-rbenv global $(cat .ruby-version)
-ruby -v
 ```
 
-### Installing Rails
-
-As a pre-requisite to install Rails, we're going to need to install a JavaScript
-runtime like Node.js.
-
-To install Node.js, we're going to add it using the official repository:
+One can verify `rbenv` installation using the `rbenv-doctor` script with the
+following commands:
 
 ```shell
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
-node -v
-npm -v
+curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
 ```
 
-Please refer to
-[NodeSource installation instructions](https://github.com/nodesource/distributions#installation-instructions)
-for further details.
+### Installing nvm
 
-If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the
-terminal and try again.
+As a pre-requisite to install Rails, Node.js needs to be installed.
+[nvm](https://github.com/nvm-sh/nvm) is a Node.js version manager that helps a
+developer select a specific Node.js version for development.
 
-And now, for rails itself:
+To install `nvm`, follow the instructions outlined in the
+[official nvm documentation](https://github.com/nvm-sh/nvm#install--update-script).
+
+Be sure to reload the shell with the command `exec $SHELL` after the
+installation is complete.
+
+Run the following command to verify that `nvm` is installed:
 
 ```shell
-gem install rails -v 5.2.4.2
+command -v nvm
 ```
 
-Then run `rbenv rehash` to make the Rails executable available. Check it out by
-using `rails -v` command
-
-```shell
-rbenv rehash
-rails -v
-```
+If the shell outputs `nvm`, the installation is successful. Installation of the
+correct Node.js version will be done in a later part of the installation
+process.
 
 ### Yarn
 
@@ -101,43 +103,64 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 ```
 
-Then you can simply issue:
+Since we do not have Node.js installed yet, we will be installing Yarn without
+the default Node.js with the following command:
 
 ```shell
-sudo apt-get update && sudo apt-get install yarn
+sudo apt update && sudo apt install --no-install-recommends yarn
 ```
 
-Make sure that Yarn is installed with `yarn -v`
+To verify Yarn's installation, run the command `yarn -v`. It should print
+`Yarn requires Node.js 4.0 or higher to be installed.`. This indicates that the
+Yarn installation succeeded but Node.js still needs to be installed for it to
+work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
-DEV requires PostgreSQL version 9.5 or higher.
+Forem requires PostgreSQL version 11 or higher. To Install PostgreSQL on WSL,
+follow steps under the
+[PostgreSQL APT Repository](https://www.postgresql.org/download/linux/ubuntu/)
+section.
 
-If you don't have PostgreSQL installed on your Windows system, you can do so
-right now. WSL is able to connect to a PostgreSQL instance on your Windows
-machine.
+Once Installed, perform the following steps in order to set up a username and
+password for PostgreSQL:
 
-Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/)
-and install it.
+1. Use `sudo -i service postgresql start` to start the server.
+2. Next, replace `$YOUR_USERNAME` in the following commands with your Linux
+   Username and execute them:
 
-Pay attention to the username and password you setup during installation of
-PostgreSQL as you will use this to configure your Rails applications to login to
-the database later.
+   ```shell
+   sudo -u postgres createuser -s $YOUR_USERNAME
+   createdb
+   sudo -u $YOUR_USERNAME psql
+   ```
+
+3. You should now be in PostgreSQL's shell interface. Execute `\password` to set
+   a password for your PostgreSQL user.
+4. Be sure to make a note of your username and password for future use. Exit
+   PostgreSQL by executing the command `\quit`.
 
 For additional configuration options, check our
 [PostgreSQL setup guide](/installation/postgresql).
 
 ### ImageMagick
 
-DEV uses [ImageMagick](https://imagemagick.org/) to manipulate images on upload.
+Forem uses [ImageMagick](https://imagemagick.org/) to manipulate images on
+upload.
 
-Please refer to ImageMagick's
-[instructions](https://imagemagick.org/script/download.php) on how to install
-it.
+ImageMagick can be installed to WSL via installing its
+[imagemagick](https://packages.ubuntu.com/bionic/imagemagick) package with the
+following command:
+
+```shell
+sudo apt update && sudo apt install imagemagick
+```
+
+To verify its installation, run `identify -version` command.
 
 ### Redis
 
-DEV requires Redis version 4.0 or higher.
+Forem requires Redis version 4.0 or higher.
 
 We recommend to follow
 [this guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under
@@ -145,20 +168,81 @@ WSL.
 
 ### Elasticsearch
 
-DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
-supported. We recommend version 7.5.2.
+Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
+not supported. We recommend version 7.5.2.
 
-We recommend following the install guide
-[in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
-for installing on Windows machines.
+We recommend that you **do not** install Elasticsearch in the app directory.
+Instead, we recommend installing it in your home directory (for example,
+`cd $HOME`). (This also ensures that we don't accidentally commit Elasticsearch
+code to the project's repository!)
 
-NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
+The following directions were taken from
+[the Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux),
+check them out to learn more about the installation process and troubleshooting
+issues. Make sure to refer to **the OSS version**, `elasticsearch-oss` while
+going through the Elasticsearch docs.
 
-## Installing DEV
+To install Elasticsearch perform the following steps:
 
-1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
+1. Execute the following commands:
+
+   ```shell
+   cd
+   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
+   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
+   shasum -a 512 -c elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
+   tar -xzf elasticsearch-7.5.2-linux-x86_64.tar.gz
+   ```
+
+2. Next, switch to the correct directory with:
+
+   ```shell
+   cd elasticsearch-7.5.2/
+   ```
+
+3. To start Elasticsearch, run the following command:
+
+   ```shell
+   ./bin/elasticsearch
+   ```
+
+   or, start it as a daemonized process with:
+
+   ```shell
+   ./bin/elasticsearch -d
+   ```
+
+4. Once Elasticsearch is running,
+   [verify Elasticsearch's installation](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#_checking_that_elasticsearch_is_running)
+   by executing the `cURL` command as follows:
+
+   ```shell
+   curl -X GET "localhost:9200/?pretty"
+   ```
+
+## Installing Forem
+
+1. Fork Forem's repository, eg. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, eg.
-   `git clone https://github.com/<your-username>/dev.to.git`
+   `git clone https://github.com/<your-username>/forem.git`
+1. Open the cloned forem folder in terminal with `cd forem`. Next, install Ruby
+   with the following commands:
+
+   ```shell
+   rbenv install $(cat .ruby-version)
+   rbenv global $(cat .ruby-version)
+   ruby -v
+   ```
+
+1. Install Node.js with the following set of commands:
+
+   ```shell
+   nvm install $(cat .nvmrc)
+   nvm use $(cat .nvmrc)
+   node -v
+   yarn -v
+   ```
+
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
@@ -189,7 +273,21 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. Run `bin/setup`
+1. Run `bin/setup`.
+
+   > The `bin/setup` script is responsible for installing a varienty of
+   > dependencies. One can find it inside the `bin` folder by the name of
+   > `setup`.
+   >
+   > - Its first task is to install the `bundler` gem. Next, it will make
+   >   `bundler` install all the gems, including `Rails`, located in `Gemfile`
+   >   in the root of the repository. It also installs `foreman`.
+   > - It then installs JavaScript dependencies using the script in `bin/yarn`
+   >   file. These dependencies are located in `package.json` in the root of the
+   >   repository.
+   > - Next, it uses various Rake files located inside the `lib` folder to setup
+   >   ElasticSearch environment, PostgreSQL database creation and updation.
+   > - Finally it cleans up all the log files and restarts the Puma server.
 
 ### Possible error messages
 

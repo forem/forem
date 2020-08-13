@@ -28,6 +28,9 @@ const Channels = ({
           channel={channel}
           discoverableChannel
           triggerActiveContent={triggerActiveContent}
+          isActiveChannel={
+            parseInt(activeChannelId, 10) === channel.chat_channel_id
+          }
         />
       );
     },
@@ -101,7 +104,7 @@ const Channels = ({
       >
         {topNotice}
         {channels}
-        {discoverableChannels.length > 0 ? (
+        {discoverableChannels.length > 0 && filterQuery.length > 0 ? (
           <div>
             <span className="crayons-indicator crayons-indicator--">
               Global Channel Search

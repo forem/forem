@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "Views an article", type: :system do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:moderator) { create(:user, :trusted) }
-  let_it_be(:article, reload: true) { create(:article, :with_notification_subscription, user: user) }
+  let(:user) { create(:user) }
+  let(:moderator) { create(:user, :trusted) }
+  let(:article) { create(:article, :with_notification_subscription, user: user) }
   let(:timestamp) { "2019-03-04T10:00:00Z" }
 
   before do
@@ -11,18 +11,14 @@ RSpec.describe "Views an article", type: :system do
     visit "/#{user.username}/#{article.slug}/mod"
   end
 
-  it "shows an article", js: true, percy: true do
+  it "shows an article", js: true do
     visit "/#{user.username}/#{article.slug}"
-
-    Percy.snapshot(page, name: "Moderators: renders an article")
 
     expect(page).to have_content(article.title)
   end
 
-  it "lets moderators visit /mod", js: true, percy: true do
+  it "lets moderators visit /mod", js: true do
     visit "/#{user.username}/#{article.slug}/mod"
-
-    Percy.snapshot(page, name: "Moderators: renders /mod")
 
     expect(page).to have_content("Moderate: #{article.title}")
     expect(page).to have_selector('button[data-category="thumbsdown"][data-reactable-type="Article"]')

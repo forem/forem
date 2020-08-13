@@ -106,7 +106,8 @@ RSpec.describe Reaction, type: :model do
       it "on destroy enqueues job to delete reaction from elasticsearch" do
         reaction.category = "readinglist"
         reaction.save
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                     args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
           reaction.destroy
         end
       end
@@ -143,8 +144,8 @@ RSpec.describe Reaction, type: :model do
   end
 
   describe "#skip_notification_for?" do
-    let_it_be(:receiver) { build(:user) }
-    let_it_be(:reaction) { build(:reaction, reactable: build(:article), user: nil) }
+    let(:receiver) { build(:user) }
+    let(:reaction) { build(:reaction, reactable: build(:article), user: nil) }
 
     context "when false" do
       it "is false when points are positive" do
@@ -201,8 +202,8 @@ RSpec.describe Reaction, type: :model do
 
   context "when callbacks are called after create" do
     describe "slack messages" do
-      let_it_be_changeable(:user) { create(:user, :trusted) }
-      let_it_be_readonly(:article) { create(:article, user: user) }
+      let!(:user) { create(:user, :trusted) }
+      let!(:article) { create(:article, user: user) }
 
       before do
         # making sure there are no other enqueued jobs from other tests

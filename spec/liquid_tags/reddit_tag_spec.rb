@@ -3,7 +3,9 @@ require "rails_helper"
 RSpec.describe RedditTag, type: :liquid_tag do
   context "when it is an image post" do
     describe "#render" do
-      let(:image_post) { "https://www.reddit.com/r/aww/comments/ag3s4b/ive_waited_28_years_to_finally_havr_my_first_pet" }
+      let(:image_post) do
+        "https://www.reddit.com/r/aww/comments/ag3s4b/ive_waited_28_years_to_finally_havr_my_first_pet"
+      end
       let(:response) do
         {
           "author" => "Miaogua007",
@@ -46,12 +48,17 @@ RSpec.describe RedditTag, type: :liquid_tag do
 
   context "when it is a text post" do
     describe "#render" do
-      let(:text_post) { "https://www.reddit.com/r/IAmA/comments/afvl2w/im_scott_from_scotts_cheap_flights_my_profession" }
+      let(:text_post) do
+        "https://www.reddit.com/r/IAmA/comments/afvl2w/im_scott_from_scotts_cheap_flights_my_profession"
+      end
+
       let(:response) do
+        post_url = "https://www.reddit.com/r/IAmA/comments/afvl2w/im_scott_from_scotts_cheap_flights_my_profession"
+
         {
           "author" => "scottkeyes",
           "title" => "I'm Scott from Scott's C…r the next 8 hours. AMA",
-          "post_url" => "https://www.reddit.com/r/IAmA/comments/afvl2w/im_scott_from_scotts_cheap_flights_my_profession",
+          "post_url" => post_url,
           "created_utc" => 1_547_470_871,
           "post_hint" => "self",
           "image_url" => "",

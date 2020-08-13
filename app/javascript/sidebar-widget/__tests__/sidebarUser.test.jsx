@@ -3,36 +3,42 @@ import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import SidebarUser from '../sidebarUser';
 
-const user = {
-  id: 1234,
-  username: 'john_doe',
-  name: 'Jon Doe',
-  profile_image_url: 'www.profile.com',
-};
-
-const followUser = jest.fn();
-
-const renderedSideBar = (props) =>
-  render(
-    <SidebarUser
-      key={user.id}
-      user={user}
-      followUser={followUser}
-      index={0}
-      {...props}
-    />,
-  );
+function getUser() {
+  return {
+    id: 1234,
+    username: 'john_doe',
+    name: 'Jon Doe',
+    profile_image_url: 'www.profile.com',
+  };
+}
 
 describe('<SidebarUser />', () => {
   it('should have no a11y violations', async () => {
-    const { container } = render(renderedSideBar());
+    const user = getUser();
+
+    const { container } = render(
+      <SidebarUser
+        key={user.id}
+        user={user}
+        followUser={jest.fn()}
+        index={0}
+      />,
+    );
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
   });
 
   it('renders properly', () => {
-    const { getByTestId, getByText, getByAltText } = renderedSideBar();
+    const user = getUser();
+    const { getByTestId, getByText, getByAltText } = render(
+      <SidebarUser
+        key={user.id}
+        user={user}
+        followUser={jest.fn()}
+        index={0}
+      />,
+    );
 
     expect(getByTestId('widget-avatar').getAttribute('href')).toEqual(
       '/john_doe',
@@ -47,7 +53,17 @@ describe('<SidebarUser />', () => {
   });
 
   it('triggers the onClick', () => {
-    const { getByTestId } = renderedSideBar();
+    const user = getUser();
+    const followUser = jest.fn();
+    const { getByTestId } = render(
+      <SidebarUser
+        key={user.id}
+        user={user}
+        followUser={followUser}
+        index={0}
+      />,
+    );
+
     getByTestId('widget-follow-button').click();
 
     expect(followUser).toHaveBeenCalled();
@@ -55,13 +71,35 @@ describe('<SidebarUser />', () => {
 
   describe('following', () => {
     it('shows if the user is followed', () => {
-      const { getByText } = renderedSideBar({ user: { following: true } });
-      getByText(/Following/i);
+      const user = getUser();
+      user.following = true;
+
+      const { queryByText } = render(
+        <SidebarUser
+          key={user.id}
+          user={user}
+          followUser={jest.fn()}
+          index={0}
+        />,
+      );
+
+      expect(queryByText(/Following/i)).toBeDefined();
     });
 
     it('shows if the user can be followed', () => {
-      const { getByText } = renderedSideBar({ user: { following: false } });
-      getByText(/follow/i);
+      const user = getUser();
+      user.following = false;
+
+      const { queryByText } = render(
+        <SidebarUser
+          key={user.id}
+          user={user}
+          followUser={jest.fn()}
+          index={0}
+        />,
+      );
+
+      expect(queryByText(/follow/i)).toBeDefined();
     });
   });
 });

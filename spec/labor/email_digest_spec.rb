@@ -26,6 +26,22 @@ RSpec.describe EmailDigest, type: :labor do
         expect(mailer).to have_received(:digest_email)
         expect(message_delivery).to have_received(:deliver_now)
       end
+
+      it "does not send email when user does not have email_digest_periodic" do
+        articles = create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
+        user.update_column(:email_digest_periodic, false)
+        described_class.send_periodic_digest_email
+
+        expect(DigestMailer).not_to have_received(:with).with(user: user, articles: articles)
+      end
+
+      it "does not send email when user is not registered" do
+        articles = create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
+        user.update_column(:registered, false)
+        described_class.send_periodic_digest_email
+
+        expect(DigestMailer).not_to have_received(:with).with(user: user, articles: articles)
+      end
     end
   end
 end

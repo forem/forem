@@ -18,13 +18,16 @@ describe('<Title />', () => {
   });
 
   it('renders the textarea', () => {
-    const { getByPlaceholderText } = render(
+    const { queryByPlaceholderText } = render(
       <Title
         defaultValue="Test title"
         onChange={null}
         switchHelpContext={null}
       />,
     );
-    getByPlaceholderText(/post title/i, { selector: 'textarea' });
+
+    expect(
+      queryByPlaceholderText(/post title/i, { selector: 'textarea' }),
+    ).toBeDefined();
   });
 });

@@ -19,6 +19,7 @@ module ApplicationHelper
     "#{controller_name}-#{controller.action_name}"
   end
 
+  # rubocop:disable Rails/HelperInstanceVariable
   def view_class
     if @podcast_episode_show # custom due to edge cases
       "stories stories-show podcast_episodes-show"
@@ -28,6 +29,7 @@ module ApplicationHelper
       "#{controller_name} #{controller_name}-#{controller.action_name}"
     end
   end
+  # rubocop:enable Rails/HelperInstanceVariable
 
   def title(page_title)
     derived_title = if page_title.include?(community_name)
@@ -99,8 +101,12 @@ module ApplicationHelper
     end
   end
 
+  def any_selfserve_auth?
+    authentication_enabled_providers.any?
+  end
+
   def beautified_url(url)
-    url.sub(/\A((https?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end
@@ -153,14 +159,18 @@ module ApplicationHelper
 
   def logo_svg
     if SiteConfig.logo_svg.present?
-      SiteConfig.logo_svg.html_safe
+      SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
     else
       inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end
   end
 
+  def safe_logo_url(logo)
+    logo.presence || SiteConfig.logo_png
+  end
+
   def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
+    @community_name ||= ApplicationConfig["COMMUNITY_NAME"] # rubocop:disable Rails/HelperInstanceVariable
   end
 
   def community_qualified_name
@@ -183,6 +193,13 @@ module ApplicationHelper
     "#{start_year} - #{current_year}"
   end
 
+  def collection_link(collection, **kwargs)
+    size_string = "#{collection.articles.published.size} Part Series"
+    body = collection.slug.present? ? "#{collection.slug} (#{size_string})" : size_string
+
+    link_to body, collection.path, **kwargs
+  end
+
   def email_link(type = :default, text: nil, additional_info: nil)
     # The allowed types for type is :default, :business, :privacy, and members.
     # These options can be found in field :email_addresses of models/site_config.rb
@@ -194,14 +211,6 @@ module ApplicationHelper
     SiteConfig.community_member_label.pluralize
   end
 
-  # Creates an app internal URL
-  #
-  # @note Uses protocol and domain specified in the environment, ensure they are set.
-  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
-  # @example Retrieve the base URL
-  #  app_url #=> "https://dev.to"
-  # @example Add a path
-  #  app_url("internal") #=> "https://dev.to/internal"
   def app_url(uri = nil)
     URL.url(uri)
   end
@@ -238,4 +247,15 @@ module ApplicationHelper
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
+
+  # rubocop:disable Rails/OutputSafety
+  def admin_config_label(method, content = nil)
+    content ||= raw("<span>#{method.to_s.humanize}</span>")
+    if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+      content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+    end
+
+    tag.label(content, class: "site-config__label", for: "site_config_#{method}")
+  end
+  # rubocop:enable Rails/OutputSafety
 end

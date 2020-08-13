@@ -1,11 +1,25 @@
+/* global InstantClick */
+
 'use strict';
 
-function initializeDashboardSort() {
-  const dashboardSorter = document.getElementById('dashboard_sort');
+function selectNavigation(select, urlPrefix) {
+  const trigger = document.getElementById(select);
 
-  if (dashboardSorter) {
-    dashboardSorter.addEventListener('change', (event) => {
-      window.location.assign(`/dashboard?sort=${event.target.value}`);
+  if (trigger) {
+    trigger.addEventListener('change', (event) => {
+      let url = event.target.value;
+      if (urlPrefix) {
+        url = urlPrefix + url;
+      }
+
+      InstantClick.preload(url);
+      InstantClick.display(url);
     });
   }
+}
+
+function initializeDashboardSort() {
+  selectNavigation('dashboard_sort', '/dashboard?sort=');
+  selectNavigation('dashboard_author');
+  selectNavigation('mobile_nav_dashboard');
 }

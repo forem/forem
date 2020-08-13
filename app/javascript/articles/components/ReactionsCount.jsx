@@ -28,7 +28,7 @@ export const ReactionsCount = ({ article }) => {
         {totalReactions}
         <span className="hidden s:inline">
           &nbsp;
-          {`${totalReactions > 1 ? 'reactions' : 'reaction'}`}
+          {`${totalReactions == 1 ? 'reaction' : 'reactions'}`}
         </span>
       </span>
     </Button>

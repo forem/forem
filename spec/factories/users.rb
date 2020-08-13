@@ -20,10 +20,13 @@ FactoryBot.define do
     checked_code_of_conduct      { true }
     checked_terms_and_conditions { true }
     display_announcements        { true }
+    registered_at                { Time.current }
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
     bg_color_hex                 { Faker::Color.hex_color }
     text_color_hex               { Faker::Color.hex_color }
+
+    after(:create) { |user| create(:profile, user: user) }
 
     trait :with_identity do
       transient { identities { Authentication::Providers.available } }
@@ -53,6 +56,14 @@ FactoryBot.define do
       end
 
       after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
+    end
+
+    trait :restricted_liquid_tag do
+      transient do
+        resource { nil }
+      end
+
+      after(:build) { |user, options| user.add_role(:restricted_liquid_tag, options.resource) }
     end
 
     trait :super_plus_single_resource_admin do
@@ -127,14 +138,6 @@ FactoryBot.define do
       after(:create) do |user|
         tag = create(:tag)
         user.add_role :tag_moderator, tag
-      end
-    end
-
-    trait :with_user_optional_fields do
-      after(:create) do |user|
-        create(:user_optional_field, user: user)
-        create(:user_optional_field, user: user, label: "another field1", value: "another value1")
-        create(:user_optional_field, user: user, label: "another field2", value: "another value2")
       end
     end
 

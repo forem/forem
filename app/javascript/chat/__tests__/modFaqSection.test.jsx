@@ -12,9 +12,11 @@ describe('<ChannelDescriptionSection />', () => {
   });
 
   it('should render', () => {
-    const { getByText } = render(<ModFaqSection email="jane@doe.com" />);
+    const { queryByText } = render(<ModFaqSection email="jane@doe.com" />);
 
-    getByText(/^Questions about Connect Channel moderation\? Contact/);
-    getByText('jane@doe.com');
+    expect(
+      queryByText(/^Questions about Connect Channel moderation\? Contact/),
+    ).toBeDefined();
+    expect(queryByText('jane@doe.com')).toBeDefined();
   });
 });

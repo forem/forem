@@ -24,7 +24,8 @@ describe('<ItemListLoadMoreButton />', () => {
   });
 
   it('renders a button when required', () => {
-    const { getByText } = render(<ItemListLoadMoreButton show={true} />);
-    getByText(/load more/i);
+    const { queryByText } = render(<ItemListLoadMoreButton show={true} />);
+
+    expect(queryByText(/load more/i)).toBeDefined();
   });
 });

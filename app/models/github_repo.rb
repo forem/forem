@@ -9,16 +9,16 @@ class GithubRepo < ApplicationRecord
 
   scope :featured, -> { where(featured: true) }
 
-  after_save :clear_caches
   before_destroy :clear_caches
+  after_save :clear_caches
 
   # Update existing repository or create a new one with given params.
   # Repository is searched by either GitHub ID or URL.
   def self.upsert(user, **params)
-    repo = user.github_repos.
-      where(github_id_code: params[:github_id_code]).
-      or(where(url: params[:url])).
-      first
+    repo = user.github_repos
+      .where(github_id_code: params[:github_id_code])
+      .or(where(url: params[:url]))
+      .first
     repo ||= new(params.merge(user_id: user.id))
 
     repo.update(params)

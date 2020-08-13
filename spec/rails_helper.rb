@@ -10,13 +10,9 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
-require "percy"
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
-require "test_prof/recipes/rspec/before_all"
-require "test_prof/recipes/rspec/let_it_be"
-require "test_prof/recipes/rspec/sample"
 require "sidekiq/testing"
 require "validate_url/rspec_matcher"
 
@@ -36,7 +32,6 @@ require "validate_url/rspec_matcher"
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/jobs/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].sort.each { |f| require f }
 
@@ -48,10 +43,10 @@ ActiveRecord::Migration.maintain_test_schema!
 # allow browser websites, so that "webdrivers" can access their binaries
 # see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
 allowed_sites = [
-  "https://chromedriver.storage.googleapis.com",
-  "https://github.com/mozilla/geckodriver/releases",
-  "https://selenium-release.storage.googleapis.com",
-  "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
+  "chromedriver.storage.googleapis.com",
+  "github.com/mozilla/geckodriver/releases",
+  "selenium-release.storage.googleapis.com",
+  "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
   "api.knapsackpro.com",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
@@ -72,7 +67,6 @@ RSpec.configure do |config|
 
   config.include ApplicationHelper
   config.include ActionMailer::TestHelper
-  config.include ActiveJob::TestHelper
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :request
@@ -140,35 +134,36 @@ RSpec.configure do |config|
   config.before do
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 
-    stub_request(:post, /api.fastly.com/).
-      to_return(status: 200, body: "".to_json, headers: {})
+    stub_request(:any, /emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/).to_rack("stubbed-emoji")
 
-    stub_request(:post, /api.bufferapp.com/).
-      to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
+    stub_request(:post, /api.fastly.com/)
+      .to_return(status: 200, body: "".to_json, headers: {})
+
+    stub_request(:post, /api.bufferapp.com/)
+      .to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
 
     # for twitter image cdn
-    stub_request(:get, /twimg.com/).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:get, /twimg.com/)
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /api.mailchimp.com/).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:any, /api.mailchimp.com/)
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /dummyimage.com/).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:any, /dummyimage.com/)
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:post, "http://www.google-analytics.com/collect").
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:post, "http://www.google-analytics.com/collect")
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /robohash.org/).
-      with(headers:
+    stub_request(:any, /robohash.org/)
+      .with(headers:
             {
               "Accept" => "*/*",
               "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
               "User-Agent" => "Ruby"
             }).to_return(status: 200, body: "", headers: {})
-    # Prevent Percy.snapshot from trying to hit the agent while not in use
 
-    allow(Percy).to receive(:snapshot)
+    allow(SiteConfig).to receive(:community_description).and_return("Some description")
   end
 
   config.after do
@@ -178,9 +173,7 @@ RSpec.configure do |config|
   config.after(:suite) do
     WebMock.disable_net_connect!(
       allow_localhost: true,
-      allow: [
-        "api.knapsackpro.com",
-      ],
+      allow: allowed_sites,
     )
   end
 
@@ -193,16 +186,4 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-
-  # Explicitly set a seed and time to ensure deterministic Percy snapshots.
-  # config.around(:each, percy: true) do |example|
-  #   Timecop.freeze("2020-05-13T10:00:00Z")
-  #   prev_random_seed = Faker::Config.random
-  #   Faker::Config.random = Random.new(42)
-
-  #   example.run
-
-  #   Faker::Config.random = prev_random_seed
-  #   Timecop.return
-  # end
 end

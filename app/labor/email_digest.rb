@@ -18,7 +18,8 @@ class EmailDigest
 
         DigestMailer.with(user: user, articles: articles).digest_email.deliver_now
       rescue StandardError => e
-        Rails.logger.error("Email issue: #{e}")
+        Honeybadger.context({ user_id: user.id, article_ids: articles.map(&:id) })
+        Honeybadger.notify(e)
       end
     end
   end
@@ -26,6 +27,6 @@ class EmailDigest
   private
 
   def get_users
-    User.where(email_digest_periodic: true).where.not(email: "")
+    User.registered.where(email_digest_periodic: true).where.not(email: "")
   end
 end

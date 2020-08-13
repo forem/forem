@@ -128,6 +128,7 @@ a.header-link {
   margin: auto;
   margin-bottom: var(--su-4);
   text-align: left;
+  overflow-wrap: break-word;
   &.comments-dedicated-page-container {
     width: 800px;
     max-width: 96%;
@@ -450,18 +451,8 @@ a.header-link {
         opacity: 0.6;
       }
 
-      pre {
-        overflow-x: auto;
-      }
-
       kbd {
         @extend %kbd;
-      }
-
-      code {
-        word-wrap: break-word;
-        background-color: rgba(0, 0, 0, 0.1);
-        padding: 0.1em 0.3em 0;
       }
 
       .article-body-image-wrapper img {
@@ -473,19 +464,6 @@ a.header-link {
         padding: 0.1% 6% 0.1% 1%;
         margin-left: 0.5rem;
       }
-    }
-
-    // this css is added to ignore the code under highlight class and use default bg-color and color.
-
-    #preview-div div.highlight pre code {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-
-    // this css is added to differentiate the code within a pre tag since pre tag already has black bg.
-
-    #preview-div pre code {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.9);
     }
 
     .actions {
@@ -829,37 +807,6 @@ a.header-link {
       padding: 3px 0px 0px;
       position: relative;
       z-index: 1;
-    }
-    code {
-      margin: auto;
-      padding: 1px 5px 0px;
-      border-radius: 2px;
-      font-size: 0.8em;
-      display: inline-block;
-      vertical-align: 0.1em;
-      max-width: 100%;
-      line-height: 1.4em;
-      background-color: rgba(0, 0, 0, 0.1);
-      padding: 0.1em 0.3em 0;
-    }
-    .highlight {
-      display: grid;
-      justify-content: stretch;
-
-      code {
-        width: 100%;
-      }
-    }
-    pre {
-      overflow-wrap: normal;
-      overflow-x: auto;
-      code {
-        color: inherit;
-        white-space: pre;
-        font-size: 1em;
-        padding: 0;
-        overflow-x: auto;
-      }
     }
     img {
       max-width: 100%;

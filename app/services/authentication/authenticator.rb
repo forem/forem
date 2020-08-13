@@ -1,5 +1,5 @@
 module Authentication
-  # TODO: [thepracticaldev/oss] use strategy pattern for the three cases
+  # TODO: [@forem/oss] use strategy pattern for the three cases
   #   described below.
   #   Make the decision early which one of the 3 cases we're dealing with
   #   and then call either NewUserStrategy, UpdateUserStrategy or
@@ -113,9 +113,13 @@ module Authentication
     end
 
     def default_user_fields
+      password = Devise.friendly_token(20)
       {
-        password: Devise.friendly_token(20),
+        password: password,
+        password_confirmation: password,
         signup_cta_variant: cta_variant,
+        registered: true,
+        registered_at: Time.current,
         saw_onboarding: false,
         editor_version: :v2
       }
@@ -123,6 +127,7 @@ module Authentication
 
     def update_user(user)
       user.tap do |model|
+        user.unlock_access! if user.access_locked?
         user.assign_attributes(provider.existing_user_data)
 
         update_profile_updated_at(model)

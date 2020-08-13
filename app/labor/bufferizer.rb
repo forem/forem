@@ -18,20 +18,24 @@ class Bufferizer
       next if tag.buffer_profile_id_code.blank?
 
       text = twitter_buffer_text
-      text = text.gsub(" #{SiteConfig.twitter_hashtag}", " #{SiteConfig.twitter_hashtag} ##{tag.name}") if text.length < 250
+      if text.length < 250 && SiteConfig.twitter_hashtag
+        text = text.gsub(" #{SiteConfig.twitter_hashtag}", " #{SiteConfig.twitter_hashtag} ##{tag.name}")
+      end
       BufferUpdate.buff!(@article.id, text, tag.buffer_profile_id_code, "twitter", tag.id, @admin_id)
     end
     @article.update(last_buffered: Time.current)
   end
 
   def main_tweet!
-    BufferUpdate.buff!(@article.id, twitter_buffer_text, ApplicationConfig["BUFFER_TWITTER_ID"], "twitter", nil, @admin_id)
+    BufferUpdate.buff!(@article.id, twitter_buffer_text, ApplicationConfig["BUFFER_TWITTER_ID"], "twitter", nil,
+                       @admin_id)
     @article.update(last_buffered: Time.current)
   end
 
   def facebook_post!
     BufferUpdate.buff!(@article.id, fb_buffer_text, ApplicationConfig["BUFFER_FACEBOOK_ID"], "facebook", nil, @admin_id)
-    BufferUpdate.buff!(@article.id, fb_buffer_text + social_tags, ApplicationConfig["BUFFER_LINKEDIN_ID"], "linkedin", nil, @admin_id)
+    BufferUpdate.buff!(@article.id, fb_buffer_text + social_tags, ApplicationConfig["BUFFER_LINKEDIN_ID"], "linkedin",
+                       nil, @admin_id)
     @article.update(facebook_last_buffered: Time.current)
   end
 

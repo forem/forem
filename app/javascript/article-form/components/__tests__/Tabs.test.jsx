@@ -14,11 +14,12 @@ describe('<Tabs />', () => {
   });
 
   it('renders two buttons', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <Tabs onPreview={null} previewShowing={false} />,
     );
-    getByText(/preview/i, { selector: 'button' });
-    getByText(/edit/i, { selector: 'button' });
+
+    expect(queryByText(/preview/i, { selector: 'button' })).toBeDefined();
+    expect(queryByText(/edit/i, { selector: 'button' })).toBeDefined();
   });
 
   describe('highlights the current tab', () => {
@@ -31,15 +32,15 @@ describe('<Tabs />', () => {
         getByText(/preview/i, { selector: 'button' }).classList.contains(
           `crayons-tabs__item--current`,
         ),
-      ).toBe(true);
+      ).toEqual(true);
       expect(
         getByText(/edit/i, { selector: 'button' }).classList.contains(
           `crayons-tabs__item--current`,
         ),
-      ).toBe(false);
+      ).toEqual(false);
     });
 
-    it('when edit is selected', () => {
+    it('should make the edit button the current button when not in preview mode', () => {
       const { getByText } = render(
         <Tabs onPreview={null} previewShowing={false} />,
       );
@@ -48,12 +49,29 @@ describe('<Tabs />', () => {
         getByText(/edit/i, { selector: 'button' }).classList.contains(
           `crayons-tabs__item--current`,
         ),
-      ).toBe(true);
+      ).toEqual(true);
       expect(
         getByText(/preview/i, { selector: 'button' }).classList.contains(
           `crayons-tabs__item--current`,
         ),
-      ).toBe(false);
+      ).toEqual(false);
+    });
+
+    it('should make the preview button the current button when in preview mode', () => {
+      const { getByText } = render(
+        <Tabs onPreview={null} previewShowing={true} />,
+      );
+
+      expect(
+        getByText(/edit/i, { selector: 'button' }).classList.contains(
+          `crayons-tabs__item--current`,
+        ),
+      ).toEqual(false);
+      expect(
+        getByText(/preview/i, { selector: 'button' }).classList.contains(
+          `crayons-tabs__item--current`,
+        ),
+      ).toEqual(true);
     });
   });
 });

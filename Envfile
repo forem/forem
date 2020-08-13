@@ -167,11 +167,6 @@ variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
 group :production do
   variable :SECRET_KEY_BASE, :String
 
-  # Timber
-  # (https://docs.timber.io/)
-  variable :SEND_LOGS_TO_TIMBER, :String  # Defaults to true in production, false in development
-  variable :TIMBER, :String  # Only required if above is "true" or unset
-
   # Sendgrid
   # (https://sendgrid.com/docs/API_Reference/api_v3.html)
   variable :SENDGRID_USERNAME_ACCEL, :String

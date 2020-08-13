@@ -109,7 +109,7 @@ Rails.application.configure do
   config.log_level = :debug
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger           = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
@@ -132,7 +132,9 @@ Rails.application.configure do
     # Check if there are any data update scripts to run during startup
     if %w[c console runner s server].include?(ENV["COMMAND"])
       if DataUpdateScript.scripts_to_run?
-        raise "Data update scripts need to be run before you can start the application. Please run 'rails data_updates:run'"
+        message = "Data update scripts need to be run before you can start the application. " \
+          "Please run 'rails data_updates:run'"
+        raise message
       end
     end
   end

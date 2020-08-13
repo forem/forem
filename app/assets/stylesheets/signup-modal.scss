@@ -20,8 +20,8 @@
     z-index: 899901;
     .close-modal-button {
       position: fixed;
-      top: 3%;
-      left: 5%;
+      top: calc(3% - 5px);
+      left: calc(5% - 5px);
       border: 0;
       background: transparent;
       cursor: pointer;
@@ -33,7 +33,7 @@
   .global-signup-modal--inner-a {
     font-family: var(--ff-default);
     position: fixed;
-    top: calc(15% - 33px);
+    top: calc(13% - 38px);
     left: calc(15% - 33px);
     right: calc(15% - 33px);
     bottom: calc(10% - 33px);
@@ -44,6 +44,8 @@
     box-shadow: 0px 0px 100px 20px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     padding: calc(1vw + 24px) calc(1vw + 10px);
+    overflow-y: auto;
+    max-height: calc(100vh - 50px)
     h1 {
       font-weight: 600;
       margin-top: 0px;
@@ -56,8 +58,8 @@
       margin: auto;
     }
     .mascot-image {
-      height: calc(7vw + 80px);
-      margin-top: calc(6vh - 10px);
+      height: calc(7vw + 45px);
+      margin-top: calc(6vh - 25px);
     }
   }
 }

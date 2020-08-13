@@ -7,12 +7,16 @@ openapi: "3.0.3"
 info:
   title: DEV API (beta)
   description: |
-    Access DEV articles, users and other resources via API.
+ 
+    Access Forem articles, users and other resources via API.
+
+    For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
 
     All endpoints that don't require authentication are CORS enabled.
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
+    
   version: "0.7.0"
   termsOfService: https://dev.to/terms
   contact:
@@ -175,6 +179,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         readable_publish_date:
           type: string
         social_image:
@@ -209,9 +214,11 @@ components:
         edited_at:
           type: string
           format: date-time
+          nullable: true          
         crossposted_at:
           type: string
           format: date-time
+          nullable: true          
         published_at:
           type: string
           format: date-time
@@ -269,6 +276,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         readable_publish_date:
           type: string
         social_image:
@@ -303,9 +311,11 @@ components:
         edited_at:
           type: string
           format: date-time
+          nullable: true
         crossposted_at:
           type: string
           format: date-time
+          nullable: true          
         published_at:
           type: string
           format: date-time
@@ -493,6 +503,7 @@ components:
         cover_image:
           type: string
           format: url
+          nullable: true
         published:
           type: boolean
         published_at:
@@ -842,11 +853,14 @@ components:
           type: string
         twitter_username:
           type: string
+          nullable: true          
         github_username:
           type: string
+          nullable: true
         website_url:
           type: string
           format: url
+          nullable: true          
         profile_image:
           description: Profile image (640x640)
           type: string
@@ -919,15 +933,20 @@ components:
           type: string
         summary:
           type: string
+          nullable: true
         twitter_username:
           type: string
+          nullable: true
         github_username:
           type: string
+          nullable: true
         website_url:
           type: string
           format: url
+          nullable: true          
         location:
           type: string
+          nullable: true
         joined_at:
           description: Date of joining (formatted with strftime `"%b %e, %Y"`)
           type: string
@@ -1692,7 +1711,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -1808,7 +1827,7 @@ paths:
         example: 150589
     get:
       operationId: getArticleById
-      summary: A published article
+      summary: A published article by ID
       description: |
         This endpoint allows the client to retrieve a single
         published article given its `id`.
@@ -1854,7 +1873,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Articles API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb)
+        - [Rails tests for Articles API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/articles_spec.rb)
       tags:
         - articles
       requestBody:
@@ -1948,6 +1967,55 @@ paths:
               -H "api-key: API_KEY" \
               -d '{"article":{"title":"Title"}}' \
               https://dev.to/api/articles/{id}
+
+  /articles/{username}/{slug}:
+    parameters:
+      - name: username
+        in: path
+        required: true
+        description: User or organization username.
+        schema:
+          type: string
+        example: devteam
+      - name: slug
+        in: path
+        required: true
+        description: Slug of the article.
+        schema:
+          type: string
+        example: for-empowering-community-2k6h
+    get:
+      operationId: getArticleByPath
+      summary: A published article by path
+      description: |
+        This endpoint allows the client to retrieve a single
+        published article given its `path`.
+      tags:
+        - articles
+      responses:
+        "200":
+          description: An article
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleShow"
+              examples:
+                article-success:
+                  $ref: "#/components/examples/ArticleShow"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/articles/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
 
   /articles/me:
     get:
@@ -2153,7 +2221,7 @@ paths:
       summary: Comments
       description: |
         This endpoint allows the client to retrieve all comments belonging to an
-        article as threaded conversations.
+        article or podcast episode as threaded conversations.
 
         It will return the all top level comments with their nested comments as
         threads. See the format specification for further details.
@@ -2168,6 +2236,14 @@ paths:
             format: int32
             minimum: 1
           example: 270180
+        - name: p_id
+          in: query
+          description: Podcast Episode identifier.
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          example: 124
       responses:
         "200":
           description: A list of threads of comments
@@ -2198,6 +2274,10 @@ paths:
           label: curl (all comments of an article)
           source: |
             curl https://dev.to/api/comments?a_id=270180
+        - lang: Shell
+          label: curl (all comments of a podcast episode)
+          source: |
+            curl https://dev.to/api/comments?p_id=124
 
   /comments/{id}:
     get:
@@ -2358,7 +2438,7 @@ paths:
 
         ### Additional resources
 
-        - [Rails tests for Listings API](https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/listings_spec.rb)
+        - [Rails tests for Listings API](https://github.com/forem/forem/blob/master/spec/requests/api/v0/listings_spec.rb)
       tags:
         - listings
       requestBody:

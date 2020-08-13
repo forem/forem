@@ -4,6 +4,10 @@ import { axe } from 'jest-axe';
 import ListingFiltersCategories from '../components/ListingFiltersCategories';
 
 describe('<ListingFiltersCategories />', () => {
+  beforeEach(() => {
+    global.selectNavigation = jest.fn();
+  });
+
   const firstCategory = {
     slug: 'clojure',
     name: 'Clojure',
@@ -39,29 +43,17 @@ describe('<ListingFiltersCategories />', () => {
     it('should render an all link', () => {
       const { getByText } = renderListingFilterCategories();
 
-      const allLink = getByText(/all/i);
+      const allLink = getByText(/all listings/i, { selector: 'a' });
       expect(allLink.getAttribute('href')).toEqual('/listings');
-      expect(allLink.textContent).toEqual('all');
     });
 
     it('should be "selected" when there is no category selected', () => {
       const propsWithoutCategory = { ...getProps(), category: '' };
-      const { getByTestId } = renderListingFilterCategories(
+      const { queryByTestId } = renderListingFilterCategories(
         propsWithoutCategory,
       );
-      getByTestId('selected');
-    });
 
-    it('should render a create listing link', () => {
-      const { getByText } = renderListingFilterCategories();
-      const createListing = getByText(/create a listing/i);
-      expect(createListing.getAttribute('href')).toContain('/listings/new');
-    });
-
-    it('should render a manage listings link', () => {
-      const { getByText } = renderListingFilterCategories();
-      const manageListing = getByText(/manage listings/i);
-      expect(manageListing.getAttribute('href')).toContain('/listings/dashboard');
+      expect(queryByTestId('selected')).toBeDefined();
     });
   });
 
@@ -69,8 +61,10 @@ describe('<ListingFiltersCategories />', () => {
     it('should render the categories name and their respective links', () => {
       const { getByText } = renderListingFilterCategories();
       categories.forEach((category) => {
-        const categoryLink = getByText(`${category.name}`);
-        expect(categoryLink.getAttribute('href')).toEqual(`/listings/${category.slug}`);
+        const categoryLink = getByText(`${category.name}`, { selector: 'a' });
+        expect(categoryLink.getAttribute('href')).toEqual(
+          `/listings/${category.slug}`,
+        );
         expect(categoryLink.textContent).toEqual(category.name);
       });
     });

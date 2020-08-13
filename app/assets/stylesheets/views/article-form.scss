@@ -77,6 +77,8 @@
       100vh - var(--header-height) - var(--article-form-actions-height)
     );
     box-shadow: 0 0 0 1px var(--card-border);
+    display: flex;
+    flex-direction: column;
 
     @media (min-width: $breakpoint-m) {
       grid-column-end: span 2;
@@ -142,7 +144,7 @@
   }
 
   &__body {
-    flex: 1 auto;
+    flex: 1 0 auto;
     position: relative;
     outline: none;
     display: flex;

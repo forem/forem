@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserShow", type: :request do
-  let_it_be(:user) { create(:user, :with_all_info, email_public: true) }
+  let(:user) { create(:user, :with_all_info, email_public: true) }
 
   describe "GET /:slug (user)" do
     it "returns a 200 status when navigating to the user's page" do

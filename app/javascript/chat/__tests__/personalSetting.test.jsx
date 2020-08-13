@@ -14,18 +14,20 @@ describe('<PersonalSettng />', () => {
   });
 
   it('should render the the component', () => {
-    const { getByText, getByLabelText } = render(
+    const { queryByText, queryByLabelText } = render(
       <PersonalSettng showGlobalBadgeNotification />,
     );
 
     // get the section header
-    getByText('Personal Settings');
+    expect(queryByText('Personal Settings')).toBeDefined();
 
     // get the subsection header
-    getByText('Notifications');
+    expect(queryByText('Notifications')).toBeDefined();
 
     // form fields
-    getByLabelText('Receive Notifications for New Messages');
-    getByText('Submit', { selector: 'button' });
+    expect(
+      queryByLabelText('Receive Notifications for New Messages'),
+    ).toBeDefined();
+    expect(queryByText('Submit', { selector: 'button' })).toBeDefined();
   });
 });

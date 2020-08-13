@@ -88,7 +88,8 @@ RSpec.describe Users::Delete, type: :service do
     end.to change(FieldTest::Membership, :count).by(-1)
   end
 
-  # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
+  # check that all the associated records are being destroyed,
+  # except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
     let(:kept_association_names) do
       %i[
@@ -96,7 +97,11 @@ RSpec.describe Users::Delete, type: :service do
         offender_feedback_messages reporter_feedback_messages
       ]
     end
-    let(:direct_associations) { User.reflect_on_all_associations.reject { |a| a.options.key?(:join_table) || a.options.key?(:through) } }
+    let(:direct_associations) do
+      User.reflect_on_all_associations.reject do |a|
+        a.options.key?(:join_table) || a.options.key?(:through)
+      end
+    end
     let!(:user_associations) do
       create_associations(direct_associations.reject { |a| kept_association_names.include?(a.name) })
     end
@@ -123,6 +128,8 @@ RSpec.describe Users::Delete, type: :service do
           if model && !model.reflect_on_association(inverse_of)
             next
           end
+
+          next if possible_factory_name == "invited_by"
 
           record = create(possible_factory_name, inverse_of => user)
           associations.push(record)
@@ -157,16 +164,16 @@ RSpec.describe Users::Delete, type: :service do
   end
 
   context "when cleaning up chat channels" do
-    let_it_be(:other_user) { create(:user) }
+    let(:other_user) { create(:user) }
 
     it "deletes the user's private chat channels" do
-      chat_channel = ChatChannel.create_with_users(users: [user, other_user])
+      chat_channel = ChatChannels::CreateWithUsers.call(users: [user, other_user])
       described_class.call(user)
       expect(ChatChannel.find_by(id: chat_channel.id)).to be_nil
     end
 
     it "does not delete the user's open channels" do
-      chat_channel = ChatChannel.create_with_users(users: [user, other_user], channel_type: "open")
+      chat_channel = ChatChannels::CreateWithUsers.call(users: [user, other_user], channel_type: "open")
       described_class.call(user)
       expect(ChatChannel.find_by(id: chat_channel.id)).not_to be_nil
     end

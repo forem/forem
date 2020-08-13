@@ -7,7 +7,10 @@
 
   self.addEventListener('install', event => {
     self.skipWaiting();
-
+    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
+       // iOS seems to have issues.
+       return;
+    }
     // Populate initial serviceworker cache.
     event.waitUntil(
       caches.open(staticCacheName)
@@ -86,8 +89,8 @@
 
   self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
-    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent) && event.request.referrer.includes('t.co')) {
-       // Twitter on iOS seems to cause problems
+    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
+       // iOS seems to have issues.
        return;
     }
     if (url.origin === location.origin) {
@@ -103,12 +106,13 @@
         !url.href.includes('?preview=') && // Skip for preview pages.
         !url.href.includes('?signin') && // Don't run on sign in.
 
-        !url.href.includes('/admin') && // Don't fetch for administrate dashboard.
+        !url.href.includes('/resource_admin') && // Don't fetch for administrate dashboard.
         !url.href.includes('/api/') && // Don't run on API endpoints.
         !url.href.includes('/embed/') && // Don't fetch for embeded content.
         !url.href.includes('/feed') && // Skip the RSS feed
+        !url.href.includes('/rss') && // Skip the RSS feed alternative path
         !url.href.includes('/future') && // Skip for /future.
-        !url.href.includes('/internal') && // Don't fetch for internal dashboard.
+        !url.href.includes('/admin') && // Don't fetch for admin dashboard.
         !url.href.includes('/oauth/') && // Skip oauth apps
         !url.href.includes('/onboarding') && // Don't run on onboarding.
         !url.href.includes('/rails/mailers') && // Skip for mailers previews in development mode
@@ -136,7 +140,6 @@
         !url.href.includes('/%F0%9F%92%B8') && // 💸 (hiring)
         !url.href.includes('/api') &&
         !url.href.includes('/future') &&
-        !url.href.includes('/p/rlyweb') &&
         !url.href.includes('/podcasts') &&
         !url.href.includes('/shop') &&
         !url.href.includes('/survey') &&
@@ -156,7 +159,9 @@
         }
 
         fetch('/async_info/shell_version').then(response => response.json()).then(json => {
-          caches.match('/async_info/shell_version').then(cachedResponse => cachedResponse.json()).then(cacheJson => {
+          caches.match('/async_info/shell_version')
+          .then(cachedResponse => (cachedResponse === undefined) ? {} : cachedResponse.json())
+          .then(cacheJson => {
             if (cacheJson['version'] != json['version']) {
               caches.open(staticCacheName)
               .then(cache => cache.addAll([

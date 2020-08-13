@@ -2,61 +2,21 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import Article from './article';
 import ChannelRequest from './channelRequest';
-import RequestManager from './requestManager';
+import RequestManager from './RequestManager/RequestManager';
 import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
 
-function display(resource) {
-  switch (resource.type_of) {
-    case 'loading-user':
-      return <div title="Loading user" className="loading-user" />;
-
-    case 'article':
-      return <Article resource={resource} />;
-
-    case 'channel-request':
-      return (
-        <ChannelRequest
-          resource={resource.data}
-          handleJoiningRequest={resource.handleJoiningRequest}
-        />
-      );
-
-    case 'channel-request-manager':
-      return (
-        <RequestManager
-          resource={resource.data}
-          handleRequestRejection={resource.handleRequestRejection}
-          handleRequestApproval={resource.handleRequestApproval}
-        />
-      );
-
-    case 'chat-channel-setting':
-      return (
-        <ChatChannelSettings
-          resource={resource.data}
-          activeMembershipId={resource.activeMembershipId}
-        />
-      );
-
-    default:
-      return null;
-  }
-}
-
-function smartSvgIcon(content, d) {
-  return (
-    <svg
-      data-content={content}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="24"
-      height="24"
-    >
-      <path data-content={content} fill="none" d="M0 0h24v24H0z" />
-      <path data-content={content} d={d} />
-    </svg>
-  );
-}
+const smartSvgIcon = (content, d) => (
+  <svg
+    data-content={content}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+  >
+    <path data-content={content} fill="none" d="M0 0h24v24H0z" />
+    <path data-content={content} d={d} />
+  </svg>
+);
 
 export default class Content extends Component {
   static propTypes = {
@@ -70,6 +30,7 @@ export default class Content extends Component {
     }).isRequired,
     fullscreen: PropTypes.bool.isRequired,
     onTriggerContent: PropTypes.func.isRequired,
+    updateRequestCount: PropTypes.func.isRequired,
   };
 
   render() {
@@ -77,68 +38,21 @@ export default class Content extends Component {
     if (!resource) {
       return '';
     }
-
-    const smartSvgIcon = (content, d) => (
-      <svg
-        data-content={content}
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
-      >
-        <path data-content={content} fill="none" d="M0 0h24v24H0z" />
-        <path data-content={content} d={d} />
-      </svg>
-    );
-
-    const Display = () => {
-      switch (resource.type_of) {
-        case 'loading-user':
-          return <div className="loading-user" title="Loading user" />;
-        case 'article':
-          return <Article resource={resource} />;
-        case 'channel-request':
-          return (
-            <ChannelRequest
-              resource={resource.data}
-              handleJoiningRequest={resource.handleJoiningRequest}
-            />
-          );
-        case 'channel-request-manager':
-          return (
-            <RequestManager
-              resource={resource.data}
-              handleRequestRejection={resource.handleRequestRejection}
-              handleRequestApproval={resource.handleRequestApproval}
-            />
-          );
-        case 'chat-channel-setting':
-          return (
-            <ChatChannelSettings
-              resource={resource.data}
-              activeMembershipId={resource.activeMembershipId}
-            />
-          );
-        default:
-          return null;
-      }
-    };
-
     return (
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+      // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
+      // TODO: These should have key click events as well.
       <div
-        role="presentation"
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
         id="chat_activecontent"
         onClick={onTriggerContent}
         role="button"
         tabIndex="0"
+        aria-hidden="true"
       >
         <button
           type="button"
           className="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
           data-content="exit"
-          type="button"
           title="exit"
         >
           {smartSvgIcon(
@@ -151,7 +65,6 @@ export default class Content extends Component {
           className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
           data-content="fullscreen"
           style={{ left: '39px' }}
-          type="button"
           title="fullscreen"
         >
           {' '}
@@ -170,3 +83,35 @@ export default class Content extends Component {
     );
   }
 }
+
+const Display = ({ resource }) => {
+  switch (resource.type_of) {
+    case 'loading-user':
+      return <div className="loading-user" title="Loading user" />;
+    case 'article':
+      return <Article resource={resource} />;
+    case 'channel-request':
+      return (
+        <ChannelRequest
+          resource={resource.data}
+          handleJoiningRequest={resource.handleJoiningRequest}
+        />
+      );
+    case 'channel-request-manager':
+      return (
+        <RequestManager
+          resource={resource.data}
+          updateRequestCount={resource.updateRequestCount}
+        />
+      );
+    case 'chat-channel-setting':
+      return (
+        <ChatChannelSettings
+          resource={resource.data}
+          activeMembershipId={resource.activeMembershipId}
+        />
+      );
+    default:
+      return null;
+  }
+};

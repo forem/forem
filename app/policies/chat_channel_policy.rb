@@ -12,7 +12,7 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def moderate?
-    !user_is_banned? && user_admin?
+    !user_is_banned? && codeland_admin?
   end
 
   def show?
@@ -39,6 +39,18 @@ class ChatChannelPolicy < ApplicationPolicy
     user_can_edit_channel
   end
 
+  def join_channel_invitation?
+    record.present? && user.id
+  end
+
+  def set_channel?
+    user_can_edit_channel
+  end
+
+  def joining_invitation_response?
+    record.present?
+  end
+
   private
 
   def user_can_edit_channel
@@ -57,5 +69,9 @@ class ChatChannelPolicy < ApplicationPolicy
 
   def channel_is_direct
     record.channel_type == "direct"
+  end
+
+  def codeland_admin?
+    user.has_role?(:codeland_admin)
   end
 end

@@ -12,11 +12,12 @@ items:
   - fastly.md
   - roles.md
   - pusher.md
-  - admin.md
+  - resource-admin.md
   - previewing-emails.md
   - notification.md
   - scheduled-jobs.md
   - metrics.md
+  - tracking.md
 ---
 
 # Backend Guide

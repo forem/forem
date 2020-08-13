@@ -23,6 +23,14 @@
   }
 }
 
+.article-wrapper {
+  // Hack preventing content exceeding its container - it works for scenarios where we have
+  // `pre` tag having wide (overflowing) text. And the container itself is part of a layout
+  // built using CSS `grid`. Without this, the grid layout wouldn't stick to its defined
+  // widths...
+  min-width: 0;
+}
+
 .crayons-article {
   &__cover {
     position: relative;
@@ -73,266 +81,232 @@
   &__body {
     padding: 0 var(--article-padding-x) var(--article-padding-y)
       var(--article-padding-x);
-    font-size: var(--article-font-size);
+    overflow-wrap: break-word;
+  }
+}
+.text-styles {
+  font-size: var(--article-font-size);
 
-    a {
-      code {
-        color: var(--link-color);
-      }
-
-      &.anchor {
-        padding-top: 0;
-        margin-top: 0;
-        top: -50px;
-        display: block;
-        visibility: hidden;
-        position: relative;
-      }
+  a {
+    code {
+      color: var(--link-color);
     }
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      font-family: var(--ff-default);
-      margin: var(--article-rythm) 0;
-      margin-top: calc(var(--article-rythm) * 2);
+    &.anchor {
+      padding-top: 0;
+      margin-top: 0;
+      top: -50px;
+      display: block;
+      visibility: hidden;
+      position: relative;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--ff-default);
+    margin: var(--article-rythm) 0;
+    margin-top: calc(var(--article-rythm) * 2);
+    padding: 0;
+  }
+
+  h1 {
+    font-size: 1.85em;
+    line-height: 1.25em;
+    font-weight: 400;
+  }
+
+  h2 {
+    font-size: 1.7em;
+    font-weight: 400;
+    line-height: 1.25em;
+    margin-bottom: 0.5em;
+  }
+
+  h3 {
+    font-size: 1.32em;
+    font-weight: 400;
+  }
+
+  hr {
+    width: 25%;
+    opacity: 0.1;
+    border: 1px solid var(--body-color);
+    margin: 1.3em auto 1.5em;
+  }
+
+  p {
+    margin: var(--article-rythm) 0;
+  }
+
+  ul,
+  ol {
+    padding-left: var(--su-6);
+    margin: var(--article-rythm) 0;
+    br {
+      line-height: 0;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  ul {
+    list-style-type: disc;
+
+    p {
+      margin: 0;
       padding: 0;
     }
 
-    h1 {
-      font-size: 1.85em;
-      line-height: 1.25em;
-      font-weight: 400;
-    }
-
-    h2 {
-      font-size: 1.7em;
-      font-weight: 400;
-      line-height: 1.25em;
-      margin-bottom: 0.5em;
-    }
-
-    h3 {
-      font-size: 1.32em;
-      font-weight: 400;
-    }
-
-    hr {
-      width: 25%;
-      opacity: 0.1;
-      border: 1px solid var(--body-color);
-      margin: 1.3em auto 1.5em;
-    }
-
-    p {
-      margin: var(--article-rythm) 0;
-    }
-
-    ul,
-    ol {
-      padding-left: var(--su-6);
-      margin: var(--article-rythm) 0;
-      br {
-        line-height: 0;
-        margin: 0;
-        padding: 0;
-      }
-    }
-
     ul {
-      list-style-type: disc;
-
-      p {
-        margin: 0;
-        padding: 0;
-      }
+      margin: 0 0.7em 0 1.9em;
+      list-style-type: square;
 
       ul {
-        margin: 0 0.7em 0 1.9em;
-        list-style-type: square;
-
-        ul {
-          list-style-type: circle;
-        }
+        list-style-type: circle;
       }
     }
+  }
 
-    li {
+  li {
+    margin: var(--su-2) 0;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  figcaption {
+    font-style: italic;
+    text-align: center;
+    font-size: 0.8em;
+    line-height: 1.4em;
+    color: var(--body-color);
+    opacity: 0.75;
+    display: block;
+  }
+
+  p + figcaption {
+    margin-top: -0.8em;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--base-50);
+    padding: 0 var(--su-4);
+    margin: var(--article-rythm) 0;
+
+    p:first-child {
       margin: var(--su-2) 0;
     }
 
-    figure {
-      margin: 0;
-    }
+    &.twitter-tweet {
+      font-family: var(--ff-default);
+      background: var(--body-color-inverted);
+      max-width: 456px;
+      border: 1px solid #e9eef2;
+      font-size: 0.75em;
+      line-height: 1.35em;
+      border-radius: 5px;
+      margin: 1.6em auto;
+      padding: 60px 10px 18px;
+      color: white;
+      min-height: 60px;
+      padding: 33px 15px 8px;
 
-    figcaption {
-      font-style: italic;
-      text-align: center;
-      font-size: 0.8em;
-      line-height: 1.4em;
-      color: var(--body-color);
-      opacity: 0.75;
-      display: block;
-    }
-
-    p + figcaption {
-      margin-top: -0.8em;
-    }
-
-    blockquote {
-      border-left: 4px solid var(--base-50);
-      padding: 0 var(--su-4);
-      margin: var(--article-rythm) 0;
-
-      p:first-child {
-        margin: var(--su-2) 0;
-      }
-
-      &.twitter-tweet {
-        font-family: var(--ff-default);
-        background: var(--body-color-inverted);
-        max-width: 456px;
-        border: 1px solid #e9eef2;
-        font-size: 0.75em;
-        line-height: 1.35em;
-        border-radius: 5px;
-        margin: 1.6em auto;
-        padding: 60px 10px 18px;
+      a {
         color: white;
-        min-height: 60px;
-        padding: 33px 15px 8px;
-
-        a {
-          color: white;
-        }
-
-        @media screen and (min-width: $breakpoint-s) {
-          padding: 60px 22px 18px;
-          min-height: 105px;
-        }
-      }
-    }
-
-    code {
-      margin: auto;
-      background: rgba(0, 0, 0, 0.1);
-      padding: 0.1em 0.3em 0;
-      border-radius: 2px;
-      font-size: 0.84em;
-      vertical-align: 0;
-      max-width: 100%;
-      line-height: 1.6em;
-      word-break: break-all;
-    }
-
-    kbd {
-      display: inline-block;
-      padding: 3px 5px;
-      font-size: 11px;
-      line-height: 10px;
-      color: #444d56;
-      vertical-align: middle;
-      background-color: #fafbfc;
-      border: solid 1px #c6cbd1;
-      border-bottom-color: #959da5;
-      border-radius: 3px;
-      box-shadow: inset 0 -1px 0 #959da5;
-    }
-
-    pre {
-      background: #08090a;
-      overflow-x: auto;
-      color: #eff0f9;
-      padding: var(--article-padding-y) var(--article-padding-x);
-      margin: var(--article-rythm) 0;
-      margin-left: calc(var(--article-padding-x) * -1);
-      margin-right: calc(var(--article-padding-x) * -1);
-      width: calc(100% + var(--article-padding-x) + var(--article-padding-x));
-      overflow-wrap: normal;
-      border-radius: 0;
-
-      code {
-        background: #08090a;
-        color: #eff0f9;
-        white-space: pre;
-      }
-    }
-
-    .highlight {
-      display: grid;
-      justify-content: stretch;
-      margin-left: calc(var(--article-padding-x) * -1);
-      margin-right: calc(var(--article-padding-x) * -1);
-
-      pre.highlight {
-        display: block;
-        margin: 0;
-        margin-left: 0;
-        margin-right: 0;
-        width: 100%;
-      }
-    }
-
-    img {
-      height: auto;
-      position: relative;
-      display: block;
-      margin: auto;
-      max-width: 100%;
-      max-height: calc(50vh + 180px);
-      border-radius: var(--radius);
-    }
-
-    a.article-body-image-wrapper {
-      cursor: zoom-in;
-    }
-
-    iframe {
-      width: 100%;
-      border: 0;
-      margin: var(--article-rythm) 0;
-    }
-
-    .fluidvids {
-      margin: var(--article-rythm) 0;
-
-      iframe {
-        margin: 0;
-      }
-    }
-
-    .table-wrapper-paragraph {
-      width: 100%;
-      margin-left: 0%;
-      overflow-x: auto;
-    }
-
-    table {
-      border-collapse: collapse;
-      font-size: 0.78em;
-      margin: 0.8em auto 1.2em;
-      table-layout: fixed;
-
-      th {
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        padding: 5px 1vw;
-        background: var(--body-bg);
-        text-align: left;
       }
 
-      td {
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        padding: 5px 1vw;
+      @media screen and (min-width: $breakpoint-s) {
+        padding: 60px 22px 18px;
+        min-height: 105px;
       }
-    }
-
-    .twitter-tweet {
-      margin: auto;
     }
   }
+
+  kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 11px;
+    line-height: 10px;
+    color: #444d56;
+    vertical-align: middle;
+    background-color: #fafbfc;
+    border: solid 1px #c6cbd1;
+    border-bottom-color: #959da5;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #959da5;
+  }
+
+  pre:not(.highlight),
+  div.highlight {
+    margin: var(--article-rythm) 0;
+  }
+
+  img {
+    height: auto;
+    position: relative;
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    max-height: calc(50vh + 180px);
+    border-radius: var(--radius);
+  }
+
+  a.article-body-image-wrapper {
+    cursor: zoom-in;
+  }
+
+  iframe {
+    width: 100%;
+    border: 0;
+    margin: var(--article-rythm) 0;
+  }
+
+  .fluidvids {
+    margin: var(--article-rythm) 0;
+
+    iframe {
+      margin: 0;
+    }
+  }
+
+  .table-wrapper-paragraph {
+    width: 100%;
+    margin-left: 0%;
+    overflow-x: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    font-size: 0.78em;
+    margin: 0.8em auto 1.2em;
+    table-layout: fixed;
+
+    th {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 5px 1vw;
+      background: var(--body-bg);
+      text-align: left;
+    }
+
+    td {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 5px 1vw;
+    }
+  }
+
+  .twitter-tweet {
+    margin: auto;
+  }
+}
+
+.text-padding {
+  padding: var(--article-padding-y) var(--article-padding-x);
 }
 
 .crayons-article-actions {
@@ -341,15 +315,9 @@
   right: 0;
   bottom: 0;
   padding: var(--su-2);
-  @supports (padding-bottom: constant(safe-area-inset-bottom)) {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  display: flex;
-  align-items: center;
   background: var(--body-bg);
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1);
   z-index: 100;
-  justify-content: space-around;
 
   @media (min-width: $breakpoint-m) {
     padding: 0;
@@ -360,6 +328,19 @@
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding) + 6vh);
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: env(safe-area-inset-bottom);
+
+    @media (min-width: $breakpoint-m) {
+      display: grid;
+      gap: var(--su-6);
+      justify-content: stretch;
+    }
   }
 }
 
@@ -544,10 +525,6 @@
   }
 }
 
-.text-padding {
-  padding: var(--article-padding-y) var(--article-padding-x);
-}
-
 .crayons-article {
   .article-collection-wrapper {
     font-family: var(--ff-default);
@@ -591,10 +568,6 @@
           color: var(--body-color-inverted);
         }
 
-        &.coming-soon {
-          pointer-events: none;
-          color: var(--base-80);
-        }
         &.collection-link-hidden {
           display: none;
         }

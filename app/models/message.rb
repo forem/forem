@@ -27,15 +27,15 @@ class Message < ApplicationRecord
 
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
-    chat_channel.chat_channel_memberships.each(&:index_to_elasticsearch)
+    ChatChannels::IndexesMembershipsWorker.perform_async(chat_channel.id)
   end
 
   def update_all_has_unopened_messages_statuses
-    chat_channel.
-      chat_channel_memberships.
-      where("last_opened_at < ?", 10.seconds.ago).
-      where.not(user_id: user_id).
-      update_all(has_unopened_messages: true)
+    chat_channel
+      .chat_channel_memberships
+      .where("last_opened_at < ?", 10.seconds.ago)
+      .where.not(user_id: user_id)
+      .update_all(has_unopened_messages: true)
   end
 
   def evaluate_markdown
@@ -94,10 +94,12 @@ class Message < ApplicationRecord
   def target_blank_links(html)
     return html if html.blank?
 
-    html = html.gsub("<a href", "<a target='_blank' rel='noopener nofollow' href")
-    html
+    html.gsub("<a href", "<a target='_blank' rel='noopener nofollow' href")
   end
 
+  # rubocop:disable Layout/LineLength
+  # rubocop:disable Metrics/BlockLength
+  # rubocop:disable Rails/OutputSafety
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
     doc.css("a").each do |anchor|
@@ -143,9 +145,14 @@ class Message < ApplicationRecord
     end
     html
   end
+  # rubocop:enable Layout/LineLength
+  # rubocop:enable Metrics/BlockLength
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def handle_slash_command(html)
-    response = if html.to_s.strip == "<p>/call</p>"
+    response = case html.to_s.strip
+               when "<p>/call</p>"
                  "<a href='/video_chats/#{chat_channel_id}'
                     class='chatchannels__richlink chatchannels__richlink--base'
                     target='_blank' rel='noopener' data-content='sidecar-video'>
@@ -153,7 +160,7 @@ class Message < ApplicationRecord
                       Let's video chat 😄
                     </h1>
                     </a>".html_safe
-               elsif html.to_s.strip == "<p>/play codenames</p>" # proof of concept
+               when "<p>/play codenames</p>" # proof of concept
                  "<a href='https://www.horsepaste.com/connect-channel-#{rand(1_000_000_000)}'
                     class='chatchannels__richlink chatchannels__richlink--base'
                     target='_blank' rel='noopener' data-content='sidecar-content-plus-video'>
@@ -165,16 +172,10 @@ class Message < ApplicationRecord
     html = response if response
     html
   end
+  # rubocop:enable Rails/OutputSafety
 
   def cl_path(img_src)
-    ActionController::Base.helpers.
-      cl_image_path(img_src,
-                    type: "fetch",
-                    width: 725,
-                    crop: "limit",
-                    flags: "progressive",
-                    fetch_format: "auto",
-                    sign_url: true)
+    ImageResizer.call(img_src, width: 725)
   end
 
   def determine_user_validity
@@ -187,7 +188,7 @@ class Message < ApplicationRecord
   def channel_permission
     errors.add(:base, "Must be part of channel.") if chat_channel_id.blank?
 
-    channel = ChatChannel.find(chat_channel_id)
+    channel = chat_channel || ChatChannel.find(chat_channel_id)
     return if channel.open?
 
     errors.add(:base, "You are not a participant of this chat channel.") unless channel.has_member?(user)
@@ -195,23 +196,29 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    Article.find_by(slug: link["href"].split("/")[4].split("?")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+
+    Article.find_by(slug: link["href"].split("/")[4].split("?")[0])
   end
 
   def rich_link_tag(link)
-    Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+
+    Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0])
   end
 
   def rich_user_link(link)
-    User.find_by(username: link["href"].split("/")[3].split("/")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
+    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
+
+    User.find_by(username: link["href"].split("/")[3].split("/")[0])
   end
 
   def send_email_if_appropriate
     recipient = direct_receiver
     return if !chat_channel.direct? ||
       recipient.updated_at > 1.hour.ago ||
-      recipient.chat_channel_memberships.order("last_opened_at DESC").
-        first.last_opened_at > 15.hours.ago ||
+      recipient.chat_channel_memberships.order(last_opened_at: :desc)
+        .first.last_opened_at > 15.hours.ago ||
       chat_channel.last_message_at > 30.minutes.ago ||
       recipient.email_connect_messages == false
 

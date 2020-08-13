@@ -15,9 +15,13 @@ class BlackBox
       if article.decorate.cached_tag_list_array.include?("watercooler")
         reaction_points = (reaction_points * 0.8).to_i # watercooler posts shouldn't get as much love in feed
       end
-      function_caller.call("blackbox-production-articleHotness",
-                           { article: article, user: article.user }.to_json).to_i +
-        reaction_points + recency_bonus + super_recent_bonus + super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus
+
+      article_hotness = last_mile_hotness_calc(article, function_caller)
+
+      (
+        article_hotness + reaction_points + recency_bonus + super_recent_bonus +
+        super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus
+      )
     end
 
     def comment_quality_score(comment)
@@ -31,6 +35,8 @@ class BlackBox
     def calculate_spaminess(story, function_caller = FunctionCaller)
       # accepts comment or article as story
       return 100 unless story.user
+      return 0 if ENV["AWS_SDK_KEY"].blank? # Skip this if we don't have a private spam score for now
+      return 0 if ENV["AWS_SDK_KEY"] == "foobarbaz" # Also skip if placeholder
 
       function_caller.call("blackbox-production-spamScore",
                            { story: story, user: story.user }.to_json).to_i
@@ -42,6 +48,22 @@ class BlackBox
       size_bonus = body_markdown.size > 200 ? 2 : 0
       code_bonus = body_markdown.include?("`") ? 1 : 0
       size_bonus + code_bonus
+    end
+
+    def last_mile_hotness_calc(article, function_caller)
+      if ENV["AWS_SDK_KEY"].present? && ENV["AWS_SDK_KEY"] != "foobarbaz"
+        function_caller.call(
+          "blackbox-production-articleHotness",
+          { article: article, user: article.user }.to_json,
+        ).to_i
+      else
+        # Simple calculation that takes in published at time and scores
+        # Same order of magnitude calculation as existing private function
+        # Gives credit to new articles and articles which score well from users and mods
+        article.published_at.to_i / 10_000 +
+          (article.score * 5000) +
+          (article.comment_score * 5000)
+      end
     end
   end
 end

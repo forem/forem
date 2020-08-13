@@ -6,11 +6,11 @@ class ReadingList
   end
 
   def get
-    Article.
-      joins(:reactions).
-      includes(:user).
-      where(reactions: reaction_criteria).
-      order("reactions.created_at DESC")
+    Article
+      .joins(:reactions)
+      .includes(:user)
+      .where(reactions: reaction_criteria)
+      .order("reactions.created_at" => :desc)
   end
 
   def cached_ids_of_articles
@@ -20,7 +20,7 @@ class ReadingList
   end
 
   def ids_of_articles
-    Reaction.where(reaction_criteria).order("created_at DESC").pluck(:reactable_id)
+    Reaction.where(reaction_criteria).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
   end
 
   def count

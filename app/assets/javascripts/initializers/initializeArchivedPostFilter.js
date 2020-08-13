@@ -21,6 +21,7 @@ function hideArchivedPosts() {
 }
 
 function toggleArchivedPosts(e) {
+  e.preventDefault();
   var link = e.target;
 
   if (link.innerHTML.match(/Show/)) {

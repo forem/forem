@@ -1,5 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { Button } from '@crayons';
 
 const Membership = ({
   membership,
@@ -10,7 +12,13 @@ const Membership = ({
 }) => {
   return (
     <div className="flex items-center">
-      <a href={`/${membership.username}`} title={`${membership.name} profile`}>
+      <a
+        href={`/${membership.username}`}
+        className="chatmessagebody__username--link"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-content="sidecar-user"
+      >
         <span className="crayons-avatar crayons-avatar--l mr-3">
           <img
             className="crayons-avatar__image align-middle"
@@ -21,17 +29,17 @@ const Membership = ({
         <span className="mr-2 user_name">{membership.name}</span>
       </a>
       {membershipType === 'requested' ? (
-        <button
+        <Button
           className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost add-membership"
           type="button"
           onClick={chatChannelAcceptMembership}
           data-membership-id={membership.membership_id}
         >
           +
-        </button>
+        </Button>
       ) : null}
       {membership.role !== 'mod' && currentMembershipRole === 'mod' ? (
-        <button
+        <Button
           className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost remove-membership"
           type="button"
           onClick={removeMembership}
@@ -39,24 +47,14 @@ const Membership = ({
           data-membership-status={membership.status}
         >
           x
-        </button>
+        </Button>
       ) : null}
     </div>
   );
 };
 
 Membership.propTypes = {
-  membership: PropTypes.objectOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      membership_id: PropTypes.number.isRequired,
-      user_id: PropTypes.number.isRequired,
-      role: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-      status: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
+  membership: PropTypes.objectOf(defaulMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   membershipType: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,

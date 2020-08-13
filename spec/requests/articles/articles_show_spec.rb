@@ -1,15 +1,16 @@
 require "rails_helper"
 
 RSpec.describe "ArticlesShow", type: :request do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:article, reload: true) { create(:article, user: user, published: true, organization: organization) }
-  let_it_be(:organization) { create(:organization) }
+  let(:user) { create(:user) }
+  let(:article) { create(:article, user: user, published: true, organization: organization) }
+  let(:organization) { create(:organization) }
   let(:doc) { Nokogiri::HTML(response.body) }
   let(:text) { doc.at('script[type="application/ld+json"]').text }
   let(:response_json) { JSON.parse(text) }
 
   describe "GET /:slug (articles)" do
     before do
+      allow(SiteConfig).to receive(:logo_png).and_return("logo.png")
       get article.path
     end
 

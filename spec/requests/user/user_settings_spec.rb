@@ -22,8 +22,8 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "handles unknown settings tab properly" do
-        expect { get "/settings/does-not-exist" }.
-          to raise_error(ActiveRecord::RecordNotFound)
+        expect { get "/settings/does-not-exist" }
+          .to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "displays content on ux tab properly" do
@@ -46,14 +46,6 @@ RSpec.describe "UserSettings", type: :request do
         get "/settings?state=previous-registration"
         error_message = "There is an existing account authorized with that social account"
         expect(response.body).to include error_message
-      end
-
-      it "renders the proper organization page" do
-        first_org, second_org = create_list(:organization, 2)
-        create(:organization_membership, user: user, organization: first_org)
-        create(:organization_membership, user: user, organization: second_org, type_of_user: "admin")
-        get user_settings_path(tab: "organization", org_id: second_org.id) # /settings/organization/:org_id
-        expect(response.body).to include "Grow the team"
       end
 
       it "renders the proper response template" do
@@ -239,10 +231,22 @@ RSpec.describe "UserSettings", type: :request do
       expect(response).to have_http_status(:bad_request)
     end
 
+    it "returns error message if user can't be saved" do
+      put "/users/#{user.id}", params: { user: { password: "1", password_confirmation: "1" } }
+
+      expect(flash[:error]).to include("Password is too short")
+    end
+
+    it "returns an error message if the passwords do not match" do
+      put "/users/#{user.id}", params: { user: { password: "asdfghjk", password_confirmation: "qwertyui" } }
+
+      expect(flash[:error]).to include("Password doesn't match password confirmation")
+    end
+
     context "when requesting an export of the articles" do
-      def send_request(flag = true)
+      def send_request(export_requested: true)
         put "/users/#{user.id}", params: {
-          user: { tab: "misc", export_requested: flag }
+          user: { tab: "misc", export_requested: export_requested }
         }
       end
 
@@ -278,7 +282,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "does not send an email if there was no request" do
         sidekiq_perform_enqueued_jobs do
-          expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
+          expect { send_request(export_requested: false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end
     end
@@ -399,8 +403,8 @@ RSpec.describe "UserSettings", type: :request do
         delete "/users/remove_identity", params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
 
-        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
-        expect(flash[:error]).to eq(expected_error)
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(error)
       end
 
       it "does not show the 'Remove OAuth' section afterwards if only one identity remains" do
@@ -423,8 +427,8 @@ RSpec.describe "UserSettings", type: :request do
       it "sets the proper flash error message" do
         delete "/users/remove_identity", params: { provider: provider }
 
-        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
-        expect(flash[:error]).to eq(expected_error)
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(error)
       end
 
       it "does not delete any identities" do

@@ -139,11 +139,11 @@ describe('<Channels />', () => {
     });
 
     it('should have the proper elements, attributes, and content', () => {
-      const { getByTestId } = render(getChannels(false, fakeChannels));
+      const { queryByTestId } = render(getChannels(false, fakeChannels));
 
       // should have group names but no user names
       // TODO: I don't understand the comment above. To revisit.
-      getByTestId('chat-channels-list');
+      expect(queryByTestId('chat-channels-list')).toBeDefined();
     });
   });
 

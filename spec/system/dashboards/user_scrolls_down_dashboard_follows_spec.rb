@@ -22,11 +22,6 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       visit "/dashboard/user_followers?per_page=#{default_per_page}"
     end
 
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", percy: true do
-      Percy.snapshot(page, name: "Homepage: /dashboard/user_followers?per_page= infinite scroll")
-    end
-
     it "scrolls through all users" do
       page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
@@ -69,11 +64,6 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       visit dashboard_following_users_path(per_page: default_per_page)
     end
 
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", percy: true do
-      Percy.snapshot(page, name: "Homepage: /dashboard/following_users infinite scroll")
-    end
-
     it "scrolls through all users" do
       page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
@@ -87,11 +77,6 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       end
 
       visit dashboard_following_organizations_path(per_page: default_per_page)
-    end
-
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", percy: true do
-      Percy.snapshot(page, name: "Homepage: /dashboard/following_organizations infinite scroll")
     end
 
     it "scrolls through all users" do

@@ -12,17 +12,16 @@ describe('<LeaveMembershipSection />', () => {
   });
 
   it('should render', () => {
-    const { getByText } = render(<LeaveMembershipSection />);
-    getByText('Danger Zone');
-    getByText('Leave Channel');
+    const { queryByText } = render(<LeaveMembershipSection />);
+
+    expect(queryByText('Danger Zone')).toBeDefined();
+    expect(queryByText('Leave Channel')).toBeDefined();
   });
 
   it('should have user leave channel when leave button is clicked', () => {
     const leaveHandler = jest.fn();
     const { getByText } = render(
-      <LeaveMembershipSection
-        handleleaveChatChannelMembership={leaveHandler}
-      />,
+      <LeaveMembershipSection handleleaveChannelMembership={leaveHandler} />,
     );
     const leaveButton = getByText('Leave Channel');
 

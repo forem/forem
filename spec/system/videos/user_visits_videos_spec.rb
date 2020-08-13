@@ -5,10 +5,8 @@ RSpec.describe "User visits the videos page", type: :system do
     before { visit "/videos" }
 
     describe "meta tags" do
-      it "contains the qualified community name in og:site_name", js: true, percy: true do
+      it "contains the qualified community name in og:site_name", js: true do
         selector = "meta[property='og:site_name'][content='#{community_qualified_name}']"
-
-        Percy.snapshot(page, name: "Videos: /videos renders")
 
         expect(page).to have_selector(selector, visible: :hidden)
       end

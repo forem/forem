@@ -1,6 +1,12 @@
 class AppSecrets
+  SETTABLE_SECRETS = %w[
+    SLACK_CHANNEL
+    SLACK_DEPLOY_CHANNEL
+    SLACK_WEBHOOK_URL
+  ].freeze
+
   def self.[](key)
-    result = Vault.kv(namespace).read(key)&.data&.fetch(:value) if ENV["VAULT_TOKEN"].present?
+    result = Vault.kv(namespace).read(key)&.data&.fetch(:value) if vault_enabled?
     result ||= ApplicationConfig[key]
 
     result
@@ -10,6 +16,10 @@ class AppSecrets
 
   def self.[]=(key, value)
     Vault.kv(namespace).write(key, value: value)
+  end
+
+  def self.vault_enabled?
+    ENV["VAULT_TOKEN"].present?
   end
 
   def self.namespace

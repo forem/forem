@@ -81,16 +81,16 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "creates a URL with a path" do
-      expect(app_url("internal")).to eq("https://dev.to/internal")
+      expect(app_url("admin")).to eq("https://dev.to/admin")
     end
 
     it "creates the correct URL even if the path starts with a slash" do
-      expect(app_url("/internal")).to eq("https://dev.to/internal")
+      expect(app_url("/admin")).to eq("https://dev.to/admin")
     end
 
     it "works when called with an URI object" do
-      uri = URI::Generic.build(path: "internal", fragment: "test")
-      expect(app_url(uri)).to eq("https://dev.to/internal#test")
+      uri = URI::Generic.build(path: "resource_admin", fragment: "test")
+      expect(app_url(uri)).to eq("https://dev.to/resource_admin#test")
     end
   end
 
@@ -105,6 +105,23 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     it "returns nil if the referer is empty" do
       expect(sanitized_referer("")).to be nil
+    end
+  end
+
+  describe "#collection_link" do
+    let(:collection) { create(:collection, :with_articles) }
+
+    it "returns an 'a' tag" do
+      expect(helper.collection_link(collection)).to have_selector("a")
+    end
+
+    it "sets the correct href" do
+      expect(helper.collection_link(collection)).to have_link(href: collection.path)
+    end
+
+    it "has the correct text in the a tag" do
+      expect(helper.collection_link(collection))
+        .to have_text("#{collection.slug} (#{collection.articles.published.size} Part Series)")
     end
   end
 
@@ -144,7 +161,9 @@ RSpec.describe ApplicationHelper, type: :helper do
         body: "This is a longer body with a question mark ? \n and a newline"
       }
 
-      expect(email_link(text: "text", additional_info: additional_info)).to eq("<a href=\"mailto:hi@dev.to?body=This%20is%20a%20longer%20body%20with%20a%20question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>")
+      link = "<a href=\"mailto:hi@dev.to?body=This%20is%20a%20longer%20body%20with%20a%20" \
+        "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
+      expect(email_link(text: "text", additional_info: additional_info)).to eq(link)
     end
   end
 

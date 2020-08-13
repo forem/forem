@@ -18,14 +18,15 @@ describe('<NextPageButton />', () => {
   });
 
   it('should show a button', () => {
-    const {getByText} = render(<NextPageButton {...defaultProps} />);
-    getByText(/load more listings/i);
+    const { queryByText } = render(<NextPageButton {...defaultProps} />);
+
+    expect(queryByText(/load more/i)).toBeDefined();
   });
 
   it('should call the onclick handler', () => {
     const onClick = jest.fn();
-    const {getByText} = render(<NextPageButton onClick={onClick} />);
-    const button = getByText(/load more listings/i);
+    const { getByText } = render(<NextPageButton onClick={onClick} />);
+    const button = getByText(/load more/i);
 
     button.click();
     expect(onClick).toHaveBeenCalledTimes(1);

@@ -16,9 +16,14 @@
 
   &__prefix {
     opacity: 0.5;
+    font-weight: normal;
   }
 
   &[href]:hover {
     color: var(--tag-color-hover);
+  }
+
+  &--l {
+    font-size: var(--fs-l);
   }
 }

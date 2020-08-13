@@ -23,16 +23,19 @@ RSpec.describe "Messages", type: :request do
       before do
         allow(Pusher).to receive(:trigger).and_return(true)
         sign_in user
+      end
+
+      it "triggers pusher, returns json response and 201 status upon success", :aggregate_failures do
         post "/messages", params: { message: new_message }
-      end
-
-      it "returns 201 upon success" do
-        allow(Pusher).to receive(:trigger).and_return(true)
         expect(response.status).to eq(201)
+        expect(response.media_type).to eq("application/json")
+        expect(Pusher).to have_received(:trigger).twice
       end
 
-      it "returns in json" do
+      it "sends mention notifications when mentioned_users_id present" do
+        post "/messages", params: { message: new_message.merge(mentioned_users_id: [99]) }
         expect(response.media_type).to eq("application/json")
+        expect(Pusher).to have_received(:trigger).exactly(3).times
       end
     end
 

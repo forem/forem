@@ -28,7 +28,7 @@ To avoid blocking the initial render, we frequently write critical CSS inline,
 and we use the `defer` attribute to accelerate page loads. This practice results
 in a faster page load, and doesn't leave users waiting on heavy assets. However,
 this practice limits our ability to manipulate layout with JavaScript. As a
-rule, you should avoid relying on JavaScript for layout when working on DEV.
+rule, you should avoid relying on JavaScript for layout when working on Forem.
 
 ## We attempt to reduce our bundle size
 
@@ -78,7 +78,7 @@ shared among all users.
 
 ## Inter-page navigation
 
-DEV uses a variation of "instant click", via
+Forem uses a variation of "instant click", via
 [InstantClick](/frontend/instant-click), which swaps out page content instead of
 making full-page requests. This approach is similar to the one used by the Rails
 gem `Turbolinks`, but our approach is more lightweight. The library is modified
@@ -150,7 +150,7 @@ The functionality of credits may be expanded in the future.
 
 Users can belong to organizations, which have their own profile pages where
 posts can be published etc. This can be any group endeavor such as a company, an
-open source project, or any standalone publication on DEV.
+open source project, or any standalone publication on Forem.
 
 ## Reactions
 
@@ -181,10 +181,10 @@ Example: "This user was warned for spammy content".
 
 ## Pages
 
-`Pages` in the [internal dashboard](/internal/) represent static pages to be
-served on the site. Admins are in full control to create and customize them to
-their needs using markdown or custom HTML. Pages are configured with a `slug`
-and they will be served on either the `/page/slug` or `/slug` path.
+`Pages` in the [admin dashboard](/admin/) represent static pages to be served on
+the site. Admins are in full control to create and customize them to their needs
+using markdown or custom HTML. Pages are configured with a `slug` and they will
+be served on either the `/page/slug` or `/slug` path.
 
 In order to ease development of custom HTML Pages in local environments the rake
 task `pages:sync` is available. It will listen to changes made to a local HTML

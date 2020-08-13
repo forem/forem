@@ -1,21 +1,29 @@
 module Admin
   class BadgesController < Admin::ApplicationController
-    # To customize the behavior of this controller,
-    # you can overwrite any of the RESTful actions. For example:
-    #
-    # def index
-    #   super
-    #   @resources = Badge.
-    #     page(params[:page]).
-    #     per(10)
-    # end
+    layout "admin"
 
-    # Define a custom finder by overriding the `find_resource` method:
-    # def find_resource(param)
-    #   Badge.find_by!(slug: param)
-    # end
+    def index
+      @badges = Badge.all
+    end
 
-    # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
-    # for more information
+    def award_badges
+      raise ArgumentError, "Please choose a badge to award" if permitted_params[:badge].blank?
+
+      usernames = permitted_params[:usernames].split(/\s*,\s*/)
+      message = permitted_params[:message_markdown].presence || "Congrats!"
+      BadgeAchievements::BadgeAwardWorker.perform_async(usernames, permitted_params[:badge], message)
+
+      flash[:success] = "Badges are being rewarded. The task will finish shortly."
+      redirect_to admin_badges_url
+    rescue ArgumentError => e
+      flash[:danger] = e.message
+      redirect_to "/admin/badge_achievements"
+    end
+
+    private
+
+    def permitted_params
+      params.permit(:usernames, :badge, :message_markdown)
+    end
   end
 end
