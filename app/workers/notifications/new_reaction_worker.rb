@@ -20,7 +20,7 @@ module Notifications
       return false unless receiver
       return true if receiver_klass == "Organization"
 
-      !receiver.article_reaction_notifications
+      receiver.reaction_notifications
     end
   end
 end

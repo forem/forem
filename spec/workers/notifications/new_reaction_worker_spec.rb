@@ -6,7 +6,7 @@ RSpec.describe Notifications::NewReactionWorker, type: :worker do
   let(:user) { create(:user) }
   let(:receiver_data_org) { { klass: "Organization", id: org.id } }
   let(:receiver_data_user) { { klass: "User", id: user.id } }
-  let(:receiver_data_user_disabled) { { klass: "User", id: user.id, article_reaction_notifications: false } }
+  let(:receiver_data_user_disabled) { { klass: "User", id: user.id, reaction_notifications: false } }
   let(:worker) { subject }
 
   include_examples "#enqueues_on_correct_queue", "medium_priority", [{}, {}]

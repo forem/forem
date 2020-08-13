@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_20_110041) do
+ActiveRecord::Schema.define(version: 2020_08_13_042118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1146,7 +1146,6 @@ ActiveRecord::Schema.define(version: 2020_07_20_110041) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
-    t.boolean "article_reaction_notifications", default: true
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
@@ -1249,6 +1248,7 @@ ActiveRecord::Schema.define(version: 2020_07_20_110041) do
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
+    t.boolean "reaction_notifications", default: true
     t.integer "reactions_count", default: 0, null: false
     t.boolean "registered", default: true
     t.datetime "registered_at"
