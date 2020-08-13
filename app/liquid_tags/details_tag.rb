@@ -1,14 +1,16 @@
 class DetailsTag < Liquid::Block
+  include ActionView::Helpers::SanitizeHelper
+
   PARTIAL = "liquids/details".freeze
 
   def initialize(_tag_name, summary, _parse_context)
     super
-    @summary = summary.strip
+    @summary = sanitize(summary.strip)
   end
 
   def render(_context)
     content = Nokogiri::HTML.parse(super)
-    parsed_content = content.xpath("//html/body").text.strip
+    parsed_content = sanitize(content.xpath("//html/body").inner_html)
 
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
