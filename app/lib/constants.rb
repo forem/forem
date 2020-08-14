@@ -265,8 +265,7 @@ module Constants
                 "Regular Member",
                 "Trusted", "Pro"].freeze
 
-  SPECIAL_ROLES = ["──────────",
-                   "Admin",
+  SPECIAL_ROLES = ["Admin",
                    "Super Admin",
                    "Resource Admin: Article",
                    "Resource Admin: Comment",
