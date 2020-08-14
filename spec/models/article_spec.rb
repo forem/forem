@@ -136,6 +136,25 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "#canonical_url_must_be_unique" do
+      let(:url) { "http://example.com" }
+
+      it "is not valid when the url has been taken by a published article" do
+        article.update(canonical_url: url)
+        another_article = build(:article)
+        another_article.canonical_url = url
+
+        expect(another_article).not_to be_valid
+      end
+
+      it "is valid when the url has been taken by a draft article" do
+        another_article = build(:article)
+        another_article.canonical_url = url
+
+        expect(another_article).to be_valid
+      end
+    end
+
     describe "#main_image" do
       it "must have url for main image if present" do
         article.main_image = "hello"

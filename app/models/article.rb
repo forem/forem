@@ -53,8 +53,9 @@ class Article < ApplicationRecord
   validates :user_id, presence: true
   validates :feed_source_url, uniqueness: { allow_blank: true }
   validates :canonical_url,
-            url: { allow_blank: true, no_local: true, schemes: %w[https http] },
-            uniqueness: { allow_blank: true }
+            url: { allow_blank: true, no_local: true, schemes: %w[https http] }
+  # uniqueness: { scope: :published, allow_blank: true }
+  validate :canonical_url_must_be_unique
   validates :body_markdown, length: { minimum: 0, allow_nil: false }, uniqueness: { scope: %i[user_id title] }
   validate :validate_tag
   validate :validate_video
@@ -565,6 +566,12 @@ class Article < ApplicationRecord
     return unless canonical_url.to_s.match?(/[[:space:]]/)
 
     errors.add(:canonical_url, "must not have spaces")
+  end
+
+  def canonical_url_must_be_unique
+    return unless canonical_url && Article.published.exists?(canonical_url: canonical_url)
+
+    errors.add(:canonical_url, "has already been taken")
   end
 
   def create_slug
