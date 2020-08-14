@@ -175,7 +175,7 @@ class Message < ApplicationRecord
   # rubocop:enable Rails/OutputSafety
 
   def cl_path(img_src)
-    ImageResizer.call(img_src, width: 725)
+    Images::Optimizer.call(img_src, width: 725)
   end
 
   def determine_user_validity

@@ -1,6 +1,6 @@
 class PodcastTag < LiquidTagBase
   include ApplicationHelper
-  include CloudinaryHelper
+  include ActionView::Helpers::AssetUrlHelper
 
   attr_reader :episode, :podcast
 

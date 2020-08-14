@@ -1,4 +1,75 @@
 @import 'variables';
+@import 'config/import';
+
+.authentication-feed {
+  &__card {
+    display: grid;
+    grid-gap: var(--su-6);
+    padding: var(--su-6);
+    margin: var(--su-3);
+
+    @include generate-box(
+      $level: 1,
+      $bg: #f5f6fe,
+      $border: var(--accent-brand),
+      $color: var(--card-color)
+    );
+
+    @media (min-width: $breakpoint-s) {
+      padding: var(--su-7);
+    }
+  }
+
+  &__container {
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      grid-gap: var(--su-7);
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  &__logo {
+    border-radius: var(--radius);
+    height: var(--su-8);
+    margin-bottom: var(--su-2);
+    transform: rotate(-10deg);
+    width: var(--su-8);
+
+    @media (min-width: $breakpoint-s) {
+      margin: 0 auto;
+      height: 80px;
+      width: 80px;
+    }
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-2xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+  }
+
+  &__actions {
+    display: grid;
+    grid-gap: var(--su-1);
+
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      flex-direction: column;
+      width: max-content;
+      justify-self: center;
+    }
+  }
+}
+
 #page-content.registrations {
   .devise-container {
     min-height: 480px;

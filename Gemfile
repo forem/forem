@@ -36,7 +36,6 @@ gem "doorkeeper", "~> 5.4" # Oauth 2 provider
 gem "elasticsearch", "~> 7.8" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
-gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
 gem "faraday-http-cache", "~> 2.2" # Middleware to handle HTTP caching
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
@@ -92,6 +91,7 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
 gem "sidekiq", "~> 6.1.1" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 6.0.22" # Ensures that Sidekiq jobs are unique when enqueued
 gem "simpleidn", "~> 0.1" # Convert IDN domains to Punycode
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
@@ -135,6 +135,7 @@ group :development, :test do
   gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.33" # Capybara is an integration testing tool for rack based web applications
+  gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.13" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 2.1.1" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution

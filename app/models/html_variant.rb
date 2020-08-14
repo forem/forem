@@ -64,7 +64,7 @@ class HtmlVariant < ApplicationRecord
       img["src"] = if Giphy::Image.valid_url?(src)
                      src.gsub("https://media.", "https://i.")
                    else
-                     ImageResizer.call(src, width: 420).gsub(",", "%2C")
+                     Images::Optimizer.call(src, width: 420).gsub(",", "%2C")
                    end
     end
     self.html = doc.to_html
