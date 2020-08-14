@@ -193,9 +193,15 @@
   <script type="text/javascript">
 
     const palettes = {
-      default: ['#F4908E', '#F2F097', '#88B0DC', '#F7B5D1', '#53C4AF', '#FDE38C'],
+      default: {
+        name: 'Default Palette',
+        colors: ['#F4908E', '#F2F097', '#88B0DC', '#F7B5D1', '#53C4AF', '#FDE38C']
+      },
       // Color-deficient accessible palettes: https://owi.usgs.gov/blog/tolcolors/
-      paulTol: ['#B997C6', '#824D99', '#4E79C4', '#57A2AC', '#7EB875', '#D0B440', '#E67F33'],
+      paulTol: {
+        name: 'Paul Tol Palette',
+        colors: ['#B997C6', '#824D99', '#4E79C4', '#57A2AC', '#7EB875', '#D0B440', '#E67F33']
+      },
       // Add more palette options below and to the "select" dropdown.
     }
     let activePalette = 'default' // match key inside the palettes variable
@@ -331,12 +337,12 @@
 
     paletteSelector.onchange = (event) => {
       activePalette = event.target.value
-      render(palettes[activePalette])
+      render(palettes[activePalette].colors)
     }
 
     // Initialization when page is ready to load, runs once
     (function() {
-      render(palettes[activePalette])
+      render(palettes[activePalette].colors)
     })()
 
   </script>
