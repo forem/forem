@@ -67,14 +67,6 @@ const themeSwitcherDecorator = (storyFn) => {
 addDecorator(themeSwitcherDecorator);
 
 addParameters({
-  docs: {
-    extractComponentDescription: (component, { notes }) => {
-      if (notes) {
-        return typeof notes === 'string' ? notes : notes.markdown || notes.text;
-      }
-      return null;
-    },
-  },
   options: {
     storySort: (a, b) =>
       a[1].kind === b[1].kind
