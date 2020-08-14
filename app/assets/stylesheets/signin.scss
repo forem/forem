@@ -33,7 +33,7 @@
     border-radius: var(--radius);
     height: var(--su-8);
     margin-bottom: var(--su-2);
-    transform: rotateZ(-10deg);
+    transform: rotate(-10deg);
     width: var(--su-8);
 
     @media (min-width: $breakpoint-s) {
