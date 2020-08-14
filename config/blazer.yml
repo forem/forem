@@ -31,6 +31,7 @@ data_sources:
 
     smart_columns:
       status: {0: "enqueued", 1: "working", 2: "succeeded", 3: "failed"}
+      input_types: {0: "text_field", 1: "text_area", 2: "check_box", 3: "color_field"}
 
 # create audits
 audit: true

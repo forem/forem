@@ -129,9 +129,9 @@
       <%= form_for(@user, url: banish_admin_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible. Banishing will delete all articles and turn their username into @spam_###')" }) do %>
         <button class="btn btn-danger float-right">🚫 Banish User for Spam 🚫</button>
       <% end %>
-    <% elsif current_user.has_role?(:super_admin) %>
+    <% elsif current_user.has_role?(:super_admin) || current_user.has_role?(:support_admin) %>
       <p><strong>This is not a new user.</strong> You are only allowed to take this action because you are a
-        <strong>super admin.</strong></p>
+        <strong>super admin or a support admin.</strong></p>
       <p>
         <em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em>
       </p>
@@ -140,7 +140,7 @@
         <button class="btn btn-danger float-right">Banish User for Spam!</button>
       <% end %>
     <% else %>
-      <p><em>This is not a new user so you'll need to contact a super admin to banish this user.</em></p>
+      <p><em>This is not a new user. Only super admins or support admins are allowed to banish this user.</em></p>
     <% end %>
   </div>
 

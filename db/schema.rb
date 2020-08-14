@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_05_050048) do
+ActiveRecord::Schema.define(version: 2020_08_09_200631) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -29,17 +29,17 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.index ["visit_id"], name: "index_ahoy_events_on_visit_id"
   end
 
-  create_table "ahoy_messages", id: :serial, force: :cascade do |t|
+  create_table "ahoy_messages", force: :cascade do |t|
     t.datetime "clicked_at"
     t.text "content"
-    t.integer "feedback_message_id"
+    t.bigint "feedback_message_id"
     t.string "mailer"
     t.datetime "opened_at"
     t.datetime "sent_at"
     t.text "subject"
     t.text "to"
     t.string "token"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.string "user_type"
     t.string "utm_campaign"
     t.string "utm_content"
@@ -71,12 +71,12 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.string "description", null: false
     t.string "secret"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["secret"], name: "index_api_secrets_on_secret", unique: true
     t.index ["user_id"], name: "index_api_secrets_on_user_id"
   end
 
-  create_table "articles", id: :serial, force: :cascade do |t|
+  create_table "articles", force: :cascade do |t|
     t.boolean "any_comments_hidden", default: false
     t.boolean "approved", default: false
     t.boolean "archived", default: false
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
-    t.integer "collection_id"
+    t.bigint "collection_id"
     t.integer "comment_score", default: 0
     t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
@@ -115,7 +115,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0
     t.integer "organic_page_views_past_week_count", default: 0
-    t.integer "organization_id"
+    t.bigint "organization_id"
     t.datetime "originally_published_at"
     t.integer "page_views_count", default: 0
     t.string "password"
@@ -135,15 +135,15 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.integer "score", default: 0
     t.string "search_optimized_description_replacement"
     t.string "search_optimized_title_preamble"
-    t.integer "second_user_id"
+    t.bigint "second_user_id"
     t.boolean "show_comments", default: true
     t.text "slug"
     t.string "social_image"
     t.integer "spaminess_rating", default: 0
-    t.integer "third_user_id"
+    t.bigint "third_user_id"
     t.string "title"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.integer "user_subscriptions_count", default: 0, null: false
     t.string "video"
     t.string "video_closed_caption_track_url"
@@ -189,7 +189,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
   create_table "badge_achievements", force: :cascade do |t|
     t.bigint "badge_id", null: false
     t.datetime "created_at", null: false
-    t.integer "rewarder_id"
+    t.bigint "rewarder_id"
     t.text "rewarding_context_message"
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", null: false
@@ -280,7 +280,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.datetime "active_status_updated_at"
     t.string "banner_style"
     t.text "body_markdown"
-    t.integer "broadcastable_id"
+    t.bigint "broadcastable_id"
     t.string "broadcastable_type"
     t.datetime "created_at"
     t.text "processed_html"
@@ -457,7 +457,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.integer "clicks_count", default: 0
     t.datetime "created_at", null: false
     t.integer "impressions_count", default: 0
-    t.integer "organization_id"
+    t.bigint "organization_id"
     t.string "placement_area"
     t.text "processed_html"
     t.boolean "published", default: false
@@ -496,14 +496,14 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
   end
 
   create_table "feedback_messages", force: :cascade do |t|
-    t.integer "affected_id"
+    t.bigint "affected_id"
     t.string "category"
     t.datetime "created_at"
     t.string "feedback_type"
     t.text "message"
-    t.integer "offender_id"
+    t.bigint "offender_id"
     t.string "reported_url"
-    t.integer "reporter_id"
+    t.bigint "reporter_id"
     t.string "status", default: "Open"
     t.datetime "updated_at"
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
@@ -593,17 +593,17 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
   end
 
   create_table "html_variant_successes", force: :cascade do |t|
-    t.integer "article_id"
+    t.bigint "article_id"
     t.datetime "created_at", null: false
-    t.integer "html_variant_id"
+    t.bigint "html_variant_id"
     t.datetime "updated_at", null: false
     t.index ["html_variant_id", "article_id"], name: "index_html_variant_successes_on_html_variant_id_and_article_id"
   end
 
   create_table "html_variant_trials", force: :cascade do |t|
-    t.integer "article_id"
+    t.bigint "article_id"
     t.datetime "created_at", null: false
-    t.integer "html_variant_id"
+    t.bigint "html_variant_id"
     t.datetime "updated_at", null: false
     t.index ["html_variant_id", "article_id"], name: "index_html_variant_trials_on_html_variant_id_and_article_id"
   end
@@ -678,17 +678,17 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.index ["user_id", "notifiable_type", "notifiable_id"], name: "idx_notification_subs_on_user_id_notifiable_type_notifiable_id", unique: true
   end
 
-  create_table "notifications", id: :serial, force: :cascade do |t|
+  create_table "notifications", force: :cascade do |t|
     t.string "action"
     t.datetime "created_at", null: false
     t.jsonb "json_data"
-    t.integer "notifiable_id"
+    t.bigint "notifiable_id"
     t.string "notifiable_type"
     t.datetime "notified_at"
     t.bigint "organization_id"
     t.boolean "read", default: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
@@ -943,6 +943,14 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.index ["pinnable_id", "profile_id", "profile_type", "pinnable_type"], name: "idx_pins_on_pinnable_id_profile_id_profile_type_pinnable_type", unique: true
     t.index ["pinnable_id"], name: "index_profile_pins_on_pinnable_id"
     t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
+  end
+
+  create_table "profiles", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
   create_table "rating_votes", force: :cascade do |t|
@@ -1305,7 +1313,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
 
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "role_id"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
@@ -1328,6 +1336,10 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "ahoy_events", "ahoy_visits", column: "visit_id", on_delete: :cascade
+  add_foreign_key "ahoy_events", "users", on_delete: :cascade
+  add_foreign_key "ahoy_messages", "users", on_delete: :cascade
+  add_foreign_key "ahoy_visits", "users", on_delete: :cascade
   add_foreign_key "api_secrets", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
@@ -1347,6 +1359,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_050048) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
+  add_foreign_key "profiles", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"

@@ -242,6 +242,8 @@ class ChatChannelsController < ApplicationController
              params[:slug]
            end
     chat_channel = ChatChannel.find_by(slug: slug)
+    return unless chat_channel
+
     membership = chat_channel.chat_channel_memberships.find_by(user_id: current_user.id)
     @active_channel = membership&.status == "active" ? chat_channel : nil
   end

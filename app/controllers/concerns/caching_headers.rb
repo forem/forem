@@ -13,29 +13,21 @@ module CachingHeaders
   #  {cache_control: 'public, no-cache, maxage=xyz', surrogate_control: 'max-age: 100'}
   def set_cache_control_headers(
     max_age = 1.day.to_i,
-    surrogate_control: nil, stale_while_revalidate: nil, stale_if_error: 26_400
+    surrogate_control: nil,
+    stale_while_revalidate: nil,
+    stale_if_error: 26_400
   )
-
-    # TODO: [@forem/delightful]: Once we've tested that removing `no-cache` from the Cache-Control headers
-    # does not adversely affect fastly, we should remove this specific check entirely.
-    article_requested = request.env["REQUEST_PATH"].present? &&
-      request.env["REQUEST_PATH"].include?("the-3-biggest-misconceptions-about-diversity-3hkm")
-    cache_control = if article_requested
-                      "public, max-age=86400"
-                    else
-                      "public, no-cache"
-                    end
-
     request.session_options[:skip] = true # no cookies
-    response.headers["Cache-Control"] = cache_control
 
+    response.headers["Cache-Control"] = "public, no-cache" # Used only by Fastly.
+    response.headers["X-Accel-Expires"] = max_age.to_s # Used only by Nginx.
     response.headers["Surrogate-Control"] = surrogate_control.presence || build_surrogate_control(
       max_age, stale_while_revalidate: stale_while_revalidate, stale_if_error: stale_if_error
     )
   end
 
   # Sets Surrogate-Key HTTP header with one or more keys strips session data
-  # from the request
+  # from the request.
   def set_surrogate_key_header(*surrogate_keys)
     request.session_options[:skip] = true # No Set-Cookie
     response.headers["Surrogate-Key"] = surrogate_keys.join(" ")

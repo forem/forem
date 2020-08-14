@@ -67,6 +67,10 @@ class ApplicationPolicy
     user.has_role?(:super_admin)
   end
 
+  def support_admin?
+    user.has_role?(:support_admin)
+  end
+
   def user_is_banned?
     user.banned
   end
