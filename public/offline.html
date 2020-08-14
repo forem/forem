@@ -171,11 +171,7 @@
   <div class="colors">
   </div>
   <div class='paletteSelector'>
-    <!-- TODO: Populate options from javascript instead of hardcoding -->
-    <select>
-      <option value="default">Default Palette</option>
-      <option value="paulTol">Paul Tol Palette</option>
-    </select>
+    <select id="palettes"></select>
   </div>
   <svg width="75px" height="75px" viewBox="0 0 266 286" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     class="signature">
@@ -334,6 +330,19 @@
     }
     canvas.addEventListener('mousemove', endPaint)
     canvas.addEventListener('touchmove', endPaint)
+
+    // generate options for select tag
+    let selectTag = document.getElementById('palettes');
+
+    Object.keys(palettes).forEach((key) => {
+      // create tag
+      let option = document.createElement('option');
+      option.value = key;
+      option.textContent = palettes[key].name;
+      
+      // insert to select
+      selectTag.appendChild(option);
+    });
 
     paletteSelector.onchange = (event) => {
       activePalette = event.target.value
