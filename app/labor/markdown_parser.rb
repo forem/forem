@@ -1,6 +1,5 @@
 class MarkdownParser
   include ApplicationHelper
-  include CloudinaryHelper
 
   BAD_XSS_REGEX = [
     /src=["'](data|&)/i,
@@ -259,19 +258,7 @@ class MarkdownParser
   end
 
   def img_of_size(source, width = 880)
-    quality = if source && (source.include? ".gif")
-                66
-              else
-                "auto"
-              end
-    cl_image_path(source,
-                  type: "fetch",
-                  width: width,
-                  crop: "limit",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: "auto",
-                  sign_url: true).gsub(",", "%2C")
+    Images::Optimizer.call(source, width: width).gsub(",", "%2C")
   end
 
   def wrap_all_images_in_links(html)
