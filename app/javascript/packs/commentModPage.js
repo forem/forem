@@ -33,12 +33,17 @@ async function updateMainReactions(reactableType, category, reactableId) {
 
     if (outcome.result === 'create') {
       clickedBtn.classList.add('reacted');
-    } else {
+    } else if (outcome.result === 'destroy') {
       clickedBtn.classList.remove('reacted');
+    } else {
+      // eslint-disable-next-line no-alert
+      alert(`Error: ${outcome.error}`);
+      // eslint-disable-next-line no-console
+      console.error(`Error: ${outcome.error}`);
     }
   } catch (error) {
     // eslint-disable-next-line no-alert
-    alert(error);
+    alert(`Error: ${error}`);
   }
 }
 
