@@ -97,19 +97,21 @@ document.querySelectorAll('.level-rating-button').forEach((btn) => {
   });
 });
 
-document.querySelectorAll('.reaction-button, .reaction-vomit-button').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    applyReactedClass(btn.dataset.category);
-    updateMainReactions(
-      btn.dataset.reactableType,
-      btn.dataset.category,
-      btn.reactableId,
-    );
+document
+  .querySelectorAll('.reaction-button, .reaction-vomit-button')
+  .forEach((btn) => {
+    btn.addEventListener('click', () => {
+      applyReactedClass(btn.dataset.category);
+      updateMainReactions(
+        btn.dataset.reactableType,
+        btn.dataset.category,
+        btn.dataset.reactableId,
+      );
+    });
   });
-});
 
 const form = document.getElementsByClassName('button_to')[0];
-form.addEventListener('submit', e => {
+form.addEventListener('submit', (e) => {
   e.preventDefault();
   if (confirm('Are you SURE you want to delete this comment?')) {
     form.submit();
