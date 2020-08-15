@@ -1,5 +1,3 @@
-import { addSnackbarItem } from '../Snackbar';
-
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
   const downVote = document.querySelector("[data-category='thumbsdown']");
@@ -38,10 +36,14 @@ async function updateMainReactions(reactableType, category, reactableId) {
     } else if (outcome.result === 'destroy') {
       clickedBtn.classList.remove('reacted');
     } else {
-      addSnackbarItem(`Error: ${outcome.error}`);
+      // eslint-disable-next-line no-alert
+      alert(`Error: ${outcome.error}`);
+      // eslint-disable-next-line no-console
+      console.error(`Error: ${outcome.error}`);
     }
   } catch (error) {
-    addSnackbarItem(`Error: ${error}`);
+    // eslint-disable-next-line no-alert
+    alert(`Error: ${error}`);
   }
 }
 
