@@ -1,3 +1,5 @@
+import { addSnackbarItem } from '../Snackbar';
+
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
   const downVote = document.querySelector("[data-category='thumbsdown']");
@@ -33,12 +35,13 @@ async function updateMainReactions(reactableType, category, reactableId) {
 
     if (outcome.result === 'create') {
       clickedBtn.classList.add('reacted');
-    } else {
+    } else if (outcome.result === 'destroy') {
       clickedBtn.classList.remove('reacted');
+    } else {
+      addSnackbarItem(`Error: ${outcome.error}`);
     }
   } catch (error) {
-    // eslint-disable-next-line no-alert
-    alert(error);
+    addSnackbarItem(`Error: ${error}`);
   }
 }
 
