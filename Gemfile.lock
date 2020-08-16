@@ -381,7 +381,7 @@ GEM
     hashdiff (1.0.1)
     hashie (4.1.0)
     heapy (0.1.4)
-    honeybadger (4.7.0)
+    honeybadger (4.7.1)
     honeycomb-beeline (2.1.1)
       libhoney (~> 1.14, >= 1.14.2)
     html_tokenizer (0.0.7)
