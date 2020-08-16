@@ -12,7 +12,7 @@ const Endorsement = ({ avatar, content, isOpen }) => {
     : 'show_avatar_endorsement';
   const showContent = isOpen ? 'inline' : 'none';
   return (
-    <span className={showEndorsement}>
+    <span className={`${showEndorsement} show-endorsement`}>
       <img
         src={avatar}
         width={30}
@@ -20,15 +20,9 @@ const Endorsement = ({ avatar, content, isOpen }) => {
         alt="end_img"
         style={img_style}
       />
-      <label style={{ display: 'inline' }}>
-        <input
-          type="text"
-          value={content}
-          style={{ display: showContent }}
-          className="endorsement_content"
-          disabled
-        />
-      </label>
+      <span style={{ display: showContent }} className="endorsement_content">
+        {content}
+      </span>
     </span>
   );
 };

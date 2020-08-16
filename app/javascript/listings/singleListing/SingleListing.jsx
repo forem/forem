@@ -9,6 +9,7 @@ export class SingleListing extends Component {
 
   listingContent = (listing, currentUserId, onChangeCategory, onOpenModal, onAddTag, isOpen) => {
     const endorsements = listing.listing_endorsements.length;
+    const show_endorsement_text = isOpen ? "show-endorsement-text" : "";
     return (
       <div className="relative">
         <Header
@@ -23,9 +24,7 @@ export class SingleListing extends Component {
         />
         <AuthorInfo listing={listing} onCategoryClick={onChangeCategory} />
         {listing.listing_endorsements.length ? (
-      <div className="endorsement-comp">
-        <span>
-          
+      <div className={`endorsement-comp ${show_endorsement_text}`}>
           {listing.listing_endorsements.map((endorsement, idx) => {
             return (
               endorsement.approved && (
@@ -38,9 +37,10 @@ export class SingleListing extends Component {
               )
             );
           })}
-        </span>
         {!isOpen && (
-          <span>{ endorsements > 1 ?  `${endorsements} endorsements` : `${endorsements} endorsement`}</span>
+          <span className="endorsement-num">
+            { endorsements > 1 ?  `${endorsements} endorsements` : `${endorsements} endorsement`}
+          </span>
         )}
       </div>
     ) : (

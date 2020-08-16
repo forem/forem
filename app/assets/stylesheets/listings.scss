@@ -234,9 +234,24 @@ textarea#new-endorse-message {
 div.endorsement-comp {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   vertical-align: middle;
   margin-top: .5em;
+}
+
+div.show-endorsement-text {
+  flex-direction: column;
+}
+
+span.endorsement-num {
+  margin-left:  2em;
+}
+
+span.show-endorsement {
+  display: flex;
+}
+
+span.show_avatar_endorsement {
+  flex-direction: row;
 }
 
 input.endorsement_content {
