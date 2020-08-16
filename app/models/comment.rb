@@ -28,8 +28,8 @@ class Comment < ApplicationRecord
   before_create :adjust_comment_parent_based_on_depth
   after_create :after_create_checks
   after_create :notify_slack_channel_about_warned_users
-  after_update :remove_notifications, if: :deleted
   after_update :update_descendant_notifications, if: :deleted
+  after_update :remove_notifications, if: :hidden_by_commentable_user
   before_destroy :before_destroy_actions
   after_destroy :after_destroy_actions
 
