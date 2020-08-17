@@ -26,20 +26,20 @@ RSpec.describe BufferUpdate, type: :model do
   end
 
   it "allows same text across different social platforms" do
-    described_class.buff!(article.id, "twitter_buffer_text", "CODE", { social_service_name: "facebook" })
+    described_class.buff!(article.id, "twitter_buffer_text", "CODE", social_service_name: "facebook")
     described_class.buff!(article.id, "twitter_buffer_text", "CODE")
     expect(described_class.all.size).to eq(2)
   end
 
   it "allows same text across different tags" do
-    described_class.buff!(article.id, "twitter_buffer_text", "CODE", { tag_id: 1 })
-    described_class.buff!(article.id, "twitter_buffer_text", "CODE", { tag_id: 2 })
+    described_class.buff!(article.id, "twitter_buffer_text", "CODE", tag_id: 1)
+    described_class.buff!(article.id, "twitter_buffer_text", "CODE", tag_id: 2)
     expect(described_class.all.size).to eq(2)
   end
 
   it "allows same text across different articles with the same tag" do
-    described_class.buff!(article.id, "twitter_buffer_text", "CODE", { tag_id: 1 })
-    described_class.buff!(create(:article).id, "twitter_buffer_text", "CODE", { tag_id: 1 })
+    described_class.buff!(article.id, "twitter_buffer_text", "CODE", tag_id: 1)
+    described_class.buff!(create(:article).id, "twitter_buffer_text", "CODE", tag_id: 1)
     expect(described_class.all.size).to eq(2)
   end
 

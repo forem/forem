@@ -21,7 +21,7 @@ class Bufferizer
       if text.length < 250 && SiteConfig.twitter_hashtag
         text = text.gsub(" #{SiteConfig.twitter_hashtag}", " #{SiteConfig.twitter_hashtag} ##{tag.name}")
       end
-      BufferUpdate.buff!(@article.id, text, tag.buffer_profile_id_code, { tag_id: tag.id, admin_id: @admin_id })
+      BufferUpdate.buff!(@article.id, text, tag.buffer_profile_id_code, tag_id: tag.id, admin_id: @admin_id)
     end
     @article.update(last_buffered: Time.current)
   end
@@ -34,9 +34,9 @@ class Bufferizer
 
   def facebook_post!
     BufferUpdate.buff!(@article.id, fb_buffer_text, ApplicationConfig["BUFFER_FACEBOOK_ID"],
-                       { social_service_name: "facebook", admin_id: @admin_id })
+                       social_service_name: "facebook", admin_id: @admin_id)
     BufferUpdate.buff!(@article.id, fb_buffer_text + social_tags, ApplicationConfig["BUFFER_LINKEDIN_ID"],
-                       { social_service_name: "linkedin", admin_id: @admin_id })
+                       social_service_name: "linkedin", admin_id: @admin_id)
     @article.update(facebook_last_buffered: Time.current)
   end
 

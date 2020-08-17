@@ -5,10 +5,10 @@ class BufferUpdate < ApplicationRecord
   validate :validate_body_text_recent_uniqueness, :validate_suggestion_limit
   validates :status, inclusion: { in: %w[pending sent_direct confirmed dismissed] }
 
-  def self.buff!(article_id, text, buffer_profile_id_code, **options)
-    social_service_name = options.fetch(:social_service_name, "twitter")
-    tag_id = options.fetch(:tag_id, nil)
-    admin_id = options.fetch(:admin_id, nil)
+  def self.buff!(article_id, text, buffer_profile_id_code, **kwargs)
+    social_service_name = kwargs.fetch(:social_service_name, "twitter")
+    tag_id = kwargs[:tag_id]
+    admin_id = kwargs[:admin_id]
 
     buffer_response = send_to_buffer(text, buffer_profile_id_code)
     create(
