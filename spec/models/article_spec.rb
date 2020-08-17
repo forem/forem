@@ -14,7 +14,6 @@ RSpec.describe Article, type: :model do
   it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
-    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
     it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
     it { is_expected.to validate_presence_of(:title) }
@@ -145,17 +144,18 @@ RSpec.describe Article, type: :model do
         expect(another_article).to be_valid
       end
 
-      it "is not valid when the url has been taken by a published article" do
-        article.update(canonical_url: url)
-        another_article = build(:article)
-        another_article.canonical_url = url
+      it "is not valid" do
+        body_markdown = "---\ntitle: Title\ncanonical_url: #{url}\npublished: true\n---\n\n"
+        create(:article, body_markdown: body_markdown)
+        another_article = build(:article, body_markdown: body_markdown)
 
         expect(another_article).not_to be_valid
       end
 
-      it "is valid when the url has been taken by a draft article" do
-        another_article = build(:article)
-        another_article.canonical_url = url
+      it "is valid" do
+        body_markdown = "---\ntitle: Title\ncanonical_url: #{url}\npublished: false\n---\n\n"
+        create(:article, body_markdown: body_markdown)
+        another_article = build(:article, body_markdown: body_markdown)
 
         expect(another_article).to be_valid
       end
