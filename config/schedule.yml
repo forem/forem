@@ -1,3 +1,12 @@
 log_worker_queue_stats:
-  cron: "*/10 * * * *"
+  cron: "*/10 * * * *" # every 10 minutes
   class: "Metrics::RecordBackgroundQueueStatsWorker"
+record_daily_usage:
+  cron: "0 11 * * *" # daily at 11:00 UTC
+  class: "Metrics::RecordDailyUsageWorker"
+record_daily_notifications:
+  cron: "0 11 * * *" # daily at 11:00 UTC
+  class: "Metrics::RecordDailyNotificationsWorker"
+record_data_counts:
+  cron: "10 * * * *" # every hour, 10 min after the hour
+  class: "Metrics::RecordDataCountsWorker"
