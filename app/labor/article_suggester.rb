@@ -1,7 +1,7 @@
 class ArticleSuggester
   def initialize(article)
     @article = article
-    @total_articles_count = self.class.memoized_articles_count
+    @total_articles_count = self.class.articles_count
   end
 
   def articles(max: 4)
@@ -23,7 +23,7 @@ class ArticleSuggester
     end
   end
 
-  def self.memoized_articles_count
+  def self.articles_count
     Article.published.estimated_count
   end
 
