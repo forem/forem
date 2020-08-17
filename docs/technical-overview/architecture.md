@@ -4,7 +4,7 @@
 
 Ruby on Rails is a web framework heavy on conventions over configuration. All
 else equal, we should try to follow Rails convention. We are currently on
-version 5.2.3, due for an upgrade to 6.x.x.
+version 6.x.x.
 
 ## We cache many content pages on the edge
 
