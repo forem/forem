@@ -1,9 +1,7 @@
 function initSignupModal() {
   if (document.getElementById('global-signup-modal')) {
-    document.getElementById('global-signup-modal-bg').onclick = () => {
-      document
-        .getElementById('global-signup-modal')
-        .classList.add('hidden');
+    document.querySelector('.authentication-modal__close-btn').onclick = () => {
+      document.getElementById('global-signup-modal').classList.add('hidden');
       document.body.classList.remove('modal-open');
     };
   }
