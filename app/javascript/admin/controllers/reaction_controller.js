@@ -2,7 +2,7 @@
 import { Controller } from 'stimulus';
 
 export default class ReactionController extends Controller {
-  static targets = ['invalid', 'confirmed', 'valid'];
+  static targets = ['invalid', 'confirmed'];
 
   // eslint-disable-next-line class-methods-use-this
   /* eslint no-alert: "error" */
@@ -41,8 +41,8 @@ export default class ReactionController extends Controller {
     this.updateReaction(this.reactionId, this.invalidStatus);
   }
 
-  updateReactionValid() {
-    this.updateReaction(this.reactionId, this.validStatus);
+  updateReactionConfirmed() {
+    this.updateReaction(this.reactionId, this.confirmedStatus);
   }
 
   reactableUserCheck() {
@@ -70,9 +70,5 @@ export default class ReactionController extends Controller {
 
   get invalidStatus() {
     return this.invalidTarget.dataset.altstatus;
-  }
-
-  get validStatus() {
-    return this.validTarget.dataset.altstatus;
   }
 }
