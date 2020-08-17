@@ -158,7 +158,7 @@
     "pusher-js": "^7.0.0",
     "rails-erb-loader": "^5.5.2",
     "stimulus": "^1.1.1",
-    "twilio-video": "^2.7.1",
+    "twilio-video": "^2.7.2",
     "web-share-wrapper": "^0.2.1"
   },
   "jest": {
