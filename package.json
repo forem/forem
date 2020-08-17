@@ -94,7 +94,7 @@
     "@storybook/addon-storyshots": "^6.0.5",
     "@storybook/addons": "^6.0.5",
     "@storybook/preact": "^6.0.5",
-    "@testing-library/jest-dom": "^5.11.2",
+    "@testing-library/jest-dom": "^5.11.3",
     "@testing-library/preact": "^2.0.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
