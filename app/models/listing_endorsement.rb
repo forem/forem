@@ -1,0 +1,2 @@
+class ListingEndorsement < ApplicationRecord
+end
