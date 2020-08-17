@@ -14,6 +14,7 @@ class ProfileField < ApplicationRecord
   validates :label, presence: true, uniqueness: { case_sensitive: false }
   validates :active, inclusion: { in: [true, false] }
   validates :attribute_name, presence: true, on: :update
+  validates :group, presence: true, uniqueness: { case_sensitive: false }
 
   scope :active, -> { where(active: true) }
 
