@@ -242,6 +242,11 @@ Devise.setup do |config|
   # Defines which key will be used when recovering the password for an account
   # config.reset_password_keys = [:email]
 
+  # Disable "email not found" hints during password reset
+  # For security reasons we don't want to alert users if an email exists or not, by leaving this empty
+  # the system won't communicate to the user whether an email exists or is correct
+  config.reset_password_keys = []
+
   # Time interval you can reset your password with a reset password key.
   # Don't put a too small interval or your users won't have the time to
   # change their passwords.
