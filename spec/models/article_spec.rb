@@ -139,6 +139,12 @@ RSpec.describe Article, type: :model do
     describe "#canonical_url_must_be_unique" do
       let(:url) { "http://example.com" }
 
+      it "is valid when the canonical url is nil" do
+        another_article = build(:article)
+
+        expect(another_article).to be_valid
+      end
+
       it "is not valid when the url has been taken by a published article" do
         article.update(canonical_url: url)
         another_article = build(:article)
