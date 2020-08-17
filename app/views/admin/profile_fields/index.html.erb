@@ -19,26 +19,57 @@
 </div>
 
 <% @profile_fields.each do |group, fields| %>
-  <h3>Group: <%= group %></h3>
+  <div class="row my-3">
+    <div class="card w-100">
 
-  <% fields.each do |field| %>
-    <div class="crayons-card grid p-6 mb-6 gap-1">
-      <%= form_for [:admin, field] do |form| %>
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div class="form-group">
-            <%= form.label :group %>
-            <%= select_tag :group, options_for_select(ProfileField.distinct.pluck(:group), selected: field[:group]), class: "form-control selectpicker" %>
+      <div class="card-header" id="<%= group.gsub(/\s+/, "_") %>Header" data-toggle="collapse"
+        data-target="#<%= group.gsub(/\s+/, "_") %>BodyContainer" aria-expanded="false" aria-controls="<%= group.gsub(/\s+/, "_") %>BodyContainer">
+        <h2 class="d-inline"><%= group %></h2>
+        <button class="btn btn-secondary float-right" type="button">
+          Toggle <%= group %>
+        </button>
+      </div>
+
+
+      <div id="<%= group.gsub(/\s+/, "_") %>BodyContainer" class="collapse hide hide p-3" aria-labelledby="<%= group %>Header">
+        <% fields.each do |field| %>
+
+          <div class="card mt-3">
+            <%= render partial: "admin/configs/card_header",
+                       locals: {
+                         header: field.label,
+                         state: "collapse",
+                         target: "#{field.label.gsub(/\s+/, "_")}BodyContainer",
+                         expanded: "false"
+                       } %>
+
+            <div id="<%= field.label.gsub(/\s+/, "_") %>BodyContainer" class="card-body collapse hide" aria-labelledby="<%= field.label.gsub(/\s+/, "_") %>BodyContainer">
+              <div class="form-group grid p-6 mb-6 gap-1">
+
+                <%= form_for [:admin, field] do |form| %>
+                  <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div class="form-group">
+                      <%= form.label :group %>
+                      <%= select_tag :group, options_for_select(ProfileField.distinct.pluck(:group), selected: field[:group]), class: "form-control selectpicker" %>
+                    </div>
+                    <div> OR </div>
+                    <div class="form-group">
+                      <%= form.label :group, style: "visibility: hidden" %>
+                      <%= form.text_field :group, placeholder: "Add a new group", class: "form-control" %>
+                    </div>
+                  </div>
+                  <%= render "form", form: form  %>
+                  <%= form.submit class: "btn btn-primary" %>
+                <% end %>
+                <%= button_to "Delete", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
+
+              </div>
+            </div>
           </div>
-          <div> OR </div>
-          <div class="form-group">
-            <%= form.label :group, style: "visibility: hidden" %>
-            <%= form.text_field :group, placeholder: "Add a new group", class: "form-control" %>
-          </div>
-        </div>
-        <%= render "form", form: form  %>
-        <%= form.submit class: "btn btn-primary" %>
-      <% end %>
-      <%= button_to "Delete", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
+        <% end %>
+
+      </div>
+
     </div>
-  <% end %>
+  </div>
 <% end %>
