@@ -2,13 +2,13 @@ require "rails_helper"
 
 RSpec.describe ArticleSuggester, type: :labor do
   it "returns proper number of articles with post with the same tags" do
-    create_list(:article, 4, featured: true, tags: ["discuss"])
+    create_list(:article, 4, featured: true, tags: ["discuss"], score: 10)
     article = create(:article, featured: true, tags: ["discuss"])
     expect(described_class.new(article).articles.size).to eq(4)
   end
 
   it "returns proper number of articles with post with different tags" do
-    create_list(:article, 2, featured: true, tags: ["discuss"])
+    create_list(:article, 2, featured: true, tags: ["discuss"], score: 10)
     create_list(:article, 2, featured: true, tags: ["javascript"])
     article = create(:article, featured: true, tags: ["discuss"])
     expect(described_class.new(article).articles.size).to eq(4)
