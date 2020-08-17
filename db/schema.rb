@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_11_044202) do
+ActiveRecord::Schema.define(version: 2020_08_14_142648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1349,6 +1349,8 @@ ActiveRecord::Schema.define(version: 2020_08_11_044202) do
   add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
+  add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
