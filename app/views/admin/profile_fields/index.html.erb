@@ -13,7 +13,7 @@
     </div>
     <div class="form-group">
       <%= render "form", form: form %>
-      <%= form.submit class: "btn btn-primary" %>
+      <%= form.submit "Create New Profile Field", class: "btn btn-primary" %>
     </div>
   <% end %>
 </div>
@@ -30,10 +30,8 @@
         </button>
       </div>
 
-
       <div id="<%= group.gsub(/\s+/, "_") %>BodyContainer" class="collapse hide hide p-3" aria-labelledby="<%= group %>Header">
         <% fields.each do |field| %>
-
           <div class="card mt-3">
             <%= render partial: "admin/configs/card_header",
                        locals: {
@@ -45,7 +43,6 @@
 
             <div id="<%= field.label.gsub(/\s+/, "_") %>BodyContainer" class="card-body collapse hide" aria-labelledby="<%= field.label.gsub(/\s+/, "_") %>BodyContainer">
               <div class="form-group grid p-6 mb-6 gap-1">
-
                 <%= form_for [:admin, field] do |form| %>
                   <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div class="form-group">
@@ -62,7 +59,6 @@
                   <%= form.submit class: "btn btn-primary" %>
                 <% end %>
                 <%= button_to "Delete", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
-
               </div>
             </div>
           </div>
