@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   require "sidekiq/web"
   require "sidekiq_unique_jobs/web"
+  require "sidekiq/cron/web"
 
   authenticated :user, ->(user) { user.tech_admin? } do
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]

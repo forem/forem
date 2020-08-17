@@ -3,17 +3,17 @@ module ProfileFields
     include FieldDefinition
 
     group "Links" do
-      field "Facebook profile URL", :text_field, placeholder: "https://facebook.com/..."
+      field "Facebook URL", :text_field, placeholder: "https://facebook.com/..."
       field "Youtube URL", :text_field, placeholder: "https://www.youtube.com/channel/..."
-      field "StackOverflow profile URL", :text_field, placeholder: "https://stackoverflow.com/users/..."
-      field "LinkedIn profile URL", :text_field, placeholder: "https://www.linkedin.com/in/..."
-      field "Behance profile URL", :text_field, placeholder: "https://..."
-      field "Dribble profile URL", :text_field, placeholder: "https://dribble.com/..."
-      field "Medium profile URL", :text_field, placeholder: "https://..."
-      field "GitLab profile URL", :text_field, placeholder: "https://..."
-      field "Instagram profile URL", :text_field, placeholder: "https://..."
-      field "Mastodon profile URL", :text_field, placeholder: "https://..."
-      field "Twitch profile URL", :text_field, placeholder: "https://..."
+      field "StackOverflow URL", :text_field, placeholder: "https://stackoverflow.com/users/..."
+      field "LinkedIn URL", :text_field, placeholder: "https://www.linkedin.com/in/..."
+      field "Behance URL", :text_field, placeholder: "https://www.behance.net/..."
+      field "Dribble URL", :text_field, placeholder: "https://dribble.com/..."
+      field "Medium URL", :text_field, placeholder: "https://medium.com/@..."
+      field "GitLab URL", :text_field, placeholder: "https://gitlab.com/..."
+      field "Instagram URL", :text_field, placeholder: "https://www.instagram.com/..."
+      field "Mastodon URL", :text_field, placeholder: "https://..."
+      field "Twitch URL", :text_field, placeholder: "https://www.twitch.tv/..."
     end
   end
 end
