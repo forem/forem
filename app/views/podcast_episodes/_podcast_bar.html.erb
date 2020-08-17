@@ -5,7 +5,7 @@
   </audio>
   <div id="progressBar" class="audio-player-display">
     <a href="/<%= @podcast.slug %>/<%= @episode.slug %>">
-      <% image_url = Images::Optimizer(@episode.image_url, crop: "fill", width: 420, height: 420) %>
+      <% image_url = Images::Optimizer.call(@episode.image_url, crop: "fill", width: 420, height: 420) %>
       <%= image_tag(image_url, width: 420, height: 420, id: "episode-profile-image", alt: @episode.title) %>
       <img id="animated-bars" src="<%= asset_path("animated-bars.gif") %>" alt="animated volume bars">
     </a>
