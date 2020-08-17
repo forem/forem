@@ -34,7 +34,7 @@ rule, you should avoid relying on JavaScript for layout when working on Forem.
 
 We use [PreactJS](/frontend/preact), a lightweight alternative to ReactJS, and
 we try to reduce our bundle size with
-[dynamic imports](frontend/dynamic-imports).
+[dynamic imports](/frontend/dynamic-imports).
 
 ## Service workers and shell architecture
 
