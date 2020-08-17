@@ -7,7 +7,7 @@ openapi: "3.0.3"
 info:
   title: DEV API (beta)
   description: |
- 
+
     Access Forem articles, users and other resources via API.
 
     For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
@@ -16,7 +16,7 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-    
+
   version: "0.7.0"
   termsOfService: https://dev.to/terms
   contact:
@@ -214,11 +214,11 @@ components:
         edited_at:
           type: string
           format: date-time
-          nullable: true          
+          nullable: true
         crossposted_at:
           type: string
           format: date-time
-          nullable: true          
+          nullable: true
         published_at:
           type: string
           format: date-time
@@ -315,7 +315,7 @@ components:
         crossposted_at:
           type: string
           format: date-time
-          nullable: true          
+          nullable: true
         published_at:
           type: string
           format: date-time
@@ -853,14 +853,14 @@ components:
           type: string
         twitter_username:
           type: string
-          nullable: true          
+          nullable: true
         github_username:
           type: string
           nullable: true
         website_url:
           type: string
           format: url
-          nullable: true          
+          nullable: true
         profile_image:
           description: Profile image (640x640)
           type: string
@@ -943,7 +943,7 @@ components:
         website_url:
           type: string
           format: url
-          nullable: true          
+          nullable: true
         location:
           type: string
           nullable: true
@@ -1869,7 +1869,7 @@ paths:
 
         ### Rate limiting
 
-        There is a limit of 150 requests per 30 seconds.
+        There is a limit of 30 requests per 30 seconds.
 
         ### Additional resources
 
