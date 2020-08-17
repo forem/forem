@@ -607,6 +607,7 @@ components:
       required:
         - type_of
         - id_code
+        - created_at
         - body_html
         - user
         - children
@@ -615,6 +616,9 @@ components:
           type: string
         id_code:
           type: string
+        created_at:
+          type: string
+          format: date-time
         body_html:
           description: HTML formatted comment
           type: string
@@ -1204,6 +1208,7 @@ components:
       value:
         - type_of: comment
           id_code: m3m0
+          created_at: 2020-07-01T17:59:43Z
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1221,6 +1226,7 @@ components:
           children: []
         - type_of: comment
           id_code: m357
+          created_at: 2020-07-02T17:19:40Z          
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1240,6 +1246,7 @@ components:
           children:
           - type_of: comment
             id_code: m35m
+            created_at: 2020-08-01T11:59:40Z          
             body_html: |
               <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
               <html><body>
@@ -1310,6 +1317,7 @@ components:
       value:
         type_of: comment
         id_code: m357
+        created_at: 2020-08-02T17:19:40Z          
         body_html: |
           <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
           <html><body>
@@ -1329,6 +1337,7 @@ components:
         children:
         - type_of: comment
           id_code: m35m
+          created_at: 2020-07-02T17:19:40Z          
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
