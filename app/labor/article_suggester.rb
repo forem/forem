@@ -24,7 +24,7 @@ class ArticleSuggester
   end
 
   def self.memoized_articles_count
-    @memoized_articles_count ||= Article.published.estimated_count
+    Article.published.estimated_count
   end
 
   private
