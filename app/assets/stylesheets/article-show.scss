@@ -86,7 +86,7 @@ article {
     z-index: 6;
     position: relative;
     width: 81%;
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
 
     @media screen and (max-width: 750px) {
       width: 90%;
@@ -243,7 +243,7 @@ article {
   }
 
   .article-collection-wrapper {
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     font-size: 16px;
     border-radius: 5px;
     border: 1px solid $light-medium-gray;
@@ -334,7 +334,7 @@ article {
     h4,
     h5,
     h6 {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       margin: 0.3em auto;
       padding-left: 4px;
       padding-right: 4px;
@@ -469,7 +469,7 @@ article {
       }
 
       &.twitter-tweet {
-        font-family: var(--ff-default);
+        font-family: var(--ff-sans-serif);
         background: white;
         max-width: 456px;
         border: 1px solid #e9eef2;
@@ -598,7 +598,7 @@ article {
     }
 
     table {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       border-collapse: collapse;
       font-size: 0.78em;
       margin: 0.8em auto 1.2em;

@@ -153,7 +153,7 @@
     &__field {
       flex: 1 auto;
       font-size: var(--fs-l);
-      font-family: var(--ff-accent);
+      font-family: var(--ff-monospace);
       overflow: hidden;
     }
   }
@@ -255,7 +255,7 @@
   }
 
   &__tagname {
-    font-family: var(--ff-accent);
+    font-family: var(--ff-monospace);
     color: var(--base-90);
     letter-spacing: -0.05em;
     font-weight: bold;

@@ -135,6 +135,8 @@ class SiteConfig < RailsSettings::Base
   # a non-public forem will redirect all unauthenticated pages to the registration page.
   # a public forem could have more fine-grained authentication (listings ar private etc.) in future
   field :public, type: :boolean, default: 1
+  # The default font for all users that have not chosen a custom font yet
+  field :default_font, type: :string, default: "sans_serif"
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date

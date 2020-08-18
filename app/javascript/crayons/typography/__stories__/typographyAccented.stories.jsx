@@ -15,16 +15,16 @@ export default {
 export const SampleTexts = () => (
   <div className="sample-texts">
     <div>
-      <p className="ff-accent fs-xs">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-s">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-base">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-l">Lorem ipsum dolor sit amet.</p>
+      <p className="ff-monospace fs-xs">Lorem ipsum dolor sit amet.</p>
+      <p className="ff-monospace fs-s">Lorem ipsum dolor sit amet.</p>
+      <p className="ff-monospace fs-base">Lorem ipsum dolor sit amet.</p>
+      <p className="ff-monospace fs-l">Lorem ipsum dolor sit amet.</p>
     </div>
     <div>
-      <p className="ff-accent fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-accent fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
+      <p className="ff-monospace fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
+      <p className="ff-monospace fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
+      <p className="ff-monospace fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+      <p className="ff-monospace fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
     </div>
   </div>
 );
