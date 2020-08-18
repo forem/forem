@@ -486,7 +486,7 @@ Style/Send:
 
 Style/SingleArgumentDig:
   Description: 'Avoid using single argument dig method.'
-  Enabled: pending
+  Enabled: true
 
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
