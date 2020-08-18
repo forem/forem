@@ -62,6 +62,8 @@ class User < ApplicationRecord
                            foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
+  has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :destroy
+  has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :destroy
   has_many :api_secrets, dependent: :destroy
   has_many :articles, dependent: :destroy
   has_many :audit_logs, dependent: :nullify
