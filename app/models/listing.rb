@@ -24,7 +24,6 @@ class Listing < ApplicationRecord
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
   has_many :listing_endorsements,
            -> { where(approved: true) },
-           as: :endorsements,
            foreign_key: :classified_listing_id,
            dependent: :destroy,
            inverse_of: :listing

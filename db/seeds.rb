@@ -478,14 +478,11 @@ seeder.create_if_none(Listing) do
 end
 
 seeder.create_if_none(ListingEndorsement) do
-  user = User.last
-  listing = Listing.last
-
-  2.times do
+  5.times do
     ListingEndorsement.create!(
       content: Faker::Lorem.sentence,
-      user: user,
-      listing: listing,
+      user: User.find(rand(1...10)),
+      listing: Listing.find(rand(1...3)),
     )
   end
 end
