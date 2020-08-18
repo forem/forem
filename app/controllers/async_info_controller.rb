@@ -19,6 +19,7 @@ class AsyncInfoController < ApplicationController
       remember_me(current_user)
     end
     @user = current_user.decorate
+    check_process_env_updates
     occasionally_update_analytics
     respond_to do |format|
       format.json do
@@ -97,6 +98,13 @@ class AsyncInfoController < ApplicationController
   end
 
   private
+
+  def check_process_env_updates
+    Rails.cache.fetch("config-update-shield-#{Process.pid}") do
+      Devise.omniauth :github, AppSecrets["GITHUB_KEY"], AppSecrets["GITHUB_SECRET"]
+      Devise.omniauth :twitter, AppSecrets["TWITTER_KEY"], AppSecrets["TWITTER_SECRET"]
+    end
+  end
 
   def occasionally_update_analytics
     return unless Rails.env.production? && rand(SiteConfig.ga_fetch_rate) == 1
