@@ -110,11 +110,12 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.app_domain = ENV["APP_DOMAIN"]
+  config.app_domain = ENV["APP_DOMAIN"] || "localhost:3000"
+  protocol = ENV["APP_PROTOCOL"] || "http://"
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: ENV["APP_PROTOCOL"] + ENV["APP_DOMAIN"] }
+  config.action_mailer.default_url_options = { host: protocol + config.app_domain }
   ActionMailer::Base.smtp_settings = {
     address: "smtp.sendgrid.net",
     port: "587",
@@ -125,14 +126,14 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
-  if ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
+  if ENV["HEROKU_APP_URL"] != config.app_domain
     config.middleware.use Rack::HostRedirect,
-                          ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
+                          ENV["HEROKU_APP_URL"] => config.app_domain
   end
 end
 # rubocop:enable Metrics/BlockLength
 
 Rails.application.routes.default_url_options = {
   host: Rails.application.config.app_domain,
-  protocol: ENV["APP_PROTOCOL"].delete_suffix("://")
+  protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://")
 }

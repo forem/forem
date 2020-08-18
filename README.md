@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Ruby-v2.7.1-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
-    <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
+    <img src="https://img.shields.io/badge/Rails-v6.0.3-brightgreen.svg" alt="rails version">
   </a>
   <a href="https://travis-ci.com/thepracticaldev/dev.to">
     <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to">

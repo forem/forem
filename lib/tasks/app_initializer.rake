@@ -4,6 +4,9 @@ namespace :app_initializer do
     puts "\n== Preparing Elasticsearch =="
     Rake::Task["search:setup"].execute
 
+    # @mstruve: Temporary debug logging
+    puts "ENABLE_HYPERSHIELD #{ENV["ENABLE_HYPERSHIELD"].present?}"
+
     puts "\n== Preparing database =="
     system("bin/rails db:prepare")
 
@@ -19,6 +22,9 @@ if ENV["ENABLE_HYPERSHIELD"].present?
   # runs AFTER db:prepare. Passing it as an argument will cause it to run BEFORE
   # https://ruby-doc.org/stdlib-2.0.0/libdoc/rake/rdoc/Rake/Task.html#method-i-enhance
   Rake::Task["db:prepare"].enhance do
+    # @mstruve: Temporary debug logging
+    puts "db:prepare ENHANCE triggering"
+
     Rake::Task["hypershield:refresh"]
   end
 end

@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   require "sidekiq/web"
   require "sidekiq_unique_jobs/web"
+  require "sidekiq/cron/web"
 
   authenticated :user, ->(user) { user.tech_admin? } do
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
@@ -115,9 +116,9 @@ Rails.application.routes.draw do
     end
     resources :webhook_endpoints, only: :index
     resource :config
-    resources :badges, only: %i[index], path: "/badge_achievements"
-    get "/badges", to: redirect("/admin/badge_achievements")
-    post "badges/award_badges", to: "badges#award_badges"
+    resources :badges, only: %i[index edit update new create]
+    get "/badge_achievements/award_badges", to: "badges#award"
+    post "/badge_achievements/award_badges", to: "badges#award_badges"
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
   end
@@ -189,6 +190,7 @@ Rails.application.routes.draw do
   resources :comments, only: %i[create update destroy] do
     patch "/hide", to: "comments#hide"
     patch "/unhide", to: "comments#unhide"
+    patch "/admin_delete", to: "comments#admin_delete"
     collection do
       post "/moderator_create", to: "comments#moderator_create"
     end
