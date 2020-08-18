@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'config/import';
 
+// Authentication Card in Feed
 .authentication-feed {
   &__card {
     display: grid;
@@ -67,6 +68,87 @@
       width: max-content;
       justify-self: center;
     }
+  }
+}
+
+// Registration View
+.registration {
+  padding: var(--su-6);
+
+  &__image-container {
+    height: 80px;
+    width: 80px;
+    margin: 0 auto var(--su-4);
+  }
+
+  &__image {
+    border-radius: var(--radius);
+    transform: rotate(-10deg);
+    height: auto;
+    width: 100%;
+  }
+
+  &__content {
+    margin-bottom: var(--su-4);
+    text-align: center;
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-2xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+    font-size: var(--fs-base);
+  }
+
+  &__hr {
+    display: block;
+    margin-bottom: var(--su-4);
+    position: relative;
+    text-align: center;
+
+    &:after {
+      border: 1px solid var(--base-20);
+      content: '';
+      display: block;
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      z-index: 0;
+    }
+  }
+
+  &__hr-label {
+    position: relative;
+    font-size: var(--fs-s);
+    color: var(--card-color-secondary);
+    background: var(--card-bg);
+    padding-left: var(--su-1);
+    padding-right: var(--su-1);
+    z-index: 1;
+  }
+
+  &__actions-providers {
+    margin-bottom: var(--su-4);
+    display: grid;
+    grid-gap: var(--su-2);
+    width: 100%;
+  }
+
+  &__actions-email {
+  }
+
+  &__footer {
+    font-size: var(--fs-s);
+    font-family: var(--ff-accent);
+    text-align: center;
   }
 }
 
