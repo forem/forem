@@ -60,6 +60,14 @@ RSpec.describe AppSecrets, type: :lib do
       described_class[key] = "secret-value"
       expect(write_stub).to have_received(:write).with(key, value: "secret-value")
     end
+
+    it "sets appropriate config for certain keys" do
+      write_stub = instance_double("Vault::Kv", write: nil)
+      allow(Vault).to receive(:kv) { write_stub }
+
+      described_class["GITHUB_KEY"] = "secret-github-key"
+      Devise.omniauth_configs[:github].args[0].to eq("secret-github-key")
+    end
   end
 
   describe "#vault_enabled?" do
