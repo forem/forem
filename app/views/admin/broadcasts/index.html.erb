@@ -1,4 +1,4 @@
-<div class="row my-3">
+<nav class="row my-3" aria-label="Broadcasts navigation">
   <div class="col">
     <ul class="nav nav-pills">
       <li class="nav-item">
@@ -17,31 +17,32 @@
       <%= link_to "Make A New Broadcast", new_admin_broadcast_path, class: "btn btn-primary" %>
     </div>
   </div>
-</div>
+</nav>
 
-<div class="alert alert-warning"><strong>Note: You must ensure that your Broadcast is active in order for it to be sent to users!</strong></div>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Title</th>
-      <th scope="col">Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @broadcasts.each do |broadcast| %>
+<main>
+  <div class="alert alert-warning">
+    <strong>Note: You must ensure that your Broadcast is active in order for it to be sent to users!</strong>
+  </div>
+  <table class="table">
+    <thead>
       <tr>
-        <td><%= link_to broadcast.title, admin_broadcast_path(broadcast.id) %></td>
-        <td class="justify-content-center">
-          <h5>
+        <th scope="col">Title</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @broadcasts.each do |broadcast| %>
+        <tr>
+          <td><%= link_to broadcast.title, admin_broadcast_path(broadcast.id) %></td>
+          <td class="justify-content-center">
             <div class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">
               <%= broadcast.active? ? "Active" : "Inactive" %>
             </div>
-          </h5>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</main>
 
 <%= csrf_meta_tags %>
