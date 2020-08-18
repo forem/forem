@@ -1,12 +1,26 @@
 require "rails_helper"
 
-def user_from_authorization_service(service_name, signed_in_resource, cta_variant)
+def user_from_authorization_service(service_name, signed_in_resource = nil, cta_variant = "navbar_basic")
   auth = OmniAuth.config.mock_auth[service_name]
   Authentication::Authenticator.call(
     auth,
     current_user: signed_in_resource,
     cta_variant: cta_variant,
   )
+end
+
+def mock_username(provider_name, username)
+  if provider_name == :apple
+    OmniAuth.config.mock_auth[provider_name].info.first_name = username
+  else
+    OmniAuth.config.mock_auth[provider_name].info.nickname = username
+  end
+end
+
+def provider_username(service_name)
+  auth_payload = OmniAuth.config.mock_auth[service_name]
+  provider_class = Authentication::Providers.get!(auth_payload.provider)
+  provider_class.new(auth_payload).user_nickname
 end
 
 RSpec.describe User, type: :model do
@@ -158,11 +172,13 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-      it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
-      it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
       it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
       it { is_expected.to validate_url_of(:employer_url) }
       it { is_expected.to validate_url_of(:website_url) }
+
+      Authentication::Providers.username_fields.each do |username_field|
+        it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
+      end
     end
 
     it "validates username against reserved words" do
@@ -245,31 +261,19 @@ RSpec.describe User, type: :model do
   context "when callbacks are triggered before validation" do
     let(:user) { build(:user) }
 
-    describe "#twitter_username" do
-      it "sets twitter username to nil if empty" do
-        user.twitter_username = ""
-        user.validate!
-        expect(user.twitter_username).to eq(nil)
-      end
+    Authentication::Providers.username_fields.each do |username_field|
+      describe username_field do
+        it "sets #{username_field} to nil if empty" do
+          user.assign_attributes(username_field => "")
+          user.validate!
+          expect(user.attributes[username_field.to_s]).to be_nil
+        end
 
-      it "does not change a valid name" do
-        user.twitter_username = "hello"
-        user.validate!
-        expect(user.twitter_username).to eq("hello")
-      end
-    end
-
-    describe "#github_username" do
-      it "sets github username to nil if empty" do
-        user.github_username = ""
-        user.validate!
-        expect(user.github_username).to eq(nil)
-      end
-
-      it "does not change a valid name" do
-        user.github_username = "hello"
-        user.validate!
-        expect(user.github_username).to eq("hello")
+        it "does not change a valid name" do
+          user.assign_attributes(username_field => "hello")
+          user.validate!
+          expect(user.attributes[username_field.to_s]).to eq("hello")
+        end
       end
     end
 
@@ -621,14 +625,15 @@ RSpec.describe User, type: :model do
         expect(user.reload.estimated_default_language).to eq("ja")
       end
 
-      it "estimates default language based on ID dump" do
+      it "estimates default language from Twitter identity" do
         new_user = nil
 
-        sidekiq_perform_enqueued_jobs do
-          new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
+        sidekiq_perform_enqueued_jobs(only: Users::EstimateDefaultLanguageWorker) do
+          new_user = user_from_authorization_service(:twitter)
         end
 
-        expect(new_user.estimated_default_language).to eq(nil)
+        lang = new_user.identities.last.auth_data_dump.extra.raw_info.lang
+        expect(new_user.reload.estimated_default_language).to eq(lang)
       end
     end
 
@@ -791,107 +796,109 @@ RSpec.describe User, type: :model do
         end
       end
 
-      it "enqueues resave articles job when changing github_username" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.github_username = "mygreatgithubname"
-          user.save
+      Authentication::Providers.username_fields.each do |username_field|
+        it "enqueues resave articles job when changing #{username_field}" do
+          sidekiq_assert_enqueued_with(
+            job: Users::ResaveArticlesWorker,
+            args: [user.id],
+            queue: "medium_priority",
+          ) do
+            user.assign_attributes(username_field => "greatnewusername")
+            user.save
+          end
         end
-      end
 
-      it "enqueues resave articles job when changing twitter_username" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.twitter_username = "mygreattwittername"
-          user.save
+        it "doesn't enqueue resave articles job when changing #{username_field} for a banned user" do
+          banned_user = create(:user, :banned)
+
+          expect do
+            banned_user.assign_attributes(username_field => "greatnewusername")
+            banned_user.save
+          end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
         end
-      end
-
-      it "doesn't enqueue resave articles when changing resave attributes but user is banned" do
-        banned_user = create(:user, :banned)
-        expect do
-          banned_user.twitter_username = "mygreattwittername"
-          banned_user.save
-        end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
       end
     end
   end
 
-  describe "user registration" do
+  describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
 
-    it "finds user by email and assigns identity to that if exists" do
-      OmniAuth.config.mock_auth[:twitter].info.email = user.email
-
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.id).to eq(user.id)
+    before do
+      omniauth_mock_providers_payload
     end
 
-    it "assigns random username if username is taken on registration" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = user.username
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
+    Authentication::Providers.available.each do |provider_name|
+      it "finds user by email and assigns identity to that if exists for #{provider_name}" do
+        OmniAuth.config.mock_auth[provider_name].info.email = user.email
 
-      expect(new_user.persisted?).to eq(true)
-      expect(new_user.username).not_to eq(user.username)
-    end
+        new_user = user_from_authorization_service(provider_name)
+        expect(new_user.id).to eq(user.id)
+      end
 
-    it "assigns random username if username is taken by organization on registration" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = org.slug
+      it "assigns random username if username is taken on registration for #{provider_name}" do
+        OmniAuth.config.mock_auth[provider_name].info.nickname = user.username
+        OmniAuth.config.mock_auth[provider_name].info.first_name = user.username
 
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.persisted?).to eq(true)
-      expect(new_user.username).not_to eq(org.slug)
-    end
+        new_user = user_from_authorization_service(provider_name)
 
-    it "assigns signup_cta_variant to state param with Twitter if new user" do
-      new_user = user_from_authorization_service(:twitter, nil, "hey-hey-hey")
-      expect(new_user.signup_cta_variant).to eq("hey-hey-hey")
-    end
+        expect(new_user.persisted?).to be(true)
+        expect(new_user.username).not_to eq(user.username)
+      end
 
-    it "does not assign signup_cta_variant to non-new users" do
-      returning_user = create(:user, signup_cta_variant: nil)
-      new_user = user_from_authorization_service(:twitter, returning_user, "hey-hey-hey")
-      expect(new_user.signup_cta_variant).to eq(nil)
-    end
+      it "assigns signup_cta_variant to state param if new user for #{provider_name}" do
+        new_user = user_from_authorization_service(provider_name, nil, "hey-hey-hey")
+        expect(new_user.signup_cta_variant).to eq("hey-hey-hey")
+      end
 
-    it "assigns proper social_username based on auth" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = "valid_username"
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.username).to eq("valid_username")
-    end
+      it "does not assign signup_cta_variant to non-new users for #{provider_name}" do
+        returning_user = create(:user, signup_cta_variant: nil)
+        new_user = user_from_authorization_service(provider_name, returning_user, "hey-hey-hey")
+        expect(new_user.signup_cta_variant).to be(nil)
+      end
 
-    it "assigns modified username if invalid" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.user"
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.username).to eq("invaliduser")
-    end
+      it "assigns proper social username based on authentication for #{provider_name}" do
+        mock_username(provider_name, "valid_username")
+        new_user = user_from_authorization_service(provider_name)
 
-    it "assigns an identity to user" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.identities.size).to eq(1)
-      new_user = user_from_authorization_service(:github, nil, "navbar_basic")
-      expect(new_user.identities.size).to eq(2)
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.identities.size).to eq(2)
-      new_user = user_from_authorization_service(:github, nil, "navbar_basic")
-      expect(new_user.identities.size).to eq(2)
-    end
+        if provider_name == :apple
+          expect(new_user.username).to match(/valid_username_\w+/)
+        else
+          expect(new_user.username).to eq("valid_username")
+        end
+      end
 
-    it "persists JSON dump of identity data" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      identity = new_user.identities.first
-      expect(identity.auth_data_dump.provider).to eq(identity.provider)
-    end
+      it "marks registered_at for newly registered user" do
+        new_user = user_from_authorization_service(provider_name, nil, "navbar_basic")
+        expect(new_user.registered_at).not_to be nil
+      end
 
-    it "marks registered_at for newly registered user" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.registered_at).not_to be nil
+      it "assigns modified username if the username is invalid for #{provider_name}" do
+        mock_username(provider_name, "invalid.username")
+        new_user = user_from_authorization_service(provider_name)
+
+        if provider_name == :apple
+          expect(new_user.username).to match(/invalidusername_\w+/)
+        else
+          expect(new_user.username).to eq("invalidusername")
+        end
+      end
+
+      it "serializes the authentication payload for #{provider_name}" do
+        new_user = user_from_authorization_service(provider_name)
+
+        identity = new_user.identities.last
+        expect(identity.auth_data_dump.provider).to eq(identity.provider)
+      end
+
+      it "does not allow previously banished users to sign up again for #{provider_name}" do
+        banished_name = "SpammyMcSpamface"
+        mock_username(provider_name, banished_name)
+
+        create(:banished_user, username: provider_username(provider_name))
+        expect do
+          user_from_authorization_service(provider_name, nil, "navbar_basic")
+        end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
+      end
     end
 
     it "persists extracts relevant identity data from new twitter user" do
@@ -900,29 +907,27 @@ RSpec.describe User, type: :model do
       expect(new_user.twitter_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
     end
 
-    it "persists extracts relevant identity data from new github user" do
-      new_user = user_from_authorization_service(:github, nil, "navbar_basic")
-      expect(new_user.github_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
+    it "assigns multiple identities to the same user", :aggregate_failures, vcr: { cassette_name: "fastly_sloan" } do
+      providers = Authentication::Providers.available
+
+      users = []
+      Authentication::Providers.available.each do |provider_name|
+        OmniAuth.config.mock_auth[provider_name].info.email = "person1@example.com"
+
+        users.append(user_from_authorization_service(provider_name))
+      end
+
+      expect(users.uniq.first.identities.count).to eq(providers.length)
     end
+  end
 
-    it "does not allow previously banished users to sign up again" do
-      banished_name = "SpammyMcSpamface"
-      create(:banished_user, username: banished_name)
-      OmniAuth.config.mock_auth[:twitter].info.nickname = banished_name
+  it "does not allow an existing user to change their name to a banished one" do
+    banished_name = "SpammyMcSpamface"
+    create(:banished_user, username: banished_name)
+    user = create(:user)
 
-      expect do
-        user_from_authorization_service(:twitter, nil, "navbar_basic")
-      end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
-    end
-
-    it "does not allow an existing user to change their name to a banished one" do
-      banished_name = "SpammyMcSpamface"
-      create(:banished_user, username: banished_name)
-      user = create(:user)
-
-      user.update(username: banished_name)
-      expect(user.errors.full_messages).to include("Username has been banished.")
-    end
+    user.update(username: banished_name)
+    expect(user.errors.full_messages).to include("Username has been banished.")
   end
 
   describe "#follow and #all_follows" do
