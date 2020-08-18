@@ -1,19 +1,13 @@
 <div id="profileFields">
   <div class="crayons-card grid p-6 mb-6 gap-1">
     <%= form_for [:admin, ProfileField.new], html: { class: "inline-form" } do |form| %>
-      <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div class="form-group">
-          <%= form.label :group %>
-          <%= select_tag "profile_field[group]", options_for_select(ProfileField.distinct.pluck(:group)), include_blank: "Choose an existing group", class: "form-control selectpicker" %>
-        </div>
-        <div id="create-profile-group" onclick="showNewProfile(event)"> or create a new group </div>
-        <div id="new-profile-group">
-          <div class="form-group">
-            <%= form.label :group, style: "visibility: hidden" %>
-            <%= form.text_field :group, placeholder: "Add a new group", class: "form-control" %>
-          </div>
-        </div>
+      <div class="form-group">
+        <%= form.label :group %>
+        <%= select_tag "profile_field[group]", options_for_select(ProfileField.distinct.pluck(:group)), include_blank: "Choose an existing group", class: "form-control selectpicker profile__group-dropdown" %>
+
+          <%= form.text_field :group, placeholder: "Add a new group", class: "form-control profile__group-text-input hidden", disabled: true %>
       </div>
+      <div id="create-profile-group" onclick="showNewProfile(event)"> or create a new group </div>
       <div class="form-group">
         <%= render "form", form: form %>
         <%= form.submit "Create New Profile Field", class: "btn btn-primary" %>
@@ -76,11 +70,27 @@
 
 <script>
   function showNewProfile() {
-    var profile = document.getElementById("new-profile-group")
-    profile.style.display = "block";
+    var profileDropdown = document.getElementsByClassName("dropdown profile__group-dropdown")[0];
+    var profileInput = document.getElementsByClassName("profile__group-text-input")[0];
+    var text = document.getElementById("create-profile-group");
+
+    if(profileDropdown.classList.contains('hidden')) {
+      profileDropdown.classList.remove('hidden');
+      profileDropdown.disabled = false;
+
+      profileInput.classList.add('hidden');
+      profileInput.disabled = true;
+
+      text.innerHTML = "or create a new group";
+    } else {
+      profileInput.classList.remove('hidden');
+      profileInput.disabled = false;
+
+      profileDropdown.classList.add('hidden');
+      profileDropdown.disabled = true;
+
+      text.innerHTML = "or update an existing group";
+    }
   }
 
-  window.addEventListener('load', function() {
-    console.log("in event listener");
-  });
 </script>
