@@ -49,7 +49,11 @@
   display: flex;
 
   &--logged-out {
-    width: 240px;
+    width: auto;
+
+    @media (min-width: $breakpoint-s) {
+      width: 240px;
+    }
   }
 
   .logo {
