@@ -31,11 +31,12 @@ module Admin
     end
 
     def destroy
-      profile_field = ProfileField.find(params[:id])
-      if profile_field.destroy
+      remove_result = ProfileFields::Remove.call(params[:id])
+      if remove_result.success?
+        profile_field = remove_result.profile_field
         flash[:success] = "Profile field #{profile_field.label} deleted"
       else
-        flash[:error] = "Error: #{profile_field.errors_as_sentence}"
+        flash[:error] = "Error: #{remove_result.error_message}"
       end
       redirect_to admin_profile_fields_path
     end
