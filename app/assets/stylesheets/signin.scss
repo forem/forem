@@ -73,7 +73,15 @@
 
 // Registration View
 .registration {
+  border-radius: unset;
   padding: var(--su-6);
+
+  @media (min-width: $breakpoint-s) {
+    border-radius: var(--radius);
+    padding: var(--su-8);
+    margin: 0 auto;
+    width: $breakpoint-s;
+  }
 
   &__image-container {
     height: 80px;
@@ -142,12 +150,11 @@
     width: 100%;
   }
 
-  &__actions-email {
-  }
-
   &__footer {
     font-size: var(--fs-s);
     font-family: var(--ff-accent);
+    padding-top: var(--su-4);
+    padding-bottom: var(--su-4);
     text-align: center;
   }
 }

@@ -1,68 +1,70 @@
-<div class="registration crayons-card">
-  <div class="registration__image-container">
-    <img class="registration__image" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
-          alt="Secondary <%= community_name %> logo" />
-  </div>
-  <div class="registration__content">
-    <h1 class="registration__title">
-      Welcome to <%= community_name %>
-    </h1>
-    <% if any_selfserve_auth? %>
-      <p class="registration__description">
+<section class="crayons-layout">
+  <div class="registration crayons-card">
+    <div class="registration__image-container">
+      <img class="registration__image" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
+            alt="Secondary <%= community_name %> logo" />
+    </div>
+    <div class="registration__content">
+      <h1 class="registration__title">
+        Welcome to <%= community_name %>
+      </h1>
+      <% if any_selfserve_auth? %>
+        <p class="registration__description">
 community_members_label
-                                                                %>. Registration is by invitation only. Sign in
-        by social auth if you don't have a password set.
-      </p>
-    <% else %>
-      <p class="registration__description">
-        <a href="/"><%= community_name %></a> is a community of <br />
-                <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
-      </p>
-    <% end %>
-  </div>
-
-  <div class="registration__actions">
-    <%= render partial: "shared/authentication/providers_registration_form" %>
-
-    <div class="registration__actions-email" id="sign-in-password-form">
-      <div class="registration__hr">
-        <span class="registration__hr-label">
-          Or continue with your email address
-        </span>
-      </div>
-      <%= form_for(User.new, as: :user, url: session_path(:user)) do |f| %>
-        <div class="crayons-field mb-2">
-          <%= f.label :email, class: "crayons-field__label" %>
-          <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
-        </div>
-
-        <div class="crayons-field mb-2">
-          <%= f.label :password, class: "crayons-field__label" %>
-          <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
-        </div>
-
-        <div class="field">
-          <%= f.check_box :remember_me, class: "crayons-checkbox" %>
-          <%= f.label :remember_me, class: "fs-s" %>
-        </div>
-
-        <div class="actions pt-3">
-          <%= f.submit "Continue", class: "crayons-btn crayons-btn--l w-100 s:w-auto" %>
-        </div>
+                                                                  %>. Registration is by invitation only. Sign in
+          by social auth if you don't have a password set.
+        </p>
+      <% else %>
+        <p class="registration__description">
+          <a href="/"><%= community_name %></a> is a community of <br />
+                  <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
+        </p>
       <% end %>
-      <p class="pt-6 pb-6 fs-s align-center">
-        <a href="<%= new_password_path(:user) %>">
-          I forgot my password
-        </a>
-      </p>
+    </div>
+
+    <div class="registration__actions">
+      <%= render partial: "shared/authentication/providers_registration_form" %>
+
+      <div class="registration__actions-email" id="sign-in-password-form">
+        <div class="registration__hr">
+          <span class="registration__hr-label">
+            Or continue with your email address
+          </span>
+        </div>
+        <%= form_for(User.new, as: :user, url: session_path(:user)) do |f| %>
+          <div class="crayons-field mb-2">
+            <%= f.label :email, class: "crayons-field__label" %>
+            <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
+          </div>
+
+          <div class="crayons-field mb-2">
+            <%= f.label :password, class: "crayons-field__label" %>
+            <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
+          </div>
+
+          <div class="field">
+            <%= f.check_box :remember_me, class: "crayons-checkbox" %>
+            <%= f.label :remember_me, class: "fs-s" %>
+          </div>
+
+          <div class="actions pt-3">
+            <%= f.submit "Continue", class: "crayons-btn crayons-btn--l w-100" %>
+          </div>
+        <% end %>
+        <p class="pt-6 fs-s align-center">
+          <a href="<%= new_password_path(:user) %>">
+            I forgot my password
+          </a>
+        </p>
+      </div>
     </div>
   </div>
-  <div class="registration__footer">
+  <footer class="registration__footer">
     <p>
       Open Source 😇 · Free Forever ❤️
     </p>
     <p>
       We strive for transparency and don't collect excess data.
     </p>
-  </div>
-</div>
+  </footer>
+</section>
