@@ -251,7 +251,7 @@ class Article < ApplicationRecord
 
   def processed_description
     text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
-    text_portion = text_portion.strip + "..." if body_text.size > 100
+    text_portion = "#{text_portion.strip}..." if body_text.size > 100
     return "A post by #{user.name}" if text_portion.blank?
 
     text_portion.strip
@@ -634,7 +634,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    title.to_s.downcase.parameterize.tr("_", "") + "-" + rand(100_000).to_s(26)
+    "#{title.to_s.downcase.parameterize.tr('_', '')}-#{rand(100_000).to_s(26)}"
   end
 
   def clean_data

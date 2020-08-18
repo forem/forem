@@ -226,7 +226,7 @@ class User < ApplicationRecord
   end
 
   def path
-    "/" + username.to_s
+    "/#{username}"
   end
 
   def followed_articles
@@ -515,7 +515,7 @@ class User < ApplicationRecord
 
   def set_temp_username
     self.username = if temp_name_exists?
-                      temp_username + "_" + rand(100).to_s
+                      "#{temp_username}_#{rand(100)}"
                     else
                       temp_username
                     end

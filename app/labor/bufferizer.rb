@@ -57,7 +57,8 @@ class Bufferizer
 
   def social_tags
     # for linkedin's followable tags
-    " #programming #softwareengineering " + (@article.tag_list.map { |tag| "#" + tag }).join(" ")
+    tags = @article.tag_list.map { |tag| "##{tag}" }.join(" ")
+    " #programming #softwareengineering #{tags}"
   end
 
   def listings_twitter_text

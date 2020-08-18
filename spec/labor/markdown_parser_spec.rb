@@ -66,20 +66,20 @@ RSpec.describe MarkdownParser, type: :labor do
 
   it "wraps figcaptions with figures" do
     code_span = "<p>Statement</p>\n<figcaption>A fig</figcaption>"
-    test = generate_and_parse_markdown("<p>case: </p>" + code_span)
-    expect(test).to eq("<p>case: </p>\n<figure>" + code_span + "</figure>\n\n\n\n")
+    test = generate_and_parse_markdown("<p>case: </p>#{code_span}")
+    expect(test).to eq("<p>case: </p>\n<figure>#{code_span}</figure>\n\n\n\n")
   end
 
   it "does not wrap figcaptions already in figures" do
     code_span = "<figure><p>Statement</p>\n<figcaption>A fig</figcaption></figure>"
     test = generate_and_parse_markdown(code_span)
-    expect(test).to eq(code_span + "\n\n\n\n")
+    expect(test).to eq("#{code_span}\n\n\n\n")
   end
 
   it "does not wrap figcaptions without predecessors" do
     code_span = "<figcaption>A fig</figcaption>"
     test = generate_and_parse_markdown(code_span)
-    expect(test).to eq(code_span + "\n\n")
+    expect(test).to eq("#{code_span}\n\n")
   end
 
   context "when rendering links markdown" do
