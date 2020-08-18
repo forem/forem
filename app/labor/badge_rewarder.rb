@@ -1,5 +1,5 @@
 module BadgeRewarder
-  YEARS = { 1 => "one", 2 => "two", 3 => "three" }.freeze
+  YEARS = { 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six", 7 => "seven" }.freeze
   REPOSITORIES = ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].freeze
 
   LONGEST_STREAK_WEEKS = 16
@@ -10,7 +10,8 @@ module BadgeRewarder
   MINIMUM_QUALITY = -25
 
   def self.award_yearly_club_badges
-    (1..3).each do |i|
+    total_years = Time.current.year - ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"].to_i
+    (1..total_years).each do |i|
       message = "Happy #{ApplicationConfig['COMMUNITY_NAME']} birthday! " \
         "Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
       badge = Badge.find_by!(slug: "#{YEARS[i]}-year-club")
