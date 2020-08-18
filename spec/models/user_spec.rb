@@ -34,6 +34,8 @@ RSpec.describe User, type: :model do
     describe "builtin validations" do
       subject { user }
 
+      it { is_expected.to have_many(:ahoy_events).dependent(:destroy) }
+      it { is_expected.to have_many(:ahoy_visits).dependent(:destroy) }
       it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
       it { is_expected.to have_many(:articles).dependent(:destroy) }
       it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
