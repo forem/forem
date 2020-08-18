@@ -27,7 +27,7 @@ RSpec.describe Search::User, type: :service do
 
         user_docs = described_class.search_documents(params: query_params)
         expect(user_docs.count).to eq(2)
-        doc_ids = user_docs.map { |t| t.dig("id") }
+        doc_ids = user_docs.map { |t| t["id"] }
         expect(doc_ids).to include(user1.id, user2.id)
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe Search::User, type: :service do
 
         user_docs = described_class.search_documents(params: query_params)
         expect(user_docs.count).to eq(1)
-        doc_ids = user_docs.map { |t| t.dig("id") }
+        doc_ids = user_docs.map { |t| t["id"] }
         expect(doc_ids).to match_array([user1.id])
       end
     end
