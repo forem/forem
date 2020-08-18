@@ -28,7 +28,8 @@ class AppSecrets
   end
 
   def write_to_rails_config(key, value)
-    # Bust the cache of config-update-shield-xxxx for every process running.....
+    # This is where we'd bust the cache of config-update-shield-xxxx for every process running.....
+    # Then every process would indepenently check the next time through that path.
   end
 
   def self.namespace
