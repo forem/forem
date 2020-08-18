@@ -2,8 +2,9 @@
   <a href="<%= episode.path %>" class="small-pic-link-wrapper" id="article-link-<%= episode.id %>">
     <div class="single-article single-article-small-pic single-article-single-podcast">
       <div class="small-pic">
-        <% image_url = Images::Optimizer.call(episode.image_url || episode.podcast.image_url, crop: "imagga_scale", width: 240, height: 240) %>
-        <%= image_tag(image_url, width: 240, height: 240, alt: episode.title) %>
+        <%= optimized_image_tag(episode.image_url || episode.podcast.image_url,
+                                optimizer_options: { crop: "imagga_scale", width: 240, height: 240 },
+                                image_options: { alt: episode.title }) %>
       </div>
       <div class="content">
         <h3><span class="tag-identifier">podcast</span><%= episode.title %></h3>
