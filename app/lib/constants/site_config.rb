@@ -185,6 +185,9 @@ module Constants
       feed_style: {
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
         placeholder: "basic, rich, or compact"
+      },
+      default_font: {
+        description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
       }
       # Dynamic values ommitted: configurable_rate_limits and social_media_handles
     }.freeze

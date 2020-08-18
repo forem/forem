@@ -19,7 +19,7 @@ gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.0" # Tracking analytics for Rails
 gem "ancestry", "~> 3.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.8" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.46" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.48" # Official AWS Ruby gem for AWS Lambda
 gem "blazer", "~> 2.2.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
@@ -86,7 +86,7 @@ gem "redis", "~> 4.2.1" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
 gem "rolify", "~> 5.3" # Very simple Roles library
-gem "rouge", "~> 3.21" # A pure-ruby code highlighter
+gem "rouge", "~> 3.22" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
@@ -98,7 +98,7 @@ gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
-gem "store_attribute", "~> 0.5.0" # ActiveRecord extension which adds typecasting to store accessors.
+gem "store_attribute", "~> 0.7.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 5.23" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
@@ -140,7 +140,7 @@ group :development, :test do
   gem "knapsack_pro", "~> 2.1.1" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.89.0", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.89.1", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.7", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.7", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.42", require: false # Code style checking for RSpec files

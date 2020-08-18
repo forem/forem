@@ -573,9 +573,9 @@
     'ff',
     'font-family',
     (
-      'default': var(--ff-default),
-      'accent': var(--ff-accent),
-      'serif': var(--ff-serif)
+      'sans-serif': var(--ff-sans-serif),
+      'serif': var(--ff-serif),
+      'monospace': var(--ff-monospace)
     ),
     (),
     false
