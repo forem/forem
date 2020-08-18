@@ -168,9 +168,9 @@ class MarkdownParser
       codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
       codeblock.gsub!("{% raw %}", "{----% raw %----}")
       if codeblock.match?(/[[:space:]]*`{3}/)
-        "\n{% raw %}\n" + codeblock + "\n{% endraw %}\n"
+        "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
       else
-        "{% raw %}" + codeblock + "{% endraw %}"
+        "{% raw %}#{codeblock}{% endraw %}"
       end
     end
   end

@@ -30,7 +30,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   def correct_link_html(article)
-    tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join("\n" + "\s" * 8)
+    tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join("\n#{"\s" * 8}")
     <<~HTML
       <div class='ltag__link'>
         <a href='#{article.user.path}' class='ltag__link__link'>

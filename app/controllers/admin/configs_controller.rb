@@ -34,6 +34,7 @@ module Admin
         payment_pointer
         health_check_token
         feed_style
+        default_font
         sponsor_headline
         public
       ]

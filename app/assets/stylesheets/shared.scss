@@ -7,7 +7,7 @@
   left: 0px;
   right: 0px;
   z-index: 15;
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   display: block;
   #progressBar {
     color: #fff;
@@ -214,7 +214,7 @@
 }
 
 .global-notice {
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   background: $green;
   color: black;
   padding: 20px 0px 20px;

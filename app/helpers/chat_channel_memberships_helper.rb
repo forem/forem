@@ -10,7 +10,8 @@ module ChatChannelMembershipsHelper
         status: membership.status,
         image: ProfileImage.new(membership.user).get(width: 90),
         chat_channel_name: membership.chat_channel.channel_name,
-        chat_channel_id: membership.chat_channel.id
+        chat_channel_id: membership.chat_channel.id,
+        slug: membership.chat_channel.slug
       }
     end
   end

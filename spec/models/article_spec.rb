@@ -24,6 +24,8 @@ RSpec.describe Article, type: :model do
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:collection).optional }
     it { is_expected.to have_many(:comments) }
+    it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
+    it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
@@ -446,7 +448,7 @@ RSpec.describe Article, type: :model do
       article.update(body_markdown: body, approved: true)
 
       Timecop.travel(1.second.from_now) do
-        article.update(body_markdown: body + "s")
+        article.update(body_markdown: "#{body}s")
       end
 
       expect(article.featured_number).not_to eq(article.updated_at.to_i)

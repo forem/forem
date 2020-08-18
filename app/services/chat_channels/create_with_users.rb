@@ -39,7 +39,7 @@ module ChatChannels
     end
 
     def verify_contrived_name(usernames)
-      channel_type == "direct" ? "Direct chat between " + usernames.join(" and ") : contrived_name
+      channel_type == "direct" ? "Direct chat between #{usernames.join(' and ')}" : contrived_name
     end
   end
 end

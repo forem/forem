@@ -14,7 +14,7 @@ RSpec.describe "Link on tags for post in notifications", type: :system do
     end
 
     it "shows the sign-with page", js: true do
-      expect(page).to have_content(/Sign In With/i, count: 2)
+      expect(page).to have_content(/Sign In With/i, count: Authentication::Providers.available.size)
     end
   end
 

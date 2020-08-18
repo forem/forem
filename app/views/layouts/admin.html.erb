@@ -34,15 +34,17 @@
     </nav>
 
     <div class="container mt-3">
-      <% flash.each do |type, message| %>
-        <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
-          <button class="close" data-dismiss="alert">
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </button>
-          <%= message %>
-        </div>
-      <% end %>
-      <h1 class="mt-3"><%= controller_name.titleize %></h1>
+      <header>
+        <% flash.each do |type, message| %>
+          <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
+            <button class="close" data-dismiss="alert" aria-label="Close">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            <%= message %>
+          </div>
+        <% end %>
+        <h1 class="mt-3"><%= controller_name.titleize %></h1>
+      </header>
       <%= yield %>
     </div>
   </div>

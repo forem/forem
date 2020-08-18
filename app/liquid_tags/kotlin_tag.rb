@@ -19,7 +19,7 @@ class KotlinTag < LiquidTagBase
   end
 
   def self.embedded_url(link)
-    "https://play.kotlinlang.org/embed?" + URI.encode_www_form(parse_link(link))
+    "https://play.kotlinlang.org/embed?#{URI.encode_www_form(parse_link(link))}"
   end
 
   def self.parse_link(link)
