@@ -1,5 +1,5 @@
 <ul>
-  <% authentication_enabled_providers.each do |provider| %>
+  <% current_user_authentication_enabled_providers.each do |provider| %>
     <li><a href="<%= provider.settings_url %>"><%= provider.official_name %> profile settings</a></li>
   <% end %>
 </ul>

@@ -4,7 +4,7 @@ module Api
       before_action :set_cache_control_headers, only: %i[index show]
 
       ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id processed_html user_id ancestry deleted hidden_by_commentable_user
+        id processed_html user_id ancestry deleted hidden_by_commentable_user created_at
       ].freeze
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 

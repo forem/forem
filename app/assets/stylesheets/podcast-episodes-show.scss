@@ -1,7 +1,7 @@
 @import 'variables';
 
 .podcast-episode-container {
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
 
   .hero {
     padding-bottom: 30px;
@@ -205,7 +205,7 @@
   }
   .body {
     padding: calc(0.7vw + 4px) 0px calc(0.5vw + 2px);
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     img {
       min-height: 0px !important;
     }

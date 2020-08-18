@@ -67,6 +67,11 @@
       margin-top: 30px;
     }
 
+    #btn-clear, .paletteSelector select {
+      height: 30px;
+      cursor: pointer;
+    }
+
     .colors {
       z-index: 2;
       margin: 0 20px;
@@ -348,6 +353,10 @@
       activePalette = event.target.value
       render(palettes[activePalette].colors)
     }
+
+    document.getElementById('btn-clear').addEventListener('click', (e) => {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    });
 
     // Initialization when page is ready to load, runs once
     (function() {

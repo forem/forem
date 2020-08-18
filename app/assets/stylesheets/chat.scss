@@ -445,7 +445,7 @@
 
 .activechatchannel__activecontentuserdetails {
   margin-top: 20px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   font-size: 0.9em;
 
   .key {
@@ -748,7 +748,7 @@
     vertical-align: 0.05em;
     max-width: 100%;
     line-height: 1.4em;
-    font-family: var(--ff-accent);
+    font-family: var(--ff-monospace);
   }
 }
 
@@ -840,7 +840,7 @@
   position: absolute;
   top: -27px;
   left: 35px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   @include themeable(color, theme-color, $dark-gray);
 }
 
