@@ -41,6 +41,8 @@ class Article < ApplicationRecord
            class_name: "Comment"
   has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
   has_many :buffer_updates, dependent: :destroy
+  has_many :html_variant_successes, dependent: :nullify
+  has_many :html_variant_trials, dependent: :nullify
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :rating_votes
