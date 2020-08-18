@@ -1,11 +1,11 @@
 class BufferUpdate < ApplicationRecord
-  SOCIAL_SERVICE = {
+  SOCIAL_MEDIA = {
     "twitter" => ApplicationConfig["BUFFER_TWITTER_ID"],
     "facebook" => ApplicationConfig["BUFFER_FACEBOOK_ID"],
     "linkedin" => ApplicationConfig["BUFFER_LINKEDIN_ID"]
   }.freeze
 
-  DEFAULT_SOCIAL_SERVICE = "twitter".freeze
+  DEFAULT_SOCIAL_MEDIA = "twitter".freeze
 
   resourcify
 
@@ -14,8 +14,8 @@ class BufferUpdate < ApplicationRecord
   validates :status, inclusion: { in: %w[pending sent_direct confirmed dismissed] }
 
   def self.buff!(article_id, text, **kwargs)
-    social_service_name = kwargs.fetch(:social_service_name, DEFAULT_SOCIAL_SERVICE)
-    buffer_profile_id_code = kwargs.fetch(:buffer_profile_id_code, wich_social_service(social_service_name))
+    social_service_name = kwargs.fetch(:social_service_name, DEFAULT_SOCIAL_MEDIA)
+    buffer_profile_id_code = kwargs.fetch(:buffer_profile_id_code, SOCIAL_MEDIA.fetch(social_service_name))
     tag_id = kwargs[:tag_id]
     admin_id = kwargs[:admin_id]
 
@@ -63,10 +63,6 @@ class BufferUpdate < ApplicationRecord
       ("{ author: @#{article.user.twitter_username} } " if article.user.twitter_username?),
       SiteConfig.twitter_hashtag.presence,
     ].compact.join.strip
-  end
-
-  def self.wich_social_service(service_name)
-    SOCIAL_SERVICE.fetch(service_name)
   end
 
   private
