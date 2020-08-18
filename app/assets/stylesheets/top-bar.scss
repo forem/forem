@@ -48,6 +48,10 @@
 .top-bar--logo {
   display: flex;
 
+  &--logged-out {
+    width: 240px;
+  }
+
   .logo {
     width: 50px;
     height: 40px;
@@ -67,6 +71,12 @@
   @media (min-width: $breakpoint-s) {
     margin: 0 var(--su-4);
   }
+
+  &--logged-out {
+    @media (min-width: $breakpoint-s) {
+      max-width: $breakpoint-s;
+    }
+  }
 }
 
 // Actions on right side...
@@ -75,6 +85,9 @@
   display: flex;
   align-items: center;
   margin-left: auto;
+
+  &--logged-out {
+  }
 }
 
 .top-bar__link {
