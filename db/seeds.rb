@@ -477,6 +477,18 @@ seeder.create_if_none(Listing) do
   end
 end
 
+seeder.create_if_none(ListingEndorsement) do
+  user = User.last
+  listing = Listing.last
+
+  2.times do
+    ListingEndorsement.create!(
+      content: Faker::Lorem.sentence,
+      user: user,
+      listing: listing,
+    )
+  end
+end
 ##############################################################################
 
 seeder.create_if_none(Page) do

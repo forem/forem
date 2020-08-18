@@ -22,6 +22,12 @@ class Listing < ApplicationRecord
   after_commit :remove_from_elasticsearch, on: [:destroy]
   acts_as_taggable_on :tags
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
+  has_many :listing_endorsements,
+           -> { where(approved: true) },
+           as: :endorsements,
+           foreign_key: :classified_listing_id,
+           dependent: :destroy,
+           inverse_of: :listing
 
   validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
