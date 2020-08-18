@@ -7,6 +7,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
+import notifyUser from '../utilities/connect/newMessageNotify';
 import debounceAction from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
 import {
@@ -450,13 +451,13 @@ export default class Chat extends Component {
       activeChannelId,
       scrolled,
       chatChannels,
+      currentUserId,
       unopenedChannelIds,
     } = this.state;
 
     const receivedChatChannelId = message.chat_channel_id;
     const messageList = document.getElementById('messagelist');
     let newMessages = [];
-
     const nearBottom =
       messageList.scrollTop + messageList.offsetHeight + 400 >
       messageList.scrollHeight;
@@ -464,7 +465,12 @@ export default class Chat extends Component {
     if (nearBottom) {
       scrollToBottom();
     }
-    // Remove reduntant messages
+
+    // If I'm not sender
+    if (message.user_id !== currentUserId) {
+      notifyUser();
+    }
+
     if (
       message.temp_id &&
       messages[receivedChatChannelId] &&
@@ -472,6 +478,7 @@ export default class Chat extends Component {
         (oldmessage) => oldmessage.temp_id === message.temp_id,
       ) > -1
     ) {
+      // Remove reduntant messages
       return;
     }
 
