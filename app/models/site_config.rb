@@ -30,6 +30,7 @@ class SiteConfig < RailsSettings::Base
   field :community_member_label, type: :string, default: "user"
   field :community_action, type: :string
   field :tagline, type: :string
+  field :community_copyright_start_year, type: :integer, default: 2020
 
   # Emails
   field :email_addresses, type: :hash, default: {

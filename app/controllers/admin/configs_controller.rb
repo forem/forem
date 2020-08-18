@@ -96,6 +96,7 @@ module Admin
         community_description
         community_member_label
         community_action
+        community_copyright_start_year
         tagline
       ]
     end

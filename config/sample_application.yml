@@ -3,7 +3,6 @@ APP_DOMAIN: "localhost:3000"
 APP_PROTOCOL: "http://"
 
 # Community Related Variables
-COMMUNITY_COPYRIGHT_START_YEAR: "2016"
 COMMUNITY_NAME: "DEV(local)"
 
 # Email related variables
