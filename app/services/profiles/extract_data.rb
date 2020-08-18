@@ -2,7 +2,7 @@ module Profiles
   module ExtractData
     DIRECT_ATTRIBUTES = %i[
       available_for
-      behance_urL
+      behance_url
       currently_hacking_on
       currently_learning
       dribble_url
