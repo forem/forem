@@ -446,7 +446,7 @@ RSpec.describe Article, type: :model do
       article.update(body_markdown: body, approved: true)
 
       Timecop.travel(1.second.from_now) do
-        article.update(body_markdown: body + "s")
+        article.update(body_markdown: "#{body}s")
       end
 
       expect(article.featured_number).not_to eq(article.updated_at.to_i)

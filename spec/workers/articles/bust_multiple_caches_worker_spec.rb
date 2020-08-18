@@ -12,7 +12,7 @@ RSpec.describe Articles::BustMultipleCachesWorker, type: :worker do
       worker.perform([article.id])
 
       expect(CacheBuster).to have_received(:bust).with(path).once
-      expect(CacheBuster).to have_received(:bust).with(path + "?i=i").once
+      expect(CacheBuster).to have_received(:bust).with("#{path}?i=i").once
     end
   end
 end

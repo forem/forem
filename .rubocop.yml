@@ -499,7 +499,7 @@ Style/SlicingWithRange:
 Style/StringConcatenation:
   Description: 'Checks for places where string concatenation can be replaced with string interpolation.'
   StyleGuide: '#string-interpolation'
-  Enabled: pending
+  Enabled: true
 
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
