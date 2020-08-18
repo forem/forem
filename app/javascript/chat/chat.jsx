@@ -910,7 +910,6 @@ export default class Chat extends Component {
         searchType: '',
         paginationNumber: 0,
       };
-      console.log(acceptedInfo);
       getChannels(searchParams, 'all', this.loadChannels);
       this.triggerSwitchChannel(
         parseInt(acceptedInfo.channelId, 10),
