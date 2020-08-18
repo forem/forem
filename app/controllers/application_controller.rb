@@ -126,4 +126,12 @@ class ApplicationController < ActionController::Base
   def api_action?
     self.class.to_s.start_with?("Api::")
   end
+
+  def initialize_stripe
+    Rails.configuration.stripe = {
+      publishable_key: "Set dynamically instead of once at boot."
+    }
+
+    Stripe.api_key = "Also set dynamically instead of once at boot."
+  end
 end
