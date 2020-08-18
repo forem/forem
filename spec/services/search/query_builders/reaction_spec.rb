@@ -81,8 +81,8 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
     it "allows default params to be overriden" do
       params = { sort_by: "status", sort_direction: "asc", size: 20 }
       filter = described_class.new(params: params).as_hash
-      expect(filter.dig("sort")).to eq("status" => "asc")
-      expect(filter.dig("size")).to eq(20)
+      expect(filter["sort"]).to eq("status" => "asc")
+      expect(filter["size"]).to eq(20)
     end
   end
 

@@ -99,16 +99,16 @@ RSpec.describe Search::QueryBuilders::Listing, type: :service do
 
     it "sets default params when not present" do
       filter = described_class.new(params: {}).as_hash
-      expect(filter.dig("sort")).to eq("bumped_at" => "desc")
-      expect(filter.dig("size")).to eq(0)
+      expect(filter["sort"]).to eq("bumped_at" => "desc")
+      expect(filter["size"]).to eq(0)
       expect(filter.dig("query", "bool", "filter")).to match_array([{ "terms" => { "published" => [true] } }])
     end
 
     it "allows default params to be overriden" do
       params = { sort_by: "category", sort_direction: "asc", size: 20 }
       filter = described_class.new(params: params).as_hash
-      expect(filter.dig("sort")).to eq("category" => "asc")
-      expect(filter.dig("size")).to eq(20)
+      expect(filter["sort"]).to eq("category" => "asc")
+      expect(filter["size"]).to eq(20)
     end
   end
 end

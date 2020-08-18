@@ -19,7 +19,7 @@ RSpec.describe PodcastTag, type: :liquid_tag do
 
     it "raises error if podcast does not exist" do
       expect do
-        generate_podcast_liquid_tag(valid_long_slug + "1")
+        generate_podcast_liquid_tag("#{valid_long_slug}1")
       end.to raise_error(StandardError)
     end
   end

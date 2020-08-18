@@ -1,5 +1,4 @@
 @import 'config/import';
-@import 'fonts';
 
 .rich-selector {
   background: var(--card-secondary-bg);
@@ -9,25 +8,24 @@
 }
 
 // Font styles
-.font-selector--default {
-  font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua',
-    Georgia, serif;
+.font-selector--serif {
+  font-family: var(--ff-serif);
 }
 
 .font-selector--sans-serif {
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
 }
 
 .font-selector--monospace {
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
 }
 
 .font-selector--comic-sans {
-  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-family: var(--ff-comic);
 }
 
 .font-selector--open-dyslexic {
-  font-family: OpenDyslexic, sans-serif;
+  font-family: var(--ff-dyslexic);
   font-display: swap;
 }
 
