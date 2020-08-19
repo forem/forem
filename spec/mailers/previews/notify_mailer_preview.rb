@@ -64,7 +64,7 @@ class NotifyMailerPreview < ActionMailer::Preview
     HEREDOC
     params = {
       email_to: @user.email,
-      email_subject: "Courtesy notice from #{ApplicationConfig['COMMUNITY_NAME']}",
+      email_subject: "Courtesy notice from #{SiteConfig.community_name}",
       email_body: email_body,
       email_type: "Reporter",
       feedback_message_id: rand(100)

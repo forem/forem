@@ -3,7 +3,7 @@ module BadgeRewarder
   REPOSITORIES = ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].freeze
 
   LONGEST_STREAK_WEEKS = 16
-  LONGEST_STREAK_MESSAGE = "16 weeks! You've achieved the longest #{ApplicationConfig['COMMUNITY_NAME']} writing " \
+  LONGEST_STREAK_MESSAGE = "16 weeks! You've achieved the longest writing " \
     "streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to" \
     " our community!".freeze
 
@@ -12,7 +12,7 @@ module BadgeRewarder
   def self.award_yearly_club_badges
     total_years = Time.current.year - SiteConfig.community_copyright_start_year.to_i
     (1..total_years).each do |i|
-      message = "Happy #{ApplicationConfig['COMMUNITY_NAME']} birthday! " \
+      message = "Happy #{SiteConfig.community_name} birthday! " \
         "Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
       badge = Badge.find_by!(slug: "#{YEARS[i]}-year-club")
       User.registered.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
