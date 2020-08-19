@@ -481,8 +481,8 @@ seeder.create_if_none(ListingEndorsement) do
   5.times do
     ListingEndorsement.create!(
       content: Faker::Lorem.sentence,
-      user: User.find(rand(1...10)),
-      listing: Listing.find(rand(1...3)),
+      user: User.order(Arel.sql("RANDOM()")).first,
+      listing: Listing.order(Arel.sql("RANDOM()")).first,
     )
   end
 end
