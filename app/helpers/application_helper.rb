@@ -188,10 +188,10 @@ module ApplicationHelper
   end
 
   def copyright_notice
-    start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
+    start_year = SiteConfig.community_copyright_start_year.to_s
     current_year = Time.current.year.to_s
     return start_year if current_year == start_year
-    return current_year if start_year.strip.length.zero?
+    return current_year if start_year.strip.length < 4 # 978 is not a valid year!
 
     "#{start_year} - #{current_year}"
   end

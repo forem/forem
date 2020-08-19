@@ -96,6 +96,13 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.community_member_label).to eq(action)
         end
 
+        it "updates the community_copyright_start_year" do
+          year = "2018"
+          post "/admin/config", params: { site_config: { community_copyright_start_year: year },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.community_copyright_start_year).to eq(2018)
+        end
+
         it "updates the tagline" do
           description = "Hey hey #{rand(100)}"
           post "/admin/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
