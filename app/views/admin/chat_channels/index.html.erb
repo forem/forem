@@ -32,6 +32,9 @@
       <th scope="col">Users</th>
       <th scope="col">Add Users</th>
       <th scope="col">Remove User</th>
+      <% if current_user.any_admin? %>
+        <th scope="th">Delete Channel</th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
@@ -51,6 +54,15 @@
               <%= f.submit "Remove From channel", data: { confirm: "Are you sure you want to remove this user?" } %>
             <% end %>
           </td>
+          <% if current_user.any_admin? %>
+            <td>
+              <% if channel.users.count.zero? %>
+                <%= button_to "Delete Channel", { action: "destroy", id: channel.id }, method: :delete, data: { confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--danger" %>
+              <% else %>
+                Cannot delete; channel has users
+              <% end %>
+            </td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>
