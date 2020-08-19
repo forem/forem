@@ -108,6 +108,11 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
           expect(SiteConfig.tagline).to eq(description)
         end
+
+        it "updates the staff_user_id" do
+          post "/admin/config", params: { site_config: { staff_user_id: 22 }, confirmation: confirmation_message }
+          expect(SiteConfig.staff_user_id).to eq(22)
+        end
       end
 
       describe "Emails" do
@@ -445,12 +450,6 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Social Media" do
-        it "does not allow the staff_user_id to be updated" do
-          expect(SiteConfig.staff_user_id).to eq(1)
-          post "/admin/config", params: { site_config: { staff_user_id: 2 }, confirmation: confirmation_message }
-          expect(SiteConfig.staff_user_id).to eq(1)
-        end
-
         it "updates social_media_handles" do
           expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "" }
           post "/admin/config", params: { site_config: { social_media_handles: expected_handle },
