@@ -243,6 +243,15 @@
                                placeholder: "We're a place where coders share, stay up-to-date and grow their careers." %>
               <div class="alert alert-info">Used in signup modal.</div>
             </div>
+
+            <div class="form-group">
+              <%= admin_config_label :community_copyright_start_year %>
+              <%= f.text_field :community_copyright_start_year,
+                               class: "form-control",
+                               value: SiteConfig.community_copyright_start_year,
+                               placeholder: Constants::SiteConfig::DETAILS[:community_copyright_start_year][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_copyright_start_year][:description] %></div>
+            </div>
           </div>
         </div>
 

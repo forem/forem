@@ -10,7 +10,7 @@ module BadgeRewarder
   MINIMUM_QUALITY = -25
 
   def self.award_yearly_club_badges
-    total_years = Time.current.year - ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"].to_i
+    total_years = Time.current.year - SiteConfig.community_copyright_start_year.to_i
     (1..total_years).each do |i|
       message = "Happy #{ApplicationConfig['COMMUNITY_NAME']} birthday! " \
         "Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
