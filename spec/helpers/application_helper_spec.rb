@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper, type: :helper do
+  include CloudinaryHelper
+
   describe "#community_name" do
     it "equals to the community name" do
       allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("SLOAN")
@@ -197,6 +199,23 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     it "keeps an ASCII domain as ASCII" do
       expect(helper.cloudinary("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
+    end
+  end
+
+  describe "#optimized_image_tag" do
+    it "works just like cl_image_tag" do
+      image_url = "https://i.imgur.com/fKYKgo4.png"
+      cloudinary_image_tag = cl_image_tag(image_url,
+                                          type: "fetch", crop: "imagga_scale",
+                                          quality: "auto", flags: "progressive",
+                                          fetch_format: "auto", sign_url: true,
+                                          loading: "lazy", alt: "profile image",
+                                          width: 100, height: 100)
+      optimized_helper = helper.optimized_image_tag(image_url,
+                                                    optimizer_options: { crop: "imagga_scale", width: 100,
+                                                                         height: 100 },
+                                                    image_options: { loading: "lazy", alt: "profile image" })
+      expect(optimized_helper).to eq(cloudinary_image_tag)
     end
   end
 end
