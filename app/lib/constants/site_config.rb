@@ -45,6 +45,10 @@ module Constants
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
       },
+      staff_user_id: {
+        description: "Account ID which acts as automated 'staff'— used principally for welcome thread.",
+        placeholder: ""
+      },
       tagline: {
         description: "Used in signup modal.",
         placeholder: "We're a place where coders share, stay up-to-date and grow their careers."
