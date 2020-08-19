@@ -249,8 +249,8 @@
               <%= f.text_field :community_copyright_start_year,
                                class: "form-control",
                                value: SiteConfig.community_copyright_start_year,
-                               placeholder: "2020" %>
-              <div class="alert alert-info">Used in the footer to note what year the forem started.</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:community_copyright_start_year][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_copyright_start_year][:description] %></div>
             </div>
           </div>
         </div>

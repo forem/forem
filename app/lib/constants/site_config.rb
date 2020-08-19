@@ -43,7 +43,7 @@ module Constants
       },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
-        placeholder: "2020"
+        placeholder: Time.zone.today.year.to_s
       },
       tagline: {
         description: "Used in signup modal.",
