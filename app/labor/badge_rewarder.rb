@@ -88,6 +88,18 @@ module BadgeRewarder
     end
   end
 
+  def self.award_four_week_streak_badge
+    award_streak_badge(4)
+  end
+
+  def self.award_eight_week_streak_badge
+    award_streak_badge(8)
+  end
+
+  def self.award_sixteen_week_streak_badge
+    award_streak_badge(16)
+  end
+
   def self.award_streak_badge(num_weeks)
     # No credit for super low quality
     article_user_ids = Article.published
