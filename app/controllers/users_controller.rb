@@ -335,7 +335,7 @@ class UsersController < ApplicationController
   end
 
   def handle_account_tab
-    community_name = ApplicationConfig["COMMUNITY_NAME"]
+    community_name = SiteConfig.community_name
     @email_body = <<~HEREDOC
       Hello #{community_name} Team,\n
       I would like to delete my account.\n

@@ -31,7 +31,7 @@ RSpec.describe "Organization index", type: :system do
       end
 
       it "shows the proper title tag" do
-        expect(page).to have_title("#{organization.name} - #{ApplicationConfig['COMMUNITY_NAME']}")
+        expect(page).to have_title("#{organization.name} - #{SiteConfig.community_name}")
       end
     end
 

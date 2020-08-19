@@ -1,27 +1,33 @@
-<h2>Create New Connect Channel</h2>
-<div class="row m-3">
-  <div class="col">
-    <%= form_for [:admin, ChatChannel.new], html: { class: "inline-form" } do |f| %>
-      <div class="form-row">
-        <div class="form-group">
-          <%= f.text_field :channel_name, placeholder: "Channel Name", required: true %>
-          <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
-          <%= f.submit %>
+<aside>
+  <h2>Create New Connect Channel</h2>
+  <div class="row m-3">
+    <div class="col">
+      <%= form_for [:admin, ChatChannel.new], html: { class: "inline-form" } do |f| %>
+        <div class="form-row">
+          <div class="form-group">
+            <%= f.label :channel_name, "Channel Name", class: "sr-only" %>
+            <%= f.text_field :channel_name, placeholder: "Channel Name", required: true %>
+            <%= f.label :usernames_string, "Usernames", class: "sr-only" %>
+            <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
+            <%= f.submit %>
+          </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   </div>
-</div>
-<h2>Group Connect Channels</h2>
-<div class="row m-3">
-  <div class="col">
-  </div>
-  <div class="col">
-    <%= search_form_for @q, url: admin_chat_channels_path, class: "form-inline justify-content-end" do |f| %>
-      <%= f.label :channel_name_cont, "Channel Name", class: "sr-only" %>
-      <%= f.search_field :channel_name_cont, placeholder: "Channel Name", class: "form-control mx-3" %>
-      <%= f.submit "Search", class: "btn btn-secondary" %>
-    <% end %>
+</aside>
+<main>
+  <h2>Group Connect Channels</h2>
+  <div class="row m-3">
+    <div class="col">
+    </div>
+    <div class="col">
+      <%= search_form_for @q, url: admin_chat_channels_path, class: "form-inline justify-content-end" do |f| %>
+        <%= f.label :channel_name_cont, "Channel Name", class: "sr-only" %>
+        <%= f.search_field :channel_name_cont, placeholder: "Channel Name", class: "form-control mx-3" %>
+        <%= f.submit "Search", class: "btn btn-secondary" %>
+      <% end %>
+    </div>
   </div>
 </div>
 <%= paginate @group_chat_channels %>
@@ -68,3 +74,4 @@
     </tbody>
   </table>
   <%= paginate @group_chat_channels %>
+</main>
