@@ -298,7 +298,8 @@ class User < ApplicationRecord
   end
 
   def any_admin?
-    has_role?(:super_admin) || has_role?(:admin)
+    # done this way for performance improvement
+    @any_admin ||= (has_role?(:super_admin) || has_role?(:admin))
   end
 
   def tech_admin?

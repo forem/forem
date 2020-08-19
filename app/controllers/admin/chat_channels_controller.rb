@@ -35,7 +35,7 @@ module Admin
         @chat_channel.destroy
         flash[:success] = "Channel was successfully deleted."
       else
-        flash[:alert] = "Channel NOT deleted!"
+        flash[:alert] = "Channel NOT deleted, because it still has users."
       end
       redirect_back(fallback_location: "/admin/chat_channels")
     end
