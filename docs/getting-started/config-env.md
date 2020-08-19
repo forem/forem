@@ -11,11 +11,11 @@ The [backend guide][backend_guide] will show you how to get free API keys for
 additional services that may be required to run certain parts of the app.
 
 To set up keys for your local instance of Forem, you'll need to create an `.env`
-file. You can do this by copying the file called `.env_sample` in the `config`
+file. You can do this by copying the file called `.env_sample` in the app's main
 directory:
 
 ```shell
-cp config/.env_sample .env
+cp .env_sample .env
 ```
 
 Then, add each key you need to the `.env` file. For example, if you're setting

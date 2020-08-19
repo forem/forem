@@ -43,7 +43,7 @@ install: true
 script:
   - date --rfc-3339=seconds
   - nvm install
-  - cp config/.env_sample .env
+  - cp .env_sample .env
   - pkill -9 -f elasticsearch || true
   - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
   - sudo dpkg -i --force-confnew elasticsearch-7.5.2-amd64.deb
