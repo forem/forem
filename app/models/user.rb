@@ -297,9 +297,9 @@ class User < ApplicationRecord
     has_role?(:super_admin)
   end
 
+  # this method will be optimized in a seperate PR
   def any_admin?
-    # done this way for performance improvement
-    @any_admin ||= (has_role?(:super_admin) || has_role?(:admin))
+    has_role?(:super_admin) || has_role?(:admin)
   end
 
   def tech_admin?
