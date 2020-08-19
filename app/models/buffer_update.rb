@@ -1,13 +1,24 @@
 class BufferUpdate < ApplicationRecord
+  SOCIAL_MEDIA = {
+    "twitter" => ApplicationConfig["BUFFER_TWITTER_ID"],
+    "facebook" => ApplicationConfig["BUFFER_FACEBOOK_ID"],
+    "linkedin" => ApplicationConfig["BUFFER_LINKEDIN_ID"]
+  }.freeze
+
+  DEFAULT_SOCIAL_MEDIA = "twitter".freeze
+
   resourcify
 
   belongs_to :article
   validate :validate_body_text_recent_uniqueness, :validate_suggestion_limit
   validates :status, inclusion: { in: %w[pending sent_direct confirmed dismissed] }
 
-  def self.buff!(
-    article_id, text, buffer_profile_id_code, social_service_name = "twitter", tag_id = nil, admin_id = nil
-  )
+  def self.buff!(article_id, text, **kwargs)
+    social_service_name = kwargs.fetch(:social_service_name, DEFAULT_SOCIAL_MEDIA)
+    buffer_profile_id_code = kwargs.fetch(:buffer_profile_id_code, SOCIAL_MEDIA.fetch(social_service_name))
+    tag_id = kwargs[:tag_id]
+    admin_id = kwargs[:admin_id]
+
     buffer_response = send_to_buffer(text, buffer_profile_id_code)
     create(
       article_id: article_id,

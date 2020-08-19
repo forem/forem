@@ -113,7 +113,7 @@ RSpec.describe "ArticlesShow", type: :request do
 
   context "when user not signed in but internal nav triggered" do
     before do
-      get article.path + "?i=i"
+      get "#{article.path}?i=i"
     end
 
     describe "GET /:slug (user)" do

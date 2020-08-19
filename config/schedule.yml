@@ -10,3 +10,17 @@ record_daily_notifications:
 record_data_counts:
   cron: "10 * * * *" # every hour, 10 min after the hour
   class: "Metrics::RecordDataCountsWorker"
+award_yearly_club_badges:
+  cron: "0 0 * * *" # daily at 12 am UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_yearly_club_badges
+    - ""
+award_beloved_comment_badges:
+  cron: "5 0 * * *" # daily at 12:05 am UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_beloved_comment_badges
+    - ""

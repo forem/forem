@@ -10,7 +10,7 @@ class User < ApplicationRecord
   DRIBBBLE_URL_REGEXP = %r{\A(http(s)?://)?(www.dribbble.com|dribbble.com)/.*\z}.freeze
   EDITORS = %w[v1 v2].freeze
   FACEBOOK_URL_REGEXP = %r{\A(http(s)?://)?(www.facebook.com|facebook.com)/.*\z}.freeze
-  FONTS = %w[default sans_serif monospace comic_sans open_dyslexic].freeze
+  FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
   GITLAB_URL_REGEXP = %r{\A(http(s)?://)?(www.gitlab.com|gitlab.com)/.*\z}.freeze
   INBOXES = %w[open private].freeze
   INSTAGRAM_URL_REGEXP =
@@ -62,6 +62,8 @@ class User < ApplicationRecord
                            foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
+  has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :destroy
+  has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :destroy
   has_many :api_secrets, dependent: :destroy
   has_many :articles, dependent: :destroy
   has_many :audit_logs, dependent: :nullify
@@ -117,7 +119,7 @@ class User < ApplicationRecord
 
   validates :behance_url, length: { maximum: 100 }, allow_blank: true, format: BEHANCE_URL_REGEXP
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
-  validates :config_font, inclusion: { in: FONTS, message: MESSAGES[:invalid_config_font] }
+  validates :config_font, inclusion: { in: FONTS + ["default".freeze], message: MESSAGES[:invalid_config_font] }
   validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }
   validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
   validates :currently_streaming_on, inclusion: { in: STREAMING_PLATFORMS }, allow_nil: true
@@ -226,7 +228,7 @@ class User < ApplicationRecord
   end
 
   def path
-    "/" + username.to_s
+    "/#{username}"
   end
 
   def followed_articles
@@ -515,7 +517,7 @@ class User < ApplicationRecord
 
   def set_temp_username
     self.username = if temp_name_exists?
-                      temp_username + "_" + rand(100).to_s
+                      "#{temp_username}_#{rand(100)}"
                     else
                       temp_username
                     end

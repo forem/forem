@@ -8,7 +8,7 @@
   </div>
 <% end %>
 
-<div class="row">
+<main class="row">
   <div class="col-12">
     <ul class="nav nav-tabs nav-fill">
       <li class="nav-item">
@@ -55,7 +55,7 @@
             <div class="card-body">
               <h4>Score: <%= buffer_update.article.score %></h4>
               <div class="blockquote">
-                <%= HTML_Truncator.truncate(buffer_update.article.processed_html, 50, ellipsis: '<a class="comment-read-more" href="' + buffer_update.article.path + '">... Read Entire Post</a>').html_safe %>
+                <%= HTML_Truncator.truncate(buffer_update.article.processed_html, 50, ellipsis: "<a class=\"comment-read-more\" href=\"#{buffer_update.article.path}\">... Read Entire Post</a>").html_safe %>
               </div>
               <hr />
 
@@ -104,6 +104,6 @@
 
     <%= paginate @articles %>
   </div>
-</div>
+</main>
 
 <%= render "image_upload_script" %>

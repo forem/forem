@@ -44,7 +44,7 @@ RSpec.describe Search::Reaction, type: :service do
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
         expect(reaction_docs.count).to eq(2)
-        doc_ids = reaction_docs.map { |t| t.dig("id") }
+        doc_ids = reaction_docs.map { |t| t["id"] }
         expect(doc_ids).to include(reaction1.id, reaction2.id)
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe Search::Reaction, type: :service do
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
         expect(reaction_docs.count).to eq(1)
-        doc_ids = reaction_docs.map { |t| t.dig("id") }
+        doc_ids = reaction_docs.map { |t| t["id"] }
         expect(doc_ids).to include(reaction1.id)
       end
 
@@ -75,7 +75,7 @@ RSpec.describe Search::Reaction, type: :service do
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
         expect(reaction_docs.count).to eq(1)
-        doc_ids = reaction_docs.map { |t| t.dig("id") }
+        doc_ids = reaction_docs.map { |t| t["id"] }
         expect(doc_ids).to include(reaction2.id)
       end
 
@@ -85,7 +85,7 @@ RSpec.describe Search::Reaction, type: :service do
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
         expect(reaction_docs.count).to eq(1)
-        doc_ids = reaction_docs.map { |t| t.dig("id") }
+        doc_ids = reaction_docs.map { |t| t["id"] }
         expect(doc_ids).to include(reaction1.id)
       end
 
@@ -96,7 +96,7 @@ RSpec.describe Search::Reaction, type: :service do
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
         expect(reaction_docs.count).to eq(1)
-        doc_ids = reaction_docs.map { |t| t.dig("id") }
+        doc_ids = reaction_docs.map { |t| t["id"] }
         expect(doc_ids).to include(reaction2.id)
       end
 
@@ -106,7 +106,7 @@ RSpec.describe Search::Reaction, type: :service do
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
         expect(reaction_docs.count).to eq(1)
-        doc_ids = reaction_docs.map { |t| t.dig("id") }
+        doc_ids = reaction_docs.map { |t| t["id"] }
         expect(doc_ids).to include(reaction2.id)
       end
     end
@@ -116,7 +116,7 @@ RSpec.describe Search::Reaction, type: :service do
         index_documents([reaction1, reaction2])
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
-        doc_ids = reaction_docs.map { |t| t.dig("id") }
+        doc_ids = reaction_docs.map { |t| t["id"] }
         expect(doc_ids).to eq([reaction2.id, reaction1.id])
       end
     end

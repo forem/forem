@@ -1,0 +1,49 @@
+@import '../mixins';
+
+@font-face {
+  font-family: OpenDyslexic;
+  @include font-src('OpenDyslexic-Regular.otf');
+  font-style: normal;
+  font-weight: normal;
+}
+@font-face {
+  font-family: OpenDyslexic;
+  @include font-src('OpenDyslexic-Italic.otf');
+  font-style: italic;
+  font-weight: normal;
+}
+@font-face {
+  font-family: OpenDyslexic;
+  @include font-src('OpenDyslexic-Bold.otf');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: OpenDyslexic;
+  @include font-src('OpenDyslexic-BoldItalic.otf');
+  font-weight: bold;
+  font-style: italic;
+}
+
+// Content fonts
+body {
+  &.serif-article-body {
+    --content-font-family: var(--ff-serif);
+  }
+
+  &.sans-serif-article-body {
+    --content-font-family: var(--ff-sans-serif);
+  }
+
+  &.comic-sans-article-body {
+    --content-font-family: var(--ff-comic);
+  }
+
+  &.monospace-article-body {
+    --content-font-family: var(--ff-monospace);
+  }
+
+  &.open-dyslexic-article-body {
+    --content-font-family: var(--ff-dyslexic);
+  }
+}

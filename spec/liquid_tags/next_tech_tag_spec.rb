@@ -17,7 +17,7 @@ RSpec.describe NextTechTag, type: :liquid_template do
 
     it "accepts nexttech link with a / at the end" do
       expect do
-        generate_new_liquid(nexttech_link + "/")
+        generate_new_liquid("#{nexttech_link}/")
       end.not_to raise_error
     end
 

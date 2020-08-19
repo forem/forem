@@ -36,6 +36,7 @@ latest.dump
 
 # Ignore application configuration
 /config/application.yml
+/config/application_unused.yml
 /public/packs
 /public/packs-test
 /node_modules

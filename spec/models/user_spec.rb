@@ -34,6 +34,8 @@ RSpec.describe User, type: :model do
     describe "builtin validations" do
       subject { user }
 
+      it { is_expected.to have_many(:ahoy_events).dependent(:destroy) }
+      it { is_expected.to have_many(:ahoy_visits).dependent(:destroy) }
       it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
       it { is_expected.to have_many(:articles).dependent(:destroy) }
       it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
@@ -972,7 +974,7 @@ RSpec.describe User, type: :model do
 
   describe "theming properties" do
     it "creates proper body class with defaults" do
-      classes = "default default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
@@ -1008,14 +1010,14 @@ RSpec.describe User, type: :model do
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
 
-      classes = "night-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
 
-      classes = "pink-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
