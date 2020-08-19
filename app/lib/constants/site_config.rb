@@ -149,7 +149,7 @@ module Constants
         placeholder: "sk_live_...."
       },
       stripe_publishable_key: {
-        description: "Public stripe key for receiving payments. " \
+        description: "Public Stripe key for receiving payments. " \
         "See: https://stripe.com/docs/keys",
         placeholder: "pk_live_...."
       },
