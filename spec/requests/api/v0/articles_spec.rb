@@ -795,7 +795,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(response.parsed_body["id"]).description).to eq("yoooo" * 20 + "y...")
+        expect(Article.find(response.parsed_body["id"]).description).to eq("#{'yoooo' * 20}y...")
       end
 
       it "does not raise an error if article params are missing" do

@@ -33,12 +33,24 @@ module Constants
         description: "Used in meta description tags etc.",
         placeholder: "A fabulous community of kind and welcoming people."
       },
+      community_name: {
+        description: "Primary name... e.g. DEV",
+        placeholder: "New Forem"
+      },
       community_member_label: {
         description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
         placeholder: "user"
       },
       community_action: {
         description: "Used to determine the action of community e.g coding, reading, training etc.",
+        placeholder: ""
+      },
+      community_copyright_start_year: {
+        description: "Used to mark the year this forem was started.",
+        placeholder: Time.zone.today.year.to_s
+      },
+      staff_user_id: {
+        description: "Account ID which acts as automated 'staff'— used principally for welcome thread.",
         placeholder: ""
       },
       tagline: {
@@ -69,10 +81,6 @@ module Constants
       ga_view_id: {
         description: "Google Analytics Reporting API v4 - View ID",
         placeholder: ""
-      },
-      ga_fetch_rate: {
-        description: "Determines how often the site updates its Google Analytics stats",
-        placeholder: 1
       },
       main_social_image: {
         description: "Used as the main image in social networks and OpenGraph",
@@ -185,6 +193,9 @@ module Constants
       feed_style: {
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
         placeholder: "basic, rich, or compact"
+      },
+      default_font: {
+        description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
       }
       # Dynamic values ommitted: configurable_rate_limits and social_media_handles
     }.freeze

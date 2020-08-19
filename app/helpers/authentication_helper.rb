@@ -14,4 +14,11 @@ module AuthenticationHelper
       Authentication::Providers.get!(provider_name)
     end
   end
+
+  def current_user_authentication_enabled_providers
+    providers = Authentication::Providers.enabled & current_user.identities.pluck(:provider).map(&:to_sym)
+    providers.sort.map do |provider_name|
+      Authentication::Providers.get!(provider_name)
+    end
+  end
 end

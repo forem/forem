@@ -54,7 +54,7 @@ module Search
       end
 
       def document_count
-        Search::Client.count(index: self::INDEX_ALIAS).dig("count")
+        Search::Client.count(index: self::INDEX_ALIAS)["count"]
       end
 
       def search_documents(params:)
@@ -69,7 +69,7 @@ module Search
       private
 
       def prepare_doc(hit)
-        hit.dig("_source")
+        hit["_source"]
       end
 
       def search(body:)
