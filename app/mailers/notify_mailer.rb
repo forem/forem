@@ -18,7 +18,7 @@ class NotifyMailer < ApplicationMailer
     @follower = follow.follower
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_follower_notifications)
 
-    mail(to: @user.email, subject: "#{@follower.name} just followed you on #{SiteConfig.community_name}")
+    mail(to: @user.email, subject: "#{@follower.name} #{subjects[__method__]}")
   end
 
   def new_mention_email
@@ -138,5 +138,11 @@ class NotifyMailer < ApplicationMailer
 
     subject = "You've been upgraded to #{SiteConfig.community_name} Community mod status!"
     mail(to: @user.email, subject: subject)
+  end
+
+  def subjects
+    {
+      new_follower_email: "".freeze
+    }.freeze
   end
 end
