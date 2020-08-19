@@ -218,8 +218,7 @@ your local Elasticsearch installation, for example:
    - For any key that you wish to enter/replace, follow the steps below.
 
      1. Create `.env` by copying from the provided template (i.e. with bash:
-        `cp config/.env_sample .env`). This is a personal file that is ignored
-        in git.
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      2. Obtain the development variable and apply the key you wish to
         enter/replace. i.e.:
 
