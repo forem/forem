@@ -51,7 +51,11 @@
   &--logged-out {
     width: auto;
 
-    @media (min-width: $breakpoint-s) {
+    @media (min-width: $breakpoint-m) {
+      width: 2fr;
+    }
+
+    @media (min-width: $breakpoint-l) {
       width: 240px;
     }
   }
