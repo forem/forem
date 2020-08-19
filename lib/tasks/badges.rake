@@ -1,5 +1,4 @@
 task award_badges: :environment do
-  BadgeRewarder.award_beloved_comment_badges
   BadgeRewarder.award_streak_badge(4)
   BadgeRewarder.award_streak_badge(8)
   BadgeRewarder.award_streak_badge(16)
