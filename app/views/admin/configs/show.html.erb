@@ -252,6 +252,15 @@
                                placeholder: Constants::SiteConfig::DETAILS[:community_copyright_start_year][:placeholder] %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_copyright_start_year][:description] %></div>
             </div>
+
+            <div class="form-group">
+              <%= admin_config_label :staff_user_id %>
+              <%= f.text_field :staff_user_id,
+                               class: "form-control",
+                               value: SiteConfig.staff_user_id,
+                               placeholder: Constants::SiteConfig::DETAILS[:staff_user_id][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:staff_user_id][:description] %></div>
+            </div>
           </div>
         </div>
 
