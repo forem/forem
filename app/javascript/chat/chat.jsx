@@ -1842,11 +1842,6 @@ export default class Chat extends Component {
 
   render() {
     const { state } = this;
-    const detectIOSSafariClass =
-      navigator.userAgent.match(/iPhone/i) &&
-      !navigator.userAgent.match('CriOS')
-        ? ' chat--iossafari'
-        : '';
     let channelHeader = <div className="active-channel__header">&nbsp;</div>;
     if (state.activeChannel) {
       channelHeader = (
@@ -1867,9 +1862,9 @@ export default class Chat extends Component {
       <div
         data-testid="chat"
         className={`chat chat--expanded
-        ${detectIOSSafariClass} chat--${
-          state.videoPath ? 'video-visible' : 'video-not-visible'
-        } chat--${
+         chat--${
+           state.videoPath ? 'video-visible' : 'video-not-visible'
+         } chat--${
           state.activeContent[state.activeChannelId]
             ? 'content-visible'
             : 'content-not-visible'

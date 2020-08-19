@@ -4,6 +4,7 @@ module VerifySetupCompleted
   module_function
 
   MANDATORY_CONFIGS = %i[
+    community_name
     community_description
     community_action
     tagline

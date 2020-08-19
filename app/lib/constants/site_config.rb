@@ -33,12 +33,24 @@ module Constants
         description: "Used in meta description tags etc.",
         placeholder: "A fabulous community of kind and welcoming people."
       },
+      community_name: {
+        description: "Primary name... e.g. DEV",
+        placeholder: "New Forem"
+      },
       community_member_label: {
         description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
         placeholder: "user"
       },
       community_action: {
         description: "Used to determine the action of community e.g coding, reading, training etc.",
+        placeholder: ""
+      },
+      community_copyright_start_year: {
+        description: "Used to mark the year this forem was started.",
+        placeholder: Time.zone.today.year.to_s
+      },
+      staff_user_id: {
+        description: "Account ID which acts as automated 'staff'— used principally for welcome thread.",
         placeholder: ""
       },
       tagline: {
@@ -132,7 +144,7 @@ module Constants
         placeholder: "$pay.somethinglikethis.co/value"
       },
       stripe_api_key: {
-        description: "Secret stripe key for receiving payments. " \
+        description: "Secret Stripe key for receiving payments. " \
         "See: https://stripe.com/docs/keys",
         placeholder: "sk_live_...."
       },
