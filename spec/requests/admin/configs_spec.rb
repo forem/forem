@@ -179,11 +179,6 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { ga_view_id: "abc" }, confirmation: confirmation_message }
           expect(SiteConfig.ga_view_id).to eq("abc")
         end
-
-        it "updates ga_fetch_rate" do
-          post "/admin/config", params: { site_config: { ga_fetch_rate: 3 }, confirmation: confirmation_message }
-          expect(SiteConfig.ga_fetch_rate).to eq(3)
-        end
       end
 
       describe "Images" do

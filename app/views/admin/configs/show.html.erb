@@ -415,16 +415,6 @@
                                value: SiteConfig.ga_view_id %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:ga_view_id][:description] %></div>
             </div>
-
-            <div class="form-group">
-              <%= admin_config_label :ga_fetch_rate, "Fetch rate" %>
-              <%= f.number_field :ga_fetch_rate,
-                                 class: "form-control",
-                                 value: SiteConfig.ga_fetch_rate,
-                                 min: 1,
-                                 placeholder: Constants::SiteConfig::DETAILS[:ga_fetch_rate][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:ga_fetch_rate][:description] %></div>
-            </div>
           </div>
         </div>
 
