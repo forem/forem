@@ -144,7 +144,7 @@
 </div>
   <script>
 
-    var stripe = Stripe('<%= Rails.configuration.stripe[:publishable_key] %>');
+    var stripe = Stripe('<%= SiteConfig.stripe_publishable_key %>');
     var elements = stripe.elements();
 
     <% if current_user.decorate.dark_theme? %>
