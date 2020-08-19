@@ -40,7 +40,7 @@ RSpec.describe "ArticlesShow", type: :request do
           "logo" => {
             "@context" => "http://schema.org",
             "@type" => "ImageObject",
-            "url" => Images::Optimizer.call(SiteConfig.logo_png, width: 192, quality: 80, fetch_format: "png"),
+            "url" => ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, 80, "png"),
             "width" => "192",
             "height" => "192"
           }
