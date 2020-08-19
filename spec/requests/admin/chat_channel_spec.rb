@@ -45,4 +45,16 @@ RSpec.describe "/admin/chat_channels", type: :request do
       expect(chat_channel.users.count).to eq 0
     end
   end
+
+  describe "DELETE /admin/chat_channels/:id" do
+    it "deletes the chat channel when it has no users" do
+      user.add_role(:super_admin)
+      sign_in user
+      channel_id = chat_channel.id
+
+      delete "/admin/chat_channels/#{channel_id}"
+
+      expect { ChatChannel.find(channel_id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+  end
 end

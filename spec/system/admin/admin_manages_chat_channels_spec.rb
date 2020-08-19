@@ -44,4 +44,14 @@ RSpec.describe "Admin manages chat channels", type: :system do
       expect(page.body).not_to have_link(chat_channel2.channel_name)
     end
   end
+
+  context "when channels without users exist" do
+    let(:chat_channel1) { create(:chat_channel, channel_name: "No users chat", channel_type: "invite_only") }
+
+    it "displays a 'Delete Channel' button" do
+      expect(chat_channel1.users.count).to eq(0)
+      expect(page).to have_content("Delete Channel")
+      expect(page).not_to have_content("Cannot delete; channel has users")
+    end
+  end
 end
