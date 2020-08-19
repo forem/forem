@@ -49,11 +49,10 @@ class User < ApplicationRecord
         end
       end
 
-      private
-
       def create_profile
         Profile.create(user: self, data: Profiles::ExtractData.call(self))
       end
+      private :create_profile
     end
   end
   # rubocop:enable Metrics/BlockLength
