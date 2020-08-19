@@ -192,19 +192,11 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(image).to start_with("https://res.cloudinary.com")
         .and include("image/fetch/", "/c_limit,f_auto,fl_progressive,q_80,w_500/")
     end
-
-    it "returns an ASCII domain for Unicode input" do
-      expect(helper.cloudinary("https://www.火.dev/image.png")).to include("https://www.xn--vnx.dev")
-    end
-
-    it "keeps an ASCII domain as ASCII" do
-      expect(helper.cloudinary("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
-    end
   end
 
   describe "#optimized_image_tag" do
     it "works just like cl_image_tag" do
-      image_url = "https://i.imgur.com/fKYKgo4.png"
+      image_url = Faker::Placeholdit.image
       cloudinary_image_tag = cl_image_tag(image_url,
                                           type: "fetch", crop: "imagga_scale",
                                           quality: "auto", flags: "progressive",
