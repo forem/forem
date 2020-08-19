@@ -7,8 +7,4 @@ class ListingEndorsement < ApplicationRecord
   validates :user_id, presence: true
   validates :classified_listing_id, presence: true
   validates :content, presence: true
-
-  def approval
-    approved == false
-  end
 end
