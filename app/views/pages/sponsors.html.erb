@@ -19,9 +19,9 @@
     <h2 class="fs-2xl s:fs-3xl l:fs-4xl fw-medium s:fw-bold lh-tight mb-4 mt-0">for supporting our community</h2>
 
         <h4>
-      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
+      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", width: 30) %>" alt="golden badge">
       <span class="sponsor-level-headline" style="background-color: #fefa87;">Gold Sponsors</span>
-      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
+      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", width: 30) %>" alt="golden badge">
     </h4>
     <div id="gold-sponsors">
       <% Sponsorship.gold.live.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
@@ -34,9 +34,9 @@
     </div>
 
     <h4>
-      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="silver badge">
+      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", width: 30) %>" alt="silver badge">
       <span class="sponsor-level-headline" style="background-color: #d8e1f0;">Silver Sponsors</span>
-      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="silver badge">
+      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", width: 30) %>" alt="silver badge">
     </h4>
     <div id="silver-sponsors">
       <% Sponsorship.where(status: "live", level: "silver").where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
@@ -49,9 +49,9 @@
     </div>
 
     <h4>
-      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="bronze badge">
+      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", width: 30) %>" alt="bronze badge">
       <span class="sponsor-level-headline" style="background-color: #fcd6bb;">Bronze Sponsors</span>
-      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="bronze badge">
+      <img src="<%= optimized_image_url("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", width: 30) %>" alt="bronze badge">
     </h4>
     <div id="bronze-sponsors">
       <% Sponsorship.bronze.live.where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).find_each do |sponsorship| %>
