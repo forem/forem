@@ -33,6 +33,7 @@ class SiteConfig < RailsSettings::Base
   field :community_copyright_start_year, type: :integer,
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
                                            Time.zone.today.year
+  field :staff_user_id, type: :integer, default: 1
 
   # Emails
   field :email_addresses, type: :hash, default: {
@@ -115,7 +116,6 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
 
   # Social Media
-  field :staff_user_id, type: :integer, default: 1
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
     facebook: nil,
