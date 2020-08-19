@@ -28,7 +28,7 @@ module BadgeRewarder
 
   def self.award_beloved_comment_badges(comment_count = 24)
     badge_id = Badge.find_by!(slug: "beloved-comment").id
-    Comment.where("public_reactions_count > ?", comment_count).find_each do |comment|
+    Comment.includes(:user).where("public_reactions_count > ?", comment_count).find_each do |comment|
       message = "You're famous! [This is the comment](#{URL.comment(comment)}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,
