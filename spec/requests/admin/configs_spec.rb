@@ -86,7 +86,7 @@ RSpec.describe "/admin/config", type: :request do
           name_magoo = "Hey hey #{rand(100)}"
           post "/admin/config", params: { site_config: { community_name: name_magoo },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.community_name).to eq(description)
+          expect(SiteConfig.community_name).to eq(name_magoo)
         end
 
         it "updates the community_member_label" do
