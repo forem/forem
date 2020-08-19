@@ -1,9 +1,3 @@
-task award_badges: :environment do
-  BadgeRewarder.award_streak_badge(4)
-  BadgeRewarder.award_streak_badge(8)
-  BadgeRewarder.award_streak_badge(16)
-end
-
 task award_weekly_tag_badges: :environment do
   # Should run once per week.
   # Scheduled "daily" on Heroku Scheduler, should only fully run on Thursday.

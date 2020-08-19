@@ -24,3 +24,24 @@ award_beloved_comment_badges:
     - ""
     - award_beloved_comment_badges
     - ""
+award_four_week_streak_badge:
+  cron: "10 0 * * *" # daily at 12:10 am UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_four_week_streak_badge
+    - ""
+award_eight_week_streak_badge:
+  cron: "15 0 * * *" # daily at 12:15 am UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_eight_week_streak_badge
+    - ""
+award_sixteen_week_streak_badge:
+  cron: "20 0 * * *" # daily at 12:20 am UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_sixteen_week_streak_badge
+    - ""
