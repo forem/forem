@@ -82,10 +82,6 @@ module Constants
         description: "Google Analytics Reporting API v4 - View ID",
         placeholder: ""
       },
-      ga_fetch_rate: {
-        description: "Determines how often the site updates its Google Analytics stats",
-        placeholder: 1
-      },
       main_social_image: {
         description: "Used as the main image in social networks and OpenGraph",
         placeholder: "https://image.url"
