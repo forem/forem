@@ -1,5 +1,4 @@
 class EmailSubscriptionsController < ApplicationController
-
   def unsubscribe
     verified_params = Rails.application.message_verifier(:unsubscribe).verify(params[:ut])
 
