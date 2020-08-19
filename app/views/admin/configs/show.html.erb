@@ -209,6 +209,15 @@
                      } %>
           <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
             <div class="form-group">
+              <%= admin_config_label :community_name %>
+              <%= f.text_field :community_name,
+                               class: "form-control",
+                               value: SiteConfig.community_name,
+                               placeholder: Constants::SiteConfig::DETAILS[:community_name][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_name][:description] %></div>
+            </div>
+
+            <div class="form-group">
               <%= admin_config_label :community_description %>
               <%= f.text_field :community_description,
                                class: "form-control",

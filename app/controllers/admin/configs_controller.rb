@@ -93,6 +93,7 @@ module Admin
 
     def community_params
       %i[
+        community_name
         community_description
         community_member_label
         community_action
