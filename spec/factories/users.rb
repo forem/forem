@@ -159,5 +159,9 @@ FactoryBot.define do
       instagram_url { "www.instagram.com/example" }
       twitch_username { "Example007" }
     end
+
+    trait :without_profile do
+      _skip_creating_profile { true }
+    end
   end
 end

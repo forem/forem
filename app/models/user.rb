@@ -13,8 +13,11 @@ class User < ApplicationRecord
       PROFIE_FIELDS =
         (Profiles::ExtractData::DIRECT_ATTRIBUTES + Profiles::ExtractData::MAPPED_ATTRIBUTES.values).freeze
 
+      # NOTE: this allows us to skip the profile create callback in a thread-safe way
+      attr_accessor :_skip_creating_profile
+
       # All new users should automatically have a profile
-      after_create_commit { Profile.create(user: self, data: Profiles::ExtractData.call(self)) }
+      after_create_commit :create_profile, unless: :_skip_creating_profile
 
       # Keep saving changes locally for the time being, but propagate them to profiles.
       after_update_commit do
@@ -44,6 +47,12 @@ class User < ApplicationRecord
             self[user_attribute]
           end
         end
+      end
+
+      private
+
+      def create_profile
+        Profile.create(user: self, data: Profiles::ExtractData.call(self))
       end
     end
   end
