@@ -26,14 +26,4 @@ RSpec.describe Images::Optimizer, type: :service do
                                    fetch_format: "jpg")
     expect(described_class.call(image_url, crop: nil, fetch_format: "jpg")).to eq(cloudinary_url)
   end
-
-  context "when dealing with unicode input" do
-    it "returns an ASCII domain for Unicode input" do
-      expect(described_class.call("https://www.火.dev/image.png")).to include("https://www.xn--vnx.dev")
-    end
-
-    it "keeps an ASCII domain as ASCII" do
-      expect(described_class.call("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
-    end
-  end
 end
