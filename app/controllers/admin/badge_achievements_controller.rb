@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     def index
-      @badge_achievements = BadgeAchievement.all
+      @badge_achievements = BadgeAchievement.all.page(params[:page]).order(created_at: :desc).per(10)
     end
 
     def destroy
