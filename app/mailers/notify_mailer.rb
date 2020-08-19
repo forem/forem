@@ -142,7 +142,7 @@ class NotifyMailer < ApplicationMailer
 
   def subjects
     {
-      new_follower_email: "".freeze
+      new_follower_email: "just followed you on #{SiteConfig.community_name}".freeze
     }.freeze
   end
 end
