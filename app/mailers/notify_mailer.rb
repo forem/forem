@@ -1,8 +1,4 @@
 class NotifyMailer < ApplicationMailer
-  SUBJECTS = {
-    new_follower_email: "just followed you on #{SiteConfig.community_name}".freeze
-  }.freeze
-
   def new_reply_email
     @comment = params[:comment]
     @user = @comment.parent_user
@@ -22,7 +18,7 @@ class NotifyMailer < ApplicationMailer
     @follower = follow.follower
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_follower_notifications)
 
-    mail(to: @user.email, subject: "#{@follower.name} #{SUBJECTS[__method__]}")
+    mail(to: @user.email, subject: "#{@follower.name} just followed you on #{SiteConfig.community_name}")
   end
 
   def new_mention_email
