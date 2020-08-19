@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Profile, type: :model do
   describe "validations" do
-    subject { create(:user).profile }
+    subject { create(:profile) }
 
     it { is_expected.to validate_uniqueness_of(:user_id) }
   end
