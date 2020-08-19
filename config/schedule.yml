@@ -17,3 +17,10 @@ award_yearly_club_badges:
     - ""
     - award_yearly_club_badges
     - ""
+award_beloved_comment_badges:
+  cron: "5 0 * * *" # daily at 12:05 am UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_beloved_comment_badges
+    - ""

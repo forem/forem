@@ -5,7 +5,7 @@ RSpec.describe BadgeRewarder, type: :labor do
     before do
       stub_const("#{described_class}::YEARS", BadgeRewarder::YEARS.slice(1, 2, 3))
       allow(ApplicationConfig).to receive(:[])
-      allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(3.years.ago.year)
+      SiteConfig.community_copyright_start_year = 3.years.ago.year
       create(:badge, title: "one-year-club")
       create(:badge, title: "two-year-club")
       create(:badge, title: "three-year-club")
