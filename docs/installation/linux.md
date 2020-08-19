@@ -98,8 +98,7 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    - For any key that you wish to enter/replace:
 
      1. Create `.env` by copying from the provided template (i.e. with bash:
-        `cp config/.env_sample .env`). This is a personal file that is ignored
-        in git.
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      1. Obtain the development variable and apply the key you wish to
         enter/replace. i.e.:
 
