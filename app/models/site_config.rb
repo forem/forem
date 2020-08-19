@@ -31,7 +31,7 @@ class SiteConfig < RailsSettings::Base
   field :community_action, type: :string
   field :tagline, type: :string
   field :community_copyright_start_year, type: :integer,
-    default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] || 2020
+                                         default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] || 2020
 
   # Emails
   field :email_addresses, type: :hash, default: {
