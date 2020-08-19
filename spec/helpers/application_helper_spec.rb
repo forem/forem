@@ -194,11 +194,11 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "returns an ASCII domain for Unicode input" do
-      expect(helper.cloudinary("https://www.火.dev/image.png")).to include("https://www.xn--vnx.dev")
+      expect(helper.optimized_image_url("https://www.火.dev/image.png")).to include("https://www.xn--vnx.dev")
     end
 
     it "keeps an ASCII domain as ASCII" do
-      expect(helper.cloudinary("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
+      expect(helper.optimized_image_url("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
     end
   end
 
