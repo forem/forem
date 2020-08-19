@@ -2,6 +2,21 @@ module Admin
   class BadgeAchievementsController < Admin::ApplicationController
     layout "admin"
 
+    def index
+      @badge_achievements = BadgeAchievement.all
+    end
+
+    def destroy
+      @badge_achievement = BadgeAchievement.find(params[:id])
+
+      if @badge_achievement.destroy
+        flash[:success] = "Badge has been deleted!"
+      else
+        flash[:danger] = @badge_achievement.errors_as_sentence
+      end
+      redirect_to admin_badge_achievements_path
+    end
+
     def award
       @badge = Badge.all
     end
@@ -22,7 +37,7 @@ module Admin
 
     private
 
-    def badge_params
+    def permitted_params
       params.permit(:usernames, :badge, :message_markdown)
     end
   end

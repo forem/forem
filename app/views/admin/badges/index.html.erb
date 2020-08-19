@@ -1,12 +1,18 @@
-<main>
-  <div class="col">
-    <div class="row justify-content-end">
-      <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>
-      <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, style: "margin-left: 20px;", class: "btn btn-primary" %>
-    </div>
+<div class="col">
+  <div class="row justify-content-end">
+    <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>
   </div>
-  <table class="table mt-2">
-    <thead>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Slug</th>
+      <th scope="col">Badge Image</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @badges.each do |badge| %>
       <tr>
         <th scope="col">Title</th>
         <th scope="col">Slug</th>

@@ -1,0 +1,28 @@
+<div class="col">
+  <div class="row justify-content-end">
+    <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
+  </div>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Badge</th>
+      <th scope="col">Badge Image</th>
+    </tr>
+  </thead>
+  <tbody>
+   <% @badge_achievements.each do |badge_achievement| %>
+    <tr>
+      <td><%= badge_achievement.user.username %></td>
+      <td><%= badge_achievement.badge.title %></td>
+      <h5>
+        <td class="justify-content-center">
+          <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image">
+        </td>
+        <td><%= link_to "Delete", url_for(action: :destroy, id: badge_achievement.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %></td>
+      </h5>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
