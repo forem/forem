@@ -18,28 +18,28 @@ award_yearly_club_badges:
     - award_yearly_club_badges
     - ""
 award_beloved_comment_badges:
-  cron: "5 0 * * *" # daily at 12:05 am UTC
+  cron: "5 */12 * * *" # 5 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
     - award_beloved_comment_badges
     - ""
 award_four_week_streak_badge:
-  cron: "10 0 * * *" # daily at 12:10 am UTC
+  cron: "10 */12 * * *" # 10 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
     - award_four_week_streak_badge
     - ""
 award_eight_week_streak_badge:
-  cron: "15 0 * * *" # daily at 12:15 am UTC
+  cron: "15 */12 * * *" # 15 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
     - award_eight_week_streak_badge
     - ""
 award_sixteen_week_streak_badge:
-  cron: "20 0 * * *" # daily at 12:20 am UTC
+  cron: "20 */12 * * *" # 20 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
