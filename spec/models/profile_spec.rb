@@ -1,7 +1,11 @@
 require "rails_helper"
 
 RSpec.describe Profile, type: :model do
-  it { is_expected.to validate_presence_of(:data) }
+  describe "validations" do
+    subject { create(:profile) }
+
+    it { is_expected.to validate_uniqueness_of(:user_id) }
+  end
 
   context "when accessing profile fields" do
     before do
