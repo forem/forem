@@ -28,8 +28,6 @@ Rails/HasManyOrHasOneDependent:
     - 'app/models/organization.rb'
     - 'app/models/podcast.rb'
     - 'app/models/podcast_episode.rb'
-    - 'app/models/poll.rb'
-    - 'app/models/poll_option.rb'
     - 'app/models/user.rb'
 
 # Offense count: 4
