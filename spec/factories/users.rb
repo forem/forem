@@ -26,8 +26,6 @@ FactoryBot.define do
     bg_color_hex                 { Faker::Color.hex_color }
     text_color_hex               { Faker::Color.hex_color }
 
-    after(:create) { |user| create(:profile, user: user) }
-
     trait :with_identity do
       transient { identities { Authentication::Providers.available } }
 
@@ -160,6 +158,10 @@ FactoryBot.define do
       gitlab_url { "www.gitlab.com/example" }
       instagram_url { "www.instagram.com/example" }
       twitch_username { "Example007" }
+    end
+
+    trait :without_profile do
+      _skip_creating_profile { true }
     end
   end
 end

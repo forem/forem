@@ -148,7 +148,7 @@ class ArticlesController < ApplicationController
           return
         end
         if params[:article][:video_thumbnail_url]
-          redirect_to(@article.path + "/edit")
+          redirect_to("#{@article.path}/edit")
           return
         end
         render json: { status: 200 }

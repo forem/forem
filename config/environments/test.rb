@@ -75,6 +75,8 @@ Rails.application.configure do
     # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
   end
 end
 # rubocop:enable Metrics/BlockLength

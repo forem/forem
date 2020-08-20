@@ -276,7 +276,7 @@
     bottom: var(--su-4);
     width: calc(100% - 32px);
     transform: translateY(0px);
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     $button: &;
 
     @media screen and (min-width: 800px) {
@@ -302,7 +302,7 @@
     &__inner {
       background: var(--base-10);
       bottom: 0;
-      font-family: var(--ff-accent);
+      font-family: var(--ff-monospace);
       hyphens: auto;
       left: 0;
       padding: var(--su-4);

@@ -46,7 +46,7 @@
   <script>
     setTimeout(function () {
       var handler = StripeCheckout.configure({
-        key: '<%= Rails.configuration.stripe[:publishable_key] %>',
+        key: '<%= SiteConfig.stripe_publishable_key %>',
         image: "https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg",
         locale: 'auto',
         token: function (token) {

@@ -109,6 +109,7 @@ const Display = ({ resource }) => {
         <ChatChannelSettings
           resource={resource.data}
           activeMembershipId={resource.activeMembershipId}
+          handleLeavingChannel={resource.handleLeavingChannel}
         />
       );
     default:

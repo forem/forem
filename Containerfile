@@ -31,7 +31,9 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/"${DOCKERIZE_VER
 
 WORKDIR "${APP_HOME}"
 
-USER "${APP_USER}"
+# Comment out running as the forem user due to this issue with podman-compose:
+# https://github.com/containers/podman-compose/issues/166
+# USER "${APP_USER}"
 
 COPY ./.ruby-version "${APP_HOME}"
 COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"

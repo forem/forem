@@ -77,14 +77,17 @@ module ApplicationHelper
   end
 
   def cloudinary(url, width = "500", quality = 80, format = "auto")
-    cl_image_path(url || asset_path("#{rand(1..40)}.png"),
-                  type: "fetch",
-                  width: width,
-                  crop: "limit",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: format,
-                  sign_url: true)
+    image_url = url.presence || asset_path("#{rand(1..40)}.png")
+
+    Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: format)
+  end
+
+  def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
+    image_options[:width] ||= optimizer_options[:width]
+    image_options[:height] ||= optimizer_options[:height]
+    updated_image_url = Images::Optimizer.call(image_url, optimizer_options)
+
+    image_tag(updated_image_url, image_options)
   end
 
   def cloud_cover_url(url)
@@ -129,7 +132,7 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     tag :button, # Yikes
-        class: "crayons-btn follow-action-button " + classes,
+        class: "crayons-btn follow-action-button #{classes}",
         data: {
           :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
@@ -170,7 +173,7 @@ module ApplicationHelper
   end
 
   def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"] # rubocop:disable Rails/HelperInstanceVariable
+    @community_name ||= SiteConfig.community_name # rubocop:disable Rails/HelperInstanceVariable
   end
 
   def community_qualified_name
@@ -185,10 +188,10 @@ module ApplicationHelper
   end
 
   def copyright_notice
-    start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
+    start_year = SiteConfig.community_copyright_start_year.to_s
     current_year = Time.current.year.to_s
     return start_year if current_year == start_year
-    return current_year if start_year.strip.length.zero?
+    return current_year if start_year.strip.length < 4 # 978 is not a valid year!
 
     "#{start_year} - #{current_year}"
   end

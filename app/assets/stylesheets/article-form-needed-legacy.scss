@@ -7,7 +7,7 @@
   text-align: center;
   padding: 80px 5px 60px;
   margin-bottom: -20px;
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   font-size: 1.5em;
   font-weight: 800;
 }
@@ -17,7 +17,7 @@
   padding-bottom: 4px !important;
   position: relative;
   z-index: 11;
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
 
   .top-buttons {
     padding: 20px 0px 5px;
@@ -99,7 +99,7 @@
   }
 
   .editor-image-upload {
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     padding: 4px 5px;
     font-size: 0.8em;
     width: inherit;
@@ -448,7 +448,7 @@
 #error_explanation {
   background: $red;
   max-width: 750px;
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   color: white;
   border-radius: 5px;
   margin: 80px auto -50px;
@@ -535,7 +535,7 @@
   p {
     font-size: 16px;
     line-height: 25px;
-    font-family: var(--ff-accent);
+    font-family: var(--ff-monospace);
   }
 
   img.gif {

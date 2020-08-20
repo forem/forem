@@ -38,7 +38,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "displays content on RSS tab properly" do
         get "/settings/publishing-from-rss"
-        title = "Publishing to #{ApplicationConfig['COMMUNITY_NAME']} from RSS"
+        title = "Publishing to #{SiteConfig.community_name} from RSS"
         expect(response.body).to include(title)
       end
 

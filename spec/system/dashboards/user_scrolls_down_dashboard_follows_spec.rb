@@ -101,7 +101,7 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
 
     it "shows working links" do
       podcasts.each do |podcast|
-        expect(page).to have_link(nil, href: "/" + podcast.path)
+        expect(page).to have_link(nil, href: "/#{podcast.path}")
       end
     end
   end
