@@ -21,7 +21,6 @@ module CacheBuster
     #
     # https://github.com/fastly/fastly-ruby#efficient-purging
     return unless Rails.env.production?
-    return if ApplicationConfig["FASTLY_API_KEY"].blank?
 
     if fastly_enabled?
       bust_fastly_cache(path)
