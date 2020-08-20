@@ -5,6 +5,10 @@ RSpec.describe Images::Optimizer, type: :service do
 
   let(:image_url) { "https://i.imgur.com/fKYKgo4.png" }
 
+  before do
+    Imgproxy.config.key = "secret"
+  end
+
   it "performs exactly like cl_image_path" do
     cloudinary_url = cl_image_path(image_url,
                                    type: "fetch",
@@ -25,5 +29,12 @@ RSpec.describe Images::Optimizer, type: :service do
                                    flags: "progressive",
                                    fetch_format: "jpg")
     expect(described_class.call(image_url, crop: nil, fetch_format: "jpg")).to eq(cloudinary_url)
+  end
+
+  describe "#imgproxy" do
+    it "works" do
+      imgproxy_url = described_class.call(image_url, service: :imgproxy, width: 500, height: 500)
+      expect(imgproxy_url).to eq("/unsafe/s:500:500/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw")
+    end
   end
 end
