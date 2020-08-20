@@ -3,12 +3,6 @@ require "rails_helper"
 RSpec.describe Podcast, type: :model do
   let(:podcast) { create(:podcast) }
 
-  it { is_expected.to validate_presence_of(:image) }
-  it { is_expected.to validate_presence_of(:slug) }
-  it { is_expected.to validate_presence_of(:title) }
-  it { is_expected.to validate_presence_of(:main_color_hex) }
-  it { is_expected.to validate_presence_of(:feed_url) }
-
   it "has a creator" do
     user = build(:user)
     pod = create(:podcast, creator: user)
@@ -24,6 +18,19 @@ RSpec.describe Podcast, type: :model do
   end
 
   describe "validations" do
+    describe "builtin validations" do
+      subject { podcast }
+
+      it { is_expected.to belong_to(:creator).class_name("User").inverse_of(:created_podcasts).optional }
+      it { is_expected.to have_many(:podcast_episodes).dependent(:destroy) }
+
+      it { is_expected.to validate_presence_of(:feed_url) }
+      it { is_expected.to validate_presence_of(:image) }
+      it { is_expected.to validate_presence_of(:main_color_hex) }
+      it { is_expected.to validate_presence_of(:slug) }
+      it { is_expected.to validate_presence_of(:title) }
+    end
+
     # Couldn't use shoulda uniqueness matchers for these tests because:
     # Shoulda uses `save(validate: false)` which skips validations
     # So an invalid record is trying to be saved but fails because of the db constraints
