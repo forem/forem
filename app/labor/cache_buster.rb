@@ -1,5 +1,6 @@
 module CacheBuster
   class Error < RuntimeError; end
+  class ConfigurationError < StandardError; end
 
   TIMEFRAMES = [
     [1.week.ago, "week"],
@@ -27,19 +28,21 @@ module CacheBuster
     elsif nginx_enabled?
       bust_nginx_cache(path)
     else
-      Rails.logger.error("You cannot bust a cache without a caching service set! Please enable a caching service.")
+      raise ConfigurationError, "You cannot bust a cache without a caching service! Please enable a caching service."
     end
+  rescue ConfigurationError => e
+    Rails.logger.error(e)
   rescue URI::InvalidURIError => e
     Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
     DatadogStatsClient.increment("cache_buster.invalid_uri", tags: ["path:#{path}"])
   end
 
   def self.fastly_enabled?
-    ENV["FASTLY_API_KEY"].present? && ENV["FASTLY_SERVICE_ID"].present?
+    ApplicationConfig["FASTLY_API_KEY"].present? && ApplicationConfig["FASTLY_SERVICE_ID"].present?
   end
 
   def self.nginx_enabled?
-    ENV["OPENRESTY_PROTOCOL"].present? && ENV["OPENRESTY_DOMAIN"].present?
+    ApplicationConfig["OPENRESTY_PROTOCOL"].present? && ApplicationConfig["OPENRESTY_DOMAIN"].present?
   end
 
   def self.bust_fastly_cache(path)
@@ -55,6 +58,17 @@ module CacheBuster
         "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
       },
     )
+  end
+
+  def self.bust_nginx_cache(path)
+    uri = URI.parse("#{ApplicationConfig['OPENRESTY_PROTOCOL']}#{ApplicationConfig['OPENRESTY_DOMAIN']}/#{path}")
+    http = Net::HTTP.new(uri.host, uri.port)
+    response = http.request Net::HTTP::NginxPurge.new(uri.request_uri)
+
+    # Explicitly use `fail` here since we are not catching and re-raising the exception.
+    fail Error, response.body unless response.is_a?(Net::HTTPSuccess) # rubocop:disable Style/SignalException
+
+    response.body
   end
 
   def self.bust_comment(commentable)
@@ -231,17 +245,6 @@ module CacheBuster
       bust("/?i=i")
       bust("?i=i")
     end
-  end
-
-  def self.bust_nginx_cache(path)
-    uri = URI.parse("#{ApplicationConfig['OPENRESTY_PROTOCOL']}#{ApplicationConfig['OPENRESTY_DOMAIN']}/#{path}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    response = http.request Net::HTTP::NginxPurge.new(uri.request_uri)
-
-    # Explicitly use `fail` here since we are not catching and re-raising the exception.
-    fail Error, response.body unless response.is_a?(Net::HTTPSuccess) # rubocop:disable Style/SignalException
-
-    response.body
   end
 end
 

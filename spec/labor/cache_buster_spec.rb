@@ -11,6 +11,31 @@ RSpec.describe CacheBuster, type: :labor do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:tag) { create(:tag) }
 
+  describe "#bust_nginx_cache" do
+    before do
+      allow(cache_buster).to receive(:bust_nginx_cache).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return("localhost:9090")
+    end
+
+    it "can bust an nginx cache when configured" do
+      cache_buster.bust_nginx_cache("/#{user.username}")
+    end
+  end
+
+  describe "#bust_fastly_cache" do
+    before do
+      allow(cache_buster).to receive(:bust_fastly_cache).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("fake-key")
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return("fake-key")
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("localhost:3000")
+    end
+
+    it "can bust a fastly cache when configured" do
+      cache_buster.bust_fastly_cache("/#{user.username}")
+    end
+  end
+
   describe "#bust_comment" do
     it "busts comment" do
       cache_buster.bust_comment(comment.commentable)
