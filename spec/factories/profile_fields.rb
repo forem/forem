@@ -6,5 +6,9 @@ FactoryBot.define do
     placeholder_text { "john.doe@example.com" }
     active { true }
     group { "Basic" }
+
+    trait :onboarding do
+      show_in_onboarding { true }
+    end
   end
 end
