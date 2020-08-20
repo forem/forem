@@ -13,7 +13,10 @@ class User < ApplicationRecord
       PROFIE_FIELDS =
         (Profiles::ExtractData::DIRECT_ATTRIBUTES + Profiles::ExtractData::MAPPED_ATTRIBUTES.values).freeze
 
-      # NOTE: this allows us to skip the profile create callback in a thread-safe way
+      # NOTE: There are rare cases were we want to skip this callback, primarily
+      # in tests. `skip_callback` modifies global state, which is not thread-safe
+      # and can cause hard to track down bugs. We use an instance-level attribute
+      # instead. See `spec/factories/profiles.rb` for an example.
       attr_accessor :_skip_creating_profile
 
       # All new users should automatically have a profile
