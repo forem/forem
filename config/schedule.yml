@@ -45,3 +45,17 @@ award_sixteen_week_streak_badge:
     - ""
     - award_sixteen_week_streak_badge
     - ""
+award_weekly_tag_badges:
+  cron: "0 11 * * 4" # 11 am UTC every Thursday
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_tag_badges
+    - ""
+award_contributor_badges_from_github:
+  cron: "20 * * * *" # every hour, 20 min after the hour
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_contributor_badges_from_github
+    - ""
