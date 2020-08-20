@@ -126,7 +126,7 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
-  if ENV["HEROKU_APP_URL"] != config.app_domain
+  if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != config.app_domain
     config.middleware.use Rack::HostRedirect,
                           ENV["HEROKU_APP_URL"] => config.app_domain
   end

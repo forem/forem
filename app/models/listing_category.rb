@@ -3,7 +3,9 @@ class ListingCategory < ApplicationRecord
   # We standardized on the latter, but keeping the table name was easier.
   self.table_name = "classified_listing_categories"
 
-  has_many :listings, inverse_of: :listing_category
+  has_many :listings, inverse_of: :listing_category,
+                      foreign_key: :classified_listing_category_id,
+                      dependent: :restrict_with_error
 
   before_validation :normalize_social_preview_color
 

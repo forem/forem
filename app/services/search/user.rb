@@ -10,7 +10,7 @@ module Search
       private
 
       def prepare_doc(hit)
-        source = hit.dig("_source")
+        source = hit["_source"]
         {
           "user" => {
             "username" => source["username"],

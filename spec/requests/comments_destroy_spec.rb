@@ -11,7 +11,7 @@ RSpec.describe "CommentsDestroy", type: :request do
   describe "GET /:username/comment/:id_code/delete_confirm" do
     it "renders the confirmation message" do
       comment = create(:comment, user_id: user.id, commentable: article)
-      get comment.path + "/delete_confirm"
+      get "#{comment.path}/delete_confirm"
       expect(response.body).to include("Are you sure you want to delete this comment")
     end
   end

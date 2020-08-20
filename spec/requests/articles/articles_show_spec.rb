@@ -36,7 +36,7 @@ RSpec.describe "ArticlesShow", type: :request do
         "publisher" => {
           "@context" => "http://schema.org",
           "@type" => "Organization",
-          "name" => "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+          "name" => "#{SiteConfig.community_name} Community",
           "logo" => {
             "@context" => "http://schema.org",
             "@type" => "ImageObject",
@@ -113,7 +113,7 @@ RSpec.describe "ArticlesShow", type: :request do
 
   context "when user not signed in but internal nav triggered" do
     before do
-      get article.path + "?i=i"
+      get "#{article.path}?i=i"
     end
 
     describe "GET /:slug (user)" do

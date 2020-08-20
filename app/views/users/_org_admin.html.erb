@@ -61,7 +61,7 @@
     <p>
       Your secret code is:
       <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false">
-        <input type="text" class="ff-accent ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="Organization secret (to be rotated regularly)">
+        <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="Organization secret (to be rotated regularly)">
         <%= inline_svg_tag("copy.svg", aria: true, class: "crayons-icon", title: "Copy to clipboard") %>
       </clipboard-copy>
       <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden>Copied to clipboard!</span>

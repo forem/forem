@@ -3,16 +3,16 @@ module BadgeRewarder
   REPOSITORIES = ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].freeze
 
   LONGEST_STREAK_WEEKS = 16
-  LONGEST_STREAK_MESSAGE = "16 weeks! You've achieved the longest #{ApplicationConfig['COMMUNITY_NAME']} writing " \
+  LONGEST_STREAK_MESSAGE = "16 weeks! You've achieved the longest writing " \
     "streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to" \
     " our community!".freeze
 
   MINIMUM_QUALITY = -25
 
   def self.award_yearly_club_badges
-    total_years = Time.current.year - ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"].to_i
+    total_years = Time.current.year - SiteConfig.community_copyright_start_year.to_i
     (1..total_years).each do |i|
-      message = "Happy #{ApplicationConfig['COMMUNITY_NAME']} birthday! " \
+      message = "Happy #{SiteConfig.community_name} birthday! " \
         "Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
       badge = Badge.find_by!(slug: "#{YEARS[i]}-year-club")
       User.registered.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
@@ -28,7 +28,7 @@ module BadgeRewarder
 
   def self.award_beloved_comment_badges(comment_count = 24)
     badge_id = Badge.find_by!(slug: "beloved-comment").id
-    Comment.where("public_reactions_count > ?", comment_count).find_each do |comment|
+    Comment.includes(:user).where("public_reactions_count > ?", comment_count).find_each do |comment|
       message = "You're famous! [This is the comment](#{URL.comment(comment)}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,
@@ -86,6 +86,18 @@ module BadgeRewarder
         )
       end
     end
+  end
+
+  def self.award_four_week_streak_badge
+    award_streak_badge(4)
+  end
+
+  def self.award_eight_week_streak_badge
+    award_streak_badge(8)
+  end
+
+  def self.award_sixteen_week_streak_badge
+    award_streak_badge(16)
   end
 
   def self.award_streak_badge(num_weeks)

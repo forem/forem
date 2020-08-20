@@ -12,13 +12,7 @@
 }
 
 .live-chat {
-  height: calc(100vh - 56px);
-
-  &.live-chat--iossafari {
-    height: calc(100vh - 190px);
-  }
-
-  overflow-y: hidden;
+  height: calc(100 * var(--vh) - var(--header-height));
 }
 
 .live-chat {
@@ -28,14 +22,10 @@
 
 .chat {
   display: flex;
-  height: calc(100vh - var(--header-height));
+  height: calc(100 * var(--vh) - var(--header-height));
   position: relative;
   overflow-x: hidden;
   overflow-y: hidden;
-
-  &.chat--iossafari {
-    height: calc(100vh - 201px);
-  }
 }
 
 .chat__channels {
@@ -297,7 +287,7 @@
   @media screen and (max-width: 426px) {
     padding: 10px;
     min-width: 50%;
-    width: calc(100% - 16px);
+    width: calc(100%);
     position: fixed;
     height: 100%;
     margin-left: 0;
@@ -445,7 +435,7 @@
 
 .activechatchannel__activecontentuserdetails {
   margin-top: 20px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   font-size: 0.9em;
 
   .key {
@@ -748,7 +738,7 @@
     vertical-align: 0.05em;
     max-width: 100%;
     line-height: 1.4em;
-    font-family: var(--ff-accent);
+    font-family: var(--ff-monospace);
   }
 }
 
@@ -840,7 +830,7 @@
   position: absolute;
   top: -27px;
   left: 35px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   @include themeable(color, theme-color, $dark-gray);
 }
 
