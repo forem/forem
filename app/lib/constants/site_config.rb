@@ -5,13 +5,17 @@ module Constants
         description: "How can users sign in?",
         placeholder: ""
       },
-      campaign_hero_html_variant_name: {
-        description: "Hero HtmlVariant name",
-        placeholder: ""
-      },
       campaign_articles_require_approval: {
         description: "",
         placeholder: "Campaign stories show up on sidebar with approval?"
+      },
+      campaign_featured_tags: {
+        description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
+        placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded"
+      },
+      campaign_hero_html_variant_name: {
+        description: "Hero HtmlVariant name",
+        placeholder: ""
       },
       campaign_sidebar_enabled: {
         description: "",
@@ -25,22 +29,6 @@ module Constants
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
       },
-      campaign_featured_tags: {
-        description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
-        placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded"
-      },
-      community_description: {
-        description: "Used in meta description tags etc.",
-        placeholder: "A fabulous community of kind and welcoming people."
-      },
-      community_name: {
-        description: "Primary name... e.g. DEV",
-        placeholder: "New Forem"
-      },
-      community_member_label: {
-        description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
-        placeholder: "user"
-      },
       community_action: {
         description: "Used to determine the action of community e.g coding, reading, training etc.",
         placeholder: "coding"
@@ -48,6 +36,18 @@ module Constants
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
+      },
+      community_description: {
+        description: "Used in meta description tags etc.",
+        placeholder: "A fabulous community of kind and welcoming people."
+      },
+      community_member_label: {
+        description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
+        placeholder: "user"
+      },
+      community_name: {
+        description: "Primary name... e.g. DEV",
+        placeholder: "New Forem"
       },
       credit_prices_in_cents: {
         small: {
@@ -67,13 +67,13 @@ module Constants
           placeholder: ""
         }
       },
+      default_font: {
+        description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
+      },
       display_jobs_banner: {
         description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
         "or 'jobs' in the search box",
         placeholder: ""
-      },
-      default_font: {
-        description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
       },
       email_addresses: {
         description: "Email address",
@@ -92,8 +92,8 @@ module Constants
         placeholder: ""
       },
       health_check_token: {
-          description: "Used to authenticate with your health check endpoints.",
-          placeholder: "a secure token"
+        description: "Used to authenticate with your health check endpoints.",
+        placeholder: "a secure token"
       },
       jobs_url: {
         description: "URL of the website where open positions are posted",
@@ -131,14 +131,6 @@ module Constants
         description: "Community Moderators Newsletter ID",
         placeholder: ""
       },
-      mascot_user_id: {
-        description: "User ID of the Mascot account",
-        placeholder: "1"
-      },
-      mascot_image_url: {
-        description: "Used as the mascot image.",
-        placeholder: "https://image.url"
-      },
       mascot_footer_image_url: {
         description: "Special cute mascot image used in the footer.",
         placeholder: "https://image.url"
@@ -147,16 +139,24 @@ module Constants
         description: "Used as the alt text for the mascot image",
         placeholder: ""
       },
+      mascot_image_url: {
+        description: "Used as the mascot image.",
+        placeholder: "https://image.url"
+      },
+      mascot_user_id: {
+        description: "User ID of the Mascot account",
+        placeholder: "1"
+      },
       meta_keywords: {
         description: "",
         placeholder: "List of valid keywords: comma separated, letters only e.g. engineering, development"
       },
-      onboarding_logo_image: {
-        description: "Main onboarding display logo image",
-        placeholder: "https://image.url"
-      },
       onboarding_background_image: {
         description: "Background for onboarding splash page",
+        placeholder: "https://image.url"
+      },
+      onboarding_logo_image: {
+        description: "Main onboarding display logo image",
         placeholder: "https://image.url"
       },
       onboarding_taskcard_image: {
@@ -180,10 +180,6 @@ module Constants
         description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
         placeholder: "<svg ...></svg>"
       },
-      staff_user_id: {
-        description: "Account ID which acts as automated 'staff'— used principally for welcome thread.",
-        placeholder: ""
-      },
       secondary_logo_url: {
         description: "Used as the secondary logo",
         placeholder: "https://image.url"
@@ -191,6 +187,18 @@ module Constants
       shop_url: {
         description: "Used as the shop url of the community",
         placeholder: "https://shop.url"
+      },
+      sidebar_tags: {
+        description: "Determines which tags are shown on the homepage righthand sidebar",
+        placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta"
+      },
+      sponsor_headline: {
+        description: "Determines the heading text of the main sponsors sidebar above the list of sponsors.",
+        placeholder: "Community Sponsors"
+      },
+      staff_user_id: {
+        description: "Account ID which acts as automated 'staff'— used principally for welcome thread.",
+        placeholder: ""
       },
       stripe_api_key: {
         description: "Secret Stripe key for receiving payments. " \
@@ -212,18 +220,6 @@ module Constants
         "separated, letters only). Please note that these users will be shown as a fallback if no" \
         "recently-active commenters or producers can be suggested",
         placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
-      },
-      sponsor_headline: {
-        description: "Determines the heading text of the main sponsors sidebar above the list of sponsors.",
-        placeholder: "Community Sponsors"
-      },
-      sidebar_tags: {
-        description: "Determines which tags are shown on the homepage righthand sidebar",
-        placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta"
-      },
-      staff_user_id: {
-        description: "Account ID which acts as automated 'staff'— used principally for welcome thread.",
-        placeholder: ""
       },
       tagline: {
         description: "Used in signup modal.",
