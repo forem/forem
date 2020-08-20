@@ -12,7 +12,7 @@
     </tr>
   </thead>
   <tbody>
-   <% @badge_achievements.each do |badge_achievement| %>
+   <% @badge_achievements.includes([:user]).includes([:badge]).each do |badge_achievement| %>
     <tr>
       <td><%= badge_achievement.user.username %></td>
       <td><%= badge_achievement.badge.title %></td>
@@ -20,7 +20,7 @@
         <td class="justify-content-center">
           <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image">
         </td>
-        <td><%= link_to "Delete", url_for(action: :destroy, id: badge_achievement.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %></td>
+        <td><%= link_to "Remove", url_for(action: :destroy, id: badge_achievement.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %></td>
       </h5>
     </tr>
     <% end %>
