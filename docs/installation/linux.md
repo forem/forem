@@ -103,8 +103,9 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
         enter/replace. i.e.:
 
      ```shell
-     export GITHUB_KEY="SOME_REAL_SECURE_KEY_HERE"
-     export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
    - If you are missing `ENV` variables on bootup, the

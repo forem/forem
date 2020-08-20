@@ -73,8 +73,9 @@ with Podman. You can install it by following these
         enter/replace. i.e.:
 
      ```shell
-     export GITHUB_KEY="SOME_REAL_SECURE_KEY_HERE"
-     export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
    - You do not need "real" keys for basic development. Some features require

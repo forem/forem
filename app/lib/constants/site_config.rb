@@ -87,6 +87,14 @@ module Constants
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
         placeholder: "basic, rich, or compact"
       },
+      github_key: {
+        description: "The \"Client ID\" portion of the GitHub Oauth Apps portal",
+        placeholder: ""
+      },
+      github_secret: {
+        description: "The \"Client Secret\" portion of the GitHub Oauth Apps portal",
+        placeholder: ""
+      },
       ga_view_id: {
         description: "Google Analytics Reporting API v4 - View ID",
         placeholder: ""
@@ -228,6 +236,14 @@ module Constants
       twitter_hashtag: {
         description: "Used as the twitter hashtag of the community",
         placeholder: "#DEVCommunity"
+      },
+      twitter_key: {
+        description: "The \"API key\" portion of consumer keys in the Twitter developer portal.",
+        placeholder: ""
+      },
+      twitter_secret: {
+        description: "The \"API secret key\" portion of consumer keys in the Twitter developer portal.",
+        placeholder: ""
       }
       # Dynamic values ommitted: configurable_rate_limits and social_media_handles
     }.freeze
