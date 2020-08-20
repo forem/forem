@@ -11,6 +11,4 @@ class Profile < ApplicationRecord
   end
 
   refresh_store_accessors!
-
-  validates :data, presence: true
 end
