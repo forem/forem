@@ -29,6 +29,24 @@ module Constants
         description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
         placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded"
       },
+      credit_prices_in_cents: {
+        small: {
+          description: "Price for small credit purchase (&lt;10 credits).",
+          placeholder: ""
+        },
+        medium: {
+          description: "Price for medium credit purchase (10 - 99 credits).",
+          placeholder: ""
+        },
+        large: {
+          description: "Price for large credit purchase (100 - 999 credits).",
+          placeholder: ""
+        },
+        xlarge: {
+          description: "Price for extra large credit purchase (1000 credits or more).",
+          placeholder: ""
+        }
+      },
       community_description: {
         description: "Used in meta description tags etc.",
         placeholder: "A fabulous community of kind and welcoming people."
@@ -43,7 +61,7 @@ module Constants
       },
       community_action: {
         description: "Used to determine the action of community e.g coding, reading, training etc.",
-        placeholder: ""
+        placeholder: "coding"
       },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
@@ -56,6 +74,10 @@ module Constants
       tagline: {
         description: "Used in signup modal.",
         placeholder: "We're a place where coders share, stay up-to-date and grow their careers."
+      },
+      health_check_token: {
+          description: "Used to authenticate with your health check endpoints.",
+          placeholder: "a secure token"
       },
       email_addresses: {
         description: "Email address",

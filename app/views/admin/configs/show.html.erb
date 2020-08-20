@@ -102,8 +102,8 @@
               <%= f.text_field :health_check_token,
                                class: "form-control",
                                value: SiteConfig.health_check_token,
-                               placeholder: "a secure token" %>
-              <div class="alert alert-info">Used to authenticate with your health check endpoints.</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:health_check_token][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:health_check_token][:description] %></div>
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@
                              ),
                              multiple: true,
                              class: "form-control selectpicker" %>
-              <div class="alert alert-info">How can users sign in?</div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %></div>
             </div>
           </div>
         </div>
@@ -147,20 +147,20 @@
               <%= f.text_field :campaign_hero_html_variant_name,
                                class: "form-control",
                                value: SiteConfig.campaign_hero_html_variant_name,
-                               placeholder: "" %>
-              <div class="alert alert-info">Hero HtmlVariant name</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:campaign_hero_html_variant_name][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:campaign_hero_html_variant_name][:description] %></div>
             </div>
 
             <div class="form-group">
               <%= admin_config_label :campaign_articles_require_approval %>
               <%= f.check_box :campaign_articles_require_approval, checked: SiteConfig.campaign_articles_require_approval %>
-              <div class="alert alert-info">Campaign stories show up on sidebar with approval?</div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:campaign_articles_require_approval][:description] %></div>
             </div>
 
             <div class="form-group">
               <%= admin_config_label :campaign_sidebar_enabled %>
               <%= f.check_box :campaign_sidebar_enabled, checked: SiteConfig.campaign_sidebar_enabled %>
-              <div class="alert alert-info">Campaign sidebar enabled or not</div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:campaign_sidebar_enabled][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -175,8 +175,8 @@
               <%= f.text_field :campaign_sidebar_image,
                                class: "form-control",
                                value: SiteConfig.campaign_sidebar_image,
-                               placeholder: "https://image.url" %>
-              <div class="alert alert-info">Used at the top of the campaign sidebar</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:campaign_sidebar_image][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:campaign_sidebar_image][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -184,8 +184,8 @@
               <%= f.text_field :campaign_url,
                                class: "form-control",
                                value: SiteConfig.campaign_url,
-                               placeholder: "https://url.com/lander" %>
-              <div class="alert alert-info">URL campaign sidebar image will link to</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:campaign_url][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:campaign_url][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -193,8 +193,8 @@
               <%= f.text_field :campaign_featured_tags,
                                class: "form-control",
                                value: SiteConfig.campaign_featured_tags.join(","),
-                               placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded" %>
-              <div class="alert alert-info">Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:campaign_featured_tags][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:campaign_featured_tags][:description] %></div>
             </div>
           </div>
         </div>
@@ -222,8 +222,8 @@
               <%= f.text_field :community_description,
                                class: "form-control",
                                value: SiteConfig.community_description,
-                               placeholder: "A fabulous community of kind and welcoming people." %>
-              <div class="alert alert-info">Used in meta description tags etc.</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:community_description][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_description][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -231,8 +231,8 @@
               <%= f.text_field :community_member_label,
                                class: "form-control",
                                value: SiteConfig.community_member_label,
-                               placeholder: "" %>
-              <div class="alert alert-info">Used to determine what a member will be called e.g developer, hobbyist etc.</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:community_member_label][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_member_label][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -240,8 +240,8 @@
               <%= f.text_field :community_action,
                                class: "form-control",
                                value: SiteConfig.community_action,
-                               placeholder: "" %>
-              <div class="alert alert-info">Used to determine the action of community e.g coding, reading, training etc.</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:community_action][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_action][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -249,8 +249,8 @@
               <%= f.text_field :tagline,
                                class: "form-control",
                                value: SiteConfig.tagline,
-                               placeholder: "We're a place where coders share, stay up-to-date and grow their careers." %>
-              <div class="alert alert-info">Used in signup modal.</div>
+                               placeholder: Constants::SiteConfig::DETAILS[:tagline][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:tagline][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -289,26 +289,26 @@
                 <%= price_field.number_field :small,
                                              class: "form-control",
                                              value: SiteConfig.credit_prices_in_cents[:small] %>
-                <div class="alert alert-info">Price for small credit purchase (&lt;10 credits).</div>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:small][:description] %></div>
                 <%= price_field.label "Credit price in cents (M)" %>
                 <%= price_field.number_field :medium,
                                              class: "form-control",
                                              value: SiteConfig.credit_prices_in_cents[:medium] %>
-                <div class="alert alert-info">Price for medium credit purchase (10 - 99 credits).</div>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:medium][:description] %></div>
               </div>
               <div class="form-group">
                 <%= price_field.label "Credit price in cents (L)" %>
                 <%= price_field.number_field :large,
                                              class: "form-control",
                                              value: SiteConfig.credit_prices_in_cents[:large] %>
-                <div class="alert alert-info">Price for large credit purchase (100 - 999 credits).</div>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:large][:description] %></div>
               </div>
               <div class="form-group">
                 <%= price_field.label "Credit price in cents (XL)" %>
                 <%= price_field.number_field :xlarge,
                                              class: "form-control",
                                              value: SiteConfig.credit_prices_in_cents[:xlarge] %>
-                <div class="alert alert-info">Price for extra large credit purchase (1000 credits or more).</div>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:xlarge][:description] %></div>
               </div>
             <% end %>
           </div>
@@ -336,8 +336,8 @@
                    <%= email_field.text_field type,
                                               class: "form-control",
                                               value: SiteConfig.email_addresses[type],
-                                              placeholder: "" %>
-                   <div class="alert alert-info"><%= type.capitalize %>Email</div>
+                                              placeholder: Constants::SiteConfig::DETAILS[:email_addresses][:placeholder] %>
+                   <div class="alert alert-info"><%= type.capitalize %><%= Constants::SiteConfig::DETAILS[:email_addresses][:description] %></div>
                  </div>
                <% end %>
              <% end %>
