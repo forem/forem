@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
+  before_action :initialize_stripe, only: %i[edit]
 
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
@@ -335,7 +336,7 @@ class UsersController < ApplicationController
   end
 
   def handle_account_tab
-    community_name = ApplicationConfig["COMMUNITY_NAME"]
+    community_name = SiteConfig.community_name
     @email_body = <<~HEREDOC
       Hello #{community_name} Team,\n
       I would like to delete my account.\n

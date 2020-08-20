@@ -7,7 +7,7 @@ openapi: "3.0.3"
 info:
   title: DEV API (beta)
   description: |
- 
+
     Access Forem articles, users and other resources via API.
 
     For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
@@ -16,7 +16,7 @@ info:
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-    
+
   version: "0.7.0"
   termsOfService: https://dev.to/terms
   contact:
@@ -214,11 +214,11 @@ components:
         edited_at:
           type: string
           format: date-time
-          nullable: true          
+          nullable: true
         crossposted_at:
           type: string
           format: date-time
-          nullable: true          
+          nullable: true
         published_at:
           type: string
           format: date-time
@@ -315,7 +315,7 @@ components:
         crossposted_at:
           type: string
           format: date-time
-          nullable: true          
+          nullable: true
         published_at:
           type: string
           format: date-time
@@ -607,6 +607,7 @@ components:
       required:
         - type_of
         - id_code
+        - created_at
         - body_html
         - user
         - children
@@ -615,6 +616,9 @@ components:
           type: string
         id_code:
           type: string
+        created_at:
+          type: string
+          format: date-time
         body_html:
           description: HTML formatted comment
           type: string
@@ -853,14 +857,14 @@ components:
           type: string
         twitter_username:
           type: string
-          nullable: true          
+          nullable: true
         github_username:
           type: string
           nullable: true
         website_url:
           type: string
           format: url
-          nullable: true          
+          nullable: true
         profile_image:
           description: Profile image (640x640)
           type: string
@@ -943,7 +947,7 @@ components:
         website_url:
           type: string
           format: url
-          nullable: true          
+          nullable: true
         location:
           type: string
           nullable: true
@@ -1204,6 +1208,7 @@ components:
       value:
         - type_of: comment
           id_code: m3m0
+          created_at: 2020-07-01T17:59:43Z
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1221,6 +1226,7 @@ components:
           children: []
         - type_of: comment
           id_code: m357
+          created_at: 2020-07-02T17:19:40Z          
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1240,6 +1246,7 @@ components:
           children:
           - type_of: comment
             id_code: m35m
+            created_at: 2020-08-01T11:59:40Z          
             body_html: |
               <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
               <html><body>
@@ -1310,6 +1317,7 @@ components:
       value:
         type_of: comment
         id_code: m357
+        created_at: 2020-08-02T17:19:40Z          
         body_html: |
           <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
           <html><body>
@@ -1329,6 +1337,7 @@ components:
         children:
         - type_of: comment
           id_code: m35m
+          created_at: 2020-07-02T17:19:40Z          
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1869,7 +1878,7 @@ paths:
 
         ### Rate limiting
 
-        There is a limit of 150 requests per 30 seconds.
+        There is a limit of 30 requests per 30 seconds.
 
         ### Additional resources
 
@@ -2221,7 +2230,7 @@ paths:
       summary: Comments
       description: |
         This endpoint allows the client to retrieve all comments belonging to an
-        article as threaded conversations.
+        article or podcast episode as threaded conversations.
 
         It will return the all top level comments with their nested comments as
         threads. See the format specification for further details.
@@ -2236,6 +2245,14 @@ paths:
             format: int32
             minimum: 1
           example: 270180
+        - name: p_id
+          in: query
+          description: Podcast Episode identifier.
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          example: 124
       responses:
         "200":
           description: A list of threads of comments
@@ -2266,6 +2283,10 @@ paths:
           label: curl (all comments of an article)
           source: |
             curl https://dev.to/api/comments?a_id=270180
+        - lang: Shell
+          label: curl (all comments of a podcast episode)
+          source: |
+            curl https://dev.to/api/comments?p_id=124
 
   /comments/{id}:
     get:

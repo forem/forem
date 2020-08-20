@@ -106,6 +106,13 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
     end
 
+    it "sets Nginx X-Accel-Expires headers" do
+      get "/"
+      expect(response.status).to eq(200)
+
+      expect(response.headers["X-Accel-Expires"]).to eq("600")
+    end
+
     it "shows default meta keywords" do
       SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
       get "/"
@@ -241,7 +248,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "renders page with proper header" do
       podcast = create(:podcast)
       create(:podcast_episode, podcast: podcast)
-      get "/" + podcast.slug
+      get "/#{podcast.slug}"
       expect(response.body).to include(podcast.title)
     end
   end
@@ -263,33 +270,41 @@ RSpec.describe "StoriesIndex", type: :request do
       )
     end
 
-    it "renders page with proper header" do
-      get "/t/#{tag.name}"
-      expect(response.body).to include(tag.name)
-    end
+    context "with caching headers" do
+      before do
+        get "/t/#{tag.name}"
+      end
 
-    it "sets Fastly Cache-Control headers" do
-      get "/t/#{tag.name}"
-      expect(response.status).to eq(200)
+      it "renders page with proper header" do
+        expect(response.body).to include(tag.name)
+      end
 
-      expected_cache_control_headers = %w[public no-cache]
-      expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
-    end
+      it "sets Fastly Cache-Control headers" do
+        expect(response.status).to eq(200)
 
-    it "sets Fastly Surrogate-Control headers" do
-      get "/t/#{tag.name}"
-      expect(response.status).to eq(200)
+        expected_cache_control_headers = %w[public no-cache]
+        expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
+      end
 
-      expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
-      expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
-    end
+      it "sets Fastly Surrogate-Control headers" do
+        expect(response.status).to eq(200)
 
-    it "sets Fastly Surrogate-Key headers" do
-      get "/t/#{tag.name}"
-      expect(response.status).to eq(200)
+        expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
+        expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
+      end
 
-      expected_surrogate_key_headers = %W[articles-#{tag}]
-      expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      it "sets Fastly Surrogate-Key headers" do
+        expect(response.status).to eq(200)
+
+        expected_surrogate_key_headers = %W[articles-#{tag}]
+        expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      end
+
+      it "sets Nginx X-Accel-Expires headers" do
+        expect(response.status).to eq(200)
+
+        expect(response.headers["X-Accel-Expires"]).to eq("600")
+      end
     end
 
     it "renders page with top/week etc." do

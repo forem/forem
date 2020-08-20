@@ -19,12 +19,12 @@ class Tweet < ApplicationRecord
     end
     mentioned_usernames_serialized.each do |username|
       uname = username["screen_name"]
-      text.gsub!("@" + uname, "<a href='https://twitter.com/#{uname}'>#{'@' + uname}</a>")
+      text.gsub!("@#{uname}", "<a href='https://twitter.com/#{uname}'>#{"@#{uname}"}</a>")
     end
     hashtags_serialized.each do |tag|
       tag_text = tag[:text]
-      text.gsub!("#" + tag_text,
-                 "<a href='https://twitter.com/hashtag/#{tag_text}'>#{'#' + tag_text}</a>")
+      text.gsub!("##{tag_text}",
+                 "<a href='https://twitter.com/hashtag/#{tag_text}'>#{"##{tag_text}"}</a>")
     end
 
     if extended_entities_serialized && extended_entities_serialized[:media]

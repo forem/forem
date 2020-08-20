@@ -339,12 +339,7 @@ export default class Chat extends Component {
   };
 
   setupChannel = (channelId) => {
-    const {
-      messages,
-      messageOffset,
-      activeChannel,
-      activeChannelId,
-    } = this.state;
+    const { messages, messageOffset, activeChannel } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
@@ -354,7 +349,7 @@ export default class Chat extends Component {
     }
     if (activeChannel && activeChannel.channel_type !== 'direct') {
       getContent(
-        `/chat_channels/${activeChannelId}/channel_info`,
+        `/chat_channels/${channelId}/channel_info`,
         this.setOpenChannelUsers,
         null,
       );
@@ -372,7 +367,7 @@ export default class Chat extends Component {
       res.channel_users,
       ([username]) => username !== window.currentUser.username,
     );
-    if (activeChannel.channel_type === 'open') {
+    if (activeChannel && activeChannel.channel_type === 'open') {
       this.setState({
         channelUsers: {
           [activeChannelId]: leftUser,
@@ -919,6 +914,7 @@ export default class Chat extends Component {
       this.triggerSwitchChannel(
         parseInt(acceptedInfo.channelId, 10),
         acceptedInfo.channelSlug,
+        this.state.chatChannels,
       );
     }
 
@@ -1022,6 +1018,7 @@ export default class Chat extends Component {
           data: {},
           type_of: 'chat-channel-setting',
           activeMembershipId: activeChannel.id,
+          handleLeavingChannel: this.handleLeavingChannel,
         });
       }
     }
@@ -1060,6 +1057,21 @@ export default class Chat extends Component {
       });
       return { chatChannels: newChannelsObj };
     });
+  };
+
+  handleLeavingChannel = (leftChannelId) => {
+    const { chatChannels } = this.state;
+    this.triggerSwitchChannel(
+      chatChannels[1].chat_channel_id,
+      chatChannels[1].channel_modified_slug,
+      chatChannels,
+    );
+    this.setState((prevState) => ({
+      chatChannels: prevState.chatChannels.filter(
+        (channel) => channel.id !== leftChannelId,
+      ),
+    }));
+    this.setActiveContentState(chatChannels[1].chat_channel_id, null);
   };
 
   triggerChannelTypeFilter = (e) => {
@@ -1830,11 +1842,6 @@ export default class Chat extends Component {
 
   render() {
     const { state } = this;
-    const detectIOSSafariClass =
-      navigator.userAgent.match(/iPhone/i) &&
-      !navigator.userAgent.match('CriOS')
-        ? ' chat--iossafari'
-        : '';
     let channelHeader = <div className="active-channel__header">&nbsp;</div>;
     if (state.activeChannel) {
       channelHeader = (
@@ -1855,9 +1862,9 @@ export default class Chat extends Component {
       <div
         data-testid="chat"
         className={`chat chat--expanded
-        ${detectIOSSafariClass} chat--${
-          state.videoPath ? 'video-visible' : 'video-not-visible'
-        } chat--${
+         chat--${
+           state.videoPath ? 'video-visible' : 'video-not-visible'
+         } chat--${
           state.activeContent[state.activeChannelId]
             ? 'content-visible'
             : 'content-not-visible'

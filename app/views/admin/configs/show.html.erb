@@ -21,7 +21,7 @@
       </button>
     </div>
 
-    <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? 'hide collapse': 'show expand' %> p-3" aria-labelledby="siteConfigHeader">
+    <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3" aria-labelledby="siteConfigHeader">
       <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
 
         <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
@@ -36,7 +36,7 @@
                     <%= a_field.text_field key,
                                            class: "form-control",
                                            value: SiteConfig.public_send(config_key)[key],
-                                           placeholder: Constants::SITE_CONFIG_DETAILS[config_key][:placeholder] %>
+                                           placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
                     <div class="alert alert-info"><%= "#{key} #{config_key.to_s.tr! '_', ' '}" %></div>
                   </div>
                   <% end %>
@@ -48,8 +48,8 @@
               <%= f.text_field config_key,
                                class: "form-control",
                                value: SiteConfig.public_send(config_key).join(","),
-                               placeholder: Constants::SITE_CONFIG_DETAILS[config_key][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[config_key][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[config_key][:description] %></div>
             </div>
           <% else %>
             <div class="form-group">
@@ -57,8 +57,8 @@
               <%= f.text_field config_key,
                                class: "form-control",
                                value: SiteConfig.public_send(config_key),
-                               placeholder: Constants::SITE_CONFIG_DETAILS[config_key][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[config_key][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[config_key][:description] %></div>
             </div>
           <% end %>
         <% end %>
@@ -209,6 +209,15 @@
                      } %>
           <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
             <div class="form-group">
+              <%= admin_config_label :community_name %>
+              <%= f.text_field :community_name,
+                               class: "form-control",
+                               value: SiteConfig.community_name,
+                               placeholder: Constants::SiteConfig::DETAILS[:community_name][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_name][:description] %></div>
+            </div>
+
+            <div class="form-group">
               <%= admin_config_label :community_description %>
               <%= f.text_field :community_description,
                                class: "form-control",
@@ -242,6 +251,24 @@
                                value: SiteConfig.tagline,
                                placeholder: "We're a place where coders share, stay up-to-date and grow their careers." %>
               <div class="alert alert-info">Used in signup modal.</div>
+            </div>
+
+            <div class="form-group">
+              <%= admin_config_label :community_copyright_start_year %>
+              <%= f.text_field :community_copyright_start_year,
+                               class: "form-control",
+                               value: SiteConfig.community_copyright_start_year,
+                               placeholder: Constants::SiteConfig::DETAILS[:community_copyright_start_year][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_copyright_start_year][:description] %></div>
+            </div>
+
+            <div class="form-group">
+              <%= admin_config_label :staff_user_id %>
+              <%= f.text_field :staff_user_id,
+                               class: "form-control",
+                               value: SiteConfig.staff_user_id,
+                               placeholder: Constants::SiteConfig::DETAILS[:staff_user_id][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:staff_user_id][:description] %></div>
             </div>
           </div>
         </div>
@@ -332,8 +359,8 @@
               <%= f.number_field :periodic_email_digest_max,
                                  class: "form-control",
                                  value: SiteConfig.periodic_email_digest_max,
-                                 placeholder: Constants::SITE_CONFIG_DETAILS[:periodic_email_digest_max][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:periodic_email_digest_max][:description] %></div>
+                                 placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -341,8 +368,8 @@
               <%= f.number_field :periodic_email_digest_min,
                                  class: "form-control",
                                  value: SiteConfig.periodic_email_digest_min,
-                                 placeholder: Constants::SITE_CONFIG_DETAILS[:periodic_email_digest_max][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:periodic_email_digest_max][:description] %></div>
+                                 placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:description] %></div>
             </div>
           </div>
         </div>
@@ -361,13 +388,13 @@
               <%= f.text_field :jobs_url,
                                class: "form-control",
                                value: SiteConfig.jobs_url,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:jobs_url][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:jobs_url][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:jobs_url][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:jobs_url][:description] %></div>
             </div>
             <div class="form-group">
               <%= admin_config_label :display_jobs_banner %>
               <%= f.check_box :display_jobs_banner, checked: SiteConfig.display_jobs_banner %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:display_jobs_banner][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:display_jobs_banner][:description] %></div>
             </div>
           </div>
         </div>
@@ -386,17 +413,7 @@
               <%= f.text_field :ga_view_id,
                                class: "form-control",
                                value: SiteConfig.ga_view_id %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:ga_view_id][:description] %></div>
-            </div>
-
-            <div class="form-group">
-              <%= admin_config_label :ga_fetch_rate, "Fetch rate" %>
-              <%= f.number_field :ga_fetch_rate,
-                                 class: "form-control",
-                                 value: SiteConfig.ga_fetch_rate,
-                                 min: 1,
-                                 placeholder: Constants::SITE_CONFIG_DETAILS[:ga_fetch_rate][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:ga_fetch_rate][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:ga_view_id][:description] %></div>
             </div>
           </div>
         </div>
@@ -415,8 +432,8 @@
               <%= f.text_field :main_social_image,
                                class: "form-control",
                                value: SiteConfig.main_social_image,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:main_social_image][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:main_social_image][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:main_social_image][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:main_social_image][:description] %></div>
               <% if SiteConfig.main_social_image.present? %>
                 <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
               <% end %>
@@ -426,8 +443,8 @@
                 <%= f.text_field :favicon_url,
                                  class: "form-control",
                                  value: SiteConfig.favicon_url,
-                                 placeholder: Constants::SITE_CONFIG_DETAILS[:favicon_url][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:favicon_url][:description] %></div>
+                                 placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:favicon_url][:description] %></div>
                 <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
               </div>
 
@@ -436,8 +453,8 @@
                 <%= f.text_field :logo_png,
                                  class: "form-control",
                                  value: SiteConfig.logo_png,
-                                 placeholder: Constants::SITE_CONFIG_DETAILS[:logo_png][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:logo_png][:description] %></div>
+                                 placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:logo_png][:description] %></div>
                 <% if SiteConfig.logo_png.present? %>
                   <img class="preview" src="<%= SiteConfig.logo_png %>" />
                 <% end %>
@@ -449,8 +466,8 @@
                                 class: "form-control",
                                 value: SiteConfig.logo_svg,
                                 rows: 6,
-                                placeholder: Constants::SITE_CONFIG_DETAILS[:logo_svg][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:logo_svg][:description] %></div>
+                                placeholder: Constants::SiteConfig::DETAILS[:logo_svg][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:logo_svg][:description] %></div>
                 <% if SiteConfig.logo_svg.present? %>
                   <%= SiteConfig.logo_svg.html_safe %>
                 <% end %>
@@ -461,8 +478,8 @@
                 <%= f.text_field :secondary_logo_url,
                                  class: "form-control",
                                  value: SiteConfig.secondary_logo_url,
-                                 placeholder: Constants::SITE_CONFIG_DETAILS[:secondary_logo_url][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:secondary_logo_url][:description] %></div>
+                                 placeholder: Constants::SiteConfig::DETAILS[:secondary_logo_url][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:secondary_logo_url][:description] %></div>
                 <% if SiteConfig.secondary_logo_url.present? %>
                   <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
                 <% end %>
@@ -474,8 +491,8 @@
                                 class: "form-control",
                                 value: SiteConfig.left_navbar_svg_icon,
                                 rows: 6,
-                                placeholder: Constants::SITE_CONFIG_DETAILS[:left_navbar_svg_icon][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:left_navbar_svg_icon][:description] %></div>
+                                placeholder: Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:description] %></div>
                 <%= SiteConfig.left_navbar_svg_icon.html_safe %>
               </div>
 
@@ -485,8 +502,8 @@
                                 class: "form-control",
                                 value: SiteConfig.right_navbar_svg_icon,
                                 rows: 6,
-                                placeholder: Constants::SITE_CONFIG_DETAILS[:right_navbar_svg_icon][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:right_navbar_svg_icon][:description] %></div>
+                                placeholder: Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:description] %></div>
                 <%= SiteConfig.right_navbar_svg_icon.html_safe %>
               </div>
             </div>
@@ -508,8 +525,8 @@
                                class: "form-control",
                                value: SiteConfig.mascot_user_id,
                                min: 1,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:mascot_user_id][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mascot_user_id][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:mascot_user_id][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_user_id][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -517,13 +534,13 @@
               <%= f.text_field :mascot_image_url,
                                class: "form-control",
                                value: SiteConfig.mascot_image_url,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:mascot_image_url][:placeholder] %>
+                               placeholder: Constants::SiteConfig::DETAILS[:mascot_image_url][:placeholder] %>
 
               <div class="col-12">
                 <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
               </div>
 
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mascot_image_url][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_image_url][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -531,13 +548,13 @@
               <%= f.text_field :mascot_footer_image_url,
                                class: "form-control",
                                value: SiteConfig.mascot_footer_image_url,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:mascot_footer_image_url][:placeholder] %>
+                               placeholder: Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:placeholder] %>
 
               <div class="col-12">
                 <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_footer_image_url %>" />
               </div>
 
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mascot_footer_image_url][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -545,7 +562,7 @@
               <%= f.text_field :mascot_image_description,
                                class: "form-control",
                                value: SiteConfig.mascot_image_description %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mascot_image_description][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_image_description][:description] %></div>
             </div>
           </div>
         </div>
@@ -567,7 +584,7 @@
                     <%= meta_keywords_field.text_field area,
                                                        class: "form-control",
                                                        value: SiteConfig.meta_keywords[area],
-                                                       placeholder: Constants::SITE_CONFIG_DETAILS[:meta_keywords][:placeholder] %>
+                                                       placeholder: Constants::SiteConfig::DETAILS[:meta_keywords][:placeholder] %>
                     <div class="alert alert-info"><%= area.capitalize %><%= " page" unless area == "default" %> keywords</div>
                   </div>
                 <% end %>
@@ -590,8 +607,26 @@
               <%= f.text_field :shop_url,
                                class: "form-control",
                                value: SiteConfig.shop_url,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:shop_url][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:shop_url][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:shop_url][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:shop_url][:description] %></div>
+            </div>
+
+            <div class="form-group">
+              <%= admin_config_label :stripe_api_key %>
+              <%= f.text_field :stripe_api_key,
+                               class: "form-control",
+                               value: SiteConfig.stripe_api_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:stripe_api_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:stripe_api_key][:description] %></div>
+            </div>
+
+            <div class="form-group">
+              <%= admin_config_label :stripe_publishable_key %>
+              <%= f.text_field :stripe_publishable_key,
+                               class: "form-control",
+                               value: SiteConfig.stripe_publishable_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:stripe_publishable_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:stripe_publishable_key][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -599,8 +634,8 @@
               <%= f.text_field :payment_pointer,
                                class: "form-control",
                                value: SiteConfig.payment_pointer,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:payment_pointer][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:payment_pointer][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:payment_pointer][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:payment_pointer][:description] %></div>
              </div>
           </div>
         </div>
@@ -619,7 +654,7 @@
               <%= f.text_field :mailchimp_newsletter_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_newsletter_id %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mailchimp_newsletter_id][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mailchimp_newsletter_id][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -627,7 +662,7 @@
               <%= f.text_field :mailchimp_sustaining_members_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_sustaining_members_id %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mailchimp_sustaining_members_id][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mailchimp_sustaining_members_id][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -635,7 +670,7 @@
               <%= f.text_field :mailchimp_tag_moderators_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_tag_moderators_id %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mailchimp_tag_moderators_id][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mailchimp_tag_moderators_id][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -643,7 +678,7 @@
               <%= f.text_field :mailchimp_community_moderators_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_community_moderators_id %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:mailchimp_community_moderators_id][:description] %></div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mailchimp_community_moderators_id][:description] %></div>
             </div>
           </div>
         </div>
@@ -662,13 +697,13 @@
               <%= f.text_field :onboarding_logo_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_logo_image,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:onboarding_logo_image][:placeholder] %>
+                               placeholder: Constants::SiteConfig::DETAILS[:onboarding_logo_image][:placeholder] %>
               <div class="row mt-2">
                 <div class="col-12">
                   <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" />
                 </div>
                 <div class="col-12">
-                  <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:onboarding_logo_image][:description] %></div>
+                  <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:onboarding_logo_image][:description] %></div>
                 </div>
               </div>
             </div>
@@ -678,13 +713,13 @@
               <%= f.text_field :onboarding_background_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_background_image,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:onboarding_background_image][:placeholder] %>
+                               placeholder: Constants::SiteConfig::DETAILS[:onboarding_background_image][:placeholder] %>
               <div class="row mt-2">
                 <div class="col-12">
                   <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
                 </div>
                 <div class="col-12">
-                  <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:onboarding_background_image][:description] %></div>
+                  <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %></div>
                 </div>
               </div>
             </div>
@@ -694,13 +729,13 @@
               <%= f.text_field :onboarding_taskcard_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_taskcard_image,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:onboarding_taskcard_image][:placeholder] %>
+                               placeholder: Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:placeholder] %>
               <div class="row mt-2">
                 <div class="col-12">
                   <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
                 </div>
                 <div class="col-12">
-                  <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:onboarding_taskcard_image][:description] %></div>
+                  <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:description] %></div>
                 </div>
               </div>
             </div>
@@ -710,8 +745,8 @@
               <%= f.text_field :suggested_users,
                                class: "form-control",
                                value: SiteConfig.suggested_users.join(","),
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:suggested_users][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:suggested_users][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:suggested_users][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:suggested_users][:description] %></div>
             </div>
 
             <div class="form-group">
@@ -719,8 +754,8 @@
               <%= f.text_field :suggested_tags,
                                class: "form-control",
                                value: SiteConfig.suggested_tags.join(","),
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:suggested_tags][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:suggested_tags][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:suggested_tags][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:suggested_tags][:description] %></div>
             </div>
           </div>
         </div>
@@ -762,8 +797,8 @@
               <%= f.text_field :twitter_hashtag,
                                class: "form-control",
                                value: SiteConfig.twitter_hashtag.to_s,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:twitter_hashtag][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:twitter_hashtag][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:twitter_hashtag][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:twitter_hashtag][:description] %></div>
             </div>
             <div class="form-group">
               <%= f.fields_for :social_media_handles do |social_media_field| %>
@@ -796,8 +831,8 @@
               <%= f.text_field :sponsor_headline,
                                class: "form-control",
                                value: SiteConfig.sponsor_headline,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:sponsor_headline][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:sponsor_headline][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:sponsor_headline][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sponsor_headline][:description] %></div>
             </div>
           </div>
         </div>
@@ -816,8 +851,8 @@
               <%= f.text_field :sidebar_tags,
                                class: "form-control",
                                value: SiteConfig.sidebar_tags.join(","),
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:sidebar_tags][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:sidebar_tags][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %></div>
             </div>
           </div>
         </div>
@@ -836,8 +871,19 @@
               <%= f.text_field :feed_style,
                                class: "form-control",
                                value: SiteConfig.feed_style,
-                               placeholder: Constants::SITE_CONFIG_DETAILS[:feed_style][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[:feed_style][:description] %></div>
+                               placeholder: Constants::SiteConfig::DETAILS[:feed_style][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:feed_style][:description] %></div>
+            </div>
+            <div class="form-group">
+              <%= f.label :default_font %>
+              <%= select_tag "site_config[default_font]",
+                             options_for_select(
+                               [%w[sans-serif sans_serif], %w[serif serif], %w[open-dyslexic open_dyslexic]],
+                               SiteConfig.default_font,
+                             ),
+                             multiple: false,
+                             class: "form-control selectpicker" %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:default_font][:description] %></div>
             </div>
             <div class="form-group">
               <%= admin_config_label :public %>
@@ -884,13 +930,11 @@
             </tr>
           </thead>
           <tbody>
-            <% ENVied.config.variables.each do |v| %>
-            <% if v.group.in?(ENVied.required_groups) %>
-            <tr>
-              <td><%= v.name %></td>
-              <td style="max-width: 750px;"><%= ApplicationConfig[v.name] %></td>
-            </tr>
-            <% end %>
+            <% ENV.sort.each do |key, value| %>
+              <tr>
+                <td><%= key %></td>
+                <td style="max-width: 750px;"><%= value %></td>
+              </tr>
             <% end %>
           </tbody>
         </table>

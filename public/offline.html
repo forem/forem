@@ -67,6 +67,11 @@
       margin-top: 30px;
     }
 
+    #btn-clear, .paletteSelector select {
+      height: 30px;
+      cursor: pointer;
+    }
+
     .colors {
       z-index: 2;
       margin: 0 20px;
@@ -171,11 +176,8 @@
   <div class="colors">
   </div>
   <div class='paletteSelector'>
-    <!-- TODO: Populate options from javascript instead of hardcoding -->
-    <select>
-      <option value="default">Default Palette</option>
-      <option value="paulTol">Paul Tol Palette</option>
-    </select>
+    <select id="palettes"></select>
+    <button type="button" id="btn-clear">Clear</button> 
   </div>
   <svg width="75px" height="75px" viewBox="0 0 266 286" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     class="signature">
@@ -193,19 +195,25 @@
   <script type="text/javascript">
 
     const palettes = {
-      default: ["#F4908E", "#F2F097", "#88B0DC", "#F7B5D1", "#53C4AF", "#FDE38C"],
+      default: {
+        name: 'Default Palette',
+        colors: ['#F4908E', '#F2F097', '#88B0DC', '#F7B5D1', '#53C4AF', '#FDE38C']
+      },
       // Color-deficient accessible palettes: https://owi.usgs.gov/blog/tolcolors/
-      paulTol: ["#B997C6", "#824D99", "#4E79C4", "#57A2AC", "#7EB875", "#D0B440", "#E67F33"],
+      paulTol: {
+        name: 'Paul Tol Palette',
+        colors: ['#B997C6', '#824D99', '#4E79C4', '#57A2AC', '#7EB875', '#D0B440', '#E67F33']
+      },
       // Add more palette options below and to the "select" dropdown.
     }
     let activePalette = 'default' // match key inside the palettes variable
 
     // Globally DOM nodes + variables
-    const paletteSelector = document.querySelector(".paletteSelector")
-    const colorSelector = document.querySelector(".colors")
+    const paletteSelector = document.querySelector('.paletteSelector')
+    const colorSelector = document.querySelector('.colors')
     const canvas = document.querySelector('canvas')
     const context = canvas.getContext('2d')
-    const colorDiv = document.querySelector(".colors")
+    const colorDiv = document.querySelector('.colors')
     let dx = 1, dy = 1;
 
     // handler for color input buttons
@@ -221,12 +229,12 @@
         button.removeEventListener('click', handleButtonClick)
       })
       // Then, remove existing buttons
-      colorDiv.innerHTML = ""
+      colorDiv.innerHTML = ''
 
       // Lastly, add new a new button for each color in the passed in palette
       colors.forEach(color => {
-        const button = document.createElement("button")
-        button.classList.add("color")
+        const button = document.createElement('button')
+        button.classList.add('color')
         button.style.backgroundColor = color
         colorDiv.appendChild(button)
         button.addEventListener('click', handleButtonClick)
@@ -236,7 +244,7 @@
     // Helper for modifying canvas context
     const setContextSettings = (strokeColor) => {
       context.strokeStyle = strokeColor
-      context.lineJoin = "round"
+      context.lineJoin = 'round'
       context.lineWidth = 5
     }
 
@@ -257,7 +265,7 @@
       setResizeFactors();
     }
 
-    window.addEventListener("resize", handleResize)
+    window.addEventListener('resize', handleResize)
 
     // Main function to render new DOM whenever activePalette changes
     const render = (palette) => {
@@ -272,7 +280,7 @@
 
     function getCoordinates(event) {
       // check to see if mobile or desktop
-      if (["mousedown", "mousemove"].includes(event.type)) {
+      if (['mousedown', 'mousemove'].includes(event.type)) {
         // click events
         return [event.pageX * dx, event.pageY * dy]
       } else {
@@ -329,14 +337,31 @@
     canvas.addEventListener('mousemove', endPaint)
     canvas.addEventListener('touchmove', endPaint)
 
+    // generate options for select tag
+    let selectTag = document.getElementById('palettes');
+
+    Object.keys(palettes).forEach((key) => {
+      // create tag
+      let option = document.createElement('option');
+      option.value = key;
+      option.textContent = palettes[key].name;
+      
+      // insert to select
+      selectTag.appendChild(option);
+    });
+
     paletteSelector.onchange = (event) => {
       activePalette = event.target.value
-      render(palettes[activePalette])
+      render(palettes[activePalette].colors)
     }
+
+    document.getElementById('btn-clear').addEventListener('click', (e) => {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    });
 
     // Initialization when page is ready to load, runs once
     (function() {
-      render(palettes[activePalette])
+      render(palettes[activePalette].colors)
     })()
 
   </script>

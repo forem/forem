@@ -1,15 +1,17 @@
 class HtmlVariant < ApplicationRecord
   GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign].freeze
 
+  belongs_to :user, optional: true
+
+  has_many :html_variant_successes, dependent: :destroy
+  has_many :html_variant_trials, dependent: :destroy
+
+  validates :group, inclusion: { in: GROUP_NAMES }
   validates :html, presence: true
   validates :name, uniqueness: true
-  validates :group, inclusion: { in: GROUP_NAMES }
   validates :success_rate, presence: true
-  validate  :no_edits
 
-  belongs_to :user, optional: true
-  has_many :html_variant_trials
-  has_many :html_variant_successes
+  validate  :no_edits
 
   before_save :prefix_all_images
 
@@ -64,7 +66,7 @@ class HtmlVariant < ApplicationRecord
       img["src"] = if Giphy::Image.valid_url?(src)
                      src.gsub("https://media.", "https://i.")
                    else
-                     ImageResizer.call(src, width: 420).gsub(",", "%2C")
+                     Images::Optimizer.call(src, width: 420).gsub(",", "%2C")
                    end
     end
     self.html = doc.to_html

@@ -1,9 +1,17 @@
 <% title "[Moderate] " + @moderatable.title %>
 
+<%= javascript_packs_with_chunks_tag "commentModPage", defer: true %>
+
 <% cache(cache_key_heroku_slug("mod-styling")) do %>
   <style>
     <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
   </style>
+<% end %>
+
+<% if flash[:error].present? %>
+  <div class="crayons-banner crayons-banner--error">
+    <%= flash[:error] %>
+  </div>
 <% end %>
 
 <div class="container mod-container" style="text-align: center">
@@ -96,6 +104,16 @@
       This is the equivalent of vomiting on <b>all</b> of this user's articles.
     </p>
   </div>
+  <% if current_user.any_admin? && @moderatable.class.name == "Comment" && !@moderatable.deleted %>
+    <div class="crayons-card crayons-card--secondary p-4 flex items-center">
+      <div class="fw-medium flex-1" style="text-align: left;">
+        <p class="fw-bold fs-xl">Delete This Comment</p>
+      </div>
+      <div class="flex">
+        <%= button_to "Delete Comment", comment_admin_delete_path(@moderatable.id), method: :patch, class: "crayons-btn crayons-btn--secondary ml-2" %>
+      </div>
+    </div>
+  <% end %>
   <% if @hidden_comments.present? %>
     <div class="tag-mod-form">
       <h2>Hidden Comments</h2>
@@ -198,105 +216,3 @@
     <% end %>
   <% end %>
 </div>
-
-<script defer>
-  setTimeout(function () {
-    var butts = document.querySelectorAll('.reaction-button, .reaction-vomit-button');
-    function applyReactedClass(category) {
-      const upVote = document.querySelector("[data-category='thumbsup']");
-      const downVote = document.querySelector("[data-category='thumbsdown']");
-      const vomitVote = document.querySelector("[data-category='vomit']");
-
-      if (category === 'thumbsup') {
-        downVote.classList.remove('reacted');
-        vomitVote.classList.remove('reacted');
-      } else {
-        upVote.classList.remove('reacted');
-      }
-    }
-    for (var i = 0; i < butts.length; i++) {
-      var butt = butts[i];
-      butt.onclick = function (event) {
-        event.preventDefault();
-        var thisButt = this;
-        applyReactedClass(thisButt.dataset.category);
-        thisButt.classList.add('reacted');
-
-        function successCb(response) {
-          if (response.result === 'create') {
-            thisButt.classList.add('reacted');
-          } else {
-            thisButt.classList.remove('reacted');
-          }
-        }
-
-        var formData = new FormData();
-        formData.append('reactable_type', thisButt.dataset.reactableType);
-        formData.append('category', thisButt.dataset.category);
-        formData.append('reactable_id', thisButt.dataset.reactableId);
-
-        getCsrfToken()
-          .then(sendFetch('reaction-creation', formData))
-          .then(function (response) {
-            if (response.status === 200) {
-              response.json().then(successCb);
-            }
-          });
-      };
-    }
-
-    // Experience-Level JS
-    function clearExpLevels() {
-      Array.from(
-        document.getElementsByClassName('level-rating-button selected'),
-      ).forEach((el) => {
-        el.classList.remove('selected');
-      });
-    }
-
-    async function updateExperienceLevel(currentUserId, articleId, rating, group) {
-      try {
-        const response = await fetch('/rating_votes', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'X-CSRF-Token': window.csrfToken,
-            'Content-Type': 'application/json',
-          },
-          credentials: 'same-origin',
-          body: JSON.stringify({
-            user_id: currentUserId,
-            article_id: articleId,
-            rating,
-            group,
-          }),
-        });
-
-        const outcome = await response.json();
-
-        if (outcome.result === 'Success') {
-          clearExpLevels();
-          document
-            .getElementById(`js__rating__vote__${rating}`)
-            .classList.add('selected');
-        } else {
-          // eslint-disable-next-line no-alert
-          alert(outcome.error);
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-alert
-        alert(error);
-      }
-    }
-    document.querySelectorAll('.level-rating-button').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        updateExperienceLevel(
-          btn.dataset.userId,
-          btn.dataset.articleId,
-          btn.value,
-          btn.dataset.group,
-        );
-      });
-    });
-  }, 200)
-</script>

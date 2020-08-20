@@ -7,15 +7,18 @@ RSpec.describe Users::DeleteWorker, type: :worker do
   let(:message_delivery) { double }
 
   describe "#perform" do
-    let(:user) { create(:user) }
+    let!(:user) { create(:user) }
     let(:delete) { Users::Delete }
 
-    before do
-      allow(delete).to receive(:call)
-    end
-
     context "when user is found" do
+      it "deletes the user correctly" do
+        worker.perform(user.id)
+
+        expect(User.exists?(id: user.id)).to be(false)
+      end
+
       it "calls the service when a user is found" do
+        allow(delete).to receive(:call)
         worker.perform(user.id)
         expect(delete).to have_received(:call).with(user)
       end
@@ -39,7 +42,7 @@ RSpec.describe Users::DeleteWorker, type: :worker do
 
         worker.perform(user.id)
 
-        expect(mailer_class).to have_received(:with).with(user: user)
+        expect(mailer_class).to have_received(:with).with(name: user.name, email: user.email)
         expect(mailer).to have_received(:account_deleted_email)
         expect(message_delivery).to have_received(:deliver_now)
       end

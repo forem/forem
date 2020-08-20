@@ -48,10 +48,14 @@ class UserDecorator < ApplicationDecorator
     end
   end
 
+  def config_font_name
+    config_font.gsub("default", SiteConfig.default_font)
+  end
+
   def config_body_class
     body_class = [
       config_theme.tr("_", "-"),
-      "#{config_font.tr('_', '-')}-article-body",
+      "#{config_font_name.tr('_', '-')}-article-body",
       "trusted-status-#{trusted}",
       "#{config_navbar.tr('_', '-')}-navbar-config",
     ]

@@ -87,15 +87,15 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
 
     it "sets default params when not present" do
       filter = described_class.new(params: {})
-      expect(filter.as_hash.dig("sort")).to eq("channel_last_message_at" => "desc")
-      expect(filter.as_hash.dig("size")).to eq(0)
+      expect(filter.as_hash["sort"]).to eq("channel_last_message_at" => "desc")
+      expect(filter.as_hash["size"]).to eq(0)
     end
 
     it "allows default params to be overriden" do
       params = { sort_by: "status", sort_direction: "asc", size: 20 }
       filter = described_class.new(params: params)
-      expect(filter.as_hash.dig("sort")).to eq("status" => "asc")
-      expect(filter.as_hash.dig("size")).to eq(20)
+      expect(filter.as_hash["sort"]).to eq("status" => "asc")
+      expect(filter.as_hash["size"]).to eq(20)
     end
   end
 end

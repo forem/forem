@@ -21,7 +21,7 @@ class GithubTag
     end
 
     def render
-      ActionController::Base.new.render_to_string(
+      ApplicationController.render(
         partial: PARTIAL,
         locals: {
           body: @body,

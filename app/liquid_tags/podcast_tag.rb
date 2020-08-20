@@ -1,6 +1,6 @@
 class PodcastTag < LiquidTagBase
   include ApplicationHelper
-  include CloudinaryHelper
+  include ActionView::Helpers::AssetUrlHelper
 
   attr_reader :episode, :podcast
 
@@ -33,7 +33,7 @@ class PodcastTag < LiquidTagBase
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         episode: @episode,

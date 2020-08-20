@@ -73,6 +73,25 @@
                   INVALID
                 </button>
               <% end %>
+              <% if params[:status] == "Resolved" %>
+                <button
+                  class="btn btn-warning text-white btn-sm"
+                  type="button"
+                  data-altstatus="invalid"
+                  data-target="reaction.invalid"
+                  data-action="reaction#updateReactionInvalid">
+                  INVALIDATE
+                </button>
+                <% elsif params[:status] == "Invalid" %>
+                <button
+                  class="btn btn-success btn-sm"
+                  type="button"
+                  data-status="confirmed"
+                  data-target="reaction.confirmed"
+                  data-action="reaction#updateReactionConfirmed">
+                  MARK AS VALID
+                </button>
+              <% end %>
             </span>
           </div>
           <hr id="js__reaction__div__hr__<%= reaction.id %>">
