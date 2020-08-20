@@ -54,7 +54,6 @@ RSpec.describe "Admin manages chat channels", type: :system do
 
       expect(page).to have_content("No users chat")
       expect(page).to have_content("Delete Channel")
-      expect(page).not_to have_content("Cannot delete; channel has users")
     end
   end
 end
