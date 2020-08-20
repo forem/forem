@@ -19,6 +19,11 @@
     background: var(--base-0);
     padding: var(--su-4);
     border-radius: var(--radius);
+    margin-bottom: var(--su-4);
+
+    @media (min-width: $breakpoint-m) {
+      margin-bottom: 0;
+    }
   }
 
   &__items {
