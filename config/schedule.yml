@@ -59,3 +59,9 @@ award_contributor_badges_from_github:
     - ""
     - award_contributor_badges_from_github
     - ""
+resave_supported_tags:
+  cron: "25 0 * * *" # daily at 12:25 am UTC
+  class: "Tags::ResaveSupportedTagsWorker"
+expire_old_listings:
+  cron: "30 0 * * *" # daily at 12:30 am UTC
+  class: "Listings::ExpireOldListingsWorker"

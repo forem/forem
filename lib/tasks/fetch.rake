@@ -12,20 +12,6 @@ task fetch_all_rss: :environment do
   RssReader.get_all_articles(force: false) # don't force fetch. Fetch "random" subset instead of all of them.
 end
 
-task resave_supported_tags: :environment do
-  puts "resaving supported tags"
-  Tag.where(supported: true).find_each(&:save)
-end
-
-task expire_old_listings: :environment do
-  Listing.where("bumped_at < ?", 30.days.ago).each do |listing|
-    listing.update(published: false)
-  end
-  Listing.where("expires_at = ?", Time.zone.today).each do |listing|
-    listing.update(published: false)
-  end
-end
-
 task save_nil_hotness_scores: :environment do
   Article.published.where(hotness_score: nil).find_each(&:save)
 end
