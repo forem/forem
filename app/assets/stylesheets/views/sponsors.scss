@@ -1,0 +1,30 @@
+@import '../config/import';
+
+.sponsors {
+  display: grid;
+  grid-template-columns: 25% 1fr;
+  grid-gap: var(--su-6);
+  margin-bottom: var(--su-6);
+
+  &__label {
+    background: var(--base-0);
+    padding: var(--su-4);
+    border-radius: var(--radius);
+  }
+
+  &__items {
+    display: grid;
+    grid-gap: var(--su-6);
+  }
+
+  &__logo {
+    border-radius: var(--radius);
+    background: white;
+    padding: var(--su-4);
+    margin-bottom: var(--su-4);
+    max-width: 250px;
+    height: auto;
+    display: block;
+    border: 1px solid var(--base-20);
+  }
+}
