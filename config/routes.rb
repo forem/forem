@@ -117,6 +117,8 @@ Rails.application.routes.draw do
     resources :webhook_endpoints, only: :index
     resource :config
     resources :badges, only: %i[index edit update new create]
+    # These redirects serve as a safegaurd to prevent 404s for any Admins
+    # who have the old badge_achievement URLs bookmarked.
     get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
     get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
     resources :badge_achievements, only: %i[index destroy]
