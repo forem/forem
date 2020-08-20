@@ -69,6 +69,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:response_templates).dependent(:destroy) }
       it { is_expected.to have_many(:tweets).dependent(:destroy) }
+      it { is_expected.to have_many(:endorsements).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
       it do
