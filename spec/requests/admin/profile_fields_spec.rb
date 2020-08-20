@@ -21,7 +21,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
         profile_field.input_type,
         profile_field.description,
         profile_field.placeholder_text,
-        profile_field.group
+        profile_field.group,
       )
     end
   end
@@ -77,7 +77,9 @@ RSpec.describe "/admin/profile_fields", type: :request do
   end
 
   describe "DELETE /admin/profile_fields/:id" do
-    let(:profile_field) { create(:profile_field) }
+    let(:profile_field) do
+      create(:profile_field).tap { Profile.refresh_store_accessors! }
+    end
 
     it "redirects successfully" do
       delete "#{admin_profile_fields_path}/#{profile_field.id}"

@@ -139,6 +139,16 @@ module Constants
         "See: https://github.com/thepracticaldev/dev.to/pull/6345",
         placeholder: "$pay.somethinglikethis.co/value"
       },
+      stripe_api_key: {
+        description: "Secret Stripe key for receiving payments. " \
+        "See: https://stripe.com/docs/keys",
+        placeholder: "sk_live_...."
+      },
+      stripe_publishable_key: {
+        description: "Public Stripe key for receiving payments. " \
+        "See: https://stripe.com/docs/keys",
+        placeholder: "pk_live_...."
+      },
       mailchimp_newsletter_id: {
         description: "Main Newsletter ID",
         placeholder: ""

@@ -4,7 +4,13 @@
 module Sidekiq
   class WorkerRetriesExhaustedReporter
     def self.report_final_failure(job)
-      tags = ["action:dead", "worker_name:#{job['class']}"]
+      tags = [
+        "action:dead",
+        "worker_name:#{job['class']}",
+        "jid:#{job['jid']}",
+        "retry:#{job['retry']}",
+        "retry_count:#{job['retry_count']}",
+      ]
       DatadogStatsClient.increment(
         "sidekiq.worker.retries_exhausted", tags: tags
       )

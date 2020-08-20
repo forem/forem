@@ -290,6 +290,14 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.payment_pointer).to eq("$pay.yo")
         end
 
+        it "updates stripe configs" do
+          post "/admin/config", params: { site_config: { stripe_api_key: "sk_live_yo",
+                                                         stripe_publishable_key: "pk_live_haha" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.stripe_api_key).to eq("sk_live_yo")
+          expect(SiteConfig.stripe_publishable_key).to eq("pk_live_haha")
+        end
+
         describe "Shop" do
           it "rejects update to shop_url without proper confirmation" do
             expected_shop_url = "https://qshop.dev.to"

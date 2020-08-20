@@ -612,6 +612,24 @@
             </div>
 
             <div class="form-group">
+              <%= admin_config_label :stripe_api_key %>
+              <%= f.text_field :stripe_api_key,
+                               class: "form-control",
+                               value: SiteConfig.stripe_api_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:stripe_api_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:stripe_api_key][:description] %></div>
+            </div>
+
+            <div class="form-group">
+              <%= admin_config_label :stripe_publishable_key %>
+              <%= f.text_field :stripe_publishable_key,
+                               class: "form-control",
+                               value: SiteConfig.stripe_publishable_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:stripe_publishable_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:stripe_publishable_key][:description] %></div>
+            </div>
+
+            <div class="form-group">
               <%= admin_config_label :payment_pointer %>
               <%= f.text_field :payment_pointer,
                                class: "form-control",
