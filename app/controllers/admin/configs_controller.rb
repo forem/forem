@@ -39,6 +39,10 @@ module Admin
         default_font
         sponsor_headline
         public
+        twitter_key
+        twitter_secret
+        github_key
+        github_secret
       ]
 
       allowed_params = allowed_params |

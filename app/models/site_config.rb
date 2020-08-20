@@ -16,6 +16,10 @@ class SiteConfig < RailsSettings::Base
 
   # Authentication
   field :authentication_providers, type: :array, default: Authentication::Providers.available
+  field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
+  field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
+  field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
+  field :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
 
   # Campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
