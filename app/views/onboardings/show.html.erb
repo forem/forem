@@ -1,7 +1,7 @@
 <% title "Welcome to #{community_name}" %>
 
 <style>
-  <% cache(cache_key_heroku_slug("onboarding-css"), expires_in: 10.hours) do %>
+  <% cache(release_adjusted_cache_key("onboarding-css"), expires_in: 10.hours) do %>
     <%= Rails.application.assets["preact/onboarding-modal.css"].to_s.html_safe %>
   <% end %>
   footer {
