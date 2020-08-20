@@ -76,7 +76,7 @@ RSpec.describe "Authenticating with GitHub" do
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_link(sign_in_link)
-        expect(page).to have_link("All about #{ApplicationConfig['COMMUNITY_NAME']}")
+        expect(page).to have_link("All about #{SiteConfig.community_name}")
       end
 
       it "notifies Datadog about a callback error" do

@@ -12,7 +12,7 @@ class DetailsTag < Liquid::Block
     content = Nokogiri::HTML.parse(super)
     parsed_content = sanitize(content.xpath("//html/body").inner_html)
 
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         summary: @summary,

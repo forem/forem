@@ -1,5 +1,6 @@
 class CreditsController < ApplicationController
   before_action :authenticate_user!
+  before_action :initialize_stripe
 
   def index
     @user_unspent_credits_count = current_user.credits.unspent.size

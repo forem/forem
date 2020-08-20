@@ -302,7 +302,7 @@ seeder.create_if_none(Broadcast) do
     tags: welcome
     ---
 
-    Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
+    Hey there! Welcome to #{SiteConfig.community_name}!
 
     Leave a comment below to introduce yourself to the community!✌️
   HEREDOC

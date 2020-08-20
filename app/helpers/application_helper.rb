@@ -82,6 +82,14 @@ module ApplicationHelper
     Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: format)
   end
 
+  def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
+    image_options[:width] ||= optimizer_options[:width]
+    image_options[:height] ||= optimizer_options[:height]
+    updated_image_url = Images::Optimizer.call(image_url, optimizer_options)
+
+    image_tag(updated_image_url, image_options)
+  end
+
   def cloud_cover_url(url)
     CloudCoverUrl.new(url).call
   end
@@ -165,7 +173,7 @@ module ApplicationHelper
   end
 
   def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"] # rubocop:disable Rails/HelperInstanceVariable
+    @community_name ||= SiteConfig.community_name # rubocop:disable Rails/HelperInstanceVariable
   end
 
   def community_qualified_name
@@ -180,10 +188,10 @@ module ApplicationHelper
   end
 
   def copyright_notice
-    start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
+    start_year = SiteConfig.community_copyright_start_year.to_s
     current_year = Time.current.year.to_s
     return start_year if current_year == start_year
-    return current_year if start_year.strip.length.zero?
+    return current_year if start_year.strip.length < 4 # 978 is not a valid year!
 
     "#{start_year} - #{current_year}"
   end

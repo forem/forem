@@ -26,10 +26,15 @@ class SiteConfig < RailsSettings::Base
   field :campaign_articles_require_approval, type: :boolean, default: 0
 
   # Community Content
+  field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
   field :community_action, type: :string
   field :tagline, type: :string
+  field :community_copyright_start_year, type: :integer,
+                                         default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
+                                           Time.zone.today.year
+  field :staff_user_id, type: :integer, default: 1
 
   # Emails
   field :email_addresses, type: :hash, default: {
@@ -50,7 +55,6 @@ class SiteConfig < RailsSettings::Base
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>
   field :ga_view_id, type: :string, default: ""
-  field :ga_fetch_rate, type: :integer, default: 25
 
   # Images
   field :main_social_image, type: :string
@@ -76,7 +80,9 @@ class SiteConfig < RailsSettings::Base
   }
 
   # Monetization
-  field :payment_pointer, type: :string # Experimental
+  field :payment_pointer, type: :string
+  field :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
+  field :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
   field :shop_url, type: :string
 
   # Newsletter
@@ -112,7 +118,6 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
 
   # Social Media
-  field :staff_user_id, type: :integer, default: 1
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
     facebook: nil,

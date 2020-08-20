@@ -82,6 +82,13 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.community_description).to eq(description)
         end
 
+        it "updates the community_name" do
+          name_magoo = "Hey hey #{rand(100)}"
+          post "/admin/config", params: { site_config: { community_name: name_magoo },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.community_name).to eq(name_magoo)
+        end
+
         it "updates the community_member_label" do
           name = "developer"
           post "/admin/config", params: { site_config: { community_member_label: name },
@@ -96,10 +103,22 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.community_member_label).to eq(action)
         end
 
+        it "updates the community_copyright_start_year" do
+          year = "2018"
+          post "/admin/config", params: { site_config: { community_copyright_start_year: year },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.community_copyright_start_year).to eq(2018)
+        end
+
         it "updates the tagline" do
           description = "Hey hey #{rand(100)}"
           post "/admin/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
           expect(SiteConfig.tagline).to eq(description)
+        end
+
+        it "updates the staff_user_id" do
+          post "/admin/config", params: { site_config: { staff_user_id: 22 }, confirmation: confirmation_message }
+          expect(SiteConfig.staff_user_id).to eq(22)
         end
       end
 
@@ -159,11 +178,6 @@ RSpec.describe "/admin/config", type: :request do
         it "updates ga_view_id" do
           post "/admin/config", params: { site_config: { ga_view_id: "abc" }, confirmation: confirmation_message }
           expect(SiteConfig.ga_view_id).to eq("abc")
-        end
-
-        it "updates ga_fetch_rate" do
-          post "/admin/config", params: { site_config: { ga_fetch_rate: 3 }, confirmation: confirmation_message }
-          expect(SiteConfig.ga_fetch_rate).to eq(3)
         end
       end
 
@@ -276,6 +290,14 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.payment_pointer).to eq("$pay.yo")
         end
 
+        it "updates stripe configs" do
+          post "/admin/config", params: { site_config: { stripe_api_key: "sk_live_yo",
+                                                         stripe_publishable_key: "pk_live_haha" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.stripe_api_key).to eq("sk_live_yo")
+          expect(SiteConfig.stripe_publishable_key).to eq("pk_live_haha")
+        end
+
         describe "Shop" do
           it "rejects update to shop_url without proper confirmation" do
             expected_shop_url = "https://qshop.dev.to"
@@ -294,7 +316,7 @@ RSpec.describe "/admin/config", type: :request do
             expect(SiteConfig.shop_url).to eq("")
             get "/privacy"
             expect(response.body).not_to include(previous_shop_url)
-            expect(response.body).not_to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+            expect(response.body).not_to include("#{SiteConfig.community_name} Shop")
           end
 
           it "updates shop url" do
@@ -304,7 +326,7 @@ RSpec.describe "/admin/config", type: :request do
             expect(SiteConfig.shop_url).to eq(expected_shop_url)
             get "/privacy"
             expect(response.body).to include(expected_shop_url)
-            expect(response.body).to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+            expect(response.body).to include("#{SiteConfig.community_name} Shop")
           end
         end
       end
@@ -438,12 +460,6 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Social Media" do
-        it "does not allow the staff_user_id to be updated" do
-          expect(SiteConfig.staff_user_id).to eq(1)
-          post "/admin/config", params: { site_config: { staff_user_id: 2 }, confirmation: confirmation_message }
-          expect(SiteConfig.staff_user_id).to eq(1)
-        end
-
         it "updates social_media_handles" do
           expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "" }
           post "/admin/config", params: { site_config: { social_media_handles: expected_handle },
