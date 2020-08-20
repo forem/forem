@@ -1,10 +1,19 @@
 @import '../config/import';
 
 .sponsors {
-  display: grid;
-  grid-template-columns: 25% 1fr;
-  grid-gap: var(--su-6);
+  display: block;
   margin-bottom: var(--su-6);
+
+  @media (min-width: $breakpoint-m) {
+    display: grid;
+    grid-template-columns: 33% 1fr;
+    grid-gap: var(--su-4);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    grid-template-columns: 25% 1fr;
+    grid-gap: var(--su-6);
+  }
 
   &__label {
     background: var(--base-0);
