@@ -1,5 +1,8 @@
-<aside>
-  <h2>Create New Connect Channel</h2>
+<nav class="row">
+  <div class="col-12">
+    <h2>Create New Connect Channel</h2>
+  </div>
+
   <div class="row m-3">
     <div class="col">
       <%= form_for [:admin, ChatChannel.new], html: { class: "inline-form" } do |f| %>
@@ -9,15 +12,17 @@
             <%= f.text_field :channel_name, placeholder: "Channel Name", required: true %>
             <%= f.label :usernames_string, "Usernames", class: "sr-only" %>
             <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
-            <%= f.submit %>
+            <%= f.submit "Create Chat channel", class: "btn btn-primary" %>
           </div>
         </div>
       <% end %>
     </div>
   </div>
-</aside>
+</nav>
+
 <main>
   <h2>Group Connect Channels</h2>
+
   <div class="row m-3">
     <div class="col">
     </div>
@@ -29,7 +34,9 @@
       <% end %>
     </div>
   </div>
+
   <%= paginate @group_chat_channels %>
+
   <table class="table">
     <thead>
       <tr>
@@ -37,6 +44,9 @@
         <th scope="col">Users</th>
         <th scope="col">Add Users</th>
         <th scope="col">Remove User</th>
+        <% if current_user.any_admin? %>
+          <th scope="th">Delete Channel</th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
@@ -46,20 +56,28 @@
             <td><%= channel.users.pluck(:username).join(", ") %></td>
             <td>
               <%= form_for [:admin, channel] do |f| %>
-                <%= f.text_field :usernames_string, id: "usersToAddToChannel#{channel.id}", placeholder: "Usernames to add", aria: { label: "Usernames" } %>
-                <%= f.submit %>
+                <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
+                <%= f.submit "Add users to Chat Channel", class: "btn btn-primary" %>
               <% end %>
             </td>
             <td>
               <%= form_with url: remove_user_admin_chat_channel_url(channel), model: [:admin, channel], method: :delete, local: true do |f| %>
-                <%= f.label :usernames_string, "Users to Remove", class: "sr-only" %>
-                <%= f.text_field :username_string, id: "usersToRemoveFromChannel#{channel.id}", placeholder: "Username to remove", aria: { label: "Usernames" } %>
-                <%= f.submit "Remove From channel", data: { confirm: "Are you sure you want to remove this user?" } %>
+                <%= f.text_field :username_string, placeholder: "Username to remove" %>
+                <%= f.submit "Remove From channel", data: { confirm: "Are you sure you want to remove this user?" }, class: "btn btn-primary" %>
               <% end %>
             </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-  <%= paginate @group_chat_channels %>
+            <% if current_user.any_admin? %>
+              <td>
+                <% if channel.users.count.zero? %>
+                  <%= button_to "Delete Channel", { action: "destroy", id: channel.id }, method: :delete, data: { confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--danger" %>
+                <% else %>
+                  Cannot delete; channel has users
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= paginate @group_chat_channels %>
 </main>
