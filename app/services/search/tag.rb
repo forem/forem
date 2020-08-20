@@ -7,7 +7,7 @@ module Search
     class << self
       def search_documents(query_string)
         results = search(body: query(query_string))
-        results.dig("hits", "hits").map { |tag_doc| tag_doc.dig("_source") }
+        results.dig("hits", "hits").map { |tag_doc| tag_doc["_source"] }
       end
 
       private

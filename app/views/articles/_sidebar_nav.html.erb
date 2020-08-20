@@ -88,11 +88,11 @@
 
 <nav class="sidebar-tags-browser mb-6 overflow-y-auto scrolling-touch" aria-label="Secondary sidebar nav">
   <% if user_signed_in? %>
-    <header class="fs-xs color-base-50 ff-accent fw-bold p-2">MY TAGS</header>
+    <header class="fs-xs color-base-50 ff-monospace fw-bold p-2">MY TAGS</header>
     <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
   <% end %>
   <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
-    <header id="tag-separator" class="fs-xs color-base-50 ff-accent fw-bold p-2">
+    <header id="tag-separator" class="fs-xs color-base-50 ff-monospace fw-bold p-2">
       <% if user_signed_in? %>
         OTHER POPULAR TAGS
       <% else %>

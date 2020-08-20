@@ -142,7 +142,7 @@ module CacheBuster
   end
 
   def self.bust_podcast(path)
-    bust("/" + path)
+    bust("/#{path}")
   end
 
   def self.bust_organization(organization, slug)
@@ -161,7 +161,7 @@ module CacheBuster
     podcast_episode.purge_all
     begin
       bust(path)
-      bust("/" + podcast_slug)
+      bust("/#{podcast_slug}")
       bust("/pod")
       bust(path)
     rescue StandardError => e

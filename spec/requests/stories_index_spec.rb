@@ -248,7 +248,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "renders page with proper header" do
       podcast = create(:podcast)
       create(:podcast_episode, podcast: podcast)
-      get "/" + podcast.slug
+      get "/#{podcast.slug}"
       expect(response.body).to include(podcast.title)
     end
   end

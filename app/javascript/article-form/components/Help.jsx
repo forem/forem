@@ -140,7 +140,7 @@ export class Help extends Component {
               <table className="crayons-card crayons-card--secondary crayons-table crayons-table--compact w-100 mt-2 mb-4 lh-tight">
                 <tbody>
                   <tr>
-                    <td className="ff-accent">
+                    <td className="ff-monospace">
                       # Header
                       <br />
                       ...
@@ -156,25 +156,25 @@ export class Help extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">*italics* or _italics_</td>
+                    <td className="ff-monospace">*italics* or _italics_</td>
                     <td>
                       <em>italics</em>
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">**bold**</td>
+                    <td className="ff-monospace">**bold**</td>
                     <td>
                       <strong>bold</strong>
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">[Link](https://...)</td>
+                    <td className="ff-monospace">[Link](https://...)</td>
                     <td>
                       <a href="https://forem.com">Link</a>
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">
+                    <td className="ff-monospace">
                       * item 1<br />* item 2
                     </td>
                     <td>
@@ -185,7 +185,7 @@ export class Help extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">
+                    <td className="ff-monospace">
                       1. item 1<br />
                       2. item 2
                     </td>
@@ -197,7 +197,7 @@ export class Help extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">&gt; quoted text</td>
+                    <td className="ff-monospace">&gt; quoted text</td>
                     <td>
                       <span className="pl-2 border-0 border-solid border-l-4 border-base-50">
                         quoted text
@@ -205,13 +205,13 @@ export class Help extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">`inline code`</td>
+                    <td className="ff-monospace">`inline code`</td>
                     <td>
                       <code>inline code</code>
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">
+                    <td className="ff-monospace">
                       <span class="fs-xs">```</span>
                       <br />
                       code block

@@ -6,6 +6,13 @@ RSpec.describe PollOption, type: :model do
   let(:poll_option) { build(:poll_option, poll: poll) }
 
   describe "validations" do
+    describe "builtin validations" do
+      subject { poll_option }
+
+      it { is_expected.to belong_to(:poll) }
+      it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+    end
+
     it "allows up to 128 markdown characters" do
       poll_option.markdown = "0" * 128
       expect(poll_option).to be_valid

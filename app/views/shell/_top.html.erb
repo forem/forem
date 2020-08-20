@@ -50,7 +50,7 @@
   </head>
   <% unless internal_navigation? %>
     <% cache(cache_key_heroku_slug("top-html-and-config--#{user_signed_in?}")) do %>
-      <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
+      <body data-user-status="<%= user_logged_in_status %>" class="<%= SiteConfig.default_font.tr("_", "-") %>-article-body" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
         <div id="body-styles"></div>
         <% if user_signed_in? %>
           <%= render "layouts/user_config" %>

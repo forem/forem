@@ -1,6 +1,6 @@
-<div class="row">
+<main class="row">
   <div class="col-12">
-    <h3><%= "Edit Badge #{@badge.id}" %></h3>
+    <h2><%= "Edit Badge #{@badge.id}" %></h2>
     <%= form_for [:admin, @badge], method: :patch do |form| %>
     <div class="form-group">
       <%= form.label :title %>
@@ -31,4 +31,4 @@
     <% end %>
     <%= link_to "Back to All Badges", admin_badges_path, class: "btn btn-primary float-left" %>
   </div>
-</div>
+</main>

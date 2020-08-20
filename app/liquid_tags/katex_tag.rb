@@ -22,7 +22,7 @@ class KatexTag < Liquid::Block
       context[KATEX_EXISTED] = true
     end
 
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         parsed_content: parsed_content,

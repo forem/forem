@@ -61,7 +61,7 @@
             <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px; "><%= article.title %></textarea>
           </div>
           <div class="crayons-article-form__tagsfield">
-            <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
+            <input type="text" class="crayons-textfield crayons-textfield--ghost ff-monospace" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
           </div>
         </div>
       <% end %>

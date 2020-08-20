@@ -86,6 +86,7 @@
 }
 .text-styles {
   font-size: var(--article-font-size);
+  font-family: var(--content-font-family);
 
   a {
     code {
@@ -108,7 +109,7 @@
   h4,
   h5,
   h6 {
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     margin: var(--article-rythm) 0;
     margin-top: calc(var(--article-rythm) * 2);
     padding: 0;
@@ -204,7 +205,7 @@
     }
 
     &.twitter-tweet {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       background: var(--body-color-inverted);
       max-width: 456px;
       border: 1px solid #e9eef2;
@@ -527,7 +528,7 @@
 
 .crayons-article {
   .article-collection-wrapper {
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     font-size: 16px;
     border-radius: var(--radius);
     border: 1px solid var(--base-30);

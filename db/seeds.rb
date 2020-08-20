@@ -302,7 +302,7 @@ seeder.create_if_none(Broadcast) do
     tags: welcome
     ---
 
-    Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
+    Hey there! Welcome to #{SiteConfig.community_name}!
 
     Leave a comment below to introduce yourself to the community!✌️
   HEREDOC
@@ -477,6 +477,15 @@ seeder.create_if_none(Listing) do
   end
 end
 
+seeder.create_if_none(ListingEndorsement) do
+  5.times do
+    ListingEndorsement.create!(
+      content: Faker::Lorem.sentence,
+      user: User.order(Arel.sql("RANDOM()")).first,
+      listing: Listing.order(Arel.sql("RANDOM()")).first,
+    )
+  end
+end
 ##############################################################################
 
 seeder.create_if_none(Page) do
