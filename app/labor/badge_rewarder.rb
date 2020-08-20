@@ -14,7 +14,9 @@ module BadgeRewarder
     (1..total_years).each do |i|
       message = "Happy #{SiteConfig.community_name} birthday! " \
         "Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
-      badge = Badge.find_by!(slug: "#{YEARS[i]}-year-club")
+      badge = Badge.find_by(slug: "#{YEARS[i]}-year-club")
+      next unless badge
+
       User.registered.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
         achievement = BadgeAchievement.create(
           user_id: user.id,
@@ -27,7 +29,9 @@ module BadgeRewarder
   end
 
   def self.award_beloved_comment_badges(comment_count = 24)
-    badge_id = Badge.find_by!(slug: "beloved-comment").id
+    badge_id = Badge.find_by(slug: "beloved-comment")&.id
+    return unless badge_id
+
     Comment.includes(:user).where("public_reactions_count > ?", comment_count).find_each do |comment|
       message = "You're famous! [This is the comment](#{URL.comment(comment)}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
@@ -74,7 +78,8 @@ module BadgeRewarder
   end
 
   def self.award_contributor_badges_from_github(since = 1.day.ago, msg = "Thank you so much for your contributions!")
-    badge = Badge.find_by!(slug: "dev-contributor")
+    badge = Badge.find_by(slug: "dev-contributor")
+    return unless badge
 
     REPOSITORIES.each do |repo|
       commits = Github::Client.commits(repo, since: since.utc.iso8601)
@@ -126,7 +131,9 @@ module BadgeRewarder
   end
 
   def self.award_badges(usernames, slug, message_markdown)
-    badge_id = Badge.find_by!(slug: slug).id
+    badge_id = Badge.find_by(slug: slug)&.id
+    return unless badge_id
+
     User.registered.where(username: usernames).find_each do |user|
       BadgeAchievement.create(
         user_id: user.id,
