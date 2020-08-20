@@ -61,7 +61,7 @@ module CacheBuster
   end
 
   def self.bust_nginx_cache(path)
-    uri = URI.parse("#{ApplicationConfig['OPENRESTY_PROTOCOL']}#{ApplicationConfig['OPENRESTY_DOMAIN']}/#{path}")
+    uri = URI.parse("#{ApplicationConfig['OPENRESTY_PROTOCOL']}#{ApplicationConfig['OPENRESTY_DOMAIN']}#{path}")
     http = Net::HTTP.new(uri.host, uri.port)
     response = http.request Net::HTTP::NginxPurge.new(uri.request_uri)
 
