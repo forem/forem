@@ -32,6 +32,8 @@ module Admin
         twitter_hashtag
         shop_url
         payment_pointer
+        stripe_api_key
+        stripe_publishable_key
         health_check_token
         feed_style
         default_font
