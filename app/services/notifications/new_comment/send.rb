@@ -1,8 +1,20 @@
 # send notifications about the new comment
+module PushNotif
+  private
 
+  def send_push_notifications(channels)
+    return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
+
+    Pusher::PushNotifications.publish_to_interests(
+      interests: channels,
+      payload: push_notification_payload,
+    )
+  end
+end
 module Notifications
   module NewComment
     class Send
+      include PushNotif
       def initialize(comment)
         @comment = comment
       end
@@ -77,15 +89,6 @@ module Notifications
         return [] if comment.user_id != comment.commentable.user_id
 
         user_ids_for("only_author_comments")
-      end
-
-      def send_push_notifications(channels)
-        return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
-
-        Pusher::PushNotifications.publish_to_interests(
-          interests: channels,
-          payload: push_notification_payload,
-        )
       end
 
       def push_notification_payload

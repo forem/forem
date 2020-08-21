@@ -34,6 +34,17 @@ module Notifications
     }
   end
 
+  def self.endorsement_data(endorsement)
+    {
+      id: endorsement.id,
+      class: { name: "ListingEndorsement" },
+      content: endorsement.content,
+      created_at: endorsement.created_at,
+      approved: endorsement.approved,
+      path: "/listings/#{endorsement.listing.category}/#{endorsement.listing.slug}"
+    }
+  end
+
   def self.article_data(article)
     {
       id: article.id,
