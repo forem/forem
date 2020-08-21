@@ -1,4 +1,6 @@
 class ProfileField < ApplicationRecord
+  self.ignored_columns = ["active"]
+
   before_create :generate_attribute_name
 
   WORD_REGEX = /\w+/.freeze
@@ -17,11 +19,8 @@ class ProfileField < ApplicationRecord
   }
 
   validates :label, presence: true, uniqueness: { case_sensitive: false }
-  validates :active, inclusion: { in: [true, false] }
   validates :attribute_name, presence: true, on: :update
   validates :show_in_onboarding, inclusion: { in: [true, false] }
-
-  scope :active, -> { where(active: true) }
 
   def type
     return :boolean if check_box?
