@@ -1,6 +1,4 @@
 module CacheBuster
-  class Error < RuntimeError; end
-
   TIMEFRAMES = [
     [1.week.ago, "week"],
     [1.month.ago, "month"],
@@ -60,8 +58,7 @@ module CacheBuster
     http = Net::HTTP.new(uri.host, uri.port)
     response = http.request Net::HTTP::NginxPurge.new(uri.request_uri)
 
-    # Explicitly use `fail` here since we are not catching and re-raising the exception.
-    fail Error, response.body unless response.is_a?(Net::HTTPSuccess) # rubocop:disable Style/SignalException
+    raise StandardError, "NginxPurge request failed: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
     response.body
   end
