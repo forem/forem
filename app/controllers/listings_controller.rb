@@ -8,6 +8,7 @@ class ListingsController < ApplicationController
     ],
     include: {
       author: { only: %i[username name], methods: %i[username profile_image_90] },
+      endorsements: { only: %i[content user_id approved] },
       user: { only: %i[username], methods: %i[username] }
     }
   }.freeze
@@ -41,7 +42,7 @@ class ListingsController < ApplicationController
       if params[:category].blank?
         published_listings
           .order(bumped_at: :desc)
-          .includes(:user, :organization, :taggings)
+          .includes(:user, :organization, :taggings, :endorsements)
           .limit(12)
       else
         Listing.none
