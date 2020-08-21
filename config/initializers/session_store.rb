@@ -10,6 +10,7 @@ expires_after = app_config_expires_after.positive? ? app_config_expires_after : 
 servers = ApplicationConfig["REDIS_SESSIONS_URL"] || ApplicationConfig["REDIS_URL"]
 Rails.application.config.session_store :redis_store,
                                        key: ApplicationConfig["SESSION_KEY"],
+                                       domain: ApplicationConfig["APP_DOMAIN"],
                                        servers: servers,
                                        expire_after: expires_after,
                                        signed: true,
