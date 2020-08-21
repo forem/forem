@@ -5,6 +5,9 @@
   </div>
   <div class="row m-3">
     <div class="col">
+      <div class="row justify-content-right">
+        <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
+    </div>
     </div>
     <div class="col">
       <%= search_form_for @q, url: admin_badge_achievements_path, class: "form-inline justify-content-end" do |f| %>
