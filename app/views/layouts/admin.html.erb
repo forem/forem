@@ -28,7 +28,7 @@
   <div class="d-flex">
     <nav class="sidebar-nav">
       <a href="/admin">
-        <img class="d-block mx-auto mt-3" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>" width="40" height="40" alt="<%= community_name %> Logo">
+        <img class="d-block mx-auto mt-3" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>" width="40" height="40" alt="<%= community_name %> Logo">
       </a>
         <%= render "admin/shared/navbar" %>
     </nav>
