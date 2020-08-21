@@ -1,6 +1,5 @@
 module CacheBuster
   class Error < RuntimeError; end
-  class ConfigurationError < StandardError; end
 
   TIMEFRAMES = [
     [1.week.ago, "week"],
@@ -27,11 +26,7 @@ module CacheBuster
       bust_fastly_cache(path)
     elsif nginx_enabled?
       bust_nginx_cache(path)
-    else
-      raise ConfigurationError, "You cannot bust a cache without a caching service! Please enable a caching service."
     end
-  rescue ConfigurationError => e
-    Rails.logger.error(e)
   rescue URI::InvalidURIError => e
     Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
     DatadogStatsClient.increment("cache_buster.invalid_uri", tags: ["path:#{path}"])
