@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
   # the user to after a successful log in
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
-      path = request.env["omniauth.origin"] || stored_location_for(resource) || dashboard_path
+      path = request.env["omniauth.origin"] || stored_location_for(resource) || root_path
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)
