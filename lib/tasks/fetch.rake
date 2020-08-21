@@ -20,12 +20,6 @@ task github_repo_fetch_all: :environment do
   GithubRepo.update_to_latest
 end
 
-task send_email_digest: :environment do
-  if Time.current.wday >= 3
-    EmailDigest.send_periodic_digest_email
-  end
-end
-
 task remove_old_html_variant_data: :environment do
   HtmlVariantTrial.destroy_by("created_at < ?", 2.weeks.ago)
   HtmlVariantSuccess.destroy_by("created_at < ?", 2.weeks.ago)
