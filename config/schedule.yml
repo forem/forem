@@ -1,6 +1,9 @@
 log_worker_queue_stats:
   cron: "*/10 * * * *" # every 10 minutes
   class: "Metrics::RecordBackgroundQueueStatsWorker"
+prune_old_field_tests:
+  cron: "0 13 * * *" # daily at 1 pm UTC
+  class: "FieldTests::PruneOldExperimentsWorker"
 record_daily_usage:
   cron: "0 11 * * *" # daily at 11:00 UTC
   class: "Metrics::RecordDailyUsageWorker"
@@ -59,3 +62,12 @@ award_contributor_badges_from_github:
     - ""
     - award_contributor_badges_from_github
     - ""
+resave_supported_tags:
+  cron: "25 0 * * *" # daily at 12:25 am UTC
+  class: "Tags::ResaveSupportedTagsWorker"
+expire_old_listings:
+  cron: "30 0 * * *" # daily at 12:30 am UTC
+  class: "Listings::ExpireOldListingsWorker"
+send_welcome_notifications:
+  cron: "0 16 * * *" # daily at 4 pm UTC
+  class: "Broadcasts::SendWelcomeNotificationsWorker"

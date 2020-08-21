@@ -12,20 +12,6 @@ task fetch_all_rss: :environment do
   RssReader.get_all_articles(force: false) # don't force fetch. Fetch "random" subset instead of all of them.
 end
 
-task resave_supported_tags: :environment do
-  puts "resaving supported tags"
-  Tag.where(supported: true).find_each(&:save)
-end
-
-task expire_old_listings: :environment do
-  Listing.where("bumped_at < ?", 30.days.ago).each do |listing|
-    listing.update(published: false)
-  end
-  Listing.where("expires_at = ?", Time.zone.today).each do |listing|
-    listing.update(published: false)
-  end
-end
-
 task save_nil_hotness_scores: :environment do
   Article.published.where(hotness_score: nil).find_each(&:save)
 end
@@ -38,13 +24,6 @@ task send_email_digest: :environment do
   if Time.current.wday >= 3
     EmailDigest.send_periodic_digest_email
   end
-end
-
-# This task is meant to be scheduled daily
-task prune_old_field_tests: :environment do
-  # For rolling ongoing experiemnts, we remove old experiment memberships
-  # So that they can be re-tested.
-  FieldTests::PruneOldExperimentsWorker.perform_async
 end
 
 task remove_old_html_variant_data: :environment do
