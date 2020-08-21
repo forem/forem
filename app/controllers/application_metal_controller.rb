@@ -10,7 +10,7 @@ class ApplicationMetalController < ActionController::Metal
   protect_from_forgery with: :exception, prepend: true unless Rails.env.test?
 
   include SessionCurrentUser
-  include ValidRequest
+  # include ValidRequest
 
   def logger
     ActionController::Base.logger
