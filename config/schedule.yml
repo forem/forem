@@ -68,3 +68,6 @@ resave_supported_tags:
 expire_old_listings:
   cron: "30 0 * * *" # daily at 12:30 am UTC
   class: "Listings::ExpireOldListingsWorker"
+send_welcome_notifications:
+  cron: "0 16 * * *" # daily at 4 pm UTC
+  class: "Broadcasts::SendWelcomeNotificationsWorker"
