@@ -29,14 +29,14 @@ module Images
       ActionController::Base.helpers.cl_image_path(img_src, options)
     end
 
-    DEFAULT_IMGPRXY_OPTIONS = {
+    DEFAULT_IMGPROXY_OPTIONS = {
       height: nil,
       width: nil,
       resizing_type: nil
     }.freeze
 
     def self.imgproxy(img_src, **kwargs)
-      options = DEFAULT_IMGPRXY_OPTIONS.merge(kwargs).reject { |_, v| v.blank? }
+      options = DEFAULT_IMGPROXY_OPTIONS.merge(kwargs).reject { |_, v| v.blank? }
 
       Imgproxy.url_for(img_src, options)
     end
