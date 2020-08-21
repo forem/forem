@@ -144,7 +144,7 @@
 </div>
   <script>
 
-    var stripe = Stripe('<%= ApplicationConfig["STRIPE_PUBLISHABLE_KEY"] %>');
+    var stripe = Stripe('<%= SiteConfig.stripe_publishable_key %>');
     var elements = stripe.elements();
 
     <% if current_user.decorate.dark_theme? %>

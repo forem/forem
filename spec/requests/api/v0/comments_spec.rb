@@ -100,7 +100,7 @@ RSpec.describe "Api::V0::Comments", type: :request do
     it "returns date created" do
       get api_comments_path(a_id: article.id)
       expect(find_root_comment(response)).to include(
-        "created_at" => article.created_at.utc.iso8601,
+        "created_at" => root_comment.created_at.utc.iso8601,
       )
     end
 
@@ -167,7 +167,9 @@ RSpec.describe "Api::V0::Comments", type: :request do
     context "when getting by podcast episode id" do
       let(:podcast) { create(:podcast) }
       let(:podcast_episode) { create(:podcast_episode, podcast: podcast) }
-      let!(:comment) { create(:comment, commentable: podcast_episode) }
+      let(:comment) { create(:comment, commentable: podcast_episode) }
+
+      before { comment }
 
       it "not found if bad podcast episode id" do
         get api_comments_path(p_id: "asdfghjkl")

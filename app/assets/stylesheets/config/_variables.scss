@@ -33,7 +33,7 @@
   // Border radius ///////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
 
-  --radius: 3px;
+  --radius: 5px;
 
   ////////////////////////////////////////////////////////////////////////////////////
   // Transitions /////////////////////////////////////////////////////////////////////
@@ -55,8 +55,9 @@
 
   // Font families
 
-  --ff-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --ff-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol';
   --ff-monospace: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo,
     Courier, monospace;
   --ff-serif: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua',

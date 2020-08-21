@@ -24,7 +24,7 @@ class StackexchangeTag < LiquidTagBase
   def render(_context)
     default_link = "https://stackoverflow.com/a/#{@json_content['answer_id'] || @json_content['question_id']}"
 
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         site: @site,

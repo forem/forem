@@ -5,14 +5,14 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#community_name" do
     it "equals to the community name" do
-      allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("SLOAN")
+      SiteConfig.community_name = "SLOAN"
       expect(helper.community_name).to eq("SLOAN")
     end
   end
 
   describe "#community_qualified_name" do
     it "equals to the full qualified community name" do
-      expected_name = "#{ApplicationConfig['COMMUNITY_NAME']} Community"
+      expected_name = "#{SiteConfig.community_name} Community"
       expect(helper.community_qualified_name).to eq(expected_name)
     end
   end

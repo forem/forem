@@ -25,12 +25,7 @@ Rails/HasManyOrHasOneDependent:
   Exclude:
     - 'app/models/article.rb'
     - 'app/models/concerns/user_subscription_sourceable.rb'
-    - 'app/models/listing_category.rb'
     - 'app/models/organization.rb'
-    - 'app/models/podcast.rb'
-    - 'app/models/podcast_episode.rb'
-    - 'app/models/poll.rb'
-    - 'app/models/poll_option.rb'
     - 'app/models/user.rb'
 
 # Offense count: 4
