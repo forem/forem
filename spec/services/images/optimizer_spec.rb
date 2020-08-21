@@ -7,6 +7,12 @@ RSpec.describe Images::Optimizer, type: :service do
 
   before do
     Imgproxy.config.key = "secret"
+    Imgproxy.config.endpoint = "https://dev.to"
+  end
+
+  after do
+    Imgproxy.config.key = nil
+    Imgproxy.config.endpoint = nil
   end
 
   it "performs exactly like cl_image_path" do
@@ -34,7 +40,7 @@ RSpec.describe Images::Optimizer, type: :service do
   describe "#imgproxy" do
     it "works" do
       imgproxy_url = described_class.call(image_url, service: :imgproxy, width: 500, height: 500)
-      expect(imgproxy_url).to eq("/unsafe/s:500:500/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw")
+      expect(imgproxy_url).to match(%r{/unsafe/s:500:500/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 end

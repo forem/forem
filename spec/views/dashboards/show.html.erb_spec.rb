@@ -7,11 +7,13 @@ RSpec.describe "dashboards/show.html.erb", type: :view do
     stub_template "dashboards/_actions.html.erb" => "stubbed content"
 
     Imgproxy.config.key = "hmm"
+    Imgproxy.config.endpoint = "https://dev.to"
     SiteConfig.mascot_image_url = "https://i.imgur.com/fKYKgo4.png"
   end
 
   after do
     Imgproxy.config.key = nil
+    Imgproxy.config.endpoint = nil
     SiteConfig.mascot_image_url = nil
   end
 
