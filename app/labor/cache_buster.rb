@@ -18,8 +18,6 @@ module CacheBuster
     # fastly.purge(path)
     #
     # https://github.com/fastly/fastly-ruby#efficient-purging
-    return unless Rails.env.production?
-
     if fastly_enabled?
       bust_fastly_cache(path)
     elsif nginx_enabled?
