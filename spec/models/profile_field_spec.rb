@@ -10,6 +10,14 @@ RSpec.describe ProfileField, type: :model do
       it { is_expected.to validate_presence_of(:label) }
       it { is_expected.to validate_uniqueness_of(:label).case_insensitive }
       it { is_expected.to validate_inclusion_of(:active).in_array([true, false]) }
+      it { is_expected.to validate_presence_of(:attribute_name).on(:update) }
+    end
+  end
+
+  describe "callbacks" do
+    it "automatically generates an attribute name" do
+      pf = create(:profile_field, label: "Is this a test? This is a test! 1")
+      expect(pf.attribute_name).to eq "is_this_a_test_this_is_a_test1"
     end
   end
 end

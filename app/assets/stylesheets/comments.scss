@@ -437,7 +437,7 @@ a.header-link {
       min-height: calc(13vw + 6px);
       text-align: left;
       font-size: 19px;
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       background: var(--card-bg);
       box-shadow: $shadow;
       width: calc(100% - 80px);
@@ -643,7 +643,7 @@ a.header-link {
   .alert-error {
     background: $red;
     max-width: 730px;
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     color: white;
     border-radius: 5px;
     margin: 20px auto;
@@ -747,7 +747,7 @@ a.header-link {
     overflow: hidden;
     margin-bottom: -28px;
     word-wrap: break-word;
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     position: relative;
     margin-left: 1px;
     h1,
@@ -1131,7 +1131,7 @@ a.header-link {
       position: relative;
       width: calc(100% + 60px);
       margin-left: -58px;
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       &.submitting {
         input[type='submit'] {
           background: $bold-blue;

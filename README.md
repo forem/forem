@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Ruby-v2.7.1-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
-    <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
+    <img src="https://img.shields.io/badge/Rails-v6.0.3-brightgreen.svg" alt="rails version">
   </a>
   <a href="https://travis-ci.com/thepracticaldev/dev.to">
     <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to">
@@ -60,9 +60,9 @@ where people need to come together to be part of a collective.
 for a higher level overview of what Forem is.
 
 [dev.to](https://dev.to) (or just DEV) is hosted by Forem. It is a community of
-software developers who write articles, take part in discussions, and build their
-professional profiles. We value supportive and constructive dialogue in the
-pursuit of great code and career growth for all members. The ecosystem spans
+software developers who write articles, take part in discussions, and build
+their professional profiles. We value supportive and constructive dialogue in
+the pursuit of great code and career growth for all members. The ecosystem spans
 from beginner to advanced developers, and all are welcome to find their place
 within our community. ❤️
 
@@ -90,8 +90,8 @@ proceed.
 ## Getting Started
 
 This section provides a high-level quick start guide. If you're looking for the
-[installation guide](https://docs.dev.to/installation/), you'll want to refer to
-our complete [Developer Documentation](https://docs.forem.com/).
+[installation guide](https://docs.forem.com/installation/), you'll want to refer
+to our complete [Developer Documentation](https://docs.forem.com/).
 
 We run on a [Rails](https://rubyonrails.org/) backend, and we are currently
 transitioning to a [Preact](https://preactjs.com/)-first frontend.
@@ -127,11 +127,11 @@ A more complete overview of our stack is available in
 
 ### Installation Documentation
 
-[View Full Installation Documentation](https://docs.dev.to/installation/).
+[View Full Installation Documentation](https://docs.forem.com/installation/).
 
 ## Developer Documentation
 
-[Check out our dedicated docs page for more technical documentation](https://docs.dev.to).
+[Check out our dedicated docs page for more technical documentation](https://docs.forem.com).
 
 ## Core team
 
@@ -171,15 +171,15 @@ later version. Please see the [LICENSE](./LICENSE.md) file in our repository for
 the full text.
 
 Like many open source projects, we require that contributors provide us with a
-Contributor License Agreement (CLA). By submitting code to the Forem project, you
-are granting us a right to use that code under the terms of the CLA.
+Contributor License Agreement (CLA). By submitting code to the Forem project,
+you are granting us a right to use that code under the terms of the CLA.
 
 Our version of the CLA was adapted from the Microsoft Contributor License
 Agreement, which they generously made available to the public domain under
 Creative Commons CC0 1.0 Universal.
 
-Any questions, please refer to our [license FAQ](https://docs.dev.to/licensing/)
-doc or email yo@dev.to.
+Any questions, please refer to our
+[license FAQ](https://docs.forem.com/licensing/) doc or email yo@dev.to.
 
 <br>
 

@@ -88,7 +88,7 @@
 
 <% if current_user.has_role?(:super_admin) || current_user.has_role?(:admin) %>
   <center>
-    <h1><a href="/internal/tags/<%= @tag.id %>" data-no-instant><%= @tag.name %> admin</a></h1>
+    <h1><a href="/admin/tags/<%= @tag.id %>" data-no-instant><%= @tag.name %> admin</a></h1>
     <br />
     <br />
     <br />

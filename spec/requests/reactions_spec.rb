@@ -33,8 +33,12 @@ RSpec.describe "Reactions", type: :request do
         expect(result["reactions"].to_json).to eq(user.reactions.where(reactable: article).to_json)
       end
 
-      it "does not set cache control headers" do
+      it "does not set Surrogate-Key cache control headers" do
         expect(response.headers["Surrogate-Key"]).to eq(nil)
+      end
+
+      it "does not set X-Accel-Expires headers" do
+        expect(response.headers["X-Accel-Expires"]).to eq(nil)
       end
 
       it "does not set Fastly cache control and surrogate control headers" do
@@ -63,6 +67,10 @@ RSpec.describe "Reactions", type: :request do
 
       it "sets the surrogate key header equal to params for article" do
         expect(response.headers["Surrogate-Key"]).to eq(controller.params.to_s)
+      end
+
+      it "sets the x-accel-expires header equal to max-age for article" do
+        expect(response.headers["X-Accel-Expires"]).to eq(max_age.to_s)
       end
 
       it "sets Fastly cache control and surrogate control headers" do
@@ -98,6 +106,10 @@ RSpec.describe "Reactions", type: :request do
         expect(response.headers["surrogate-key"]).to be_nil
       end
 
+      it "does not set x-accel-expires headers" do
+        expect(response.headers["x-accel-expires"]).to be_nil
+      end
+
       it "does not set Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).not_to include(
           "Cache-Control" => "public, no-cache",
@@ -119,6 +131,10 @@ RSpec.describe "Reactions", type: :request do
 
       it "sets the surrogate key header equal to params" do
         expect(response.headers["Surrogate-Key"]).to eq(controller.params.to_s)
+      end
+
+      it "sets the x-accel-expires header equal to max-age for article" do
+        expect(response.headers["X-Accel-Expires"]).to eq(max_age.to_s)
       end
 
       it "sets Fastly cache control and surrogate control headers" do

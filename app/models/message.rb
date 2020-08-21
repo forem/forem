@@ -107,7 +107,7 @@ class Message < ApplicationRecord
         html += "<a href='#{article.current_state_path}'
         class='chatchannels__richlink'
           target='_blank' rel='noopener' data-content='sidecar-article'>
-            #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(" + cl_path(article.main_image) + ")' data-content='sidecar-article' ></div>" if article.main_image.present?}
+            #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(#{cl_path(article.main_image)})' data-content='sidecar-article' ></div>" if article.main_image.present?}
           <h1 data-content='sidecar-article'>#{article.title}</h1>
           <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(width: 90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
           </a>".html_safe
@@ -116,7 +116,7 @@ class Message < ApplicationRecord
         class='chatchannels__richlink'
           target='_blank' rel='noopener' data-content='sidecar-tag'>
           <h1 data-content='sidecar-tag'>
-            #{"<img src='" + cl_path(tag.badge.badge_image_url) + "' data-content='sidecar-tag' style='transform:rotate(-5deg)' />" if tag.badge_id.present?}
+            #{"<img src='#{cl_path(tag.badge.badge_image_url)}' data-content='sidecar-tag' style='transform:rotate(-5deg)' />" if tag.badge_id.present?}
             ##{tag.name}
           </h1>
           </a>".html_safe
@@ -175,14 +175,7 @@ class Message < ApplicationRecord
   # rubocop:enable Rails/OutputSafety
 
   def cl_path(img_src)
-    ActionController::Base.helpers
-      .cl_image_path(img_src,
-                     type: "fetch",
-                     width: 725,
-                     crop: "limit",
-                     flags: "progressive",
-                     fetch_format: "auto",
-                     sign_url: true)
+    Images::Optimizer.call(img_src, width: 725)
   end
 
   def determine_user_validity

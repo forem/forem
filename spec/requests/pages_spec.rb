@@ -55,7 +55,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /about-listings" do
     it "has proper headline" do
       get "/about-listings"
-      expect(response.body).to include("About #{ApplicationConfig['COMMUNITY_NAME']} Listings")
+      expect(response.body).to include("About #{SiteConfig.community_name} Listings")
     end
   end
 
@@ -76,14 +76,14 @@ RSpec.describe "Pages", type: :request do
   describe "GET /page/post-a-job" do
     it "has proper headline" do
       get "/page/post-a-job"
-      expect(response.body).to include("Posting a Job on #{ApplicationConfig['COMMUNITY_NAME']} Listings")
+      expect(response.body).to include("Posting a Job on #{SiteConfig.community_name} Listings")
     end
   end
 
   describe "GET /api" do
     it "redirects to the API docs" do
       get "/api"
-      expect(response.body).to redirect_to("https://docs.dev.to/api")
+      expect(response.body).to redirect_to("https://docs.forem.com/api")
     end
   end
 
@@ -93,7 +93,7 @@ RSpec.describe "Pages", type: :request do
       get "/privacy"
       expect(response.body).to include("Privacy Policy")
       expect(response.body).to include(SiteConfig.shop_url)
-      expect(response.body).to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+      expect(response.body).to include("#{SiteConfig.community_name} Shop")
     end
   end
 

@@ -1,5 +1,5 @@
 module CommentsHelper
-  def comment_class(comment, is_view_root = false)
+  def comment_class(comment, is_view_root: false)
     if comment.root? || is_view_root
       "root"
     else

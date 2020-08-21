@@ -1,5 +1,6 @@
 <div class="comment-hash-marker" id="<%= comment.id_code_generated %>"></div>
-<div id="comment-node-<%= comment.id %>" class="single-comment-node <%= comment_class(comment, is_view_root) %> <%= "flat-node" if comment.depth > 3 %> comment-deep-<%= comment.depth %>" data-comment-id="<%= comment.id %>" data-comment-author-id="<%= comment_user_id_unless_deleted comment %>" data-content-user-id="<%= comment_user_id_unless_deleted comment %>">
+<div id="comment-node-<%= comment.id %>"
+     class="single-comment-node <%= comment_class(comment, is_view_root: is_view_root) %> <%= "flat-node" if comment.depth > 3 %> comment-deep-<%= comment.depth %>" data-comment-id="<%= comment.id %>" data-comment-author-id="<%= comment_user_id_unless_deleted comment %>" data-content-user-id="<%= comment_user_id_unless_deleted comment %>">
   <% if comment.deleted %>
     <div class="inner-comment">
       <div class="body" style="padding-bottom:32px;opacity:0.3;user-select:none;cursor:default">
@@ -12,15 +13,7 @@
 
       <% if decorated_comment.low_quality %>
         <div class="low-quality-comment-marker">
-          <%= image_tag(cl_image_path(SiteConfig.mascot_image_url,
-                                      type: "fetch",
-                                      width: 50,
-                                      height: 50,
-                                      crop: "imagga_scale",
-                                      quality: "auto",
-                                      flags: "progressive",
-                                      fetch_format: "auto",
-                                      sign_url: true), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
+          <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_image_url, width: 50, height: 50, crop: "imagga_scale"), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
           Comment marked as low quality/non-constructive by the community
           <a href="/code-of-conduct">View code of conduct</a>
         </div>

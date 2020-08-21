@@ -3,11 +3,11 @@
     <p>We support native <a href="https://shopify.github.io/liquid" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:</p>
     <h3><%= community_name %> Article/Post Embed</h3>
     <p>All you need is the full link of the article:</p>
-    <code>{% link https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}</code>
+    <code>{% link <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
     <p>You can also use the slug like this:</p>
     <code>{% link kazz/boost-your-productivity-using-markdown-1be %}</code>
     <p>You can also use the alias post instead of link like this:</p>
-    <code>{% post https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}</code>
+    <code>{% post <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
     <p>or this:</p>
     <code>{% post kazz/boost-your-productivity-using-markdown-1be %}</code>
     <h3><%= community_name %> User Embed</h3>
@@ -20,7 +20,7 @@
     <p>All you need is the
       <code>ID</code> at the end of a comment URL. To get the comment link, click either the timestamp or the menu button in the top right corner on a comment and then click "Permalink". Here's an example:
     </p>
-    <code>{% devcomment 2d1a %}</code>
+    <code>{% comment 2d1a %}</code>
     <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
       <h3><%= community_name %> User Subscriptions</h3>
       <p class="fs-s fw-bold">This tag can only be used in articles.</p>
@@ -34,13 +34,22 @@
     <% end %>
     <h3><%= community_name %> Podcast Episode Embed</h3>
     <p>All you need is the full link of the podcast episode:</p>
-    <code>{% podcast https://dev.to/basecspodcast/s2e2--queues-irl %}</code>
+    <code>{% podcast <%= app_url("/basecspodcast/s2e2--queues-irl") %> %}</code>
     <h3><%= community_name %> Listing Embed</h3>
     <p>All you need is the full link of the listing:</p>
-    <code>{% listing https://dev.to/listings/collabs/dev-is-open-source-823 %}</code>
+    <code>{% listing <%= app_url("/listings/collabs/dev-is-open-source-823") %> %}</code>
     <p>You can also use the category and slug like this:</p>
     <code>{% listing collabs/dev-is-open-source-823 %}</code>
     <p>Note: Expired listings will raise an error. Make sure the listing is published or recently bumped.</p>
+    <h3>Details Embed</h3>
+    <p>You can embed a details HTML element by using details, spoiler, or
+    collapsible. The <em>summary</em> will be what the dropdown title displays.
+    The <em>content</em> will be the text hidden behind the dropdown. This is
+    great for when you want to hide text (i.e. answers to questions) behind a
+    user action/intent (i.e. a click).</p>
+    <p><code>{% details summary %} content {% enddetails %}</code></p>
+    <p><code>{% spoiler summary %} content {% endspoiler %}</code></p>
+    <p><code>{% collapsible summary %} content {% endcollapsible %}</code></p>
     <h3>Twitter Embed</h3>
     <p>Using the Twitter Liquid tag will allow the tweet to pre-render from the server, providing your reader with a better experience. All you need is the tweet
       <code>id</code> from the url.</p>

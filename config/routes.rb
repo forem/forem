@@ -18,6 +18,7 @@ Rails.application.routes.draw do
 
   require "sidekiq/web"
   require "sidekiq_unique_jobs/web"
+  require "sidekiq/cron/web"
 
   authenticated :user, ->(user) { user.tech_admin? } do
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
@@ -38,8 +39,8 @@ Rails.application.routes.draw do
     root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
   end
 
-  namespace :internal do
-    get "/", to: redirect("/internal/articles")
+  namespace :admin do
+    get "/", to: redirect("/admin/articles")
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
@@ -115,9 +116,9 @@ Rails.application.routes.draw do
     end
     resources :webhook_endpoints, only: :index
     resource :config
-    resources :badges, only: %i[index], path: "/badge_achievements"
-    get "/badges", to: redirect("/internal/badge_achievements")
-    post "badges/award_badges", to: "badges#award_badges"
+    resources :badges, only: %i[index edit update new create]
+    get "/badge_achievements/award_badges", to: "badges#award"
+    post "/badge_achievements/award_badges", to: "badges#award_badges"
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
   end
@@ -189,6 +190,7 @@ Rails.application.routes.draw do
   resources :comments, only: %i[create update destroy] do
     patch "/hide", to: "comments#hide"
     patch "/unhide", to: "comments#unhide"
+    patch "/admin_delete", to: "comments#admin_delete"
     collection do
       post "/moderator_create", to: "comments#moderator_create"
     end
@@ -298,6 +300,8 @@ Rails.application.routes.draw do
   delete "/messages/:id" => "messages#destroy"
   patch "/messages/:id" => "messages#update"
   get "/live/:username" => "twitch_live_streams#show"
+  get "/internal", to: redirect("/admin")
+  get "/internal/:path", to: redirect("/admin/%{path}")
 
   post "/pusher/auth" => "pusher#auth"
 
@@ -348,7 +352,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root
   get "/robots.:format" => "pages#robots"
-  get "/api", to: redirect("https://docs.dev.to/api")
+  get "/api", to: redirect("https://docs.forem.com/api")
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"

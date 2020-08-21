@@ -1,0 +1,28 @@
+<main>
+  <div class="col">
+    <div class="row justify-content-end">
+      <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>
+      <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, style: "margin-left: 20px;", class: "btn btn-primary" %>
+    </div>
+  </div>
+  <table class="table mt-2">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Slug</th>
+        <th scope="col">Badge Image</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @badges.each do |badge| %>
+        <tr>
+          <td><%= link_to badge.title, edit_admin_badge_path(badge.id) %></td>
+          <td class="justify-content-center"><%= badge.slug %></td>
+          <td class="justify-content-center">
+            <img class="mx-auto mt-3" width="40" height="40" src="<%= badge.badge_image %>" alt="badge image">
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</main>

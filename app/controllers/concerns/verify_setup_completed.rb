@@ -4,6 +4,7 @@ module VerifySetupCompleted
   module_function
 
   MANDATORY_CONFIGS = %i[
+    community_name
     community_description
     community_action
     tagline
@@ -35,13 +36,13 @@ module VerifySetupCompleted
   def verify_setup_completed
     return if config_path? || setup_completed?
 
-    link = helpers.link_to("the configuration page", internal_config_path)
+    link = helpers.link_to("the configuration page", admin_config_path)
     # rubocop:disable Rails/OutputSafety
     flash[:global_notice] = "Setup not completed yet, please visit #{link}.".html_safe
     # rubocop:enable Rails/OutputSafety
   end
 
   def config_path?
-    request.env["PATH_INFO"] == internal_config_path
+    request.env["PATH_INFO"] == admin_config_path
   end
 end
