@@ -15,4 +15,5 @@ Rails.application.config.session_store :redis_store,
                                        expire_after: expires_after,
                                        signed: true,
                                        secure: false,
+                                       same_site: :lax,
                                        httponly: true
