@@ -26,13 +26,6 @@ task send_email_digest: :environment do
   end
 end
 
-# This task is meant to be scheduled daily
-task prune_old_field_tests: :environment do
-  # For rolling ongoing experiemnts, we remove old experiment memberships
-  # So that they can be re-tested.
-  FieldTests::PruneOldExperimentsWorker.perform_async
-end
-
 task remove_old_html_variant_data: :environment do
   HtmlVariantTrial.destroy_by("created_at < ?", 2.weeks.ago)
   HtmlVariantSuccess.destroy_by("created_at < ?", 2.weeks.ago)
