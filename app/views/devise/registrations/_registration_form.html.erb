@@ -2,7 +2,7 @@
   <% if @new_article_not_logged_in %>
     <div class="prefill-non-logged-in-message">
       <div class="registration__logo-container">
-        <img class="secondary-logo" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
+        <img class="secondary-logo" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
              alt="Secondary <%= community_name %> logo" />
       </div>
       <p>
@@ -14,7 +14,7 @@
     </div>
   <% else %>
     <div class="registration__logo-container">
-      <img class="secondary-logo" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
+      <img class="secondary-logo" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
            alt="Secondary <%= community_name %> logo" />
     </div>
     <% if any_selfserve_auth? %>

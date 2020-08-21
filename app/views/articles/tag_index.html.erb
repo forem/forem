@@ -14,7 +14,7 @@
     <div class="tag-or-query-header-container">
       <h1>
         <% if @tag_model.badge_id && @tag_model.badge %>
-            <img src="<%= cloudinary @tag_model.badge.badge_image_url, 180 %>" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg" />
+            <img src="<%= optimized_image_url(@tag_model.badge.badge_image_url, width: 180) %>" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg" />
         <% end %>
         <% if @tag_model && @tag_model.pretty_name.present? %>
           <%= @tag_model.pretty_name %>
