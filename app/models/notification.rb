@@ -51,6 +51,12 @@ class Notification < ApplicationRecord
       Notifications::NewComment::Send.call(comment)
     end
 
+    def send_new_endorsement_notifications_without_delay(endorsement)
+      return if endorsement.approved == true
+
+      Notifications::NewEndorsement::Send.call(endorsement)
+    end
+
     def send_new_badge_achievement_notification(badge_achievement)
       Notifications::NewBadgeAchievementWorker.perform_async(badge_achievement.id)
     end
