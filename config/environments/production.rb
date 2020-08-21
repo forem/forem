@@ -52,7 +52,7 @@ Rails.application.configure do
   # config.active_storage.service = :local
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = ENV["FORCE_SSL_IN_RAILS"] == "true"
+  config.force_ssl = true
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
@@ -133,7 +133,7 @@ Rails.application.configure do
 end
 # rubocop:enable Metrics/BlockLength
 
-Rails.application.routes.default_url_options = {
-  host: Rails.application.config.app_domain,
-  protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://")
-}
+# Rails.application.routes.default_url_options = {
+#   host: Rails.application.config.app_domain,
+#   protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://")
+# }
