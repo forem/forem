@@ -55,7 +55,6 @@ Rails.application.configure do
   config.force_ssl = true
   config.ssl_options = { redirect: false }
 
-
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
   config.log_level = ENV["LOG_LEVEL"] || :info

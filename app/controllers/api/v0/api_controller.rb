@@ -3,7 +3,7 @@ module Api
     class ApiController < ApplicationController
       protect_from_forgery with: :exception, prepend: true
 
-      # include ValidRequest
+      include ValidRequest
 
       respond_to :json
 
