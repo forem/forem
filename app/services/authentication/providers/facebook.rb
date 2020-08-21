@@ -26,8 +26,7 @@ module Authentication
       # Instead: we'll construct one based on the user's name with some randomization thrown in.
       def user_nickname
         [
-          info.first_name&.downcase,
-          info.last_name&.downcase,
+          info.name.sub(" ", "_"),
           Digest::SHA512.hexdigest(info.email),
         ].join("_")[0...25]
       end
