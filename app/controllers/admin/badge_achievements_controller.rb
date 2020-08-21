@@ -3,7 +3,12 @@ module Admin
     layout "admin"
 
     def index
-      @badge_achievements = BadgeAchievement.all.page(params[:page]).order(created_at: :desc).per(10)
+      @q = BadgeAchievement
+        .includes(:badge)
+        .includes(:user)
+        .order(created_at: :desc)
+        .ransack(params[:q])
+      @badge_achievements = @q.result.page(params[:page] || 1).per(15)
     end
 
     def destroy
@@ -18,7 +23,7 @@ module Admin
     end
 
     def award
-      @badge = Badge.all
+      @badge = Badge.page(params[:page]).per(Badge.count)
     end
 
     def award_badges
