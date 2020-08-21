@@ -22,7 +22,7 @@ RSpec.describe "Admin manages chat channels", type: :system do
     it "creates a chat channel" do
       fill_in "chat_channel_channel_name", with: "Cool chat"
       fill_in "chat_channel_usernames_string", with: admin.username.to_s
-      click_on "Create Chat channel"
+      click_on "Create Chat Channel"
 
       expect(page.body).to have_link("Cool chat")
     end
