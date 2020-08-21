@@ -12,18 +12,8 @@ task fetch_all_rss: :environment do
   RssReader.get_all_articles(force: false) # don't force fetch. Fetch "random" subset instead of all of them.
 end
 
-task save_nil_hotness_scores: :environment do
-  Article.published.where(hotness_score: nil).find_each(&:save)
-end
-
 task github_repo_fetch_all: :environment do
   GithubRepo.update_to_latest
-end
-
-task send_email_digest: :environment do
-  if Time.current.wday >= 3
-    EmailDigest.send_periodic_digest_email
-  end
 end
 
 task remove_old_html_variant_data: :environment do
