@@ -62,6 +62,9 @@ award_contributor_badges_from_github:
     - ""
     - award_contributor_badges_from_github
     - ""
+remove_old_html_variant_data:
+  cron: "10 * * * *" # every hour, 10 min after the hour
+  class: "HtmlVariants::RemoveOldDataWorker"
 resave_supported_tags:
   cron: "25 0 * * *" # daily at 12:25 am UTC
   class: "Tags::ResaveSupportedTagsWorker"
