@@ -13,7 +13,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to have_many(:credits).dependent(:restrict_with_error) }
       it { is_expected.to have_many(:display_ads).dependent(:destroy) }
       it { is_expected.to have_many(:listings).dependent(:nullify) }
-      it { is_expected.to have_many(:notifications).dependent(:nullify) }
+      it { is_expected.to have_many(:notifications).dependent(:destroy) }
       it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
       it { is_expected.to have_many(:profile_pins).dependent(:destroy) }
       it { is_expected.to have_many(:sponsorships).dependent(:destroy) }
