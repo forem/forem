@@ -71,3 +71,6 @@ expire_old_listings:
 send_welcome_notifications:
   cron: "0 16 * * *" # daily at 4 pm UTC
   class: "Broadcasts::SendWelcomeNotificationsWorker"
+send_email_digest:
+  cron: "30 11 * * 3,4,5,6" # 11:30 am UTC Wed, Thurs, Fri, Sat, Sun
+  class: "SendEmailDigestWorker"
