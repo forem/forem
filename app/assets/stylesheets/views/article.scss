@@ -63,6 +63,8 @@
 
   &__header {
     margin-bottom: var(--article-padding-y);
+    overflow-wrap: anywhere;
+    word-break: break-word;
 
     &__meta {
       padding: var(--article-padding-y) var(--article-padding-x) 0
