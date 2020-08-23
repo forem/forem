@@ -5156,25 +5156,10 @@ chokidar@^2.0.3, chokidar@^2.1.8:
   optionalDependencies:
     fsevents "^1.2.7"
 
-chokidar@^3.3.0:
+chokidar@^3.3.0, chokidar@^3.4.0, chokidar@^3.4.1:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.4.2.tgz#38dc8e658dec3809741eb3ef7bb0a47fe424232d"
   integrity sha512-IZHaDeBeI+sZJRX7lGcXsdzgvZqKv6sECqsbErJA4mHWfpRrD8B97kSFN4cQz6nGBGiuFia1MKR4d6c1o8Cv7A==
-  dependencies:
-    anymatch "~3.1.1"
-    braces "~3.0.2"
-    glob-parent "~5.1.0"
-    is-binary-path "~2.1.0"
-    is-glob "~4.0.1"
-    normalize-path "~3.0.0"
-    readdirp "~3.4.0"
-  optionalDependencies:
-    fsevents "~2.1.2"
-
-chokidar@^3.4.0, chokidar@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.4.1.tgz#e905bdecf10eaa0a0b1db0c664481cc4cbc22ba1"
-  integrity sha512-TQTJyr2stihpC4Sya9hs2Xh+O2wf+igjL36Y75xx2WdHuiICcn/XJza46Jwt0eT5hVpQOzo3FpY3cj3RVYLX0g==
   dependencies:
     anymatch "~3.1.1"
     braces "~3.0.2"
@@ -14150,10 +14135,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redoc-cli@0.9.10:
-  version "0.9.10"
-  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.10.tgz#8ac783fa845e7285a19cf66a9c269d0f732cd8ce"
-  integrity sha512-2rfbQp8uNpQEw/4hRYes3fVrOAYfgK7jYw3t/A9R4EpMSF6jtzJLA/sl1SQh2zWaF5z1ckXEvUW9B8c+NDc//g==
+redoc-cli@0.9.11:
+  version "0.9.11"
+  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.11.tgz#6c651d732e1682a372e45aaa1981e6e552e61829"
+  integrity sha512-MlnMgDgedD7bjk3MIOiwZqjBvI9YF4ZA+lLA96NtBKSn1d5ygDiCQYo+5SjFtEYlpDkBS7EGL8+M/j9UnO2nFw==
   dependencies:
     chokidar "^3.4.1"
     handlebars "^4.7.6"
@@ -14163,15 +14148,15 @@ redoc-cli@0.9.10:
     node-libs-browser "^2.2.1"
     react "^16.13.1"
     react-dom "^16.13.1"
-    redoc "2.0.0-rc.36"
+    redoc "2.0.0-rc.37"
     styled-components "^5.1.1"
     tslib "^2.0.0"
     yargs "^15.4.1"
 
-redoc@2.0.0-rc.36:
-  version "2.0.0-rc.36"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.36.tgz#c6c06ca026fd31b9b5b2cb47e85c925e3bdd76bf"
-  integrity sha512-vTK1slMn1FcV4QwiBxFL6adIzYoOPzrkRsVyedGj4SrqjIJXuQ5HWVsxpMGoru45tgp3bs7Jy3TBOcEdOYjbbg==
+redoc@2.0.0-rc.37:
+  version "2.0.0-rc.37"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.37.tgz#e64b4bc6747c45bcb4a236a14ef4bd002c015f72"
+  integrity sha512-He6cyXcySZkX6hz3aMxA+zKUb3LbClEwyBF6mKi4wk3h9A7zmavtFut/QvMwrOg3LqCbd3M9tiSouLgJJnN5QA==
   dependencies:
     "@types/node" "^13.11.1"
     classnames "^2.2.6"
