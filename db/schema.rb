@@ -1276,6 +1276,7 @@ ActiveRecord::Schema.define(version: 2020_08_20_093752) do
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
+    t.boolean "reaction_notifications", default: true
     t.integer "reactions_count", default: 0, null: false
     t.boolean "registered", default: true
     t.datetime "registered_at"
