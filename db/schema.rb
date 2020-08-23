@@ -1364,7 +1364,7 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
   add_foreign_key "classified_listing_endorsements", "classified_listings"
   add_foreign_key "classified_listing_endorsements", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
-  add_foreign_key "classified_listings", "organizations", on_delete: :nullify
+  add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "credits", "organizations", on_delete: :restrict
