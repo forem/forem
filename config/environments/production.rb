@@ -133,7 +133,7 @@ Rails.application.configure do
 end
 # rubocop:enable Metrics/BlockLength
 
-# Rails.application.routes.default_url_options = {
-#   host: Rails.application.config.app_domain,
-#   protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://")
-# }
+Rails.application.routes.default_url_options = {
+  host: Rails.application.config.app_domain,
+  protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://")
+}
