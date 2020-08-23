@@ -1,11 +1,10 @@
 module DataUpdateScripts
-  class NullifyOrphanedListingsByOrganization
+  class RemoveOrphanedListingsByOrganization
     def run
-      # Nullify organization_id for all Listings linked to a non existing Organization
+      # Delete all Listings belonging to Organizations that don't exist anymore
       ActiveRecord::Base.connection.execute(
         <<~SQL,
-          UPDATE listings
-          SET organization_id = NULL
+          DELETE FROM classified_listings
           WHERE organization_id IS NOT NULL
           AND organization_id NOT IN (SELECT id FROM organizations);
         SQL

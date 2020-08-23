@@ -16,7 +16,7 @@ class Organization < ApplicationRecord
   has_many :collections, dependent: :nullify
   has_many :credits, dependent: :restrict_with_error
   has_many :display_ads, dependent: :destroy
-  has_many :listings, dependent: :nullify
+  has_many :listings, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :organization_memberships, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
