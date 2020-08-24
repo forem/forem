@@ -163,17 +163,17 @@
     </div>
 
     <% if current_user.any_admin? %>
-      <button class="admin-unpublish-article">
-        <div
+      <div class="unpublish-article">
+        <button
           class="crayons-btn crayons-btn--danger"
           data-article-id="<%= @moderatable.id %>"
           data-author-id="<%= @moderatable.user_id %>"
           data-article-slug="<%= @moderatable.slug %>"
-          id="admin-unpublish-article"
+          id="unpublish-article-btn"
         >
           Unpublish Article
-        </div>
-      </button>
+        </button>
+      </div>
     <% end %>
   </div>
 
