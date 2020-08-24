@@ -101,3 +101,6 @@ remove_old_notifications:
 sync_credits_counter_cache:
   cron: "0 16 * * *" # daily at 4 pm UTC
   class: "Credits::SyncCounterCache"
+get_podcast_episodes:
+  cron: "5 * * * *" # every hour, 5 min after the hour
+  class: "Podcasts::EnqueueGetEpisodesWorker"
