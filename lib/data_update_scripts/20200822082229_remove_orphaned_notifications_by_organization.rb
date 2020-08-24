@@ -5,7 +5,7 @@ module DataUpdateScripts
       ActiveRecord::Base.connection.execute(
         <<~SQL,
           DELETE FROM notifications
-          WHERE organization_id NOT IN (SELECT id FROM organization_id);
+          WHERE organization_id NOT IN (SELECT id FROM organizations);
         SQL
       )
     end
