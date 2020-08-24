@@ -23,7 +23,7 @@ module Admin
     end
 
     def award
-      @badge = Badge.page(params[:page]).per(Badge.count)
+      @all_badges = Badge.page(params[:page]).per(Badge.count)
     end
 
     def award_badges
