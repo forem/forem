@@ -12,7 +12,7 @@
             <%= f.text_field :channel_name, placeholder: "Channel Name", required: true %>
             <%= f.label :usernames_string, "Usernames", class: "sr-only" %>
             <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
-            <%= f.submit "Create Chat channel", class: "btn btn-primary" %>
+            <%= f.submit "Create Chat Channel", class: "btn btn-secondary p-1" %>
           </div>
         </div>
       <% end %>
@@ -57,13 +57,13 @@
             <td>
               <%= form_for [:admin, channel] do |f| %>
                 <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
-                <%= f.submit "Add users to Chat Channel", class: "btn btn-primary" %>
+                <%= f.submit "Add users", class: "btn btn-secondary p-1 my-1" %>
               <% end %>
             </td>
             <td>
               <%= form_with url: remove_user_admin_chat_channel_url(channel), model: [:admin, channel], method: :delete, local: true do |f| %>
                 <%= f.text_field :username_string, placeholder: "Username to remove" %>
-                <%= f.submit "Remove From channel", data: { confirm: "Are you sure you want to remove this user?" }, class: "btn btn-primary" %>
+                <%= f.submit "Remove user", data: { confirm: "Are you sure you want to remove this user?" }, class: "btn btn-secondary p-1 my-1" %>
               <% end %>
             </td>
             <% if current_user.any_admin? %>
@@ -71,7 +71,7 @@
                 <% if channel.users.count.zero? %>
                   <%= button_to "Delete Channel", { action: "destroy", id: channel.id }, method: :delete, data: { confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--danger" %>
                 <% else %>
-                  Cannot delete; channel has users
+                  Cannot delete a channel with users
                 <% end %>
               </td>
             <% end %>

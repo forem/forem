@@ -11,11 +11,14 @@ class ProfileField < ApplicationRecord
     color_field: 3
   }
 
-  validates :label, presence: true, uniqueness: { case_sensitive: false }
-  validates :active, inclusion: { in: [true, false] }
-  validates :attribute_name, presence: true, on: :update
+  enum display_area: {
+    header: 0,
+    left_sidebar: 1
+  }
 
-  scope :active, -> { where(active: true) }
+  validates :label, presence: true, uniqueness: { case_sensitive: false }
+  validates :attribute_name, presence: true, on: :update
+  validates :show_in_onboarding, inclusion: { in: [true, false] }
 
   def type
     return :boolean if check_box?

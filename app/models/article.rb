@@ -351,7 +351,7 @@ class Article < ApplicationRecord
   def cloudinary_video_url
     return if video_thumbnail_url.blank?
 
-    ApplicationController.helpers.cloudinary(video_thumbnail_url, 880)
+    Images::Optimizer.call(video_thumbnail_url, width: 880, quality: 80)
   end
 
   def video_duration_in_minutes
@@ -645,8 +645,6 @@ class Article < ApplicationRecord
   end
 
   def bust_cache
-    return unless Rails.env.production?
-
     CacheBuster.bust(path)
     CacheBuster.bust("#{path}?i=i")
     CacheBuster.bust("#{path}?preview=#{password}")

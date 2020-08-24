@@ -26,10 +26,6 @@ class PodcastTag < LiquidTagBase
     super
     @episode = fetch_podcast(link)
     @podcast ||= Podcast.new
-    @podcast_links = [["iTunes", @podcast.itunes_url, cloudinary(IMAGE_LINK["iTunes".downcase.to_sym], 40, 90, "png")],
-                      ["Overcast", @podcast.overcast_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
-                      ["Android", @podcast.android_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
-                      ["RSS", @podcast.feed_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")]]
   end
 
   def render(_context)
@@ -37,8 +33,7 @@ class PodcastTag < LiquidTagBase
       partial: PARTIAL,
       locals: {
         episode: @episode,
-        podcast: @podcast,
-        podcast_links: @podcast_links
+        podcast: @podcast
       },
     )
   end
@@ -71,4 +66,5 @@ class PodcastTag < LiquidTagBase
     raise StandardError, "Invalid podcast link"
   end
 end
+
 Liquid::Template.register_tag("podcast", PodcastTag)

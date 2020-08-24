@@ -130,9 +130,41 @@
                              class: "form-control selectpicker" %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %></div>
             </div>
+            <h4>Notice: Changing authentication keys will not take affect until devops restarts the app (about once per day). This will soon be instant.</h4>
+            <div class="form-group">
+              <%= admin_config_label :twitter_key %>
+              <%= f.text_field :twitter_key,
+                               class: "form-control",
+                               value: SiteConfig.twitter_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:twitter_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:twitter_key][:description] %></div>
+            </div>
+            <div class="form-group">
+              <%= admin_config_label :twitter_secret %>
+              <%= f.text_field :twitter_secret,
+                               class: "form-control",
+                               value: SiteConfig.twitter_secret,
+                               placeholder: Constants::SiteConfig::DETAILS[:twitter_secret][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:twitter_secret][:description] %></div>
+            </div>
+            <div class="form-group">
+              <%= admin_config_label :github_key %>
+              <%= f.text_field :github_key,
+                               class: "form-control",
+                               value: SiteConfig.github_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:github_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:github_key][:description] %></div>
+            </div>
+            <div class="form-group">
+              <%= admin_config_label :github_secret %>
+              <%= f.text_field :github_secret,
+                               class: "form-control",
+                               value: SiteConfig.github_secret,
+                               placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:github_secret][:description] %></div>
+            </div>
           </div>
         </div>
-
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {

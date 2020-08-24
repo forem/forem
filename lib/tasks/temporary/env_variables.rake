@@ -6,8 +6,7 @@ task create_dot_env_file: :environment do
   sample_app_yml = YAML.load_file("config/sample_application.yml")
 
   # read existing lines
-  application_yml = File.open("config/application.yml", 'r').read
-
+  application_yml = File.open("config/application.yml", "r").read
 
   File.open(".env", "w") do |env_file|
     # add default values only if they are not already present in the
@@ -16,7 +15,7 @@ task create_dot_env_file: :environment do
       env_file.write("export #{variable}=#{value}\n") unless application_yml.include?(variable.to_s)
     end
 
-    File.open("config/application.yml", 'r') do |file|
+    File.open("config/application.yml", "r") do |file|
       file.each_line do |line|
         new_line = line.gsub(": ", "=")
         unless new_line.blank? || new_line.starts_with?("#")
