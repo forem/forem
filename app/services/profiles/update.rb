@@ -1,13 +1,19 @@
 module Profiles
   module Update
     def self.call(profile, updated_attributes = {})
-      # Explicitly assign attributes so we make use of store_attribute's typecasting
-      updated_attributes.each { |key, value| profile.public_send("#{key}=", value) }
+      # We don't update `data` directly. This uses the defined store_attributes
+      # so we can make use of their typecasting.
+      profile.assign_attributes(updated_attributes)
 
-      # Only keep current profile fields
-      profile.data.slice!(*Profile.stored_attributes[:data])
-
+      # Before saving, filter out obsolete profile fields
+      profile.data.slice!(*Profile.fields)
       profile.save
+
+      # Propagate changes bac to the `users` table
+      user_attributes = profile.data.transform_keys do |key|
+        Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
+      end
+      profile.user.update(user_attributes)
     end
   end
 end
