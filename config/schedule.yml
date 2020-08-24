@@ -74,6 +74,21 @@ expire_old_listings:
 send_welcome_notifications:
   cron: "0 16 * * *" # daily at 4 pm UTC
   class: "Broadcasts::SendWelcomeNotificationsWorker"
+hourly_feed_cache_bust:
+  cron: "0 * * * *" # hourly on the hour
+  class: "BustCachePathWorker"
+  args:
+    - "/feed.xml"
+hourly_badge_cache_bust:
+  cron: "0 * * * *" # hourly on the hour
+  class: "BustCachePathWorker"
+  args:
+    - "/badge"
+daily_home_cache_bust:
+  cron: "0 0 * * *" # daily at 12 am UTC
+  class: "BustCachePathWorker"
+  args:
+    - "/"
 send_email_digest:
   cron: "30 11 * * 3,4,5,6" # 11:30 am UTC Wed, Thurs, Fri, Sat, Sun
   class: "SendEmailDigestWorker"
