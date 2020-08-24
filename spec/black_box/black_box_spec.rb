@@ -9,7 +9,7 @@ RSpec.describe BlackBox, type: :black_box do
       lower_article = build_stubbed(:article, score: 70, published_at: Time.current)
       score = described_class.article_hotness_score(article)
       lower_score = described_class.article_hotness_score(lower_article)
-      expect(score).to > lower_score
+      expect(score).to be > lower_score
     end
 
     it "returns higher value for more recent article" do
@@ -17,7 +17,7 @@ RSpec.describe BlackBox, type: :black_box do
       lower_article = build_stubbed(:article, score: 70, published_at: 5.days.ago)
       score = described_class.article_hotness_score(article)
       lower_score = described_class.article_hotness_score(lower_article)
-      expect(score).to > lower_score
+      expect(score).to be > lower_score
     end
   end
 

@@ -62,8 +62,8 @@ class BlackBox
 
     def social_auth_registration_recent?(user)
       # was the social auth account created very recently?
-      social_registration_date_plus_two_days = ((user.github_created_at || user.twitter_created_at || 3.days.ago) + 2.days)
-      user.registered_at < social_registration_date_plus_two_days
+      social_auth_date_plus_two_days = ((user.github_created_at || user.twitter_created_at || 3.days.ago) + 2.days)
+      user.registered_at < social_auth_date_plus_two_days
     end
   end
 end
