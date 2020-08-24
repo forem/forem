@@ -21,7 +21,7 @@ class User < ApplicationRecord
       # Define wrapped getters for profile attributes. We first try to get the
       # value from the profile and if it doesn't exist there we retrieve it
       # from here.
-      Profile.fields.each do |attribute|
+      Profile.attributes.each do |attribute|
         getter = Profile::MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s
         define_method(getter) do
           if profile.respond_to?(attribute)

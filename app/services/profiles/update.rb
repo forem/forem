@@ -6,7 +6,7 @@ module Profiles
       profile.assign_attributes(updated_attributes)
 
       # Before saving, filter out obsolete profile fields
-      profile.data.slice!(*Profile.fields)
+      profile.data.slice!(*Profile.attributes)
       profile.save
 
       # Propagate changes bac to the `users` table

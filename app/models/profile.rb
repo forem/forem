@@ -24,7 +24,7 @@ class Profile < ApplicationRecord
   refresh_store_accessors!
 
   # Returns an array of all currently defined `store_attribute`s on `data`.
-  def self.fields
+  def self.attributes
     stored_attributes[:data]
   end
 end
