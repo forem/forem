@@ -161,6 +161,20 @@
         </span>
       </a>
     </div>
+
+    <% if current_user.any_admin? %>
+      <button class="admin-unpublish-article">
+        <div
+          class="crayons-btn crayons-btn--danger"
+          data-article-id="<%= @moderatable.id %>"
+          data-author-id="<%= @moderatable.user_id %>"
+          data-article-slug="<%= @moderatable.slug %>"
+          id="admin-unpublish-article"
+        >
+          Unpublish Article
+        </div>
+      </button>
+    <% end %>
   </div>
 
   <div class="bottom-actions">
