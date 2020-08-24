@@ -9,8 +9,8 @@ expires_after = app_config_expires_after.positive? ? app_config_expires_after : 
 # httponly has been added in <https://github.com/redis-store/redis-actionpack/pull/17>
 servers = ApplicationConfig["REDIS_SESSIONS_URL"] || ApplicationConfig["REDIS_URL"]
 
-# domain property should not be set on localhost
-domain = ApplicationConfig["APP_DOMAIN"].start_with("localhost:") ? nil : ApplicationConfig["APP_DOMAIN"]
+# domain property should only be set in production
+domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
 
 Rails.application.config.session_store :redis_store,
                                        key: ApplicationConfig["SESSION_KEY"],
