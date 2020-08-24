@@ -9,6 +9,8 @@ class User < ApplicationRecord
   # be removed.
   concerning :ProfileMigration do
     included do
+      include Profile::USER_MIXIN
+
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
       # and can cause hard to track down bugs. We use an instance-level attribute
@@ -16,36 +18,15 @@ class User < ApplicationRecord
       attr_accessor :_skip_creating_profile
 
       # All new users should automatically have a profile
-      after_create_commit :create_profile, unless: :_skip_creating_profile
+      after_create_commit -> { Profile.create(user: self, data: Profiles::ExtractData.call(self)) },
+                          unless: :_skip_creating_profile
 
       # Keep saving changes locally for the time being, but propagate them to profiles.
       after_update_commit do
-        if (previous_changes.keys.map(&:to_sym) & Profile.mapped_attributes).present?
+        if (previous_changes.keys.map(&:to_sym) & PROFILE_FIELDS).present?
           profile.update(data: Profiles::ExtractData.call(self))
         end
       end
-
-      # Define wrapped getters for profile attributes. We first try to get the
-      # value from the profile and if it doesn't exist there we retrieve it
-      # from here.
-      Profile.attributes.each do |attribute|
-        getter = Profile::MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s
-        define_method(getter) do
-          if profile.respond_to?(attribute)
-            profile.public_send(attribute)
-          else
-            self[getter]
-          end
-        end
-
-        # Make mapped attributes available under both names
-        alias_method(attribute, getter) if attribute != getter
-      end
-
-      def create_profile
-        Profile.create(user: self)
-      end
-      private :create_profile
     end
   end
 

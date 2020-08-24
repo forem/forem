@@ -3,6 +3,8 @@ class Profile < ApplicationRecord
 
   validates :user_id, uniqueness: true
 
+  USER_MIXIN = Module.new
+
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
   MAPPED_ATTRIBUTES = {
@@ -19,7 +21,22 @@ class Profile < ApplicationRecord
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
     ProfileField.find_each do |field|
-      store_attribute :data, field.attribute_name, field.type
+      attribute_name = field.attribute_name
+      store_attribute :data, attribute_name, field.type
+
+      getter = MAPPED_ATTRIBUTES.fetch(attribute_name, attribute_name).to_s
+      USER_MIXIN.instance_eval do
+        define_method(getter) do
+          if profile.respond_to?(attribute_name)
+            profile.public_send(attribute_name)
+          else
+            self[getter]
+          end
+        end
+
+        # Make mapped attributes available under both names
+        alias_method(attribute_name, getter) if attribute_name != getter
+      end
     end
   end
 
@@ -28,11 +45,5 @@ class Profile < ApplicationRecord
   # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes
     stored_attributes[:data]
-  end
-
-  # NOTE: @citizen428 Used for temporary mapping so we don't break DEV during
-  # profile migration/generalization work.
-  def self.mapped_attributes
-    attributes.map { |attribute| MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s }
   end
 end
