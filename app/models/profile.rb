@@ -27,4 +27,10 @@ class Profile < ApplicationRecord
   def self.attributes
     stored_attributes[:data]
   end
+
+  # NOTE: @citizen428 Used for temporary mapping so we don't break DEV during
+  # profile migration/generalization work.
+  def self.mapped_attributes
+    attributes.map { |attribute| MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s }
+  end
 end

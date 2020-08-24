@@ -18,6 +18,13 @@ class User < ApplicationRecord
       # All new users should automatically have a profile
       after_create_commit :create_profile, unless: :_skip_creating_profile
 
+      # Keep saving changes locally for the time being, but propagate them to profiles.
+      after_update_commit do
+        if (previous_changes.keys.map(&:to_sym) & Profile.mapped_attributes).present?
+          profile.update(data: Profiles::ExtractData.call(self))
+        end
+      end
+
       # Define wrapped getters for profile attributes. We first try to get the
       # value from the profile and if it doesn't exist there we retrieve it
       # from here.
