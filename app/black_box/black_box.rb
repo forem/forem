@@ -1,4 +1,5 @@
 class BlackBox
+  OUR_EPOCH_NUMBER = "2010-01-01 00:00:01".to_time.to_i
   class << self
     def article_hotness_score(article)
       usable_date = article.crossposted_at || article.published_at
@@ -39,9 +40,7 @@ class BlackBox
       return 100 if user.badges_count.positive?
 
       base_spaminess = 0
-      base_spaminess += 25 if
-        user.registred_at < ((user.github_created_at || user.twitter_created_at || 3.days.ago) + 2.days) &&
-          user.registered_at > 25.days.ago
+      base_spaminess += 25 if social_auth_registration_recent?(user) && user.registered_at > 25.days.ago
       base_spaminess
     end
 
@@ -54,12 +53,17 @@ class BlackBox
     end
 
     def last_mile_hotness_calc(article)
-      epoch_number = "2010-01-01 00:00:01".to_time.to_i
-      score_from_epoch = article.featured_number.to_i - epoch_number # Approximate time of publish - epoch time
+      score_from_epoch = article.featured_number.to_i - OUR_EPOCH_NUMBER # Approximate time of publish - epoch time
       score_from_epoch / 1000 +
         (article.score * 50) +
         (article.comment_score * 50) -
         (article.spaminess_rating * 5)
+    end
+
+    def social_auth_registration_recent?(user)
+      # was the social auth account created very recently?
+      social_registration_date_plus_two_days = ((user.github_created_at || user.twitter_created_at || 3.days.ago) + 2.days)
+      user.registered_at < social_registration_date_plus_two_days
     end
   end
 end
