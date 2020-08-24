@@ -1,12 +1,15 @@
 <main id="profileFields">
   <article class="crayons-card grid p-6 mb-6 gap-1">
     <%= form_for [:admin, ProfileField.new], html: { class: "inline-form" } do |form| %>
-      <div class="form-group">
-        <%= form.label :group %>
-        <%= select_tag "profile_field[group]", options_for_select(ProfileField.distinct.pluck(:group)), include_blank: "Choose an existing group", class: "form-control selectpicker profile__group-dropdown" %>
-        <%= form.text_field :group, placeholder: "Add a new group", class: "form-control profile__group-text-input hidden", disabled: true %>
-      </div>
-      <div class="profile__group-toggle" onclick="toggleGroup(event)"> or create a new group </div>
+      <%= render "group_form",
+        form: form,
+        select_option_tags: options_for_select(ProfileField.distinct.pluck(:group)),
+        select_options: {
+          include_blank: "Choose an existing group",
+          class: "form-control selectpicker profile__group-dropdown"
+        },
+        toggle_text: "or create a new group"
+      %>
       <div class="form-group">
         <%= render "form", form: form %>
         <%= form.submit "Create New Profile Field", class: "btn btn-primary" %>
@@ -15,20 +18,20 @@
   </article>
 
   <% @grouped_profile_fields.each do |group, fields| %>
-    <div class="row my-3">
-      <div class="card w-100">
+    <% group_attribute = group.gsub(/\s+/, "_") %>
 
-        <div class="card-header" id="<%= group.gsub(/\s+/, "_") %>Header" data-toggle="collapse"
-          data-target="#<%= group.gsub(/\s+/, "_") %>BodyContainer" aria-expanded="false" aria-controls="<%= group.gsub(/\s+/, "_") %>BodyContainer">
+    <article class="row my-3">
+      <div class="card w-100">
+        <div class="card-header" id="<%= group_attribute %>Header" data-toggle="collapse"
+          data-target="#<%= group_attribute %>BodyContainer" aria-expanded="false" aria-controls="<%= group_attribute %>BodyContainer">
           <h2 class="d-inline"><%= group %></h2>
           <button class="btn btn-secondary float-right" type="button">
             Toggle <%= group %>
           </button>
         </div>
-
-        <div id="<%= group.gsub(/\s+/, "_") %>BodyContainer" class="collapse hide hide p-3" aria-labelledby="<%= group %>Header">
+        <div id="<%= group_attribute %>BodyContainer" class="collapse hide hide p-3" aria-labelledby="<%= group %>Header">
           <% fields.each do |field| %>
-            <article class="card mt-3">
+            <div class="card mt-3">
               <%= render partial: "admin/configs/card_header",
                          locals: {
                            header: field.label,
@@ -36,31 +39,29 @@
                            target: "#{field.attribute_name}_container",
                            expanded: "false"
                          } %>
-
               <div id="<%= field.attribute_name %>_container" class="card-body collapse hide" aria-labelledby="<%= field.attribute_name %>_container">
                 <div class="form-group grid p-6 mb-6 gap-1">
                   <%= form_for [:admin, field] do |form| %>
-                    <div>
-                      <div class="form-group">
-                        <%= form.label :group %>
-                        <%= select_tag "profile_field[group]", options_for_select(ProfileField.distinct.pluck(:group), selected: field[:group]), class: "form-control selectpicker profile__group-dropdown" %>
-                        <%= form.text_field :group, placeholder: "Add a new group", class: "form-control profile__group-text-input hidden", disabled: true %>
-                      </div>
-                      <div class="profile__group-toggle" onclick="toggleGroup(event)"> or create a new group </div>
-                    </div>
+                    <%= render "group_form",
+                      form: form,
+                      select_option_tags: options_for_select(ProfileField.distinct.pluck(:group),  selected: field[:group]),
+                      select_options: {
+                        class: "form-control selectpicker profile__group-dropdown"
+                      },
+                      toggle_text: "or create a new group"
+                    %>
                     <%= render "form", form: form  %>
                     <%= form.submit class: "btn btn-primary" %>
                   <% end %>
                   <%= button_to "Delete", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
                 </div>
               </div>
-            </article>
+            </div>
           <% end %>
-
         </div>
 
       </div>
-    </div>
+    </article>
   <% end %>
 </div>
 
@@ -84,7 +85,6 @@
     elementToHide.classList.add('hidden');
     elementToHide.disabled = true;
 
-    groupToggle.innerHTML = "or update an existing group";
+    groupToggle.innerHTML = updatedText;
   }
-
 </script>
