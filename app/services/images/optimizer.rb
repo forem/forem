@@ -1,11 +1,9 @@
 module Images
   module Optimizer
     def self.call(img_src, service: :cloudinary, **kwargs)
-      if imgproxy_enabled?
-        public_send(service, img_src, kwargs)
-      else
-        cloudinary(img_src, kwargs)
-      end
+      return cloudinary(img_src, kwargs) unless imgproxy_enabled?
+
+      public_send(service, img_src, kwargs)
     end
 
     DEFAULT_CL_OPTIONS = {
