@@ -3,6 +3,8 @@ class Profile < ApplicationRecord
 
   validates :user_id, uniqueness: true
 
+  # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
+  # profile migration/generalization work.
   MAPPED_ATTRIBUTES = {
     brand_color1: :bg_color_hex,
     brand_color2: :text_color_hex,
@@ -14,7 +16,7 @@ class Profile < ApplicationRecord
     stack_overflow_url: :stackoverflow_url
   }.with_indifferent_access.freeze
 
-  # This method generates typed accessors for all profile fields
+  # Generates typed accessors for all currently defined profile fields.
   def self.refresh_store_accessors!
     ProfileField.find_each do |field|
       store_attribute :data, field.attribute_name, field.type
