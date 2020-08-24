@@ -36,14 +36,12 @@ class BlackBox
       user = story.user
       return 100 unless user
       return 100 if user.trusted
-      return 100 if user.badges_count > 0
+      return 100 if user.badges_count.positive?
 
       base_spaminess = 0
       base_spaminess += 25 if
         user.registred_at < ((user.github_created_at || user.twitter_created_at) + 2.days) &&
           user.registered_at > 25.days.ago
-      base_spaminess += 25 if SiteConfig.spam_keywords.present? && story.match?(SiteConfig.spam_keywords) &&
-        user.registered_at > 7.days.ago
       base_spaminess
     end
 
@@ -56,9 +54,12 @@ class BlackBox
     end
 
     def last_mile_hotness_calc(article)
-      article.published_at.to_i / 10_000 +
-        (article.score * 5000) +
-        (article.comment_score * 5000)
+      epoch_number = "2010-01-01 00:00:01".to_time.to_i
+      score_from_epoch = article.featured_number.to_i - epoch_number # Approximate time of publish - epoch time
+      score_from_epoch / 1000 +
+        (article.score * 50) +
+        (article.comment_score * 50) -
+        (article.spaminess_rating * 5)
     end
   end
 end
