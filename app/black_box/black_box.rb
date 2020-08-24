@@ -37,7 +37,7 @@ class BlackBox
       user = story.user
       return 100 unless user
       return 100 if user.trusted
-      return 100 if user.badges_count.positive?
+      return 100 if user.badge_achievements_count.positive?
 
       base_spaminess = 0
       base_spaminess += 25 if social_auth_registration_recent?(user) && user.registered_at > 25.days.ago
