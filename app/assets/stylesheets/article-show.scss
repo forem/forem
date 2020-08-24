@@ -242,64 +242,6 @@ article {
     }
   }
 
-  .article-collection-wrapper {
-    font-family: var(--ff-sans-serif);
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid $light-medium-gray;
-    width: 92%;
-    max-width: 500px;
-    margin: calc(1.1vw + 5px) auto 1vw;
-    box-shadow: $bold-shadow;
-    p {
-      margin: 0px auto;
-      padding: calc(0.1vw + 9px);
-      font-weight: bold;
-      font-size: 0.96em;
-    }
-
-    .article-collection {
-      user-select: none;
-      font-size: 16px;
-      overflow: hidden;
-      position: relative;
-      z-index: 8;
-      a {
-        color: var(--body-color);
-        padding: calc(0.1vw + 9px);
-        display: block;
-        position: relative;
-        z-index: 4;
-        border-top: 1px solid $light-medium-gray;
-        font-size: 0.88em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        &:last-child {
-          border-bottom-left-radius: 5px;
-          border-bottom-right-radius: 5px;
-        }
-
-        &.current-article {
-          background: var(--accent-brand-lighter);
-          color: var(--body-color-inverted);
-        }
-
-        &.collection-link-hidden {
-          display: none;
-        }
-      }
-    }
-
-    &.article-collection-wrapper-bottom {
-      margin-bottom: 3vw;
-
-      p {
-        margin-top: 5px;
-      }
-    }
-  }
-
   .body {
     margin: auto;
     width: 82%;
