@@ -61,7 +61,7 @@
   display: block;
   padding: 8px 16px;
   margin: 0 -16px;
-  border-radius: 3px;
+  border-radius: var(--radius);
   color: var(--link-color);
 
   &:hover {

@@ -1,11 +1,3 @@
-task award_weekly_tag_badges: :environment do
-  # Should run once per week.
-  # Scheduled "daily" on Heroku Scheduler, should only fully run on Thursday.
-  if Time.current.wday == 4
-    BadgeRewarder.award_tag_badges
-  end
-end
-
 # rake award_top_seven_badges["ben jess peter mac liana andy"]
 task :award_top_seven_badges, [:arg1] => :environment do |_t, args|
   usernames = args[:arg1].split(" ")
@@ -28,9 +20,4 @@ task :award_fab_five_badges, [:arg1] => :environment do |_t, args|
   puts "Awarding fab 5 badges to #{usernames}"
   BadgeRewarder.award_fab_five_badges(usernames)
   puts "Done!"
-end
-
-# this task is meant to be scheduled daily
-task award_contributor_badges_from_github: :environment do
-  BadgeRewarder.award_contributor_badges_from_github
 end

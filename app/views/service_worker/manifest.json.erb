@@ -8,17 +8,17 @@
   "theme_color": "#000000",
   "homepage_url": "<%= app_url %>",
   "icons": [{
-    "src": "<%= ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, 80, "png") %>",
+    "src": "<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>",
     "sizes": "192x192",
     "type": "image/png",
     "purpose": "any maskable"
   }, {
-    "src": "<%= ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 128, 80, "png") %>",
+    "src": "<%= optimized_image_url(SiteConfig.logo_png, width: 128, fetch_format: "png") %>",
     "sizes": "128x128",
     "type": "image/png",
     "purpose": "any maskable"
   }, {
-    "src": "<%= ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 512, 80, "png") %>",
+    "src": "<%= optimized_image_url(SiteConfig.logo_png, width: 512, fetch_format: "png") %>",
     "sizes": "512x512",
     "type": "image/png",
     "purpose": "any maskable"

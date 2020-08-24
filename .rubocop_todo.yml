@@ -26,8 +26,6 @@ Rails/HasManyOrHasOneDependent:
     - 'app/models/article.rb'
     - 'app/models/concerns/user_subscription_sourceable.rb'
     - 'app/models/organization.rb'
-    - 'app/models/podcast.rb'
-    - 'app/models/podcast_episode.rb'
     - 'app/models/user.rb'
 
 # Offense count: 4

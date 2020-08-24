@@ -13,7 +13,14 @@ module Notifications
       return unless %w[User Organization].include?(receiver_klass)
 
       receiver = receiver_klass.constantize.find_by(id: receiver_data.fetch(:id))
-      Notifications::Reactions::Send.call(reaction_data, receiver) if receiver
+      Notifications::Reactions::Send.call(reaction_data, receiver) if should_send?(receiver, receiver_klass)
+    end
+
+    def should_send?(receiver, receiver_klass)
+      return false unless receiver
+      return true if receiver_klass == "Organization"
+
+      receiver.reaction_notifications
     end
   end
 end

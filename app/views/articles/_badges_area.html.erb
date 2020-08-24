@@ -43,7 +43,7 @@
       <% @user.badge_achievements.order(id: :desc).includes(:badge).each do |achievement| %>
         <a class="badge-achievement" href="/badge/<%= achievement.badge.slug %>">
           <img
-            src="<%= cloudinary achievement.badge.badge_image_url, 180 %>"
+            src="<%= optimized_image_url(achievement.badge.badge_image_url, width: 180) %>"
             alt="<%= achievement.badge.title %>"
             title="<%= achievement.badge.title %>"
             class="badge-achievement-image mx-auto"

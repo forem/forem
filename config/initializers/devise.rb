@@ -1,5 +1,14 @@
-# Use this hook to configure devise mailer, warden hooks and so forth.
-# Many of these configuration options can be set straight in your model.
+TWITTER_OMNIAUTH_SETUP = lambda do |env|
+  env["omniauth.strategy"].options[:consumer_key] = SiteConfig.twitter_key
+  env["omniauth.strategy"].options[:consumer_secret] = SiteConfig.twitter_secret
+end
+
+GITHUB_OMNIUATH_SETUP = lambda do |env|
+  env["omniauth.strategy"].options[:client_id] = SiteConfig.github_key
+  env["omniauth.strategy"].options[:client_secret] = SiteConfig.github_secret
+  env["omniauth.strategy"].options[:scope] = "user:email"
+end
+
 Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
@@ -283,9 +292,10 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
-  config.omniauth :github, ApplicationConfig["GITHUB_KEY"], ApplicationConfig["GITHUB_SECRET"], scope: "user:email"
-  config.omniauth :twitter, ApplicationConfig["TWITTER_KEY"], ApplicationConfig["TWITTER_SECRET"]
+
+  # Fun fact, if this is reordered to have Twitter first, it doesn't work for some reason. 
+  config.omniauth :github, setup: GITHUB_OMNIUATH_SETUP
+  config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

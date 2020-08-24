@@ -140,14 +140,14 @@
     font-weight: normal;
     font-family: var(--ff-monospace);
     font-size: 0.6em;
-    padding: 0.35em 0.3em 0.3em 0.3em;
+    padding: 0.3em;
     vertical-align: middle;
     position: relative;
     top: -2px;
     line-height: 1em;
     display: inline-block;
     border-radius: var(--radius);
-    letter-spacing: -0.025em;
+    letter-spacing: -0.05em;
     background: var(--base-60);
     margin-right: var(--su-1);
     color: var(--base-inverted);
@@ -169,10 +169,18 @@
   &__comments {
     cursor: default;
     background: var(--story-comments-bg);
-    padding: var(--story-padding);
-    padding-top: var(--su-4);
-    border-radius: 0 0 var(--radius) var(--radius);
-    margin-top: calc(var(--su-1) * -1);
+    border-radius: var(--radius);
+    position: relative;
+    bottom: var(--su-2);
+    margin: var(--su-2);
+    margin-bottom: 0;
+    padding: var(--su-2) 0;
+
+    @media (min-width: $breakpoint-s) {
+      bottom: var(--su-3);
+      margin: var(--su-3);
+      margin-bottom: 0;
+    }
 
     &__headline {
       font-weight: var(--fw-bold);
@@ -186,6 +194,7 @@
       padding-left: calc(var(--su-6) + var(--su-4));
       z-index: 6;
       position: relative;
+      margin-top: var(--su-1);
     }
   }
 

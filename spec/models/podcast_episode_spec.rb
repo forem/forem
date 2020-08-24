@@ -3,12 +3,19 @@ require "rails_helper"
 RSpec.describe PodcastEpisode, type: :model do
   let(:podcast_episode) { create(:podcast_episode) }
 
-  it { is_expected.to validate_presence_of(:title) }
-  it { is_expected.to validate_presence_of(:slug) }
-  it { is_expected.to validate_presence_of(:media_url) }
-  it { is_expected.to validate_presence_of(:guid) }
-
   describe "validations" do
+    describe "builtin validations" do
+      subject { podcast_episode }
+
+      it { is_expected.to belong_to(:podcast) }
+      it { is_expected.to have_many(:comments).inverse_of(:commentable).dependent(:nullify) }
+
+      it { is_expected.to validate_presence_of(:guid) }
+      it { is_expected.to validate_presence_of(:media_url) }
+      it { is_expected.to validate_presence_of(:slug) }
+      it { is_expected.to validate_presence_of(:title) }
+    end
+
     # Couldn't use shoulda matchers for these tests because:
     # Shoulda uses `save(validate: false)` which skips validations, but runs callbacks
     # So an invalid record is saved and the elasticsearch callback fails because there's no associated podcast
