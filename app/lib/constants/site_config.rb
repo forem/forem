@@ -79,6 +79,16 @@ module Constants
         description: "Email address",
         placeholder: ""
       },
+      facebook_key: {
+        description:
+          "The \"App ID\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
+        placeholder: ""
+      },
+      facebook_secret: {
+        description:
+          "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
+        placeholder: ""
+      },
       favicon_url: {
         description: "Used as the site favicon",
         placeholder: "https://image.url"
