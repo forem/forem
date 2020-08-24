@@ -9,7 +9,7 @@ module Profiles
       profile.data.slice!(*Profile.attributes)
       profile.save
 
-      # Propagate changes bac to the `users` table
+      # Propagate changes back to the `users` table
       user_attributes = profile.data.transform_keys do |key|
         Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
       end
