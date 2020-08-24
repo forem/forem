@@ -59,32 +59,7 @@
             </div>
           <% end %>
         </div>
-
       </div>
     </article>
   <% end %>
 </div>
-
-<script>
-  function toggleGroup(event) {
-    let groupToggle = event.target
-    let groupDropdown = $( event.target ).siblings().find('.profile__group-dropdown')[0]
-    let groupInput = $( event.target ).siblings().find('.profile__group-text-input')[0]
-
-    if(groupDropdown.classList.contains('hidden')) {
-      performToggling(groupInput, groupDropdown, "or create a new group", groupToggle);
-    } else {
-      performToggling(groupDropdown, groupInput, "or update an existing group", groupToggle);
-    }
-  }
-
-  function performToggling(elementToHide, elementToShow, updatedText, groupToggle) {
-    elementToShow.classList.remove('hidden');
-    elementToShow.disabled = false;
-
-    elementToHide.classList.add('hidden');
-    elementToHide.disabled = true;
-
-    groupToggle.innerHTML = updatedText;
-  }
-</script>
