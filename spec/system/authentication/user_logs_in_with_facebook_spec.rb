@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Authenticating with Facebook", vcr: { cassette_name: "fastly_sloan" } do
+RSpec.describe "Authenticating with Facebook" do
   let(:sign_in_link) { "Sign In with Facebook" }
 
   before { omniauth_mock_facebook_payload }
