@@ -2,31 +2,37 @@
 <% slugs = articles.pluck(:slug) %>
 
 <% if collection && collection_size > 1 %>
-  <div class="article-collection-wrapper article-collection-wrapper-<%= position %>">
-    <p><%= collection_link(collection) %></p>
+  <nav class="series-switcher crayons-card crayons-card--secondary">
+    <header class="crayons-card__header">
+      <h3 class="crayons-card__header__headline">
+        <%= collection_link(collection) %>
+      </h3>
+    </header>
 
-    <div class="article-collection">
+    <div class="series-switcher__list">
       <% articles.each_with_index do |article, i| %>
         <% if collection_size > 5 && i == 2 %>
-          <a
-            href="<%= article.path %>"
-            class="<%= "current-article" if slugs[2..collection_size - 3].include?(rendered_article.slug) %> collection-link-inbetween"
-            data-preload-image="<%= cloud_cover_url(article.main_image) %>"
-            id="collection-link-inbetween"
-            data-no-instant
-            title="View more">
-            3 ... <%= collection_size - 2 %>
-          </a>
+            <a
+              href="<%= article.path %>"
+              class="crayons-link crayons-link--contentful series-switcher__link <%= "series-switcher__link--active" if slugs[2..collection_size - 3].include?(rendered_article.slug) %> series-switcher__link--inbetween"
+              data-preload-image="<%= cloud_cover_url(article.main_image) %>"
+              id="collection-link-inbetween"
+              data-no-instant
+              title="View more">
+              <span class="series-switcher__num">...</span>
+              <span class="series-switcher__title"><%= collection_size - 2 %> more <%= "part".pluralize(count: collection_size - 2) %>...</span>
+            </a>
         <% end %>
 
-        <a
-          href="<%= article.path %>"
-          class="<%= "current-article" if rendered_article.id == article.id %> <%= "collection-link-hidden" if collection_size > 5 && (i > 1 && i < collection_size - 2) %>"
-          data-preload-image="<%= cloud_cover_url(article.main_image) %>"
-          title="Published <%= article.readable_publish_date %>">
-          <%= i + 1 %>) <%= article.title %>
-        </a>
+          <a
+            href="<%= article.path %>"
+            class="crayons-link crayons-link--contentful series-switcher__link <%= "series-switcher__link--active" if rendered_article.id == article.id %> <%= "series-switcher__link--hidden" if collection_size > 5 && (i > 1 && i < collection_size - 2) %>"
+            data-preload-image="<%= cloud_cover_url(article.main_image) %>"
+            title="Published <%= article.readable_publish_date %>">
+            <span class="series-switcher__num"><%= i + 1 %></span>
+            <span class="series-switcher__title"><%= article.title %></span>
+          </a>
       <% end %>
     </div>
-  </div>
+  </nav>
 <% end %>

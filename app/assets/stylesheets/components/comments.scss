@@ -2,6 +2,7 @@
 
 .crayons-comment {
   font-size: var(--fs-s);
+  padding: var(--su-2) var(--su-3);
 
   &__meta {
     display: flex;
@@ -14,18 +15,17 @@
   }
 
   &__body {
-    margin-top: calc(var(--su-1) * -1);
     padding-left: var(--su-7);
-    padding-bottom: var(--su-2);
     max-height: 310px;
     overflow: hidden;
+    position: relative;
 
     a:hover {
       text-decoration: underline; //todo: default for all in-content links
     }
 
     p {
-      margin: var(--su-1) auto;
+      margin-bottom: var(--su-1);
     }
 
     * {
@@ -42,15 +42,19 @@
       margin: var(--su-1) auto;
       font-size: 90%; // little adjustment for feed comments since default monospace font looks really tiny there.
     }
-  }
 
-  &__footer {
-    box-shadow: 0px 0px var(--su-2) var(--su-2) var(--story-comments-bg);
-    z-index: 5;
-    position: relative;
+    &::after {
+      content: '';
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: linear-gradient(transparent 250px, var(--story-comments-bg));
+    }
   }
 
   & + & {
-    margin-top: var(--su-4);
+    margin-top: var(--su-1);
   }
 }

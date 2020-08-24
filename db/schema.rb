@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_20_093752) do
+ActiveRecord::Schema.define(version: 2020_08_21_035520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -933,7 +933,6 @@ ActiveRecord::Schema.define(version: 2020_08_20_093752) do
   end
 
   create_table "profile_fields", force: :cascade do |t|
-    t.boolean "active", default: true, null: false
     t.string "attribute_name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.string "description"
@@ -1278,6 +1277,7 @@ ActiveRecord::Schema.define(version: 2020_08_20_093752) do
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
+    t.boolean "reaction_notifications", default: true
     t.integer "reactions_count", default: 0, null: false
     t.boolean "registered", default: true
     t.datetime "registered_at"

@@ -11,7 +11,6 @@ RSpec.describe Profile, type: :model do
     before do
       create(:profile_field, label: "Test 1")
       create(:profile_field, label: "Test 2", input_type: :check_box)
-      create(:profile_field, label: "Test 3", active: false)
       described_class.refresh_store_accessors!
     end
 
@@ -20,7 +19,6 @@ RSpec.describe Profile, type: :model do
     it "defines accessors for active profile fields", :aggregate_failures do
       expect(profile).to respond_to(:test1)
       expect(profile).to respond_to(:test2)
-      expect(profile).not_to respond_to(:test3)
     end
 
     it "performs ActiveRecord typecasting for profile fields", :aggregate_failures do
