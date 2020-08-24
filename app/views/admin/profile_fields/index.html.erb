@@ -6,7 +6,7 @@
         <%= select_tag "profile_field[group]", options_for_select(ProfileField.distinct.pluck(:group)), include_blank: "Choose an existing group", class: "form-control selectpicker profile__group-dropdown" %>
         <%= form.text_field :group, placeholder: "Add a new group", class: "form-control profile__group-text-input hidden", disabled: true %>
       </div>
-      <div class="profile__group-toggle" onclick="showNewProfile(event)"> or create a new group </div>
+      <div class="profile__group-toggle" onclick="toggleGroup(event)"> or create a new group </div>
       <div class="form-group">
         <%= render "form", form: form %>
         <%= form.submit "Create New Profile Field", class: "btn btn-primary" %>
@@ -46,7 +46,7 @@
                         <%= select_tag "profile_field[group]", options_for_select(ProfileField.distinct.pluck(:group), selected: field[:group]), class: "form-control selectpicker profile__group-dropdown" %>
                         <%= form.text_field :group, placeholder: "Add a new group", class: "form-control profile__group-text-input hidden", disabled: true %>
                       </div>
-                      <div class="profile__group-toggle" onclick="showNewProfile(event)"> or create a new group </div>
+                      <div class="profile__group-toggle" onclick="toggleGroup(event)"> or create a new group </div>
                     </div>
                     <%= render "form", form: form  %>
                     <%= form.submit class: "btn btn-primary" %>
@@ -65,29 +65,26 @@
 </div>
 
 <script>
-  function showNewProfile(event) {
-    console.log(event);
-    var groupDropdown = $( event.target ).siblings().find('.profile__group-dropdown')[0]
-    var groupInput = $( event.target ).siblings().find('.profile__group-text-input')[0]
-    var groupToggle = event.target
+  function toggleGroup(event) {
+    let groupToggle = event.target
+    let groupDropdown = $( event.target ).siblings().find('.profile__group-dropdown')[0]
+    let groupInput = $( event.target ).siblings().find('.profile__group-text-input')[0]
 
     if(groupDropdown.classList.contains('hidden')) {
-      groupDropdown.classList.remove('hidden');
-      groupDropdown.disabled = false;
-
-      groupInput.classList.add('hidden');
-      groupInput.disabled = true;
-
-      groupToggle.innerHTML = "or create a new group";
+      performToggling(groupInput, groupDropdown, "or create a new group", groupToggle);
     } else {
-      groupInput.classList.remove('hidden');
-      groupInput.disabled = false;
-
-      groupDropdown.classList.add('hidden');
-      groupDropdown.disabled = true;
-
-      groupToggle.innerHTML = "or update an existing group";
+      performToggling(groupDropdown, groupInput, "or update an existing group", groupToggle);
     }
+  }
+
+  function performToggling(elementToHide, elementToShow, updatedText, groupToggle) {
+    elementToShow.classList.remove('hidden');
+    elementToShow.disabled = false;
+
+    elementToHide.classList.add('hidden');
+    elementToHide.disabled = true;
+
+    groupToggle.innerHTML = "or update an existing group";
   }
 
 </script>
