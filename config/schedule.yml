@@ -77,3 +77,6 @@ send_welcome_notifications:
 send_email_digest:
   cron: "30 11 * * 3,4,5,6" # 11:30 am UTC Wed, Thurs, Fri, Sat, Sun
   class: "SendEmailDigestWorker"
+remove_old_notifications:
+  cron: "0 5 * * *" # daily at 5 am UTC
+  class: "Notifications::RemoveOldNotificationsWorker"
