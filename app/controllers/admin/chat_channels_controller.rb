@@ -1,9 +1,5 @@
 module Admin
   class ChatChannelsController < Admin::ApplicationController
-    after_action only: [:destroy] do
-      Audit::Logger.log(:moderator, current_user, params.dup)
-    end
-
     layout "admin"
 
     def index
