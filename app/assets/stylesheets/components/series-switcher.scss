@@ -1,0 +1,59 @@
+@import '../config/import';
+
+.series-switcher {
+  font-family: var(--ff-sans-serif);
+  max-width: 550px;
+  margin: var(--su-4) auto;
+
+  @media (min-width: $breakpoint-m) {
+    margin: var(--su-6) auto;
+  }
+
+  &__num {
+    background: var(--base-10);
+    width: var(--su-7);
+    height: var(--su-7);
+    font-size: var(--fs-base);
+    color: var(--base-70);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-right: var(--su-3);
+    flex-shrink: 0;
+  }
+
+  &__title {
+    max-width: 100%;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__link {
+    padding: var(--su-3) var(--su-4);
+    font-size: var(--fs-base);
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+
+    @media (min-width: $breakpoint-m) {
+      font-size: var(--fs-l);
+    }
+
+    &--hidden {
+      display: none;
+    }
+
+    &--active {
+      color: var(--base-100);
+      font-weight: var(--fw-bold);
+      .series-switcher__num {
+        background: var(--accent-brand);
+        color: var(--base-inverted);
+        font-weight: var(--fw-normal);
+      }
+    }
+  }
+}
