@@ -33,7 +33,6 @@ RSpec.describe "/admin/profile_fields", type: :request do
         input_type: "text_field",
         description: "users' location",
         placeholder_text: "new york",
-        active: false,
         group: "Location"
       }
     end
@@ -53,7 +52,6 @@ RSpec.describe "/admin/profile_fields", type: :request do
       expect(last_profile_field_record.input_type).to eq(new_profile_field[:input_type])
       expect(last_profile_field_record.description).to eq(new_profile_field[:description])
       expect(last_profile_field_record.placeholder_text).to eq(new_profile_field[:placeholder_text])
-      expect(last_profile_field_record.active).to eq(new_profile_field[:active])
       expect(last_profile_field_record.group).to eq(new_profile_field[:group])
     end
   end
@@ -63,16 +61,16 @@ RSpec.describe "/admin/profile_fields", type: :request do
 
     it "redirects successfully" do
       put "#{admin_profile_fields_path}/#{profile_field.id}",
-          params: { profile_field: { active: false } }
+          params: { profile_field: { show_in_onboarding: false } }
       expect(response).to redirect_to admin_profile_fields_path
     end
 
     it "updates the profile field values" do
       put "#{admin_profile_fields_path}/#{profile_field.id}",
-          params: { profile_field: { active: false } }
+          params: { profile_field: { show_in_onboarding: false } }
 
       changed_profile_record = ProfileField.find(profile_field.id)
-      expect(changed_profile_record.active).to be(false)
+      expect(changed_profile_record.show_in_onboarding).to be(false)
     end
   end
 
