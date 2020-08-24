@@ -1,6 +1,6 @@
 class BlackBox
   class << self
-    def article_hotness_score(article, function_caller = FunctionCaller)
+    def article_hotness_score(article)
       usable_date = article.crossposted_at || article.published_at
       reaction_points = article.score
       super_super_recent_bonus = usable_date > 1.hour.ago ? 28 : 0
@@ -16,7 +16,7 @@ class BlackBox
         reaction_points = (reaction_points * 0.8).to_i # watercooler posts shouldn't get as much love in feed
       end
 
-      article_hotness = last_mile_hotness_calc(article, function_caller)
+      article_hotness = last_mile_hotness_calc(article)
 
       (
         article_hotness + reaction_points + recency_bonus + super_recent_bonus +
@@ -32,14 +32,19 @@ class BlackBox
       (rep_points + descendants_points + bonus_points - spaminess_rating).to_i
     end
 
-    def calculate_spaminess(story, function_caller = FunctionCaller)
-      # accepts comment or article as story
-      return 100 unless story.user
-      return 0 if ENV["AWS_SDK_KEY"].blank? # Skip this if we don't have a private spam score for now
-      return 0 if ENV["AWS_SDK_KEY"] == "foobarbaz" # Also skip if placeholder
+    def calculate_spaminess(story)
+      user = story.user
+      return 100 unless user
+      return 100 if user.trusted
+      return 100 if user.badges_count > 0
 
-      function_caller.call("blackbox-production-spamScore",
-                           { story: story, user: story.user }.to_json).to_i
+      base_spaminess = 0
+      base_spaminess += 25 if
+        user.registred_at < ((user.github_created_at || user.twitter_created_at) + 2.days) &&
+          user.registered_at > 25.days.ago
+      base_spaminess += 25 if SiteConfig.spam_keywords.present? && story.match?(SiteConfig.spam_keywords) &&
+        user.registered_at > 7.days.ago
+      base_spaminess
     end
 
     private
@@ -50,20 +55,10 @@ class BlackBox
       size_bonus + code_bonus
     end
 
-    def last_mile_hotness_calc(article, function_caller)
-      if ENV["AWS_SDK_KEY"].present? && ENV["AWS_SDK_KEY"] != "foobarbaz"
-        function_caller.call(
-          "blackbox-production-articleHotness",
-          { article: article, user: article.user }.to_json,
-        ).to_i
-      else
-        # Simple calculation that takes in published at time and scores
-        # Same order of magnitude calculation as existing private function
-        # Gives credit to new articles and articles which score well from users and mods
-        article.published_at.to_i / 10_000 +
-          (article.score * 5000) +
-          (article.comment_score * 5000)
-      end
+    def last_mile_hotness_calc(article)
+      article.published_at.to_i / 10_000 +
+        (article.score * 5000) +
+        (article.comment_score * 5000)
     end
   end
 end
