@@ -3,6 +3,8 @@ class Profile < ApplicationRecord
 
   validates :user_id, uniqueness: true
 
+  # A dynamic mixin so the wrapper methods on user update automatically.
+  # See: https://dev.to/appsignal/configurable-ruby-modules-the-module-builder-pattern-4483
   USER_MIXIN = Module.new
 
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
@@ -45,5 +47,11 @@ class Profile < ApplicationRecord
   # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes
     stored_attributes[:data]
+  end
+
+  # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
+  # profile migration/generalization work.
+  def self.mapped_attributes
+    attributes.map { |attribute| MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s }
   end
 end

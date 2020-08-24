@@ -23,7 +23,7 @@ class User < ApplicationRecord
 
       # Keep saving changes locally for the time being, but propagate them to profiles.
       after_update_commit do
-        if (previous_changes.keys.map(&:to_sym) & PROFILE_FIELDS).present?
+        if previous_changes.keys.any? { |attribute| attribute.in?(Profile.mapped_attributes) }
           profile.update(data: Profiles::ExtractData.call(self))
         end
       end
