@@ -40,7 +40,7 @@ class BlackBox
 
       base_spaminess = 0
       base_spaminess += 25 if
-        user.registred_at < ((user.github_created_at || user.twitter_created_at) + 2.days) &&
+        user.registred_at < ((user.github_created_at || user.twitter_created_at || 3.days.ago) + 2.days) &&
           user.registered_at > 25.days.ago
       base_spaminess
     end
