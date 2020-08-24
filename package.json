@@ -53,6 +53,9 @@
     "Gemfile": [
       "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
+    "*.rake": [
+      "bundle exec rubocop --require rubocop-rspec --auto-correct"
+    ],
     "app/**/*.html.erb": [
       "bundle exec erblint --autocorrect"
     ],
