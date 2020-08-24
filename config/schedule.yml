@@ -74,6 +74,9 @@ expire_old_listings:
 send_welcome_notifications:
   cron: "0 16 * * *" # daily at 4 pm UTC
   class: "Broadcasts::SendWelcomeNotificationsWorker"
+sitemap_refresh:
+  cron: "30 * * * *" # every hour, 30 min after the hour
+  class: "SitemapRefreshWorker"
 hourly_feed_cache_bust:
   cron: "0 * * * *" # hourly on the hour
   class: "BustCachePathWorker"
