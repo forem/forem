@@ -8,10 +8,16 @@ expires_after = app_config_expires_after.positive? ? app_config_expires_after : 
 # see <https://github.com/redis-store/redis-rails#session-storage> for configuration options,
 # httponly has been added in <https://github.com/redis-store/redis-actionpack/pull/17>
 servers = ApplicationConfig["REDIS_SESSIONS_URL"] || ApplicationConfig["REDIS_URL"]
+
+# domain property should only be set in production
+domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
+
 Rails.application.config.session_store :redis_store,
                                        key: ApplicationConfig["SESSION_KEY"],
+                                       domain: domain,
                                        servers: servers,
                                        expire_after: expires_after,
                                        signed: true,
                                        secure: ApplicationConfig["FORCE_SSL_IN_RAILS"] == "true",
+                                       same_site: :lax,
                                        httponly: true
