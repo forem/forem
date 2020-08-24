@@ -9,12 +9,12 @@ RSpec.describe Profiles::Update, type: :service do
   before(:all) do
     create(:profile_field, label: "Name", input_type: :text_field)
     create(:profile_field, label: "Check", input_type: :check_box)
-    Profile.refresh_store_accessors!
+    Profile.refresh_attributes!
   end
 
   after(:all) do
     ProfileField.destroy_all
-    Profile.refresh_store_accessors!
+    Profile.refresh_attributes!
   end
   # rubocop:enable RSpec/BeforeAfterAll
 

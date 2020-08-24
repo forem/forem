@@ -11,7 +11,7 @@ RSpec.describe Profile, type: :model do
     before do
       create(:profile_field, label: "Test 1")
       create(:profile_field, label: "Test 2", input_type: :check_box)
-      described_class.refresh_store_accessors!
+      described_class.refresh_attributes!
     end
 
     let(:profile) { described_class.new }

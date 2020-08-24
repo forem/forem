@@ -17,13 +17,13 @@ class Profile < ApplicationRecord
   }.with_indifferent_access.freeze
 
   # Generates typed accessors for all currently defined profile fields.
-  def self.refresh_store_accessors!
+  def self.refresh_attributes!
     ProfileField.find_each do |field|
       store_attribute :data, field.attribute_name, field.type
     end
   end
 
-  refresh_store_accessors!
+  refresh_attributes!
 
   # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes

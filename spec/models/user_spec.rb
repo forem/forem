@@ -1186,7 +1186,7 @@ RSpec.describe User, type: :model do
   describe "profiles" do
     before do
       create(:profile_field, label: "Available for")
-      Profile.refresh_store_accessors!
+      Profile.refresh_attributes!
     end
 
     it "automatically creates a profile for new users", :aggregate_failures do
