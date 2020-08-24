@@ -23,7 +23,7 @@
       </form>
     </div>
 
-    <div id="top-bar-logged-in" class="top-bar__links hidden">
+    <div id="top-bar-logged-in" class="top-bar__links <%= user_signed_in? ? "" : "hidden" %>">
       <a href="/new" class="crayons-btn hidden mr-2 whitespace-nowrap s:block">Write a post</a>
 
       <a id="moderation-link" class="top-bar__link trusted-visible-block" aria-label="Moderation" href="<%= mod_path %>">
@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <div id="top-bar-logged-out" class="top-bar__links hidden">
+    <div id="top-bar-logged-out" class="top-bar__links <%= user_signed_in? ? "hidden" : "" %>">
       <a href="/enter" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap s:block">
         Log in
       </a>
