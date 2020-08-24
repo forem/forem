@@ -52,7 +52,7 @@ class Notification < ApplicationRecord
     end
 
     def send_new_endorsement_notifications_without_delay(endorsement)
-      return if endorsement.approved == true
+      return if endorsement.approved
 
       Notifications::NewEndorsement::Send.call(endorsement)
     end

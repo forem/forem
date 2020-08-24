@@ -4,22 +4,24 @@ class ListingEndorsementsController < ApplicationController
   after_action :verify_authorized, only: %i[update]
 
   def create
-    @endorsement = ListingEndorsement.create(content: params[:content],
-                                             user_id: current_user.id,
-                                             classified_listing_id: params[:classified_listing_id])
-    if @endorsement.persisted?
-      Notification.send_new_endorsement_notifications_without_delay(@endorsement)
-      render json: { status: "created" }, status: :ok
+    endorsement = ListingEndorsement.create(content: params[:content],
+                                            user_id: current_user.id,
+                                            classified_listing_id: params[:classified_listing_id])
+    if endorsement.persisted?
+      Notification.send_new_endorsement_notifications_without_delay(endorsement)
+      render json: "The endorsement has been made", status: :created
     else
-      render json: { error: "an error occured with the endorsement" }, status: :unprocessable_entity
+      render json: { error: endorsement.errors_as_sentence }, status: :unprocessable_entity
     end
   end
 
   def update
-    @endorsement = ListingEndorsement.find(params[:id])
+    endorsement = ListingEndorsement.find(params[:id])
 
-    authorize @endorsement
+    authorize endorsement
 
-    @endorsement.update(approved: true) unless @endorsement.approved
+    endorsement.update(approved: true) unless endorsement.approved
+
+    head :no_content
   end
 end

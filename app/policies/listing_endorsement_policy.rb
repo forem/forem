@@ -6,6 +6,6 @@ class ListingEndorsementPolicy < ApplicationPolicy
   private
 
   def user_is_author?
-    record.user_id == user.id
+    record.listing.user_id == user.id
   end
 end
