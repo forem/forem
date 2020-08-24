@@ -1,4 +1,4 @@
-<div class="row">
+<main class="row">
   <div class="col-12">
     <h2>
       <a href="/t/<%= @tag.name %>" style="background:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">#<%= @tag.name %></a>, tagged <%= @tag.taggings_count %> times.
@@ -23,7 +23,7 @@
     <% end %>
     <%= form_for [:admin, @tag], html: { class: "form-inline justify-content-between" } do |f| %>
       <div class="form-group">
-        <%= f.label "Add Moderator (id):", class: "mr-3" %>
+        <%= f.label :tag_moderator_id, "Add Moderator (id):", class: "mr-3" %>
         <%= f.text_field :tag_moderator_id, class: "form-control" %>
       </div>
       <div>
@@ -84,4 +84,4 @@
       <%= f.submit class: "btn btn-primary float-right" %>
     <% end %>
   </div>
-</div>
+</main>

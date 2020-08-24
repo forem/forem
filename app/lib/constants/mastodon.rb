@@ -65,6 +65,7 @@ module Constants
       "social.targaryen.house",
       "social.tchncs.de",
       "switter.at",
+      "tech.lgbt",
       "todon.nl",
       "toot.cafe",
       "wikitetas.club",

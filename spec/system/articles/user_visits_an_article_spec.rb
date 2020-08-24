@@ -68,7 +68,7 @@ RSpec.describe "Views an article", type: :system do
 
   describe "when articles belong to a collection" do
     let(:collection) { create(:collection) }
-    let(:articles_selector) { "//div[@class='article-collection']//a" }
+    let(:articles_selector) { "//div[@class='series-switcher__list']//a" }
 
     context "with regular articles" do
       it "lists the articles in ascending published_at order" do

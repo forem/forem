@@ -62,6 +62,9 @@ award_contributor_badges_from_github:
     - ""
     - award_contributor_badges_from_github
     - ""
+remove_old_html_variant_data:
+  cron: "10 * * * *" # every hour, 10 min after the hour
+  class: "HtmlVariants::RemoveOldDataWorker"
 resave_supported_tags:
   cron: "25 0 * * *" # daily at 12:25 am UTC
   class: "Tags::ResaveSupportedTagsWorker"
@@ -71,3 +74,24 @@ expire_old_listings:
 send_welcome_notifications:
   cron: "0 16 * * *" # daily at 4 pm UTC
   class: "Broadcasts::SendWelcomeNotificationsWorker"
+hourly_feed_cache_bust:
+  cron: "0 * * * *" # hourly on the hour
+  class: "BustCachePathWorker"
+  args:
+    - "/feed.xml"
+hourly_badge_cache_bust:
+  cron: "0 * * * *" # hourly on the hour
+  class: "BustCachePathWorker"
+  args:
+    - "/badge"
+daily_home_cache_bust:
+  cron: "0 0 * * *" # daily at 12 am UTC
+  class: "BustCachePathWorker"
+  args:
+    - "/"
+send_email_digest:
+  cron: "30 11 * * 3,4,5,6" # 11:30 am UTC Wed, Thurs, Fri, Sat, Sun
+  class: "SendEmailDigestWorker"
+remove_old_notifications:
+  cron: "0 5 * * *" # daily at 5 am UTC
+  class: "Notifications::RemoveOldNotificationsWorker"
