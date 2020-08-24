@@ -98,3 +98,6 @@ send_email_digest:
 remove_old_notifications:
   cron: "0 5 * * *" # daily at 5 am UTC
   class: "Notifications::RemoveOldNotificationsWorker"
+sync_credits_counter_cache:
+  cron: "0 16 * * *" # daily at 4 pm UTC
+  class: "Credits::SyncCounterCache"

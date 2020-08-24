@@ -15,7 +15,3 @@ end
 task github_repo_fetch_all: :environment do
   GithubRepo.update_to_latest
 end
-
-task fix_credits_count_cache: :environment do
-  Credit.counter_culture_fix_counts only: %i[user organization]
-end
