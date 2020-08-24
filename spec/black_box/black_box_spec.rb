@@ -44,7 +44,7 @@ RSpec.describe BlackBox, type: :black_box do
       user = create(:user)
       user.update_column(:github_created_at, 1.day.ago)
       user.update_column(:registered_at, 1.hour.ago)
-      article = create(:article, score: 99, published_at: Time.current)
+      article = create(:article, score: 99, published_at: Time.current, user: user)
       expect(described_class.calculate_spaminess(article)).to eq(25)
     end
 
