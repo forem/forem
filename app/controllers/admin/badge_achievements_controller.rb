@@ -15,7 +15,7 @@ module Admin
       @badge_achievement = BadgeAchievement.find(params[:id])
 
       if @badge_achievement.destroy
-        flash[:success] = "Badge has been deleted!"
+        flash[:success] = "Badge achievement has been deleted!"
       else
         flash[:danger] = @badge_achievement.errors_as_sentence
       end
@@ -23,7 +23,7 @@ module Admin
     end
 
     def award
-      @all_badges = Badge.page(params[:page]).per(Badge.count)
+      @all_badges = Badge.all.select(:title, :slug)
     end
 
     def award_badges
