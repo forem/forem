@@ -1,6 +1,3 @@
-fetch_all_rss:
-  cron: "20 * * * *" # every hour, 20 min after the hour
-  class: "Articles::RssReaderWorker"
 log_worker_queue_stats:
   cron: "*/10 * * * *" # every 10 minutes
   class: "Metrics::RecordBackgroundQueueStatsWorker"
