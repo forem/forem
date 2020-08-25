@@ -5,7 +5,7 @@
       <section class="crayons-card crayons-card--secondary signin-cta-widget">
         <div class="authentication-widget__container">
           <figure class="authentication-widget__image-container">
-            <img class="authentication-widget__image" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
+            <img class="authentication-widget__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
                   alt="Secondary <%= community_name %> logo" />
           </figure>
           <div class="authentication-widget__content">

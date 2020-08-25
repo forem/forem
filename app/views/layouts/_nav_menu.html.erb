@@ -23,7 +23,7 @@
   <% else %>
     <div class="authentication-header__container border-0 border-b-1 border-solid border-base-20">
       <figure class="authentication-header__image-container">
-        <img class="authentication-header__image" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
+        <img class="authentication-header__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
               alt="Secondary <%= community_name %> logo" />
       </figure>
       <div class="authentication-header__content">
