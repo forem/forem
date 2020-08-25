@@ -38,8 +38,21 @@ module Authentication
       SiteConfig.authentication_providers.map(&:to_sym).sort
     end
 
+    def self.enabled_for_user(user)
+      return [] unless user
+
+      providers = enabled & user.identities.pluck(:provider).map(&:to_sym)
+      providers.sort.map do |provider_name|
+        get!(provider_name)
+      end
+    end
+
     def self.enabled?(provider_name)
       enabled.include?(provider_name.to_sym)
+    end
+
+    def self.username_fields
+      Authentication::Providers::Provider.subclasses.map(&:user_username_field).sort
     end
   end
 end

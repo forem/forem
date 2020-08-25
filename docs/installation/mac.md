@@ -69,6 +69,11 @@ archive. We recommend installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
 
+We recommend that you **do not** install Elasticsearch in the app directory.
+Instead, we recommend installing it in your home directory (for example,
+`cd $HOME`). (This also ensures that we don't accidentally commit Elasticsearch
+code to the project's repository!)
+
 The following directions were
 [taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-macos),
 so check those out if you run into any issues or want further information. Make
@@ -212,16 +217,15 @@ your local Elasticsearch installation, for example:
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace, follow the steps below.
 
-     1. Create `config/application.yml` by copying from the provided template
-        (i.e. with bash:
-        `cp config/sample_application.yml config/application.yml`). This is a
-        personal file that is ignored in git.
+     1. Create `.env` by copying from the provided template (i.e. with bash:
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      2. Obtain the development variable and apply the key you wish to
         enter/replace. i.e.:
 
      ```shell
-     GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
-     GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
    - If you are missing `ENV` variables on bootup, the

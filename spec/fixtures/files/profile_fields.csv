@@ -1,0 +1,4 @@
+Name,text_field,John Doe,,Basic
+Skills/Languages,text_area,,Programming languages,Coding
+
+Color,color_field,#000000,"Used for backgrounds, borders etc.",Branding

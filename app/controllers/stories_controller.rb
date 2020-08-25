@@ -244,12 +244,12 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_view_param
-    redirect_to "/internal/users/#{@user.id}" if params[:view] == "moderate"
-    redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
+    redirect_to "/admin/users/#{@user.id}" if params[:view] == "moderate"
+    redirect_to "/resource_admin/users/#{@user.id}/edit" if params[:view] == "admin"
   end
 
   def redirect_if_show_view_param
-    redirect_to "/internal/articles/#{@article.id}" if params[:view] == "moderate"
+    redirect_to "/admin/articles/#{@article.id}" if params[:view] == "moderate"
   end
 
   def handle_article_show
@@ -402,11 +402,12 @@ class StoriesController < ApplicationController
       "publisher": {
         "@context": "http://schema.org",
         "@type": "Organization",
-        "name": "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+        "name": "#{SiteConfig.community_name} Community",
         "logo": {
           "@context": "http://schema.org",
           "@type": "ImageObject",
-          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, 80, "png"),
+          "url": ApplicationController.helpers.optimized_image_url(SiteConfig.logo_png, width: 192,
+                                                                                        fetch_format: "png"),
           "width": "192",
           "height": "192"
         }

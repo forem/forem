@@ -2,7 +2,7 @@
   <% if @new_article_not_logged_in %>
     <div class="prefill-non-logged-in-message">
       <div class="registration__logo-container">
-        <img class="secondary-logo" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
+        <img class="secondary-logo" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
              alt="Secondary <%= community_name %> logo" />
       </div>
       <p>
@@ -14,7 +14,7 @@
     </div>
   <% else %>
     <div class="registration__logo-container">
-      <img class="secondary-logo" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
+      <img class="secondary-logo" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
            alt="Secondary <%= community_name %> logo" />
     </div>
     <% if any_selfserve_auth? %>
@@ -31,12 +31,12 @@
       <%= form_for(User.new, as: :user, url: session_path(:user)) do |f| %>
         <div class="crayons-field">
           <%= f.label :email, class: "crayons-field__label" %>
-          <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
+          <%= f.email_field :email, autocomplete: "email", required: true, class: "crayons-textfield" %>
         </div>
 
         <div class="field">
           <%= f.label :password, class: "crayons-field__label" %>
-          <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
+          <%= f.password_field :password, autocomplete: "current-password", required: true, class: "crayons-textfield" %>
         </div>
 
         <div class="field">
@@ -56,5 +56,5 @@
   </div>
   <p>Open Source 😇</p>
   <p>Free Forever ❤️</p>
-  <div style="height:300px" />
+  <div style="height:300px"></div>
 </div>

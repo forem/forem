@@ -1,0 +1,63 @@
+<main>
+  <section class="row my-3" role="search">
+    <div class="col">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <%= link_to "General Community", admin_mods_path, class: "nav-link #{'active' if params[:state].blank?}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Tag Mods", admin_mods_path(state: :tag_moderator), class: "nav-link #{'active' if params[:state] == 'tag_moderator'}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Potential Mods", admin_mods_path(state: :potential), class: "nav-link #{'active' if params[:state] == 'potential'}" %>
+        </li>
+      </ul>
+    </div>
+    <div class="col">
+      <%= form_with url: admin_mods_path, method: :get, local: true, class: "form-inline justify-content-end" do |f| %>
+        <div class="form-group mx-sm-3">
+          <%= f.text_field :search, value: params[:search], class: "form-control", aria: { label: "Search" } %>
+          <%= f.hidden_field :state, value: params[:state] if params[:state].present? %>
+        </div>
+        <%= f.submit "Search", class: "btn btn-light" %>
+      <% end %>
+    </div>
+  </section>
+
+  <%= paginate @mods, theme: "internal" %>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Profile</th>
+        <th scope="col">Comments</th>
+        <th scope="col">Badges</th>
+        <th scope="col">Last Comment</th>
+        <% if params[:state] == "potential" %>
+          <th scope="col">Action</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @mods.each do |mod| %>
+        <tr>
+          <td><%= mod.id %></td>
+          <td><%= link_to mod.username, admin_user_path(mod.id) %></td>
+          <td><%= mod.comments_count %></td>
+          <td><%= mod.badge_achievements_count %></td>
+          <td><%= time_ago_in_words mod.last_comment_at %> ago</td>
+          <% if params[:state] == "potential" %>
+            <td>
+              <%= form_with model: [:admin, mod], url: admin_mod_path(mod.id), method: :patch, local: true do |f| %>
+                <%= f.submit "Make Trusted Mod", class: "btn btn-light js-add-to-mod-channel" %>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= paginate @mods, theme: "internal" %>
+</main>

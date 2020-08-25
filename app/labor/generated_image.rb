@@ -1,5 +1,4 @@
 class GeneratedImage
-  include CloudinaryHelper
   attr_reader :resource
 
   def initialize(resource)
@@ -10,11 +9,11 @@ class GeneratedImage
     if resource.class.name.include?("Article")
       article_image
     elsif resource.class.name == "User"
-      cloudinary_generated_url "/user/#{resource.id}?bust=#{resource.profile_image_url}"
+      optimize_image "/user/#{resource.id}?bust=#{resource.profile_image_url}"
     elsif resource.class.name == "Organization"
-      cloudinary_generated_url "/organization/#{resource.id}?bust=#{resource.profile_image_url}"
+      optimize_image "/organization/#{resource.id}?bust=#{resource.profile_image_url}"
     elsif resource.class.name.include?("Tag")
-      cloudinary_generated_url "/tag/#{@resource.id}?bust=#{@resource.pretty_name}"
+      optimize_image "/tag/#{@resource.id}?bust=#{@resource.pretty_name}"
     end
   end
 
@@ -24,16 +23,21 @@ class GeneratedImage
     return resource.video_thumbnail_url if resource.video_thumbnail_url.present?
 
     path = "/article/#{resource.id}?bust=#{resource.comments_count}-#{resource.title}-#{resource.published}"
-    cloudinary_generated_url(path)
+    optimize_image(path)
   end
 
-  def cloudinary_generated_url(path)
-    cl_image_path("https://dev.to/social_previews#{path}",
-                  gravity: "north",
-                  height: 400,
-                  width: 800,
-                  crop: "fill",
-                  sign_url: true,
-                  type: "url2png")
+  def optimize_image(path)
+    options = {
+      height: 400,
+      width: 800,
+      gravity: "north",
+      crop: "fill",
+      type: "url2png",
+      flags: nil,
+      quality: nil,
+      fetch_format: nil
+    }
+
+    Images::Optimizer.call("https://dev.to/social_previews#{path}", options)
   end
 end

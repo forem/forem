@@ -1,5 +1,5 @@
 Rails.application.reloader.to_prepare do
-  AWS_LAMBDA = if Rails.env.production?
+  AWS_LAMBDA = if Rails.env.production? && ApplicationConfig["AWS_SDK_KEY"].present?
                  Aws::Lambda::Client.new(
                    region: ApplicationConfig["AWS_DEFAULT_REGION"],
                    access_key_id: ApplicationConfig["AWS_SDK_KEY"],

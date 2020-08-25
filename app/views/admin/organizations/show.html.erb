@@ -1,0 +1,58 @@
+<main>
+  <article class="row">
+    <div class="col-12">
+      <h2 class="d-inline">
+        <%= @organization.name %><%= link_to "@#{@organization.name}", "/#{@organization.slug}", class: "ml-2", target: "_blank", rel: "noopener" %>
+      </h2>
+      <p class="font-italic">Created <%= @organization.created_at.strftime("%b %e '%y") %></p>
+    </div>
+    <div class="col-12">
+      <h2>General Info</h2>
+      <dl>
+        <dt>ID:</dt>
+        <dd><%= @organization.id %></span></dd>
+        <dt>Name:</dt>
+        <dd><%= @organization.name %></dd>
+        <dt>Membership Count:</dt>
+        <dd><%= @organization.organization_memberships.size %></dd>
+        <dt>Email:</dt>
+        <dd><%= @organization.email || "N/A" %></dd>
+        <dt>Twitter:</dt>
+        <% if @organization.twitter_username %>
+          <dd><%= link_to @organization.twitter_username, "https://twitter.com/#{@organization.twitter_username}" %></dd>
+        <% else %>
+          <dd>N/A</dd>
+        <% end %>
+        <dt>GitHub:</dt>
+        <% if @organization.github_username %>
+          <dd><%= link_to @organization.github_username, "https://github.com/#{@organization.github_username}" %></dd>
+        <% else %>
+          <dd>N/A</dd>
+        <% end %>
+      </dl>
+    </div>
+    <div class="col-12">
+      <% current_credits = @organization.unspent_credits_count %>
+      <h2>Credits (currrent: <%= current_credits %>)</h2>
+      <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "form-inline justify-content-between mb-2" do %>
+        <div class="form-group">
+          <%= hidden_field_tag :credit_action, :add %>
+          <%= number_field_tag :credits, nil, in: 1...100_000, required: true, class: "form-control mr-3", size: 5, aria: { label: "Credits" } %>
+          <%= text_field_tag :note, "", placeholder: "Why are you adding these credits?", size: 50, required: true, class: "form-control mr-3", aria: { label: "Reason" } %>
+        </div>
+        <%= submit_tag "Add Org Credits", class: "btn btn-primary" %>
+      <% end %>
+      <% if current_credits.positive? %>
+        <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "form-inline justify-content-between mb-2" do %>
+          <div class="form-group">
+            <%= hidden_field_tag :credit_action, :remove %>
+            <%= number_field_tag :credits, nil, in: 1..current_credits, required: true, class: "form-control mr-3", size: 5, aria: { label: "Credits" } %>
+            <%= text_field_tag :note, "", placeholder: "Why are you removing these credits?", size: 50, required: true, class: "form-control mr-3", aria: { label: "Reason" } %>
+          </div>
+          <%= submit_tag "Remove Org Credits", class: "btn btn-danger" %>
+        <% end %>
+      <% end %>
+    </div>
+  </article>
+  <%= render "activity" %>
+</main>

@@ -14,4 +14,8 @@ module AuthenticationHelper
       Authentication::Providers.get!(provider_name)
     end
   end
+
+  def authentication_enabled_providers_for_user(user = current_user)
+    Authentication::Providers.enabled_for_user(user)
+  end
 end

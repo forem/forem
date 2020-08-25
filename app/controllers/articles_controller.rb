@@ -148,7 +148,7 @@ class ArticlesController < ApplicationController
           return
         end
         if params[:article][:video_thumbnail_url]
-          redirect_to(@article.path + "/edit")
+          redirect_to("#{@article.path}/edit")
           return
         end
         render json: { status: 200 }
@@ -289,20 +289,6 @@ class ArticlesController < ApplicationController
         Notification.remove_all(notifiable_ids: @article.comments.ids,
                                 notifiable_type: "Comment")
       end
-    end
-  end
-
-  def redirect_after_creation
-    @article.decorate
-    if @article.persisted?
-      redirect_to @article.current_state_path, notice: "Article was successfully created."
-    else
-      if @article.errors.to_h[:body_markdown] == "has already been taken"
-        @article = current_user.articles.find_by(body_markdown: @article.body_markdown)
-        redirect_to @article.current_state_path
-        return
-      end
-      render :new
     end
   end
 

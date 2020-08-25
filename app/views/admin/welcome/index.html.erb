@@ -1,0 +1,19 @@
+<main>
+  <div class="notice"><%= flash[:notice] %></div>
+  <%= csrf_meta_tags %>
+
+  <div class="row justify-content-end">
+    <%= link_to "Create A New Welcome Thread", admin_welcome_index_path, method: :post, class: "btn btn-primary" %>
+  </div>
+
+  <h2>All Welcome Threads</h2>
+  <hr>
+
+  <div class="row">
+    <div class="list-group-flush">
+      <% @daily_threads.each do |thread| %>
+        <a class="list-group-item list-group-item-action" href="<%= thread.path %>"><%= thread.title %></a>
+      <% end %>
+    </div>
+  </div>
+</main>

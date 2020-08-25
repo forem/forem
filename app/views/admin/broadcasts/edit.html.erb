@@ -1,0 +1,9 @@
+<main class="row">
+  <div class="col-12">
+    <h2>Edit broadcast:</h2>
+    <%= form_for([:admin, @broadcast], method: :patch) do %>
+      <%= render "form" %>
+      <%= submit_tag "Update Broadcast", class: "btn btn-primary float-right" %>
+    <% end %>
+  </div>
+</main>

@@ -1,6 +1,7 @@
 class ArticleSuggester
   def initialize(article)
     @article = article
+    @total_articles_count = self.class.articles_count
   end
 
   def articles(max: 4)
@@ -22,6 +23,10 @@ class ArticleSuggester
     end
   end
 
+  def self.articles_count
+    Article.published.estimated_count
+  end
+
   private
 
   attr_reader :article
@@ -39,14 +44,20 @@ class ArticleSuggester
   def suggestions_by_tag(max: 4)
     Article.published.tagged_with(cached_tag_list_array, any: true)
       .where.not(user_id: article.user_id)
-      .where("organic_page_views_past_month_count > 5")
+      .where(tag_suggestion_query)
       .order(hotness_score: :desc)
       .offset(rand(0..offset))
       .first(max)
   end
 
   def offset
-    Rails.env.production? ? 200 : 0
+    @total_articles_count > 1000 ? 200 : (@total_articles_count / 10)
+  end
+
+  def tag_suggestion_query
+    # Fore big communities like DEV we can look at organic page views for indicator.
+    # For smaller communities, we'll a basic score check.
+    @total_articles_count > 1000 ? "organic_page_views_past_month_count > 5" : "score > 1"
   end
 
   def cached_tag_list_array

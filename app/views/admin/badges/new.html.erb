@@ -1,0 +1,30 @@
+<main class="row">
+  <div class="col-12">
+    <h2>Create a Badge:</h2>
+    <%= form_for [:admin, @badge], method: :post do |form| %>
+    <div class="form-group">
+      <%= form.label :title %>
+      <%= form.text_field :title, class: "form-control" %>
+    </div>
+    <hr>
+    <div class="form-group">
+      <%= form.label :slug, "Slug:" %>
+      <%= form.text_field :slug, class: "form-control" %>
+    </div>
+    <hr>
+    <div class="form-group">
+      <%= form.label :description, "Description:" %>
+      <%= form.text_field :description, class: "form-control" %>
+    </div>
+    <hr>
+    <div class="form-group">
+      <%= form.label :badge_image, "Badge Image:" %>
+    <br>
+    <%= form.file_field :badge_image, class: "form-control" %>
+    <br>
+    </div>
+    <hr>
+      <%= submit_tag "Create Badge", class: "btn btn-primary float-right" %>
+    <% end %>
+  </div>
+</main>

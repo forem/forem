@@ -1,0 +1,32 @@
+<main class="row">
+  <div class="col-12">
+    <h2>Create New Event</h2>
+  </div>
+  <div class="col-12">
+    <%= form_for @event, url: { controller: "events", action: "create" } do |f| %>
+      <%= render "event_form", f: f, event: @event %>
+    <% end %>
+  </div>
+  <div class="col-12">
+    <h2> Upcoming Events </h2>
+    <% @events.each do |event| %>
+      <% if event.starts_at.future? %>
+        <img src="<%= event.cover_image_url %>" alt="event cover image">
+        <%= form_for [:admin, event] do |f| %>
+          <%= render "event_form", f: f, event: event %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="col-12">
+    <h2> Past Events </h2>
+    <% @events.each do |event| %>
+      <% if !event.starts_at.future? %>
+        <img src="<%= event.cover_image_url %>" alt="event cover image">
+        <%= form_for [:admin, event] do |f| %>
+          <%= render "event_form", f: f, event: event %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</main>

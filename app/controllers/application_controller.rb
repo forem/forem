@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   include SessionCurrentUser
   include ValidRequest
   include Pundit
-  include FastlyHeaders
+  include CachingHeaders
   include ImageUploads
   include VerifySetupCompleted
 
@@ -16,8 +16,11 @@ class ApplicationController < ActionController::Base
     error_too_many_requests(exc)
   end
 
+  PUBLIC_CONTROLLERS = %w[shell async_info ga_events].freeze
+  private_constant :PUBLIC_CONTROLLERS
+
   def verify_private_forem
-    return if %w[shell async_info ga_events].include?(controller_name)
+    return if controller_name.in?(PUBLIC_CONTROLLERS)
     return if user_signed_in? || SiteConfig.public
 
     if api_action?
@@ -122,5 +125,13 @@ class ApplicationController < ActionController::Base
 
   def api_action?
     self.class.to_s.start_with?("Api::")
+  end
+
+  def initialize_stripe
+    Stripe.api_key = SiteConfig.stripe_api_key
+
+    return unless Rails.env.development? && Stripe.api_key.present?
+
+    Stripe.log_level = Stripe::LEVEL_INFO
   end
 end

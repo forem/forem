@@ -15,7 +15,7 @@ class PodcastEpisode < ApplicationRecord
   delegate :published, to: :podcast
 
   belongs_to :podcast
-  has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
@@ -113,18 +113,7 @@ class PodcastEpisode < ApplicationRecord
 
       next unless img_src
 
-      quality = "auto"
-      quality = 66 if img_src.include?(".gif")
-
-      cloudinary_img_src = ActionController::Base.helpers
-        .cl_image_path(img_src,
-                       type: "fetch",
-                       width: 725,
-                       crop: "limit",
-                       quality: quality,
-                       flags: "progressive",
-                       fetch_format: "auto",
-                       sign_url: true)
+      cloudinary_img_src = Images::Optimizer.call(img_src, width: 725)
       self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
     end
   end

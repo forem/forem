@@ -1,0 +1,59 @@
+<main>
+  <%= paginate @comments %>
+
+  <% @comments.each do |comment| %>
+    <div class="row my-3">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <% if comment.commentable %>
+              <a href="<%= comment.commentable.path %>">re: <%= comment.commentable.title %></a> (<%= comment.public_reactions_count %> ❤️)
+            <% end %>
+          </div>
+          <div class="card-body">
+            <p class="card-text">
+              <%= sanitize comment.processed_html,
+                           tags: %w[strong em p h1 h2 h3 h4 h5 h6 i u b code pre br ul ol li small sup img a span hr blockquote],
+                           attributes: %w[href strong em ref rel src title alt class] %>
+
+            </p>
+            <h5 class="card-title text-center">
+              <% if comment.user %>
+                <a href="<%= comment.user.path %>" target="_blank" rel="noopener">
+                  <img class="rounded" height="30" src="<%= ProfileImage.new(comment.user).get(width: 50) %>" alt="<%= comment.user.username %> profile" /> <%= comment.user.username %>
+                </a>
+              <% end %>
+              <% if comment.user && comment.user.twitter_username.present? %>
+                |
+                <a href="https://twitter.com/<%= comment.user.twitter_username %>">
+                  <i class="fa fa-twitter" aria-hidden="true"></i> @<%= comment.user.twitter_username %>
+                </a>
+              <% end %>
+            </h5>
+            <div class="mt-3 d-flex justify-content-end">
+              <a class="btn btn-primary" href="<%= comment.path %>" target="_blank" rel="noopener">View</a>
+              <% if comment.reactions.where(user_id: current_user.id).empty? %>
+                <%= form_tag(reactions_path, remote: true, class: "d-inline ml-2") do %>
+                  <%= hidden_field_tag(:reactable_type, "Comment") %>
+                  <%= hidden_field_tag(:reactable_id, comment.id) %>
+                  <button class="btn btn-danger">❤️ Like</button>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <%= paginate @comments %>
+
+  <script>
+   window.addEventListener('load', function() {
+     $("form").submit(function (e) {
+       $(this).toggleClass("d-none");
+       $(this).toggleClass("d-inline");
+     });
+   });
+  </script>
+</main>

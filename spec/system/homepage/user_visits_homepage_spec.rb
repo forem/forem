@@ -88,7 +88,7 @@ RSpec.describe "User visits a homepage", type: :system do
         end
       end
 
-      it "shows followed tags ordered by weight and name", js: true do
+      it "shows followed tags ordered by weight and name", js: true, elasticsearch: "FeedContent" do
         # Need to ensure the user data is loaded before doing any checks
         find("body")["data-user"]
 

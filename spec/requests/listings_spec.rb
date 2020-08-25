@@ -1,17 +1,16 @@
 require "rails_helper"
 
 RSpec.describe "/listings", type: :request do
-  let(:edu_category) do
-    create(:listing_category, cost: 1)
-  end
   let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
+  let(:edu_category) { create(:listing_category, cost: 1) }
   let(:listing_params) do
     {
       listing: {
         title: "something",
         body_markdown: "something else",
         listing_category_id: edu_category.id,
-        tag_list: "",
+        tag_list: "ruby, rails, go",
         contact_via_connect: true
       }
     }
@@ -70,7 +69,7 @@ RSpec.describe "/listings", type: :request do
     context "when view is moderate" do
       it "redirects to internal/listings/:id/edit" do
         get "/listings", params: { view: "moderate", slug: listing.slug }
-        expect(response.redirect_url).to include("/internal/listings/#{listing.id}/edit")
+        expect(response.redirect_url).to include("/admin/listings/#{listing.id}/edit")
       end
 
       it "without a slug raises an ActiveRecord::RecordNotFound error" do
@@ -144,7 +143,7 @@ RSpec.describe "/listings", type: :request do
   describe "POST /listings" do
     before do
       sign_in user
-      create_list(:credit, 25, user: user)
+      create_list(:credit, 20, user: user)
     end
 
     let(:cfp_category) { create(:listing_category, :cfp) }
@@ -199,30 +198,56 @@ RSpec.describe "/listings", type: :request do
         expect(response).to redirect_to "/listings"
       end
 
+      it "creates proper listing if credits are available" do
+        post "/listings", params: listing_params
+        expect(Listing.last.processed_html).to include(listing_params[:listing][:body_markdown])
+      end
+
       it "properly deducts the amount of credits" do
         expect do
           post "/listings", params: listing_params
         end.to change { user.credits.spent.size }.by(edu_category.cost)
       end
 
-      it "creates a listing draft under the org" do
+      it "adds tags" do
+        post "/listings", params: listing_params
+
+        tag = listing_params[:listing][:tag_list].split(", ").first
+        expect(Listing.last.cached_tag_list).to include(tag)
+      end
+
+      it "creates the listing under the user" do
+        post "/listings", params: listing_params
+        expect(Listing.last.user_id).to eq(user.id)
+      end
+
+      it "creates the listing for the user if no organization_id is selected" do
+        create(:organization_membership, user_id: user.id, organization_id: organization.id)
+
+        post "/listings", params: listing_params
+
+        expect(Listing.last.organization_id).to be(nil)
+        expect(Listing.last.user_id).to eq(user.id)
+      end
+
+      it "creates a listing draft under the org for an org admin" do
         org_admin = create(:user, :org_admin)
         org_id = org_admin.organizations.first.id
         Credit.create(organization_id: org_id)
         draft_params[:listing][:organization_id] = org_id
         sign_in org_admin
         post "/listings", params: draft_params
-        expect(Listing.first.organization_id).to eq org_id
+        expect(Listing.first.organization_id).to eq(org_id)
       end
 
-      it "creates a listing under the org" do
+      it "creates a listing under the org for an org admin" do
         org_admin = create(:user, :org_admin)
         org_id = org_admin.organizations.first.id
         Credit.create(organization_id: org_id)
         listing_params[:listing][:organization_id] = org_id
         sign_in org_admin
         post "/listings", params: listing_params
-        expect(Listing.first.organization_id).to eq org_id
+        expect(Listing.first.organization_id).to eq(org_id)
       end
 
       it "does not create a listing draft for an org not belonging to the user" do
@@ -235,6 +260,22 @@ RSpec.describe "/listings", type: :request do
         org = create(:organization)
         listing_params[:listing][:organization_id] = org.id
         expect { post "/listings", params: listing_params }.to raise_error(Pundit::NotAuthorizedError)
+      end
+
+      it "creates the listing for the organization" do
+        create(:organization_membership, user_id: user.id, organization_id: organization.id)
+        listing_params[:listing][:organization_id] = organization.id
+        post "/listings", params: listing_params
+        expect(Listing.last.organization_id).to eq(organization.id)
+      end
+
+      it "does not create an org listing if a different org member doesn't belong to the org" do
+        another_org = create(:organization)
+        create(:organization_membership, user_id: user.id, organization_id: another_org.id)
+        listing_params[:listing][:organization_id] = organization.id
+        expect do
+          post "/listings", params: listing_params
+        end.to raise_error Pundit::NotAuthorizedError
       end
 
       it "assigns the spent credits to the listing" do
@@ -267,6 +308,29 @@ RSpec.describe "/listings", type: :request do
         expect do
           post "/listings", params: listing_params
         end.to raise_error("SUSPENDED")
+      end
+    end
+
+    context "when rate limiting" do
+      let(:rate_limiter) { RateLimitChecker.new(user) }
+
+      before do
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
+        sign_in user
+      end
+
+      it "increments rate limit for listing_creation" do
+        allow(rate_limiter).to receive(:track_limit_by_action)
+        post "/listings", params: listing_params
+
+        expect(rate_limiter).to have_received(:track_limit_by_action).with(:listing_creation)
+      end
+
+      it "returns a 429 status when rate limit is reached" do
+        allow(rate_limiter).to receive(:limit_by_action).and_return(true)
+        post "/listings", params: listing_params
+
+        expect(response.status).to eq(429)
       end
     end
   end
@@ -316,7 +380,7 @@ RSpec.describe "/listings", type: :request do
         expect do
           put "/listings/#{listing.id}", params: params
         end.to change(user.credits.spent, :size).by(cost)
-        expect(listing.reload.bumped_at >= previous_bumped_at).to eq(true)
+        expect(listing.reload.bumped_at >= previous_bumped_at).to be(true)
       end
 
       it "bumps the org listing using org credits before user credits" do
@@ -327,7 +391,7 @@ RSpec.describe "/listings", type: :request do
         expect do
           put "/listings/#{org_listing.id}", params: params
         end.to change(organization.credits.spent, :size).by(cost)
-        expect(org_listing.reload.bumped_at >= previous_bumped_at).to eq(true)
+        expect(org_listing.reload.bumped_at >= previous_bumped_at).to be(true)
       end
 
       it "bumps the org listing using user credits if org credits insufficient and user credits are" do
@@ -337,7 +401,7 @@ RSpec.describe "/listings", type: :request do
         expect do
           put "/listings/#{org_listing.id}", params: params
         end.to change(user.credits.spent, :size).by(cost)
-        expect(org_listing.reload.bumped_at >= previous_bumped_at).to eq(true)
+        expect(org_listing.reload.bumped_at >= previous_bumped_at).to be(true)
       end
     end
 
@@ -404,16 +468,64 @@ RSpec.describe "/listings", type: :request do
 
       it "unpublishes a published listing" do
         put "/listings/#{listing.id}", params: params
-        expect(listing.reload.published).to eq(false)
+        expect(listing.reload.published).to be(false)
       end
     end
 
     context "when an update is attempted" do
+      it "updates body_markdown" do
+        put "/listings/#{listing.id}", params: { listing: { body_markdown: "hello new markdown" } }
+        expect(listing.reload.body_markdown).to eq("hello new markdown")
+      end
+
+      it "does not update body_markdown if not bumped/created recently" do
+        listing.update_column(:bumped_at, 50.hours.ago)
+
+        put "/listings/#{listing.id}", params: { listing: { body_markdown: "hello new markdown" } }
+        expect(listing.reload.body_markdown).not_to eq("hello new markdown")
+      end
+
       it "does not update with an empty body markdown" do
         put "/listings/#{listing.id}", params: { listing: { body_markdown: "" } }
         expect(response.body).to include(CGI.escapeHTML("can't be blank"))
         expect(listing.reload.body_markdown).not_to be_empty
       end
+
+      it "updates other fields" do
+        put "/listings/#{listing.id}", params: {
+          listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }
+        }
+
+        listing.reload
+        expect(listing.title).to eq("New title!")
+        expect(listing.cached_tag_list).to include("hey")
+      end
+
+      it "does not update other fields if not bumped/created recently" do
+        listing.update_column(:bumped_at, 50.hours.ago)
+
+        put "/listings/#{listing.id}", params: {
+          listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }
+        }
+
+        listing.reload
+        expect(listing.title).not_to eq("New title!")
+        expect(listing.cached_tag_list).not_to include("hey")
+      end
+    end
+  end
+
+  describe "GET /listings/edit" do
+    let(:listing) { create(:listing, user: user) }
+
+    before do
+      create_list(:credit, 20, user: user)
+      sign_in user
+    end
+
+    it "has page content" do
+      get "/listings/#{listing.id}/edit"
+      expect(response.body).to include("You can bump your listing")
     end
   end
 
@@ -514,169 +626,6 @@ RSpec.describe "/listings", type: :request do
           get "/listings/#{listing.category}/#{listing.slug}_1/delete_confirm"
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
-    end
-  end
-end
-
-# TODO: [@forem/oss] We used to have 2 request spec files, listing_spec.rb
-# and classified_listing_spec.rb. This context contains the specs of the former,
-# but we should eventually unify them into one set to remove some redundancy.
-context "when running the specs that were previously in another file" do
-  let(:user) { create(:user) }
-  let(:organization) { create(:organization) }
-  let(:cl_category) { create(:listing_category, cost: 1) }
-
-  let(:params) do
-    {
-      listing: {
-        title: "Hey",
-        listing_category_id: cl_category.id,
-        body_markdown: "hey hey my my",
-        tag_list: "ruby, rails, go"
-      }
-    }
-  end
-
-  describe "POST /listings" do
-    before do
-      create_list(:credit, 20, user_id: user.id)
-      sign_in user
-    end
-
-    it "creates proper listing if credits are available" do
-      post "/listings", params: params
-      expect(Listing.last.processed_html).to include("hey my")
-    end
-
-    it "spends credits" do
-      num_credits = Credit.where(spent: true).size
-      post "/listings", params: params
-      expect(Credit.where(spent: true).size).to be > num_credits
-    end
-
-    it "adds tags" do
-      post "/listings", params: params
-      expect(Listing.last.cached_tag_list).to include("rails")
-    end
-
-    it "creates the listing under the user" do
-      post "/listings", params: params
-      expect(Listing.last.user_id).to eq user.id
-    end
-
-    it "creates the listing for the user if no organization_id is selected" do
-      create(:organization_membership, user_id: user.id, organization_id: organization.id)
-      post "/listings", params: params
-      expect(Listing.last.organization_id).to eq nil
-      expect(Listing.last.user_id).to eq user.id
-    end
-
-    it "creates the listing for the organization" do
-      create(:organization_membership, user_id: user.id, organization_id: organization.id)
-      params[:listing][:organization_id] = organization.id
-      post "/listings", params: params
-      expect(Listing.last.organization_id).to eq(organization.id)
-    end
-
-    it "does not create an org listing if a different org member doesn't belong to the org" do
-      another_org = create(:organization)
-      create(:organization_membership, user_id: user.id, organization_id: another_org.id)
-      params[:listing][:organization_id] = organization.id
-      expect do
-        post "/listings", params: params
-      end.to raise_error Pundit::NotAuthorizedError
-    end
-
-    context "when rate limiting" do
-      let(:rate_limiter) { RateLimitChecker.new(user) }
-
-      before do
-        allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
-        sign_in user
-      end
-
-      it "increments rate limit for listing_creation" do
-        allow(rate_limiter).to receive(:track_limit_by_action)
-        post "/listings", params: params
-
-        expect(rate_limiter).to have_received(:track_limit_by_action).with(:listing_creation)
-      end
-
-      it "returns a 429 status when rate limit is reached" do
-        allow(rate_limiter).to receive(:limit_by_action).and_return(true)
-        post "/listings", params: params
-
-        expect(response.status).to eq(429)
-      end
-    end
-  end
-
-  describe "GET /listings/edit" do
-    let(:listing) { create(:listing, user_id: user.id) }
-
-    before do
-      create_list(:credit, 20, user_id: user.id)
-      sign_in user
-    end
-
-    it "has page content" do
-      get "/listings/#{listing.id}/edit"
-      expect(response.body).to include("You can bump your listing")
-    end
-  end
-
-  describe "PUT /listings/:id" do
-    let(:listing) { create(:listing, user_id: user.id) }
-
-    before do
-      create_list(:credit, 20, user_id: user.id)
-      sign_in user
-    end
-
-    it "updates bumped_at if action is bump" do
-      put "/listings/#{listing.id}", params: {
-        listing: { action: "bump" }
-      }
-      expect(Listing.last.bumped_at).to be > 10.seconds.ago
-    end
-
-    it "updates publish if action is unpublish" do
-      put "/listings/#{listing.id}", params: {
-        listing: { action: "unpublish" }
-      }
-      expect(Listing.last.published).to eq(false)
-    end
-
-    it "updates body_markdown" do
-      put "/listings/#{listing.id}", params: {
-        listing: { body_markdown: "hello new markdown" }
-      }
-      expect(Listing.last.body_markdown).to eq("hello new markdown")
-    end
-
-    it "does not update body_markdown if not bumped/created recently" do
-      listing.update_column(:bumped_at, 50.hours.ago)
-      put "/listings/#{listing.id}", params: {
-        listing: { body_markdown: "hello new markdown" }
-      }
-      expect(Listing.last.body_markdown).not_to eq("hello new markdown")
-    end
-
-    it "updates other fields" do
-      put "/listings/#{listing.id}", params: {
-        listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }
-      }
-      expect(Listing.last.title).to eq("New title!")
-      expect(Listing.last.cached_tag_list).to include("hey")
-    end
-
-    it "does not update other fields" do
-      listing.update_column(:bumped_at, 50.hours.ago)
-      put "/listings/#{listing.id}", params: {
-        listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }
-      }
-      expect(Listing.last.title).not_to eq("New title!")
-      expect(Listing.last.cached_tag_list).not_to include("hey")
     end
   end
 end

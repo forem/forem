@@ -1,0 +1,20 @@
+<%= csrf_meta_tags %>
+
+<main>
+  <div class="row justify-content-end">
+    <%= link_to "New Page", new_admin_page_path, class: "btn btn-primary" %>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="list-group-flush w-100">
+      <% @pages.each do |page| %>
+        <div class="list-group-item d-flex justify-content-between">
+          <%= link_to page.title, edit_admin_page_path(page.id) %>
+          <%= link_to "View", page.path %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</main>
