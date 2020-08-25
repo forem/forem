@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :configure_permitted_parameters, if: :devise_controller?
   skip_before_action :track_ahoy_visit
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
@@ -134,4 +135,10 @@ class ApplicationController < ActionController::Base
 
     Stripe.log_level = Stripe::LEVEL_INFO
   end
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :name, :profile_image, :profile_image_url, :education])
+  end 
 end
