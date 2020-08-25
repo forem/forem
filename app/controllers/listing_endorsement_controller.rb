@@ -20,7 +20,11 @@ class ListingEndorsementsController < ApplicationController
 
     authorize endorsement
 
-    endorsement.update(approved: true) unless endorsement.approved
+    if endorsement.approved
+      endorsement.update(approved: false)
+    else
+      endorsement.update(approved: true)
+    end
 
     head :no_content
   end
