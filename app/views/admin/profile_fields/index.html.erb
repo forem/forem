@@ -2,14 +2,13 @@
   <article class="crayons-card grid p-6 mb-6 gap-1">
     <%= form_for [:admin, ProfileField.new], html: { class: "inline-form" } do |form| %>
       <%= render "group_form",
-        form: form,
-        select_option_tags: options_for_select(ProfileField.distinct.pluck(:group)),
-        select_options: {
-          include_blank: "Choose an existing group",
-          class: "form-control selectpicker profile__group-dropdown"
-        },
-        toggle_text: "or create a new group"
-      %>
+                 form: form,
+                 select_option_tags: options_for_select(ProfileField.distinct.pluck(:group)),
+                 select_options: {
+                   include_blank: "Choose an existing group",
+                   class: "form-control selectpicker profile__group-dropdown"
+                 },
+                 toggle_text: "or create a new group" %>
       <div class="form-group">
         <%= render "form", form: form %>
         <%= form.submit "Create New Profile Field", class: "btn btn-primary" %>
@@ -43,14 +42,13 @@
                 <div class="form-group grid p-6 mb-6 gap-1">
                   <%= form_for [:admin, field] do |form| %>
                     <%= render "group_form",
-                      form: form,
-                      select_option_tags: options_for_select(ProfileField.distinct.pluck(:group),  selected: field[:group]),
-                      select_options: {
-                        class: "form-control selectpicker profile__group-dropdown"
-                      },
-                      toggle_text: "or create a new group"
-                    %>
-                    <%= render "form", form: form  %>
+                               form: form,
+                               select_option_tags: options_for_select(ProfileField.distinct.pluck(:group), selected: field[:group]),
+                               select_options: {
+                                 class: "form-control selectpicker profile__group-dropdown"
+                               },
+                               toggle_text: "or create a new group" %>
+                    <%= render "form", form: form %>
                     <%= form.submit class: "btn btn-primary" %>
                   <% end %>
                   <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
