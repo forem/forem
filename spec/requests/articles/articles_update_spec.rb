@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "ArticlesUpdate", type: :request do
-  let(:organization) { build_stubbed(:organization) }
+  let(:organization) { create(:organization) }
   let(:organization2) { create(:organization) }
   let(:user) { create(:user, :org_admin) }
   let(:user2) do
