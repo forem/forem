@@ -104,3 +104,7 @@ sync_credits_counter_cache:
 get_podcast_episodes:
   cron: "5 * * * *" # every hour, 5 min after the hour
   class: "Podcasts::EnqueueGetEpisodesWorker"
+update_latest_github_repos:
+  cron: "30 16 * * *" # daily at 4:30 pm UTC
+  class: "GithubRepos::UpdateLatestWorker"
+
