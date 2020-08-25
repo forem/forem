@@ -33,6 +33,38 @@ RSpec.describe "Authenticating with Facebook" do
       end
     end
 
+    context "when using valid credentials but witholding email address" do
+      before do
+        OmniAuth.config.mock_auth[:facebook][:info].delete(:email)
+        OmniAuth.config.mock_auth[:facebook][:extra][:raw_info].delete(:email)
+      end
+
+      it "creates a new user" do
+        expect do
+          visit root_path
+          click_link(sign_in_link, match: :first)
+        end.to change(User, :count).by(1)
+      end
+
+      it "logs in and redirects to the onboarding" do
+        visit root_path
+        click_link(sign_in_link, match: :first)
+
+        expect(page).to have_current_path("/onboarding", ignore_query: true)
+        expect(page.html).to include("onboarding-container")
+      end
+
+      it "remembers the user" do
+        visit root_path
+        click_link(sign_in_link, match: :first)
+
+        user = User.last
+
+        expect(user.remember_token).to be_present
+        expect(user.remember_created_at).to be_present
+      end
+    end
+
     context "when trying to register with an already existing username" do
       it "creates a new user with a temporary username" do
         # see Authentication::Providers::Facebook#new_user_data
