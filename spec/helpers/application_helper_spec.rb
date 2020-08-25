@@ -35,14 +35,14 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
-  describe "#cache_key_heroku_slug" do
-    it "does nothing when HEROKU_SLUG_COMMIT is not set" do
-      allow(ApplicationConfig).to receive(:[]).with("HEROKU_SLUG_COMMIT").and_return(nil)
+  describe "#release_adjusted_cache_key" do
+    it "does nothing when RELEASE_FOOTPRINT is not set" do
+      allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return(nil)
       expect(helper.cache_key_heroku_slug("cache-me")).to eq("cache-me")
     end
 
-    it "appends the HEROKU_SLUG_COMMIT if it is set" do
-      allow(ApplicationConfig).to receive(:[]).with("HEROKU_SLUG_COMMIT").and_return("abc123")
+    it "appends the RELEASE_FOOTPRINT if it is set" do
+      allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
       expect(helper.cache_key_heroku_slug("cache-me")).to eq("cache-me-abc123")
     end
   end
