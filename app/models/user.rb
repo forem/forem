@@ -5,6 +5,61 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  # NOTE: @citizen428 This is temporary code during profile migration and will
+  # be removed.
+  # rubocop:disable Metrics/BlockLength
+  concerning :ProfileMigration do
+    included do
+      PROFIE_FIELDS =
+        (Profiles::ExtractData::DIRECT_ATTRIBUTES + Profiles::ExtractData::MAPPED_ATTRIBUTES.values).freeze
+
+      # NOTE: There are rare cases were we want to skip this callback, primarily
+      # in tests. `skip_callback` modifies global state, which is not thread-safe
+      # and can cause hard to track down bugs. We use an instance-level attribute
+      # instead. See `spec/factories/profiles.rb` for an example.
+      attr_accessor :_skip_creating_profile
+
+      # All new users should automatically have a profile
+      after_create_commit :create_profile, unless: :_skip_creating_profile
+
+      # Keep saving changes locally for the time being, but propagate them to profiles.
+      after_update_commit do
+        if (previous_changes.keys.map(&:to_sym) & User::PROFIE_FIELDS).present?
+          profile.update(data: Profiles::ExtractData.call(self))
+        end
+      end
+
+      # Define wrapped getters for profile attributes. We first try to get the
+      # value from the profile and if it doesn't exist there we move retrieve it
+      # from here.
+      Profiles::ExtractData::DIRECT_ATTRIBUTES.each do |attribute|
+        define_method(attribute) do
+          if profile.respond_to?(attribute)
+            profile.public_send(attribute)
+          else
+            self[attribute]
+          end
+        end
+      end
+
+      Profiles::ExtractData::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
+        define_method(user_attribute) do
+          if profile.respond_to?(profile_attribute)
+            profile.public_send(profile_attribute)
+          else
+            self[user_attribute]
+          end
+        end
+      end
+
+      def create_profile
+        Profile.create(user: self, data: Profiles::ExtractData.call(self))
+      end
+      private :create_profile
+    end
+  end
+  # rubocop:enable Metrics/BlockLength
+
   BEHANCE_URL_REGEXP = %r{\A(http(s)?://)?(www.behance.net|behance.net)/.*\z}.freeze
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
   DRIBBBLE_URL_REGEXP = %r{\A(http(s)?://)?(www.dribbble.com|dribbble.com)/.*\z}.freeze
@@ -79,6 +134,7 @@ class User < ApplicationRecord
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :listings, dependent: :destroy
+  has_many :endorsements, dependent: :destroy, class_name: "ListingEndorsement"
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
@@ -298,7 +354,7 @@ class User < ApplicationRecord
   end
 
   def any_admin?
-    has_role?(:super_admin) || has_role?(:admin)
+    @any_admin ||= (has_role?(:super_admin) || has_role?(:admin))
   end
 
   def tech_admin?

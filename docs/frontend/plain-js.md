@@ -28,7 +28,7 @@ which is included globally in the primary template,
 ```
 
 One JS file in particular, `app/assets/javascripts/initializePage.js.erb`,
-boostraps the majority of the functionality. You will notice, within this file,
+bootstraps the majority of the functionality. You will notice, within this file,
 that major sections of the websites are bootstrapped, for example:
 
 ```javascript

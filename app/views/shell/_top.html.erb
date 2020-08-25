@@ -34,12 +34,12 @@
       <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
       <%= favicon_link_tag SiteConfig.favicon_url %>
-      <link rel="apple-touch-icon" href="<%= cloudinary(SiteConfig.logo_png, 180, "png") %>">
-      <link rel="apple-touch-icon" sizes="152x152" href="<%= cloudinary(SiteConfig.logo_png, 152, "png") %>">
-      <link rel="apple-touch-icon" sizes="180x180" href="<%= cloudinary(SiteConfig.logo_png, 180, "png") %>">
-      <link rel="apple-touch-icon" sizes="167x167" href="<%= cloudinary(SiteConfig.logo_png, 167, "png") %>">
-      <link href="<%= cloudinary(SiteConfig.logo_png, 192, "png") %>" rel="icon" sizes="192x192" />
-      <link href="<%= cloudinary(SiteConfig.logo_png, 128, "png") %>" rel="icon" sizes="128x128" />
+      <link rel="apple-touch-icon" href="<%= optimized_image_url(SiteConfig.logo_png, width: 180, fetch_format: "png") %>">
+      <link rel="apple-touch-icon" sizes="152x152" href="<%= optimized_image_url(SiteConfig.logo_png, width: 152, fetch_format: "png") %>">
+      <link rel="apple-touch-icon" sizes="180x180" href="<%= optimized_image_url(SiteConfig.logo_png, width: 180, fetch_format: "png") %>">
+      <link rel="apple-touch-icon" sizes="167x167" href="<%= optimized_image_url(SiteConfig.logo_png, width: 167, fetch_format: "png") %>">
+      <link href="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" rel="icon" sizes="192x192" />
+      <link href="<%= optimized_image_url(SiteConfig.logo_png, width: 128, fetch_format: "png") %>" rel="icon" sizes="128x128" />
       <meta name="apple-mobile-web-app-title" content="<%= ApplicationConfig["APP_DOMAIN"] %>">
       <meta name="application-name" content="<%= ApplicationConfig["APP_DOMAIN"] %>">
       <meta property="fb:pages" content="568966383279687" />

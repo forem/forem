@@ -47,6 +47,7 @@ class Article < ApplicationRecord
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :rating_votes
   has_many :page_views
+  has_many :polls, dependent: :destroy
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/,
                    uniqueness: { scope: :user_id }
@@ -350,7 +351,7 @@ class Article < ApplicationRecord
   def cloudinary_video_url
     return if video_thumbnail_url.blank?
 
-    ApplicationController.helpers.cloudinary(video_thumbnail_url, 880)
+    Images::Optimizer.call(video_thumbnail_url, width: 880, quality: 80)
   end
 
   def video_duration_in_minutes
@@ -644,8 +645,6 @@ class Article < ApplicationRecord
   end
 
   def bust_cache
-    return unless Rails.env.production?
-
     CacheBuster.bust(path)
     CacheBuster.bust("#{path}?i=i")
     CacheBuster.bust("#{path}?preview=#{password}")

@@ -22,8 +22,9 @@ Then, add each key you need to the `.env` file. For example, if you're setting
 up GitHub authentication:
 
 ```shell
-export GITHUB_KEY="SOME_REAL_SECURE_KEY_HERE"
-export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
 ```
 
 (Don't worry, your `.env` file is ignored by git)

@@ -69,6 +69,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:response_templates).dependent(:destroy) }
       it { is_expected.to have_many(:tweets).dependent(:destroy) }
+      it { is_expected.to have_many(:endorsements).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
       it do
@@ -1179,6 +1180,35 @@ RSpec.describe User, type: :model do
       user = create(:user, :with_identity)
 
       expect(user.authenticated_with_all_providers?).to be(true)
+    end
+  end
+
+  describe "profiles" do
+    before do
+      create(:profile_field, label: "Available for")
+      Profile.refresh_store_accessors!
+    end
+
+    it "automatically creates a profile for new users", :aggregate_failures do
+      user = create(:user)
+      expect(user.profile).to be_present
+      expect(user.profile).to respond_to(:available_for)
+    end
+
+    it "propagates changes to the profile model", :aggregate_failures do
+      expect do
+        user.update(available_for: "profile migrations")
+      end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
+
+      # Changes were also persisted in the users table
+      expect(user.reload.available_for).to eq "profile migrations"
+    end
+
+    it "reads from the profile model, not the user", :aggregate_failures do
+      user.profile.update(available_for: "Well, actually...")
+
+      expect(user.available_for).to eq "Well, actually..."
+      expect(user[:available_for]).to be nil
     end
   end
 end

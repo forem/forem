@@ -12,15 +12,15 @@ class Organization < ApplicationRecord
   acts_as_followable
 
   has_many :api_secrets, through: :users
-  has_many :articles
-  has_many :listings
-  has_many :collections
+  has_many :articles, dependent: :nullify
+  has_many :collections, dependent: :nullify
   has_many :credits, dependent: :restrict_with_error
-  has_many :display_ads
-  has_many :notifications
+  has_many :display_ads, dependent: :destroy
+  has_many :listings, dependent: :destroy
+  has_many :notifications, dependent: :destroy
   has_many :organization_memberships, dependent: :delete_all
-  has_many :profile_pins, as: :profile, inverse_of: :profile
-  has_many :sponsorships
+  has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
+  has_many :sponsorships, dependent: :destroy
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :users, through: :organization_memberships
 

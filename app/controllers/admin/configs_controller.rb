@@ -25,18 +25,24 @@ module Admin
 
     def config_params
       allowed_params = %i[
-        ga_view_id ga_fetch_rate
+        ga_view_id
         periodic_email_digest_max
         periodic_email_digest_min
         sidebar_tags
         twitter_hashtag
         shop_url
         payment_pointer
+        stripe_api_key
+        stripe_publishable_key
         health_check_token
         feed_style
         default_font
         sponsor_headline
         public
+        twitter_key
+        twitter_secret
+        github_key
+        github_secret
       ]
 
       allowed_params = allowed_params |
@@ -93,6 +99,7 @@ module Admin
 
     def community_params
       %i[
+        community_name
         community_description
         community_member_label
         community_action
