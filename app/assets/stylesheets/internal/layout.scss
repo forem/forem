@@ -97,3 +97,16 @@ body {
   display: flex;
   justify-content: space-between;
 }
+
+#profileFields .card-header {
+  cursor: pointer;
+}
+
+.profile__group-toggle {
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 12px;
+  color: grey;
+  margin: 1em 0;
+  text-align: end;
+}
