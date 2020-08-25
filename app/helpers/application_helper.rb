@@ -180,11 +180,11 @@ module ApplicationHelper
     "#{community_name} Community"
   end
 
-  def cache_key_heroku_slug(path)
-    heroku_slug_commit = ApplicationConfig["HEROKU_SLUG_COMMIT"]
-    return path if heroku_slug_commit.blank?
+  def release_adjusted_cache_key(path)
+    release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
+    return path if release_footprint.blank?
 
-    "#{path}-#{heroku_slug_commit}"
+    "#{path}-#{release_footprint}"
   end
 
   def copyright_notice

@@ -11,7 +11,7 @@
         </div>
       </section>
     <% end %>
-    <% cache(cache_key_heroku_slug("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
+    <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
       <% @sidebar_ad = DisplayAd.for_display("sidebar_right") %>
       <% if @sidebar_ad %>
         <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget">
