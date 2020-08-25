@@ -38,7 +38,9 @@ export class SaveButton extends Component {
         <button
           type="button"
           className={`crayons-btn crayons-btn--s ${
-            isBookmarked ? 'crayons-btn--ghost-dimmed' : 'crayons-btn--secondary'
+            isBookmarked
+              ? 'crayons-btn--ghost-dimmed'
+              : 'crayons-btn--secondary'
           }`}
           data-initial-feed
           data-reactable-id={article.id}
