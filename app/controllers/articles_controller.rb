@@ -292,20 +292,6 @@ class ArticlesController < ApplicationController
     end
   end
 
-  def redirect_after_creation
-    @article.decorate
-    if @article.persisted?
-      redirect_to @article.current_state_path, notice: "Article was successfully created."
-    else
-      if @article.errors.to_h[:body_markdown] == "has already been taken"
-        @article = current_user.articles.find_by(body_markdown: @article.body_markdown)
-        redirect_to @article.current_state_path
-        return
-      end
-      render :new
-    end
-  end
-
   def allowed_to_change_org_id?
     potential_user = @article&.user || current_user
     potential_org_id = params["article"]["organization_id"].presence || @article&.organization_id
