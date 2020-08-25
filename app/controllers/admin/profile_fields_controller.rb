@@ -6,7 +6,7 @@ module Admin
     layout "admin"
 
     def index
-      @profile_fields = ProfileField.all.group_by(&:group)
+      @grouped_profile_fields = ProfileField.all.group_by(&:group)
     end
 
     def update
