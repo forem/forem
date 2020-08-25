@@ -264,7 +264,8 @@ class ChatChannelsController < ApplicationController
                     else
                       @chat_channel.adjusted_slug(current_user)
                     end
-    Pusher.trigger("private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{session_current_user_id}", "message-opened",
-                   { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
+    channel_name = "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{session_current_user_id}"
+    Pusher.trigger(, "message-opened",
+     { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
   end
 end
