@@ -8,4 +8,20 @@ class RegistrationsController < Devise::RegistrationsController
       super
     end
   end
+
+  def create
+    build_resource(sign_up_params)
+    resource.saw_onboarding = false
+    resource.editor_version = "v2"
+    resource.save
+    yield resource if block_given?
+    if resource.persisted?
+      redirect_to "/confirmation-email-being-sent"
+    else
+      # Todo: complete the flow
+      clean_up_passwords resource
+      set_minimum_password_length
+      respond_with resource
+    end
+  end
 end
