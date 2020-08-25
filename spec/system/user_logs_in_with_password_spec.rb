@@ -56,7 +56,7 @@ RSpec.describe "Authenticating with a password" do
       auth_payload.info.email = user.email
       user.lock_access!
 
-      visit root_path
+      visit sign_up_path
       click_link("Sign In with GitHub", match: :first)
 
       expect(page).to have_current_path("/?signin=true")
@@ -67,7 +67,7 @@ RSpec.describe "Authenticating with a password" do
   context "when logging in with the correct credentials" do
     it "allows the user to sign in with the correct password" do
       submit_login_form(user.email, password)
-      expect(page).to have_current_path("/dashboard?signin=true")
+      expect(page).to have_current_path("/?signin=true")
     end
   end
 end

@@ -3,7 +3,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def new
     if user_signed_in?
-      redirect_to dashboard_path
+      redirect_to root_path(signin: "true")
     else
       super
     end
