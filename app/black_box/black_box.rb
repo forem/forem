@@ -1,5 +1,5 @@
 class BlackBox
-  OUR_EPOCH_NUMBER = "2010-01-01 00:00:01".to_time.to_i
+  OUR_EPOCH_NUMBER = "2010-01-01 00:00:01".to_time.to_i # Arbitrary date, but the one we went with.
   class << self
     def article_hotness_score(article)
       usable_date = article.crossposted_at || article.published_at
