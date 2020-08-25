@@ -38,12 +38,12 @@ RSpec.describe ApplicationHelper, type: :helper do
   describe "#release_adjusted_cache_key" do
     it "does nothing when RELEASE_FOOTPRINT is not set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return(nil)
-      expect(helper.cache_key_heroku_slug("cache-me")).to eq("cache-me")
+      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me")
     end
 
     it "appends the RELEASE_FOOTPRINT if it is set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
-      expect(helper.cache_key_heroku_slug("cache-me")).to eq("cache-me-abc123")
+      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me-abc123")
     end
   end
 
