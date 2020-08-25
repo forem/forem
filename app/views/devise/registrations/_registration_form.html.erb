@@ -10,8 +10,8 @@
       </h1>
       <% if any_selfserve_auth? %>
         <p class="registration__description">
-<%= community_members_label %>. Registration is by invitation only. Sign in
-          by social auth if you don't have a password set.
+          <a href="/"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
+        Registration is by invitation only.
         </p>
       <% else %>
         <p class="registration__description">
