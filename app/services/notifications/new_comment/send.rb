@@ -1,20 +1,7 @@
 # send notifications about the new comment
-module PushNotif
-  private
-
-  def send_push_notifications(channels)
-    return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
-
-    Pusher::PushNotifications.publish_to_interests(
-      interests: channels,
-      payload: push_notification_payload,
-    )
-  end
-end
 module Notifications
   module NewComment
     class Send
-      include PushNotif
       def initialize(comment)
         @comment = comment
       end
@@ -47,7 +34,7 @@ module Notifications
         end
 
         # Sends the push notification to Pusher Beams channels. Batch is in place to respect Pusher 100 channel limit.
-        targets.each_slice(100) { |batch| send_push_notifications(batch) }
+        targets.each_slice(100) { |batch| PushNotifications::Send.call(batch, comment) }
 
         return unless comment.commentable.organization_id
 
@@ -89,31 +76,6 @@ module Notifications
         return [] if comment.user_id != comment.commentable.user_id
 
         user_ids_for("only_author_comments")
-      end
-
-      def push_notification_payload
-        title = "@#{comment.user.username}"
-        subtitle = "re: #{comment.parent_or_root_article.title.strip}"
-        data_payload = { url: URL.url("/notifications/comments") }
-        {
-          apns: {
-            aps: {
-              alert: {
-                title: title,
-                subtitle: subtitle,
-                body: CGI.unescapeHTML(comment.title.strip)
-              }
-            },
-            data: data_payload
-          },
-          fcm: {
-            notification: {
-              title: title,
-              body: subtitle
-            },
-            data: data_payload
-          }
-        }
       end
     end
   end
