@@ -30,7 +30,7 @@ module MessagesHelper
     begin
       message_json = create_pusher_payload(message, temp_message_id)
       if is_single
-        Pusher.trigger("private-message-notifications-#{ApplicationConfig['APP_NAME']}/#{message.user_id}", "message-created", message_json)
+        Pusher.trigger("private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{message.user_id}", "message-created", message_json)
       else
         Pusher.trigger(message.chat_channel.pusher_channels, "message-created", message_json)
       end
