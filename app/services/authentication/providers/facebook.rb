@@ -8,7 +8,7 @@ module Authentication
       def new_user_data
         {
           name: @info.name,
-          email: @info.email,
+          email: @info.email || "",
           remote_profile_image_url: @info.image,
           facebook_username: user_nickname,
           facebook_created_at: Time.zone.now
@@ -23,11 +23,12 @@ module Authentication
       end
 
       # We're overriding this method because Facebook doesn't have a concept nickname or username.
-      # Instead: we'll construct one based on the user's name with some randomization thrown in.
+      # Instead: we'll construct one based on the user's name with some randomization thrown in based
+      # on uid, which is guaranteed to be present and unique on Facebook.
       def user_nickname
         [
           info.name.sub(" ", "_"),
-          Digest::SHA512.hexdigest(info.email),
+          Digest::SHA512.hexdigest(raw_info.id),
         ].join("_")[0...25]
       end
 
