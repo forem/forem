@@ -1,23 +1,12 @@
 <section class="crayons-layout">
   <div class="registration crayons-card">
-    <div class="registration__image-container">
-      <img class="registration__image" src="<%= cloudinary_url(safe_logo_url(SiteConfig.secondary_logo_url)) %>"
-            alt="Secondary <%= community_name %> logo" />
-    </div>
     <div class="registration__content">
       <h1 class="registration__title">
         Welcome to <%= community_name %>
       </h1>
-      <% if any_selfserve_auth? %>
-        <p class="registration__description">
-          <a href="/"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
-        Registration is by invitation only.
-        </p>
-      <% else %>
-        <p class="registration__description">
-          <a href="/"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
-        </p>
-      <% end %>
+      <p class="registration__description">
+        <a href="/"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>.
+      </p>
     </div>
 
     <div class="registration__actions">
@@ -26,7 +15,7 @@
       <div class="registration__actions-email" id="sign-in-password-form">
         <div class="registration__hr">
           <span class="registration__hr-label">
-            Or continue with your email address
+            Have a password? Continue with your email address
           </span>
         </div>
         <%= form_for(User.new, as: :user, url: session_path(:user)) do |f| %>
