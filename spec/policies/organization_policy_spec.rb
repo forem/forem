@@ -27,7 +27,7 @@ RSpec.describe OrganizationPolicy, type: :policy do
   context "when user is an org admin of an org" do
     subject(:organization_policy) { described_class.new(user, org) }
 
-    let(:user) { build_stubbed(:user) }
+    let(:user) { create(:user) }
     let(:org)  { create(:organization) }
 
     before do
@@ -42,7 +42,7 @@ RSpec.describe OrganizationPolicy, type: :policy do
   context "when user is an org admin of another org" do
     subject(:organization_policy) { described_class.new(user, new_org) }
 
-    let(:user) { build_stubbed(:user) }
+    let(:user) { create(:user) }
     let(:org)  { create(:organization) }
     let(:new_org) { build_stubbed(:organization) }
 
