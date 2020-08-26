@@ -6,5 +6,7 @@ class CreateProfileFieldGroups < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+
+    add_index :profile_field_groups, :name, unique: true
   end
 end
