@@ -46,7 +46,7 @@ class Profile < ApplicationRecord
 
   # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes
-    stored_attributes[:data]
+    stored_attributes[:data] || []
   end
 
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
