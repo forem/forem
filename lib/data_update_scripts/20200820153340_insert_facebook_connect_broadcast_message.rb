@@ -1,5 +1,5 @@
 module DataUpdateScripts
-  class InsertFacebookConntectBroadcastMessage
+  class InsertFacebookConnectBroadcastMessage
     def run
       return if Broadcast.find_by title: "Welcome Notification: facebook_connect"
 
