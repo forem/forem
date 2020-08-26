@@ -2,3 +2,7 @@
 @import 'variables';
 @import 'scaffolds';
 @import 'color-picker';
+
+.admin {
+  --header-height: 0;
+}
