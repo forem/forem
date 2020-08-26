@@ -53,3 +53,11 @@
   display: flex;
   justify-content: space-between;
 }
+
+.profile__group-toggle {
+  text-decoration: underline;
+  cursor: pointer;
+  color: grey;
+  margin: 1em 0;
+  text-align: end;
+}
