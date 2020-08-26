@@ -1,7 +1,7 @@
 module DataUpdateScripts
   class RemoveOrphanedPageViewsByUser
     def run
-      # Delete all Collections belonging to Users that don't exist anymore
+      # Delete all PageViews belonging to Users that don't exist anymore
       ActiveRecord::Base.connection.execute(
         <<~SQL,
           DELETE FROM page_views

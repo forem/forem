@@ -1,7 +1,7 @@
 module DataUpdateScripts
   class RemoveOrphanedRatingVotesByUser
     def run
-      # Delete all Mentions belonging to Users that don't exist anymore
+      # Delete all RatingVotes belonging to Users that don't exist anymore
       ActiveRecord::Base.connection.execute(
         <<~SQL,
           DELETE FROM rating_votes
