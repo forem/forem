@@ -25,13 +25,13 @@
 <table class="crayons-table" width="100%">
   <thead>
     <tr>
-      <th>ID</th>
-      <th>Profile</th>
-      <th>Comments</th>
-      <th>Badges</th>
-      <th>Last Comment</th>
+      <th scope="col">ID</th>
+      <th scope="col">Profile</th>
+      <th scope="col">Comments</th>
+      <th scope="col">Badges</th>
+      <th scope="col">Last Comment</th>
       <% if params[:state] == "potential" %>
-        <th>Action</th>
+        <th scope="col">Action</th>
       <% end %>
     </tr>
   </thead>

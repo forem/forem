@@ -28,12 +28,12 @@
   <table class="crayons-table">
     <thead>
       <tr>
-        <th>Channel Name</th>
-        <th>Users</th>
-        <th>Add Users</th>
-        <th>Remove User</th>
+        <th scope="col">Channel Name</th>
+        <th scope="col">Users</th>
+        <th scope="col">Add Users</th>
+        <th scope="col">Remove User</th>
         <% if current_user.any_admin? %>
-          <th>Delete Channel</th>
+          <th scope="col">Delete Channel</th>
         <% end %>
       </tr>
     </thead>
