@@ -31,8 +31,8 @@ class GithubRepo < ApplicationRecord
       user = repo.user
       next unless user
 
-      client = Github::OauthClient.for_user(user)
       begin
+        client = Github::OauthClient.for_user(user)
         fetched_repo = client.repository(repo.info_hash[:full_name])
 
         repo.update!(
