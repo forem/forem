@@ -43,6 +43,8 @@ module Admin
         twitter_secret
         github_key
         github_secret
+        facebook_key
+        facebook_secret
       ]
 
       allowed_params = allowed_params |
@@ -141,6 +143,8 @@ module Admin
         mascot_image_description
         mascot_image_url
         mascot_footer_image_url
+        mascot_footer_image_width
+        mascot_footer_image_height
         mascot_user_id
       ]
     end
