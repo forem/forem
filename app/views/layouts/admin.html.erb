@@ -39,27 +39,25 @@
     </div>
   </header>
 
-  <main class="crayons-layout crayons-layout--2-cols">
+  <div class="crayons-layout crayons-layout--2-cols">
     <div class="crayons-layout__left-sidebar">
       <nav class="hidden m:block">
         <%= render "admin/shared/navbar" %>
       </nav>
     </div>
 
-    <div class="crayons-layout__content min-w-0">
-      <header>
-        <% flash.each do |type, message| %>
-          <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
-            <button class="close" data-dismiss="alert" aria-label="Close">
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </button>
-            <%= message %>
-          </div>
-        <% end %>
-      </header>
+    <main class="crayons-layout__content min-w-0">
+      <% flash.each do |type, message| %>
+        <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
+          <button class="close" data-dismiss="alert" aria-label="Close">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+          <%= message %>
+        </div>
+      <% end %>
       <%= yield %>
-    </div>
-  </main>
+    </main>
+  </div>
 
   <!-- Bootstrap Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
