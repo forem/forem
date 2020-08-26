@@ -45,7 +45,7 @@ application.
 
 7. From the basic settings screen dashboard copy the **App ID** and **App
    Secret** values to your environment settings accordingly (name of Facebook
-   key -> name of our `ENV` variable).
+   key -> name of our `SiteConfig` variable).
 
    ```text
    APP ID -> FACEBOOK_APP_ID
