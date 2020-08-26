@@ -130,7 +130,9 @@
                              class: "form-control selectpicker" %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %></div>
             </div>
-            <h4>Notice: Changing authentication keys will not take affect until devops restarts the app (about once per day). This will soon be instant.</h4>
+            <div class="notice">
+              Notice: Changing authentication keys will not take affect until devops restarts the app (about once per day). This will soon be instant.
+            </div>
             <div class="form-group">
               <%= admin_config_label :twitter_key %>
               <%= f.text_field :twitter_key,
@@ -162,6 +164,22 @@
                                value: SiteConfig.github_secret,
                                placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:github_secret][:description] %></div>
+            </div>
+            <div class="form-group">
+              <%= admin_config_label :facebook_key %>
+              <%= f.text_field :facebook_key,
+                               class: "form-control",
+                               value: SiteConfig.facebook_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:facebook_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:facebook_key][:description] %></div>
+            </div>
+            <div class="form-group">
+              <%= admin_config_label :facebook_secret %>
+              <%= f.text_field :facebook_secret,
+                               class: "form-control",
+                               value: SiteConfig.facebook_secret,
+                               placeholder: Constants::SiteConfig::DETAILS[:facebook_secret][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:facebook_secret][:description] %></div>
             </div>
           </div>
         </div>

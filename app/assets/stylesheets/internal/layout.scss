@@ -15,6 +15,13 @@
   color: var(--secondary);
 }
 
+#siteConfig .notice {
+  margin: 20px 0;
+  font-weight: bold;
+  color: $dark-purple;
+  font-size: 14px;
+}
+
 .pagination {
   justify-content: right;
 
@@ -86,11 +93,11 @@ body {
 
 .site-config__required {
   background: #dc3545;
-    border-radius: 19px;
-    padding: 5px 15px;
-    color: white;
-    text-align: right;
-    margin-left: 10px;
+  border-radius: 19px;
+  padding: 5px 15px;
+  color: white;
+  text-align: right;
+  margin-left: 10px;
 }
 
 .site-config__label {

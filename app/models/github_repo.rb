@@ -27,8 +27,8 @@ class GithubRepo < ApplicationRecord
   end
 
   def self.update_to_latest
-    where("updated_at < ?", 1.day.ago).find_each do |repo|
-      user = User.find_by(id: repo.user_id)
+    where("updated_at < ?", 26.hours.ago).includes(:user).find_each do |repo|
+      user = repo.user
       next unless user
 
       client = Github::OauthClient.for_user(user)

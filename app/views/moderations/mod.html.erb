@@ -2,7 +2,7 @@
 
 <%= javascript_packs_with_chunks_tag "commentModPage", defer: true %>
 
-<% cache(cache_key_heroku_slug("mod-styling")) do %>
+<% cache(release_adjusted_cache_key("mod-styling")) do %>
   <style>
     <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
   </style>

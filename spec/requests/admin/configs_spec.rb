@@ -457,6 +457,48 @@ RSpec.describe "/admin/config", type: :request do
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(3).to(1)
         end
+
+        it "updates rate_limit_article_update" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_article_update: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_article_update).from(30).to(3)
+        end
+
+        it "updates rate_limit_user_update" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_user_update: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_user_update).from(5).to(3)
+        end
+
+        it "updates rate_limit_feedback_message_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_feedback_message_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_feedback_message_creation).from(5).to(3)
+        end
+
+        it "updates rate_limit_listing_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_listing_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_listing_creation).from(1).to(3)
+        end
+
+        it "updates rate_limit_reaction_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_reaction_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_reaction_creation).from(10).to(3)
+        end
+
+        it "updates rate_limit_send_email_confirmation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_send_email_confirmation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(2).to(3)
+        end
       end
 
       describe "Social Media" do
