@@ -1,8 +1,12 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
+  # Devise does not support scoping omniauth callbacks under a dynamic segment
+  # so this lives outside our i18n scope.
   devise_for :users, only: :omniauth_callbacks, controllers: { omniauth_callbacks: "omniauth_callbacks" }
 
+  # [@forem/delightful] - all routes are nested under this optional scope to
+  # begin supporting i18n.
   scope "(:locale)", locale: /lang-.*/ do
     use_doorkeeper do
       controllers tokens: "oauth/tokens"

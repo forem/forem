@@ -33,8 +33,10 @@ class ApplicationController < ActionController::Base
 
   def default_url_options
     # [@forem/delightful] - this will be used to further implement i18n in the
-    # future. This is here to prevent path helpers from breaking. It will be
-    # found in the URL params as :locale and be in the format of lang-fr-ca.
+    # future. This is here to prevent path helpers from breaking. The locale
+    # will be found in the URL params as :locale and in the format of
+    # prefix-locale-region (i.e. lang-fr-ca).
+
     # _prefix, locale, region = params[:locale].split("-")
     { locale: nil }
   end
