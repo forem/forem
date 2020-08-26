@@ -16,7 +16,7 @@ class RegistrationsController < Devise::RegistrationsController
     resource.save
     yield resource if block_given?
     if resource.persisted?
-      redirect_to "/confirmation-email-being-sent"
+      redirect_to "/confirm-email"
     else
       # Todo: complete the flow
       clean_up_passwords resource

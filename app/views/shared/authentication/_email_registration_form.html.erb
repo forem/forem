@@ -1,38 +1,44 @@
-  <div id="sign-in-password-form" class="mt-1 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:490px;">
-  <p class="pb-4 fw-bold">Register today...</p>
-  <%= form_for(User.new, as: :user, url: registration_path(:user)) do |f| %>
-    <div class="crayons-field">
-      <%= f.label :email, class: "crayons-field__label" %>
-      <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
-    </div>
+<% if SiteConfig.allow_email_password_registration %>
+  <div id="sign-in-password-form" class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:490px;">
+    <p class="pb-4 fw-bold">Create account from email... (beta)</p>
+    <%= form_for(User.new, as: :user, url: registration_path(:user)) do |f| %>
+      <div class="crayons-field mt-3">
+        <%= f.label :profile_image, class: "crayons-field__label" %>
+        <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
+      </div>
 
-    <div class="crayons-field mt-3">
-      <%= f.label :profile_image, class: "crayons-field__label" %>
-      <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
-    </div>
+      <div class="crayons-field mt-2">
+        <%= f.label :name, class: "crayons-field__label" %>
+        <%= f.text_field :name, class: "crayons-textfield" %>
+      </div>
 
-    <div class="crayons-field mt-2">
-      <%= f.label :name, class: "crayons-field__label" %>
-      <%= f.text_field :name, class: "crayons-textfield" %>
-    </div>
+      <div class="crayons-field mt-2">
+        <%= f.label :username, class: "crayons-field__label" %>
+        <%= f.text_field :username, class: "crayons-textfield" %>
+      </div>
 
-    <div class="crayons-field mt-2">
-      <%= f.label :username, class: "crayons-field__label" %>
-      <%= f.text_field :username, class: "crayons-textfield" %>
-    </div>
+      <div class="crayons-field mt-2">
+        <%= f.label :email, class: "crayons-field__label" %>
+        <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
+      </div>
 
-    <div class="crayons-field mt-2">
-      <%= f.label :password, class: "crayons-field__label" %>
-      <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
-    </div>
+      <div class="crayons-field mt-2">
+        <%= f.label :password, class: "crayons-field__label" %>
+        <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
+      </div>
 
-    <div class="crayons-field mt-2">
-      <%= f.label :password_confirmation, class: "crayons-field__label" %>
-      <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "crayons-textfield" %>
-    </div>
+      <div class="crayons-field mt-2">
+        <%= f.label :password_confirmation, class: "crayons-field__label" %>
+        <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "crayons-textfield" %>
+      </div>
 
-    <div class="actions pt-3">
-      <%= f.submit "Sign up", class: "crayons-btn" %>
-    </div>
-  <% end %>
-</div> 
+      <div class="actions pt-3">
+        <%= f.submit "Sign up", class: "crayons-btn" %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="crayons-notice crayons-notice--danger mb-10 mt-8 mx-auto" style="width: 680px;max-width:94%;">
+    Email authentication is not enabled for this Forem.
+  </div>
+<% end %>

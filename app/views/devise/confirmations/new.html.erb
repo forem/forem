@@ -1,16 +1,18 @@
-<h2>Resend confirmation instructions</h2>
+<h1>Welcome!</h1>
 
-<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= devise_error_messages! %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
-  </div>
+<div class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:490px;">
+  <h2>Resend confirmation instructions</h2>
+  <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+    <%= devise_error_messages! %>
 
-  <div class="actions">
-    <%= f.submit "Resend confirmation instructions" %>
-  </div>
-<% end %>
+    <div class="crayons-field mt-2">
+      <%= f.label :email, class: "crayons-field__label" %><br />
+      <%= f.email_field :email, class:  "crayons-textfield", autofocus: true, value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+    </div>
 
-<%= render "devise/shared/links" %>
+    <div class="crayons-field mt-2">
+      <%= f.submit "Resend confirmation instructions", class: "crayons-btn" %>
+    </div>
+  <% end %>
+</div>
