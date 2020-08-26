@@ -10,7 +10,7 @@ class User < ApplicationRecord
   # rubocop:disable Metrics/BlockLength
   concerning :ProfileMigration do
     included do
-      PROFIE_FIELDS =
+      PROFILE_FIELDS =
         (Profiles::ExtractData::DIRECT_ATTRIBUTES + Profiles::ExtractData::MAPPED_ATTRIBUTES.values).freeze
 
       # NOTE: There are rare cases were we want to skip this callback, primarily
@@ -24,7 +24,7 @@ class User < ApplicationRecord
 
       # Keep saving changes locally for the time being, but propagate them to profiles.
       after_update_commit do
-        if (previous_changes.keys.map(&:to_sym) & User::PROFIE_FIELDS).present?
+        if (previous_changes.keys.map(&:to_sym) & User::PROFILE_FIELDS).present?
           profile.update(data: Profiles::ExtractData.call(self))
         end
       end
