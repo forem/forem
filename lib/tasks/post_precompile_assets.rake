@@ -3,4 +3,6 @@ task after_assets_precompile: :environment do
   system("yarn postcss")
 end
 
-Rake::Task["assets:precompile"].enhance ["after_assets_precompile"]
+Rake::Task["assets:precompile"].enhance do
+  Rake::Task["after_assets_precompile"].execute
+end
