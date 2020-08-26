@@ -24,7 +24,9 @@ module Honeycomb
       rate = 1 # include everything by default
       # should_sample is a no-op if the rate is 1
 
-      if fields["redis.command"].in? NOISY_REDIS_COMMANDS
+      if Honeycomb.current_trace&.fields&.dig("throttle_sql_events") && fields["sql.active_record.sql"]
+        rate = 100_000
+      elsif fields["redis.command"].in? NOISY_REDIS_COMMANDS
         rate = 100
       elsif fields["sql.active_record.sql"].in? NOISY_SQL_COMMANDS
         rate = 100

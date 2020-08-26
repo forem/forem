@@ -52,4 +52,15 @@ RSpec.describe Honeycomb::NoiseCancellingSampler do
       expect(rate).to match(100)
     end
   end
+
+  context "with current_trace that has field throttle_sql_events" do
+    it "samples if its a sql command" do
+      trace = instance_double("Honeycomb::Trace", fields: {})
+      allow(Honeycomb).to receive(:current_trace).and_return(trace)
+      allow(trace).to receive(:fields).and_return("throttle_sql_events" => true)
+      is_sampled, rate = described_class.sample({ "sql.active_record.sql" => "COMMIT", "trace.trace_id" => trace_id })
+      expect(is_sampled).to be_in [true, false]
+      expect(rate).to match(100_000)
+    end
+  end
 end

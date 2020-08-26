@@ -42,6 +42,7 @@ Sidekiq.configure_server do |config|
 
   config.server_middleware do |chain|
     chain.add Sidekiq::HoneycombMiddleware
+    chain.add Sidekiq::ThrottleHoneycombTracking
   end
 
   # This allows us to define custom logic to handle when a worker has exhausted all
