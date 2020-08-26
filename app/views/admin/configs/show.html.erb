@@ -11,7 +11,7 @@
     </h2>
   </div>
 
-  <div class="" id="getStarted">
+  <div id="getStarted">
     <div class="card w-100">
       <div class="card-header" id="getStartedHeader" data-toggle="collapse"
         data-target="#getStartedBodyContainer" aria-expanded="true" aria-controls="getStartedBodyContainer">
@@ -76,7 +76,7 @@
     </div>
   </div>
 
-  <div class="" id="siteConfig">
+  <div id="siteConfig">
     <div class="card w-100">
       <div class="card-header" id="siteConfigHeader" data-toggle="collapse"
         data-target="#siteConfigBodyContainer" aria-expanded="false" aria-controls="siteConfigBodyContainer">
@@ -88,25 +88,6 @@
       <div id="siteConfigBodyContainer" class="collapse hide hide p-3" aria-labelledby="siteConfigHeader">
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
 
-<<<<<<< HEAD
-          <div class="card mt-3">
-            <%= render partial: "card_header",
-                       locals: {
-                         header: "API Tokens",
-                         state: "collapse",
-                         target: "apiBodyContainer",
-                         expanded: "false"
-                       } %>
-            <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
-              <div class="form-group">
-                <%= admin_config_label :health_check_token %>
-                <%= f.text_field :health_check_token,
-                                 class: "form-control",
-                                 value: SiteConfig.health_check_token,
-                                 placeholder: Constants::SiteConfig::DETAILS[:health_check_token][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:health_check_token][:description] %></div>
-              </div>
-=======
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
@@ -163,7 +144,6 @@
                                value: SiteConfig.github_secret,
                                placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:github_secret][:description] %></div>
->>>>>>> master
             </div>
           </div>
 
@@ -1003,33 +983,31 @@
   </div>
 
   <% if current_user.has_role?(:single_resource_admin, Config) && current_user.has_role?(:super_admin) %>
-    <div class="" id="siteConfig">
-      <div class="card w-100">
-        <div class="card-header" id="appConfigHeader" data-toggle="collapse"
-          data-target="#appConfigBodyContainer" aria-expanded="false" aria-controls="appConfigBodyContainer">
-          <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
-          <button class="btn btn-secondary float-right" type="button">
-            Toggle Environment Variables
-          </button>
-        </div>
-        <div id="appConfigBodyContainer" class="collapse hide" aria-labelledby="appConfigHeader">
-          <table class="table">
-            <thead>
+    <div class="card w-100">
+      <div class="card-header" id="appConfigHeader" data-toggle="collapse"
+        data-target="#appConfigBodyContainer" aria-expanded="false" aria-controls="appConfigBodyContainer">
+        <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
+        <button class="btn btn-secondary float-right" type="button">
+          Toggle Environment Variables
+        </button>
+      </div>
+      <div id="appConfigBodyContainer" class="collapse hide" aria-labelledby="appConfigHeader">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% ENV.sort.each do |key, value| %>
               <tr>
-                <th>Variable</th>
-                <th>Value</th>
+                <td><%= key %></td>
+                <td style="max-width: 750px;"><%= value %></td>
               </tr>
-            </thead>
-            <tbody>
-              <% ENV.sort.each do |key, value| %>
-                <tr>
-                  <td><%= key %></td>
-                  <td style="max-width: 750px;"><%= value %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
+            <% end %>
+          </tbody>
+        </table>
       </div>
     </div>
   <% end %>
