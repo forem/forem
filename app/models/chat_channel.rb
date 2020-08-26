@@ -161,7 +161,7 @@ class ChatChannel < ApplicationRecord
     pending_users.select(:id, :username, :name, :updated_at)
   end
 
-  self.pm_notifications_channel(user_id)
+  def self.pm_notifications_channel(user_id)
     "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{user_id}"
   end
 
