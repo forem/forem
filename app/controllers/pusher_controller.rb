@@ -14,8 +14,7 @@ class PusherController < ApplicationController
   end
 
   def valid_private_dm_channel
-    current_user && params[:channel_name] ==
-      "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{current_user.id}"
+    current_user && params[:channel_name] == ChatChannel.pm_notifications_channel(current_user.id)
   end
 
   def valid_private_group_channel
