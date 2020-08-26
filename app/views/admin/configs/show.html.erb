@@ -608,6 +608,22 @@
             </div>
 
             <div class="form-group">
+              <%= admin_config_label :mascot_footer_image_width %>
+              <%= f.text_field :mascot_footer_image_width,
+                               class: "form-control",
+                               value: SiteConfig.mascot_footer_image_width %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_footer_image_width][:description] %></div>
+            </div>
+
+            <div class="form-group">
+              <%= admin_config_label :mascot_footer_image_height %>
+              <%= f.text_field :mascot_footer_image_height,
+                               class: "form-control",
+                               value: SiteConfig.mascot_footer_image_height %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_footer_image_height][:description] %></div>
+            </div>
+
+            <div class="form-group">
               <%= admin_config_label :mascot_image_description %>
               <%= f.text_field :mascot_image_description,
                                class: "form-control",
