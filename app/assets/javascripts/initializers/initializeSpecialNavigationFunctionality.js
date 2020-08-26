@@ -20,14 +20,4 @@ function initializeSpecialNavigationFunctionality() {
   } else {
     moderationLink.classList.remove('top-bar__link--current');
   }
-
-  var loggedInBar = document.getElementById('top-bar-logged-in');
-  var loggedOutBar = document.getElementById('top-bar-logged-out');
-  if (document.body.dataset.userStatus === 'logged-in') {
-    loggedInBar.classList.remove('hidden');
-    loggedOutBar.classList.add('hidden');
-  } else {
-    loggedInBar.classList.add('hidden');
-    loggedOutBar.classList.remove('hidden');
-  }
 }

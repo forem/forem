@@ -24,11 +24,11 @@ RSpec.describe "Registrations", type: :request do
     end
 
     context "when logged in" do
-      it "redirects to /dashboard" do
+      it "redirects to main feed" do
         sign_in user
 
         get "/enter"
-        expect(response).to redirect_to("/dashboard")
+        expect(response).to redirect_to("/?signin=true")
       end
     end
   end
