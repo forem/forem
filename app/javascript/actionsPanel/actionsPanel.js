@@ -364,9 +364,62 @@ export function addBottomActionsListeners() {
   });
 }
 
+export function unpublishArticle() {
+  const unpublishArticleBtn = document.querySelector('#unpublish-article-btn');
+  unpublishArticleBtn.addEventListener('click', async () => {
+    const {
+      articleId: id,
+      articleUsername: username,
+      articleSlug: slug,
+    } = unpublishArticleBtn.dataset;
+
+    try {
+      const response = await request(`/articles/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          id,
+          username,
+          slug,
+        }),
+      });
+
+      const outcome = await response.json();
+      console.log(outcome.current_state_path);
+      // let message;
+      // /* eslint-disable no-restricted-globals */
+      // if (outcome.result === 'create' && outcome.category === 'thumbsup') {
+      //   message = 'This post will be more visible.';
+      // } else if (
+      //   outcome.result === 'create' &&
+      //   outcome.category === 'thumbsdown'
+      // ) {
+      //   message = 'This post will be less visible.';
+      // } else if (
+      //   outcome.result === 'create' &&
+      //   outcome.category === 'vomit'
+      // ) {
+      //   message = "You've flagged this post as abusive or spam.";
+      // } else if (outcome.result === 'destroy') {
+      //   message = 'Your quality rating was removed.';
+      // } else if (outcome.error) {
+      //   message = `Error: ${outcome.error}`;
+      // }
+      // top.addSnackbarItem({
+      //   message,
+      //   addCloseButton: true,
+      // });
+      /* eslint-enable no-restricted-globals */
+    } catch (error) {
+      // eslint-disable-next-line no-alert
+      alert(error);
+    }
+  });
+}
+
 export function initializeActionsPanel() {
   initializeHeight();
   addCloseListener();
   addReactionButtonListeners();
   addBottomActionsListeners();
+  unpublishArticle();
 }
