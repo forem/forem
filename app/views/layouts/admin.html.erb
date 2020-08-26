@@ -25,12 +25,23 @@
 
 </head>
 <body class="admin">
+  <header class="top-bar" id="top-bar" role="banner">
+    <div class="top-bar__container">
+      <a href="/" class="top-bar--logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+      <h1 class="pl-4 fs-l">
+        Admin
+        <span class="color-base-40">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>
+      </h1>
+
+      <div class="top-bar__links">
+        <a href="/" aria-label="<%= community_name %> Home">Go to <%= community_name %> home page</a>
+      </div>
+    </div>
+  </header>
+
   <main class="crayons-layout crayons-layout--2-cols">
     <div class="crayons-layout__left-sidebar">
       <nav class="hidden m:block">
-        <a href="/admin">
-          <img class="d-block mx-auto mt-3" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>" width="40" height="40" alt="<%= community_name %> Logo">
-        </a>
         <%= render "admin/shared/navbar" %>
       </nav>
     </div>
@@ -45,7 +56,6 @@
             <%= message %>
           </div>
         <% end %>
-        <h1 class="mt-3"><%= controller_name.titleize %></h1>
       </header>
       <%= yield %>
     </div>

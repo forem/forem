@@ -1,8 +1,8 @@
 @import 'config/import';
 @import 'variables';
 @import 'scaffolds';
+@import 'top-bar';
 @import 'color-picker';
 
 .admin {
-  --header-height: 0;
 }
