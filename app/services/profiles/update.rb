@@ -27,6 +27,7 @@ module Profiles
         Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
       end
       @success = true if @profile.user.update(user_attributes)
+      self
     end
 
     def success?
