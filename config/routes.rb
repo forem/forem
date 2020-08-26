@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/BlockLength
+LOCALE_LANG_REGEXP = /lang-.*/i.freeze
 
 Rails.application.routes.draw do
   # Devise does not support scoping omniauth callbacks under a dynamic segment
@@ -7,7 +8,7 @@ Rails.application.routes.draw do
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
-  scope "(:locale)", locale: /lang-.*/ do
+  scope "(:locale)", locale: LOCALE_LANG_REGEXP do
     use_doorkeeper do
       controllers tokens: "oauth/tokens"
     end
@@ -505,7 +506,7 @@ Rails.application.routes.draw do
     get "/:username/:slug" => "stories#show"
     get "/:sitemap" => "sitemaps#show",
         :constraints => { format: /xml/, sitemap: /sitemap-.+/ }
-    get "/:locale" => "stories#index"
+    get "/:locale" => "stories#index", :constraints => { locale: LOCALE_LANG_REGEXP }
     get "/:username" => "stories#index", :as => "user_profile"
 
     root "stories#index"
