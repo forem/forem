@@ -16,10 +16,11 @@ class ProfileField < ApplicationRecord
     left_sidebar: 1
   }
 
+  belongs_to :profile_field_group, optional: true
+
   validates :label, presence: true, uniqueness: { case_sensitive: false }
   validates :attribute_name, presence: true, on: :update
   validates :show_in_onboarding, inclusion: { in: [true, false] }
-  validates :group, presence: true
 
   def type
     return :boolean if check_box?
