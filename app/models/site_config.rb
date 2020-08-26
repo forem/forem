@@ -77,6 +77,8 @@ class SiteConfig < RailsSettings::Base
   field :mascot_image_url, type: :string
   field :mascot_image_description, type: :string, default: "The community mascot"
   field :mascot_footer_image_url, type: :string
+  field :mascot_footer_image_width, type: :integer, default: 52
+  field :mascot_footer_image_height, type: :integer, default: 120
 
   # Meta keywords
   field :meta_keywords, type: :hash, default: {

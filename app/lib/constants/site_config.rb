@@ -153,6 +153,14 @@ module Constants
         description: "Special cute mascot image used in the footer.",
         placeholder: "https://image.url"
       },
+      mascot_footer_image_width: {
+        description: "The footer mascot width will resized to this value, defaults to 52",
+        placeholder: ""
+      },
+      mascot_footer_image_height: {
+        description: "The footer mascot height will be resized to this value, defaults to 120",
+        placeholder: ""
+      },
       mascot_image_description: {
         description: "Used as the alt text for the mascot image",
         placeholder: ""
