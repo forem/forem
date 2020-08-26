@@ -43,6 +43,8 @@ module Admin
         twitter_secret
         github_key
         github_secret
+        facebook_key
+        facebook_secret
       ]
 
       allowed_params = allowed_params |
@@ -127,6 +129,12 @@ module Admin
         rate_limit_published_article_creation
         rate_limit_organization_creation
         rate_limit_user_subscription_creation
+        rate_limit_article_update
+        rate_limit_user_update
+        rate_limit_feedback_message_creation
+        rate_limit_listing_creation
+        rate_limit_reaction_creation
+        rate_limit_send_email_confirmation
       ]
     end
 

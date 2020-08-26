@@ -41,6 +41,15 @@ FactoryBot.define do
       end
     end
 
+    factory :facebook_connect_broadcast do
+      title          { "Welcome Notification: facebook_connect" }
+      type_of        { "Welcome" }
+      processed_html do
+        "You're on a roll! 🎉  Do you have a Facebook account? Consider " \
+        "<a href='/settings'>connecting it</a>."
+      end
+    end
+
     factory :customize_ux_broadcast do
       title          { "Welcome Notification: customize_experience" }
       type_of        { "Welcome" }

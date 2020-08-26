@@ -20,6 +20,8 @@ class SiteConfig < RailsSettings::Base
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
   field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
   field :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
+  field :facebook_key, type: :string
+  field :facebook_secret, type: :string
 
   # Campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
