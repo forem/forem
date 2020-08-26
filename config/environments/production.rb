@@ -136,5 +136,6 @@ end
 
 Rails.application.routes.default_url_options = {
   host: Rails.application.config.app_domain,
-  protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://")
+  protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://"),
+  locale: nil
 }
