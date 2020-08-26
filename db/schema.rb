@@ -1372,6 +1372,7 @@ ActiveRecord::Schema.define(version: 2020_08_28_032013) do
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
+  add_foreign_key "buffer_updates", "articles", on_delete: :cascade
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listing_endorsements", "classified_listings"
@@ -1411,6 +1412,7 @@ ActiveRecord::Schema.define(version: 2020_08_28_032013) do
   add_foreign_key "polls", "articles", on_delete: :cascade
   add_foreign_key "profile_fields", "profile_field_groups"
   add_foreign_key "profiles", "users", on_delete: :cascade
+  add_foreign_key "rating_votes", "articles", on_delete: :cascade
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
