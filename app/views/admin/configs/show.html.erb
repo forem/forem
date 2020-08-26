@@ -130,7 +130,9 @@
                              class: "form-control selectpicker" %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %></div>
             </div>
-            <h4>Notice: Changing authentication keys will not take affect until devops restarts the app (about once per day). This will soon be instant.</h4>
+            <div class="notice">
+              Notice: Changing authentication keys will not take affect until devops restarts the app (about once per day). This will soon be instant.
+            </div>
             <div class="form-group">
               <%= admin_config_label :twitter_key %>
               <%= f.text_field :twitter_key,
