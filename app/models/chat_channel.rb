@@ -115,7 +115,7 @@ class ChatChannel < ApplicationRecord
       "open-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
     else
       channel_name = "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{id}"
-      chat_channel_memberships.pluck(:user_id).map { |id|  }
+      chat_channel_memberships.pluck(:user_id).map { |id| channel_name }
     end
   end
 
