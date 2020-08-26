@@ -79,7 +79,7 @@
 <div class="crayons-card grid gap-6 p-6 mb-6">
   <h2>Organization details</h2>
 
-  <%= form_for @organization, html: { class: "grid gap-6" } do |f| %>
+  <%= form_for @organization, url: organization_path(params[:locale], @organization), html: { class: "grid gap-6" } do |f| %>
     <%= f.hidden_field :id %>
     <div class="crayons-field">
       <%= f.label :name, class: "crayons-field__label" %>
@@ -219,7 +219,7 @@
       </p>
       <% if @org_organization_memberships.size === 1 && @organization.articles_count.zero? %>
         <% onsubmit = "return confirm('Are you absolutely sure you want to delete your organization: #{@organization.name}?');" %>
-        <%= form_tag organization_path(@organization.id), method: :delete, onsubmit: onsubmit do %>
+        <%= form_tag organization_path(params[:locale], @organization.id), method: :delete, onsubmit: onsubmit do %>
           <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
             Delete "<%= @organization.name %>"
           </button>
