@@ -165,6 +165,22 @@
                                placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:github_secret][:description] %></div>
             </div>
+            <div class="form-group">
+              <%= admin_config_label :facebook_key %>
+              <%= f.text_field :facebook_key,
+                               class: "form-control",
+                               value: SiteConfig.facebook_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:facebook_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:facebook_key][:description] %></div>
+            </div>
+            <div class="form-group">
+              <%= admin_config_label :facebook_secret %>
+              <%= f.text_field :facebook_secret,
+                               class: "form-control",
+                               value: SiteConfig.facebook_secret,
+                               placeholder: Constants::SiteConfig::DETAILS[:facebook_secret][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:facebook_secret][:description] %></div>
+            </div>
           </div>
         </div>
         <div class="card mt-3">
