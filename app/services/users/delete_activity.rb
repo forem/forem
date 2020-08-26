@@ -35,7 +35,6 @@ module Users
     end
 
     def delete_social_media(user)
-      user.tweets.delete_all
       user.github_repos.delete_all
     end
 
