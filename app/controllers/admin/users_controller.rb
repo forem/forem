@@ -170,6 +170,14 @@ module Admin
       Credit.remove_from(org, amount)
     end
 
+    def get_related_reactions
+      user_article_ids = @user.articles.ids
+      user_comment_ids = @user.comments.ids
+      @related_vomit_reactions = Reaction.where(reactable_type: "Article", reactable_id: user_article_ids)
+        .or(Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit"))
+        .includes(:reactable)
+    end
+
     def user_params
       allowed_params = %i[
         new_note note_for_current_role user_status
