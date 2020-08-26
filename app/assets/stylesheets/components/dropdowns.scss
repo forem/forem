@@ -10,7 +10,7 @@
   position: absolute;
   display: none; // initially hidden
   padding: var(--su-4);
-  min-width: 200px;
+  min-width: 250px;
 
   @media (min-width: $breakpoint-s) {
     max-width: 360px;

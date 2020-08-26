@@ -43,6 +43,8 @@ module Admin
         twitter_secret
         github_key
         github_secret
+        facebook_key
+        facebook_secret
       ]
 
       allowed_params = allowed_params |
