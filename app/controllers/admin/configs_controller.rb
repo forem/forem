@@ -67,14 +67,14 @@ module Admin
       )
     end
 
-    def confirmation_text_error
-      render json: { Error: "confirmation text did not match" }, status: :unprocessable_entity
+    def raise_confirmation_mismatch_error
+      raise ActionController::BadRequest.new, "The confirmation key does not match"
     end
 
     def extra_authorization_and_confirmation
       not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
       confirmation_message = "My username is @#{current_user.username} and this action is 100% safe and appropriate."
-      confirmation_text_error if params[:confirmation] != confirmation_message
+      raise_confirmation_mismatch_error if params.require(:confirmation) != confirmation_message
     end
 
     def clean_up_params
