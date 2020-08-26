@@ -157,10 +157,19 @@
 
   &__footer {
     font-size: var(--fs-s);
-    font-family: var(--ff-accent);
+    font-family: var(--ff-monospace);
     padding-top: var(--su-4);
     padding-bottom: var(--su-4);
     text-align: center;
+  }
+
+  &__footer-content {
+    display: flex;
+    justify-content: center;
+
+    svg {
+      margin-left: var(--su-2);
+    }
   }
 }
 
