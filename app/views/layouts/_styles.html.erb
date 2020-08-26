@@ -1,4 +1,4 @@
-<% cache "base_inline_styles_#{@story_show}_#{@article_index}_#{@home_page}_#{@article_show}_#{view_class}_#{@notifications_index}_#{@tags_index}_#{@reading_list_items_index}_#{@history_index}_#{ApplicationConfig['HEROKU_SLUG_COMMIT']}_#{user_signed_in?}_#{@shell}", expires_in: 8.hours do %>
+<% cache "base_inline_styles_#{@story_show}_#{@article_index}_#{@home_page}_#{@article_show}_#{view_class}_#{@notifications_index}_#{@tags_index}_#{@reading_list_items_index}_#{@history_index}_#{ApplicationConfig['RELEASE_FOOTPRINT']}_#{user_signed_in?}_#{@shell}", expires_in: 8.hours do %>
   <% if @shell %>
     <style>
       <% Rails.application.config.assets.compile = true %>

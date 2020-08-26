@@ -264,6 +264,30 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.mascot_footer_image_url).to eq(expected_image_url)
         end
 
+        it "updates the mascot_footer_image_width" do
+          expected_default_mascot_footer_image_width = 52
+          expected_mascot_footer_image_width = 1002
+
+          expect(SiteConfig.mascot_footer_image_width).to eq(expected_default_mascot_footer_image_width)
+
+          post "/admin/config", params: { site_config:
+                                            { mascot_footer_image_width: expected_mascot_footer_image_width },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mascot_footer_image_width).to eq(expected_mascot_footer_image_width)
+        end
+
+        it "updates the mascot_footer_image_height" do
+          expected_default_mascot_footer_image_height = 120
+          expected_mascot_footer_image_height = 3002
+
+          expect(SiteConfig.mascot_footer_image_height).to eq(expected_default_mascot_footer_image_height)
+
+          post "/admin/config", params: { site_config:
+                                            { mascot_footer_image_height: expected_mascot_footer_image_height },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mascot_footer_image_height).to eq(expected_mascot_footer_image_height)
+        end
+
         it "updates mascot_image_description" do
           description = "Hey hey #{rand(100)}"
           post "/admin/config", params: { site_config: { mascot_image_description: description },
@@ -456,6 +480,48 @@ RSpec.describe "/admin/config", type: :request do
             post "/admin/config", params: { site_config: { rate_limit_user_subscription_creation: 1 },
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(3).to(1)
+        end
+
+        it "updates rate_limit_article_update" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_article_update: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_article_update).from(30).to(3)
+        end
+
+        it "updates rate_limit_user_update" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_user_update: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_user_update).from(5).to(3)
+        end
+
+        it "updates rate_limit_feedback_message_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_feedback_message_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_feedback_message_creation).from(5).to(3)
+        end
+
+        it "updates rate_limit_listing_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_listing_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_listing_creation).from(1).to(3)
+        end
+
+        it "updates rate_limit_reaction_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_reaction_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_reaction_creation).from(10).to(3)
+        end
+
+        it "updates rate_limit_send_email_confirmation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_send_email_confirmation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(2).to(3)
         end
       end
 

@@ -5,7 +5,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
   let(:article) do
     create(:article, user_id: user.id, title: "test this please", tags: "html, rss, css")
   end
-  let(:org) { build_stubbed(:organization) }
+  let(:org) { create(:organization) }
   let(:org_user) do
     user = create(:user)
     build_stubbed(:organization_membership, user: user, organization: org)

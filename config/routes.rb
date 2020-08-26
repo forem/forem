@@ -117,8 +117,13 @@ Rails.application.routes.draw do
     resources :webhook_endpoints, only: :index
     resource :config
     resources :badges, only: %i[index edit update new create]
-    get "/badge_achievements/award_badges", to: "badges#award"
-    post "/badge_achievements/award_badges", to: "badges#award_badges"
+    # These redirects serve as a safegaurd to prevent 404s for any Admins
+    # who have the old badge_achievement URLs bookmarked.
+    get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
+    get "/badges/badge_achievements/award_badges", to: redirect("/admin/badge_achievements/award_badges")
+    resources :badge_achievements, only: %i[index destroy]
+    get "/badge_achievements/award_badges", to: "badge_achievements#award"
+    post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
   end

@@ -1,0 +1,47 @@
+<main>
+<br>
+  <div class="alert alert-warning">
+    <strong>Note: If you remove a badge that is automatically rewarded it will simply be re-awarded despite being removed.</strong>
+  </div>
+  <div class="row m-3">
+    <div class="col">
+      <div class="row justify-content-right">
+        <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
+    </div>
+    </div>
+    <div class="col">
+      <%= search_form_for @q, url: admin_badge_achievements_path, class: "form-inline justify-content-end" do |f| %>
+
+        <%= f.label :user_id_eq, "User ID", class: "sr-only" %>
+        <%= f.search_field :user_id_eq, placeholder: "User ID", class: "form-control mx-3" %>
+
+        <%= f.submit "Search", class: "btn btn-secondary" %>
+      <% end %>
+    </div>
+  </div>
+  <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">User ID</th>
+      <th scope="col">User</th>
+      <th scope="col">Badge</th>
+      <th scope="col">Badge Image</th>
+    </tr>
+  </thead>
+  <tbody>
+   <% @badge_achievements.each do |badge_achievement| %>
+    <tr>
+      <td><%= badge_achievement.user.id %></td>
+      <td><%= badge_achievement.user.username %></td>
+      <td><%= badge_achievement.badge.title %></td>
+      <h5>
+        <td class="justify-content-center">
+          <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image">
+        </td>
+        <td><%= link_to "Remove", url_for(action: :destroy, id: badge_achievement.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %></td>
+      </h5>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+</main>

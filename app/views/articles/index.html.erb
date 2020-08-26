@@ -26,7 +26,7 @@
 
 <%= javascript_packs_with_chunks_tag "homePage", defer: true %>
 
-<% cache(cache_key_heroku_slug("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
+<% cache(release_adjusted_cache_key("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
   <div class="crayons-layout crayons-layout--3-cols crayons-layout--3-cols--drop-right-left" id="index-container"
       data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
       data-tag=""
