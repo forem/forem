@@ -32,11 +32,17 @@ module Admin
         twitter_hashtag
         shop_url
         payment_pointer
+        stripe_api_key
+        stripe_publishable_key
         health_check_token
         feed_style
         default_font
         sponsor_headline
         public
+        twitter_key
+        twitter_secret
+        github_key
+        github_secret
       ]
 
       allowed_params = allowed_params |

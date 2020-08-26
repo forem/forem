@@ -6,58 +6,60 @@
   <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
 <% end %>
 
-<style>
-  .sponsor-level-headline {
-    padding:5px 18px;
-    border-radius: 3px;
-  }
-</style>
-
 <div class="crayons-layout crayons-layout--limited">
   <div class="crayons-card text-styles text-padding">
     <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-0 mt-0">Thank you! ♥️</h1>
-    <h2 class="fs-2xl s:fs-3xl l:fs-4xl fw-medium s:fw-bold lh-tight mb-4 mt-0">for supporting our community</h2>
+    <h2 h2 class="fs-2xl s:fs-3xl l:fs-4xl fw-medium s:fw-bold lh-tight mb-4 mt-0">for supporting our community</h2>
 
-        <h4>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
-      <span class="sponsor-level-headline" style="background-color: #fefa87;">Gold Sponsors</span>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
-    </h4>
-    <div id="gold-sponsors">
-      <% Sponsorship.gold.live.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
-        <a href="<%= sponsorship.url %>"><%= render "sponsor_image", sponsorship: sponsorship %></a>
-        <p>
-          <%= sponsorship.blurb_html&.html_safe %>
-        </p>
-        <hr />
-      <% end %>
+    <div class="sponsors">
+      <div class="sponsors__label">
+        <h3 class="p-0 m-0 fs-xl fw-medium">🥇 Gold Sponsors</h3>
+      </div>
+      <div class="sponsors__items">
+        <% Sponsorship.gold.live.includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
+          <div>
+            <a href="<%= sponsorship.url %>" class="sponsor__logo">
+              <img src="<%= optimized_image_url(sponsorship.organization.nav_image_url, width: 250) %>" alt="<%= sponsorship.organization.name %> logo" loading="lazy">
+            </a>
+            <p>
+              <%= sponsorship.blurb_html&.html_safe %>
+            </p>
+          </div>
+        <% end %>
+      </div>
     </div>
 
-    <h4>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="silver badge">
-      <span class="sponsor-level-headline" style="background-color: #d8e1f0;">Silver Sponsors</span>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="silver badge">
-    </h4>
-    <div id="silver-sponsors">
-      <% Sponsorship.where(status: "live", level: "silver").where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
-        <a href="<%= sponsorship.url %>"><%= render "sponsor_image", sponsorship: sponsorship %></a>
-        <p>
-          <%= sponsorship.blurb_html&.html_safe %>
-        </p>
-        <hr />
-      <% end %>
+    <div class="sponsors">
+      <div class="sponsors__label">
+        <h3 class="p-0 m-0 fs-xl fw-medium">🥈 Silver Sponsors</h3>
+      </div>
+      <div class="sponsors__items">
+        <% Sponsorship.where(status: "live", level: "silver").where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).each do |sponsorship| %>
+          <div>
+            <a href="<%= sponsorship.url %>" class="sponsor__logo">
+              <img src="<%= optimized_image_url(sponsorship.organization.nav_image_url, width: 250) %>" alt="<%= sponsorship.organization.name %> logo" loading="lazy">
+            </a>
+            <p>
+              <%= sponsorship.blurb_html&.html_safe %>
+            </p>
+          </div>
+        <% end %>
+      </div>
     </div>
 
-    <h4>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="bronze badge">
-      <span class="sponsor-level-headline" style="background-color: #fcd6bb;">Bronze Sponsors</span>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="bronze badge">
-    </h4>
-    <div id="bronze-sponsors">
-      <% Sponsorship.bronze.live.where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).find_each do |sponsorship| %>
-        <a href="<%= sponsorship.url %>"><%= render "sponsor_image", sponsorship: sponsorship %></a>
-        <hr />
-      <% end %>
+    <div class="sponsors">
+      <div class="sponsors__label">
+        <h3 class="p-0 m-0 fs-xl fw-medium">🥉 Bronze Sponsors</h3>
+      </div>
+      <div class="sponsors__items">
+        <% Sponsorship.bronze.live.where("expires_at > ?", Time.current).includes(:organization).order(featured_number: :asc).find_each do |sponsorship| %>
+          <div>
+            <a href="<%= sponsorship.url %>" class="sponsor__logo">
+              <img src="<%= optimized_image_url(sponsorship.organization.nav_image_url, width: 250) %>" alt="<%= sponsorship.organization.name %> logo" loading="lazy">
+            </a>
+          </div>
+        <% end %>
+      </div>
     </div>
 
     <div class="crayons-notice">

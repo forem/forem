@@ -126,4 +126,12 @@ class ApplicationController < ActionController::Base
   def api_action?
     self.class.to_s.start_with?("Api::")
   end
+
+  def initialize_stripe
+    Stripe.api_key = SiteConfig.stripe_api_key
+
+    return unless Rails.env.development? && Stripe.api_key.present?
+
+    Stripe.log_level = Stripe::LEVEL_INFO
+  end
 end

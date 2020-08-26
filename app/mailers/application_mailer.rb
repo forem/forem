@@ -5,6 +5,7 @@ class ApplicationMailer < ActionMailer::Base
   # an example is the user_url
   helper Rails.application.routes.url_helpers
   helper ApplicationHelper
+  helper AuthenticationHelper
 
   default(
     from: -> { email_from("Community") },
