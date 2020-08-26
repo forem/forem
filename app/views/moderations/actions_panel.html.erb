@@ -164,15 +164,7 @@
 
     <% if current_user.any_admin? %>
       <div class="unpublish-article">
-        <button
-          class="crayons-btn crayons-btn--danger"
-          data-article-id="<%= @moderatable.id %>"
-          data-article-username="<%= @moderatable.username %>"
-          data-article-slug="<%= @moderatable.slug %>"
-          id="unpublish-article-btn"
-        >
-          Unpublish Article
-        </button>
+        <%= button_to "Unpublish Article", { action: "article_admin_unpublish", article_id: @moderatable.id }, method: :patch, data: { confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--danger" %>
       </div>
     <% end %>
   </div>

@@ -185,6 +185,19 @@ class ArticlesController < ApplicationController
     @organization_id = @article.organization_id
   end
 
+  def admin_unpublish
+    authorize @article
+    if @article.has_frontmatter?
+      @article.body_markdown.sub!("\npublished: true\n", "\npublished: false\n")
+    else
+      @article.published = false
+    end
+
+    return unless @article.save
+
+    redirect_to current_state_path
+  end
+
   private
 
   def base_editor_assigments
