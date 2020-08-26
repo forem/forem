@@ -57,6 +57,7 @@ script:
   - bundle config set path 'vendor/bundle'
   - bin/ci-bundle
   - yarn install --frozen-lockfile
+  - createdb PracticalDeveloper_test
   - bundle exec rails db:create
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
