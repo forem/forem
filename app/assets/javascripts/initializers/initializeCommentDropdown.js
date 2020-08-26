@@ -1,17 +1,11 @@
+/* global Runtime */
+
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
   function isClipboardSupported() {
     return (
       typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-    );
-  }
-
-  function isNativeAndroidDevice() {
-    return (
-      navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== 'undefined' &&
-      AndroidBridge !== null
     );
   }
 
@@ -47,7 +41,7 @@ function initializeCommentDropdown() {
 
   function copyText() {
     const inputValue = document.getElementById('article-copy-link-input').value;
-    if (isNativeAndroidDevice()) {
+    if (Runtime.isNativeAndroid('copyToClipboard')) {
       AndroidBridge.copyToClipboard(inputValue);
       showAnnouncer();
     } else if (isClipboardSupported()) {
@@ -110,6 +104,13 @@ function initializeCommentDropdown() {
     )[0];
 
     if (!dropdownContent) {
+      return;
+    }
+
+    // Android native apps have enhanced sharing capabilities for Articles
+    const articleShowMoreClicked = button.id === 'article-show-more-button';
+    if (articleShowMoreClicked && Runtime.isNativeAndroid('shareText')) {
+      AndroidBridge.shareText(location.href);
       return;
     }
 
