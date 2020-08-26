@@ -1,3 +1,6 @@
+# Explicitly load ProfileField before Profile in all environments
+require_dependency Rails.root.join("app/models/profile_field.rb")
+
 class Profile < ApplicationRecord
   belongs_to :user
 
