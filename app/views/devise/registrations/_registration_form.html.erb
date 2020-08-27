@@ -6,7 +6,7 @@
       </h1>
       <p class="registration__description">
         <a href="/"><%= community_name %></a> is a community of
-        <%= number_with_delimiter User.registered.estimated_count %>
+        <%= number_with_delimiter(@registered_users_count) %>
         amazing <%= community_members_label %>.
       </p>
     </div>
