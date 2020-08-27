@@ -133,6 +133,8 @@
     padding-left: var(--su-1);
     padding-right: var(--su-1);
     z-index: 1;
+    display: inline-block;
+    max-width: 75%;
   }
 
   &__actions-providers {
