@@ -15,18 +15,17 @@ module Admin
     def edit
       @user = User.find(params[:id])
       @notes = @user.notes.order(created_at: :desc).limit(10).load
+<<<<<<< HEAD
       set_related_reactions
+=======
+      set_feedback_messages
+>>>>>>> Adds #set_feedback_messages to Admin::Users::Controller and adjusts _reports.html.erb
     end
 
     def show
       @user = User.find(params[:id])
       @organizations = @user.organizations.order(:name)
       @notes = @user.notes.order(created_at: :desc).limit(10)
-      # @reports = FeedbackMessage.where(offender_id: @user.id)
-      # @reports = FeedbackMessage.where(offender_id: current_user.id)
-      # @reports = FeedbackMessage.where(reporter_id: current_user.id, offender_id: @user.id)
-      @reports = FeedbackMessage.where(reporter_id: @user.id).or(FeedbackMessage.where(offender_id: @user.id))
-      # binding.pry
       @organization_memberships = @user.organization_memberships
         .joins(:organization)
         .order("organizations.name" => :asc)
@@ -190,15 +189,13 @@ module Admin
       Credit.remove_from(org, amount)
     end
 
-    def set_related_reactions
-      user_article_ids = @user.articles.ids
-      user_comment_ids = @user.comments.ids
-      @related_vomit_reactions = Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids,
-                                                category: "vomit")
-        .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
-        .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
-        .includes(:reactable)
-        .order(created_at: :desc).limit(15)
+    def set_feedback_messages
+      offender_report_ids = @user.offender_feedback_messages.ids
+      affected_report_ids = @user.affected_feedback_messages.ids
+      reporter_report_ids = @user.reporter_feedback_messages.ids
+      @related_reports = FeedbackMessage.where(offender_id: offender_report_ids)
+        .or(FeedbackMessage.where(affected_id: affected_report_ids))
+        .or(FeedbackMessage.where(reporter_id: reporter_report_ids))
     end
 
     def user_params
