@@ -49,12 +49,13 @@ RSpec.describe UserSubscription, type: :model do
       it "is required on creation" do
         subscription = described_class.new(
           user_subscription_sourceable: nil, subscriber: subscriber, subscriber_email: subscriber.email,
+          author: source.user
         )
         subscription.save
 
         expect(subscription).not_to be_valid
-        expect(subscription.errors.messages.keys).to match_array(
-          %i[author_id user_subscription_sourceable_id user_subscription_sourceable_type],
+        expect(subscription.errors.messages.keys).to include(
+          :user_subscription_sourceable_id, :user_subscription_sourceable_type
         )
       end
 
