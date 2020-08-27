@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   include ApplicationHelper
 
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit manage update destroy stats]
+  before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish]
   before_action :raise_suspended, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -195,7 +195,7 @@ class ArticlesController < ApplicationController
 
     return unless @article.save
 
-    redirect_to current_state_path
+    redirect_to "#{URL.url@article.current_state_path}"
   end
 
   private
