@@ -21,6 +21,16 @@ module ResourceAdmin
       request.origin.nil? || request.origin.gsub("https", "http") == request.base_url.gsub("https", "http")
     end
 
+    def default_url_options
+      # [@forem/delightful] - this will be used to further implement i18n in the
+      # future. This is here to prevent path helpers from breaking. The locale
+      # will be found in the URL params as :locale and in the format of
+      # prefix-locale-region (i.e. lang-fr-ca).
+
+      # _prefix, locale, region = params[:locale].split("-")
+      { locale: nil }
+    end
+
     private
 
     def authorize_admin
