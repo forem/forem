@@ -1,7 +1,7 @@
 module Profiles
   module ExtractData
     def self.call(user)
-      user_attributes = user.attributes.symbolize_keys!
+      user_attributes = user.attributes
 
       mapped_attributes = Profile::MAPPED_ATTRIBUTES
       direct_attributes = Profile.attributes! - mapped_attributes.keys

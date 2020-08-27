@@ -24,13 +24,15 @@ class User < ApplicationRecord
                           unless: :_skip_creating_profile
 
       # Keep saving changes locally for the time being, but propagate them to profiles.
-      after_update_commit do
-        return if _skip_profile_sync
+      after_update_commit :sync_profile
 
-        if previous_changes.keys.any? { |attribute| attribute.in?(Profile.mapped_attributes) }
-          profile.update(data: Profiles::ExtractData.call(self))
-        end
+      def sync_profile
+        return if _skip_profile_sync
+        return unless previous_changes.keys.any? { |attribute| attribute.in?(Profile.mapped_attributes) }
+
+        profile.update(data: Profiles::ExtractData.call(self))
       end
+      private :sync_profile
     end
   end
 

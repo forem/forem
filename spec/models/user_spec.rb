@@ -1203,12 +1203,5 @@ RSpec.describe User, type: :model do
       # Changes were also persisted in the users table
       expect(user.reload.available_for).to eq "profile migrations"
     end
-
-    it "reads from the profile model, not the user", :aggregate_failures do
-      user.profile.update(available_for: "Well, actually...")
-
-      expect(user.available_for).to eq "Well, actually..."
-      expect(user[:available_for]).to be nil
-    end
   end
 end
