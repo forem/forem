@@ -27,31 +27,8 @@ class GithubRepo < ApplicationRecord
   end
 
   def self.update_to_latest
-    where("updated_at < ?", 26.hours.ago).includes(:user).find_each do |repo|
-      user = repo.user
-      next unless user
-
-      client = Github::OauthClient.for_user(user)
-      begin
-        fetched_repo = client.repository(repo.info_hash[:full_name])
-
-        repo.update!(
-          github_id_code: fetched_repo.id,
-          name: fetched_repo.name,
-          description: fetched_repo.description,
-          language: fetched_repo.language,
-          fork: fetched_repo.fork,
-          bytes_size: fetched_repo.size,
-          watchers_count: fetched_repo.watchers,
-          stargazers_count: fetched_repo.stargazers_count,
-          info_hash: fetched_repo.to_hash,
-        )
-        repo.user&.touch(:github_repos_updated_at)
-      rescue Github::Errors::NotFound
-        repo.destroy
-      rescue StandardError
-        next
-      end
+    where("updated_at < ?", 26.hours.ago).ids.each do |repo_id|
+      GithubRepos::RepoSyncWorker.perform_async(repo_id)
     end
   end
 

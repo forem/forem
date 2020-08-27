@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_22_092853) do
+ActiveRecord::Schema.define(version: 2020_08_27_073520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1161,8 +1161,8 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
     t.string "subscriber_email", null: false
     t.bigint "subscriber_id", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_subscription_sourceable_id", null: false
-    t.string "user_subscription_sourceable_type", null: false
+    t.bigint "user_subscription_sourceable_id"
+    t.string "user_subscription_sourceable_type"
     t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
     t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
     t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
