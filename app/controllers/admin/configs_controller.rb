@@ -45,6 +45,7 @@ module Admin
         github_secret
         facebook_key
         facebook_secret
+        allow_email_password_registration
       ]
 
       allowed_params = allowed_params |

@@ -1,6 +1,10 @@
 module Constants
   module SiteConfig
     DETAILS = {
+      allow_email_password_registration: {
+        description: "Can users sign up with only email and password?",
+        placeholder: ""
+      },
       authentication_providers: {
         description: "How can users sign in?",
         placeholder: ""
