@@ -28,7 +28,7 @@
       </figure>
       <div class="authentication-header__content">
         <h2 class="authentication-header__title">
-  <a href="/"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
+          <a href="/"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
         </h2>
         <p class="authentication-header__description">
           <% if SiteConfig.tagline.present? %>
