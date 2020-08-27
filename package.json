@@ -23,7 +23,8 @@
     "lint:frontend": "eslint app/assets/javascripts/**/*.js app/javascript/**/*.jsx app/javascript/**/*.js",
     "pretest": "npm run lint:frontend",
     "test": "jest app/javascript/ bin/ --coverage",
-    "test:watch": "jest app/javascript/ bin/ --watch"
+    "test:watch": "jest app/javascript/ bin/ --watch",
+    "postcss": "postcss public/assets/*.css -d public/assets"
   },
   "husky": {
     "hooks": {
@@ -143,6 +144,7 @@
     "@honeybadger-io/webpack": "^1.2.0",
     "@rails/webpacker": "5.2.1",
     "ahoy.js": "^0.3.7",
+    "autoprefixer": "^9.8.6",
     "babel-preset-preact": "^2.0.0",
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^3.0.1",
@@ -154,6 +156,9 @@
     "intersection-observer": "^0.11.0",
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
+    "postcss-cli": "^7.1.1",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-smart-import": "^0.7.6",
     "postscribe": "^2.0.8",
     "preact": "^10.4.7",
     "preact-textarea-autosize": "^4.0.7",
