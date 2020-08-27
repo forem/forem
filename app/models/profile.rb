@@ -1,14 +1,7 @@
-# Explicitly load ProfileField before Profile in all environments
-require_dependency Rails.root.join("app/models/profile_field.rb")
-
 class Profile < ApplicationRecord
   belongs_to :user
 
   validates :user_id, uniqueness: true
-
-  # A dynamic mixin so the wrapper methods on user update automatically.
-  # See: https://dev.to/appsignal/configurable-ruby-modules-the-module-builder-pattern-4483
-  USER_MIXIN = Module.new
 
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
@@ -26,29 +19,13 @@ class Profile < ApplicationRecord
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
     ProfileField.find_each do |field|
-      attribute_name = field.attribute_name
-      store_attribute :data, attribute_name, field.type
-
-      getter = MAPPED_ATTRIBUTES.fetch(attribute_name, attribute_name).to_s
-      USER_MIXIN.instance_eval do
-        define_method(getter) do
-          if profile.respond_to?(attribute_name)
-            profile.public_send(attribute_name)
-          else
-            self[getter]
-          end
-        end
-
-        # Make mapped attributes available under both names
-        alias_method(attribute_name, getter) if attribute_name != getter
-      end
+      store_attribute :data, field.attribute_name, field.type
     end
   end
 
-  refresh_attributes!
-
   # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes
+    refresh_attributes!
     stored_attributes[:data] || []
   end
 

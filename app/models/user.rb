@@ -9,8 +9,6 @@ class User < ApplicationRecord
   # be removed.
   concerning :ProfileMigration do
     included do
-      include Profile::USER_MIXIN
-
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
       # and can cause hard to track down bugs. We use an instance-level attribute
