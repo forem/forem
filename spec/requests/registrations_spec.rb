@@ -32,4 +32,10 @@ RSpec.describe "Registrations", type: :request do
       end
     end
   end
+
+  describe "POST /enter" do
+    it "creates a user" do
+      post "/users"
+      expect(User.all.size).to eq(2)
+    end
 end
