@@ -130,8 +130,7 @@
     font-size: var(--fs-s);
     color: var(--card-color-secondary);
     background: var(--card-bg);
-    padding-left: var(--su-1);
-    padding-right: var(--su-1);
+    padding: 0 var(--su-2);
     z-index: 1;
     display: inline-block;
     max-width: 75%;
