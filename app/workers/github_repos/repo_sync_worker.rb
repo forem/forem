@@ -2,7 +2,7 @@ module GithubRepos
   class RepoSyncWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :low_priority, retry: 10
+    sidekiq_options queue: :low_priority, retry: 10, lock: :until_executing
 
     def perform(repo_id)
       repo = GithubRepo.find_by(id: repo_id)
