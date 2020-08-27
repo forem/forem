@@ -3,8 +3,8 @@ class ArticlePolicy < ApplicationPolicy
     user_is_author? || user_admin? || user_org_admin? || minimal_admin?
   end
 
-  def admin_unpublish
-    user_admin?
+  def admin_unpublish?
+    minimal_admin?
   end
 
   def new?
