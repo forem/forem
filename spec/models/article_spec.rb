@@ -28,9 +28,10 @@ RSpec.describe Article, type: :model do
     it { is_expected.to have_many(:polls).dependent(:destroy) }
     it { is_expected.to have_many(:profile_pins).dependent(:destroy) }
     it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+    it { is_expected.to have_many(:sourced_subscribers) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
     it { is_expected.to have_many(:tags) }
-    it { is_expected.to have_many(:user_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_many(:user_subscriptions).dependent(:nullify) }
 
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
