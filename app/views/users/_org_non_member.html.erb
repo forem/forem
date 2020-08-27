@@ -21,7 +21,7 @@
     <p>Starred fields are required</p>
   </header>
 
-  <%= form_for @organization, url: organization_path(params[:locale], @organization), html: { class: "grid gap-6" } do |f| %>
+  <%= form_for @organization, url: organizations_path(params[:locale], @organization), html: { class: "grid gap-6" } do |f| %>
     <div class="crayons-field">
       <%= f.label :name, "Name *", class: "crayons-field__label" %>
       <%= f.text_field :name, class: "crayons-textfield", placeholder: "Acme Inc." %>
