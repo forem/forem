@@ -25,13 +25,18 @@ class Profile < ApplicationRecord
 
   # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes
-    refresh_attributes!
     stored_attributes[:data] || []
+  end
+
+  # Forces a reload before returning attributes
+  def self.attributes!
+    refresh_attributes!
+    attributes
   end
 
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
   def self.mapped_attributes
-    attributes.map { |attribute| MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s }
+    attributes!.map { |attribute| MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s }
   end
 end

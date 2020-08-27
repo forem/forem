@@ -13,6 +13,9 @@ module Profiles
     end
 
     def call
+      # Ensure we have up to date attributes
+      Profile.refresh_attributes!
+
       # We don't update `data` directly. This uses the defined store_attributes
       # so we can make use of their typecasting.
       @profile.assign_attributes(@updated_attributes)
