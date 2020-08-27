@@ -5,7 +5,9 @@
         Welcome to <%= community_name %>
       </h1>
       <p class="registration__description">
-        <a href="/"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>.
+        <a href="/"><%= community_name %></a> is a community of
+        <%= number_with_delimiter User.registered.estimated_count %>
+        amazing <%= community_members_label %>.
       </p>
     </div>
 
@@ -13,11 +15,15 @@
       <%= render partial: "shared/authentication/providers_registration_form" %>
 
       <div class="registration__actions-email" id="sign-in-password-form">
-        <div class="registration__hr">
-          <span class="registration__hr-label">
-            Have a password? Continue with your email address
-          </span>
-        </div>
+        <%# if there are no SSO auths enabled, we don't ask the user if they have a password %>
+        <% if authentication_enabled_providers.any? %>
+          <div class="registration__hr">
+            <span class="registration__hr-label">
+              Have a password? Continue with your email address
+            </span>
+          </div>
+        <% end %>
+
         <%= form_for(User.new, as: :user, url: session_path(:user)) do |f| %>
           <div class="crayons-field mb-3">
             <%= f.label :email, class: "crayons-field__label" %>
