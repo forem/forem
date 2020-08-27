@@ -10,12 +10,12 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    raise unless SiteConfig.allow_email_password_registration
+    not_authorized unless SiteConfig.allow_email_password_registration
 
     build_resource(sign_up_params)
     resource.saw_onboarding = false
     resource.editor_version = "v2"
-    resource.save
+    resource.save if resource.email.present?
     yield resource if block_given?
     if resource.persisted?
       redirect_to "/confirm-email?email=#{resource.email}"
