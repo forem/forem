@@ -29,10 +29,18 @@
             <% if SiteConfig.public_send(config_key).is_a?(Hash) %>
               <%= admin_config_label config_key.to_s %>
               <div class="form-group">
-                <%= label_tag "Please type out the sentence below to submit:" %>
-                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
-                <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
-                <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
+                <%= f.fields_for config_key do |a_field| %>
+                  <% SiteConfig.public_send(config_key).each do |key, value| %>
+                    <div>
+                      <%= admin_config_label key.to_s %>
+                      <%= a_field.text_field key,
+                                             class: "form-control",
+                                             value: SiteConfig.public_send(config_key)[key],
+                                             placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                      <div class="alert alert-info"><%= "#{key} #{config_key.to_s.tr! '_', ' '}" %></div>
+                    </div>
+                    <% end %>
+                <% end %>
               </div>
             <% elsif SiteConfig.public_send(config_key).is_a?(Array) %>
               <div class="form-group">
@@ -58,8 +66,8 @@
           <% if current_user.has_role?(:single_resource_admin, Config) %>
                 <div class="form-group">
                   <%= label_tag "Please type out the sentence below to submit:" %>
-                  <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off" %>
-                  <div class="alert alert-info">Type the sentence: My username is @your_username and this action is 100% safe and appropriate.</div>
+                  <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+                  <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
                   <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
                 </div>
           <% end %>
