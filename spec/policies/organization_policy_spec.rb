@@ -28,7 +28,7 @@ RSpec.describe OrganizationPolicy, type: :policy do
     subject(:organization_policy) { described_class.new(user, org) }
 
     let(:user) { build_stubbed(:user) }
-    let(:org)  { build_stubbed(:organization) }
+    let(:org)  { create(:organization) }
 
     before do
       create(:organization_membership, user: user, organization: org, type_of_user: "admin")
@@ -43,7 +43,7 @@ RSpec.describe OrganizationPolicy, type: :policy do
     subject(:organization_policy) { described_class.new(user, new_org) }
 
     let(:user) { build_stubbed(:user) }
-    let(:org)  { build_stubbed(:organization) }
+    let(:org)  { create(:organization) }
     let(:new_org) { build_stubbed(:organization) }
 
     before { create(:organization_membership, user: user, organization: org, type_of_user: "admin") }

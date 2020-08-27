@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_09_200631) do
+ActiveRecord::Schema.define(version: 2020_08_27_073520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -346,6 +346,17 @@ ActiveRecord::Schema.define(version: 2020_08_09_200631) do
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_classified_listing_categories_on_name", unique: true
     t.index ["slug"], name: "index_classified_listing_categories_on_slug", unique: true
+  end
+
+  create_table "classified_listing_endorsements", force: :cascade do |t|
+    t.boolean "approved", default: false
+    t.bigint "classified_listing_id"
+    t.string "content"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id"
+    t.index ["classified_listing_id"], name: "index_classified_listing_endorsements_on_classified_listing_id"
+    t.index ["user_id"], name: "index_classified_listing_endorsements_on_user_id"
   end
 
   create_table "classified_listings", force: :cascade do |t|
@@ -922,13 +933,15 @@ ActiveRecord::Schema.define(version: 2020_08_09_200631) do
   end
 
   create_table "profile_fields", force: :cascade do |t|
-    t.boolean "active", default: true, null: false
+    t.string "attribute_name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.string "description"
+    t.integer "display_area", default: 1, null: false
     t.string "group"
     t.integer "input_type", default: 0, null: false
     t.citext "label", null: false
     t.string "placeholder_text"
+    t.boolean "show_in_onboarding", default: false, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["label"], name: "index_profile_fields_on_label", unique: true
   end
@@ -950,7 +963,7 @@ ActiveRecord::Schema.define(version: 2020_08_09_200631) do
     t.jsonb "data", default: {}, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_profiles_on_user_id"
+    t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 
   create_table "rating_votes", force: :cascade do |t|
@@ -1148,8 +1161,8 @@ ActiveRecord::Schema.define(version: 2020_08_09_200631) do
     t.string "subscriber_email", null: false
     t.bigint "subscriber_id", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_subscription_sourceable_id", null: false
-    t.string "user_subscription_sourceable_type", null: false
+    t.bigint "user_subscription_sourceable_id"
+    t.string "user_subscription_sourceable_type"
     t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
     t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
     t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
@@ -1207,7 +1220,9 @@ ActiveRecord::Schema.define(version: 2020_08_09_200631) do
     t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
+    t.datetime "facebook_created_at"
     t.string "facebook_url"
+    t.string "facebook_username"
     t.integer "failed_attempts", default: 0
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
@@ -1262,6 +1277,7 @@ ActiveRecord::Schema.define(version: 2020_08_09_200631) do
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
+    t.boolean "reaction_notifications", default: true
     t.integer "reactions_count", default: 0, null: false
     t.boolean "registered", default: true
     t.datetime "registered_at"
@@ -1299,6 +1315,7 @@ ActiveRecord::Schema.define(version: 2020_08_09_200631) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["facebook_username"], name: "index_users_on_facebook_username"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
@@ -1341,24 +1358,47 @@ ActiveRecord::Schema.define(version: 2020_08_09_200631) do
   add_foreign_key "ahoy_messages", "users", on_delete: :cascade
   add_foreign_key "ahoy_visits", "users", on_delete: :cascade
   add_foreign_key "api_secrets", "users", on_delete: :cascade
+  add_foreign_key "articles", "organizations", on_delete: :nullify
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
+  add_foreign_key "classified_listing_endorsements", "classified_listings"
+  add_foreign_key "classified_listing_endorsements", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
+  add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "collections", "organizations", on_delete: :nullify
+  add_foreign_key "credits", "organizations", on_delete: :restrict
+  add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
+  add_foreign_key "display_ad_events", "users", on_delete: :cascade
+  add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
+  add_foreign_key "html_variant_successes", "articles", on_delete: :nullify
+  add_foreign_key "html_variant_successes", "html_variants", on_delete: :cascade
+  add_foreign_key "html_variant_trials", "articles", on_delete: :nullify
+  add_foreign_key "html_variant_trials", "html_variants", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
+  add_foreign_key "notifications", "organizations", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
+  add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
+  add_foreign_key "poll_options", "polls", on_delete: :cascade
+  add_foreign_key "poll_skips", "polls", on_delete: :cascade
+  add_foreign_key "poll_skips", "users", on_delete: :cascade
+  add_foreign_key "poll_votes", "poll_options", on_delete: :cascade
+  add_foreign_key "poll_votes", "polls", on_delete: :cascade
+  add_foreign_key "poll_votes", "users", on_delete: :cascade
+  add_foreign_key "polls", "articles", on_delete: :cascade
   add_foreign_key "profiles", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"

@@ -62,7 +62,8 @@
   }
 
   &__header {
-    margin-bottom: var(--article-padding-y);
+    overflow-wrap: anywhere;
+    word-break: break-word;
 
     &__meta {
       padding: var(--article-padding-y) var(--article-padding-x) 0
@@ -78,14 +79,18 @@
     align-items: center;
   }
 
+  &__main {
+    padding: var(--article-padding-y) var(--article-padding-x);
+    gap: var(--su-7);
+  }
+
   &__body {
-    padding: 0 var(--article-padding-x) var(--article-padding-y)
-      var(--article-padding-x);
     overflow-wrap: break-word;
   }
 }
 .text-styles {
   font-size: var(--article-font-size);
+  font-family: var(--content-font-family);
 
   a {
     code {
@@ -108,7 +113,7 @@
   h4,
   h5,
   h6 {
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     margin: var(--article-rythm) 0;
     margin-top: calc(var(--article-rythm) * 2);
     padding: 0;
@@ -204,7 +209,7 @@
     }
 
     &.twitter-tweet {
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       background: var(--body-color-inverted);
       max-width: 456px;
       border: 1px solid #e9eef2;
@@ -522,64 +527,5 @@
     font-weight: var(--fw-bold);
     text-transform: uppercase;
     color: var(--card-color-tertiary);
-  }
-}
-
-.crayons-article {
-  .article-collection-wrapper {
-    font-family: var(--ff-default);
-    font-size: 16px;
-    border-radius: var(--radius);
-    border: 1px solid var(--base-30);
-    width: 92%;
-    max-width: 500px;
-    margin: calc(1.1vw + 5px) auto 1vw;
-    p {
-      margin: 0px auto;
-      padding: calc(0.1vw + 9px);
-      font-weight: bold;
-      font-size: 0.96em;
-    }
-
-    .article-collection {
-      user-select: none;
-      font-size: 16px;
-      overflow: hidden;
-      position: relative;
-      z-index: 8;
-      a {
-        color: var(--body-color);
-        padding: calc(0.1vw + 9px);
-        display: block;
-        position: relative;
-        z-index: 4;
-        border-top: 1px solid var(--base-30);
-        font-size: 0.88em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        &:last-child {
-          border-bottom-left-radius: 5px;
-          border-bottom-right-radius: 5px;
-        }
-
-        &.current-article {
-          background: var(--accent-brand-lighter);
-          color: var(--body-color-inverted);
-        }
-
-        &.collection-link-hidden {
-          display: none;
-        }
-      }
-    }
-
-    &.article-collection-wrapper-bottom {
-      margin-bottom: 3vw;
-
-      p {
-        margin-top: 5px;
-      }
-    }
   }
 }

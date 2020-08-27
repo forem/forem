@@ -1,14 +1,152 @@
-GITHUB_KEY:
-GITHUB_SECRET:
+# App domain + Protocol setting for development
+APP_DOMAIN: "localhost:3000"
+APP_PROTOCOL: "http://"
 
-TWITTER_KEY:
-TWITTER_SECRET:
+# Community Related Variables
+COMMUNITY_NAME: "DEV(local)"
 
-PUSHER_APP_ID:
-PUSHER_KEY:
-PUSHER_SECRET:
-PUSHER_CLUSTER:
+# Email related variables
+DEFAULT_EMAIL: "yo@dev.to"
 
-TWITCH_CLIENT_ID:
-TWITCH_CLIENT_SECRET:
-TWITCH_WEBHOOK_SECRET:
+# Service timeout length
+RACK_TIMEOUT_WAIT_TIMEOUT: 100_000
+RACK_TIMEOUT_SERVICE_TIMEOUT: 100_000
+
+# Redis caching storage
+REDIS_URL: "redis://localhost:6379"
+
+# Redis sessions storage
+REDIS_SESSIONS_URL: "redis://localhost:6379"
+SESSION_KEY: "_Dev_Community_Session"
+SESSION_EXPIRY_SECONDS: 1209600 # two weeks in seconds
+
+# Redis Sidekiq storage
+REDIS_SIDEKIQ_URL: "redis://localhost:6379"
+
+# Elasticsearch
+ELASTICSEARCH_URL: "http://localhost:9200"
+
+# SSL config
+FORCE_SSL_IN_RAILS: "not applicable in dev"
+
+################################################
+############## 3rd Party Services ##############
+################################################
+
+# It's best if you have the following configured
+# for more development experience
+
+# GitHub
+# (https://developer.github.com/v3/guides/basics-of-authentication/)
+GITHUB_KEY: ""
+GITHUB_SECRET: ""
+
+# Twitter
+# (https://developer.twitter.com/en/docs/basics/authentication/oauth-2-0/application-only)
+TWITTER_KEY: ""
+TWITTER_SECRET: ""
+
+################################################
+######### Optional 3rd Party Services ##########
+################################################
+
+# Honeybadger for error tracking
+# (https://docs.honeybadger.io/lib/ruby/getting-started/introduction.html)
+HONEYBADGER_API_KEY: "Optional"
+HONEYBADGER_JS_API_KEY: "Optional"
+
+# AWS for images storages
+AWS_ID: "Optional"
+AWS_SECRET: "Optional"
+AWS_BUCKET_NAME: "Optional"
+AWS_UPLOAD_REGION: ""
+
+# AWS SDK
+# (https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html)
+AWS_DEFAULT_REGION: "us-east-1"
+AWS_SDK_KEY: "Optional"
+AWS_SDK_SECRET: "Optional"
+
+# AWS for video storage
+AWS_S3_INPUT_BUCKET: "Optional"
+AWS_S3_VIDEO_ID: "Optional"
+AWS_S3_VIDEO_KEY: "Optional"
+
+# Buffer for sending to buffer
+# (https://buffer.com/developers/api)
+BUFFER_ACCESS_TOKEN: "Optional"
+BUFFER_FACEBOOK_ID: "Optional"
+BUFFER_LINKEDIN_ID: "Optional"
+BUFFER_PROFILE_ID: 0
+BUFFER_TWITTER_ID: "Optional"
+BUFFER_LISTINGS_PROFILE: "Optional"
+
+# Cloudinary for image resizing and cache??
+# (https://cloudinary.com/documentation/rails_integration)
+CLOUDINARY_API_KEY: "Optional"
+CLOUDINARY_API_SECRET: "Optional"
+CLOUDINARY_CLOUD_NAME: "Optional"
+CLOUDINARY_SECURE: "Optional"
+
+# HTML/CSS to Image for generating social preview images
+# (https://docs.htmlcsstoimage.com/example-code/ruby)
+HCTI_API_USER_ID: "Optional"
+HCTI_API_KEY: "Optional"
+
+# Fastly for edge caching
+# (https://docs.fastly.com/api/)
+FASTLY_API_KEY: ""
+FASTLY_SERVICE_ID: ""
+
+# Honeycomb for monitoring and observability
+# (https://www.honeycomb.io/)
+HONEYCOMB_API_KEY: ""
+
+# Google analytic
+# (https://developers.google.com/analytics/devguides/reporting/core/v4)
+GA_TRACKING_ID: "Optional"
+
+# Mailchimp for mails
+# (https://mailchimp.com/developer/)
+MAILCHIMP_API_KEY: "Optional-valid"
+
+# Pusher for DEV Connect/notfications
+# (https://pusher.com/docs)
+PUSHER_APP_ID: "Optional"
+PUSHER_CLUSTER: "Optional"
+PUSHER_KEY: "Optional"
+PUSHER_SECRET: "Optional"
+PUSHER_BEAMS_ID: "Optional"
+PUSHER_BEAMS_KEY: "Optional"
+
+# Google recaptcha
+# (https://developers.google.com/recaptcha/intro)
+RECAPTCHA_SECRET: "Optional"
+RECAPTCHA_SITE: "Optional"
+
+# Slack for customer alerts
+# (https://api.slack.com/)
+SLACK_CHANNEL: ""
+SLACK_DEPLOY_CHANNEL: ""
+SLACK_WEBHOOK_URL: ""
+
+# Stripe for payment system
+# (https://stripe.com/docs/api)
+STRIPE_PUBLISHABLE_KEY: "Optional"
+STRIPE_SECRET_KEY: "Optional"
+
+# For video calling in DEV Connect
+# (https://www.twilio.com/docs/video)
+TWILIO_ACCOUNT_SID: "Optional"
+TWILIO_VIDEO_API_KEY: "Optional"
+TWILIO_VIDEO_API_SECRET: "Optional"
+
+# For Twitch live stream integration
+# (https://dev.twitch.tv/docs)
+TWITCH_CLIENT_ID: "Optional"
+TWITCH_CLIENT_SECRET: "Optional"
+TWITCH_WEBHOOK_SECRET: "Optional"
+
+# For calling the Stack Exchange API
+# (https://api.stackexchange.com/docs)
+STACK_EXCHANGE_APP_KEY: ""

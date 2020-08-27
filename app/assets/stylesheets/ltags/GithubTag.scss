@@ -3,6 +3,9 @@
 .ltag_github-liquid-tag {
   margin: 1.1em auto 1.3em;
   max-width: 580px;
+  z-index: 1;
+  position: relative;
+
   h1 {
     font-size: 1.05em !important;
     line-height: 1.2em !important;

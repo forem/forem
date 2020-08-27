@@ -31,16 +31,6 @@
       <% else %>
         <dd>N/A</dd>
       <% end %>
-      <dt>Sustaining Member:</dt>
-      <dd><%= @user.a_sustaining_member? %></dd>
-      <% if @user.a_sustaining_member? %>
-        <dt>Monthly Dues:</dt>
-        <dd><%= @user.monthly_dues %></dd>
-        <dt>25% Off Coupon:</dt>
-        <dd><%= CouponGenerator.new(current_user.id, "member_discount").generate %> || "N/A" </dd>
-        <dt>1x Gift:</dt>
-        <dd><%= CouponGenerator.new(current_user.id, "tee_pack").generate %> || "N/A" </dd>
-      <% end %>
     </dl>
   </div>
   </p>

@@ -6,6 +6,7 @@
 @import 'base/helpers';
 @import 'base/icons';
 @import 'base/layout';
+@import 'base/typography';
 
 @import 'components/avatars';
 @import 'components/banners';
@@ -19,6 +20,7 @@
 @import 'components/modals';
 @import 'components/navigation';
 @import 'components/notices';
+@import 'components/series-switcher';
 @import 'components/snackbars';
 @import 'components/spinner';
 @import 'components/stories';
@@ -30,3 +32,4 @@
 @import 'views/article-form';
 @import 'views/listings';
 @import 'views/dashboard';
+@import 'views/sponsors';

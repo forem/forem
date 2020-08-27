@@ -9,6 +9,7 @@ module Admin
       { name: "articles",           controller: "articles" },
       { name: "broadcasts",         controller: "broadcasts" },
       { name: "badges",             controller: "badges" },
+      { name: "badge_achievements", controller: "badge_achievements" },
       { name: "chat_channels",      controller: "chat_channels" },
       { name: "comments",           controller: "comments" },
       { name: "config",             controller: "config" },

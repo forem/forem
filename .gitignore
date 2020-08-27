@@ -36,11 +36,13 @@ latest.dump
 
 # Ignore application configuration
 /config/application.yml
+/config/application_unused.yml
 /public/packs
 /public/packs-test
 /node_modules
 yarn-debug.log*
 .yarn-integrity
+.env
 
 # Ignore storybook static site generation
 app/javascript/storybook-static/

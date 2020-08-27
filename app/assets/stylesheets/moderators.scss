@@ -163,13 +163,12 @@
 }
 
 .mod-actions-menu-btn {
-  transition: 0.3s all ease;
   position: fixed;
   bottom: var(--su-7);
+  margin-bottom: env(safe-area-inset-bottom);
   right: var(--su-7);
   z-index: 201;
   cursor: pointer;
-  transition: 0.3s all ease;
   border-radius: 50px;
 
   @media (max-width: $breakpoint-m) {
@@ -520,7 +519,7 @@
         font-size: var(--fs-base);
         text-align: left;
         color: var(--base-80);
-        font-family: var(--ff-accent);
+        font-family: var(--ff-monospace);
         .num-sign {
           color: var(--base-40);
           padding-left: 2px;

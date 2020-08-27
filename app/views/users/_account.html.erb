@@ -33,7 +33,7 @@
           <summary class="title fw-medium"><%= api_secret.description %></summary>
           <div class="flex pt-2">
             <div class="flex-1 pl-4">
-              <p class="ff-accent"><%= api_secret.secret %></p>
+              <p class="ff-monospace"><%= api_secret.secret %></p>
               <p class="fs-s">Created: <time datetime="<%= api_secret.created_at.rfc3339 %>"><%= api_secret.created_at.to_s %></time></p>
             </div>
             <%= form_tag users_api_secret_path(api_secret.id), class: "api__secret__revoke", method: :delete do %>
@@ -66,7 +66,7 @@
       </p>
     </div>
 
-    <% authentication_enabled_providers.each do |provider| %>
+    <% authentication_enabled_providers_for_user.each do |provider| %>
       <% onsubmit = "return confirm('Are you absolutely sure you want to remove your #{provider.official_name} account?');" %>
       <%= form_tag users_remove_identity_path, method: :delete, onsubmit: onsubmit do %>
         <%= hidden_field_tag :provider, provider.provider_name %>

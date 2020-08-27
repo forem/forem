@@ -76,7 +76,7 @@ RSpec.describe "Authenticating with GitHub" do
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_link(sign_in_link)
-        expect(page).to have_link("All about #{ApplicationConfig['COMMUNITY_NAME']}")
+        expect(page).to have_link("All about #{SiteConfig.community_name}")
       end
 
       it "notifies Datadog about a callback error" do
@@ -162,12 +162,25 @@ RSpec.describe "Authenticating with GitHub" do
 
     before do
       auth_payload.info.email = user.email
-      sign_in user
+    end
+
+    after do
+      sign_out user
     end
 
     context "when using valid credentials" do
-      it "logs in and redirects to the dashboard" do
-        visit "/users/auth/github"
+      it "logs in" do
+        visit root_path
+        click_link(sign_in_link, match: :first)
+
+        expect(page).to have_current_path("/?signin=true")
+      end
+    end
+
+    context "when already signed in" do
+      it "redirects to the dashboard" do
+        sign_in user
+        visit user_github_omniauth_authorize_path
 
         expect(page).to have_current_path("/dashboard?signin=true")
       end

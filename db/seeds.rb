@@ -264,6 +264,8 @@ seeder.create_if_none(Broadcast) do
     twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? " \
       "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
       "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
+    facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
+      "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
       "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
     customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
@@ -302,7 +304,7 @@ seeder.create_if_none(Broadcast) do
     tags: welcome
     ---
 
-    Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
+    Hey there! Welcome to #{SiteConfig.community_name}!
 
     Leave a comment below to introduce yourself to the community!✌️
   HEREDOC
@@ -477,6 +479,15 @@ seeder.create_if_none(Listing) do
   end
 end
 
+seeder.create_if_none(ListingEndorsement) do
+  5.times do
+    ListingEndorsement.create!(
+      content: Faker::Lorem.sentence,
+      user: User.order(Arel.sql("RANDOM()")).first,
+      listing: Listing.order(Arel.sql("RANDOM()")).first,
+    )
+  end
+end
 ##############################################################################
 
 seeder.create_if_none(Page) do

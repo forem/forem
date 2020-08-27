@@ -1,30 +1,44 @@
-<div class="global-signup-modal" id="global-signup-modal" style="display:none">
-  <div class="global-signup-modal--bg" id="global-signup-modal-bg">
-    <button type="button" class="close-modal-button">
-      <img src="<%= asset_path("cancel.svg") %>" class="search-img" alt="Close modal button" />
+<div id="global-signup-modal" class="authentication-modal crayons-modal crayons-modal--s absolute hidden">
+  <div class="authentication-modal__box crayons-modal__box">
+    <button type="button" class="authentication-modal__close-btn close-modal-button crayons-btn crayons-btn--icon crayons-btn--ghost">
+      <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
+      </svg>
     </button>
-  </div>
-  <div class="global-signup-modal--inner-a">
-    <%= image_tag(cloudinary(SiteConfig.mascot_image_url, 300),
-                  class: "mascot-image",
-                  alt: SiteConfig.mascot_image_description,
-                  loading: "lazy") %>
-    <% if any_selfserve_auth? %>
-      <h1>Join our <%= community_qualified_name %> :)</h1>
-
-      <% if SiteConfig.tagline.present? %>
-        <p><%= SiteConfig.tagline %></p>
-      <% end %>
-
-      <div class="flex flex-col l:flex-row justify-center">
-        <%= render partial: "shared/authentication/providers_signup_modal" %>
+    <div class="crayons-modal__box__body p-0">
+      <div class="authentication-modal__container">
+        <figure class="authentication-modal__image-container">
+          <img class="authentication-modal__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
+              alt="Secondary <%= community_name %> logo" />
+        </figure>
+        <div class="authentication-modal__content">
+          <h1 class="authentication-modal__title">
+            Log in to continue
+          </h1>
+          <p class="authentication-modal__description">
+            <% if SiteConfig.tagline.present? %>
+              <%= SiteConfig.tagline %>
+            <% else %>
+              We’d love for you to be apart of this community.
+            <% end %>
+          </p>
+        </div>
       </div>
 
-      <p>
-        <em>We strive for transparency and don't collect excess data.</em>
-      </p>
-    <% else %>
-      <h1><a href="/enter" data-no-instant>Sign in</a> to <%= community_qualified_name %> :)</h1>
-    <% end %>
+      <div class="authentication-modal__actions">
+        <a href="/enter" class="crayons-btn" aria-label="Log in" data-no-instant>
+          Log in
+        </a>
+        <a href="/enter" class="crayons-btn crayons-btn--ghost-brand" aria-label="Create new account" data-no-instant>
+          Create new account
+        </a>
+      </div>
+      <footer class="authentication-modal__footer">
+        <p class="authentication-modal__footer-label">
+          We strive for transparency and don't collect excess data.
+        </p>
+      </footer>
+    </div>
   </div>
+  <div class="crayons-modal__overlay"></div>
 </div>

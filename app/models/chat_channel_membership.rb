@@ -66,7 +66,7 @@ class ChatChannelMembership < ApplicationRecord
 
   def channel_modified_slug
     if chat_channel.channel_type == "direct"
-      "@" + other_user&.username
+      "@#{other_user&.username}"
     else
       chat_channel.slug
     end

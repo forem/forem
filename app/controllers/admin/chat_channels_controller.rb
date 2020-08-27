@@ -29,6 +29,17 @@ module Admin
       redirect_back(fallback_location: "/admin/chat_channels")
     end
 
+    def destroy
+      @chat_channel = ChatChannel.find(params[:id])
+      if @chat_channel.users.count.zero?
+        @chat_channel.destroy
+        flash[:success] = "Channel was successfully deleted."
+      else
+        flash[:alert] = "Channel NOT deleted, because it still has users."
+      end
+      redirect_back(fallback_location: "/admin/chat_channels")
+    end
+
     private
 
     def users_by_param

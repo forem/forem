@@ -1,21 +1,19 @@
 @import '../config/import';
 
 .crayons-tag {
-  font-family: var(--ff-accent);
   font-size: var(--fs-xs);
   color: var(--tag-color);
-  line-height: var(--lh-tight);
+  line-height: 1.3;
   border-radius: var(--radius);
   padding: var(--su-1);
   display: inline-block;
-  letter-spacing: -0.025em;
 
   @media (min-width: $breakpoint-s) {
     font-size: var(--fs-s);
   }
 
   &__prefix {
-    opacity: 0.5;
+    opacity: 0.4;
     font-weight: normal;
   }
 

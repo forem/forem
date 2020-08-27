@@ -1,0 +1,110 @@
+log_worker_queue_stats:
+  cron: "*/10 * * * *" # every 10 minutes
+  class: "Metrics::RecordBackgroundQueueStatsWorker"
+prune_old_field_tests:
+  cron: "0 13 * * *" # daily at 1 pm UTC
+  class: "FieldTests::PruneOldExperimentsWorker"
+record_daily_usage:
+  cron: "0 11 * * *" # daily at 11:00 UTC
+  class: "Metrics::RecordDailyUsageWorker"
+record_daily_notifications:
+  cron: "0 11 * * *" # daily at 11:00 UTC
+  class: "Metrics::RecordDailyNotificationsWorker"
+record_data_counts:
+  cron: "10 * * * *" # every hour, 10 min after the hour
+  class: "Metrics::RecordDataCountsWorker"
+award_yearly_club_badges:
+  cron: "0 0 * * *" # daily at 12 am UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_yearly_club_badges
+    - ""
+award_beloved_comment_badges:
+  cron: "5 */12 * * *" # 5 min past every 12th hour UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_beloved_comment_badges
+    - ""
+award_four_week_streak_badge:
+  cron: "10 */12 * * *" # 10 min past every 12th hour UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_four_week_streak_badge
+    - ""
+award_eight_week_streak_badge:
+  cron: "15 */12 * * *" # 15 min past every 12th hour UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_eight_week_streak_badge
+    - ""
+award_sixteen_week_streak_badge:
+  cron: "20 */12 * * *" # 20 min past every 12th hour UTC
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_sixteen_week_streak_badge
+    - ""
+award_weekly_tag_badges:
+  cron: "0 11 * * 4" # 11 am UTC every Thursday
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_tag_badges
+    - ""
+award_contributor_badges_from_github:
+  cron: "20 * * * *" # every hour, 20 min after the hour
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_contributor_badges_from_github
+    - ""
+remove_old_html_variant_data:
+  cron: "10 * * * *" # every hour, 10 min after the hour
+  class: "HtmlVariants::RemoveOldDataWorker"
+resave_supported_tags:
+  cron: "25 0 * * *" # daily at 12:25 am UTC
+  class: "Tags::ResaveSupportedTagsWorker"
+expire_old_listings:
+  cron: "30 0 * * *" # daily at 12:30 am UTC
+  class: "Listings::ExpireOldListingsWorker"
+send_welcome_notifications:
+  cron: "0 16 * * *" # daily at 4 pm UTC
+  class: "Broadcasts::SendWelcomeNotificationsWorker"
+sitemap_refresh:
+  cron: "30 * * * *" # every hour, 30 min after the hour
+  class: "SitemapRefreshWorker"
+hourly_feed_cache_bust:
+  cron: "0 * * * *" # hourly on the hour
+  class: "BustCachePathWorker"
+  args:
+    - "/feed.xml"
+hourly_badge_cache_bust:
+  cron: "0 * * * *" # hourly on the hour
+  class: "BustCachePathWorker"
+  args:
+    - "/badge"
+daily_home_cache_bust:
+  cron: "0 0 * * *" # daily at 12 am UTC
+  class: "BustCachePathWorker"
+  args:
+    - "/"
+send_email_digest:
+  cron: "30 11 * * 3,4,5,6" # 11:30 am UTC Wed, Thurs, Fri, Sat, Sun
+  class: "SendEmailDigestWorker"
+remove_old_notifications:
+  cron: "0 5 * * *" # daily at 5 am UTC
+  class: "Notifications::RemoveOldNotificationsWorker"
+sync_credits_counter_cache:
+  cron: "0 16 * * *" # daily at 4 pm UTC
+  class: "Credits::SyncCounterCache"
+get_podcast_episodes:
+  cron: "5 * * * *" # every hour, 5 min after the hour
+  class: "Podcasts::EnqueueGetEpisodesWorker"
+update_latest_github_repos:
+  cron: "30 16 * * *" # daily at 4:30 pm UTC
+  class: "GithubRepos::UpdateLatestWorker"
+
