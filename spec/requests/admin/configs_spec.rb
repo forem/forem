@@ -155,7 +155,7 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { periodic_email_digest_min: 6 },
                                             confirmation: "Incorrect yo!" }
-          end.to raise_error Pundit::NotAuthorizedError
+          end.to raise_error ActionController::BadRequest
           expect(SiteConfig.periodic_email_digest_min).not_to eq(6)
         end
       end
@@ -238,7 +238,15 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
                                             confirmation: "Incorrect yo!" }
-          end.to raise_error Pundit::NotAuthorizedError
+          end.to raise_error ActionController::BadRequest
+        end
+
+        it "rejects update without any confirmation" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          expect do
+            post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
+                                            confirmation: "" }
+          end.to raise_error ActionController::ParameterMissing
         end
       end
 
@@ -329,7 +337,7 @@ RSpec.describe "/admin/config", type: :request do
             expect do
               params = { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" }
               post "/admin/config", params: params
-            end.to raise_error(Pundit::NotAuthorizedError)
+            end.to raise_error ActionController::BadRequest
 
             expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
           end
@@ -538,8 +546,8 @@ RSpec.describe "/admin/config", type: :request do
           twitter_hashtag = "#DEVCommunity"
           params = { site_config: { twitter_hashtag: twitter_hashtag }, confirmation: "Incorrect confirmation" }
 
-          it "does not update the twitter hashtag" do
-            expect { post "/admin/config", params: params }.to raise_error Pundit::NotAuthorizedError
+          it "does not update the twitter hashtag without the correct confirmation text" do
+            expect { post "/admin/config", params: params }.to raise_error ActionController::BadRequest
           end
 
           it "updates the twitter hashtag" do

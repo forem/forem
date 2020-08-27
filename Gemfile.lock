@@ -863,7 +863,6 @@ DEPENDENCIES
   amazing_print (~> 1.2)
   ancestry (~> 3.1)
   approvals (~> 0.0)
-  autoprefixer-rails (~> 9.8)
   better_errors (~> 2.7)
   binding_of_caller (~> 0.8)
   blazer (~> 2.2.6)

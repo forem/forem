@@ -66,8 +66,8 @@
         <% if current_user.has_role?(:single_resource_admin, Config) %>
               <div class="form-group">
                 <%= label_tag "Please type out the sentence below to submit:" %>
-                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off" %>
-                <div class="alert alert-info">Type the sentence: My username is @your_username and this action is 100% safe and appropriate.</div>
+                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+                <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
                 <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
               </div>
         <% end %>
@@ -965,8 +965,8 @@
             <div class="card-body">
               <div class="form-group">
                 <%= label_tag :confirmation %>
-                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off" %>
-                <div class="alert alert-info">Type the sentence: My username is @your_username and this action is 100% safe and appropriate.</div>
+                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+                <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
                 <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
               </div>
             </div>
