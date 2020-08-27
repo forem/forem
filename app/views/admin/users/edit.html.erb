@@ -34,8 +34,8 @@
     <%= form_for(@user, url: user_status_admin_user_path(@user), html: { class: "mt-3" }) do |f| %>
       <div class="form-group">
         <%= f.label "Select new user status", class: "mr-3" %>
-        <% options = { "Base Roles" => Constants::Roles::BASE_ROLES } %>
-        <% options["Special Roles"] = Constants::Roles::SPECIAL_ROLES if current_user.has_role?(:super_admin) %>
+        <% options = { "Base Roles" => Constants::Role::BASE_ROLES } %>
+        <% options["Special Roles"] = Constants::Role::SPECIAL_ROLES if current_user.has_role?(:super_admin) %>
         <%= f.select(:user_status, grouped_options_for_select(options), include_blank: true) %>
       </div>
       <div class="form-group">
