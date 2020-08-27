@@ -15,12 +15,18 @@ class User < ApplicationRecord
       # instead. See `spec/factories/profiles.rb` for an example.
       attr_accessor :_skip_creating_profile
 
+      # NOTE: used for not sync-ing back data to profiles when the profile got
+      # updated first. This will eventually be removed:
+      attr_accessor :_skip_profile_sync
+
       # All new users should automatically have a profile
       after_create_commit -> { Profile.create(user: self, data: Profiles::ExtractData.call(self)) },
                           unless: :_skip_creating_profile
 
       # Keep saving changes locally for the time being, but propagate them to profiles.
       after_update_commit do
+        return if _skip_profile_sync
+
         if previous_changes.keys.any? { |attribute| attribute.in?(Profile.mapped_attributes) }
           profile.update(data: Profiles::ExtractData.call(self))
         end

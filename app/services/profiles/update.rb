@@ -29,7 +29,9 @@ module Profiles
       user_attributes = @profile.data.transform_keys do |key|
         Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
       end
+      @profile.user._skip_profile_sync = true
       @success = true if @profile.user.update(user_attributes)
+      @profile.user._skip_profile_sync = false
       self
     end
 
