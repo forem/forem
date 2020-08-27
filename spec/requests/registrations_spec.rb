@@ -10,6 +10,7 @@ RSpec.describe "Registrations", type: :request do
 
         Authentication::Providers.enabled.each do |provider_name|
           provider = Authentication::Providers.get!(provider_name)
+
           expect(response.body).to include("Continue with #{provider.official_name}")
         end
       end
