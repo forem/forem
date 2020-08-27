@@ -20,12 +20,7 @@ class RegistrationsController < Devise::RegistrationsController
     if resource.persisted?
       redirect_to "/confirm-email?email=#{resource.email}"
     else
-      # # Todo: complete the flow
-      # clean_up_passwords resource
-      # set_minimum_password_length
-      @hey="hey"
       render action: "by_email"
-      # respond_with resource, location: "/enter?state=beta_email_signup"
     end
   end
 end
