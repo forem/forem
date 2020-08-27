@@ -4,6 +4,10 @@ module Admin
 
     before_action :extra_authorization_and_confirmation, only: [:create]
 
+    def show
+      @confirmation_text = confirmation_text
+    end
+
     def create
       clean_up_params
 
@@ -22,6 +26,10 @@ module Admin
     end
 
     private
+
+    def confirmation_text
+      "My username is @#{current_user.username} and this action is 100% safe and appropriate."
+    end
 
     def config_params
       allowed_params = %i[
@@ -43,6 +51,8 @@ module Admin
         twitter_secret
         github_key
         github_secret
+        facebook_key
+        facebook_secret
       ]
 
       allowed_params = allowed_params |
@@ -67,10 +77,13 @@ module Admin
       )
     end
 
+    def raise_confirmation_mismatch_error
+      raise ActionController::BadRequest.new, "The confirmation key does not match"
+    end
+
     def extra_authorization_and_confirmation
       not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
-      confirmation_message = "My username is @#{current_user.username} and this action is 100% safe and appropriate."
-      not_authorized if params[:confirmation] != confirmation_message
+      raise_confirmation_mismatch_error if params.require(:confirmation) != confirmation_text
     end
 
     def clean_up_params
@@ -141,6 +154,8 @@ module Admin
         mascot_image_description
         mascot_image_url
         mascot_footer_image_url
+        mascot_footer_image_width
+        mascot_footer_image_height
         mascot_user_id
       ]
     end

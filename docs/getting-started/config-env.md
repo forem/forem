@@ -19,7 +19,7 @@ cp .env_sample .env
 ```
 
 Then, add each key you need to the `.env` file. For example, if you're setting
-up GitHub authentication:
+up Cloudinary:
 
 ```shell
 export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"

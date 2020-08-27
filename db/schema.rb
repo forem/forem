@@ -1220,7 +1220,9 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
     t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
+    t.datetime "facebook_created_at"
     t.string "facebook_url"
+    t.string "facebook_username"
     t.integer "failed_attempts", default: 0
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
@@ -1313,6 +1315,7 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["facebook_username"], name: "index_users_on_facebook_username"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"

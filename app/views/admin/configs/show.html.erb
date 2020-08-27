@@ -29,18 +29,10 @@
             <% if SiteConfig.public_send(config_key).is_a?(Hash) %>
               <%= admin_config_label config_key.to_s %>
               <div class="form-group">
-                <%= f.fields_for config_key do |a_field| %>
-                  <% SiteConfig.public_send(config_key).each do |key, value| %>
-                    <div>
-                      <%= admin_config_label key.to_s %>
-                      <%= a_field.text_field key,
-                                             class: "form-control",
-                                             value: SiteConfig.public_send(config_key)[key],
-                                             placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
-                      <div class="alert alert-info"><%= "#{key} #{config_key.to_s.tr! '_', ' '}" %></div>
-                    </div>
-                    <% end %>
-                <% end %>
+                <%= label_tag "Please type out the sentence below to submit:" %>
+                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+                <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
+                <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
               </div>
             <% elsif SiteConfig.public_send(config_key).is_a?(Array) %>
               <div class="form-group">
@@ -142,6 +134,22 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:github_secret][:description] %></div>
               </div>
+            </div>
+            <div class="form-group">
+              <%= admin_config_label :facebook_key %>
+              <%= f.text_field :facebook_key,
+                               class: "form-control",
+                               value: SiteConfig.facebook_key,
+                               placeholder: Constants::SiteConfig::DETAILS[:facebook_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:facebook_key][:description] %></div>
+            </div>
+            <div class="form-group">
+              <%= admin_config_label :facebook_secret %>
+              <%= f.text_field :facebook_secret,
+                               class: "form-control",
+                               value: SiteConfig.facebook_secret,
+                               placeholder: Constants::SiteConfig::DETAILS[:facebook_secret][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:facebook_secret][:description] %></div>
             </div>
           </div>
           <div class="card mt-3">
@@ -568,13 +576,31 @@
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:description] %></div>
               </div>
 
-              <div class="form-group">
-                <%= admin_config_label :mascot_image_description %>
-                <%= f.text_field :mascot_image_description,
-                                 class: "form-control",
-                                 value: SiteConfig.mascot_image_description %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_image_description][:description] %></div>
-              </div>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:description] %></div>
+            </div>
+
+            <div class="form-group">
+              <%= admin_config_label :mascot_footer_image_width %>
+              <%= f.text_field :mascot_footer_image_width,
+                               class: "form-control",
+                               value: SiteConfig.mascot_footer_image_width %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_footer_image_width][:description] %></div>
+            </div>
+
+            <div class="form-group">
+              <%= admin_config_label :mascot_footer_image_height %>
+              <%= f.text_field :mascot_footer_image_height,
+                               class: "form-control",
+                               value: SiteConfig.mascot_footer_image_height %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_footer_image_height][:description] %></div>
+            </div>
+
+            <div class="form-group">
+              <%= admin_config_label :mascot_image_description %>
+              <%= f.text_field :mascot_image_description,
+                               class: "form-control",
+                               value: SiteConfig.mascot_image_description %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_image_description][:description] %></div>
             </div>
           </div>
 
@@ -897,9 +923,10 @@
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:default_font][:description] %></div>
               </div>
               <div class="form-group">
-                <%= admin_config_label :public %>
-                <%= f.check_box :public, checked: SiteConfig.public %>
-                <div class="alert alert-info">Are most of the site pages (posts, profiles, etc. public?) — BE VERY CAUTIOUS IN CHANGING THIS</div>
+                <%= label_tag :confirmation %>
+                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+                <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
+                <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
               </div>
             </div>
           </div>
