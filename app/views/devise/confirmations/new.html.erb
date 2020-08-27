@@ -1,9 +1,3 @@
-<% if @hey %>
-  <h1>HEY HEYY</h1>
-<% end %>
-
-<%= params[:context] %>
-
 <% title "Confirm your email" %>
 <% proper_email = params[:email] || (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
 <div class="crayons-layout crayons-layout--limited align-center mt-9 mb-10 p-3">
