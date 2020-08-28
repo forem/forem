@@ -8,8 +8,10 @@ class EmailDigest
   end
 
   def send_periodic_digest_email
-    @users.ids.each do |user_id|
-      Email::SendUserDigestWorker.perform_async(user_id)
+    @users.select(:id).in_batches do |batch|
+      batch.each do |user|
+        Emails::SendUserDigestWorker.perform_async(user.id)
+      end
     end
   end
 
