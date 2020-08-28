@@ -190,12 +190,10 @@ module Admin
     end
 
     def set_feedback_messages
-      offender_report_ids = @user.offender_feedback_messages.ids
-      affected_report_ids = @user.affected_feedback_messages.ids
-      reporter_report_ids = @user.reporter_feedback_messages.ids
-      @related_reports = FeedbackMessage.where(offender_id: offender_report_ids)
-        .or(FeedbackMessage.where(affected_id: affected_report_ids))
-        .or(FeedbackMessage.where(reporter_id: reporter_report_ids))
+      @related_reports = FeedbackMessage.where(id: @user.reporter_feedback_messages.ids)
+        .or(FeedbackMessage.where(id: @user.affected_feedback_messages.ids))
+        .or(FeedbackMessage.where(id: @user.offender_feedback_messages.ids))
+        .order(created_at: :desc).limit(15)
     end
 
     def user_params
