@@ -1,4 +1,4 @@
-user_profile_image = ProfileImage.new(user)
+user_profile_image = Images::Avatar.call(user.profile_image_url)
 
 json.user do
   json.extract!(user, :name, :username, :twitter_username, :github_username)

@@ -121,7 +121,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       get api_webhook_path(webhook.id)
 
       response_webhook_user = response.parsed_body["user"]
-      user_profile_image = ProfileImage.new(webhook.user)
+      user_profile_image = Images::Avatar.call(webhook.user.profile_image_url)
 
       expect(response_webhook_user["name"]).to eq(webhook.user.name)
       expect(response_webhook_user["username"]).to eq(webhook.user.username)

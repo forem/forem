@@ -165,7 +165,7 @@ class ChatChannel < ApplicationRecord
 
   def user_obj(membership)
     {
-      profile_image: ProfileImage.new(membership.user).get(width: 90),
+      profile_image: Images::Avatar.call(membership.user.profile_image_url, length: 90),
       darker_color: membership.user.decorate.darker_color,
       name: membership.user.name,
       last_opened_at: membership.last_opened_at,

@@ -1,4 +1,4 @@
-organization_profile_image = ProfileImage.new(organization)
+organization_profile_image = Images::Avatar.call(organization.profile_image_url)
 
 json.organization do
   json.extract!(organization, :name, :username, :slug)
