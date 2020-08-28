@@ -1,17 +1,11 @@
+/* global Runtime */
+
 import { h } from 'preact';
 import { useReducer } from 'preact/hooks';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { ClipboardButton } from './ClipboardButton';
 import { Button, Spinner } from '@crayons';
-
-function isNativeAndroid() {
-  return (
-    navigator.userAgent === 'DEV-Native-android' &&
-    typeof AndroidBridge !== 'undefined' &&
-    AndroidBridge !== null
-  );
-}
 
 function isClipboardSupported() {
   return (
@@ -108,7 +102,7 @@ export const ImageUploader = () => {
       'image-markdown-copy-link-input',
     );
 
-    if (isNativeAndroid()) {
+    if (Runtime.isNativeAndroid('copyToClipboard')) {
       AndroidBridge.copyToClipboard(imageMarkdownInput.value);
       dispatch({
         type: 'show_copied_image_message',
