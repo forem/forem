@@ -1410,7 +1410,7 @@ ActiveRecord::Schema.define(version: 2020_08_28_032013) do
   add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
-  add_foreign_key "page_views", "users", on_delete: :cascade
+  add_foreign_key "page_views", "users", on_delete: :nullify
   add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
   add_foreign_key "poll_options", "polls", on_delete: :cascade
@@ -1423,7 +1423,7 @@ ActiveRecord::Schema.define(version: 2020_08_28_032013) do
   add_foreign_key "profile_fields", "profile_field_groups"
   add_foreign_key "profiles", "users", on_delete: :cascade
   add_foreign_key "rating_votes", "articles", on_delete: :cascade
-  add_foreign_key "rating_votes", "users", on_delete: :cascade
+  add_foreign_key "rating_votes", "users", on_delete: :nullify
   add_foreign_key "reactions", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
