@@ -1,6 +1,7 @@
+/* global Runtime */
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { isNativeAndroid } from '../../../utilities/validateAndroidNative';
 
 import { Button } from '@crayons';
 
@@ -46,7 +47,7 @@ export default class InvitationLinkManager extends Component {
       'chat-channel-unviation-url',
     );
 
-    if (isNativeAndroid()) {
+    if (Runtime.isNativeAndroid('copyToClipboard')) {
       AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
       this.setState({ showImageCopiedMessage: true });
     } else if (isClipboardSupported()) {
