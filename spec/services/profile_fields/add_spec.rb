@@ -29,7 +29,7 @@ RSpec.describe ProfileFields::Add, type: :service do
       add_response = described_class.call({})
       expect(add_response.success?).to be false
       expect(add_response.profile_field).to be_an_instance_of(ProfileField)
-      expect(add_response.error_message).to eq "Label can't be blank and Group can't be blank"
+      expect(add_response.error_message).to eq "Label can't be blank"
     end
   end
 end
