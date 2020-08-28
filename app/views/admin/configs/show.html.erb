@@ -118,6 +118,11 @@
                      } %>
           <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
             <div class="form-group">
+              <%= admin_config_label :allow_email_password_registration %>
+              <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %></div>
+            </div>
+            <div class="form-group">
               <%= admin_config_label :authentication_providers %>
               <%= select_tag "site_config[authentication_providers]",
                              options_from_collection_for_select(
