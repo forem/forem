@@ -1,10 +1,11 @@
 module DataUpdateScripts
-  class RemoveOrphanedPageViewsByUser
+  class NullifyOrphanedPageViewsByUser
     def run
-      # Delete all PageViews belonging to Users that don't exist anymore
+      # Nullify all PageViews belonging to Users that don't exist anymore
       ActiveRecord::Base.connection.execute(
         <<~SQL,
-          DELETE FROM page_views
+          UPDATE page_views
+          SET user_id = NULL
           WHERE user_id IS NOT NULL
           AND user_id NOT IN (SELECT id FROM users);
         SQL

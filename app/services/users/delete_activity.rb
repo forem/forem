@@ -18,10 +18,8 @@ module Users
       user.display_ad_events.delete_all
       user.email_messages.delete_all
       user.html_variants.delete_all
-      user.page_views.delete_all
       user.poll_skips.delete_all
       user.poll_votes.delete_all
-      user.rating_votes.delete_all
       user.response_templates.delete_all
       user.listings.destroy_all
       delete_feedback_messages(user)

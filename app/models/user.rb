@@ -151,11 +151,17 @@ class User < ApplicationRecord
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :destroy
   has_many :organizations, through: :organization_memberships
-  has_many :page_views, dependent: :destroy
+
+  # we keep page views as they belong to the article, not to the user who viewed it
+  has_many :page_views, dependent: :nullify
+
   has_many :poll_skips, dependent: :destroy
   has_many :poll_votes, dependent: :destroy
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
-  has_many :rating_votes, dependent: :destroy
+
+  # we keep rating votes as they belong to the article, not to the user who viewed it
+  has_many :rating_votes, dependent: :nullify
+
   has_many :reactions, dependent: :destroy
   has_many :reporter_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
