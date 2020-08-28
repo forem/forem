@@ -93,8 +93,14 @@ RSpec.describe Users::Delete, type: :service do
   describe "deleting associations" do
     let(:kept_association_names) do
       %i[
-        affected_feedback_messages audit_logs created_podcasts notes
-        offender_feedback_messages reporter_feedback_messages
+        affected_feedback_messages
+        audit_logs
+        created_podcasts
+        offender_feedback_messages
+        page_views
+        rating_votes
+        reporter_feedback_messages
+        tweets
       ]
     end
     let(:direct_associations) do
