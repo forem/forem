@@ -23,8 +23,6 @@ Performance/OpenStruct:
 # Include: app/models/**/*.rb
 Rails/HasManyOrHasOneDependent:
   Exclude:
-    - 'app/models/article.rb'
-    - 'app/models/concerns/user_subscription_sourceable.rb'
     - 'app/models/user.rb'
 
 # Offense count: 4
