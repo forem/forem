@@ -28,7 +28,16 @@ class Article < ApplicationRecord
   counter_culture :user
   counter_culture :organization
 
-  has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :buffer_updates, dependent: :destroy
+  has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
+  has_many :html_variant_successes, dependent: :nullify
+  has_many :html_variant_trials, dependent: :nullify
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
+  has_many :page_views, dependent: :destroy
+  has_many :polls, dependent: :destroy
+  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :destroy
+  has_many :rating_votes, dependent: :destroy
   has_many :top_comments,
            lambda {
              where(
@@ -39,15 +48,6 @@ class Article < ApplicationRecord
            as: :commentable,
            inverse_of: :commentable,
            class_name: "Comment"
-  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
-  has_many :buffer_updates, dependent: :destroy
-  has_many :html_variant_successes, dependent: :nullify
-  has_many :html_variant_trials, dependent: :nullify
-  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
-  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
-  has_many :rating_votes
-  has_many :page_views
-  has_many :polls, dependent: :destroy
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/,
                    uniqueness: { scope: :user_id }
