@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_27_073520) do
+ActiveRecord::Schema.define(version: 2020_08_28_032013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1409,6 +1409,7 @@ ActiveRecord::Schema.define(version: 2020_08_27_073520) do
   add_foreign_key "poll_votes", "polls", on_delete: :cascade
   add_foreign_key "poll_votes", "users", on_delete: :cascade
   add_foreign_key "polls", "articles", on_delete: :cascade
+  add_foreign_key "profile_fields", "profile_field_groups"
   add_foreign_key "profiles", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
