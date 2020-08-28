@@ -39,7 +39,6 @@ module Admin
       @user = User.find(params[:id])
       manage_credits
       add_note if user_params[:new_note]
-      add_report if user_params[:new_report]
       redirect_to "/admin/users/#{params[:id]}"
     end
 
@@ -154,19 +153,6 @@ module Admin
       )
     end
 
-    def add_report
-      FeedbackMessage.create(
-        reporter_id: current_user.id,
-        feedback_type: "abuse-reports",
-        message: user_params[:new_report],
-        category: "harassment",
-        status: "Open",
-        offender_id: @user.id,
-        affected_id: @user.id,
-        reported_url: "",
-      )
-    end
-
     def add_credits
       amount = user_params[:add_credits].to_i
       Credit.add_to(@user, amount)
@@ -202,7 +188,6 @@ module Admin
         pro merge_user_id add_credits remove_credits
         add_org_credits remove_org_credits ghostify
         organization_id identity_id backup_data_id
-        new_report
       ]
       params.require(:user).permit(allowed_params)
     end
