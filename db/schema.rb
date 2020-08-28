@@ -484,6 +484,7 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
+    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -932,7 +933,6 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
   end
 
   create_table "profile_fields", force: :cascade do |t|
-    t.boolean "active", default: true, null: false
     t.string "attribute_name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.string "description"
