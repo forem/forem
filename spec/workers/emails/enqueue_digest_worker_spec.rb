@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Email::EnqueueDigestWorker, type: :worker do
+RSpec.describe Emails::EnqueueDigestWorker, type: :worker do
   let(:worker) { subject }
 
   include_examples "#enqueues_on_correct_queue", "medium_priority"

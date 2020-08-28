@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Email::SendUserDigestWorker, type: :worker do
+RSpec.describe Emails::SendUserDigestWorker, type: :worker do
   let(:worker) { subject }
   let(:user) { create(:user, email_digest_periodic: true) }
   let(:author) { create(:user) }

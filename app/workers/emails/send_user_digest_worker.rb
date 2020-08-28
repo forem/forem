@@ -1,4 +1,4 @@
-module Email
+module Emails
   class SendUserDigestWorker
     include Sidekiq::Worker
 
