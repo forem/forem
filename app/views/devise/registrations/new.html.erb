@@ -1,3 +1,6 @@
-<%= render "devise/shared/authorization_error" %>
-
-<%= render "devise/registrations/registration_form" %>
+<% if params[:state] == "beta_email_signup" %>
+  <%= render "shared/authentication/email_registration_form" %>
+<% else %>
+  <%= render "devise/shared/authorization_error" %>
+  <%= render "devise/registrations/registration_form" %>
+<% end %>
