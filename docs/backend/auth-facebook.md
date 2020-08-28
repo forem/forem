@@ -59,11 +59,11 @@ application.
 1. From the basic settings screen dashboard set your application's domain name
    in **App Domains** field, and be sure to click **Save Changes**
 
-   ![facebook-7]()
+   ![facebook-7](https://user-images.githubusercontent.com/37842/91494838-20fa8100-e87f-11ea-8609-0d3b92edc093.png)
 
 2. Naviate to **Facebook Login --> Settings**, and enter the following callback
    URL in the field **Valid OAuth Redirect URIs**:
 
    `https://<your domain>>/users/auth/facebook/callback`
 
-   ![facebook-8]()
+   ![facebook-8](https://user-images.githubusercontent.com/37842/91509964-48624580-e8a1-11ea-9f7b-931cfcb7cd87.png)
