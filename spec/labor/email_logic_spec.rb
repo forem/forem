@@ -78,5 +78,12 @@ RSpec.describe EmailLogic, type: :labor do
       h = described_class.new(user).analyze
       expect(h.should_receive_email?).to eq(true)
     end
+
+    it "returns false if fresh_date is less than 24 hours before." do
+      email_logic = described_class.new(user)
+      allow(email_logic).to receive(:get_fresh_date).and_return(Time.current)
+      h = email_logic.analyze
+      expect(h.should_receive_email?).to eq(false)
+    end
   end
 end

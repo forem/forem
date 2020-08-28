@@ -15,6 +15,13 @@
   color: var(--secondary);
 }
 
+#siteConfig .notice {
+  margin: 20px 0;
+  font-weight: bold;
+  color: $dark-purple;
+  font-size: 14px;
+}
+
 .pagination {
   justify-content: right;
 
@@ -100,6 +107,9 @@ body {
 
 #profileFields .card-header {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .profile__group-toggle {

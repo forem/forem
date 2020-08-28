@@ -15,11 +15,14 @@ class SiteConfig < RailsSettings::Base
   field :health_check_token, type: :string
 
   # Authentication
+  field :allow_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: Authentication::Providers.available
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
   field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
   field :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
+  field :facebook_key, type: :string
+  field :facebook_secret, type: :string
 
   # Campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
@@ -75,6 +78,8 @@ class SiteConfig < RailsSettings::Base
   field :mascot_image_url, type: :string
   field :mascot_image_description, type: :string, default: "The community mascot"
   field :mascot_footer_image_url, type: :string
+  field :mascot_footer_image_width, type: :integer, default: 52
+  field :mascot_footer_image_height, type: :integer, default: 120
 
   # Meta keywords
   field :meta_keywords, type: :hash, default: {

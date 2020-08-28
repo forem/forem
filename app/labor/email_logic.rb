@@ -28,31 +28,36 @@ class EmailLogic
   def get_articles_to_send
     fresh_date = get_fresh_date
 
-    articles = if user_has_followings?
-                 experience_level_rating = (@user.experience_level || 5)
-                 experience_level_rating_min = experience_level_rating - 3.6
-                 experience_level_rating_max = experience_level_rating + 3.6
+    if fresh_date.before?(23.hours.ago)
+      articles = if user_has_followings?
+                   experience_level_rating = (@user.experience_level || 5)
+                   experience_level_rating_min = experience_level_rating - 3.6
+                   experience_level_rating_max = experience_level_rating + 3.6
 
-                 @user.followed_articles
-                   .where("published_at > ?", fresh_date)
-                   .where(published: true, email_digest_eligible: true)
-                   .where.not(user_id: @user.id)
-                   .where("score > ?", 12)
-                   .where("experience_level_rating > ? AND experience_level_rating < ?",
-                          experience_level_rating_min, experience_level_rating_max)
-                   .order(score: :desc)
-                   .limit(8)
-               else
-                 Article.published
-                   .where("published_at > ?", fresh_date)
-                   .where(featured: true, email_digest_eligible: true)
-                   .where.not(user_id: @user.id)
-                   .where("score > ?", 25)
-                   .order(score: :desc)
-                   .limit(8)
-               end
+                   @user.followed_articles
+                     .where("published_at > ?", fresh_date)
+                     .where(published: true, email_digest_eligible: true)
+                     .where.not(user_id: @user.id)
+                     .where("score > ?", 12)
+                     .where("experience_level_rating > ? AND experience_level_rating < ?",
+                            experience_level_rating_min, experience_level_rating_max)
+                     .order(score: :desc)
+                     .limit(8)
+                 else
+                   Article.published
+                     .where("published_at > ?", fresh_date)
+                     .where(featured: true, email_digest_eligible: true)
+                     .where.not(user_id: @user.id)
+                     .where("score > ?", 25)
+                     .order(score: :desc)
+                     .limit(8)
+                 end
 
-    @ready_to_receive_email = false if articles.length < 3
+      @ready_to_receive_email = false if articles.length < 3
+    else
+      articles = []
+      @ready_to_receive_email = false
+    end
 
     articles
   end

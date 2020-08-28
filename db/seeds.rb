@@ -264,6 +264,8 @@ seeder.create_if_none(Broadcast) do
     twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? " \
       "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
       "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
+    facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
+      "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
       "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
     customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
@@ -324,7 +326,7 @@ seeder.create_if_none(ChatChannel) do
     )
   end
 
-  direct_channel = ChatChannel.create_with_users(users: User.last(2), channel_type: "direct")
+  direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
   Message.create!(
     chat_channel: direct_channel,
     user: User.last,
