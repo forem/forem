@@ -107,6 +107,9 @@ body {
 
 #profileFields .card-header {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .profile__group-toggle {
