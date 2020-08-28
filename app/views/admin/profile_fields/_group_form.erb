@@ -1,0 +1,36 @@
+<div>
+  <div class="form-group">
+    <%= form.label :group %>
+    <%= select_tag "profile_field[group]",
+      select_option_tags,
+      select_options %>
+    <%= form.text_field :group, placeholder: "Add a new group", class: "form-control profile__group-text-input hidden", disabled: true %>
+  </div>
+  <div class="profile__group-toggle" onclick="toggleGroup(event)">
+    <%= toggle_text %>
+  </div>
+</div>
+
+<script>
+  function toggleGroup(event) {
+    let groupToggle = event.target
+    let groupDropdown = $( event.target ).siblings().find('.profile__group-dropdown')[0]
+    let groupInput = $( event.target ).siblings().find('.profile__group-text-input')[0]
+
+    if(groupDropdown.classList.contains('hidden')) {
+      performToggling(groupInput, groupDropdown, "or create a new group", groupToggle);
+    } else {
+      performToggling(groupDropdown, groupInput, "or choose an existing group", groupToggle);
+    }
+  }
+
+  function performToggling(elementToHide, elementToShow, updatedText, groupToggle) {
+    elementToShow.classList.remove('hidden');
+    elementToShow.disabled = false;
+
+    elementToHide.classList.add('hidden');
+    elementToHide.disabled = true;
+
+    groupToggle.innerHTML = updatedText;
+  }
+</script>

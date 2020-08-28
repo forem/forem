@@ -155,7 +155,7 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { periodic_email_digest_min: 6 },
                                             confirmation: "Incorrect yo!" }
-          end.to raise_error Pundit::NotAuthorizedError
+          end.to raise_error ActionController::BadRequest
           expect(SiteConfig.periodic_email_digest_min).not_to eq(6)
         end
       end
@@ -238,7 +238,15 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
                                             confirmation: "Incorrect yo!" }
-          end.to raise_error Pundit::NotAuthorizedError
+          end.to raise_error ActionController::BadRequest
+        end
+
+        it "rejects update without any confirmation" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          expect do
+            post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
+                                            confirmation: "" }
+          end.to raise_error ActionController::ParameterMissing
         end
       end
 
@@ -262,6 +270,30 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { mascot_footer_image_url: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.mascot_footer_image_url).to eq(expected_image_url)
+        end
+
+        it "updates the mascot_footer_image_width" do
+          expected_default_mascot_footer_image_width = 52
+          expected_mascot_footer_image_width = 1002
+
+          expect(SiteConfig.mascot_footer_image_width).to eq(expected_default_mascot_footer_image_width)
+
+          post "/admin/config", params: { site_config:
+                                            { mascot_footer_image_width: expected_mascot_footer_image_width },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mascot_footer_image_width).to eq(expected_mascot_footer_image_width)
+        end
+
+        it "updates the mascot_footer_image_height" do
+          expected_default_mascot_footer_image_height = 120
+          expected_mascot_footer_image_height = 3002
+
+          expect(SiteConfig.mascot_footer_image_height).to eq(expected_default_mascot_footer_image_height)
+
+          post "/admin/config", params: { site_config:
+                                            { mascot_footer_image_height: expected_mascot_footer_image_height },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mascot_footer_image_height).to eq(expected_mascot_footer_image_height)
         end
 
         it "updates mascot_image_description" do
@@ -305,7 +337,7 @@ RSpec.describe "/admin/config", type: :request do
             expect do
               params = { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" }
               post "/admin/config", params: params
-            end.to raise_error(Pundit::NotAuthorizedError)
+            end.to raise_error ActionController::BadRequest
 
             expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
           end
@@ -457,6 +489,48 @@ RSpec.describe "/admin/config", type: :request do
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(3).to(1)
         end
+
+        it "updates rate_limit_article_update" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_article_update: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_article_update).from(30).to(3)
+        end
+
+        it "updates rate_limit_user_update" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_user_update: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_user_update).from(5).to(3)
+        end
+
+        it "updates rate_limit_feedback_message_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_feedback_message_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_feedback_message_creation).from(5).to(3)
+        end
+
+        it "updates rate_limit_listing_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_listing_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_listing_creation).from(1).to(3)
+        end
+
+        it "updates rate_limit_reaction_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_reaction_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_reaction_creation).from(10).to(3)
+        end
+
+        it "updates rate_limit_send_email_confirmation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_send_email_confirmation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(2).to(3)
+        end
       end
 
       describe "Social Media" do
@@ -472,8 +546,8 @@ RSpec.describe "/admin/config", type: :request do
           twitter_hashtag = "#DEVCommunity"
           params = { site_config: { twitter_hashtag: twitter_hashtag }, confirmation: "Incorrect confirmation" }
 
-          it "does not update the twitter hashtag" do
-            expect { post "/admin/config", params: params }.to raise_error Pundit::NotAuthorizedError
+          it "does not update the twitter hashtag without the correct confirmation text" do
+            expect { post "/admin/config", params: params }.to raise_error ActionController::BadRequest
           end
 
           it "updates the twitter hashtag" do

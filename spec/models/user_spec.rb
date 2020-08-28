@@ -863,8 +863,11 @@ RSpec.describe User, type: :model do
         mock_username(provider_name, "valid_username")
         new_user = user_from_authorization_service(provider_name)
 
-        if provider_name == :apple
+        case provider_name
+        when :apple
           expect(new_user.username).to match(/valid_username_\w+/)
+        when :facebook
+          expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("valid_username")
         end
@@ -879,8 +882,11 @@ RSpec.describe User, type: :model do
         mock_username(provider_name, "invalid.username")
         new_user = user_from_authorization_service(provider_name)
 
-        if provider_name == :apple
+        case provider_name
+        when :apple
           expect(new_user.username).to match(/invalidusername_\w+/)
+        when :facebook
+          expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("invalidusername")
         end
