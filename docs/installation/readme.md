@@ -18,8 +18,8 @@ you can help contribute code to Forem.
 ## Installing locally
 
 You can install Forem to your local machine and we have instructions for
-[Mac](/installation/mac), [Windows](/installation/windows) and
-[Linux](/installation/linux).
+[Mac](/docs/installation/mac.md), [Windows](/docs/installation/windows.md) and
+[Linux](/docs/installation/linux.md).
 
 ## Running with containers
 
@@ -29,7 +29,7 @@ conflicting database and runtime versions.
 Another way you can get a development environment up and running is with
 containers. They will set up everything you need in an isolated environment, and
 you need not worry about the details of setting everything up locally. We have
-instructions for getting set up with [containers](/installation/containers)
+instructions for getting set up with [containers](/docs/installation/containers.md)
 quickly.
 
 ## GitPod _- beginner friendly!_
@@ -41,4 +41,4 @@ GitPod.
 GitPod is an IDE in the cloud which is also attached to a web server. It will
 install everything you need. If you are comfortable doing everything from a web
 browser, then we have instructions for installing with
-[GitPod](/installation/gitpod) as well.
+[GitPod](/docs/installation/gitpod.md) as well.
