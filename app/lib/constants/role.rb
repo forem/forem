@@ -15,6 +15,7 @@ module Constants
                     "Resource Admin: ChatChannel",
                     "Resource Admin: Page",
                     "Resource Admin: FeedbackMessage",
+                    "Resource Admin: Config",
                     "Resource Admin: Broadcast"].freeze
   end
 end
