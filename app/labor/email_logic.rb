@@ -28,7 +28,7 @@ class EmailLogic
   def get_articles_to_send
     fresh_date = get_fresh_date
 
-    if fresh_date < 23.hours.ago
+    if fresh_date.before?(23.hours.ago)
       articles = if user_has_followings?
                    experience_level_rating = (@user.experience_level || 5)
                    experience_level_rating_min = experience_level_rating - 3.6
