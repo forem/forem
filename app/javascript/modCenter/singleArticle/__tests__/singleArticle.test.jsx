@@ -1,5 +1,5 @@
 /* eslint-disable jest/expect-expect */
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { axe } from 'jest-axe';
 import { render, getNodeText } from '@testing-library/preact';
 import SingleArticle from '../index';
@@ -19,14 +19,14 @@ const getTestArticle = () => ({
 describe('<SingleArticle />', () => {
   it('should have no a11y violations', async () => {
     const { container } = render(
-      <>
+      <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
         {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div
           data-testid="flag-user-modal-container"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -34,13 +34,13 @@ describe('<SingleArticle />', () => {
 
   it('renders the article title', () => {
     const { queryByText } = render(
-      <>
+      <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
 
     expect(queryByText(getTestArticle().title)).toBeDefined();
@@ -48,13 +48,13 @@ describe('<SingleArticle />', () => {
 
   it('renders the tags', () => {
     const { queryByText } = render(
-      <>
+      <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
 
     expect(queryByText('discuss')).toBeDefined();
@@ -77,13 +77,13 @@ describe('<SingleArticle />', () => {
       },
     };
     const { container } = render(
-      <>
+      <Fragment>
         <SingleArticle {...article} toggleArticle={jest.fn()} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
     const text = getNodeText(container.querySelector('.article-title'));
     expect(text).not.toContain('#');
@@ -91,13 +91,13 @@ describe('<SingleArticle />', () => {
 
   it('renders the author name', () => {
     const { container } = render(
-      <>
+      <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
     const text = getNodeText(container.querySelector('.article-author'));
     expect(text).toContain(getTestArticle().user.name);
@@ -105,13 +105,13 @@ describe('<SingleArticle />', () => {
 
   it('renders the hand wave emoji if the author has less than 3 articles ', () => {
     const { container } = render(
-      <>
+      <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
     const text = getNodeText(container.querySelector('.article-author'));
     expect(text).toContain('👋');
@@ -119,13 +119,13 @@ describe('<SingleArticle />', () => {
 
   it('renders the correct formatted published date', () => {
     const { queryByText } = render(
-      <>
+      <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
 
     expect(queryByText('Jun 22')).toBeDefined();
@@ -137,13 +137,13 @@ describe('<SingleArticle />', () => {
     article.publishedAt = publishDate.toISOString();
 
     render(
-      <>
+      <Fragment>
         <SingleArticle {...article} toggleArticle={jest.fn()} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
 
     const readableTime = publishDate
@@ -161,13 +161,13 @@ describe('<SingleArticle />', () => {
     const toggleArticle = jest.fn();
     const article = getTestArticle();
     const { getByTestId } = render(
-      <>
+      <Fragment>
         <SingleArticle {...article} toggleArticle={toggleArticle} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
 
     const button = getByTestId(`mod-article-${article.id}`);

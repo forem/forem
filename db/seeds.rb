@@ -326,7 +326,7 @@ seeder.create_if_none(ChatChannel) do
     )
   end
 
-  direct_channel = ChatChannel.create_with_users(users: User.last(2), channel_type: "direct")
+  direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
   Message.create!(
     chat_channel: direct_channel,
     user: User.last,
