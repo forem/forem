@@ -67,11 +67,11 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:notifications).dependent(:destroy) }
       it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
-      it { is_expected.to have_many(:page_views).dependent(:destroy) }
+      it { is_expected.to have_many(:page_views).dependent(:nullify) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
       it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
       it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
-      it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:rating_votes).dependent(:nullify) }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:response_templates).dependent(:destroy) }
       it { is_expected.to have_many(:source_authored_user_subscriptions).dependent(:destroy) }
