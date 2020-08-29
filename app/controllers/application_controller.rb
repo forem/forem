@@ -17,11 +17,12 @@ class ApplicationController < ActionController::Base
     error_too_many_requests(exc)
   end
 
-  PUBLIC_CONTROLLERS = %w[shell async_info ga_events].freeze
+  PUBLIC_CONTROLLERS = %w[shell async_info ga_events admin].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
+    return if self.class.parent.to_s == "Admin"
     return if user_signed_in? || SiteConfig.public
 
     if api_action?
