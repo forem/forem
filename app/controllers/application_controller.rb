@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
     error_too_many_requests(exc)
   end
 
-  PUBLIC_CONTROLLERS = %w[shell async_info ga_events admin].freeze
+  PUBLIC_CONTROLLERS = %w[shell async_info ga_events].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   def verify_private_forem
