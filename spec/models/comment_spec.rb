@@ -417,6 +417,14 @@ RSpec.describe Comment, type: :model do
       expect(comment.notifications).to be_empty
     end
 
+    it "deletes the comment's notifications when hidden_by_commentable_user is set to true" do
+      create(:notification, notifiable: comment, user: user)
+      sidekiq_perform_enqueued_jobs do
+        comment.update(hidden_by_commentable_user: true)
+      end
+      expect(comment.notifications).to be_empty
+    end
+
     it "updates the notifications of the descendants with [deleted]" do
       comment = create(:comment, commentable: article)
       child_comment = create(:comment, parent: comment, commentable: article, user: user)
