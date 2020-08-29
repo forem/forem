@@ -1192,6 +1192,7 @@ RSpec.describe User, type: :model do
   describe "profiles" do
     before do
       create(:profile_field, label: "Available for")
+      create(:profile_field, label: "Brand Color 1")
       Profile.refresh_attributes!
     end
 
@@ -1201,13 +1202,22 @@ RSpec.describe User, type: :model do
       expect(user.profile).to respond_to(:available_for)
     end
 
-    it "propagates changes to the profile model", :aggregate_failures do
+    it "propagates changes of unmapped attributes to the profile model", :aggregate_failures do
       expect do
         user.update(available_for: "profile migrations")
       end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
 
       # Changes were also persisted in the users table
       expect(user.reload.available_for).to eq "profile migrations"
+    end
+
+    it "propagates changes of mapped attributes to the profile model", :aggregate_failures do
+      expect do
+        user.update(bg_color_hex: "#abcdef")
+      end.to change { user.profile.reload.brand_color1 }.to("#abcdef")
+
+      # Changes were also persisted in the users table
+      expect(user.reload.bg_color_hex).to eq "#abcdef"
     end
   end
 end
