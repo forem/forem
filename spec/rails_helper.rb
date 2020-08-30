@@ -168,6 +168,7 @@ RSpec.configure do |config|
 
     allow(SiteConfig).to receive(:community_description).and_return("Some description")
     SiteConfig.public = true
+    SiteConfig.waiting_on_first_user = false
   end
 
   config.after do
