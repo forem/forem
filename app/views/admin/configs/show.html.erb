@@ -931,7 +931,7 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "User Experience",
+                       header: "User Experience and Brand",
                        state: "collapse",
                        target: "uxBodyContainer",
                        expanded: "false"
@@ -955,6 +955,15 @@
                              multiple: false,
                              class: "form-control selectpicker" %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:default_font][:description] %></div>
+            </div>
+            <div class="form-group">
+              <%= f.label :primary_brand_color_hex %>
+              <%= f.text_field :primary_brand_color_hex,
+                               class: "form-control",
+                               value: SiteConfig.primary_brand_color_hex,
+                               pattern: "^#+([a-fA-F0-9]{6})$",
+                               placeholder: Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:description] %></div>
             </div>
             <div class="form-group">
               <%= admin_config_label :public %>

@@ -12,6 +12,10 @@
   --brand-github-bg: #24292e;
   --brand-github-color: #fff;
   --brand-github-bg-hover: #000;
+
+  --brand-facebook-bg: #4267B2;
+  --brand-facebook-color: #fff;
+  --brand-facebook-bg-hover: #476fbf;
 }
 
 // Basic styling
@@ -260,6 +264,18 @@
   --color-inverted: var(--brand-github-color);
   --color-inverted-hover: var(--brand-github-color);
 }
+
+.crayons-btn--brand-facebook {
+  --bg: var(--brand-facebook-bg);
+  --bg-hover: var(--brand-facebook-bg-hover);
+  --color: var(--brand-facebook-color);
+  --color-hover: var(--brand-facebook-color);
+  --bg-inverted: var(--brand-facebook-bg);
+  --bg-inverted-hover: var(--brand-facebook-bg-hover);
+  --color-inverted: var(--brand-facebook-color);
+  --color-inverted-hover: var(--brand-facebook-color);
+}
+
 
 // Icon alone
 .crayons-btn--icon,

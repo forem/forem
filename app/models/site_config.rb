@@ -151,6 +151,7 @@ class SiteConfig < RailsSettings::Base
   field :public, type: :boolean, default: 1
   # The default font for all users that have not chosen a custom font yet
   field :default_font, type: :string, default: "sans_serif"
+  field :primary_brand_color_hex, type: :string, default: "#3b49df"
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
