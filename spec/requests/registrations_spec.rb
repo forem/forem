@@ -94,6 +94,10 @@ RSpec.describe "Registrations", type: :request do
         SiteConfig.waiting_on_first_user = true
       end
 
+      after do
+        SiteConfig.waiting_on_first_user = false
+      end
+
       it "does not raise disallowed if community is set to allow email" do
         expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
       end

@@ -33,6 +33,7 @@ puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 # Default development site config if different from production scenario
 
 SiteConfig.public = true
+SiteConfig.waiting_on_first_user = false
 
 ##############################################################################
 
