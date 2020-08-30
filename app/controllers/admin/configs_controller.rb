@@ -118,7 +118,6 @@ module Admin
     def brand_color_not_hex
       hex = params[:site_config][:primary_brand_color_hex]
       hex.present? && !hex.match(/\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/)
-      
     end
 
     def campaign_params
