@@ -30,6 +30,11 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 ##############################################################################
+# Default development site config if different from production scenario
+
+SiteConfig.public = true
+
+##############################################################################
 
 seeder.create_if_none(Organization) do
   3.times do

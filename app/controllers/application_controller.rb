@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
 
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
-    return if self.class.parent.to_s == "Admin"
+    return if self.class.module_parent.to_s == "Admin"
     return if user_signed_in? || SiteConfig.public
 
     if api_action?
