@@ -1411,11 +1411,17 @@ export default class Chat extends Component {
       .classList.remove('chatchanneljumpback__hide');
   };
   handleImageDrop = (e) => {
-    document.getElementById('messagelist').style.opacity = 1;
-    dragDrop(e, this.handleImageSuccess, this.handleImageFailure);
+    e.preventDefault();
+    const { files } = e.dataTransfer;
+
+    const messageArea = document.getElementById('messagelist');
+    messageArea.classList.remove('opacity-25');
+    messageArea.classList.add('opacity-100');
+    dragDrop(files, this.handleImageSuccess, this.handleImageFailure);
   };
   handleImageSuccess = (res) => {
-    const mLink = `![alt text](${res.links[0]})`;
+    const { links, image } = res;
+    const mLink = `![${image[0].name}](${links[0]})`;
     const el = document.getElementById('messageform');
     const start = el.selectionStart;
     const end = el.selectionEnd;
@@ -1433,11 +1439,14 @@ export default class Chat extends Component {
   };
   handleDragHover(e) {
     e.preventDefault();
-    document.getElementById('messagelist').style.opacity = 0.3;
+    const messageArea = document.getElementById('messagelist');
+    messageArea.classList.add('opacity-25');
   }
   handleDragExit(e) {
     e.preventDefault();
-    document.getElementById('messagelist').style.opacity = 1;
+    const messageArea = document.getElementById('messagelist');
+    messageArea.classList.remove('opacity-25');
+    messageArea.classList.add('opacity-100');
   }
   renderActiveChatChannel = (channelHeader) => {
     const { state, props } = this;

@@ -91,8 +91,9 @@ export function generateMainImage(payload, successCb, failureCb) {
       if (json.error) {
         throw new Error(json.error);
       }
-
-      return successCb(json);
+      const { links } = json;
+      const { image } = payload;
+      return successCb({ links, image });
     })
     .catch(failureCb);
 }
