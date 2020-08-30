@@ -1594,6 +1594,11 @@
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
 
+"@redocly/react-dropdown-aria@^2.0.11":
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/@redocly/react-dropdown-aria/-/react-dropdown-aria-2.0.11.tgz#532b864b329237e646abe45d0f8edc923e77370a"
+  integrity sha512-rmuSC2JFFl4DkPDdGVrmffT9KcbG2AB5jvhxPIrOc1dO9mHRMUUftQY35KZlvWqqSSqVn+AM+J9dhiTo1ZqR8A==
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -7303,7 +7308,7 @@ emotion-theming@^9.2.9:
   dependencies:
     hoist-non-react-statics "^2.3.1"
 
-emotion@^9.1.2, emotion@^9.1.3, emotion@^9.2.12, emotion@^9.2.6:
+emotion@^9.1.2, emotion@^9.1.3, emotion@^9.2.12:
   version "9.2.12"
   resolved "https://registry.yarnpkg.com/emotion/-/emotion-9.2.12.tgz#53925aaa005614e65c6e43db8243c843574d1ea9"
   integrity sha512-hcx7jppaI8VoXxIWEhxpDW7I+B4kq9RNzQLmsrF6LY8BGKqe2N+gFAQr0EfuFucFlPs2A9HM4+xNj4NeqEWIOQ==
@@ -14503,13 +14508,6 @@ react-draggable@^4.0.3:
     classnames "^2.2.5"
     prop-types "^15.6.0"
 
-react-dropdown-aria@^2.0.7:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/react-dropdown-aria/-/react-dropdown-aria-2.0.7.tgz#18ed03e1bb91aa50ac041ea33457a1370c450700"
-  integrity sha512-wRjmmMUmA/q33ZugY0lTka4b6jY1ehp8qgHG2yeda64z5I0gTOtyxUVI/tA9ZBlBqysDN22hMGHNMnPb2sg+Qw==
-  dependencies:
-    emotion "^9.2.6"
-
 react-emotion@^9.1.3, react-emotion@^9.2.12:
   version "9.2.12"
   resolved "https://registry.yarnpkg.com/react-emotion/-/react-emotion-9.2.12.tgz#74d1494f89e22d0b9442e92a33ca052461955c83"
@@ -14968,10 +14966,10 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redoc-cli@0.9.11:
-  version "0.9.11"
-  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.11.tgz#6c651d732e1682a372e45aaa1981e6e552e61829"
-  integrity sha512-MlnMgDgedD7bjk3MIOiwZqjBvI9YF4ZA+lLA96NtBKSn1d5ygDiCQYo+5SjFtEYlpDkBS7EGL8+M/j9UnO2nFw==
+redoc-cli@0.9.12:
+  version "0.9.12"
+  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.12.tgz#9a0f45311bb8cf06c90d63354565f3a12f9f8542"
+  integrity sha512-9Ap7WfEsYtAoVZNyA8lryWAsU2Wq0lHXaNiFgdVZb4zltHNTYEqKmRi06WhileeuqVTNkd1CF2S5CCS5Xg9+aQ==
   dependencies:
     chokidar "^3.4.1"
     handlebars "^4.7.6"
@@ -14981,16 +14979,17 @@ redoc-cli@0.9.11:
     node-libs-browser "^2.2.1"
     react "^16.13.1"
     react-dom "^16.13.1"
-    redoc "2.0.0-rc.37"
+    redoc "^2.0.0-rc.40"
     styled-components "^5.1.1"
     tslib "^2.0.0"
     yargs "^15.4.1"
 
-redoc@2.0.0-rc.37:
-  version "2.0.0-rc.37"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.37.tgz#e64b4bc6747c45bcb4a236a14ef4bd002c015f72"
-  integrity sha512-He6cyXcySZkX6hz3aMxA+zKUb3LbClEwyBF6mKi4wk3h9A7zmavtFut/QvMwrOg3LqCbd3M9tiSouLgJJnN5QA==
+redoc@^2.0.0-rc.40:
+  version "2.0.0-rc.40"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.40.tgz#4dd7d095265bd2af464069e684863a5b17f7a507"
+  integrity sha512-f1na5vWCr37R5+G4xhbD1TjH6j6b/he8nEMGGJOwDcIMMcDK88S0YEWuhplhdVuZdc4c61CoxZqGXqcDRp5m0w==
   dependencies:
+    "@redocly/react-dropdown-aria" "^2.0.11"
     "@types/node" "^13.11.1"
     classnames "^2.2.6"
     decko "^1.2.0"
@@ -15008,7 +15007,6 @@ redoc@2.0.0-rc.37:
     polished "^3.6.5"
     prismjs "^1.20.0"
     prop-types "^15.7.2"
-    react-dropdown-aria "^2.0.7"
     react-tabs "^3.1.1"
     slugify "^1.4.4"
     stickyfill "^1.1.1"
