@@ -97,6 +97,9 @@ module Admin
 
     def bust_relevant_caches
       CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited.
+      CacheBuster.bust("/shell_top") # Cached at edge, sent to service worker.
+      CacheBuster.bust("/shell_bottom") # Cached at edge, sent to service worker.
+      CacheBuster.bust("/onboarding") # Page is cached at edge.
       Rails.cache.delete_matched(ApplicationConfig["RELEASE_FOOTPRINT"]) # Clear relevant fragment caches tied to this key.
     end
 
