@@ -8,10 +8,11 @@ class MarkdownParser
 
   WORDS_READ_PER_MINUTE = 275.0
 
-  def initialize(content, source: nil, user: nil)
+  def initialize(content, source: nil, user: nil, html_edit: nil)
     @content = content
     @source = source
     @user = user
+    @html_edit = html_edit
   end
 
   def finalize(link_attributes: {})
@@ -20,7 +21,7 @@ class MarkdownParser
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)
     escaped_content = escape_liquid_tags_in_codeblock(@content)
-    html = markdown.render(escaped_content)
+    html = @html_edit.present? && @html_edit ? escaped_content : markdown.render(escaped_content)
     sanitized_content = sanitize_rendered_markdown(html)
     begin
       liquid_tag_options = { source: @source, user: @user }
@@ -29,7 +30,6 @@ class MarkdownParser
     rescue Liquid::SyntaxError => e
       html = e.message
     end
-    html = remove_tag_br_pre_code(html)
     html = remove_nested_linebreak_in_list(html)
     html = prefix_all_images(html)
     html = wrap_all_images_in_links(html)
@@ -165,12 +165,6 @@ class MarkdownParser
   end
 
   # check if there exists html tag <br>
-  def remove_tag_br_pre_code(html)
-    parse = Nokogiri::HTML(html)
-    parse.search("//br").remove if parse.search("//pre/code/br")
-    parse.to_html
-  end
-
   def escape_liquid_tags_in_codeblock(content)
     # Escape codeblocks, code spans, and inline code
     content.gsub(/[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|

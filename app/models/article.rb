@@ -408,7 +408,7 @@ class Article < ApplicationRecord
   def evaluate_markdown
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownParser.new(parsed.content, source: self, user: user)
+    parsed_markdown = MarkdownParser.new(parsed.content, source: self, user: user, html_edit: true)
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
 
