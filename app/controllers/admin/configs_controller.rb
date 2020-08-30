@@ -96,8 +96,8 @@ module Admin
     end
 
     def bust_relevant_caches
-      # Needs to change when suggested_tags is edited.
-      CacheBuster.bust("/tags/onboarding")
+      CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited.
+      Rails.cache.delete_matched(ApplicationConfig["RELEASE_FOOTPRINT"]) # Clear relevant fragment caches tied to this key.
     end
 
     def campaign_params
