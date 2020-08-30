@@ -21,7 +21,7 @@ class MarkdownParser
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)
     escaped_content = escape_liquid_tags_in_codeblock(@content)
-    html = @html_edit.present? && @html_edit ? escaped_content : markdown.render(escaped_content)
+    html = !@html_edit ? markdown.render(escaped_content) : escaped_content
     sanitized_content = sanitize_rendered_markdown(html)
     begin
       liquid_tag_options = { source: @source, user: @user }
