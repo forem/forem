@@ -4,7 +4,7 @@ RSpec.describe "Authenticating with a password" do
   def submit_login_form(email, password)
     fill_in "Email", with: email
     fill_in "Password", with: password
-    click_button "Log in"
+    click_button "Continue"
   end
 
   let(:password) { "p4assw0rd" }
@@ -17,6 +17,7 @@ RSpec.describe "Authenticating with a password" do
   context "when logging in with incorrect credentials" do
     it "displays an error when the email address is wrong" do
       submit_login_form("wrong@example.com", password)
+
       expect(page).to have_text("Invalid Email or password.")
     end
 
