@@ -1,30 +1,26 @@
-<main class="row">
-  <div class="col-12">
-    <h2>Create a Badge:</h2>
-    <%= form_for [:admin, @badge], method: :post do |form| %>
+<h2 class="fs-2xl s:fs-3xl mb-6">Create badge</h2>
+
+<div class="crayons-card p-6">
+  <%= form_for [:admin, @badge], method: :post do |form| %>
     <div class="form-group">
       <%= form.label :title %>
       <%= form.text_field :title, class: "form-control" %>
     </div>
-    <hr>
+
     <div class="form-group">
       <%= form.label :slug, "Slug:" %>
       <%= form.text_field :slug, class: "form-control" %>
     </div>
-    <hr>
+
     <div class="form-group">
       <%= form.label :description, "Description:" %>
       <%= form.text_field :description, class: "form-control" %>
     </div>
-    <hr>
+
     <div class="form-group">
       <%= form.label :badge_image, "Badge Image:" %>
-    <br>
-    <%= form.file_field :badge_image, class: "form-control" %>
-    <br>
+      <%= form.file_field :badge_image, class: "form-control" %>
     </div>
-    <hr>
-      <%= submit_tag "Create Badge", class: "btn btn-primary float-right" %>
-    <% end %>
-  </div>
-</main>
+    <%= submit_tag "Create Badge", class: "btn btn-primary" %>
+  <% end %>
+</div>
