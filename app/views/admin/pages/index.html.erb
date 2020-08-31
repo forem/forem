@@ -1,20 +1,15 @@
 <%= csrf_meta_tags %>
 
-<main>
-  <div class="row justify-content-end">
-    <%= link_to "New Page", new_admin_page_path, class: "btn btn-primary" %>
-  </div>
+<header class="flex items-center mb-6">
+  <h2 class="fs-2xl s:fs-3xl">Pages</h2>
+  <%= link_to "New page", new_admin_page_path, class: "btn btn-primary ml-auto" %>
+</header>
 
-  <hr>
-
-  <div class="row">
-    <div class="list-group-flush w-100">
-      <% @pages.each do |page| %>
-        <div class="list-group-item d-flex justify-content-between">
-          <%= link_to page.title, edit_admin_page_path(page.id) %>
-          <%= link_to "View", page.path %>
-        </div>
-      <% end %>
+<div class="crayons-card p-6">
+  <% @pages.each do |page| %>
+    <div class="flex py-2 items-center">
+      <%= link_to page.title, edit_admin_page_path(page.id) %>
+      <%= link_to "View", page.path, class: "ml-auto btn btn-secondary" %>
     </div>
-  </div>
-</main>
+  <% end %>
+</div>

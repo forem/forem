@@ -1,6 +1,5 @@
-<article class="row">
-  <div class="col">
-    <h3 class="m-4">Past <%= num_days %> day new users (<%= User.where("registered_at > ?", num_days.day.ago).count %>)</h3>
+<div class="crayons-card mb-6 p-6">
+    <h4 class="mb-4">Past <%= num_days %> day new users (<%= User.where("registered_at > ?", num_days.day.ago).count %>)</h4>
     <div class="card">
       <div class="card-header">
         <strong>Overall data:</strong>
@@ -17,5 +16,4 @@
         </li>
       </ul>
     </div>
-  </div>
-</article>
+</div>
