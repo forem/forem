@@ -1,7 +1,7 @@
 /** This initializes the mod actions button on the article show page (app/views/articles/show.html.erb). */
 export default function initializeActionsPanel(user, path) {
   const modActionsMenuHTML = `
-    <iframe id="mod-container" src=${path}/actions_panel title="Moderation panel actions">
+    <iframe id="mod-container" src=${path}/actions_panel sandbox="allow-top-navigation allow-scripts allow-same-origin allow-modals" title="Moderation panel actions">
     </iframe>
   `;
 

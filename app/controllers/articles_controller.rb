@@ -193,9 +193,11 @@ class ArticlesController < ApplicationController
       @article.published = false
     end
 
-    return unless @article.save
-
-    redirect_to "#{URL.url@article.current_state_path}"
+    if @article.save
+      render json: { message: "success", status: 200, path: @article.current_state_path }
+    else
+      render json: { message: @article.errors.full_messages, status: 422 }
+    end
   end
 
   private

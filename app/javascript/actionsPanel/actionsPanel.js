@@ -143,6 +143,31 @@ async function updateExperienceLevel(currentUserId, articleId, rating, group) {
   }
 }
 
+const adminUnpublishArticle = async (id, username, slug) => {
+  try {
+    const response = await request(`/articles/${id}/admin_unpublish`, {
+      method: 'PATCH',
+      body: JSON.stringify({ id, username, slug }),
+      credentials: 'same-origin',
+    });
+
+    const outcome = await response.json();
+
+    /* eslint-disable no-restricted-globals */
+    if (outcome.message == "success") {
+      window.top.location.href = window.location.origin + outcome.path;
+    } else {
+      top.addSnackbarItem({
+        message: `Error: ${outcome.message}`,
+        addCloseButton: true,
+      });
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-alert
+    alert(error);
+  }
+};
+
 function toggleSubmitContainer() {
   document
     .getElementById('adjustment-reason-container')
@@ -362,6 +387,21 @@ export function addBottomActionsListeners() {
       );
     });
   });
+
+  const unpublishArticleBtn = document.querySelector('#unpublish-article-btn');
+  if (unpublishArticleBtn) {
+    unpublishArticleBtn.addEventListener('click', () => {
+      const {
+        articleId: id,
+        articleAuthor: username,
+        articleSlug: slug,
+      } = unpublishArticleBtn.dataset;
+
+      if (confirm('You are unpublishing this article; are you sure?')) {
+        adminUnpublishArticle(id, username, slug);
+      }
+    });
+  }
 }
 
 export function initializeActionsPanel() {
