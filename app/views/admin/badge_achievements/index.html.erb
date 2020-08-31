@@ -1,25 +1,23 @@
-<main>
-<br>
-  <div class="alert alert-warning">
-    <strong>Note: If you remove a badge that is automatically rewarded it will simply be re-awarded despite being removed.</strong>
-  </div>
-  <div class="row m-3">
-    <div class="col">
-      <div class="row justify-content-right">
-        <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
-    </div>
-    </div>
-    <div class="col">
-      <%= search_form_for @q, url: admin_badge_achievements_path, class: "form-inline justify-content-end" do |f| %>
+<div class="alert alert-warning">
+  <strong>Note: If you remove a badge that is automatically rewarded it will simply be re-awarded despite being removed.</strong>
+</div>
 
-        <%= f.label :user_id_eq, "User ID", class: "sr-only" %>
-        <%= f.search_field :user_id_eq, placeholder: "User ID", class: "form-control mx-3" %>
-
-        <%= f.submit "Search", class: "btn btn-secondary" %>
-      <% end %>
-    </div>
+<div class="flex">
+  <div>
+    <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, class: "btn btn-primary" %>
   </div>
-  <table class="table">
+  <div class="ml-auto">
+    <%= search_form_for @q, url: admin_badge_achievements_path, class: "form-inline justify-content-end" do |f| %>
+
+      <%= f.label :user_id_eq, "User ID", class: "sr-only" %>
+      <%= f.search_field :user_id_eq, placeholder: "User ID", class: "form-control mx-3" %>
+
+      <%= f.submit "Search", class: "btn btn-secondary" %>
+    <% end %>
+  </div>
+</div>
+
+<table class="crayons-table" width="100%">
   <thead>
     <tr>
       <th scope="col">User ID</th>
@@ -28,7 +26,7 @@
       <th scope="col">Badge Image</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="crayons-card">
    <% @badge_achievements.each do |badge_achievement| %>
     <tr>
       <td><%= badge_achievement.user.id %></td>
@@ -44,4 +42,3 @@
     <% end %>
   </tbody>
 </table>
-</main>

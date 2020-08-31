@@ -18,15 +18,6 @@ Performance/OpenStruct:
     - 'spec/models/github_repo_spec.rb'
     - 'spec/requests/github_repos_spec.rb'
 
-# Offense count: 13
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/HasManyOrHasOneDependent:
-  Exclude:
-    - 'app/models/article.rb'
-    - 'app/models/concerns/user_subscription_sourceable.rb'
-    - 'app/models/user.rb'
-
 # Offense count: 4
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb

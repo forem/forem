@@ -1,3 +1,12 @@
-<%= render "devise/shared/authorization_error" %>
-
-<%= render "devise/registrations/registration_form" %>
+<% if params[:state] == "beta_email_signup" && SiteConfig.allow_email_password_registration %>
+  <%= render "shared/authentication/email_registration_form" %>
+<% elsif params[:state] == "beta_email_signup" %>
+  <div class="crayons-notice crayons-notice--danger mb-10 mt-8 mx-auto" style="width: 680px;max-width:94%;">
+    Email authentication is not enabled for this Forem.
+  </div>
+<% elsif SiteConfig.waiting_on_first_user %>
+  <%= render "shared/authentication/initial_account_wizard" %>
+<% else %>
+  <%= render "devise/shared/authorization_error" %>
+  <%= render "devise/registrations/registration_form" %>
+<% end %>

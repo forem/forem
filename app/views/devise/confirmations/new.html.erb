@@ -1,16 +1,21 @@
-<h2>Resend confirmation instructions</h2>
+<% title "Confirm your email" %>
+<% proper_email = params[:email] || (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+<div class="crayons-layout crayons-layout--limited align-center mt-9 mb-10 p-3">
 
-<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= devise_error_messages! %>
+  <h1 class="fs-5xl mb-5">Welcome to <%= community_name %>! 🎉</h1>
+  <h3 class="mb-5">A confirmation email has been sent to <a href="mailto:<%= proper_email %>"><%= proper_email %></a></h3>
+  <div class="mt-8 mb-6 crayons-card p-7 align-left mx-auto">
+    <h2 class="pb-4">Didn't get the email?</h2>
+    <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+      <%= devise_error_messages! %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+      <div class="crayons-field mt-2">
+        <%= f.email_field :email, class:  "crayons-textfield", autofocus: false, value: proper_email %>
+      </div>
+
+      <div class="crayons-field mt-2">
+        <%= f.submit "Resend confirmation instructions", class: "crayons-btn" %>
+      </div>
+    <% end %>
   </div>
-
-  <div class="actions">
-    <%= f.submit "Resend confirmation instructions" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

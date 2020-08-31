@@ -14,9 +14,11 @@ class Comment < ApplicationRecord
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
   belongs_to :commentable, polymorphic: true, optional: true
-  counter_culture :commentable
   belongs_to :user
+
+  counter_culture :commentable
   counter_culture :user
+
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
@@ -27,16 +29,18 @@ class Comment < ApplicationRecord
   after_create :after_create_checks
   after_create :notify_slack_channel_about_warned_users
   after_update :update_descendant_notifications, if: :deleted
-  after_update :remove_notifications, if: :deleted
+  after_update :remove_notifications, if: :remove_notifications?
   before_destroy :before_destroy_actions
   after_destroy :after_destroy_actions
+
   after_save :synchronous_bust
   after_save :bust_cache
-  validate :permissions, if: :commentable
+
+  validate :published_article, if: :commentable
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
-  validates :commentable_id, presence: true
-  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }
+  validates :commentable_id, presence: true, if: :commentable_type
+  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }, if: :commentable_id
   validates :user_id, presence: true
 
   after_create_commit :record_field_test_event
@@ -129,6 +133,10 @@ class Comment < ApplicationRecord
   end
 
   private
+
+  def remove_notifications?
+    deleted? || hidden_by_commentable_user?
+  end
 
   def update_notifications
     Notification.update_notifications(self)
@@ -255,7 +263,7 @@ class Comment < ApplicationRecord
     self.markdown_character_count = body_markdown.size
   end
 
-  def permissions
+  def published_article
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
   end
 

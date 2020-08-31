@@ -1,65 +1,41 @@
-<main id="profileFields">
-  <article class="crayons-card grid p-6 mb-6 gap-1">
-    <%= form_for [:admin, ProfileField.new], html: { class: "inline-form" } do |form| %>
-      <%= render "group_form",
-        form: form,
-        select_option_tags: options_for_select(ProfileField.distinct.pluck(:group)),
-        select_options: {
-          include_blank: "Choose an existing group",
-          class: "form-control selectpicker profile__group-dropdown"
-        },
-        toggle_text: "or create a new group"
-      %>
-      <div class="form-group">
-        <%= render "form", form: form %>
-        <%= form.submit "Create New Profile Field", class: "btn btn-primary" %>
+<header class="mb-6">
+  <h2 class="fs-2xl s:fs-3xl">Profile fields</h2>
+</header>
+
+<% @grouped_profile_fields.each do |group| %>
+  <% group_name = group.name.gsub(/\s+/, "_") %>
+  <div class="crayons-card">
+    <div class="card-header flex" id="<%= group_name %>Header" data-toggle="collapse"
+      data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer">
+      <div>
+        <h2 class="d-inline"><%= group_name %></h2>
+        <% if group.description %>
+          <div><%= group.description %></div>
+        <% end %>
       </div>
-    <% end %>
-  </article>
-
-  <% @grouped_profile_fields.each do |group, fields| %>
-    <% group_attribute = group.gsub(/\s+/, "_") %>
-
-    <article class="row my-3">
-      <div class="card w-100">
-        <div class="card-header" id="<%= group_attribute %>Header" data-toggle="collapse"
-          data-target="#<%= group_attribute %>BodyContainer" aria-expanded="false" aria-controls="<%= group_attribute %>BodyContainer">
-          <h2 class="d-inline"><%= group %></h2>
-          <button class="btn btn-secondary float-right" type="button">
-            Toggle <%= group %>
-          </button>
-        </div>
-        <div id="<%= group_attribute %>BodyContainer" class="collapse hide hide p-3" aria-labelledby="<%= group %>Header">
-          <% fields.each do |field| %>
-            <div class="card mt-3">
-              <%= render partial: "admin/configs/card_header",
-                         locals: {
-                           header: field.label,
-                           state: "collapse",
-                           target: "#{field.attribute_name}_container",
-                           expanded: "false"
-                         } %>
-              <div id="<%= field.attribute_name %>_container" class="card-body collapse hide" aria-labelledby="<%= field.attribute_name %>_container">
-                <div class="form-group grid p-6 mb-6 gap-1">
-                  <%= form_for [:admin, field] do |form| %>
-                    <%= render "group_form",
-                      form: form,
-                      select_option_tags: options_for_select(ProfileField.distinct.pluck(:group),  selected: field[:group]),
-                      select_options: {
-                        class: "form-control selectpicker profile__group-dropdown"
-                      },
-                      toggle_text: "or create a new group"
-                    %>
-                    <%= render "form", form: form  %>
-                    <%= form.submit class: "btn btn-primary" %>
-                  <% end %>
-                  <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
-                </div>
-              </div>
+      <button class="btn btn-secondary ml-auto" type="button">Toggle <%= group_name %></button>
+    </div>
+    <div id="<%= group_name %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= group %>Header">
+      <% group.profile_fields.each do |field| %>
+        <div class="card mb-3">
+          <%= render partial: "admin/configs/card_header",
+                     locals: {
+                       header: field.label,
+                       state: "collapse",
+                       target: "#{field.attribute_name}_container",
+                       expanded: "false"
+                     } %>
+          <div id="<%= field.attribute_name %>_container" class="collapse hide" aria-labelledby="<%= field.attribute_name %>_container">
+            <div class="form-group grid p-6 mb-6 gap-1">
+              <%= form_for [:admin, field] do |form| %>
+                <%= render "form", form: form %>
+                <%= form.submit class: "btn btn-primary" %>
+              <% end %>
+              <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
             </div>
-          <% end %>
+          </div>
         </div>
-      </div>
-    </article>
-  <% end %>
-</div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

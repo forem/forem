@@ -7,13 +7,13 @@ RSpec.describe ProfileFields::Add, type: :service do
     it "creates a new profile field and adds a store accessor", :aggregate_failures do
       expect(profile.respond_to?(:new_field)).to be false
       expect do
-        described_class.call(label: "New Field", group: "Basic")
+        described_class.call(label: "New Field", input_type: :check_box)
       end.to change(ProfileField, :count).by(1)
       expect(profile.respond_to?(:new_field)).to be true
     end
 
     it "returns the correct response object", :aggregate_failures do
-      add_response = described_class.call(label: "Another New Field", group: "Basic")
+      add_response = described_class.call(label: "Another New Field", input_type: :check_box)
       expect(add_response.success?).to be true
       expect(add_response.profile_field).to be_an_instance_of(ProfileField)
       expect(add_response.error_message).to be_blank
@@ -29,7 +29,7 @@ RSpec.describe ProfileFields::Add, type: :service do
       add_response = described_class.call({})
       expect(add_response.success?).to be false
       expect(add_response.profile_field).to be_an_instance_of(ProfileField)
-      expect(add_response.error_message).to eq "Label can't be blank and Group can't be blank"
+      expect(add_response.error_message).to eq "Label can't be blank"
     end
   end
 end

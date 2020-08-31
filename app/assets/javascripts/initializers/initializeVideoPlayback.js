@@ -12,36 +12,15 @@
 /* eslint no-use-before-define: 0 */
 /* eslint no-param-reassign: 0 */
 /* eslint no-useless-escape: 0 */
-/* global jwplayer */
-/* global ahoy */
+/* global jwplayer, ahoy, Runtime */
 
 function initializeVideoPlayback() {
-  var nativeBridgeMessage;
   var currentTime = '0';
   var deviceType = 'web';
   var lastEvent = '';
 
   function getById(name) {
     return document.getElementById(name);
-  }
-
-  function isNativeIOS() {
-    return (
-      navigator.userAgent === 'DEV-Native-ios' &&
-      window &&
-      window.webkit &&
-      window.webkit.messageHandlers &&
-      window.webkit.messageHandlers.video
-    );
-  }
-
-  function isNativeAndroid() {
-    return (
-      navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== 'undefined' &&
-      AndroidBridge !== null &&
-      AndroidBridge.videoMessage !== undefined
-    );
   }
 
   function getParameterByName(name, url) {
@@ -138,7 +117,7 @@ function initializeVideoPlayback() {
     getById('pause-butt').classList.add('active');
     getById('play-butt').classList.remove('active');
 
-    nativeBridgeMessage({
+    Runtime.videoMessage({
       action: 'play',
       url: metadata.video_source_url,
       seconds: currentTime,
@@ -174,18 +153,18 @@ function initializeVideoPlayback() {
     var seconds = timeToSeconds(getParameterByName('t') || '0');
     var metadata = videoMetadata(videoSource);
 
-    if (isNativeIOS()) {
+    if (Runtime.isNativeIOS('video')) {
       deviceType = 'iOS';
-      nativeBridgeMessage = function (message) {
+      Runtime.videoMessage = function (message) {
         try {
           window.webkit.messageHandlers.video.postMessage(message);
         } catch (err) {
           console.log(err.message); // eslint-disable-line no-console
         }
       };
-    } else if (isNativeAndroid()) {
+    } else if (Runtime.isNativeAndroid('videoMessage')) {
       deviceType = 'Android';
-      nativeBridgeMessage = function (message) {
+      Runtime.videoMessage = function (message) {
         try {
           AndroidBridge.videoMessage(JSON.stringify(message));
         } catch (err) {

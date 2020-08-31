@@ -4,6 +4,10 @@ module Admin
 
     before_action :extra_authorization_and_confirmation, only: [:create]
 
+    def show
+      @confirmation_text = confirmation_text
+    end
+
     def create
       clean_up_params
 
@@ -22,6 +26,10 @@ module Admin
     end
 
     private
+
+    def confirmation_text
+      "My username is @#{current_user.username} and this action is 100% safe and appropriate."
+    end
 
     def config_params
       allowed_params = %i[
@@ -45,6 +53,7 @@ module Admin
         github_secret
         facebook_key
         facebook_secret
+        allow_email_password_registration
       ]
 
       allowed_params = allowed_params |
@@ -69,10 +78,13 @@ module Admin
       )
     end
 
+    def raise_confirmation_mismatch_error
+      raise ActionController::BadRequest.new, "The confirmation key does not match"
+    end
+
     def extra_authorization_and_confirmation
       not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
-      confirmation_message = "My username is @#{current_user.username} and this action is 100% safe and appropriate."
-      not_authorized if params[:confirmation] != confirmation_message
+      raise_confirmation_mismatch_error if params.require(:confirmation) != confirmation_text
     end
 
     def clean_up_params
@@ -84,8 +96,11 @@ module Admin
     end
 
     def bust_relevant_caches
-      # Needs to change when suggested_tags is edited.
-      CacheBuster.bust("/tags/onboarding")
+      CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited.
+      CacheBuster.bust("/shell_top") # Cached at edge, sent to service worker.
+      CacheBuster.bust("/shell_bottom") # Cached at edge, sent to service worker.
+      CacheBuster.bust("/onboarding") # Page is cached at edge.
+      Rails.cache.delete_matched(ApplicationConfig["RELEASE_FOOTPRINT"]) # Delete all caches tied to this key.
     end
 
     def campaign_params
