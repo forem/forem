@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
-  scope "(:locale)", locale: LOCALE_LANG_REGEXP do
+  scope "(:locale)", locale: LOCALE_LANG_REGEXP, defaults: { locale: nil } do
     use_doorkeeper do
       controllers tokens: "oauth/tokens"
     end
