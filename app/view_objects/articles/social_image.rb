@@ -18,7 +18,8 @@ module Articles
       end
       return legacy_article_social_image unless use_new_social_url?
 
-      article_social_preview_url(article, format: :png)
+      locale = nil
+      article_social_preview_url(locale, article, format: :png)
     end
 
     private
