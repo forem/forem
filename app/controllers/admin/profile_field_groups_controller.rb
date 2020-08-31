@@ -16,11 +16,11 @@ module Admin
     end
 
     def create
-      @profile_field_group = ProfileFieldGroup.new(profile_field_group_params)
-      if @profile_field_group.save
-        flash[:success] = "Successfully created group: #{@profile_field_group.name}"
+      profile_field_group = ProfileFieldGroup.new(profile_field_group_params)
+      if profile_field_group.save
+        flash[:success] = "Successfully created group: #{profile_field_group.name}"
       else
-        flash[:error] = @profile_field_group.errors.full_messages
+        flash[:error] = "Error: #{profile_field_group.errors_as_sentence}"
       end
       redirect_to admin_profile_fields_path
     end
