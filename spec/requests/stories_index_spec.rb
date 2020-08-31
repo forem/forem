@@ -21,8 +21,9 @@ RSpec.describe "StoriesIndex", type: :request do
 
     it "renders registration page if site config is private" do
       SiteConfig.public = false
-      get "/"
-      expect(response.body).to include("Great to have you")
+
+      get root_path
+      expect(response.body).to include("Continue with")
     end
 
     it "renders proper description" do

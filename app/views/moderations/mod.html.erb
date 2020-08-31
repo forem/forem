@@ -85,7 +85,7 @@
     <br />
     Use <b>Low Quality</b> to move this content "down" for any reason (quality, usefulness, etc.).
     <br />
-    Use <b>Mark As Spam</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
+    Use <b>Flag to Admins</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
   </p>
   <div class="tag-mod-form" style="display: flex; flex-direction: column; align-items: center;">
     <h2>Flag <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a> as Abusive</h2>
@@ -101,7 +101,7 @@
       <span class="vote-text">Flag User</span>
     </button>
     <p>
-      This is the equivalent of vomiting on <b>all</b> of this user's articles.
+      This is the equivalent of vomiting on <b>all</b> of this user's articles and will lower their article scores.
     </p>
   </div>
   <% if current_user.any_admin? && @moderatable.class.name == "Comment" && !@moderatable.deleted %>

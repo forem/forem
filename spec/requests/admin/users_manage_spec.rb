@@ -137,6 +137,28 @@ RSpec.describe "Admin::Users", type: :request do
       expect(user.roles.last.name).to eq("comment_banned")
     end
 
+    it "selects super admin role when user was banned" do
+      user.add_role :banned
+      user.reload
+
+      params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
+      patch "/admin/users/#{user.id}/user_status", params: params
+
+      expect(user.roles.count).to eq(1)
+      expect(user.roles.last.name).to eq("super_admin")
+    end
+
+    it "does not allow non-super-admin to doll out admin" do
+      super_admin.remove_role(:super_admin)
+      super_admin.add_role(:super_admin)
+      super_admin.reload
+
+      params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
+      patch "/admin/users/#{user.id}/user_status", params: params
+
+      expect(user.has_role?(:super_admin)).not_to be false
+    end
+
     it "creates a general note on the user" do
       put "/admin/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
       expect(Note.last.content).to eq("general note about whatever")
@@ -148,6 +170,7 @@ RSpec.describe "Admin::Users", type: :request do
       expect(user.credits.size).to eq(2)
     end
   end
+  
 
   context "when deleting user and converting content to ghost" do
     it "raises a 'record not found' error after deletion" do

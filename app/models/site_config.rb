@@ -11,10 +11,13 @@ class SiteConfig < RailsSettings::Base
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
 
+  field :waiting_on_first_user, type: :boolean, default: !User.exists?
+
   # API Tokens
   field :health_check_token, type: :string
 
   # Authentication
+  field :allow_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: Authentication::Providers.available
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
@@ -147,7 +150,7 @@ class SiteConfig < RailsSettings::Base
   field :feed_style, type: :string, default: "basic"
   # a non-public forem will redirect all unauthenticated pages to the registration page.
   # a public forem could have more fine-grained authentication (listings ar private etc.) in future
-  field :public, type: :boolean, default: 1
+  field :public, type: :boolean, default: 0
   # The default font for all users that have not chosen a custom font yet
   field :default_font, type: :string, default: "sans_serif"
 

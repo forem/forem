@@ -55,8 +55,8 @@ class BlackBox
     def last_mile_hotness_calc(article)
       score_from_epoch = article.featured_number.to_i - OUR_EPOCH_NUMBER # Approximate time of publish - epoch time
       score_from_epoch / 1000 +
-        ([article.score, 750].min * 4) +
-        ([article.comment_score, 750].min * 4) -
+        ([article.score, 650].min * 2) +
+        ([article.comment_score, 650].min * 2) -
         (article.spaminess_rating * 5)
     end
 

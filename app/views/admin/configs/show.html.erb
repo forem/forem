@@ -1,92 +1,92 @@
-<div class="alert alert-warning" role="alert">
-  <p>
-    Only admins with explicit <strong>single resource admin</strong> role may make changes to site config. Even super admins require this permission.
-  </p>
-  <h2>
-    <% if current_user.has_role?(:single_resource_admin, Config) %>
-      <div class="alert alert-primary">You have permission to make config changes. Do so with care.</div>
-    <% else %>
-      You do not have permission to make config changes. (Read Only)
-    <% end %>
-  </h2>
-</div>
+<div class="grid gap-6">
+  <div class="crayons-notice crayons-notice--info" role="alert">
+    <p class="mb-1">
+      Only admins with explicit <strong>single resource admin</strong> role may make changes to site config. Even super admins require this permission.
+    </p>
+      <% if current_user.has_role?(:single_resource_admin, Config) %>
+        <p class="fw-bold">You have permission to make config changes. Do so with care.</p>
+      <% else %>
+        <p>You do not have permission to make config changes. (Read Only)</p>
+      <% end %>
+    </h2>
+  </div>
 
-<div class="row my-3" id="getStarted">
-  <div class="card w-100">
-    <div class="card-header" id="getStartedHeader" data-toggle="collapse"
-      data-target="#getStartedBodyContainer" aria-expanded="true" aria-controls="getStartedBodyContainer">
-      <h2 class="d-inline">Get Started</h2>
-      <button class="btn btn-secondary float-right" type="button">
-        Toggle Get Started
-      </button>
-    </div>
+  <div id="getStarted">
+    <div class="card w-100">
+      <div class="card-header" id="getStartedHeader" data-toggle="collapse"
+        data-target="#getStartedBodyContainer" aria-expanded="true" aria-controls="getStartedBodyContainer">
+        <h2 class="d-inline">Get Started</h2>
+        <button class="btn btn-secondary float-right" type="button">
+          Toggle Get Started
+        </button>
+      </div>
 
-    <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3" aria-labelledby="siteConfigHeader">
-      <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+      <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3" aria-labelledby="siteConfigHeader">
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
 
-        <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
-          <!-- we need to list the config as separate fields if the data structure is a Hash -->
-          <% if SiteConfig.public_send(config_key).is_a?(Hash) %>
-            <%= admin_config_label config_key.to_s %>
-            <div class="form-group">
-              <%= f.fields_for config_key do |a_field| %>
-                <% SiteConfig.public_send(config_key).each do |key, value| %>
-                  <div>
-                    <%= admin_config_label key.to_s %>
-                    <%= a_field.text_field key,
-                                           class: "form-control",
-                                           value: SiteConfig.public_send(config_key)[key],
-                                           placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
-                    <div class="alert alert-info"><%= "#{key} #{config_key.to_s.tr! '_', ' '}" %></div>
-                  </div>
-                  <% end %>
-              <% end %>
-            </div>
-          <% elsif SiteConfig.public_send(config_key).is_a?(Array) %>
-            <div class="form-group">
-              <%= admin_config_label config_key %>
-              <%= f.text_field config_key,
-                               class: "form-control",
-                               value: SiteConfig.public_send(config_key).join(","),
-                               placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[config_key][:description] %></div>
-            </div>
-          <% else %>
-            <div class="form-group">
-              <%= admin_config_label config_key %>
-              <%= f.text_field config_key,
-                               class: "form-control",
-                               value: SiteConfig.public_send(config_key),
-                               placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[config_key][:description] %></div>
-            </div>
+          <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
+            <!-- we need to list the config as separate fields if the data structure is a Hash -->
+            <% if SiteConfig.public_send(config_key).is_a?(Hash) %>
+              <%= admin_config_label config_key.to_s %>
+              <div class="form-group">
+                <%= f.fields_for config_key do |a_field| %>
+                  <% SiteConfig.public_send(config_key).each do |key, value| %>
+                    <div>
+                      <%= admin_config_label key.to_s %>
+                      <%= a_field.text_field key,
+                                             class: "form-control",
+                                             value: SiteConfig.public_send(config_key)[key],
+                                             placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                      <div class="alert alert-info"><%= "#{key} #{config_key.to_s.tr! '_', ' '}" %></div>
+                    </div>
+                    <% end %>
+                <% end %>
+              </div>
+            <% elsif SiteConfig.public_send(config_key).is_a?(Array) %>
+              <div class="form-group">
+                <%= admin_config_label config_key %>
+                <%= f.text_field config_key,
+                                 class: "form-control",
+                                 value: SiteConfig.public_send(config_key).join(","),
+                                 placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[config_key][:description] %></div>
+              </div>
+            <% else %>
+              <div class="form-group">
+                <%= admin_config_label config_key %>
+                <%= f.text_field config_key,
+                                 class: "form-control",
+                                 value: SiteConfig.public_send(config_key),
+                                 placeholder: Constants::SiteConfig::DETAILS[config_key][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[config_key][:description] %></div>
+              </div>
+            <% end %>
+          <% end %>
+
+          <% if current_user.has_role?(:single_resource_admin, Config) %>
+                <div class="form-group">
+                  <%= label_tag "Please type out the sentence below to submit:" %>
+                  <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+                  <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
+                  <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
+                </div>
           <% end %>
         <% end %>
-
-        <% if current_user.has_role?(:single_resource_admin, Config) %>
-              <div class="form-group">
-                <%= label_tag "Please type out the sentence below to submit:" %>
-                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off" %>
-                <div class="alert alert-info">Type the sentence: My username is @your_username and this action is 100% safe and appropriate.</div>
-                <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
-              </div>
-        <% end %>
-      <% end %>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="row my-3" id="siteConfig">
-  <div class="card w-100">
-    <div class="card-header" id="siteConfigHeader" data-toggle="collapse"
-      data-target="#siteConfigBodyContainer" aria-expanded="false" aria-controls="siteConfigBodyContainer">
-      <h2 class="d-inline">All Site Configuration</h2>
-      <button class="btn btn-secondary float-right" type="button">
-        Toggle Site Configuration
-      </button>
-    </div>
-    <div id="siteConfigBodyContainer" class="collapse hide hide p-3" aria-labelledby="siteConfigHeader">
-      <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+  <div id="siteConfig">
+    <div class="card w-100">
+      <div class="card-header" id="siteConfigHeader" data-toggle="collapse"
+        data-target="#siteConfigBodyContainer" aria-expanded="false" aria-controls="siteConfigBodyContainer">
+        <h2 class="d-inline">All Site Configuration</h2>
+        <button class="btn btn-secondary float-right" type="button">
+          Toggle Site Configuration
+        </button>
+      </div>
+      <div id="siteConfigBodyContainer" class="collapse hide hide p-3" aria-labelledby="siteConfigHeader">
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
 
         <div class="card mt-3">
           <%= render partial: "card_header",
@@ -118,6 +118,11 @@
                      } %>
           <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
             <div class="form-group">
+              <%= admin_config_label :allow_email_password_registration %>
+              <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %></div>
+            </div>
+            <div class="form-group">
               <%= admin_config_label :authentication_providers %>
               <%= select_tag "site_config[authentication_providers]",
                              options_from_collection_for_select(
@@ -130,7 +135,7 @@
                              class: "form-control selectpicker" %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %></div>
             </div>
-            <div class="notice">
+            <div class="crayons-notice crayons-notice--info mb-4">
               Notice: Changing authentication keys will not take affect until devops restarts the app (about once per day). This will soon be instant.
             </div>
             <div class="form-group">
@@ -965,20 +970,19 @@
             <div class="card-body">
               <div class="form-group">
                 <%= label_tag :confirmation %>
-                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off" %>
-                <div class="alert alert-info">Type the sentence: My username is @your_username and this action is 100% safe and appropriate.</div>
+                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+                <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
                 <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
               </div>
             </div>
           </div>
         <% end %>
       <% end %>
+      </div>
     </div>
   </div>
-</div>
 
-<% if current_user.has_role?(:single_resource_admin, Config) && current_user.has_role?(:super_admin) %>
-  <div class="row my-3" id="siteConfig">
+  <% if current_user.has_role?(:single_resource_admin, Config) && current_user.has_role?(:super_admin) %>
     <div class="card w-100">
       <div class="card-header" id="appConfigHeader" data-toggle="collapse"
         data-target="#appConfigBodyContainer" aria-expanded="false" aria-controls="appConfigBodyContainer">
@@ -991,8 +995,8 @@
         <table class="table">
           <thead>
             <tr>
-              <th>Variable</th>
-              <th>Value</th>
+              <th scope="col">Variable</th>
+              <th scope="col">Value</th>
             </tr>
           </thead>
           <tbody>
@@ -1006,5 +1010,6 @@
         </table>
       </div>
     </div>
-  </div>
-<% end %>
+  <% end %>
+
+</div>

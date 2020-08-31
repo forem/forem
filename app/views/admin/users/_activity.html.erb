@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="col-sm-6">
+    <h2>Activity</h2>
+    <ul>
+      <li><%= @user.comments_count %> comments</li>
+      <li><%= @user.articles_count %> articles</li>
+      <li><%= @user.reactions_count %> reactions</li>
+      <li><%= @user.followers_count %> followers</li>
+      <li><%= @user.following_users_count %> users following</li>
+      <li><%= @user.badge_achievements_count %> badges</li>
+    </ul>
+  </div>
+  <div class="col-sm-6">
+    <h2>Current Roles</h2>
+    <p>(view full history in notes below)</p>
+    <ul>
+      <% @user.roles.each do |role| %>
+        <li><%= role.name %> <em><%= "- #{Tag.find(role.resource_id).name}" if role.resource_id.present? %></em></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
