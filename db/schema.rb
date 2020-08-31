@@ -1181,8 +1181,6 @@ ActiveRecord::Schema.define(version: 2020_08_28_045600) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.datetime "apple_created_at"
-    t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
