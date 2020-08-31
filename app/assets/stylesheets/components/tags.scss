@@ -24,4 +24,13 @@
   &--l {
     font-size: var(--fs-l);
   }
+
+  &--xl {
+    font-size: var(--fs-xl);
+  }
+
+  &--2xl {
+    font-size: var(--fs-2xl);
+    padding: var(--su-1) var(--su-2);
+  }
 }

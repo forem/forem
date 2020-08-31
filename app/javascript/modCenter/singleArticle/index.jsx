@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import { createPortal } from 'preact/compat';
 import { toggleFlagUserModal, FlagUserModal } from '../../packs/flagUserModal';
 import { formatDate } from './util';
@@ -49,7 +49,7 @@ export default class SingleArticle extends Component {
     }
 
     return (
-      <>
+      <Fragment>
         {modContainer &&
           createPortal(
             <FlagUserModal moderationUrl={path} authorId={user.id} />,
@@ -81,7 +81,7 @@ export default class SingleArticle extends Component {
             id={`article-iframe-${id}`}
           />
         </button>
-      </>
+      </Fragment>
     );
   }
 }
