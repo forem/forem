@@ -43,8 +43,100 @@ RSpec.describe "Registrations", type: :request do
       it "redirects to main feed" do
         sign_in user
 
-        get "/enter"
+        get sign_up_path
         expect(response).to redirect_to("/?signin=true")
+      end
+    end
+  end
+
+  describe "POST /users" do
+    context "when site is not configured to accept email registration" do
+      before do
+        SiteConfig.allow_email_password_registration = false
+      end
+
+      it "disallows communities where email registration is not allowed" do
+        expect { post "/users" }.to raise_error Pundit::NotAuthorizedError
+      end
+    end
+
+    context "when site is configured to accept email registration" do
+      before do
+        SiteConfig.allow_email_password_registration = true
+      end
+
+      it "does not raise disallowed if community is set to allow email" do
+        expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
+      end
+
+      it "does not create user with invalid params" do
+        post "/users"
+        expect(User.all.size).to be 0
+      end
+
+      it "creates user with valid params passed" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+
+      it "does not create user with password confirmation mismatch" do
+        post "/users", params:
+        { user: { name: "test #{rand(100)}",
+                  username: "haha_#{rand(100)}",
+                  email: "yoooo#{rand(100)}@yo.co",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000ooooooo" } }
+        expect(User.all.size).to be 0
+      end
+
+      it "does not create user with no email address" do
+        post "/users", params:
+        { user: { name: "test #{rand(10)}",
+                  username: "haha_#{rand(10)}",
+                  email: "",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 0
+      end
+    end
+
+    context "when site is in waiting_on_first_user state" do
+      before do
+        SiteConfig.waiting_on_first_user = true
+      end
+
+      after do
+        SiteConfig.waiting_on_first_user = false
+      end
+
+      it "does not raise disallowed if community is set to allow email" do
+        expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
+      end
+
+      it "creates user with valid params passed" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+
+      it "makes user super admin and config admin" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
       end
     end
   end
