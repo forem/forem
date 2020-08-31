@@ -4,15 +4,15 @@
     <% group_name = group.name.gsub(/\s+/, "_") %>
     <article class="row my-3">
       <div class="card w-100">
-        <div class="card-header" id="<%= group_name %>Header" data-toggle="collapse"
-          data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer">
+        <div class="card-header">
           <div>
             <h2 class="d-inline"><%= group_name %></h2>
             <% if group.description %>
-              <div><%= group.description %></div>
+              <div class="d-inline"><%= group.description %></div>
             <% end %>
           </div>
-          <div> Toggle <%= group_name %></div>
+          <div id="<%= group_name %>Header" data-toggle="collapse"
+            data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer"> Toggle <%= group_name %></div>
 
           <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
         </div>
