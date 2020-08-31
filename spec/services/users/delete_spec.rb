@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Users::Delete, type: :service do
   before { omniauth_mock_github_payload }
 
-  let(:user) { create(:user, :with_identity, identities: ["github"]) }
+  let(:user) { create(:user, :trusted, :with_identity, identities: ["github"]) }
 
   it "deletes user" do
     described_class.call(user)
@@ -115,10 +115,6 @@ RSpec.describe Users::Delete, type: :service do
       create_associations(direct_associations.select { |a| kept_association_names.include?(a.name) })
     end
 
-    before do
-      allow(user).to receive(:trusted).and_return(true)
-    end
-
     def create_associations(names)
       associations = []
 
@@ -150,11 +146,6 @@ RSpec.describe Users::Delete, type: :service do
     end
 
     it "keeps the kept associations" do
-      # Rating Vote must be for NOT the user's own article
-      other_article = create(:article)
-      rating_vote = kept_associations.detect { |a| a.is_a?(RatingVote) }
-      rating_vote.update(article_id: other_article.id)
-
       expect(kept_associations).not_to be_empty
       user.reload
       described_class.call(user)

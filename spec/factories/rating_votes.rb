@@ -4,7 +4,7 @@ FactoryBot.define do
     group { "experience_level" }
     rating { rand(1.0..8.0) }
     after(:build) do |vote|
-      vote.article ||= create(:article, user: vote.user)
+      vote.article ||= create(:article)
     end
   end
 end
