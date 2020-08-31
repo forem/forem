@@ -154,7 +154,7 @@ RSpec.describe "Registrations", type: :request do
         expect(User.first.has_role?(:single_resource_admin, Config)).to be true
       end
 
-      it "does not create user FOREM_OWNER_SECRET scenario if not passed correct value" do
+      it "does not authorize request in FOREM_OWNER_SECRET scenario if not passed correct value" do
         ENV["FOREM_OWNER_SECRET"] = "test"
         expect do
           post "/users", params:
@@ -165,7 +165,7 @@ RSpec.describe "Registrations", type: :request do
                       forem_owner_secret: "not_test",
                       password_confirmation: "PaSSw0rd_yo000" } }
           expect(User.first).to be nil
-        end.not_to raise_error Pundit::NotAuthorizedError
+        end.to raise_error Pundit::NotAuthorizedError
       end
     end
   end
