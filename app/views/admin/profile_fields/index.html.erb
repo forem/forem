@@ -19,7 +19,7 @@
 
           <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
         </div>
-        <div id="<%= group_name %>BodyContainer" class="collapse hide hide p-3" aria-labelledby="<%= group %>Header">
+        <div id="<%= group_name %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= group %>Header">
 
           <% if group.profile_fields.empty? %>
             <div> There are no profile fields configured for this group. </div>
