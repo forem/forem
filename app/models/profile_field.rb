@@ -1,4 +1,6 @@
 class ProfileField < ApplicationRecord
+  self.ignored_columns = ["group"]
+
   before_create :generate_attribute_name
 
   WORD_REGEX = /\w+/.freeze
