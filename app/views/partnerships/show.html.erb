@@ -27,7 +27,7 @@
     <%= render "form", level: params[:option].split("-")[0], organizations: @organizations %>
   <% else %>
     <div class="partner-credits-explainer">
-      <a href="/enter">Sign in to get started</a>
+      <a href="<%= sign_up_path %>">Sign in to get started</a>
     </div>
   <% end %>
 </div>

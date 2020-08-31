@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     end
 
     respond_to do |format|
-      format.html { redirect_to "/enter" }
+      format.html { redirect_to sign_up_path }
       format.json { render json: { error: "Please sign in" }, status: :unauthorized }
     end
   end
