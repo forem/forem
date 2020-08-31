@@ -38,6 +38,7 @@ RSpec.describe "Registrations", type: :request do
       before do
         SiteConfig.allow_email_password_registration = false
       end
+
       it "disallows communities where email registration is not allowed" do
         expect { post "/users" }.to raise_error Pundit::NotAuthorizedError
       end
@@ -85,6 +86,41 @@ RSpec.describe "Registrations", type: :request do
                   password: "PaSSw0rd_yo000",
                   password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.all.size).to be 0
+      end
+    end
+
+    context "when site is in waiting_on_first_user state" do
+      before do
+        SiteConfig.waiting_on_first_user = true
+      end
+
+      after do
+        SiteConfig.waiting_on_first_user = false
+      end
+
+      it "does not raise disallowed if community is set to allow email" do
+        expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
+      end
+
+      it "creates user with valid params passed" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+
+      it "makes user super admin and config admin" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
       end
     end
   end

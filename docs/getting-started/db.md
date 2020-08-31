@@ -45,3 +45,11 @@ will result in creating double the default amount of items in the database.
 It's currently used only for `articles` and `users`.
 
 It can also be used for `rails db:seed` and `rails db:reset`.
+
+### Other seed modes
+
+To put your local forem into "starter mode", as it would be for a new creator, use `MODE=STARTER` i.e...
+
+```shell
+MODE=STARTER rails db:setup
+```
