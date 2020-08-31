@@ -568,15 +568,7 @@ class Article < ApplicationRecord
   def canonical_url_must_not_have_spaces
     return unless canonical_url.to_s.match?(/[[:space:]]/)
 
-<<<<<<< HEAD
     errors.add(:canonical_url, "must not have spaces")
-=======
-  # Admin only beta tags etc.
-  def validate_liquid_tag_permissions
-    return unless liquid_tags_used.include?(PollTag) && !(user.has_role?(:super_admin) || user.has_role?(:admin))
-
-    errors.add(:body_markdown, "must only use permitted tags")
->>>>>>> f431b8ee2... Add unique indexes to articles - part 5
   end
 
   def create_slug
