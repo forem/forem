@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_22_092853) do
+ActiveRecord::Schema.define(version: 2020_08_28_032013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -932,6 +932,14 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "profile_field_groups", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.string "description"
+    t.string "name", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_profile_field_groups_on_name", unique: true
+  end
+
   create_table "profile_fields", force: :cascade do |t|
     t.string "attribute_name", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -941,9 +949,11 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
     t.integer "input_type", default: 0, null: false
     t.citext "label", null: false
     t.string "placeholder_text"
+    t.bigint "profile_field_group_id"
     t.boolean "show_in_onboarding", default: false, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["label"], name: "index_profile_fields_on_label", unique: true
+    t.index ["profile_field_group_id"], name: "index_profile_fields_on_profile_field_group_id"
   end
 
   create_table "profile_pins", force: :cascade do |t|
@@ -1161,8 +1171,8 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
     t.string "subscriber_email", null: false
     t.bigint "subscriber_id", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_subscription_sourceable_id", null: false
-    t.string "user_subscription_sourceable_type", null: false
+    t.bigint "user_subscription_sourceable_id"
+    t.string "user_subscription_sourceable_type"
     t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
     t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
     t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
@@ -1362,6 +1372,7 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
+  add_foreign_key "buffer_updates", "articles", on_delete: :cascade
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listing_endorsements", "classified_listings"
@@ -1399,7 +1410,9 @@ ActiveRecord::Schema.define(version: 2020_08_22_092853) do
   add_foreign_key "poll_votes", "polls", on_delete: :cascade
   add_foreign_key "poll_votes", "users", on_delete: :cascade
   add_foreign_key "polls", "articles", on_delete: :cascade
+  add_foreign_key "profile_fields", "profile_field_groups"
   add_foreign_key "profiles", "users", on_delete: :cascade
+  add_foreign_key "rating_votes", "articles", on_delete: :cascade
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"

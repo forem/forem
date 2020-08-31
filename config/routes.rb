@@ -8,11 +8,13 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     registrations: "registrations",
-    invitations: "invitations"
+    invitations: "invitations",
+    sessions: "sessions"
   }
 
   devise_scope :user do
     get "/enter", to: "registrations#new", as: :sign_up
+    get "/confirm-email", to: "devise/confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 

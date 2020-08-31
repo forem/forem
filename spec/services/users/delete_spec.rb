@@ -93,8 +93,14 @@ RSpec.describe Users::Delete, type: :service do
   describe "deleting associations" do
     let(:kept_association_names) do
       %i[
-        affected_feedback_messages audit_logs created_podcasts notes
-        offender_feedback_messages reporter_feedback_messages
+        affected_feedback_messages
+        audit_logs
+        created_podcasts
+        offender_feedback_messages
+        page_views
+        rating_votes
+        reporter_feedback_messages
+        tweets
       ]
     end
     let(:direct_associations) do
@@ -107,6 +113,10 @@ RSpec.describe Users::Delete, type: :service do
     end
     let!(:kept_associations) do
       create_associations(direct_associations.select { |a| kept_association_names.include?(a.name) })
+    end
+
+    before do
+      allow(user).to receive(:trusted).and_return(true)
     end
 
     def create_associations(names)
@@ -140,6 +150,11 @@ RSpec.describe Users::Delete, type: :service do
     end
 
     it "keeps the kept associations" do
+      # Rating Vote must be for NOT the user's own article
+      other_article = create(:article)
+      rating_vote = kept_associations.detect { |a| a.is_a?(RatingVote) }
+      rating_vote.update(article_id: other_article.id)
+
       expect(kept_associations).not_to be_empty
       user.reload
       described_class.call(user)

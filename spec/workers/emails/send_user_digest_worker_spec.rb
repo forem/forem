@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe EmailDigest, type: :labor do
+RSpec.describe Emails::SendUserDigestWorker, type: :worker do
+  let(:worker) { subject }
   let(:user) { create(:user, email_digest_periodic: true) }
   let(:author) { create(:user) }
-
   let(:mailer) { double }
   let(:message_delivery) { double }
 
@@ -13,14 +13,16 @@ RSpec.describe EmailDigest, type: :labor do
     allow(message_delivery).to receive(:deliver_now)
   end
 
-  describe "::send_digest_email" do
-    context "when there's article to be sent" do
+  include_examples "#enqueues_on_correct_queue", "low_priority"
+
+  describe "perform" do
+    context "when there's articles to be sent" do
       before { user.follow(author) }
 
       it "send digest email when there are at least 3 hot articles" do
         articles = create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
 
-        described_class.send_periodic_digest_email
+        worker.perform(user.id)
 
         expect(DigestMailer).to have_received(:with).with(user: user, articles: articles)
         expect(mailer).to have_received(:digest_email)
@@ -30,7 +32,7 @@ RSpec.describe EmailDigest, type: :labor do
       it "does not send email when user does not have email_digest_periodic" do
         articles = create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
         user.update_column(:email_digest_periodic, false)
-        described_class.send_periodic_digest_email
+        worker.perform(user.id)
 
         expect(DigestMailer).not_to have_received(:with).with(user: user, articles: articles)
       end
@@ -38,7 +40,7 @@ RSpec.describe EmailDigest, type: :labor do
       it "does not send email when user is not registered" do
         articles = create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
         user.update_column(:registered, false)
-        described_class.send_periodic_digest_email
+        worker.perform(user.id)
 
         expect(DigestMailer).not_to have_received(:with).with(user: user, articles: articles)
       end
