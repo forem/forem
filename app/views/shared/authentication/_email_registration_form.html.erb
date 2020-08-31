@@ -48,6 +48,12 @@
       <%= f.password_field :password_confirmation, autocomplete: "current-password", class: "crayons-textfield", required: true %>
     </div>
 
+    <% if ENV["FOREM_OWNER_SECRET"].present? && SiteConfig.waiting_on_first_user %>
+      <div class="crayons-field mt-2">
+        <%= f.label :forem_owner_secret, "Few Forem Secret", class: "crayons-field__label" %>
+        <%= f.password_field :forem_owner_secret, autocomplete: "current-password", class: "crayons-textfield", required: true, placeholder: "As provided by your Forem host" %>
+      </div>
+    <% end %>
     <div class="actions pt-3">
       <%= f.submit "Sign up", class: "crayons-btn" %>
     </div>
