@@ -6,6 +6,7 @@ RSpec.describe "all routes", type: :routing do
 
   it "renders a podcast index if there is a podcast with the slug successfully" do
     expect(get: "/#{podcast.slug}").to route_to(
+      locale: nil,
       controller: "stories",
       action: "index",
       username: podcast.slug,
@@ -14,6 +15,7 @@ RSpec.describe "all routes", type: :routing do
 
   it "renders a user index if there is a user with the username successfully" do
     expect(get: "/#{user.username}").to route_to(
+      locale: nil,
       controller: "stories",
       action: "index",
       username: user.username,
@@ -22,6 +24,7 @@ RSpec.describe "all routes", type: :routing do
 
   it "renders a user's story successfully" do
     expect(get: "/ben/this-is-a-slug").to route_to(
+      locale: nil,
       controller: "stories",
       action: "show",
       slug: "this-is-a-slug",
