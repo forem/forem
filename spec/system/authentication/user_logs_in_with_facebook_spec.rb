@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Authenticating with Facebook" do
-  let(:sign_in_link) { "Sign In with Facebook" }
+  let(:sign_in_link) { "Continue with Facebook" }
 
   before { omniauth_mock_facebook_payload }
 

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Authenticating with GitHub" do
-  let(:sign_in_link) { "Sign In with GitHub" }
+  let(:sign_in_link) { "Continue with GitHub" }
 
   before { omniauth_mock_github_payload }
 

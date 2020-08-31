@@ -7,7 +7,7 @@ RSpec.describe "Redirects authentication using Referer", type: :system do
   end
 
   let(:login_link) { "Log in" }
-  let(:sign_in_link) { "Sign In with Twitter" }
+  let(:sign_in_link) { "Continue with Twitter" }
 
   before do
     omniauth_mock_twitter_payload

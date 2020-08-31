@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Authenticating with Twitter" do
-  let(:sign_in_link) { "Sign In with Twitter" }
+  let(:sign_in_link) { "Continue with Twitter" }
 
   before { omniauth_mock_twitter_payload }
 
