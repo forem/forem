@@ -21,7 +21,7 @@
           <%= button_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
           <div> Add Field </div>
         </div>
-        <div id="<%= group_name %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= group %>Header">
+        <div id="<%= group_name %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= group_name %>Header">
 
           <% if group.profile_fields.empty? %>
             <div> There are no profile fields configured for this group. </div>
