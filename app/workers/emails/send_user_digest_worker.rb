@@ -8,10 +8,9 @@ module Emails
       user = User.find_by(id: user_id)
       return unless user&.email_digest_periodic? && user&.registered?
 
-      user_email_heuristic = EmailLogic.new(user).analyze
-      return unless user_email_heuristic.should_receive_email?
+      articles = EmailDigestArticleCollector.new(user).articles_to_send
+      return unless articles.any?
 
-      articles = user_email_heuristic.articles_to_send
       begin
         DigestMailer.with(user: user, articles: articles).digest_email.deliver_now
       rescue StandardError => e
