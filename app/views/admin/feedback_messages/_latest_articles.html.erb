@@ -9,8 +9,8 @@
     <div id="articlesBodyContainer" class="collapse hide" aria-labelledby="articleHeader" data-parent="#latestArticles">
       <div class="card-body" style="overflow: scroll; max-height: 500px;">
         <% @new_articles.each do |article| %>
+          <% next if article.user.badge_achievements_count > 2 %>
           <div class="flex py-2">
-            <% next if article.user.badge_achievements_count > 2 %>
             <a href="<%= article.path %>"><%= article.title %></a>
 
             <div class="ml-auto shrink-0">
