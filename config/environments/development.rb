@@ -142,7 +142,5 @@ Rails.application.configure do
 end
 # rubocop:enable Metrics/BlockLength
 
-Rails.application.routes.default_url_options = {
-  host: Rails.application.config.app_domain,
-  locale: nil
-}
+Rails.application.routes.default_url_options[:host] = Rails.application.config.app_domain
+Rails.application.routes.default_url_options[:locale] = nil
