@@ -108,13 +108,15 @@ RSpec.describe "Registrations", type: :request do
     context "when site is in waiting_on_first_user state" do
       before do
         SiteConfig.waiting_on_first_user = true
+        ENV["FOREM_OWNER_SECRET"] = nil
       end
 
       after do
         SiteConfig.waiting_on_first_user = false
+        ENV["FOREM_OWNER_SECRET"] = nil
       end
 
-      it "does not raise disallowed if community is set to allow email" do
+      it "does not raise disallowed" do
         expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
       end
 
@@ -137,6 +139,33 @@ RSpec.describe "Registrations", type: :request do
                     password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.first.has_role?(:super_admin)).to be true
         expect(User.first.has_role?(:single_resource_admin, Config)).to be true
+      end
+
+      it "creates super admin with valid params in FOREM_OWNER_SECRET scenario" do
+        ENV["FOREM_OWNER_SECRET"] = "test"
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    forem_owner_secret: "test",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
+      end
+
+      it "does not authorize request in FOREM_OWNER_SECRET scenario if not passed correct value" do
+        ENV["FOREM_OWNER_SECRET"] = "test"
+        expect do
+          post "/users", params:
+            { user: { name: "test #{rand(10)}",
+                      username: "haha_#{rand(10)}",
+                      email: "yoooo#{rand(100)}@yo.co",
+                      password: "PaSSw0rd_yo000",
+                      forem_owner_secret: "not_test",
+                      password_confirmation: "PaSSw0rd_yo000" } }
+          expect(User.first).to be nil
+        end.to raise_error Pundit::NotAuthorizedError
       end
     end
   end
