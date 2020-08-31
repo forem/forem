@@ -76,7 +76,7 @@ class PagesController < ApplicationController
   def welcome
     daily_thread = Article.admin_published_with("welcome").first
     if daily_thread
-      redirect_to daily_thread.path
+      redirect_to URI.parse(daily_thread.path).path
     else
       # fail safe if we haven't made the first welcome thread
       redirect_to "/notifications"
@@ -86,7 +86,7 @@ class PagesController < ApplicationController
   def challenge
     daily_thread = Article.admin_published_with("challenge").first
     if daily_thread
-      redirect_to daily_thread.path
+      redirect_to URI.parse(daily_thread.path).path
     else
       redirect_to "/notifications"
     end
@@ -101,7 +101,7 @@ class PagesController < ApplicationController
         .first
 
     if daily_thread
-      redirect_to daily_thread.path
+      redirect_to URI.parse(daily_thread.path).path
     else
       redirect_to "/notifications"
     end
