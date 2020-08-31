@@ -33,5 +33,39 @@ RSpec.describe GithubRepos::RepoSyncWorker, type: :worker do
         expect(old_updated_at).not_to eq(GithubRepo.find(repo.id).updated_at)
       end
     end
+
+    it "destroys unfound repos" do
+      repo_id = repo.id
+      allow(github_client).to receive(:repository).and_raise(Github::Errors::NotFound)
+
+      worker.perform(repo.id)
+      expect(GithubRepo.find_by(id: repo_id)).to be_nil
+    end
+
+    it "destroys Unauthorized repos" do
+      repo_id = repo.id
+      allow(github_client).to receive(:repository).and_raise(Github::Errors::Unauthorized)
+
+      worker.perform(repo.id)
+      expect(GithubRepo.find_by(id: repo_id)).to be_nil
+    end
+
+    it "destroys suspended account repos" do
+      repo_id = repo.id
+      client_error = Github::Errors::ClientError.new(message: "GET https:// 403 - Sorry. Your account was suspended.")
+      allow(github_client).to receive(:repository).and_raise(client_error)
+
+      worker.perform(repo.id)
+      expect(GithubRepo.find_by(id: repo_id)).to be_nil
+    end
+
+    it "destroys blocked access repos" do
+      repo_id = repo.id
+      client_error = Github::Errors::ClientError.new(message: "GET https:// 451 - Repository access blocked.")
+      allow(github_client).to receive(:repository).and_raise(client_error)
+
+      worker.perform(repo.id)
+      expect(GithubRepo.find_by(id: repo_id)).to be_nil
+    end
   end
 end
