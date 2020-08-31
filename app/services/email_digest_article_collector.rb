@@ -13,8 +13,7 @@ class EmailDigestArticleCollector
 
                  @user.followed_articles
                    .where("published_at > ?", cutoff_date)
-                   .where(published: true, email_digest_eligible: true)
-                   .where.not(user_id: @user.id)
+                   .where(email_digest_eligible: true)
                    .where("score > ?", 12)
                    .where("experience_level_rating > ? AND experience_level_rating < ?",
                           experience_level_rating_min, experience_level_rating_max)
