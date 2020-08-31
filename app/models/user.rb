@@ -92,8 +92,7 @@ class User < ApplicationRecord
   }.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify,
-                :ip_address
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
 
   rolify after_add: :index_roles, after_remove: :index_roles
 

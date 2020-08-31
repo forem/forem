@@ -147,18 +147,6 @@
       </div>
 
       <% if current_user.has_role?(:super_admin) %>
-        <div class="mb-6">
-          <h3>Delete User & Turn Content Into Ghost</h3>
-          <p>This will
-            <strong>completely destroy the user</strong> and convert all of their articles & comments into a ghost author. This action is irreversible.
-          </p>
-          <p><strong>Do not do this lightly.</strong></p>
-          <%= form_for(@user, url: full_delete_admin_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? 👻 This is extremely destructive and irreversible. The user will be deleted and their articles & comments will be converted to Ghost')" }) do |f| %>
-            <%= f.hidden_field :ghostify, value: true %>
-            <button class="btn btn-danger">👻 Fully Delete User & Ghostify 👻</button>
-          <% end %>
-        </div>
-
         <div>
           <h3>Fully Delete User</h3>
           <p>This will
@@ -166,7 +154,6 @@
           </p>
           <p><strong>Do not do this lightly.</strong></p>
           <%= form_for(@user, url: full_delete_admin_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible.')" }) do |f| %>
-            <%= f.hidden_field :ghostify, value: false %>
             <button class="btn btn-danger">☠️ Fully Delete User & All Activity ☠️</button>
           <% end %>
         </div>
