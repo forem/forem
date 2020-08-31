@@ -115,7 +115,7 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.6",
-    "faker": "^4.1.0",
+    "faker": "^5.1.0",
     "gitdocs": "^2.0.0",
     "husky": "^4.2.5",
     "ibm-openapi-validator": "0.29.0",
