@@ -112,7 +112,7 @@ module Admin
     # Validations
     def brand_contrast_too_low
       hex = params[:site_config][:primary_brand_color_hex]
-      hex.present? && WCAGColorContrast.ratio(hex.delete("#"), "ffffff") < 4.5 # a11y
+      hex.present? && Color::Accessibility.new(hex).low_contrast?
     end
 
     def brand_color_not_hex
