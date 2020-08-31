@@ -6,7 +6,7 @@
   <div class="pt-6 collapse" id="reactions-row">
     <% unless @related_reports.empty? %>
       <% @related_reports.each do |report| %>
-        <a href="<%= report.reported_url %>" class="list-group-item list-group-item-action action px-5 d-flex justify-content-between">
+        <a href="<%= admin_feedback_messages_path %>" class="list-group-item list-group-item-action action px-5 d-flex justify-content-between">
         <span><%= report.category.capitalize %> (<%= report.status %>)</span>
         <span><strong><%= report.feedback_type.titlecase %></strong>: <%= report.message %></span>
         <em> <%= report.created_at&.strftime("%b %e '%y") %></em>
