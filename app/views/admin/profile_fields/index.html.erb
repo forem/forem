@@ -13,6 +13,9 @@
           </div>
           <div id="<%= group_name %>Header" data-toggle="collapse"
             data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer"> Toggle <%= group_name %></div>
+            <button class="btn btn-secondary" type="button" onclick="showEditGroupModal('<%= group_name %>')">
+              Edit group
+            </button>
 
           <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
         </div>
