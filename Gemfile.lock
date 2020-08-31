@@ -746,7 +746,7 @@ GEM
       builder (~> 3.0)
     slack-notifier (2.3.2)
     smart_properties (1.15.0)
-    spring (2.1.0)
+    spring (2.1.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     sprockets (4.0.2)
