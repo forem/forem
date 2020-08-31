@@ -25,6 +25,16 @@ module Admin
       redirect_to admin_profile_fields_path
     end
 
+    def destroy
+      profile_field_group = ProfileFieldGroup.find(params[:id])
+      if profile_field_group.destroy
+        flash[:success] = "Group #{profile_field_group.name} deleted"
+      else
+        flash[:error] = "Error: #{profile_field_group.errors_as_sentence}"
+      end
+      redirect_to admin_profile_fields_path
+    end
+
     private
 
     private_constant :ALLOWED_PARAMS
