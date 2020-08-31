@@ -1,11 +1,11 @@
 <div
-  class="card-header"
+  class="card-header flex items-center"
   data-toggle="<%= state %>"
   data-target="#<%= target %>"
   aria-expanded="<%= expanded %>"
   aria-controls="<%= target %>">
-  <span><%= header %></span>
-  <div class="card-header__toggle float-right">
+  <h6 class="mb-0"><%= header %></h6>
+  <button type="button" class="card-header__toggle btn btn-secondary ml-auto">
     Toggle
-  </div>
+  </button>
 </div>
