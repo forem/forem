@@ -22,6 +22,7 @@
                   <% user.roles.pluck(:name, :resource_type, :resource_id).each do |role| %>
                     <li><%= role[0] %><%= ": #{role[1]}" if role[1] %><%= "/#{role[2]}" if role[2] %></li>
                   <% end %>
+                  <li><a href="<%= edit_admin_user_path(user) %>">Add new permission</a>
                 </ul>
               </td>
             </tr>

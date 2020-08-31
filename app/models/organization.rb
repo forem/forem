@@ -11,7 +11,6 @@ class Organization < ApplicationRecord
 
   acts_as_followable
 
-  has_many :api_secrets, through: :users
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
   has_many :credits, dependent: :restrict_with_error
