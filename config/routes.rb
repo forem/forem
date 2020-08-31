@@ -4,24 +4,24 @@ LOCALE_LANG_REGEXP = /lang-.*/i.freeze
 Rails.application.routes.draw do
   # Devise does not support scoping omniauth callbacks under a dynamic segment
   # so this lives outside our i18n scope.
-  devise_for :users, only: :omniauth_callbacks, controllers: { omniauth_callbacks: "omniauth_callbacks" }
+  devise_for :users, controllers: {
+    omniauth_callbacks: "omniauth_callbacks",
+    registrations: "registrations",
+    invitations: "invitations",
+    sessions: "sessions"
+  }
+
+  devise_scope :user do
+    get "/enter", to: "registrations#new", as: :sign_up
+    get "/confirm-email", to: "devise/confirmations#new"
+    delete "/sign_out", to: "devise/sessions#destroy"
+  end
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(:locale)", locale: LOCALE_LANG_REGEXP do
     use_doorkeeper do
       controllers tokens: "oauth/tokens"
-    end
-
-    devise_for :users, skip: :omniauth_callback, controllers: {
-      registrations: "registrations",
-      invitations: "invitations"
-    }
-
-    devise_scope :user do
-      get "/enter", to: "registrations#new", as: :sign_up
-      get "/confirm-email", to: "devise/confirmations#new"
-      delete "/sign_out", to: "devise/sessions#destroy"
     end
 
     require "sidekiq/web"
