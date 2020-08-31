@@ -13,6 +13,8 @@
             <% end %>
           </div>
           <div> Toggle <%= group_name %></div>
+
+          <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
         </div>
         <div id="<%= group_name %>BodyContainer" class="collapse hide hide p-3" aria-labelledby="<%= group %>Header">
 
