@@ -7,7 +7,6 @@ RSpec.describe Organization, type: :model do
     describe "builtin validations" do
       subject { organization }
 
-      it { is_expected.to have_many(:api_secrets).through(:users) }
       it { is_expected.to have_many(:articles).dependent(:nullify) }
       it { is_expected.to have_many(:collections).dependent(:nullify) }
       it { is_expected.to have_many(:credits).dependent(:restrict_with_error) }
