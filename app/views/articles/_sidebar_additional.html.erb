@@ -3,11 +3,31 @@
   <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
     <% unless user_signed_in? || !any_selfserve_auth? %>
       <section class="crayons-card crayons-card--secondary signin-cta-widget">
-        <header class="crayons-card__header">
-          <h3 class="crayons-card__header__headline">Join <%= community_name %></h3>
-        </header>
-        <div class="p-4 grid gap-2">
-          <%= render partial: "shared/authentication/providers_sidebar" %>
+        <div class="authentication-widget__container">
+          <figure class="authentication-widget__image-container">
+            <img class="authentication-widget__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
+                  alt="Secondary <%= community_name %> logo" />
+          </figure>
+          <div class="authentication-widget__content">
+            <h3 class="authentication-widget__title">
+      <a href="/"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
+            </h3>
+            <p class="authentication-widget__description">
+              <% if SiteConfig.tagline.present? %>
+                <%= SiteConfig.tagline %>
+              <% else %>
+                Log in to customize your experience and get involved.
+              <% end %>
+            </p>
+            <div class="authentication-widget__actions">
+              <a href="/enter" class="crayons-btn" aria-label="Create new account">
+                Create new account
+              </a>
+              <a href="/enter" class="crayons-btn crayons-btn--ghost-brand" aria-label="Log in">
+                Log in
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     <% end %>

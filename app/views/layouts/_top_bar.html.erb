@@ -24,22 +24,32 @@
     </div>
 
     <div class="top-bar__links">
-      <a href="/new" class="crayons-btn hidden mr-2 whitespace-nowrap s:block">Write a post</a>
+      <% if user_signed_in? %>
+        <a href="/new" class="crayons-btn hidden mr-2 whitespace-nowrap s:block">Write a post</a>
 
-      <a id="moderation-link" class="top-bar__link trusted-visible-block" aria-label="Moderation" href="<%= mod_path %>">
-        <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
-      </a>
+        <a id="moderation-link" class="top-bar__link trusted-visible-block" aria-label="Moderation" href="<%= mod_path %>">
+          <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
+        </a>
 
-      <a href="/connect" id="connect-link" class="top-bar__link" aria-label="Connect">
-        <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Connect") %>
-        <span class="crayons-indicator crayons-indicator--accent hidden" id="connect-number"></span>
-      </a>
-      <a href="/notifications" id="notifications-link" class="top-bar__link" aria-label="Notifications">
-        <%= inline_svg_tag("bell.svg", aria: true, class: "crayons-icon", title: "Notifications") %>
-        <span class="crayons-indicator crayons-indicator--critical hidden" id="notifications-number"></span>
-      </a>
+        <a href="/connect" id="connect-link" class="top-bar__link" aria-label="Connect">
+          <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Connect") %>
+          <span class="crayons-indicator crayons-indicator--accent hidden" id="connect-number"></span>
+        </a>
 
-      <div class="top-bar__menu" id="top-bar__menu">
+        <a href="/notifications" id="notifications-link" class="top-bar__link" aria-label="Notifications">
+          <%= inline_svg_tag("bell.svg", aria: true, class: "crayons-icon", title: "Notifications") %>
+          <span class="crayons-indicator crayons-indicator--critical hidden" id="notifications-number"></span>
+        </a>
+      <% else %>
+        <a href="/enter" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap s:block" data-no-instant>
+          Log in
+        </a>
+
+        <a href="/enter" class="crayons-btn hidden mr-2 whitespace-nowrap s:block" data-no-instant>
+          Create account
+        </a>
+      <% end %>
+      <div class="top-bar__menu <% unless user_signed_in? %>s:hidden<% end %>" id="top-bar__menu">
         <button type="button" class="top-bar__menu__trigger" id="navigation-butt" aria-label="Navigation menu">
           <% if user_signed_in? %>
             <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" /></span>

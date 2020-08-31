@@ -1,7 +1,6 @@
-@import '../variables';
-@import '../config/import';
+@import 'variables';
+@import 'config/import';
 
-// Authentication Card in Feed
 .authentication-feed {
   &__card {
     display: grid;
@@ -121,101 +120,41 @@
     }
   }
 }
-
-// Registration View
-.registration {
-  border-radius: unset;
-  padding: var(--su-6);
-
-  @media (min-width: $breakpoint-s) {
-    border-radius: var(--radius);
-    padding: var(--su-8);
-    margin: 0 auto;
-    width: $breakpoint-s;
-  }
-
-  &__content {
-    margin-bottom: var(--su-6);
-    text-align: center;
-  }
-
-  &__title {
-    color: var(--card-color);
-    font-size: var(--fs-2xl);
-    line-height: var(--lh-tight);
-
-    @media (min-width: $breakpoint-s) {
-      font-size: var(--fs-3xl);
+#page-content.registrations {
+  .devise-container {
+    min-height: 480px;
+    padding-top: calc(10vw + 35px);
+    h1 {
+      font-weight: 300;
+      text-align: center;
+      font-family: var(--ff-sans-serif);
+      font-size: 30px;
+      @media screen and (min-width: 520px) {
+        font-size: 50px;
+      }
     }
-  }
-
-  &__description {
-    color: var(--card-color-secondary);
-    font-size: var(--fs-base);
-  }
-
-  &__hr {
-    margin-bottom: var(--su-4);
-    position: relative;
-    text-align: center;
-
-    &:after {
-      border: 1px solid var(--base-20);
-      content: '';
+    a.sign-up-link {
       display: block;
-      position: absolute;
-      top: 50%;
-      width: 100%;
-      z-index: 0;
-      border-radius: var(--radius);
-    }
-  }
-
-  &__hr-label {
-    position: relative;
-    font-size: var(--fs-s);
-    color: var(--card-color-secondary);
-    background: var(--card-bg);
-    padding: 0 var(--su-2);
-    z-index: 1;
-    display: inline-block;
-    max-width: 75%;
-  }
-
-  &__actions-providers {
-    margin-bottom: var(--su-4);
-    display: grid;
-    grid-gap: var(--su-2);
-    width: 100%;
-  }
-
-  &__footer {
-    font-size: var(--fs-s);
-    font-family: var(--ff-monospace);
-    padding-top: var(--su-4);
-    padding-bottom: var(--su-4);
-    text-align: center;
-    color: var(--base-60);
-  }
-
-  &__footer-content {
-    display: flex;
-    justify-content: center;
-
-    svg {
-      margin-left: var(--su-2);
-    }
-  }
-
-  &__error-notice {
-    color: var(--accent-danger-darker);
-    font-size: var(--fs-base);
-    padding: var(--su-2);
-    margin: var(--su-2);
-
-    @media (min-width: $breakpoint-s) {
-      margin: var(--su-4) auto 0;
-      width: $breakpoint-s;
+      margin: 50px auto;
+      width: 280px;
+      max-width: 92%;
+      text-align: center;
+      padding: 20px 0px;
+      border: 1px solid rgb(245, 245, 245);
+      font-family: var(--ff-sans-serif);
+      color: rgb(86, 98, 103);
+      border-radius: 3px;
+      font-size: 22px;
+      img {
+        opacity: 0.7;
+        width: 24px;
+        height: 24px;
+        margin-right: 3px;
+        vertical-align: -3px;
+      }
+      &:hover {
+        border: 1px solid rgb(0, 231, 255);
+      }
     }
   }
 }

@@ -5,8 +5,11 @@ class RegistrationsController < Devise::RegistrationsController
     @registered_users_count = User.registered.estimated_count
 
     if user_signed_in?
-      redirect_to dashboard_path
+      redirect_to root_path(signin: "true")
     else
+      if URI(request.referer || "").host == URI(request.base_url).host
+        store_location_for(:user, request.referer)
+      end
       super
     end
   end
