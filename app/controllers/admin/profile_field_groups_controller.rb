@@ -8,7 +8,7 @@ module Admin
     def update
       profile_field_group = ProfileFieldGroup.find(params[:id])
       if profile_field_group.update(profile_field_group_params)
-        flash[:success] = "Profile field #{profile_field_group.name} updated"
+        flash[:success] = "Group #{profile_field_group.name} updated"
       else
         flash[:error] = "Error: #{profile_field_group.errors_as_sentence}"
       end
