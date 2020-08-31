@@ -16,7 +16,7 @@ RSpec.describe "Admin manages reports", type: :system do
 
   it "loads the view" do
     expect(page).to have_content("Feedback Messages")
-    expect(page).to have_content("Suspicious Activity")
+    expect(page).to have_content("Suspicious activity")
   end
 
   context "when searching for reports" do
