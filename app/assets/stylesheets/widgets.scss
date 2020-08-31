@@ -66,36 +66,7 @@
   h4 {
     margin: 0;
   }
-  &.signin-cta-widget {
-    border: 1px solid darken($bold-blue, 5%);
-    box-shadow: 5px 6px 0px darken($bold-blue, 15%);
-    padding: 0px 0px;
-    border-radius: 3px;
 
-    header {
-      background: darken($bold-blue, 5%);
-      color: white;
-      padding: 16px 0px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .widget-body {
-      display: flex;
-      flex-flow: column;
-      padding: 8px 0;
-
-      .login-cta-button {
-        margin: 8px;
-        background-color: $bold-blue;
-        padding: 16px 0;
-        border-radius: 50px;
-        color: $white;
-        text-align: center;
-        font-size: 1.1em;
-      }
-    }
-  }
   &.showing {
     display: block;
   }

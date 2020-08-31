@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Authenticating with Twitter" do
-  let(:sign_in_link) { "Sign In with Twitter" }
+  let(:sign_in_link) { "Continue with Twitter" }
 
   before { omniauth_mock_twitter_payload }
 
@@ -9,13 +9,13 @@ RSpec.describe "Authenticating with Twitter" do
     context "when using valid credentials" do
       it "creates a new user" do
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
       end
 
       it "logs in and redirects to the onboarding" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/onboarding?referrer=none")
@@ -23,7 +23,7 @@ RSpec.describe "Authenticating with Twitter" do
       end
 
       it "remembers the user" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         user = User.last
@@ -39,7 +39,7 @@ RSpec.describe "Authenticating with Twitter" do
         user = create(:user, username: username.delete("."))
 
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
 
@@ -61,18 +61,18 @@ RSpec.describe "Authenticating with Twitter" do
 
       it "does not create a new user" do
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "does not log in" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_link(sign_in_link)
-        expect(page).to have_link("All about #{SiteConfig.community_name}")
+        expect(page).to have_link("About #{SiteConfig.community_name}")
       end
 
       it "notifies Datadog about a callback error" do
@@ -82,7 +82,7 @@ RSpec.describe "Authenticating with Twitter" do
 
         omniauth_setup_authentication_error(error)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
@@ -98,7 +98,7 @@ RSpec.describe "Authenticating with Twitter" do
         error = OAuth::Unauthorized.new(request)
         omniauth_setup_authentication_error(error)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
@@ -111,7 +111,7 @@ RSpec.describe "Authenticating with Twitter" do
         error = nil
         omniauth_setup_authentication_error(error)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "twitter", "{}")
@@ -129,13 +129,13 @@ RSpec.describe "Authenticating with Twitter" do
 
       it "does not create a new user" do
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "redirects to the registration page" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_up")
@@ -144,7 +144,7 @@ RSpec.describe "Authenticating with Twitter" do
       it "reports errors" do
         allow(Honeybadger).to receive(:notify)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(Honeybadger).to have_received(:notify)
@@ -162,19 +162,19 @@ RSpec.describe "Authenticating with Twitter" do
 
     context "when using valid credentials" do
       it "logs in" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
-        expect(page).to have_current_path("/dashboard?signin=true")
+        expect(page).to have_current_path("/?signin=true")
       end
     end
 
     context "when already signed in" do
-      it "redirects to the dashboard" do
+      it "redirects to the feed" do
         sign_in user
         visit user_twitter_omniauth_authorize_path
 
-        expect(page).to have_current_path("/dashboard?signin=true")
+        expect(page).to have_current_path("/?signin=true")
       end
     end
   end
