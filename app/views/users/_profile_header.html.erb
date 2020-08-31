@@ -16,6 +16,58 @@
   </script>
 <% end %>
 
+<header class="profile-header">
+  <div class="profile-header__top">
+    <div>
+      <img src="https://placehold.it/128" width="128" height="128" alt="">
+    </div>
+
+    <div>
+      <div class="flex items-center item-between">
+        <h1>Paweł Ludwiczak</h1>
+        <div class="flex">
+          <button class="crayons-btn crayons-btn--outlined mr-2" type="button">Chat</button>
+          <button class="crayons-btn" type="button">Follow</button>
+        </div>
+      </div>
+      <p>Product Designer based in Poland, fallen in love with F1 when Robert Kubica became a F1 driver in 2006.</p>
+
+      <div class="profile-header__meta">
+        <div>
+          <a href="#">@ludwiczakpawel</a> <span>&bull;</span> 
+          <a href="#">ludwiczakpawel@gmail.com</a> <span>&bull;</span> 
+          <div>
+            <a href="#"><%= inline_svg_tag("twitter.svg", aria: true, class: "crayons-icon", title: "Twitter") %></a>
+            <a href="#"><%= inline_svg_tag("github.svg", aria: true, class: "crayons-icon", title: "GitHub") %></a>
+            <a href="#"><%= inline_svg_tag("facebook.svg", aria: true, class: "crayons-icon", title: "Facebook") %></a>
+            <a href="#"><%= inline_svg_tag("twitch.svg", aria: true, class: "crayons-icon", title: "Twitch") %></a>
+            <a href="#"><%= inline_svg_tag("save.svg", aria: true, class: "crayons-icon", title: "Website") %></a>
+          </div>
+        </div>
+
+        <div>
+          <span>
+            <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Location") %>
+            Beacon, NY
+          </span>
+
+          <span>
+            <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Location") %>
+            Joined on March 17th, 2015
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="profile-header__bottom">
+    <div>
+      <strong>Favorite F1 team</strong>
+      <p>Alfa Romeo Racing ORLEN</p>
+    </div>
+  </div>
+</header>
+
 <div class="user-profile-header" style="<%= user_colors_style(@user) %>">
   <a href="<%= user_url(@user) %>"></a>
   <div class="user-profile-header-container">
