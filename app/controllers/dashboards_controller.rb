@@ -78,7 +78,7 @@ class DashboardsController < ApplicationController
   def set_source
     source_type = UserSubscription::ALLOWED_TYPES.detect { |allowed_type| allowed_type == params[:source_type] }
 
-    not_found if source_type.nil?
+    not_found unless source_type
 
     source = source_type.constantize.find_by(id: params[:source_id])
     @source = source || not_found
