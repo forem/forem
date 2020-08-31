@@ -15,11 +15,7 @@ module Admin
     def edit
       @user = User.find(params[:id])
       @notes = @user.notes.order(created_at: :desc).limit(10).load
-<<<<<<< HEAD
-      set_related_reactions
-=======
       set_feedback_messages
->>>>>>> Adds #set_feedback_messages to Admin::Users::Controller and adjusts _reports.html.erb
     end
 
     def show
