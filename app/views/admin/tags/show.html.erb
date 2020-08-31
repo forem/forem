@@ -1,11 +1,17 @@
-<main class="row">
-  <div class="col-12">
-    <h2>
-      <a href="/t/<%= @tag.name %>" style="background:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">#<%= @tag.name %></a>, tagged <%= @tag.taggings_count %> times.
-    </h2>
+<header class="flex mb-6 items-center">
+  <div>
+    <h2 class="fs-2xl s:fs-3xl"><span class="crayons-tag crayons-tag--2xl" style="background:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">#<%= @tag.name %></span></h2>
+    <p>Tagged <%= @tag.taggings_count %> times</p>
   </div>
-  <div class="col-12">
-    <h3>Moderators</h3>
+
+  <div class="ml-auto">
+    <a href="/t/<%= @tag.name %>">View</a>
+  </div>
+</header>
+
+<div class="grid gap-6">
+  <div class="crayons-card p-6">
+    <h4 class="mb-4">Moderators</h4>
     <% if @tag.tag_moderator_ids.any? %>
       <ul class="list-group-flush">
         <% @tag.tag_moderator_ids.each do |id| %>
@@ -30,9 +36,10 @@
         <%= f.submit "Add Moderator", class: "btn btn-primary" %>
       </div>
     <% end %>
-    <hr>
   </div>
-  <div class="col-12">
+
+  <div class="crayons-card p-6">
+    <h4 class="mb-4">Edit details</h4>
     <%= form_for [:admin, @tag] do |f| %>
       <div class="form-group">
         <%= f.label :supported %>
@@ -84,4 +91,4 @@
       <%= f.submit class: "btn btn-primary float-right" %>
     <% end %>
   </div>
-</main>
+</div>

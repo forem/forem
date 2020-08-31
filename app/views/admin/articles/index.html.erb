@@ -1,15 +1,15 @@
 <% if ENV["BUFFER_ACCESS_TOKEN"].blank? %>
-  <div class="alert alert-warning" role="alert">
+  <div class="crayons-notice crayons-notice--info mb-6" role="alert">
     <p><strong>All references to "Buffering" are legacy and social media functionality is not currently operational.</strong></p>
     <p>Buffer, the social media scheduling tool, has discontinued its API, so send-to-buffer functionality only works for legacy clients.</p>
     <p>We will replace this functionality in the future with a functional alternative.</p>
   </div>
 <% elsif @user_buffer_updates.any? %>
-  <div class="alert alert-primary">
+  <div class="crayons-notice crayons-notice--success mb-6" role="alert">
     You have sent <strong><%= @user_buffer_updates.size %></strong> buffers so far in the past 24 hours. Keep it up!
   </div>
 <% else %>
-  <div class="alert alert-warning" role="alert">
+  <div class="crayons-notice crayons-notice--warning mb-6" role="alert">
     You haven't sent any buffers in the past 24 hours, let's get to work!
   </div>
 <% end %>

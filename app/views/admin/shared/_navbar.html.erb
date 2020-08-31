@@ -1,5 +1,5 @@
-<div class="mt-4">
-  <% Admin::ApplicationController::MENU_ITEMS.each do |menu_item| %>
-    <a class="sidebar-nav-item px-2 <%= "active" if request.path.include?(menu_item[:controller]) %>" href="/admin/<%= menu_item[:controller] %>"><%= menu_item[:name].to_s.titleize %></a>
-  <% end %>
-</div>
+<% Admin::ApplicationController::MENU_ITEMS.each do |menu_item| %>
+  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if request.path.include?(menu_item[:controller]) %>" href="/admin/<%= menu_item[:controller] %>">
+    <%= menu_item[:name].to_s.titleize %>
+  </a>
+<% end %>

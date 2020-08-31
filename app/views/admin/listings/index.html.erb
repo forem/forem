@@ -1,88 +1,85 @@
-<main>
-  <section class="row m-3" role="search">
-    <div class="col justify-content-end">
-      <%= form_tag(admin_listings_path, method: "get") do %>
-        <div class="form-row align-items-end flex-column">
-          <div class="form-group">
-            <%= label_tag(:search, "Keyword") %>
-            <%= text_field_tag(:search, params[:search]) %>
-            <% if params[:state].present? %>
-              <%= hidden_field_tag(:state, params[:state]) %>
-            <% end %>
-          </div>
-          <div class="form-group">
-            <%= label_tag(:filter, "Category") %>
-            <%= select_tag(:filter, options_for_select(categories_available.keys, params[:filter]), include_blank: true) %>
-          </div>
-          <div class="form-group">
-            <%= label_tag(:include_unpublished, "Include unpublished listings") %>
-            <%= hidden_field_tag(:include_unpublished, 0) %>
-            <%= check_box_tag(:include_unpublished, 1, params[:include_unpublished] == "1") %>
-          </div>
-          <div class="form-group">
-            <%= submit_tag("Filter") %>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  </section>
+<header class="mb-6">
+  <h2 class="fs-2xl s:fs-3xl mb-4">Listings</h2>
+</header>
 
-  <%= paginate @listings %>
+<%= form_tag(admin_listings_path, method: "get", role: "search", class: "crayons-card crayons-card--secondary p-4 flex items-center") do %>
+  <div class="mr-4">
+    <%= label_tag(:search, "Keyword", class: "mb-0") %>
+    <%= text_field_tag(:search, params[:search]) %>
+    <% if params[:state].present? %>
+      <%= hidden_field_tag(:state, params[:state]) %>
+    <% end %>
+  </div>
 
-  <table class="table">
-    <thead>
+  <div class="mr-4">
+    <%= label_tag(:filter, "Category", class: "mb-0") %>
+    <%= select_tag(:filter, options_for_select(categories_available.keys, params[:filter]), include_blank: true) %>
+  </div>
+
+  <div class="mr-4">
+    <%= label_tag(:include_unpublished, "Include unpublished listings", class: "mb-0") %>
+    <%= hidden_field_tag(:include_unpublished, 0) %>
+    <%= check_box_tag(:include_unpublished, 1, params[:include_unpublished] == "1") %>
+  </div>
+
+  <%= submit_tag("Filter") %>
+<% end %>
+
+<%= paginate @listings %>
+
+<table class="crayons-table">
+  <thead>
+    <tr>
+      <th scope="col">Title Link</th>
+      <th scope="col">User</th>
+      <th scope="col">Org</th>
+      <th scope="col">Category</th>
+      <th scope="col">Cached Tags</th>
+      <th scope="col">Published?</th>
+      <th scope="col">Last Bumped</th>
+    </tr>
+  </thead>
+  <tbody class="crayons-card">
+    <% @listings.each do |listing| %>
       <tr>
-        <th scope="col">Title Link</th>
-        <th scope="col">User</th>
-        <th scope="col">Org</th>
-        <th scope="col">Category</th>
-        <th scope="col">Cached Tags</th>
-        <th scope="col">Published?</th>
-        <th scope="col">Last Bumped</th>
+        <td><%= link_to listing.title, edit_admin_listing_path(listing.id), rel: "noopener" %></td>
+        <td><%= link_to listing.user.username, edit_admin_user_path(listing.user.id) %></td>
+        <td><%= link_to listing.organization.name, admin_organization_path(listing.organization_id) if listing.organization_id.present? %></td>
+        <td><%= listing.category %></td>
+        <td><%= listing.cached_tag_list %></td>
+        <td><%= listing.published ? "Yes" : "No" %></td>
+        <td><%= listing.bumped_at ? "#{time_ago_in_words(listing.bumped_at)} ago" : "Draft" %></td>
       </tr>
-    </thead>
-    <tbody>
-      <% @listings.each do |listing| %>
-        <tr>
-          <td><%= link_to listing.title, edit_admin_listing_path(listing.id), target: "_blank", rel: "noopener" %></td>
-          <td><%= link_to listing.user.username, edit_admin_user_path(listing.user.id) %></td>
-          <td><%= link_to listing.organization.name, admin_organization_path(listing.organization_id) if listing.organization_id.present? %></td>
-          <td><%= listing.category %></td>
-          <td><%= listing.cached_tag_list %></td>
-          <td><%= listing.published ? "Yes" : "No" %></td>
-          <td><%= listing.bumped_at ? "#{time_ago_in_words(listing.bumped_at)} ago" : "Draft" %></td>
-        </tr>
-        <tr>
-          <td class="buffer-cell border-0" colspan="7" data-controller="buffer" data-action="load@window->buffer#autosizeBodyText">
-            <button class="btn btn-secondary" data-toggle="collapse" data-target="#buffering-area-for-listing-<%= listing.id %>" aria-expanded="false" aria-controls="buffering-area-for-listing-<%= listing.id %>">
-              Share to Buffer
-            </button>
+      <tr>
+        <td class="buffer-cell border-0" colspan="7" data-controller="buffer" data-action="load@window->buffer#autosizeBodyText">
+          <button class="btn btn-secondary" data-toggle="collapse" data-target="#buffering-area-for-listing-<%= listing.id %>" aria-expanded="false" aria-controls="buffering-area-for-listing-<%= listing.id %>">
+            Share to Buffer
+          </button>
 
-            <% if listing.last_buffered.present? %>
-              <em class="ml-1">
-                Last shared: <%= listing.last_buffered.strftime("%d %B %Y") %>
-              </em>
+          <% if listing.last_buffered.present? %>
+            <em class="ml-1">
+              Last shared: <%= listing.last_buffered.strftime("%d %B %Y") %>
+            </em>
+          <% end %>
+          <div id="buffering-area-for-listing-<%= listing.id %>" class="collapse buffer-area mt-3">
+            <p><strong><%= listing.title %></strong></p>
+            <p><%= listing.processed_html&.html_safe %></p>
+            <%= form_with url: admin_buffer_updates_path, html: { data: { action: "submit->buffer#highlightElement" } } do %>
+              <input type="hidden" name="social_channel" value="listings_twitter" />
+              <input type="hidden" name="listing_id" value="<%= listing.id %>" />
+              <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">
+              📋 New <%= community_name %> Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013
+                <% if listing.user.twitter_username? %>
+                Posted by @<%= listing.user.twitter_username %>
+                <% end %>
+              </textarea>
+              <button class="btn btn-primary mt-2">🐦 Tweet 🐦</button>
             <% end %>
-            <div id="buffering-area-for-listing-<%= listing.id %>" class="collapse buffer-area mt-3">
-              <p><strong><%= listing.title %></strong></p>
-              <p><%= listing.processed_html&.html_safe %></p>
-              <%= form_with url: admin_buffer_updates_path, html: { data: { action: "submit->buffer#highlightElement" } } do %>
-                <input type="hidden" name="social_channel" value="listings_twitter" />
-                <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-                <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">
-                📋 New <%= community_name %> Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013
-                  <% if listing.user.twitter_username? %>
-                  Posted by @<%= listing.user.twitter_username %>
-                  <% end %>
-                </textarea>
-                <button class="btn btn-primary mt-2">🐦 Tweet 🐦</button>
-              <% end %>
-            </div>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
-  <%= paginate @listings %>
-</main>
+<%= paginate @listings %>

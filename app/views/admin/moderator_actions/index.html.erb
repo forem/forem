@@ -1,42 +1,36 @@
-<main>
-  <section class="row m-3" role="search">
-    <div class="col justify-content-end">
-      <%= search_form_for @q, url: admin_moderator_actions_path, class: "form-inline justify-content-end" do |f| %>
+<div class="mb-6">
+  <%= search_form_for @q, url: admin_moderator_actions_path, class: "form-inline" do |f| %>
+    <%= f.label :user_username_cont, "User", class: "sr-only" %>
+    <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mr-2" %>
+    <%= f.submit "Search", class: "btn btn-secondary" %>
+  <% end %>
+</div>
 
-        <%= f.label :user_username_cont, "User", class: "sr-only" %>
-        <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mx-3" %>
+<%= paginate @moderator_actions %>
 
-        <%= f.submit "Search", class: "btn btn-secondary" %>
-      <% end %>
-    </div>
-  </section>
-
-  <%= paginate @moderator_actions %>
-
-  <table class="table">
-    <thead>
+<table class="crayons-table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">User</th>
+      <th scope="col">Action</th>
+      <th scope="col">Data</th>
+      <th scope="col">
+        <%= tag.span(sort_link(@q, :created_at, "Date")) %>
+      </th>
+    </tr>
+  </thead>
+  <tbody class="crayons-card">
+    <% @moderator_actions.each do |action| %>
       <tr>
-        <th scope="col">ID</th>
-        <th scope="col">User</th>
-        <th scope="col">Action</th>
-        <th scope="col">Data</th>
-        <th scope="col">
-          <%= tag.span(sort_link(@q, :created_at, "Date"), class: "mx-2") %>
-        </th>
+        <td><%= action.id %></td>
+        <td><%= link_to(action.user.username, admin_user_path(action.user_id)) if action.user %></td>
+        <td><%= "#{action.data['action'].humanize} #{action.data['controller'].humanize.singularize.titleize}" if action.data.present? %></td>
+        <td><%= action.data %></td>
+        <td><%= action.created_at %></td>
       </tr>
-    </thead>
-    <tbody>
-      <% @moderator_actions.each do |action| %>
-        <tr>
-          <td><%= action.id %></td>
-          <td><%= link_to(action.user.username, admin_user_path(action.user_id)) if action.user %></td>
-          <td><%= "#{action.data['action'].humanize} #{action.data['controller'].humanize.singularize.titleize}" if action.data.present? %></td>
-          <td><%= action.data %></td>
-          <td><%= action.created_at %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+    <% end %>
+  </tbody>
+</table>
 
-  <%= paginate @moderator_actions %>
-</main>
+<%= paginate @moderator_actions %>
