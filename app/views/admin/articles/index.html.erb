@@ -5,7 +5,7 @@
     <p>We will replace this functionality in the future with a functional alternative.</p>
   </div>
 <% elsif @user_buffer_updates.any? %>
-  <div class="crayons-notice crayons-notice--success mb-6">
+  <div class="crayons-notice crayons-notice--success mb-6" role="alert">
     You have sent <strong><%= @user_buffer_updates.size %></strong> buffers so far in the past 24 hours. Keep it up!
   </div>
 <% else %>
