@@ -1,7 +1,42 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
+import { useEffect, useRef } from 'preact/hooks';
+import { addSnackbarItem } from '../../Snackbar';
 import { Toolbar } from './Toolbar';
+import { useDragAndDrop, dragDrop } from '@utilities/dragAndUpload';
+
+function handleImageDrop(handleImageSuccess, handleImageFailure) {
+  return function (event) {
+    event.preventDefault();
+    event.currentTarget.classList.remove('opacity-25');
+
+    const { files } = event.dataTransfer;
+
+    dragDrop(files, handleImageSuccess, handleImageFailure);
+  };
+}
+
+// TODO: Speak to design about how the dropzone should look when dragging over.
+function onDragOver(event) {
+  event.preventDefault();
+  event.currentTarget.classList.add('opacity-25');
+}
+
+function onDragExit(event) {
+  event.preventDefault();
+  // This for now, but basically undo styles that were added in drag over.
+  event.currentTarget.classList.remove('opacity-25');
+}
+
+function handleImageFailure(error) {
+  console.error(error);
+
+  addSnackbarItem({
+    message: 'Unable to add image. Try again',
+    addCloseButton: true,
+  });
+}
 
 export const EditorBody = ({
   onChange,
@@ -9,6 +44,41 @@ export const EditorBody = ({
   switchHelpContext,
   version,
 }) => {
+  function handleImageSuccess(response) {
+    // Function is within the component to be able to access
+    // textarea ref.
+    const editableBodyElement = textAreaRef.current.base;
+    const { links, image } = response;
+
+    const markdownImageLink = `![${image[0].name}](${links[0]})`;
+    const { selectionStart, selectionEnd, value } = editableBodyElement;
+    const before = value.substring(0, selectionStart);
+    const after = value.substring(selectionEnd, value.length);
+
+    editableBodyElement.value = `${before + markdownImageLink} ${after}`;
+    editableBodyElement.selectionStart =
+      selectionStart + markdownImageLink.length + 1;
+    editableBodyElement.selectionEnd = editableBodyElement.selectionStart;
+
+    // Dispatching a new event so that linkstate, https://github.com/developit/linkstate,
+    // the function used to create the onChange prop gets called correctly.
+    editableBodyElement.dispatchEvent(new Event('input'));
+  }
+
+  const { setElement } = useDragAndDrop({
+    onDrop: handleImageDrop(handleImageSuccess, handleImageFailure),
+    onDragOver,
+    onDragExit,
+  });
+
+  const textAreaRef = useRef(null);
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      setElement(textAreaRef.current.base);
+    }
+  });
+
   return (
     <div
       data-testid="article-form__body"
@@ -27,6 +97,7 @@ export const EditorBody = ({
           switchHelpContext(_event);
         }}
         name="body_markdown"
+        ref={textAreaRef}
       />
     </div>
   );
