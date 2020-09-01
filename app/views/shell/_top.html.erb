@@ -55,7 +55,16 @@
         class="<%= SiteConfig.default_font.tr("_", "-") %>-article-body"
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
         data-app-name="<%= ApplicationConfig["APP_NAME"] %>">
-        <div id="body-styles"></div>
+        <div id="body-styles">
+          <style>
+            :root {
+              --accent-brand: <%= SiteConfig.primary_brand_color_hex %>;
+              --accent-brand-darker: <%= HexComparer.new([SiteConfig.primary_brand_color_hex]).brightness(0.85) %>;
+              --accent-brand-lighter: <%= HexComparer.new([SiteConfig.primary_brand_color_hex]).brightness(1.1) %>;
+              --accent-brand-a10: #{rgba(<%= SiteConfig.primary_brand_color_hex %>, 0.1)};
+            }
+          </style>
+        </div>
         <% if user_signed_in? %>
           <%= render "layouts/user_config" %>
         <% end %>

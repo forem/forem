@@ -3,6 +3,7 @@ module Admin
     layout "admin"
 
     before_action :extra_authorization_and_confirmation, only: [:create]
+    before_action :validate_inputs, only: [:create]
 
     def show
       @confirmation_text = confirmation_text
@@ -54,6 +55,7 @@ module Admin
         facebook_key
         facebook_secret
         allow_email_password_registration
+        primary_brand_color_hex
       ]
 
       allowed_params = allowed_params |
@@ -87,6 +89,13 @@ module Admin
       raise_confirmation_mismatch_error if params.require(:confirmation) != confirmation_text
     end
 
+    def validate_inputs
+      errors = []
+      errors << "Brand color must be darker for accessibility." if brand_contrast_too_low
+      errors << "Brand color must be be a 6 character hex (starting with #)." if brand_color_not_hex
+      redirect_to admin_config_path, alert: "😭 #{errors.join(',')}" if errors.any?
+    end
+
     def clean_up_params
       config = params[:site_config]
       %i[sidebar_tags suggested_tags suggested_users].each do |param|
@@ -101,6 +110,17 @@ module Admin
       CacheBuster.bust("/shell_bottom") # Cached at edge, sent to service worker.
       CacheBuster.bust("/onboarding") # Page is cached at edge.
       Rails.cache.delete_matched(ApplicationConfig["RELEASE_FOOTPRINT"]) # Delete all caches tied to this key.
+    end
+
+    # Validations
+    def brand_contrast_too_low
+      hex = params[:site_config][:primary_brand_color_hex]
+      hex.present? && Color::Accessibility.new(hex).low_contrast?
+    end
+
+    def brand_color_not_hex
+      hex = params[:site_config][:primary_brand_color_hex]
+      hex.present? && !hex.match?(/\A#(\h{6}|\h{3})\z/)
     end
 
     def campaign_params
