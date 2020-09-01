@@ -17,11 +17,6 @@ module.exports = {
     '!**/__stories__/**',
     '!app/javascript/storybook-static/**/*.js',
   ],
-  transform: {
-    '\\.jsx?(\\.erb)?$': 'babel-jest',
-    '^.+\\.(js)$': 'babel-jest',
-    '\\.erb$': 'rails-erb-loader',
-  },
   coverageThreshold: {
     global: {
       statements: 41,
