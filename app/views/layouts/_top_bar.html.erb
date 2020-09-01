@@ -41,11 +41,11 @@
           <span class="crayons-indicator crayons-indicator--critical hidden" id="notifications-number"></span>
         </a>
       <% else %>
-        <a href="/enter" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap s:block" data-no-instant>
+        <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap s:block" data-no-instant>
           Log in
         </a>
 
-        <a href="/enter" class="crayons-btn hidden mr-2 whitespace-nowrap s:block" data-no-instant>
+        <a href="<%= sign_up_path(state:"new-user") %>" class="crayons-btn hidden mr-2 whitespace-nowrap s:block" data-no-instant>
           Create account
         </a>
       <% end %>

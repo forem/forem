@@ -21,7 +21,7 @@
         <a href="<%= videos_path %>" class="crayons-link crayons-link--block">Videos</a>
         <a href="<%= tags_path %>" class="crayons-link crayons-link--block">Tags</a>
         <% unless user_signed_in? %>
-          <a href="/enter" class="crayons-link crayons-link--block fw-bold">
+          <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
             Sign In/Up
           </a>
         <% else %>
