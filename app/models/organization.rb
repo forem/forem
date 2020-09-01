@@ -93,7 +93,7 @@ class Organization < ApplicationRecord
   end
 
   def profile_image_90
-    Images::Avatar.call(profile_image_url, length: 90)
+    Images::ProfileImage.call(profile_image_url, length: 90)
   end
 
   def enough_credits?(num_credits_needed)

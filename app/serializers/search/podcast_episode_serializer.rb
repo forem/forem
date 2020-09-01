@@ -8,7 +8,7 @@ module Search
                :website_url
 
     attribute :main_image do |pde|
-      Images::Avatar.call(pde.podcast.profile_image_url, length: 90)
+      Images::ProfileImage.call(pde.podcast.profile_image_url, length: 90)
     end
     attribute :slug, &:podcast_slug
 

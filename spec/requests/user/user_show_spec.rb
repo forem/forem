@@ -38,7 +38,7 @@ RSpec.describe "UserShow", type: :request do
           user.twitch_username,
           user.website_url,
         ],
-        "image" => Images::Avatar.call(user.profile_image_url, length: 320),
+        "image" => Images::ProfileImage.call(user.profile_image_url, length: 320),
         "name" => user.name,
         "email" => user.email,
         "jobTitle" => user.employment_title,
