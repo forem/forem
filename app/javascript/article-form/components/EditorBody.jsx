@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
 import { useEffect, useRef } from 'preact/hooks';
 import { addSnackbarItem } from '../../Snackbar';
+import { processImageUpload } from '../actions';
 import { Toolbar } from './Toolbar';
-import { useDragAndDrop, dragDrop } from '@utilities/dragAndUpload';
+import { useDragAndDrop } from '@utilities/dragAndDrop';
 
 function handleImageDrop(handleImageSuccess, handleImageFailure) {
   return function (event) {
@@ -13,7 +14,7 @@ function handleImageDrop(handleImageSuccess, handleImageFailure) {
 
     const { files } = event.dataTransfer;
 
-    dragDrop(files, handleImageSuccess, handleImageFailure);
+    processImageUpload(files, handleImageSuccess, handleImageFailure);
   };
 }
 
@@ -57,7 +58,7 @@ export const EditorBody = ({
 
     editableBodyElement.value = `${before + markdownImageLink} ${after}`;
     editableBodyElement.selectionStart =
-      selectionStart + markdownImageLink.length + 1;
+      selectionStart + markdownImageLink.length;
     editableBodyElement.selectionEnd = editableBodyElement.selectionStart;
 
     // Dispatching a new event so that linkstate, https://github.com/developit/linkstate,

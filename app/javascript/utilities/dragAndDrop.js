@@ -1,14 +1,5 @@
 import { cloneElement } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { generateMainImage } from '../article-form/actions';
-import { validateFileInputs } from '../packs/validateFileInputs';
-
-export function dragDrop(files, handleImageSuccess, handleImageFailure) {
-  if (files.length > 0 && validateFileInputs()) {
-    const payload = { image: files };
-    generateMainImage(payload, handleImageSuccess, handleImageFailure);
-  }
-}
 
 /**
  * A custom Preact hook used to attach drag and drop functionality to a DOM element.
