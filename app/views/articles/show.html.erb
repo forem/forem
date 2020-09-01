@@ -183,25 +183,25 @@
           </div>
         </header>
 
-        <% if @collection %>
-          <%= render "articles/collection",
-                     rendered_article: @article,
-                     collection: @collection,
-                     articles: @collection_articles,
-                     position: :top %>
-        <% end %>
+        <div class="crayons-article__main">
+          <% if @collection %>
+            <%= render "articles/collection",
+                       rendered_article: @article,
+                       collection: @collection,
+                       articles: @collection_articles %>
+          <% end %>
 
-        <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
-          <%= @article.processed_html.html_safe %>
+          <div class="crayons-article__body text-styles spec__body" data-article-id="<%= @article.id %>" id="article-body">
+            <%= @article.processed_html.html_safe %>
+          </div>
+
+          <% if @article.long_markdown? && @collection %>
+            <%= render "articles/collection",
+                       rendered_article: @article,
+                       collection: @collection,
+                       articles: @collection_articles %>
+          <% end %>
         </div>
-
-        <% if @article.long_markdown? && @collection %>
-          <%= render "articles/collection",
-                     rendered_article: @article,
-                     collection: @collection,
-                     articles: @collection_articles,
-                     position: :bottom %>
-        <% end %>
       </article>
 
       <% if @article.long_markdown? || @organization %>

@@ -8,14 +8,19 @@ RSpec.describe Comment, type: :model do
   include_examples "#sync_reactions_count", :article_comment
 
   describe "validations" do
-    it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:commentable).optional }
-    it { is_expected.to have_many(:reactions).dependent(:destroy) }
-    it { is_expected.to have_many(:mentions).dependent(:destroy) }
-    it { is_expected.to have_many(:notifications).dependent(:delete_all) }
-    it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
-    it { is_expected.to validate_presence_of(:commentable_id) }
-    it { is_expected.to validate_presence_of(:body_markdown) }
+    subject { comment }
+
+    describe "builtin validations" do
+      it { is_expected.to belong_to(:user) }
+      it { is_expected.to belong_to(:commentable).optional }
+      it { is_expected.to have_many(:reactions).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:destroy) }
+      it { is_expected.to have_many(:notifications).dependent(:delete_all) }
+      it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
+
+      it { is_expected.to validate_presence_of(:body_markdown) }
+      it { is_expected.to validate_presence_of(:user_id) }
+    end
 
     it do
       # rubocop:disable RSpec/NamedSubject
@@ -28,14 +33,55 @@ RSpec.describe Comment, type: :model do
     end
 
     it { is_expected.to validate_length_of(:body_markdown).is_at_least(1).is_at_most(25_000) }
-    it { is_expected.to validate_inclusion_of(:commentable_type).in_array(%w[Article PodcastEpisode]) }
 
-    it "is invalid if commentable is unpublished article" do
-      # rubocop:disable RSpec/NamedSubject
-      subject.commentable = build(:article, published: false)
-      expect(subject).not_to be_valid
-      # rubocop:enable RSpec/NamedSubject
+    # rubocop:disable RSpec/NamedSubject
+    describe "commentable" do
+      it "is invalid if commentable is an unpublished article" do
+        subject.commentable = build(:article, published: false)
+
+        expect(subject).not_to be_valid
+      end
+
+      it "is valid without a commentable" do
+        subject.commentable = nil
+
+        expect(subject).to be_valid
+      end
+
+      it "checks for commentable_id presence only if commentable_type is present" do
+        subject.commentable = nil
+        subject.commentable_type = "Article"
+
+        expect(subject).not_to be_valid
+      end
+
+      it "checks for commentable_type inclusion only if commentable_id is present" do
+        subject.commentable = nil
+        subject.commentable_id = article.id
+
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:commentable_type].first).to match(/not included in the list/)
+      end
+
+      it "is valid with Article commentable type" do
+        subject.commentable_type = "Article"
+
+        expect(subject).to be_valid
+      end
+
+      it "is valid with PodcastEpisode commentable type" do
+        subject.commentable_type = "PodcastEpisode"
+
+        expect(subject).to be_valid
+      end
+
+      it "is not valid with Podcast commentable type" do
+        subject.commentable_type = "Podcast"
+
+        expect(subject).not_to be_valid
+      end
     end
+    # rubocop:enable RSpec/NamedSubject
 
     describe "#after_commit" do
       it "on update enqueues job to index comment to elasticsearch" do
@@ -367,6 +413,14 @@ RSpec.describe Comment, type: :model do
       create(:notification, notifiable: comment, user: user)
       sidekiq_perform_enqueued_jobs do
         comment.update(deleted: true)
+      end
+      expect(comment.notifications).to be_empty
+    end
+
+    it "deletes the comment's notifications when hidden_by_commentable_user is set to true" do
+      create(:notification, notifiable: comment, user: user)
+      sidekiq_perform_enqueued_jobs do
+        comment.update(hidden_by_commentable_user: true)
       end
       expect(comment.notifications).to be_empty
     end

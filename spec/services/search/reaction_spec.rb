@@ -112,7 +112,7 @@ RSpec.describe Search::Reaction, type: :service do
     end
 
     context "with default sorting" do
-      it "sorts by id" do
+      xit "sorts by id" do
         index_documents([reaction1, reaction2])
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]

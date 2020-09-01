@@ -36,11 +36,12 @@ RSpec.describe "ArticlesShow", type: :request do
         "publisher" => {
           "@context" => "http://schema.org",
           "@type" => "Organization",
-          "name" => "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+          "name" => "#{SiteConfig.community_name} Community",
           "logo" => {
             "@context" => "http://schema.org",
             "@type" => "ImageObject",
-            "url" => ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, 80, "png"),
+            "url" => ApplicationController.helpers.optimized_image_url(SiteConfig.logo_png, width: 192,
+                                                                                            fetch_format: "png"),
             "width" => "192",
             "height" => "192"
           }

@@ -84,6 +84,30 @@ RSpec.describe BadgeRewarder, type: :labor do
     expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
   end
 
+  describe "::award_four_week_streak_badge" do
+    it "calls award_streak_badge with argument 4" do
+      allow(described_class).to receive(:award_streak_badge)
+      described_class.award_four_week_streak_badge
+      expect(described_class).to have_received(:award_streak_badge).with(4)
+    end
+  end
+
+  describe "::award_eight_week_streak_badge" do
+    it "calls award_streak_badge with argument 8" do
+      allow(described_class).to receive(:award_streak_badge)
+      described_class.award_eight_week_streak_badge
+      expect(described_class).to have_received(:award_streak_badge).with(8)
+    end
+  end
+
+  describe "::award_sixteen_week_streak_badge" do
+    it "calls award_streak_badge with argument 16" do
+      allow(described_class).to receive(:award_streak_badge)
+      described_class.award_sixteen_week_streak_badge
+      expect(described_class).to have_received(:award_streak_badge).with(16)
+    end
+  end
+
   describe "::award_streak_badge" do
     it "rewards badge to users with four straight weeks of articles" do
       create(:badge, title: "4 Week Streak", slug: "4-week-streak")

@@ -35,6 +35,7 @@ CarrierWave.configure do |config|
         aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
         region: region
       }
+      config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
     else
       # Fallback on file storage if AWS creds are not present
       config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"

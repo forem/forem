@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
@@ -75,7 +75,7 @@ export class ArticleCoverImage extends Component {
               <Spinner /> Uploading...
             </span>
           ) : (
-            <>
+            <Fragment>
               <Button variant="outlined" className="mr-2 whitespace-nowrap">
                 <label htmlFor="cover-image-input">{uploadLabel}</label>
                 <input
@@ -95,7 +95,7 @@ export class ArticleCoverImage extends Component {
                   Remove
                 </Button>
               )}
-            </>
+            </Fragment>
           )}
         </div>
         {uploadError && (

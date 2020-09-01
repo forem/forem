@@ -5,14 +5,15 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let!(:welcome_thread) { create(:article, user: mascot_account, published: true, tags: "welcome") }
 
   # welcome_broadcast is explicitly not readonly so that we can test against an inactive broadcast
-  let!(:welcome_broadcast)         { create(:welcome_broadcast) }
-  let!(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
-  let!(:github_connect_broadcast)  { create(:github_connect_broadcast) }
+  let!(:welcome_broadcast)          { create(:welcome_broadcast) }
+  let!(:twitter_connect_broadcast)  { create(:twitter_connect_broadcast) }
+  let!(:github_connect_broadcast)   { create(:github_connect_broadcast) }
+  let!(:facebook_connect_broadcast) { create(:facebook_connect_broadcast) }
   let!(:apple_connect_broadcast)   { create(:apple_connect_broadcast) }
-  let!(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
-  let!(:discuss_and_ask_broadcast) { create(:discuss_and_ask_broadcast) }
-  let!(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
-  let!(:download_app_broadcast)    { create(:download_app_broadcast) }
+  let!(:customize_feed_broadcast)   { create(:customize_feed_broadcast) }
+  let!(:discuss_and_ask_broadcast)  { create(:discuss_and_ask_broadcast) }
+  let!(:customize_ux_broadcast)     { create(:customize_ux_broadcast) }
+  let!(:download_app_broadcast)     { create(:download_app_broadcast) }
 
   before do
     omniauth_mock_providers_payload
@@ -60,8 +61,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
           described_class.call(user.id)
         end
       end.to change(user.notifications, :count).by(1)
-      # we check it's not the broadcast for the identity
-      not_github = [apple_connect_broadcast, twitter_connect_broadcast].include?(user.notifications.last.notifiable)
+      not_github = [facebook_connect_broadcast, twitter_connect_broadcast, apple_connect_broadcast].include?(user.notifications.last.notifiable)
       expect(not_github).to be(true)
 
       Timecop.travel(1.day.from_now)
@@ -144,7 +144,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
     it "does not send notification if user is authenticated with all services" do
       user = create(:user, :with_identity, created_at: 1.day.ago)
-      sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_authentication_notification) }
+      sidekiq_perform_enqueued_jobs { described_class.new(user.id).__send__(:send_authentication_notification) }
       expect(Notification).not_to have_received(:send_welcome_notification).with(user.id, github_connect_broadcast.id)
     end
 

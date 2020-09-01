@@ -1,14 +1,14 @@
 class Profile < ApplicationRecord
   belongs_to :user
 
-  # This method generates typed accessors for all active profile fields
-  def self.define_store_accessors!
-    ProfileField.active.find_each do |field|
+  validates :user_id, uniqueness: true
+
+  # This method generates typed accessors for all profile fields
+  def self.refresh_store_accessors!
+    ProfileField.find_each do |field|
       store_attribute :data, field.attribute_name, field.type
     end
   end
 
-  define_store_accessors!
-
-  validates :data, presence: true
+  refresh_store_accessors!
 end

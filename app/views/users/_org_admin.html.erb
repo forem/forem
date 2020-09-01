@@ -96,7 +96,7 @@
       <div class="flex items-center">
           <span class="crayons-logo crayons-logo--xl mr-2">
             <% if @organization.profile_image_url.present? %>
-              <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.profile_image_url, 50) %>" class="crayons-logo__image" />
+              <img alt="<%= @organization.name %> profile image" src="<%= optimized_image_url(@organization.profile_image_url, width: 50) %>" class="crayons-logo__image" />
             <% end %>
           </span>
           <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
@@ -107,7 +107,7 @@
       <%= f.label :nav_image, "Logo for light themes", class: "crayons-field__label" %>
       <div class="flex items-center">
         <% if @organization.nav_image_url.present? %>
-          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= cloudinary(@organization.nav_image_url, 50) %>" />
+          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= optimized_image_url(@organization.nav_image_url, width: 50) %>" />
         <% end %>
         <%= f.file_field :nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
@@ -117,7 +117,7 @@
       <%= f.label :dark_nav_image, "Logo for dark themes", class: "crayons-field__label" %>
       <div class="flex items-center">
         <% if @organization.dark_nav_image_url.present? %>
-          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= cloudinary(@organization.dark_nav_image_url, 50) %>" />
+          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= optimized_image_url(@organization.dark_nav_image_url, width: 50) %>" />
         <% end %>
         <%= f.file_field :dark_nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>

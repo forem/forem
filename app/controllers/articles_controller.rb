@@ -56,7 +56,12 @@ class ArticlesController < ApplicationController
 
     @article, needs_authorization = Articles::Builder.call(@user, @tag, @prefill)
 
-    needs_authorization ? authorize(Article) : skip_authorization
+    if needs_authorization
+      authorize(Article)
+    else
+      skip_authorization
+      store_location_for(:user, request.path)
+    end
   end
 
   def edit
@@ -289,20 +294,6 @@ class ArticlesController < ApplicationController
         Notification.remove_all(notifiable_ids: @article.comments.ids,
                                 notifiable_type: "Comment")
       end
-    end
-  end
-
-  def redirect_after_creation
-    @article.decorate
-    if @article.persisted?
-      redirect_to @article.current_state_path, notice: "Article was successfully created."
-    else
-      if @article.errors.to_h[:body_markdown] == "has already been taken"
-        @article = current_user.articles.find_by(body_markdown: @article.body_markdown)
-        redirect_to @article.current_state_path
-        return
-      end
-      render :new
     end
   end
 

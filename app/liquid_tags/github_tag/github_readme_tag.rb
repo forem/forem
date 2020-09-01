@@ -16,7 +16,7 @@ class GithubTag
         readme_html = fetch_readme(repository_path)
       end
 
-      ActionController::Base.new.render_to_string(
+      ApplicationController.render(
         partial: PARTIAL,
         locals: {
           content: content,

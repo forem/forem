@@ -1,0 +1,63 @@
+@import 'config/import';
+@import 'crayons';
+@import 'variables';
+@import 'scaffolds';
+@import 'top-bar';
+
+.pagination {
+  justify-content: right;
+
+  .page,
+  .next,
+  .last,
+  .first,
+  .prev {
+    padding: 8px;
+  }
+}
+
+.bg-featured {
+  background: #bbffd2;
+}
+
+.bg-approved {
+  background: #92e8ae;
+  border: 12px solid #ff9900;
+}
+
+.bg-highlighted {
+  background: #2effa8 !important;
+  border: 20px solid black;
+}
+
+.border-highlighted {
+  border: 20px solid black;
+}
+
+.broadcast-wrapper {
+  display: flex;
+  position: relative;
+  z-index: auto;
+}
+
+.site-config__required {
+  background: #dc3545;
+  border-radius: 19px;
+  padding: 5px 15px;
+  color: white;
+  text-align: right;
+  margin-left: 10px;
+}
+
+.site-config__label {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile__group-toggle {
+  text-decoration: underline;
+  cursor: pointer;
+  color: grey;
+  margin: 1em 0;
+  text-align: end;
+}

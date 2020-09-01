@@ -18,15 +18,47 @@ module CacheBuster
     # fastly.purge(path)
     #
     # https://github.com/fastly/fastly-ruby#efficient-purging
-    return unless Rails.env.production?
-
-    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}",
-                  headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}?i=i",
-                  headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
+    if fastly_enabled?
+      bust_fastly_cache(path)
+    elsif nginx_enabled?
+      bust_nginx_cache(path)
+    end
   rescue URI::InvalidURIError => e
     Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
     DatadogStatsClient.increment("cache_buster.invalid_uri", tags: ["path:#{path}"])
+  end
+
+  def self.fastly_enabled?
+    ApplicationConfig["FASTLY_API_KEY"].present? && ApplicationConfig["FASTLY_SERVICE_ID"].present?
+  end
+
+  def self.nginx_enabled?
+    ApplicationConfig["OPENRESTY_PROTOCOL"].present? && ApplicationConfig["OPENRESTY_DOMAIN"].present?
+  end
+
+  def self.bust_fastly_cache(path)
+    HTTParty.post(
+      "https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}",
+      headers: {
+        "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
+      },
+    )
+    HTTParty.post(
+      "https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}?i=i",
+      headers: {
+        "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
+      },
+    )
+  end
+
+  def self.bust_nginx_cache(path)
+    uri = URI.parse("#{ApplicationConfig['OPENRESTY_PROTOCOL']}#{ApplicationConfig['OPENRESTY_DOMAIN']}#{path}")
+    http = Net::HTTP.new(uri.host, uri.port)
+    response = http.request Net::HTTP::NginxPurge.new(uri.request_uri)
+
+    raise StandardError, "NginxPurge request failed: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
+
+    response.body
   end
 
   def self.bust_comment(commentable)
@@ -204,4 +236,13 @@ module CacheBuster
       bust("?i=i")
     end
   end
+end
+
+# Creates our own purge method for an HTTP request,
+# which is used by Nginx to bust a cache.
+# See Net::HTTPGenericRequest for attributes/methods.
+class Net::HTTP::NginxPurge < Net::HTTPRequest # rubocop:disable Style/ClassAndModuleChildren
+  METHOD = "PURGE".freeze
+  REQUEST_HAS_BODY = false
+  RESPONSE_HAS_BODY = true
 end

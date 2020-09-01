@@ -19,7 +19,6 @@ class AsyncInfoController < ApplicationController
       remember_me(current_user)
     end
     @user = current_user.decorate
-    occasionally_update_analytics
     respond_to do |format|
       format.json do
         render json: {
@@ -36,7 +35,7 @@ class AsyncInfoController < ApplicationController
     set_surrogate_key_header "shell-version-endpoint"
     # shell_version will change on every deploy.
     # *Technically* could be only on changes to assets and shell, but this is more fool-proof.
-    shell_version = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    shell_version = ApplicationConfig["RELEASE_FOOTPRINT"]
     render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
   end
 
@@ -94,13 +93,5 @@ class AsyncInfoController < ApplicationController
 
   def remember_user_token
     cookies[:remember_user_token]
-  end
-
-  private
-
-  def occasionally_update_analytics
-    return unless Rails.env.production? && rand(SiteConfig.ga_fetch_rate) == 1
-
-    Articles::UpdateAnalyticsWorker.perform_async(@user.id)
   end
 end
