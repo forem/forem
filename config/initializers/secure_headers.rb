@@ -4,7 +4,7 @@ SecureHeaders::Configuration.default do |config|
     font_src: %w('self' data: https:),
     img_src: %w('self' https: data:),
     object_src: %w('none'),
-    script_src: %w(https:),
+    script_src: %w(https: 'unsafe-inline'),
     style_src: %w('self' https: 'unsafe-inline')
   }
 end
