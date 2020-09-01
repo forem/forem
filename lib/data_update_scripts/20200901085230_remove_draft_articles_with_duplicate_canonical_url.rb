@@ -5,7 +5,7 @@ module DataUpdateScripts
 
       # This statement deletes all draft articles in excess found to be duplicate over canonical_url,
       # excluding those whose body_markdown is different from the other duplicate occurrences
-      ActiveRecord::Base.connection.execute(
+      result = ActiveRecord::Base.connection.execute(
         <<~SQL,
           WITH duplicates_draft_articles AS
               (SELECT id
@@ -29,10 +29,17 @@ module DataUpdateScripts
         SQL
       )
 
+      # Sending IDs of deleted articles to Datadog
+      DatadogStatsClient.event(
+        "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
+        "deleted draft articles with the same canonical_url and same body_markdown",
+        tags: result.map { |row| row["id"] },
+      )
+
       # Now that all duplicates with the same body are gone, we need to deal with duplicate canonical URLs
       # with different bodies.
       # We thus select the oldest for removal preserving the most recent one
-      ActiveRecord::Base.connection.execute(
+      result = ActiveRecord::Base.connection.execute(
         <<~SQL,
           WITH duplicates_draft_articles AS
               (SELECT id
@@ -54,6 +61,13 @@ module DataUpdateScripts
           FROM articles
           WHERE id IN (SELECT id FROM duplicates_draft_articles) RETURNING id;
         SQL
+      )
+
+      # Sending IDs of deleted articles to Datadog
+      DatadogStatsClient.event(
+        "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
+        "deleted draft articles with the same canonical_url and different body_markdown",
+        tags: result.map { |row| row["id"] },
       )
     end
   end
