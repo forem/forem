@@ -15,7 +15,7 @@
       </header>
       <div class="crayons-modal__box__body">
         <div class="form-group grid p-6 mb-6 gap-1">
-          <%= form_with model: [:admin, ProfileField.new] do |form| %>
+          <%= form_for [:admin, ProfileField.new] do |form| %>
             <%= render "profile_field_form", form: form, group: group, group_name: group_name %>
             <%= form.submit class: "btn btn-primary" %>
           <% end %>
