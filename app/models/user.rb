@@ -490,7 +490,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    Images::Profile.call(profile_image_url, length: 90)
+    ProfileImage.new(self).get(width: 90)
   end
 
   def unsubscribe_from_newsletters
