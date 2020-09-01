@@ -1,4 +1,4 @@
-<div id="global-signup-modal" class="authentication-modal crayons-modal crayons-modal--s absolute hidden">
+<div id="global-signup-modal" class="authentication-modal crayons-modal crayons-modal--s fixed hidden">
   <div class="authentication-modal__box crayons-modal__box">
     <button type="button" class="authentication-modal__close-btn close-modal-button crayons-btn crayons-btn--icon crayons-btn--ghost">
       <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
@@ -26,10 +26,10 @@
       </div>
 
       <div class="authentication-modal__actions">
-        <a href="/enter" class="crayons-btn" aria-label="Log in" data-no-instant>
+        <a href="<%= sign_up_path %>" class="crayons-btn" aria-label="Log in" data-no-instant>
           Log in
         </a>
-        <a href="/enter" class="crayons-btn crayons-btn--ghost-brand" aria-label="Create new account" data-no-instant>
+        <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn crayons-btn--ghost-brand" aria-label="Create new account" data-no-instant>
           Create new account
         </a>
       </div>

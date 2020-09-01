@@ -56,7 +56,12 @@ class ArticlesController < ApplicationController
 
     @article, needs_authorization = Articles::Builder.call(@user, @tag, @prefill)
 
-    needs_authorization ? authorize(Article) : skip_authorization
+    if needs_authorization
+      authorize(Article)
+    else
+      skip_authorization
+      store_location_for(:user, request.path)
+    end
   end
 
   def edit

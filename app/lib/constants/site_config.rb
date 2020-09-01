@@ -101,6 +101,10 @@ module Constants
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
         placeholder: "basic, rich, or compact"
       },
+      primary_brand_color_hex: {
+        description: "Determines background/border of buttons etc. Must be dark enough to contrast with white text.",
+        placeholder: "#0a0a0a"
+      },
       github_key: {
         description: "The \"Client ID\" portion of the GitHub Oauth Apps portal",
         placeholder: ""
