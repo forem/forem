@@ -74,7 +74,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :profile_field_groups, only: %i[index update create destroy]
+    resources :profile_field_groups, only: %i[update create destroy]
     resources :profile_fields, only: %i[index update create destroy]
     resources :reactions, only: [:update]
     resources :response_templates, only: %i[index new edit create update destroy]
