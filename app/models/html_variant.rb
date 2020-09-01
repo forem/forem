@@ -56,7 +56,7 @@ class HtmlVariant < ApplicationRecord
   end
 
   def prefix_all_images
-    # wrap with Cloudinary or allow if from giphy or githubusercontent.com
+    # Optimize image if not from giphy or githubusercontent.com
     doc = Nokogiri::HTML.fragment(html)
     doc.css("img").each do |img|
       src = img.attr("src")

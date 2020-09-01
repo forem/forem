@@ -12,9 +12,6 @@ DEFAULT_EMAIL: "yo@dev.to"
 RACK_TIMEOUT_WAIT_TIMEOUT: 100_000
 RACK_TIMEOUT_SERVICE_TIMEOUT: 100_000
 
-# Heroku release slug used to bust caches on deploys
-HEROKU_SLUG_COMMIT: "Optional"
-
 # Redis caching storage
 REDIS_URL: "redis://localhost:6379"
 

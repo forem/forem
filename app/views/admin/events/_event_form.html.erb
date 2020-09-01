@@ -1,4 +1,3 @@
-<hr>
 <div class="form-group">
   <%= f.label :cover_image %>:
   <%= f.file_field :cover_image, class: "form-control" %>
@@ -41,11 +40,11 @@
   <%= f.text_area :description_markdown, size: "45x10", required: true, class: "form-control" %>
 </div>
 <div class="form-group">
-  <%= f.label :publish %>
+  <%= f.label :published %>
   <%= f.check_box :published %>
 </div>
 <div class="form-group">
   <%= f.label :live_now %>
   <%= f.check_box :live_now %>
 </div>
-<%= f.submit class: "btn btn-primary float-right my-3" %>
+<%= f.submit class: "btn btn-primary" %>

@@ -78,9 +78,8 @@ Rails.application.configure do
   if (gitpod_workspace_url = ENV["GITPOD_WORKSPACE_URL"])
     config.hosts << /.*#{URI.parse(gitpod_workspace_url).host}/
   end
-  config.app_domain = "localhost:3000"
+  config.app_domain = ENV["APP_DOMAIN"] || "localhost:3000"
 
-  config.action_mailer.default_url_options = { host: "localhost:3000" }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: config.app_domain }
@@ -91,7 +90,7 @@ Rails.application.configure do
     user_name: '<%= ENV["DEVELOPMENT_EMAIL_USERNAME"] %>',
     password: '<%= ENV["DEVELOPMENT_EMAIL_PASSWORD"] %>',
     authentication: :plain,
-    domain: "localhost:3000"
+    domain: config.app_domain
   }
 
   config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")

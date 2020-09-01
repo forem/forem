@@ -76,10 +76,10 @@ module ApplicationHelper
     "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
-  def cloudinary(url, width = "500", quality = 80, format = "auto")
+  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto")
     image_url = url.presence || asset_path("#{rand(1..40)}.png")
 
-    Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: format)
+    Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: fetch_format)
   end
 
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
@@ -180,11 +180,11 @@ module ApplicationHelper
     "#{community_name} Community"
   end
 
-  def cache_key_heroku_slug(path)
-    heroku_slug_commit = ApplicationConfig["HEROKU_SLUG_COMMIT"]
-    return path if heroku_slug_commit.blank?
+  def release_adjusted_cache_key(path)
+    release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
+    return path if release_footprint.blank?
 
-    "#{path}-#{heroku_slug_commit}"
+    "#{path}-#{release_footprint}"
   end
 
   def copyright_notice

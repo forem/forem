@@ -8,6 +8,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
 import debounceAction from '../utilities/debounceAction';
+import { dragDrop } from '../utilities/dragAndUpload';
 import { addSnackbarItem } from '../Snackbar';
 import {
   conductModeration,
@@ -61,6 +62,7 @@ export default class Chat extends Component {
     );
 
     this.state = {
+      appName: document.body.dataset.appName,
       messages: [],
       scrolled: false,
       showAlert: false,
@@ -112,6 +114,7 @@ export default class Chat extends Component {
       isMobileDevice,
       channelPaginationNum,
       currentUserId,
+      appName,
       messageOffset,
     } = this.state;
 
@@ -122,12 +125,12 @@ export default class Chat extends Component {
     );
     this.subscribeChannelsToPusher(
       channelsForPusherSub,
-      (channel) => `open-channel-${channel.chat_channel_id}`,
+      (channel) => `open-channel--${appName}-${channel.chat_channel_id}`,
     );
 
     setupObserver(this.observerCallback);
 
-    this.subscribePusher(`private-message-notifications-${currentUserId}`);
+    this.subscribePusher(`private-message-notifications--${appName}-${currentUserId}`);
 
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
@@ -229,7 +232,7 @@ export default class Chat extends Component {
   messageOpened = () => {};
 
   loadChannels = (channels, query) => {
-    const { activeChannelId } = this.state;
+    const { activeChannelId, appName } = this.state;
     const activeChannel =
       this.state.activeChannel ||
       channels.filter(
@@ -278,11 +281,11 @@ export default class Chat extends Component {
     }
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('open')),
-      (channel) => `open-channel-${channel.chat_channel_id}`,
+      (channel) => `open-channel--${appName}-${channel.chat_channel_id}`,
     );
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('invite_only')),
-      (channel) => `private-channel-${channel.chat_channel_id}`,
+      (channel) => `private-channel--${appName}-${channel.chat_channel_id}`,
     );
     const chatChannelsList = document.getElementById(
       'chatchannels__channelslist',
@@ -339,7 +342,7 @@ export default class Chat extends Component {
   };
 
   setupChannel = (channelId) => {
-    const { messages, messageOffset, activeChannel } = this.state;
+    const { messages, messageOffset, activeChannel, appName } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
@@ -354,9 +357,9 @@ export default class Chat extends Component {
         null,
       );
       if (activeChannel.channel_type === 'open')
-        this.subscribePusher(`open-channel-${channelId}`);
+        this.subscribePusher(`open-channel--${appName}-${channelId}`);
     }
-    this.subscribePusher(`private-channel-${channelId}`);
+    this.subscribePusher(`private-channel--${appName}-${channelId}`);
   };
 
   setOpenChannelUsers = (res) => {
@@ -1409,7 +1412,44 @@ export default class Chat extends Component {
       .getElementById('jumpback_button')
       .classList.remove('chatchanneljumpback__hide');
   };
+  handleImageDrop = (e) => {
+    e.preventDefault();
+    const { files } = e.dataTransfer;
 
+    const messageArea = document.getElementById('messagelist');
+    messageArea.classList.remove('opacity-25');
+    messageArea.classList.add('opacity-100');
+    dragDrop(files, this.handleImageSuccess, this.handleImageFailure);
+  };
+  handleImageSuccess = (res) => {
+    const { links, image } = res;
+    const mLink = `![${image[0].name}](${links[0]})`;
+    const el = document.getElementById('messageform');
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const text = el.value;
+    let before = text.substring(0, start);
+    before = text.substring(0, before.lastIndexOf('@') + 1);
+    const after = text.substring(end, text.length);
+    el.value = `${before + mLink} ${after}`;
+    el.selectionStart = start + mLink.length + 1;
+    el.selectionEnd = start + mLink.length + 1;
+    el.focus();
+  };
+  handleImageFailure = (e) => {
+    addSnackbarItem({ message: e.message, addCloseButton: true });
+  };
+  handleDragHover(e) {
+    e.preventDefault();
+    const messageArea = document.getElementById('messagelist');
+    messageArea.classList.add('opacity-25');
+  }
+  handleDragExit(e) {
+    e.preventDefault();
+    const messageArea = document.getElementById('messagelist');
+    messageArea.classList.remove('opacity-25');
+    messageArea.classList.add('opacity-100');
+  }
   renderActiveChatChannel = (channelHeader) => {
     const { state, props } = this;
 
@@ -1424,6 +1464,9 @@ export default class Chat extends Component {
               this.scroller = scroller;
             }}
             id="messagelist"
+            onDragOver={this.handleDragHover}
+            onDragExit={this.handleDragExit}
+            onDrop={this.handleImageDrop}
           >
             {this.renderMessages()}
             <div className="messagelist__sentinel" id="messagelist__sentinel" />

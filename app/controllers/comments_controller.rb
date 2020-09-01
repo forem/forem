@@ -3,7 +3,7 @@ class CommentsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index]
   before_action :authenticate_user!, only: %i[preview create hide unhide]
   after_action :verify_authorized
-  after_action only: [:moderator_create] do
+  after_action only: %i[moderator_create admin_delete] do
     Audit::Logger.log(:moderator, current_user, params.dup)
   end
 
@@ -205,10 +205,6 @@ class CommentsController < ApplicationController
     authorize @comment
     @comment.hidden_by_commentable_user = true
     @comment&.commentable&.update_column(:any_comments_hidden, true)
-
-    Notification.destroy_by(user_id: current_user.id,
-                            notifiable_type: "Comment",
-                            notifiable_id: params[:comment_id])
 
     if @comment.save
       render json: { hidden: "true" }, status: :ok

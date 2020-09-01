@@ -1,27 +1,24 @@
-<div class="row m-3">
-  <div class="col">
-  </div>
-  <div class="col">
-    <%= search_form_for @q, url: admin_privileged_reactions_path, class: "form-inline justify-content-end" do |f| %>
+<div class="mb-6">
+  <%= search_form_for @q, url: admin_privileged_reactions_path, class: "form-inline" do |f| %>
 
-      <%= f.label :user_username_cont, "User", class: "sr-only" %>
-      <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mx-3" %>
+    <%= f.label :user_username_cont, "User", class: "sr-only" %>
+    <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control" %>
 
-      <%= f.select(
-            :category_eq,
-            options_for_select(["", "thumbsup", "thumbsdown", "vomit"], @q.category_eq),
-            {},
-            class: "custom-select mx-3",
-          ) %>
+    <%= f.select(
+          :category_eq,
+          options_for_select(["", "thumbsup", "thumbsdown", "vomit"], @q.category_eq),
+          {},
+          class: "custom-select mx-3",
+          aria: { label: "Action" },
+        ) %>
 
-      <%= f.submit "Search", class: "btn btn-secondary" %>
-    <% end %>
-  </div>
+    <%= f.submit "Search", class: "btn btn-secondary" %>
+  <% end %>
 </div>
 
 <%= paginate @privileged_reactions %>
 
-<table class="table">
+<table class="crayons-table" width="100%">
   <thead>
     <tr>
       <th scope="col">ID</th>
@@ -32,7 +29,7 @@
       <th scope="col">Date</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="crayons-card">
     <% @privileged_reactions.each do |reaction| %>
       <tr>
         <td><%= reaction.id %></td>
