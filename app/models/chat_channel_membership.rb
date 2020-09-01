@@ -50,7 +50,7 @@ class ChatChannelMembership < ApplicationRecord
 
   def channel_image
     if chat_channel.channel_type == "direct"
-      Images::ProfileImage.call(other_user.profile_image_url, length: 90)
+      Images::Profile.call(other_user.profile_image_url, length: 90)
     else
       ActionController::Base.helpers.asset_path("organization.svg")
     end

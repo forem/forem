@@ -128,9 +128,9 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
                                             "twitter_username" => webhook.user.twitter_username,
                                             "github_username" => webhook.user.github_username,
                                             "website_url" => webhook.user.processed_website_url,
-                                            "profile_image" => Images::ProfileImage.call(webhook.user.profile_image_url,
+                                            "profile_image" => Images::Profile.call(webhook.user.profile_image_url,
                                                                                    length: 640),
-                                            "profile_image_90" => Images::ProfileImage.call(webhook.user.profile_image_url,
+                                            "profile_image_90" => Images::Profile.call(webhook.user.profile_image_url,
                                                                                       length: 90)
                                           })
     end

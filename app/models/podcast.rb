@@ -43,7 +43,7 @@ class Podcast < ApplicationRecord
   end
 
   def image_90
-    Images::ProfileImage.call(profile_image_url, length: 90)
+    Images::Profile.call(profile_image_url, length: 90)
   end
 
   private

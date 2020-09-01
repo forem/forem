@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Images::ProfileImage, type: :services do
+RSpec.describe Images::Profile, type: :services do
   describe "#get" do
     it "returns user profile_image_url" do
       user = build_stubbed(:user)
