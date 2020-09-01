@@ -7,6 +7,7 @@ module Admin
 
     def index
       @grouped_profile_fields = ProfileFieldGroup.all.includes(:profile_fields).order(:created_at)
+      @ungrouped_profile_fields = ProfileField.where(profile_field_group_id: nil).order(:created_at)
     end
 
     def update
