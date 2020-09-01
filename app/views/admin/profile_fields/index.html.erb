@@ -5,21 +5,20 @@
     <article class="row my-3">
       <div class="card w-100">
         <div class="card-header">
-          <div>
-            <h2 class="d-inline"><%= group_name %></h2>
+          <div class="card-header__information">
+            <div class="fw-bold fs-l"><%= group_name %></div>
             <% if group.description %>
-              <div class="d-inline"><%= group.description %></div>
+              <div class="fs-s group__description"><%= group.description %></div>
             <% end %>
           </div>
-          <div id="<%= group_name %>Header" data-toggle="collapse"
-            data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer"> Toggle <%= group_name %></div>
-            <button class="btn btn-secondary" type="button" onclick="showEditGroupModal('<%= group_name %>')">
-              Edit group
-            </button>
 
-          <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
-          <%= button_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
-          <%= render partial: "add_profile_field_modal", locals: { group: group, group_name: group_name } %>
+          <div class="card-header__actions fs-s">
+            <%= render partial: "add_profile_field_modal", locals: { group: group, group_name: group_name } %>
+            <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
+            <div><%= link_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %></div>
+            <div id="<%= group_name %>Header" data-toggle="collapse" class="color-base-70"
+              data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer">Toggle</div>
+          </div>
         </div>
         <div id="<%= group_name %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= group_name %>Header">
 
