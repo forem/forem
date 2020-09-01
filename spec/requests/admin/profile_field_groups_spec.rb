@@ -20,7 +20,7 @@ RSpec.describe "/admin/profile_field_groups", type: :request do
       expect(response).to redirect_to admin_profile_fields_path
     end
 
-    it "creates a profile_field" do
+    it "creates a profile_field_group" do
       expect do
         post admin_profile_field_groups_path, params: { profile_field_group: new_profile_field_group }
       end.to change { ProfileFieldGroup.all.count }.by(1)
@@ -57,7 +57,7 @@ RSpec.describe "/admin/profile_field_groups", type: :request do
       expect(response).to redirect_to admin_profile_fields_path
     end
 
-    it "removes a profile field" do
+    it "removes a profile_field_group" do
       delete "#{admin_profile_field_groups_path}/#{profile_field_group.id}"
       expect(ProfileFieldGroup.count).to eq(0)
     end
