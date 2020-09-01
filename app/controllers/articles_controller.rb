@@ -193,15 +193,15 @@ class ArticlesController < ApplicationController
   def admin_unpublish
     authorize @article
     if @article.has_frontmatter?
-      @article.body_markdown.sub!("\npublished: true\n", "\npublished: false\n")
+      @article.body_markdown.sub!(/\npublished:\s*true\s*\n/, "\npublished: false\n")
     else
       @article.published = false
     end
 
     if @article.save
-      render json: { message: "success", status: 200, path: @article.current_state_path }
+      render json: { message: "success", path: @article.current_state_path }, status: :ok
     else
-      render json: { message: @article.errors.full_messages, status: 422 }
+      render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

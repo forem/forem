@@ -17,9 +17,9 @@ export function addCloseListener() {
 }
 
 export function initializeHeight() {
-
   document.documentElement.style.height = '100%';
-  document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0; overflow-y: hidden';
+  document.body.style.cssText =
+    'height: 100%; margin: 0; padding-top: 0; overflow-y: hidden';
   document.getElementById('page-content').style.cssText =
     'margin-top: 0 !important; margin-bottom: 0;';
 }
@@ -33,7 +33,6 @@ function toggleDropdown(type) {
     document.querySelector('.adjust-tags-options').classList.toggle('hidden');
   }
 }
-
 
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
@@ -154,8 +153,8 @@ const adminUnpublishArticle = async (id, username, slug) => {
     const outcome = await response.json();
 
     /* eslint-disable no-restricted-globals */
-    if (outcome.message == "success") {
-      window.top.location.href = window.location.origin + outcome.path;
+    if (outcome.message == 'success') {
+      window.top.location.assign(`${window.location.origin}${outcome.path}`);
     } else {
       top.addSnackbarItem({
         message: `Error: ${outcome.message}`,
@@ -163,8 +162,10 @@ const adminUnpublishArticle = async (id, username, slug) => {
       });
     }
   } catch (error) {
-    // eslint-disable-next-line no-alert
-    alert(error);
+    top.addSnackbarItem({
+      message: `Error: ${error}`,
+      addCloseButton: true,
+    });
   }
 };
 
