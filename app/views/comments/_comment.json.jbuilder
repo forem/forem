@@ -12,7 +12,7 @@ json.user do
   json.id current_user.id
   json.username current_user.username
   json.name current_user.name
-  json.profile_pic ProfileImage.new(current_user).get(width: 50)
+  json.profile_pic Images::Profile.call(current_user.profile_image_url, length: 50)
   json.twitter_username current_user.twitter_username
   json.github_username current_user.github_username
 end
