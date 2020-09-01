@@ -22,7 +22,6 @@ RSpec.describe "StoriesIndex", type: :request do
     it "has data-ga-tracking" do
       get "/"
       expect(response.body).to include("data-ga-tracking=\"#{SiteConfig.ga_tracking_id}\"")
-
     end
 
     it "renders registration page if site config is private" do
