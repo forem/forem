@@ -7,6 +7,7 @@
         <div class="card-header">
           <div class="card-header__information">
             <div class="fw-bold fs-l"><%= group_name %></div>
+            <div class="fw-bold fs-s">&nbsp;(<%= group.profile_fields.length %>)</div>
             <% if group.description %>
               <div class="fs-s group__description"><%= group.description %></div>
             <% end %>
