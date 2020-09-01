@@ -25,6 +25,10 @@ class SiteConfig < RailsSettings::Base
   field :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
   field :facebook_key, type: :string
   field :facebook_secret, type: :string
+  field :apple_client_id, type: :string
+  field :apple_key_id, type: :string
+  field :apple_pem, type: :string
+  field :apple_team_id, type: :string
 
   # Campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""

@@ -19,14 +19,9 @@ APPLE_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:scope] = "email name"
   env["omniauth.strategy"].options[:key_id] = SiteConfig.apple_key_id
   env["omniauth.strategy"].options[:pem] = SiteConfig.apple_pem
+  env["omniauth.strategy"].options[:provider_ignores_state] = true
   env["omniauth.strategy"].options[:team_id] = SiteConfig.apple_team_id
 end
-
-# ApplicationConfig["APPLE_CLIENT_ID"], "",
-#                scope: "email name",
-#                team_id: ApplicationConfig["APPLE_TEAM_ID"],
-#                key_id: ApplicationConfig["APPLE_KEY_ID"],
-#                pem: ApplicationConfig["APPLE_PEM"]
 
 Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
