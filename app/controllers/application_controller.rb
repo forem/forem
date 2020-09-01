@@ -17,11 +17,19 @@ class ApplicationController < ActionController::Base
     error_too_many_requests(exc)
   end
 
-  PUBLIC_CONTROLLERS = %w[shell async_info ga_events].freeze
+  PUBLIC_CONTROLLERS = %w[shell
+                          async_info
+                          ga_events
+                          service_worker
+                          omniauth_callbacks
+                          registrations
+                          confirmations
+                          passwords].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
+    return if self.class.module_parent.to_s == "Admin"
     return if user_signed_in? || SiteConfig.public
 
     if api_action?
@@ -60,7 +68,7 @@ class ApplicationController < ActionController::Base
     end
 
     respond_to do |format|
-      format.html { redirect_to "/enter" }
+      format.html { redirect_to sign_up_path }
       format.json { render json: { error: "Please sign in" }, status: :unauthorized }
     end
   end
@@ -73,7 +81,7 @@ class ApplicationController < ActionController::Base
   # the user to after a successful log in
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
-      path = request.env["omniauth.origin"] || stored_location_for(resource) || dashboard_path
+      path = stored_location_for(resource) || request.env["omniauth.origin"] || root_path(signin: "true")
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)

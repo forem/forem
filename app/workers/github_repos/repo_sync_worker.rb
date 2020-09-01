@@ -29,6 +29,11 @@ module GithubRepos
         repo.user&.touch(:github_repos_updated_at)
       rescue Github::Errors::NotFound, Github::Errors::Unauthorized
         repo.destroy
+      rescue Github::Errors::ClientError => e
+        msg = e.message
+        raise e unless msg.include?("Your account was suspended") || msg.include?("Repository access blocked")
+
+        repo.destroy
       end
     end
   end

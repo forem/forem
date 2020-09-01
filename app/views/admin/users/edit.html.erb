@@ -9,7 +9,7 @@
         <%= link_to "Unlock access", unlock_access_admin_user_path(@user), method: :patch, class: "btn btn-success" %>
       </div>
     <% end %>
-    <a href="<%= admin_user_path(@user) %>" class="btn btn-primary float-right">admin Profile</a>
+    <a href="<%= admin_user_path(@user) %>" class="btn btn-primary float-right">Admin Profile</a>
     <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
   </div>
 
@@ -47,7 +47,8 @@
     <% end %>
   </div>
 
-  <%= render "notes" %>
+<%= render "notes" %>
+<%= render "negative_reactions" %>
 
   <div class="crayons-card p-6">
     <div>

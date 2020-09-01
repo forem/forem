@@ -9,8 +9,8 @@ RSpec.describe "User visits a homepage", type: :system do
     it "shows the sign-in block" do
       visit "/"
       within ".signin-cta-widget" do
-        expect(page).to have_text("Sign In with Twitter")
-        expect(page).to have_text("Sign In with GitHub")
+        expect(page).to have_text("Log in")
+        expect(page).to have_text("Create new account")
       end
     end
 
