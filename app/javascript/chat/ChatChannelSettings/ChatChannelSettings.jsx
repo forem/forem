@@ -14,7 +14,7 @@ import {
 
 import { addSnackbarItem } from '../../Snackbar';
 import ManageActiveMembership from './MembershipManager/ManageActiveMembership';
-import ChatChannelSettingsSection from './ChatChannelSettingsSection';
+import ChatChannelSettingsSection from './ChatChannelSettingsSection.jsx.erb';
 
 export default class ChatChannelSettings extends Component {
   static propTypes = {
