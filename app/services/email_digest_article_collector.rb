@@ -77,7 +77,7 @@ class EmailDigestArticleCollector
   end
 
   def user_has_followings?
-    @user.cached_following_users_ids.any? || @user.cached_followed_tag_names.any?
+    @user.following_users_count.positive? || @user.cached_followed_tag_names.any?
   end
 
   def last_user_emails
