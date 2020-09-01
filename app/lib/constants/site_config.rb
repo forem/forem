@@ -113,8 +113,8 @@ module Constants
         description: "The \"Client Secret\" portion of the GitHub Oauth Apps portal",
         placeholder: ""
       },
-      ga_view_id: {
-        description: "Google Analytics Reporting API v4 - View ID",
+      ga_tracking_id: {
+        description: "Google Analytics Tracking ID, e.g. ",
         placeholder: ""
       },
       health_check_token: {
