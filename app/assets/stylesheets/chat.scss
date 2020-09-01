@@ -1198,7 +1198,50 @@
     width: 10%;
   }
 }
+.connect-draw {
+  margin-top: 30px;
+  .draw-title {
+    display: flex;
+    justify-content: space-between;
+  }
+  .colors {
+    z-index: 2;
+    margin: 5px 20px;
+    text-align: center;
+  }
 
+  .color {
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+    border-radius: 50%;
+    border: none;
+  }
+  .color:hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+
+  .color:focus {
+    outline: 0;
+  }
+  .drawArea {
+    display: grid;
+
+    .drawConnect {
+      border: 1px solid black;
+      background-color: white;
+      justify-self: center;
+    }
+    .drawActions {
+      margin: 20px 0px;
+      display: flex;
+      button {
+        margin-left: 10px;
+      }
+    }
+  }
+}
 .membership-section {
   position: relative;
 

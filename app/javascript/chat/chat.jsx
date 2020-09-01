@@ -130,7 +130,9 @@ export default class Chat extends Component {
 
     setupObserver(this.observerCallback);
 
-    this.subscribePusher(`private-message-notifications--${appName}-${currentUserId}`);
+    this.subscribePusher(
+      `private-message-notifications--${appName}-${currentUserId}`,
+    );
 
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
@@ -743,6 +745,11 @@ export default class Chat extends Component {
         this.handleSuccess,
         this.handleFailure,
       );
+    } else if (message.startsWith('/draw')) {
+      this.setActiveContent({
+        sendCanvasImage: this.sendCanvasImage,
+        type_of: 'draw',
+      });
     } else if (message.startsWith('/')) {
       this.setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
@@ -1420,6 +1427,11 @@ export default class Chat extends Component {
     messageArea.classList.remove('opacity-25');
     messageArea.classList.add('opacity-100');
     dragDrop(files, this.handleImageSuccess, this.handleImageFailure);
+  };
+  sendCanvasImage = (files) => {
+    console.log([files]);
+
+    dragDrop([files], this.handleImageSuccess, this.handleImageFailure);
   };
   handleImageSuccess = (res) => {
     const { links, image } = res;
