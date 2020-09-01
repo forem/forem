@@ -1,5 +1,5 @@
-if Rails.env.production?
-  SecureHeaders::Configuration.default do |config|
+SecureHeaders::Configuration.default do |config|
+  if Rails.env.production?
     config.csp = {
       default_src: %w(https: 'self'),
       font_src: %w('self' data: https:),
