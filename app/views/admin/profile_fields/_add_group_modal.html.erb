@@ -1,4 +1,4 @@
-<button class="btn btn-secondary" type="button" onclick="showGroupModal()">
+<button class="btn btn-secondary" type="button" onclick="showAddGroupModal()">
   Add group
 </button>
 
@@ -7,7 +7,7 @@
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
         <h2>Add Group</h2>
-        <button type="button" onclick="hideGroupModal()" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
+        <button type="button" onclick="hideAddGroupModal()" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
           <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -34,14 +34,14 @@
 </div>
 
 <script>
-  function showGroupModal() {
+  function showAddGroupModal() {
     const confirmationModal = document.getElementById('add-group-modal');
     if (confirmationModal) {
       confirmationModal.classList.remove("hidden");
     }
   }
 
-  function hideGroupModal() {
+  function hideAddGroupModal() {
     const confirmationModal = document.getElementById('add-group-modal');
     if (confirmationModal) {
       confirmationModal.classList.add("hidden");
