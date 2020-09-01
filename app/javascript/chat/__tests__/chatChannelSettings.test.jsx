@@ -9,7 +9,10 @@ import ChatChannelSettings from '../ChatChannelSettings/ChatChannelSettings';
 describe('<ChatChannelSettings />', () => {
   it('should have no a11y violations', async () => {
     const { container } = render(
-      <ChatChannelSettings activeMembershipId={12} />,
+      <ChatChannelSettings
+        activeMembershipId={12}
+        modFaqEmail="jane@doe.com"
+      />,
     );
     const results = await axe(container);
 
@@ -18,7 +21,10 @@ describe('<ChatChannelSettings />', () => {
 
   it('should render if there are no channels', () => {
     const { container } = render(
-      <ChatChannelSettings activeMembershipId={12} />,
+      <ChatChannelSettings
+        activeMembershipId={12}
+        modFaqEmail="jane@doe.com"
+      />,
     );
 
     expect(container.firstElementChild).toBeNull();
