@@ -1,7 +1,7 @@
 module Admin
   class ProfileFieldsController < Admin::ApplicationController
     ALLOWED_PARAMS = %i[
-      input_type label active placeholder_text description group
+      input_type label active placeholder_text description profile_field_group_id
     ].freeze
     layout "admin"
 

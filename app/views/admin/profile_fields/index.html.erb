@@ -38,7 +38,7 @@
                 <div id="<%= field.attribute_name %>_container" class="card-body collapse hide" aria-labelledby="<%= field.attribute_name %>_container">
                   <div class="form-group grid p-6 mb-6 gap-1">
                     <%= form_for [:admin, field] do |form| %>
-                      <%= render "form", form: form %>
+                      <%= render "profile_field_form", form: form, group: group %>
                       <%= form.submit class: "btn btn-primary" %>
                     <% end %>
                     <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
