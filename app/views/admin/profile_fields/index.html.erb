@@ -12,7 +12,7 @@
             <% end %>
           </div>
 
-          <div class="card-header__actions fs-s">
+          <div class="card-header__actions">
             <%= render partial: "add_profile_field_modal", locals: { group: group, group_name: group_name } %>
             <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
             <div><%= link_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %></div>
@@ -20,6 +20,7 @@
               data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer">Toggle</div>
           </div>
         </div>
+
         <div id="<%= group_name %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= group_name %>Header">
 
           <% if group.profile_fields.empty? %>
