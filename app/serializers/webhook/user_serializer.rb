@@ -3,10 +3,10 @@ module Webhook
     attributes :name, :username, :twitter_username, :github_username
     attribute :website_url, &:processed_website_url
     attribute :profile_image do |user|
-      Images::Profile.call(user.profile_image_url, length:  640)
+      ProfileImage.new(user).get(width: 640)
     end
     attribute :profile_image_90 do |user|
-      Images::Profile.call(user.profile_image_url, length:  90)
+      ProfileImage.new(user).get(width: 90)
     end
   end
 end

@@ -8,7 +8,7 @@ module ChatChannelMembershipHelper
         membership_id: membership.id,
         role: membership.role,
         status: membership.status,
-        image: Images::Profile.call(membership.user.profile_image_url, length: 90)
+        image: ProfileImage.new(membership.user).get(width: 90)
       }
     end
   end
@@ -21,7 +21,7 @@ module ChatChannelMembershipHelper
       membership_id: membership.id,
       role: membership.role,
       status: membership.status,
-      image: Images::Profile.call(membership.user.profile_image_url, length: 90)
+      image: ProfileImage.new(membership.user).get(width: 90)
     }
   end
 end
