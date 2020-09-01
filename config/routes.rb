@@ -1,26 +1,26 @@
 # rubocop:disable Metrics/BlockLength
 LOCALE_LANG_REGEXP = /lang-.*/i.freeze
 
-use_doorkeeper do
-  controllers tokens: "oauth/tokens"
-end
-
-# Devise does not support scoping omniauth callbacks under a dynamic segment
-# so this lives outside our i18n scope.
-devise_for :users, controllers: {
-  omniauth_callbacks: "omniauth_callbacks",
-  registrations: "registrations",
-  invitations: "invitations",
-  sessions: "sessions"
-}
-
-devise_scope :user do
-  get "/enter", to: "registrations#new", as: :sign_up
-  get "/confirm-email", to: "devise/confirmations#new"
-  delete "/sign_out", to: "devise/sessions#destroy"
-end
-
 Rails.application.routes.draw do
+  use_doorkeeper do
+    controllers tokens: "oauth/tokens"
+  end
+
+  # Devise does not support scoping omniauth callbacks under a dynamic segment
+  # so this lives outside our i18n scope.
+  devise_for :users, controllers: {
+    omniauth_callbacks: "omniauth_callbacks",
+    registrations: "registrations",
+    invitations: "invitations",
+    sessions: "sessions"
+  }
+
+  devise_scope :user do
+    get "/enter", to: "registrations#new", as: :sign_up
+    get "/confirm-email", to: "devise/confirmations#new"
+    delete "/sign_out", to: "devise/sessions#destroy"
+  end
+
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
   scope "(:locale)", locale: LOCALE_LANG_REGEXP, defaults: { locale: nil } do
