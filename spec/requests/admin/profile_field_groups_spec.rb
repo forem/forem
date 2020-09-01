@@ -54,7 +54,7 @@ RSpec.describe "/admin/profile_field_groups", type: :request do
 
     it "redirects successfully" do
       delete "#{admin_profile_field_groups_path}/#{profile_field_group.id}"
-      expect(response).to redirect_to admin_profile_field_path
+      expect(response).to redirect_to admin_profile_fields_path
     end
 
     it "removes a profile field" do
