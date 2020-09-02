@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import Textarea from 'preact-textarea-autosize';
 // We use this magic Textarea component for title field because it's automatically
 // resizable. Even though it looks like a classic input, if you enter long title
 // it would wrap the text to the next line automatically resizing itself. It helps keeping
@@ -10,6 +9,7 @@ import Textarea from 'preact-textarea-autosize';
 // BUT it is also a classic .html.erb view which is being loaded BEFORE this component
 // to give a feeling of blazing fast page load. And we do NOT use this magic autoresizing
 // functionality on .html.erb view because there's no point of it.
+import Textarea from 'preact-textarea-autosize';
 
 export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
   return (
