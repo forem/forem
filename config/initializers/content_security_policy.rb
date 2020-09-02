@@ -5,6 +5,7 @@
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
 
 Rails.application.config.content_security_policy do |policy|
+  if Rails.env.production?
     policy.default_src :self, :https
     policy.font_src    :self, :https, :data
     policy.img_src     :self, :https, :data
@@ -12,7 +13,7 @@ Rails.application.config.content_security_policy do |policy|
     policy.script_src  :self, :https, :unsafe_inline
     policy.style_src   :self, :https, :unsafe_inline
     policy.connect_src :self, :https, :unsafe_inline, "*.pusher.com"
-
+  end
   #   # Specify URI for violation reports
   #   # policy.report_uri "/csp-violation-report-endpoint"
 
