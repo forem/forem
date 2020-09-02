@@ -46,8 +46,6 @@ import { DragAndDropZone } from '@utilities/dragAndDrop';
 const NARROW_WIDTH_LIMIT = 767;
 const WIDE_WIDTH_LIMIT = 1600;
 
-function handleDragOver() {}
-
 export default class Chat extends Component {
   static propTypes = {
     pusherKey: PropTypes.number.isRequired,
