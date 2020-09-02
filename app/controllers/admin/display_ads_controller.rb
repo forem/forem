@@ -4,7 +4,6 @@ module Admin
 
     def index
       @display_ads = DisplayAd.order(id: :desc)
-        .select("display_ads.*")
         .joins(:organization)
         .includes([:organization])
         .page(params[:page]).per(50)
@@ -29,7 +28,7 @@ module Admin
         flash[:success] = "Display Ad has been created!"
         redirect_to admin_display_ads_path
       else
-        flash[:danger] = @display_ad.errors.full_messages.to_sentence
+        flash[:danger] = @display_ad.errors_as_sentence
         render new_admin_display_ad_path
       end
     end
@@ -41,7 +40,7 @@ module Admin
         flash[:success] = "Display Ad has been updated!"
         redirect_to admin_display_ads_path
       else
-        flash[:danger] = @display_ad.errors.full_messages.to_sentence
+        flash[:danger] = @display_ad.errors_as_sentence
         render :edit
       end
     end
