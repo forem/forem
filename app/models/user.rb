@@ -255,7 +255,7 @@ class User < ApplicationRecord
   before_destroy :destroy_follows, prepend: true
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
-  after_save :conditionally_resave_articles
+  after_save :conditionally_refresh_cached_content
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
