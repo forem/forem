@@ -61,3 +61,35 @@
   margin: 1em 0;
   text-align: end;
 }
+
+#profileFields {
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-header__actions {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .card-header__information {
+    display: flex;
+    align-items: center;
+  }
+
+  .group__description {
+    color: $medium-gray;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 16px;
+  }
+
+  .card-header__actions > div {
+    margin: 0 16px;
+    cursor: pointer;
+  }
+}
