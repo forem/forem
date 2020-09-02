@@ -121,7 +121,7 @@
         <ul id="hidden-comments">
         <% @hidden_comments.each do |comment| %>
           <li>
-            <a href="<%= comment.path %>">Comment by <%= comment.user.username %></a>
+            <a href="<%= comment.path %>">Comment by <%= comment.cached_user.username %></a>
           </li>
         <% end %>
         </ul>

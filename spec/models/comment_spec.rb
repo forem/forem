@@ -406,6 +406,14 @@ RSpec.describe Comment, type: :model do
       comment = build(:comment, commentable: article, user: user)
       expect { comment.save }.to change(user, :last_comment_at)
     end
+
+    it "assigns cached_user on save" do
+      expect(comment.cached_user.name).to eq(comment.user.name)
+      expect(comment.cached_user.username).to eq(comment.user.username)
+      expect(comment.cached_user.slug).to eq(comment.user.username)
+      expect(comment.cached_user.profile_image_90).to eq(comment.user.profile_image_90)
+      expect(comment.cached_user.profile_image_url).to eq(comment.user.profile_image_url)
+    end
   end
 
   context "when callbacks are triggered after update" do

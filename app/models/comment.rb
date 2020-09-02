@@ -63,7 +63,7 @@ class Comment < ApplicationRecord
   alias touch_by_reaction save
 
   def self.tree_for(commentable, limit = 0)
-    commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+    commentable.comments.arrange(order: "score DESC").to_a[0..limit - 1].to_h
   end
 
   def search_id
@@ -71,7 +71,7 @@ class Comment < ApplicationRecord
   end
 
   def path
-    "/#{user.username}/comment/#{id_code_generated}"
+    "/#{cached_user.username}/comment/#{id_code_generated}"
   rescue StandardError
     "/404.html"
   end
