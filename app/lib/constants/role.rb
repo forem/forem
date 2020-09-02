@@ -16,6 +16,7 @@ module Constants
                      "Resource Admin: Page",
                      "Resource Admin: FeedbackMessage",
                      "Resource Admin: Config",
-                     "Resource Admin: Broadcast"].freeze
+                     "Resource Admin: Broadcast",
+                     "Resource Admin: DisplayAd"].freeze
   end
 end
