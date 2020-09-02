@@ -1,6 +1,6 @@
 module Search
   class ReactionSerializer < ApplicationSerializer
-    attributes :id, :category, :status, :user_id
+    attributes :id, :created_at, :category, :status, :user_id
 
     attribute :reactable do |reaction|
       reactable = reaction.reactable
