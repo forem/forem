@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   # begin supporting i18n.
   scope "(/locale/:locale)", defaults: { locale: nil } do
     get "/locale/:locale" => "stories#index"
+
     require "sidekiq/web"
     require "sidekiq_unique_jobs/web"
     require "sidekiq/cron/web"
@@ -79,6 +80,8 @@ Rails.application.routes.draw do
           delete :remove_admin
         end
       end
+
+      resources :profile_field_groups, only: %i[update create destroy]
       resources :profile_fields, only: %i[index update create destroy]
       resources :reactions, only: [:update]
       resources :response_templates, only: %i[index new edit create update destroy]
@@ -125,6 +128,7 @@ Rails.application.routes.draw do
       resources :webhook_endpoints, only: :index
       resource :config
       resources :badges, only: %i[index edit update new create]
+      resources :display_ads, only: %i[index edit update new create destroy]
       # These redirects serve as a safegaurd to prevent 404s for any Admins
       # who have the old badge_achievement URLs bookmarked.
       get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
@@ -198,7 +202,9 @@ Rails.application.routes.draw do
     resources :messages, only: [:create]
     resources :chat_channels, only: %i[index show create update]
     resources :chat_channel_memberships, only: %i[index create edit update destroy]
-    resources :articles, only: %i[update create destroy]
+    resources :articles, only: %i[update create destroy] do
+      patch "/admin_unpublish", to: "articles#admin_unpublish"
+    end
     resources :article_mutes, only: %i[update]
     resources :comments, only: %i[create update destroy] do
       patch "/hide", to: "comments#hide"
