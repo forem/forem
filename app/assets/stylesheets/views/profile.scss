@@ -1,0 +1,76 @@
+@import '../config/import';
+
+.profile-header {
+  --padding: var(--su-6);
+  --profile-brand-color: var(--base-90);
+
+  margin-bottom: var(--su-6);
+  border-top-color: var(--profile-brand-color);
+
+  &__top {
+    padding: var(--padding);
+    display: flex;
+  }
+
+  &__pic {
+    flex-shrink: 0;
+    position: relative;
+    top: calc(-1 * var(--su-7));
+    padding: 0 var(--su-7);
+
+    .crayons-avatar {
+      border: 4px solid white;
+    }
+  }
+
+  &__details {
+    flex: 1 auto;
+    padding-left: var(--padding);
+  }
+
+  &__meta {
+    font-size: var(--fs-s);
+    color: var(--base-60);
+
+    a {
+      color: var(--link-color-secondary);
+
+      &:hover {
+        color: var(--link-color-hover);
+      }
+    }
+
+    &__divider {
+      display: inline-block;
+      padding: 0 var(--su-3);
+      opacity: 0.5;
+    }
+  }
+
+  &__bottom {
+    border-top: 1px solid var(--base-10);
+    padding: calc(var(--padding) / 2);
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
+
+    @media (min-width: $breakpoint-s) {
+      flex-flow: row;
+    }
+
+    .crayons-definition {
+      padding: calc(var(--padding) / 2);
+    }
+  }
+}
+
+.crayons-definition {
+  font-size: inherit;
+
+  &__title {
+    font-size: 85%;
+    font-weight: var(--fw-medium);
+    color: var(--base-60);
+    display: block;
+  }
+}

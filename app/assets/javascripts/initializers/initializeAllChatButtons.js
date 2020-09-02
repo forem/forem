@@ -56,8 +56,8 @@ function addButtonClickHandle(response, button, modalInfo) {
     linkWrap.removeAttribute('href'); // remove link
     button.addEventListener('click', toggleModal);
     // eslint-disable-next-line no-param-reassign
-    button.style.display = 'initial'; // show button
-    linkWrap.style.display = 'initial'; // show button
+    button.classList.remove('hidden'); // show button
+    linkWrap.classList.remove('hidden'); // show button
     form.onsubmit = () => {
       handleChatButtonPress(form);
       return false;
@@ -65,7 +65,7 @@ function addButtonClickHandle(response, button, modalInfo) {
   } else if (response === 'mutual') {
     button.removeEventListener('click', toggleModal);
     // eslint-disable-next-line no-param-reassign
-    button.style.display = 'initial'; // show button
+    button.classList.remove('hidden'); // show button
     linkWrap.style.display = 'initial'; // show button
   }
 }

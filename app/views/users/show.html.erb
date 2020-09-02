@@ -13,127 +13,144 @@
 <% end %>
 <% cache "main-user-profile-header-area-#{@user.id}-#{@user.profile_updated_at}-#{user_signed_in?}", expires_in: 10.days do %>
   <style>
-    .widget header {
-      color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
+    .profile-header {
+      --profile-brand-color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
     }
-    .night-theme .widget header {
-      color: #cedae2;
-    }
-
-    <% if user_colors(@user)[:bg].downcase.start_with?("#fff") %>
-    .user-profile-follow-button {
-      border: 1px solid <%= user_colors(@user)[:text] %> !important;
-    }
-    <% end %>
   </style>
-  <div class="user-profile-header" style="<%= user_colors_style(@user) %>">
-    <div class="user-profile-header-container">
-      <div class="profile-pic-wrapper">
-        <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
-      </div>
-      <div class="profile-details">
-        <h1>
-          <span><%= @user.name %></span>
-          <span class="user-profile-follow-button-wrapper">
-            <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
+
+  <div class="crayons-layout">
+    <header class="profile-header crayons-card branded-7">
+      <div class="profile-header__top">
+        <div class="profile-header__pic">
+          <span class="crayons-avatar crayons-avatar--3xl">
+            <img src="<%= ProfileImage.new(@user).get(width: 320) %>" width="128" height="128" alt="<%= @user.name %> profile picture" class="crayons-avatar__image">
           </span>
-          <% if user_signed_in? %>
-            <span class="user-profile-chat-button-wrapper">
-              <a href="/connect/@<%= @user.username %>" id="user-connect-redirect" style="display:none">
-                <button class="chat-action-button user-profile-chat-button" id="modal-opener" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>; display:none; ">CHAT</button>
-              </a>
-            </span>
-          <% end %>
-        </h1>
-        <p class="profile-description">
-          <%= @user.summary.presence || ["404 bio not found"].sample %>
-        </p>
-        <style>
-          .profile-details .social .icon-img path {
-            fill: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
-          }
-          .night-theme .profile-details .social .icon-img path {
-            fill: white;
-          }
-        </style>
-        <p class="social">
-          <% if @user.twitter_username? %>
-            <a href="https://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener me">
-              <%= inline_svg_tag("twitter-logo.svg", class: "icon-img", aria: true, title: "Twitter logo") %>
-            </a>
-          <% end %>
-          <% if @user.github_username? %>
-            <a href="https://github.com/<%= @user.github_username %>" target="_blank" rel="noopener me">
-              <%= inline_svg_tag("github-logo.svg", class: "icon-img", aria: true, title: "GitHub logo") %>
-            </a>
-          <% end %>
-          <% if @user.mastodon_url? %>
-            <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg_tag("mastodon-logo.svg", class: "icon-img", aria: true, title: "Mastodon logo") %>
-            </a>
-          <% end %>
-          <% if @user.facebook_url? %>
-            <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg_tag("facebook-logo.svg", class: "icon-img", aria: true, title: "Facebook logo") %>
-            </a>
-          <% end %>
-          <% if @user.youtube_url? %>
-            <a href="<%= @user.youtube_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg_tag("youtube-logo.svg", class: "icon-img", aria: true, title: "Youtube logo") %>
-            </a>
-          <% end %>
-          <% if @user.linkedin_url? %>
-            <a href="<%= @user.linkedin_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg_tag("linkedin_icon.svg", class: "icon-img", aria: true, title: "LinkedIn logo") %>
-            </a>
-          <% end %>
-          <% if @user.behance_url? %>
-            <a href="<%= @user.behance_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg_tag("behance_icon.svg", class: "icon-img", aria: true, title: "Behance logo") %>
-            </a>
-          <% end %>
-          <% if @user.stackoverflow_url? %>
-            <a href="<%= @user.stackoverflow_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg_tag("stackoverflow-logo.svg", class: "icon-img", aria: true, title: "StackOverflow logo") %>
-            </a>
-          <% end %>
-          <% if @user.dribbble_url? %>
-            <a href="<%= @user.dribbble_url %>" target="_blank" rel="noopener me">
-              <%= inline_svg_tag("dribbble_icon.svg", class: "icon-img", aria: true, title: "Dribbble logo") %>
-            </a>
-          <% end %>
-          <% if @user.medium_url? %>
-            <a href="<%= @user.medium_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg_tag("medium_icon.svg", class: "icon-img", aria: true, title: "Medium logo") %>
-            </a>
-          <% end %>
-          <% if @user.gitlab_url? %>
-            <a href="<%= @user.gitlab_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg_tag("gitlab.svg", class: "icon-img", aria: true, title: "GitLab logo") %>
-            </a>
-          <% end %>
-          <% if @user.instagram_url? %>
-            <a href="<%= @user.instagram_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg_tag("instagram-logo.svg", class: "icon-img", aria: true, title: "Instagram logo") %>
-            </a>
-          <% end %>
-          <% if @user.twitch_username? %>
-            <%= link_to twitch_live_stream_path(username: @user.username) do %>
-              <%= inline_svg_tag("twitch-logo.svg", class: "icon-img", id: "icon-twitch", aria: true, title: "Twitch logo") %>
-            <% end %>
-          <% elsif @user.twitch_url? %>
-            <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg_tag("twitch-logo.svg", class: "icon-img", aria: true, title: "Twitch logo") %>
-            </a>
-          <% end %>
-          <% if @user.website_url? %>
-            <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow me">
-              <%= inline_svg_tag("external-link-logo.svg", class: "icon-img", aria: true, title: "external link icon") %>
-            </a>
-          <% end %>
-        </p>
+        </div>
+
+        <div class="profile-header__details">
+          <div class="flex items-start justify-between">
+            <div>
+              <h1 class="fs-4xl lh-tight mb-4 fw-heavy"><%= @user.name %></h1>
+              <p class="fs-l color-base-90 mb-4"><%= @user.summary.presence || ["404 bio not found"].sample %></p>
+            </div>
+            <div class="flex pl-6">
+              <% if user_signed_in? %>
+                <a href="/connect/@<%= @user.username %>" class="hidden mr-2" id="user-connect-redirect">
+                  <button class="chat-action-button crayons-btn crayons-btn--outlined hidden" id="modal-opener">Chat</button>
+                </a>
+              <% end %>
+              <button id="user-follow-butt" class="crayons-btn whitespace-nowrap follow-action-button user-profile-follow-button" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>Follow</button>
+            </div>
+          </div>
+
+          <div class="profile-header__meta">
+            <div class="mb-2 flex items-center">
+              <a href="#">@<%= @user.username %></a><span class="profile-header__meta__divider">&bull;</span>
+              <% if @user.email_public %>
+                <a href="mailto:<%= @user.email %>"><%= @user.email %></a><span class="profile-header__meta__divider">&bull;</span>
+              <% end %>
+              <div class="flex items-center">
+                <% if @user.twitter_username? %>
+                  <a href="https://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                  </a>
+                <% end %>
+                <% if @user.github_username? %>
+                  <a href="https://github.com/<%= @user.github_username %>" target="_blank" rel="noopener me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "GitHub logo") %>
+                  </a>
+                <% end %>
+                <% if @user.mastodon_url? %>
+                  <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("mastodon.svg", class: "crayons-icon", aria: true, title: "Mastodon logo") %>
+                  </a>
+                <% end %>
+                <% if @user.facebook_url? %>
+                  <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Facebook logo") %>
+                  </a>
+                <% end %>
+                <% if @user.youtube_url? %>
+                  <a href="<%= @user.youtube_url %>" target="_blank" rel="noopener me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("youtube.svg", class: "crayons-icon", aria: true, title: "Youtube logo") %>
+                  </a>
+                <% end %>
+                <% if @user.linkedin_url? %>
+                  <a href="<%= @user.linkedin_url %>" target="_blank" rel="noopener me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("linkedin.svg", class: "crayons-icon", aria: true, title: "LinkedIn logo") %>
+                  </a>
+                <% end %>
+                <% if @user.behance_url? %>
+                  <a href="<%= @user.behance_url %>" target="_blank" rel="noopener me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("behance.svg", class: "crayons-icon", aria: true, title: "Behance logo") %>
+                  </a>
+                <% end %>
+                <% if @user.stackoverflow_url? %>
+                  <a href="<%= @user.stackoverflow_url %>" target="_blank" rel="noopener me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("stackoverflow.svg", class: "crayons-icon", aria: true, title: "StackOverflow logo") %>
+                  </a>
+                <% end %>
+                <% if @user.dribbble_url? %>
+                  <a href="<%= @user.dribbble_url %>" target="_blank" rel="noopener me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("dribbble.svg", class: "crayons-icon", aria: true, title: "Dribbble logo") %>
+                  </a>
+                <% end %>
+                <% if @user.medium_url? %>
+                  <a href="<%= @user.medium_url %>" target="_blank" rel="noopener nofollow me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("medium.svg", class: "crayons-icon", aria: true, title: "Medium logo") %>
+                  </a>
+                <% end %>
+                <% if @user.gitlab_url? %>
+                  <a href="<%= @user.gitlab_url %>" target="_blank" rel="noopener nofollow me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("gitlab.svg", class: "crayons-icon", aria: true, title: "GitLab logo") %>
+                  </a>
+                <% end %>
+                <% if @user.instagram_url? %>
+                  <a href="<%= @user.instagram_url %>" target="_blank" rel="noopener nofollow me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("instagram.svg", class: "crayons-icon", aria: true, title: "Instagram logo") %>
+                  </a>
+                <% end %>
+                <% if @user.twitch_username? %>
+                  <a href="<%= twitch_live_stream_path(username: @user.username) %>" class="px-1 mx-1 align-middle inline-block <% if @user.currently_streaming_on_twitch? %>color-accent-success<% end %>">
+                    <%= inline_svg_tag("twitch.svg", class: "crayons-icon", id: "icon-twitch", aria: true, title: "Twitch logo") %>
+                  </a>
+                <% elsif @user.twitch_url? %>
+                  <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("twitch.svg", class: "crayons-icon", aria: true, title: "Twitch logo") %>
+                  </a>
+                <% end %>
+                <% if @user.website_url? %>
+                  <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 mx-1 align-middle inline-block">
+                    <%= inline_svg_tag("external.svg", class: "crayons-icon", aria: true, title: "External link icon") %>
+                  </a>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="flex items-center">
+              <% if @user.location.present? %>
+                <span class="flex items-center mr-6">
+                  <%= inline_svg_tag("location.svg", aria: true, class: "crayons-icon mr-2", title: "Location") %>
+                  <%= @user.location %>
+                </span>
+              <% end %>
+
+              <span class="flex items-center">
+                <%= inline_svg_tag("cake.svg", aria: true, class: "crayons-icon mr-2", title: "Joined") %>
+                Joined on&nbsp;
+                <%= local_date(@user.created_at) %>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+      <%= render "users/metadata" %>
+    </header>
+  </div>
+
+  <br><br><br><br><br><br><br><br><br><br><br><br>
+
+  <div class="user-profile-header" style="<%= user_colors_style(@user) %>">
     <div class="modal" style="display: none">
       <div class="overlay"></div>
       <div class="modal-content " id="new-message-modal">
@@ -165,15 +182,6 @@
       </div>
     </div>
   </div>
-<% end %>
-
-<% if @user.currently_streaming_on_twitch? %>
-  <style>
-    #icon-twitch path {
-      fill: green !important;
-      stroke: green !important;
-    }
-  </style>
 <% end %>
 
 <div class="home sub-home" id="index-container"
