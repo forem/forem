@@ -28,7 +28,7 @@ module Articles
 
     def published_articles_by_tag
       articles = Article.published.limited_column_select
-        .includes(top_comments: :user)
+        .includes(:top_comments)
         .page(@page).per(@number_of_articles)
       articles = articles.cached_tagged_with(@tag) if @tag.present? # More efficient than tagged_with
       articles

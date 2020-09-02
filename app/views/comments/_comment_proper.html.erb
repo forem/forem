@@ -25,23 +25,14 @@
       <% end %>
 
       <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
-        <a href="/<%= comment.user.username %>">
-          <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(width: 50) %>" alt="<%= comment.user.username %> profile image" />
+        <a href="/<%= comment.cached_user.username %>">
+          <img class="profile-pic" src="<%= ProfileImage.new(comment.cached_user).get(width: 50) %>" alt="<%= comment.cached_user.username %> profile image" />
           <span class="comment-username">
             <span class="comment-username-inner">
-              <%= comment.user.name %>
+              <%= comment.cached_user.name %>
             </span>
           </span>
         </a>
-        <% if comment.user.twitter_username.present? %>
-          <a href="https://twitter.com/<%= comment.user.twitter_username %>" rel="noopener noreferrer" target="_blank">
-            <%= image_tag("twitter-logo.svg", class: "icon-img", alt: "twitter logo") %></a>
-        <% end %>
-        <% if comment.user.github_username.present? %>
-          <a href="https://github.com/<%= comment.user.github_username %>" rel="noopener noreferrer" target="_blank">
-            <%= image_tag("github-logo.svg", class: "icon-img", alt: "github logo") %>
-          </a>
-        <% end %>
         <% if commentable_author_is_op?(commentable, comment) %>
           <span class="op-marker"><%= get_ama_or_op_banner(commentable) %></span>
         <% end %>

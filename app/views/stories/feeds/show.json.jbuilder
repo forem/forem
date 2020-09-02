@@ -30,6 +30,6 @@ json.array!(@stories) do |article|
     comment = comment.decorate
     json.comment_id comment.id
     json.extract! comment, :user_id, :published_timestamp, :published_at_int, :safe_processed_html, :path
-    json.extract! comment.user, :username, :name, :profile_image_90
+    json.extract! comment.cached_user.as_json
   end
 end

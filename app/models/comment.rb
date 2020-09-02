@@ -25,6 +25,7 @@ class Comment < ApplicationRecord
 
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
+  before_save :update_cached_user
   before_create :adjust_comment_parent_based_on_depth
   after_create :after_create_checks
   after_create :notify_slack_channel_about_warned_users
@@ -54,6 +55,8 @@ class Comment < ApplicationRecord
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
   after_commit :remove_from_elasticsearch, on: [:destroy]
+
+  serialize :cached_user
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
 
@@ -188,6 +191,12 @@ class Comment < ApplicationRecord
 
   def calculate_score
     Comments::CalculateScoreWorker.perform_async(id)
+  end
+
+  def update_cached_user
+    return unless user
+
+    self.cached_user = Articles::CachedEntity.from_object(user)
   end
 
   def after_create_checks
