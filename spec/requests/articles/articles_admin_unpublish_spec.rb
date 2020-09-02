@@ -11,13 +11,13 @@ RSpec.describe "ArticlesAdminUnpublish", type: :request do
 
   it "unpublishes an article" do
     expect(article.published).to be true
-
     patch "/articles/#{article.id}/admin_unpublish", params: {
       id: article.id,
       username: user.username,
       slug: article.slug
     }
 
+    article.reload
     expect(article.published).to be false
   end
 end
