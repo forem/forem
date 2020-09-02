@@ -195,7 +195,9 @@ Rails.application.routes.draw do
   resources :messages, only: [:create]
   resources :chat_channels, only: %i[index show create update]
   resources :chat_channel_memberships, only: %i[index create edit update destroy]
-  resources :articles, only: %i[update create destroy]
+  resources :articles, only: %i[update create destroy] do
+    patch "/admin_unpublish", to: "articles#admin_unpublish"
+  end
   resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy] do
     patch "/hide", to: "comments#hide"
