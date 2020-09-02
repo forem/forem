@@ -148,6 +148,8 @@
             max-width: 100%;
             display: inline-block;
             margin-bottom: 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
             &:hover {
               @include themeable(
                 background,
