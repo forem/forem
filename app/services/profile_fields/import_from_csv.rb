@@ -7,7 +7,7 @@ module ProfileFields
         row = row.to_h
         group = row.delete(:group)
         row[:profile_field_group] = ProfileFieldGroup.find_or_create_by(name: group)
-        ProfileField.create(row)
+        ProfileField.find_or_create_by(row)
       end
     end
   end
