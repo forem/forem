@@ -56,7 +56,6 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     describe ":account" do
-      let(:ghost_account_message) { "If you would like to keep your content under the" }
       let(:remove_oauth_section) { "Remove OAuth Associations" }
       let(:user) { create(:user, :with_identity) }
 
@@ -68,20 +67,6 @@ RSpec.describe "UserSettings", type: :request do
       it "allows users to visit the account page" do
         get user_settings_path(tab: "account")
         expect(response).to have_http_status(:ok)
-      end
-
-      it "does not render the ghost account email option if the user has no content" do
-        get user_settings_path(tab: "account")
-        expect(response.body).not_to include(ghost_account_message)
-      end
-
-      it "does render the ghost account email option if the user has content" do
-        create(:article, user: user)
-        user.update(articles_count: 1)
-
-        get user_settings_path(tab: "account")
-
-        expect(response.body).to include(ghost_account_message)
       end
 
       it "shows the 'Remove OAuth' section if a user has multiple enabled identities" do

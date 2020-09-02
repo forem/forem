@@ -1,4 +1,15 @@
 <div class="form-group">
+  <%= form.label :group %>
+  <%= select_tag "profile_field[profile_field_group_id]",
+                 options_from_collection_for_select(
+                   ProfileFieldGroup.all,
+                   :id, :name,
+                   selected: group&.id
+                 ),
+                 { class: "form-control selectpicker profile__group-dropdown",
+                   include_blank: "" } %>
+</div>
+<div class="form-group">
   <%= form.label :label %>
   <%= form.text_field :label, class: "form-control" %>
 </div>
