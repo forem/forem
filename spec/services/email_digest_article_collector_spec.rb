@@ -29,6 +29,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       before do
         author = create(:user)
         user.follow(author)
+        user.update(following_users_count: 1)
         create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
         10.times do
           Ahoy::Message.create(mailer: "DigestMailer#digest_email",
@@ -49,6 +50,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
                                sent_at: Time.current.utc, opened_at: Time.current.utc)
           author = create(:user)
           user.follow(author)
+          user.update(following_users_count: 1)
           create_list(:article, 3, user_id: author.id, public_reactions_count: 40, score: 40)
         end
       end
