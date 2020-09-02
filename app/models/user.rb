@@ -626,7 +626,7 @@ class User < ApplicationRecord
     return unless core_profile_details_changed? && !banned
 
     Users::ResaveArticlesWorker.perform_async(id)
-    comments.update_all(cached_user: Articles::CachedEntity.from_object(user))
+    comments.update_all(cached_user: Articles::CachedEntity.from_object(self))
   end
 
   def bust_cache
