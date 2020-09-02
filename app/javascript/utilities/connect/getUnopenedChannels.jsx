@@ -174,7 +174,8 @@ class UnopenedChannelNotice extends Component {
           <div>
             {channel.request_type === 'mentioned'
               ? 'You got mentioned in'
-              : 'New Message from'}{' '}
+              : 'New Message from'}
+            {' '}
             <a
               href={`/connect/${channel.adjusted_slug}`}
               style={{

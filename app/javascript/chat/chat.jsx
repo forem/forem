@@ -130,9 +130,7 @@ export default class Chat extends Component {
 
     setupObserver(this.observerCallback);
 
-    this.subscribePusher(
-      `private-message-notifications--${appName}-${currentUserId}`,
-    );
+    this.subscribePusher(`private-message-notifications--${appName}-${currentUserId}`);
 
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
