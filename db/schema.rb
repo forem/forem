@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(version: 2020_09_02_204028) do
     t.string "video_state"
     t.string "video_thumbnail_url"
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
+    t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url"
