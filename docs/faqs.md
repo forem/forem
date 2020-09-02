@@ -26,7 +26,7 @@ export RAILS_LOG_TO_STDOUT=true
 
 to your own `.env` file.
 
-## How can I see comments in the Feed?
+## How do I see comments in the Feed?
 
 In the Feed we only show comments above certain "score". It's likely the
 comments in the local environment will never meet this score that's why it must
@@ -39,7 +39,7 @@ be updated manually. Here's how:
 
 Once you refresh the page, you should be able to see some comments in the Feed.
 
-## How can I make someone follow me on local environment?
+## How do I make someone follow me on local environment?
 
 In certain cases, for example when testing various functionlities, you may need
 to be able to make some user follow you. Here's how:
@@ -50,7 +50,7 @@ to be able to make some user follow you. Here's how:
 
 Boom, you have a new follower!
 
-## How can I remove / leave organization I created?
+## How do I remove / leave organization I created?
 
 1. Open the rails console `rails c`.
 2. Enter the following commands:
