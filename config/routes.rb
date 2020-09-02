@@ -1,5 +1,4 @@
 # rubocop:disable Metrics/BlockLength
-LOCALE_LANG_REGEXP = /lang-.*/i.freeze
 
 Rails.application.routes.draw do
   use_doorkeeper do
@@ -23,7 +22,8 @@ Rails.application.routes.draw do
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
-  scope "(:locale)", locale: LOCALE_LANG_REGEXP, defaults: { locale: nil } do
+  scope "(/locale/:locale)", defaults: { locale: nil } do
+    get "/locale/:locale" => "stories#index"
     require "sidekiq/web"
     require "sidekiq_unique_jobs/web"
     require "sidekiq/cron/web"
@@ -506,7 +506,6 @@ Rails.application.routes.draw do
     get "/:username/:slug" => "stories#show"
     get "/:sitemap" => "sitemaps#show",
         :constraints => { format: /xml/, sitemap: /sitemap-.+/ }
-    get "/:locale" => "stories#index", :constraints => { locale: LOCALE_LANG_REGEXP }
     get "/:username" => "stories#index", :as => "user_profile"
 
     root "stories#index"
