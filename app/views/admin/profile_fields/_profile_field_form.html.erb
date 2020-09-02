@@ -4,7 +4,7 @@
                  options_from_collection_for_select(
                    ProfileFieldGroup.all,
                    :id, :name,
-                   selected: !group ? nil : group.id
+                   selected: group&.id
                  ),
                  { class: "form-control selectpicker profile__group-dropdown",
                    include_blank: "" } %>
