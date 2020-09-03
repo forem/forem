@@ -119,6 +119,9 @@ A few next steps we can take on the road to internationalization.
 - Allow Forem Admins to set a "default language". Currently, if a user doesn't
   select a language preference, it defaults to English ("en").
 - Update service workers and caching to interpret language preferences.
+- Clean up some code. There are some places we're hard-coding strings on the
+  frontend. We'll want to explore moving that sort data to the backend to unify
+  where and how we're translating.
 - Translate areas of the site into English (US) first to ensure things are still
   working. In other words, have the platform adhere to the default locale
   instead of hard-coded strings.
