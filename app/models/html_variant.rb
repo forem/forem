@@ -1,4 +1,6 @@
 class HtmlVariant < ApplicationRecord
+  resourcify
+
   GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign].freeze
 
   belongs_to :user, optional: true
