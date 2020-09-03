@@ -29,7 +29,7 @@ to your own `.env` file.
 ## How do I see comments in the Feed?
 
 On the home Feed, we only show comments above certain "score". It's likely the
-comments in the local environment will never meet this score that's why it must
+comments in the local environment will never meet this score. If you want to see comments locally, you will need to
 be updated manually. Here's how:
 
 1. Open the terminal.
