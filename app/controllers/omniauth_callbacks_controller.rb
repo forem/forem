@@ -34,14 +34,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   private
 
   def callback_for(provider)
-    # Deleting the session cookie with the previous app domain, the one without the leading dot.
-    # This should fix the double cookie scenario
+    # Deleting the session cookie with the legacy app domain, which does NOT include a preceding dot.
+    # This should fix the double cookie scenario.
     # TODO: this code is a hotfix, we should remove it after 09/18/2020.
-    domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
-    if domain&.starts_with?(".")
-      domain_without_leading_dot = domain.gsub(/\A./, "")
-      cookies.delete(ApplicationConfig["SESSION_KEY"], domain: domain_without_leading_dot)
-    end
+    legacy_cookie_domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
+    cookies.delete(ApplicationConfig["SESSION_KEY"], domain: legacy_cookie_domain)
 
     auth_payload = request.env["omniauth.auth"]
     cta_variant = request.env["omniauth.params"]["state"].to_s
