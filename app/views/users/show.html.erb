@@ -34,6 +34,9 @@
               <p class="fs-l color-base-90 mb-4"><%= @user.summary.presence || ["404 bio not found"].sample %></p>
             </div>
             <div class="flex pl-6">
+              <button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon">
+                <%= inline_svg_tag("overflow-horizontal.svg", class: "crayons-icon", aria: true, title: "More...") %>
+              </button>
               <% if user_signed_in? %>
                 <a href="/connect/@<%= @user.username %>" class="hidden mr-2" id="user-connect-redirect">
                   <button class="chat-action-button crayons-btn crayons-btn--outlined hidden" id="modal-opener">Chat</button>
@@ -147,8 +150,6 @@
       <%= render "users/metadata" %>
     </header>
   </div>
-
-  <br><br><br><br><br><br><br><br><br><br><br><br>
 
   <div class="user-profile-header" style="<%= user_colors_style(@user) %>">
     <div class="modal" style="display: none">
