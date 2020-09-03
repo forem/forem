@@ -589,6 +589,28 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.feed_style).to eq(feed_style)
         end
 
+        it "updates the brand color if proper hex" do
+          hex = "#0a0a0a" # dark enough
+          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.primary_brand_color_hex).to eq(hex)
+        end
+
+        it "does not update brand color if hex not contrasting enough" do
+          hex = "#bd746f" # not dark enough
+          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.primary_brand_color_hex).not_to eq(hex)
+        end
+
+        it "does not update brand color if hex not a hex with proper format" do
+          hex = "0a0a0a" # dark enough, but not proper format
+          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.primary_brand_color_hex).not_to eq(hex)
+        end
+
+
         it "updates public to true" do
           is_public = true
           post "/admin/config", params: { site_config: { public: is_public },

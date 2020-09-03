@@ -1,19 +1,7 @@
-<style>
-  .error-notice {
-    background: rgba(255, 80, 80, 0.7);
-    color: white;
-    padding: 40px 0px 40px;
-    text-align: center;
-    position: relative;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-  }
-</style>
 <% unless flash[:alert].blank? %>
-  <div class="error-notice">
-    Something went wrong:
+  <div class="crayons-notice--danger registration__error-notice">
     <% if flash[:alert].is_a?(Array) %>
+      Something went wrong:
       <ul>
         <% flash[:alert].each do |error| %>
           <li>
@@ -22,9 +10,14 @@
         <% end %>
       </ul>
     <% else %>
-      <%= flash[:alert] %>
+      <strong>
+        <%= flash[:alert] %>
+      </strong>
       <br>
     <% end %>
-    Please try again below, or contact <%= email_link %> if this persists.
+    <% if any_selfserve_auth? %>
+      If you haven't created an account, we recommend signing up with social authentication below.
+    <% end %>
+      Contact <%= email_link %> if you continue having trouble.
   </div>
 <% end %>

@@ -125,11 +125,14 @@ function initReactions() {
 }
 
 function listenForNotificationsBellClick() {
-  setTimeout(function () {
-    document.getElementById('notifications-link').onclick = function () {
-      document.getElementById('notifications-number').classList.add('hidden');
-    };
-  }, 180);
+  var notificationsLink = document.getElementById('notifications-link');
+  if (notificationsLink) {
+    setTimeout(function () {
+      notificationsLink.onclick = function () {
+        document.getElementById('notifications-number').classList.add('hidden');
+      };
+    }, 180);
+  }
 }
 
 function initFilter() {

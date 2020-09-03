@@ -12,6 +12,7 @@ end
 FACEBOOK_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:client_id] = SiteConfig.facebook_key
   env["omniauth.strategy"].options[:client_secret] = SiteConfig.facebook_secret
+  env["omniauth.strategy"].options[:token_params][:parse] = :json
 end
 
 Devise.setup do |config|
@@ -298,7 +299,7 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
 
-  # Fun fact, if this is reordered to have Twitter first, it doesn't work for some reason.
+  # Fun fact, unless Twitter is last, it doesn't work for some reason.
   config.omniauth :facebook, setup: FACEBOOK_OMNIAUTH_SETUP
   config.omniauth :github, setup: GITHUB_OMNIUATH_SETUP
   config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP

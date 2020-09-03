@@ -27,7 +27,10 @@ module GithubRepos
           info_hash: fetched_repo.to_hash,
         )
         repo.user&.touch(:github_repos_updated_at)
-      rescue Github::Errors::NotFound, Github::Errors::Unauthorized
+      rescue Github::Errors::NotFound,
+             Github::Errors::Unauthorized,
+             Github::Errors::AccountSuspended,
+             Github::Errors::RepositoryUnavailable
         repo.destroy
       end
     end

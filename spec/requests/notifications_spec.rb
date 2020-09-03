@@ -25,17 +25,19 @@ RSpec.describe "NotificationsIndex", type: :request do
     end
 
     context "when signed out" do
-      it "renders the signup cue" do
+      it "renders the signup page" do
         get "/notifications"
-        expect(response.body).to include "Great to have you"
+
+        expect(response.body).to include("Continue with")
       end
     end
 
     context "when signed in" do
       it "does not render the signup cue" do
         sign_in user
+
         get "/notifications"
-        expect(response.body).not_to include "Create your account"
+        expect(response.body).not_to include("Continue with")
       end
     end
 
