@@ -41,7 +41,7 @@ Once you refresh the page, you should be able to see some comments in the Feed.
 
 ## How do I make someone follow me on local environment?
 
-In certain cases, for example when testing various functionlities, you may need
+In certain cases, for example when testing various functionalities, you may need
 to be able to make some user follow you. Here's how:
 
 1. Open the rails console `rails c`.
