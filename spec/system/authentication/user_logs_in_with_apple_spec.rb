@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan" } do
-  let(:sign_in_link) { "Sign In with Apple" }
+  let(:sign_in_link) { "Continue with Apple" }
 
   before { omniauth_mock_apple_payload }
 
@@ -9,13 +9,13 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
     context "when using valid credentials" do
       it "creates a new user" do
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
       end
 
       it "logs in and redirects to the onboarding" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
@@ -23,7 +23,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       end
 
       it "remembers the user" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         user = User.last
@@ -40,7 +40,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
         user = create(:user, username: username)
 
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
 
@@ -66,18 +66,18 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
       it "does not create a new user" do
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "does not log in" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_link(sign_in_link)
-        expect(page).to have_link("All about #{ApplicationConfig['COMMUNITY_NAME']}")
+        expect(page).to have_link("About #{ApplicationConfig['COMMUNITY_NAME']}")
       end
 
       it "notifies Datadog about a callback error" do
@@ -87,10 +87,10 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
         omniauth_setup_authentication_error(error)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
-        args = omniauth_failure_args(error, "apple", params)
+        args = omniauth_failure_args(error, "apple", "{}")
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -103,10 +103,10 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
         error = OAuth::Unauthorized.new(request)
         omniauth_setup_authentication_error(error)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
-        args = omniauth_failure_args(error, "apple", params)
+        args = omniauth_failure_args(error, "apple", "{}")
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -116,10 +116,10 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
         error = nil
         omniauth_setup_authentication_error(error)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
-        args = omniauth_failure_args(error, "apple", params)
+        args = omniauth_failure_args(error, "apple", "{}")
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -134,13 +134,13 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
       it "does not create a new user" do
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "redirects to the registration page" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_up")
@@ -149,7 +149,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       it "logs errors" do
         allow(Honeybadger).to receive(:notify)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(Honeybadger).to have_received(:notify).once
@@ -173,7 +173,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
     context "when using valid credentials" do
       it "logs in" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/?signin=true")
@@ -181,11 +181,11 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
     end
 
     context "when already signed in" do
-      it "redirects to the dashboard" do
+      it "redirects to the feed" do
         sign_in user
         visit user_apple_omniauth_authorize_path
 
-        expect(page).to have_current_path("/dashboard?signin=true")
+        expect(page).to have_current_path("/?signin=true")
       end
     end
   end
