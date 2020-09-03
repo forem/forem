@@ -60,7 +60,7 @@ Boom, you have a new follower!
    user.organization_memberships.where(organization_id: organization_id).destroy_all
    ```
 
-## How do I add Credits to my account?
+## How do I add credits to my account?
 
 If you ever want to add Listings locally, you must have credits on your account
 to "pay" for listing. Here's how:
