@@ -58,6 +58,20 @@ export class ArticleCoverImage extends Component {
     });
   };
 
+  onDropImage = (event) => {
+    onDragExit(event);
+
+    if (event.dataTransfer.files.length > 1) {
+      addSnackbarItem({
+        message: 'Only one image can be dropped at a time.',
+        addCloseButton: true,
+      });
+      return;
+    }
+
+    this.handleMainImageUpload(event);
+  };
+
   render() {
     const { mainImage } = this.props;
     const { uploadError, uploadErrorMessage, uploadingImage } = this.state;
@@ -67,18 +81,7 @@ export class ArticleCoverImage extends Component {
       <DragAndDropZone
         onDragOver={onDragOver}
         onDragExit={onDragExit}
-        onDrop={(event) => {
-          onDragExit(event);
-
-          if (event.dataTransfer.files.length > 1) {
-            addSnackbarItem({
-              message: 'Only one image can be dropped at a time.',
-              addCloseButton: true,
-            });
-            return;
-          }
-          this.handleMainImageUpload(event);
-        }}
+        onDrop={this.onDropImage}
       >
         <div className="crayons-article-form__cover" role="presentation">
           {!uploadingImage && mainImage && (
