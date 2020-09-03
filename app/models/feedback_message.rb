@@ -26,4 +26,12 @@ class FeedbackMessage < ApplicationRecord
   def capitalize_status
     self.status = status.capitalize if status.present?
   end
+
+  def user_types(user_id)
+    types = []
+    types << "Affected" if user_id == affected_id
+    types << "Offender" if user_id == offender_id
+    types << "Reporter" if user_id == reporter_id
+    types
+  end
 end
