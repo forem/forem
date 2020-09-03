@@ -20,6 +20,7 @@ class SessionsController < Devise::SessionsController
     Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
   end
 
+  # NOTE: this code is a hotfix, and shall be removed soon (around 2 weeks from deployment)
   def delete_legacy_cookie
     domain = cookie_domain
 
