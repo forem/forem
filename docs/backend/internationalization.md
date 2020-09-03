@@ -27,9 +27,14 @@ We want everyone to feel included, regardless of where they're located or what
 language(s) they speak. The goal is to make the platform available in various
 languages.
 
-_The following is high level outline of an approach to internationalization.
-This is by no means set in stone and we encourage you to open a PR to this
-documentation or to contribute to internationalization with your ideas!_
+## How do you get involved?
+
+The following is a high level outline of an approach to internationalization.
+This is by no means set in stone.
+
+We encourage you to open a PR to this documentation or to contribute to
+internationalization with your ideas - we're
+[open-source](https://github.com/forem/forem/pulls)!
 
 ## Routing
 
