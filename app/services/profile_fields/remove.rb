@@ -17,7 +17,7 @@ module ProfileFields
       @profile_field = ProfileField.find(@id)
       if @profile_field.destroy
         accessor = profile_field.attribute_name.to_s
-        Profile.undef_method(accessor) if accessor.in?(Profile.stored_attributes[:data])
+        Profile.undef_method(accessor) if accessor.in?(Profile.attributes)
         @success = true
       else
         @error_message = @profile_field.errors_as_sentence
