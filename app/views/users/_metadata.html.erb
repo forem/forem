@@ -15,7 +15,7 @@
           <% if @user.employer_name.present? %>
             <span class="opacity-50"> at </span>
             <% if @user.employer_url.present? %>
-              <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
+              <a href="<%= @user.employer_url %>" class="crayons-link crayons-link--brand" target="_blank" rel="noopener"><%= @user.employer_name %></a>
             <% else %>
               <%= @user.employer_name %>
             <% end %>
