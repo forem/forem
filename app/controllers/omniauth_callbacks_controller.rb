@@ -36,7 +36,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def callback_for(provider)
     # Deleting the session cookie with the previous app domain, the one without the leading dot.
     # This should fix the double cookie scenario
-    # NOTE: this code is a hotfix, and shall be removed soon (around 2 weeks from deployment)
+    # TODO: this code is a hotfix, we should remove it after 09/18/2020.
     domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
     if domain&.starts_with?(".")
       domain_without_leading_dot = domain.gsub(/\A./, "")
