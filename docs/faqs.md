@@ -35,7 +35,7 @@ update the score of your local comments manually. Here's how:
 1. Open the terminal.
 2. Run `psql PracticalDeveloper_development`.
 3. Enter `update comments set score = 30;`.
-4. Hit `exit`.
+4. Type `exit` to leave the PostgreSQL terminal.
 
 Once you refresh the page, you should be able to see some comments in the Feed.
 
