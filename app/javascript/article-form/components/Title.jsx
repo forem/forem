@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 // We use this magic Textarea component for title field because it's automatically
 // resizable. Even though it looks like a classic input, if you enter long title
-// it would wrap the text to the next line automatically resizing itself. It helps keeping
+// it would wrap the text to the next line automatically resizing itself. It helps keep
 // the entire layout the way it is without having unnecessary scrolling and white spaces.
 // Keep in mind this is what happens only here - in preact component.
 // I'm mentioning this because the entire "Write a post" view is a preact component
