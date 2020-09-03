@@ -11,7 +11,7 @@ function initializeBaseTracking() {
     addedGA = true;
     wait++;
     if (window.ga && ga.create) {
-      ga('create', document.body.dataset.gaTracking, 'auto');
+      ga('create', '<%= ApplicationConfig["GA_TRACKING_ID"] %>', 'auto');
       ga('set', 'anonymizeIp', true);
       ga('send', 'pageview', location.pathname + location.search);
       clearInterval(waitingOnGA);
