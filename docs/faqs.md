@@ -67,7 +67,7 @@ to "pay" for listing. Here's how:
 
 1. Open the rails console `rails c`.
 2. Enter the following commands:
-   ```shell
+   ```ruby
    user = User.find_by(username: "your_username")
    Credit.add_to(user, 1000)
    ```
