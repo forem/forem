@@ -22,7 +22,7 @@ module Search
       }.freeze
 
       DEFAULT_PARAMS = {
-        sort_by: "id",
+        sort_by: "created_at",
         sort_direction: "desc",
         size: 0
       }.freeze
