@@ -110,7 +110,7 @@ Rails.application.routes.draw do
         patch "update_org_credits"
       end
     end
-    resources :sponsorships, only: %i[index edit update destroy]
+    resources :sponsorships, only: %i[index edit update new create destroy]
     resources :welcome, only: %i[index create]
     resources :growth, only: %i[index]
     resources :tools, only: %i[index create] do
