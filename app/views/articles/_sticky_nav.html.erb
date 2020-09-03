@@ -72,7 +72,7 @@
           <% @sticky_articles.each_with_index do |article, index| %>
             <a class="crayons-link crayons-link--contentful flex" href="<%= article.path %>">
               <span class="crayons-avatar mr-2 shrink-0">
-                <img src="<%= ProfileImage.new(article.cached_user).get(width: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.cached_user.name %> profile image">
+                <img src="<%= ProfileImage.new(article.user).get(width: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.user.name %> profile image">
               </span>
               <div>
                 <%= article.title %>
