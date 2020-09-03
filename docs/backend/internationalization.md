@@ -58,14 +58,14 @@ languages.
 There are many ways to translate static content on the platform. To start, we
 can explore tools like [i18n-tasks](https://glebm.github.io/i18n-tasks/) which
 also has an option to leverage Google Translate programmatically. We'll need to
-great locale files (likely `.yml`) to house the translations.
+create locale files (likely `.yml`) to house the translations.
 
 ## Search Engine Optimization (SEO)
 
 It seems search engines, especially Google, don't particularly like content on a
-page to be in several different languages. To account for this on pages like
-articles, we can try an approach using the canonical URL for the language the
-article was written in.
+page to be in multiple languages. To account for this on pages like articles, we
+can try an approach using the canonical URL for the language the article was
+written in.
 
 For example, if we detect an article is written in Spanish, we can set the
 canonical URL for that article to be `/locale/es/username/article-slug`. We can
