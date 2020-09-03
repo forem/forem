@@ -1,5 +1,6 @@
 import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
+import { addSnackbarItem } from '../../Snackbar';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { onDragOver, onDragExit } from './dragAndDropHelpers';
@@ -68,6 +69,14 @@ export class ArticleCoverImage extends Component {
         onDragExit={onDragExit}
         onDrop={(event) => {
           onDragExit(event);
+
+          if (event.dataTransfer.files.length > 1) {
+            addSnackbarItem({
+              message: 'Only one image can be dropped at a time.',
+              addCloseButton: true,
+            });
+            return;
+          }
           this.handleMainImageUpload(event);
         }}
       >
