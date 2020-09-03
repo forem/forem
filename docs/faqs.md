@@ -54,7 +54,7 @@ Boom, you have a new follower!
 
 1. Open the rails console `rails c`.
 2. Enter the following commands:
-   ```shell
+   ```ruby
    user = User.find_by(username: "your_username")
    organization_id = Organization.find_by(slug: "organization_slug").id
    user.organization_memberships.where(organization_id: organization_id).destroy_all
