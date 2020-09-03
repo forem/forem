@@ -52,7 +52,7 @@ Boom, you have a new follower!
 
 ## How do I remove / leave organization I created?
 
-1. Open the rails console `rails c`.
+1. Open the rails console by running `rails c` in your terminal.
 2. Enter the following commands:
    ```ruby
    user = User.find_by(username: "your_username")
