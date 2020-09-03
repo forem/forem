@@ -114,7 +114,7 @@ module Constants
         placeholder: ""
       },
       ga_tracking_id: {
-        description: "Google Analytics Tracking ID, e.g. ",
+        description: "Google Analytics Tracking ID, e.g. UA-71991000-1",
         placeholder: ""
       },
       health_check_token: {
