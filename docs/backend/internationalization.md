@@ -27,6 +27,10 @@ We want everyone to feel included, regardless of where they're located or what
 language(s) they speak. The goal is to make the platform available in various
 languages.
 
+_The following is high level outline of an approach to internationalization.
+This is by no means set in stone and we encourage you to open a PR to this
+documentation or to contribute to internationalization with your ideas!_
+
 ## Routing
 
 We have logic for routes setup. You can visit a page and add `/locale/:locale`
