@@ -11,6 +11,7 @@ items:
   - data-update-scripts.md
   - elasticsearch.md
   - fastly.md
+  - internationalization.md
   - roles.md
   - pusher.md
   - resource-admin.md
