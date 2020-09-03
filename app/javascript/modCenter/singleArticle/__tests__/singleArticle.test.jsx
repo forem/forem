@@ -147,7 +147,7 @@ describe('<SingleArticle />', () => {
     );
 
     const readableTime = publishDate
-      .toLocaleTimeString()
+      .toLocaleTimeString('en-US', { hour12: true })
       .replace(/:\d{2}\s/, ' '); // looks like 8:05 PM
 
     expect(document.querySelector('time').getAttribute('datetime')).toEqual(
