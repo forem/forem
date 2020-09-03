@@ -139,7 +139,9 @@
         // Don't run on harcoded redirects (see config/routes.rb for the list)
         !url.href.includes('/%F0%9F%92%B8') && // 💸 (hiring)
         !url.href.includes('/api') &&
+        !url.href.includes('/forem') &&
         !url.href.includes('/future') &&
+        !url.href.includes('/internal') &&
         !url.href.includes('/podcasts') &&
         !url.href.includes('/shop') &&
         !url.href.includes('/survey') &&
