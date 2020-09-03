@@ -11,13 +11,8 @@ import {
 } from './dragAndDropHelpers';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 
-export const EditorBody = ({
-  onChange,
-  defaultValue,
-  switchHelpContext,
-  version,
-}) => {
-  function handleImageSuccess(response) {
+function handleImageSuccess(textAreaRef) {
+  return function (response) {
     // Function is within the component to be able to access
     // textarea ref.
     const editableBodyElement = textAreaRef.current.base;
@@ -36,15 +31,24 @@ export const EditorBody = ({
     // Dispatching a new event so that linkstate, https://github.com/developit/linkstate,
     // the function used to create the onChange prop gets called correctly.
     editableBodyElement.dispatchEvent(new Event('input'));
-  }
+  };
+}
 
+export const EditorBody = ({
+  onChange,
+  defaultValue,
+  switchHelpContext,
+  version,
+}) => {
+  const textAreaRef = useRef(null);
   const { setElement } = useDragAndDrop({
-    onDrop: handleImageDrop(handleImageSuccess, handleImageFailure),
+    onDrop: handleImageDrop(
+      handleImageSuccess(textAreaRef),
+      handleImageFailure,
+    ),
     onDragOver,
     onDragExit,
   });
-
-  const textAreaRef = useRef(null);
 
   useEffect(() => {
     if (textAreaRef.current) {

@@ -27,6 +27,14 @@ export function handleImageDrop(handleImageSuccess, handleImageFailure) {
 
     const { files } = event.dataTransfer;
 
+    if (files.length > 1) {
+      addSnackbarItem({
+        message: 'Only one image can be dropped at a time.',
+        addCloseButton: true,
+      });
+      return;
+    }
+
     processImageUpload(files, handleImageSuccess, handleImageFailure);
   };
 }
