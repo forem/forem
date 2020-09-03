@@ -8,7 +8,7 @@ import {
   handleImageFailure,
   onDragOver,
   onDragExit,
-} from './dragAndDrop';
+} from './dragAndDropHelpers';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 
 export const EditorBody = ({

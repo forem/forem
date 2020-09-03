@@ -1,9 +1,28 @@
 import { addSnackbarItem } from '../../Snackbar';
 import { processImageUpload } from '../actions';
 
+/**
+ * Determines if at least one type of drag and drop datum type matches the data transfer type to match.
+ *
+ * @param {string[]} types An array of data transfer types.
+ * @param {string} dataTransferType The data transfer type to match.
+ */
+export function matchesDataTransferType(
+  types = [],
+  dataTransferType = 'Files',
+) {
+  return types.some((type) => type === dataTransferType);
+}
+
+// TODO: Document functions
 export function handleImageDrop(handleImageSuccess, handleImageFailure) {
   return function (event) {
     event.preventDefault();
+
+    if (!matchesDataTransferType(event.dataTransfer.types)) {
+      return;
+    }
+
     event.currentTarget.classList.remove('opacity-25');
 
     const { files } = event.dataTransfer;
@@ -12,7 +31,6 @@ export function handleImageDrop(handleImageSuccess, handleImageFailure) {
   };
 }
 
-// TODO: Speak to design about how the dropzone should look when dragging over.
 export function onDragOver(event) {
   event.preventDefault();
   event.currentTarget.classList.add('opacity-25');
@@ -20,15 +38,12 @@ export function onDragOver(event) {
 
 export function onDragExit(event) {
   event.preventDefault();
-  // This for now, but basically undo styles that were added in drag over.
   event.currentTarget.classList.remove('opacity-25');
 }
 
-export function handleImageFailure(error) {
-  console.error(error);
-
+export function handleImageFailure({ message }) {
   addSnackbarItem({
-    message: 'Unable to add image. Try again',
+    message,
     addCloseButton: true,
   });
 }

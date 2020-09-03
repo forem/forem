@@ -2,7 +2,7 @@ import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
-import { onDragOver, onDragExit } from './dragAndDrop';
+import { onDragOver, onDragExit } from './dragAndDropHelpers';
 import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
