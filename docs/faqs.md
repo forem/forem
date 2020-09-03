@@ -39,7 +39,7 @@ update the score of your local comments manually. Here's how:
 
 Once you refresh the app, you should be able to see some comments in the Feed.
 
-## How do I make someone follow me on local environment?
+## How do I make someone follow me on my local environment?
 
 In certain cases, for example when testing various functionalities, you may need
 to be able to make some user follow you. Here's how:
