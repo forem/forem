@@ -34,6 +34,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   private
 
   def callback_for(provider)
+    # Deleting the session cookie with the legacy app domain, which does NOT include a preceding dot.
+    # This should fix the double cookie scenario.
+    # TODO: this code is a hotfix, we should remove it after 09/18/2020.
+    legacy_cookie_domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
+    cookies.delete(ApplicationConfig["SESSION_KEY"], domain: legacy_cookie_domain)
+
     auth_payload = request.env["omniauth.auth"]
     cta_variant = request.env["omniauth.params"]["state"].to_s
 
@@ -44,15 +50,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     )
 
     if user_persisted_and_valid?
-      # Deleting the session cookie with the previous app domain, the one without the leading dot.
-      # This should fix the double cookie scenario
-      # NOTE: this code is a hotfix, and shall be removed soon (around 2 weeks from deployment)
-      domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
-      if domain&.starts_with?(".")
-        domain_without_leading_dot = domain.gsub(/\A./, "")
-        cookies.delete(ApplicationConfig["SESSION_KEY"], domain: domain_without_leading_dot)
-      end
-
       # Devise's Omniauthable does not automatically remember users
       # see <https://github.com/heartcombo/devise/wiki/Omniauthable,-sign-out-action-and-rememberable>
       remember_me(@user)
