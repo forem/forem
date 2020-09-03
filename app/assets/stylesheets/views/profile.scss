@@ -2,9 +2,6 @@
 
 .profile-header {
   --padding: var(--su-3);
-  --profile-brand-size: var(--su-5);
-
-  border-top: var(--profile-brand-size) solid var(--profile-brand-color);
   border-radius: 0;
 
   @media (min-width: $breakpoint-s) {
@@ -13,44 +10,55 @@
 
   @media (min-width: $breakpoint-m) {
     border-radius: var(--radius);
+    text-align: center;
   }
 
   @media (min-width: $breakpoint-l) {
     --padding: var(--su-6);
-    --profile-brand-size: var(--su-7);
   }
 
   &__top {
-    padding: var(--padding);
+    margin-top: calc(-1 * var(--su-7));
+    margin-bottom: var(--su-4);
+    position: relative;
+    padding: 0 var(--padding);
 
     @media (min-width: $breakpoint-m) {
-      display: flex;
+      margin-top: calc(-1 * var(--su-9));
+      margin-bottom: var(--su-3);
     }
   }
 
-  .crayons-avatar {
-    width: var(--su-9);
-    height: var(--su-9);
-    border: 2px solid var(--profile-brand-color);
+  &__actions {
+    display: flex;
+    right: 0;
+    top: var(--su-7);
+    position: absolute;
+    padding: var(--padding) var(--padding) 0 0;
 
-    @media (min-width: $breakpoint-l) {
-      border-width: 8px;
-      width: var(--su-10);
-      height: var(--su-10);
+    @media (min-width: $breakpoint-m) {
+      top: var(--su-9);
     }
   }
 
   &__details {
-    flex: 1 auto;
-
-    @media (min-width: $breakpoint-m) {
-      padding-left: var(--padding);
-    }
+    padding: var(--padding);
+    padding-top: 0;
   }
 
   &__meta {
     font-size: var(--fs-s);
     color: var(--base-60);
+    margin-bottom: var(--su-2);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-left: calc(-1 * var(--su-1));
+
+    @media (min-width: $breakpoint-m) {
+      justify-content: center;
+      margin-left: 0;
+    }
 
     a {
       color: var(--link-color-secondary);
@@ -60,10 +68,16 @@
       }
     }
 
-    &__divider {
-      display: inline-block;
-      padding: 0 var(--su-3);
-      opacity: 0.5;
+    &__item {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      padding: var(--su-2) var(--su-2);
+
+      @media (min-width: $breakpoint-m) {
+        padding: var(--su-1) var(--su-3);
+      }
     }
   }
 
@@ -82,6 +96,18 @@
       padding: calc(var(--padding) / 2);
     }
   }
+
+  .crayons-avatar {
+    width: var(--su-9);
+    height: var(--su-9);
+    border: var(--su-1) solid var(--profile-brand-color);
+
+    @media (min-width: $breakpoint-m) {
+      border-width: var(--su-2);
+      width: var(--su-10);
+      height: var(--su-10);
+    }
+  }
 }
 
 .crayons-definition {
@@ -95,30 +121,18 @@
   }
 }
 
-.profile-header {
-  &--alt {
-    border-top: none;
-  }
-
-  &__super-top {
-    margin-top: calc(-1 * var(--su-9));
-    margin-bottom: var(--su-3);
-    position: relative;
-  }
-
-  &__actions {
-    display: flex;
-    position: absolute;
-    right: 0;
-    top: var(--su-9);
-    padding: var(--padding) var(--padding) 0 0;
-  }
-}
-
 .brand-bg {
   background: linear-gradient(
     180deg,
-    var(--profile-brand-color) var(--su-10),
-    transparent var(--su-10)
+    var(--profile-brand-color) var(--su-9),
+    transparent var(--su-9)
   );
+
+  @media (min-width: $breakpoint-m) {
+    background: linear-gradient(
+      180deg,
+      var(--profile-brand-color) var(--su-10),
+      transparent var(--su-10)
+    );
+  }
 }
