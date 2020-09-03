@@ -13,7 +13,7 @@ RSpec.describe Search::ReactionSerializer do
     user_data = Search::NestedUserSerializer.new(user).serializable_hash.dig(:data, :attributes)
     expect(data_hash.dig(:reactable, :user)).to eq(user_data)
     expect(data_hash[:reactable].keys).to include(:id, :body_text, :class_name, :path, :tags, :title)
-    expect(data_hash.keys).to include(:id, :category, :status, :user_id)
+    expect(data_hash.keys).to include(:id, :created_at, :category, :status, :user_id)
   end
 
   it "serializes a comment reaction" do
@@ -21,7 +21,7 @@ RSpec.describe Search::ReactionSerializer do
     user_data = Search::NestedUserSerializer.new(user).serializable_hash.dig(:data, :attributes)
     expect(data_hash.dig(:reactable, :user)).to eq(user_data)
     expect(data_hash[:reactable].keys).to include(:id, :body_text, :class_name, :path, :tags, :title)
-    expect(data_hash.keys).to include(:id, :category, :status, :user_id)
+    expect(data_hash.keys).to include(:id, :created_at, :category, :status, :user_id)
   end
 
   it "creates valid json for Elasticsearch" do

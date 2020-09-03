@@ -4,7 +4,7 @@ RSpec.describe ProfileFields::Remove, type: :service do
   context "when successfully removing a profile field" do
     it "removes the profile field and store accessor", :aggregate_failures do
       profile_field = create(:profile_field, label: "Removed field")
-      Profile.refresh_store_accessors!
+      Profile.refresh_attributes!
       profile = create(:user).profile
 
       expect(profile.respond_to?(:removed_field)).to be true
@@ -16,7 +16,7 @@ RSpec.describe ProfileFields::Remove, type: :service do
 
     it "returns the correct response object", :aggregate_failures do
       profile_field = create(:profile_field, label: "Another Removed field")
-      Profile.refresh_store_accessors!
+      Profile.refresh_attributes!
 
       add_response = described_class.call(profile_field.id)
       expect(add_response.success?).to be true

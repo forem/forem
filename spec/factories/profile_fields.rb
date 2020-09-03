@@ -5,6 +5,7 @@ FactoryBot.define do
     input_type { :text_field }
     description { "some description" }
     placeholder_text { "john.doe@example.com" }
+    show_in_onboarding { false }
 
     trait :onboarding do
       show_in_onboarding { true }
