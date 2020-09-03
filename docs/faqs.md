@@ -44,7 +44,7 @@ Once you refresh the page, you should be able to see some comments in the Feed.
 In certain cases, for example when testing various functionalities, you may need
 to be able to make some user follow you. Here's how:
 
-1. Open the rails console `rails c`.
+1. Open the rails console by running `rails c` in your terminal.
 2. Get any user you want to follow you, for example `user = User.first`.
 3. Then make this user follow you: `user.follow(your_username)`.
 
