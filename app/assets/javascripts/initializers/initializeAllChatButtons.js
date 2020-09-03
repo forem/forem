@@ -62,7 +62,7 @@ function addButtonClickHandle(response, button, modalInfo) {
     button.removeEventListener('click', toggleModal);
     // eslint-disable-next-line no-param-reassign
     button.classList.remove('hidden'); // show button
-    linkWrap.style.display = 'initial'; // show button
+    linkWrap.classList.remove('hidden'); // show button
   }
 }
 
