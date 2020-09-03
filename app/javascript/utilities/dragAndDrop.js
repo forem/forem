@@ -78,6 +78,12 @@ export function useDragAndDrop({ onDragOver, onDragExit, onDrop }) {
  * @param {Function} props.onDrop The handler that runs when the drop event is fired.
  */
 export function DragAndDropZone({ children, onDragOver, onDragExit, onDrop }) {
+  if (!children) {
+    throw new Error(
+      'The <DragAndDropZone /> component children prop is null or was not specified.',
+    );
+  }
+
   const { setElement } = useDragAndDrop({ onDragOver, onDragExit, onDrop });
   const dropZoneRef = useRef(null);
 

@@ -154,5 +154,26 @@ describe('drag and drop for components', () => {
         4,
       );
     });
+
+    it('should not attach drag and drop events when no children.', async () => {
+      const onDrop = jest.fn();
+      const onDragOver = jest.fn();
+      const onDragExit = jest.fn();
+
+      HTMLElement.prototype.addEventListener = jest.fn();
+      HTMLDocument.prototype.addEventListener = jest.fn();
+
+      expect(() => {
+        render(
+          <DragAndDropZone
+            onDragOver={onDragOver}
+            onDragExit={onDragExit}
+            onDrop={onDrop}
+          />,
+        );
+      }).toThrowError(
+        'The <DragAndDropZone /> component children prop is null or was not specified.',
+      );
+    });
   });
 });
