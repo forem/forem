@@ -28,7 +28,7 @@ to your own `.env` file.
 
 ## How do I see comments in the Feed?
 
-In the Feed we only show comments above certain "score". It's likely the
+On the home Feed, we only show comments above certain "score". It's likely the
 comments in the local environment will never meet this score that's why it must
 be updated manually. Here's how:
 
