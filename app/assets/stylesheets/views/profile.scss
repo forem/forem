@@ -1,31 +1,51 @@
 @import '../config/import';
 
 .profile-header {
-  --padding: var(--su-6);
-  --profile-brand-color: var(--base-90);
+  --padding: var(--su-3);
+  --profile-brand-size: var(--su-5);
 
-  margin-bottom: var(--su-6);
-  border-top-color: var(--profile-brand-color);
+  border-top: var(--profile-brand-size) solid var(--profile-brand-color);
+  border-radius: 0;
+
+  @media (min-width: $breakpoint-s) {
+    --padding: var(--su-4);
+  }
+
+  @media (min-width: $breakpoint-m) {
+    border-radius: var(--radius);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --padding: var(--su-6);
+    --profile-brand-size: var(--su-7);
+  }
 
   &__top {
     padding: var(--padding);
-    display: flex;
+
+    @media (min-width: $breakpoint-m) {
+      display: flex;
+    }
   }
 
-  &__pic {
-    flex-shrink: 0;
-    position: relative;
-    top: calc(-1 * var(--su-7));
-    padding: 0 var(--su-7);
+  .crayons-avatar {
+    width: var(--su-9);
+    height: var(--su-9);
+    border: 2px solid var(--profile-brand-color);
 
-    .crayons-avatar {
-      border: 4px solid white;
+    @media (min-width: $breakpoint-l) {
+      border-width: 8px;
+      width: var(--su-10);
+      height: var(--su-10);
     }
   }
 
   &__details {
     flex: 1 auto;
-    padding-left: var(--padding);
+
+    @media (min-width: $breakpoint-m) {
+      padding-left: var(--padding);
+    }
   }
 
   &__meta {
@@ -73,4 +93,32 @@
     color: var(--base-60);
     display: block;
   }
+}
+
+.profile-header {
+  &--alt {
+    border-top: none;
+  }
+
+  &__super-top {
+    margin-top: calc(-1 * var(--su-9));
+    margin-bottom: var(--su-3);
+    position: relative;
+  }
+
+  &__actions {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: var(--su-9);
+    padding: var(--padding) var(--padding) 0 0;
+  }
+}
+
+.brand-bg {
+  background: linear-gradient(
+    180deg,
+    var(--profile-brand-color) var(--su-10),
+    transparent var(--su-10)
+  );
 }

@@ -12,20 +12,23 @@ function hideChatModal(modal) {
 }
 
 function toggleModal() {
-  var modal = document.querySelector('.modal');
-  var currentState = modal.style.display;
+  var modal = document.querySelector('.crayons-modal');
+  // var currentState = modal.style.display;
+  modal.classList.toggle('hidden');
 
-  if (currentState === 'none') {
-    showChatModal(modal);
-  } else {
-    hideChatModal(modal);
-  }
+  // if (currentState === 'none') {
+  //   showChatModal(modal);
+  // } else {
+  //   hideChatModal(modal);
+  // }
 }
 
 function initModal() {
-  var modal = document.querySelector('.modal');
+  var modal = document.querySelector('.crayons-modal');
   modal.querySelector('.close-modal').addEventListener('click', toggleModal);
-  modal.querySelector('.overlay').addEventListener('click', toggleModal);
+  modal
+    .querySelector('.crayons-modal__overlay')
+    .addEventListener('click', toggleModal);
 }
 
 function handleChatButtonPress(form) {
