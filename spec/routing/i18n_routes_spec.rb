@@ -23,4 +23,12 @@ RSpec.describe "i8n routes", type: :routing do
       locale: "fr-ca",
     )
   end
+
+  it "renders homepage successfully" do
+    expect(get: i18n_route).to route_to(
+      controller: "stories",
+      action: "index",
+      locale: "fr-ca",
+    )
+  end
 end
