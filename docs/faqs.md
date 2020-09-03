@@ -37,7 +37,7 @@ update the score of your local comments manually. Here's how:
 3. Enter `update comments set score = 30;`.
 4. Type `exit` to leave the PostgreSQL terminal.
 
-Once you refresh the page, you should be able to see some comments in the Feed.
+Once you refresh the app, you should be able to see some comments in the Feed.
 
 ## How do I make someone follow me on local environment?
 
