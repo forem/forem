@@ -4,7 +4,7 @@ title: Internationalization (i18n)
 
 # Internationalization (i18n)
 
-## What is internationlization (i18n)
+## What is internationlization (i18n)?
 
 To over simplify the concept a bit, internalization (i18n for short) is the
 process of making the platform more user-friendly in various languages for
@@ -32,8 +32,8 @@ languages.
 The following is a high level outline of an approach to internationalization.
 This is by no means set in stone.
 
-We encourage you to open a PR to this documentation or to contribute to
-internationalization with your ideas - we're
+We encourage you to open a pull request (PR) to this documentation or to
+contribute to internationalization with your ideas - we're
 [open-source](https://github.com/forem/forem/pulls)!
 
 ## Routing
