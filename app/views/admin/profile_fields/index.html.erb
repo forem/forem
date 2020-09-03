@@ -1,41 +1,5 @@
-<header class="mb-6">
-  <h2 class="fs-2xl s:fs-3xl">Profile fields</h2>
-</header>
-
-<% @grouped_profile_fields.each do |group| %>
-  <% group_name = group.name.gsub(/\s+/, "_") %>
-  <div class="crayons-card">
-    <div class="card-header flex" id="<%= group_name %>Header" data-toggle="collapse"
-      data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer">
-      <div>
-        <h2 class="d-inline"><%= group_name %></h2>
-        <% if group.description %>
-          <div><%= group.description %></div>
-        <% end %>
-      </div>
-      <button class="btn btn-secondary ml-auto" type="button">Toggle <%= group_name %></button>
-    </div>
-    <div id="<%= group_name %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= group %>Header">
-      <% group.profile_fields.each do |field| %>
-        <div class="card mb-3">
-          <%= render partial: "admin/configs/card_header",
-                     locals: {
-                       header: field.label,
-                       state: "collapse",
-                       target: "#{field.attribute_name}_container",
-                       expanded: "false"
-                     } %>
-          <div id="<%= field.attribute_name %>_container" class="collapse hide" aria-labelledby="<%= field.attribute_name %>_container">
-            <div class="form-group grid p-6 mb-6 gap-1">
-              <%= form_for [:admin, field] do |form| %>
-                <%= render "form", form: form %>
-                <%= form.submit class: "btn btn-primary" %>
-              <% end %>
-              <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
-            </div>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  </div>
-<% end %>
+<main id="profileFields">
+  <%= render "add_group_modal" %>
+  <%= render "grouped_profile_fields" %>
+  <%= render "ungrouped_profile_fields" %>
+</div>

@@ -1,4 +1,6 @@
 class DisplayAd < ApplicationRecord
+  resourcify
+
   belongs_to :organization
   has_many :display_ad_events, dependent: :destroy
 
