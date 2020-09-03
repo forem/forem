@@ -126,14 +126,11 @@ RSpec.describe "/admin/sponsorships", type: :request do
       end.to change { Sponsorship.all.count }.by(1)
     end
 
-    it "doesn't create the sponsorship when attributes are invalid" do
-      post "/admin/sponsorships", params: { sponsorship: invalid_attributes }
-      expect(response).to have_http_status(:ok)
-    end
-
-    it "shows errors when attributes are invalid" do
-      post "/admin/sponsorships", params: { sponsorship: invalid_attributes }
-      expect(response.body).to include("Status is not included in the list")
+    it "shows errors when attributes are invalid & doesn't persist to the DB" do
+      expect do
+        post "/admin/sponsorships", params: { sponsorship: invalid_attributes }
+        expect(response.body).to include("Status is not included in the list")
+      end.to change { Sponsorship.all.count }.by(0)
     end
   end
 
