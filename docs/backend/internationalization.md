@@ -96,6 +96,10 @@ language with one we currently support.
 Once the edge is aware of what language it should be looking for, it will set
 the cache key accordingly.
 
+We also make use of fragment caching in several places. We need to update the
+keys for those caches to account for `locale` so we're not mistakenly serving a
+cached fragment in a different language than intended.
+
 Service workers load some parts of the UI up front, like the shell. Therefore,
 the service worker will need to be aware of language preferences so that it
 loads the shell in the correct language. We also need to make sure the service
