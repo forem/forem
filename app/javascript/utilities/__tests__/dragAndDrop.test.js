@@ -83,27 +83,76 @@ describe('drag and drop for components', () => {
     });
   });
 
-  // describe('<DragAndDropZone />', () => {
-  //   it('should attach drag and drop events', async () => {
-  //     const onDrop = jest.fn();
-  //     const onDragOver = jest.fn();
-  //     const onDragExit = jest.fn();
+  describe('<DragAndDropZone />', () => {
+    it('should attach drag and drop events', async () => {
+      const onDrop = jest.fn();
+      const onDragOver = jest.fn();
+      const onDragExit = jest.fn();
 
-  //     HTMLElement.prototype.addEventListener = jest.fn();
-  //     HTMLDocument.prototype.addEventListener = jest.fn();
+      HTMLElement.prototype.addEventListener = jest.fn();
+      HTMLDocument.prototype.addEventListener = jest.fn();
 
-  //     const { container } = render(
-  //       <DragAndDropZone
-  //         onDragOver={onDragOver}
-  //         onDragExit={onDragExit}
-  //         onDrop={onDrop}
-  //       >
-  //         <textarea>I'm a text area</textarea>
-  //       </DragAndDropZone>,
-  //     );
+      const { rerender } = render(
+        <DragAndDropZone
+          onDragOver={onDragOver}
+          onDragExit={onDragExit}
+          onDrop={onDrop}
+        >
+          <textarea>I'm a text area</textarea>
+        </DragAndDropZone>,
+      );
 
-  //     expect(HTMLDocument.prototype.addEventListener).toBeCalledTimes(2);
-  //     expect(HTMLDocument.prototype.addEventListener).toHaveBeenCalledTimes(4);
-  //   });
-  // });
+      // Rerendering so that the ref gets set to the DOM node.
+      // represented by the Preact element <textarea />
+      rerender(
+        <DragAndDropZone
+          onDragOver={onDragOver}
+          onDragExit={onDragExit}
+          onDrop={onDrop}
+        >
+          <textarea>I'm a text area</textarea>
+        </DragAndDropZone>,
+      );
+
+      expect(HTMLDocument.prototype.addEventListener).toBeCalledTimes(2);
+      expect(HTMLElement.prototype.addEventListener).toHaveBeenCalledTimes(4);
+    });
+
+    it('should not attach drag and drop events', async () => {
+      const onDrop = jest.fn();
+      const onDragOver = jest.fn();
+      const onDragExit = jest.fn();
+
+      HTMLElement.prototype.removeEventListener = jest.fn();
+      HTMLDocument.prototype.removeEventListener = jest.fn();
+
+      const { unmount, rerender } = render(
+        <DragAndDropZone
+          onDragOver={onDragOver}
+          onDragExit={onDragExit}
+          onDrop={onDrop}
+        >
+          <textarea>I'm a text area</textarea>
+        </DragAndDropZone>,
+      );
+
+      // Rerendering so that the ref gets set to the DOM node.
+      // represented by the Preact element <textarea />
+      rerender(
+        <DragAndDropZone
+          onDragOver={onDragOver}
+          onDragExit={onDragExit}
+          onDrop={onDrop}
+        >
+          <textarea>I'm a text area</textarea>
+        </DragAndDropZone>,
+      );
+
+      unmount();
+      expect(HTMLDocument.prototype.removeEventListener).toBeCalledTimes(2);
+      expect(HTMLElement.prototype.removeEventListener).toHaveBeenCalledTimes(
+        4,
+      );
+    });
+  });
 });
