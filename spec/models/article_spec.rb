@@ -37,7 +37,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
-    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
+    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
