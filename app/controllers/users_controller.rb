@@ -266,8 +266,6 @@ class UsersController < ApplicationController
       handle_integrations_tab
     when "billing"
       handle_billing_tab
-    when "account"
-      handle_account_tab
     when "response-templates"
       handle_response_templates_tab
     else
@@ -333,17 +331,6 @@ class UsersController < ApplicationController
     return if stripe_code == "special"
 
     @customer = Payments::Customer.get(stripe_code) if stripe_code.present?
-  end
-
-  def handle_account_tab
-    community_name = SiteConfig.community_name
-    @email_body = <<~HEREDOC
-      Hello #{community_name} Team,\n
-      I would like to delete my account.\n
-      You can keep any comments and discussion posts under the Ghost account.\n
-      Regards,
-      YOUR-#{community_name}-USERNAME-HERE
-    HEREDOC
   end
 
   def handle_response_templates_tab

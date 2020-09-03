@@ -419,6 +419,16 @@
     border-top: 1px solid var(--base-20);
     overflow-y: auto;
 
+    div.unpublish-article {
+      background: inherit;
+      border: none;
+      padding: var(--su-3) var(--su-4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: auto;
+    }
+
     button.other-things-btn {
       background: inherit;
       border: none;

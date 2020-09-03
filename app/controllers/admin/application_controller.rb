@@ -13,6 +13,7 @@ module Admin
       { name: "chat_channels",         controller: "chat_channels" },
       { name: "comments",              controller: "comments" },
       { name: "config",                controller: "config" },
+      { name: "display_ads",           controller: "display_ads" },
       { name: "events",                controller: "events" },
       { name: "growth",                controller: "growth" },
       { name: "listings",              controller: "listings" },

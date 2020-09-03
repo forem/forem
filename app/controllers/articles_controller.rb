@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   include ApplicationHelper
 
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit manage update destroy stats]
+  before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish]
   before_action :raise_suspended, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -188,6 +188,21 @@ class ArticlesController < ApplicationController
     authorize current_user, :pro_user?
     authorize @article
     @organization_id = @article.organization_id
+  end
+
+  def admin_unpublish
+    authorize @article
+    if @article.has_frontmatter?
+      @article.body_markdown.sub!(/\npublished:\s*true\s*\n/, "\npublished: false\n")
+    else
+      @article.published = false
+    end
+
+    if @article.save
+      render json: { message: "success", path: @article.current_state_path }, status: :ok
+    else
+      render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private
