@@ -33,7 +33,7 @@ comments in the local environment will never meet this score. If you want to see
 update the score of your local comments manually. Here's how:
 
 1. Open the terminal.
-2. Run `psql PracticalDeveloper_development`.
+2. Run `psql PracticalDeveloper_development` to open `psql`, the PostgreSQL terminal.
 3. Enter `update comments set score = 30;`.
 4. Type `exit` to leave the PostgreSQL terminal.
 
