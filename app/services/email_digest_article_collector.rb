@@ -81,6 +81,7 @@ class EmailDigestArticleCollector
   end
 
   def last_user_emails
-    @last_user_emails ||= @user.email_messages.where(mailer: "DigestMailer#digest_email").limit(10)
+    @last_user_emails ||= @user.email_messages.select(:sent_at,
+                                                      :opened_at).where(mailer: "DigestMailer#digest_email").limit(10)
   end
 end
