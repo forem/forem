@@ -108,6 +108,7 @@
 
         !url.href.includes('/resource_admin') && // Don't fetch for administrate dashboard.
         !url.href.includes('/api/') && // Don't run on API endpoints.
+        !url.href.includes('/locale/') && // Don't run on explicit locale endpoints.
         !url.href.includes('/embed/') && // Don't fetch for embeded content.
         !url.href.includes('/feed') && // Skip the RSS feed
         !url.href.includes('/rss') && // Skip the RSS feed alternative path
