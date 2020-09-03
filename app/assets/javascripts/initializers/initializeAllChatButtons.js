@@ -13,14 +13,7 @@ function hideChatModal(modal) {
 
 function toggleModal() {
   var modal = document.querySelector('.crayons-modal');
-  // var currentState = modal.style.display;
   modal.classList.toggle('hidden');
-
-  // if (currentState === 'none') {
-  //   showChatModal(modal);
-  // } else {
-  //   hideChatModal(modal);
-  // }
 }
 
 function initModal() {
