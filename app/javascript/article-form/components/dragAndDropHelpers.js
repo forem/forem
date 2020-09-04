@@ -39,16 +39,32 @@ export function handleImageDrop(handleImageSuccess, handleImageFailure) {
   };
 }
 
+/**
+ * Dragover handler for the editor
+ *
+ * @param {DragEvent} event the drag event.
+ */
 export function onDragOver(event) {
   event.preventDefault();
   event.currentTarget.classList.add('opacity-25');
 }
 
+/**
+ * DragExit handler for the editor
+ *
+ * @param {DragEvent} event the drag event.
+ */
 export function onDragExit(event) {
   event.preventDefault();
   event.currentTarget.classList.remove('opacity-25');
 }
 
+/**
+ * Handler for when image upload fails.
+ *
+ * @param {Error} error an error
+ * @param {string} error.message an error message
+ */
 export function handleImageFailure({ message }) {
   addSnackbarItem({
     message,
