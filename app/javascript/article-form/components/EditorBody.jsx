@@ -59,7 +59,7 @@ export const EditorBody = ({
   return (
     <div
       data-testid="article-form__body"
-      className="crayons-article-form__body text-padding"
+      className="crayons-article-form__body drop-area text-padding"
     >
       <Toolbar version={version} />
 
