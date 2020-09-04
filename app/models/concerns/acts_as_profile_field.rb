@@ -8,7 +8,7 @@ concern :ActsAsProfileField do
     validates :attribute_name, presence: true, on: :update
   end
 
-  private 
+  private
 
   def generate_attribute_name
     self.attribute_name = label.titleize.scan(WORD_REGEX).join.underscore
