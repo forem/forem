@@ -61,9 +61,8 @@ class SiteConfig < RailsSettings::Base
   field :jobs_url, type: :string
   field :display_jobs_banner, type: :boolean, default: false
 
-  # Google Analytics Reporting API v4
-  # <https://developers.google.com/analytics/devguides/reporting/core/v4>
-  field :ga_view_id, type: :string, default: ""
+  # Google Analytics Tracking ID, e.g. UA-71991000-1
+  field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
 
   # Images
   field :main_social_image, type: :string
