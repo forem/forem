@@ -17,7 +17,7 @@ class SessionsController < Devise::SessionsController
   private
 
   def legacy_cookie_domain
-    Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
+    Rails.env.production? ? SiteConfig.app_domain : nil
   end
 
   def cookie_domain

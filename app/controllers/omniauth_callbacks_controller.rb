@@ -37,7 +37,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Deleting the session cookie with the legacy app domain, which does NOT include a preceding dot.
     # This should fix the double cookie scenario.
     # TODO: this code is a hotfix, we should remove it after 09/18/2020.
-    legacy_cookie_domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
+    legacy_cookie_domain = Rails.env.production? ? SiteConfig.app_domain : nil
     cookies.delete(ApplicationConfig["SESSION_KEY"], domain: legacy_cookie_domain)
 
     auth_payload = request.env["omniauth.auth"]

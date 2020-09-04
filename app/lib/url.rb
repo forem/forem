@@ -7,7 +7,7 @@ module URL
   end
 
   def self.domain
-    ApplicationConfig["APP_DOMAIN"]
+    SiteConfig.app_domain
   end
 
   def self.url(uri = nil)
