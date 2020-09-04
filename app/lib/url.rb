@@ -7,7 +7,7 @@ module URL
   end
 
   def self.domain
-    ApplicationConfig["APP_DOMAIN"]
+    ApplicationConfig["APP_DOMAIN"] # TODO: [@forem/systems] Make dynamic (currently needed on boot for some)
   end
 
   def self.url(uri = nil)
