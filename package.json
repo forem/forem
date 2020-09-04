@@ -169,6 +169,9 @@
     "twilio-video": "^2.7.2",
     "web-share-wrapper": "^0.2.1"
   },
+  "resolutions": {
+    "gitdocs/markdown-to-jsx": "^6.11.4"
+  },
   "jest": {
     "setupFiles": [
       "jest-localstorage-mock"
