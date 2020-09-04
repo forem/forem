@@ -282,6 +282,7 @@ Rails.application.routes.draw do
     end
 
     resource :onboarding, only: :show
+    resources :profiles, only: %i[update]
     resources :profile_field_groups, only: %i[index], defaults: { format: :json }
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
