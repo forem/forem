@@ -3,6 +3,8 @@ class Profile < ApplicationRecord
 
   validates :user_id, uniqueness: true
 
+  has_many :custom_profile_fields, dependent: :destroy
+
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
   MAPPED_ATTRIBUTES = {
