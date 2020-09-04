@@ -11,6 +11,7 @@ class AsyncInfoController < ApplicationController
         param: request_forgery_protection_token,
         token: form_authenticity_token
       }
+      cookies.signed["remember_user_token"] = nil
       return
     end
     if remember_user_token.blank?
