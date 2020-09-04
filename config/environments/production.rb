@@ -129,7 +129,7 @@ Rails.application.configure do
 
   if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
     config.middleware.use Rack::HostRedirect,
-                          ENV["HEROKU_APP_URL"] => config.app_domain
+                          ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
   end
 end
 # rubocop:enable Metrics/BlockLength
