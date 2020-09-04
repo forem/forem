@@ -464,11 +464,11 @@
                      } %>
           <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
             <div class="form-group">
-              <%= admin_config_label :ga_view_id, "View ID" %>
-              <%= f.text_field :ga_view_id,
+              <%= admin_config_label :ga_tracking_id, "View ID" %>
+              <%= f.text_field :ga_tracking_id,
                                class: "form-control",
-                               value: SiteConfig.ga_view_id %>
-              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:ga_view_id][:description] %></div>
+                               value: SiteConfig.ga_tracking_id %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:ga_tracking_id][:description] %></div>
             </div>
           </div>
         </div>
