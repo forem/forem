@@ -2324,6 +2324,11 @@
     lodash "^4.17.15"
     redent "^3.0.0"
 
+"@testing-library/preact-hooks@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@testing-library/preact-hooks/-/preact-hooks-1.0.6.tgz#f66d1f029548ca6200c3a35ba534531671747284"
+  integrity sha512-zNMnuFWqNYp/Ac5jG7o+GPsRAGnaNdHvHORFXZT7k0bseOdKJijLza1Xx+ty19+GsE/AUTYC8BCbAC67Z+sgMg==
+
 "@testing-library/preact@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@testing-library/preact/-/preact-2.0.0.tgz#bf40faa24136a2388e74655d154fe3538541c33b"
