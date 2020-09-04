@@ -13,7 +13,7 @@ class SiteConfig < RailsSettings::Base
 
   # Core setup
   field :waiting_on_first_user, type: :boolean, default: !User.exists?
-  field :app_domain, type: :string, default: SiteConfig.app_domain
+  field :app_domain, type: :string, default: ApplicationConfig["APP_DOMAIN"]
 
   # API Tokens
   field :health_check_token, type: :string
