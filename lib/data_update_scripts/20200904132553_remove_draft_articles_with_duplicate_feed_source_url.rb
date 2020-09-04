@@ -30,11 +30,13 @@ module DataUpdateScripts
       )
 
       # Sending IDs of deleted articles to Datadog
-      DatadogStatsClient.event(
-        "DataUpdateScripts::RemoveDraftArticlesWithDuplicateFeedSourceUrl",
-        "deleted draft articles with the same feed_source_url and same body_markdown",
-        tags: result.map { |row| row["id"] },
-      )
+      result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
+        DatadogStatsClient.event(
+          "DataUpdateScripts::RemoveDraftArticlesWithDuplicateFeedSourceUrl",
+          "deleted draft articles with the same feed_source_url and same body_markdown",
+          tags: ids,
+        )
+      end
 
       # Now that all duplicates with the same body are gone, we need to deal with duplicate feed source URLs
       # with different bodies.
@@ -64,11 +66,13 @@ module DataUpdateScripts
       )
 
       # Sending IDs of deleted articles to Datadog
-      DatadogStatsClient.event(
-        "DataUpdateScripts::RemoveDraftArticlesWithDuplicateFeedSourceUrl",
-        "deleted draft articles with the same feed_source_url and different body_markdown",
-        tags: result.map { |row| row["id"] },
-      )
+      result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
+        DatadogStatsClient.event(
+          "DataUpdateScripts::RemoveDraftArticlesWithDuplicateFeedSourceUrl",
+          "deleted draft articles with the same feed_source_url and different body_markdown",
+          tags: ids,
+        )
+      end
     end
   end
 end
