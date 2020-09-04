@@ -14,7 +14,7 @@ class AsyncInfoController < ApplicationController
       cookies.signed["remember_user_token"] = nil
       return
     end
-    if remember_user_token.blank?
+    if remember_user_token.blank? && user_signed_in?
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
