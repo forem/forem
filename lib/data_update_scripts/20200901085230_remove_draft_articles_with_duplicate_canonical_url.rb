@@ -30,11 +30,13 @@ module DataUpdateScripts
       )
 
       # Sending IDs of deleted articles to Datadog
-      DatadogStatsClient.event(
-        "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
-        "deleted draft articles with the same canonical_url and same body_markdown",
-        tags: result.map { |row| row["id"] },
-      )
+      result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
+        DatadogStatsClient.event(
+          "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
+          "deleted draft articles with the same canonical_url and same body_markdown",
+          tags: ids,
+        )
+      end
 
       # Now that all duplicates with the same body are gone, we need to deal with duplicate canonical URLs
       # with different bodies.
@@ -64,11 +66,13 @@ module DataUpdateScripts
       )
 
       # Sending IDs of deleted articles to Datadog
-      DatadogStatsClient.event(
-        "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
-        "deleted draft articles with the same canonical_url and different body_markdown",
-        tags: result.map { |row| row["id"] },
-      )
+      result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
+        DatadogStatsClient.event(
+          "DataUpdateScripts::RemoveDraftArticlesWithDuplicateCanonicalUrl",
+          "deleted draft articles with the same canonical_url and different body_markdown",
+          tags: ids,
+        )
+      end
     end
   end
 end
