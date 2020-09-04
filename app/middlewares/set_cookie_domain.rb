@@ -5,7 +5,9 @@ class SetCookieDomain
   end
 
   def call(env)
-    env["rack.session.options"][:domain] = ".#{env['HTTP_HOST'] || env['HTTP_X_FORWARDED_HOST']}"
+    if Rails.env.production?
+      env["rack.session.options"][:domain] = ".#{SiteConfig.app_domain}"
+    end
     @app.call(env)
   end
 
