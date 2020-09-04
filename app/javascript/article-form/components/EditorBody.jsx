@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
 import { useEffect, useRef } from 'preact/hooks';
 import { Toolbar } from './Toolbar';
+import { handleImagePasted} from './pasteImageHelpers';
 import {
   handleImageDrop,
   handleImageFailure,
   onDragOver,
   onDragExit,
 } from './dragAndDropHelpers';
+import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 
 function handleImageSuccess(textAreaRef) {
@@ -50,9 +52,17 @@ export const EditorBody = ({
     onDragExit,
   });
 
+  const {setPasteElement} = usePasteImage({
+    onPaste: handleImagePasted(
+      handleImageSuccess(textAreaRef),
+      handleImageFailure,
+    )
+  });
+
   useEffect(() => {
     if (textAreaRef.current) {
       setElement(textAreaRef.current.base);
+      setPasteElement(textAreaRef.current.base);
     }
   });
 
