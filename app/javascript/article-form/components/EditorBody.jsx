@@ -18,7 +18,7 @@ function handleImageSuccess(textAreaRef) {
     const editableBodyElement = textAreaRef.current.base;
     const { links, image } = response;
     const altText = image[0].name.replace(/\.[^.]+$/, '');
-    const markdownImageLink = `![${altText}](${links[0]})`;
+    const markdownImageLink = `![${altText}](${links[0]})\n`;
     const { selectionStart, selectionEnd, value } = editableBodyElement;
     const before = value.substring(0, selectionStart);
     const after = value.substring(selectionEnd, value.length);
