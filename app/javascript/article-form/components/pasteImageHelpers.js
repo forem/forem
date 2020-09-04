@@ -17,16 +17,15 @@ export function matchesDataTransferType(
 /**
  * Handler for when image is pasted.
  *
- * @param {function} handleImageSuccess Callback for when image upload succeeds 
+ * @param {function} handleImageSuccess Callback for when image upload succeeds
  * @param {function} handleImageFailure Callback for when image upload fails
  */
 export function handleImagePasted(handleImageSuccess, handleImageFailure) {
   return function (event) {
-    event.preventDefault();
+    if (!event.clipboardData || !event.clipboardData.items) return;
+    if (!matchesDataTransferType(event.clipboardData.types)) return;
 
-    if (!matchesDataTransferType(event.clipboardData.types)) {
-      return;
-    }
+    event.preventDefault();
 
     const { files } = event.clipboardData;
 
