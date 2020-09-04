@@ -14,7 +14,7 @@ domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
 
 Rails.application.config.session_store :redis_store,
                                        key: ApplicationConfig["SESSION_KEY"],
-                                       domain: domain,
+                                       domain: :all,
                                        servers: servers,
                                        expire_after: expires_after,
                                        signed: true,
