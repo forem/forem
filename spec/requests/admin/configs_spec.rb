@@ -175,9 +175,9 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Google Analytics Reporting API v4" do
-        it "updates ga_view_id" do
-          post "/admin/config", params: { site_config: { ga_view_id: "abc" }, confirmation: confirmation_message }
-          expect(SiteConfig.ga_view_id).to eq("abc")
+        it "updates ga_tracking_id" do
+          post "/admin/config", params: { site_config: { ga_tracking_id: "abc" }, confirmation: confirmation_message }
+          expect(SiteConfig.ga_tracking_id).to eq("abc")
         end
       end
 
