@@ -236,11 +236,8 @@ export class Help extends Component {
             to add rich content such as Tweets, YouTube videos, etc.
           </li>
           <li>
-            You can drag and drop a post cover image as well as images to add
-            rich media to the post body.
-          </li>
-          <li>
-            You can drag and drop images to add rich media to the post body.
+            You can drag and drop a post cover image as well as images to a
+            post's body content.
           </li>
         </ul>
       </div>
