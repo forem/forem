@@ -5,7 +5,7 @@ class SetCookieDomain
   end
 
   def call(env)
-    env["rack.session.options"][:domain] = ".#{ENV['HTTP_HOST'] || ENV['HTTP_X_FORWARDED_HOST']}"
+    env["rack.session.options"][:domain] = ".#{env['HTTP_HOST'] || env['HTTP_X_FORWARDED_HOST']}"
     @app.call(env)
   end
 
