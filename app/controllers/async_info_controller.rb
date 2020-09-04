@@ -17,6 +17,13 @@ class AsyncInfoController < ApplicationController
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
+      if Rails.env.production?
+        cookies.signed["remember_user_token"] = {
+          value: current_user.class.serialize_into_cookie(current_user.reload),
+          expires: 12.months.from_now,
+          domain: ".#{SiteConfig.app_domain}"
+        }
+      end
     end
     @user = current_user.decorate
     respond_to do |format|
