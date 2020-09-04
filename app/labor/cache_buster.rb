@@ -38,13 +38,13 @@ module CacheBuster
 
   def self.bust_fastly_cache(path)
     HTTParty.post(
-      "https://api.fastly.com/purge/https://#{SiteConfig.app_domain}#{path}",
+      "https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}",
       headers: {
         "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
       },
     )
     HTTParty.post(
-      "https://api.fastly.com/purge/https://#{SiteConfig.app_domain}#{path}?i=i",
+      "https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}?i=i",
       headers: {
         "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
       },
