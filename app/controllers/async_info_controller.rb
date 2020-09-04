@@ -11,20 +11,16 @@ class AsyncInfoController < ApplicationController
         param: request_forgery_protection_token,
         token: form_authenticity_token
       }
-      cookies.signed["remember_user_token"] = nil
+      if remember_user_token
+        cookies.delete :remember_user_token, domain: ".#{SiteConfig.app_domain}"
+      end
       return
     end
     if remember_user_token.blank? && user_signed_in?
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
-      if Rails.env.production?
-        cookies.signed["remember_user_token"] = {
-          value: current_user.class.serialize_into_cookie(current_user.reload),
-          expires: 12.months.from_now,
-          domain: ".#{SiteConfig.app_domain}"
-        }
-      end
+      cookies.signed["remember_user_token"] = remember_cookie_values(current_user) if Rails.env.production?
     end
     @user = current_user.decorate
     respond_to do |format|
@@ -101,5 +97,15 @@ class AsyncInfoController < ApplicationController
 
   def remember_user_token
     cookies[:remember_user_token]
+  end
+
+  def remember_cookie_values(resource)
+    options = { httponly: true }
+    options.merge!(forget_cookie_values(resource))
+    options.merge!(
+      value: resource.class.serialize_into_cookie(resource),
+      expires: resource.remember_expires_at,
+      domain: ".#{SiteConfig.app_domain}",
+    )
   end
 end
