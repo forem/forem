@@ -10,7 +10,7 @@ module ValidRequest
     return if Rails.env.test?
 
     if request.referer.present?
-      request.referer.start_with?(URL.url)
+      request.referer.start_with?(ApplicationConfig["APP_PROTOCOL"] + SiteConfig.app_domain)
     else
       null_origin = request.origin == "null"
       raise ::ActionController::InvalidAuthenticityToken, ::ApplicationController::NULL_ORIGIN_MESSAGE if null_origin
