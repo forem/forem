@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { axe } from 'jest-axe';
 import { render } from '@testing-library/preact';
+import '@testing-library/jest-dom';
 
 import { SingleListing } from '../singleListing/SingleListing';
 
@@ -14,6 +15,7 @@ const listing = {
   slug: 'illo-iure-quos-perspiciatis-5hk7',
   title: 'Illo iure quos perspiciatis.',
   user_id: 7,
+  bumped_at: new Date('2-2-2222'),
   tags: ['go', 'git'],
   author: {
     name: 'Mrs. Yoko Christiansen',
@@ -85,5 +87,18 @@ describe('<SingleListing />', () => {
     expect(getByTestId('single-listing-location').href).toContain(
       `/listings/?q=West%20Refugio`,
     );
+  });
+
+  it('should listing bumped_at date', () => {
+    const listingDate = new Date(
+      listing.bumped_at.toString(),
+    ).toLocaleDateString('default', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+
+    const { getByTestId } = renderSingleListing();
+    expect(getByTestId('single-listing-date')).toHaveTextContent(listingDate);
   });
 });
