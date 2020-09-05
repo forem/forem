@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   skip_before_action :track_ahoy_visit
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
+  before_action :remember_cookie
 
   include SessionCurrentUser
   include ValidRequest
@@ -142,6 +143,16 @@ class ApplicationController < ActionController::Base
     return unless Rails.env.development? && Stripe.api_key.present?
 
     Stripe.log_level = Stripe::LEVEL_INFO
+  end
+
+  def remember_cookie
+    if user_signed_in?
+      cookies.delete :remember_user_token, domain: ".#{SiteConfig.app_domain}"
+    else
+      current_user.remember_me = true
+      current_user.remember_me!
+      remember_me(current_user)  
+    end
   end
 
   protected
