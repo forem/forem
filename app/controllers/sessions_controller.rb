@@ -1,4 +1,5 @@
 class SessionsController < Devise::SessionsController
+  include Devise::Controllers::Rememberable
   def create
     delete_legacy_cookie
     self.resource = warden.authenticate!(auth_options)
