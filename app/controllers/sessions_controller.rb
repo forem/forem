@@ -12,7 +12,7 @@ class SessionsController < Devise::SessionsController
 
   def destroy
     delete_legacy_cookie
-
+    cookies.delete :remember_user_token, domain: ".#{SiteConfig.app_domain}"
     # Let's say goodbye to all the cookies when someone signs out.
     cookies.clear(domain: cookie_domain)
 
