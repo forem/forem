@@ -147,11 +147,11 @@ class ApplicationController < ActionController::Base
 
   def remember_cookie
     if user_signed_in?
-      cookies.delete :remember_user_token, domain: ".#{SiteConfig.app_domain}"
-    else
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)  
+    else
+      cookies.delete :remember_user_token, domain: ".#{SiteConfig.app_domain}"
     end
   end
 
