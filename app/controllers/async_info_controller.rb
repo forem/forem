@@ -81,7 +81,6 @@ class AsyncInfoController < ApplicationController
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
     #{current_user&.pro?}__
-    #{current_user&.blocking_others_count}__
-    #{remember_user_token}"
+    #{current_user&.blocking_others_count}__"
   end
 end
