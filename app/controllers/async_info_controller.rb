@@ -20,7 +20,6 @@ class AsyncInfoController < ApplicationController
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
-      cookies.signed["remember_user_token"] = remember_cookie_values(current_user) if Rails.env.production?
     end
     @user = current_user.decorate
     respond_to do |format|
@@ -97,15 +96,5 @@ class AsyncInfoController < ApplicationController
 
   def remember_user_token
     cookies[:remember_user_token]
-  end
-
-  def remember_cookie_values(resource)
-    options = { httponly: true }
-    options.merge!(forget_cookie_values(resource))
-    options.merge!(
-      value: resource.class.serialize_into_cookie(resource),
-      expires: resource.remember_expires_at,
-      domain: ".#{SiteConfig.app_domain}",
-    )
   end
 end
