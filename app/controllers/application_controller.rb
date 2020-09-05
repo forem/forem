@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   skip_before_action :track_ahoy_visit
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
-  before_action :remember_cookie
+  before_action :remember_cookie_sync
 
   include SessionCurrentUser
   include ValidRequest
@@ -147,11 +147,12 @@ class ApplicationController < ActionController::Base
     Stripe.log_level = Stripe::LEVEL_INFO
   end
 
-  def remember_cookie
-    if user_signed_in?
+  def remember_cookie_sync
+    # Set remember cookie token in case not properly set.
+    if user_signed_in? && cookies[:remember_user_token].blank?
       current_user.remember_me = true
       current_user.remember_me!
-      remember_me(current_user)  
+      remember_me(current_user)
     else
       cookies.delete :remember_user_token, domain: ".#{SiteConfig.app_domain}"
     end

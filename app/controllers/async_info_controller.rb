@@ -1,5 +1,4 @@
 class AsyncInfoController < ApplicationController
-  include Devise::Controllers::Rememberable
   # No pundit policy. All actions are unrestricted.
   before_action :set_cache_control_headers, only: %i[shell_version]
 
@@ -11,15 +10,7 @@ class AsyncInfoController < ApplicationController
         param: request_forgery_protection_token,
         token: form_authenticity_token
       }
-      if remember_user_token
-        cookies.delete :remember_user_token, domain: ".#{SiteConfig.app_domain}"
-      end
       return
-    end
-    if remember_user_token.blank? && user_signed_in?
-      current_user.remember_me = true
-      current_user.remember_me!
-      remember_me(current_user)
     end
     @user = current_user.decorate
     respond_to do |format|
@@ -92,9 +83,5 @@ class AsyncInfoController < ApplicationController
     #{current_user&.pro?}__
     #{current_user&.blocking_others_count}__
     #{remember_user_token}"
-  end
-
-  def remember_user_token
-    cookies[:remember_user_token]
   end
 end
