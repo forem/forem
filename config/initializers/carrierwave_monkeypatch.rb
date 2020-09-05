@@ -8,7 +8,7 @@ if Rails.env.production?
         class File
           include CarrierWave::Utilities::Uri
           def url
-            public_url.gsub(ApplicationConfig["APP_DOMAIN"], SiteConfig.app_domain)
+            public_url.gsub(ApplicationConfig["APP_DOMAIN"], SiteConfig.app_domain) + "?domain=" + SiteConfig.app_domain
           end
         end
       end
