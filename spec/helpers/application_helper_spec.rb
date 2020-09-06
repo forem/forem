@@ -76,6 +76,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     before do
       allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
       allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("dev.to")
+      SiteConfig.app_domain = "dev.to"
     end
 
     it "creates the correct base app URL" do

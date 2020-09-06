@@ -13,8 +13,8 @@ RSpec.describe URL, type: :lib do
   end
 
   describe ".domain" do
-    it "returns the value of APP_DOMAIN env variable" do
-      expect(described_class.domain).to eq(ApplicationConfig["APP_DOMAIN"])
+    it "returns the value of SiteConfig" do
+      expect(described_class.domain).to eq(SiteConfig.app_domain)
     end
   end
 
