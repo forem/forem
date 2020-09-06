@@ -60,7 +60,7 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
-    config.middleware.use SetCookieDomain, ".#{ENV['APP_DOMAIN']}"
+    config.middleware.use SetCookieDomain
 
     # NOTE: [Rails 6]
     # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.
