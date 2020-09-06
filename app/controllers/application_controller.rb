@@ -13,7 +13,6 @@ class ApplicationController < ActionController::Base
   include VerifySetupCompleted
   include Devise::Controllers::Rememberable
 
-
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
   rescue_from RateLimitChecker::LimitReached do |exc|
