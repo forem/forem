@@ -15,7 +15,8 @@ const listing = {
   slug: 'illo-iure-quos-perspiciatis-5hk7',
   title: 'Illo iure quos perspiciatis.',
   user_id: 7,
-  bumped_at: new Date('2-2-2222'),
+  bumped_at: '2020-09-06T14:15:02.977Z',
+  created_at: '2020-09-06T14:15:02.977Z',
   tags: ['go', 'git'],
   author: {
     name: 'Mrs. Yoko Christiansen',
@@ -26,6 +27,12 @@ const listing = {
 };
 
 describe('<SingleListing />', () => {
+  beforeEach(() => {
+    window.timestampToLocalDateTimeLong = () =>
+      'Sunday, 6 September, 2020, 7:45:02 pm';
+    window.timestampToLocalDateTimeShort = () => '6 Sep';
+  });
+
   const renderSingleListing = () =>
     render(
       <SingleListing
@@ -89,16 +96,12 @@ describe('<SingleListing />', () => {
     );
   });
 
-  it('should listing bumped_at date', () => {
-    const listingDate = new Date(
-      listing.bumped_at.toString(),
-    ).toLocaleDateString('default', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
-
+  it('should render listing date', () => {
     const { getByTestId } = renderSingleListing();
-    expect(getByTestId('single-listing-date')).toHaveTextContent(listingDate);
+
+    expect(getByTestId('single-listing-date')).toHaveTextContent('6 Sep');
+    expect(getByTestId('single-listing-date').title).toBe(
+      'Sunday, 6 September, 2020, 7:45:02 pm',
+    );
   });
 });

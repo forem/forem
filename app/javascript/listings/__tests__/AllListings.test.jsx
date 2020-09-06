@@ -86,6 +86,12 @@ const getProps = () => ({
 const renderAllListings = () => render(<AllListings {...getProps()} />);
 
 describe('<AllListings />', () => {
+  beforeEach(() => {
+    window.timestampToLocalDateTimeLong = () =>
+      'Sunday, 6 September, 2020, 7:45:02 pm';
+    window.timestampToLocalDateTimeShort = () => '6 Sep';
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = renderAllListings();
     const results = await axe(container);

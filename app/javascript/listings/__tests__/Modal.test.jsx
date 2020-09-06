@@ -12,6 +12,8 @@ describe('<Modal />', () => {
       '\u003cp\u003eEius et ullam. Dolores et qui. Quis \u003cstrong\u003equi\u003c/strong\u003e omnis.\u003c/p\u003e\n',
     slug: 'illo-iure-quos-perspiciatis-5hk7',
     title: 'Illo iure quos perspiciatis.',
+    bumped_at: '2020-09-06T14:15:02.977Z',
+    created_at: '2020-09-06T14:15:02.977Z',
     user_id: 7,
     tags: ['go', 'git'],
     author: {
@@ -20,6 +22,12 @@ describe('<Modal />', () => {
       profile_image_90:
         '/uploads/user/profile_image/7/4b1c980a-beb0-4a5f-b3f2-acc91adc503c.png',
     },
+  });
+
+  beforeEach(() => {
+    window.timestampToLocalDateTimeLong = () =>
+      'Sunday, 6 September, 2020, 7:45:02 pm';
+    window.timestampToLocalDateTimeShort = () => '6 Sep';
   });
 
   const getProps = () => ({

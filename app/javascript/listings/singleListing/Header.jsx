@@ -1,3 +1,5 @@
+/* global timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
+
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 import listingPropTypes from './listingPropTypes';
@@ -5,14 +7,16 @@ import DropdownMenu from './DropdownMenu';
 import TagLinks from './TagLinks';
 
 const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
-  const { id, user_id: userId, category, slug, title, bumped_at } = listing;
-  const listingDate = bumped_at
-    ? new Date(bumped_at.toString()).toLocaleDateString('default', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      })
-    : null;
+  const {
+    id,
+    user_id: userId,
+    category,
+    slug,
+    title,
+    bumped_at,
+    created_at,
+  } = listing;
+  const listingDate = bumped_at ? bumped_at : created_at;
 
   return (
     <header className="mb-3">
@@ -27,10 +31,14 @@ const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
           {title}
         </a>
       </h2>
-
-      <div className="single-listing__date" data-testid="single-listing-date">
-        {listingDate}
-      </div>
+      <time
+        datetime={listingDate}
+        title={timestampToLocalDateTimeLong(listingDate)}
+        className="single-listing__date"
+        data-testid="single-listing-date"
+      >
+        {timestampToLocalDateTimeShort(listingDate)}
+      </time>
 
       <TagLinks tags={listing.tags} onClick={onAddTag} />
 
