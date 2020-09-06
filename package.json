@@ -121,7 +121,7 @@
     "husky": "^4.2.5",
     "ibm-openapi-validator": "0.29.0",
     "jest": "26.4.2",
-    "jest-axe": "^3.5.0",
+    "jest-axe": "^4.0.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^0.6.0",
     "jsdom": "^16.4.0",
