@@ -1,5 +1,6 @@
 # @forem/systems Force "public_url" even when fog_public is false via this monkeypatch
 # Because we still want the "public" version path in all current scenarios.
+# We also force this to use the SiteConfig instead of APP_DOMAIN
 
 if Rails.env.production?
   module CarrierWave
@@ -8,7 +9,7 @@ if Rails.env.production?
         class File
           include CarrierWave::Utilities::Uri
           def url
-            public_url.gsub(ApplicationConfig["APP_DOMAIN"], SiteConfig.app_domain) + "?domain=" + SiteConfig.app_domain
+            public_url.gsub(ApplicationConfig["APP_DOMAIN"], SiteConfig.app_domain)
           end
         end
       end
