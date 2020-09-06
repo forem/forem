@@ -8863,10 +8863,10 @@ husky@^4.2.5:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-ibm-openapi-validator@0.29.0:
-  version "0.29.0"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.29.0.tgz#9211bf783454ca0a76fd53efed81a8586c5f944d"
-  integrity sha512-fhqcmp8QGX5js4NMCM48b0EUHY78x68YD66kCpVvzBjF41+mKWfutO9SXuQUQmZSKAstNzcFV4kTAecpwdf9Lg==
+ibm-openapi-validator@0.29.3:
+  version "0.29.3"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.29.3.tgz#abcb950fd3f7ddee8cada6f4a38ed9feb2d504d4"
+  integrity sha512-2M6psIiYw6+p+WnDTY3sNMh3U6uzqZ2pB+khnlWZjqlqTBd6K4tsWTSb80+tQ0GM6OLVEJTY3ikiprNQwkd59A==
   dependencies:
     chalk "^2.4.1"
     commander "^2.17.1"
