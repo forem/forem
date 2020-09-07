@@ -21,9 +21,10 @@
       <h2><%= group.name %></h2>
       <div class="color-base-40"><%= group.description %></div>
       <% group.profile_fields.each do |field| %>
-        <div><%= field.label %></div>
-        <div><%= @user.profile.data[field.attribute_name] %></div>
-        <div><%= f.public_send(field["input_type"], field.label) %></div>
+        <div>
+          <div><%= field.label %></div>
+          <%= f.public_send(field["input_type"], field.label, value: @user.profile.data[field.attribute_name]) %>
+        </div>
       <% end %>
     </div>
   <% end %>
