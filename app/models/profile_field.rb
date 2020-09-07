@@ -1,8 +1,6 @@
 class ProfileField < ApplicationRecord
   include ActsAsProfileField
 
-  self.ignored_columns = ["group"]
-
   # Key names follow the Rails form helpers
   enum input_type: {
     text_field: 0,
