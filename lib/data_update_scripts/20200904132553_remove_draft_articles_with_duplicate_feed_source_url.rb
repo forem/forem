@@ -5,7 +5,7 @@ module DataUpdateScripts
 
       # This statement deletes all draft articles in excess found to be duplicate over feed_source_url,
       # excluding those whose body_markdown is different from the other duplicate occurrences
-      result = ActiveRecord::Base.connection.execute(
+      result_same_body = ActiveRecord::Base.connection.execute(
         <<~SQL,
           WITH duplicates_draft_articles AS
               (SELECT id
@@ -29,19 +29,10 @@ module DataUpdateScripts
         SQL
       )
 
-      # Sending IDs of deleted articles to Datadog
-      result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
-        DatadogStatsClient.event(
-          "DataUpdateScripts::RemoveDraftArticlesWithDuplicateFeedSourceUrl",
-          "deleted draft articles with the same feed_source_url and same body_markdown",
-          tags: ids,
-        )
-      end
-
       # Now that all duplicates with the same body are gone, we need to deal with duplicate feed source URLs
       # with different bodies.
       # We thus select the oldest for removal preserving the most recent one
-      result = ActiveRecord::Base.connection.execute(
+      result_different_bodies = ActiveRecord::Base.connection.execute(
         <<~SQL,
           WITH duplicates_draft_articles AS
               (SELECT id
@@ -65,14 +56,25 @@ module DataUpdateScripts
         SQL
       )
 
-      # Sending IDs of deleted articles to Datadog
-      result.map { |row| row["id"] }.in_groups_of(1000) do |ids|
-        DatadogStatsClient.event(
-          "DataUpdateScripts::RemoveDraftArticlesWithDuplicateFeedSourceUrl",
-          "deleted draft articles with the same feed_source_url and different body_markdown",
-          tags: ids,
-        )
+      result_same_body_ids = result_same_body.map { |row| row["id"] }
+      result_different_bodies_ids = result_different_bodies.map { |row| row["id"] }
+
+      # Remove all articles from Elasticsearch
+      (result_same_body_ids + result_different_bodies_ids).each do |id|
+        Search::RemoveFromIndexWorker.perform_in(5.seconds, "Article", id)
       end
+
+      # Store deleted IDs temporarily in Redis for safe keeping
+      Rails.cache.write(
+        "DataUpdateScripts::RemoveDraftArticlesWithDuplicateFeedSourceUrl::SameBody",
+        result_same_body_ids,
+        expires_in: 2.weeks,
+      )
+      Rails.cache.write(
+        "DataUpdateScripts::RemoveDraftArticlesWithDuplicateFeedSourceUrl::DifferentBodies",
+        result_same_body_ids,
+        expires_in: 2.weeks,
+      )
     end
   end
 end
