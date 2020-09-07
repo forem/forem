@@ -5,6 +5,8 @@ class Profile < ApplicationRecord
 
   has_many :custom_profile_fields, dependent: :destroy
 
+  store_attribute :data, :custom_attributes, :json, default: {}
+
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
   MAPPED_ATTRIBUTES = {
