@@ -1,3 +1,4 @@
+# Used for sharing behavior between ProfileField and CustomProfileField
 concern :ActsAsProfileField do
   included do
     before_create :generate_attribute_name
