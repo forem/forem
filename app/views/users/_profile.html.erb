@@ -15,7 +15,7 @@
   </div>
 <% end %>
 
-<%= form_for @user, html: { class: "sticky-footer-form" } do |f| %>
+<%= form_with(url: "/profile", method: "patch", html: { class: "sticky-footer-form" }) do |f| %>
   <% @profile_field_groups.each do |group| %>
     <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
       <h2><%= group.name %></h2>
@@ -23,6 +23,7 @@
       <% group.profile_fields.each do |field| %>
         <div><%= field.label %></div>
         <div><%= @user.profile.data[field.attribute_name] %></div>
+        <div><%= f.public_send(field["input_type"], field.label) %></div>
       <% end %>
     </div>
   <% end %>
