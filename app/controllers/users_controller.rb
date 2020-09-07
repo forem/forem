@@ -30,6 +30,7 @@ class UsersController < ApplicationController
       skip_authorization
       return redirect_to sign_up_path
     end
+    @profile_field_groups = ProfileFieldGroup.includes(:profile_fields).order(:name)
     set_user
     set_tabs(params["tab"] || "profile")
     handle_settings_tab
