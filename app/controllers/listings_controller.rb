@@ -60,14 +60,6 @@ class ListingsController < ApplicationController
     @credits = current_user.credits.unspent
   end
 
-  def create
-    super
-  end
-
-  def update
-    super
-  end
-
   def edit
     authorize @listing
     @organizations = current_user.organizations

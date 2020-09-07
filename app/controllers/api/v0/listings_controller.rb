@@ -51,14 +51,6 @@ module Api
         set_surrogate_key_header @listing.record_key
       end
 
-      def create
-        super
-      end
-
-      def update
-        super
-      end
-
       private
 
       attr_accessor :user
