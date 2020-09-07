@@ -40,10 +40,12 @@ module Search
       end
 
       def filter_conditions
+        terms_filter_keys = %i[viewable_by status]
+
         FILTER_KEYS.filter_map do |filter_key|
           next if @params[filter_key].blank? || @params[filter_key] == "all"
 
-          if %i[viewable_by status].include? filter_key
+          if terms_filter_keys.include?(filter_key)
             { terms: { filter_key => @params[filter_key] } }
           else
             { term: { filter_key => @params[filter_key] } }
