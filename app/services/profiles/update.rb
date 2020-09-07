@@ -25,7 +25,7 @@ module Profiles
       @profile.assign_attributes(@updated_attributes.merge(custom_attributes: custom_attributes))
 
       # Before saving, filter out obsolete profile fields
-      @profile.data.slice!(*(Profile.attributes + custom_attributes))
+      @profile.data.slice!(*(Profile.attributes + custom_attributes.keys))
 
       return unless @profile.save
 
