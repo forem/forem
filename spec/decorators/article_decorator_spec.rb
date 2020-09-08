@@ -77,7 +77,7 @@ RSpec.describe ArticleDecorator, type: :decorator do
 
   describe "#url" do
     it "returns the article url" do
-      expected_url = "#{ApplicationConfig['APP_PROTOCOL']}://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
+      expected_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
       expect(article.decorate.url).to eq(expected_url)
     end
   end
