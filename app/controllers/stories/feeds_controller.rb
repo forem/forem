@@ -51,7 +51,8 @@ module Stories
       if SiteConfig.feed_strategy == "basic"
         Feeds::Basic.new(user: nil, page: @page, tag: params[:tag]).feed
       else # optimized
-        Feeds::Optimized.new(user: current_user, page: @page, tag: params[:tag]).default_home_feed(user_signed_in: user_signed_in?)
+        Feeds::Optimized.new(user: current_user, page: @page, tag: params[:tag])
+          .default_home_feed(user_signed_in: user_signed_in?)
       end
     end
 
