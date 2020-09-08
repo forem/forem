@@ -1,6 +1,5 @@
 class ListingsController < ApplicationController
   include ListingsToolkit
-  before_action :check_limit, only: [:create]
 
   INDEX_JSON_OPTIONS = {
     only: %i[
@@ -22,11 +21,16 @@ class ListingsController < ApplicationController
     }
   }.freeze
 
+  # actions `create` and `update` are defined in the module `ListingsToolkit`,
+  # we thus silence Rubocop lexical scope filter cop: https://rails.rubystyle.guide/#lexically-scoped-action-filter
+  # rubocop:disable Rails/LexicallyScopedActionFilter
+  before_action :check_limit, only: [:create]
   before_action :set_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
   before_action :raise_suspended, only: %i[new create update]
   before_action :authenticate_user!, only: %i[edit update new dashboard]
   after_action :verify_authorized, only: %i[edit update]
+  # rubocop:enable Rails/LexicallyScopedActionFilter
 
   def index
     published_listings = Listing.where(published: true)
@@ -58,14 +62,6 @@ class ListingsController < ApplicationController
     @listing = Listing.new
     @organizations = current_user.organizations
     @credits = current_user.credits.unspent
-  end
-
-  def create
-    super
-  end
-
-  def update
-    super
   end
 
   def edit

@@ -6,7 +6,7 @@ module DataUpdateScripts
       # This statement deletes all draft articles in excess found to be duplicate over canonical_url,
       # excluding those whose body_markdown is different from the other duplicate occurrences
       result = ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           WITH duplicates_draft_articles AS
               (SELECT id
                FROM
@@ -42,7 +42,7 @@ module DataUpdateScripts
       # with different bodies.
       # We thus select the oldest for removal preserving the most recent one
       result = ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           WITH duplicates_draft_articles AS
               (SELECT id
                FROM

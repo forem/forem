@@ -173,7 +173,7 @@ module ApplicationHelper
   end
 
   def community_name
-    @community_name ||= SiteConfig.community_name # rubocop:disable Rails/HelperInstanceVariable
+    @community_name ||= SiteConfig.community_name
   end
 
   def community_qualified_name
