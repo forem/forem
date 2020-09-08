@@ -53,7 +53,8 @@ class Article < ApplicationRecord
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url, uniqueness: { allow_nil: true }
   validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
-  validates :feed_source_url, uniqueness: { allow_blank: true }
+  validates :feed_source_url, uniqueness: { allow_nil: true }
+  validates :feed_source_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
