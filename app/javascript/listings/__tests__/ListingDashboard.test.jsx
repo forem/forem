@@ -2,6 +2,9 @@ import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
+
+import '../../../assets/javascripts/utilities/localDateTime';
+
 import { ListingDashboard } from '../listingDashboard';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -26,12 +29,12 @@ const listingsForDataAttribute = [
   },
   {
     id: 24,
-    bumped_at: '2019-06-11T16:59:16.312Z',
+    bumped_at: '2019-05-11T16:59:16.312Z',
     category: 'events',
     organization_id: 2,
     slug: 'yoyoyoyoyoooooooo-4jcb',
     title: 'YOYOYOYOYOOOOOOOO',
-    updated_at: '2019-06-11T16:59:16.316Z',
+    updated_at: '2019-05-11T16:59:16.316Z',
     user_id: 11,
     tag_list: ['computerscience', 'conference', 'career'],
     author: {
@@ -43,12 +46,12 @@ const listingsForDataAttribute = [
   },
   {
     id: 25,
-    bumped_at: '2019-06-11T17:01:25.143Z',
+    bumped_at: '2019-04-11T17:01:25.143Z',
     category: 'cfp',
     organization_id: 3,
     slug: 'hehhehe-5hld',
     title: 'hehhehe',
-    updated_at: '2019-06-11T17:01:25.169Z',
+    updated_at: '2019-04-11T17:01:25.169Z',
     user_id: 11,
     tag_list: [],
     author: {
@@ -180,11 +183,14 @@ const listings = {
   selectedListings: 'user',
 };
 
-global.window.timestampToLocalDateTimeLong = () =>
-  'Tuesday, 11 Jun, 2020, 10:15:37 pm';
-global.window.timestampToLocalDateTimeShort = () => 'Jun 11';
+/* eslint-disable no-unused-vars */
+/* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
 
 describe('<ListingDashboard />', () => {
+  afterAll(() => {
+    delete globalThis.timeAgo;
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(<ListingDashboard />);
     const results = await axe(container);
@@ -231,7 +237,7 @@ describe('<ListingDashboard />', () => {
     };
 
     getByText('asdfasdf (expired)', listing1GetByTextOptions);
-    getByText('Jun 11', listing1GetByTextOptions);
+    getByText('Jun 11, 2019', listing1GetByTextOptions);
 
     // listing category
     const listing1CfpCategory = getByText('cfp', listing1GetByTextOptions);
@@ -269,7 +275,7 @@ describe('<ListingDashboard />', () => {
     };
 
     getByText('YOYOYOYOYOOOOOOOO (expired)', listing2GetByTextOptions);
-    getByText('Jun 11', listing2GetByTextOptions);
+    getByText('May 11, 2019', listing2GetByTextOptions);
 
     // listing category
     const listing2EventsCategory = getByText(
@@ -322,7 +328,7 @@ describe('<ListingDashboard />', () => {
     };
 
     getByText('hehhehe (expired)', listing3GetByTextOptions);
-    getByText('Jun 11', listing3GetByTextOptions);
+    getByText('Apr 11, 2019', listing3GetByTextOptions);
 
     // listing category
     const listing3CfpCategory = getByText('cfp', listing3GetByTextOptions);

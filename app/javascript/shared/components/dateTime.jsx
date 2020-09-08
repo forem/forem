@@ -8,7 +8,6 @@ const DateTime = ({ dateTime, className }) => (
     dateTime={dateTime}
     title={timestampToLocalDateTimeLong(dateTime)}
     className={className}
-    data-testid="date-time-formatting"
   >
     {timestampToLocalDateTimeShort(dateTime)}
   </time>

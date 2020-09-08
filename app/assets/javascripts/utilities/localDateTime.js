@@ -96,3 +96,8 @@ function timestampToLocalDateTimeShort(timestamp) {
 
   return '';
 }
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.timestampToLocalDateTimeLong = timestampToLocalDateTimeLong; // eslint-disable-line no-undef
+  globalThis.timestampToLocalDateTimeShort = timestampToLocalDateTimeShort; // eslint-disable-line no-undef
+}
