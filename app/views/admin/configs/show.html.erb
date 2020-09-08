@@ -946,6 +946,14 @@
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:feed_style][:description] %></div>
             </div>
             <div class="form-group">
+              <%= f.label :feed_strategy %>
+              <%= f.text_field :feed_strategy,
+                               class: "form-control",
+                               value: SiteConfig.feed_strategy,
+                               placeholder: Constants::SiteConfig::DETAILS[:feed_strategy][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:feed_strategy][:description] %></div>
+            </div>
+            <div class="form-group">
               <%= f.label :default_font %>
               <%= select_tag "site_config[default_font]",
                              options_for_select(

@@ -30,6 +30,34 @@ RSpec.describe "Stories::Feeds", type: :request do
       )
     end
 
+    it "returns feed when feed_strategy is basic" do
+      SiteConfig.feed_strategy = "basic"
+      get "/stories/feed"
+      expect(response_article).to include(
+        "id" => article.id,
+        "title" => title,
+        "user_id" => user.id,
+        "user" => hash_including("name" => user.name),
+        "organization_id" => organization.id,
+        "organization" => hash_including("name" => organization.name),
+        "tag_list" => article.decorate.cached_tag_list_array,
+      )
+    end
+
+    it "returns feed when feed_strategy is optimized" do
+      SiteConfig.feed_strategy = "optimized"
+      get "/stories/feed"
+      expect(response_article).to include(
+        "id" => article.id,
+        "title" => title,
+        "user_id" => user.id,
+        "user" => hash_including("name" => user.name),
+        "organization_id" => organization.id,
+        "organization" => hash_including("name" => organization.name),
+        "tag_list" => article.decorate.cached_tag_list_array,
+      )
+    end
+
     context "when rendering an article with an image" do
       let(:cloud_cover) { CloudCoverUrl.new(article.main_image) }
 
@@ -106,6 +134,34 @@ RSpec.describe "Stories::Feeds", type: :request do
 
         ftm = user.field_test_memberships.last
         expect(ftm.experiment).to eq("user_home_feed")
+      end
+
+      it "returns feed when feed_strategy is basic" do
+        SiteConfig.feed_strategy = "basic"
+        get "/stories/feed"
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+        )
+      end
+
+      it "returns feed when feed_strategy is optimized" do
+        SiteConfig.feed_strategy = "optimized"
+        get "/stories/feed"
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+        )
       end
     end
 

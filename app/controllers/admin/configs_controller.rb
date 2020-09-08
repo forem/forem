@@ -45,6 +45,7 @@ module Admin
         stripe_publishable_key
         health_check_token
         feed_style
+        feed_strategy
         default_font
         sponsor_headline
         public

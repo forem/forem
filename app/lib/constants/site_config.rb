@@ -97,6 +97,10 @@ module Constants
         description: "Used as the site favicon",
         placeholder: "https://image.url"
       },
+      feed_strategy: {
+        description: "Determines the main feed algorithm approach the app takes (basic or optimized)",
+        placeholder: "basic"
+      },
       feed_style: {
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
         placeholder: "basic, rich, or compact"
