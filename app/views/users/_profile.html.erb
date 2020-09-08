@@ -20,12 +20,11 @@
     <% unless group.profile_fields.empty? %>
       <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
         <h2><%= group.name %></h2>
-
         <% if group.description %>
           <div class="color-base-40"><%= group.description %></div>
         <% end %>
         <% group.profile_fields.each do |field| %>
-          <div>
+          <div class="crayons-field">
             <div><%= field.label %></div>
             <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name]) %>
           </div>
@@ -38,5 +37,4 @@
       <button type="submit" class="crayons-btn">Save</button>
     </div>
   </div>
-
 <% end %>
