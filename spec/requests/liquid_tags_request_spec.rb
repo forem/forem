@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "LiquidTags", type: :request do
   describe "GET /liquid_tags" do
@@ -12,15 +12,16 @@ RSpec.describe "LiquidTags", type: :request do
 
     context "when signed in" do
       let(:user) { create(:user) }
+
       before { sign_in(user) }
 
       it "returns an array of all custom Liquid tags", :aggregate_failures do
         get liquid_tags_path
 
-        expect(response.status).to eq 200
-        json = JSON.parse(response.body, symbolize_names: true)
-        expect(json[:liquid_tags]).to be_an_instance_of(Array)
-        expect(json[:liquid_tags]).not_to be_empty
+        expect(response).to have_http_status(:ok)
+        json = response.parsed_body
+        expect(json["liquid_tags"]).to be_an_instance_of(Array)
+        expect(json["liquid_tags"]).not_to be_empty
       end
     end
   end
