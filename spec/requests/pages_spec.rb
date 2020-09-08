@@ -141,7 +141,7 @@ RSpec.describe "Pages", type: :request do
     context "when the welcome thread has an absolute URL stored as its path" do
       it "redirects to a page on the same domain as the app" do
         vulnerable_welcome_thread = create(:article, user: user, tags: "welcome")
-        vulnerable_welcome_thread.update_column(:path, 'https://attacker.com/hijacked/welcome')
+        vulnerable_welcome_thread.update_column(:path, "https://attacker.com/hijacked/welcome")
 
         get "/welcome"
 
@@ -173,7 +173,7 @@ RSpec.describe "Pages", type: :request do
     context "when the challenge thread has an absolute URL stored as its path" do
       it "redirects to a page on the same domain as the app" do
         vulnerable_challenge_thread = create(:article, user: user, tags: "challenge")
-        vulnerable_challenge_thread.update_column(:path, 'https://attacker.com/hijacked/challenge')
+        vulnerable_challenge_thread.update_column(:path, "https://attacker.com/hijacked/challenge")
 
         get "/challenge"
 
@@ -205,7 +205,7 @@ RSpec.describe "Pages", type: :request do
     context "when the staff thread has an absolute URL stored as its path" do
       it "redirects to a page on the same domain as the app" do
         vulnerable_staff_thread = create(:article, user: user, tags: "staff")
-        vulnerable_staff_thread.update_column(:path, 'https://attacker.com/hijacked/staff')
+        vulnerable_staff_thread.update_column(:path, "https://attacker.com/hijacked/staff")
 
         get "/checkin"
 

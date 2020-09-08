@@ -610,7 +610,6 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.primary_brand_color_hex).not_to eq(hex)
         end
 
-
         it "updates public to true" do
           is_public = true
           post "/admin/config", params: { site_config: { public: is_public },

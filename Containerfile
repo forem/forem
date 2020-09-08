@@ -3,7 +3,7 @@ FROM quay.io/forem/ruby:2.7.1
 USER root
 
 RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
-    dnf install -y bash curl git ImageMagick iproute less libcurl libcurl-devel \
+    dnf install -y bash curl git ImageMagick iproute jemalloc less libcurl libcurl-devel \
                    libffi-devel libxml2-devel libxslt-devel nodejs pcre-devel \
                    postgresql postgresql-devel ruby-devel tzdata yarn \
                    && dnf -y clean all \
@@ -13,6 +13,7 @@ ENV APP_USER=forem
 ENV APP_UID=1000
 ENV APP_GID=1000
 ENV APP_HOME=/opt/apps/forem/
+ENV LD_PRELOAD=/usr/lib64/libjemalloc.so.2
 RUN mkdir -p ${APP_HOME} && chown "${APP_UID}":"${APP_GID}" "${APP_HOME}"
 RUN groupadd -g "${APP_GID}" "${APP_USER}" && \
     adduser -u "${APP_UID}" -g "${APP_GID}" -d "${APP_HOME}" "${APP_USER}"

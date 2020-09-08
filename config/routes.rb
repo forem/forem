@@ -10,8 +10,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     registrations: "registrations",
-    invitations: "invitations",
-    sessions: "sessions"
+    invitations: "invitations"
   }
 
   devise_scope :user do
@@ -284,6 +283,8 @@ Rails.application.routes.draw do
     resource :onboarding, only: :show
     resources :profiles, only: %i[update]
     resources :profile_field_groups, only: %i[index], defaults: { format: :json }
+
+    resources :liquid_tags, only: %i[index], defaults: { format: :json }
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags" => "search#tags"

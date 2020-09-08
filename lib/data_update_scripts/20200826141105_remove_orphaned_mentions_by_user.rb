@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       # Delete all Mentions belonging to Users that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           DELETE FROM mentions
           WHERE user_id NOT IN (SELECT id FROM users);
         SQL
