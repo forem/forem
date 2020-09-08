@@ -6,7 +6,7 @@ module DataUpdateScripts
       # This statement deletes all draft articles in excess found to be duplicate over feed_source_url,
       # excluding those whose body_markdown is different from the other duplicate occurrences
       result_same_body = ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           WITH duplicates_draft_articles AS
               (SELECT id
                FROM
@@ -33,7 +33,7 @@ module DataUpdateScripts
       # with different bodies.
       # We thus select the oldest for removal preserving the most recent one
       result_different_bodies = ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           WITH duplicates_draft_articles AS
               (SELECT id
                FROM
@@ -61,7 +61,7 @@ module DataUpdateScripts
 
       # Remove all articles from Elasticsearch
       (result_same_body_ids + result_different_bodies_ids).each do |id|
-        Search::RemoveFromIndexWorker.perform_in(5.seconds, "Article", id)
+        Search::RemoveFromIndexWorker.perform_in(5.seconds, "Search::FeedContent", "article_#{id}")
       end
 
       # Store deleted IDs temporarily in Redis for safe keeping
