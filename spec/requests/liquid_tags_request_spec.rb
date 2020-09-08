@@ -6,7 +6,7 @@ RSpec.describe "LiquidTags", type: :request do
       it "returns a list of all custom Liquid tags" do
         get liquid_tags_path
 
-        expect(response.status).to eq 401
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
