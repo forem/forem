@@ -1,9 +1,10 @@
 import { h } from 'preact';
-
 import '../../storybook-utilities/designSystem.scss';
+import notes from './notices.md';
 
 export default {
   title: '3_Components/Notices/HTML',
+  parameters: { notes },
 };
 
 export const Default = () => (
@@ -31,7 +32,7 @@ export const Warning = () => (
 );
 
 Warning.story = {
-  name: 'story',
+  name: 'warning',
 };
 
 export const Success = () => (

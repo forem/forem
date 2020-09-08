@@ -1,26 +1,46 @@
+const path = require('path');
+
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['airbnb', 'prettier', 'plugin:jsx-a11y/recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'preact',
+    'plugin:jsx-a11y/recommended',
+    'prettier',
+  ],
   parserOptions: {
-    ecmaVersion: 2017,
+    ecmaVersion: 2018,
+    ecmaFeatures: {
+      jsx: true,
+    },
   },
   settings: {
     react: {
       pragma: 'h',
+    },
+    'import/resolver': {
+      webpack: {
+        config: {
+          resolve: {
+            alias: {
+              '@crayons': path.join(__dirname, './crayons'),
+              '@utilities': path.join(__dirname, './utilities'),
+            },
+            extensions: ['.js', '.jsx'],
+          },
+        },
+      },
     },
   },
   env: {
     jest: true,
     browser: true,
   },
-  plugins: ['import', 'jsx-a11y'],
+  plugins: ['import', 'react', 'jsx-a11y'],
   rules: {
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: ['**/*.test.js', '**/*.test.jsx', '**/*.stories.jsx'],
-      },
-    ],
+    'import/order': ['error'],
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'jsx-a11y/label-has-associated-control': [
@@ -32,13 +52,16 @@ module.exports = {
       },
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
-    'import/no-unresolved': [
-      'error',
-      {
-        ignore: ['@crayons', '@utilities'],
-      },
-    ],
   },
+  overrides: [
+    {
+      // Turn this rule off for barrel files
+      files: ['**/index.js'],
+      rules: {
+        'import/export': 'off',
+      },
+    },
+  ],
   globals: {
     getCsrfToken: false,
     sendFetch: false,

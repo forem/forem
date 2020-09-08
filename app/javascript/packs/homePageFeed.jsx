@@ -81,20 +81,24 @@ export const renderFeed = (timeFrame) => {
         };
 
         const [featuredStory, ...subStories] = feedItems;
-
-        sendFeaturedArticleAnalytics(featuredStory.id);
+        const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
+        if(featuredStory) {
+          sendFeaturedArticleAnalytics(featuredStory.id);
+        }
 
         // 1. Show the featured story first
         // 2. Podcast episodes out today
         // 3. Rest of the stories for the feed
         return (
           <div>
+            {featuredStory && 
             <Article
               {...commonProps}
               article={featuredStory}
               isFeatured
+              feedStyle={feedStyle}
               isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
-            />
+            />}
             {podcastEpisodes.length > 0 && (
               <PodcastEpisodes episodes={podcastEpisodes} />
             )}
@@ -102,6 +106,7 @@ export const renderFeed = (timeFrame) => {
               <Article
                 {...commonProps}
                 article={story}
+                feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(story.id)}
               />
             ))}

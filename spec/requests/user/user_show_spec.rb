@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserShow", type: :request do
-  let_it_be(:user) { create(:user, :with_all_info, email_public: true) }
+  let(:user) { create(:user, :with_all_info, email_public: true) }
 
   describe "GET /:slug (user)" do
     it "returns a 200 status when navigating to the user's page" do
@@ -98,7 +98,7 @@ RSpec.describe "UserShow", type: :request do
 
   context "when user not signed in but internal nav triggered" do
     before do
-      get user.path + "?i=i"
+      get "#{user.path}?i=i"
     end
 
     describe "GET /:slug (user)" do

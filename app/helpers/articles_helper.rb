@@ -12,15 +12,9 @@ module ArticlesHelper
   def has_vid?(article)
     return if article.processed_html.blank?
 
-    article.processed_html.include?("youtube.com/embed/") || article.processed_html.include?("player.vimeo.com") || article.comments_blob.include?("youtube")
-  end
-
-  def collection_link_class(current_article, linked_article)
-    if current_article.id == linked_article.id
-      "current-article"
-    elsif !linked_article.published
-      "coming-soon"
-    end
+    article.processed_html.include?("youtube.com/embed/") ||
+      article.processed_html.include?("player.vimeo.com") ||
+      article.comments_blob.include?("youtube")
   end
 
   def image_tag_or_inline_svg_tag(service_name, width: nil, height: nil)
@@ -41,11 +35,12 @@ module ArticlesHelper
   end
 
   def should_show_crossposted_on?(article)
-    article.crossposted_at &&
+    article.canonical_url ||
+      (article.crossposted_at &&
       article.published_from_feed &&
       article.published &&
       article.published_at &&
-      article.feed_source_url.present?
+      article.feed_source_url.present?)
   end
 
   def get_host_without_www(url)

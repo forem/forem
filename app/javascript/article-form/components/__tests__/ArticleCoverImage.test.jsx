@@ -1,76 +1,150 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { deep, shallow } from 'preact-render-spy';
+import {
+  render,
+  fireEvent,
+  waitForElementToBeRemoved,
+} from '@testing-library/preact';
+import { axe } from 'jest-axe';
+import fetch from 'jest-fetch-mock';
+import '@testing-library/jest-dom';
 import { ArticleCoverImage } from '../ArticleCoverImage';
 
+global.fetch = fetch;
+
 describe('<ArticleCoverImage />', () => {
-  it('renders properly', () => {
-    const tree = render(
+  it('should have no a11y violations', async () => {
+    const { container } = render(
       <ArticleCoverImage
         mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
-        onMainImageUrlChange={null}
+        onMainImageUrlChange={jest.fn()}
       />,
     );
-    expect(tree).toMatchSnapshot();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
-  it('shows the correct view when there is an image uploaded', () => {
-    const container = shallow(
-      <ArticleCoverImage
-        mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
-        onMainImageUrlChange={null}
-      />,
+  it('displays an upload input when there is no main image', () => {
+    const { getByLabelText } = render(
+      <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
     );
-    expect(
-      container.find('.crayons-article-form__cover__image').exists(),
-    ).toEqual(true);
-    expect(container.find('.crayons-article-form__cover').text()).toEqual(
-      'ChangeRemove',
-    );
-    expect(container.find('.articleform__uploaderror').exists()).toEqual(false);
+    const uploadInput = getByLabelText(/add a cover image/i);
+    expect(uploadInput.getAttribute('type')).toEqual('file');
   });
 
-  it('shows the correct view when there is no image uploaded', () => {
-    const container = shallow(
-      <ArticleCoverImage mainImage={null} onMainImageUrlChange={null} />,
-    );
-    expect(
-      container.find('.crayons-article-form__cover__image').exists(),
-    ).toEqual(false);
-    expect(container.find('.crayons-article-form__cover').text()).toEqual(
-      'Add a cover image',
-    );
-  });
-
-  it('displays an upload error when necessary', () => {
-    const context = shallow(
-      <ArticleCoverImage mainImage={null} onMainImageUrlChange={null} />,
-    );
-    expect(context.component()).toBeInstanceOf(ArticleCoverImage);
-    context.setState({
-      uploadError: true,
-      uploadErrorMessage: 'Some error message',
+  describe('when an image is uploaded', () => {
+    it('shows the uploaded image', () => {
+      const { getByAltText } = render(
+        <ArticleCoverImage
+          mainImage={'/some-fake-image.jpg'}
+          onMainImageUrlChange={jest.fn()}
+        />,
+      );
+      const uploadInput = getByAltText('Post cover');
+      expect(uploadInput.getAttribute('src')).toEqual('/some-fake-image.jpg');
     });
 
-    expect(context.find('.articleform__uploaderror').exists()).toEqual(true);
-    expect(context.find('.articleform__uploaderror').text()).toEqual(
-      'Some error message',
-    );
+    it('shows the change and remove buttons', () => {
+      const { queryByText } = render(
+        <ArticleCoverImage
+          mainImage={'/some-fake-image.jpg'}
+          onMainImageUrlChange={jest.fn()}
+        />,
+      );
+      expect(queryByText('Change')).toBeDefined();
+      expect(queryByText('Remove')).toBeDefined();
+    });
+
+    it('removes an existing cover image', async () => {
+      const onMainImageUrlChange = jest.fn();
+      const { getByText, queryByLabelText, queryByText } = render(
+        <ArticleCoverImage
+          mainImage={'/some-fake-image.jpg'}
+          onMainImageUrlChange={onMainImageUrlChange}
+        />,
+      );
+
+      expect(queryByText(/uploading.../i)).toBeNull();
+
+      expect(queryByLabelText('Add a cover image')).toBeNull();
+      expect(queryByLabelText('Post cover')).toBeDefined();
+      expect(queryByLabelText('Change')).toBeDefined();
+
+      const removeButton = getByText('Remove');
+      removeButton.click();
+
+      expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
+
+      // we can't test that the image is no longer there as it doesn't get removed in this component
+      // This is handled in the article <Form /> component.
+    });
+
+    it('allows a user to change the image', async () => {
+      global.DragEvent = jest.fn();
+
+      fetch.mockResponse(
+        JSON.stringify({
+          image: ['/i/changed-fake-link.jpg'],
+        }),
+      );
+
+      const onMainImageUrlChange = jest.fn();
+      const { getByLabelText, queryByLabelText, queryByText } = render(
+        <ArticleCoverImage
+          mainImage={'/some-fake-image.jpg'}
+          onMainImageUrlChange={onMainImageUrlChange}
+        />,
+      );
+
+      expect(queryByLabelText('Post cover')).toBeDefined();
+      expect(queryByLabelText(/remove/i)).toBeDefined();
+
+      const inputEl = getByLabelText('Change');
+      const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+        type: 'image/png',
+      });
+
+      fireEvent.change(inputEl, { target: { files: [file] } });
+      expect(inputEl.files[0]).toEqual(file);
+      expect(inputEl.files).toHaveLength(1);
+
+      expect(queryByText(/uploading.../i)).toBeDefined();
+      expect(queryByLabelText('Post cover')).toBeNull();
+      expect(queryByLabelText('Change')).toBeNull();
+      expect(queryByLabelText(/remove/i)).toBeNull();
+
+      await waitForElementToBeRemoved(() => queryByText(/uploading.../i));
+
+      expect(queryByLabelText('Post cover')).toBeDefined();
+      expect(queryByLabelText('Change')).toBeDefined();
+      expect(queryByLabelText(/remove/i)).toBeDefined();
+
+      expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
+    });
   });
 
-  it('should trigger onMainImageUrlChange when the Remove button is pressed', () => {
+  it('displays an upload error when necessary', async () => {
     const onMainImageUrlChange = jest.fn();
-
-    const context = deep(
+    const { getByLabelText, findByText } = render(
       <ArticleCoverImage
-        mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
+        mainImage={'/some-fake-image.jpg'}
         onMainImageUrlChange={onMainImageUrlChange}
       />,
     );
+    const inputEl = getByLabelText('Change');
 
-    context.find('.crayons-btn--ghost-danger').simulate('click', {
-      preventDefault: () => {},
+    // Check the input validation settings
+    expect(inputEl.getAttribute('accept')).toEqual('image/*');
+    expect(Number(inputEl.dataset.maxFileSizeMb)).toEqual(25);
+
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+      type: 'image/png',
     });
-    expect(onMainImageUrlChange).toHaveBeenCalled();
+
+    fetch.mockReject({
+      message: 'Some Fake Error',
+    });
+    fireEvent.change(inputEl, { target: { files: [file] } });
+
+    await findByText(/some fake error/i);
   });
 });

@@ -18,7 +18,8 @@ export function addCloseListener() {
 
 export function initializeHeight() {
   document.documentElement.style.height = '100%';
-  document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0;';
+  document.body.style.cssText =
+    'height: 100%; margin: 0; padding-top: 0; overflow-y: hidden';
   document.getElementById('page-content').style.cssText =
     'margin-top: 0 !important; margin-bottom: 0;';
 }
@@ -141,6 +142,33 @@ async function updateExperienceLevel(currentUserId, articleId, rating, group) {
   }
 }
 
+const adminUnpublishArticle = async (id, username, slug) => {
+  try {
+    const response = await request(`/articles/${id}/admin_unpublish`, {
+      method: 'PATCH',
+      body: JSON.stringify({ id, username, slug }),
+      credentials: 'same-origin',
+    });
+
+    const outcome = await response.json();
+
+    /* eslint-disable no-restricted-globals */
+    if (outcome.message == 'success') {
+      window.top.location.assign(`${window.location.origin}${outcome.path}`);
+    } else {
+      top.addSnackbarItem({
+        message: `Error: ${outcome.message}`,
+        addCloseButton: true,
+      });
+    }
+  } catch (error) {
+    top.addSnackbarItem({
+      message: `Error: ${error}`,
+      addCloseButton: true,
+    });
+  }
+};
+
 function toggleSubmitContainer() {
   document
     .getElementById('adjustment-reason-container')
@@ -159,13 +187,13 @@ function renderTagOnArticle(tagName, colors) {
       .getElementById('quick-mod-article')
       .contentDocument.getElementsByClassName('tags');
   } else {
-    [articleTagsContainer] = top.document.getElementsByClassName('tags');
+    [articleTagsContainer] = top.document.getElementsByClassName('spec__tags');
   }
   /* eslint-enable no-restricted-globals */
 
   const newTag = document.createElement('a');
   newTag.innerText = `#${tagName}`;
-  newTag.setAttribute('class', 'tag');
+  newTag.setAttribute('class', 'crayons-tag mr-1');
   newTag.setAttribute('href', `/t/${tagName}`);
   newTag.style = `background-color: ${colors.bg}; color: ${colors.text};`;
 
@@ -201,7 +229,7 @@ async function adjustTag(el) {
         el.remove();
       } else {
         adjustedTagName = el.value;
-        // eslint-disable-next-line no-param-reassign
+        // eslint-disable-next-line no-param-reassign, require-atomic-updates
         el.value = '';
       }
 
@@ -213,7 +241,7 @@ async function adjustTag(el) {
       } else {
         // eslint-disable-next-line no-restricted-globals
         const tagOnArticle = top.document.querySelector(
-          `.tag[href="/t/${adjustedTagName}"]`,
+          `.crayons-tag[href="/t/${adjustedTagName}"]`,
         );
         tagOnArticle.remove();
       }
@@ -360,6 +388,21 @@ export function addBottomActionsListeners() {
       );
     });
   });
+
+  const unpublishArticleBtn = document.querySelector('#unpublish-article-btn');
+  if (unpublishArticleBtn) {
+    unpublishArticleBtn.addEventListener('click', () => {
+      const {
+        articleId: id,
+        articleAuthor: username,
+        articleSlug: slug,
+      } = unpublishArticleBtn.dataset;
+
+      if (confirm('You are unpublishing this article; are you sure?')) {
+        adminUnpublishArticle(id, username, slug);
+      }
+    });
+  }
 }
 
 export function initializeActionsPanel() {

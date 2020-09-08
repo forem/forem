@@ -30,12 +30,12 @@ module MessagesHelper
     begin
       message_json = create_pusher_payload(message, temp_message_id)
       if is_single
-        Pusher.trigger("private-message-notifications-#{message.user_id}", "message-created", message_json)
+        Pusher.trigger(ChatChannel.pm_notifications_channel(message.user_id), "message-created", message_json)
       else
         Pusher.trigger(message.chat_channel.pusher_channels, "message-created", message_json)
       end
     rescue Pusher::Error => e
-      logger.info "PUSHER ERROR: #{e.message}"
+      Honeybadger.notify(e)
     end
   end
 end

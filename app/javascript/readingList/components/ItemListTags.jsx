@@ -1,6 +1,6 @@
 // Sidebar tags for item list page
 import { h } from 'preact';
-import { PropTypes } from 'preact-compat';
+import PropTypes from 'prop-types';
 
 export const ItemListTags = ({ availableTags, selectedTags, onClick }) => {
   const tagsHTML = availableTags.map((tag) => (
@@ -13,7 +13,7 @@ export const ItemListTags = ({ availableTags, selectedTags, onClick }) => {
       {`#${tag}`}
     </a>
   ));
-  return <div className="tags">{tagsHTML}</div>;
+  return <div data-testid="tags" className="tags">{tagsHTML}</div>;
 };
 
 ItemListTags.propTypes = {

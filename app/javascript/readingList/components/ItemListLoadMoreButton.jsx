@@ -1,6 +1,6 @@
 // Load more button for item list
 import { h } from 'preact';
-import { PropTypes } from 'preact-compat';
+import PropTypes from 'prop-types';
 
 export const ItemListLoadMoreButton = ({ show, onClick }) => {
   if (!show) {

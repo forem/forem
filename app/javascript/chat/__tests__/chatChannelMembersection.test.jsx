@@ -1,34 +1,80 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import ChatChannelMembershipSection from '../ChatChannelSettings/ChatChannelMembershipSection';
 
-const data = {
-  pendingMemberships: [],
-  requestedMemberships: [],
-  activeMemberships: []
-}
-
-const getChatChannelMembershipSection = (memberships) => {
-  return (
-    <ChatChannelMembershipSection 
-      pendingMemberships={memberships.pendingMemberships}
-      requestedMemberships={memberships.requestedMemberships}
-      activeMemberships={memberships.activeMemberships}
-    />
-  )
-}
-
 describe('<ChatChannelMembershipSection />', () => {
-  it ('should render and test snapshot', () => {
-    const tree = render(getChatChannelMembershipSection(data));
-    expect(tree).toMatchSnapshot();
-  })
+  it('should have no a11y violations', async () => {
+    const { container } = render(
+      <ChatChannelMembershipSection
+        pendingMemberships={[]}
+        requestedMemberships={[]}
+        activeMemberships={[]}
+        currentMembershipRole="mod"
+      />,
+    );
+    const results = await axe(container);
 
-  it ('should have the proper elements, attributes and values', () => {
-    const context = shallow(getChatChannelMembershipSection(data));
+    expect(results).toHaveNoViolations();
+  });
 
+  it('should render when no memberships', () => {
+    const { getByText, getByTestId } = render(
+      <ChatChannelMembershipSection
+        pendingMemberships={[]}
+        requestedMemberships={[]}
+        activeMemberships={[]}
+      />,
+    );
 
-    expect(context.find('.membership-list').exists()).toEqual(true)
-  })
-})
+    getByTestId('active-memberships');
+    const activeMemberships = getByTestId('active-memberships');
+
+    expect(Number(activeMemberships.dataset.activeCount)).toEqual(0);
+
+    getByText('Members');
+  });
+
+  it('should render with memberships', () => {
+    const { getByText, getByTestId } = render(
+      <ChatChannelMembershipSection
+        pendingMemberships={[{ name: 'Ben', username: 'ben' }]}
+        requestedMemberships={[
+          { name: 'Peter', username: 'peter' },
+          { name: 'Jess', username: 'jess' },
+          { name: 'Xenox', username: 'xenox1' },
+        ]}
+        activeMemberships={[
+          { name: 'Bobby', username: 'bobby' },
+          { name: 'Sarah', username: 'sarah' },
+        ]}
+        currentMembershipRole="mod"
+      />,
+    );
+
+    getByTestId('active-memberships');
+    const activeMemberships = getByTestId('active-memberships');
+
+    expect(Number(activeMemberships.dataset.activeCount)).toEqual(2);
+
+    getByText('Members', {
+      selector: '[data-testid="active-memberships"] *',
+    });
+
+    const pendingMemberships = getByTestId('pending-memberships');
+
+    expect(Number(pendingMemberships.dataset.pendingCount)).toEqual(1);
+
+    getByText('Pending Invitations', {
+      selector: '[data-testid="pending-memberships"] *',
+    });
+
+    const requestedMemberships = getByTestId('requested-memberships');
+
+    expect(Number(requestedMemberships.dataset.requestedCount)).toEqual(3);
+
+    getByText('Joining Request', {
+      selector: '[data-testid="requested-memberships"] *',
+    });
+  });
+});

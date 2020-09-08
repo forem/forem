@@ -89,7 +89,9 @@ if (!document.getElementById('featured-story-marker')) {
 
     if (userStatus === 'logged-in' && user !== null) {
       clearInterval(waitingForDataLoad);
-
+      if (document.getElementById('rendered-article-feed')) {
+        return;
+      }
       import('./homePageFeed').then(({ renderFeed }) => {
         // We have user data, render followed tags.
         renderFeed(feedTimeFrame);

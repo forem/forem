@@ -1,0 +1,20 @@
+<div class="crayons-card mb-6 p-5" id="emails">
+  <h2 class="mb-2">Account emails</h2>
+
+    <div>
+      <ul class="list-none">
+        <li class="mb-2">
+          <span class="color-base-60 fw-bold">Primary email</span>
+          <span><%= @user.email %></span>
+        </li>
+
+        <% @user.identities_enabled.each do |identity| %>
+          <% provider = authentication_provider(identity.provider) %>
+          <li class="mb-2">
+            <span class="color-base-60 fw-bold"><%= provider.official_name %> email</span>
+            <span><%= identity.email %></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+</div>

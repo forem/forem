@@ -39,15 +39,18 @@ RSpec.describe Message, type: :model do
   end
 
   context "when callbacks are triggered before validation" do
-    let_it_be(:article) { create(:article) }
+    let(:article) { create(:article) }
 
     describe "#message_html" do
       it "creates rich link with proper link for article" do
         message.message_markdown = "hello http://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
         message.validate!
 
-        expect(message.message_html).to include(article.title)
-        expect(message.message_html).to include("sidecar-article")
+        expect(message.message_html).to include(
+          article.title,
+          "sidecar-article",
+          "/c_limit,f_auto,fl_progressive,q_auto,w_725/",
+        )
       end
 
       it "creates target blank link" do
@@ -141,6 +144,17 @@ RSpec.describe Message, type: :model do
       expect do
         create(:message, chat_channel: chat_channel, user: user)
       end.to change(EmailMessage, :count).by(0)
+    end
+  end
+
+  describe "#after_create" do
+    it "enqueues ChatChannels::IndexesMembershipsWorker" do
+      chat_channel.add_users([user])
+      allow(ChatChannels::IndexesMembershipsWorker).to receive(:perform_async)
+
+      create(:message, chat_channel: chat_channel, user: user)
+
+      expect(ChatChannels::IndexesMembershipsWorker).to have_received(:perform_async)
     end
   end
 end

@@ -4,6 +4,7 @@
 //= require initializePage
 //= require utilities/getImageForLink
 //= require honeybadger-js/dist/honeybadger.js
+//= require ahoy.js/dist/ahoy.js
 //= require serviceworker-companion
 
 var instantClick
@@ -255,12 +256,6 @@ var instantClick
       }
       display(a.href);
       e.preventDefault();
-      if (window.ga && ga.create) {
-        if (a.hasAttribute("data-featured-article")){
-          var data = a.dataset.featuredArticle;
-          ga('send', 'event', 'click', 'featured-feed-click', data, null);
-        }
-      }
     }
     catch(err){
       console.log(err);
@@ -381,28 +376,40 @@ var instantClick
     }
 
     if (!isInitializing) {
-      var scripts = document.body.getElementsByTagName('script')
-        , script
-        , copy
+      var scriptElementsInDOM = document.body.getElementsByTagName('script')
+        , scriptElementsToCopy = []
+        , originalElement
+        , copyElement
         , parentNode
         , nextSibling
+        , i
 
-      for (var i = 0, j = scripts.length; i < j; i++) {
-        script = scripts[i]
-        if (script.hasAttribute('data-no-instant')) {
+      // `scriptElementsInDOM` will change during the copy of scripts if
+      // a script add or delete script elements, so we need to put script
+      // elements in an array to loop through them correctly.
+      for (i = 0; i < scriptElementsInDOM.length; i++) {
+        scriptElementsToCopy.push(scriptElementsInDOM[i])
+      }
+
+      for (i = 0; i < scriptElementsToCopy.length; i++) {
+        originalElement = scriptElementsToCopy[i]
+        if (!originalElement) { // Might have disappeared, see previous comment
           continue
         }
-        copy = document.createElement('script')
-        if (script.src) {
-          copy.src = script.src
+        if (originalElement.hasAttribute('data-no-instant')) {
+          continue
         }
-        if (script.innerHTML) {
-          copy.innerHTML = script.innerHTML
+
+        copyElement = document.createElement('script')
+        for (var j = 0; j < originalElement.attributes.length; j++) {
+          copyElement.setAttribute(originalElement.attributes[j].name, originalElement.attributes[j].value)
         }
-        parentNode = script.parentNode
-        nextSibling = script.nextSibling
-        parentNode.removeChild(script)
-        parentNode.insertBefore(copy, nextSibling)
+        copyElement.textContent = originalElement.textContent
+
+        parentNode = originalElement.parentNode
+        nextSibling = originalElement.nextSibling
+        parentNode.removeChild(originalElement)
+        parentNode.insertBefore(copyElement, nextSibling)
       }
     }
   }
@@ -680,7 +687,16 @@ var instantClick
   Honeybadger.configure({
     apiKey: "<%= ApplicationConfig['HONEYBADGER_JS_API_KEY'] %>",
     environment: "<%= Rails.env %>",
-    revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>"
+    revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>",
+    ignorePatterns: [/ResizeObserver/i, /MetaMask/i],
+  });
+
+// INITIALIZE AHOY TRACKING
+// Setting cookies to false matches what we do in ahoy's initializer.
+// Setting trackVisits to false prevents ahoy from creating a visit on the server-side.
+  ahoy.configure({
+    cookies: false,
+    trackVisits: false
   });
 
 // Start BaseApp for Page

@@ -1,6 +1,8 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
-import SingleListing from '../singleListing';
+import { axe } from 'jest-axe';
+import { render } from '@testing-library/preact';
+
+import { SingleListing } from '../singleListing/SingleListing';
 
 const listing = {
   id: 22,
@@ -22,8 +24,8 @@ const listing = {
 };
 
 describe('<SingleListing />', () => {
-  it('should load a single user listing', () => {
-    const tree = deep(
+  const renderSingleListing = () =>
+    render(
       <SingleListing
         onAddTag={() => {
           return 'onAddTag';
@@ -39,61 +41,49 @@ describe('<SingleListing />', () => {
         isOpen={false}
       />,
     );
-    expect(tree).toMatchSnapshot();
+
+  it('should have no a11y violations', async () => {
+    const { container } = renderSingleListing();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
-  describe('should load the following elements', () => {
-    const context = deep(
-      <SingleListing
-        onAddTag={() => {
-          return 'onAddTag';
-        }}
-        onChangeCategory={() => {
-          return 'onChangeCategory';
-        }}
-        listing={listing}
-        currentUserId={1}
-        onOpenModal={() => {
-          return 'onOpenModal';
-        }}
-        isOpen={false}
-      />,
+  it('shows a listing title', () => {
+    const { queryByText } = renderSingleListing();
+    expect(queryByText('Illo iure quos perspiciatis.')).toBeDefined();
+  });
+
+  it('shows a dropdown', () => {
+    const { queryByLabelText, queryByText } = renderSingleListing();
+
+    expect(queryByLabelText(/toggle dropdown menu/i)).toBeDefined();
+    expect(queryByText(/report abuse/i)).toBeDefined();
+  });
+
+  it('shows a listing tags', () => {
+    const { getByText } = renderSingleListing();
+    listing.tags.forEach((tag) => {
+      expect(getByText(tag).href).toContain(`/listings?t=${tag}`);
+    });
+  });
+
+  it('shows a listing category', () => {
+    const { getByText } = renderSingleListing();
+    const { category } = listing;
+    expect(getByText(category).href).toContain(`/listings/${category}`);
+  });
+
+  it('shows a listing author', () => {
+    const { getByText } = renderSingleListing();
+    expect(getByText('Mrs. Yoko Christiansen').href).toContain(
+      `/mrschristiansenyoko`,
     );
-    expect(context.find('.single-listing').exists()).toBeTruthy();
+  });
 
-    it('for listing title', () => {
-      expect(
-        context
-          .find('.single-listing-header')
-          .at(0)
-          .childAt(0)
-          .childAt(0)
-          .text(),
-      ).toEqual('Illo iure quos perspiciatis.');
-    });
-
-    it('for listing tags', () => {
-      expect(context.find('.single-listing-tags').childAt(0).text()).toEqual(
-        listing.tags[0],
-      );
-    });
-
-    it('for listing category', () => {
-      expect(
-        context.find('.single-listing-author-info').childAt(0).text(),
-      ).toEqual(listing.category);
-    });
-
-    it('for listing location', () => {
-      expect(
-        context.find('.single-listing-author-info').childAt(1).text(),
-      ).toEqual(`・${listing.location}`);
-    });
-
-    it('for listing author', () => {
-      expect(
-        context.find('.single-listing-author-info').childAt(3).text(),
-      ).toEqual(listing.author.name);
-    });
+  it('shows a listing location', () => {
+    const { getByTestId } = renderSingleListing();
+    expect(getByTestId('single-listing-location').href).toContain(
+      `/listings/?q=West%20Refugio`,
+    );
   });
 });

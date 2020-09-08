@@ -13,7 +13,8 @@ RSpec.describe "User visits articles by timeframe", type: :system do
   end
 
   def shows_correct_articles_count_via_xpath(count)
-    expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: count)
+    expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]",
+                               count: count)
   end
 
   def shows_main_article
@@ -71,7 +72,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       it "shows correct articles and cta count", :aggregate_failures do
         shows_correct_articles_count(5)
         shows_main_article
-        expect(page).to have_selector(".feed-cta", count: 1)
+        expect(page).to have_selector(".authentication-feed__card", count: 1)
 
         within("#articles-list") do
           expect(page).to have_text(article.title)
@@ -89,7 +90,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       it "shows correct articles and cta-count", :aggregate_failures do
         shows_correct_articles_count(5)
         shows_main_article
-        expect(page).to have_selector(".feed-cta", count: 1)
+        expect(page).to have_selector(".authentication-feed__card", count: 1)
 
         within("#articles-list") do
           expect(page).to have_text(article.title)
@@ -122,11 +123,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
     context "when viewing articles for month" do
       before { visit "/top/month" }
-
-      # TODO: Uncomment this spec when we decide to use percy again
-      xit "renders the page", percy: true do
-        Percy.snapshot(page, name: "Articles: /top/month")
-      end
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count_via_xpath(2)
@@ -175,11 +171,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
     context "when viewing articles for latest" do
       before { visit "/latest" }
-
-      # TODO: Uncomment this spec when we decide to use percy again
-      xit "renders the page", percy: true do
-        Percy.snapshot(page, name: "Articles: /latest")
-      end
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count_via_xpath(4)

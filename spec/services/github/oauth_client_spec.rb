@@ -26,6 +26,28 @@ RSpec.describe Github::OauthClient, type: :service, vcr: true do
     end
   end
 
+  describe ".repository" do
+    subject(:client) { described_class.new(client_id: "value", client_secret: "value") }
+
+    let(:repo_id) { 100 }
+
+    context "when the Github account to which the repo belongs to is suspended" do
+      it "returns a Github::Errors::AccountSuspended error" do
+        stub_request(:get, %r{repositories/#{repo_id}}).to_return(body: "account was suspended", status: 403)
+
+        expect { client.repository(repo_id) }.to raise_error(Github::Errors::AccountSuspended)
+      end
+    end
+
+    context "when the repo is unavailable" do
+      it "returns a Github::Errors::RepositoryUnavailable error" do
+        stub_request(:get, %r{repositories/#{repo_id}}).to_return(body: "repository access blocked", status: 403)
+
+        expect { client.repository(repo_id) }.to raise_error(Github::Errors::RepositoryUnavailable)
+      end
+    end
+  end
+
   describe ".issue" do
     it "returns a an issue using the client_id/client_secret" do
       VCR.use_cassette("github_client_issue") do

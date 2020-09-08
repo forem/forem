@@ -1,9 +1,10 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { deep } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { Form } from '../Form';
 
-let bodyMarkdown; let mainImage;
+let bodyMarkdown;
+let mainImage;
 
 describe('<Form />', () => {
   describe('v1', () => {
@@ -14,8 +15,8 @@ describe('<Form />', () => {
         'https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/3/13d3b32a-d381-4549-b95e-ec665768ce8f.png';
     });
 
-    it('renders properly', () => {
-      const tree = render(
+    it('should have no a11y violations', async () => {
+      const { container } = render(
         <Form
           titleDefaultValue="Test Title v1"
           titleOnChange={null}
@@ -31,11 +32,13 @@ describe('<Form />', () => {
           switchHelpContext={null}
         />,
       );
-      expect(tree).toMatchSnapshot();
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
     });
 
-    it('displays the correct elements', () => {
-      const container = deep(
+    it('renders the v1 form', () => {
+      const { queryByTestId, queryByLabelText, queryByAltText } = render(
         <Form
           titleDefaultValue="Test Title v1"
           titleOnChange={null}
@@ -51,18 +54,12 @@ describe('<Form />', () => {
           switchHelpContext={null}
         />,
       );
-      expect(container.find('.crayons-article-form__cover').exists()).toEqual(
-        false,
-      );
-      expect(container.find('.crayons-article-form__title').exists()).toEqual(
-        false,
-      );
-      expect(
-        container.find('.crayons-article-form__tagsfield').exists(),
-      ).toEqual(false);
-      expect(container.find('.crayons-article-form__body').exists()).toEqual(
-        true,
-      );
+
+      queryByTestId('article-form__body');
+
+      expect(queryByAltText(/post cover/i)).toBeNull();
+      expect(queryByTestId('article-form__title')).toBeNull();
+      expect(queryByLabelText('Post Tags')).toBeNull();
     });
   });
 
@@ -74,29 +71,8 @@ describe('<Form />', () => {
         'https://dev-to-uploads.s3.amazonaws.com/uploads/badge/badge_image/12/8_week_streak-Shadow.png';
     });
 
-    it('renders properly', () => {
-      const tree = render(
-        <Form
-          titleDefaultValue="Test Title v2"
-          titleOnChange={null}
-          tagsDefaultValue="javascript, career"
-          tagsOnInput={null}
-          bodyDefaultValue={bodyMarkdown}
-          bodyOnChange={null}
-          bodyHasFocus={false}
-          version="v2"
-          mainImage="https://dev-to-uploads.s3.amazonaws.com/uploads/badge/badge_image/12/8_week_streak-Shadow.png"
-          onMainImageUrlChange={null}
-          errors={null}
-          switchHelpContext={null}
-        />,
-      );
-
-      expect(tree).toMatchSnapshot();
-    });
-
-    it('displays the correct elements', () => {
-      const container = deep(
+    it('should have no a11y violations', async () => {
+      const { container } = render(
         <Form
           titleDefaultValue="Test Title v2"
           titleOnChange={null}
@@ -112,18 +88,41 @@ describe('<Form />', () => {
           switchHelpContext={null}
         />,
       );
-      expect(container.find('.crayons-article-form__cover').exists()).toEqual(
-        true,
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
+    });
+
+    it('renders the v2 form', () => {
+      const { queryByTestId, getByLabelText, getByAltText } = render(
+        <Form
+          titleDefaultValue="Test Title v2"
+          titleOnChange={null}
+          tagsDefaultValue="javascript, career"
+          tagsOnInput={null}
+          bodyDefaultValue={bodyMarkdown}
+          bodyOnChange={null}
+          bodyHasFocus={false}
+          version="v2"
+          mainImage={mainImage}
+          onMainImageUrlChange={null}
+          errors={null}
+          switchHelpContext={null}
+        />,
       );
-      expect(container.find('.crayons-article-form__title').exists()).toEqual(
-        true,
-      );
-      expect(
-        container.find('.crayons-article-form__tagsfield').exists(),
-      ).toEqual(true);
-      expect(container.find('.crayons-article-form__body').exists()).toEqual(
-        true,
-      );
+
+      getByAltText(/post cover/i);
+      queryByTestId('article-form__title');
+      getByLabelText('Post Tags');
+      queryByTestId('article-form__body');
+
+      const coverImageInput = getByLabelText('Change');
+
+      // Allow any image format
+      expect(coverImageInput.getAttribute('accept')).toEqual('image/*');
+
+      // Ensure max file size
+      expect(Number(coverImageInput.dataset.maxFileSizeMb)).toEqual(25);
     });
   });
 
@@ -132,7 +131,7 @@ describe('<Form />', () => {
       title: ["can't be blank"],
       main_image: ['is not a valid URL'],
     };
-    const container = deep(
+    const { getByTestId } = render(
       <Form
         titleDefaultValue="Test Title v2"
         titleOnChange={null}
@@ -149,10 +148,8 @@ describe('<Form />', () => {
       />,
     );
 
-    expect(container.find('.crayons-notice--danger').exists()).toEqual(true);
-    expect(container.find('.crayons-notice--danger').text()).toMatch('title');
-    expect(container.find('.crayons-notice--danger').text()).toMatch(
-      'main_image',
-    );
+    getByTestId('error-message');
+    expect(getByTestId('error-message').textContent).toContain('title');
+    expect(getByTestId('error-message').textContent).toContain('main_image');
   });
 });

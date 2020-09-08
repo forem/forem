@@ -1,26 +1,21 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
-import RequestManager from '../requestManager';
+import { render } from '@testing-library/preact';
+import RequestManager from '../RequestManager/RequestManager';
 
 const data = [
   {
-    id: 2,
-    channel_name: 'ironman',
+    resource: {},
   },
 ];
 
-const getRequestManager = (resource) => <RequestManager resource={resource} />;
-
 describe('<RequestManager />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getRequestManager(data));
-    expect(tree).toMatchSnapshot();
-  });
+  it('should have the proper elements', () => {
+    const { queryByText } = render(
+      <RequestManager resource={data} updateRequestCount={jest.fn()} />,
+    );
 
-  it('should have the proper elements, attributes and values', () => {
-    const context = shallow(getRequestManager(data));
-
-    expect(context.find('.request_manager_header').exists()).toEqual(true);
+    expect(
+      queryByText('You have no pending invitations/Joining Requests.'),
+    ).toBeDefined();
   });
 });

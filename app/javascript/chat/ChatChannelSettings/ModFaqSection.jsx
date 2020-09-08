@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ModFaqSection = ({ currentMembershipRole }) => {
-  if (currentMembershipRole !== 'mod') {
+const ModFaqSection = ({ email, currentMembershipRole }) => {
+  if (currentMembershipRole === 'member') {
     return null;
   }
 
@@ -11,12 +11,12 @@ const ModFaqSection = ({ currentMembershipRole }) => {
       <p className="contact-details">
         Questions about Connect Channel moderation? Contact
         <a
-          href="mailto:yo@dev.to"
+          href={`mailto:${email}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mx-2 url-link"
         >
-          yo@dev.to
+          {email}
         </a>
       </p>
     </div>
@@ -24,6 +24,7 @@ const ModFaqSection = ({ currentMembershipRole }) => {
 };
 
 ModFaqSection.propTypes = {
+  email: PropTypes.string.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
 };
 

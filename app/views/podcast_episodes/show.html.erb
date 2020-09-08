@@ -30,16 +30,11 @@
 
 <div class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
   <div class="hero">
-    <% image_url = cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
-                                 type: "fetch",
-                                 quality: "auto",
-                                 sign_url: true,
-                                 flags: "progressive",
-                                 fetch_format: "jpg") %>
+    <% image_url = Images::Optimizer.call(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", fetch_format: "jpg", crop: nil) %>
     <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= image_url %>)">
       <h2>
         <a href="/<%= @podcast.slug %>">
-          <img alt="<%= @podcast.title %>" src="<%= cloudinary(@podcast.image_url, 60, 80) %>" /><%= @podcast.title %>
+          <img alt="<%= @podcast.title %>" src="<%= optimized_image_url(@podcast.image_url, width: 60, quality: 80) %>" /><%= @podcast.title %>
         </a>
         <button id="user-follow-butt" class="cta follow-action-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
       </h2>
@@ -56,17 +51,9 @@
     </div>
     <div id="record-<%= @episode.slug %>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>">
       <div class="record" id="record">
-        <%= cl_image_tag(@podcast.image_url,
-                         type: "fetch",
-                         crop: "fill",
-                         width: 420,
-                         height: 420,
-                         quality: "auto",
-                         sign_url: true,
-                         flags: "progressive",
-                         fetch_format: "auto",
-                         class: "main-image",
-                         alt: @podcast.title) %>
+        <%= optimized_image_tag(@podcast.image_url,
+                                optimizer_options: { width: 420, height: 420, crop: "fill" },
+                                image_options: { class: "main-image", alt: @podcast.title }) %>
         <img alt="Play Button" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
         <img alt="Pause Button" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
         <div class="status-message" id="status-message-<%= @episode.slug %>">

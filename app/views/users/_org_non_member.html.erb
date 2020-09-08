@@ -6,7 +6,7 @@
     <div class="crayons-field mb-6">
       <%= label_tag :org_secret, "Secret code", class: "crayons-field__label" %>
       <p class="crayons-field__description">Provided to you by an org admin</p>
-      <%= text_field_tag :org_secret, nil, placeholder: "...", class: "crayons-textfield" %>
+      <%= text_field_tag :org_secret, nil, placeholder: "...", class: "crayons-textfield", autocomplete: "off" %>
     </div>
 
     <button class="crayons-btn" type="submit">Join Organization</button>

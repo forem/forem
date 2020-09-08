@@ -1,0 +1,25 @@
+# This workflow posts an automated comment on every new issue
+
+# https://github.com/marketplace/actions/create-or-update-comment (https://github.com/peter-evans/create-or-update-comment)
+
+name: Automatic Comment
+on:
+  issues:
+    types: [opened]
+jobs:
+  comment:
+    name: Comment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Automatic Comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Thanks for the issue! We'll take your request into consideration and follow up if we decide to tackle this issue.
+
+            To our amazing contributors: issues labeled `type: bug` are always up for grabs, but for feature requests, please wait until we add a `ready for dev` before starting to work on it.
+
+            To claim an issue to work on, please leave a comment. If you've claimed the issue and need help, please ping @forem/oss and we will follow up within 3 business days.
+
+            For full info on how to contribute, please check out our [contributors guide](https://github.com/forem/forem/blob/master/CONTRIBUTING.md).

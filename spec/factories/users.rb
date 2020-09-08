@@ -20,6 +20,7 @@ FactoryBot.define do
     checked_code_of_conduct      { true }
     checked_terms_and_conditions { true }
     display_announcements        { true }
+    registered_at                { Time.current }
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
     bg_color_hex                 { Faker::Color.hex_color }
@@ -53,6 +54,14 @@ FactoryBot.define do
       end
 
       after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
+    end
+
+    trait :restricted_liquid_tag do
+      transient do
+        resource { nil }
+      end
+
+      after(:build) { |user, options| user.add_role(:restricted_liquid_tag, options.resource) }
     end
 
     trait :super_plus_single_resource_admin do
@@ -130,14 +139,6 @@ FactoryBot.define do
       end
     end
 
-    trait :with_user_optional_fields do
-      after(:create) do |user|
-        create(:user_optional_field, user: user)
-        create(:user_optional_field, user: user, label: "another field1", value: "another value1")
-        create(:user_optional_field, user: user, label: "another field2", value: "another value2")
-      end
-    end
-
     trait :with_all_info do
       education { "DEV University" }
       employment_title { "Software Engineer" }
@@ -148,7 +149,7 @@ FactoryBot.define do
       currently_hacking_on { "JSON-LD" }
       mastodon_url { "https://mastodon.social/@test" }
       facebook_url { "www.facebook.com/example" }
-      linkedin_url { "www.linkedin.com/company/example/" }
+      linkedin_url { "www.linkedin.com/company/example" }
       youtube_url { "https://youtube.com/example" }
       behance_url { "www.behance.net/#{username}" }
       stackoverflow_url { "www.stackoverflow.com/example" }
@@ -157,6 +158,10 @@ FactoryBot.define do
       gitlab_url { "www.gitlab.com/example" }
       instagram_url { "www.instagram.com/example" }
       twitch_username { "Example007" }
+    end
+
+    trait :without_profile do
+      _skip_creating_profile { true }
     end
   end
 end

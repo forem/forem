@@ -1,6 +1,8 @@
 class DisplayAd < ApplicationRecord
+  resourcify
+
   belongs_to :organization
-  has_many :display_ad_events
+  has_many :display_ad_events, dependent: :destroy
 
   validates :organization_id, presence: true
   validates :placement_area, presence: true,
@@ -27,12 +29,12 @@ class DisplayAd < ApplicationRecord
     markdown = Redcarpet::Markdown.new(renderer)
     initial_html = markdown.render(body_markdown)
     # Temporarily disable the sanitisation in order to launch the SheCoded Campaign.
-    # TODO: [@thepracticaldev/cool] find an alternate solution.
+    # TODO: find an alternate solution.
 
     # stripped_html = ActionController::Base.helpers.sanitize initial_html,
     #                                                         tags: %w[a em i b u br img h1 h2 h3 h4 div style],
     #                                                         attributes: %w[href target src height width style]
-    stripped_html = initial_html.html_safe
+    stripped_html = initial_html.html_safe # rubocop:disable Rails/OutputSafety
     html = stripped_html.delete("\n")
     self.processed_html = MarkdownParser.new(html).prefix_all_images(html, 350)
   end

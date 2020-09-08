@@ -7,7 +7,6 @@ $input-width: 650px;
   max-height: 400px;
   overflow-y: auto;
   background: var(--card-bg);
-  box-shadow: $shadow;
   &.loading-repos {
     height: 400px;
     background: white url(image-src('loading-ellipsis.svg')) no-repeat center
@@ -40,6 +39,9 @@ $input-width: 650px;
       form {
         display: block;
         float: right;
+      }
+      .crayons-indicator {
+        margin-left: 5px;
       }
       button,
       a[role='button'] {
@@ -136,4 +138,10 @@ $input-width: 650px;
 
 .crayons-notice--danger h3 {
   color: var(--accent-danger-darker);
+}
+
+.sticky-save-footer {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  bottom: 0;
 }

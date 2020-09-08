@@ -8,16 +8,16 @@ All child comments in this thread will also be hidden.
 
 For further actions, you may consider blocking this person and/or reporting abuse.
     `;
-    const confirmHide = window.confirm(confirmMsg)
-    if(confirmHide) {
+    const confirmHide = window.confirm(confirmMsg);
+    if (confirmHide) {
       fetch(`/comments/${commentId}/hide`, {
         method: 'PATCH',
         headers: {
           'X-CSRF-Token': window.csrfToken,
         },
       })
-        .then(response => response.json())
-        .then(response => {
+        .then((response) => response.json())
+        .then((response) => {
           if (response.hidden === 'true') {
             /* eslint-disable-next-line no-restricted-globals */
             location.reload();
@@ -33,8 +33,8 @@ For further actions, you may consider blocking this person and/or reporting abus
         'X-CSRF-Token': window.csrfToken,
       },
     })
-      .then(response => response.json())
-      .then(response => {
+      .then((response) => response.json())
+      .then((response) => {
         if (response.hidden === 'false') {
           /* eslint-disable-next-line no-restricted-globals */
           location.reload();
@@ -42,21 +42,20 @@ For further actions, you may consider blocking this person and/or reporting abus
       });
   }
 
-  const hideButtons = Array.from(
-    document.getElementsByClassName('hide-comment')
-  )
-  
-  hideButtons.forEach(butt => {
-    const { hideType, commentId } = butt.dataset
+  const hideLinks = Array.from(document.getElementsByClassName('hide-comment'));
+
+  hideLinks.forEach((link) => {
+    const { hideType, commentId } = link.dataset;
+
     if (hideType === 'hide') {
-      butt.addEventListener('click', () => {
-        hide(commentId)
-      })
+      link.addEventListener('click', () => {
+        hide(commentId);
+      });
     } else if (hideType === 'unhide') {
-      butt.addEventListener('click', () => {
+      link.addEventListener('click', () => {
         unhide(commentId);
       });
     }
-  })
+  });
 }
 /* eslint-enable no-alert */

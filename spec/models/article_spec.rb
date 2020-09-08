@@ -7,26 +7,40 @@ RSpec.describe Article, type: :model do
     article
   end
 
-  let_it_be(:user) { create(:user) }
+  let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
 
   include_examples "#sync_reactions_count", :article
+  it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
-    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
-    it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
-    it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
-    it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_length_of(:title).is_at_most(128) }
-    it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:collection).optional }
-    it { is_expected.to have_many(:comments) }
-    it { is_expected.to have_many(:reactions).dependent(:destroy) }
-    it { is_expected.to have_many(:notifications).dependent(:delete_all) }
+
+    it { is_expected.to have_many(:buffer_updates).dependent(:destroy) }
+    it { is_expected.to have_many(:comments).dependent(:nullify) }
+    it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
+    it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_many(:notifications).dependent(:delete_all) }
+    it { is_expected.to have_many(:page_views).dependent(:destroy) }
+    it { is_expected.to have_many(:polls).dependent(:destroy) }
+    it { is_expected.to have_many(:profile_pins).dependent(:destroy) }
+    it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+    it { is_expected.to have_many(:sourced_subscribers) }
+    it { is_expected.to have_many(:reactions).dependent(:destroy) }
+    it { is_expected.to have_many(:tags) }
+    it { is_expected.to have_many(:user_subscriptions).dependent(:nullify) }
+
+    it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
+    it { is_expected.to validate_length_of(:title).is_at_most(128) }
+    it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
+    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
+    it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
+    it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
+
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
     describe "#after_commit" do
@@ -40,7 +54,8 @@ RSpec.describe Article, type: :model do
       it "on destroy enqueues job to delete article from elasticsearch" do
         article = create(:article)
 
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                     args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
         end
       end
@@ -92,7 +107,7 @@ RSpec.describe Article, type: :model do
     context "when published" do
       before do
         # rubocop:disable RSpec/NamedSubject
-        allow(subject).to receive(:published?).and_return(true)
+        allow(subject).to receive(:published?).and_return(true) # rubocop:disable RSpec/SubjectStub
         # rubocop:enable RSpec/NamedSubject
       end
 
@@ -444,7 +459,7 @@ RSpec.describe Article, type: :model do
       article.update(body_markdown: body, approved: true)
 
       Timecop.travel(1.second.from_now) do
-        article.update(body_markdown: body + "s")
+        article.update(body_markdown: "#{body}s")
       end
 
       expect(article.featured_number).not_to eq(article.updated_at.to_i)

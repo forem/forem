@@ -5,10 +5,10 @@ import {
   text,
   boolean,
   select,
-} from '@storybook/addon-knobs/react';
+} from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
+import notes from './buttons.md';
 import { Button } from '@crayons';
-
 import '../../storybook-utilities/designSystem.scss';
 
 const commonProps = {
@@ -22,6 +22,9 @@ const commonProps = {
 export default {
   title: '3_Components/Buttons',
   decorator: [withKnobs],
+  parameters: {
+    notes,
+  },
 };
 
 export const Default = () => (
@@ -35,6 +38,7 @@ export const Default = () => (
         Danger: 'danger',
         Ghost: 'ghost',
         'Ghost Brand': 'ghost-brand',
+        'Ghost Dimmed': 'ghost-dimmed',
         'Ghost Success': 'ghost-success',
         'Ghost Warning': 'ghost-warning',
         'Ghost Danger': 'ghost-danger',
@@ -109,6 +113,7 @@ export const ButtonWithIcon = () => {
           Danger: 'danger',
           Ghost: 'ghost',
           'Ghost Brand': 'ghost-brand',
+          'Ghost Dimmed': 'ghost-dimmed',
           'Ghost Success': 'ghost-success',
           'Ghost Warning': 'ghost-warning',
           'Ghost Danger': 'ghost-danger',

@@ -5,18 +5,24 @@
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
 
 Rails.application.config.content_security_policy do |policy|
+  # if Rails.env.production?
   #   policy.default_src :self, :https
   #   policy.font_src    :self, :https, :data
   #   policy.img_src     :self, :https, :data
   #   policy.object_src  :none
-  #   policy.script_src  :self, :https
-  #   policy.style_src   :self, :https
-
+  #   policy.script_src  :self, :https, :unsafe_inline
+  #   policy.style_src   :self, :https, :unsafe_inline
+  #   policy.connect_src :self, :https, :unsafe_inline, "*.pusher.com"
+  # end
   #   # Specify URI for violation reports
   #   # policy.report_uri "/csp-violation-report-endpoint"
 
   # allow webpack-dev-server host as allowed origin for connect-src
-  policy.connect_src :self, :https, "http://localhost:3035", "ws://localhost:3035" if Rails.env.development?
+  if Rails.env.development?
+    webpack_host = "#{ApplicationConfig.app_domain_no_port}:3035"
+    policy.connect_src :self, :https,
+                       "http://#{webpack_host}", "ws://#{webpack_host}"
+  end
 end
 
 # If you are using UJS then enable automatic nonce generation

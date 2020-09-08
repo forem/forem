@@ -114,8 +114,8 @@
   </div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 24px;">
-    <span class="ff-accent">Line height: 1.5 – .lh-base (default)</span>
-    <span class="ff-accent">Line height: 1.25 – .lh-tight</span>
+    <span class="ff-monospace">Line height: 1.5 – .lh-base (default)</span>
+    <span class="ff-monospace">Line height: 1.25 – .lh-tight</span>
 
     <h3 class="fs-2xl fw-bold">This is a bit longer text title to present line-height difference.</h3>
     <h3 class="fs-2xl fw-bold lh-tight">This is a bit longer text title to present line-height difference.</h3>
@@ -155,25 +155,25 @@
   </div>
 
   <div>
-    <p class="ff-accent fs-xs">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-s">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-base">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-l">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-xs">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-s">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-base">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-l">Lorem ipsum dolor sit amet.</p>
   </div>
 
   <div>
-    <p class="ff-accent fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
   </div>
 
   <pre><%= '
   <!-- font sizes -->
-  <p class="ff-accent fs-xs">...</p> <!-- 12px -->
-  <p class="ff-accent fs-s">...</p> <!-- 14px -->
-  <p class="ff-accent fs-base">...</p> <!-- default: 16px -->
-  <p class="ff-accent fs-l">...</p> <!-- 18px -->
+  <p class="ff-monospace fs-xs">...</p> <!-- 12px -->
+  <p class="ff-monospace fs-s">...</p> <!-- 14px -->
+  <p class="ff-monospace fs-base">...</p> <!-- default: 16px -->
+  <p class="ff-monospace fs-l">...</p> <!-- 18px -->
 
   <!-- font weights -->
   <p class="... fw-normal">...</p> <!-- default: regular -->
@@ -655,6 +655,16 @@
           <td><button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--ghost" disabled>Button label</button></td>
           <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--ghost crayons-btn--inverted">Button label</button></td>
+        </tr>
+        <tr>
+          <td class="fs-s">.crayons-btn--ghost-dimmed</td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--inverted">Button label</button></td>
         </tr>
         <tr>
           <td class="fs-s">.crayons-btn--ghost-brand</td>

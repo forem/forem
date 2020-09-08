@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe Collection, type: :model do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:collection) { create(:collection, :with_articles, user: user) }
+  let(:user) { create(:user) }
+  let(:collection) { create(:collection, :with_articles, user: user) }
 
   describe "validations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:organization).optional }
-    it { is_expected.to have_many(:articles) }
+    it { is_expected.to have_many(:articles).dependent(:nullify) }
 
     it { is_expected.to validate_presence_of(:user_id) }
     it { is_expected.to validate_presence_of(:slug) }
@@ -15,8 +15,8 @@ RSpec.describe Collection, type: :model do
   end
 
   describe ".find_series" do
-    let_it_be(:other_user) { create(:user) }
-    let_it_be(:series) { collection }
+    let!(:other_user) { create(:user) }
+    let!(:series) { collection }
 
     it "returns an existing series" do
       expect do
@@ -31,6 +31,12 @@ RSpec.describe Collection, type: :model do
 
     it "creates a new series with an existing slug for a new user" do
       expect { described_class.find_series(series.slug, other_user) }.to change(described_class, :count).by(1)
+    end
+  end
+
+  describe "path" do
+    it "returns the correct path" do
+      expect(collection.path).to eq("/#{collection.user.username}/series/#{collection.id}")
     end
   end
 

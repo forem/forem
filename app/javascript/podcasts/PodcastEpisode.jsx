@@ -3,7 +3,7 @@ import { articlePropTypes } from '../common-prop-types';
 
 export const PodcastEpisode = ({ episode }) => {
   return (
-    <div className="crayons-podcast-episode">
+    <div data-testid="podcast-episode" className="crayons-podcast-episode">
       <a
         href={`/${episode.podcast.slug}/${episode.slug}`}
         className="crayons-podcast-episode__cover"

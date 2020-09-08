@@ -123,6 +123,7 @@ export class CommentSubscription extends Component {
           </Button>
           {subscribed && (
             <Button
+              data-testid="subscription-settings"
               variant="outlined"
               icon={CogIcon}
               contentType="icon"
@@ -134,6 +135,8 @@ export class CommentSubscription extends Component {
         </ButtonGroup>
         {subscribed && (
           <Dropdown
+            data-testid="subscriptions-panel"
+            aria-hidden={!showOptions}
             className={
               showOptions
                 ? `inline-block z-30 right-4 left-4 s:right-0 s:left-auto${

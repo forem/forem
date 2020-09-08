@@ -9,7 +9,7 @@ class GaEventsController < ApplicationController
     json = JSON.parse(request.raw_post)
     user_id = user_signed_in? ? current_user.id : nil
     client_id = "#{scrambled_ip[0..12]}_#{json['user_agent']}_#{user_id}"
-    tracker = Staccato.tracker(ApplicationConfig["GA_TRACKING_ID"], client_id)
+    tracker = Staccato.tracker(SiteConfig.ga_tracking_id, client_id)
     tracker.pageview(
       path: json["path"],
       user_id: user_id,
@@ -24,7 +24,6 @@ class GaEventsController < ApplicationController
       cache_buster: rand(100_000_000_000).to_s,
       data_source: "web",
     )
-    logger.info("Server-Side Google Analytics Tracking - #{client_id}")
     render body: nil
   end
 

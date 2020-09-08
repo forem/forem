@@ -11,6 +11,7 @@ class RateLimitChecker
     published_article_creation: { retry_after: 30 },
     reaction_creation: { retry_after: 30 },
     send_email_confirmation: { retry_after: 120 },
+    user_subscription_creation: { retry_after: 30 },
     user_update: { retry_after: 30 }
   }.with_indifferent_access.freeze
 
@@ -21,7 +22,7 @@ class RateLimitChecker
   class LimitReached < StandardError
     attr_reader :retry_after
 
-    def initialize(retry_after)
+    def initialize(retry_after) # rubocop:disable Lint/MissingSuper
       @retry_after = retry_after
     end
 
@@ -39,7 +40,7 @@ class RateLimitChecker
 
   def limit_by_action(action)
     check_method = "check_#{action}_limit"
-    result = respond_to?(check_method, true) ? send(check_method) : false
+    result = respond_to?(check_method, true) ? __send__(check_method) : false
 
     if result
       @action = action

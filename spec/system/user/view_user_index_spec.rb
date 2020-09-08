@@ -11,17 +11,15 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
     context "when 1 article" do
       before { visit "/user3000" }
 
-      it "shows the header", js: true, percy: true do
-        Percy.snapshot(page, name: "User: /:user_id renders")
-
+      it "shows the header", js: true do
         within("h1") { expect(page).to have_content(user.name) }
-        within(".profile-details") do
+        within(".profile-header__actions") do
           expect(page).to have_button("Follow")
         end
       end
 
       it "shows proper title tag" do
-        expect(page).to have_title("#{user.name} - #{ApplicationConfig['COMMUNITY_NAME']}")
+        expect(page).to have_title("#{user.name} - #{SiteConfig.community_name}")
       end
 
       it "shows user's articles" do
@@ -68,12 +66,8 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       visit "/user3000"
     end
 
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", js: true, percy: true do
-      Percy.snapshot(page, name: "User: /:user_id renders with organization membership")
-    end
-
     it "shows organizations", js: true do
+      Capybara.current_session.driver.browser.manage.window.resize_to(1920, 1080)
       expect(page).to have_css("#sidebar-wrapper-right h4", text: "organizations")
     end
   end
@@ -84,14 +78,9 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       visit "/user3000"
     end
 
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", js: true, percy: true do
-      Percy.snapshot(page, name: "User: /:user_id for logged in user's own profile")
-    end
-
     it "shows the header", js: true do
       within("h1") { expect(page).to have_content(user.name) }
-      within(".profile-details") do
+      within(".profile-header__actions") do
         expect(page).to have_button("Edit profile")
       end
     end

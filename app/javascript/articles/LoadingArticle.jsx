@@ -11,7 +11,7 @@ export const LoadingArticle = ({ version }) => {
     </div>
   );
   return (
-    <div className="crayons-story">
+    <div className="crayons-story" title="Loading posts...">
       {cover}
       <div className="crayons-story__body">
         <div className="crayons-story__top mb-3">

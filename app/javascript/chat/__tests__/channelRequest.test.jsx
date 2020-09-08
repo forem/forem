@@ -1,28 +1,41 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import ChannelRequest from '../channelRequest';
 
-const data = {
-  user: {
-    name: 'Sarthak',
-  },
-  channel: {
-    name: 'IronMan',
-  },
+const getResource = () => {
+  return {
+    user: {
+      name: 'Sarthak',
+      username: 'sarthak9',
+    },
+    channel: {
+      name: 'IronMan',
+    },
+  };
 };
 
-const getChannelRequest = (resource) => <ChannelRequest resource={resource} />;
+describe('<ChannelRequest />', () => {
+  it('should have no a11y violations', async () => {
+    const { container } = render(<ChannelRequest resource={getResource()} />);
+    const results = await axe(container);
 
-describe('<Message />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getChannelRequest(data));
-    expect(tree).toMatchSnapshot();
+    expect(results).toHaveNoViolations();
   });
 
-  it('should have the proper elements, attributes and values', () => {
-    const context = shallow(getChannelRequest(data));
+  it('should render', () => {
+    const { queryByText, queryByAltText } = render(
+      <ChannelRequest resource={getResource()} />,
+    );
 
-    expect(context.find('.joining-message').exists()).toEqual(true);
+    expect(queryByText('Hey Sarthak !')).toBeDefined();
+    expect(
+      queryByText(
+        'You are not a member of this group yet. Send a request to join.',
+      ),
+    ).toBeDefined();
+    expect(queryByAltText('sarthak9 profile')).toBeDefined();
+    expect(queryByAltText('IronMan profile')).toBeDefined();
+    expect(queryByText('Join IronMan', { selector: 'button' })).toBeDefined();
   });
 });

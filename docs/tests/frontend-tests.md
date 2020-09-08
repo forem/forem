@@ -17,9 +17,8 @@ app/javascript/article-form
 The testing library being used is [Jest](https://jestjs.io/).
 
 - For unit tests, use jest's [expect API](https://jestjs.io/docs/en/expect)
-- For snapshot testing of Preact components, use
-  [preact-render-spy](https://github.com/mzgoddard/preact-render-spy) and
-  [preact-render-to-json](https://github.com/nathancahill/preact-render-to-json).
+- For integration tests, use
+  [preact-testing-library](https://github.com/testing-library/preact-testing-library).
 
 ## Running Tests
 

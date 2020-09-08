@@ -11,9 +11,7 @@ RSpec.describe "viewing podcast comments", type: :system, js: true do
     visit "/#{podcast.slug}/#{podcast_episode.slug}/comments"
   end
 
-  it "renders comment", percy: true do
-    Percy.snapshot(page, name: "Comment: /:podcast_slug/:podcast_episode_slug/comments")
-
+  it "renders comment" do
     expect(page).to have_content(comment.body_html)
   end
 end

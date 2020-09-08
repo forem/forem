@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 const SettingsFrom = ({
   channelDescription,
@@ -9,7 +10,10 @@ const SettingsFrom = ({
   handleChannelDescriptionChanges,
 }) => {
   return (
-    <div className="crayons-card p-4 grid gap-2 mb-4 settings-section">
+    <div
+      data-testid="settings-form"
+      className="crayons-card p-4 grid gap-2 mb-4 settings-section"
+    >
       <h3>Channel Settings</h3>
       <div className="crayons-field">
         <label
@@ -39,13 +43,9 @@ const SettingsFrom = ({
         </label>
       </div>
       <div>
-        <button
-          className="crayons-btn"
-          type="submit"
-          onClick={handleChannelDescriptionChanges}
-        >
+        <Button type="submit" onClick={handleChannelDescriptionChanges}>
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );

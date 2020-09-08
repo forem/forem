@@ -72,14 +72,13 @@
   }
 
   &__content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
     overflow: auto;
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)
     );
     box-shadow: 0 0 0 1px var(--card-border);
+    display: flex;
+    flex-direction: column;
 
     @media (min-width: $breakpoint-m) {
       grid-column-end: span 2;
@@ -145,7 +144,7 @@
   }
 
   &__body {
-    flex: 1 auto;
+    flex: 1 0 auto;
     position: relative;
     outline: none;
     display: flex;
@@ -154,7 +153,7 @@
     &__field {
       flex: 1 auto;
       font-size: var(--fs-l);
-      font-family: var(--ff-accent);
+      font-family: var(--ff-monospace);
       overflow: hidden;
     }
   }
@@ -256,7 +255,7 @@
   }
 
   &__tagname {
-    font-family: var(--ff-accent);
+    font-family: var(--ff-monospace);
     color: var(--base-90);
     letter-spacing: -0.05em;
     font-weight: bold;

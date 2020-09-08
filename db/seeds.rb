@@ -1,5 +1,7 @@
 # rubocop:disable Rails/Output
 
+return if Rails.env.production?
+
 # NOTE: when adding new data, please use this class to ensure the seed tasks
 # stays idempotent.
 class Seeder
@@ -28,6 +30,21 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 ##############################################################################
+# Default development site config if different from production scenario
+
+SiteConfig.public = true
+SiteConfig.waiting_on_first_user = false
+
+##############################################################################
+
+# Put forem into "starter mode"
+
+if ENV["MODE"] == "STARTER"
+  SiteConfig.public = false
+  SiteConfig.waiting_on_first_user = true
+  puts "Seeding forem in starter mode to replicate new creator experience"
+  exit # We don't need any models if we're launching things from startup.
+end
 
 seeder.create_if_none(Organization) do
   3.times do
@@ -64,9 +81,11 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       twitter_username: Faker::Internet.username(specifier: name),
       email_comment_notifications: false,
       email_follower_notifications: false,
-      email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)), # Emails limited to 50 characters
+      # Emails limited to 50 characters
+      email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
       password: "password",
+      password_confirmation: "password",
     )
 
     if i.zero?
@@ -253,16 +272,34 @@ end
 
 seeder.create_if_none(Broadcast) do
   broadcast_messages = {
-    set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. Let's begin by <a href='/settings'>setting up your profile</a>!",
-    welcome_thread: "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
-    twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
-    github_connect: "You're on a roll! 🎉  Do you have a GitHub account? Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
-    customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
-    customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!",
-    start_discussion: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!",
-    ask_question: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!",
-    discuss_and_ask: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or <a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; just click on 'Write a Post' in the sidebar of the tag page to get started!",
-    download_app: "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all of your favorite DEV content on the go!"
+    set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. " \
+      "Let's begin by <a href='/settings'>setting up your profile</a>!",
+    welcome_thread: "Sloan here again! 👋 DEV is a friendly community. " \
+      "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
+    twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? " \
+      "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
+      "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
+    facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
+      "Consider <a href='/settings'>connecting it</a>.",
+    github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
+      "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
+    customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
+      "your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
+    customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
+      "Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!",
+    start_discussion: "Sloan here! 👋 I noticed that you haven't " \
+      "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
+      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+    ask_question: "Sloan here! 👋 I noticed that you haven't " \
+      "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; " \
+      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+    discuss_and_ask: "Sloan here! 👋 I noticed that you haven't " \
+      "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
+      "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; " \
+      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+    download_app: "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? " \
+      "Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all " \
+      "of your favorite DEV content on the go!"
   }
 
   broadcast_messages.each do |type, message|
@@ -282,7 +319,7 @@ seeder.create_if_none(Broadcast) do
     tags: welcome
     ---
 
-    Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
+    Hey there! Welcome to #{SiteConfig.community_name}!
 
     Leave a comment below to introduce yourself to the community!✌️
   HEREDOC
@@ -304,7 +341,7 @@ seeder.create_if_none(ChatChannel) do
     )
   end
 
-  direct_channel = ChatChannel.create_with_users(users: User.last(2), channel_type: "direct")
+  direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
   Message.create!(
     chat_channel: direct_channel,
     user: User.last,
@@ -431,12 +468,12 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(ListingCategory) do
+seeder.create_if_none(Listing) do
   users_in_random_order = User.order(Arel.sql("RANDOM()"))
   users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
   users = users_in_random_order.to_a
 
-  listings_categories = ListingCategory.pluck(:id)
+  listings_categories = ListingCategory.ids
   listings_categories.each.with_index(1) do |category_id, index|
     # rotate users if they are less than the categories
     user = users.at(index % users.length)
@@ -457,6 +494,15 @@ seeder.create_if_none(ListingCategory) do
   end
 end
 
+seeder.create_if_none(ListingEndorsement) do
+  5.times do
+    ListingEndorsement.create!(
+      content: Faker::Lorem.sentence,
+      user: User.order(Arel.sql("RANDOM()")).first,
+      listing: Listing.order(Arel.sql("RANDOM()")).first,
+    )
+  end
+end
 ##############################################################################
 
 seeder.create_if_none(Page) do
@@ -473,19 +519,31 @@ end
 
 ##############################################################################
 
-num_path_redirects = 2 * SEEDS_MULTIPLIER
+seeder.create_if_none(ProfileField) do
+  ProfileFields::AddBaseFields.call
+  ProfileFields::AddLinkFields.call
+  ProfileFields::AddWorkFields.call
+  coding_fields_csv = Rails.root.join("lib/data/coding_profile_fields.csv")
+  ProfileFields::ImportFromCsv.call(coding_fields_csv)
+  ProfileFields::AddBrandingFields.call
+end
 
-seeder.create_if_none(PathRedirect, num_path_redirects) do
-  articles_for_old_paths = Article.where(published: true).order(Arel.sql("RANDOM()")).limit(num_path_redirects)
-  articles_for_new_paths = Article.where.not(id: articles_for_old_paths.map(&:id), published: false).order(Arel.sql("RANDOM()")).limit(num_path_redirects)
+##############################################################################
 
-  articles_for_old_paths.each_with_index do |old_article, i|
-    new_article = articles_for_new_paths[i]
-    PathRedirect.create!(old_path: old_article.path, new_path: new_article.path)
+seeder.create_if_none(Sponsorship) do
+  organizations = Organization.take(3)
+  organizations.each do |organization|
+    Sponsorship.create!(
+      organization: organization,
+      user: User.order(Arel.sql("RANDOM()")).first,
+      level: "silver",
+      blurb_html: Faker::Hacker.say_something_smart,
+    )
   end
 end
 
 ##############################################################################
+
 puts <<-ASCII
 
   ```````````````````````````````````````````````````````````````````````````
@@ -513,4 +571,5 @@ puts <<-ASCII
 
   All done!
 ASCII
+
 # rubocop:enable Rails/Output

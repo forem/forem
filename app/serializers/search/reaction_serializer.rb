@@ -1,8 +1,6 @@
 module Search
-  class ReactionSerializer
-    include FastJsonapi::ObjectSerializer
-
-    attributes :id, :category, :status, :user_id
+  class ReactionSerializer < ApplicationSerializer
+    attributes :id, :created_at, :category, :status, :user_id
 
     attribute :reactable do |reaction|
       reactable = reaction.reactable

@@ -7,7 +7,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
   describe "#perform" do
     let(:worker) { subject }
 
-    let_it_be(:user) { create(:user) }
+    let(:user) { create(:user) }
 
     context "with user who is part of field test" do
       before do
@@ -77,6 +77,14 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
         expect(FieldTest::Event.all.size).to be(0)
+      end
+    end
+
+    context "without a user" do
+      it "does not raise an error" do
+        expect do
+          worker.perform(user.id + 1000, "user_home_feed", "user_creates_reaction")
+        end.not_to raise_error
       end
     end
   end

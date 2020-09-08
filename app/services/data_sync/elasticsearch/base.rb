@@ -21,7 +21,7 @@ module DataSync
 
       def sync_related_documents
         self.class::RELATED_DOCS.each do |relation_name|
-          send(relation_name).find_each(&:index_to_elasticsearch)
+          __send__(relation_name).find_each(&:index_to_elasticsearch)
         end
       end
 

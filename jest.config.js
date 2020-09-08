@@ -8,6 +8,7 @@ process.env.TZ = 'UTC';
 module.exports = {
   setupFilesAfterEnv: ['./testSetup.js'],
   collectCoverageFrom: [
+    'bin/*.js',
     'app/javascript/**/*.{js,jsx}',
     // This exclusion avoids running coverage on Barrel files, https://twitter.com/housecor/status/981558704708472832
     '!app/javascript/**/index.js',
@@ -18,10 +19,10 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      statements: 38,
-      branches: 34,
-      functions: 34,
-      lines: 39,
+      statements: 41,
+      branches: 35,
+      functions: 39,
+      lines: 41,
     },
   },
   moduleNameMapper: {
@@ -29,7 +30,6 @@ module.exports = {
     '^@crayons(.*)$': '<rootDir>/app/javascript/crayons$1',
     '^@utilities(.*)$': '<rootDir>/app/javascript/utilities$1',
   },
-  snapshotSerializers: ['preact-render-spy/snapshot'],
   // The webpack config folder for webpacker is excluded as it has a test.js file that gets
   // picked up by jest if this folder is not excluded causing a false negative of a test suite failing.
   testPathIgnorePatterns: [

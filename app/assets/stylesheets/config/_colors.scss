@@ -96,9 +96,8 @@
   --logo-color: var(--base-inverted);
 
   // Footer
-  --footer-bg: var(--base-inverted);
-  --footer-copy-color: var(--base-80);
-  --footer-copy-secondary-color: var(--base-60);
+  --footer-bg: var(--base-20);
+  --footer-color: var(--base-80);
   --footer-link-color: var(--base-80);
   --footer-link-color-hover: var(--base-100);
 
@@ -155,11 +154,15 @@
   --button-ghost-bg-hover: rgba(0, 0, 0, 0.035);
   --button-ghost-color: var(--base-80);
   --button-ghost-color-hover: var(--base-100);
+  --button-ghost-dimmed-color: var(--base-60);
+  --button-ghost-dimmed-color-hover: var(--base-100);
   //-- Inverted
   --button-ghost-inverted-bg: transparent;
   --button-ghost-inverted-bg-hover: rgba(255, 255, 255, 0.15);
   --button-ghost-inverted-color: var(--base-30);
   --button-ghost-inverted-color-hover: var(--base-10);
+  --button-ghost-dimmed-inverted-color: var(--base-50);
+  --button-ghost-dimmed-inverted-color-hover: var(--base-100);
 
   // Forms
   --form-bg: var(--base-0);
@@ -204,7 +207,7 @@
   --tab-pill-color-current: var(--base-inverted);
 
   // Tags
-  --tag-color: var(--base-70);
+  --tag-color: var(--base-60);
   --tag-color-hover: var(--base-100);
 
   // Story
@@ -212,4 +215,12 @@
 
   // Select icon
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjMDgwOTBBIi8+Cjwvc3ZnPg==);
+
+  // Reactions
+  --reaction-like-color: var(--accent-danger);
+  --reaction-like-bg: var(--accent-danger-a10);
+  --reaction-custom-color: var(--accent-success);
+  --reaction-custom-bg: var(--accent-success-a10);
+  --reaction-save-color: var(--accent-brand);
+  --reaction-save-bg: var(--accent-brand-a10);
 }

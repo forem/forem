@@ -573,9 +573,9 @@
     'ff',
     'font-family',
     (
-      'default': var(--ff-default),
-      'accent': var(--ff-accent),
-      'serif': var(--ff-serif)
+      'sans-serif': var(--ff-sans-serif),
+      'serif': var(--ff-serif),
+      'monospace': var(--ff-monospace)
     ),
     (),
     false
@@ -626,7 +626,7 @@
   (
     'text',
     'text-decoration',
-    ('underline': underline, 'none': none),
+    ('underline': underline, 'none': none, 'strike': line-through),
     (),
     false
   ),
@@ -730,5 +730,17 @@
     true,
     null
   ),
-  (null, 'all', ('reset': unset), (), false, null)
+  (null, 'all', ('reset': unset), (), false, null),
+  (
+    'break',
+    'word-break',
+    (
+      'normal': normal,
+      'all': break-all,
+      'word': break-word,
+      'initial': initial
+    ),
+    (),
+    true
+  )
 );

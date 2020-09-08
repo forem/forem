@@ -11,10 +11,8 @@ RSpec.describe "Reading list", type: :system do
     context "when large reading list" do
       before { create_list(:reading_reaction, 46, user: user) }
 
-      it "shows the large reading list", js: true, percy: true do
+      it "shows the large reading list", js: true do
         visit "/readinglist"
-
-        Percy.snapshot(page, name: "Viewing a reading list: shows a large list")
 
         expect(page).to have_selector("#reading-list", visible: :visible)
       end

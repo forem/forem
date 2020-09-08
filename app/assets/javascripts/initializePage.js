@@ -4,13 +4,15 @@
   initializeBaseTracking, initializeTouchDevice, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeCommentDropdown, initializeSettings,
-  initializeFooterMod, initializeCommentPreview, initializeAdditionalContentBoxes,
+  initializeCommentPreview,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
   initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
-  initializeUserProfilePage, initializePodcastPlayback, initializeDrawerSliders,
+  initializeUserProfilePage, initializePodcastPlayback,
+  initializeVideoPlayback, initializeDrawerSliders,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast
+  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast,
+  initializeDateHelpers
 */
 
 function callInitializers() {
@@ -48,9 +50,7 @@ function callInitializers() {
   initializeCommentDate();
   initializeCommentDropdown();
   initializeSettings();
-  initializeFooterMod();
   initializeCommentPreview();
-  initializeAdditionalContentBoxes();
   initializeTimeFixer();
   initializeDashboardSort();
   initializePWAFunctionality();
@@ -59,9 +59,11 @@ function callInitializers() {
   initializeCreditsPage();
   initializeUserProfilePage();
   initializePodcastPlayback();
+  initializeVideoPlayback();
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
+  initializeDateHelpers();
 
   function freezeScrolling(event) {
     event.preventDefault();

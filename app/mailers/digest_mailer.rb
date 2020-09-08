@@ -1,10 +1,11 @@
 class DigestMailer < ApplicationMailer
   default from: -> { email_from("Digest") }
 
-  def digest_email(user, articles)
-    @user = user
-    @articles = articles.first(6)
+  def digest_email
+    @user = params[:user]
+    @articles = params[:articles]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
+
     subject = generate_title
     mail(to: @user.email, subject: subject)
   end
@@ -25,7 +26,7 @@ class DigestMailer < ApplicationMailer
   end
 
   def email_end_phrase
-    community_name = ApplicationConfig["COMMUNITY_NAME"]
+    community_name = SiteConfig.community_name
     # "more trending posts" won the previous split test
     # Included more often as per explore-exploit algorithm
     [

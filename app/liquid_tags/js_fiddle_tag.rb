@@ -1,16 +1,16 @@
 class JsFiddleTag < LiquidTagBase
   PARTIAL = "liquids/jsfiddle".freeze
   OPTION_REGEXP = /\A(js|html|css|result|,)*\z/.freeze
-  LINK_REGEXP = /\A(http|https):\/\/(jsfiddle\.net)\/[a-zA-Z0-9\-\/]*\z/.freeze
+  LINK_REGEXP = %r{\A(http|https)://(jsfiddle\.net)/[a-zA-Z0-9\-/]*\z}.freeze
 
-  def initialize(tag_name, link, tokens)
+  def initialize(_tag_name, link, _parse_context)
     super
     @link = parse_link(link)
     @build_options = parse_options(link)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         link: @link,

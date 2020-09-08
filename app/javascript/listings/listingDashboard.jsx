@@ -125,6 +125,7 @@ export class ListingDashboard extends Component {
       <div className="dashboard-listings-actions">
         <div className="listings-dashboard-filter-buttons">{filterButtons}</div>
         <select
+          aria-label="Filter listings"
           onChange={(event) => {
             this.setState({ sort: event.target.value });
           }}
@@ -156,10 +157,14 @@ export class ListingDashboard extends Component {
 
     const listingLength = (selected, userListings, organizationListings) => {
       return selected === 'user' ? (
-        <h4>Listings Made: {userListings.length}</h4>
+        <h4>
+          Listings Made:
+          {userListings.length}
+        </h4>
       ) : (
         <h4>
-          Listings Made:{' '}
+          Listings Made:
+          {' '}
           {
             organizationListings.filter(
               (listing) => listing.organization_id === selected,
@@ -171,10 +176,14 @@ export class ListingDashboard extends Component {
 
     const creditCount = (selected, userCreds, organizations) => {
       return selected === 'user' ? (
-        <h4>Credits Available: {userCreds}</h4>
+        <h4>
+          Credits Available:
+          {userCreds}
+        </h4>
       ) : (
         <h4>
-          Credits Available:{' '}
+          Credits Available:
+          {' '}
           {
             organizations.find((org) => org.id === selected)
               .unspent_credits_count

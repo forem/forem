@@ -54,7 +54,8 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
         params = { search_fields: "ruby", tag_names: "cfp" }
         filter = described_class.new(params: params)
         expected_query = [{
-          "simple_query_string" => { "query" => "ruby", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2 }
+          "simple_query_string" => { "query" => "ruby", "fields" => query_fields, "lenient" => true,
+                                     "analyze_wildcard" => true, "minimum_should_match" => 2 }
         }]
         expected_filters = [
           { "terms" => { "reactable.tags.name" => ["cfp"] } },
@@ -70,7 +71,8 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
       filter = described_class.new(params: params)
       expected_query = [{
         "simple_query_string" => {
-          "query" => "cfp", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2
+          "query" => "cfp", "fields" => query_fields, "lenient" => true,
+          "analyze_wildcard" => true, "minimum_should_match" => 2
         }
       }]
       expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
@@ -79,8 +81,8 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
     it "allows default params to be overriden" do
       params = { sort_by: "status", sort_direction: "asc", size: 20 }
       filter = described_class.new(params: params).as_hash
-      expect(filter.dig("sort")).to eq("status" => "asc")
-      expect(filter.dig("size")).to eq(20)
+      expect(filter["sort"]).to eq("status" => "asc")
+      expect(filter["size"]).to eq(20)
     end
   end
 

@@ -7,7 +7,7 @@
   text-align: center;
   padding: 80px 5px 60px;
   margin-bottom: -20px;
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   font-size: 1.5em;
   font-weight: 800;
 }
@@ -17,7 +17,7 @@
   padding-bottom: 4px !important;
   position: relative;
   z-index: 11;
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
 
   .top-buttons {
     padding: 20px 0px 5px;
@@ -99,7 +99,7 @@
   }
 
   .editor-image-upload {
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     padding: 4px 5px;
     font-size: 0.8em;
     width: inherit;
@@ -448,7 +448,7 @@
 #error_explanation {
   background: $red;
   max-width: 750px;
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   color: white;
   border-radius: 5px;
   margin: 80px auto -50px;
@@ -473,101 +473,6 @@
 .editor-article-view {
   margin-top: -50px;
   margin-bottom: 70px;
-}
-
-.new-article-pitch {
-  padding-top: calc(8% + 50px);
-  width: 900px;
-  max-width: 94%;
-  margin: auto;
-  text-align: center;
-
-  .registration-rainbow {
-    .rainbow-logo {
-      height: calc(170px + 1vw);
-      width: calc(170px + 1vw);
-      transform: rotate(6deg);
-      border-radius: 18px;
-      margin-top: 26px;
-    }
-  }
-
-  .prefill-non-logged-in-message {
-    background: lighten($yellow, 12%);
-    border-radius: 8px;
-    padding: 10px 0px;
-    border: 3px solid $yellow;
-
-    .rainbow-logo {
-      height: calc(100px + 1vw);
-      width: calc(100px + 1vw);
-      margin-top: 26px;
-    }
-
-    p {
-      font-size: 1.1em;
-      padding: 15px;
-    }
-  }
-
-  h1 {
-    font-size: calc(30px + 1vw);
-    font-weight: 800;
-  }
-
-  h2 {
-    font-weight: 300;
-    font-size: 40px;
-    margin: 70px auto 40px;
-  }
-
-  hr {
-    width: 40%;
-    margin-top: 40px;
-    opacity: 0.4;
-  }
-
-  h3 {
-    font-weight: 300;
-    font-size: 30px;
-  }
-
-  p {
-    font-size: 16px;
-    line-height: 25px;
-    font-family: var(--ff-accent);
-  }
-
-  img.gif {
-    width: 500px;
-    max-width: 100%;
-  }
-
-  .links {
-    margin: 50px auto;
-
-    .sign-up-link {
-      padding: 22px 0px;
-      margin: 2%;
-      border: 3px solid $bold-blue;
-      background: $bold-blue;
-      font-family: $helvetica-condensed;
-      display: inline-block;
-      text-align: center;
-      width: 290px;
-      border-radius: 100px;
-      color: white;
-      font-size: 1.1em;
-
-      .icon-img {
-        vertical-align: -7px;
-        fill: white;
-        height: 30px;
-        width: 30px;
-        margin-right: 4px;
-      }
-    }
-  }
 }
 
 .sign-in-message {

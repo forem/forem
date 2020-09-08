@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 const ModalBackground = ({ onClick }) => (
   <div
-    className="listings-modal-background"
+    data-testid="listings-modal-background"
+    className="crayons-modal__overlay"
     onClick={onClick}
     role="presentation"
     id="listings-modal-background"

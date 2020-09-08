@@ -1,17 +1,24 @@
 require "rails_helper"
 
 RSpec.describe Users::DeleteWorker, type: :worker do
-  describe "#perform" do
-    let(:user) { create(:user) }
-    let(:delete) { Users::Delete }
-    let(:worker) { subject }
+  let(:worker) { subject }
+  let(:mailer_class) { NotifyMailer }
+  let(:mailer) { double }
+  let(:message_delivery) { double }
 
-    before do
-      allow(delete).to receive(:call)
-    end
+  describe "#perform" do
+    let!(:user) { create(:user) }
+    let(:delete) { Users::Delete }
 
     context "when user is found" do
+      it "deletes the user correctly" do
+        worker.perform(user.id)
+
+        expect(User.exists?(id: user.id)).to be(false)
+      end
+
       it "calls the service when a user is found" do
+        allow(delete).to receive(:call)
         worker.perform(user.id)
         expect(delete).to have_received(:call).with(user)
       end
@@ -29,9 +36,15 @@ RSpec.describe Users::DeleteWorker, type: :worker do
       end
 
       it "sends the correct notification" do
-        allow(NotifyMailer).to receive(:account_deleted_email).and_call_original
+        allow(mailer_class).to receive(:with).and_return(mailer)
+        allow(mailer).to receive(:account_deleted_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_now)
+
         worker.perform(user.id)
-        expect(NotifyMailer).to have_received(:account_deleted_email).with(user)
+
+        expect(mailer_class).to have_received(:with).with(name: user.name, email: user.email)
+        expect(mailer).to have_received(:account_deleted_email)
+        expect(message_delivery).to have_received(:deliver_now)
       end
     end
 

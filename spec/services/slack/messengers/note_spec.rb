@@ -22,7 +22,7 @@ RSpec.describe Slack::Messengers::Note, type: :service do
     expect(message).to include(default_params[:author_name])
     expect(message).to include(default_params[:status])
     url = URL.url(
-      Rails.application.routes.url_helpers.internal_report_path(
+      Rails.application.routes.url_helpers.admin_report_path(
         default_params[:report_id],
       ),
     )

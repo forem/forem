@@ -26,6 +26,7 @@ export const ContentTitle = ({ article }) => (
           person
         </span>
       )}
+      {/* eslint-disable-next-line react/no-danger */}
       <span dangerouslySetInnerHTML={{ __html: filterXSS(article.title) }} />
     </a>
   </h2>

@@ -19,7 +19,6 @@ class AsyncInfoController < ApplicationController
       remember_me(current_user)
     end
     @user = current_user.decorate
-    occasionally_update_analytics
     respond_to do |format|
       format.json do
         render json: {
@@ -34,8 +33,9 @@ class AsyncInfoController < ApplicationController
 
   def shell_version
     set_surrogate_key_header "shell-version-endpoint"
-    # shell_version will change on every deploy. *Technically* could be only on changes to assets and shell, but this is more fool-proof.
-    shell_version = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    # shell_version will change on every deploy.
+    # *Technically* could be only on changes to assets and shell, but this is more fool-proof.
+    shell_version = ApplicationConfig["RELEASE_FOOTPRINT"]
     render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
   end
 
@@ -57,8 +57,8 @@ class AsyncInfoController < ApplicationController
         name: @user.name,
         username: @user.username,
         profile_image_90: ProfileImage.new(@user).get(width: 90),
-        followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score], methods: [:points]),
-        followed_user_ids: @user.cached_following_users_ids,
+        followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score],
+                                                          methods: [:points]),
         followed_podcast_ids: @user.cached_following_podcasts_ids,
         reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
         blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
@@ -71,6 +71,7 @@ class AsyncInfoController < ApplicationController
         moderator_for_tags: @user.moderator_for_tags,
         config_body_class: @user.config_body_class,
         pro: @user.pro?,
+        feed_style: feed_style_preference,
         created_at: @user.created_at
       }
     end.to_json
@@ -92,13 +93,5 @@ class AsyncInfoController < ApplicationController
 
   def remember_user_token
     cookies[:remember_user_token]
-  end
-
-  private
-
-  def occasionally_update_analytics
-    return unless Rails.env.production? && rand(SiteConfig.ga_fetch_rate) == 1
-
-    Articles::UpdateAnalyticsWorker.perform_async(@user.id)
   end
 end

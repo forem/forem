@@ -18,7 +18,7 @@ module Search
       ].freeze
 
       QUERY_KEYS = %i[
-        classified_listing_search
+        listing_search
       ].freeze
 
       DEFAULT_PARAMS = {
@@ -29,6 +29,8 @@ module Search
       }.freeze
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
 
         # For now, we're not allowing searches for Listings that are
@@ -74,11 +76,11 @@ module Search
       end
 
       def range_keys
-        RANGE_KEYS.map do |range_key|
+        RANGE_KEYS.filter_map do |range_key|
           next unless @params.key? range_key
 
           { range: { range_key => @params[range_key] } }
-        end.compact
+        end
       end
 
       def range_keys_present?

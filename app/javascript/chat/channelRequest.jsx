@@ -5,18 +5,16 @@ const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
   <div className="activechatchannel__activeArticle activesendrequest">
     <div className="joining-message">
       <h2>Hey {data.user.name} !</h2>
-      <h3>You are not a member of this group yet. Send request to join.</h3>
+      <h3>You are not a member of this group yet. Send a request to join.</h3>
     </div>
     <div className="user-picture">
       <div className="chatmessage__profilepic">
         <img
-          role="presentation"
           className="chatmessagebody__profileimage"
           src={data.user.profile_image_90}
           alt={`${data.user.username} profile`}
         />
         <img
-          role="presentation"
           className="chatmessagebody__profileimage"
           src="/assets/organization.svg"
           alt={`${data.channel.name} profile`}

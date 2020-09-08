@@ -61,7 +61,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
       it "order results for reverse following date" do
         follower2.follow(user)
 
-        follows = user.followings.order(id: :desc).last(2).pluck(:id)
+        follows = user.followings.order(id: :desc).last(2).map(&:id)
 
         get api_followers_users_path, headers: headers
         result = response.parsed_body.map { |f| f["id"] }

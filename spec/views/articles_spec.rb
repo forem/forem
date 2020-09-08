@@ -47,4 +47,11 @@ RSpec.describe "articles/show", type: :view do
     expect(rendered).to have_css("form#new_comment")
     expect(rendered).to have_css("input#submit-button")
   end
+
+  it "shows a note about the canonical URL" do
+    allow(article1).to receive(:canonical_url).and_return("https://example.com/lamas")
+    render
+    expect(rendered).to have_text("Originally published at")
+    expect(rendered).to have_text("example.com")
+  end
 end

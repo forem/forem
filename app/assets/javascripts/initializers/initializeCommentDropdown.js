@@ -1,4 +1,4 @@
-
+/* global Runtime */
 
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
@@ -6,14 +6,6 @@ function initializeCommentDropdown() {
   function isClipboardSupported() {
     return (
       typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-    );
-  }
-
-  function isNativeAndroidDevice() {
-    return (
-      navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== 'undefined' &&
-      AndroidBridge !== null
     );
   }
 
@@ -48,7 +40,7 @@ function initializeCommentDropdown() {
 
   function copyText(text) {
     return new Promise((resolve, reject) => {
-      if (isNativeAndroidDevice()) {
+      if (Runtime.isNativeAndroid('copyToClipboard')) {
         AndroidBridge.copyToClipboard(text);
         resolve();
       } else if (isClipboardSupported()) {
@@ -129,10 +121,26 @@ function initializeCommentDropdown() {
   }
 
   function dropdownFunction(e) {
-    var button = e.target.parentElement;
-    var dropdownContent = button.parentElement.getElementsByClassName(
+    const button = e.currentTarget;
+    const dropdownContent = button.parentElement.getElementsByClassName(
       'crayons-dropdown',
     )[0];
+
+    if (!dropdownContent) {
+      return;
+    }
+
+    // Android native apps have enhanced sharing capabilities for Articles
+    const articleShowMoreClicked = button.id === 'article-show-more-button';
+    if (articleShowMoreClicked && Runtime.isNativeAndroid('shareText')) {
+      AndroidBridge.shareText(location.href);
+      return;
+    }
+
+    finalizeAbuseReportLink(
+      dropdownContent.querySelector('.report-abuse-link-wrapper'),
+    );
+
     if (dropdownContent.classList.contains('block')) {
       dropdownContent.classList.remove('block');
       removeClickListener();
@@ -150,6 +158,15 @@ function initializeCommentDropdown() {
         clipboardCopyElement.addEventListener('click', copyArticleLink);
       }
     }
+  }
+
+  function finalizeAbuseReportLink(reportAbuseLink) {
+    // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
+    if (!reportAbuseLink) {
+      return;
+    }
+
+    reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
   }
 
   function addDropdownListener(dropdown) {

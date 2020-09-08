@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Views an article", type: :system do
-  let_it_be(:user) { create(:user) }
-  let_it_be_changeable(:article) do
+  let(:user) { create(:user) }
+  let(:article) do
     create(:article, :with_notification_subscription, user: user)
   end
   let(:timestamp) { "2019-03-04T10:00:00Z" }
@@ -11,17 +11,15 @@ RSpec.describe "Views an article", type: :system do
     sign_in user
   end
 
-  it "shows an article", js: true, percy: true do
+  it "shows an article", js: true do
     visit article.path
-    Percy.snapshot(page, name: "Article: renders")
     expect(page).to have_content(article.title)
   end
 
-  it "shows comments", js: true, percy: true do
+  it "shows comments", js: true do
     create_list(:comment, 3, commentable: article)
 
     visit article.path
-    Percy.snapshot(page, name: "Article: shows comments")
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
   end
 
@@ -41,15 +39,36 @@ RSpec.describe "Views an article", type: :system do
 
     it "embeds the published timestamp" do
       visit article.path
-
       selector = "article time[datetime='#{timestamp}']"
       expect(page).to have_selector(selector)
+    end
+
+    context "when articles have long markdowns and different published dates" do
+      let(:first_article) { build(:article, published_at: "2019-03-04T10:00:00Z") }
+      let(:second_article) { build(:article, published_at: "2019-03-05T10:00:00Z") }
+
+      before do
+        [first_article, second_article].each do |article|
+          additional_characters_length = (ArticleDecorator::LONG_MARKDOWN_THRESHOLD + 1) - article.body_markdown.length
+          article.body_markdown << Faker::Hipster.paragraph_by_chars(characters: additional_characters_length)
+          article.save!
+        end
+      end
+
+      it "shows the identical readable publish dates in each page", js: true do
+        visit first_article.path
+        expect(page).to have_selector("article time", text: "Mar 4")
+        expect(page).to have_selector(".crayons-card--secondary time", text: "Mar 4")
+        visit second_article.path
+        expect(page).to have_selector("article time", text: "Mar 5")
+        expect(page).to have_selector(".crayons-card--secondary time", text: "Mar 5")
+      end
     end
   end
 
   describe "when articles belong to a collection" do
-    let_it_be_readonly(:collection) { create(:collection) }
-    let(:articles_selector) { "//div[@class='article-collection']//a" }
+    let(:collection) { create(:collection) }
+    let(:articles_selector) { "//div[@class='series-switcher__list']//a" }
 
     context "with regular articles" do
       it "lists the articles in ascending published_at order" do
@@ -60,7 +79,7 @@ RSpec.describe "Views an article", type: :system do
         visit articles.first.path
 
         elements = page.all(:xpath, articles_selector)
-        paths = elements.map { |e| e[:href] }
+        paths = elements.pluck(:href)
         expect(paths).to eq([articles.first.path, articles.second.path])
       end
     end
@@ -69,12 +88,6 @@ RSpec.describe "Views an article", type: :system do
       let(:article1) { create(:article) }
       let(:crossposted_article) { create(:article) }
       let(:article2) { create(:article) }
-
-      # TODO: Uncomment this spec when we decide to use percy again
-      xit "renders the articles in ascending order considering crossposted_at", js: true, percy: true do
-        visit article1.path
-        Percy.snapshot(page, name: "Articles: renders crossposted articles")
-      end
 
       # rubocop:disable RSpec/ExampleLength
       it "lists the articles in ascending order considering crossposted_at" do
@@ -99,10 +112,57 @@ RSpec.describe "Views an article", type: :system do
         expected_paths = [article1.path, crossposted_article.path, article2.path]
 
         elements = page.all(:xpath, articles_selector)
-        paths = elements.map { |e| e[:href] }
+        paths = elements.pluck(:href)
         expect(paths).to eq(expected_paths)
       end
       # rubocop:enable RSpec/ExampleLength
+    end
+  end
+
+  describe "when an article is not published" do
+    let(:article) { create(:article, user: article_user, published: false) }
+    let(:article_path) { article.path + query_params }
+    let(:href) { "#{article.path}/edit" }
+    let(:link_text) { "Click to edit" }
+
+    context "with the article password, and the logged-in user is authorized to update the article" do
+      let(:query_params) { "?preview=#{article.password}" }
+      let(:article_user) { user }
+
+      it "shows the article edit link" do
+        visit article_path
+        expect(page).to have_link(link_text, href: href)
+      end
+    end
+
+    context "with the article password, and the logged-in user is not authorized to update the article" do
+      let(:query_params) { "?preview=#{article.password}" }
+      let(:article_user) { create(:user) }
+
+      it "does not the article edit link" do
+        visit article_path
+        expect(page).not_to have_link(link_text, href: href)
+      end
+    end
+
+    context "with the article password, and the user is not logged-in" do
+      let(:query_params) { "?preview=#{article.password}" }
+      let(:article_user) { user }
+
+      it "does not the article edit link" do
+        sign_out user
+        visit article_path
+        expect(page).not_to have_link(link_text, href: href)
+      end
+    end
+
+    context "without the article password" do
+      let(:query_params) { "" }
+      let(:article_user) { user }
+
+      it "raises ActiveRecord::RecordNotFound" do
+        expect { visit article_path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end

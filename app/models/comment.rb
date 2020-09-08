@@ -14,26 +14,35 @@ class Comment < ApplicationRecord
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
   belongs_to :commentable, polymorphic: true, optional: true
-  counter_culture :commentable
   belongs_to :user
+
+  counter_culture :commentable
   counter_culture :user
+
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
 
   before_validation :evaluate_markdown, if: -> { body_markdown }
-  validate :permissions, if: :commentable
+  before_save :set_markdown_character_count, if: :body_markdown
+  before_create :adjust_comment_parent_based_on_depth
+  after_create :after_create_checks
+  after_create :notify_slack_channel_about_warned_users
+  after_update :update_descendant_notifications, if: :deleted
+  after_update :remove_notifications, if: :remove_notifications?
+  before_destroy :before_destroy_actions
+  after_destroy :after_destroy_actions
+
+  after_save :synchronous_bust
+  after_save :bust_cache
+
+  validate :published_article, if: :commentable
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
-  validates :commentable_id, presence: true
-  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }
+  validates :commentable_id, presence: true, if: :commentable_type
+  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }, if: :commentable_id
   validates :user_id, presence: true
 
-  before_create :adjust_comment_parent_based_on_depth
-  before_save :set_markdown_character_count, if: :body_markdown
-
-  after_create :notify_slack_channel_about_warned_users
-  after_create :after_create_checks
   after_create_commit :record_field_test_event
   after_create_commit :send_email_notification, if: :should_send_email_notification?
   after_create_commit :create_first_reaction
@@ -42,15 +51,8 @@ class Comment < ApplicationRecord
   after_commit :calculate_score, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
 
-  after_save :bust_cache
-  after_save :synchronous_bust
-
-  after_update :remove_notifications, if: :deleted
-  after_update :update_descendant_notifications, if: :deleted
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
-  after_destroy  :after_destroy_actions
-  before_destroy :before_destroy_actions
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
@@ -80,9 +82,9 @@ class Comment < ApplicationRecord
   end
 
   def parent_type
-    parent_or_root_article.class.name.downcase.
-      gsub("article", "post").
-      gsub("podcastepisode", "episode")
+    parent_or_root_article.class.name.downcase
+      .gsub("article", "post")
+      .gsub("podcastepisode", "episode")
   end
 
   def id_code_generated
@@ -123,7 +125,7 @@ class Comment < ApplicationRecord
   end
 
   def safe_processed_html
-    processed_html.html_safe
+    processed_html.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def root_exists?
@@ -131,6 +133,10 @@ class Comment < ApplicationRecord
   end
 
   private
+
+  def remove_notifications?
+    deleted? || hidden_by_commentable_user?
+  end
 
   def update_notifications
     Notification.update_notifications(self)
@@ -152,7 +158,7 @@ class Comment < ApplicationRecord
 
   def evaluate_markdown
     fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
-    parsed_markdown = MarkdownParser.new(fixed_body_markdown)
+    parsed_markdown = MarkdownParser.new(fixed_body_markdown, source: self, user: user)
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
@@ -165,7 +171,9 @@ class Comment < ApplicationRecord
   def wrap_timestamps_if_video_present!
     return unless commentable_type != "PodcastEpisode" && commentable.video.present?
 
-    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |string| "<a href='#{commentable.path}?t=#{string}'>#{string}</a>" }
+    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) do |string|
+      "<a href='#{commentable.path}?t=#{string}'>#{string}</a>"
+    end
   end
 
   def shorten_urls!
@@ -175,7 +183,7 @@ class Comment < ApplicationRecord
         anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img")
       end
     end
-    self.processed_html = doc.to_html.html_safe
+    self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def calculate_score
@@ -255,7 +263,7 @@ class Comment < ApplicationRecord
     self.markdown_character_count = body_markdown.size
   end
 
-  def permissions
+  def published_article
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
   end
 

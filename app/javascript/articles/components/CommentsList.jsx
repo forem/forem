@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
 import { CommentListItem } from './CommentListItem';
+import { Button } from '@crayons';
 
 const numberOfCommentsToShow = 2;
 
@@ -16,16 +16,14 @@ function moreCommentsButton(comments, articlePath, totalCount) {
     button = (
       <div className="crayons-story__comments__actions">
         <Button
-          variant="secondary"
+          variant="ghost"
           size="s"
           tagName="a"
+          className="-ml-2"
           url={linkToCommentsSection(articlePath)}
+          data-testid="see-all-comments"
         >
-          See all 
-          {' '}
-          {totalCount}
-          {' '}
-          comments
+          See all {totalCount} comments
         </Button>
       </div>
     );
@@ -33,7 +31,7 @@ function moreCommentsButton(comments, articlePath, totalCount) {
   return button;
 }
 
-export const CommentsList = ({ comments, articlePath, totalCount }) => {
+export const CommentsList = ({ comments = [], articlePath, totalCount }) => {
   if (comments && comments.length > 0) {
     return (
       <div className="crayons-story__comments">

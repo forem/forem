@@ -1,33 +1,36 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import ChannelButton from '../components/channelButton';
 
-const chnl = {
-  channel_name: 'test',
-  channel_color: '#00FFFF',
-  channel_type: 'invite_only',
-  channel_modified_slug: '@test34',
-  id: 34,
-  chat_channel_id: 23,
-  status: 'active',
+const getChannel = () => {
+  return {
+    channel_name: 'test',
+    channel_color: '#00FFFF',
+    channel_type: 'invite_only',
+    channel_modified_slug: '@test34',
+    id: 34,
+    chat_channel_id: 23,
+    status: 'active',
+  };
 };
 
-const getChannel = (channel) => <ChannelButton channel={channel} />;
+describe('<ChannelButton />', () => {
+  it('should have no a11y violations', async () => {
+    const { container } = render(<ChannelButton channel={getChannel()} />);
+    const results = await axe(container);
 
-describe('<Message />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getChannel(chnl));
-    expect(tree).toMatchSnapshot();
+    expect(results).toHaveNoViolations();
   });
 
-  it('should have the proper elements, attributes and values', () => {
-    const context = shallow(getChannel(chnl));
-    expect(
-      context.find('.chatchanneltabbutton').attr('data-channel-slug'),
-    ).toEqual(chnl.channel_modified_slug); // check user
-    expect(context.find('.chatchanneltabbutton').text()).toEqual(
-      chnl.channel_name,
-    );
+  it('should render', () => {
+    const { getByText } = render(<ChannelButton channel={getChannel()} />);
+    const button = getByText('test');
+
+    expect(button.dataset.channelSlug).toEqual('@test34');
+    expect(button.dataset.channelId).toEqual('23');
+    expect(button.dataset.channelStatus).toEqual('active');
+    expect(button.dataset.channelName).toEqual('test');
+    expect(button.dataset.content).toEqual('sidecar-channel-request');
   });
 });

@@ -6,7 +6,7 @@ module Notifications
       #   * :followable_id [Integer]
       #   * :followable_type [String] - "User" or "Organization"
       #   * :follower_id [Integer] - user id
-      def initialize(follow_data, is_read = false)
+      def initialize(follow_data, is_read: false)
         # we explicitly symbolize_keys because FollowData.new will fail otherwise with an error of
         # ":followable_id is missing in Hash input". FollowData expects a symbol, not a string.
         follow_data.symbolize_keys!
@@ -24,13 +24,14 @@ module Notifications
       end
 
       def call
-        recent_follows = Follow.where(followable_type: followable_type, followable_id: followable_id).
-          where("created_at > ?", 24.hours.ago).order("created_at DESC")
+        recent_follows = Follow.where(followable_type: followable_type, followable_id: followable_id)
+          .where("created_at > ?", 24.hours.ago).order(created_at: :desc)
 
         notification_params = { action: "Follow" }
-        if followable_type == "User"
+        case followable_type
+        when "User"
           notification_params[:user_id] = followable_id
-        elsif followable_type == "Organization"
+        when "Organization"
           notification_params[:organization_id] = followable_id
         end
 

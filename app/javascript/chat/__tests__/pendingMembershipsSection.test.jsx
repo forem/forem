@@ -1,57 +1,95 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import PendingMembershipSections from '../ChatChannelSettings/PendingMembershipSection';
 
-const data = {
-  pendingMemberships: [],
-  currentMembershipRole: 'mod',
-};
+function getEmptyMembershipData() {
+  return {
+    activeMemberships: [],
+    currentMembershipRole: 'mod',
+  };
+}
 
-const membership = {
-  pendingMemberships: [
-    {
-      name: 'test user',
-      username: 'testusername',
-      user_id: '1',
-      membership_id: '2',
-      role: 'member',
-      status: 'pending',
-      image: '',
-    },
-  ],
-  membershipType: 'pending',
-  currentMembershipRole: 'mod',
-};
-
-const getPendingMembershipSections = (membershipData) => (
-  <PendingMembershipSections
-    pendingMemberships={membershipData.pendingMemberships}
-    currentMembershipRole={membershipData.currentMembershipRole}
-  />
-);
+function getMembershipData() {
+  return {
+    pendingMemberships: [
+      {
+        name: 'test user',
+        username: 'testusername',
+        user_id: '1',
+        membership_id: '2',
+        role: 'mod',
+        status: 'active',
+        image: '',
+      },
+    ],
+    membershipType: 'active',
+    currentMembershipRole: 'mod',
+  };
+}
 
 describe('<PendingMembershipSections />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getPendingMembershipSections(data));
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations when there are no members', async () => {
+    const {
+      pendingMemberships,
+      currentMembershipRole,
+    } = getEmptyMembershipData();
+    const { container } = render(
+      <PendingMembershipSections
+        pendingMemberships={pendingMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  it('should have the elements', () => {
-    const context = shallow(getPendingMembershipSections(data));
+  it('should have no a11y violations when there are members', async () => {
+    const { pendingMemberships, currentMembershipRole } = getMembershipData();
+    const { container } = render(
+      <PendingMembershipSections
+        pendingMemberships={pendingMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
+    const results = await axe(container);
 
-    expect(context.find('.pending_memberships').exists()).toEqual(true);
+    expect(results).toHaveNoViolations();
   });
 
   it('should not render the membership list', () => {
-    const context = shallow(getPendingMembershipSections(data));
+    const {
+      pendingMemberships,
+      currentMembershipRole,
+    } = getEmptyMembershipData();
+    const { getByTestId } = render(
+      <PendingMembershipSections
+        pendingMemberships={pendingMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
 
-    expect(context.find('.membership-list').exists()).toEqual(false);
+    // no users to be found
+    const pendingMembershipsWrapper = getByTestId('pending-memberships');
+
+    expect(Number(pendingMembershipsWrapper.dataset.pendingCount)).toEqual(0);
   });
 
   it('should render the membership list', () => {
-    const context = shallow(getPendingMembershipSections(membership));
+    const { pendingMemberships, currentMembershipRole } = getMembershipData();
+    const { getByTestId } = render(
+      <PendingMembershipSections
+        pendingMemberships={pendingMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
 
-    expect(context.find('.pending-member').exists()).toEqual(true);
+    // no users to be found
+    const pendingMembershipsWrapper = getByTestId('pending-memberships');
+
+    expect(
+      Number(pendingMembershipsWrapper.dataset.pendingCount),
+    ).toBeGreaterThanOrEqual(1);
   });
 });

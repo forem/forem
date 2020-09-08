@@ -1,5 +1,6 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import { render, fireEvent } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import Tags from '../tags';
 
 describe('<Tags />', () => {
@@ -9,35 +10,33 @@ describe('<Tags />', () => {
     document.body.appendChild(environment);
   });
 
-  let tags;
+  it('should have no a11y violations', async () => {
+    const { container } = render(<Tags defaultValue="defaultValue" listing />);
+    const results = await axe(container);
 
-  beforeEach(() => {
-    tags = deep(<Tags defaultValue="defaultValue" listing />);
+    expect(results).toHaveNoViolations();
   });
 
   describe('handleKeyDown', () => {
-    const preventDefaultMock = jest.fn();
-    const createKeyDown = (key) => ({
-      key,
-      preventDefault: preventDefaultMock,
-    });
-
-    beforeEach(() => {
-      preventDefaultMock.mockClear();
-    });
-
-    it('calls preventDefault on unused keyCode', () => {
-      tags.find('#tag-input').simulate('keydown', createKeyDown('§'));
-      tags.find('#tag-input').simulate('keydown', createKeyDown('\\'));
-      expect(preventDefaultMock).toHaveBeenCalledTimes(2);
-    });
-
     it('does not call preventDefault on used keyCode', () => {
-      tags.find('#tag-input').simulate('keypress', createKeyDown('a'));
-      tags.find('#tag-input').simulate('keydown', createKeyDown('1'));
-      tags.find('#tag-input').simulate('keypress', createKeyDown(','));
-      tags.find('#tag-input').simulate('keypress', createKeyDown('Enter'));
-      expect(preventDefaultMock).not.toHaveBeenCalled();
+      const { getByTestId } = render(
+        <Tags defaultValue="defaultValue" listing />,
+      );
+
+      Event.prototype.preventDefault = jest.fn();
+
+      const tests = [
+        { key: 'a', code: '65' },
+        { key: '1', code: '49' },
+        { key: ',', code: '188' },
+        { key: 'Enter', code: '13' },
+      ];
+
+      tests.forEach((eventPayload) => {
+        fireEvent.keyDown(getByTestId('tag-input'), eventPayload);
+      });
+
+      expect(Event.prototype.preventDefault).not.toHaveBeenCalled();
     });
   });
 });

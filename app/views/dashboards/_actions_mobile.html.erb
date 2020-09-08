@@ -1,0 +1,26 @@
+<div class="block m:hidden px-2">
+  <select id="mobile_nav_dashboard" class="crayons-select">
+    <option value="/dashboard" <%= "selected" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>>Posts (<%= @user.articles_count %>)</option>
+    <option value="/dashboard/user_followers" <%= "selected" if params[:action] == "followers" %>>Followers (<%= @user.followers_count %>)</option>
+    <option value="/dashboard/following_tags" <%= "selected" if params[:action] == "following_tags" %>>Following tags (<%= @user.following_tags_count %>)</option>
+    <option value="/dashboard/following_users" <%= "selected" if params[:action] == "following_users" %>>Following users (<%= @user.following_users_count %>)</option>
+    <option value="/dashboard/following_organizations" <%= "selected" if params[:action] == "following_organizations" %>>Following organizations (<%= @user.following_organizations_count %>)</option>
+    <option value="/dashboard/following_podcasts" <%= "selected" if params[:action] == "following_podcasts" %>>Following podcasts (<%= @user.following_podcasts_count %>)</option>
+
+    <option value="/listings/dashboard">Listings</option>
+
+    <% if @current_user_pro %>
+      <option value="<%= dashboard_pro_path %>">Pro Analytics</option>
+
+      <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+        <% @organizations.each do |org| %>
+          <option value="<%= dashboard_pro_org_path(org.id) %>">Pro Analytics for <%= org.name %></option>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% if policy(:video).new? %>
+      <option value="<%= new_video_path %>">Upload a video</option>
+    <% end %>
+  </select>
+</div>

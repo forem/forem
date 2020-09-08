@@ -1,19 +1,22 @@
 import { h } from 'preact';
-
 import '../../storybook-utilities/designSystem.scss';
+import notes from './buttons.md';
 
 export default {
   title: '3_Components/Buttons/HTML',
+  parameters: {
+    notes,
+  },
 };
 
-export const Default = () => (
+export const Primary = () => (
   <button type="button" className="crayons-btn">
     Button label
   </button>
 );
 
-Default.story = {
-  name: 'Default',
+Primary.story = {
+  name: 'primary',
 };
 
 export const Secondary = () => (
@@ -54,6 +57,16 @@ export const Ghost = () => (
 
 Ghost.story = {
   name: 'Ghost',
+};
+
+export const GhostDimmed = () => (
+  <button type="button" className="crayons-btn crayons-btn--ghost-dimmed">
+    Ghost Dimmed Button label
+  </button>
+);
+
+Ghost.story = {
+  name: 'Ghost Dimmed',
 };
 
 export const GhostBrand = () => (

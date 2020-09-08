@@ -36,6 +36,7 @@ export const ClipboardButton = ({
     aria-controls="image-markdown-copy-link-announcer"
   >
     <input
+      data-testid="markdown-copy-link"
       type="text"
       className="crayons-textfield mr-2"
       id="image-markdown-copy-link-input"

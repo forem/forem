@@ -1,5 +1,6 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import MessageModal from '../components/MessageModal';
 
 const getDefaultListing = () => ({
@@ -23,21 +24,25 @@ const getDefaultListing = () => ({
 const getProps = () => ({
   currentUserId: 1,
   message: 'Something',
-  onChangeDraftingMessage: () => {
-    return 'onChangeDraftingMessage';
-  },
-  onSubmit: () => {
-    return 'onSubmit;';
-  },
+  onChangeDraftingMessage: jest.fn(),
+  onSubmit: jest.fn(),
 });
 
 const renderMessageModal = (listing) =>
-  deep(<MessageModal {...getProps()} listing={listing} />);
+  render(<MessageModal {...getProps()} listing={listing} />);
 
 describe('<MessageModal />', () => {
-  it('Should render a text-area', () => {
-    const context = renderMessageModal(getDefaultListing());
-    expect(context.find('#new-message').exists()).toBe(true);
+  it('should have no a11y violations', async () => {
+    const { container } = render(renderMessageModal(getDefaultListing()));
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('should render a text-area', () => {
+    const { queryByTestId } = renderMessageModal(getDefaultListing());
+
+    expect(queryByTestId('listing-new-message')).toBeDefined();
   });
 
   describe('When the current user is the author', () => {
@@ -45,21 +50,15 @@ describe('<MessageModal />', () => {
       ...getDefaultListing(),
       user_id: 1,
     };
-    const context = renderMessageModal(listingWithCurrentUserId);
-    const idFromPersonalMessageContact = 'personal-contact-message';
-    const idFromPersonalMessageAboutInteractions =
-      'personal-message-about-interactions';
 
-    it('Should show the information about contact with the current user', () => {
-      expect(context.find(`#${idFromPersonalMessageContact}`).text()).toEqual(
-        'This is your active listing. Any member can contact you via this form.',
-      );
-    });
+    it('should show the information about contact with the current user', () => {
+      const { queryByText } = renderMessageModal(listingWithCurrentUserId);
 
-    it('Should show the personalized message about the interactions', () => {
       expect(
-        context.find(`#${idFromPersonalMessageAboutInteractions}`).text(),
-      ).toEqual('All private interactions must abide by the code of conduct');
+        queryByText(
+          'This is your active listing. Any member can contact you via this form.',
+        ),
+      ).toBeDefined();
     });
   });
 
@@ -68,23 +67,17 @@ describe('<MessageModal />', () => {
       ...getDefaultListing(),
       user_id: 111,
     };
-    const context = renderMessageModal(listingWithDifferentCurrentUserId);
-    const idFromGenericMessageContact = 'generic-contact-message';
-    const idFromGenericMessageAboutInteractions =
-      'generic-message-about-interactions';
 
-    it('Should show the message to contact the author', () => {
-      expect(context.find(`#${idFromGenericMessageContact}`).text()).toEqual(
-        `Contact ${listingWithDifferentCurrentUserId.author.name} via DEV Connect`,
+    it('should show the message to contact the author', () => {
+      const { queryByText } = renderMessageModal(
+        listingWithDifferentCurrentUserId,
       );
-    });
 
-    it('Should show a generic message about the interactions', () => {
       expect(
-        context.find(`#${idFromGenericMessageAboutInteractions}`).text(),
-      ).toEqual(
-        'Message must be relevant and on-topic with the listing. All private interactions must abide by the code of conduct',
-      );
+        queryByText(
+          `Contact ${listingWithDifferentCurrentUserId.author.name} via DEV Connect`,
+        ),
+      ).toBeDefined();
     });
   });
 });

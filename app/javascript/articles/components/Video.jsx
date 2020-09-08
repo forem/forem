@@ -8,7 +8,7 @@ export const Video = ({ article }) => {
       className="crayons-story__video"
       style={`background-image:url(${article.cloudinary_video_url})`}
     >
-      <span className="crayons-story__video__time">
+      <span title="Video duration" className="crayons-story__video__time">
         {article.video_duration_in_minutes}
       </span>
     </a>
