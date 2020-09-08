@@ -102,10 +102,6 @@ FASTLY_SERVICE_ID: ""
 # (https://www.honeycomb.io/)
 HONEYCOMB_API_KEY: ""
 
-# Google analytic
-# (https://developers.google.com/analytics/devguides/reporting/core/v4)
-GA_TRACKING_ID: "Optional"
-
 # Mailchimp for mails
 # (https://mailchimp.com/developer/)
 MAILCHIMP_API_KEY: "Optional-valid"

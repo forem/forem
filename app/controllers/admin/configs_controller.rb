@@ -34,7 +34,7 @@ module Admin
 
     def config_params
       allowed_params = %i[
-        ga_view_id
+        ga_tracking_id
         periodic_email_digest_max
         periodic_email_digest_min
         sidebar_tags

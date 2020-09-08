@@ -55,7 +55,7 @@ gem "imgproxy", "~> 1.2" # A gem that easily generates imgproxy URLs for your im
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.4" #  A gem to automate using jQuery with Rails
-gem "jsonapi-serializer", "~> 2.0" # Serializer for Ruby objects
+gem "jsonapi-serializer", "~> 2.1" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.6.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
@@ -101,7 +101,7 @@ gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "store_attribute", "~> 0.7.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.24" # Ruby library for the Stripe API
+gem "stripe", "~> 5.25" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twilio-ruby", "~> 5.40" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
@@ -139,12 +139,12 @@ group :development, :test do
   gem "capybara", "~> 3.33" # Capybara is an integration testing tool for rack based web applications
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.13" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.1.1" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 2.2.1" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.89.1", require: false # Automatic Ruby code style checking tool
-  gem "rubocop-performance", "~> 1.7", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.7", require: false # Automatic Rails code style checking tool
+  gem "rubocop", "~> 0.90.0", require: false # Automatic Ruby code style checking tool
+  gem "rubocop-performance", "~> 1.8", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
+  gem "rubocop-rails", "~> 2.8", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.43", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring

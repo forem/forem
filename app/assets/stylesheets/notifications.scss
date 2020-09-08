@@ -435,6 +435,26 @@
   }
 }
 
+.notification-nav {
+  margin-bottom: var(--su-4);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  header {
+    color: var(--base-80);
+  }
+
+  .crayons-link {
+    margin-bottom: var(--su-1);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
 .notifications-filter__list {
   li {
     margin-bottom: var(--su-1);
