@@ -127,13 +127,21 @@ RSpec.describe "Stories::Feeds", type: :request do
         sign_in user
       end
 
-      it "sets a field test" do
+      it "sets a field test when feed_strategy is optimized" do
+        SiteConfig.feed_strategy = "optimized"
         expect do
           get "/stories/feed"
         end.to change(user.field_test_memberships, :count).by(1)
 
         ftm = user.field_test_memberships.last
         expect(ftm.experiment).to eq("user_home_feed")
+      end
+
+      it "does not set a field test when feed_strategy is basic" do
+        SiteConfig.feed_strategy = "basic"
+        expect do
+          get "/stories/feed"
+        end.not_to change(user.field_test_memberships, :count)
       end
 
       it "returns feed when feed_strategy is basic" do
@@ -166,7 +174,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     end
 
     context "when there are no params passed (base feed) and user is not signed in" do
-      it "sets a field test" do
+      it "does not set a field test" do
         expect do
           get "/stories/feed"
         end.not_to change(FieldTest::Membership, :count)
@@ -190,7 +198,7 @@ RSpec.describe "Stories::Feeds", type: :request do
         sign_in user
       end
 
-      it "does not sets a field test" do
+      it "does not set a field test" do
         allow_any_instance_of(Stories::FeedsController).to receive(:field_test) # rubocop:disable RSpec/AnyInstance
 
         expect do
