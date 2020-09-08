@@ -19,7 +19,7 @@ DateTime.defaultProps = {
 };
 
 DateTime.propTypes = {
-  datetime: PropTypes.instanceOf(Date),
+  datetime: PropTypes.instanceOf(Date).isRequired,
   className: PropTypes.string,
 };
 
