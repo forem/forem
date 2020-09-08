@@ -22,7 +22,7 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def url
-    "https://#{SiteConfig.app_domain}#{path}"
+    URL.url(path)
   end
 
   def title_length_classification
