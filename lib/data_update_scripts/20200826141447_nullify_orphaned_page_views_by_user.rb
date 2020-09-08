@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       # Nullify all PageViews belonging to Users that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           UPDATE page_views
           SET user_id = NULL
           WHERE user_id IS NOT NULL

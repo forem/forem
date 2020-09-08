@@ -1,15 +1,19 @@
 require "rails_helper"
 
 RSpec.describe "ProfileFieldGroups", type: :request do
-  describe "GET /api/profile_field_groups" do
+  let(:user) { create(:user) }
 
-    before { sign_in(create(:user)) }
-
+  describe "GET /profile_field_groups" do
     let!(:group1) { create(:profile_field_group) }
     let!(:group2) { create(:profile_field_group) }
     let!(:field1) { create(:profile_field, :onboarding, label: "Field 1", profile_field_group: group1) }
-    let!(:field2) { create(:profile_field, label: "Field 2", profile_field_group: group1) }
-    let!(:field3) { create(:profile_field, label: "Field 3", profile_field_group: group2) }
+
+    before do
+      sign_in user
+
+      create(:profile_field, label: "Field 2", profile_field_group: group1)
+      create(:profile_field, label: "Field 3", profile_field_group: group2)
+    end
 
     it "returns a successful response" do
       get profile_field_groups_path
