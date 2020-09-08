@@ -111,7 +111,7 @@ module Constants
       apple_pem: {
         description:
           "The \"PEM\" key from the Authentication Service configured in the Apple Developer Portal",
-        placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\n"
+        placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
       },
       favicon_url: {
         description: "Used as the site favicon",

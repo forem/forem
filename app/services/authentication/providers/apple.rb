@@ -8,7 +8,7 @@ module Authentication
 
       # Currently `beta` state until thoroughly tested in production level env
       def self.beta_access?
-        true
+        !Flipper.enabled?(:apple_auth)
       end
 
       def new_user_data

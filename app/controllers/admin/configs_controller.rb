@@ -48,17 +48,11 @@ module Admin
         default_font
         sponsor_headline
         public
-        twitter_key
-        twitter_secret
-        github_key
-        github_secret
-        facebook_key
-        facebook_secret
-        allow_email_password_registration
         primary_brand_color_hex
       ]
 
       allowed_params = allowed_params |
+        authentication_params |
         campaign_params |
         community_params |
         newsletter_params |
@@ -121,6 +115,22 @@ module Admin
     def brand_color_not_hex
       hex = params[:site_config][:primary_brand_color_hex]
       hex.present? && !hex.match?(/\A#(\h{6}|\h{3})\z/)
+    end
+
+    def authentication_params
+      %i[
+        allow_email_password_registration
+        twitter_key
+        twitter_secret
+        github_key
+        github_secret
+        facebook_key
+        facebook_secret
+        apple_client_id
+        apple_key_id
+        apple_pem
+        apple_team_id
+      ]
     end
 
     def campaign_params
