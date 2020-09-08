@@ -178,7 +178,7 @@ class MarkdownParser
   end
 
   def possibly_raw_tag_syntax?(array)
-    array.any? { |string| RAW_TAG_DELIMITERS.include?(string) }
+    (RAW_TAG_DELIMITERS & array).any?
   end
 
   def unescape_raw_tag_in_codeblocks(html)
