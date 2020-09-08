@@ -20,7 +20,10 @@
     <% unless group.profile_fields.empty? %>
       <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
         <h2><%= group.name %></h2>
-        <div class="color-base-40"><%= group.description %></div>
+
+        <% if group.description %>
+          <div class="color-base-40"><%= group.description %></div>
+        <% end %>
         <% group.profile_fields.each do |field| %>
           <div>
             <div><%= field.label %></div>
