@@ -8,6 +8,8 @@ module Search
         viewable_by
       ].freeze
 
+      TERMS_FILTER_KEYS = %i[viewable_by status].freeze
+
       QUERY_KEYS = %i[
         channel_text
       ].freeze
@@ -40,12 +42,10 @@ module Search
       end
 
       def filter_conditions
-        terms_filter_keys = %i[viewable_by status]
-
         FILTER_KEYS.filter_map do |filter_key|
           next if @params[filter_key].blank? || @params[filter_key] == "all"
 
-          if terms_filter_keys.include?(filter_key)
+          if TERMS_FILTER_KEYS.include?(filter_key)
             { terms: { filter_key => @params[filter_key] } }
           else
             { term: { filter_key => @params[filter_key] } }

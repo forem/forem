@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "ProfileFieldGroups", type: :request do
   let(:user) { create(:user) }
 
-  describe "GET /api/profile_field_groups" do
+  describe "GET /profile_field_groups" do
     let!(:group1) { create(:profile_field_group) }
     let!(:group2) { create(:profile_field_group) }
     let!(:field1) { create(:profile_field, :onboarding, label: "Field 1", profile_field_group: group1) }
