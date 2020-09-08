@@ -8,6 +8,6 @@ class ProfilesController < ApplicationController
   private
 
   def update_params
-    params.require(:profile).permit(*Profile.attributes)
+    params.require(:profile).permit(*Profile.attributes!)
   end
 end
