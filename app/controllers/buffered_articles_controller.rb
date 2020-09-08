@@ -16,6 +16,6 @@ class BufferedArticlesController < ApplicationController
                end
 
     paths = relation.pluck(:path)
-    paths.map { |path| "https://#{SiteConfig.app_domain}#{path}" }
+    paths.map { |path| URL.url(path) }
   end
 end

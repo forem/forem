@@ -1,3 +1,5 @@
+# This change takes the Devise remember_cookie_values and explicitely assigns the admin-defined domain
+
 module Devise
   module Controllers
     module Rememberable
