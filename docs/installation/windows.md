@@ -191,7 +191,7 @@ To install Elasticsearch perform the following steps:
    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
    shasum -a 512 -c elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
-   tar -xzf elasticsearch-7.5.2-linux-x86_64.tar.gz
+   tar -xzf elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
    ```
 
 2. Next, switch to the correct directory with:
