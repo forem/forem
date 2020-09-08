@@ -38,7 +38,6 @@ gem "faraday-http-cache", "~> 2.2" # Middleware to handle HTTP caching
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
-gem "figaro", "~> 1.2" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
 gem "flipper", "~> 0.18.0" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.18.0" # Store Flipper flags in ActiveRecord
 gem "flipper-ui", "~> 0.18.0"
