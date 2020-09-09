@@ -149,13 +149,10 @@ class ApplicationController < ActionController::Base
   def remember_cookie_sync
     # Set remember cookie token in case not properly set.
     if user_signed_in? &&
-        cookies[:remember_user_token].blank? &&
-        (action_name == "index" || action_name == "base_data")
+        cookies[:remember_user_token].blank?
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
-    # elsif action_name == "destroy" && user_signed_in?
-    #   current_user.forget_me!
     end
   end
 
