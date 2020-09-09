@@ -152,35 +152,17 @@ RSpec.describe User, type: :model do
       end
       # rubocop:enable RSpec/NamedSubject
 
-      it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
-      it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
-      it { is_expected.to allow_value("#aabbcc").for(:bg_color_hex) }
-      it { is_expected.to allow_value("#aabbcc").for(:text_color_hex) }
-      it { is_expected.to allow_value("#abc").for(:bg_color_hex) }
-      it { is_expected.to allow_value("#abc").for(:text_color_hex) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
-      it { is_expected.to validate_length_of(:available_for).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:behance_url).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:currently_hacking_on).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:currently_learning).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:education).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
-      it { is_expected.to validate_length_of(:employer_name).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:employer_url).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:employment_title).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
       it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
-      it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
-      it { is_expected.to validate_url_of(:employer_url) }
-      it { is_expected.to validate_url_of(:website_url) }
 
       Authentication::Providers.username_fields.each do |username_field|
         it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
