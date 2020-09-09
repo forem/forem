@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_06_193438) do
+ActiveRecord::Schema.define(version: 2020_09_04_151734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.string "utm_term"
     t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
+    t.index ["user_id", "mailer"], name: "index_ahoy_messages_on_user_id_and_mailer"
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
   end
 
@@ -71,7 +72,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.string "description", null: false
     t.string "secret"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["secret"], name: "index_api_secrets_on_secret", unique: true
     t.index ["user_id"], name: "index_api_secrets_on_user_id"
   end
@@ -153,14 +154,16 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.string "video_state"
     t.string "video_thumbnail_url"
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
+    t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
-    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url"
+    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
+    t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["slug"], name: "index_articles_on_slug"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
@@ -189,7 +192,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
   create_table "badge_achievements", force: :cascade do |t|
     t.bigint "badge_id", null: false
     t.datetime "created_at", null: false
-    t.integer "rewarder_id"
+    t.bigint "rewarder_id"
     t.text "rewarding_context_message"
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", null: false
@@ -280,7 +283,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.datetime "active_status_updated_at"
     t.string "banner_style"
     t.text "body_markdown"
-    t.integer "broadcastable_id"
+    t.bigint "broadcastable_id"
     t.string "broadcastable_type"
     t.datetime "created_at"
     t.text "processed_html"
@@ -348,6 +351,17 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.index ["slug"], name: "index_classified_listing_categories_on_slug", unique: true
   end
 
+  create_table "classified_listing_endorsements", force: :cascade do |t|
+    t.boolean "approved", default: false
+    t.bigint "classified_listing_id"
+    t.string "content"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id"
+    t.index ["classified_listing_id"], name: "index_classified_listing_endorsements_on_classified_listing_id"
+    t.index ["user_id"], name: "index_classified_listing_endorsements_on_user_id"
+  end
+
   create_table "classified_listings", force: :cascade do |t|
     t.text "body_markdown"
     t.datetime "bumped_at"
@@ -390,6 +404,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.string "ancestry"
     t.text "body_html"
     t.text "body_markdown"
+    t.text "cached_user"
     t.bigint "commentable_id"
     t.string "commentable_type"
     t.datetime "created_at", null: false
@@ -457,7 +472,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.integer "clicks_count", default: 0
     t.datetime "created_at", null: false
     t.integer "impressions_count", default: 0
-    t.integer "organization_id"
+    t.bigint "organization_id"
     t.string "placement_area"
     t.text "processed_html"
     t.boolean "published", default: false
@@ -496,14 +511,14 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
   end
 
   create_table "feedback_messages", force: :cascade do |t|
-    t.integer "affected_id"
+    t.bigint "affected_id"
     t.string "category"
     t.datetime "created_at"
     t.string "feedback_type"
     t.text "message"
-    t.integer "offender_id"
+    t.bigint "offender_id"
     t.string "reported_url"
-    t.integer "reporter_id"
+    t.bigint "reporter_id"
     t.string "status", default: "Open"
     t.datetime "updated_at"
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
@@ -593,17 +608,17 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
   end
 
   create_table "html_variant_successes", force: :cascade do |t|
-    t.integer "article_id"
+    t.bigint "article_id"
     t.datetime "created_at", null: false
-    t.integer "html_variant_id"
+    t.bigint "html_variant_id"
     t.datetime "updated_at", null: false
     t.index ["html_variant_id", "article_id"], name: "index_html_variant_successes_on_html_variant_id_and_article_id"
   end
 
   create_table "html_variant_trials", force: :cascade do |t|
-    t.integer "article_id"
+    t.bigint "article_id"
     t.datetime "created_at", null: false
-    t.integer "html_variant_id"
+    t.bigint "html_variant_id"
     t.datetime "updated_at", null: false
     t.index ["html_variant_id", "article_id"], name: "index_html_variant_trials_on_html_variant_id_and_article_id"
   end
@@ -921,16 +936,27 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "profile_fields", force: :cascade do |t|
-    t.boolean "active", default: true, null: false
+  create_table "profile_field_groups", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.string "description"
-    t.string "group"
+    t.string "name", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_profile_field_groups_on_name", unique: true
+  end
+
+  create_table "profile_fields", force: :cascade do |t|
+    t.string "attribute_name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.string "description"
+    t.integer "display_area", default: 1, null: false
     t.integer "input_type", default: 0, null: false
     t.citext "label", null: false
     t.string "placeholder_text"
+    t.bigint "profile_field_group_id"
+    t.boolean "show_in_onboarding", default: false, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["label"], name: "index_profile_fields_on_label", unique: true
+    t.index ["profile_field_group_id"], name: "index_profile_fields_on_profile_field_group_id"
   end
 
   create_table "profile_pins", force: :cascade do |t|
@@ -950,7 +976,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.jsonb "data", default: {}, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_profiles_on_user_id"
+    t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 
   create_table "rating_votes", force: :cascade do |t|
@@ -1148,8 +1174,8 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.string "subscriber_email", null: false
     t.bigint "subscriber_id", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_subscription_sourceable_id", null: false
-    t.string "user_subscription_sourceable_type", null: false
+    t.bigint "user_subscription_sourceable_id"
+    t.string "user_subscription_sourceable_type"
     t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
     t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
     t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
@@ -1207,7 +1233,9 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.integer "experience_level"
     t.boolean "export_requested", default: false
     t.datetime "exported_at"
+    t.datetime "facebook_created_at"
     t.string "facebook_url"
+    t.string "facebook_username"
     t.integer "failed_attempts", default: 0
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
@@ -1262,6 +1290,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
+    t.boolean "reaction_notifications", default: true
     t.integer "reactions_count", default: 0, null: false
     t.boolean "registered", default: true
     t.datetime "registered_at"
@@ -1299,6 +1328,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["facebook_username"], name: "index_users_on_facebook_username"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
@@ -1313,7 +1343,7 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
 
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "role_id"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
@@ -1341,31 +1371,70 @@ ActiveRecord::Schema.define(version: 2020_08_06_193438) do
   add_foreign_key "ahoy_messages", "users", on_delete: :cascade
   add_foreign_key "ahoy_visits", "users", on_delete: :cascade
   add_foreign_key "api_secrets", "users", on_delete: :cascade
+  add_foreign_key "articles", "organizations", on_delete: :nullify
+  add_foreign_key "articles", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
+  add_foreign_key "buffer_updates", "articles", on_delete: :cascade
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
+  add_foreign_key "classified_listing_endorsements", "classified_listings"
+  add_foreign_key "classified_listing_endorsements", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
+  add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "collections", "organizations", on_delete: :nullify
+  add_foreign_key "collections", "users", on_delete: :cascade
+  add_foreign_key "comments", "users", on_delete: :cascade
+  add_foreign_key "credits", "organizations", on_delete: :restrict
+  add_foreign_key "credits", "users", on_delete: :cascade
+  add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
+  add_foreign_key "display_ad_events", "users", on_delete: :cascade
+  add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
+  add_foreign_key "github_repos", "users", on_delete: :cascade
+  add_foreign_key "html_variant_successes", "articles", on_delete: :nullify
+  add_foreign_key "html_variant_successes", "html_variants", on_delete: :cascade
+  add_foreign_key "html_variant_trials", "articles", on_delete: :nullify
+  add_foreign_key "html_variant_trials", "html_variants", on_delete: :cascade
+  add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
+  add_foreign_key "mentions", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
+  add_foreign_key "notifications", "organizations", on_delete: :cascade
+  add_foreign_key "notifications", "users", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
+  add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
+  add_foreign_key "page_views", "users", on_delete: :nullify
+  add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
+  add_foreign_key "poll_options", "polls", on_delete: :cascade
+  add_foreign_key "poll_skips", "polls", on_delete: :cascade
+  add_foreign_key "poll_skips", "users", on_delete: :cascade
+  add_foreign_key "poll_votes", "poll_options", on_delete: :cascade
+  add_foreign_key "poll_votes", "polls", on_delete: :cascade
+  add_foreign_key "poll_votes", "users", on_delete: :cascade
+  add_foreign_key "polls", "articles", on_delete: :cascade
+  add_foreign_key "profile_fields", "profile_field_groups"
   add_foreign_key "profiles", "users", on_delete: :cascade
+  add_foreign_key "rating_votes", "articles", on_delete: :cascade
+  add_foreign_key "rating_votes", "users", on_delete: :nullify
+  add_foreign_key "reactions", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
   add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
+  add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_subscriptions", "users", column: "author_id"

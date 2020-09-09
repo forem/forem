@@ -1,3 +1,8 @@
-<%= render "devise/shared/authorization_error" %>
+<% title "Welcome!" %>
 
-<%= render "devise/registrations/registration_form" %>
+<% if params[:state] == "new-user" %>
+  <%= render "shared/authentication/email_registration_form" %>
+<% else %>
+  <%= render "devise/shared/authorization_error" %>
+  <%= render "devise/registrations/registration_form" %>
+<% end %>

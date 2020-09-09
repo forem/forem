@@ -42,6 +42,31 @@ module OmniauthHelpers
     }
   }.freeze
 
+  OMNIAUTH_PAYLOAD_FACEBOOK = OmniAuth::AuthHash::InfoHash.new(
+    {
+      provider: "facebook",
+      uid: SecureRandom.hex,
+      info: {
+        email: "markz@thefacebook.com",
+        name: "fname lname",
+        image: "https://dummyimage.com/400x400.jpg"
+      },
+      credentials: {
+        token: SecureRandom.hex,
+        refresh_token: SecureRandom.hex,
+        expires_at: 1_589_475_606,
+        expires: true
+      },
+      extra: {
+        raw_info: {
+          email: "markz@thefacebook.com",
+          id: "123455677",
+          name: "fname lname"
+        }
+      }
+    },
+  ).freeze
+
   def omniauth_setup_invalid_credentials(provider)
     OmniAuth.config.mock_auth[provider] = :invalid_credentials
   end
@@ -90,6 +115,10 @@ module OmniauthHelpers
     Authentication::Providers.available.each do |provider_name|
       OmniAuth.config.mock_auth[provider_name] = nil
     end
+  end
+
+  def omniauth_mock_facebook_payload
+    OmniAuth.config.mock_auth[:facebook] = OMNIAUTH_PAYLOAD_FACEBOOK.dup
   end
 
   def omniauth_mock_github_payload

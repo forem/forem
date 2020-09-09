@@ -3,6 +3,11 @@ module Admin
     layout "admin"
 
     before_action :extra_authorization_and_confirmation, only: [:create]
+    before_action :validate_inputs, only: [:create]
+
+    def show
+      @confirmation_text = confirmation_text
+    end
 
     def create
       clean_up_params
@@ -23,19 +28,34 @@ module Admin
 
     private
 
+    def confirmation_text
+      "My username is @#{current_user.username} and this action is 100% safe and appropriate."
+    end
+
     def config_params
       allowed_params = %i[
-        ga_view_id ga_fetch_rate
+        ga_tracking_id
         periodic_email_digest_max
         periodic_email_digest_min
         sidebar_tags
         twitter_hashtag
         shop_url
         payment_pointer
+        stripe_api_key
+        stripe_publishable_key
         health_check_token
         feed_style
+        default_font
         sponsor_headline
         public
+        twitter_key
+        twitter_secret
+        github_key
+        github_secret
+        facebook_key
+        facebook_secret
+        allow_email_password_registration
+        primary_brand_color_hex
       ]
 
       allowed_params = allowed_params |
@@ -60,10 +80,20 @@ module Admin
       )
     end
 
+    def raise_confirmation_mismatch_error
+      raise ActionController::BadRequest.new, "The confirmation key does not match"
+    end
+
     def extra_authorization_and_confirmation
       not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
-      confirmation_message = "My username is @#{current_user.username} and this action is 100% safe and appropriate."
-      not_authorized if params[:confirmation] != confirmation_message
+      raise_confirmation_mismatch_error if params.require(:confirmation) != confirmation_text
+    end
+
+    def validate_inputs
+      errors = []
+      errors << "Brand color must be darker for accessibility." if brand_contrast_too_low
+      errors << "Brand color must be be a 6 character hex (starting with #)." if brand_color_not_hex
+      redirect_to admin_config_path, alert: "😭 #{errors.join(',')}" if errors.any?
     end
 
     def clean_up_params
@@ -75,8 +105,22 @@ module Admin
     end
 
     def bust_relevant_caches
-      # Needs to change when suggested_tags is edited.
-      CacheBuster.bust("/tags/onboarding")
+      CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited.
+      CacheBuster.bust("/shell_top") # Cached at edge, sent to service worker.
+      CacheBuster.bust("/shell_bottom") # Cached at edge, sent to service worker.
+      CacheBuster.bust("/onboarding") # Page is cached at edge.
+      Rails.cache.delete_matched(ApplicationConfig["RELEASE_FOOTPRINT"]) # Delete all caches tied to this key.
+    end
+
+    # Validations
+    def brand_contrast_too_low
+      hex = params[:site_config][:primary_brand_color_hex]
+      hex.present? && Color::Accessibility.new(hex).low_contrast?
+    end
+
+    def brand_color_not_hex
+      hex = params[:site_config][:primary_brand_color_hex]
+      hex.present? && !hex.match?(/\A#(\h{6}|\h{3})\z/)
     end
 
     def campaign_params
@@ -92,9 +136,12 @@ module Admin
 
     def community_params
       %i[
+        community_name
         community_description
         community_member_label
         community_action
+        community_copyright_start_year
+        staff_user_id
         tagline
       ]
     end
@@ -117,6 +164,12 @@ module Admin
         rate_limit_published_article_creation
         rate_limit_organization_creation
         rate_limit_user_subscription_creation
+        rate_limit_article_update
+        rate_limit_user_update
+        rate_limit_feedback_message_creation
+        rate_limit_listing_creation
+        rate_limit_reaction_creation
+        rate_limit_send_email_confirmation
       ]
     end
 
@@ -125,6 +178,8 @@ module Admin
         mascot_image_description
         mascot_image_url
         mascot_footer_image_url
+        mascot_footer_image_width
+        mascot_footer_image_height
         mascot_user_id
       ]
     end

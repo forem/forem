@@ -11,11 +11,20 @@ class SiteConfig < RailsSettings::Base
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
 
+  field :waiting_on_first_user, type: :boolean, default: !User.exists?
+
   # API Tokens
   field :health_check_token, type: :string
 
   # Authentication
+  field :allow_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: Authentication::Providers.available
+  field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
+  field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
+  field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
+  field :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
+  field :facebook_key, type: :string
+  field :facebook_secret, type: :string
 
   # Campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
@@ -26,10 +35,15 @@ class SiteConfig < RailsSettings::Base
   field :campaign_articles_require_approval, type: :boolean, default: 0
 
   # Community Content
+  field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
   field :community_action, type: :string
   field :tagline, type: :string
+  field :community_copyright_start_year, type: :integer,
+                                         default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
+                                           Time.zone.today.year
+  field :staff_user_id, type: :integer, default: 1
 
   # Emails
   field :email_addresses, type: :hash, default: {
@@ -47,10 +61,8 @@ class SiteConfig < RailsSettings::Base
   field :jobs_url, type: :string
   field :display_jobs_banner, type: :boolean, default: false
 
-  # Google Analytics Reporting API v4
-  # <https://developers.google.com/analytics/devguides/reporting/core/v4>
-  field :ga_view_id, type: :string, default: ""
-  field :ga_fetch_rate, type: :integer, default: 25
+  # Google Analytics Tracking ID, e.g. UA-71991000-1
+  field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
 
   # Images
   field :main_social_image, type: :string
@@ -67,6 +79,8 @@ class SiteConfig < RailsSettings::Base
   field :mascot_image_url, type: :string
   field :mascot_image_description, type: :string, default: "The community mascot"
   field :mascot_footer_image_url, type: :string
+  field :mascot_footer_image_width, type: :integer, default: 52
+  field :mascot_footer_image_height, type: :integer, default: 120
 
   # Meta keywords
   field :meta_keywords, type: :hash, default: {
@@ -76,7 +90,9 @@ class SiteConfig < RailsSettings::Base
   }
 
   # Monetization
-  field :payment_pointer, type: :string # Experimental
+  field :payment_pointer, type: :string
+  field :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
+  field :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
   field :shop_url, type: :string
 
   # Newsletter
@@ -112,7 +128,6 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
 
   # Social Media
-  field :staff_user_id, type: :integer, default: 1
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
     facebook: nil,
@@ -134,7 +149,10 @@ class SiteConfig < RailsSettings::Base
   field :feed_style, type: :string, default: "basic"
   # a non-public forem will redirect all unauthenticated pages to the registration page.
   # a public forem could have more fine-grained authentication (listings ar private etc.) in future
-  field :public, type: :boolean, default: 1
+  field :public, type: :boolean, default: 0
+  # The default font for all users that have not chosen a custom font yet
+  field :default_font, type: :string, default: "sans_serif"
+  field :primary_brand_color_hex, type: :string, default: "#3b49df"
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date

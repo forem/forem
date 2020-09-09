@@ -27,7 +27,7 @@
       Visit <b><a href="<%= app_url(user_settings_path(:misc)) %>" style="text-decoration: none;">your settings</a></b> to enter your experience level on a scale of 1-10.
       <br /><br />
       You can change it any time in the future. Happy <%= SiteConfig.community_action %>!
-    <% elsif @user.follows.size == 0 %>
+    <% elsif @user.following_users_count == 0 %>
       <b>
         <%= community_name %> Digest is a new periodic email featuring the best posts from our community of <%= community_members_label %>.
       </b>
@@ -45,7 +45,7 @@
       <% elsif tip_rand == 3 %>
         You're a better <%= SiteConfig.community_member_label %> today than you were yesterday.
       <% elsif tip_rand == 4 %>
-        <% if @user.articles.published.any? %>
+        <% if @user.articles_count > 0 %>
           Can't wait to see <b>your</b> next <%= community_name %> post!
         <% else %>
           Can't wait to see <b>your</b> first <%= community_name %> post!

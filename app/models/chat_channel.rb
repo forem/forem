@@ -110,11 +110,11 @@ class ChatChannel < ApplicationRecord
 
   def pusher_channels
     if invite_only?
-      "private-channel-#{id}"
+      "private-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
     elsif open?
-      "open-channel-#{id}"
+      "open-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
     else
-      chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}" }
+      chat_channel_memberships.pluck(:user_id).map { |id| ChatChannel.pm_notifications_channel(id) }
     end
   end
 
@@ -125,9 +125,10 @@ class ChatChannel < ApplicationRecord
   def adjusted_slug(user = nil, caller_type = "receiver")
     user ||= current_user
     if direct? && caller_type == "receiver"
-      "@" + slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
+      cleaned_slug = slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
+      "@#{cleaned_slug}"
     elsif caller_type == "sender"
-      "@" + user.username
+      "@#{user.username}"
     else
       slug
     end
@@ -158,6 +159,10 @@ class ChatChannel < ApplicationRecord
 
   def pending_users_select_fields
     pending_users.select(:id, :username, :name, :updated_at)
+  end
+
+  def self.pm_notifications_channel(user_id)
+    "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{user_id}"
   end
 
   private

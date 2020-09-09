@@ -1,6 +1,6 @@
 class VerificationMailer < ApplicationMailer
   default from: lambda {
-    "#{ApplicationConfig['COMMUNITY_NAME']} Email Verification <#{SiteConfig.email_addresses[:default]}>"
+    "#{SiteConfig.community_name} Email Verification <#{SiteConfig.email_addresses[:default]}>"
   }
 
   def account_ownership_verification_email
@@ -8,6 +8,6 @@ class VerificationMailer < ApplicationMailer
     email_authorization = EmailAuthorization.create(user: @user, type_of: "account_ownership")
     @confirmation_token = email_authorization.confirmation_token
 
-    mail(to: @user.email, subject: "Verify Your #{ApplicationConfig['COMMUNITY_NAME']} Account Ownership")
+    mail(to: @user.email, subject: "Verify Your #{SiteConfig.community_name} Account Ownership")
   end
 end

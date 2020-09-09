@@ -1,6 +1,5 @@
 class MarkdownParser
   include ApplicationHelper
-  include CloudinaryHelper
 
   BAD_XSS_REGEX = [
     /src=["'](data|&)/i,
@@ -8,6 +7,8 @@ class MarkdownParser
   ].freeze
 
   WORDS_READ_PER_MINUTE = 275.0
+
+  RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
 
   def initialize(content, source: nil, user: nil)
     @content = content
@@ -169,15 +170,15 @@ class MarkdownParser
       codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
       codeblock.gsub!("{% raw %}", "{----% raw %----}")
       if codeblock.match?(/[[:space:]]*`{3}/)
-        "\n{% raw %}\n" + codeblock + "\n{% endraw %}\n"
+        "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
       else
-        "{% raw %}" + codeblock + "{% endraw %}"
+        "{% raw %}#{codeblock}{% endraw %}"
       end
     end
   end
 
   def possibly_raw_tag_syntax?(array)
-    array.any? { |string| ["{", "}", "raw", "endraw", "----"].include?(string) }
+    (RAW_TAG_DELIMITERS & array).any?
   end
 
   def unescape_raw_tag_in_codeblocks(html)
@@ -259,19 +260,7 @@ class MarkdownParser
   end
 
   def img_of_size(source, width = 880)
-    quality = if source && (source.include? ".gif")
-                66
-              else
-                "auto"
-              end
-    cl_image_path(source,
-                  type: "fetch",
-                  width: width,
-                  crop: "limit",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: "auto",
-                  sign_url: true).gsub(",", "%2C")
+    Images::Optimizer.call(source, width: width).gsub(",", "%2C")
   end
 
   def wrap_all_images_in_links(html)

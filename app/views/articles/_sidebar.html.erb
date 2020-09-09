@@ -1,13 +1,13 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left crayons-layout__sidebar-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <aside class="side-bar" aria-label="Primary sidebar">
-    <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 15.minutes) do %>
+    <% cache(release_adjusted_cache_key("main-sidebar-nav--#{user_signed_in?}"), expires_in: 15.minutes) do %>
       <%= render "articles/sidebar_nav" %>
       <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
       <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
       <% if @sponsorships.present? %>
         <div class="<%= "hidden" if user_signed_in? %> px-1" id="sponsorship-widget">
-          <h4 class="flex align-center fs-s ff-accent fw-bold tt-uppercase mb-4">
+          <h4 class="flex align-center fs-s ff-monospace fw-bold tt-uppercase mb-4">
             <%= SiteConfig.sponsor_headline %>
             <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default ml-1", title: "Love") %>
           </h4>

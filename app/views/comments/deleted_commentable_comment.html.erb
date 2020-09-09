@@ -1,5 +1,5 @@
 <div class="single-comment-header"></div>
-<div class="comments-container">
+<div class="comments-container comments-dedicated-page-container">
   <h3>Comment from a deleted article or podcast</h3>
   <div class="single-comment-node root">
     <% @user ||= @root_comment.user %>
@@ -15,15 +15,7 @@
 
         <% if decorated_comment.low_quality %>
           <div class="low-quality-comment-marker">
-            <%= image_tag(cl_image_path(SiteConfig.mascot_image_url,
-                                        type: "fetch",
-                                        width: 50,
-                                        height: 50,
-                                        crop: "imagga_scale",
-                                        quality: "auto",
-                                        flags: "progressive",
-                                        fetch_format: "auto",
-                                        sign_url: true), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
+            <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_image_url, width: 50, height: 50, crop: "imagga_scale"), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
             Comment marked as low quality/non-constructive by the community
             <a href="/code-of-conduct">View code of conduct</a>
           </div>

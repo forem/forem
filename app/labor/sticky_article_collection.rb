@@ -22,6 +22,7 @@ class StickyArticleCollection
 
   def tag_articles
     @tag_articles ||= Article.published.tagged_with(article_tags, any: true)
+      .limited_column_select
       .includes(:user)
       .where("public_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num)
       .where.not(id: article.id).where.not(user_id: article.user_id)
@@ -34,6 +35,7 @@ class StickyArticleCollection
     return [] if tag_articles.size > 6
 
     Article.published.tagged_with(%w[career productivity discuss explainlikeimfive], any: true)
+      .limited_column_select
       .includes(:user)
       .where("comments_count > ?", comment_count_num)
       .where.not(id: article.id).where.not(user_id: article.user_id)

@@ -14,7 +14,7 @@ RSpec.describe "Deleting Comment", type: :system, js: true, elasticsearch: "Feed
 
   it "works" do
     visit "/"
-    visit comment.path + "/delete_confirm"
+    visit "#{comment.path}/delete_confirm"
 
     wait_for_javascript
 

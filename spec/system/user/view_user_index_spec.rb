@@ -13,13 +13,13 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
 
       it "shows the header", js: true do
         within("h1") { expect(page).to have_content(user.name) }
-        within(".profile-details") do
+        within(".profile-header__actions") do
           expect(page).to have_button("Follow")
         end
       end
 
       it "shows proper title tag" do
-        expect(page).to have_title("#{user.name} - #{ApplicationConfig['COMMUNITY_NAME']}")
+        expect(page).to have_title("#{user.name} - #{SiteConfig.community_name}")
       end
 
       it "shows user's articles" do
@@ -80,7 +80,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
 
     it "shows the header", js: true do
       within("h1") { expect(page).to have_content(user.name) }
-      within(".profile-details") do
+      within(".profile-header__actions") do
         expect(page).to have_button("Edit profile")
       end
     end
