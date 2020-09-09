@@ -40,10 +40,8 @@ class Article < ApplicationRecord
   has_many :rating_votes, dependent: :destroy
   has_many :top_comments,
            lambda {
-             where(
-               "comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE",
-               10,
-             ).order("comments.score" => :desc)
+             where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.score" => :desc)
            },
            as: :commentable,
            inverse_of: :commentable,
