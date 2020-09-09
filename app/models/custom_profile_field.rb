@@ -7,7 +7,7 @@ class CustomProfileField < ApplicationRecord
 
   private
 
-  # We allow a maximum of 3 custom profile fields per user
+  # We allow a maximum of 5 custom profile fields per user
   def validate_maximum_count
     return if profile.custom_profile_fields.count < 5
 
