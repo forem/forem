@@ -47,6 +47,13 @@ RSpec.describe "/admin/config", type: :request do
         sign_in(admin_plus_config)
       end
 
+      it "deletes release-tied fragment caches" do
+        allow(Rails.cache).to receive(:delete_matched).and_call_original
+        post "/admin/config", params: { site_config: { health_check_token: "token" },
+                                        confirmation: confirmation_message }
+        expect(Rails.cache).to have_received(:delete_matched).with("*-#{ApplicationConfig['RELEASE_FOOTPRINT']}")
+      end
+
       describe "API tokens" do
         it "updates the health_check_token" do
           token = rand(20).to_s
