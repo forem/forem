@@ -143,7 +143,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
            :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html)
+           :email_digest_eligible, :processed_html, :second_user_id, :third_user_id)
   }
 
   scope :boosted_via_additional_articles, lambda {
