@@ -40,10 +40,8 @@ class Article < ApplicationRecord
   has_many :rating_votes, dependent: :destroy
   has_many :top_comments,
            lambda {
-             where(
-               "comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE",
-               10,
-             ).order("comments.score" => :desc)
+             where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.score" => :desc)
            },
            as: :commentable,
            inverse_of: :commentable,
@@ -53,7 +51,8 @@ class Article < ApplicationRecord
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url, uniqueness: { allow_nil: true }
   validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
-  validates :feed_source_url, uniqueness: { allow_blank: true }
+  validates :feed_source_url, uniqueness: { allow_nil: true }
+  validates :feed_source_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
@@ -354,13 +353,11 @@ class Article < ApplicationRecord
   end
 
   def video_duration_in_minutes
-    minutes = video_duration_in_minutes_integer
-    seconds = video_duration_in_seconds.to_i % 60
-    seconds = "0#{seconds}" if seconds.to_s.size == 1
+    duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
+    minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
+    return minutes_and_seconds if duration[:hours] < 1
 
-    hours = (video_duration_in_seconds.to_i / 3600)
-    minutes = "0#{minutes}" if hours.positive? && minutes < 10
-    hours < 1 ? "#{minutes}:#{seconds}" : "#{hours}:#{minutes}:#{seconds}"
+    "#{duration[:hours]}:#{minutes_and_seconds}"
   end
 
   def video_duration_in_minutes_integer
