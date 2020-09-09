@@ -41,8 +41,7 @@ module Admin
 
     def bust_link(link)
       if link.starts_with?(URL.url)
-        link.sub!(URL.url,
-                  "")
+        link.sub!(URL.url, "")
       end
       CacheBuster.bust(link)
       CacheBuster.bust("#{link}/")
