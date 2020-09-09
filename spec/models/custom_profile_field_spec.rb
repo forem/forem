@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe CustomProfileField, type: :model do
   it_behaves_like "a profile field"
@@ -6,7 +6,7 @@ RSpec.describe CustomProfileField, type: :model do
   describe "#validate_maximum_count" do
     it "validates that user's can't have more than 3 custom profile fields" do
       profile = create(:profile)
-      create_list(:custom_profile_field, 3, profile: profile)
+      create_list(:custom_profile_field, 5, profile: profile)
 
       custom_profile_field = build(:custom_profile_field, profile: profile)
       custom_profile_field.save
