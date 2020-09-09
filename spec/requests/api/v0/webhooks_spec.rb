@@ -121,15 +121,18 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       get api_webhook_path(webhook.id)
 
       response_webhook_user = response.parsed_body["user"]
-      user_profile_image = ProfileImage.new(webhook.user)
 
-      expect(response_webhook_user["name"]).to eq(webhook.user.name)
-      expect(response_webhook_user["username"]).to eq(webhook.user.username)
-      expect(response_webhook_user["twitter_username"]).to eq(webhook.user.twitter_username)
-      expect(response_webhook_user["github_username"]).to eq(webhook.user.github_username)
-      expect(response_webhook_user["website_url"]).to eq(webhook.user.processed_website_url)
-      expect(response_webhook_user["profile_image"]).to eq(user_profile_image.get(width: 640))
-      expect(response_webhook_user["profile_image_90"]).to eq(user_profile_image.get(width: 90))
+      expect(response_webhook_user).to eq({
+                                            "name" => webhook.user.name,
+                                            "username" => webhook.user.username,
+                                            "twitter_username" => webhook.user.twitter_username,
+                                            "github_username" => webhook.user.github_username,
+                                            "website_url" => webhook.user.processed_website_url,
+                                            "profile_image" => Images::Profile.call(webhook.user.profile_image_url,
+                                                                                   length: 640),
+                                            "profile_image_90" => Images::Profile.call(webhook.user.profile_image_url,
+                                                                                      length: 90)
+                                          })
     end
   end
 

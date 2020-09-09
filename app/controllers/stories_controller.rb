@@ -378,7 +378,7 @@ class StoriesController < ApplicationController
       },
       "url": URL.user(@user),
       "sameAs": user_same_as,
-      "image": ProfileImage.new(@user).get(width: 320),
+      "image": Images::Profile.call(@user.profile_image_url, length: 320),
       "name": @user.name,
       "email": @user.email_public ? @user.email : nil,
       "jobTitle": @user.employment_title.presence,
@@ -444,7 +444,7 @@ class StoriesController < ApplicationController
         "@id": URL.organization(@organization)
       },
       "url": URL.organization(@organization),
-      "image": ProfileImage.new(@organization).get(width: 320),
+      "image": Images::Profile.call(@organization.profile_image_url, length: 320),
       "name": @organization.name,
       "description": @organization.summary.presence || "404 bio not found"
     }
