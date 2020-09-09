@@ -180,7 +180,7 @@ class Comment < ApplicationRecord
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
       unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
-        anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img")
+        anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img") # rubocop:disable Style/SoleNestedConditional
       end
     end
     self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
