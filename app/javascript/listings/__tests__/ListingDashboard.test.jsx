@@ -188,7 +188,8 @@ const listings = {
 
 describe('<ListingDashboard />', () => {
   afterAll(() => {
-    delete globalThis.timeAgo;
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
   });
 
   it('should have no a11y violations', async () => {

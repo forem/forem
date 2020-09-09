@@ -11,6 +11,11 @@ import '../../../../assets/javascripts/utilities/localDateTime';
 
 describe('<DateTime />', () => {
   it('should have no a11y violations', async () => {
+    afterAll(() => {
+      delete globalThis.timestampToLocalDateTimeLong;
+      delete globalThis.timestampToLocalDateTimeShort;
+    });
+
     const { container } = render(
       <DateTime
         className={'date-time'}
