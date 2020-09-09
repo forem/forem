@@ -54,7 +54,8 @@
         data-user-status="<%= user_logged_in_status %>"
         class="<%= SiteConfig.default_font.tr("_", "-") %>-article-body"
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
-        data-app-name="<%= ApplicationConfig["APP_NAME"] %>">
+        data-app-name="<%= ApplicationConfig["APP_NAME"] %>"
+        data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
         <div id="body-styles">
           <style>
             :root {
