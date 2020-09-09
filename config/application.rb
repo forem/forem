@@ -44,6 +44,7 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
 
+    # Middlewares folder is not otherwise autorequired.
     Dir["./app/middlewares/*.rb"].sort.each do |file|
       require file
     end
