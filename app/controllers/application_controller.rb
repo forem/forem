@@ -154,6 +154,8 @@ class ApplicationController < ActionController::Base
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
+    # elsif action_name == "destroy" && user_signed_in?
+    #   current_user.forget_me!
     end
   end
 
