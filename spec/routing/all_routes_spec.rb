@@ -9,6 +9,7 @@ RSpec.describe "all routes", type: :routing do
       controller: "stories",
       action: "index",
       username: podcast.slug,
+      locale: nil, # default locale
     )
   end
 
@@ -17,6 +18,7 @@ RSpec.describe "all routes", type: :routing do
       controller: "stories",
       action: "index",
       username: user.username,
+      locale: nil, # default locale
     )
   end
 
@@ -26,6 +28,7 @@ RSpec.describe "all routes", type: :routing do
       action: "show",
       slug: "this-is-a-slug",
       username: "ben",
+      locale: nil, # default locale
     )
   end
 

@@ -1,12 +1,12 @@
 module Admin
   class ProfileFieldsController < Admin::ApplicationController
     ALLOWED_PARAMS = %i[
-      input_type label active placeholder_text description profile_field_group_id
+      input_type label active placeholder_text description profile_field_group_id display_area show_in_onboarding
     ].freeze
     layout "admin"
 
     def index
-      @grouped_profile_fields = ProfileFieldGroup.all.includes(:profile_fields).order(:name)
+      @grouped_profile_fields = ProfileFieldGroup.includes(:profile_fields).order(:name)
       @ungrouped_profile_fields = ProfileField.where(profile_field_group_id: nil).order(:label)
     end
 

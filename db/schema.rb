@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_01_084210) do
+ActiveRecord::Schema.define(version: 2020_09_04_151734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2020_09_01_084210) do
     t.string "utm_term"
     t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
+    t.index ["user_id", "mailer"], name: "index_ahoy_messages_on_user_id_and_mailer"
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
   end
 
@@ -153,9 +154,10 @@ ActiveRecord::Schema.define(version: 2020_09_01_084210) do
     t.string "video_state"
     t.string "video_thumbnail_url"
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
+    t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
-    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url"
+    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
@@ -440,6 +442,17 @@ ActiveRecord::Schema.define(version: 2020_09_01_084210) do
     t.bigint "user_id"
     t.index ["purchase_id", "purchase_type"], name: "index_credits_on_purchase_id_and_purchase_type"
     t.index ["spent"], name: "index_credits_on_spent"
+  end
+
+  create_table "custom_profile_fields", force: :cascade do |t|
+    t.string "attribute_name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.string "description"
+    t.citext "label", null: false
+    t.bigint "profile_id", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["label", "profile_id"], name: "index_custom_profile_fields_on_label_and_profile_id", unique: true
+    t.index ["profile_id"], name: "index_custom_profile_fields_on_profile_id"
   end
 
   create_table "data_update_scripts", force: :cascade do |t|
@@ -1386,6 +1399,7 @@ ActiveRecord::Schema.define(version: 2020_09_01_084210) do
   add_foreign_key "comments", "users", on_delete: :cascade
   add_foreign_key "credits", "organizations", on_delete: :restrict
   add_foreign_key "credits", "users", on_delete: :cascade
+  add_foreign_key "custom_profile_fields", "profiles", on_delete: :cascade
   add_foreign_key "display_ad_events", "display_ads", on_delete: :cascade
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade

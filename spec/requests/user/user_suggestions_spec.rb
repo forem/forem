@@ -32,7 +32,7 @@ RSpec.describe "Users", type: :request do
           "name" => suggested_user.name,
           "username" => suggested_user.username,
           "summary" => suggested_user.summary,
-          "profile_image_url" => ProfileImage.new(suggested_user).get(width: 90),
+          "profile_image_url" => Images::Profile.call(suggested_user.profile_image_url, length: 90),
           "following" => false,
         )
       end

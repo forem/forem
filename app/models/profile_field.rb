@@ -1,9 +1,5 @@
 class ProfileField < ApplicationRecord
-  self.ignored_columns = ["group"]
-
-  before_create :generate_attribute_name
-
-  WORD_REGEX = /\w+/.freeze
+  include ActsAsProfileField
 
   # Key names follow the Rails form helpers
   enum input_type: {
@@ -20,19 +16,11 @@ class ProfileField < ApplicationRecord
 
   belongs_to :profile_field_group, optional: true
 
-  validates :label, presence: true, uniqueness: { case_sensitive: false }
-  validates :attribute_name, presence: true, on: :update
   validates :show_in_onboarding, inclusion: { in: [true, false] }
 
   def type
     return :boolean if check_box?
 
     :string
-  end
-
-  private
-
-  def generate_attribute_name
-    self.attribute_name = label.titleize.scan(WORD_REGEX).join.underscore
   end
 end

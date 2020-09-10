@@ -108,6 +108,7 @@
 
         !url.href.includes('/resource_admin') && // Don't fetch for administrate dashboard.
         !url.href.includes('/api/') && // Don't run on API endpoints.
+        !url.href.includes('/locale/') && // Don't run on explicit locale endpoints.
         !url.href.includes('/embed/') && // Don't fetch for embeded content.
         !url.href.includes('/feed') && // Skip the RSS feed
         !url.href.includes('/rss') && // Skip the RSS feed alternative path
@@ -139,7 +140,9 @@
         // Don't run on harcoded redirects (see config/routes.rb for the list)
         !url.href.includes('/%F0%9F%92%B8') && // 💸 (hiring)
         !url.href.includes('/api') &&
+        !url.href.includes('/forem') &&
         !url.href.includes('/future') &&
+        !url.href.includes('/internal') &&
         !url.href.includes('/podcasts') &&
         !url.href.includes('/shop') &&
         !url.href.includes('/survey') &&

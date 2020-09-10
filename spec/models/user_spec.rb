@@ -1195,7 +1195,8 @@ RSpec.describe User, type: :model do
   describe "profiles" do
     before do
       create(:profile_field, label: "Available for")
-      Profile.refresh_store_accessors!
+      create(:profile_field, label: "Brand Color 1")
+      Profile.refresh_attributes!
     end
 
     it "automatically creates a profile for new users", :aggregate_failures do
@@ -1204,7 +1205,7 @@ RSpec.describe User, type: :model do
       expect(user.profile).to respond_to(:available_for)
     end
 
-    it "propagates changes to the profile model", :aggregate_failures do
+    it "propagates changes of unmapped attributes to the profile model", :aggregate_failures do
       expect do
         user.update(available_for: "profile migrations")
       end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
@@ -1213,11 +1214,13 @@ RSpec.describe User, type: :model do
       expect(user.reload.available_for).to eq "profile migrations"
     end
 
-    it "reads from the profile model, not the user", :aggregate_failures do
-      user.profile.update(available_for: "Well, actually...")
+    it "propagates changes of mapped attributes to the profile model", :aggregate_failures do
+      expect do
+        user.update(bg_color_hex: "#abcdef")
+      end.to change { user.profile.reload.brand_color1 }.to("#abcdef")
 
-      expect(user.available_for).to eq "Well, actually..."
-      expect(user[:available_for]).to be nil
+      # Changes were also persisted in the users table
+      expect(user.reload.bg_color_hex).to eq "#abcdef"
     end
   end
 end

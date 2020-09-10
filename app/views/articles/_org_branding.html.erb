@@ -2,7 +2,7 @@
   <div class="flex <% if author == true %>mt-6<% end %>">
     <a href="/<%= organization.slug %>" class="crayons-logo crayons-logo--2xl shrink-0 mr-4">
       <% cache("article-organization-image-#{organization.id}-#{organization.updated_at.rfc3339}", expires_in: 100.hours) do %>
-        <img src="<%= ProfileImage.new(organization).get %>" alt="<%= organization.name %>" class="crayons-logo__image" />
+        <img src="<%= Images::Profile.call(organization.profile_image_url) %>" alt="<%= organization.name %>" class="crayons-logo__image" />
       <% end %>
     </a>
     <div>

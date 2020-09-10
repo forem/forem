@@ -8,8 +8,8 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
 import debounceAction from '../utilities/debounceAction';
-import { dragDrop } from '../utilities/dragAndUpload';
 import { addSnackbarItem } from '../Snackbar';
+import { processImageUpload } from '../article-form/actions';
 import {
   conductModeration,
   getAllMessages,
@@ -41,6 +41,7 @@ import Message from './message';
 import ActionMessage from './actionMessage';
 import Content from './content';
 import { VideoContent } from './videoContent';
+import { DragAndDropZone } from '@utilities/dragAndDrop';
 
 const NARROW_WIDTH_LIMIT = 767;
 const WIDE_WIDTH_LIMIT = 1600;
@@ -130,7 +131,9 @@ export default class Chat extends Component {
 
     setupObserver(this.observerCallback);
 
-    this.subscribePusher(`private-message-notifications--${appName}-${currentUserId}`);
+    this.subscribePusher(
+      `private-message-notifications--${appName}-${currentUserId}`,
+    );
 
     if (activeChannelId) {
       sendOpen(activeChannelId, this.handleChannelOpenSuccess, null);
@@ -1412,14 +1415,23 @@ export default class Chat extends Component {
       .getElementById('jumpback_button')
       .classList.remove('chatchanneljumpback__hide');
   };
-  handleImageDrop = (e) => {
-    e.preventDefault();
-    const { files } = e.dataTransfer;
 
-    const messageArea = document.getElementById('messagelist');
-    messageArea.classList.remove('opacity-25');
-    messageArea.classList.add('opacity-100');
-    dragDrop(files, this.handleImageSuccess, this.handleImageFailure);
+  handleDragOver = (event) => {
+    event.preventDefault();
+    event.currentTarget.classList.add('opacity-25');
+  };
+
+  handleDragExit = (event) => {
+    event.preventDefault();
+    event.currentTarget.classList.remove('opacity-25');
+  };
+
+  handleImageDrop = (event) => {
+    event.preventDefault();
+    const { files } = event.dataTransfer;
+
+    event.currentTarget.classList.remove('opacity-25');
+    processImageUpload(files, this.handleImageSuccess, this.handleImageFailure);
   };
   handleImageSuccess = (res) => {
     const { links, image } = res;
@@ -1433,7 +1445,7 @@ export default class Chat extends Component {
     const after = text.substring(end, text.length);
     el.value = `${before + mLink} ${after}`;
     el.selectionStart = start + mLink.length + 1;
-    el.selectionEnd = start + mLink.length + 1;
+    el.selectionEnd = el.selectionStart;
     el.focus();
   };
   handleImageFailure = (e) => {
@@ -1448,7 +1460,6 @@ export default class Chat extends Component {
     e.preventDefault();
     const messageArea = document.getElementById('messagelist');
     messageArea.classList.remove('opacity-25');
-    messageArea.classList.add('opacity-100');
   }
   renderActiveChatChannel = (channelHeader) => {
     const { state, props } = this;
@@ -1457,20 +1468,26 @@ export default class Chat extends Component {
       <div className="activechatchannel">
         <div className="activechatchannel__conversation">
           {channelHeader}
-          <div
-            className="activechatchannel__messages"
-            onScroll={this.handleMessageScroll}
-            ref={(scroller) => {
-              this.scroller = scroller;
-            }}
-            id="messagelist"
-            onDragOver={this.handleDragHover}
+          <DragAndDropZone
+            onDragOver={this.handleDragOver}
             onDragExit={this.handleDragExit}
             onDrop={this.handleImageDrop}
           >
-            {this.renderMessages()}
-            <div className="messagelist__sentinel" id="messagelist__sentinel" />
-          </div>
+            <div
+              className="activechatchannel__messages"
+              onScroll={this.handleMessageScroll}
+              ref={(scroller) => {
+                this.scroller = scroller;
+              }}
+              id="messagelist"
+            >
+              {this.renderMessages()}
+              <div
+                className="messagelist__sentinel"
+                id="messagelist__sentinel"
+              />
+            </div>
+          </DragAndDropZone>
           <div
             className="chatchanneljumpback chatchanneljumpback__hide"
             id="jumpback_button"

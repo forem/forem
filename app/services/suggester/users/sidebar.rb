@@ -26,7 +26,7 @@ module Suggester
         @active_authors_for_given_tags ||= Article.published.tagged_with([given_tag], any: true)
           .where("public_reactions_count >= ?", minimum_reaction_count)
           .where("published_at > ?", 4.months.ago)
-          .where("user_id != ?", user.id)
+          .where.not(user_id: user.id)
           .where.not(user_id: user.following_by_type("User"))
           .pluck(:user_id)
       end

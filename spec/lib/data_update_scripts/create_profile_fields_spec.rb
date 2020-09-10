@@ -6,6 +6,11 @@ def profile_field_and_group_count
 end
 
 describe DataUpdateScripts::CreateProfileFields do
+  before do
+    ProfileFieldGroup.destroy_all
+    ProfileField.destroy_all
+  end
+
   context "when no profile fields or groups exist" do
     it "creates all profile fields and groups" do
       expect do
@@ -18,11 +23,6 @@ describe DataUpdateScripts::CreateProfileFields do
     before do
       csv = Rails.root.join("lib/data/dev_profile_fields.csv")
       ProfileFields::ImportFromCsv.call(csv)
-    end
-
-    after do
-      ProfileFieldGroup.destroy_all
-      ProfileField.destroy_all
     end
 
     it "works when profile fields or groups already exist", :aggregate_failures do
