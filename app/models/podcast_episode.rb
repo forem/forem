@@ -89,8 +89,7 @@ class PodcastEpisode < ApplicationRecord
     nil
   end
   alias user_id nil_method
-  alias second_user_id nil_method
-  alias third_user_id nil_method
+  alias co_author_ids nil_method
 
   private
 
