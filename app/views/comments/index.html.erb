@@ -58,21 +58,23 @@
           </h1>
           <p class="color-base-60">
             <%= @commentable.is_a?(PodcastEpisode) ? @commentable.podcast.name : @commentable.user.name %>
-            <%= "on " + @commentable.published_at.strftime("%B %d, %Y") if @commentable.published_at %></span>
+            <%= "on #{@commentable.published_at.strftime('%B %d, %Y')}" if @commentable.published_at %></span>
           </p>
         </div>
       </header>
 
       <% if @commentable.processed_html.present? %>
-        <div class="crayons-article__body text-styles -mt-1 m:-mt-2">
-          <% if @commentable.processed_html.size < 350 %>
-            <%= sanitize_rendered_markdown(@commentable.processed_html) %>
-          <% else %>
-            <%= truncate(sanitize(@commentable.processed_html, tags: []), length: 150) %>
-            <div class="pt-6">
-              <a class="crayons-btn crayons-btn--outlined" href="<%= @commentable.path %>">Read full post</a>
-            </div>
-          <% end %>
+        <div class="crayons-article__main">
+          <div class="crayons-article__body text-styles -mt-1 m:-mt-2">
+            <% if @commentable.processed_html.size < 350 %>
+              <%= sanitize_rendered_markdown(@commentable.processed_html) %>
+            <% else %>
+              <%= truncate(sanitize(@commentable.processed_html, tags: []), length: 150) %>
+              <div class="pt-6">
+                <a class="crayons-btn crayons-btn--outlined" href="<%= @commentable.path %>">Read full post</a>
+              </div>
+            <% end %>
+          </div>
         </div>
       <% end %>
     </article>
@@ -108,8 +110,8 @@
 
     <% if !@root_comment %>
       <%= render "form",
-                commentable: @commentable,
-                commentable_type: "Article" %>
+                 commentable: @commentable,
+                 commentable_type: "Article" %>
     <% end %>
 
     <ol class="comments" id="comment-trees-container">
