@@ -1,0 +1,85 @@
+@import '../config/import';
+
+.crayons-reactions {
+  --reaction-bg: transparent;
+  --reaction-border: var(--base-a10);
+  --label-color: var(--base-60);
+  display: inline-flex;
+  align-items: center;
+  padding: var(--su-1);
+  border: none;
+  border-radius: var(--radius);
+  background: transparent;
+
+  &__icons {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &__icon {
+    background: var(--card-bg);
+    border: 1px solid var(--reaction-border);
+    box-shadow: inset 0 0 0 var(--su-7) var(--reaction-bg);
+    color: var(--reaction-color);
+    border-radius: 50%;
+    padding: var(--su-1);
+    display: inline-flex;
+    z-index: 2;
+    position: relative;
+
+    &:nth-child(n + 2) {
+      margin-left: -6px;
+      z-index: 1;
+    }
+
+    &--like {
+      --reaction-color: var(--reaction-like-color);
+      &.crayons-reactions__icon--active {
+        --reaction-bg: var(--reaction-like-bg);
+      }
+    }
+
+    &--custom {
+      --reaction-color: var(--reaction-custom-color);
+
+      &.crayons-reactions__icon--active {
+        --reaction-bg: var(--reaction-custom-bg);
+      }
+    }
+
+    &--comment {
+      --reaction-color: var(--base-60);
+      &.crayons-reactions__icon--active {
+        --reaction-bg: var(--base-10);
+      }
+    }
+
+    &--active {
+      --reaction-border: var(--reaction-color);
+    }
+  }
+
+  &__label {
+    font-size: var(--fs-s);
+    color: var(--label-color);
+    line-height: 100%;
+    padding: 0 var(--su-1) 0 var(--su-2);
+
+    a {
+      color: inherit;
+
+      &:hover {
+        color: var(--link-color-hover);
+      }
+    }
+  }
+
+  &[type],
+  &[href] {
+    &:hover {
+      --reaction-border: var(--base-a20);
+      --label-color: var(--base-80);
+      background: var(--base-10);
+    }
+  }
+}

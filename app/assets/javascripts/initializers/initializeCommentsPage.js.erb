@@ -28,9 +28,9 @@ function initializeCommentsPage() {
               for (var i = 0; i < publicReactionCounts.length; i++) {
                 var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
                 if (buttForComment) {
-                  if (publicReactionCounts[i].count > 0) {
+                  if (publicReactionCounts[i].count >= 0) {
                     if (!document.getElementById('reactions-count-' + publicReactionCounts[i].id)) {
-                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
+                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='crayons-reactions__label reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
                     } else {
                       document.getElementById('reactions-count-' + publicReactionCounts[i].id).innerHTML = publicReactionCounts[i].count;
                     }

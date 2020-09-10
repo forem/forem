@@ -77,19 +77,28 @@
         </div>
 
         <footer class="comment__footer" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">
-          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left">
-            <%= inline_svg_tag("small-heart.svg", class: "crayons-icon") %>34
+          <button class="reaction-button crayons-reactions mr-2" type="button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>">
+            <span class="crayons-reactions__icons">
+              <span class="crayons-reactions__icon crayons-reactions__icon--like">
+                <%= inline_svg_tag("heart-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+              </span>
+            </span>
           </button>
 
-          <% if comment.depth < 2 || is_childless %>
-            <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form crayons-btn crayons-btn--ghost crayons-btn--icon-left" rel="nofollow">
-              <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Reply
-            </a>
-          <% else %>
-            <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication crayons-btn crayons-btn--ghost crayons-btn--icon-left" rel="nofollow">
-              <%= inline_svg_tag("small-comment.svg", class: "crayons-icon") %>Thread
-            </a>
-          <% end %>
+          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="crayons-reactions toggle-reply-form <% unless comment.depth < 2 || is_childless %>thread-indication<% end %>" rel="nofollow">
+            <span class="crayons-reactions__icons">
+              <span class="crayons-reactions__icon crayons-reactions__icon--comment">
+                <%= inline_svg_tag("comment.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Comment") %>
+              </span>
+            </span>
+            <span class="crayons-reactions__label">
+              <% if comment.depth < 2 || is_childless %>
+                Reply
+              <% else %>
+                Thread
+              <% end %>
+            </span>
+          </a>
         </footer>
       <% end %>
 
@@ -140,16 +149,6 @@
               </span>
             </span>
           </a>
-          <!-- TODO: social links -->
-          <% if comment.user.twitter_username.present? %>
-            <a href="https://twitter.com/<%= comment.user.twitter_username %>" rel="noopener noreferrer" target="_blank">
-              <%= image_tag("twitter-logo.svg", class: "icon-img", alt: "twitter logo") %></a>
-          <% end %>
-          <% if comment.user.github_username.present? %>
-            <a href="https://github.com/<%= comment.user.github_username %>" rel="noopener noreferrer" target="_blank">
-              <%= image_tag("github-logo.svg", class: "icon-img", alt: "github logo") %>
-            </a>
-          <% end %>
 
           <%= render "comments/comment_date", decorated_comment: decorated_comment %>
 
@@ -165,11 +164,6 @@
         <div class="actions" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">
           <span class="current-user-actions hidden" style="display:none">
           </span>
-          <% if comment.depth < 2 || is_childless %>
-            <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form" rel="nofollow">REPLY</a>
-          <% else %>
-            <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication" rel="nofollow">THREAD</a>
-          <% end %>
         </div>
       </div>
     <% end %>
