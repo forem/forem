@@ -1,4 +1,4 @@
-# Since we must explicetly set the cookie domain in session_store before SiteConfig is available,
+# Since we must explicitly set the cookie domain in session_store before SiteConfig is available,
 # this ensures we properly set the cookie to SiteConfig.app_domain at runtime.
 
 class SetCookieDomain
