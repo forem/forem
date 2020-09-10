@@ -149,6 +149,7 @@ module Admin
 
     def newsletter_params
       %i[
+        mailchimp_api_key
         mailchimp_community_moderators_id
         mailchimp_newsletter_id
         mailchimp_sustaining_members_id
