@@ -4,6 +4,8 @@ import { axe } from 'jest-axe';
 import { render, getNodeText } from '@testing-library/preact';
 import SingleArticle from '../index';
 
+import '../../../../assets/javascripts/utilities/localDateTime';
+
 const getTestArticle = () => ({
   id: 1,
   title: 'An article title',
@@ -16,7 +18,15 @@ const getTestArticle = () => ({
   },
 });
 
+/* eslint-disable no-unused-vars */
+/* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
+
 describe('<SingleArticle />', () => {
+  afterAll(() => {
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(
       <Fragment>

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { h, Component, Fragment } from 'preact';
 import { createPortal } from 'preact/compat';
 import { toggleFlagUserModal, FlagUserModal } from '../../packs/flagUserModal';
-import { formatDate } from './util';
+import DateTime from '../../shared/components/dateTime';
 
 export default class SingleArticle extends Component {
   activateToggle = (e) => {
@@ -72,7 +72,7 @@ export default class SingleArticle extends Component {
             {user.name}
           </span>
           <span className="article-published-at fs-s fw-bold lh-tight">
-            <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
+            <DateTime dateTime={publishedAt} />
           </span>
           <div
             className={`article-iframes-container ${

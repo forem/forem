@@ -2,6 +2,8 @@ import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { ModerationArticles } from '../moderationArticles';
 
+import '../../../assets/javascripts/utilities/localDateTime';
+
 const getTestArticles = () => {
   const articles = [
     {
@@ -34,7 +36,15 @@ const getTestArticles = () => {
   return JSON.stringify(articles);
 };
 
+/* eslint-disable no-unused-vars */
+/* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
+
 describe('<ModerationArticles />', () => {
+  afterAll(() => {
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
+  });
+
   beforeEach(() => {
     render(
       <div

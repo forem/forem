@@ -77,10 +77,21 @@ function timestampToLocalDateTimeLong(timestamp) {
 function timestampToLocalDateTimeShort(timestamp) {
   // example: "10 Dec 2018" if it is not the current year
   // example: "6 Sep" if it is the current year
+  // example: "22:43" if the date is the current date
 
   if (timestamp) {
-    const currentYear = new Date().getFullYear();
-    const givenYear = new Date(timestamp).getFullYear();
+    const dateToday = new Date();
+    const givenDate = new Date(timestamp);
+
+    if (dateToday.toDateString() === givenDate.toDateString()) {
+      return timestampToLocalDateTime(timestamp, navigator.language, {
+        hour: 'numeric',
+        minute: 'numeric',
+      });
+    }
+
+    const currentYear = dateToday.getFullYear();
+    const givenYear = givenDate.getFullYear();
 
     var timeOptions = {
       day: 'numeric',
