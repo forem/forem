@@ -14,8 +14,8 @@ RSpec.describe "Admin manages chat channels", type: :system do
 
   it "loads the view" do
     expect(page).to have_content("Chat Channels")
-    expect(page).to have_content("Create New Connect Channel")
-    expect(page).to have_content("Group Connect Channels")
+    expect(page).to have_content("Create Channel")
+    expect(page).to have_content("Channels")
   end
 
   context "when creating a chat channel" do

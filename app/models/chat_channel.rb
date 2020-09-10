@@ -110,11 +110,11 @@ class ChatChannel < ApplicationRecord
 
   def pusher_channels
     if invite_only?
-      "private-channel-#{id}"
+      "private-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
     elsif open?
-      "open-channel-#{id}"
+      "open-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
     else
-      chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}" }
+      chat_channel_memberships.pluck(:user_id).map { |id| ChatChannel.pm_notifications_channel(id) }
     end
   end
 
@@ -161,11 +161,15 @@ class ChatChannel < ApplicationRecord
     pending_users.select(:id, :username, :name, :updated_at)
   end
 
+  def self.pm_notifications_channel(user_id)
+    "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{user_id}"
+  end
+
   private
 
   def user_obj(membership)
     {
-      profile_image: ProfileImage.new(membership.user).get(width: 90),
+      profile_image: Images::Profile.call(membership.user.profile_image_url, length: 90),
       darker_color: membership.user.decorate.darker_color,
       name: membership.user.name,
       last_opened_at: membership.last_opened_at,

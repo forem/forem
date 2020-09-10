@@ -1,0 +1,43 @@
+<nav class="flex mb-4" aria-label="Display Ads navigation">
+  <%= form_tag("/admin/display_ads", method: "get") do %>
+    <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "top-bar--search-input crayons-textfield", placeholder: "Search by Org name") %>
+  <% end %>
+  <div class="ml-auto">
+    <div class="justify-content-end">
+      <%= link_to "Make A New Display Ad", new_admin_display_ad_path, class: "crayons-btn" %>
+    </div>
+  </div>
+</nav>
+
+<%= paginate @display_ads %>
+
+<table class="crayons-table" width="100%">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Organization</th>
+      <th scope="col">Placement Area</th>
+      <th scope="col">Body Markdown</th>
+      <th scope="col">Published</th>
+      <th scope="col">Approved</th>
+      <th scope="col">Success Rate</th>
+    </tr>
+  </thead>
+  <tbody class="crayons-card">
+    <% @display_ads.each do |display_ad| %>
+        <tr>
+          <td><%= link_to display_ad.id, edit_admin_display_ad_path(display_ad) %></td>
+          <td><%= link_to display_ad.organization.name, admin_organization_path(display_ad.organization) %></td>
+          <td><%= display_ad.placement_area %></td>
+          <td><%= display_ad.body_markdown.truncate(30) %></td>
+          <td><%= display_ad.published %></td>
+          <td><%= display_ad.approved %></td>
+          <td><%= display_ad.success_rate %></td>
+          <td><%= link_to "Edit", edit_admin_display_ad_path(display_ad), class: "crayons-btn" %></td>
+          <td><%= link_to "Destroy", admin_display_ad_path(display_ad), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %></td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @display_ads %>

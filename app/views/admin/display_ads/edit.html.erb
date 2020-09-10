@@ -1,0 +1,7 @@
+<h2 class="fs-2xl s:fs-3xl mb-6">Edit Display Ad:</h2>
+<div class="crayons-card p-6">
+  <%= form_for([:admin, @display_ad], method: :patch) do %>
+    <%= render "form" %>
+    <%= submit_tag "Update Display Ad", class: "btn btn-primary" %>
+  <% end %>
+</div>

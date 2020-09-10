@@ -61,7 +61,7 @@ if (process.env.HONEYBADGER_API_KEY && process.env.ASSETS_URL) {
       assetsUrl: process.env.ASSETS_URL,
       silent: false,
       ignoreErrors: false,
-      revision: process.env.HEROKU_SLUG_COMMIT || 'master',
+      revision: process.env.RELEASE_FOOTPRINT || process.env.HEROKU_SLUG_COMMIT || 'master',
     }),
   );
 }

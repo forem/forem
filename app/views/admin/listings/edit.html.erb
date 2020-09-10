@@ -1,36 +1,42 @@
-<%= link_to "Back to All Listings", admin_listings_path, class: "btn btn-primary float-right" %>
+<header class="mb-6 flex items-center">
+  <h2 class="fs-2xl s:fs-3xl mb-4">Edit</h2>
 
-<h2>Edit <%= link_to @listing.title, "/listings/#{@listing.category}/#{@listing.slug}", target: "_blank", rel: "noopener" %></h2>
+  <div class="ml-auto flex">
+    <%= link_to "Remove", url_for(action: :destroy, id: @listing.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger mr-2" %>
 
-<%= form_with model: [:admin, @listing], method: :patch do |form| %>
-  <div class="form-group">
-    <%= form.label :title %>
-    <%= form.text_field :title, size: 100, maxlength: 128, class: "form-control" %>
+    <%= form_with model: [:admin, @listing], method: :patch do |f| %>
+      <input type="hidden" name="listing[action]" value="bump" />
+      <%= f.submit "Bump Listing ⏫", class: "btn btn-secondary" %>
+    <% end %>
+
+    <%= link_to "View", "/listings/#{@listing.category}/#{@listing.slug}", target: "_blank", rel: "noopener", class: "btn btn-primary ml-2" %>
+
   </div>
-  <div class="form-group">
-    <%= form.label :body_markdown %>
-    <%= form.text_area :body_markdown, cols: 40, rows: 15, maxlength: 400, class: "form-control" %>
-  </div>
-  <div class="form-group">
-    <%= form.label :tag_list %>
-    <i style="font-size: 15px;">Comma separated, one space, 8 tags max</i>
-    <%= form.text_field :tag_list, value: @listing.cached_tag_list, size: 100, class: "form-control" %>
-  </div>
-  <div class="form-group">
-    <%= form.label :listing_category_id %>
-    <%= form.select :listing_category_id, select_options_for_categories %>
-  </div>
-  <div class="form-check">
-    <%= form.check_box :published, checked: @listing.published? %>
-    <%= form.label :published %>
-  </div>
-  <%= form.submit "Update Listing", class: "btn btn-primary float-right" %>
-<% end %>
-<hr class="mt-5">
-<div class="d-flex justify-content-start">
-  <%= form_with model: [:admin, @listing], method: :patch do |f| %>
-    <input type="hidden" name="listing[action]" value="bump" />
-    <%= f.submit "Bump Listing ⏫", class: "btn btn-secondary" %>
+</header>
+
+<div class="crayons-card p-6">
+  <%= form_with model: [:admin, @listing], method: :patch do |form| %>
+    <div class="form-group">
+      <%= form.label :title %>
+      <%= form.text_field :title, size: 100, maxlength: 128, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= form.label :body_markdown %>
+      <%= form.text_area :body_markdown, cols: 40, rows: 15, maxlength: 400, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= form.label :tag_list %>
+      <i class="fs-s">Comma separated, one space, 8 tags max</i>
+      <%= form.text_field :tag_list, value: @listing.cached_tag_list, size: 100, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= form.label :listing_category_id %>
+      <%= form.select :listing_category_id, select_options_for_categories %>
+    </div>
+    <div class="form-check">
+      <%= form.check_box :published, checked: @listing.published? %>
+      <%= form.label :published %>
+    </div>
+    <%= form.submit "Update Listing", class: "btn btn-primary" %>
   <% end %>
-  <%= link_to "Destroy Listing", url_for(action: :destroy, id: @listing.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger ml-2" %>
 </div>

@@ -1,6 +1,6 @@
 <% title "Moderating " + @moderatable.title %>
 
-<% cache(cache_key_heroku_slug("mod-styling")) do %>
+<% cache(release_adjusted_cache_key("mod-styling")) do %>
   <style>
     <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
   </style>
@@ -161,6 +161,20 @@
         </span>
       </a>
     </div>
+
+    <% if current_user.any_admin? && @moderatable.published %>
+      <div class="unpublish-article">
+        <button
+          class="crayons-btn crayons-btn--danger"
+          id="unpublish-article-btn"
+          data-article-id="<%= @moderatable.id %>"
+          data-article-author="<%= @moderatable.username %>"
+          data-article-slug="<%= @moderatable.slug %>"
+        >
+          Unpublish Article
+        </button>
+      </div>
+    <% end %>
   </div>
 
   <div class="bottom-actions">

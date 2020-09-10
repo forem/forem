@@ -1,0 +1,24 @@
+<div class="form-group">
+  <%= label_tag :organization_id, "Organization ID:" %>
+  <%= text_field_tag :organization_id, @display_ad.organization_id, class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :body_markdown, "Body Markdown:" %>
+  <%= text_area_tag :body_markdown, @display_ad.body_markdown, size: "100x10", class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :placement_area, "Placement Area:" %>
+  <%= select_tag :placement_area, options_for_select(%w[sidebar_left sidebar_right], selected: @display_ad.placement_area), include_blank: true %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :published, "Published:" %>
+  <%= select_tag :published, options_for_select([false, true], selected: @display_ad.published) %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :approved, "Approved:" %>
+  <%= select_tag :approved, options_for_select([false, true], selected: @display_ad.approved) %>
+</div>

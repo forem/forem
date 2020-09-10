@@ -1,6 +1,10 @@
 module Constants
   module SiteConfig
     DETAILS = {
+      allow_email_password_registration: {
+        description: "Can users sign up with only email and password?",
+        placeholder: ""
+      },
       authentication_providers: {
         description: "How can users sign in?",
         placeholder: ""
@@ -79,6 +83,16 @@ module Constants
         description: "Email address",
         placeholder: ""
       },
+      facebook_key: {
+        description:
+          "The \"App ID\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
+        placeholder: ""
+      },
+      facebook_secret: {
+        description:
+          "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
+        placeholder: ""
+      },
       favicon_url: {
         description: "Used as the site favicon",
         placeholder: "https://image.url"
@@ -86,6 +100,10 @@ module Constants
       feed_style: {
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
         placeholder: "basic, rich, or compact"
+      },
+      primary_brand_color_hex: {
+        description: "Determines background/border of buttons etc. Must be dark enough to contrast with white text.",
+        placeholder: "#0a0a0a"
       },
       github_key: {
         description: "The \"Client ID\" portion of the GitHub Oauth Apps portal",
@@ -95,8 +113,8 @@ module Constants
         description: "The \"Client Secret\" portion of the GitHub Oauth Apps portal",
         placeholder: ""
       },
-      ga_view_id: {
-        description: "Google Analytics Reporting API v4 - View ID",
+      ga_tracking_id: {
+        description: "Google Analytics Tracking ID, e.g. UA-71991000-1",
         placeholder: ""
       },
       health_check_token: {
@@ -142,6 +160,14 @@ module Constants
       mascot_footer_image_url: {
         description: "Special cute mascot image used in the footer.",
         placeholder: "https://image.url"
+      },
+      mascot_footer_image_width: {
+        description: "The footer mascot width will resized to this value, defaults to 52",
+        placeholder: ""
+      },
+      mascot_footer_image_height: {
+        description: "The footer mascot height will be resized to this value, defaults to 120",
+        placeholder: ""
       },
       mascot_image_description: {
         description: "Used as the alt text for the mascot image",

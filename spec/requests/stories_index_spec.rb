@@ -19,10 +19,16 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
+    it "has data-ga-tracking" do
+      get "/"
+      expect(response.body).to include("data-ga-tracking=\"#{SiteConfig.ga_tracking_id}\"")
+    end
+
     it "renders registration page if site config is private" do
       SiteConfig.public = false
-      get "/"
-      expect(response.body).to include("Great to have you")
+
+      get root_path
+      expect(response.body).to include("Continue with")
     end
 
     it "renders proper description" do

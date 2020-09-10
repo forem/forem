@@ -35,7 +35,7 @@ class AsyncInfoController < ApplicationController
     set_surrogate_key_header "shell-version-endpoint"
     # shell_version will change on every deploy.
     # *Technically* could be only on changes to assets and shell, but this is more fool-proof.
-    shell_version = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+    shell_version = ApplicationConfig["RELEASE_FOOTPRINT"]
     render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
   end
 
@@ -56,7 +56,7 @@ class AsyncInfoController < ApplicationController
         id: @user.id,
         name: @user.name,
         username: @user.username,
-        profile_image_90: ProfileImage.new(@user).get(width: 90),
+        profile_image_90: Images::Profile.call(@user.profile_image_url, length: 90),
         followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score],
                                                           methods: [:points]),
         followed_podcast_ids: @user.cached_following_podcasts_ids,

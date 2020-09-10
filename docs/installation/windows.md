@@ -191,7 +191,7 @@ To install Elasticsearch perform the following steps:
    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
    shasum -a 512 -c elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
-   tar -xzf elasticsearch-7.5.2-linux-x86_64.tar.gz
+   tar -xzf elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
    ```
 
 2. Next, switch to the correct directory with:
@@ -271,7 +271,8 @@ To install Elasticsearch perform the following steps:
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. Run `bin/setup`.
+1. After ensuring that Elasticsearch, the PostgreSQL server, and the Redis
+   server are running, run `bin/setup`.
 
    > The `bin/setup` script is responsible for installing a varienty of
    > dependencies. One can find it inside the `bin` folder by the name of

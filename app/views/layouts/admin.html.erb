@@ -21,32 +21,42 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.16/css/bootstrap-select.min.css" integrity="sha256-g19F2KOr/H58l6XdI/rhCdEK3NmB8OILHwP/QYBQ8M4=" crossorigin="anonymous" />
 
-  <%= stylesheet_link_tag "internal/layout" %>
+  <%= stylesheet_link_tag "admin" %>
 
 </head>
-<body>
-  <div class="d-flex">
-    <nav class="sidebar-nav">
-      <a href="/admin">
-        <img class="d-block mx-auto mt-3" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>" width="40" height="40" alt="<%= community_name %> Logo">
-      </a>
-        <%= render "admin/shared/navbar" %>
-    </nav>
+<body class="admin">
+  <header class="top-bar" id="top-bar" role="banner">
+    <div class="top-bar__container">
+      <a href="/" class="top-bar--logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+      <h1 class="pl-4 fs-l">
+        Admin
+        <span class="color-base-40">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>
+      </h1>
 
-    <div class="container mt-3">
-      <header>
-        <% flash.each do |type, message| %>
-          <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
-            <button class="close" data-dismiss="alert" aria-label="Close">
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </button>
-            <%= message %>
-          </div>
-        <% end %>
-        <h1 class="mt-3"><%= controller_name.titleize %></h1>
-      </header>
-      <%= yield %>
+      <div class="top-bar__links">
+        <a href="/" aria-label="<%= community_name %> Home">Go to <%= community_name %> home page</a>
+      </div>
     </div>
+  </header>
+
+  <div class="crayons-layout crayons-layout--2-cols">
+    <div class="crayons-layout__left-sidebar">
+      <nav class="hidden m:block">
+        <%= render "admin/shared/navbar" %>
+      </nav>
+    </div>
+
+    <main class="crayons-layout__content min-w-0">
+      <% flash.each do |type, message| %>
+        <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
+          <button class="close" data-dismiss="alert" aria-label="Close">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+          <%= message %>
+        </div>
+      <% end %>
+      <%= yield %>
+    </main>
   </div>
 
   <!-- Bootstrap Dependencies -->

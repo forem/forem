@@ -9,7 +9,7 @@
     </a>
   <% end %>
   <% unless user_signed_in? %>
-    <a href="/enter" class="crayons-link crayons-link--block fw-bold">
+    <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
       <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
       Sign In/Up
     </a>

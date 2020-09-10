@@ -7,58 +7,34 @@ class User < ApplicationRecord
 
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
-  # rubocop:disable Metrics/BlockLength
   concerning :ProfileMigration do
     included do
-      PROFIE_FIELDS =
-        (Profiles::ExtractData::DIRECT_ATTRIBUTES + Profiles::ExtractData::MAPPED_ATTRIBUTES.values).freeze
-
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
       # and can cause hard to track down bugs. We use an instance-level attribute
       # instead. See `spec/factories/profiles.rb` for an example.
       attr_accessor :_skip_creating_profile
 
+      # NOTE: used for not sync-ing back data to profiles when the profile got
+      # updated first. This will eventually be removed:
+      attr_accessor :_skip_profile_sync
+
       # All new users should automatically have a profile
-      after_create_commit :create_profile, unless: :_skip_creating_profile
+      after_create_commit -> { Profile.create(user: self, data: Profiles::ExtractData.call(self)) },
+                          unless: :_skip_creating_profile
 
       # Keep saving changes locally for the time being, but propagate them to profiles.
-      after_update_commit do
-        if (previous_changes.keys.map(&:to_sym) & User::PROFIE_FIELDS).present?
-          profile.update(data: Profiles::ExtractData.call(self))
-        end
-      end
+      after_update_commit :sync_profile
 
-      # Define wrapped getters for profile attributes. We first try to get the
-      # value from the profile and if it doesn't exist there we move retrieve it
-      # from here.
-      Profiles::ExtractData::DIRECT_ATTRIBUTES.each do |attribute|
-        define_method(attribute) do
-          if profile.respond_to?(attribute)
-            profile.public_send(attribute)
-          else
-            self[attribute]
-          end
-        end
-      end
+      def sync_profile
+        return if _skip_profile_sync
+        return unless previous_changes.keys.any? { |attribute| attribute.in?(Profile.mapped_attributes) }
 
-      Profiles::ExtractData::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
-        define_method(user_attribute) do
-          if profile.respond_to?(profile_attribute)
-            profile.public_send(profile_attribute)
-          else
-            self[user_attribute]
-          end
-        end
+        profile.update(data: Profiles::ExtractData.call(self))
       end
-
-      def create_profile
-        Profile.create(user: self, data: Profiles::ExtractData.call(self))
-      end
-      private :create_profile
+      private :sync_profile
     end
   end
-  # rubocop:enable Metrics/BlockLength
 
   BEHANCE_URL_REGEXP = %r{\A(http(s)?://)?(www.behance.net|behance.net)/.*\z}.freeze
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
@@ -92,8 +68,7 @@ class User < ApplicationRecord
   }.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify,
-                :ip_address
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
@@ -105,16 +80,11 @@ class User < ApplicationRecord
   acts_as_follower
 
   has_one :profile, dependent: :destroy
-  has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
-                                                foreign_key: :author_id, inverse_of: :author, dependent: :destroy
-  has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
-  has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription",
-                                              foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
 
-  has_many :access_grants, class_name: "Doorkeeper::AccessGrant",
-                           foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
-  has_many :access_tokens, class_name: "Doorkeeper::AccessToken",
-                           foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id,
+                           inverse_of: :resource_owner, dependent: :delete_all
+  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id,
+                           inverse_of: :resource_owner, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :ahoy_events, class_name: "Ahoy::Event", dependent: :destroy
@@ -123,18 +93,16 @@ class User < ApplicationRecord
   has_many :articles, dependent: :destroy
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
-  has_many :backup_data, foreign_key: "instance_user_id",
-                         inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
+  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user,
+                         class_name: "BackupData", dependent: :delete_all
   has_many :badge_achievements, dependent: :destroy
   has_many :badges, through: :badge_achievements
-  has_many :blocked_blocks, class_name: "UserBlock",
-                            foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
-  has_many :blocker_blocks, class_name: "UserBlock",
-                            foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
+  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id,
+                            inverse_of: :blocked, dependent: :delete_all
+  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
+                            inverse_of: :blocker, dependent: :delete_all
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
-  has_many :listings, dependent: :destroy
-  has_many :endorsements, dependent: :destroy, class_name: "ListingEndorsement"
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
@@ -142,30 +110,43 @@ class User < ApplicationRecord
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :endorsements, dependent: :destroy, class_name: "ListingEndorsement"
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :identities_enabled, -> { enabled }, class_name: "Identity", inverse_of: false
+  has_many :listings, dependent: :destroy
   has_many :mentions, dependent: :destroy
   has_many :messages, dependent: :destroy
-  has_many :notes, as: :noteable, inverse_of: :noteable
+  has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy
   has_many :notification_subscriptions, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :offender_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :destroy
   has_many :organizations, through: :organization_memberships
-  has_many :page_views, dependent: :destroy
+
+  # we keep page views as they belong to the article, not to the user who viewed it
+  has_many :page_views, dependent: :nullify
+
   has_many :poll_skips, dependent: :destroy
   has_many :poll_votes, dependent: :destroy
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
-  has_many :rating_votes, dependent: :destroy
+
+  # we keep rating votes as they belong to the article, not to the user who viewed it
+  has_many :rating_votes, dependent: :nullify
+
   has_many :reactions, dependent: :destroy
   has_many :reporter_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
   has_many :response_templates, inverse_of: :user, dependent: :destroy
-  has_many :tweets, dependent: :destroy
+  has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
+                                                foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+  has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription",
+                                              foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
+  has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
+  has_many :tweets, dependent: :nullify
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -485,7 +466,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(width: 90)
+    Images::Profile.call(profile_image_url, length: 90)
   end
 
   def unsubscribe_from_newsletters

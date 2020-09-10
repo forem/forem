@@ -34,8 +34,12 @@ RSpec.describe User, type: :model do
     describe "builtin validations" do
       subject { user }
 
-      it { is_expected.to have_many(:ahoy_events).dependent(:destroy) }
-      it { is_expected.to have_many(:ahoy_visits).dependent(:destroy) }
+      it { is_expected.to have_one(:profile).dependent(:destroy) }
+
+      it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
+      it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }
+      it { is_expected.to have_many(:ahoy_events).class_name("Ahoy::Event").dependent(:destroy) }
+      it { is_expected.to have_many(:ahoy_visits).class_name("Ahoy::Visit").dependent(:destroy) }
       it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
       it { is_expected.to have_many(:articles).dependent(:destroy) }
       it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
@@ -43,33 +47,38 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-      it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:collections).dependent(:destroy) }
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
       it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
+      it { is_expected.to have_many(:endorsements).dependent(:destroy) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:html_variants).dependent(:destroy) }
       it { is_expected.to have_many(:identities).dependent(:destroy) }
+      it { is_expected.to have_many(:identities_enabled) }
+      it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:mentions).dependent(:destroy) }
       it { is_expected.to have_many(:messages).dependent(:destroy) }
-      it { is_expected.to have_many(:notes) }
+      it { is_expected.to have_many(:notes).dependent(:destroy) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:notifications).dependent(:destroy) }
       it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
-      it { is_expected.to have_many(:page_views).dependent(:destroy) }
+      it { is_expected.to have_many(:page_views).dependent(:nullify) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
       it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
       it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
-      it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:rating_votes).dependent(:nullify) }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:response_templates).dependent(:destroy) }
-      it { is_expected.to have_many(:tweets).dependent(:destroy) }
-      it { is_expected.to have_many(:endorsements).dependent(:destroy) }
+      it { is_expected.to have_many(:source_authored_user_subscriptions).dependent(:destroy) }
+      it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
+      it { is_expected.to have_many(:subscribers).dependent(:destroy) }
+      it { is_expected.to have_many(:tweets).dependent(:nullify) }
+      it { is_expected.to have_many(:webhook_endpoints).class_name("Webhook::Endpoint").dependent(:delete_all) }
 
       # rubocop:disable RSpec/NamedSubject
       it do
@@ -140,12 +149,6 @@ RSpec.describe User, type: :model do
           .class_name("FeedbackMessage")
           .with_foreign_key(:reporter_id)
           .dependent(:nullify)
-      end
-
-      it do
-        expect(subject).to have_many(:webhook_endpoints)
-          .class_name("Webhook::Endpoint")
-          .dependent(:delete_all)
       end
       # rubocop:enable RSpec/NamedSubject
 
@@ -863,8 +866,11 @@ RSpec.describe User, type: :model do
         mock_username(provider_name, "valid_username")
         new_user = user_from_authorization_service(provider_name)
 
-        if provider_name == :apple
+        case provider_name
+        when :apple
           expect(new_user.username).to match(/valid_username_\w+/)
+        when :facebook
+          expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("valid_username")
         end
@@ -879,8 +885,11 @@ RSpec.describe User, type: :model do
         mock_username(provider_name, "invalid.username")
         new_user = user_from_authorization_service(provider_name)
 
-        if provider_name == :apple
+        case provider_name
+        when :apple
           expect(new_user.username).to match(/invalidusername_\w+/)
+        when :facebook
+          expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("invalidusername")
         end
@@ -1186,7 +1195,8 @@ RSpec.describe User, type: :model do
   describe "profiles" do
     before do
       create(:profile_field, label: "Available for")
-      Profile.refresh_store_accessors!
+      create(:profile_field, label: "Brand Color 1")
+      Profile.refresh_attributes!
     end
 
     it "automatically creates a profile for new users", :aggregate_failures do
@@ -1195,7 +1205,7 @@ RSpec.describe User, type: :model do
       expect(user.profile).to respond_to(:available_for)
     end
 
-    it "propagates changes to the profile model", :aggregate_failures do
+    it "propagates changes of unmapped attributes to the profile model", :aggregate_failures do
       expect do
         user.update(available_for: "profile migrations")
       end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
@@ -1204,11 +1214,13 @@ RSpec.describe User, type: :model do
       expect(user.reload.available_for).to eq "profile migrations"
     end
 
-    it "reads from the profile model, not the user", :aggregate_failures do
-      user.profile.update(available_for: "Well, actually...")
+    it "propagates changes of mapped attributes to the profile model", :aggregate_failures do
+      expect do
+        user.update(bg_color_hex: "#abcdef")
+      end.to change { user.profile.reload.brand_color1 }.to("#abcdef")
 
-      expect(user.available_for).to eq "Well, actually..."
-      expect(user[:available_for]).to be nil
+      # Changes were also persisted in the users table
+      expect(user.reload.bg_color_hex).to eq "#abcdef"
     end
   end
 end

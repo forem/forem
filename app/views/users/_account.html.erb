@@ -105,13 +105,6 @@
   </div>
 
   <div>
-    <% if current_user.articles_count.positive? || current_user.comments_count.positive? %>
-      <p>
-        If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
-        please <%= email_link(text: "click here", additional_info: { subject: "Request Account Deletion", body: @email_body }) %>.
-      </p>
-    <% end %>
-
     <p>Feel free to contact <%= email_link %> with any questions.</p>
   </div>
 </div>

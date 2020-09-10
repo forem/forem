@@ -18,7 +18,7 @@
     <% else %>
       <a href="/<%= comment.user.username %>" class="flex items-center mr-2" title="<%= comment.user.name %> profile">
         <span class="crayons-avatar mr-1 m:mr-2 shrink-0">
-          <img src="<%= ProfileImage.new(comment.user).get(width: 50) %>" width="32" height="32" class="crayons-avatar__image" alt="<%= comment.user.name %> profile image">
+          <img src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" width="32" height="32" class="crayons-avatar__image" alt="<%= comment.user.name %> profile image">
         </span>
         <strong class="fw-medium"><%= comment.user.name %></strong>
 

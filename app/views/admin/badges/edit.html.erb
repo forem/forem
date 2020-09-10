@@ -1,34 +1,35 @@
-<main class="row">
-  <div class="col-12">
-    <h2><%= "Edit Badge #{@badge.id}" %></h2>
-    <%= form_for [:admin, @badge], method: :patch do |form| %>
+<header class="flex mb-6">
+  <h2 class="fs-2xl s:fs-3xl"><%= "Edit Badge #{@badge.id}" %></h2>
+
+  <div class="ml-auto">
+    <%= link_to "Back to All Badges", admin_badges_path, class: "btn btn-primary " %>
+  </div>
+</header>
+
+<div class="crayons-card p-6">
+  <%= form_for [:admin, @badge], method: :patch do |form| %>
     <div class="form-group">
       <%= form.label :title %>
       <%= form.text_field :title, class: "form-control" %>
     </div>
-    <hr>
+
     <div class="form-group">
       <%= form.label :slug, "Slug:" %>
       <%= form.text_field :slug, class: "form-control" %>
     </div>
-    <hr>
+
     <div class="form-group">
       <%= form.label :description, "Description:" %>
       <%= form.text_field :description, class: "form-control" %>
     </div>
-    <hr>
+
     <div class="form-group">
       <%= form.label :badge_image, "Badge Image:" %>
-      <br>
       <% if @badge.badge_image %>
-      <img class="mx-auto mt-3" width="60" height="60" src="<%= @badge.badge_image %>" alt="badge image">
+        <img class="mx-auto mt-3" width="60" height="60" src="<%= @badge.badge_image %>" alt="badge image">
       <% end %>
       <%= form.file_field :badge_image, class: "form-control" %>
-      <br>
     </div>
-    <hr>
-      <%= form.submit "Update Badge", class: "btn btn-primary float-right" %>
-    <% end %>
-    <%= link_to "Back to All Badges", admin_badges_path, class: "btn btn-primary float-left" %>
-  </div>
-</main>
+    <%= submit_tag "Update Badge", class: "btn btn-primary" %>
+  <% end %>
+</div>

@@ -179,3 +179,49 @@
     }
   }
 }
+
+.authentication-header {
+  &__container {
+    padding: var(--su-6);
+  }
+
+  &__image-container {
+    width: var(--su-8);
+    height: var(--su-8);
+    margin-bottom: var(--su-2);
+  }
+
+  &__image {
+    border-radius: var(--radius);
+    transform: rotate(-10deg);
+    height: auto;
+    width: 100%;
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-2xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+    margin-bottom: var(--su-4);
+  }
+
+  &__actions {
+    display: grid;
+    grid-gap: var(--su-1);
+
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      flex-direction: column;
+      width: max-content;
+      justify-self: center;
+    }
+  }
+}
