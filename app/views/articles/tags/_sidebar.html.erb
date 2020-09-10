@@ -54,7 +54,7 @@
             <% @moderators.each do |user| %>
               <div class="widget-user-pic">
                 <a href="/<%= user.username %>" title="<%= user.username %>">
-                  <img src="<%= ProfileImage.new(user).get(width: 90) %>" alt="<%= user.username %> profile image">
+                  <img src="<%= Images::Profile.call(user.profile_image_url, length: 90) %>" alt="<%= user.username %> profile image">
                 </a>
               </div>
             <% end %>

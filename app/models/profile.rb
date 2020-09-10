@@ -3,6 +3,10 @@ class Profile < ApplicationRecord
 
   validates :user_id, uniqueness: true
 
+  has_many :custom_profile_fields, dependent: :destroy
+
+  store_attribute :data, :custom_attributes, :json, default: {}
+
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
   MAPPED_ATTRIBUTES = {
@@ -19,13 +23,13 @@ class Profile < ApplicationRecord
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
     ProfileField.find_each do |field|
-      store_attribute :data, field.attribute_name, field.type
+      store_attribute :data, field.attribute_name.to_sym, field.type
     end
   end
 
   # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes
-    stored_attributes[:data] || []
+    (stored_attributes[:data] || []).map(&:to_s)
   end
 
   # Forces a reload before returning attributes
@@ -38,5 +42,9 @@ class Profile < ApplicationRecord
   # profile migration/generalization work.
   def self.mapped_attributes
     attributes!.map { |attribute| MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s }
+  end
+
+  def custom_profile_attributes
+    custom_profile_fields.pluck(:attribute_name)
   end
 end

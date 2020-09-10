@@ -19,10 +19,12 @@
     position: relative;
     flex-direction: column;
     padding: 0 var(--su-2);
+    margin-bottom: calc(var(--su-9) + env(safe-area-inset-bottom));
 
     @media (min-width: $breakpoint-m) {
       flex-direction: row;
       padding: 0 var(--layout-padding);
+      margin-bottom: env(safe-area-inset-bottom);
     }
   }
 

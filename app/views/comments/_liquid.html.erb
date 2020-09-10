@@ -1,7 +1,7 @@
 <div class="liquid-comment">
   <div class="details">
     <a href="/<%= comment.user.username %>">
-      <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(width: 50) %>" alt="<%= comment.user.username %> profile image" />
+      <img class="profile-pic" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" />
     </a>
     <a href="/<%= comment.user.username %>">
       <span class="comment-username"><%= comment.user.name %></span>

@@ -40,10 +40,8 @@ class Article < ApplicationRecord
   has_many :rating_votes, dependent: :destroy
   has_many :top_comments,
            lambda {
-             where(
-               "comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE",
-               10,
-             ).order("comments.score" => :desc)
+             where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.score" => :desc)
            },
            as: :commentable,
            inverse_of: :commentable,
@@ -145,7 +143,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
            :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html)
+           :email_digest_eligible, :processed_html, :second_user_id, :third_user_id)
   }
 
   scope :boosted_via_additional_articles, lambda {
@@ -355,13 +353,11 @@ class Article < ApplicationRecord
   end
 
   def video_duration_in_minutes
-    minutes = video_duration_in_minutes_integer
-    seconds = video_duration_in_seconds.to_i % 60
-    seconds = "0#{seconds}" if seconds.to_s.size == 1
+    duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
+    minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
+    return minutes_and_seconds if duration[:hours] < 1
 
-    hours = (video_duration_in_seconds.to_i / 3600)
-    minutes = "0#{minutes}" if hours.positive? && minutes < 10
-    hours < 1 ? "#{minutes}:#{seconds}" : "#{hours}:#{minutes}:#{seconds}"
+    "#{duration[:hours]}:#{minutes_and_seconds}"
   end
 
   def video_duration_in_minutes_integer
