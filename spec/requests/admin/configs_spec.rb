@@ -371,6 +371,12 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Newsletter" do
+        it "updates mailchimp_api_key" do
+          post "/admin/config", params: { site_config: { mailchimp_api_key: "abc" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mailchimp_api_key).to eq("abc")
+        end
+
         it "updates mailchimp_newsletter_id" do
           post "/admin/config", params: { site_config: { mailchimp_newsletter_id: "abc" },
                                           confirmation: confirmation_message }
