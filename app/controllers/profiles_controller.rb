@@ -1,13 +1,16 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
+  ALLOWED_PARAMS = %i[
+    email username profile_image
+  ].freeze
 
   def update
-    Profiles::Update.call(current_user.profile, update_params)
+    Profiles::Update.call(current_user, update_params)
   end
 
   private
 
   def update_params
-    params.require(:profile).permit(*Profile.attributes!)
+    params.permit(profile: Profile.attributes!, user: ALLOWED_PARAMS)
   end
 end

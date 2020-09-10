@@ -16,6 +16,31 @@
 <% end %>
 
 <%= form_with(url: profile_path(@user.profile_id), method: "put", html: { class: "sticky-footer-form" }) do |f| %>
+
+  <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
+    <h2>User</h2>
+    <div class="crayons-field">
+      <%= f.label :email, class: "crayons-field__label" %>
+      <%= f.text_field "user[email]", class: "crayons-textfield", placeholder: "john.doe@example.com", value: @user.email %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :username, class: "crayons-field__label" %>
+      <%= f.text_field "user[username]", maxlength: 30, class: "crayons-textfield", placeholder: "johndoe", value: @user.username %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :profile_image, class: "crayons-field__label" %>
+
+      <div class="flex items-center">
+        <% if @user.profile_image_url.present? %>
+          <span class="crayons-avatar crayons-avatar--xl mr-2"><img alt="<%= @user.username %> profile image" src="<%= ProfileImage.new(@user).get(width: 50) %>" class="crayons-avatar__image" /></span>
+          <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
   <% @profile_field_groups.each do |group| %>
     <% unless group.profile_fields.empty? %>
       <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
@@ -32,9 +57,8 @@
       </div>
     <% end %>
   <% end %>
-  <div class="save-footer crayons-card mb-6 grid gap-6 p-6">
-    <div>
-      <button type="submit" class="crayons-btn">Save</button>
-    </div>
+
+  <div class="save-footer crayons-card mb-6 grid p-6">
+    <button type="submit" class="crayons-btn">Save Profile Information</button>
   </div>
 <% end %>
