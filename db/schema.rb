@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_09_163415) do
+ActiveRecord::Schema.define(version: 2020_09_10_155145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -90,7 +90,7 @@ ActiveRecord::Schema.define(version: 2020_09_09_163415) do
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
-    t.bigint "co_author_ids"
+    t.bigint "co_author_ids", array: true
     t.bigint "collection_id"
     t.integer "comment_score", default: 0
     t.string "comment_template"
