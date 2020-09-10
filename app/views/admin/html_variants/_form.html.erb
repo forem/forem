@@ -30,7 +30,7 @@
   <%= select_tag :published, options_for_select([false, true], selected: @html_variant.published) %>
 </div>
 
-<% if current_user.any_admin? %>
+<% if params[:action] == 'edit' %>
   <div class="form-group">
     <%= label_tag :approved, "Approved:" %>
     <%= select_tag :approved, options_for_select([false, true], selected: @html_variant.approved) %>

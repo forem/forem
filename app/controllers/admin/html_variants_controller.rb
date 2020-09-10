@@ -40,7 +40,7 @@ module Admin
 
       if @html_variant.save
         flash[:success] = "HTML Variant has been created!"
-        redirect_to edit_admin_html_variant_path(@html_variant)
+        redirect_to admin_html_variants_path(state: "mine")
       else
         flash[:danger] = @html_variant.errors_as_sentence
         render new_admin_html_variant_path
@@ -51,8 +51,8 @@ module Admin
       @html_variant = HtmlVariant.find(params[:id])
 
       if @html_variant.update(html_variant_params)
-        flash[:success] = "Display Ad has been updated!"
-        redirect_to admin_html_variants_path
+        flash[:success] = "HTML Variant has been updated!"
+        redirect_to edit_admin_html_variant_path(@html_variant)
       else
         flash[:danger] = @html_variant.errors_as_sentence
         render :edit
@@ -63,10 +63,10 @@ module Admin
       @html_variant = HtmlVariant.find(params[:id])
 
       if @html_variant.destroy
-        flash[:success] = "Display Ad has been deleted!"
+        flash[:success] = "HTML Variant has been deleted!"
         redirect_to admin_html_variants_path
       else
-        flash[:danger] = "Something went wrong with deleting the Display Ad."
+        flash[:danger] = "Something went wrong with deleting the HTML Variant."
         render :edit
       end
     end

@@ -4,7 +4,7 @@ require "requests/shared_examples/internal_policy_dependant_request"
 RSpec.describe "/admin/html_variants", type: :request do
   let(:get_resource) { get "/admin/html_variants" }
   let(:params) do
-    { name: "Banner", body_markdown: "<h1>Hello HTML Variants!</h1>", group: "campaign",
+    { name: "Banner", html: "<h1>Hello HTML Variants!</h1>", group: "campaign",
       approved: true, published: true }
   end
   let(:post_resource) { post "/admin/html_variants", params: params }
