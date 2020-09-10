@@ -71,17 +71,33 @@ RSpec.describe Exporter::Service, type: :service do
     context "when emailing the user" do
       it "delivers one email" do
         service = valid_instance(article.user)
-        service.export(send_email: true)
+        service.export(send_to_admin: false)
         expect(ActionMailer::Base.deliveries.count).to eq(1)
+      end
+
+      it "delivers one email to the user's email" do
+        service = valid_instance(article.user)
+        service.export(send_to_admin: false)
+        expect(ActionMailer::Base.deliveries.last.to.first).to eq article.user.email
       end
 
       it "delivers an email with the export" do
         service = valid_instance(article.user)
-        zipped_export = service.export(send_email: true)
+        zipped_export = service.export(send_to_admin: false)
         attachment = ActionMailer::Base.deliveries.last.attachments[0].decoded
 
         exports = extract_zipped_exports(zipped_export)
         expect(exports).to eq(extract_zipped_exports(StringIO.new(attachment)))
+      end
+    end
+
+    context "when emailing an admin" do
+      it "delivers one email to the default admin email" do
+        admin_email = "admin@example.com"
+        SiteConfig.email_addresses = { default: admin_email }
+        service = valid_instance(article.user)
+        service.export(send_to_admin: true)
+        expect(ActionMailer::Base.deliveries.last.to.first).to eq admin_email
       end
     end
 

@@ -13,7 +13,7 @@ module Exporter
       @user = user
     end
 
-    def export(send_email: false, config: {})
+    def export(send_to_admin: false, config: {})
       exports = {}
 
       # export content with filenames
@@ -26,7 +26,7 @@ module Exporter
 
       zipped_exports = zip_exports(exports)
 
-      send_exports_by_email(zipped_exports) if send_email
+      send_exports_by_email(zipped_exports, send_to_admin: send_to_admin)
 
       update_user_export_fields
 
@@ -53,9 +53,10 @@ module Exporter
       buffer
     end
 
-    def send_exports_by_email(zipped_exports)
+    def send_exports_by_email(zipped_exports, send_to_admin: false)
       zipped_exports.rewind
-      NotifyMailer.with(user: user, attachment: zipped_exports.read).export_email.deliver_now
+      user_to_email = send_to_admin ? User.new(email: SiteConfig.email_addresses[:default]) : user
+      NotifyMailer.with(user: user_to_email, attachment: zipped_exports.read).export_email.deliver_now
     end
 
     def update_user_export_fields

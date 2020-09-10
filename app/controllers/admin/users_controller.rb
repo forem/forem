@@ -49,6 +49,14 @@ module Admin
       redirect_to "/admin/users/#{@user.id}/edit"
     end
 
+    def export_data
+      user = User.find(params[:id])
+      send_to_admin = JSON.parse(params[:send_to_admin])
+      ExportContentWorker.perform_async(user.id, send_to_admin: send_to_admin)
+      flash[:success] = "Data exported to the #{send_to_admin ? 'admin' : 'user'}. The job will complete momentarily."
+      redirect_to admin_users_edit_path(user.id)
+    end
+
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
       flash[:success] = "This user is being banished in the background. The job will complete soon."
