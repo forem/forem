@@ -38,8 +38,8 @@ export const ListingRow = ({ listing }) => {
       />
       {expiryDate && (
         <Fragment>
-          {' '}
-          | Expires on: <DateTime dateTime={expiryDate} />
+          {' | Expires on: '}
+          <DateTime dateTime={expiryDate} />
         </Fragment>
       )}
       {listing.location && <Location location={listing.location} />}
