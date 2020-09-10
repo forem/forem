@@ -94,7 +94,7 @@ RSpec.describe Exporter::Service, type: :service do
     context "when emailing an admin" do
       it "delivers one email to the default admin email" do
         admin_email = "admin@example.com"
-        SiteConfig.email_addresses = { default: admin_email }
+        allow(SiteConfig).to receive(:email_addresses).and_return({ default: admin_email })
         service = valid_instance(article.user)
         service.export(send_to_admin: true)
         expect(ActionMailer::Base.deliveries.last.to.first).to eq admin_email
