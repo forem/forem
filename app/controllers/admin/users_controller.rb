@@ -54,7 +54,7 @@ module Admin
       send_to_admin = JSON.parse(params[:send_to_admin])
       ExportContentWorker.perform_async(user.id, send_to_admin: send_to_admin)
       flash[:success] = "Data exported to the #{send_to_admin ? 'admin' : 'user'}. The job will complete momentarily."
-      redirect_to admin_users_edit_path(user.id)
+      redirect_to edit_admin_user_path(user.id)
     end
 
     def banish
