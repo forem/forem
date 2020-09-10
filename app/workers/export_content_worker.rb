@@ -6,6 +6,6 @@ class ExportContentWorker
   def perform(user_id, send_to_admin: false)
     user = User.find_by(id: user_id)
 
-    Exporter::Service.new(user).export(send_to_admin: send_to_admin)
+    Exporter::Service.new(user).export(send_to_admin: send_to_admin) if user
   end
 end
