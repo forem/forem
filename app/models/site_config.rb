@@ -97,6 +97,7 @@ class SiteConfig < RailsSettings::Base
 
   # Newsletter
   # <https://mailchimp.com/developer/>
+  field :mailchimp_api_key, type: :string, default: ApplicationConfig["MAILCHIMP_API_KEY"]
   field :mailchimp_newsletter_id, type: :string, default: ""
   field :mailchimp_sustaining_members_id, type: :string, default: ""
   field :mailchimp_tag_moderators_id, type: :string, default: ""
