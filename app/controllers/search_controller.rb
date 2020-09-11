@@ -35,6 +35,7 @@ class SearchController < ApplicationController
   FEED_PARAMS = [
     :approved,
     :class_name,
+    :id,
     :organization_id,
     :page,
     :per_page,
