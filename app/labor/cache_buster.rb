@@ -44,11 +44,14 @@ module CacheBuster
     uri = URI.parse(openresty_path)
     http = Net::HTTP.new(uri.host, uri.port)
     response = http.get(uri.request_uri)
-  rescue StandardError
-    # If we can't connect to openresty, alert ourselves that it is unavailable
-    Rails.logger.error("Could not connect to Openresty via #{openresty_path}!")
 
-    response.is_a?(Net::HTTPSuccess)
+    return true if response.is_a?(Net::HTTPSuccess)
+  rescue StandardError
+    # If we can't connect to openresty, alert ourselves that
+    # it is unavailable and return false.
+    Rails.logger.error("Could not connect to Openresty via #{openresty_path}!")
+    DatadogStatsClient.increment("cache_buster.service_unavailable", tags: ["path:#{openresty_path}"])
+    false
   end
 
   def self.bust_fastly_cache(path)
