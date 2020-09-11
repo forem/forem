@@ -47,6 +47,17 @@ module Api
         end
       end
 
+      def authenticate_super_admin!
+        if request.headers["api-key"]
+          @user = authenticate_with_api_key
+          return error_unauthorized unless @user&.has_role?(:super_admin)
+        elsif current_user&.has_role?(:super_admin)
+          @user = current_user
+        else
+          error_unauthorized
+        end
+      end
+
       # Checks if the user is authenticated, sets @user to nil otherwise
       def authenticate_with_api_key_or_current_user
         @user = authenticate_with_api_key || current_user
