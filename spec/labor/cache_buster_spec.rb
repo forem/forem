@@ -13,13 +13,43 @@ RSpec.describe CacheBuster, type: :labor do
 
   describe "#bust_nginx_cache" do
     before do
+      # Stub out Fastly since we check for fastly_enabled? before nginx_enabled?
+      allow(cache_buster).to receive(:fastly_enabled?).and_return(false)
       allow(cache_buster).to receive(:bust_nginx_cache).and_call_original
+
       allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return("http://")
       allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return("localhost:9090")
     end
 
-    it "can bust an nginx cache when configured" do
-      cache_buster.bust_nginx_cache("/#{user.username}")
+    context "when nginx is available and openresty is configured" do
+      it "can bust an nginx cache" do
+        cache_buster.bust("/#{user.username}")
+        expect(cache_buster).to have_received(:bust_nginx_cache)
+      end
+    end
+
+    context "when nginx is unavailable and openresty is configured" do
+      before do
+        allow(cache_buster).to receive(:bust)
+        allow(cache_buster).to receive(:nginx_available?).and_return(false)
+      end
+
+      it "does not bust an nginx cache" do
+        cache_buster.bust("/#{user.username}")
+        expect(cache_buster).not_to have_received(:bust_nginx_cache)
+      end
+    end
+
+    context "when openresty is not configured" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return(nil)
+      end
+
+      it "does not bust an nginx cache" do
+        cache_buster.bust("/#{user.username}")
+        expect(cache_buster).not_to have_received(:bust_nginx_cache)
+      end
     end
   end
 
