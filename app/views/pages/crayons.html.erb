@@ -56,6 +56,74 @@
 </style>
 
 <div class="container">
+  <div class="crayons-reactions">
+    <span class="crayons-reactions__icons">
+      <span class="crayons-reactions__icon crayons-reactions__icon--like">
+        <%= inline_svg_tag("heart-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+      </span>
+    </span>
+    <span class="crayons-reactions__label">
+      8 reactions
+      &bull;
+      <a href="#">3 comments</a>
+    </span>
+  </div>
+
+  <br>
+
+  <div class="crayons-reactions">
+    <span class="crayons-reactions__icons">
+      <span class="crayons-reactions__icon crayons-reactions__icon--like crayons-reactions__icon--active">
+        <%= inline_svg_tag("heart-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+      </span>
+
+      <span class="crayons-reactions__icon crayons-reactions__icon--custom">
+        <%= inline_svg_tag("unicorn-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+      </span>
+    </span>
+    <span class="crayons-reactions__label">8 reactions</span>
+  </div>
+
+  <br>
+
+  <div class="crayons-reactions">
+    <span class="crayons-reactions__icons">
+      <span class="crayons-reactions__icon crayons-reactions__icon--custom crayons-reactions__icon--active">
+        <%= inline_svg_tag("unicorn-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+      </span>
+      <span class="crayons-reactions__icon crayons-reactions__icon--like">
+        <%= inline_svg_tag("heart-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+      </span>
+    </span>
+    <span class="crayons-reactions__label">8 reactions</span>
+  </div>
+
+  <br>
+
+  <div class="crayons-reactions">
+    <span class="crayons-reactions__icons">
+      <span class="crayons-reactions__icon crayons-reactions__icon--like crayons-reactions__icon--active">
+        <%= inline_svg_tag("heart-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+      </span>
+
+      <span class="crayons-reactions__icon crayons-reactions__icon--custom crayons-reactions__icon--active">
+        <%= inline_svg_tag("unicorn-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+      </span>
+    </span>
+    <span class="crayons-reactions__label">8 reactions</span>
+  </div>
+
+  <br>
+
+  <button class="crayons-reactions" type="button">
+    <span class="crayons-reactions__icon crayons-reactions__icon--like">
+      <%= inline_svg_tag("heart-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+    </span>
+    <span class="crayons-reactions__label">8</span>
+  </button>
+</div>
+
+<div class="container">
   <div class="body">
     <h2>Main Typography</h2>
     <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
