@@ -3,9 +3,9 @@ class ExportContentWorker
 
   sidekiq_options queue: :medium_priority, retry: 10, lock: :until_executed
 
-  def perform(user_id, send_to_admin: false)
+  def perform(user_id, email)
     user = User.find_by(id: user_id)
 
-    Exporter::Service.new(user).export(send_to_admin: send_to_admin) if user
+    Exporter::Service.new(user).export(email) if user
   end
 end

@@ -52,7 +52,8 @@ module Admin
     def export_data
       user = User.find(params[:id])
       send_to_admin = JSON.parse(params[:send_to_admin])
-      ExportContentWorker.perform_async(user.id, send_to_admin: send_to_admin)
+      email_to_send = send_to_admin ? SiteConfig.email_addresses[:default] : user.email
+      ExportContentWorker.perform_async(user.id, email_to_send)
       flash[:success] = "Data exported to the #{send_to_admin ? 'admin' : 'user'}. The job will complete momentarily."
       redirect_to edit_admin_user_path(user.id)
     end
