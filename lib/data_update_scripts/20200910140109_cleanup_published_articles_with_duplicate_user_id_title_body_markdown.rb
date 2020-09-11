@@ -62,28 +62,27 @@ module DataUpdateScripts
       article_id = article_to_keep.id
       articles_to_graft_ids = articles_to_graft.map { |a| a["id"] }
 
+      # NotificationSubscription, Notification and RatingVote rows will be removed
+      # Poll is ignored because it's related to the liquid tag inside the article, also user's can't use polls
+      # TagAdjustment is ignored as there's likely no reason for article to have an adjustment moved over
       models_with_a_direct_relation = [
         BufferUpdate,
         HtmlVariantSuccess,
         HtmlVariantSuccess,
         HtmlVariantTrial,
         PageView,
-        # Poll is ignored because it's related to the liquid tag inside the article,
-        # also user's can't use polls
-        RatingVote,
-        # TagAdjustment is ignored as there's likely no reason for article to have an adjustment moved over
       ]
       models_with_a_direct_relation.each do |model_class|
         model_class.where(article_id: articles_to_graft_ids).update_all(article_id: article_id)
       end
 
-      Comment.where(commentable_type: "Article",
-                    commentable_id: articles_to_graft_ids).update_all(commentable_id: article_id)
-      NotificationSubscription.where(notifiable_type: "Article",
-                                     notifiable_id: articles_to_graft_ids).update_all(notifiable_id: article_id)
-      Notification.where(notifiable_type: "Article",
-                         notifiable_id: articles_to_graft_ids).update_all(notifiable_id: article_id)
-      ProfilePin.where(pinnable_type: "Article", pinnable_id: articles_to_graft_ids).update_all(pinnable_id: article_id)
+      Comment
+        .where(commentable_type: "Article", commentable_id: articles_to_graft_ids)
+        .update_all(commentable_id: article_id)
+
+      ProfilePin
+        .where(pinnable_type: "Article", pinnable_id: articles_to_graft_ids)
+        .update_all(pinnable_id: article_id)
 
       # we add tags that are not already present in the article from the others
       # we don't really need to graft these as the tag objects belonging to the soon to be
