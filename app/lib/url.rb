@@ -7,7 +7,7 @@ module URL
   end
 
   def self.domain
-    Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+    ApplicationConfig["APP_DOMAIN"]
   end
 
   def self.url(uri = nil)
