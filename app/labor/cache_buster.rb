@@ -37,14 +37,15 @@ module CacheBuster
   end
 
   def self.bust_fastly_cache(path)
+    # @forem/systems Fastly-enabled forems don't need "flexible" domains.
     HTTParty.post(
-      "https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}",
+      "https://api.fastly.com/purge/https://#{URL.domain}#{path}",
       headers: {
         "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
       },
     )
     HTTParty.post(
-      "https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}?i=i",
+      "https://api.fastly.com/purge/https://#{URL.domain}#{path}?i=i",
       headers: {
         "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
       },
