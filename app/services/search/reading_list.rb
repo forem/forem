@@ -55,7 +55,9 @@ module Search
 
     def reading_list_article_ids
       # Collect all reading list IDs and article IDs for a user
-      @reading_list_article_ids ||= user.reactions.readinglist.where(status: status).pluck(:reactable_id, :id).to_h
+      @reading_list_article_ids ||= user.reactions.readinglist.where(status: status).order(id: :desc).pluck(
+        :reactable_id, :id
+      ).to_h
     end
 
     def search_ids

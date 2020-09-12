@@ -103,13 +103,13 @@ RSpec.describe Search::ReadingList, type: :service do
       end
     end
 
-    it "sorts by reaction ID" do
+    it "sorts by reaction ID DESC" do
       reaction3
       index_documents([article0, article1, article2])
 
       reaction_docs = described_class.search_documents(params: query_params, user: user)["reactions"]
       doc_ids = reaction_docs.map { |t| t["id"] }
-      expect(doc_ids).to eq([reaction1.id, reaction2.id, reaction3.id])
+      expect(doc_ids).to eq([reaction3.id, reaction2.id, reaction1.id])
     end
   end
 end
