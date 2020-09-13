@@ -89,7 +89,7 @@ gem "rouge", "~> 3.22" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
-gem "sidekiq", "~> 6.1.1" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq", "~> 6.1.2" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
 gem "sidekiq-unique-jobs", "~> 6.0.22" # Ensures that Sidekiq jobs are unique when enqueued
 gem "simpleidn", "~> 0.1" # Convert IDN domains to Punycode
