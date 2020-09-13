@@ -195,7 +195,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.1.7)
     connection_pool (2.2.3)
-    counter_culture (2.6.0)
+    counter_culture (2.6.1)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
       after_commit_action (~> 1.0)
