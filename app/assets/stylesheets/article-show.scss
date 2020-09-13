@@ -744,6 +744,7 @@ article {
   height: 0;
   position: relative;
   z-index: 2;
+  top: var(--article-rythm);
 }
 
 .copy-code-icon {
@@ -761,10 +762,6 @@ article {
   &:hover {
     opacity: 1;
   }
-}
-
-.highlight-wrapper {
-  margin-top: var(--article-rythm);
 }
 
 .highlight-wrapper:hover {
