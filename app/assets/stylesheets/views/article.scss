@@ -242,9 +242,12 @@
     box-shadow: inset 0 -1px 0 #959da5;
   }
 
-  pre:not(.highlight),
-  div.highlight {
+  pre:not(.highlight) {
     margin: var(--article-rythm) 0;
+  }
+
+  div.highlight {
+    margin: 0 0 var(--article-rythm);
   }
 
   img {

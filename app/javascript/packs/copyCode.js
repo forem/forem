@@ -17,7 +17,7 @@ function execCopyText() {
 }
 
 function copyText(event) {
-    const inputValue = event.target.nextElementSibling.getElementsByTagName('code')[0].innerText;
+    const inputValue = event.target.parentNode.nextElementSibling.getElementsByTagName('code')[0].innerText;
     if (isNativeAndroidDevice()) {
         AndroidBridge.copyToClipboard(inputValue);
     } else if (isClipboardSupported()) {
@@ -31,8 +31,7 @@ function copyText(event) {
     }
 }
 
-const clipboardCopyElements = document.getElementsByClassName('copy-icon');
-
+const clipboardCopyElements = document.getElementsByClassName('copy-code-icon');
 for (let element of clipboardCopyElements) {
     element.addEventListener('click', copyText);
 }

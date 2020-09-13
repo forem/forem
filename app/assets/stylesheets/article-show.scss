@@ -739,3 +739,36 @@ article {
   100% {
   }
 }
+
+.copy-code {
+  height: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.copy-code-icon {
+  visibility: hidden;
+  content: url(/assets/clipboard.svg);
+  background: #4f575f;
+  width: var(--su-7);
+  height: var(--su-7);
+  opacity: 0.9;
+  margin-left: auto;
+  padding: var(--su-2);
+  border-bottom-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.highlight-wrapper {
+  margin-top: var(--article-rythm);
+}
+
+.highlight-wrapper:hover {
+  .copy-code-icon {
+    visibility: visible;
+  }
+}

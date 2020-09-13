@@ -288,7 +288,8 @@ class MarkdownParser
   def add_clipboard_to_codeblock(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("div.highlight").each do |codeblock|
-      codeblock.prepend_child("<div class='copy-icon'>Copy</div>")
+      codeblock.wrap('<div class="highlight-wrapper"/>')
+      codeblock.add_previous_sibling('<div class="copy-code"><div class="copy-code-icon"/></div>')
     end
     doc.to_html
   end
