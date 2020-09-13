@@ -289,7 +289,7 @@ class MarkdownParser
     doc = Nokogiri::HTML.fragment(html)
     doc.search("div.highlight").each do |codeblock|
       codeblock.wrap('<div class="highlight-wrapper"/>')
-      codeblock.add_previous_sibling('<div class="copy-code"><div class="copy-code-icon"/></div>')
+      codeblock.add_previous_sibling('<div class="copy-code"><div class="copy-code-icon" title="Copy code"/></div>')
     end
     doc.to_html
   end
