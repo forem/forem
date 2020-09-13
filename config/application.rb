@@ -45,8 +45,8 @@ module PracticalDeveloper
     config.eager_load_paths += Dir["#{config.root}/lib"]
 
     # Middlewares folder is not otherwise autorequired.
-    Dir["./app/middlewares/*.rb"].sort.each do |file|
-      require file
+    Dir["#{config.root}/app/middlewares/**/*.rb"].each do |file|
+      require_dependency(file)
     end
 
     config.active_job.queue_adapter = :sidekiq
