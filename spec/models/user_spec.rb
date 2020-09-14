@@ -1057,6 +1057,24 @@ RSpec.describe User, type: :model do
       user.follow(org)
       expect(user.reload.following_orgs_count).to eq(1)
     end
+
+    def create_reaction(user, article)
+      Reaction.create!(
+        user_id: user.id,
+        reactable_id: article.id,
+        reactable_type: "Article",
+        category: "readinglist",
+      )
+    end
+
+    it "returns cached ids of articles that have been saved to their readinglist" do
+      article = create(:article)
+      article2 = create(:article)
+      create_reaction(user, article)
+      create_reaction(user, article2)
+
+      expect(user.cached_reading_list_article_ids).to eq([article2.id, article.id])
+    end
   end
 
   describe "#org_admin?" do
