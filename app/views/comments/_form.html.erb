@@ -28,7 +28,7 @@
     <%= f.hidden_field :parent_id, value: @parent_comment.id if @parent_comment %>
   <% end %>
 
-  <div class="comment-form" id="comment-form-wrapper">
+  <div class="comment-form">
     <span class="crayons-avatar crayons-avatar--l mr-2 shrink-0">
       <% if user_signed_in? %>
         <img src="<%= Images::Profile.call(current_user.profile_image_url, length: 50) %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
@@ -87,7 +87,7 @@
           <%# filled by JS %>
         </div>
 
-        <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>" class="mod-response-create-new">
+        <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>">
           Create new template
         </a>
         <p>Create templates to quickly answer FAQs or store snippets for re-use.</p>

@@ -98,6 +98,10 @@
     font-size: var(--comment-font-size);
   }
 
+  :last-child {
+    margin-bottom: 0;
+  }
+
   a {
     code {
       color: var(--link-color);

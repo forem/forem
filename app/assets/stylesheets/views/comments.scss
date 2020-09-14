@@ -8,7 +8,6 @@
   --comment-brand-color: var(--base-10);
 
   @media (min-width: $breakpoint-m) {
-    --comments-gap: var(--su-6);
     --comment-header-font-size: var(--fs-base);
     --comment-body-font-size: var(--fs-l);
   }
@@ -34,13 +33,13 @@
 
   padding-bottom: var(--comments-gap);
   font-size: var(--comment-font-size);
-  
+
   &__header {
     display: flex;
     align-items: center;
     margin-bottom: var(--su-2);
     font-size: var(--comment-header-font-size);
-    
+
     @media (min-width: $breakpoint-m) {
       margin-bottom: var(--su-3);
     }
@@ -136,6 +135,7 @@
   &__footer {
     display: flex;
     align-items: center;
+    padding-bottom: var(--su-1);
   }
 
   .comments {
@@ -159,12 +159,11 @@
       display: none;
 
       @media (min-width: $breakpoint-m) {
-        display: inline-block
+        display: inline-block;
       }
     }
   }
 }
-
 
 .comment-form {
   display: flex;
@@ -172,7 +171,7 @@
 
   .crayons-textfield {
     &.embiggened {
-      height: 96px
+      height: 96px;
     }
     &.embiggened-more {
       height: 256px;
@@ -181,7 +180,7 @@
       height: 384px;
     }
   }
-  
+
   &--initiated {
     .crayons-textfield {
       height: 96px;
