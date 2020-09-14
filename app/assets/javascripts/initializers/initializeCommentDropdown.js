@@ -3,12 +3,6 @@
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
-  function isClipboardSupported() {
-    return (
-      typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-    );
-  }
-
   function removeClass(className) {
     return (element) => element.classList.remove(className);
   }
@@ -34,28 +28,11 @@ function initializeCommentDropdown() {
     }
   }
 
-  function execCopyText() {
-    showAnnouncer();
-    document.execCommand('copy');
-  }
-
   function copyText() {
     const inputValue = document.getElementById('article-copy-link-input').value;
-    if (Runtime.isNativeAndroid('copyToClipboard')) {
-      AndroidBridge.copyToClipboard(inputValue);
+    Runtime.copyToClipboard(inputValue).then(() => {
       showAnnouncer();
-    } else if (isClipboardSupported()) {
-      navigator.clipboard
-        .writeText(inputValue)
-        .then(() => {
-          showAnnouncer();
-        })
-        .catch((err) => {
-          execCopyText();
-        });
-    } else {
-      execCopyText();
-    }
+    });
   }
 
   function shouldCloseDropdown(event) {
@@ -63,8 +40,7 @@ function initializeCommentDropdown() {
       event.target.matches('.dropdown-icon') ||
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
-      event.target.matches('clipboard-copy input') ||
-      event.target.matches('clipboard-copy svg') ||
+      document.getElementById('article-copy-icon').contains(event.target) ||
       event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }

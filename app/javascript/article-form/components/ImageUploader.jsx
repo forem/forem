@@ -7,12 +7,6 @@ import { validateFileInputs } from '../../packs/validateFileInputs';
 import { ClipboardButton } from './ClipboardButton';
 import { Button, Spinner } from '@crayons';
 
-function isClipboardSupported() {
-  return (
-    typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-  );
-}
-
 const ImageIcon = () => (
   <svg
     width="24"
@@ -102,25 +96,11 @@ export const ImageUploader = () => {
       'image-markdown-copy-link-input',
     );
 
-    if (Runtime.isNativeAndroid('copyToClipboard')) {
-      AndroidBridge.copyToClipboard(imageMarkdownInput.value);
+    Runtime.copyToClipboard(imageMarkdownInput.value).then(() => {
       dispatch({
         type: 'show_copied_image_message',
       });
-    } else if (isClipboardSupported()) {
-      navigator.clipboard
-        .writeText(imageMarkdownInput.value)
-        .then(() => {
-          dispatch({
-            type: 'show_copied_image_message',
-          });
-        })
-        .catch((_err) => {
-          execCopyText();
-        });
-    } else {
-      execCopyText();
-    }
+    });
   }
 
   function handleInsertionImageUpload(e) {
@@ -140,14 +120,6 @@ export const ImageUploader = () => {
     dispatch({
       type: 'upload_image_success',
       payload: { insertionImageUrls: response.links },
-    });
-  }
-
-  function execCopyText() {
-    imageMarkdownInput.setSelectionRange(0, imageMarkdownInput.value.length);
-    document.execCommand('copy');
-    dispatch({
-      type: 'show_copied_image_message',
     });
   }
 
