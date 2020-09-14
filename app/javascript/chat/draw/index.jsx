@@ -47,6 +47,7 @@ function Draw({ sendCanvasImage }) {
         canvas.width / img.width,
         canvas.height / img.height,
       );
+      setSendButtonDisabled(false);
       const x = canvas.width / 2 - (img.width / 2) * scale;
       const y = canvas.height / 2 - (img.height / 2) * scale;
       context.drawImage(img, x, y, img.width * scale, img.height * scale);
