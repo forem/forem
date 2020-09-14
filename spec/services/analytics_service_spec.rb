@@ -424,7 +424,9 @@ RSpec.describe AnalyticsService, type: :service do
       end
 
       it "returns 20 domains at most by default" do
-        21.times { create(:page_view, user: user, article: article, referrer: Faker::Internet.url) } # rubocop:disable FactoryBot/CreateList
+        21.times do |n|
+          create(:page_view, user: user, article: article, referrer: "http://fakeurl#{n}.com")
+        end
         expect(analytics_service.referrers[:domains].size).to eq(20)
       end
 
