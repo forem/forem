@@ -27,7 +27,8 @@ class Follow < ApplicationRecord
   scope :follower_tag, ->(id) { where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag") }
 
   counter_culture :follower, column_name: proc { |follow| COUNTER_CULTURE_COLUMN_NAME_BY_TYPE[follow.followable_type] },
-                             column_names: COUNTER_CULTURE_COLUMNS_NAMES
+                             column_names: COUNTER_CULTURE_COLUMNS_NAMES,
+                             touch: true
   after_create :send_email_notification
   before_destroy :modify_chat_channel_status
   after_save :touch_follower
