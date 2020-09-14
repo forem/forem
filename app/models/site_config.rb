@@ -20,7 +20,7 @@ class SiteConfig < RailsSettings::Base
 
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
-  field :authentication_providers, type: :array, default: Authentication::Providers.available
+  field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
   field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
