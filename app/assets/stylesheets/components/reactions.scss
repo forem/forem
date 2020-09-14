@@ -3,6 +3,7 @@
 .crayons-reactions {
   --reaction-bg: transparent;
   --reaction-border: var(--base-a10);
+  --reaction-color: var(--base-60);
   --label-color: var(--base-60);
   display: inline-flex;
   align-items: center;
@@ -10,6 +11,12 @@
   border: none;
   border-radius: var(--radius);
   background: transparent;
+  .active {
+    display: none;
+  }
+  .inactive {
+    display: inline-block;
+  }
 
   &__icons {
     display: inline-flex;
@@ -34,28 +41,37 @@
 
     &--like {
       --reaction-color: var(--reaction-like-color);
-      &.crayons-reactions__icon--active {
-        --reaction-bg: var(--reaction-like-bg);
-      }
     }
 
     &--custom {
       --reaction-color: var(--reaction-custom-color);
-
-      &.crayons-reactions__icon--active {
-        --reaction-bg: var(--reaction-custom-bg);
-      }
     }
 
     &--comment {
       --reaction-color: var(--base-60);
-      &.crayons-reactions__icon--active {
-        --reaction-bg: var(--base-10);
-      }
+    }
+  }
+
+  &.reacted {
+    --reaction-border: var(--reaction-color);
+
+    .active {
+      display: inline-block;
+    }
+    .inactive {
+      display: none;
     }
 
-    &--active {
-      --reaction-border: var(--reaction-color);
+    &-like {
+      --reaction-color: var(--reaction-like-color);
+    }
+
+    &-custom {
+      --reaction-color: var(--reaction-custom-color);
+    }
+
+    &-comment {
+      --reaction-color: var(--base-60);
     }
   }
 
@@ -77,7 +93,6 @@
   &[type],
   &[href] {
     &:hover {
-      --reaction-border: var(--base-a20);
       --label-color: var(--base-80);
       background: var(--base-10);
     }

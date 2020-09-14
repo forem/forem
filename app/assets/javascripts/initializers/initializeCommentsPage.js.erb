@@ -22,7 +22,7 @@ function initializeCommentsPage() {
               for (var i = 0; i < reactions.length; i++) {
                 var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
                 if (buttForComment) {
-                  buttForComment.classList.add('reacted');
+                  buttForComment.classList.add('reacted', 'reacted-like');
                 }
               }
               for (var i = 0; i < publicReactionCounts.length; i++) {
@@ -48,7 +48,7 @@ function initializeCommentsPage() {
                     userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
                                                 <a href="' + userActionsEl.parentNode.dataset.path + '/edit">EDIT</a>'
                     userActionsEl.style.display = 'inline-block';
-                    document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
+                    document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted', 'reacted-like');
                   }
                 }
               }
@@ -74,18 +74,18 @@ function initializeCommentsPage() {
           return;
         }
 
-        thisButt.classList.add('reacted');
+        thisButt.classList.add('reacted', 'reacted-like');
         thisButt.disabled = true;
 
         function successCb(response) {
           var reactionCountSpan = thisButt.children[2];
           if (response.result === 'create') {
-            thisButt.classList.add('reacted');
+            thisButt.classList.add('reacted', 'reacted-like');
             if (reactionCountSpan) {
               reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) + 1;
             }
           } else {
-            thisButt.classList.remove('reacted');
+            thisButt.classList.remove('reacted', 'reacted-like');
             if (reactionCountSpan) {
               reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) - 1;
             }
@@ -164,12 +164,12 @@ function toggleCodeOfConduct() {
 
 function replaceActionButts(el) {
   var loggedInActionButts = "";
-  var wrapper = el.getElementsByClassName("actions")[0]
+  var wrapper = el.getElementsByClassName("comment__footer")[0]
   if (el.dataset.currentUserComment == "true") {
-    loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
-                            <a href="' + el.parentNode.parentNode.dataset.path + '/edit">EDIT</a>'
+    loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">Delete</a>\
+                            <a href="' + el.parentNode.parentNode.dataset.path + '/edit">Edit</a>'
   }
-  wrapper.innerHTML = '<span class="current-user-actions">' + loggedInActionButts + '</span><a href="#" class="toggle-reply-form">REPLY</a>';
+  wrapper.innerHTML = '<span class="current-user-actions">' + loggedInActionButts + '</span><a href="#" class="toggle-reply-form">Reply</a>';
 }
 
 function warmNewCommentsArea() {

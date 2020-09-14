@@ -79,8 +79,9 @@
         <footer class="comment__footer" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">
           <button class="reaction-button crayons-reactions mr-2 -ml-1" type="button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>">
             <span class="crayons-reactions__icons">
-              <span class="crayons-reactions__icon crayons-reactions__icon--like">
-                <%= inline_svg_tag("heart-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon", title: "Like") %>
+              <span class="crayons-reactions__icon">
+                <%= inline_svg_tag("heart.svg", aria: true, width: 16, height: 16, class: "crayons-icon inactive", title: "Like") %>
+                <%= inline_svg_tag("heart-filled.svg", aria: true, width: 16, height: 16, class: "crayons-icon active", title: "Like") %>
               </span>
             </span>
           </button>
