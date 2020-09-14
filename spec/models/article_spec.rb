@@ -43,6 +43,15 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
+    describe "#body_markdown" do
+      it "is unique scoped for user_id and title" do
+        art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
+
+        expect(art2).not_to be_valid
+        expect(art2.errors.full_messages.to_sentence).to match("markdown has already been taken")
+      end
+    end
+
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save
