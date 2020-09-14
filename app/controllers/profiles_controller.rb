@@ -5,7 +5,12 @@ class ProfilesController < ApplicationController
   ].freeze
 
   def update
-    Profiles::Update.call(current_user, update_params)
+    update_result = Profiles::Update.call(current_user, update_params)
+    if update_result.success?
+      flash[:success] = "Your profile has been updated"
+    else
+      flash[:error] = "Error: #{update_result.error_message}"
+    end
   end
 
   private

@@ -4,7 +4,7 @@ module Profiles
       new(profile, updated_attributes).call
     end
 
-    attr_reader
+    attr_reader :error_message
 
     def initialize(user, updated_attributes)
       @user = user
@@ -16,7 +16,6 @@ module Profiles
 
     def call
       update_profile
-      update_user
     end
 
     def success?
@@ -43,13 +42,21 @@ module Profiles
         Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
       end
       @profile.user._skip_profile_sync = true
-      @success = true if @profile.user.update(user_attributes)
+      if @profile.user.update(user_attributes)
+        update_user
+      else
+        @error_message = @user.errors_as_sentence
+      end
       @profile.user._skip_profile_sync = false
       self
     end
 
     def update_user
-      @success = true if @user.update(@updated_user_attributes.to_h)
+      if @user.update(@updated_user_attributes.to_h)
+        @success = true
+      else
+        @error_message = @user.errors_as_sentence
+      end
     end
   end
 end
