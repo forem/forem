@@ -91,6 +91,10 @@ class User < ApplicationRecord
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :destroy
   has_many :api_secrets, dependent: :destroy
   has_many :articles, dependent: :destroy
+  has_many :articles_as_second_user, class_name: "Article", foreign_key: :second_user_id,
+                                     inverse_of: :second_user, dependent: :nullify
+  has_many :articles_as_third_user, class_name: "Article", foreign_key: :third_user_id,
+                                    inverse_of: :third_user, dependent: :nullify
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
   has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user,

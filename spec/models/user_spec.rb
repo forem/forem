@@ -103,6 +103,20 @@ RSpec.describe User, type: :model do
       end
 
       it do
+        expect(subject).to have_many(:articles_as_second_user)
+          .class_name("Article")
+          .with_foreign_key("second_user_id")
+          .dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:articles_as_third_user)
+          .class_name("Article")
+          .with_foreign_key("third_user_id")
+          .dependent(:nullify)
+      end
+
+      it do
         expect(subject).to have_many(:authored_notes)
           .class_name("Note")
           .with_foreign_key("author_id")
