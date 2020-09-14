@@ -28,10 +28,6 @@ class DashboardsController < ApplicationController
 
     @articles = @articles.sorting(params[:sort]).decorate
     @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(50)
-
-    # Updates analytics in background if appropriate
-    update_analytics = @articles && SiteConfig.ga_fetch_rate < 50 # Rate limited, sometimes we throttle down
-    Articles::UpdateAnalyticsWorker.perform_async(current_user.id) if update_analytics
   end
 
   def following_tags
@@ -80,8 +76,9 @@ class DashboardsController < ApplicationController
   private
 
   def set_source
-    source_type = params[:source_type]
-    not_found unless UserSubscription::ALLOWED_TYPES.include? source_type
+    source_type = UserSubscription::ALLOWED_TYPES.detect { |allowed_type| allowed_type == params[:source_type] }
+
+    not_found unless source_type
 
     source = source_type.constantize.find_by(id: params[:source_id])
     @source = source || not_found

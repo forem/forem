@@ -3,6 +3,13 @@ require "rails_helper"
 RSpec.describe Search::Base, type: :service do
   let(:document_id) { 123 }
 
+  def recreate_tag_index
+    Search::Tag.delete_index if described_class.index_exists?
+    Search::Tag.create_index
+    Search::Tag.add_alias
+    Search::Tag.update_mappings
+  end
+
   before do
     # Need to use an existing index name to ensure proper data cleanup
     stub_const("#{described_class}::INDEX_NAME", "tags_#{Rails.env}")
@@ -69,7 +76,11 @@ RSpec.describe Search::Base, type: :service do
     end
   end
 
-  describe "::create_index", elasticsearch_reset: true do
+  describe "::create_index" do
+    before { recreate_tag_index }
+
+    after { recreate_tag_index }
+
     it "creates an elasticsearch index with INDEX_NAME" do
       described_class.delete_index
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
@@ -88,7 +99,31 @@ RSpec.describe Search::Base, type: :service do
     end
   end
 
-  describe "::delete_index", elasticsearch_reset: true do
+  describe "::update_index" do
+    before do
+      recreate_tag_index
+      allow(described_class).to receive(:dynamic_index_settings).and_return(
+        refresh_interval: "10s",
+      )
+    end
+
+    after { recreate_tag_index }
+
+    it "updates elasticsearch index settings with INDEX_NAME" do
+      index_info = Search::Client.indices.get(index: described_class::INDEX_NAME)
+      expect(index_info.values.first.dig("settings", "index", "refresh_interval")).to be_nil
+      described_class.update_index
+
+      new_index_info = Search::Client.indices.get(index: described_class::INDEX_NAME)
+      expect(new_index_info.values.first.dig("settings", "index", "refresh_interval")).to eq("10s")
+    end
+  end
+
+  describe "::delete_index" do
+    before { recreate_tag_index }
+
+    after { recreate_tag_index }
+
     it "deletes an elasticsearch index with INDEX_NAME" do
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
       described_class.delete_index

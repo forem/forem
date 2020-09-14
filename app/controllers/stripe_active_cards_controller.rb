@@ -1,5 +1,6 @@
 class StripeActiveCardsController < ApplicationController
   before_action :authenticate_user!
+  before_action :initialize_stripe
 
   AUDIT_LOG_CATEGORY = "user.credit_card.edit".freeze
   private_constant :AUDIT_LOG_CATEGORY

@@ -13,4 +13,4 @@ json.extract!(
 )
 
 json.joined_at     @user.created_at.strftime("%b %e, %Y")
-json.profile_image ProfileImage.new(@user).get(width: 320)
+json.profile_image Images::Profile.call(@user.profile_image_url, length: 320)

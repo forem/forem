@@ -172,5 +172,21 @@ RSpec.describe RssReader, type: :service, vcr: true, db_strategy: :truncation do
         rss_reader.fetch_user(user)
       end.to change(user.articles, :count).by(10)
     end
+
+    it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "rss_reader_swimburger" } do
+      user = create(:user, feed_url: "https://swimburger.net/atom.xml")
+
+      expect do
+        rss_reader.fetch_user(user)
+      end.to change(user.articles, :count).by(10)
+
+      body_markdown = user.articles.last.body_markdown
+
+      expect(body_markdown).not_to include("<picture>")
+      expected_image_markdown =
+        "![Screenshot of Azure left navigation pane](https://swimburger.net/media/lxypkhak/azure-create-a-resource.png)"
+
+      expect(body_markdown).to include(expected_image_markdown)
+    end
   end
 end

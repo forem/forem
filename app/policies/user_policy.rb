@@ -1,5 +1,6 @@
 class UserPolicy < ApplicationPolicy
   PERMITTED_ATTRIBUTES = %i[
+    reaction_notifications
     available_for
     behance_url
     bg_color_hex

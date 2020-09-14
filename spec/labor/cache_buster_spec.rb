@@ -11,6 +11,61 @@ RSpec.describe CacheBuster, type: :labor do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:tag) { create(:tag) }
 
+  describe "#bust_nginx_cache" do
+    before do
+      # Stub out Fastly since we check for fastly_enabled? before nginx_enabled?
+      allow(cache_buster).to receive(:fastly_enabled?).and_return(false)
+      allow(cache_buster).to receive(:bust_nginx_cache).and_call_original
+
+      allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return("localhost:9090")
+    end
+
+    context "when nginx is available and openresty is configured" do
+      it "can bust an nginx cache" do
+        cache_buster.bust("/#{user.username}")
+        expect(cache_buster).to have_received(:bust_nginx_cache)
+      end
+    end
+
+    context "when nginx is unavailable and openresty is configured" do
+      before do
+        allow(cache_buster).to receive(:bust)
+        allow(cache_buster).to receive(:nginx_available?).and_return(false)
+      end
+
+      it "does not bust an nginx cache" do
+        cache_buster.bust("/#{user.username}")
+        expect(cache_buster).not_to have_received(:bust_nginx_cache)
+      end
+    end
+
+    context "when openresty is not configured" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return(nil)
+      end
+
+      it "does not bust an nginx cache" do
+        cache_buster.bust("/#{user.username}")
+        expect(cache_buster).not_to have_received(:bust_nginx_cache)
+      end
+    end
+  end
+
+  describe "#bust_fastly_cache" do
+    before do
+      allow(cache_buster).to receive(:bust_fastly_cache).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("fake-key")
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return("fake-key")
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("localhost:3000")
+    end
+
+    it "can bust a fastly cache when configured" do
+      cache_buster.bust_fastly_cache("/#{user.username}")
+    end
+  end
+
   describe "#bust_comment" do
     it "busts comment" do
       cache_buster.bust_comment(comment.commentable)

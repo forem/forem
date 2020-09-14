@@ -68,12 +68,16 @@
 
   <div class="crayons-card mb-6 grid gap-6 p-6">
     <header>
-      <h3 class="mb-2">Platform Notification Settings</h3>
+      <h3 class="mb-2">General Notification Settings</h3>
       <p>Notifications that only appear on the <a href="<%= notifications_path %>">notifications page</a>.</p>
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :welcome_notifications, class: "crayons-checkbox" %>
       <%= f.label :welcome_notifications, "Send me occasional tips on how to enhance my #{community_name} experience", class: "crayons-field__label" %>
+    </div>
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box :reaction_notifications, class: "crayons-checkbox" %>
+      <%= f.label :reaction_notifications, "Send notifications when someone reacts to my comments or posts", class: "crayons-field__label" %>
     </div>
   </div>
 

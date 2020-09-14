@@ -47,6 +47,13 @@ RSpec.describe "/admin/config", type: :request do
         sign_in(admin_plus_config)
       end
 
+      it "deletes release-tied fragment caches" do
+        allow(Rails.cache).to receive(:delete_matched).and_call_original
+        post "/admin/config", params: { site_config: { health_check_token: "token" },
+                                        confirmation: confirmation_message }
+        expect(Rails.cache).to have_received(:delete_matched).with("*-#{ApplicationConfig['RELEASE_FOOTPRINT']}")
+      end
+
       describe "API tokens" do
         it "updates the health_check_token" do
           token = rand(20).to_s
@@ -82,6 +89,13 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.community_description).to eq(description)
         end
 
+        it "updates the community_name" do
+          name_magoo = "Hey hey #{rand(100)}"
+          post "/admin/config", params: { site_config: { community_name: name_magoo },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.community_name).to eq(name_magoo)
+        end
+
         it "updates the community_member_label" do
           name = "developer"
           post "/admin/config", params: { site_config: { community_member_label: name },
@@ -96,10 +110,22 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.community_member_label).to eq(action)
         end
 
+        it "updates the community_copyright_start_year" do
+          year = "2018"
+          post "/admin/config", params: { site_config: { community_copyright_start_year: year },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.community_copyright_start_year).to eq(2018)
+        end
+
         it "updates the tagline" do
           description = "Hey hey #{rand(100)}"
           post "/admin/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
           expect(SiteConfig.tagline).to eq(description)
+        end
+
+        it "updates the staff_user_id" do
+          post "/admin/config", params: { site_config: { staff_user_id: 22 }, confirmation: confirmation_message }
+          expect(SiteConfig.staff_user_id).to eq(22)
         end
       end
 
@@ -136,7 +162,7 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { periodic_email_digest_min: 6 },
                                             confirmation: "Incorrect yo!" }
-          end.to raise_error Pundit::NotAuthorizedError
+          end.to raise_error ActionController::BadRequest
           expect(SiteConfig.periodic_email_digest_min).not_to eq(6)
         end
       end
@@ -156,14 +182,9 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Google Analytics Reporting API v4" do
-        it "updates ga_view_id" do
-          post "/admin/config", params: { site_config: { ga_view_id: "abc" }, confirmation: confirmation_message }
-          expect(SiteConfig.ga_view_id).to eq("abc")
-        end
-
-        it "updates ga_fetch_rate" do
-          post "/admin/config", params: { site_config: { ga_fetch_rate: 3 }, confirmation: confirmation_message }
-          expect(SiteConfig.ga_fetch_rate).to eq(3)
+        it "updates ga_tracking_id" do
+          post "/admin/config", params: { site_config: { ga_tracking_id: "abc" }, confirmation: confirmation_message }
+          expect(SiteConfig.ga_tracking_id).to eq("abc")
         end
       end
 
@@ -224,7 +245,15 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
                                             confirmation: "Incorrect yo!" }
-          end.to raise_error Pundit::NotAuthorizedError
+          end.to raise_error ActionController::BadRequest
+        end
+
+        it "rejects update without any confirmation" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          expect do
+            post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
+                                            confirmation: "" }
+          end.to raise_error ActionController::ParameterMissing
         end
       end
 
@@ -248,6 +277,30 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { mascot_footer_image_url: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.mascot_footer_image_url).to eq(expected_image_url)
+        end
+
+        it "updates the mascot_footer_image_width" do
+          expected_default_mascot_footer_image_width = 52
+          expected_mascot_footer_image_width = 1002
+
+          expect(SiteConfig.mascot_footer_image_width).to eq(expected_default_mascot_footer_image_width)
+
+          post "/admin/config", params: { site_config:
+                                            { mascot_footer_image_width: expected_mascot_footer_image_width },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mascot_footer_image_width).to eq(expected_mascot_footer_image_width)
+        end
+
+        it "updates the mascot_footer_image_height" do
+          expected_default_mascot_footer_image_height = 120
+          expected_mascot_footer_image_height = 3002
+
+          expect(SiteConfig.mascot_footer_image_height).to eq(expected_default_mascot_footer_image_height)
+
+          post "/admin/config", params: { site_config:
+                                            { mascot_footer_image_height: expected_mascot_footer_image_height },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mascot_footer_image_height).to eq(expected_mascot_footer_image_height)
         end
 
         it "updates mascot_image_description" do
@@ -276,6 +329,14 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.payment_pointer).to eq("$pay.yo")
         end
 
+        it "updates stripe configs" do
+          post "/admin/config", params: { site_config: { stripe_api_key: "sk_live_yo",
+                                                         stripe_publishable_key: "pk_live_haha" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.stripe_api_key).to eq("sk_live_yo")
+          expect(SiteConfig.stripe_publishable_key).to eq("pk_live_haha")
+        end
+
         describe "Shop" do
           it "rejects update to shop_url without proper confirmation" do
             expected_shop_url = "https://qshop.dev.to"
@@ -283,7 +344,7 @@ RSpec.describe "/admin/config", type: :request do
             expect do
               params = { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" }
               post "/admin/config", params: params
-            end.to raise_error(Pundit::NotAuthorizedError)
+            end.to raise_error ActionController::BadRequest
 
             expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
           end
@@ -294,7 +355,7 @@ RSpec.describe "/admin/config", type: :request do
             expect(SiteConfig.shop_url).to eq("")
             get "/privacy"
             expect(response.body).not_to include(previous_shop_url)
-            expect(response.body).not_to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+            expect(response.body).not_to include("#{SiteConfig.community_name} Shop")
           end
 
           it "updates shop url" do
@@ -304,12 +365,18 @@ RSpec.describe "/admin/config", type: :request do
             expect(SiteConfig.shop_url).to eq(expected_shop_url)
             get "/privacy"
             expect(response.body).to include(expected_shop_url)
-            expect(response.body).to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+            expect(response.body).to include("#{SiteConfig.community_name} Shop")
           end
         end
       end
 
       describe "Newsletter" do
+        it "updates mailchimp_api_key" do
+          post "/admin/config", params: { site_config: { mailchimp_api_key: "abc" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mailchimp_api_key).to eq("abc")
+        end
+
         it "updates mailchimp_newsletter_id" do
           post "/admin/config", params: { site_config: { mailchimp_newsletter_id: "abc" },
                                           confirmation: confirmation_message }
@@ -435,15 +502,51 @@ RSpec.describe "/admin/config", type: :request do
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(3).to(1)
         end
+
+        it "updates rate_limit_article_update" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_article_update: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_article_update).from(30).to(3)
+        end
+
+        it "updates rate_limit_user_update" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_user_update: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_user_update).from(5).to(3)
+        end
+
+        it "updates rate_limit_feedback_message_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_feedback_message_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_feedback_message_creation).from(5).to(3)
+        end
+
+        it "updates rate_limit_listing_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_listing_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_listing_creation).from(1).to(3)
+        end
+
+        it "updates rate_limit_reaction_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_reaction_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_reaction_creation).from(10).to(3)
+        end
+
+        it "updates rate_limit_send_email_confirmation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_send_email_confirmation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(2).to(3)
+        end
       end
 
       describe "Social Media" do
-        it "does not allow the staff_user_id to be updated" do
-          expect(SiteConfig.staff_user_id).to eq(1)
-          post "/admin/config", params: { site_config: { staff_user_id: 2 }, confirmation: confirmation_message }
-          expect(SiteConfig.staff_user_id).to eq(1)
-        end
-
         it "updates social_media_handles" do
           expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "" }
           post "/admin/config", params: { site_config: { social_media_handles: expected_handle },
@@ -456,8 +559,8 @@ RSpec.describe "/admin/config", type: :request do
           twitter_hashtag = "#DEVCommunity"
           params = { site_config: { twitter_hashtag: twitter_hashtag }, confirmation: "Incorrect confirmation" }
 
-          it "does not update the twitter hashtag" do
-            expect { post "/admin/config", params: params }.to raise_error Pundit::NotAuthorizedError
+          it "does not update the twitter hashtag without the correct confirmation text" do
+            expect { post "/admin/config", params: params }.to raise_error ActionController::BadRequest
           end
 
           it "updates the twitter hashtag" do
@@ -497,6 +600,27 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { mascot_user_id: feed_style },
                                           confirmation: confirmation_message }
           expect(SiteConfig.feed_style).to eq(feed_style)
+        end
+
+        it "updates the brand color if proper hex" do
+          hex = "#0a0a0a" # dark enough
+          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.primary_brand_color_hex).to eq(hex)
+        end
+
+        it "does not update brand color if hex not contrasting enough" do
+          hex = "#bd746f" # not dark enough
+          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.primary_brand_color_hex).not_to eq(hex)
+        end
+
+        it "does not update brand color if hex not a hex with proper format" do
+          hex = "0a0a0a" # dark enough, but not proper format
+          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.primary_brand_color_hex).not_to eq(hex)
         end
 
         it "updates public to true" do

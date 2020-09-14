@@ -191,7 +191,7 @@ To install Elasticsearch perform the following steps:
    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
    shasum -a 512 -c elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
-   tar -xzf elasticsearch-7.5.2-linux-x86_64.tar.gz
+   tar -xzf elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
    ```
 
 2. Next, switch to the correct directory with:
@@ -254,16 +254,14 @@ To install Elasticsearch perform the following steps:
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
-     1. Create `config/application.yml` by copying from the provided template
-        (ie. with bash:
-        `cp config/sample_application.yml config/application.yml`). This is a
-        personal file that is ignored in git.
+     1. Create `.env` by copying from the provided template (ie. with bash:
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      1. Obtain the development variable and apply the key you wish to
         enter/replace. ie:
 
      ```shell
-     GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
-     GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
+     export GITHUB_KEY="SOME_REAL_SECURE_KEY_HERE"
+     export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
    - If you are missing `ENV` variables on bootup, the
@@ -273,7 +271,8 @@ To install Elasticsearch perform the following steps:
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. Run `bin/setup`.
+1. After ensuring that Elasticsearch, the PostgreSQL server, and the Redis
+   server are running, run `bin/setup`.
 
    > The `bin/setup` script is responsible for installing a varienty of
    > dependencies. One can find it inside the `bin` folder by the name of
@@ -329,8 +328,7 @@ There are currently two work-arounds.
 
    1. `docker run -d --name selenium-hub -p 4444:4444 selenium/hub:3.141.59-20200409`
    2. `CH=$(docker run --rm --name=ch --link selenium-hub:hub -v /dev/shm:/dev/shm selenium/node-chrome:3.141.59-20200409)`
-   3. Add `SELENIUM_URL: "http://localhost:4444/wd/hub"` to your
-      `application.yml`
+   3. Add `export SELENIUM_URL="http://localhost:4444/wd/hub"` to your `.env`
    4. Run your System test!
 
 2. Port forward with `socats` (more info needed).

@@ -15,6 +15,7 @@ module Admin
     def edit
       @user = User.find(params[:id])
       @notes = @user.notes.order(created_at: :desc).limit(10).load
+      set_feedback_messages
     end
 
     def show
@@ -57,9 +58,9 @@ module Admin
     def full_delete
       @user = User.find(params[:id])
       begin
-        Moderator::DeleteUser.call(admin: current_user, user: @user, user_params: user_params)
+        Moderator::DeleteUser.call(user: @user)
         message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
-          "has been fully deleted. If requested, old content may have been ghostified. " \
+          "has been fully deleted." \
           "If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
         flash[:success] = message
       rescue StandardError => e
@@ -170,11 +171,18 @@ module Admin
       Credit.remove_from(org, amount)
     end
 
+    def set_feedback_messages
+      @related_reports = FeedbackMessage.where(id: @user.reporter_feedback_messages.ids)
+        .or(FeedbackMessage.where(id: @user.affected_feedback_messages.ids))
+        .or(FeedbackMessage.where(id: @user.offender_feedback_messages.ids))
+        .order(created_at: :desc).limit(15)
+    end
+
     def user_params
       allowed_params = %i[
         new_note note_for_current_role user_status
         pro merge_user_id add_credits remove_credits
-        add_org_credits remove_org_credits ghostify
+        add_org_credits remove_org_credits
         organization_id identity_id backup_data_id
       ]
       params.require(:user).permit(allowed_params)

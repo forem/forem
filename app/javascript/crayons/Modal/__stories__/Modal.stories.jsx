@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { withKnobs, text, boolean, select } from '@storybook/addon-knobs/react';
+import { withKnobs, text, boolean, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import notes from './modals.md';
 import { Modal, Button } from '@crayons';

@@ -38,7 +38,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "displays content on RSS tab properly" do
         get "/settings/publishing-from-rss"
-        title = "Publishing to #{ApplicationConfig['COMMUNITY_NAME']} from RSS"
+        title = "Publishing to #{SiteConfig.community_name} from RSS"
         expect(response.body).to include(title)
       end
 
@@ -56,7 +56,6 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     describe ":account" do
-      let(:ghost_account_message) { "If you would like to keep your content under the" }
       let(:remove_oauth_section) { "Remove OAuth Associations" }
       let(:user) { create(:user, :with_identity) }
 
@@ -68,20 +67,6 @@ RSpec.describe "UserSettings", type: :request do
       it "allows users to visit the account page" do
         get user_settings_path(tab: "account")
         expect(response).to have_http_status(:ok)
-      end
-
-      it "does not render the ghost account email option if the user has no content" do
-        get user_settings_path(tab: "account")
-        expect(response.body).not_to include(ghost_account_message)
-      end
-
-      it "does render the ghost account email option if the user has content" do
-        create(:article, user: user)
-        user.update(articles_count: 1)
-
-        get user_settings_path(tab: "account")
-
-        expect(response.body).to include(ghost_account_message)
       end
 
       it "shows the 'Remove OAuth' section if a user has multiple enabled identities" do
@@ -178,6 +163,11 @@ RSpec.describe "UserSettings", type: :request do
       user.update_column(:profile_updated_at, 2.weeks.ago)
       put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
       expect(user.reload.profile_updated_at).to be > 2.minutes.ago
+    end
+
+    it "disables reaction notifications" do
+      put "/users/#{user.id}", params: { user: { tab: "notifications", reaction_notifications: 0 } }
+      expect(user.reload.reaction_notifications).to be(false)
     end
 
     it "enables community-success notifications" do

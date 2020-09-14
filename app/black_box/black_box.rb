@@ -1,6 +1,7 @@
 class BlackBox
+  OUR_EPOCH_NUMBER = "2010-01-01 00:00:01".to_time.to_i # Arbitrary date, but the one we went with.
   class << self
-    def article_hotness_score(article, function_caller = FunctionCaller)
+    def article_hotness_score(article)
       usable_date = article.crossposted_at || article.published_at
       reaction_points = article.score
       super_super_recent_bonus = usable_date > 1.hour.ago ? 28 : 0
@@ -16,10 +17,7 @@ class BlackBox
         reaction_points = (reaction_points * 0.8).to_i # watercooler posts shouldn't get as much love in feed
       end
 
-      article_hotness = function_caller.call(
-        "blackbox-production-articleHotness",
-        { article: article, user: article.user }.to_json,
-      ).to_i
+      article_hotness = last_mile_hotness_calc(article)
 
       (
         article_hotness + reaction_points + recency_bonus + super_recent_bonus +
@@ -35,12 +33,15 @@ class BlackBox
       (rep_points + descendants_points + bonus_points - spaminess_rating).to_i
     end
 
-    def calculate_spaminess(story, function_caller = FunctionCaller)
-      # accepts comment or article as story
-      return 100 unless story.user
+    def calculate_spaminess(story)
+      user = story.user
+      return 100 unless user
+      return 0 if user.trusted
+      return 0 if user.badge_achievements_count.positive?
 
-      function_caller.call("blackbox-production-spamScore",
-                           { story: story, user: story.user }.to_json).to_i
+      base_spaminess = 0
+      base_spaminess += 25 if social_auth_registration_recent?(user) && user.registered_at > 25.days.ago
+      base_spaminess
     end
 
     private
@@ -49,6 +50,20 @@ class BlackBox
       size_bonus = body_markdown.size > 200 ? 2 : 0
       code_bonus = body_markdown.include?("`") ? 1 : 0
       size_bonus + code_bonus
+    end
+
+    def last_mile_hotness_calc(article)
+      score_from_epoch = article.featured_number.to_i - OUR_EPOCH_NUMBER # Approximate time of publish - epoch time
+      score_from_epoch / 1000 +
+        ([article.score, 650].min * 2) +
+        ([article.comment_score, 650].min * 2) -
+        (article.spaminess_rating * 5)
+    end
+
+    def social_auth_registration_recent?(user)
+      # was the social auth account created very recently?
+      social_auth_date_plus_two_days = ((user.github_created_at || user.twitter_created_at || 3.days.ago) + 2.days)
+      user.registered_at < social_auth_date_plus_two_days
     end
   end
 end

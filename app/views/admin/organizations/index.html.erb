@@ -1,19 +1,15 @@
-<div class="row m-3">
-  <div class="col justify-content-end">
-    <%= form_tag(admin_organizations_path, method: "get") do %>
-      <div class="form-row justify-content-end">
-        <div class="form-group">
-          <%= text_field_tag(:search, params[:search]) %>
-          <%= submit_tag("Search") %>
-        </div>
-      </div>
-    <% end %>
+<%= form_tag(admin_organizations_path, method: "get") do %>
+  <div class="form-row">
+    <div class="form-group">
+      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }) %>
+      <%= submit_tag("Search") %>
+    </div>
   </div>
-</div>
+<% end %>
 
 <%= paginate @organizations %>
 
-<table class="table">
+<table class="crayons-table" width="100%">
   <thead>
     <tr>
       <th scope="col">Name</th>
@@ -23,7 +19,7 @@
       <th scope="col">URL</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="crayons-card">
     <% @organizations.each do |organization| %>
       <tr>
         <td><%= link_to "@#{organization.name}", admin_organization_path(organization.id) %></td>

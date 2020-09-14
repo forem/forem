@@ -102,7 +102,7 @@ module SidekiqTestHelpers
             next false if Array(except).include?(job_class.constantize)
           end
           if queue
-            next false unless queue.to_s == job.fetch("queue")
+            next false unless queue.to_s == job.fetch("queue") # rubocop:disable Style/SoleNestedConditional
           end
           true
         end

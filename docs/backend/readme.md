@@ -3,6 +3,7 @@ title: Backend Guide
 items:
   - audit-log.md
   - authentication.md
+  - auth-facebook.md
   - auth-twitter.md
   - auth-github.md
   - authorization.md
@@ -10,6 +11,7 @@ items:
   - data-update-scripts.md
   - elasticsearch.md
   - fastly.md
+  - internationalization.md
   - roles.md
   - pusher.md
   - resource-admin.md

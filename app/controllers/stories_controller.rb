@@ -378,7 +378,7 @@ class StoriesController < ApplicationController
       },
       "url": URL.user(@user),
       "sameAs": user_same_as,
-      "image": ProfileImage.new(@user).get(width: 320),
+      "image": Images::Profile.call(@user.profile_image_url, length: 320),
       "name": @user.name,
       "email": @user.email_public ? @user.email : nil,
       "jobTitle": @user.employment_title.presence,
@@ -402,11 +402,12 @@ class StoriesController < ApplicationController
       "publisher": {
         "@context": "http://schema.org",
         "@type": "Organization",
-        "name": "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+        "name": "#{SiteConfig.community_name} Community",
         "logo": {
           "@context": "http://schema.org",
           "@type": "ImageObject",
-          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, 80, "png"),
+          "url": ApplicationController.helpers.optimized_image_url(SiteConfig.logo_png, width: 192,
+                                                                                        fetch_format: "png"),
           "width": "192",
           "height": "192"
         }
@@ -443,7 +444,7 @@ class StoriesController < ApplicationController
         "@id": URL.organization(@organization)
       },
       "url": URL.organization(@organization),
-      "image": ProfileImage.new(@organization).get(width: 320),
+      "image": Images::Profile.call(@organization.profile_image_url, length: 320),
       "name": @organization.name,
       "description": @organization.summary.presence || "404 bio not found"
     }
