@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useRef, useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 function Draw({ sendCanvasImage }) {
   const canvasRef = useRef(null);
@@ -15,6 +16,7 @@ function Draw({ sendCanvasImage }) {
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawColor, setDrawColor] = useState('#F58F8E');
   const [coordinates, setCoordinates] = useState({});
+  const [sendButtonDisabled, setSendButtonDisabled] = useState(true);
   const prevCoordinates = usePrevious(coordinates);
 
   const handleCanvasSend = () => {
@@ -52,6 +54,7 @@ function Draw({ sendCanvasImage }) {
   };
 
   const handleClearCanvas = () => {
+    setSendButtonDisabled(true);
     if (!canvasRef.current) {
       return;
     }
@@ -74,6 +77,7 @@ function Draw({ sendCanvasImage }) {
   };
   const handleMouseMove = (e) => {
     if (isDrawing) {
+      setSendButtonDisabled(false);
       setCoordinates({ x: e.offsetX, y: e.offsetY });
     }
   };
@@ -108,6 +112,7 @@ function Draw({ sendCanvasImage }) {
               className="color"
               onClick={handleChangeColor}
               style={`background-color: ${color}`}
+              title={`color-${color}`}
             />
           ))}
         </div>
@@ -125,15 +130,24 @@ function Draw({ sendCanvasImage }) {
           width="600"
         />
         <div className="drawActions">
-          <button
+          <Button
             className=" crayons-btn crayons-btn--secondary"
             onClick={handleClearCanvas}
+            title="clear"
+            type="button"
+            size="s"
+            variant="secondary"
           >
             Clear
-          </button>
-          <button className="crayons-btn" onClick={handleCanvasSend}>
+          </Button>
+          <Button
+            className="crayons-btn"
+            onClick={handleCanvasSend}
+            title="send"
+            disabled={sendButtonDisabled}
+          >
             Send
-          </button>
+          </Button>
         </div>
       </div>
     </div>
