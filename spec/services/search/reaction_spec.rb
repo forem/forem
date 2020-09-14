@@ -10,8 +10,8 @@ RSpec.describe Search::Reaction, type: :service do
   describe "::search_documents", elasticsearch: "Reaction" do
     let(:article1) { create(:article) }
     let(:article2) { create(:article) }
-    let(:reaction1) { create(:reaction, category: "readinglist", reactable: article1) }
-    let(:reaction2) { create(:reaction, category: "readinglist", reactable: article2) }
+    let(:reaction1) { create(:reaction, category: "readinglist", reactable: article1, created_at: 1.week.ago) }
+    let(:reaction2) { create(:reaction, category: "readinglist", reactable: article2, created_at: Time.current) }
     let(:query_params) { { size: 5 } }
 
     it "parses reaction document hits from search response" do
@@ -112,7 +112,7 @@ RSpec.describe Search::Reaction, type: :service do
     end
 
     context "with default sorting" do
-      xit "sorts by id" do
+      it "sorts by created_at" do
         index_documents([reaction1, reaction2])
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]

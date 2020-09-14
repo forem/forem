@@ -17,7 +17,7 @@ module ProfileFields
       @profile_field = ProfileField.create(@attributes)
       if @profile_field.persisted?
         @success = true
-        Profile.refresh_store_accessors!
+        Profile.refresh_attributes!
       else
         @error_message = @profile_field.errors_as_sentence
       end

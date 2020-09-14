@@ -1,0 +1,19 @@
+<div class="crayons-card p-6">
+  <div>
+    <h2 class="d-inline">Recent Reports</h2>
+    <button type="button" data-toggle="collapse" data-target="#reactions-row" class="btn btn-secondary float-right">Toggle</button>
+  </div>
+  <div class="pt-6 collapse" id="reactions-row">
+    <% unless @related_reports.empty? %>
+      <% @related_reports.each do |report| %>
+        <a href="<%= admin_report_path(report.id) %>" class="list-group-item list-group-item-action action px-5 d-flex justify-content-between">
+        <span><%= report.category.capitalize %> (<%= report.status %>)</span>
+        <span><strong><%= report.user_types(@user.id).to_sentence %></strong>: <%= report.message %></span>
+        <em> <%= report.created_at&.strftime("%b %e '%y") %></em>
+        </a>
+      <% end %>
+      <% else %>
+      <p><em>Nothing to report here! 👀</em></p>
+    <% end %>
+  </div>
+</div>

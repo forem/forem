@@ -1,5 +1,4 @@
 class AsyncInfoController < ApplicationController
-  include Devise::Controllers::Rememberable
   # No pundit policy. All actions are unrestricted.
   before_action :set_cache_control_headers, only: %i[shell_version]
 
@@ -12,11 +11,6 @@ class AsyncInfoController < ApplicationController
         token: form_authenticity_token
       }
       return
-    end
-    if remember_user_token.blank?
-      current_user.remember_me = true
-      current_user.remember_me!
-      remember_me(current_user)
     end
     @user = current_user.decorate
     respond_to do |format|
@@ -56,7 +50,7 @@ class AsyncInfoController < ApplicationController
         id: @user.id,
         name: @user.name,
         username: @user.username,
-        profile_image_90: ProfileImage.new(@user).get(width: 90),
+        profile_image_90: Images::Profile.call(@user.profile_image_url, length: 90),
         followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score],
                                                           methods: [:points]),
         followed_podcast_ids: @user.cached_following_podcasts_ids,
@@ -87,11 +81,6 @@ class AsyncInfoController < ApplicationController
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
     #{current_user&.pro?}__
-    #{current_user&.blocking_others_count}__
-    #{remember_user_token}"
-  end
-
-  def remember_user_token
-    cookies[:remember_user_token]
+    #{current_user&.blocking_others_count}__"
   end
 end

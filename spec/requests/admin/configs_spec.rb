@@ -47,6 +47,13 @@ RSpec.describe "/admin/config", type: :request do
         sign_in(admin_plus_config)
       end
 
+      it "deletes release-tied fragment caches" do
+        allow(Rails.cache).to receive(:delete_matched).and_call_original
+        post "/admin/config", params: { site_config: { health_check_token: "token" },
+                                        confirmation: confirmation_message }
+        expect(Rails.cache).to have_received(:delete_matched).with("*-#{ApplicationConfig['RELEASE_FOOTPRINT']}")
+      end
+
       describe "API tokens" do
         it "updates the health_check_token" do
           token = rand(20).to_s
@@ -175,9 +182,9 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Google Analytics Reporting API v4" do
-        it "updates ga_view_id" do
-          post "/admin/config", params: { site_config: { ga_view_id: "abc" }, confirmation: confirmation_message }
-          expect(SiteConfig.ga_view_id).to eq("abc")
+        it "updates ga_tracking_id" do
+          post "/admin/config", params: { site_config: { ga_tracking_id: "abc" }, confirmation: confirmation_message }
+          expect(SiteConfig.ga_tracking_id).to eq("abc")
         end
       end
 
@@ -364,6 +371,12 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Newsletter" do
+        it "updates mailchimp_api_key" do
+          post "/admin/config", params: { site_config: { mailchimp_api_key: "abc" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mailchimp_api_key).to eq("abc")
+        end
+
         it "updates mailchimp_newsletter_id" do
           post "/admin/config", params: { site_config: { mailchimp_newsletter_id: "abc" },
                                           confirmation: confirmation_message }
@@ -587,6 +600,27 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { mascot_user_id: feed_style },
                                           confirmation: confirmation_message }
           expect(SiteConfig.feed_style).to eq(feed_style)
+        end
+
+        it "updates the brand color if proper hex" do
+          hex = "#0a0a0a" # dark enough
+          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.primary_brand_color_hex).to eq(hex)
+        end
+
+        it "does not update brand color if hex not contrasting enough" do
+          hex = "#bd746f" # not dark enough
+          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.primary_brand_color_hex).not_to eq(hex)
+        end
+
+        it "does not update brand color if hex not a hex with proper format" do
+          hex = "0a0a0a" # dark enough, but not proper format
+          post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.primary_brand_color_hex).not_to eq(hex)
         end
 
         it "updates public to true" do

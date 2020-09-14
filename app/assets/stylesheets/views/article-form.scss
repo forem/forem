@@ -143,12 +143,17 @@
     }
   }
 
+  &__top {
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
   &__body {
     flex: 1 0 auto;
     position: relative;
     outline: none;
     display: flex;
     flex-direction: column;
+    border-radius: 0 0 var(--radius) var(--radius);
 
     &__field {
       flex: 1 auto;
@@ -292,5 +297,19 @@
 
   &__tagsoptionsbottomrow {
     display: none;
+  }
+}
+
+// Styling for drag'n'drop functionality...
+
+.drop-area {
+  &--active {
+    background: var(--accent-brand-a10);
+    box-shadow: inset 0 0 0 1px var(--accent-brand);
+
+    // ideally this one shouldn't be there, but I'm not sure how else we could handle that right now...
+    .crayons-article-form__toolbar {
+      opacity: 0;
+    }
   }
 }

@@ -8,7 +8,6 @@ RSpec.describe "Admin::Users", type: :request do
   let(:article) { create(:article, user: user) }
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
-  let(:ghost) { create(:user, username: "ghost", github_username: "Ghost") }
   let(:organization) { create(:organization) }
 
   before do
@@ -60,11 +59,6 @@ RSpec.describe "Admin::Users", type: :request do
       url: Faker::Internet.url
     }
     GithubRepo.create(params)
-  end
-
-  def call_ghost
-    ghost
-    post "/admin/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
   end
 
   context "when merging users" do
@@ -170,25 +164,6 @@ RSpec.describe "Admin::Users", type: :request do
       expect(user.credits.size).to eq(2)
     end
   end
-  
-
-  context "when deleting user and converting content to ghost" do
-    it "raises a 'record not found' error after deletion" do
-      call_ghost
-      expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
-    end
-
-    it "reassigns comment and article content to ghost account" do
-      create(:article, user: user)
-      call_ghost
-      articles = ghost.articles
-      expect(articles.count).to eq(2)
-      expect(ghost.comments.count).to eq(1)
-      expect(ghost.comments.last.path).to include("ghost")
-      expect(articles.last.path).to include("ghost")
-      expect(articles.last.elasticsearch_doc.dig("_source", "path")).to include("ghost")
-    end
-  end
 
   context "when deleting user" do
     def create_mention
@@ -217,13 +192,13 @@ RSpec.describe "Admin::Users", type: :request do
 
     it "raises a 'record not found' error after deletion" do
       sidekiq_perform_enqueued_jobs do
-        post "/admin/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+        post "/admin/users/#{user.id}/full_delete"
       end
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "expect flash message" do
-      post "/admin/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      post "/admin/users/#{user.id}/full_delete"
       expect(request.flash["success"]).to include("fully deleted")
     end
   end

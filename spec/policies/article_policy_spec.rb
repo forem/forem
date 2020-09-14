@@ -22,13 +22,13 @@ RSpec.describe ArticlePolicy do
 
   context "when user is not the author" do
     it { is_expected.to permit_actions(%i[new create preview]) }
-    it { is_expected.to forbid_actions(%i[update edit manage delete_confirm destroy]) }
+    it { is_expected.to forbid_actions(%i[update edit manage delete_confirm destroy admin_unpublish]) }
 
     context "with banned status" do
       before { user.add_role(:banned) }
 
       it { is_expected.to permit_actions(%i[new preview]) }
-      it { is_expected.to forbid_actions(%i[create edit manage update delete_confirm destroy]) }
+      it { is_expected.to forbid_actions(%i[create edit manage update delete_confirm destroy admin_unpublish]) }
     end
   end
 
@@ -49,5 +49,6 @@ RSpec.describe ArticlePolicy do
     let(:user) { build(:user, :super_admin) }
 
     it { is_expected.to permit_actions(%i[update new edit manage create delete_confirm destroy preview]) }
+    it { is_expected.to permit_actions(%i[admin_unpublish]) }
   end
 end

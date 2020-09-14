@@ -44,6 +44,11 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/lib"]
     config.eager_load_paths += Dir["#{config.root}/lib"]
 
+    # Middlewares folder is not otherwise autorequired.
+    Dir["#{config.root}/app/middlewares/**/*.rb"].each do |file|
+      require_dependency(file)
+    end
+
     config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Deflater
@@ -55,6 +60,8 @@ module PracticalDeveloper
     # Unfortunately there isn't an easy way to use them and use view caching at the same time.
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
+
+    config.middleware.use SetCookieDomain
 
     # NOTE: [Rails 6]
     # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.

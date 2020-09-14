@@ -11,7 +11,9 @@ class SiteConfig < RailsSettings::Base
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
 
+  # Core setup
   field :waiting_on_first_user, type: :boolean, default: !User.exists?
+  field :app_domain, type: :string, default: ApplicationConfig["APP_DOMAIN"]
 
   # API Tokens
   field :health_check_token, type: :string
@@ -61,9 +63,8 @@ class SiteConfig < RailsSettings::Base
   field :jobs_url, type: :string
   field :display_jobs_banner, type: :boolean, default: false
 
-  # Google Analytics Reporting API v4
-  # <https://developers.google.com/analytics/devguides/reporting/core/v4>
-  field :ga_view_id, type: :string, default: ""
+  # Google Analytics Tracking ID, e.g. UA-71991000-1
+  field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
 
   # Images
   field :main_social_image, type: :string
@@ -98,6 +99,7 @@ class SiteConfig < RailsSettings::Base
 
   # Newsletter
   # <https://mailchimp.com/developer/>
+  field :mailchimp_api_key, type: :string, default: ApplicationConfig["MAILCHIMP_API_KEY"]
   field :mailchimp_newsletter_id, type: :string, default: ""
   field :mailchimp_sustaining_members_id, type: :string, default: ""
   field :mailchimp_tag_moderators_id, type: :string, default: ""
@@ -153,6 +155,7 @@ class SiteConfig < RailsSettings::Base
   field :public, type: :boolean, default: 0
   # The default font for all users that have not chosen a custom font yet
   field :default_font, type: :string, default: "sans_serif"
+  field :primary_brand_color_hex, type: :string, default: "#3b49df"
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date

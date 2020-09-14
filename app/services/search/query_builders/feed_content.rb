@@ -17,6 +17,7 @@ module Search
       # Search keys from our controllers may not match what we have stored in Elasticsearch so we map them here,
       # this allows us to change our Elasticsearch docs without worrying about the frontend
       TERM_KEYS = {
+        id: "id", # NOTE: FeedContent ids are formatted article_#, podcast_episode_#, comment_#
         tag_names: "tags.name",
         approved: "approved",
         user_id: "user.id",
