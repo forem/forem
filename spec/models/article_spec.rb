@@ -54,6 +54,32 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "#second_user and #third_user" do
+      it "is invalid if second_user is user" do
+        article.second_user = user
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if third_user is user" do
+        article.third_user = user
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if second_user is equal to third_user" do
+        article.second_user = article.third_user = create(:user)
+
+        expect(article).not_to be_valid
+      end
+
+      it "is valid if second_user and third_user are nil" do
+        article.second_user = article.third_user = nil
+
+        expect(article).to be_valid
+      end
+    end
+
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save

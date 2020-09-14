@@ -71,8 +71,11 @@ class Article < ApplicationRecord
 
   validate :canonical_url_must_not_have_spaces
   validate :past_or_present_date
+  validate :validate_additional_authors_must_not_be_the_same
   validate :validate_collection_permission
+  validate :validate_second_user
   validate :validate_tag
+  validate :validate_third_user
   validate :validate_video
 
   before_validation :evaluate_markdown, :create_slug
@@ -551,6 +554,28 @@ class Article < ApplicationRecord
     return unless collection && collection.user_id != user_id
 
     errors.add(:collection_id, "must be one you have permission to post to")
+  end
+
+  def validate_second_user
+    return unless second_user_id
+    return unless second_user_id == user_id
+
+    errors.add(:second_user_id, "must not be the same user as the author")
+  end
+
+  def validate_third_user
+    return unless third_user_id
+    return unless third_user_id == user_id
+
+    errors.add(:third_user_id, "must not be the same user as the author")
+  end
+
+  def validate_additional_authors_must_not_be_the_same
+    return unless second_user_id
+    return unless third_user_id
+    return if second_user_id != third_user_id
+
+    errors.add(:base, "second and third user cannot be the same")
   end
 
   def past_or_present_date
