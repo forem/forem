@@ -24,8 +24,8 @@ class Article < ApplicationRecord
   belongs_to :collection, optional: true
 
   belongs_to :organization, optional: true
-  belongs_to :second_user, optional: true
-  belongs_to :third_user, optional: true
+  belongs_to :second_user, class_name: "User", inverse_of: :articles_as_second_user, optional: true
+  belongs_to :third_user, class_name: "User", inverse_of: :articles_as_third_user, optional: true
   belongs_to :user
 
   counter_culture :user
