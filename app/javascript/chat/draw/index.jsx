@@ -128,6 +128,7 @@ function Draw({ sendCanvasImage }) {
           onDragOver={handleDragHover}
           onDragExit={handleDragExit}
           height="600"
+          width="600"
         />
         <div className="drawActions">
           <Button

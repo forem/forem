@@ -1198,6 +1198,7 @@
     width: 10%;
   }
 }
+
 .connect-draw {
   margin-top: 30px;
   .draw-title {
@@ -1206,13 +1207,14 @@
   }
   .colors {
     z-index: 2;
+    margin: 5px 20px;
     text-align: center;
   }
 
   .color {
     height: 30px;
     width: 30px;
-
+    margin-right: 10px;
     border-radius: 50%;
     border: none;
   }
@@ -1231,7 +1233,6 @@
       border: 1px solid black;
       background-color: white;
       justify-self: center;
-      width: 100%;
     }
     .drawActions {
       margin: 20px 0px;
@@ -1242,6 +1243,7 @@
     }
   }
 }
+
 .membership-section {
   position: relative;
 
