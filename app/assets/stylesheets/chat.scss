@@ -1202,18 +1202,17 @@
   margin-top: 30px;
   .draw-title {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
   .colors {
     z-index: 2;
-    margin: 5px 20px;
     text-align: center;
   }
 
   .color {
-    height: 40px;
-    width: 40px;
-    margin-right: 10px;
+    height: 30px;
+    width: 30px;
+
     border-radius: 50%;
     border: none;
   }
@@ -1232,6 +1231,7 @@
       border: 1px solid black;
       background-color: white;
       justify-self: center;
+      width: 100%;
     }
     .drawActions {
       margin: 20px 0px;

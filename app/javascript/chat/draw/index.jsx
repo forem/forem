@@ -105,7 +105,7 @@ function Draw({ sendCanvasImage }) {
   return (
     <div className="p-4 grid gap-2 crayons-card mb-4 connect-draw">
       <div className="mb-1 draw-title">
-        <h1>Connect Draw</h1>
+        <h2>Connect Draw</h2>
         <div className="colors" style="pointer-events: all;">
           {palettes.map((color) => (
             <button
@@ -127,7 +127,6 @@ function Draw({ sendCanvasImage }) {
           onDragOver={handleDragHover}
           onDragExit={handleDragExit}
           height="600"
-          width="600"
         />
         <div className="drawActions">
           <Button
