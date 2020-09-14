@@ -658,6 +658,8 @@ class User < ApplicationRecord
   end
 
   def index_roles(_role)
+    return unless persisted?
+
     index_to_elasticsearch_inline
   end
 
