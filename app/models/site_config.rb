@@ -167,4 +167,9 @@ class SiteConfig < RailsSettings::Base
     large: 300,
     xlarge: 250
   }
+
+  # Returns true if we are operating on a local installation, false otherwise
+  def self.local?
+    app_domain.include?("localhost")
+  end
 end
