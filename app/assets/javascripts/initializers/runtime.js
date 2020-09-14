@@ -58,7 +58,7 @@ class Runtime {
    *
    * @param {string} text to be copied to the clipboard
    *
-   * @returns {Promise} Resolves correctly when
+   * @returns {Promise} Resolves when succesful in copying to clipboard
    */
   static copyToClipboard(text) {
     return new Promise((resolve, reject) => {
