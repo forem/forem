@@ -14,7 +14,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
   var previewButton = '<button id="preview-button" class="crayons-btn crayons-btn--secondary comment-action-button comment-action-preview mr-2" onclick="handleCommentPreview(event)">Preview</button>'
 
 
-  return '<form class="new_comment w-100" onsubmit="handleCommentSubmit.bind(this)(event)" id="new-comment-' + parentId + '" action="/comments" accept-charset="UTF-8" method="post" data-comment-id="'+parentId+'">\
+  return '<form class="new_comment w-100 pt-4" onsubmit="handleCommentSubmit.bind(this)(event)" id="new-comment-' + parentId + '" action="/comments" accept-charset="UTF-8" method="post" data-comment-id="'+parentId+'">\
       <input name="utf8" type="hidden" value="&#x2713;" />\
       <input type="hidden" name="authenticity_token" value="' + authToken + '">\
       <input value="' + commentableId + '" type="hidden" name="comment[commentable_id]" id="comment_commentable_id" />\
@@ -58,15 +58,8 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
           <div class="comment-form__buttons mb-4">\
             <button type="submit" class="crayons-btn comment-action-button mr-2" name="submit">Submit</button>\
             '+previewButton+'\
-            <a href="#" class="crayons-btn crayons-btn--ghost" onclick="cancel(event,this)">Dismiss</a>\
           </div>\
         </div>\
       </div>\
     </form>';
-}
-
-function cancel(event, el) {
-  event.preventDefault();
-  replaceActionButts(el.parentNode.parentNode.parentNode.parentNode);
-  initializeCommentsPage();
 }
