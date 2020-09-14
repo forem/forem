@@ -765,6 +765,15 @@ RSpec.describe Article, type: :model do
         end
         expect(article).to have_received(:update_main_image_background_hex)
       end
+
+      it "does not enqueue a job if main_image has not changed" do
+        article.save
+        allow(article).to receive(:update_main_image_background_hex).and_call_original
+        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
+          article.save
+        end
+        expect(article).to have_received(:update_main_image_background_hex)
+      end
     end
 
     describe "async score calc" do

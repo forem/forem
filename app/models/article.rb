@@ -422,6 +422,7 @@ class Article < ApplicationRecord
   end
 
   def update_main_image_background_hex
+    return unless saved_changes.key?("main_image")
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
     Articles::UpdateMainImageBackgroundHexWorker.perform_async(id)
