@@ -105,7 +105,7 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.3.0",
     "babel-loader": "^8.1.0",
-    "css-loader": "^4.2.1",
+    "css-loader": "^4.3.0",
     "cssom": "^0.4.4",
     "eslint": "^7.9.0",
     "eslint-config-preact": "^1.1.1",
