@@ -2,13 +2,13 @@
   <%= render "articles/search/meta" %>
 <% end %>
 <div id="query-wrapper"></div>
-<div class="home sub-home" id="index-container"
+<div class="home sub-home crayons-layout crayons-layout--3-cols" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
      data-tag=""
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
   <%= render "articles/search/sidebar" %>
-  <div class="articles-list" id="articles-list">
+  <div class="articles-list crayons-layout__content" id="articles-list">
     <div id="banner-section"></div>
     <div class="flex-1 flex items-center justify-between pb-2">
       <h2 class="fs-l fw-heavy">Results</h2>
