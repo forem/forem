@@ -86,4 +86,14 @@ class ArticleDecorator < ApplicationDecorator
   def long_markdown?
     body_markdown.present? && body_markdown.size > LONG_MARKDOWN_THRESHOLD
   end
+
+  def co_authors
+    User.where(id: co_author_ids)
+  end
+
+  def co_author_name_and_path
+    co_authors.map do |user|
+      "<b><a href=\"#{user.path}\">#{user.name}</a></b>"
+    end.to_sentence
+  end
 end
