@@ -294,19 +294,12 @@ class StoriesController < ApplicationController
     end
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
-    assign_co_authors
     set_article_json_ld
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
   def permission_denied?
     !@article.published && params[:preview] != @article.password
-  end
-
-  def assign_co_authors
-    return if @article.co_author_ids.blank?
-
-    @co_authors = User.find(@article.co_author_ids)
   end
 
   def assign_user_comments
