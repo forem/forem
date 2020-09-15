@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe StringToBool, type: :refinement do
+RSpec.describe StringToBoolean, type: :refinement do
   describe "#to_bool" do
     using described_class
     it "converts a string to a boolean" do
