@@ -155,11 +155,12 @@
                 <% if @article.published_timestamp.present? %>
                   <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
                 <% end %>
-                <% if @second_user.present? %>
-                  <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
-                <% end %>
-                <% if @third_user.present? %>
-                  <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
+                <% unless @article.co_author_ids.empty? %>
+                  <% if @article.co_author_ids.count == 1 %>
+                    <em>with <b><a href="<%= @article.co_authors.first.path %>"><%= @article.co_authors.first.name %></a></b></em>
+                  <% elsif @article.co_author_ids.count > 1 %>
+                    <em>with <%= @article.get_co_author_name_and_path.html_safe %></em>
+                  <% end %>
                 <% end %>
 
                 <% if should_show_updated_on?(@article) %>
