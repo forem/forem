@@ -1,7 +1,7 @@
 module Profiles
   class Update
-    def self.call(profile, updated_attributes = {})
-      new(profile, updated_attributes).call
+    def self.call(user, updated_attributes = {})
+      new(user, updated_attributes).call
     end
 
     attr_reader :error_message
