@@ -401,7 +401,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   end
 
   describe "#export_email" do
-    let(:email) { described_class.with(user: user, attachment: "attachment").export_email }
+    let(:email) { described_class.with(email: user.email, attachment: "attachment").export_email }
 
     it "renders proper subject" do
       expect(email.subject).to include("export of your content is ready")
