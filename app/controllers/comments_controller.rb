@@ -141,7 +141,16 @@ class CommentsController < ApplicationController
     authorize @comment
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
-      redirect_to URI.parse(@comment.path).path, notice: "Comment was successfully updated."
+
+      # The following sets variables used in the index view. We render the index
+      # view directly to avoid having to redirect which leads to caching issues.
+      @on_comments_page = true
+      @root_comment = @comment
+      @user = current_user
+      @commentable = @root_comment&.commentable
+      @commentable_type = @commentable.class.name if @commentable
+
+      render :index
     else
       @commentable = @comment.commentable
       render :edit
