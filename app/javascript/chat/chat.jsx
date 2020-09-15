@@ -53,12 +53,15 @@ export default class Chat extends Component {
     chatChannels: PropTypes.string.isRequired,
     chatOptions: PropTypes.string.isRequired,
     githubToken: PropTypes.string.isRequired,
+    superAdmin: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
     super(props);
     const chatChannels = JSON.parse(props.chatChannels);
     const chatOptions = JSON.parse(props.chatOptions);
+    const superAdmin = props.superAdmin;
+
     this.debouncedChannelFilter = debounceAction(
       this.triggerChannelFilter.bind(this),
     );
@@ -102,6 +105,7 @@ export default class Chat extends Component {
       rerenderIfUnchangedCheck: null,
       userRequestCount: 0,
       openModal: false,
+      superAdmin,
     };
     if (chatOptions.activeChannelId) {
       getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
@@ -1316,36 +1320,37 @@ export default class Chat extends Component {
                 ) : null}
               </span>
             </button>
-            <button
-              className="chat__channelssearchtoggle "
-              aria-label="Toggle request manager"
-              onClick={this.toggleModalCreateChannel}
-              data-content="sidecar-joining-request-manager"
-            >
-              <span
+            {this.state.superAdmin === 'true' ? (
+              <button
+                className="chat__channelssearchtoggle "
+                aria-label="Toggle request manager"
+                onClick={this.toggleModalCreateChannel}
                 data-content="sidecar-joining-request-manager"
-                role="button"
-                aria-hidden="true"
               >
-                <svg
-                  version="1.1"
-                  id="Capa_1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  x="0px"
-                  y="0px"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 512 512"
-                  style="enable-background:new 0 0 512 512;"
+                <span
+                  data-content="sidecar-joining-request-manager"
+                  role="button"
+                  aria-hidden="true"
                 >
-                  <path
-                    d="M492,236H276V20c0-11.046-8.954-20-20-20c-11.046,0-20,8.954-20,20v216H20c-11.046,0-20,8.954-20,20s8.954,20,20,20h216
-                  v216c0,11.046,8.954,20,20,20s20-8.954,20-20V276h216c11.046,0,20-8.954,20-20C512,244.954,503.046,236,492,236z"
-                  />
-                </svg>
-              </span>
-            </button>
-
+                  <svg
+                    version="1.1"
+                    id="Capa_1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    x="0px"
+                    y="0px"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 512 512"
+                    style="enable-background:new 0 0 512 512;"
+                  >
+                    <path
+                      d="M492,236H276V20c0-11.046-8.954-20-20-20c-11.046,0-20,8.954-20,20v216H20c-11.046,0-20,8.954-20,20s8.954,20,20,20h216
+                    v216c0,11.046,8.954,20,20,20s20-8.954,20-20V276h216c11.046,0,20-8.954,20-20C512,244.954,503.046,236,492,236z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            ) : null}
             {this.state.openModal ? (
               <CreateChatModal
                 toggleModalCreateChannel={this.toggleModalCreateChannel}

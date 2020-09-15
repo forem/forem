@@ -14,7 +14,8 @@
       data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
       data-github-token="<%= @github_token %>"
       data-chat-channels="<%= [] %>"
-      data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id, currentUserId: current_user.id }.to_json %>">
+      data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id, currentUserId: current_user.id }.to_json %>"
+      data-super-admin=<%= current_user.has_role?(:mod_relations_admin) %>>
       <div class="chat" id="chat_placeholder">
         <div class="chat__channels chat__channels--placeholder">
         </div>

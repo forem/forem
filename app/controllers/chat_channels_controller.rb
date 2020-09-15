@@ -47,11 +47,11 @@ class ChatChannelsController < ApplicationController
   end
 
   def update
-    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_param)
+    chat_channel = ChatChannels::UpdateChannel.call(@chat_channel, chat_channel_params)
     if chat_channel.errors.any?
       flash[:error] = chat_channel.errors.full_messages.to_sentence
     else
-      if chat_channel_param[:discoverable].to_i.zero?
+      if chat_channel_params[:discoverable].to_i.zero?
         ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
                                      role: "member", status: "active")
       else
@@ -175,21 +175,22 @@ class ChatChannelsController < ApplicationController
   end
 
   def create_channel
-    chat_channel_param = params[:chat_channel]
+    chat_channel_params = params[:chat_channel]
+    chat_channel_name = chat_channel_params[:channel_name].split(" ").join("-")
     chat_channel = ChatChannel.new(
       channel_type: "invite_only",
-      channel_name: chat_channel_param[:channel_name],
-      slug: "#{chat_channel_param[:channel_name]}-#{rand(100_000).to_s(26)}",
+      channel_name: chat_channel_params[:channel_name],
+      slug: "#{chat_channel_name}-#{SecureRandom.hex(5)}",
     )
-    chat_channel.save
     authorize chat_channel
+    chat_channel.save
     membership = chat_channel.chat_channel_memberships.new(user_id: current_user.id, role: "mod")
     if membership.save
-      message = SendChannelInvitationService.new(
-        chat_channel_param[:invitation_usernames],
+      message = ChatChannels::SendInvitation.call(
+        chat_channel_params[:invitation_usernames],
         current_user,
         chat_channel,
-      ).send_invitations
+      )
 
       send_chat_action_message(
         "channel is created by #{current_user.username}",
@@ -203,7 +204,7 @@ class ChatChannelsController < ApplicationController
     else
       render json: {
         success: false,
-        message: membership.errors.full_messages
+        message: membership.errors.as_sentence
       }, status: 445
     end
   end
@@ -215,7 +216,7 @@ class ChatChannelsController < ApplicationController
     authorize @chat_channel
   end
 
-  def chat_channel_param
+  def chat_channel_params
     params.require(:chat_channel).permit(policy(ChatChannel).permitted_attributes)
   end
 
@@ -305,7 +306,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def send_chat_action_message(message, user, channel_id, action)
-    temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
+    temp_message_id = SecureRandom.hex(20)
     message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
                              "chat_action" => action)
     pusher_message_created(false, message, temp_message_id)

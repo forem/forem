@@ -12,8 +12,8 @@ const CreateChatModal = ({
 
   const handleCreateChannel = async (e) => {
     e.preventDefault();
-    const res = await createChannel(channelName, userNames);
-    if (res.success) {
+    const result = await createChannel(channelName, userNames);
+    if (result.success) {
       handleCreateChannelSuccess();
     }
   };

@@ -38,11 +38,11 @@ class ChatChannelMembershipsController < ApplicationController
   def create_membership_request
     chat_channel = ChatChannel.find_by(id: channel_membership_params[:chat_channel_id])
     authorize chat_channel, :update?
-    message = SendChannelInvitationService.new(
+    message = ChatChannels::SendInvitation.call(
       channel_membership_params[:invitation_usernames],
       current_user,
-      chat_channel
-    ).send_invitations
+      chat_channel,
+    )
 
     render json: { success: true, message: message, data: {} }, status: :ok
   end
@@ -133,7 +133,7 @@ class ChatChannelMembershipsController < ApplicationController
     user_chat_channels = ChatChannel.includes(:chat_channel_memberships).where(
       chat_channel_memberships: { user_id: current_user.id, role: "mod", status: "active" },
     )
-    @memberships = user_chat_channels.map(&:requested_memberships).flatten
+    @memberships = user_chat_channels.map(&:requested_memberships)&.flatten
     @user_invitations = ChatChannelMembership.where(
       user_id: current_user.id,
       status: %w[pending],
