@@ -1440,8 +1440,6 @@ export default class Chat extends Component {
     processImageUpload(files, this.handleImageSuccess, this.handleImageFailure);
   };
   sendCanvasImage = (files) => {
-    console.log([files]);
-
     dragAndUpload([files], this.handleImageSuccess, this.handleImageFailure);
   };
   handleImageSuccess = (res) => {

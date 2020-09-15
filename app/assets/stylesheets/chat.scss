@@ -1205,13 +1205,14 @@
     display: flex;
     justify-content: flex-start;
   }
-  .colors {
+  .connect-draw__colors {
     z-index: 2;
     margin: 5px 20px;
     text-align: center;
+    pointer-events: all;
   }
 
-  .color {
+  .connect-draw__color {
     height: 30px;
     width: 30px;
     margin-right: 10px;
@@ -1226,15 +1227,15 @@
   .color:focus {
     outline: 0;
   }
-  .drawArea {
+  .connect-draw__draw-area {
     display: grid;
 
-    .drawConnect {
+    .connect-draw__draw {
       border: 1px solid black;
       background-color: white;
       justify-self: center;
     }
-    .drawActions {
+    .connect-draw__actions {
       margin: 20px 0px;
       display: flex;
       button {

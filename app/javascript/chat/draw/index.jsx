@@ -1,18 +1,24 @@
 import { h } from 'preact';
 import { useRef, useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { chatDrawPalettes } from '../../utilities/Constants';
 import { Button } from '@crayons';
+// import { useDragAndDrop } from '../../utilities/dragAndDrop';
 
+/**
+ * Draw function is wrapped in this component
+ *
+ * @example
+ * <Draw
+ *  sendCanvasImage={sendCanvasImage}
+ * />
+ *
+ *
+ * @param {object} props
+ * @param {function} props.sendCanvasImage
+ */
 function Draw({ sendCanvasImage }) {
   const canvasRef = useRef(null);
-  const palettes = [
-    '#F4908E',
-    '#F2F097',
-    '#88B0DC',
-    '#F7B5D1',
-    '#53C4AF',
-    '#FDE38C',
-  ];
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawColor, setDrawColor] = useState('#F58F8E');
   const [coordinates, setCoordinates] = useState({});
@@ -25,10 +31,12 @@ function Draw({ sendCanvasImage }) {
       sendCanvasImage(new File([blob], 'draw.png'));
     });
   };
+
   const handleMouseDown = (e) => {
     setCoordinates({ x: e.offsetX, y: e.offsetY });
     setIsDrawing(true);
   };
+
   const handleImageDrop = (e) => {
     e.preventDefault();
     if (!canvasRef.current) {
@@ -68,20 +76,24 @@ function Draw({ sendCanvasImage }) {
 
     canvasRef.current.classList.add('opacity-25');
   };
+
   const handleChangeColor = (e) => {
     setDrawColor(e.target.style.backgroundColor);
   };
+
   const handleDragExit = (e) => {
     e.preventDefault();
     canvasRef.current.classList.remove('opacity-25');
     canvasRef.current.classList.add('opacity-100');
   };
+
   const handleMouseMove = (e) => {
     if (isDrawing) {
       setSendButtonDisabled(false);
       setCoordinates({ x: e.offsetX, y: e.offsetY });
     }
   };
+
   const handleMouseUp = () => {
     setCoordinates({});
     setIsDrawing(false);
@@ -91,7 +103,9 @@ function Draw({ sendCanvasImage }) {
     if (!canvasRef.current) {
       return;
     }
+
     const context = canvasRef.current.getContext('2d');
+
     if (isDrawing) {
       context.beginPath();
       context.strokeStyle = drawColor;
@@ -107,20 +121,25 @@ function Draw({ sendCanvasImage }) {
     <div className="p-4 grid gap-2 crayons-card mb-4 connect-draw">
       <div className="mb-1 draw-title">
         <h2>Connect Draw</h2>
-        <div className="colors" style="pointer-events: all;">
-          {palettes.map((color) => (
+        <div className="connect-draw__colors">
+          {chatDrawPalettes.map((color) => (
             <button
-              className="color"
+              className="connect-draw__color"
               onClick={handleChangeColor}
               style={`background-color: ${color}`}
-              title={`color-${color}`}
+              title={`Change color to ${color}`}
+              key={`id-${color}`}
             />
           ))}
         </div>
       </div>
-      <div aria-hidden className="drawArea" onMouseUp={handleMouseUp}>
+      <div
+        aria-hidden
+        className="connect-draw__draw-area"
+        onMouseUp={handleMouseUp}
+      >
         <canvas
-          className="drawConnect"
+          className="connect-draw__draw"
           ref={canvasRef}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -128,13 +147,12 @@ function Draw({ sendCanvasImage }) {
           onDragOver={handleDragHover}
           onDragExit={handleDragExit}
           height="600"
-          width="600"
+          width="400"
         />
-        <div className="drawActions">
+        <div className="connect-draw__actions">
           <Button
-            className=" crayons-btn crayons-btn--secondary"
             onClick={handleClearCanvas}
-            title="clear"
+            title="Clear the canvas."
             type="button"
             size="s"
             variant="secondary"
@@ -142,9 +160,8 @@ function Draw({ sendCanvasImage }) {
             Clear
           </Button>
           <Button
-            className="crayons-btn"
             onClick={handleCanvasSend}
-            title="send"
+            title="Send the canvas."
             disabled={sendButtonDisabled}
           >
             Send
@@ -164,7 +181,7 @@ function usePrevious(value) {
   return ref.current;
 }
 Draw.propTypes = {
-  sendCanvasImage: PropTypes.func,
+  sendCanvasImage: PropTypes.func.isRequired,
 };
 
 export default Draw;
