@@ -724,7 +724,7 @@
                 <% SiteConfig.navigation.each do |hash| %>
                   <hr>
                   <div>
-                    <%= internal_config_label "name" %>
+                    <%= admin_config_label "name" %>
                     <%= f.text_field "navigation[][name]",
                                                       class: "form-control",
                                                       value: hash[:name],
@@ -732,7 +732,7 @@
                     <div class="alert alert-info">Used as the friendly name for the nav item</div>
                   </div>
                   <div>
-                    <%= internal_config_label "url" %>
+                    <%= admin_config_label "url" %>
                     <%= f.text_field "navigation[][url]",
                                                       class: "form-control",
                                                       value: hash[:url],
@@ -740,7 +740,7 @@
                     <div class="alert alert-info">Used as the url for the nav item</div>
                   </div>
                   <div>
-                    <%= internal_config_label "icon" %>
+                    <%= admin_config_label "icon" %>
                     <%= f.text_area "navigation[][icon]",
                                     class: "form-control",
                                     value: hash[:icon],
