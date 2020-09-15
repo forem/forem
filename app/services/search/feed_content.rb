@@ -13,14 +13,14 @@ module Search
         define_method("#{class_name.underscore.pluralize}_document_count") do
           Search::Client.count(
             index: self::INDEX_ALIAS, body: count_filter(class_name),
-          ).dig("count")
+          )["count"]
         end
       end
 
       private
 
       def prepare_doc(hit)
-        source = hit.dig("_source")
+        source = hit["_source"]
         source["tag_list"] = hit["tags"]&.map { |t| t["name"] } || []
         source["id"] = source["id"].split("_").last.to_i
         source["tag_list"] = source["tags"]&.map { |t| t["name"] } || []
@@ -68,6 +68,14 @@ module Search
             number_of_shards: 1,
             number_of_replicas: 0
           }
+        end
+      end
+
+      def dynamic_index_settings
+        if Rails.env.production?
+          { refresh_interval: "5s" }
+        else
+          { refresh_interval: "1s" }
         end
       end
     end

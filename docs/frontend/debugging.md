@@ -49,8 +49,4 @@ If you do not see your editor here, consider contributing to the documentation.
 Preact has their
 [own developer tools](https://preactjs.github.io/preact-devtools/) in the form
 of a browser extension. These tools are currently supported for Preact version
-10.x and up.
-
-Forem currently uses Preact 8.x so the Preact developer tools are not an option,
-however Preact 8.x+ is compatible with the React developer tools extension which
-is available for Chrome and Firefox.
+10.x and up. Forem currently uses Preact 10.x.

@@ -26,31 +26,37 @@ RSpec.describe "Articles", type: :request do
       expect { get "/feed/#{tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "sets Fastly Cache-Control headers" do
-      create(:article, featured: true)
-      get "/feed"
-      expect(response.status).to eq(200)
+    context "with caching headers" do
+      before do
+        create(:article, featured: true)
+        get "/feed"
+      end
 
-      expected_cache_control_headers = %w[public no-cache]
-      expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
-    end
+      it "sets Fastly Cache-Control headers" do
+        expect(response.status).to eq(200)
 
-    it "sets Fastly Surrogate-Control headers" do
-      create(:article, featured: true)
-      get "/feed"
-      expect(response.status).to eq(200)
+        expected_cache_control_headers = %w[public no-cache]
+        expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
+      end
 
-      expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
-      expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
-    end
+      it "sets Fastly Surrogate-Control headers" do
+        expect(response.status).to eq(200)
 
-    it "sets Fastly Surrogate-Key headers" do
-      create(:article, featured: true)
-      get "/feed"
-      expect(response.status).to eq(200)
+        expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
+        expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
+      end
 
-      expected_surrogate_key_headers = %w[feed]
-      expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      it "sets Fastly Surrogate-Key headers" do
+        expect(response.status).to eq(200)
+
+        expected_surrogate_key_headers = %w[feed]
+        expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      end
+
+      it "sets Nginx X-Accel-Expires headers" do
+        expect(response.status).to eq(200)
+        expect(response.headers["X-Accel-Expires"]).to eq("600")
+      end
     end
 
     context "when :username param is not given" do

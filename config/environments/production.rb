@@ -56,7 +56,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = ENV["LOG_LEVEL"] || :info
+  config.log_level = ENV["LOG_LEVEL"] || :error
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -87,10 +87,10 @@ Rails.application.configure do
 
   # Filter sensitive information from production logs
   config.filter_parameters += %i[
-    auth_data_dump email encrypted
+    auth_data_dump content email encrypted
     encrypted_password message_html message_markdown
     password previous_refresh_token refresh_token secret
-    token current_sign_in_ip last_sign_in_ip
+    to token current_sign_in_ip last_sign_in_ip
     reset_password_token remember_token unconfirmed_email
   ]
 
@@ -102,7 +102,7 @@ Rails.application.configure do
     # require 'syslog/logger'
     # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger           = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
@@ -110,22 +110,23 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.app_domain = ENV["APP_DOMAIN"]
+  protocol = ENV["APP_PROTOCOL"] || "http://"
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: ENV["APP_PROTOCOL"] + ENV["APP_DOMAIN"] }
+  sendgrid_api_key_present = ENV["SENDGRID_API_KEY"].present?
+  config.action_mailer.default_url_options = { host: protocol + ENV["APP_DOMAIN"] }
   ActionMailer::Base.smtp_settings = {
     address: "smtp.sendgrid.net",
     port: "587",
     authentication: :plain,
-    user_name: ENV["SENDGRID_USERNAME_ACCEL"],
-    password: ENV["SENDGRID_PASSWORD_ACCEL"],
+    user_name: sendgrid_api_key_present ? "apikey" : ENV["SENDGRID_USERNAME_ACCEL"],
+    password: sendgrid_api_key_present ? ENV["SENDGRID_API_KEY"] : ENV["SENDGRID_PASSWORD_ACCEL"],
     domain: ENV["APP_DOMAIN"],
     enable_starttls_auto: true
   }
 
-  if ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
+  if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
     config.middleware.use Rack::HostRedirect,
                           ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
   end
@@ -133,6 +134,5 @@ end
 # rubocop:enable Metrics/BlockLength
 
 Rails.application.routes.default_url_options = {
-  host: Rails.application.config.app_domain,
-  protocol: ENV["APP_PROTOCOL"].delete_suffix("://")
+  protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://")
 }

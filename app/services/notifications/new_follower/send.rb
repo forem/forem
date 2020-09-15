@@ -6,7 +6,7 @@ module Notifications
       #   * :followable_id [Integer]
       #   * :followable_type [String] - "User" or "Organization"
       #   * :follower_id [Integer] - user id
-      def initialize(follow_data, is_read = false)
+      def initialize(follow_data, is_read: false)
         # we explicitly symbolize_keys because FollowData.new will fail otherwise with an error of
         # ":followable_id is missing in Hash input". FollowData expects a symbol, not a string.
         follow_data.symbolize_keys!

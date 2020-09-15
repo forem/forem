@@ -59,7 +59,10 @@ class RssReader
 
     def thorough_parsing(content, feed_url)
       html_doc = Nokogiri::HTML(content)
+
       find_and_replace_possible_links!(html_doc) if @user.feed_referential_link
+      find_and_replace_picture_tags_with_img!(html_doc)
+
       if feed_url.include?("medium.com")
         parse_and_translate_gist_iframe!(html_doc)
         parse_and_translate_youtube_iframe!(html_doc)
@@ -68,6 +71,7 @@ class RssReader
       else
         clean_relative_path!(html_doc, feed_url)
       end
+
       html_doc.to_html
     end
 
@@ -144,6 +148,22 @@ class RssReader
 
         found_article = Article.find_by(feed_source_url: link)&.decorate
         a_tag.attributes["href"].value = found_article.url if found_article
+      end
+    end
+
+    # <picture> tags are not automatically converted to Markdown, they live on as verbatim HTML.
+    # Since they are also not supported by the editor, we need to replace them with their inner <img> tag.
+    # We'll rely on Cloudinary to provide responsive images to the client
+    def find_and_replace_picture_tags_with_img!(html_doc)
+      picture_tags = html_doc.css("picture")
+      return unless picture_tags
+
+      picture_tags.each do |picture_tag|
+        img_tag = picture_tag.at_css("img")
+        next unless img_tag
+
+        picture_tag.add_next_sibling(img_tag)
+        picture_tag.remove
       end
     end
   end

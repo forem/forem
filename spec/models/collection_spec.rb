@@ -7,7 +7,7 @@ RSpec.describe Collection, type: :model do
   describe "validations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:organization).optional }
-    it { is_expected.to have_many(:articles) }
+    it { is_expected.to have_many(:articles).dependent(:nullify) }
 
     it { is_expected.to validate_presence_of(:user_id) }
     it { is_expected.to validate_presence_of(:slug) }
@@ -31,6 +31,12 @@ RSpec.describe Collection, type: :model do
 
     it "creates a new series with an existing slug for a new user" do
       expect { described_class.find_series(series.slug, other_user) }.to change(described_class, :count).by(1)
+    end
+  end
+
+  describe "path" do
+    it "returns the correct path" do
+      expect(collection.path).to eq("/#{collection.user.username}/series/#{collection.id}")
     end
   end
 

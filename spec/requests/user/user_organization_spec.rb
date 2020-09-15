@@ -22,7 +22,7 @@ RSpec.describe "UserOrganization", type: :request do
     end
 
     it "correctly strips the secret of the org_secret param" do
-      post "/users/join_org", params: { org_secret: organization.secret + "     " }
+      post "/users/join_org", params: { org_secret: "#{organization.secret}     " }
       expect(OrganizationMembership.exists?(user: user, organization: organization)).to eq true
     end
   end

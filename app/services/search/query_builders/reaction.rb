@@ -22,7 +22,7 @@ module Search
       }.freeze
 
       DEFAULT_PARAMS = {
-        sort_by: "id",
+        sort_by: "created_at",
         sort_direction: "desc",
         size: 0
       }.freeze
@@ -40,6 +40,8 @@ module Search
       attr_accessor :params, :body
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
 
         # Default to only readinglist reactions

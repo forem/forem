@@ -78,9 +78,8 @@ Rails.application.configure do
   if (gitpod_workspace_url = ENV["GITPOD_WORKSPACE_URL"])
     config.hosts << /.*#{URI.parse(gitpod_workspace_url).host}/
   end
-  config.app_domain = "localhost:3000"
+  config.app_domain = ENV["APP_DOMAIN"] || "localhost:3000"
 
-  config.action_mailer.default_url_options = { host: "localhost:3000" }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: config.app_domain }
@@ -91,7 +90,7 @@ Rails.application.configure do
     user_name: '<%= ENV["DEVELOPMENT_EMAIL_USERNAME"] %>',
     password: '<%= ENV["DEVELOPMENT_EMAIL_PASSWORD"] %>',
     authentication: :plain,
-    domain: "localhost:3000"
+    domain: config.app_domain
   }
 
   config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
@@ -109,7 +108,7 @@ Rails.application.configure do
   config.log_level = :debug
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
+    logger           = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
@@ -128,14 +127,14 @@ Rails.application.configure do
     # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
 
     # Check if there are any data update scripts to run during startup
-    if %w[c console runner s server].include?(ENV["COMMAND"])
-      if DataUpdateScript.scripts_to_run?
-        message = "Data update scripts need to be run before you can start the application. " \
-          "Please run 'rails data_updates:run'"
-        raise message
-      end
+    if %w[c console runner s server].include?(ENV["COMMAND"]) && DataUpdateScript.scripts_to_run?
+      message = "Data update scripts need to be run before you can start the application. " \
+        "Please run 'rails data_updates:run'"
+      raise message
     end
   end
 end

@@ -1,0 +1,24 @@
+<% title_string = "#{@collection.slug} Series' Articles" %>
+
+<%= content_for :page_meta do %>
+  <%= render "collections/meta", title_string: title_string %>
+<% end %>
+
+<div class="crayons-layout crayons-layout--1-col">
+  <header class="px-2 m:px-0">
+    <h1><%= title_string %></h1>
+    <%= link_to "Back to #{@user.name}'s Series", user_series_path(@user.username) %>
+  </header>
+
+  <div class="articles-list" id="articles-list">
+    <div class="substories" id="substories">
+      <% if @articles.present? %>
+        <% @articles.each do |article| %>
+          <%= render "articles/single_story", story: article.decorate, featured: article.main_image.present? %>
+        <% end %>
+      <% else %>
+        <p>This series doesn't have any articles</p>
+      <% end %>
+    </div>
+  </div>
+</div>

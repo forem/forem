@@ -67,7 +67,6 @@ RSpec.configure do |config|
 
   config.include ApplicationHelper
   config.include ActionMailer::TestHelper
-  config.include ActiveJob::TestHelper
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :request
@@ -140,6 +139,9 @@ RSpec.configure do |config|
     stub_request(:post, /api.fastly.com/)
       .to_return(status: 200, body: "".to_json, headers: {})
 
+    stub_request(:any, /localhost:9090/)
+      .to_return(status: 200, body: "OK".to_json, headers: {})
+
     stub_request(:post, /api.bufferapp.com/)
       .to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
 
@@ -165,6 +167,8 @@ RSpec.configure do |config|
             }).to_return(status: 200, body: "", headers: {})
 
     allow(SiteConfig).to receive(:community_description).and_return("Some description")
+    SiteConfig.public = true
+    SiteConfig.waiting_on_first_user = false
   end
 
   config.after do

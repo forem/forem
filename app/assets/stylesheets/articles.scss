@@ -140,62 +140,6 @@
   }
 }
 
-// Feed Card: Signup CTA
-.feed-cta {
-  background: lighten($purple, 6%) !important;
-  border: 1px solid darken($bold-blue, 5%) !important;
-  box-shadow: 5px 6px 0px darken($bold-blue, 15%) !important;
-  margin: 0.8em 0;
-  .cta-container {
-    padding: calc(1vw + 7px) 9px;
-    margin-bottom: 15px;
-  }
-  h2 {
-    text-align: center;
-    margin-right: 9px;
-    padding-right: 9px;
-    font-size: 1.5em;
-  }
-  h3 {
-    text-align: center;
-    margin-right: 9px;
-    padding-right: 9px;
-    font-size: 17px !important;
-  }
-  .button-container {
-    margin-top: 40px;
-    text-align: center;
-    margin-right: 9px;
-    padding-right: 9px;
-  }
-  img.secondary-logo {
-    width: 190px;
-    height: 190px;
-    margin: 18px auto 35px;
-    border-radius: 22px;
-    display: block;
-    transform: rotate(6deg);
-  }
-  .cta-button {
-    text-align: center;
-    margin: 5px;
-    padding: 12px 5px;
-    min-width: 230px;
-    font-size: 1.1em;
-    display: inline-block;
-    height: auto;
-    text-align: center;
-    font-weight: bold;
-    border-radius: 100px;
-    background-color: $bold-blue;
-    color: white !important;
-  }
-  .feed-cta-sub {
-    margin-top: 20px;
-    font-size: 15px;
-  }
-}
-
 // MOBILE ONLY navigation to switch between tabs (these on top of the feed).
 // Although it uses different markup :/.
 .narrow-nav-menu {

@@ -142,12 +142,15 @@
             border-radius: 3px;
           }
           .notification-comment-reacted-link {
+            vertical-align: middle;
             padding: 2px 6px;
             border: 1px solid lighten($medium-gray, 9%);
             border-radius: 3px;
             max-width: 100%;
             display: inline-block;
             margin-bottom: 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
             &:hover {
               @include themeable(
                 background,
@@ -432,6 +435,26 @@
   }
 }
 
+.notification-nav {
+  margin-bottom: var(--su-4);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  header {
+    color: var(--base-80);
+  }
+
+  .crayons-link {
+    margin-bottom: var(--su-1);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
 .notifications-filter__list {
   li {
     margin-bottom: var(--su-1);
@@ -522,7 +545,7 @@
     justify-content: center;
     font-weight: var(--fw-bold);
     width: 100%;
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
 
     &:hover &:active {
       background-color: var(--base-10);

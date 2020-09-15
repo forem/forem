@@ -2,12 +2,11 @@
 
 @import 'variables';
 @import 'mixins';
-@import 'fonts';
 
 body {
   background: var(--body-bg);
   color: var(--body-color);
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   padding: 0;
   margin: 0;
   overflow-y: scroll;
@@ -133,8 +132,7 @@ body.ten-x-hacker-theme {
   .chatchannels__config img,
   .message__actions img,
   .external-link-img,
-  .group-img,
-  .user-profile-header .social a {
+  .group-img {
     -webkit-filter: invert(95%);
     filter: invert(95%);
   }

@@ -8,6 +8,8 @@ module Search
         viewable_by
       ].freeze
 
+      TERMS_FILTER_KEYS = %i[viewable_by status].freeze
+
       QUERY_KEYS = %i[
         channel_text
       ].freeze
@@ -19,6 +21,8 @@ module Search
       }.freeze
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
         @params[:viewable_by] = @params[:user_id]
 
@@ -41,7 +45,7 @@ module Search
         FILTER_KEYS.filter_map do |filter_key|
           next if @params[filter_key].blank? || @params[filter_key] == "all"
 
-          if %i[viewable_by status].include? filter_key
+          if TERMS_FILTER_KEYS.include?(filter_key)
             { terms: { filter_key => @params[filter_key] } }
           else
             { term: { filter_key => @params[filter_key] } }

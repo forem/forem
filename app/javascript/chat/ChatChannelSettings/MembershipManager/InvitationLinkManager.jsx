@@ -1,14 +1,9 @@
+/* global Runtime */
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { isNativeAndroid } from '../../../utilities/validateAndroidNative';
 
 import { Button } from '@crayons';
-
-function isClipboardSupported() {
-  return (
-    typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-  );
-}
 
 const CopyIcon = () => (
   <svg
@@ -46,31 +41,10 @@ export default class InvitationLinkManager extends Component {
       'chat-channel-unviation-url',
     );
 
-    if (isNativeAndroid()) {
-      AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
+    Runtime.copyToClipboard(this.imageMarkdownInput.value).then(() => {
       this.setState({ showImageCopiedMessage: true });
-    } else if (isClipboardSupported()) {
-      navigator.clipboard
-        .writeText(this.imageMarkdownInput.value)
-        .then(() => {
-          this.setState({ showImageCopiedMessage: true });
-        })
-        .catch((_err) => {
-          this.execCopyText();
-        });
-    } else {
-      this.execCopyText();
-    }
+    });
   };
-
-  execCopyText() {
-    this.imageMarkdownInput.setSelectionRange(
-      0,
-      this.imageMarkdownInput.value.length,
-    );
-    document.execCommand('copy');
-    this.setState({ showImageCopiedMessage: true });
-  }
 
   render() {
     const {

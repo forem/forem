@@ -17,6 +17,7 @@ module Search
       # Search keys from our controllers may not match what we have stored in Elasticsearch so we map them here,
       # this allows us to change our Elasticsearch docs without worrying about the frontend
       TERM_KEYS = {
+        id: "id", # NOTE: FeedContent ids are formatted article_#, podcast_episode_#, comment_#
         tag_names: "tags.name",
         approved: "approved",
         user_id: "user.id",
@@ -67,6 +68,8 @@ module Search
       attr_accessor :params, :body
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
 
         # Default to only showing published articles to start
@@ -101,7 +104,13 @@ module Search
       def build_queries
         @body[:query] = { bool: {} }
         @body[:query][:bool][:filter] = filter_conditions if filter_keys_present?
-        @body[:query][:bool][:must] = query_conditions if query_keys_present?
+        return unless query_keys_present?
+
+        @body[:query][:bool][:must] = query_conditions
+        # Boost the score of queries that match these conditions but if they dont match any,
+        # minimum_should_match: 0, then that is OK
+        @body[:query][:bool][:should] = match_phrase_conditions
+        @body[:query][:bool][:minimum_should_match] = 0
       end
 
       def filter_conditions

@@ -5,16 +5,17 @@
   .crayons-article__video__player {
     background-position: center;
     background-size: cover;
+    padding-bottom: 56.25%;
 
     &.native {
-      height: calc(100vw * (9/16)); // Maintain 16:9 ratio
+      height: calc(100vw * (9 / 16)); // Maintain 16:9 ratio
     }
 
     img {
       display: none;
-      width: calc(100vw * (9/16) * (1/2));
-      height: calc((100vw * (9/16) * (1/2)) + (100vw * (9/16) * (1/6)));
-      padding-top: calc(100vw * (9/16) * (1/6));
+      width: calc(100vw * (9 / 16) * (1 / 2));
+      height: calc((100vw * (9 / 16) * (1 / 2)) + (100vw * (9 / 16) * (1 / 6)));
+      padding-top: calc(100vw * (9 / 16) * (1 / 6));
       margin: 0 auto;
 
       &.active {
@@ -27,13 +28,16 @@
     // calculations are based on viewport size (the columns "don't count")
     @media screen and (min-width: 640px) {
       &.native {
-        height: calc(100vw * (9/16) * (2/3));
+        height: calc(100vw * (9 / 16) * (2 / 3));
       }
 
       img {
-        width: calc(100vw * (9/16) * (1/2) * (2/3));
-        height: calc((100vw * (9/16) * (1/2) * (2/3)) + (100vw * (9/16) * (1/6) * (2/3)));
-        padding-top: calc(100vw * (9/16) * (1/6) * (2/3));
+        width: calc(100vw * (9 / 16) * (1 / 2) * (2 / 3));
+        height: calc(
+          (100vw * (9 / 16) * (1 / 2) * (2 / 3)) +
+            (100vw * (9 / 16) * (1 / 6) * (2 / 3))
+        );
+        padding-top: calc(100vw * (9 / 16) * (1 / 6) * (2 / 3));
       }
     }
   }

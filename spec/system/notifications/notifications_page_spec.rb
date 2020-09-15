@@ -47,7 +47,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
 
   it "allows user to follow other users back" do
     follow = leslie.follow(alex)
-    Notification.send_new_follower_notification_without_delay(follow, "Published")
+    Notification.send_new_follower_notification_without_delay(follow, is_read: true)
     visit "/notifications"
     expect(page).to have_css("div.single-notification")
     click_button("Follow back")

@@ -70,51 +70,6 @@ class ChatChannel < ApplicationRecord
     chat_channel_memberships.where(user_id: user.id).pick(:last_opened_at)
   end
 
-  class << self
-    def create_with_users(users:, channel_type: "direct", contrived_name: "New Channel", membership_role: "member")
-      raise "Invalid direct channel" if invalid_direct_channel?(users, channel_type)
-
-      usernames = users.map(&:username).sort
-      slug = if channel_type == "direct"
-               usernames.join("/")
-             else
-               "#{contrived_name.to_s.parameterize}-#{rand(100_000).to_s(26)}"
-             end
-
-      contrived_name = "Direct chat between " + usernames.join(" and ") if channel_type == "direct"
-      channel = find_or_create_chat_channel(channel_type, slug, contrived_name)
-      if channel_type == "direct"
-        channel.add_users(users)
-      else
-        channel.invite_users(users: users, membership_role: membership_role)
-      end
-      channel
-    end
-
-    def find_or_create_chat_channel(channel_type, slug, contrived_name)
-      channel = ChatChannel.find_by(slug: slug)
-      if channel
-        raise "Blocked channel" if channel.status == "blocked"
-
-        channel.status = "active"
-        channel.save
-      else
-        channel = create(
-          channel_type: channel_type,
-          channel_name: contrived_name,
-          slug: slug,
-          last_message_at: 1.week.ago,
-          status: "active",
-        )
-      end
-      channel
-    end
-
-    def invalid_direct_channel?(users, channel_type)
-      (users.size != 2 || users.map(&:id).uniq.count < 2) && channel_type == "direct"
-    end
-  end
-
   def add_users(users)
     now = Time.current
     users_params = Array.wrap(users).map do |user|
@@ -155,11 +110,11 @@ class ChatChannel < ApplicationRecord
 
   def pusher_channels
     if invite_only?
-      "private-channel-#{id}"
+      "private-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
     elsif open?
-      "open-channel-#{id}"
+      "open-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
     else
-      chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}" }
+      chat_channel_memberships.pluck(:user_id).map { |id| ChatChannel.pm_notifications_channel(id) }
     end
   end
 
@@ -170,9 +125,10 @@ class ChatChannel < ApplicationRecord
   def adjusted_slug(user = nil, caller_type = "receiver")
     user ||= current_user
     if direct? && caller_type == "receiver"
-      "@" + slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
+      cleaned_slug = slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
+      "@#{cleaned_slug}"
     elsif caller_type == "sender"
-      "@" + user.username
+      "@#{user.username}"
     else
       slug
     end
@@ -205,11 +161,15 @@ class ChatChannel < ApplicationRecord
     pending_users.select(:id, :username, :name, :updated_at)
   end
 
+  def self.pm_notifications_channel(user_id)
+    "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{user_id}"
+  end
+
   private
 
   def user_obj(membership)
     {
-      profile_image: ProfileImage.new(membership.user).get(width: 90),
+      profile_image: Images::Profile.call(membership.user.profile_image_url, length: 90),
       darker_color: membership.user.decorate.darker_color,
       name: membership.user.name,
       last_opened_at: membership.last_opened_at,

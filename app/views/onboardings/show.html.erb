@@ -1,7 +1,7 @@
 <% title "Welcome to #{community_name}" %>
 
 <style>
-  <% cache(cache_key_heroku_slug("onboarding-css"), expires_in: 10.hours) do %>
+  <% cache(release_adjusted_cache_key("onboarding-css"), expires_in: 10.hours) do %>
     <%= Rails.application.assets["preact/onboarding-modal.css"].to_s.html_safe %>
   <% end %>
   footer {
@@ -15,9 +15,8 @@
 <div id="onboarding-container"
   data-community-name="<%= community_name %>"
   data-community-description="<%= SiteConfig.community_description %>"
-  data-community-logo="<%= cloudinary safe_logo_url(SiteConfig.onboarding_logo_image) %>"
-  data-community-background="<%= cloudinary(SiteConfig.onboarding_background_image, "1680", 75) %>"
->
+  data-community-logo="<%= optimized_image_url(safe_logo_url(SiteConfig.onboarding_logo_image)) %>"
+  data-community-background="<%= optimized_image_url(SiteConfig.onboarding_background_image, width: 1680, quality: 75) %>">
   <%= javascript_packs_with_chunks_tag "Onboarding", defer: true %>
 </div>
 
