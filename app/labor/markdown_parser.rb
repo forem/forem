@@ -8,6 +8,8 @@ class MarkdownParser
 
   WORDS_READ_PER_MINUTE = 275.0
 
+  RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
+
   def initialize(content, source: nil, user: nil)
     @content = content
     @source = source
@@ -176,7 +178,7 @@ class MarkdownParser
   end
 
   def possibly_raw_tag_syntax?(array)
-    array.any? { |string| ["{", "}", "raw", "endraw", "----"].include?(string) }
+    (RAW_TAG_DELIMITERS & array).any?
   end
 
   def unescape_raw_tag_in_codeblocks(html)
@@ -250,7 +252,7 @@ class MarkdownParser
     username = mention.delete("@").downcase
     if User.find_by(username: username)
       <<~HTML
-        <a class='comment-mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{username}'>@#{username}</a>
+        <a class='comment-mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{SiteConfig.app_domain}/#{username}'>@#{username}</a>
       HTML
     else
       mention

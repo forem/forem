@@ -30,6 +30,10 @@ module Profiles
       # Ensure we have up to date attributes
       Profile.refresh_attributes!
 
+      # Handle user specific custom profile fields
+      custom_attributes = @updated_attributes.extract!(*@profile.custom_profile_attributes)
+      @updated_attributes[:custom_attributes] = custom_attributes
+
       # We don't update `data` directly. This uses the defined store_attributes
       # so we can make use of their typecasting.
       @profile.assign_attributes(@updated_profile_attributes)
@@ -40,6 +44,14 @@ module Profiles
       return unless @profile.save
     end
 
+    def update_user
+      if @user.update(@updated_user_attributes.to_h)
+        @success = true
+      else
+        @error_message = @user.errors_as_sentence
+      end
+    end
+
     # Propagate changes back to the `users` table
     def sync_to_user
       # These are the profile attributes that still exist as columns on User.
@@ -47,7 +59,7 @@ module Profiles
         Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
       end
       @profile.user._skip_profile_sync = true
-      if @profile.user.update(profile_attributes)
+      if @profile.user.update(profile_attributes.except("custom_attributes"))
         update_user
       else
         @error_message = @user.errors_as_sentence
@@ -56,12 +68,5 @@ module Profiles
       @profile.user._skip_profile_sync = false
     end
 
-    def update_user
-      if @user.update(@updated_user_attributes.to_h)
-        @success = true
-      else
-        @error_message = @user.errors_as_sentence
-      end
-    end
   end
 end

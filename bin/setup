@@ -25,13 +25,6 @@ chdir APP_ROOT do
   # Install JavaScript dependencies if using Yarn
   system("bin/yarn")
 
-  # TEMPORARY @sre will remove before Sept 1, 2020
-  puts "\n== Create .env File from application.yml =="
-  system!("bin/rails create_dot_env_file")
-  if File.exist?("config/application.yml")
-    system!("mv config/application.yml config/application_unused.yml")
-  end
-
   puts "\n== Copying sample files =="
   unless File.exist?("config/database.yml")
     cp "config/database.yml.sample", "config/database.yml"

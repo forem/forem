@@ -109,7 +109,7 @@ class Message < ApplicationRecord
           target='_blank' rel='noopener' data-content='sidecar-article'>
             #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(#{cl_path(article.main_image)})' data-content='sidecar-article' ></div>" if article.main_image.present?}
           <h1 data-content='sidecar-article'>#{article.title}</h1>
-          <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(width: 90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
+          <h4 data-content='sidecar-article'><img src='#{Images::Profile.call(article.cached_user.profile_image_url, length: 90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
           </a>".html_safe
       elsif (tag = rich_link_tag(anchor))
         html += "<a href='/t/#{tag.name}'
@@ -125,7 +125,7 @@ class Message < ApplicationRecord
         class='chatchannels__richlink'
           target='_blank' rel='noopener' data-content='sidecar-user'>
           <h1 data-content='sidecar-user'>
-            <img src='#{ProfileImage.new(user).get(width: 90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' />
+            <img src='#{Images::Profile.call(user.profile_image_url, length: 90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' />
             #{user.name}
           </h1>
           </a>".html_safe
@@ -196,19 +196,19 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+    return unless link["href"].include?("//#{SiteConfig.app_domain}/") && link["href"].split("/")[4]
 
     Article.find_by(slug: link["href"].split("/")[4].split("?")[0])
   end
 
   def rich_link_tag(link)
-    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+    return unless link["href"].include?("//#{SiteConfig.app_domain}/t/")
 
     Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0])
   end
 
   def rich_user_link(link)
-    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
+    return unless link["href"].include?("//#{SiteConfig.app_domain}/")
 
     User.find_by(username: link["href"].split("/")[3].split("/")[0])
   end

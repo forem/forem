@@ -148,6 +148,17 @@ RSpec.describe Search::FeedContent, type: :service do
         doc_ids = feed_docs.map { |t| t["id"] }
         expect(doc_ids).to include(pde.id)
       end
+
+      it "filters by id" do
+        index_documents([article1, article2])
+        query_params = { size: 5, id: ["article_#{article1.id}"] }
+
+        feed_docs = described_class.search_documents(params: query_params)
+        expect(feed_docs.count).to eq(1)
+        doc_ids = feed_docs.map { |t| t["id"] }
+        expect(doc_ids).to include(article1.id)
+        expect(doc_ids).not_to include(article2.id)
+      end
     end
 
     context "with range keys" do

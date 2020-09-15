@@ -295,6 +295,14 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_reading_list_article_ids
+    Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}") do
+      Reaction.readinglist.where(
+        user_id: id, reactable_type: "Article",
+      ).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
+    end
+  end
+
   def preferred_languages_array
     return @preferred_languages_array if defined?(@preferred_languages_array)
 
@@ -466,7 +474,7 @@ class User < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(width: 90)
+    Images::Profile.call(profile_image_url, length: 90)
   end
 
   def unsubscribe_from_newsletters
