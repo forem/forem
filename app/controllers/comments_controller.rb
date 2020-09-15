@@ -146,9 +146,17 @@ class CommentsController < ApplicationController
       # view directly to avoid having to redirect which leads to caching issues.
       @on_comments_page = true
       @root_comment = @comment
-      @user = current_user
-      @commentable = @root_comment&.commentable
-      @commentable_type = @commentable.class.name if @commentable
+      @commentable = @comment.commentable
+      @commentable_type = @comment.commentable_type
+
+      case @comment.commentable_type
+      when "Podcast"
+        @user = @commentable
+      when "Article"
+        # User could be a user or an organization
+        @user = @commentable.user
+        @article = @commentable
+      end
 
       render :index
     else
