@@ -159,7 +159,7 @@
                   <% if @article.co_author_ids.count == 1 %>
                     <em>with <b><a href="<%= @article.co_authors.first.path %>"><%= @article.co_authors.first.name %></a></b></em>
                   <% elsif @article.co_author_ids.count > 1 %>
-                    <em>with <%= @article.get_co_author_name_and_path.html_safe %></em>
+                    <em>with <%= @article.co_author_name_and_path.html_safe %></em>
                   <% end %>
                 <% end %>
 
