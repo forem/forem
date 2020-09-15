@@ -110,4 +110,7 @@ get_podcast_episodes:
 update_latest_github_repos:
   cron: "30 16 * * *" # daily at 4:30 pm UTC
   class: "GithubRepos::UpdateLatestWorker"
+bust_http_github_repo_cache_key:
+  cron: "0 1 * * *" # daily at 1 am UTC
+  class: GithubRepos::ClearHttpCacheWorker
 
