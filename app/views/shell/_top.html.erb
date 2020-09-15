@@ -40,8 +40,8 @@
       <link rel="apple-touch-icon" sizes="167x167" href="<%= optimized_image_url(SiteConfig.logo_png, width: 167, fetch_format: "png") %>">
       <link href="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" rel="icon" sizes="192x192" />
       <link href="<%= optimized_image_url(SiteConfig.logo_png, width: 128, fetch_format: "png") %>" rel="icon" sizes="128x128" />
-      <meta name="apple-mobile-web-app-title" content="<%= ApplicationConfig["APP_DOMAIN"] %>">
-      <meta name="application-name" content="<%= ApplicationConfig["APP_DOMAIN"] %>">
+      <meta name="apple-mobile-web-app-title" content="<%= SiteConfig.app_domain %>">
+      <meta name="application-name" content="<%= SiteConfig.app_domain %>">
       <meta property="fb:pages" content="568966383279687" />
       <meta name="theme-color" content="#000000" />
       <link rel="manifest" href="/manifest.json" />
