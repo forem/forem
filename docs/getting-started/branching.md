@@ -23,3 +23,6 @@ git checkout -b USERNAME/fixing-that-bug-1234
 where `USERNAME` should be replaced by your username on GitHub and `1234` is the
 ID of the issue tied to your pull request. If there is no related issue, you can
 leave the number out.
+
+NOTE: It is ok if your branch name shows up as
+`USERNAME:USERNAME/fixing-that-bug-1234` when you create the pull request
