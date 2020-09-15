@@ -149,7 +149,7 @@ class CommentsController < ApplicationController
       @commentable = @comment.commentable
       @commentable_type = @comment.commentable_type
 
-      case @comment.commentable_type
+      case @commentable_type
       when "Podcast"
         @user = @commentable
       when "Article"
