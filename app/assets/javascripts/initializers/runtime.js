@@ -51,4 +51,32 @@ class Runtime {
 
     return nativeCheck && namespaceCheck;
   }
+
+  /**
+   * This function copies text to clipboard taking in consideration all
+   * supported platforms.
+   *
+   * @param {string} text to be copied to the clipboard
+   *
+   * @returns {Promise} Resolves when succesful in copying to clipboard
+   */
+  static copyToClipboard(text) {
+    return new Promise((resolve, reject) => {
+      if (Runtime.isNativeAndroid('copyToClipboard')) {
+        AndroidBridge.copyToClipboard(text);
+        resolve();
+      } else if (navigator.clipboard != null) {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            resolve();
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      } else {
+        reject('Unsupported device unable to copy to clipboard');
+      }
+    });
+  }
 }

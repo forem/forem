@@ -19,7 +19,7 @@ RSpec.describe "Using the editor", type: :system do
 
   def fill_markdown_with(content)
     visit "/new"
-    fill_in "article_body_markdown", with: content
+    within("#article-form") { fill_in "article_body_markdown", with: content }
   end
 
   describe "Previewing an article", js: true do

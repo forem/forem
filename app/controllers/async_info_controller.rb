@@ -54,7 +54,7 @@ class AsyncInfoController < ApplicationController
         followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score],
                                                           methods: [:points]),
         followed_podcast_ids: @user.cached_following_podcasts_ids,
-        reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
+        reading_list_ids: @user.cached_reading_list_article_ids,
         blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
         saw_onboarding: @user.saw_onboarding,
         checked_code_of_conduct: @user.checked_code_of_conduct,
@@ -77,8 +77,6 @@ class AsyncInfoController < ApplicationController
     #{current_user&.last_followed_at}__
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
-    #{current_user&.saw_onboarding}__
-    #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
     #{current_user&.pro?}__
     #{current_user&.blocking_others_count}__"
