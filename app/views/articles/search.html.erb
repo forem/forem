@@ -7,10 +7,14 @@
      data-tag=""
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
-  <%= render "articles/search/sidebar" %>
+
+  <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+    <div class="sidebar-bg" id="sidebar-bg-left"></div>
+    <%= render "articles/search/nav_menu" %>
+  </div>
   <div class="articles-list crayons-layout__content" id="articles-list">
     <div id="banner-section"></div>
-    <div class="flex-1 flex items-center justify-between pb-2">
+    <div class="flex-1 flex items-center justify-between ml-4 mr-4 mt-3 mb-3 s:m-0 s:pb-2">
       <h2 class="fs-l fw-heavy">Results</h2>
       <nav id="sorting-option-tabs" class="crayons-tabs hidden s:flex">
         <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>">Most Relevant</a>
