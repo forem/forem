@@ -16,6 +16,8 @@ module Profiles
 
     def call
       update_profile
+      sync_to_user
+      self
     end
 
     def success?
@@ -36,19 +38,22 @@ module Profiles
       @profile.data.slice!(*Profile.attributes)
 
       return unless @profile.save
+    end
 
-      # Propagate changes back to the `users` table
-      user_attributes = @profile.data.transform_keys do |key|
+    # Propagate changes back to the `users` table
+    def sync_to_user
+      # These are the profile attributes that still exist as columns on User.
+      profile_attributes = @profile.data.transform_keys do |key|
         Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
       end
       @profile.user._skip_profile_sync = true
-      if @profile.user.update(user_attributes)
+      if @profile.user.update(profile_attributes)
         update_user
       else
         @error_message = @user.errors_as_sentence
       end
+    ensure
       @profile.user._skip_profile_sync = false
-      self
     end
 
     def update_user
