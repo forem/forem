@@ -52,10 +52,16 @@ module Admin
 
     def export_data
       user = User.find(params[:id])
-      email_to_send = params[:send_to_admin].to_boolean ? SiteConfig.email_addresses[:default] : user.email
-      ExportContentWorker.perform_async(user.id, email_to_send)
-      flash[:success] =
-        "Data exported to the #{params[:send_to_admin].to_boolean ? 'admin' : 'user'}. The job will complete momentarily."
+      send_to_admin = params[:send_to_admin].to_boolean
+      if send_to_admin
+        email = SiteConfig.email_addresses[:default]
+        receiver = "admin"
+      else
+        email = user.email
+        receiver = "user"
+      end
+      ExportContentWorker.perform_async(user.id, email)
+      flash[:success] = "Data exported to the #{receiver}. The job will complete momentarily."
       redirect_to edit_admin_user_path(user.id)
     end
 
