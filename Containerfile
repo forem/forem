@@ -37,7 +37,7 @@ WORKDIR "${APP_HOME}"
 # USER "${APP_USER}"
 
 COPY ./.ruby-version "${APP_HOME}"
-COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"
+COPY . "${APP_HOME}"
 
 # Fixes https://github.com/sass/sassc-ruby/issues/146
 RUN bundle config build.sassc --disable-march-tune-native
@@ -49,8 +49,6 @@ COPY ./.yarn "${APP_HOME}"/.yarn
 RUN yarn install
 
 RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
-
-COPY . "${APP_HOME}"
 
 RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
     echo $(git rev-parse --short HEAD) >> "${APP_HOME}"/FOREM_BUILD_SHA && \
