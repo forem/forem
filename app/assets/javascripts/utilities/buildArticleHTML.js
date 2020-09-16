@@ -5,35 +5,37 @@
 function buildArticleHTML(article) {
   if (article && article.class_name === 'PodcastEpisode') {
     return (
-      '<div class="single-article single-article-small-pic single-article-single-podcast">\
-      <div class="small-pic">\
-       <a href="/' +
+      '<article class="crayons-story crayons-podcast-episode mb-2">\
+        <div class="crayons-story__body flex flex-start">\
+          <a href="' +
       article.podcast.slug +
-      '" class="small-pic-link-wrapper">\
-         <img src="' +
+      '" class="crayons-podcast-episode__cover">\
+            <img src="' +
       article.podcast.image_url +
       '" alt="' +
       article.podcast.title +
-      ' image">\
-       </a>\
-       </div>\
-       <a href="' +
+      '" />\
+          </a>\
+          <div class="pt-2 flex-1">\
+            <p class="crayons-podcast-episode__author">\
+              ' +
+      article.podcast.title +
+      '\
+            </p>\
+            <h2 class="crayons-podcast-episode__title crayons-story__title mb-0">\
+              <a href="' +
       article.path +
-      '" class="small-pic-link-wrapper index-article-link" id="article-link-' +
+      '" id="article-link-' +
       article.id +
       '">\
-        <div class="content">\
-         <h3><span class="tag-identifier">podcast</span>' +
-      article.title +
-      '</h3>\
-        </div>\
-       </a>\
-       <h4><a href="/' +
-      article.podcast.slug +
-      '">' +
+                ' +
       article.podcast.title +
-      '</a></h4>\
-       </div>'
+      '\
+              </a>\
+            </h2>\
+          </div>\
+        </div>\
+      </article>'
     );
   }
 
