@@ -76,9 +76,9 @@
         <span class="current-user-actions hidden" style="display:none">
         </span>
         <% if comment.depth < 2 || is_childless %>
-          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form" rel="nofollow">REPLY</a>
+          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form" rel="nofollow">Reply</a>
         <% else %>
-          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication" rel="nofollow">THREAD</a>
+          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication" rel="nofollow">Thread</a>
         <% end %>
       </div>
     </div>

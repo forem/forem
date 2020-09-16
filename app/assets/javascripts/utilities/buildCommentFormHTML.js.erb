@@ -58,8 +58,16 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
           <div class="comment-form__buttons mb-4">
             <button type="submit" class="crayons-btn comment-action-button mr-2" name="submit">Submit</button>
             ${previewButton}
+            <button type="button" class="crayons-btn crayons-btn--ghost" onclick="cancel(event,this)">Dismiss</button>
           </div>
         </div>
       </div>
     </form>`;
+}
+
+function cancel(event, el) {
+  event.preventDefault();
+  event.target.closest('.inner-comment').classList.remove("replying");
+  event.target.closest('.new_comment').remove();
+  initializeCommentsPage();
 }

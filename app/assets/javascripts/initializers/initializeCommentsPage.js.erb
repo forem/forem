@@ -45,8 +45,8 @@ function initializeCommentsPage() {
                   var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
                   if (userActionsEl && buttEl) {
                     userActionsEl.className = 'current-user-actions';
-                    userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
-                                                <a href="' + userActionsEl.parentNode.dataset.path + '/edit">EDIT</a>'
+                    userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">Delete</a>\
+                                                <a href="' + userActionsEl.parentNode.dataset.path + '/edit">Edit</a>'
                     userActionsEl.style.display = 'inline-block';
                     document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
                   }
@@ -119,18 +119,19 @@ function initializeCommentsPage() {
           }
           var actionNode = event.target.parentNode;
           var parentId = actionNode.dataset.commentId;
-          document.getElementById("button-for-comment-" + actionNode.dataset.commentId).style.zIndex = "5";
           var waitingOnCSRF = setInterval(function () {
             var metaTag = document.querySelector("meta[name='csrf-token']");
             if (metaTag) {
               clearInterval(waitingOnCSRF);
-              actionNode.innerHTML = buildCommentFormHTML(commentableId, commentableType, parentId);
+              commentWrapper = event.target.closest('.inner-comment');
+              commentWrapper.classList.add("replying");
+              commentWrapper.innerHTML += buildCommentFormHTML(commentableId, commentableType, parentId);
+              
               setTimeout(function () {
-                actionNode.getElementsByTagName('textarea')[0].focus();
+                commentWrapper.getElementsByTagName('textarea')[0].focus();
               }, 30);
             }
           }, 1);
-          // document.getElementById('textarea-for-'+parentId).focus();
         };
         return false;
       }
@@ -167,10 +168,10 @@ function replaceActionButts(el) {
   var loggedInActionButts = "";
   var wrapper = el.getElementsByClassName("actions")[0]
   if (el.dataset.currentUserComment == "true") {
-    loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
-                            <a href="' + el.parentNode.parentNode.dataset.path + '/edit">EDIT</a>'
+    loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">Delete</a>\
+                            <a href="' + el.parentNode.parentNode.dataset.path + '/edit">Edit</a>'
   }
-  wrapper.innerHTML = '<span class="current-user-actions">' + loggedInActionButts + '</span><a href="#" class="toggle-reply-form">REPLY</a>';
+  wrapper.innerHTML = '<span class="current-user-actions">' + loggedInActionButts + '</span><a href="#" class="toggle-reply-form">Reply</a>';
 }
 
 function warmNewCommentsArea() {
@@ -216,7 +217,9 @@ function handleCommentSubmit(event) {
 
           var mainCommentsForm = document.getElementById("new_comment");
           if (parentComment) {
-            replaceActionButts(parentComment);
+            // replaceActionButts(parentComment);
+            event.target.closest('.inner-comment').classList.remove("replying");
+            event.target.closest('.new_comment').remove();
             if (newComment.depth > 2) {
               parentComment.getElementsByClassName("toggle-reply-form")[0].innerHTML = ""
             }

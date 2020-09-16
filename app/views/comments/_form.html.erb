@@ -29,15 +29,13 @@
   <% end %>
 
   <div class="comment-form">
-    <% if true %>
-      <span class="crayons-avatar crayons-avatar--l mr-2 shrink-0">
-        <% if user_signed_in? %>
-          <img src="<%= Images::Profile.call(current_user.profile_image_url, length: 50) %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
-        <% else %>
-          <img src="<%= image_path("android-icon-128x128.png") %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
-        <% end %>
-      </span>
-    <% end %>
+    <span class="crayons-avatar crayons-avatar--l mr-2 shrink-0">
+      <% if user_signed_in? %>
+        <img src="<%= Images::Profile.call(current_user.profile_image_url, length: 50) %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
+      <% else %>
+        <img src="<%= image_path("android-icon-128x128.png") %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
+      <% end %>
+    </span>
     <div class="flex-1 flex flex-col">
       <div class="comment-form__field">
         <%= f.text_area :body_markdown,

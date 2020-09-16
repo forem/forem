@@ -143,7 +143,6 @@ a.header-link {
     }
   }
 
-
   .top-level-actions {
     margin: 0px 0px 85px;
     padding: 3px 0px;
@@ -725,8 +724,7 @@ a.header-link {
     position: relative;
     min-height: 1.2em;
     z-index: 5;
-    font-family: $helvetica-condensed;
-    font-stretch: condensed;
+    text-transform: capitalize;
     margin-left: 58px;
     a.thread-indication {
       color: lighten($medium-gray, 22%);
@@ -755,39 +753,6 @@ a.header-link {
         margin-right: 10px;
         display: inline-block;
         color: $medium-gray;
-      }
-    }
-    form {
-      margin-bottom: -5px;
-      margin-top: -7px;
-      z-index: 29;
-      position: relative;
-      width: calc(100% + 60px);
-      margin-left: -58px;
-      font-family: var(--ff-sans-serif);
-      &.submitting {
-        input[type='submit'] {
-          background: $bold-blue;
-        }
-        textarea {
-          color: lighten($dark-gray, 25%);
-        }
-      }
-      input[type='submit'] {
-        padding: 5px 8px;
-        margin-bottom: 5px;
-        margin-right: 7px;
-      }
-
-      .cancel {
-        margin-right: 5px;
-        color: $red;
-        opacity: 0.5;
-        vertical-align: -1px;
-        font-size: 0.9em;
-        &:hover {
-          opacity: 0.8;
-        }
       }
     }
   }
