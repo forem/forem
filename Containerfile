@@ -38,6 +38,7 @@ WORKDIR "${APP_HOME}"
 
 COPY ./.ruby-version "${APP_HOME}"
 COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"
+COPY ./vendor/cache "${APP_HOME}"/vendor/cache
 
 # Fixes https://github.com/sass/sassc-ruby/issues/146
 RUN bundle config build.sassc --disable-march-tune-native
