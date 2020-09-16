@@ -1,0 +1,13 @@
+steps:
+  - name: ":rspec:"
+    command: "scripts/ci/parallel_specs.sh"
+    artifact_paths: "log/**/*"
+    env:
+      RAILS_ENV: test
+    plugins:
+      - docker-compose#v3.5.0:
+          run: rails
+    parallelism: 3
+    agents:
+      queue: $BUILDKITE_AGENT_META_DATA_QUEUE
+    branches: "mstruve/buildkite*"
