@@ -44,14 +44,6 @@ module Profiles
       return unless @profile.save
     end
 
-    def update_user
-      if @user.update(@updated_user_attributes.to_h)
-        @success = true
-      else
-        @error_message = @user.errors_as_sentence
-      end
-    end
-
     # Propagate changes back to the `users` table
     def sync_to_user
       # These are the profile attributes that still exist as columns on User.
@@ -68,5 +60,12 @@ module Profiles
       @profile.user._skip_profile_sync = false
     end
 
+    def update_user
+      if @user.update(@updated_user_attributes.to_h)
+        @success = true
+      else
+        @error_message = @user.errors_as_sentence
+      end
+    end
   end
 end
