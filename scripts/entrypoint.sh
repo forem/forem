@@ -17,6 +17,16 @@ case "$@" in
     bundle exec rake assets:precompile
     ;;
 
+  clean)
+    echo "Running rake assets:clean..."
+    bundle exec rake assets:clean
+    ;;
+
+  clobber)
+    echo "Running rake assets:clobber..."
+    bundle exec rake assets:clobber
+    ;;
+
   bootstrap)
     echo "Running rake app_initializer:setup..."
     bundle exec rake app_initializer:setup
