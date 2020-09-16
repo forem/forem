@@ -228,7 +228,8 @@ function handleCommentSubmit(event) {
             var mainCommentsForm = document.getElementById("new_comment");
             mainCommentsForm.classList.remove("submitting");
             const textArea = document.getElementById("text-area");
-            textArea.classList = "";
+            textArea.classList.remove('embiggened-max', 'embiggened-more', 'embiggened');
+            textArea.closest('.comment-form').classList.remove('comment-form--initiated');
             textArea.value = newComment.comment_template || "";
             var preview = document.getElementById("preview-div");
             preview.classList.add("preview-toggle");
@@ -274,6 +275,8 @@ function handleFocus(event) {
       showModal('reply-to-comment');
     }, 100);
   } else {
+    var formWrapper = event.target.closest(".comment-form");
+    formWrapper.classList.add("comment-form--initiated");
     handleSizeChange(event);
   }
 }
@@ -282,7 +285,7 @@ function handleBlur(event) {
   setTimeout(function () {
     var el = document.getElementById('text-area');
     if (el.value.length == 0) {
-      el.className = '';
+      el.classList.remove('embiggened-max', 'embiggened-more', 'embiggened');
     }
   }, 100);
 }
@@ -303,7 +306,7 @@ function handleSubmit(event) {
   if (codeOfConduct && event.target.value.trim() !== '') {
     // get a reference to the submit button for the text area (first level comment vs. reply comment)
     var parentFormId = event.target.parentElement.parentElement.id || event.target.parentElement.id;
-    var submitButton = document.querySelector('#' + parentFormId + ' input[type="submit"].comment-action-button');
+    var submitButton = document.querySelector('#' + parentFormId + ' button[type="submit"].comment-action-button');
     submitButton.click();
   }
 }
@@ -400,13 +403,17 @@ function handleKeyDown(event) {
 
 function handleSizeChange(event) {
   var lines = event.target.value.split(/\r*\n/);
+  var textarea = event.target;
   var lineCount = lines.length;
-  if (lineCount > 11) {
-    document.getElementById('text-area').className = 'embiggened-max';
-  } else if (lineCount > 6) {
-    document.getElementById('text-area').className = 'embiggened-more';
+  if (lineCount > 10) {
+    textarea.classList.add('embiggened-max');
+    textarea.classList.remove('embiggened-more', 'embiggened');
+  } else if (lineCount > 3) {
+    textarea.classList.add('embiggened-more');
+    textarea.classList.remove('embiggened-max', 'embiggened');
   } else {
-    document.getElementById('text-area').className = 'embiggened';
+    textarea.classList.add('embiggened');
+    textarea.classList.remove('embiggened-more', 'embiggened-max');
   }
 }
 
@@ -459,7 +466,7 @@ function handleImageUpload(event, randomIdNumber) {
                 // button.style.display = "none";
                 messageContainer.style.display = "none";
                 address.value = json.links[0];
-                address.classList.add("showing");
+                address.classList.remove("hidden");;
                 address.select();
 
                 var uploadedMessage = 'Uploaded! Paste into editor';
