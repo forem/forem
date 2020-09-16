@@ -15,7 +15,7 @@ describe('<Draw />', () => {
     const { queryByText } = render(<Draw />);
 
     expect(queryByText('Connect Draw')).not.toBeNull();
-    expect(queryByText('Clear')).toBeDefined();
-    expect(queryByText('Send')).toBeDefined();
+    expect(queryByText('Clear')).not.toBeNull();
+    expect(queryByText('Send')).not.toBeNull();
   });
 });
