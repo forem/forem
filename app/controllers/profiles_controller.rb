@@ -7,10 +7,11 @@ class ProfilesController < ApplicationController
   def update
     update_result = Profiles::Update.call(current_user, update_params)
     if update_result.success?
-      flash[:success] = "Your profile has been updated"
+      flash[:settings_notice] = "Your profile has been updated"
     else
       flash[:error] = "Error: #{update_result.error_message}"
     end
+    redirect_to user_settings_path
   end
 
   private
