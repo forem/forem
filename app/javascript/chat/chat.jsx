@@ -60,7 +60,6 @@ export default class Chat extends Component {
     super(props);
     const chatChannels = JSON.parse(props.chatChannels);
     const chatOptions = JSON.parse(props.chatOptions);
-    const superAdmin = props.superAdmin;
 
     this.debouncedChannelFilter = debounceAction(
       this.triggerChannelFilter.bind(this),
@@ -105,7 +104,7 @@ export default class Chat extends Component {
       rerenderIfUnchangedCheck: null,
       userRequestCount: 0,
       openModal: false,
-      superAdmin,
+      superAdmin: props.superAdmin,
     };
     if (chatOptions.activeChannelId) {
       getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
