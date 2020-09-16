@@ -94,8 +94,6 @@ RSpec.describe Users::Delete, type: :service do
     let(:kept_association_names) do
       %i[
         affected_feedback_messages
-        articles_as_second_user
-        articles_as_third_user
         audit_logs
         created_podcasts
         offender_feedback_messages

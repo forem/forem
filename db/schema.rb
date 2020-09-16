@@ -1385,8 +1385,6 @@ ActiveRecord::Schema.define(version: 2020_09_14_145500) do
   add_foreign_key "api_secrets", "users", on_delete: :cascade
   add_foreign_key "articles", "collections", on_delete: :nullify
   add_foreign_key "articles", "organizations", on_delete: :nullify
-  add_foreign_key "articles", "users", column: "second_user_id", on_delete: :nullify
-  add_foreign_key "articles", "users", column: "third_user_id", on_delete: :nullify
   add_foreign_key "articles", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"

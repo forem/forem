@@ -16,8 +16,6 @@ RSpec.describe Article, type: :model do
   describe "validations" do
     it { is_expected.to belong_to(:collection).optional }
     it { is_expected.to belong_to(:organization).optional }
-    it { is_expected.to belong_to(:second_user).inverse_of(:articles_as_second_user).optional }
-    it { is_expected.to belong_to(:third_user).inverse_of(:articles_as_third_user).optional }
     it { is_expected.to belong_to(:user) }
 
     it { is_expected.to have_many(:buffer_updates).dependent(:destroy) }
@@ -51,32 +49,6 @@ RSpec.describe Article, type: :model do
 
         expect(art2).not_to be_valid
         expect(art2.errors.full_messages.to_sentence).to match("markdown has already been taken")
-      end
-    end
-
-    describe "#second_user and #third_user" do
-      it "is invalid if second_user is user" do
-        article.second_user = user
-
-        expect(article).not_to be_valid
-      end
-
-      it "is invalid if third_user is user" do
-        article.third_user = user
-
-        expect(article).not_to be_valid
-      end
-
-      it "is invalid if second_user is equal to third_user" do
-        article.second_user = article.third_user = create(:user)
-
-        expect(article).not_to be_valid
-      end
-
-      it "is valid if second_user and third_user are nil" do
-        article.second_user = article.third_user = nil
-
-        expect(article).to be_valid
       end
     end
 
