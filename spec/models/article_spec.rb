@@ -14,9 +14,9 @@ RSpec.describe Article, type: :model do
   it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
-    it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:collection).optional }
+    it { is_expected.to belong_to(:organization).optional }
+    it { is_expected.to belong_to(:user) }
 
     it { is_expected.to have_many(:buffer_updates).dependent(:destroy) }
     it { is_expected.to have_many(:comments).dependent(:nullify) }
