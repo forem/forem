@@ -58,3 +58,17 @@
     border-radius: 0 0 var(--radius) var(--radius);
   }
 }
+
+// temporary until we have new design for comments
+.inner-comment {
+  &.replying {
+    .actions,
+    .reaction-button {
+      display: none;
+    }
+  }
+
+  .comment-form {
+    margin: var(--su-6) var(--su-4) 0 var(--su-4);
+  }
+}
