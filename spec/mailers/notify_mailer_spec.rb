@@ -429,12 +429,6 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "includes the tracking pixel" do
       expect(email.html_part.body).to include("open.gif")
     end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=export_email"))
-    end
   end
 
   describe "#tag_moderator_confirmation_email" do
