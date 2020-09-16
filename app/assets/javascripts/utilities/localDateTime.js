@@ -25,6 +25,41 @@ function timestampToLocalDateTime(timestamp, locale, options) {
   }
 }
 
+function addLocalizedDateTimeToElementsTitles(elements, timestampAttribute) {
+  for (var i = 0; i < elements.length; i += 1) {
+    var element = elements[i];
+
+    // get UTC timestamp set by the server
+    var timestamp = element.getAttribute(timestampAttribute || 'datetime');
+
+    if (timestamp) {
+      // add a full datetime to the element title, visible on hover.
+      // `navigator.language` is used to allow the date to be localized
+      // according to the browser's locale
+      // see <https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage/language>
+      var localDateTime = timestampToLocalDateTimeLong(timestamp);
+      element.setAttribute('title', localDateTime);
+    }
+  }
+}
+
+function localizeTimeElements(elements, timeOptions) {
+  for (let i = 0; i < elements.length; i += 1) {
+    const element = elements[i];
+
+    const timestamp = element.getAttribute('datetime');
+    if (timestamp) {
+      const localDateTime = timestampToLocalDateTime(
+        timestamp,
+        navigator.language,
+        timeOptions,
+      );
+
+      element.textContent = localDateTime;
+    }
+  }
+}
+
 function timestampToLocalDateTimeLong(timestamp) {
   // example: "Wednesday, April 3, 2019, 2:55:14 PM"
 
@@ -62,37 +97,7 @@ function timestampToLocalDateTimeShort(timestamp) {
   return '';
 }
 
-function addLocalizedDateTimeToElementsTitles(elements, timestampAttribute) {
-  for (var i = 0; i < elements.length; i += 1) {
-    var element = elements[i];
-
-    // get UTC timestamp set by the server
-    var timestamp = element.getAttribute(timestampAttribute || 'datetime');
-
-    if (timestamp) {
-      // add a full datetime to the element title, visible on hover.
-      // `navigator.language` is used to allow the date to be localized
-      // according to the browser's locale
-      // see <https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage/language>
-      var localDateTime = timestampToLocalDateTimeLong(timestamp);
-      element.setAttribute('title', localDateTime);
-    }
-  }
-}
-
-function localizeTimeElements(elements, timeOptions) {
-  for (let i = 0; i < elements.length; i += 1) {
-    const element = elements[i];
-
-    const timestamp = element.getAttribute('datetime');
-    if (timestamp) {
-      const localDateTime = timestampToLocalDateTime(
-        timestamp,
-        navigator.language,
-        timeOptions,
-      );
-
-      element.textContent = localDateTime;
-    }
-  }
+if (typeof globalThis !== 'undefined') {
+  globalThis.timestampToLocalDateTimeLong = timestampToLocalDateTimeLong; // eslint-disable-line no-undef
+  globalThis.timestampToLocalDateTimeShort = timestampToLocalDateTimeShort; // eslint-disable-line no-undef
 }

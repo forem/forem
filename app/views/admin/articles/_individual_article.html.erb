@@ -85,6 +85,16 @@
         <input id="author_id_<%= article.id %>" class="form-control" size="6" name="article[user_id]"
           value="<%= article.user_id %>">
       </div>
+      <div class="form-group col">
+        <label for="second_author_id_<%= article.id %>">Second Author ID:</label>
+        <input id="second_author_id_<%= article.id %>" class="form-control" size="6" name="article[second_user_id]"
+          value="<%= article.second_user_id %>">
+      </div>
+      <div class="form-group col">
+        <label for="third_author_id_<%= article.id %>">Third Author ID:</label>
+        <input id="third_author_id_<%= article.id %>" class="form-control" size="6" name="article[third_user_id]"
+          value="<%= article.third_user_id %>">
+      </div>
     </div>
     <div class="row">
       <div class="form-check col">

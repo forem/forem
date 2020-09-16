@@ -5,18 +5,11 @@ RSpec.describe Profiles::Update, type: :service do
     create(:profile, data: { name: "Sloan Doe", looking_for_work: true, removed: "Bla" })
   end
 
-  # rubocop:disable RSpec/BeforeAfterAll
-  before(:all) do
+  before do
     create(:profile_field, label: "Name", input_type: :text_field)
     create(:profile_field, label: "Looking for work", input_type: :check_box)
     Profile.refresh_attributes!
   end
-
-  after(:all) do
-    ProfileField.destroy_all
-    Profile.refresh_attributes!
-  end
-  # rubocop:enable RSpec/BeforeAfterAll
 
   it "correctly typecasts new attributes", :aggregate_failures do
     described_class.call(profile, name: 123, looking_for_work: "false")
@@ -35,5 +28,14 @@ RSpec.describe Profiles::Update, type: :service do
     described_class.call(profile, name: new_name)
     expect(profile.name).to eq new_name
     expect(profile.user[:name]).to eq new_name
+  end
+
+  it "sets custom attributes for the user" do
+    custom_profile_field = create(:custom_profile_field, profile: profile)
+    custom_attribute = custom_profile_field.attribute_name
+
+    described_class.call(profile, custom_attribute => "Test")
+
+    expect(profile.custom_attributes[custom_attribute]).to eq "Test"
   end
 end

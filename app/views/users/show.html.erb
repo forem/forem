@@ -22,7 +22,7 @@
       <header class="profile-header crayons-card mt-2">
         <div class="relative profile-header__top">
           <span class="crayons-avatar crayons-avatar--3xl">
-            <img src="<%= ProfileImage.new(@user).get(width: 320) %>" width="128" height="128" alt="<%= @user.name %> profile picture" class="crayons-avatar__image">
+            <img src="<%= Images::Profile.call(@user.profile_image_url, length: 320) %>" width="128" height="128" alt="<%= @user.name %> profile picture" class="crayons-avatar__image">
           </span>
 
           <div class="profile-header__actions">
