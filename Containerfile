@@ -42,7 +42,7 @@ COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"
 # Fixes https://github.com/sass/sassc-ruby/issues/146
 RUN bundle config build.sassc --disable-march-tune-native
 
-RUN bundle check || bundle install --jobs 20 --retry 5
+RUN bundle check || bundle install --local --jobs 20 --retry 5
 
 COPY ./package.json ./yarn.lock ./.yarnrc "${APP_HOME}"
 COPY ./.yarn "${APP_HOME}"/.yarn
