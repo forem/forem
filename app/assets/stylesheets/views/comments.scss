@@ -35,15 +35,15 @@
     }
   }
 
+  &__toolbar,
+  &__buttons {
+    display: none;
+  }
+
   &--initiated {
     .crayons-textfield {
       height: 96px;
     }
-  }
-
-  &__toolbar,
-  &__buttons {
-    display: none;
   }
 
   &--initiated &__toolbar,
@@ -53,10 +53,8 @@
 
   &__toolbar {
     padding: var(--su-1);
-    border-top: 1px solid var(--form-border);
+    border-top: 1px solid var(--base-20);
     background: var(--form-bg);
     border-radius: 0 0 var(--radius) var(--radius);
   }
-
-  
 }
