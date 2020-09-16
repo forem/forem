@@ -128,7 +128,7 @@ function Draw({ sendCanvasImage }) {
               onClick={handleChangeColor}
               style={`background-color: ${color}`}
               title={`Change color to ${color}`}
-              key={`id-${color}`}
+              key={color}
             />
           ))}
         </div>
