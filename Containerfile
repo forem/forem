@@ -1,5 +1,7 @@
 FROM quay.io/forem/ruby:2.7.1
 
+ARG RAILS_ENV
+
 USER root
 
 RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
