@@ -24,6 +24,20 @@ services:
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
       APP_DOMAIN: rails
+      CC_TEST_REPORTER_ID: f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
+      # Dummy values needed to verify the app boots via "rails runner"
+      APP_PROTOCOL: http://
+      APP_DOMAIN: localhost:3000
+      HEROKU_APP_URL: practicaldev.herokuapp.com
+      SECRET_KEY_BASE: dummydummydummy
+      GITHUB_KEY: dummy
+      GITHUB_SECRET: dummy
+      # KnapsackPro
+      KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC}
+      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: "true"
+      KNAPSACK_PRO_LOG_LEVEL: info
+      KNAPSACK_PRO_CI_NODE_TOTAL: 3
+      COVERAGE_REPORTS_TOTAL: 4
     entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-timeout", "2700s", "./scripts/entrypoint-dev.sh"]
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
