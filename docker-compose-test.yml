@@ -2,7 +2,7 @@ version: "3"
 services:
   rails:
     build: .
-      args:
+      arg:
         RAILS_ENV=test
     image: forem-rails:latest
     container_name: forem_rails
