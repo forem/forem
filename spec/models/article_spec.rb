@@ -52,6 +52,26 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "#validate co_authors" do
+      it "is invalid if the co_author is the same as the author" do
+        article.co_author_ids = [user.id]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if there are duplicate co_authors for the same article" do
+        article.co_author_ids = [article.co_author_ids]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is valid if co_author_ids is nil" do
+        article.co_author_ids = nil
+
+        expect(article).to be_valid
+      end
+    end
+
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save
