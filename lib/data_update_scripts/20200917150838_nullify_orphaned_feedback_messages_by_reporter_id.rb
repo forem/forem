@@ -1,7 +1,7 @@
 module DataUpdateScripts
   class NullifyOrphanedFeedbackMessagesByReporterId
     def run
-      # Nullify all Tags mod_chat_channel_id belonging to ChatChannels that don't exist anymore
+      # Nullify all FeedbackMessages reporter_id belonging to Users that don't exist anymore
       ActiveRecord::Base.connection.execute(
         <<~SQL.squish,
           UPDATE feedback_messages
