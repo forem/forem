@@ -52,6 +52,7 @@ module.exports = {
       },
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
+    'no-console': ['error', { allow: ['error'] }],
   },
   overrides: [
     {
