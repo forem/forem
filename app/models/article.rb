@@ -72,6 +72,8 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_tag
   validate :validate_video
+  validate :validate_co_authors
+  validate :validate_co_authors_must_not_be_the_same
 
   before_validation :evaluate_markdown, :create_slug
   before_save :update_cached_user
@@ -550,6 +552,22 @@ class Article < ApplicationRecord
     return unless collection && collection.user_id != user_id
 
     errors.add(:collection_id, "must be one you have permission to post to")
+  end
+
+  def validate_co_authors
+    return unless co_author_ids
+    return unless co_author_ids.include?(user_id)
+
+    errors.add(:co_author_ids, "must not be the same user as the author")
+  end
+
+  def validate_co_authors_must_not_be_the_same
+    return unless co_author_ids
+
+    co_author = co_author_ids.map { |id| id }
+    return if co_author_ids != co_author
+
+    errors.add(:base, "must not be the same user as the co-author")
   end
 
   def past_or_present_date
