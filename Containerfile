@@ -41,7 +41,7 @@ COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"/
 COPY ./vendor/cache "${APP_HOME}"/vendor/cache
 
 # Fixes https://github.com/sass/sassc-ruby/issues/146
-RUN bundle config build.sassc --disable-march-tune-native
+RUN if [ "$RAILS_ENV" != "test" ] ; then bundle config build.sassc --disable-march-tune-native ; fi
 
 RUN bundle check || bundle install --jobs 20 --retry 5
 
@@ -49,7 +49,7 @@ RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
 COPY . "${APP_HOME}"/
 
-RUN RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile
+RUN if [ "$RAILS_ENV" != "test" ] ; then AILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile ; fi
 
 RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
     echo $(git rev-parse --short HEAD) >> "${APP_HOME}"/FOREM_BUILD_SHA && \
