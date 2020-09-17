@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe BufferUpdate, type: :model do
   let(:article) { create(:article) }
+  let(:tag1) { create(:tag) }
+  let(:tag2) { create(:tag) }
 
   describe "validations" do
     describe "builtin validations" do
@@ -42,14 +44,14 @@ RSpec.describe BufferUpdate, type: :model do
   end
 
   it "allows same text across different tags" do
-    described_class.buff!(article.id, "twitter_buffer_text", tag_id: 1)
-    described_class.buff!(article.id, "twitter_buffer_text", tag_id: 2)
+    described_class.buff!(article.id, "twitter_buffer_text", tag_id: tag1.id)
+    described_class.buff!(article.id, "twitter_buffer_text", tag_id: tag2.id)
     expect(described_class.all.size).to eq(2)
   end
 
   it "allows same text across different articles with the same tag" do
-    described_class.buff!(article.id, "twitter_buffer_text", tag_id: 1)
-    described_class.buff!(create(:article).id, "twitter_buffer_text", tag_id: 1)
+    described_class.buff!(article.id, "twitter_buffer_text", tag_id: tag1.id)
+    described_class.buff!(create(:article).id, "twitter_buffer_text", tag_id: tag1.id)
     expect(described_class.all.size).to eq(2)
   end
 
