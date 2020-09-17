@@ -16,9 +16,9 @@ class HexComparer
   end
 
   def brightness(amount = 1)
-    rgb = smallest.match(RGB_REGEX).named_captures.map do |key, color|
-      [key.to_sym, (color.hex * amount).round]
-    end.to_h
+    rgb = hex_to_rgb_hash(smallest).transform_values do |color|
+      (color * amount).round
+    end
     format("#%<r>02x%<g>02x%<b>02x", rgb)
   rescue StandardError
     smallest
@@ -32,7 +32,18 @@ class HexComparer
     end
   end
 
+  def opacity(value = 0.0)
+    rgba = hex_to_rgb_hash(smallest).merge(a: value)
+    format("rgba(%<r>d, %<g>d, %<b>d, %<a>.2f)", rgba)
+  end
+
   private
+
+  def hex_to_rgb_hash(hex)
+    hex.match(RGB_REGEX).named_captures.map do |key, color|
+      [key.to_sym, color.hex]
+    end.to_h
+  end
 
   attr_accessor :hexes, :amount
 end

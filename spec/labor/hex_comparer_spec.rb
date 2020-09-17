@@ -18,4 +18,9 @@ RSpec.describe HexComparer, type: :labor do
     hc = described_class.new(["#ccddee", "#ffffff"])
     expect(hc.accent).to eq("#d8eafc")
   end
+
+  it "generates an rgba value with opactity" do
+    rgba = described_class.new(["#123456"]).opacity(0.5)
+    expect(rgba).to eq("rgba(18, 52, 86, 0.50)")
+  end
 end
