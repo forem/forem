@@ -45,7 +45,7 @@ RSpec.describe "articles/show", type: :view do
   it "shows user new comment box" do
     render
     expect(rendered).to have_css("form#new_comment")
-    expect(rendered).to have_css("input#submit-button")
+    expect(rendered).to have_button("Submit")
   end
 
   it "shows a note about the canonical URL" do
