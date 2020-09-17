@@ -8,8 +8,9 @@ module Feeds
     end
 
     def feed
-      articles = Article.published.order("hotness_score DESC")
-        .where("score >= 0")
+      articles = Article.published
+        .order(hotness_score: :desc)
+        .where(score: 0..)
         .limit(@number_of_articles)
         .limited_column_select.includes(top_comments: :user)
       return articles unless @user

@@ -42,7 +42,7 @@ module Stories
     def signed_in_base_feed
       if SiteConfig.feed_strategy == "basic"
         Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag]).feed
-      else # optimized
+      else
         optimized_signed_in_feed
       end
     end
@@ -50,7 +50,7 @@ module Stories
     def signed_out_base_feed
       if SiteConfig.feed_strategy == "basic"
         Feeds::Basic.new(user: nil, page: @page, tag: params[:tag]).feed
-      else # optimized
+      else
         Feeds::Optimized.new(user: current_user, page: @page, tag: params[:tag])
           .default_home_feed(user_signed_in: user_signed_in?)
       end

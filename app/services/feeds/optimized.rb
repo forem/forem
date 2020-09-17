@@ -1,6 +1,7 @@
 module Feeds
   class Optimized
     RANDOM_OFFSET_VALUES = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].freeze
+    MINIMUM_SCORE_LATEST_FEED= -20
 
     def initialize(user: nil, number_of_articles: 35, page: 1, tag: nil)
       @user = user
@@ -17,7 +18,7 @@ module Feeds
       featured_story =  if stories.is_a?(ActiveRecord::Relation)
                           stories.where.not(main_image: nil).first
                         else
-                          stories.detect { |story| !story.main_image.nil? }
+                          stories.detect { |story| story.main_image.present? }
                         end
       featured_story || Article.new
     end
@@ -42,7 +43,7 @@ module Feeds
 
     def latest_feed
       published_articles_by_tag.order(published_at: :desc)
-        .where("featured_number > ? AND score > ?", 1_449_999_999, -20)
+        .where("score > ?", MINIMUM_SCORE_LATEST_FEED)
         .page(@page).per(@number_of_articles)
     end
 
