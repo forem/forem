@@ -1,9 +1,10 @@
 version: "3"
 services:
   rails:
-    build: .
-      arg:
-        RAILS_ENV=test
+    build:
+      context: .
+      args:
+        - RAILS_ENV=test
     image: forem-rails:latest
     container_name: forem_rails
     ports:
