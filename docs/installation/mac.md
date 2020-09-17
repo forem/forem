@@ -12,7 +12,8 @@ title: macOS
    [rbenv](https://github.com/rbenv/rbenv). Please follow their
    [installation guide](https://github.com/rbenv/rbenv#installation).
 2. With the Ruby version manager, install the Ruby version listed on our badge.
-   (i.e. with rbenv: `rbenv install $(cat .ruby-version)`)
+   (i.e. with rbenv: `rbenv install *latest badge version*`) 
+    example: `rbenv install 2.7.1`
 
 ### Yarn
 
@@ -20,7 +21,7 @@ Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
 
-Forem requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher to be running.
 
 The easiest way to get started is to use
 [Postgres.app](https://postgresapp.com/). Alternatively, check out the official
@@ -38,7 +39,7 @@ You can install ImageMagick with `brew install imagemagick`.
 
 ### Redis
 
-Forem requires Redis version 4.0 or higher.
+Forem requires Redis version 4.0 or higher to be running.
 
 We recommend using [Homebrew](https://brew.sh):
 
@@ -61,11 +62,10 @@ redis-cli ping
 
 ### Elasticsearch
 
-Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
+Forem requires a version of Elasticsearch between 7.1 and 7.5 to be running. Version 7.6 is
 not supported. We recommend version 7.5.2.
 
-You have the option of installing Elasticsearch with Homebrew or through an
-archive. We recommend installing from archive on Mac.
+We recommend installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
 
@@ -106,25 +106,6 @@ To start elasticsearch as a daemonized process:
 ```shell
 ./bin/elasticsearch -d
 ```
-
-### Installing Elasticsearch with Homebrew
-
-As the default version of the Homebrew formula points to Elasticsearch 7.6, we
-need to retrieve the correct revision of the formula to make sure we install the
-latest supported version: 7.5.2.
-
-```shell
-brew tap elastic/tap
-brew install https://raw.githubusercontent.com/elastic/homebrew-tap/bed8bc6b03213c2c1a7df6e4b9f928e7082fae46/Formula/elasticsearch-oss.rb
-brew pin elasticsearch-oss
-```
-
-After installation you can manually test if the Elasticsearch server starts by
-issuing the command `elasticsearch` in the shell. You can then start the server
-as a service with `brew services start elasticsearch-oss`.
-
-You can find further info on your local Elasticsearch installation by typing
-`brew info elastic/tap/elasticsearch-oss`.
 
 #### Troubleshooting startup issues
 
