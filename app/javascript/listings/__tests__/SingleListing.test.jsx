@@ -3,6 +3,7 @@ import { axe } from 'jest-axe';
 import { render } from '@testing-library/preact';
 import '@testing-library/jest-dom';
 
+import '../../../assets/javascripts/utilities/localDateTime';
 import { SingleListing } from '../singleListing/SingleListing';
 
 const listing = {
@@ -16,7 +17,7 @@ const listing = {
   title: 'Illo iure quos perspiciatis.',
   user_id: 7,
   bumped_at: '2020-09-06T14:15:02.977Z',
-  created_at: '2020-09-06T14:15:02.977Z',
+  originally_published_at: '2020-09-06T14:15:02.977Z',
   tags: ['go', 'git'],
   author: {
     name: 'Mrs. Yoko Christiansen',
@@ -26,11 +27,13 @@ const listing = {
   },
 };
 
+/* eslint-disable no-unused-vars */
+/* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
+
 describe('<SingleListing />', () => {
-  beforeEach(() => {
-    window.timestampToLocalDateTimeLong = () =>
-      'Sunday, 6 September, 2020, 7:45:02 pm';
-    window.timestampToLocalDateTimeShort = () => '6 Sep';
+  afterAll(() => {
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
   });
 
   const renderSingleListing = () =>
@@ -93,15 +96,6 @@ describe('<SingleListing />', () => {
     const { getByTestId } = renderSingleListing();
     expect(getByTestId('single-listing-location').href).toContain(
       `/listings/?q=West%20Refugio`,
-    );
-  });
-
-  it('should render listing date', () => {
-    const { getByTestId } = renderSingleListing();
-
-    expect(getByTestId('single-listing-date')).toHaveTextContent('6 Sep');
-    expect(getByTestId('single-listing-date').title).toBe(
-      'Sunday, 6 September, 2020, 7:45:02 pm',
     );
   });
 });

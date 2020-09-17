@@ -22,7 +22,7 @@
       "type": "text",
       "copy_to": "listing_search"
     },
-    "created_at": {
+    "originally_published_at": {
       "type": "date"
     },
     "bumped_at": {

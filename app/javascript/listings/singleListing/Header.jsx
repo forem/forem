@@ -1,7 +1,6 @@
-/* global timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
-
 import PropTypes from 'prop-types';
 import { h } from 'preact';
+import DateTime from '../../shared/components/dateTime';
 import listingPropTypes from './listingPropTypes';
 import DropdownMenu from './DropdownMenu';
 import TagLinks from './TagLinks';
@@ -14,9 +13,9 @@ const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
     slug,
     title,
     bumped_at,
-    created_at,
+    originally_published_at,
   } = listing;
-  const listingDate = bumped_at ? bumped_at : created_at;
+  const listingDate = bumped_at ? bumped_at : originally_published_at;
 
   return (
     <header className="mb-3">
@@ -31,15 +30,7 @@ const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
           {title}
         </a>
       </h2>
-      <time
-        datetime={listingDate}
-        title={timestampToLocalDateTimeLong(listingDate)}
-        className="single-listing__date"
-        data-testid="single-listing-date"
-      >
-        {timestampToLocalDateTimeShort(listingDate)}
-      </time>
-
+      <DateTime datetime={listingDate} className="single-listing__date" />
       <TagLinks tags={listing.tags} onClick={onAddTag} />
 
       <DropdownMenu listing={listing} isOwner={currentUserId === userId} />
