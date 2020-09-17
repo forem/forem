@@ -3,7 +3,6 @@ import { useRef, useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { chatDrawPalettes } from '../../utilities/Constants';
 import { Button } from '@crayons';
-// import { useDragAndDrop } from '../../utilities/dragAndDrop';
 
 /**
  * Draw function is wrapped in this component
