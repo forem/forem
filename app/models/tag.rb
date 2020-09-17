@@ -12,6 +12,7 @@ class Tag < ActsAsTaggableOn::Tag
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
 
   belongs_to :badge, optional: true
+  has_many :buffer_updates, dependent: :nullify
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader

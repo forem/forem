@@ -110,6 +110,22 @@ RSpec.describe User, type: :model do
       end
 
       it do
+        expect(subject).to have_many(:badge_achievements_rewarded)
+          .class_name("BadgeAchievement")
+          .with_foreign_key("rewarder_id")
+          .inverse_of(:rewarder)
+          .dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:banished_users)
+          .class_name("BanishedUser")
+          .with_foreign_key("banished_by_id")
+          .inverse_of(:banished_by)
+          .dependent(:nullify)
+      end
+
+      it do
         expect(subject).to have_many(:blocked_blocks)
           .class_name("UserBlock")
           .with_foreign_key("blocked_id")
@@ -121,6 +137,22 @@ RSpec.describe User, type: :model do
           .class_name("UserBlock")
           .with_foreign_key("blocker_id")
           .dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:buffer_updates_approved)
+          .class_name("BufferUpdate")
+          .with_foreign_key("approver_user_id")
+          .inverse_of(:approver_user)
+          .dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:buffer_updates_composed)
+          .class_name("BufferUpdate")
+          .with_foreign_key("composer_user_id")
+          .inverse_of(:composer_user)
+          .dependent(:nullify)
       end
 
       it do

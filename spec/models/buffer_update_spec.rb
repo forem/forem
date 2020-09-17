@@ -3,6 +3,16 @@ require "rails_helper"
 RSpec.describe BufferUpdate, type: :model do
   let(:article) { create(:article) }
 
+  describe "validations" do
+    describe "builtin validations" do
+      subject { described_class.buff!(article.id, "twitter_buffer_text") }
+
+      it { is_expected.to belong_to(:approver_user).optional }
+      it { is_expected.to belong_to(:composer_user).optional }
+      it { is_expected.to belong_to(:tag).optional }
+    end
+  end
+
   it "creates update" do
     described_class.buff!(article.id, "twitter_buffer_text")
     expect(described_class.all.size).to eq(1)
