@@ -5,10 +5,12 @@
   --article-padding-x: var(--su-3);
   --article-padding-y: var(--su-3);
   --article-font-size: var(--fs-l);
+  --comment-font-size: var(--fs-base);
 
   @media (min-width: $breakpoint-s) {
     --article-padding-x: var(--su-5);
     --article-padding-y: var(--su-5);
+    --comment-font-size: var(--fs-l);
   }
 
   @media (min-width: $breakpoint-m) {
@@ -92,6 +94,14 @@
   font-size: var(--article-font-size);
   font-family: var(--content-font-family);
 
+  &--comment {
+    font-size: var(--comment-font-size);
+  }
+
+  :last-child {
+    margin-bottom: 0;
+  }
+
   a {
     code {
       color: var(--link-color);
@@ -114,7 +124,7 @@
   h5,
   h6 {
     font-family: var(--ff-sans-serif);
-    margin: var(--article-rythm) 0;
+    margin: 0 0 var(--article-rythm) 0;
     margin-top: calc(var(--article-rythm) * 2);
     padding: 0;
   }
@@ -145,13 +155,13 @@
   }
 
   p {
-    margin: var(--article-rythm) 0;
+    margin: 0 0 var(--article-rythm) 0;
   }
 
   ul,
   ol {
     padding-left: var(--su-6);
-    margin: var(--article-rythm) 0;
+    margin: 0 0 var(--article-rythm) 0;
     br {
       line-height: 0;
       margin: 0;
@@ -202,7 +212,7 @@
   blockquote {
     border-left: 4px solid var(--base-50);
     padding: 0 var(--su-4);
-    margin: var(--article-rythm) 0;
+    margin: 0 0 var(--article-rythm) 0;
 
     p:first-child {
       margin: var(--su-2) 0;
@@ -249,7 +259,7 @@
 
   pre:not(.highlight),
   div.highlight {
-    margin: var(--article-rythm) 0;
+    margin: 0 0 var(--article-rythm) 0;
   }
 
   img {
@@ -269,11 +279,11 @@
   iframe {
     width: 100%;
     border: 0;
-    margin: var(--article-rythm) 0;
+    margin: 0 0 var(--article-rythm) 0;
   }
 
   .fluidvids {
-    margin: var(--article-rythm) 0;
+    margin: 0 0 var(--article-rythm) 0;
 
     iframe {
       margin: 0;

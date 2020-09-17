@@ -36,7 +36,7 @@
         <img src="<%= image_path("android-icon-128x128.png") %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
       <% end %>
     </span>
-    <div class="flex-1 flex flex-col">
+    <div class="comment-form__inner">
       <div class="comment-form__field">
         <%= f.text_area :body_markdown,
                         placeholder: "Add to the discussion",
@@ -54,7 +54,7 @@
             <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
             <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed" onclick="handleImageUpload(event,'main')">
               <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") %>
-              Upload image
+              <span class="hidden s:inline-block">Upload image</span>
             </button>
             <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
             <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
@@ -63,7 +63,7 @@
 
           <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed response-templates-button" title="Use a response template" data-has-listener="false" data-form-id="new_comment">
             <%= inline_svg_tag("templates.svg", aria: true, class: "crayons-icon", title: "Templates") %>
-            Templates
+            <span class="hidden s:inline-block">Templates</span>
           </button>
 
           <a href="/p/editor_guide" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon crayons-btn--s ml-auto" target="_blank" rel="noopener" title="Markdown Guide">
@@ -93,19 +93,16 @@
         <p>Create templates to quickly answer FAQs or store snippets for re-use.</p>
       </div>
 
+      <div class="comment-form__preview text-styles text-styles--comment" id="preview-div"></div>
+
       <div class="comment-form__buttons mb-4">
         <button type="submit" class="crayons-btn mr-2" onclick="validateField(event)">Submit</button>
-        <button type="button" class="crayons-btn crayons-btn--secondary comment-action-preview" id="preview-button">Preview</button>
+        <button type="button" class="preview-toggle crayons-btn crayons-btn--secondary comment-action-preview">Preview</button>
       </div>
     </div>
   </div>
 
-  <div class="field" id="textarea-wrapper">
-    <div class="preview-toggle comment-preview-div" id="preview-div"></div>
-  </div>
-  <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
-  </div>
-
+  <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox"></div>
 <% end %>
 
 <% if @comment.persisted? %>

@@ -20,7 +20,13 @@
     }
   }
 
-  .crayons-textfield {
+  &__inner {
+    display: flex;
+    flex-flow: column;
+    flex: 1 auto;
+  }
+
+  .comment-textarea {
     resize: vertical;
     padding: 0.5em;
 
@@ -41,7 +47,7 @@
   }
 
   &--initiated {
-    .crayons-textfield {
+    .comment-textarea {
       height: 96px;
     }
   }
@@ -56,6 +62,14 @@
     border-top: 1px solid var(--base-20);
     background: var(--form-bg);
     border-radius: 0 0 var(--radius) var(--radius);
+    font-size: var(--fs-s);
+  }
+
+  &__preview {
+    border-radius: var(--radius);
+    padding: var(--su-4);
+    border: 1px solid var(--base-20);
+    margin-bottom: var(--su-3);
   }
 }
 
@@ -70,5 +84,20 @@
 
   .comment-form {
     margin: var(--su-6) var(--su-4) 0 var(--su-4);
+  }
+}
+
+.new_comment {
+  .comment-form__preview {
+    display: none;
+  }
+
+  &.preview-open {
+    .comment-form__preview {
+      display: block;
+    }
+    .comment-form__field {
+      display: none;
+    }
   }
 }
