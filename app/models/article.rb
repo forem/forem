@@ -19,11 +19,12 @@ class Article < ApplicationRecord
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
 
-  belongs_to :user
-  belongs_to :organization, optional: true
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
   belongs_to :collection, optional: true
+
+  belongs_to :organization, optional: true
+  belongs_to :user
 
   counter_culture :user
   counter_culture :organization

@@ -1380,9 +1380,11 @@ ActiveRecord::Schema.define(version: 2020_09_17_114525) do
 
   add_foreign_key "ahoy_events", "ahoy_visits", column: "visit_id", on_delete: :cascade
   add_foreign_key "ahoy_events", "users", on_delete: :cascade
+  add_foreign_key "ahoy_messages", "feedback_messages", on_delete: :nullify
   add_foreign_key "ahoy_messages", "users", on_delete: :cascade
   add_foreign_key "ahoy_visits", "users", on_delete: :cascade
   add_foreign_key "api_secrets", "users", on_delete: :cascade
+  add_foreign_key "articles", "collections", on_delete: :nullify
   add_foreign_key "articles", "organizations", on_delete: :nullify
   add_foreign_key "articles", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
