@@ -4,22 +4,26 @@
   <title>We're sorry, but something went wrong (500)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-      body {
+    body {
        font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-       font-weight: 300;
+    }
+    .unhandled-error-page {
+      height: 100vh;
+      min-height: 550px;
+      padding-top: 10vh;
     }
     .dialog{
       background:rgb(236, 236, 236);
-      border:1px solid rgb(217, 217, 217);
+      border:2px solid rgb(217, 217, 217);
       text-align:center;
-      padding:20px 0px;
+      padding:30px 0px;
       margin:5% auto;
       width:80%;
-      max-width:600px;
+      max-width:580px;
       min-width:315px;
       color:rgb(44, 46, 50);
-      border-radius:5px;
-      min-height: 600px;
+      border-radius:8px;
+      min-height: 500px;
     }
     textarea{
       width:75%;
@@ -51,6 +55,7 @@
     img{
       max-width:100%;
       height:200px;
+      border-radius: 5px;
     }
   </style>
   <script src='https://www.google.com/recaptcha/api.js'></script>
@@ -58,13 +63,15 @@
 
 <body>
   <!-- This file lives in public/500.html -->
-  <div class="dialog">
-    <div>
-      <img alt="500 error" src="https://media.giphy.com/media/SX9TFmjF0eChq/200.gif" height="200" />
-      <h1>500 Error</h1>
-      <h2>It's not you, it's me.</h2>
+  <div class="unhandled-error-page base-background-color">
+    <div class="dialog">
+      <div>
+        <img alt="500 error" src="https://media.giphy.com/media/SX9TFmjF0eChq/200.gif" height="200" />
+        <h1>Ooooops...</h1>
+        <h2>You have encountered an error.</h2>
+      </div>
+      <p style="margin: 10%">Our team has been notified. Please feel welcome to also submit a public <a href="https://github.com/thepracticaldev/dev.to/issues/new?template=bug_report.md">bug report</a>. <br><br/>We apologize for any inconvenience.</p>
     </div>
-    <p style="margin: 10%">Sorry you're hitting this page. <br> Please help us by submitting a <a href="https://github.com/thepracticaldev/dev.to/issues/new?template=bug_report.md">bug report</a>. <br>Thank you!</p>
   </div>
 </body>
 </html>

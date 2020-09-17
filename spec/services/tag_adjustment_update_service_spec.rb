@@ -1,8 +1,8 @@
 require "rails_helper"
 
-RSpec.describe TagAdjustmentUpdateService do
+RSpec.describe TagAdjustmentUpdateService, type: :service do
   let(:user) { create(:user) }
-  let(:article) { create(:article) }
+  let(:article) { create(:article, tags: tag.name) }
   let(:tag) { create(:tag) }
 
   def create_tag_adjustment
@@ -13,7 +13,7 @@ RSpec.describe TagAdjustmentUpdateService do
       tag_name: tag.name,
       article_id: article.id,
       reason_for_adjustment: "reasons",
-    ).create
+    )
   end
 
   before do
@@ -21,7 +21,8 @@ RSpec.describe TagAdjustmentUpdateService do
   end
 
   it "creates tag adjustment" do
-    tag_adjustment = create_tag_adjustment
+    tag_adjustment = create_tag_adjustment.tag_adjustment
+    tag_adjustment.save
     described_class.new(tag_adjustment, status: "resolved").update
 
     expect(tag_adjustment).to be_valid

@@ -1,6 +1,8 @@
-'use strict';
-
-const sponsorClickHandler = event => {
+/*
+ * kept as a stand function so it can be loaded again without issue
+ * see: https://github.com/thepracticaldev/dev.to/issues/6468
+ */
+function sponsorClickHandler(event) {
   if (event.target.classList.contains('follow-action-button')) {
     handleOptimisticButtRender(event.target);
     handleFollowButtPress(event.target);
@@ -13,7 +15,7 @@ const sponsorClickHandler = event => {
     event.target.dataset.details,
     null,
   );
-};
+}
 
 function listenForSponsorClick() {
   setTimeout(() => {
@@ -50,12 +52,12 @@ function initializeSponsorshipVisibility() {
     }, 400);
   }
   if (el && user && user.display_sponsors) {
-    el.classList.add('showing');
+    el.classList.remove('hidden');
     listenForSponsorClick();
   } else if (el && user) {
-    el.classList.remove('showing');
+    el.classList.add('hidden');
   } else if (el) {
-    el.classList.add('showing');
+    el.classList.remove('hidden');
     listenForSponsorClick();
   }
 }

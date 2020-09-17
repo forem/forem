@@ -1,4 +1,4 @@
-class CreateKis < ActiveRecord::Migration
+class CreateKis < ActiveRecord::Migration[4.2]
   def change
     create_table :kis do |t|
       t.integer :user_id

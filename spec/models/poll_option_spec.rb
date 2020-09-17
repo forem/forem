@@ -1,16 +1,26 @@
 require "rails_helper"
 
 RSpec.describe PollOption, type: :model do
-  let(:article) { create(:article, featured: true) }
-  let(:poll) { create(:poll, article_id: article.id) }
+  let(:article) { build(:article, featured: true) }
+  let(:poll) { build(:poll, article: article) }
+  let(:poll_option) { build(:poll_option, poll: poll) }
 
-  it "allows up to 128 markdown characters" do
-    poll_option = described_class.create(markdown: "0" * 30, poll_id: poll.id)
-    expect(poll_option).to be_valid
-  end
+  describe "validations" do
+    describe "builtin validations" do
+      subject { poll_option }
 
-  it "disallows over 128 markdown characters" do
-    poll_option = described_class.create(markdown: "0" * 200, poll_id: poll.id)
-    expect(poll_option).not_to be_valid
+      it { is_expected.to belong_to(:poll) }
+      it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+    end
+
+    it "allows up to 128 markdown characters" do
+      poll_option.markdown = "0" * 128
+      expect(poll_option).to be_valid
+    end
+
+    it "disallows over 128 markdown characters" do
+      poll_option.markdown = "0" * 129
+      expect(poll_option).not_to be_valid
+    end
   end
 end

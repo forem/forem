@@ -3,16 +3,26 @@ require "rails_helper"
 RSpec.describe HtmlVariant, type: :model do
   let(:html_variant) { create(:html_variant, approved: true, published: true) }
 
-  it { is_expected.to validate_uniqueness_of(:name) }
-  it { is_expected.to validate_presence_of(:html) }
-  it { is_expected.to belong_to(:user).optional }
+  describe "validations" do
+    describe "builtin validations" do
+      subject { html_variant }
+
+      it { is_expected.to belong_to(:user).optional }
+
+      it { is_expected.to have_many(:html_variant_trials).dependent(:destroy) }
+      it { is_expected.to have_many(:html_variant_successes).dependent(:destroy) }
+
+      it { is_expected.to validate_inclusion_of(:group).in_array(described_class::GROUP_NAMES) }
+      it { is_expected.to validate_presence_of(:html) }
+      it { is_expected.to validate_presence_of(:success_rate) }
+      it { is_expected.to validate_uniqueness_of(:name) }
+    end
+  end
 
   it "calculates success rate" do
-    HtmlVariantTrial.create!(html_variant_id: html_variant.id)
-    HtmlVariantTrial.create!(html_variant_id: html_variant.id)
-    HtmlVariantTrial.create!(html_variant_id: html_variant.id)
-    HtmlVariantTrial.create!(html_variant_id: html_variant.id)
+    4.times { HtmlVariantTrial.create!(html_variant_id: html_variant.id) }
     HtmlVariantSuccess.create!(html_variant_id: html_variant.id)
+
     html_variant.calculate_success_rate!
     expect(html_variant.success_rate).to eq(0.025)
   end
@@ -35,14 +45,14 @@ RSpec.describe HtmlVariant, type: :model do
   end
 
   it "finds if no tag targeted and tag given" do
-    html_variant.save!
+    html_variant.update(target_tag: nil)
     expect(described_class.find_for_test(["hello"]).id).to eq(html_variant.id)
   end
 
-  it "creates an html variant with img in it" do
-    html_variant = create(:html_variant, approved: false, published: true)
-    html_variant.html = "<div><img src='https://devimages.com/image.jpg' /></div>"
-    html_variant.save!
-    expect(html_variant.html).to include("cloudinary")
+  it "prefixes an image with cloudinary" do
+    html = "<div><img src='https://devimages.com/image.jpg' /></div>"
+    html_variant.update(approved: false, html: html)
+    cloudinary_string = "/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_420/https://devimages.com/image.jpg"
+    expect(html_variant.html).to include(cloudinary_string)
   end
 end

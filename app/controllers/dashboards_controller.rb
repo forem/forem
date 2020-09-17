@@ -1,7 +1,9 @@
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
   before_action :authenticate_user!
-  before_action :fetch_and_authorize_user, only: %i[show following followers]
+  before_action :fetch_and_authorize_user, except: :pro
+  before_action :set_source, only: %i[subscriptions]
+  before_action -> { limit_per_page(default: 80, max: 1000) }, except: %i[show pro]
   after_action :verify_authorized
 
   def show
@@ -15,33 +17,42 @@ class DashboardsController < ApplicationController
     if params[:which] == "organization" && params[:org_id] && (@user.org_admin?(params[:org_id]) || @user.any_admin?)
       target = @organizations.find_by(id: params[:org_id])
       @organization = target
+      @articles = target.articles
+    else
+      # if the target is a user, we need to eager load the organization
+      @articles = target.articles.includes(:organization)
     end
 
-    @articles = target.articles.includes(:organization).sorting(params[:sort]).decorate
+    @reactions_count = @articles.sum(&:public_reactions_count)
+    @page_views_count = @articles.sum(&:page_views_count)
 
-    # Updates analytics in background if appropriate
-    Articles::UpdateAnalyticsJob.perform_later(current_user.id) if @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limit concerned, sometimes we throttle down.
+    @articles = @articles.sorting(params[:sort]).decorate
+    @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(50)
   end
 
-  def following
-    @follows = @user.follows_by_type("User").
-      order("created_at DESC").includes(:followable).limit(80)
-    @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").
-      order("points DESC").includes(:followable).limit(80)
-    @followed_organizations = @user.follows_by_type("Organization").
-      order("created_at DESC").includes(:followable).limit(80)
-    @followed_podcasts = @user.follows_by_type("Podcast").
-      order("created_at DESC").includes(:followable).limit(80)
+  def following_tags
+    @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag")
+      .order(points: :desc).includes(:followable).limit(@follows_limit)
+  end
+
+  def following_users
+    @follows = @user.follows_by_type("User")
+      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
+  end
+
+  def following_organizations
+    @followed_organizations = @user.follows_by_type("Organization")
+      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
+  end
+
+  def following_podcasts
+    @followed_podcasts = @user.follows_by_type("Podcast")
+      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
   end
 
   def followers
-    if params[:which] == "user_followers"
-      @follows = Follow.where(followable_id: @user.id, followable_type: "User").
-        includes(:follower).order("created_at DESC").limit(80)
-    elsif params[:which] == "organization_user_followers"
-      @follows = Follow.where(followable_id: @user.organization_id, followable_type: "Organization").
-        includes(:follower).order("created_at DESC").limit(80)
-    end
+    @follows = Follow.followable_user(@user.id)
+      .includes(:follower).order(created_at: :desc).limit(@follows_limit)
   end
 
   def pro
@@ -56,7 +67,22 @@ class DashboardsController < ApplicationController
     @organizations = current_user.member_organizations
   end
 
+  def subscriptions
+    authorize @source
+    @subscriptions = @source.user_subscriptions
+      .includes(:subscriber).order(created_at: :desc).page(params[:page]).per(100)
+  end
+
   private
+
+  def set_source
+    source_type = UserSubscription::ALLOWED_TYPES.detect { |allowed_type| allowed_type == params[:source_type] }
+
+    not_found unless source_type
+
+    source = source_type.constantize.find_by(id: params[:source_id])
+    @source = source || not_found
+  end
 
   def fetch_and_authorize_user
     @user = if params[:username] && current_user.any_admin?
@@ -65,5 +91,10 @@ class DashboardsController < ApplicationController
               current_user
             end
     authorize (@user || User), :dashboard_show?
+  end
+
+  def limit_per_page(default:, max:)
+    per_page = (params[:per_page] || default).to_i
+    @follows_limit = [per_page, max].min
   end
 end

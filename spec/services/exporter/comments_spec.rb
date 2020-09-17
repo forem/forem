@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Exporter::Comments do
+RSpec.describe Exporter::Comments, type: :service do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
   let(:podcast_episode) { create(:podcast_episode) }
@@ -22,7 +22,7 @@ RSpec.describe Exporter::Comments do
       edited_at
       id_code
       markdown_character_count
-      positive_reactions_count
+      public_reactions_count
       processed_html
       receive_notifications
       commentable_path
@@ -74,7 +74,7 @@ RSpec.describe Exporter::Comments do
         exporter = valid_instance(user)
         result = exporter.export(id_code: comment.id_code)
         comments = load_comments(result)
-        expect(comments.first.keys).to eq(expected_fields)
+        expect(comments.first.keys).to match_array(expected_fields)
       end
     end
 
@@ -91,7 +91,7 @@ RSpec.describe Exporter::Comments do
         exporter = valid_instance(comment.user)
         result = exporter.export
         comments = load_comments(result)
-        expect(comments.first.keys).to eq(expected_fields)
+        expect(comments.first.keys).to match_array(expected_fields)
       end
     end
 

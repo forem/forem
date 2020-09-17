@@ -1,9 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "User visits a homepage", type: :system do
-  let!(:article) { create(:article, reactions_count: 12, featured: true) }
-  let!(:article2) { create(:article, reactions_count: 20, featured: true) }
-  let!(:bad_article) { create(:article, reactions_count: 0) }
+  let!(:article) { create(:article, reactions_count: 12, featured: true, user: create(:user, profile_image: nil)) }
+  let!(:article2) { create(:article, reactions_count: 20, featured: true, user: create(:user, profile_image: nil)) }
   let!(:timestamp) { "2019-03-04T10:00:00Z" }
 
   context "when no options specified" do
@@ -15,15 +14,15 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true)
+        expect(page).to have_selector(".crayons-story--featured", visible: :visible)
       end
 
-      it "shows the main article readable date", js: true do
-        expect(page).to have_selector(".big-article time", text: "Mar 4")
+      it "shows the main article readable date", js: true, stub_elasticsearch: true do
+        expect(page).to have_selector(".crayons-story--featured time", text: "Mar 4")
       end
 
       it "embeds the main article published timestamp" do
-        selector = ".big-article time[datetime='#{timestamp}']"
+        selector = ".crayons-story--featured time[datetime='#{timestamp}']"
         expect(page).to have_selector(selector)
       end
     end
@@ -35,19 +34,18 @@ RSpec.describe "User visits a homepage", type: :system do
         visit "/"
       end
 
-      it "shows correct articles" do
-        expect(page).to have_selector(".single-article", count: 2)
+      it "shows correct articles " do
+        expect(page).to have_selector(".crayons-story", count: 2)
         expect(page).to have_text(article.title)
         expect(page).to have_text(article2.title)
-        expect(page).not_to have_text(bad_article.title)
       end
 
-      it "shows all articles dates", js: true do
-        expect(page).to have_selector(".single-article time", text: "Mar 4", count: 2)
+      it "shows all articles dates", js: true, stub_elasticsearch: true do
+        expect(page).to have_selector(".crayons-story time", text: "Mar 4", count: 2)
       end
 
       it "embeds all articles published timestamps" do
-        selector = ".single-article time[datetime='#{timestamp}']"
+        selector = ".crayons-story time[datetime='#{timestamp}']"
         expect(page).to have_selector(selector, count: 2)
       end
     end
@@ -64,17 +62,17 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "contains the qualified community name in og:title" do
         selector = "meta[property='og:title'][content='#{community_qualified_name}']"
-        expect(page).to have_selector(selector, visible: false)
+        expect(page).to have_selector(selector, visible: :hidden)
       end
 
       it "contains the qualified community name in og:site_name" do
         selector = "meta[property='og:site_name'][content='#{community_qualified_name}']"
-        expect(page).to have_selector(selector, visible: false)
+        expect(page).to have_selector(selector, visible: :hidden)
       end
 
       it "contains the qualified community name in twitter:title" do
         selector = "meta[name='twitter:title'][content='#{community_qualified_name}']"
-        expect(page).to have_selector(selector, visible: false)
+        expect(page).to have_selector(selector, visible: :hidden)
       end
     end
   end

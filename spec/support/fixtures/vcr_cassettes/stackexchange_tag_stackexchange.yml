@@ -1,0 +1,94 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.stackexchange.com/2.2/posts/1163633?filter=!3tz1WbZW5JxrG-f99&key=&site=askubuntu
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '138'
+      Content-Type:
+      - application/json; charset=utf-8
+      Strict-Transport-Security:
+      - max-age=2592000
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST
+      Access-Control-Allow-Credentials:
+      - 'false'
+      X-Content-Type-Options:
+      - nosniff
+      X-Request-Guid:
+      - a8df412f-cc88-496c-ad89-9e40ad387650
+      Date:
+      - Mon, 13 Jan 2020 12:22:38 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '{"items":[{"last_activity_date":1565109531,"post_type":"answer","post_id":1163633}],"has_more":false,"quota_max":300,"quota_remaining":289}'
+    http_version: 
+  recorded_at: Mon, 13 Jan 2020 12:22:39 GMT
+- request:
+    method: get
+    uri: https://api.stackexchange.com/2.2/answers/1163633?filter=!.Fjr38AQkcvWfJTF-2exSL50At_pT&key=&site=askubuntu
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '608'
+      Content-Type:
+      - application/json; charset=utf-8
+      Strict-Transport-Security:
+      - max-age=2592000
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST
+      Access-Control-Allow-Credentials:
+      - 'false'
+      X-Content-Type-Options:
+      - nosniff
+      X-Request-Guid:
+      - 9e23222f-b1d1-4841-9349-623e806a0321
+      Date:
+      - Mon, 13 Jan 2020 12:22:39 GMT
+    body:
+      encoding: ASCII-8BIT
+      string: '{"items":[{"tags":[],"comment_count":3,"is_accepted":false,"score":1,"last_activity_date":1565109531,"last_edit_date":1565109531,"creation_date":1565033637,"answer_id":1163633,"question_id":885432,"link":"https://askubuntu.com/questions/885432/help-setting-up-sshfs/1163633#1163633","title":"Help
+        setting up sshfs","body":"<p>As you are getting the following error message:</p>\n\n<blockquote>\n  <p>gpasswd:
+        group''fuse'' does not exist in /etc/group</p>\n</blockquote>\n\n<p>This indicates
+        that there is no such group, yet!<br>\nPlease test if there is and subsequently
+        alleviate the problem as described below:</p>\n\n<ol>\n<li><p>check if there
+        is a fuse group with:  </p>\n\n<pre><code>cat /etc/group | grep ''fuse''  \n</code></pre></li>\n<li><p>If
+        there is it would look like:  </p>\n\n<pre><code>fuse:x:1001:  \n</code></pre></li>\n<li><p>If
+        there isn''t, add one like this:  </p>\n\n<pre><code>sudo groupadd fuse  \n</code></pre></li>\n<li><p>At
+        this point you can add yourself to the group with:  </p>\n\n<pre><code>sudo
+        usermod -a -G fuse your_username \n</code></pre></li>\n</ol>\n"}],"has_more":false,"quota_max":300,"quota_remaining":289}'
+    http_version: 
+  recorded_at: Mon, 13 Jan 2020 12:22:39 GMT
+recorded_with: VCR 5.0.0

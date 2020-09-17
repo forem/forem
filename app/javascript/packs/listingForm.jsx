@@ -9,7 +9,7 @@ function loadElement() {
       organizations,
       categoriesForSelect,
       categoriesForDetails,
-    } = root.dataset;  
+    } = root.dataset;
     render(
       <ListingForm
         organizations={organizations}
@@ -18,7 +18,7 @@ function loadElement() {
         categoriesForDetails={categoriesForDetails}
       />,
       root,
-      root.firstElementChild
+      root.firstElementChild,
     );
   }
 }

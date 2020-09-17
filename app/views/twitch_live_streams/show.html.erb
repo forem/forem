@@ -12,7 +12,7 @@
   }
 
   var scr  = document.createElement('script'),
-      head = document.head || document.getElementsByTagName('head')[0];
+      head = document.head;
   scr.src = 'https://embed.twitch.tv/embed/v1.js';
   scr.onload = load_twitch;
   scr.async = true;

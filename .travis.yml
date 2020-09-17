@@ -1,4 +1,3 @@
-sudo: required
 language: ruby
 cache:
   directories:
@@ -6,53 +5,91 @@ cache:
     - node_modules
     - $HOME/.nvm
 rvm:
-  - 2.6.5
+  - 2.7.1
 addons:
-  postgresql: '9.6'
+  postgresql: '10' # Travis does not work out of the box with Postgres 11 yet
   chrome: 'stable'
+  artifacts:
+    paths:
+      - $(ls tmp/screenshots/*.png | tr "\n" ":")
+      - $(ls tmp/csvs/*.csv | tr "\n" ":")
+    debug: true
+services:
+  - redis
 env:
   global:
     - RAILS_ENV=test
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
     - DATABASE_URL=postgres://postgres@localhost/
+    # Dummy values needed to verify the app boots via "rails runner"
+    - APP_PROTOCOL=http://
+    - APP_DOMAIN=localhost:3000
+    - HEROKU_APP_URL=practicaldev.herokuapp.com
+    - SECRET_KEY_BASE=dummydummydummy
+    - GITHUB_KEY=dummy
+    - GITHUB_SECRET=dummy
+    - KNAPSACK_PRO_FIXED_QUEUE_SPLIT=true
+    - KNAPSACK_PRO_LOG_LEVEL=info
+    - KNAPSACK_PRO_CI_NODE_TOTAL=3
+    - COVERAGE_REPORTS_TOTAL=4
+  jobs:
+    - KNAPSACK_PRO_CI_NODE_INDEX=0
+    - KNAPSACK_PRO_CI_NODE_INDEX=1
+    - KNAPSACK_PRO_CI_NODE_INDEX=2
 branches:
   only:
     - master
-before_install:
+install: true
+script:
   - date --rfc-3339=seconds
   - nvm install
-install:
-  - bundle install --path vendor/bundle
-  - yarn install
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-    > ./cc-test-reporter
+  - cp .env_sample .env
+  - pkill -9 -f elasticsearch || true
+  - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
+  - sudo dpkg -i --force-confnew elasticsearch-7.5.2-amd64.deb
+  - sudo sed -i.old 's/-Xms1g/-Xms128m/' /etc/elasticsearch/jvm.options
+  - sudo sed -i.old 's/-Xmx1g/-Xmx128m/' /etc/elasticsearch/jvm.options
+  - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
+  - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
+  - sudo systemctl start elasticsearch
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
-before_script:
+  - bundle config set path 'vendor/bundle'
+  - bin/ci-bundle
+  - yarn install --frozen-lockfile
   - bundle exec rails db:create
-script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rspec spec --color --tty'
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
+  - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
-  - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
-  - 'yarn test --colors'
-  - './cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json'
-  - './cc-test-reporter sum-coverage coverage/codeclimate.*.json'
-  - './cc-test-reporter upload-coverage'
-  - 'bundle exec bundle-audit check --update --ignore CVE-2015-9284'
-  - yarn build-storybook
-deploy:
-  provider: heroku
-  api_key: '$HEROKU_AUTH_TOKEN'
-  app:
-    master: practicaldev
-  on:
-    condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]
-after_deploy:
-  - bash after_deploy.sh
+after_script:
+  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
+  - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
 notifications:
   slack:
+    if: branch = master
     on_pull_requests: false
+    on_success: change
+    on_failure: always
     rooms:
       secure: vzIee4jDgPSRY4szZPdD/jW7YW4GzGqo5NoLV9Exz9TBoWH9UqJnc0TOb2YN84Ys5baRK7LOqxpfp8kFveZkrKGi7/ypeEJlpc9E5UqVh/bwQhvOGrKEg1fvNXbARRnO/sJ49o1CMvroMWvt3GurzuuY9Qu2r+3NBjn9aVwLnLzXsBuF+m2lLoeSkHnW13OC73EeJMsse6JBoCe3gp/srDwISp9+MU+sEAPaY333WK9Vk1kdG7D5oUIuT7743airLRiyWiNUCD1450g864628CEOEZKJAAtqk6kTmvwB91DJMnhD/XhMm4H21kd54YHy0fhqzcG8hYd1lDZuUfrOBfpdEtfnpcRwMyMpY+FPPHXkHhck3OiLJnzkV4L+Lr5W/RvDJ63Ye2nxT4hOItLWaoZWax/LhoIrhZjgYBc4JhiGRQJ8m2HzoRyceeG9Y80vayGVN7y46sjYHP5NHRI36qmJipneDRAJklBTXLdYATvVM/6Mh9B7+H/nBGR6UVJLBC/txi2C8rZRjKBZ/i9e+q/MZs0UEvOuvbz9BXKU08rI+rarJqH3h5Ji9G/k3M0mQ8EfvadabA9lu+gNUAAnq+vwLETweKvfbRpDQjVBKnWsOJoUl9aarfkBn3lhQE8fxZJT/GchLGZPx/CWUE4o1OhliBA9avJ7WINyYStM4Mc=
+
+jobs:
+  include:
+    - stage: Deploy
+      if: type != pull_request
+      script: skip
+      after_script: skip
+      deploy:
+        provider: heroku
+        api_key: '$HEROKU_AUTH_TOKEN'
+        app:
+          master: practicaldev
+        on:
+          condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]

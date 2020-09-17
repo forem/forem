@@ -1,7 +1,7 @@
 'use strict';
 
 function initializePWAFunctionality() {
-  if (window.matchMedia('(display-mode: standalone)').matches) {
+  if (window.matchMedia('(display-mode: standalone)').matches || window.frameElement) {
     document
       .getElementById('pwa-nav-buttons')
       .classList.add('pwa-nav-buttons--showing');

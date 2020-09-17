@@ -41,9 +41,9 @@
   font-weight: bold;
   font-size: 17px;
   border-radius: 3px;
-  border: 2px solid var(--theme-top-bar-write-color, $black);
-  @include themeable(color, theme-top-bar-write-color, $black);
-  @include themeable(background, theme-top-bar-write-background, $green);
+  border: 2px solid var(--button-primary-bg-hover);
+  background: var(--button-primary-bg);
+  color: var(--button-primary-color);
 }
 .tag-edit-flash-success {
   color: white;

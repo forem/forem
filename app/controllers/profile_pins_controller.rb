@@ -31,7 +31,7 @@ class ProfilePinsController < ApplicationController
   end
 
   def bust_user_profile
-    CacheBuster.new.bust(current_user.path)
-    CacheBuster.new.bust(current_user.path + "?i=i")
+    CacheBuster.bust(current_user.path)
+    CacheBuster.bust("#{current_user.path}?i=i")
   end
 end

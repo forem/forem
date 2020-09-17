@@ -1,4 +1,4 @@
-class AddFeaturedNumberToArticles < ActiveRecord::Migration
+class AddFeaturedNumberToArticles < ActiveRecord::Migration[4.2]
   def change
     add_column :sponsors, :url, :string
     add_column :sponsorships, :url, :string

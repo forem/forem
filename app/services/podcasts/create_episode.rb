@@ -10,34 +10,66 @@ module Podcasts
     end
 
     def call
-      ep = PodcastEpisode.new
-      ep.title = item.title
-      ep.podcast_id = podcast_id
-      ep.slug = item.title.parameterize
-      ep.subtitle = item.itunes_subtitle
-      ep.summary = item.itunes_summary
-      ep.website_url = item.link
-      ep.guid = item.guid
-      get_media_url(ep) if item.enclosure_url
-      begin
-        ep.published_at = item.pubDate.to_date
-      rescue ArgumentError, NoMethodError => e
-        Rails.logger.error("not a valid date: #{e}")
-      end
-      ep.body = item.body
-      ep.save!
-      ep
+      attributes = podcast_episode_attributes
+      attributes = add_media_url(attributes)
+      attributes = add_published_at(attributes)
+
+      upsert_result = PodcastEpisode.upsert(
+        attributes,
+        unique_by: :index_podcast_episodes_on_media_url,
+        returning: %i[id],
+      )
+
+      episode = PodcastEpisode.find(upsert_result.to_a.first["id"])
+
+      finalize(episode)
+
+      episode
     end
 
     private
 
     attr_reader :podcast_id, :item
 
-    def get_media_url(episode)
+    def podcast_episode_attributes
+      now = Time.current
+
+      {
+        podcast_id: podcast_id,
+        title: item.title,
+        slug: item.title.parameterize,
+        subtitle: item.itunes_subtitle,
+        summary: item.itunes_summary,
+        website_url: item.link,
+        guid: item.guid,
+        body: item.body,
+        created_at: now,
+        updated_at: now
+      }
+    end
+
+    def add_media_url(attributes)
+      return attributes if item.enclosure_url.blank?
+
       result = GetMediaUrl.call(item.enclosure_url)
-      episode.reachable = result.reachable
-      episode.media_url = result.url
-      episode.https = result.https
+
+      attributes.merge(
+        reachable: result.reachable,
+        media_url: result.url,
+        https: result.https,
+      )
+    end
+
+    def add_published_at(attributes)
+      attributes.merge(published_at: item.pubDate.to_date)
+    rescue ArgumentError, NoMethodError => e
+      Rails.logger.error("not a valid date: #{e}")
+      attributes
+    end
+
+    def finalize(episode)
+      episode.purge_all
+      episode.index_to_elasticsearch
     end
   end
 end

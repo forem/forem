@@ -20,9 +20,11 @@
       <a href="<%= json_data["comment"]["commentable"]["path"] %>">
         <%= h(json_data["comment"]["commentable"]["title"]) %>
       </a>
-      <div>
-        <small><%= time_ago_in_words notification.notifiable.created_at %> ago</small>
-      </div>
+      <% if json_data["comment"]["created_at"] %>
+        <div>
+          <small><%= time_ago_in_words json_data["comment"]["created_at"] %> ago</small>
+        </div>
+      <% end %>
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
     <% elsif notification.action == "Moderation" %>
       <a href="/<%= json_data["comment"]["path"].split("/")[1] %>">@<%= json_data["comment"]["path"].split("/")[1] %></a> just left a comment. Since they are new to the community, could you leave a nice reply to help them feel welcome?

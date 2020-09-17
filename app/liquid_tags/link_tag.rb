@@ -2,13 +2,14 @@ class LinkTag < LiquidTagBase
   include ActionView::Helpers
   PARTIAL = "articles/liquid".freeze
 
-  def initialize(_tag_name, slug_or_path_or_url, _tokens)
+  def initialize(_tag_name, slug_or_path_or_url, _parse_context)
+    super
     @article = get_article(slug_or_path_or_url)
-    @title = @article.title
+    @title = @article.title if @article
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: { article: @article, title: @title },
     )
@@ -16,10 +17,7 @@ class LinkTag < LiquidTagBase
 
   def get_article(slug)
     slug = ActionController::Base.helpers.strip_tags(slug).strip
-    article = find_article_by_user(article_hash(slug)) || find_article_by_org(article_hash(slug))
-    raise StandardError, "Invalid link URL or link URL does not exist" unless article
-
-    article
+    find_article_by_user(article_hash(slug)) || find_article_by_org(article_hash(slug))
   end
 
   def article_hash(slug)

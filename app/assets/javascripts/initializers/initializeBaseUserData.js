@@ -1,22 +1,16 @@
-'use strict';
-
-/* global userData, filterXSS */
+/* global filterXSS */
 
 function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile-pic').innerHTML =
-    '<img alt="' +
-    user.username +
-    '" class="sidebar-profile-pic-img" src="' +
-    user.profile_image_90 +
-    '" />';
+  document.getElementById('sidebar-profile--avatar').src =
+    user.profile_image_90;
+  document.getElementById('sidebar-profile--avatar').alt = user.username;
 
-  document.getElementById('sidebar-profile-name').innerHTML = filterXSS(
+  document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
     user.name,
   );
-  document.getElementById('sidebar-profile-username').innerHTML =
+  document.getElementById('sidebar-profile--username').innerHTML =
     '@' + user.username;
-  document.getElementById('sidebar-profile-snapshot-inner').href =
-    '/' + user.username;
+  document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
 function initializeUserSidebar(user) {
@@ -26,41 +20,20 @@ function initializeUserSidebar(user) {
   let followedTags = JSON.parse(user.followed_tags);
   const tagSeparatorLabel =
     followedTags.length === 0
-      ? 'Follow tags to improve your feed'
-      : 'Other Popular Tags';
-  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
+      ? 'FOLLOW TAGS TO IMPROVE YOUR FEED'
+      : 'OTHER POPULAR TAGS';
 
-  // sort tags by descending weigth, descending popularity and name
-  followedTags.sort((tagA, tagB) => {
-    return (
-      tagB.points - tagA.points ||
-      tagB.hotness_score - tagA.hotness_score ||
-      tagA.name.localeCompare(tagB.name)
-    );
-  });
-
-  let tagHTML = '';
-  followedTags.forEach(tag => {
-    var element = document.getElementById(
+  followedTags.forEach((tag) => {
+    const element = document.getElementById(
       'default-sidebar-element-' + tag.name,
     );
-    tagHTML +=
-      tag.points > 0.0
-        ? '<div class="sidebar-nav-element" id="sidebar-element-' +
-          tag.name +
-          '">' +
-          '<a class="sidebar-nav-link" href="/t/' +
-          tag.name +
-          '">' +
-          '<span class="sidebar-nav-tag-text">#' +
-          tag.name +
-          '</span>' +
-          '</a>' +
-          '</div>'
-        : '';
-    if (element) element.remove();
+
+    if (element) {
+      element.remove();
+    }
   });
-  document.getElementById('sidebar-nav-followed-tags').innerHTML = tagHTML;
+
+  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
   document.getElementById('sidebar-nav-default-tags').classList.add('showing');
 }
 
@@ -69,37 +42,46 @@ function addRelevantButtonsToArticle(user) {
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       let actions = [
-        `<a href="${articleContainer.dataset.path}/edit" rel="nofollow">EDIT</a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
       ];
       if (JSON.parse(articleContainer.dataset.published) === true) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/manage" rel="nofollow">MANAGE</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
         );
       }
       if (user.pro) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/stats" rel="nofollow">STATS</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
         );
       }
       document.getElementById('action-space').innerHTML = actions.join('');
-    } else if (user.trusted) {
-      document.getElementById('action-space').innerHTML =
-        '<a href="' +
-        articleContainer.dataset.path +
-        '/mod" rel="nofollow">MODERATE <span class="post-word">POST</span></a>';
     }
   }
 }
 
 function addRelevantButtonsToComments(user) {
   if (document.getElementById('comments-container')) {
+    // buttons are actually <span>'s
     var settingsButts = document.getElementsByClassName('comment-actions');
 
     for (let i = 0; i < settingsButts.length; i += 1) {
       let butt = settingsButts[i];
-      if (parseInt(butt.dataset.userId, 10) === user.id) {
-        butt.className = 'comment-actions';
-        butt.style.display = 'inline-block';
+      const { action, commentableUserId, userId } = butt.dataset;
+      if (parseInt(userId, 10) === user.id && action === 'settings-button') {
+        butt.innerHTML =
+          '<a href="' +
+          butt.dataset.path +
+          '" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Settings</a>';
+        butt.classList.remove('hidden');
+        butt.classList.add('block');
+      }
+
+      if (
+        action === 'hide-button' &&
+        parseInt(commentableUserId, 10) === user.id
+      ) {
+        butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
     }
 
@@ -107,8 +89,15 @@ function addRelevantButtonsToComments(user) {
       var modButts = document.getElementsByClassName('mod-actions');
       for (let i = 0; i < modButts.length; i += 1) {
         let butt = modButts[i];
+        if (butt.classList.contains('mod-actions-comment-button')) {
+          butt.innerHTML =
+            '<a href="' +
+            butt.dataset.path +
+            '" rel="nofollow" class="crayons-link crayons-link--block">Moderate</a>';
+        }
         butt.className = 'mod-actions';
-        butt.style.display = 'inline-block';
+        butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
     }
   }
@@ -119,13 +108,23 @@ function initializeBaseUserData() {
   const userProfileLinkHTML =
     '<a href="/' +
     user.username +
-    '" id="first-nav-link"><div class="option prime-option">@' +
+    '" id="first-nav-link" class="crayons-link crayons-link--block"><div>' +
+    '<span class="fw-medium block">' +
+    user.name +
+    '</span>' +
+    '<small class="fs-s color-base-50">@' +
     user.username +
+    '</small>' +
     '</div></a>';
   document.getElementById(
     'user-profile-link-placeholder',
   ).innerHTML = userProfileLinkHTML;
+  const userNavLink = document.getElementById('first-nav-link');
+  userNavLink.href = `/${user.username}`;
+  userNavLink.querySelector('span').textContent = user.name;
+  userNavLink.querySelector('small').textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
+
   initializeUserSidebar(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);

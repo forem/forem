@@ -1,4 +1,4 @@
-class AddIdentityDataToUsers < ActiveRecord::Migration
+class AddIdentityDataToUsers < ActiveRecord::Migration[4.2]
   def change
     add_column :identities, :auth_data_dump, :text
     add_column :users, :github_created_at, :datetime

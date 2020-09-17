@@ -13,8 +13,6 @@ class DisplayAdDashboard < Administrate::BaseDashboard
     placement_area: Field::String,
     body_markdown: Field::Text,
     processed_html: Field::Text,
-    cost_per_impression: Field::Number.with_options(decimals: 2),
-    cost_per_click: Field::Number.with_options(decimals: 2),
     impressions_count: Field::Number,
     clicks_count: Field::Number,
     success_rate: Field::Number,
@@ -47,8 +45,6 @@ class DisplayAdDashboard < Administrate::BaseDashboard
     placement_area
     body_markdown
     processed_html
-    cost_per_impression
-    cost_per_click
     impressions_count
     clicks_count
     success_rate
@@ -65,8 +61,6 @@ class DisplayAdDashboard < Administrate::BaseDashboard
     organization
     placement_area
     body_markdown
-    cost_per_impression
-    cost_per_click
     published
     approved
   ].freeze

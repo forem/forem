@@ -18,6 +18,7 @@ module Notifications
       class: { name: "Comment" },
       path: comment.path,
       processed_html: comment.processed_html,
+      created_at: comment.created_at,
       updated_at: comment.updated_at,
       ancestry: comment.ancestry,
       depth: comment.depth,

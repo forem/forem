@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MediumTag, type: :liquid_template do
+RSpec.describe MediumTag, type: :liquid_tag do
   setup { Liquid::Template.register_tag("medium", described_class) }
 
   subject { Liquid::Template.parse("{% medium #{link} %}") }
@@ -13,6 +13,8 @@ RSpec.describe MediumTag, type: :liquid_template do
       author: "Edison",
       author_image: "https://cdn-images-1.medium.com/fit/c/120/120/1*qFzi921ix0_kkrFMKYgELw.jpeg",
       reading_time: "4 min read",
+      published_time: "2018-11-03T09:44:32.733Z",
+      publication_date: "Nov 3, 2018",
       url: "https://medium.com/@edisonywh"
     }
   end
@@ -49,6 +51,6 @@ RSpec.describe MediumTag, type: :liquid_template do
   end
 
   it "raises an error when invalid" do
-    expect { generate_medium_tag("invalid link") }. to raise_error("Invalid link URL or link URL does not exist")
+    expect { generate_medium_tag("invalid link") }.to raise_error("Invalid link URL or link URL does not exist")
   end
 end

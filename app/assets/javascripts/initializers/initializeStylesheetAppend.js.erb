@@ -5,6 +5,6 @@ function initializeStylesheetAppend() {
         link.id = "main-head-stylesheet"
         link.rel = 'stylesheet'
         link.href = '<%= stylesheet_url 'minimal' %>';
-        document.getElementsByTagName('head')[0].appendChild(link);
+        document.head.appendChild(link);
     }
 }

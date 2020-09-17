@@ -1,12 +1,7 @@
 'use strict';
 
 function userData() {
-  const dataUser = document
-    .getElementsByTagName('body')[0]
-    .getAttribute('data-user');
+  const { user = null } = document.body.dataset;
 
-  if (dataUser === null) {
-    return null;
-  }
-  return JSON.parse(dataUser);
+  return JSON.parse(user);
 }

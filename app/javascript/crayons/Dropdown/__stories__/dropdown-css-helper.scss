@@ -1,0 +1,7 @@
+.dropdown-trigger-container {
+  position: relative;
+
+  .dropdown-trigger:hover + div {
+    display: block;
+  }
+}

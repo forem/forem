@@ -1,5 +1,6 @@
 class Collection < ApplicationRecord
-  has_many :articles
+  has_many :articles, dependent: :nullify
+
   belongs_to :user
   belongs_to :organization, optional: true
 
@@ -12,7 +13,13 @@ class Collection < ApplicationRecord
     Collection.find_or_create_by(slug: slug, user: user)
   end
 
+  def path
+    "/#{user.username}/series/#{id}"
+  end
+
+  private
+
   def touch_articles
-    articles.update_all(updated_at: Time.zone.now)
+    articles.touch_all
   end
 end

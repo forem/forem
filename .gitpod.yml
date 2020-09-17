@@ -1,27 +1,37 @@
 image:
   file: .gitpod.dockerfile
+
 ports:
   - port: 3000
-    onOpen: open-preview
+    onOpen: ignore
   - port: 3035
     onOpen: ignore
   - port: 5432
     onOpen: ignore
+  - port: 6379
+    onOpen: ignore
+  - port: 9200
+    onOpen: ignore
+  - port: 9300
+    onOpen: ignore
+
 tasks:
-  - init: >
-      cp config/sample_application.yml config/application.yml &&
-      bin/setup 2>/dev/null || true
+  - name: Forem Server
+    before: |
+      redis-server &
+      /home/gitpod/elasticsearch-7.5.2/bin/elasticsearch &
+    init: >
+      cp .env_sample .env &&
+      gem install solargraph &&
+      bin/setup
     command: >
-      while [ -z "${ALGOLIASEARCH_APPLICATION_ID:=$(cat config/application.yml | grep ALGOLIASEARCH_APPLICATION_ID | sed 's/.*:\s*//')}" ] ||
-            [ -z "${ALGOLIASEARCH_SEARCH_ONLY_KEY:=$(cat config/application.yml | grep ALGOLIASEARCH_SEARCH_ONLY_KEY | sed 's/.*:\s*//')}" ] ||
-            [ -z "${ALGOLIASEARCH_API_KEY:=$(cat config/application.yml | grep ALGOLIASEARCH_API_KEY | sed 's/.*:\s*//')}" ] ; do
-        gp open config/application.yml 2>/dev/null &&
-        printf "\n❗ Dev.to requires free Algolia credentials.\n" &&
-        printf "❗ To get them, please follow https://docs.dev.to/backend/algolia/#get-api-keys\n\n" &&
-        read -p "Add them to config/application.yml, save the file, and press any key to continue... " -n 1 -r
-      done ;
-      bin/setup &&
       bin/startup
+  - command: >
+      gp await-port 3000 &&
+      printf "Waiting for Forem server ..." &&
+      until $(curl -sNL $(gp url 3000) | grep -q "DEV"); do printf '.'; sleep 5; done && echo "" &&
+      gp preview $(gp url 3000)
+
 github:
   prebuilds:
     # enable for the master/default branch (defaults to true)

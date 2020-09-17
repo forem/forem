@@ -1,0 +1,42 @@
+@import '../config/import';
+
+.crayons-snackbar {
+  position: fixed;
+  z-index: 9999; // todo: make z-index a variable..
+  left: var(--su-2);
+  right: var(--su-2);
+  bottom: var(--su-2);
+  display: grid;
+  grid-gap: var(--su-2);
+
+  @media (min-width: $breakpoint-s) {
+    max-width: 480px;
+    width: auto;
+    left: var(--su-6);
+    right: auto;
+    bottom: var(--su-6);
+    justify-items: flex-start;
+  }
+
+  &__item {
+    @include generate-box(
+      $level: 1,
+      $bg: var(--snackbar-bg),
+      $border: var(--snackbar-border),
+      $color: var(--snackbar-color)
+    );
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--su-2);
+  }
+
+  &__body {
+    padding: 0 var(--su-2);
+  }
+
+  &__actions {
+    flex-shrink: 0;
+    padding-left: var(--su-2);
+  }
+}

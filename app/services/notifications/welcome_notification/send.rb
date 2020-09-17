@@ -1,4 +1,4 @@
-# send welcome notification
+# Creates and sends a specific welcome notification.
 module Notifications
   module WelcomeNotification
     class Send
@@ -14,26 +14,36 @@ module Notifications
       end
 
       def call
-        dev_account = User.dev_account
+        mascot_account = User.mascot_account
         json_data = {
-          user: user_data(dev_account),
+          user: user_data(mascot_account),
           broadcast: {
             title: welcome_broadcast.title,
-            processed_html: welcome_broadcast.processed_html
+            processed_html: welcome_broadcast.processed_html,
+            type_of: welcome_broadcast.type_of
           }
         }
-        Notification.create(
+        Notification.create!(
           user_id: receiver_id,
           notifiable_id: welcome_broadcast.id,
           notifiable_type: "Broadcast",
           action: welcome_broadcast.type_of,
           json_data: json_data,
         )
+
+        log_to_datadog
       end
 
       private
 
       attr_reader :receiver_id, :welcome_broadcast
+
+      def log_to_datadog
+        DatadogStatsClient.increment(
+          "notifications.welcome",
+          tags: ["user_id:#{receiver_id}", "title:#{welcome_broadcast.title}"],
+        )
+      end
     end
   end
 end

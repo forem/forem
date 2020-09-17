@@ -1,3 +1,7 @@
+# Silence all Ruby 2.7 deprecation warnings
+$VERBOSE = nil
+
+# rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -7,6 +11,9 @@ Rails.application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
 
+  # NOTE: [Rails 6] this is the default store in testing,
+  # as we haven't enabled Rails 6.0 defaults in config/application.rb,
+  # we need to keep this explicit, for now
   config.cache_store = :null_store
 
   # Do not eager load code on boot. This avoids loading your whole application
@@ -14,7 +21,7 @@ Rails.application.configure do
   # preloads Rails for running tests, you may have to set it to true.
   config.eager_load = false
 
-  # Configure static file server for tests with Cache-Control for performance.
+  # Configure public file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
     "Cache-Control" => "public, max-age=#{1.hour.to_i}"
@@ -54,19 +61,24 @@ Rails.application.configure do
 
   config.active_job.queue_adapter = :test
 
-  # Install the Timber.io logger, but do not send logs.
-  logger = Timber::Logger.new(nil)
-  logger.level = config.log_level
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
+  # Debug is the default log_level, but can be changed per environment.
+  config.log_level = :debug
 
   # enable Bullet in testing mode only if requested
   config.after_initialize do
-    Bullet.enable = ENV["BULLET"]
-    Bullet.raise = ENV["BULLET"]
+    Bullet.enable = true
+    Bullet.raise = true
+
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+    # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 Rails.application.routes.default_url_options = { host: "test.host" }

@@ -1,56 +1,68 @@
 import { h } from 'preact';
-import { shallow } from 'preact-render-spy';
-import render from 'preact-render-to-json';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
+import { axe } from 'jest-axe';
 import { SingleRepo } from '../singleRepo';
 
 global.fetch = fetch;
 
 describe('<SingleRepo />', () => {
-  describe('when it is not already selected', () => {
-    const subject = (
+  it('should have no a11y violations', async () => {
+    const { container } = render(
       <SingleRepo
         githubIdCode={123}
         name="dev.to"
         fork={false}
-        selected={false}
-      />
+        featured={false}
+      />,
     );
+    const results = await axe(container);
 
-    it('should render and match the snapshot', () => {
-      const tree = render(subject);
-      expect(tree).toMatchSnapshot();
-    });
-
-    it('should have a state of { selected: false }', () => {
-      const context = shallow(subject);
-      expect(context.state()).toEqual({ selected: false });
-    });
+    expect(results).toHaveNoViolations();
   });
 
-  describe('when it is selected', () => {
-    const subject = (
-      <SingleRepo githubIdCode={123} name="dev.to" fork={false} selected />
+  it('should render as not featured', () => {
+    const { getByText, queryByText } = render(
+      <SingleRepo
+        githubIdCode={123}
+        name="dev.to"
+        fork={false}
+        featured={false}
+      />,
     );
-    it('should render and match the snapshot', () => {
-      const tree = render(subject);
-      expect(tree).toMatchSnapshot();
-    });
 
-    it('should have a state of { selected: true }', () => {
-      const context = shallow(subject);
-      expect(context.state()).toEqual({ selected: true });
-    });
+    getByText('dev.to');
+    getByText('SELECT');
+
+    const removeButton = queryByText('REMOVE');
+
+    expect(removeButton).toBeNull();
   });
 
-  describe('when it is a fork', () => {
-    const subject = (
-      <SingleRepo githubIdCode={123} name="dev.to" fork selected={false} />
+  it('should render as featured', () => {
+    const { getByText, queryByText } = render(
+      <SingleRepo githubIdCode={123} name="dev.to" fork={false} featured />,
     );
 
-    it('should render and match the snapshot', () => {
-      const tree = render(subject);
-      expect(tree).toMatchSnapshot();
-    });
+    getByText('dev.to');
+    getByText('REMOVE');
+
+    const selectButton = queryByText('SELECT');
+
+    expect(selectButton).toBeNull();
+  });
+
+  it('should render as a forked repository', () => {
+    const { getByText, queryByText } = render(
+      <SingleRepo githubIdCode={123} name="dev.to" fork featured={false} />,
+    );
+
+    getByText('dev.to');
+    getByText('SELECT');
+    getByText('fork');
+
+    const removeButton = queryByText('REMOVE');
+
+    expect(removeButton).toBeNull();
   });
 });

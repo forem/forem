@@ -1,55 +1,63 @@
 require "rails_helper"
 
-RSpec.describe BadgeRewarder do
-  it "rewards birthday badge to birthday folks who registered a year ago" do
-    user = create(:user, created_at: 366.days.ago)
-    newer_user = create(:user, created_at: 6.days.ago)
-    older_user = create(:user, created_at: 390.days.ago)
-    create(:badge, title: "one-year-club")
-    create(:badge, title: "heysddssdhey")
-    described_class.award_yearly_club_badges
-    expect(user.badge_achievements.size).to eq(1)
-    expect(newer_user.badge_achievements.size).to eq(0)
-    expect(older_user.badge_achievements.size).to eq(0)
+RSpec.describe BadgeRewarder, type: :labor do
+  describe "::award_yearly_club_badges" do
+    before do
+      stub_const("#{described_class}::YEARS", BadgeRewarder::YEARS.slice(1, 2, 3))
+      allow(ApplicationConfig).to receive(:[])
+      SiteConfig.community_copyright_start_year = 3.years.ago.year
+      create(:badge, title: "one-year-club")
+      create(:badge, title: "two-year-club")
+      create(:badge, title: "three-year-club")
+      create(:badge, title: "heysddssdhey")
+    end
+
+    it "rewards birthday badge to birthday folks who registered a year ago" do
+      user = create(:user, created_at: 366.days.ago)
+      newer_user = create(:user, created_at: 6.days.ago)
+      older_user = create(:user, created_at: 390.days.ago)
+      described_class.award_yearly_club_badges
+      expect(user.badge_achievements.size).to eq(1)
+      expect(newer_user.badge_achievements.size).to eq(0)
+      expect(older_user.badge_achievements.size).to eq(0)
+    end
+
+    it "rewards 2-year birthday badge to birthday folks who registered 2 years ago" do
+      user = create(:user, created_at: 731.days.ago)
+      newer_user = create(:user, created_at: 6.days.ago)
+      older_user = create(:user, created_at: 800.days.ago)
+      described_class.award_yearly_club_badges
+      expect(user.badge_achievements.size).to eq(1)
+      expect(newer_user.badge_achievements.size).to eq(0)
+      expect(older_user.badge_achievements.size).to eq(0)
+    end
+
+    it "rewards 3-year birthday badge to birthday folks who registered 3 years ago" do
+      user = create(:user, created_at: 1096.days.ago)
+      newer_user = create(:user, created_at: 6.days.ago)
+      older_user = create(:user, created_at: 1200.days.ago)
+      described_class.award_yearly_club_badges
+      expect(user.badge_achievements.size).to eq(1)
+      expect(newer_user.badge_achievements.size).to eq(0)
+      expect(older_user.badge_achievements.size).to eq(0)
+    end
   end
 
-  it "rewards 2-year birthday badge to birthday folks who registered 2 years ago" do
-    user = create(:user, created_at: 731.days.ago)
-    newer_user = create(:user, created_at: 6.days.ago)
-    older_user = create(:user, created_at: 800.days.ago)
-    create(:badge, title: "two-year-club")
-    create(:badge, title: "heysddssdhey")
-    described_class.award_yearly_club_badges
-    expect(user.badge_achievements.size).to eq(1)
-    expect(newer_user.badge_achievements.size).to eq(0)
-    expect(older_user.badge_achievements.size).to eq(0)
-  end
+  describe "::award_beloved_comments" do
+    it "rewards beloved comment to folks who have a qualifying comment" do
+      create(:badge, title: "Beloved comment", slug: "beloved-comment")
+      comment = create(:comment, commentable: create(:article))
+      comment.update(public_reactions_count: 30)
+      described_class.award_beloved_comment_badges
+      expect(BadgeAchievement.count).to eq(1)
+    end
 
-  it "rewards 3-year birthday badge to birthday folks who registered 3 years ago" do
-    user = create(:user, created_at: 1096.days.ago)
-    newer_user = create(:user, created_at: 6.days.ago)
-    older_user = create(:user, created_at: 1200.days.ago)
-    create(:badge, title: "three-year-club")
-    create(:badge, title: "heysddssdhey")
-    described_class.award_yearly_club_badges
-    expect(user.badge_achievements.size).to eq(1)
-    expect(newer_user.badge_achievements.size).to eq(0)
-    expect(older_user.badge_achievements.size).to eq(0)
-  end
-
-  it "rewards beloved comment to folks who have a qualifying comment" do
-    create(:badge, title: "Beloved comment", slug: "beloved-comment")
-    comment = create(:comment, commentable: create(:article))
-    comment.update(positive_reactions_count: 30)
-    described_class.award_beloved_comment_badges
-    expect(BadgeAchievement.count).to eq(1)
-  end
-
-  it "does not reward beloved comment to non-qualifying comment" do
-    create(:badge, title: "Beloved comment", slug: "beloved-comment")
-    create(:comment, commentable: create(:article))
-    described_class.award_beloved_comment_badges
-    expect(BadgeAchievement.count).to eq(0)
+    it "does not reward beloved comment to non-qualifying comment" do
+      create(:badge, title: "Beloved comment", slug: "beloved-comment")
+      create(:comment, commentable: create(:article))
+      described_class.award_beloved_comment_badges
+      expect(BadgeAchievement.count).to eq(0)
+    end
   end
 
   it "rewards top seven badge to users" do
@@ -76,6 +84,30 @@ RSpec.describe BadgeRewarder do
     expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
   end
 
+  describe "::award_four_week_streak_badge" do
+    it "calls award_streak_badge with argument 4" do
+      allow(described_class).to receive(:award_streak_badge)
+      described_class.award_four_week_streak_badge
+      expect(described_class).to have_received(:award_streak_badge).with(4)
+    end
+  end
+
+  describe "::award_eight_week_streak_badge" do
+    it "calls award_streak_badge with argument 8" do
+      allow(described_class).to receive(:award_streak_badge)
+      described_class.award_eight_week_streak_badge
+      expect(described_class).to have_received(:award_streak_badge).with(8)
+    end
+  end
+
+  describe "::award_sixteen_week_streak_badge" do
+    it "calls award_streak_badge with argument 16" do
+      allow(described_class).to receive(:award_streak_badge)
+      described_class.award_sixteen_week_streak_badge
+      expect(described_class).to have_received(:award_streak_badge).with(16)
+    end
+  end
+
   describe "::award_streak_badge" do
     it "rewards badge to users with four straight weeks of articles" do
       create(:badge, title: "4 Week Streak", slug: "4-week-streak")
@@ -99,23 +131,38 @@ RSpec.describe BadgeRewarder do
     end
   end
 
-  describe "::award_contributor_badges_from_github" do
-    let(:my_ocktokit_client) { instance_double(Octokit::Client) }
-    let(:user) { create(:user) }
-
-    let(:stubbed_github_commit) do
-      [OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))]
-    end
+  describe "::award_contributor_badges_from_github", vcr: true do
+    let(:user) { create(:user, :with_identity, identities: ["github"]) }
+    let(:badge) { create(:badge, title: "DEV Contributor") }
 
     before do
-      allow(Octokit::Client).to receive(:new).and_return(my_ocktokit_client)
-      allow(my_ocktokit_client).to receive(:commits).and_return(stubbed_github_commit)
-      create(:badge, title: "DEV Contributor")
+      badge
+      omniauth_mock_github_payload
+
+      stub_const("BadgeRewarder::REPOSITORIES", ["rust-lang/rust"])
+
+      user.identities.github.update_all(uid: "3372342")
     end
 
-    it "award contributor badge" do
-      described_class.award_contributor_badges_from_github
-      expect(user.badge_achievements.size).to eq(1)
+    it "awards contributor badge" do
+      expect do
+        Timecop.freeze("2020-05-15T13:49:20Z") do
+          VCR.use_cassette("github_client_commits_contributor_badge") do
+            described_class.award_contributor_badges_from_github
+          end
+        end
+      end.to change(user.badge_achievements, :count).by(1)
+    end
+
+    it "awards contributor badge once" do
+      expect do
+        Timecop.freeze("2020-05-15T13:49:20Z") do
+          VCR.use_cassette("github_client_commits_contributor_badge_twice") do
+            described_class.award_contributor_badges_from_github
+            described_class.award_contributor_badges_from_github
+          end
+        end
+      end.to change(user.badge_achievements, :count).by(1)
     end
   end
 
@@ -179,6 +226,24 @@ RSpec.describe BadgeRewarder do
       expect(user.reload.badge_achievements.size).to eq(1)
       expect(second_user.reload.badge_achievements.size).to eq(1)
       expect(third_user.reload.badge_achievements.size).to eq(1)
+    end
+  end
+
+  describe "::award_badges" do
+    let!(:badge) { create(:badge, title: "one-year-club") }
+    let(:user) { create(:user) }
+    let(:user2) { create(:user) }
+
+    it "awards badges" do
+      expect do
+        described_class.award_badges([user.username, user2.username], "one-year-club", "Congrats on a badge!")
+      end.to change(BadgeAchievement, :count).by(2)
+    end
+
+    it "creates correct badge acheivements" do
+      described_class.award_badges([user.username, user2.username], "one-year-club", "Congrats on a badge!")
+      expect(user.badge_achievements.pluck(:badge_id)).to eq([badge.id])
+      expect(user2.badge_achievements.pluck(:rewarding_context_message_markdown)).to eq(["Congrats on a badge!"])
     end
   end
 end

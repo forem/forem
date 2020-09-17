@@ -1,0 +1,126 @@
+<div class="dashboard-story js-dashboard-story spec__dashboard-story single-article <%= "story-unpublished" unless article.published %> <%= "js-dashboard-story story-archived hidden" if article.archived %>">
+  <div class="dashboard-story__title">
+    <h3 class="flex items-center">
+      <% if article.archived %>
+        <span class="crayons-indicator crayons-indicator--critical mr-2 fw-normal">Archived</span>
+      <% end %>
+      <a href="<%= article.current_state_path %>" class="inline-flex items-center">
+        <% if article.organization_id %>
+          <span class="crayons-logo crayons-logo--s mr-2 shrink-0"><img class="crayons-logo__image align-top" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24"></span>
+        <% end %>
+        <%= sanitize_and_decode article.title %>
+      </a>
+    </h3>
+    <% if article.published %>
+      <p class="fs-s color-base-60 js-dashboard-story-details">
+        <strong class="fw-medium">Published:</strong> <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
+        <% if article.edited? %>
+          <strong class="fw-medium pl-2">Edited:</strong> <time datetime="<%= article.edited_at.utc.iso8601 %>"><%= article.readable_edit_date %></time>
+        <% end %>
+        <% if article.collection_id %>
+          <strong class="fw-medium pl-2">Series:</strong> <%= article.series %>
+        <% end %>
+      </p>
+    <% end %>
+  </div>
+
+  <div class="fs-s color-base-60">
+    <% if !article.published? %>
+      <a href="<%= article.path %>/edit" class="crayons-indicator crayons-indicator--accent">Draft</a>
+    <% else %>
+      <div class="flex flex-nowrap whitespace-nowrap" data-analytics-pageviews data-article-id="<%= article.id %>">
+        <span class="flex items-center p-1" title="Reactions">
+          <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon mr-1", title: "Reactions") %>
+          <% if article.published %>
+            <%= article.public_reactions_count %>
+          <% else %>
+            0
+          <% end %>
+        </span>
+
+        <span class="flex items-center p-1 ml-1" title="Comments">
+          <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon mr-1", title: "Comments") %>
+          <span class="spec__comments-count">
+            <%= article.comments_count %>
+          </span>
+        </span>
+
+        <span class="flex items-center p-1 ml-1" title="Views">
+          <%= inline_svg_tag("small-eye.svg", aria: true, class: "crayons-icon mr-1", title: "Views") %>
+          <% if article.published %>
+            <% if article.page_views_count > 25 %>
+              <%= article.page_views_count %>
+            <% else %>
+              &lt; 25
+            <% end %>
+          <% else %>
+            0
+          <% end %>
+        </span>
+
+        <% if article.user_subscriptions_count > 0 %>
+          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="flex items-center crayons-btn crayons-btn--ghost-dimmed crayons-btn--s" title="Subscriptions">
+            <%= inline_svg_tag("small-data.svg", aria: true, class: "crayons-icon mr-1", title: "Data") %>
+            <%= article.user_subscriptions_count %>
+          </a>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="dashboard-story__actions">
+    <% if manage_view %>
+      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
+
+      <% if article.profile_pins.any? %>
+        <%= form_for(article.profile_pins.first) do |f| %>
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--s">Unpin</button>
+        <% end %>
+      <% else %>
+        <%= form_for(ProfilePin.new) do |f| %>
+          <%= f.hidden_field :pinnable_id, value: article.id %>
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--s" title="Pin to profile">Pin</button>
+        <% end %>
+      <% end %>
+    <% elsif article.published %>
+      <a href="<%= article.path %>/manage" class="crayons-btn crayons-btn--ghost crayons-btn--s">Manage</a>
+    <% elsif @user == article.user %>
+      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
+    <% end %>
+    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s">Edit</a>
+
+    <div class="js-dashboard-row-more relative inline-block">
+      <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon js-dashboard-row-more-trigger">
+        <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More...") %>
+      </button>
+
+      <div class="crayons-dropdown top-100 right-0 z-10 align-left js-dashboard-row-more-dropdown p-1">
+        <% if article.user_subscriptions_count > 0 %>
+          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="crayons-link crayons-link--block w-100"><%= "Subscriptions (#{article.user_subscriptions_count})" %></a>
+        <% end %>
+        <% if @current_user_pro %>
+          <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100">Stats</a>
+        <% end %>
+        <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "js-archive-toggle" }) do |f| %>
+          <%= f.hidden_field :archived, value: !article.archived, id: "article_archived_#{article.id}" %>
+
+          <button type="submit" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">
+            <%= article.archived ? "Unarchive post" : "Archive post" %>
+          </button>
+        <% end %>
+
+        <% if organization && org_admin %>
+          <%= form_for(article, html: { class: "mt-4 pt-4 border-0 border-t-1 border-color-base-10 border-solid" }) do |f| %>
+            <input type="hidden" name="destination" value="/dashboard/organization/<%= organization.id %>" />
+            <div class="crayons-field mb-4">
+              <label for="user_id" class="crayons-field__label">Author</label>
+              <%= f.select :user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id), {}, { class: "crayons-select" } %>
+
+            </div>
+            <button type="submit" class="crayons-btn">Save</button>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

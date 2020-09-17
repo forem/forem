@@ -1,0 +1,137 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.twitter.com/oauth2/token
+    body:
+      encoding: UTF-8
+      string: grant_type=client_credentials
+    headers:
+      User-Agent:
+      - TwitterRubyGem/7.0.0 (http://localhost:3000)
+      Accept:
+      - "*/*"
+      Connection:
+      - close
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Connection:
+      - close
+      Content-Disposition:
+      - attachment; filename=json.json
+      Content-Length:
+      - '153'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Mon, 18 May 2020 14:46:21 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Mon, 18 May 2020 14:46:21 GMT
+      Ml:
+      - A
+      Pragma:
+      - no-cache
+      Server:
+      - tsa_o
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - c745e01b2e126fa33f799e05ae0c848b
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Response-Time:
+      - '116'
+      X-Transaction:
+      - 00d4dfbe006f4d83
+      X-Tsa-Request-Body-Time:
+      - '0'
+      X-Twitter-Response-Tags:
+      - BouncerCompliant
+      X-Ua-Compatible:
+      - IE=edge,chrome=1
+      X-Xss-Protection:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: '{"token_type":"bearer","access_token":"ACCESS_TOKEN"}'
+    http_version: null
+  recorded_at: Mon, 18 May 2020 14:46:21 GMT
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/0.json?tweet_mode=extended
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/7.0.0 (http://localhost:3000)
+      Connection:
+      - close
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Connection:
+      - close
+      Content-Disposition:
+      - attachment; filename=json.json
+      Content-Length:
+      - '71'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 18 May 2020 14:46:21 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Mon, 18 May 2020 14:46:21 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - tsa_o
+      Status:
+      - 404 Not Found
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - aa96b1523d91f21bc57cc858a291326c
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Rate-Limit-Limit:
+      - '900'
+      X-Rate-Limit-Remaining:
+      - '898'
+      X-Rate-Limit-Reset:
+      - '1589814001'
+      X-Response-Time:
+      - '116'
+      X-Transaction:
+      - 00d8302700668f57
+      X-Twitter-Response-Tags:
+      - BouncerCompliant
+      X-Xss-Protection:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: '{"errors":[{"code":8,"message":"No data available for specified ID."}]}'
+    http_version: null
+  recorded_at: Mon, 18 May 2020 14:46:21 GMT
+recorded_with: VCR 5.1.0

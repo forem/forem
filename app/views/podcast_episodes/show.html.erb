@@ -1,17 +1,17 @@
 <% title @episode.title %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/<%= @podcast.slug %>/<%= @episode.slug %>" />
+  <link rel="canonical" href="<%= app_url("/#{@podcast.slug}/#{@episode.slug}") %>" />
   <meta name="description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>">
-  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/<%= @podcast.slug %>/<%= @episode.slug %>" />
+  <meta property="og:url" content="<%= app_url("/#{@podcast.slug}/#{@episode.slug}") %>" />
   <meta property="og:title" content="<%= @episode.title %>" />
   <meta property="og:description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>" />
-  <meta property="og:site_name" content="The Practical Dev" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
-  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:creator" content="@software_daily">
   <meta name="twitter:title" content="<%= @episode.title %>">
   <meta name="twitter:description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>" />
@@ -28,20 +28,13 @@
 
 <% end %>
 
-<%= render "podcast_episodes/podcast_bar" %>
-
-<div class="podcast-episode-container">
+<div class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
   <div class="hero">
-    <% image_url = cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
-                                 type: "fetch",
-                                 quality: "auto",
-                                 sign_url: true,
-                                 flags: "progressive",
-                                 fetch_format: "jpg") %>
+    <% image_url = Images::Optimizer.call(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", fetch_format: "jpg", crop: nil) %>
     <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= image_url %>)">
       <h2>
         <a href="/<%= @podcast.slug %>">
-          <img alt="<%= @podcast.title %>" src="<%= cloudinary(@podcast.image_url, 60, 80) %>" /><%= @podcast.title %>
+          <img alt="<%= @podcast.title %>" src="<%= optimized_image_url(@podcast.image_url, width: 60, quality: 80) %>" /><%= @podcast.title %>
         </a>
         <button id="user-follow-butt" class="cta follow-action-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
       </h2>
@@ -58,17 +51,9 @@
     </div>
     <div id="record-<%= @episode.slug %>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>">
       <div class="record" id="record">
-        <%= cl_image_tag(@podcast.image_url,
-                         type: "fetch",
-                         crop: "fill",
-                         width: 420,
-                         height: 420,
-                         quality: "auto",
-                         sign_url: true,
-                         flags: "progressive",
-                         fetch_format: "auto",
-                         class: "main-image",
-                         alt: @podcast.title) %>
+        <%= optimized_image_tag(@podcast.image_url,
+                                optimizer_options: { width: 420, height: 420, crop: "fill" },
+                                image_options: { class: "main-image", alt: @podcast.title }) %>
         <img alt="Play Button" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
         <img alt="Pause Button" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
         <div class="status-message" id="status-message-<%= @episode.slug %>">
@@ -88,14 +73,13 @@
       </p>
     </center>
   <% end %>
-  <%= render "podcast_episodes/subscribe_buttons" %>
   <div class="container">
     <div class="body">
       <% if @episode.podcast.feed_url.include?("soundcloud") %>
-        <%= simple_format((@episode.processed_html || @episode.body).html_safe, sanitize: true) %>
+        <%= simple_format((@episode.processed_html || @episode.body), sanitize: true) %>
       <% else %>
-        <%= sanitize (@episode.processed_html || "").html_safe,
-                     tags: %w[strong em a table tbody thead tfoot th tr td col colgroup del p h1 h2 h3 h4 h5 h6 blockquote time div span i em u b ul ol li dd dl dt q code pre img sup cite center small],
+        <%= sanitize (@episode.processed_html || ""),
+                     tags: %w[strong br em a table tbody thead tfoot th tr td col colgroup del p h1 h2 h3 h4 h5 h6 blockquote time div span i em u b ul ol li dd dl dt q code pre img sup cite center small],
                      attributes: %w[href strong em class ref rel src title alt colspan height width size rowspan span value start data-conversation data-lang id] %>
       <% end %>
       <p style="font-size:16px;">
@@ -122,3 +106,5 @@
     </div>
   </div>
 </div>
+
+<%= render "podcast_episodes/podcast_bar" %>

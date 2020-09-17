@@ -1,0 +1,60 @@
+@import '../config/import';
+
+.crayons-comment {
+  font-size: var(--fs-s);
+  padding: var(--su-2) var(--su-3);
+
+  &__meta {
+    display: flex;
+    align-items: flex-start;
+
+    a {
+      display: flex;
+      align-items: flex-start;
+    }
+  }
+
+  &__body {
+    padding-left: var(--su-7);
+    max-height: 310px;
+    overflow: hidden;
+    position: relative;
+
+    a:hover {
+      text-decoration: underline; //todo: default for all in-content links
+    }
+
+    p {
+      margin-bottom: var(--su-1);
+    }
+
+    * {
+      max-width: 100%;
+    }
+
+    div {
+      width: auto;
+      object-fit: contain;
+    }
+
+    pre:not(.highlight),
+    div.highlight {
+      margin: var(--su-1) auto;
+      font-size: 90%; // little adjustment for feed comments since default monospace font looks really tiny there.
+    }
+
+    &::after {
+      content: '';
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: linear-gradient(transparent 250px, var(--story-comments-bg));
+    }
+  }
+
+  & + & {
+    margin-top: var(--su-1);
+  }
+}

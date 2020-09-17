@@ -19,7 +19,7 @@ RSpec.describe "Oauth::Tokens", type: :request do
       user2_webhook = create(:webhook_endpoint, oauth_application: oauth_app)
       another_app_webhook = create(:webhook_endpoint)
 
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         post oauth_revoke_path, params: { token: access_token.token }
       end
       expect(Webhook::Endpoint.find_by(id: user_webhook.id)).to be_nil
@@ -58,7 +58,7 @@ RSpec.describe "Oauth::Tokens", type: :request do
     end
 
     it "doesn't destroy webhooks" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         post oauth_revoke_path, params: { token: access_token.token }
       end
       expect(user_webhook.reload).to be_persisted

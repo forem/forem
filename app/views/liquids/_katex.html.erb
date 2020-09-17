@@ -1,0 +1,13 @@
+<% if should_render_css %>
+<%= stylesheet_link_tag "katex" %>
+<% end %>
+
+<% if inline %>
+<span class="katex-element">
+  <%= parsed_content %>
+</span>
+<% else %>
+<div class="katex-element">
+  <%= parsed_content %>
+</div>
+<% end %>

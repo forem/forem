@@ -12,7 +12,7 @@ class SpotifyTag < LiquidTagBase
     show: 232
   }.freeze
 
-  def initialize(tag_name, uri, tokens)
+  def initialize(_tag_name, uri, _parse_context)
     super
     @parsed_uri = parse_uri(uri)
     @embed_link = generate_embed_link(@parsed_uri)
@@ -21,7 +21,7 @@ class SpotifyTag < LiquidTagBase
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         embed_link: @embed_link,
@@ -37,11 +37,13 @@ class SpotifyTag < LiquidTagBase
   end
 
   def generate_embed_link(parsed_uri)
-    parsed_uri.string.split(":")[1..-1].unshift("https://open.spotify.com/embed").join("/")
+    parsed_uri.string.split(":")[1..].unshift("https://open.spotify.com/embed").join("/")
   end
 
   def raise_error
-    raise StandardError, "Invalid Spotify Link - Be sure you're using the uri of a specific track, album, artist, playlist, or podcast episode."
+    msg = "Invalid Spotify Link - Be sure you're using the uri of a specific track, " \
+      "album, artist, playlist, or podcast episode."
+    raise StandardError, msg
   end
 end
 

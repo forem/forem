@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :user_block do
-    blocker { user }
-    blocked { user }
+    association :blocker, factory: :user
+    association :blocked, factory: :user
     config { "default" }
   end
 end

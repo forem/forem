@@ -1,0 +1,31 @@
+<script>
+ window.addEventListener('load', function() {
+   function generateUploadFormdata(image) {
+     var token = document.getElementsByName('authenticity_token')[0].value;
+     var formData = new FormData();
+     formData.append('authenticity_token', token);
+     formData.append('image', image[0]);
+     return formData;
+   }
+
+   function uploadImageCb(ajaxReq) {
+     if (ajaxReq.status === 200 && ajaxReq.readyState === XMLHttpRequest.DONE) {
+       var address = document.getElementById('uploaded-image');
+       address.value = JSON.parse(ajaxReq.response).link;
+       address.style.display = "inline-block";
+       address.style.width = "90%";
+       address.select();
+       var uploadedMessage = '';
+       document.getElementById('image-upload-submit').style.display = 'none';
+     }
+   }
+
+   function createAjaxReq() {
+     if (window.XMLHttpRequest) {
+       return new XMLHttpRequest();
+     } else {
+       return new ActiveXObject("Microsoft.XMLHTTP");
+     }
+   }
+ });
+</script>

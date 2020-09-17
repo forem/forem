@@ -1,33 +1,29 @@
-# require "rails_helper"
+require "rails_helper"
 
-# RSpec.describe "User edits their profile", type: :system, js: true do
-#   let(:user) { create(:user, saw_onboarding: true) }
+RSpec.describe "User edits their profile", type: :system do
+  let(:user) { create(:user, saw_onboarding: true) }
 
-#   before do
-#     sign_in user
-#   end
+  before do
+    sign_in user
+    visit "/settings/profile"
+  end
 
-#   describe "via their profile page" do
-#     it "clicks on the edit profile button" do
-#       visit "/#{user.username}"
-#       find(:xpath, "//button[@id='user-follow-butt']").click
-#       expect(page).to have_current_path("/settings")
-#     end
-#   end
+  describe "visiting /settings/profile" do
+    it "renders an error if the username contains spaces and thus is invalid" do
+      fill_in "user[username]", with: "a b c"
+      click_button "Save"
 
-#   describe "via visiting /settings" do
-#     it "goes to /settings" do
-#       visit "/settings"
-#       expect(page).to have_current_path("/settings")
-#     end
-#   end
+      expect(page).to have_text("Username is invalid")
+    end
 
-#   describe "via the navbar" do
-#     it "clicks on the Settings button in the navbar" do
-#       visit "/"
-#       find(:xpath, "//button[@id='navigation-butt']").hover
-#       find(:xpath, "//div[@id='loggedinmenu']/a[@href='/settings']").click
-#       expect(page).to have_current_path("/settings")
-#     end
-#   end
-# end
+    it "makes the 'Save Button' footer sticky once a field is filled in", js: true do
+      expect(page).not_to have_css(".sticky-save-footer")
+
+      fill_in "user[website_url]", with: "example.com"
+
+      find("#user_website_url").native.send_keys :tab # this un-focuses the filled-in field
+
+      expect(page).to have_css(".sticky-save-footer")
+    end
+  end
+end

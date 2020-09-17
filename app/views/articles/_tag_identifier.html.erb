@@ -1,4 +1,4 @@
 <% flare_tag = FlareTag.new(story, @tag).tag %>
 <% if flare_tag %>
-  <span class="tag-identifier black-identifier" style="background:<%= flare_tag.bg_color_hex %>;color:<%= flare_tag.text_color_hex %>">
+  <span class="crayons-story__flare-tag" style="background:<%= flare_tag.bg_color_hex %>;color:<%= flare_tag.text_color_hex %>">
     #<%= flare_tag.name %></span><% end %><%= story.title %>

@@ -1,4 +1,4 @@
-class AddCommentLifecycleAttributes < ActiveRecord::Migration
+class AddCommentLifecycleAttributes < ActiveRecord::Migration[4.2]
   def change
     add_column :comments, :article_conversion_inquiry, :boolean, default: false
     add_column :comments, :article_conversion_won, :boolean, default: false

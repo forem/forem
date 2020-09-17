@@ -1,4 +1,4 @@
-class CreateJobListings < ActiveRecord::Migration
+class CreateJobListings < ActiveRecord::Migration[4.2]
   def change
     create_table :job_listings do |t|
       t.integer :organization_id

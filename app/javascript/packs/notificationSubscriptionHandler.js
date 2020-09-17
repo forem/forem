@@ -9,9 +9,7 @@ function loadFunctionality() {
     'notification-subscriptions-area',
   ).dataset;
 
-  const userStatus = document
-    .getElementsByTagName('body')[0]
-    .getAttribute('data-user-status');
+  const userStatus = document.body.getAttribute('data-user-status');
 
   if (userStatus === 'logged-in') {
     fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
@@ -22,8 +20,8 @@ function loadFunctionality() {
       },
       credentials: 'same-origin',
     })
-      .then(response => response.json())
-      .then(result => {
+      .then((response) => response.json())
+      .then((result) => {
         document
           .getElementById(`notification-subscription-label_${result.config}`)
           .classList.add('selected');
@@ -40,7 +38,7 @@ function loadFunctionality() {
       showModal('notification-subscription');
     };
   } else {
-    updateStatus = target => {
+    updateStatus = (target) => {
       let payload = '';
       const shouldUnsubscribeToNotifications =
         target.classList.contains('selected') ||
@@ -80,14 +78,14 @@ function loadFunctionality() {
   );
 
   for (let i = 0; i < subscriptionButtons.length; i += 1) {
-    subscriptionButtons[i].addEventListener('click', e => {
+    subscriptionButtons[i].addEventListener('click', (e) => {
       e.preventDefault();
       updateStatus(e.target);
       if (typeof window.sendHapticMessage !== 'undefined') {
         window.sendHapticMessage('medium');
       }
     });
-    subscriptionButtons[i].addEventListener('keydown', e => {
+    subscriptionButtons[i].addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         updateStatus(e.target);
       }

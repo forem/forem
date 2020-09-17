@@ -1,44 +1,25 @@
-import 'preact/devtools';
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
-// eslint-disable-next-line import/no-unresolved
-import ImageUploadIcon from 'images/image-upload.svg';
-// eslint-disable-next-line import/no-unresolved
-import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
-import BodyMarkdown from './elements/bodyMarkdown';
-import BodyPreview from './elements/bodyPreview';
-import PublishToggle from './elements/publishToggle';
-import Notice from './elements/notice';
-import Title from './elements/title';
-import MainImage from './elements/mainImage';
-import ImageManagement from './elements/imageManagement';
-import MoreConfig from './elements/moreConfig';
-import Errors from './elements/errors';
-import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
-import Tags from '../shared/components/tags';
-import { OrganizationPicker } from '../organization/OrganizationPicker';
 
-const SetupImageButton = ({
-  className,
-  imgSrc,
-  imgAltText,
-  onClickCallback,
-}) => (
-  <button type="button" className={className} onClick={onClickCallback}>
-    <img src={imgSrc} alt={imgAltText} />
-  </button>
-);
+/* global activateRunkitTags */
 
-SetupImageButton.propTypes = {
-  className: PropTypes.string.isRequired,
-  imgSrc: PropTypes.string.isRequired,
-  imgAltText: PropTypes.string.isRequired,
-  onClickCallback: PropTypes.func.isRequired,
-};
+import {
+  EditorActions,
+  Form,
+  Header,
+  Help,
+  Preview,
+  KeyboardShortcutsHandler,
+} from './components';
 
+/*
+  Although the state fields: id, description, canonicalUrl, series, allSeries and
+  editing are not used in this file, they are important to the
+  editor.
+*/
 export default class ArticleForm extends Component {
   static handleGistPreview() {
     const els = document.getElementsByClassName('ltag_gist-liquid-tag');
@@ -48,18 +29,17 @@ export default class ArticleForm extends Component {
   }
 
   static handleRunkitPreview() {
-    const targets = document.getElementsByClassName('runkit-element');
-    for (let i = 0; i < targets.length; i += 1) {
-      if (targets[i].children.length > 0) {
-        const preamble = targets[i].children[0].textContent;
-        const content = targets[i].children[1].textContent;
-        targets[i].innerHTML = '';
-        window.RunKit.createNotebook({
-          element: targets[i],
-          source: content,
-          preamble,
-        });
-      }
+    activateRunkitTags();
+  }
+
+  // Scripts inserted via innerHTML won't execute, so we use this handler to
+  // make the Asciinema player work in previews.
+  static handleAsciinemaPreview() {
+    const els = document.getElementsByClassName('ltag_asciinema');
+    for (let i = 0; i < els.length; i += 1) {
+      const el = els[i];
+      const script = el.removeChild(el.firstElementChild);
+      postscribe(el, script.outerHTML);
     }
   }
 
@@ -67,6 +47,7 @@ export default class ArticleForm extends Component {
     version: PropTypes.string.isRequired,
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
+    logoSvg: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -75,78 +56,79 @@ export default class ArticleForm extends Component {
 
   constructor(props) {
     super(props);
-    const { article, version } = this.props;
+    const { article, version, logoSvg } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
-
     this.url = window.location.href;
 
+    const previousContent =
+      JSON.parse(
+        localStorage.getItem(`editor-${version}-${window.location.href}`),
+      ) || {};
+    const isLocalstorageNewer =
+      new Date(previousContent.updatedAt) > new Date(this.article.updated_at);
+
+    const previousContentState =
+      previousContent && isLocalstorageNewer
+        ? {
+            title: previousContent.title || '',
+            tagList: previousContent.tagList || '',
+            mainImage: previousContent.mainImage || null,
+            bodyMarkdown: previousContent.bodyMarkdown || '',
+            edited: true,
+          }
+        : {};
+
     this.state = {
-      id: this.article.id || null,
+      id: this.article.id || null, // eslint-disable-line react/no-unused-state
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
-      description: '',
-      canonicalUrl: this.article.canonical_url || '',
-      series: this.state.series || '',
-      allSeries: this.article.all_series || [],
+      description: '', // eslint-disable-line react/no-unused-state
+      canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      series: this.article.series || '', // eslint-disable-line react/no-unused-state
+      allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
-      helpShowing: false,
       previewResponse: '',
-      helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: this.article.id !== null,
-      imageManagementShowing: false,
-      moreConfigShowing: false,
+      editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
       organizations,
       organizationId: this.article.organization_id,
       errors: null,
       edited: false,
+      updatedAt: this.article.updated_at,
       version,
+      logoSvg,
+      helpFor: null,
+      helpPosition: null,
+      ...previousContentState,
     };
   }
 
   componentDidMount() {
-    const { version } = this.state;
-    const previousContent = JSON.parse(
-      localStorage.getItem(`editor-${version}-${window.location.href}`),
-    );
-    if (previousContent && this.checkContentChanges(previousContent)) {
-      this.setState({
-        title: previousContent.title || '',
-        tagList: previousContent.tagList || '',
-        mainImage: previousContent.mainImage || null,
-        bodyMarkdown: previousContent.bodyMarkdown || '',
-        edited: true,
-      });
-    }
-
     window.addEventListener('beforeunload', this.localStoreContent);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.localStoreContent);
   }
 
   componentDidUpdate() {
     const { previewResponse } = this.state;
+
     if (previewResponse) {
       this.constructor.handleGistPreview();
       this.constructor.handleRunkitPreview();
+      this.constructor.handleAsciinemaPreview();
     }
   }
 
-  checkContentChanges = previousContent => {
-    const { bodyMarkdown, title, mainImage, tagList } = this.state;
-    return (
-      bodyMarkdown !== previousContent.bodyMarkdown ||
-      title !== previousContent.title ||
-      mainImage !== previousContent.mainImage ||
-      tagList !== previousContent.tagList
-    );
-  };
-
   localStoreContent = () => {
     const { version, title, tagList, mainImage, bodyMarkdown } = this.state;
+    const updatedAt = new Date();
     localStorage.setItem(
       `editor-${version}-${this.url}`,
       JSON.stringify({
@@ -154,66 +136,39 @@ export default class ArticleForm extends Component {
         tagList,
         mainImage,
         bodyMarkdown,
+        updatedAt,
       }),
     );
   };
 
-  toggleHelp = e => {
-    const { helpShowing } = this.state;
-    e.preventDefault();
-    window.scrollTo(0, 0);
-    this.setState({
-      helpShowing: !helpShowing,
-      previewShowing: false,
-      imageManagementShowing: false,
-      moreConfigShowing: false,
-    });
+  setCommonProps = ({
+    previewShowing = false,
+    helpFor = null,
+    helpPosition = null,
+  }) => {
+    return {
+      previewShowing,
+      helpFor,
+      helpPosition,
+    };
   };
 
-  fetchPreview = e => {
+  fetchPreview = (e) => {
     const { previewShowing, bodyMarkdown } = this.state;
     e.preventDefault();
     if (previewShowing) {
       this.setState({
-        previewShowing: false,
-        helpShowing: false,
-        imageManagementShowing: false,
-        moreConfigShowing: false,
+        ...this.setCommonProps({}),
       });
     } else {
       previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
     }
   };
 
-  toggleImageManagement = e => {
-    const { imageManagementShowing } = this.state;
-    e.preventDefault();
-    window.scrollTo(0, 0);
-    this.setState({
-      imageManagementShowing: !imageManagementShowing,
-      previewShowing: false,
-      helpShowing: false,
-      moreConfigShowing: false,
-    });
-  };
-
-  toggleMoreConfig = e => {
-    const { moreConfigShowing } = this.state;
-    e.preventDefault();
-    this.setState({
-      moreConfigShowing: !moreConfigShowing,
-      previewShowing: false,
-      helpShowing: false,
-      imageManagementShowing: false,
-    });
-  };
-
-  showPreview = response => {
+  showPreview = (response) => {
     if (response.processed_html) {
       this.setState({
-        previewShowing: true,
-        helpShowing: false,
-        imageManagementShowing: false,
+        ...this.setCommonProps({ previewShowing: true }),
         previewResponse: response,
         errors: null,
       });
@@ -225,28 +180,27 @@ export default class ArticleForm extends Component {
     }
   };
 
-  handleOrgIdChange = e => {
+  handleOrgIdChange = (e) => {
     const organizationId = e.target.selectedOptions[0].value;
     this.setState({ organizationId });
   };
 
-  failedPreview = response => {
+  failedPreview = (response) => {
     // TODO: console.log should not be part of production code. Remove it!
     // eslint-disable-next-line no-console
     console.log(response);
   };
 
-  handleConfigChange = e => {
+  handleConfigChange = (e) => {
     e.preventDefault();
     const newState = {};
     newState[e.target.name] = e.target.value;
     this.setState(newState);
   };
 
-  handleMainImageUrlChange = payload => {
+  handleMainImageUrlChange = (payload) => {
     this.setState({
       mainImage: payload.links[0],
-      imageManagementShowing: false,
     });
   };
 
@@ -256,7 +210,7 @@ export default class ArticleForm extends Component {
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
 
-  onPublish = e => {
+  onPublish = (e) => {
     e.preventDefault();
     this.setState({ submitting: true, published: true });
     const { state } = this;
@@ -264,7 +218,7 @@ export default class ArticleForm extends Component {
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
-  onSaveDraft = e => {
+  onSaveDraft = (e) => {
     e.preventDefault();
     this.setState({ submitting: true, published: false });
     const { state } = this;
@@ -272,49 +226,42 @@ export default class ArticleForm extends Component {
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
-  handleTitleKeyDown = e => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-    }
-  };
-
-  handleBodyKeyDown = _e => {};
-
-  onClearChanges = e => {
+  onClearChanges = (e) => {
     e.preventDefault();
     // eslint-disable-next-line no-alert
     const revert = window.confirm(
       'Are you sure you want to revert to the previous save?',
     );
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
+
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
-      description: '',
-      canonicalUrl: this.article.canonical_url || '',
-      series: this.state.series || '',
-      allSeries: this.article.all_series || [],
+      description: '', // eslint-disable-line react/no-unused-state
+      canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      series: this.article.series || '', // eslint-disable-line react/no-unused-state
+      allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
-      helpShowing: false,
       previewResponse: '',
-      helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: this.artical.id !== null,
-      imageManagementShowing: false,
-      moreConfigShowing: false,
+      editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
       errors: null,
       edited: false,
+      helpFor: null,
+      helpPosition: 0,
     });
   };
 
-  handleArticleError = response => {
+  handleArticleError = (response, publishFailed = false) => {
     window.scrollTo(0, 0);
     this.setState({
       errors: response,
       submitting: false,
+      // Even if it's an update that failed, published will still be set to true
+      published: !publishFailed,
     });
   };
 
@@ -327,185 +274,94 @@ export default class ArticleForm extends Component {
     });
   };
 
+  switchHelpContext = ({ target }) => {
+    this.setState({
+      ...this.setCommonProps({
+        helpFor: target.id,
+        helpPosition: target.getBoundingClientRect().y,
+      }),
+    });
+  };
+
   render() {
-    // cover image url should asking for url OR providing option to upload an image
     const {
       title,
       tagList,
       bodyMarkdown,
       published,
       previewShowing,
-      helpShowing,
       previewResponse,
-      helpHTML,
       submitting,
-      imageManagementShowing,
-      moreConfigShowing,
       organizations,
       organizationId,
       mainImage,
       errors,
       edited,
       version,
+      helpFor,
+      helpPosition,
+      logoSvg,
     } = this.state;
-    const notice = submitting ? (
-      <Notice published={published} version={version} />
-    ) : (
-      ''
-    );
-    const imageArea =
-      mainImage && !previewShowing && version === 'v2' ? (
-        <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
-      ) : (
-        ''
-      );
-    const imageManagement = imageManagementShowing ? (
-      <ImageManagement
-        onExit={this.toggleImageManagement}
-        mainImage={mainImage}
-        version={version}
-        onMainImageUrlChange={this.handleMainImageUrlChange}
-      />
-    ) : (
-      ''
-    );
-    const moreConfig = moreConfigShowing ? (
-      <MoreConfig
-        onExit={this.toggleMoreConfig}
-        passedData={this.state}
-        onSaveDraft={this.onSaveDraft}
-        onConfigChange={this.handleConfigChange}
-      />
-    ) : (
-      ''
-    );
-    const orgArea =
-      organizations && organizations.length > 0 ? (
-        <div className="articleform__orgsettings">
-          Publish under an organization:
-          <OrganizationPicker
-            name="article[organization_id]"
-            id="article_publish_under_org"
-            organizations={organizations}
-            organizationId={organizationId}
-            onToggle={this.handleOrgIdChange}
-          />
-        </div>
-      ) : null;
-    const errorsArea = errors ? <Errors errorsList={errors} /> : '';
-    let editorView = '';
-    if (previewShowing) {
-      editorView = (
-        <div>
-          {errorsArea}
-          {orgArea}
-          {imageArea}
-          <BodyPreview
-            previewResponse={previewResponse}
-            articleState={this.state}
-            version="article-preview"
-          />
-        </div>
-      );
-    } else if (helpShowing) {
-      editorView = (
-        <BodyPreview
-          previewResponse={{ processed_html: helpHTML }}
-          version="help"
-        />
-      );
-    } else {
-      let controls = '';
-      let moreConfigBottomButton = '';
-      if (version === 'v2') {
-        moreConfigBottomButton = (
-          <SetupImageButton
-            className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
-            imgSrc={ThreeDotsIcon}
-            imgAltText="menu dots"
-            onClickCallback={this.toggleMoreConfig}
-          />
-        );
-        controls = (
-          <div
-            className={title.length > 128 ? 'articleform__titleTooLong' : ''}
-          >
-            <Title
-              defaultValue={title}
-              onKeyDown={this.handleTitleKeyDown}
-              onChange={linkState(this, 'title')}
-            />
-            <div className="articleform__detailfields">
-              <Tags
-                defaultValue={tagList}
-                onInput={linkState(this, 'tagList')}
-                maxTags={4}
-                autoComplete="off"
-                classPrefix="articleform"
-              />
-              <SetupImageButton
-                className="articleform__detailsButton articleform__detailsButton--image"
-                imgSrc={ImageUploadIcon}
-                imgAltText="Upload images"
-                onClickCallback={this.toggleImageManagement}
-              />
-              <SetupImageButton
-                className="articleform__detailsButton articleform__detailsButton--moreconfig"
-                imgSrc={ThreeDotsIcon}
-                imgAltText="Menu"
-                onClickCallback={this.toggleMoreConfig}
-              />
-            </div>
-          </div>
-        );
-      }
-      editorView = (
-        <div>
-          {errorsArea}
-          {orgArea}
-          {imageArea}
-          {controls}
-          <BodyMarkdown
-            defaultValue={bodyMarkdown}
-            onKeyDown={this.handleBodyKeyDown}
-            onChange={linkState(this, 'bodyMarkdown')}
-          />
-          <button
-            className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
-            onClick={this.toggleImageManagement}
-            type="button"
-          >
-            <img src={ImageUploadIcon} alt="upload images" />
-            IMAGES
-          </button>
-          {moreConfigBottomButton}
-        </div>
-      );
-    }
+
     return (
       <form
-        className={`articleform__form articleform__form--${version}`}
+        id="article-form"
+        className="crayons-article-form"
         onSubmit={this.onSubmit}
         onInput={this.toggleEdit}
       >
-        {editorView}
-        <PublishToggle
+        <Header
+          onPreview={this.fetchPreview}
+          previewShowing={previewShowing}
+          organizations={organizations}
+          organizationId={organizationId}
+          onToggle={this.handleOrgIdChange}
+          logoSvg={logoSvg}
+        />
+
+        {previewShowing ? (
+          <Preview
+            previewResponse={previewResponse}
+            articleState={this.state}
+            errors={errors}
+          />
+        ) : (
+          <Form
+            titleDefaultValue={title}
+            titleOnChange={linkState(this, 'title')}
+            tagsDefaultValue={tagList}
+            tagsOnInput={linkState(this, 'tagList')}
+            bodyDefaultValue={bodyMarkdown}
+            bodyOnChange={linkState(this, 'bodyMarkdown')}
+            bodyHasFocus={false}
+            version={version}
+            mainImage={mainImage}
+            onMainImageUrlChange={this.handleMainImageUrlChange}
+            errors={errors}
+            switchHelpContext={this.switchHelpContext}
+          />
+        )}
+
+        <Help
+          previewShowing={previewShowing}
+          helpFor={helpFor}
+          helpPosition={helpPosition}
+          version={version}
+        />
+
+        <EditorActions
           published={published}
           version={version}
-          previewShowing={previewShowing}
-          helpShowing={helpShowing}
-          onPreview={this.fetchPreview}
           onPublish={this.onPublish}
-          onHelp={this.toggleHelp}
           onSaveDraft={this.onSaveDraft}
           onClearChanges={this.onClearChanges}
           edited={edited}
-          onChange={linkState(this, 'published')}
+          passedData={this.state}
+          onConfigChange={this.handleConfigChange}
+          submitting={submitting}
         />
+
         <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />
-        {notice}
-        {imageManagement}
-        {moreConfig}
       </form>
     );
   }

@@ -13,15 +13,18 @@ class StackexchangeTag < LiquidTagBase
 
   attr_reader :site, :post_type
 
-  def initialize(tag_name, input, tokens)
+  def initialize(_tag_name, input, _parse_context)
     super
-    @site = parse_site(input)
+
+    @site = parse_site(input.strip)
     @post_type = "question"
-    @json_content = get_data(input)
+    @json_content = get_data(input.strip)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    default_link = "https://stackoverflow.com/a/#{@json_content['answer_id'] || @json_content['question_id']}"
+
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         site: @site,
@@ -31,7 +34,7 @@ class StackexchangeTag < LiquidTagBase
         comment_count: @json_content["comment_count"],
         answer_count: @json_content["answer_count"],
         post_type: @post_type,
-        post_url: @json_content["link"] || "https://stackoverflow.com/a/#{@json_content['answer_id'] || @json_content['question_id']}",
+        post_url: @json_content["link"] || default_link,
         body: @json_content["body"]
       },
     )
@@ -58,9 +61,12 @@ class StackexchangeTag < LiquidTagBase
     ID_REGEXP.match?(input.split(" ")[0])
   end
 
-  def handle_response_error(response)
+  def handle_response_error(response, input)
     raise StandardError, "Calling StackExchange API failed: #{response&.error_message}" if response.code != 200
-    raise StandardError, "Couldn't find a post with that ID: {% #{tag_name} #{input} %}" if response["items"].length.zero?
+
+    return unless response["items"].length.zero?
+
+    raise StandardError, "Couldn't find a post with that ID: {% #{tag_name} #{input} %}"
   end
 
   def get_data(input)
@@ -68,15 +74,19 @@ class StackexchangeTag < LiquidTagBase
 
     id = input.split(" ")[0]
 
-    post_response = HTTParty.get("#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
+    url = "#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}" \
+      "&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
+    post_response = HTTParty.get(url)
 
-    handle_response_error(post_response)
+    handle_response_error(post_response, input)
 
     @post_type = post_response["items"][0]["post_type"]
 
-    final_response = HTTParty.get("#{API_URL}#{@post_type.pluralize}/#{id}?site=#{@site}&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
+    url = "#{API_URL}#{@post_type.pluralize}/#{id}?site=#{@site}" \
+      "&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
+    final_response = HTTParty.get(url)
 
-    handle_response_error(final_response)
+    handle_response_error(final_response, input)
 
     final_response["items"][0]
   end

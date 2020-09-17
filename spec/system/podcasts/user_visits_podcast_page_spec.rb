@@ -15,8 +15,8 @@ RSpec.describe "User visits a podcast page", type: :system do
     end
   end
 
-  it "displays podcast episodes" do
-    expect(page).to have_selector("div.single-article", visible: true, count: 2)
+  it "displays podcast episodes", js: true do
+    expect(page).to have_selector("div.single-article", visible: :visible, count: 2)
   end
 
   it "displays podcast publish_at" do

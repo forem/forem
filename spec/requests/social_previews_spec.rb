@@ -2,18 +2,17 @@ require "rails_helper"
 
 RSpec.describe "SocialPreviews", type: :request do
   let(:user) { create(:user) }
-  let(:tag) { create(:tag) }
+  let(:tag) { create(:tag, badge: create(:badge)) }
   let(:organization) { create(:organization) }
-  let(:article) { create(:article, user_id: user.id) }
-  let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:article) { create(:article, user_id: user.id, tags: tag.name) }
+  let(:comment) { create(:comment, user_id: user.id, commentable: article) }
   let(:image_url) { "https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1" }
-  let(:listing) { create(:classified_listing, user_id: user.id, category: "cfp") }
 
   before do
-    stub_request(:post, /hcti.io/).
-      to_return(status: 200,
-                body: "{ \"url\": \"#{image_url}\" }",
-                headers: { "Content-Type" => "application/json" })
+    stub_request(:post, /hcti.io/)
+      .to_return(status: 200,
+                 body: "{ \"url\": \"#{image_url}\" }",
+                 headers: { "Content-Type" => "application/json" })
   end
 
   describe "GET /social_previews/article/:id" do
@@ -33,12 +32,25 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(first_request_body).to eq second_request_body
     end
 
-    it "renders shecoded template when tagged with shecoded" do
+    it "renders custom template when tagged with shecoded" do
+      create(:tag, social_preview_template: "shecoded")
       she_coded_article = create(:article, tags: "shecoded")
 
       get "/social_previews/article/#{she_coded_article.id}"
 
       expect(response.body).to include CGI.escapeHTML(she_coded_article.title)
+    end
+
+    it "includes campaign tags when tagged with 2 campaign tags" do
+      create(:tag, name: "shecoded", social_preview_template: "shecoded")
+      create(:tag, name: "theycoded", social_preview_template: "shecoded")
+
+      she_coded_article = create(:article, tags: "shecoded, theycoded")
+      SiteConfig.campaign_featured_tags = "shecoded,theycoded"
+
+      get "/social_previews/article/#{she_coded_article.id}"
+
+      expect(response.body).to include("#shecoded #theycoded")
     end
 
     it "renders an image when requested and redirects to image url" do
@@ -55,6 +67,8 @@ RSpec.describe "SocialPreviews", type: :request do
     end
 
     it "renders consistent HTML between requests" do
+      create(:badge_achievement, user: user)
+
       # We use the HTML for caching. It needs to be deterministic (if data is unchanged, the HTML should be the same)
       get "/social_previews/user/#{user.id}"
       first_request_body = response.body
@@ -121,9 +135,11 @@ RSpec.describe "SocialPreviews", type: :request do
   end
 
   describe "GET /social_previews/listing/:id" do
+    let(:listing) { create(:listing, user_id: user.id) }
+
     it "renders pretty category name" do
       get "/social_previews/listing/#{listing.id}"
-      expect(response.body).to include CGI.escapeHTML("Call For Proposal")
+      expect(response.body).to include CGI.escapeHTML("Education")
     end
 
     it "renders consistent HTML between requests" do

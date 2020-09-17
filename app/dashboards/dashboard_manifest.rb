@@ -22,12 +22,13 @@ class DashboardManifest
     tags
     email_messages
     feedback_messages
-    display_ads
     badges
     badge_achievements
     html_variants
+    html_variant_trials
+    html_variant_successes
     sponsorships
-    pro_memberships
+    listing_categories
   ].freeze
   # DASHBOARDS = [
   #   :users,

@@ -8,12 +8,16 @@ class FollowChecker
   end
 
   def cached_follow_check
-    RedisRailsCache.fetch("user-#{follower.id}-#{follower.updated_at}/is_following_#{followable_type}_#{followable_id}", expires_in: 20.hours) do
-      followable = if followable_type == "Tag"
+    return false unless follower
+
+    cache_key = "user-#{follower.id}-#{follower.updated_at.rfc3339}/is_following_#{followable_type}_#{followable_id}"
+    Rails.cache.fetch(cache_key, expires_in: 20.hours) do
+      followable = case followable_type
+                   when "Tag"
                      Tag.find(followable_id)
-                   elsif followable_type == "Organization"
+                   when "Organization"
                      Organization.find(followable_id)
-                   elsif followable_type == "Podcast"
+                   when "Podcast"
                      Podcast.find(followable_id)
                    else
                      User.find(followable_id)

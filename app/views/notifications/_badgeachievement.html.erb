@@ -7,7 +7,7 @@
     <p class="badge-description">
       <%= json_data["badge_achievement"]["badge"]["description"] %>
     </p>
-    <img class="badge-image" src="<%= cloudinary json_data["badge_achievement"]["badge"]["badge_image_url"], 250 %>" alt="<%= json_data["badge_achievement"]["badge"]["title"] %>">
+    <img class="badge-image" src="<%= optimized_image_url(json_data["badge_achievement"]["badge"]["badge_image_url"], width: 250) %>" alt="<%= json_data["badge_achievement"]["badge"]["title"] %>">
   <% end %>
   <p class="badge-reward-message">
     <em>
@@ -25,6 +25,6 @@
     if you have anything you'd like to promote. 🎉
   </p>
   <p class="badge-credit-message">
-    <strong><a href="/about-listings">More information about listings<a></strong>
+    <strong><a href="<%= about_listings_url %>">More information about listings<a></strong>
   </p>
 </div>

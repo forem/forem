@@ -1,6 +1,12 @@
 FactoryBot.define do
+  sequence(:name) { |n| "tag#{n}" }
+
   factory :tag do
-    name { rand(10_000).to_s }
+    name { generate :name }
     supported { true }
+
+    trait :search_indexed do
+      after(:create, &:index_to_elasticsearch_inline)
+    end
   end
 end

@@ -7,6 +7,7 @@ RSpec.describe "Dashboards", type: :request do
   let(:pro_user)      { create(:user, :pro) }
   let(:article)       { create(:article, user: user) }
   let(:unpublished_article) { create(:article, user: user, published: false) }
+  let(:organization) { create(:organization) }
 
   describe "GET /dashboard" do
     context "when not logged in" do
@@ -29,13 +30,60 @@ RSpec.describe "Dashboards", type: :request do
 
       it 'does not show "STATS" for articles' do
         get "/dashboard"
-        expect(response.body).not_to include("STATS")
+        expect(response.body).not_to include("Stats")
       end
 
       it "renders the delete button for drafts" do
         unpublished_article
         get "/dashboard"
-        expect(response.body).to include "DELETE"
+        expect(response.body).to include "Delete"
+      end
+
+      it "renders subscriptions for articles with subscriptions" do
+        allow(user).to receive(:has_role?).and_call_original
+        allow(user).to receive(:has_role?).with(:restricted_liquid_tag,
+                                                LiquidTags::UserSubscriptionTag).and_return(true)
+        article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
+        create(:user_subscription,
+               subscriber_id: second_user.id,
+               subscriber_email: second_user.email,
+               author_id: article_with_user_subscription_tag.user_id,
+               user_subscription_sourceable: article_with_user_subscription_tag)
+
+        get "/dashboard"
+        expect(response.body).to include "Subscriptions"
+      end
+
+      it "renders pagination if minimum amount of posts" do
+        create_list(:article, 52, user: user)
+        get "/dashboard"
+        expect(response.body).to include "pagination"
+      end
+
+      it "does not render pagination if less than one full page" do
+        create_list(:article, 3, user: user)
+        get "/dashboard"
+        expect(response.body).not_to include "pagination"
+      end
+
+      it "does not render a link to pro analytics" do
+        get dashboard_path
+
+        expect(response.body).not_to include("Pro Analytics")
+      end
+
+      it "does not render a link to pro analytics for the org" do
+        create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
+
+        get dashboard_path
+
+        expect(response.body).not_to include("Pro Analytics for #{organization.name}")
+      end
+
+      it "does not render a link to upload a video" do
+        get dashboard_path
+
+        expect(response.body).not_to include("Upload a video")
       end
     end
 
@@ -54,8 +102,37 @@ RSpec.describe "Dashboards", type: :request do
         article = create(:article, user: pro_user)
         sign_in pro_user
         get "/dashboard"
-        expect(response.body).to include("STATS")
+        expect(response.body).to include("Stats")
         expect(response.body).to include("#{article.path}/stats")
+      end
+
+      it "renders a link to pro analytics" do
+        sign_in pro_user
+        get dashboard_path
+
+        expect(response.body).to include("Pro Analytics")
+      end
+
+      it "renders a link to pro analytics for the org" do
+        create(:organization_membership, type_of_user: :admin, organization: organization, user: pro_user)
+
+        sign_in pro_user
+        get dashboard_path
+
+        expect(response.body).to include("Pro Analytics for #{CGI.escapeHTML(organization.name)}")
+      end
+    end
+
+    context "when logged in as a non recent user" do
+      it "renders a link to upload a video" do
+        Timecop.freeze(Time.current) do
+          user.update!(created_at: 3.weeks.ago)
+
+          sign_in user
+          get dashboard_path
+
+          expect(response.body).to include("Upload a video")
+        end
       end
     end
   end
@@ -76,7 +153,7 @@ RSpec.describe "Dashboards", type: :request do
         article.update(organization_id: organization.id)
         sign_in user
         get "/dashboard/organization/#{organization.id}"
-        expect(response.body).to include "dashboard-collection-org-details"
+        expect(response.body).to include "crayons-logo"
       end
 
       it "does not render the delete button for other org member's drafts" do
@@ -85,7 +162,7 @@ RSpec.describe "Dashboards", type: :request do
         unpublished_article.update(organization_id: organization.id)
         sign_in second_user
         get "/dashboard/organization/#{organization.id}"
-        expect(response.body).not_to include("DELETE")
+        expect(response.body).not_to include("Delete")
         expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
       end
     end
@@ -104,11 +181,11 @@ RSpec.describe "Dashboards", type: :request do
         sign_in user
         user.follow second_user
         user.reload
-        get "/dashboard/following"
+        get "/dashboard/following_users"
       end
 
       it "renders followed users count" do
-        expect(response.body).to include "Followed users (1)"
+        expect(response.body).to include "Following users (1)"
       end
 
       it "lists followed users" do
@@ -123,11 +200,11 @@ RSpec.describe "Dashboards", type: :request do
         sign_in user
         user.follow tag
         user.reload
-        get "/dashboard/following"
+        get "/dashboard/following_tags"
       end
 
       it "renders followed tags count" do
-        expect(response.body).to include "Followed tags (1)"
+        expect(response.body).to include "Following tags (1)"
       end
 
       it "lists followed tags" do
@@ -142,15 +219,34 @@ RSpec.describe "Dashboards", type: :request do
         sign_in user
         user.follow organization
         user.reload
-        get "/dashboard/following"
+        get "/dashboard/following_organizations"
       end
 
       it "renders followed organizations count" do
-        expect(response.body).to include "Followed organizations (1)"
+        expect(response.body).to include "Following organizations (1)"
       end
 
       it "lists followed organizations" do
         expect(response.body).to include CGI.escapeHTML(organization.name)
+      end
+    end
+
+    describe "followed podcasts section" do
+      let(:podcast) { create(:podcast) }
+
+      before do
+        sign_in user
+        user.follow podcast
+        user.reload
+        get "/dashboard/following_podcasts"
+      end
+
+      it "renders followed podcast count" do
+        expect(response.body).to include "Following podcasts (1)"
+      end
+
+      it "lists followed podcasts" do
+        expect(response.body).to include podcast.name
       end
     end
   end
@@ -197,21 +293,12 @@ RSpec.describe "Dashboards", type: :request do
       end
     end
 
-    context "when user has a pro membership" do
-      it "shows page properly" do
-        create(:pro_membership, user: user)
-        sign_in user
-        get "/dashboard/pro"
-        expect(response.body).to include("pro")
-      end
-    end
-
     context "when user has pro permission and is an org admin" do
       it "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         user.add_role(:pro)
-        login_as user
+        sign_in user
         get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")
       end
@@ -226,6 +313,85 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")
       end
+    end
+  end
+
+  describe "GET /dashboard/subscriptions" do
+    let(:author) { create(:user) }
+    let(:article_with_user_subscription_tag) { create(:article, user: author, with_user_subscription_tag: true) }
+    let(:params) do
+      { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+    end
+
+    before do
+      # Stub roles because adding them normally can cause flaky specs
+      allow(author).to receive(:has_role?).and_call_original
+      allow(author).to receive(:has_role?).with(:restricted_liquid_tag,
+                                                LiquidTags::UserSubscriptionTag).and_return(true)
+
+      sign_in author
+    end
+
+    it "renders subscriptions" do
+      user_subscription = create(:user_subscription,
+                                 subscriber_id: second_user.id,
+                                 subscriber_email: second_user.email,
+                                 author_id: article_with_user_subscription_tag.user_id,
+                                 user_subscription_sourceable: article_with_user_subscription_tag)
+
+      get "/dashboard/subscriptions", params: params
+      expect(response.body).to include(user_subscription.subscriber_email)
+    end
+
+    it "displays a message if no subscriptions are found" do
+      get "/dashboard/subscriptions", params: params
+      expect(response.body).to include("You don't have any subscribers for this")
+    end
+
+    it "raises unauthorized when trying to access a source the user doesn't own" do
+      unauthorized_article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
+      create(:user_subscription,
+             subscriber_id: second_user.id,
+             subscriber_email: second_user.email,
+             author_id: unauthorized_article.user_id,
+             user_subscription_sourceable: unauthorized_article)
+      unauthorized_article_params = { source_type: unauthorized_article.class.name, source_id: unauthorized_article.id }
+
+      expect do
+        get "/dashboard/subscriptions", params: unauthorized_article_params
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "raises an error for disallowed source_types" do
+      invalid_source_type_params = { source_type: "Comment", source_id: 1 }
+      expect do
+        get "/dashboard/subscriptions", params: invalid_source_type_params
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "raises an error when the source can't be found" do
+      nonexistant_article_params = { source_type: article.class.name, source_id: article.id + 999 }
+      expect do
+        get "/dashboard/subscriptions", params: nonexistant_article_params
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "renders pagination if minimum amount of subscriptions" do
+      create_list(:user_subscription,
+                  102, # Current pagination limit is 100
+                  author: author,
+                  user_subscription_sourceable: article_with_user_subscription_tag)
+      get "/dashboard/subscriptions", params: params
+      expect(response.body).to include "pagination"
+    end
+
+    it "does not render pagination if less than one full page" do
+      create_list(:user_subscription,
+                  5,
+                  author: author,
+                  user_subscription_sourceable: article_with_user_subscription_tag)
+      get "/dashboard/subscriptions", params: params
+      expect(response.body).not_to include "pagination"
     end
   end
 end

@@ -1,0 +1,231 @@
+////////////////////////////////////////////////////////////////////////////////////
+// Colors. /////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// List of colors to be used to generate utility-first classes,
+// using generate-classes() function. See files from /base folder
+// for reference.
+//
+// These colors are defined using some colors CSS variables defined
+// in config/_colors.scss. We only utilize some of these variables
+// for utility-classes because it doesn't make much sense to create
+// utility-class for every single variable in config/_colors.scss.
+
+$colors: (
+  'base-100': var(--base-100),
+  'base-90': var(--base-90),
+  'base-80': var(--base-80),
+  'base-70': var(--base-70),
+  'base-60': var(--base-60),
+  'base-50': var(--base-50),
+  'base-40': var(--base-40),
+  'base-30': var(--base-30),
+  'base-20': var(--base-20),
+  'base-10': var(--base-10),
+  'base-0': var(--base-0),
+  'base-inverted': var(--base-inverted),
+  'accent-brand': var(--accent-brand),
+  'accent-brand-darker': var(--accent-brand-darker),
+  'accent-brand-lighter': var(--accent-brand-lighter),
+  'accent-success': var(--accent-success),
+  'accent-success-darker': var(--accent-success-darker),
+  'accent-success-lighter': var(--accent-success-lighter),
+  'accent-warning': var(--accent-warning),
+  'accent-warning-darker': var(--accent-warning-darker),
+  'accent-warning-lighter': var(--accent-warning-lighter),
+  'accent-danger': var(--accent-danger),
+  'accent-danger-darker': var(--accent-danger-darker),
+  'accent-danger-lighter': var(--accent-danger-lighter),
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+// [DRAFT] Responsiveness Breakpoints. /////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// List of breakpoints for our responsiveness.
+
+$breakpoint-s: 640px;
+$breakpoint-m: 768px;
+$breakpoint-l: 1024px;
+$breakpoint-xl: 1280px;
+
+$breakpoints: (
+  's': $breakpoint-s,
+  'm': $breakpoint-m,
+  'l': $breakpoint-l,
+  'xl': $breakpoint-xl,
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+
+$spacing-units: (
+  '1': var(--su-1),
+  '2': var(--su-2),
+  '3': var(--su-3),
+  '4': var(--su-4),
+  '5': var(--su-5),
+  '6': var(--su-6),
+  '7': var(--su-7),
+  '8': var(--su-8),
+  '9': var(--su-9),
+  '10': var(--su-10),
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+
+$negative-spacing-units: (
+  '1': calc(var(--su-1) * -1),
+  '2': calc(var(--su-2) * -1),
+  '3': calc(var(--su-3) * -1),
+  '4': calc(var(--su-4) * -1),
+  '5': calc(var(--su-5) * -1),
+  '6': calc(var(--su-6) * -1),
+  '7': calc(var(--su-7) * -1),
+  '8': calc(var(--su-8) * -1),
+  '9': calc(var(--su-9) * -1),
+  '10': calc(var(--su-10) * -1),
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+// Helpers /////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// Generators & functions utilized in other SCSS files. They are meant to simplify the
+// process of creating styles, etc.
+
+// pow() - Raise number to the nth power
+//
+// @param {number} $base      The base number
+// @param {number} $exponents The exponent to which to raise $base
+
+@function pow($base, $exponents) {
+  $raised: 1;
+
+  @for $i from 1 through $exponents {
+    $raised: $raised * $base;
+  }
+
+  @return $raised;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// replace-nth() - Replace n-th list item with another item
+//
+// @param {number} $list      List.
+// @param {number} $index     Which item in the list should be replaced.
+// @param {number} $value     New item.
+
+@function replace-nth($list, $index, $value) {
+  $result: null;
+
+  @if type-of($index) != number {
+    @warn "$index: #{quote($index)} is not a number for `replace-nth`.";
+  } @else if $index == 0 {
+    @warn "List index 0 must be a non-zero integer for `replace-nth`.";
+  } @else if abs($index) > length($list) {
+    @warn "List index is #{$index} but list is only #{length($list)} item long for `replace-nth`.";
+  } @else {
+    $result: ();
+    $index: if($index < 0, length($list) + $index + 1, $index);
+
+    @for $i from 1 through length($list) {
+      @if $i == $index {
+        $result: append($result, $value, comma);
+      } @else {
+        $result: append($result, nth($list, $i), comma);
+      }
+    }
+  }
+
+  @return $result;
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// generate-classes()
+//
+// Generating classes for Tailwind approach.
+//
+// @param {string} $prefix                Prefix for utility class, for example `mr`
+// @param {string || list} $properties    Defines CSS property(ies) that, for example `margin-right`
+// @param {list} $values-1                List of values for which we gonna generate classes
+// @param {list} $values-2                Additional list of values, useful when we want to combine two lists.
+// @param {boolean} $responsive           Whether or not class should be responsive.
+// @param {string} $separator             Separator between prefix and value.
+
+@mixin generate-classes(
+  $prefix,
+  $properties,
+  $values-1,
+  $values-2: (),
+  $responsive: false,
+  $separator: '-'
+) {
+  $values: map-merge($values-1, $values-2);
+  @each $name, $value in $values {
+    .#{$prefix}#{$separator}#{$name} {
+      @each $property in $properties {
+        #{$property}: $value !important;
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// initialize-generator()
+//
+// Initilize generators.
+//
+// @param {list} $breakpoints       All our responsiveness breakpoints.
+// @param {list} $classes           All the parameters required by generate-classes().
+
+@mixin initialize-generator($breakpoints, $classes...) {
+  @each $argument in $classes {
+    @include generate-classes($argument...);
+  }
+
+  @each $breakpoint, $value in $breakpoints {
+    @media (min-width: $value) {
+      @each $argument in $classes {
+        $responsive: nth($argument, 5);
+        @if $responsive == true {
+          $prefix: $breakpoint + '\\:';
+          @if nth($argument, 1) != null {
+            $prefix: $breakpoint + '\\:'+ nth($argument, 1);
+          }
+          $argument: replace-nth($argument, 1, $prefix);
+          @include generate-classes($argument...);
+        }
+      }
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+// generate-box() - generating classes for different style
+//
+// This mixin automates process of generating styles for different
+// types of boxes used across Crayons.
+//
+// @param {integer} $level    Visual elevation level: 0-4
+// @param {color} $bg         Background color
+// @param {color} $border     Border and shadow colors
+// @param {color} $color      Contnet color
+
+@mixin generate-box(
+  $level: 1,
+  $bg: var(--card-bg),
+  $border: var(--base-100),
+  $color: var(--card-color)
+) {
+  background: $bg;
+  border: 2px solid $border;
+  @if $level > 0 {
+    box-shadow: #{pow(2, $level) + px} #{pow(2, $level) + px} 0 $border;
+  }
+  color: $color;
+  border-radius: var(--radius);
+}

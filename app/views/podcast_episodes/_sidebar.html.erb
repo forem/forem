@@ -10,15 +10,7 @@
           <% @podcasts.each do |podcast| %>
             <a href="/<%= podcast.slug %>">
               <div class="podcast-pic" id="podcast-pic-<%= podcast.slug %>">
-                <img src="<%= cl_image_path(podcast.image_url,
-                                            type: "fetch",
-                                            crop: "fill",
-                                            width: 100,
-                                            height: 100,
-                                            flags: "progressive",
-                                            quality: "auto",
-                                            fetch_format: "auto",
-                                            sign_url: true) %>"
+                <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
                      alt="<%= podcast.title %>" />
                 <div class="podcast-name">
                   <div class="podcast-name-inner">
@@ -28,8 +20,8 @@
               </div>
             </a>
           <% end %>
-          <p>If you know of a great dev podcast that should be added to this list, contact <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a></p>
-        </div>
+          <p><%= link_to "Suggest a Podcast", new_podcast_path, class: "suggest-podcast" %></p>
+         </div>
       </div>
     <% elsif @podcast %>
     <% end %>

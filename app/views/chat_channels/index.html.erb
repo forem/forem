@@ -1,35 +1,27 @@
-<% title "DEV Connect 👩‍💻 💬 👨‍💻" %>
+<% title("#{community_name} Connect 👩‍💻💬👨‍💻") %>
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/connect" />
-  <meta name="description" content="DEV Connect">
-  <%= csrf_meta_tags %>
+  <link rel="canonical" href="<%= app_url(connect_path) %>" />
+  <meta name="description" content="<%= community_name %> Connect">
 <% end %>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/theme/material.min.css">
+<%= csrf_meta_tags %>
 
 <% if user_signed_in? %>
-  <%= javascript_pack_tag "Chat", defer: true %>
+  <%= javascript_packs_with_chunks_tag "Chat", defer: true %>
   <div class="chat-page-wrapper">
     <div
       id="chat"
       class="live-chat"
       data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
-      data-algolia-id="<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>"
-      data-algolia-key="<%= @secured_algolia_key %>"
-      data-algolia-index="<%= "SecuredChatChannelMembership_#{Rails.env}" %>"
       data-github-token="<%= @github_token %>"
       data-chat-channels="<%= [] %>"
-      data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id }.to_json %>">
+      data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id, currentUserId: current_user.id }.to_json %>">
       <div class="chat" id="chat_placeholder">
-        <div class="chat__channels chat__channels--expanded chat__channels--placeholder">
-          <button class="chat__channelstogglebutt" onClick={this.toggleExpand}>&lt;</button>
-          <button class="chat__channelstogglebutt chat__channelstogglebutt--placeholderunexpanded">&gt;</button>
-          <input placeholder='Filter' onKeyUp={this.triggerChannelFilter} />
+        <div class="chat__channels chat__channels--placeholder">
         </div>
         <div class="chat__activechat">
           <div class="activechatchannel">
             <div class="activechatchannel__conversation">
-              <div class="activechatchannel__header"><span>&nbsp;</span></div>
+              <div class="active-channel__header"><span>&nbsp;</span></div>
             </div>
           </div>
         </div>
@@ -45,8 +37,9 @@
   }
 </style>
 <script>
-  if (navigator.userAgent.match(/iPhone/i) && !navigator.userAgent.match('CriOS')) {
-    document.getElementById("chat").classList.add("live-chat--iossafari")
-  }
-  window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ApplicationConfig["VAPID_PUBLIC_KEY"]).bytes %>);
+    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+  let vh = window.innerHeight * 0.01;
+  // Then we set the value in the --vh custom property to the root of the document
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+  document.body.style.setProperty('min-height','-webkit-fill-available')
 </script>

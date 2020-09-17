@@ -1,0 +1,17 @@
+Description:
+  Generates a data update script.
+
+Examples:
+  `rails generate data_update ExampleScript`
+
+    # lib/data_update_scripts/example_script.rb
+    module DataUpdateScripts
+      class ExampleScript
+        def run
+          # Place your data update logic here
+          # Make sure your code is idempotent and can be run safely
+          # multiple times at any time
+        end
+      end
+    end
+

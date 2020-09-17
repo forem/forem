@@ -1,11 +1,14 @@
 {
   "recommendations": [
+    "nickytonline.dev-to-extension-pack",
     "waderyan.nodejs-extension-pack",
     "esbenp.prettier-vscode",
     "donjayamanne.git-extension-pack",
     "msjsdiag.debugger-for-chrome",
     "msjsdiag.debugger-for-edge",
     "rebornix.ruby",
-    "MS-vsliveshare.vsliveshare-pack"
+    "MS-vsliveshare.vsliveshare-pack",
+    "42Crunch.vscode-openapi",
+    "philosowaffle.openapi-designer"
   ]
 }

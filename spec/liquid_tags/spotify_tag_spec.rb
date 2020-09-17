@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SpotifyTag, type: :liquid_template do
+RSpec.describe SpotifyTag, type: :liquid_tag do
   describe "#link" do
     let(:valid_uri) { "spotify:track:0K1UpnetfCKtcNu37rJmCg" }
     let(:valid_playlist_uri) { "spotify:playlist:37i9dQZF1E36t2Deh8frhL" }
@@ -13,7 +13,7 @@ RSpec.describe SpotifyTag, type: :liquid_template do
     end
 
     def generate_iframe(uri, height)
-      parsed_uri = uri.split(":")[1..-1].unshift("https://open.spotify.com/embed").join("/")
+      parsed_uri = uri.split(":")[1..].unshift("https://open.spotify.com/embed").join("/")
       <<~HTML
         <iframe
           width="100%"
@@ -22,7 +22,8 @@ RSpec.describe SpotifyTag, type: :liquid_template do
           frameborder="0"
           allowtransparency="true"
           allow="encrypted-media"
-          src="#{parsed_uri} ">
+          src="#{parsed_uri} "
+          loading="lazy">
         </iframe>
       HTML
     end
@@ -44,7 +45,11 @@ RSpec.describe SpotifyTag, type: :liquid_template do
     end
 
     it "raises an error if the uri is invalid" do
-      expect { generate_tag(invalid_uri) }.to raise_error(StandardError, "Invalid Spotify Link - Be sure you're using the uri of a specific track, album, artist, playlist, or podcast episode.")
+      message = "Invalid Spotify Link - Be sure you're using the uri of a specific track, " \
+        "album, artist, playlist, or podcast episode."
+      expect do
+        generate_tag(invalid_uri)
+      end.to raise_error(StandardError, message)
     end
   end
 end

@@ -1,4 +1,4 @@
-class AddPlitTestingStuffToSponsorsForReal < ActiveRecord::Migration
+class AddPlitTestingStuffToSponsorsForReal < ActiveRecord::Migration[4.2]
   def change
     remove_column :articles, :alt_description, :text
     remove_column :articles, :alt_image, :string

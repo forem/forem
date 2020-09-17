@@ -4,8 +4,9 @@ export default function initBlock() {
   const blockButton = document.getElementById(
     'user-profile-dropdownmenu-block-button',
   );
-  if (!blockButton) { // button not always present when this is called 
-    return
+  if (!blockButton) {
+    // button not always present when this is called
+    return;
   }
   const { profileUserId } = blockButton.dataset;
 
@@ -23,8 +24,8 @@ export default function initBlock() {
         },
       }),
     })
-      .then(response => response.json())
-      .then(response => {
+      .then((response) => response.json())
+      .then((response) => {
         if (response.result === 'unblocked') {
           blockButton.innerText = 'Block';
           /* eslint-disable-next-line no-use-before-define */
@@ -35,7 +36,7 @@ export default function initBlock() {
           );
         }
       })
-      .catch(e => {
+      .catch((e) => {
         window.alert(
           `Something went wrong: ${e}. -- Please refresh the page to try again.`,
         );
@@ -63,8 +64,8 @@ export default function initBlock() {
           },
         }),
       })
-        .then(response => response.json())
-        .then(response => {
+        .then((response) => response.json())
+        .then((response) => {
           if (response.result === 'blocked') {
             blockButton.innerText = 'Unblock';
             blockButton.addEventListener('click', unblock, { once: true });
@@ -74,7 +75,7 @@ export default function initBlock() {
             );
           }
         })
-        .catch(e => {
+        .catch((e) => {
           window.alert(
             `Something went wrong: ${e}. -- Please refresh the page to try again.`,
           );
@@ -86,14 +87,17 @@ export default function initBlock() {
 
   // userData() is a global function
   /* eslint-disable-next-line no-undef */
-  const currentUserId = userData().id;
+  const user = userData();
+  if (!user) {
+    return;
+  }
 
-  if (currentUserId === parseInt(profileUserId, 10)) {
+  if (user.id === parseInt(profileUserId, 10)) {
     blockButton.style.display = 'none';
   } else {
     fetch(`/user_blocks/${profileUserId}`)
-      .then(response => response.json())
-      .then(response => {
+      .then((response) => response.json())
+      .then((response) => {
         if (response.result === 'blocking') {
           blockButton.innerText = 'Unblock';
           blockButton.addEventListener('click', unblock, { once: true });

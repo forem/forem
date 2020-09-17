@@ -1,6 +1,4 @@
 class CommentDecorator < ApplicationDecorator
-  delegate_all
-
   LOW_QUALITY_THRESHOLD = -75
 
   def low_quality
@@ -11,5 +9,9 @@ class CommentDecorator < ApplicationDecorator
     return "" if created_at.nil?
 
     created_at.utc.iso8601
+  end
+
+  def published_at_int
+    created_at.to_i
   end
 end

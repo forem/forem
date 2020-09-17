@@ -1,35 +1,37 @@
 class ChatChannel < ApplicationRecord
-  include AlgoliaSearch
-  attr_accessor :current_user, :usernames_string
+  attr_accessor :current_user, :usernames_string, :username_string
 
-  has_many :messages
+  resourcify
+
+  CHANNEL_TYPES = %w[open invite_only direct].freeze
+  STATUSES = %w[active inactive blocked].freeze
+
+  has_many :messages, dependent: :destroy
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
 
-  has_many :active_memberships, -> { where status: "active" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
-  has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
-  has_many :rejected_memberships, -> { where status: "rejected" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :active_memberships, lambda {
+                                  where status: "active"
+                                }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :pending_memberships, lambda {
+                                   where status: "pending"
+                                 }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :rejected_memberships, lambda {
+                                    where status: "rejected"
+                                  }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :mod_memberships, -> { where role: "mod" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :requested_memberships, lambda {
+                                     where status: "joining_request"
+                                   }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :active_users, through: :active_memberships, class_name: "User", source: :user
   has_many :pending_users, through: :pending_memberships, class_name: "User", source: :user
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
-  validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
-  validates :status, presence: true, inclusion: { in: %w[active inactive blocked] }
+  validates :channel_type, presence: true, inclusion: { in: CHANNEL_TYPES }
+  validates :status, presence: true, inclusion: { in: STATUSES }
   validates :slug, uniqueness: true, presence: true
-
-  algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
-    attribute :id, :viewable_by, :slug, :channel_type,
-              :channel_name, :last_message_at, :status,
-              :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields,
-              :description
-    searchableAttributes %i[channel_name channel_slug channel_human_names]
-    attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)", "filterOnly(channel_type)"]
-    ranking ["desc(last_message_at)"]
-  end
-
-  before_destroy :remove_from_index!, prepend: true
+  validates :description, length: { maximum: 200 }, allow_blank: true
 
   def open?
     channel_type == "open"
@@ -43,8 +45,16 @@ class ChatChannel < ApplicationRecord
     channel_type == "invite_only"
   end
 
+  def group?
+    channel_type != "direct"
+  end
+
+  def private_org_channel?
+    channel_name.to_s.ends_with?(" private group chat") # e.g. @devteam private group chat
+  end
+
   def clear_channel
-    messages.delete_all
+    messages.destroy_all
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
     true
   rescue Pusher::Error => e
@@ -57,113 +67,114 @@ class ChatChannel < ApplicationRecord
 
   def last_opened_at(user = nil)
     user ||= current_user
-    chat_channel_memberships.where(user_id: user.id).pluck(:last_opened_at).first
-  end
-
-  def self.create_with_users(users, channel_type = "direct", contrived_name = "New Channel")
-    raise "Invalid direct channel" if users.size != 2 && channel_type == "direct"
-
-    if channel_type == "direct"
-      usernames = users.map(&:username).sort
-      contrived_name = "Direct chat between " + usernames.join(" and ")
-      slug = usernames.join("/")
-    else
-      slug = contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
-    end
-
-    channel = ChatChannel.find_by(slug: slug)
-    if channel
-      raise "Blocked channel" if channel.status == "blocked"
-
-      channel.status = "active"
-      channel.save
-    else
-      channel = create(
-        channel_type: channel_type,
-        channel_name: contrived_name,
-        slug: slug,
-        last_message_at: 1.week.ago,
-        status: "active",
-      )
-      channel.add_users(users)
-      channel.index!
-      channel.chat_channel_memberships.map(&:index!)
-    end
-    channel
+    chat_channel_memberships.where(user_id: user.id).pick(:last_opened_at)
   end
 
   def add_users(users)
-    Array(users).each do |user|
-      ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
+    now = Time.current
+    users_params = Array.wrap(users).map do |user|
+      { user_id: user.id, chat_channel_id: id, created_at: now, updated_at: now }
     end
+
+    # memberships that are not unique are automatically skipped
+    ChatChannelMembership.insert_all(
+      users_params,
+      unique_by: :index_chat_channel_memberships_on_chat_channel_id_and_user_id,
+    )
+  end
+
+  def invite_users(users:, membership_role: "member", inviter: nil)
+    invitation_sent = 0
+    Array(users).each do |user|
+      existing_membership = ChatChannelMembership.find_by(user_id: user.id, chat_channel_id: id)
+      if existing_membership.present? && %w[active pending].exclude?(existing_membership.status)
+        if existing_membership.update(status: "pending", role: membership_role)
+          NotifyMailer.with(membership: existing_membership, inviter: inviter).channel_invite_email.deliver_later
+          invitation_sent += 1
+        end
+      else
+        membership = ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role,
+                                                  status: "pending")
+        if membership.persisted?
+          NotifyMailer.with(membership: membership, inviter: inviter).channel_invite_email.deliver_later
+          invitation_sent += 1
+        end
+      end
+    end
+    invitation_sent
   end
 
   def remove_user(user)
-    chat_channel_memberships.where(user: user).destroy_all
+    chat_channel_memberships.destroy_by(user: user)
   end
 
   def pusher_channels
     if invite_only?
-      "presence-channel-#{id}"
+      "private-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
     elsif open?
-      "open-channel-#{id}"
+      "open-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
     else
-      chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}" }
+      chat_channel_memberships.pluck(:user_id).map { |id| ChatChannel.pm_notifications_channel(id) }
     end
+  end
+
+  def channel_users_ids
+    chat_channel_memberships.pluck(:user_id)
   end
 
   def adjusted_slug(user = nil, caller_type = "receiver")
     user ||= current_user
     if direct? && caller_type == "receiver"
-      "@" + slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
+      cleaned_slug = slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
+      "@#{cleaned_slug}"
     elsif caller_type == "sender"
-      "@" + user.username
+      "@#{user.username}"
     else
       slug
     end
   end
 
-  def viewable_by
-    active_memberships.pluck(:user_id)
-  end
-
-  def messages_count
-    messages.size
-  end
-
   def channel_human_names
-    active_memberships.
-      order("last_opened_at DESC").limit(5).includes(:user).map do |membership|
+    active_memberships
+      .order(last_opened_at: :desc).limit(5).includes(:user).map do |membership|
         membership.user.name
       end
   end
 
   def channel_users
-    # Purely for algolia indexing
     obj = {}
-    active_memberships.
-      order("last_opened_at DESC").includes(:user).each do |membership|
+
+    relation = active_memberships.includes(:user).select(:id, :user_id, :last_opened_at)
+
+    relation.order(last_opened_at: :desc).each do |membership|
       obj[membership.user.username] = user_obj(membership)
     end
+
     obj
   end
 
   def channel_mod_ids
-    mod_users.pluck(:id)
+    mod_users.ids
   end
+
+  def pending_users_select_fields
+    pending_users.select(:id, :username, :name, :updated_at)
+  end
+
+  def self.pm_notifications_channel(user_id)
+    "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{user_id}"
+  end
+
+  private
 
   def user_obj(membership)
     {
-      profile_image: ProfileImage.new(membership.user).get(90),
+      profile_image: Images::Profile.call(membership.user.profile_image_url, length: 90),
       darker_color: membership.user.decorate.darker_color,
       name: membership.user.name,
       last_opened_at: membership.last_opened_at,
       username: membership.user.username,
       id: membership.user_id
     }
-  end
-
-  def pending_users_select_fields
-    pending_users.select(:id, :username, :name, :updated_at)
   end
 end

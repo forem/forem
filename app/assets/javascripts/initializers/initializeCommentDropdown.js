@@ -1,17 +1,10 @@
-'use strict';
+/* global Runtime */
 
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
-  function isIOSDevice() {
-    return (
-      /iPhone|CriOS|iPad/i.test(navigator.userAgent) ||
-      navigator.userAgent === 'DEV-Native-ios'
-    );
-  }
-
   function removeClass(className) {
-    return element => element.classList.remove(className);
+    return (element) => element.classList.remove(className);
   }
 
   function getAllByClassName(className) {
@@ -23,7 +16,7 @@ function initializeCommentDropdown() {
     const input =
       activeElement.localName === 'clipboard-copy'
         ? activeElement.querySelector('input')
-        : activeElement;
+        : document.getElementById('article-copy-link-input');
     input.focus();
     input.setSelectionRange(0, input.value.length);
     announcer.hidden = false;
@@ -31,15 +24,15 @@ function initializeCommentDropdown() {
 
   function hideAnnouncer() {
     if (announcer) {
-      announcer.hidden = true; 
+      announcer.hidden = true;
     }
   }
 
-  function iOSCopyText() {
-    const input = document.getElementById('article-copy-link-input');
-    input.setSelectionRange(0, input.value.length);
-    document.execCommand('copy');
-    showAnnouncer();
+  function copyText() {
+    const inputValue = document.getElementById('article-copy-link-input').value;
+    Runtime.copyToClipboard(inputValue).then(() => {
+      showAnnouncer();
+    });
   }
 
   function shouldCloseDropdown(event) {
@@ -47,8 +40,7 @@ function initializeCommentDropdown() {
       event.target.matches('.dropdown-icon') ||
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
-      event.target.matches('clipboard-copy input') ||
-      event.target.matches('clipboard-copy img') ||
+      document.getElementById('article-copy-icon').contains(event.target) ||
       event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }
@@ -61,20 +53,16 @@ function initializeCommentDropdown() {
   }
 
   function removeCopyListener() {
-    if (isIOSDevice()) {
-      const clipboardCopyElement = document.getElementsByTagName(
-        'clipboard-copy',
-      )[0];
-      if (clipboardCopyElement) {
-        clipboardCopyElement.removeEventListener('click', iOSCopyText);
-      }
-    } else {
-      document.removeEventListener('clipboard-copy', showAnnouncer);
+    const clipboardCopyElement = document.getElementsByTagName(
+      'clipboard-copy',
+    )[0];
+    if (clipboardCopyElement) {
+      clipboardCopyElement.removeEventListener('click', copyText);
     }
   }
 
   function removeAllShowing() {
-    getAllByClassName('showing').forEach(removeClass('showing'));
+    getAllByClassName('crayons-dropdown').forEach(removeClass('block'));
   }
 
   function outsideClickListener(event) {
@@ -86,32 +74,52 @@ function initializeCommentDropdown() {
   }
 
   function dropdownFunction(e) {
-    var button = e.target.parentElement;
-    var dropdownContent = button.parentElement.getElementsByClassName(
-      'dropdown-content',
+    const button = e.currentTarget;
+    const dropdownContent = button.parentElement.getElementsByClassName(
+      'crayons-dropdown',
     )[0];
-    if (dropdownContent.classList.contains('showing')) {
-      dropdownContent.classList.remove('showing');
+
+    if (!dropdownContent) {
+      return;
+    }
+
+    // Android native apps have enhanced sharing capabilities for Articles
+    const articleShowMoreClicked = button.id === 'article-show-more-button';
+    if (articleShowMoreClicked && Runtime.isNativeAndroid('shareText')) {
+      AndroidBridge.shareText(location.href);
+      return;
+    }
+
+    finalizeAbuseReportLink(
+      dropdownContent.querySelector('.report-abuse-link-wrapper'),
+    );
+
+    if (dropdownContent.classList.contains('block')) {
+      dropdownContent.classList.remove('block');
       removeClickListener();
       removeCopyListener();
       hideAnnouncer();
     } else {
       removeAllShowing();
-      dropdownContent.classList.add('showing');
-      if (isIOSDevice()) {
-        const clipboardCopyElement = document.getElementsByTagName(
-          'clipboard-copy',
-        )[0];
+      dropdownContent.classList.add('block');
+      const clipboardCopyElement = document.getElementsByTagName(
+        'clipboard-copy',
+      )[0];
 
-        document.addEventListener('click', outsideClickListener);
-        if (clipboardCopyElement) {
-          clipboardCopyElement.addEventListener('click', iOSCopyText);          
-        }
-      } else {
-        document.addEventListener('click', outsideClickListener);
-        document.addEventListener('clipboard-copy', showAnnouncer);
+      document.addEventListener('click', outsideClickListener);
+      if (clipboardCopyElement) {
+        clipboardCopyElement.addEventListener('click', copyText);
       }
     }
+  }
+
+  function finalizeAbuseReportLink(reportAbuseLink) {
+    // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
+    if (!reportAbuseLink) {
+      return;
+    }
+
+    reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
   }
 
   function addDropdownListener(dropdown) {

@@ -1,4 +1,4 @@
-class AddSignUpInformationToUsers < ActiveRecord::Migration
+class AddSignUpInformationToUsers < ActiveRecord::Migration[4.2]
   def change
     add_column :users, :signup_cta_variant, :string
     add_column :users, :signup_refer_code, :string

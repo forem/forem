@@ -1,6 +1,7 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import '@testing-library/jest-dom';
+import { axe } from 'jest-axe';
 import Message from '../message';
 
 const msg = {
@@ -10,7 +11,7 @@ const msg = {
   color: '#00FFFF',
 };
 
-const getMessage = message => (
+const getMessage = (message) => (
   <Message
     user={message.username}
     userID={message.user_id}
@@ -20,22 +21,21 @@ const getMessage = message => (
 );
 
 describe('<Message />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getMessage(msg));
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations', async () => {
+    const { container } = render(getMessage(msg));
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  it('should have the proper elements, attributes and values', () => {
-    const context = shallow(getMessage(msg));
-    expect(context.find('.chatmessage').exists()).toEqual(true);
-    expect(
-      context.find('.chatmessagebody__message').attr('dangerouslySetInnerHTML'),
-    ).toEqual({ __html: msg.message });
-    expect(
-      context.find('.chatmessagebody__username').attr('style').color,
-    ).toEqual(msg.color);
-    expect(context.find('.chatmessagebody__username--link').text()).toEqual(
-      msg.username,
-    );
+  it('should render', () => {
+    const { getByText, getByAltText } = render(getMessage(msg));
+
+    getByAltText('asdf profile');
+    getByText(msg.message);
+
+    const profileLink = getByText(msg.username);
+
+    expect(profileLink.parentElement).toHaveStyle({ color: msg.color });
   });
 });

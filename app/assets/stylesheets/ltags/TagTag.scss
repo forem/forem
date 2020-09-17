@@ -1,9 +1,9 @@
-@import 'variables';
-@import 'mixins';
+@import '../variables';
+@import '../mixins';
 
 .ltag__tag {
   border: 1px solid $black;
-  font-family: $helvetica;
+  font-family: var(--ff-sans-serif);
   border: 1px solid $light-medium-gray;
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
   border-radius: 3px;
@@ -11,13 +11,14 @@
   margin: 0.95em 0 1.2em;
   position: relative;
   overflow: hidden;
+  width: auto;
   @media screen and (min-width: 760px) {
     margin: 0.95em auto;
-    width: 620px;
+    max-width: 620px;
   }
   .ltag__tag__content {
     a {
-      @include themeable-important(color, theme-container-color, $black);
+      color: var(--card-color);
     }
     width: 90%;
     width: calc(100% - 36px);

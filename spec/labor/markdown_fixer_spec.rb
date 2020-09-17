@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarkdownFixer do
+RSpec.describe MarkdownFixer, type: :labor do
   let(:sample_text) { Faker::Book.title }
 
   def front_matter(title: "", description: "")
@@ -62,23 +62,23 @@ RSpec.describe MarkdownFixer do
 
     it "does not escape a description that came pre-wrapped in single quotes" do
       legacy_description = "'#{sample_text}'"
-      result = described_class.
-        add_quotes_to_description(front_matter(description: legacy_description))
+      result = described_class
+        .add_quotes_to_description(front_matter(description: legacy_description))
       expect(result).to eq(front_matter(description: legacy_description))
     end
 
     it "does not escape a description that came pre-wrapped in double quotes" do
       legacy_description = "\"#{sample_text}\""
-      result = described_class.
-        add_quotes_to_description(front_matter(description: legacy_description))
+      result = described_class
+        .add_quotes_to_description(front_matter(description: legacy_description))
       expect(result).to eq(front_matter(description: legacy_description))
     end
 
     it "handles a complex description" do
       legacy_description = %(Book review: "#{sample_text}", part 1 I'm #testing)
       expected_description = "\"Book review: \\\"#{sample_text}\\\", part 1 I'm #testing\""
-      result = described_class.
-        add_quotes_to_description(front_matter(description: legacy_description))
+      result = described_class
+        .add_quotes_to_description(front_matter(description: legacy_description))
       expect(result).to eq(front_matter(description: expected_description))
     end
 
@@ -100,16 +100,16 @@ RSpec.describe MarkdownFixer do
 
   describe "::fix_all" do
     it "escapes title and description" do
-      result = described_class.
-        fix_all(front_matter(title: sample_text, description: sample_text))
+      result = described_class
+        .fix_all(front_matter(title: sample_text, description: sample_text))
       expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
       expect(result).to eq(expected_result)
     end
 
     context "when description is empty" do
       it "escapes title and description" do
-        result = described_class.
-          fix_all("---\ntitle: #{sample_text}\ndescription:\ntags: \n---\n")
+        result = described_class
+          .fix_all("---\ntitle: #{sample_text}\ndescription:\ntags: \n---\n")
         expected_result = "---\ntitle: \"#{sample_text}\"\ndescription: \"\"\ntags: \n---\n"
         expect(result).to eq(expected_result)
       end
@@ -118,8 +118,8 @@ RSpec.describe MarkdownFixer do
 
   describe "::fix_for_preview" do
     it "escapes title and description" do
-      result = described_class.
-        fix_for_preview(front_matter(title: sample_text, description: sample_text))
+      result = described_class
+        .fix_for_preview(front_matter(title: sample_text, description: sample_text))
       expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
       expect(result).to eq(expected_result)
     end
@@ -130,7 +130,7 @@ RSpec.describe MarkdownFixer do
       test_string1 = "@_xy_"
       expected_result1 = "@\\_xy\\_"
       test_string2 = "@_x_y_"
-      expected_result2 = "@\\_x_y\\_"
+      expected_result2 = "@\\_x\\_y\\_"
 
       expect(described_class.underscores_in_usernames(test_string1)).to eq(expected_result1)
       expect(described_class.underscores_in_usernames(test_string2)).to eq(expected_result2)
@@ -140,6 +140,23 @@ RSpec.describe MarkdownFixer do
       test_string = "_make this cursive_"
       expected_result = "_make this cursive_"
       expect(described_class.underscores_in_usernames(test_string)).to eq(expected_result)
+    end
+
+    it "escapes correctly and ignores underscored username in code and code block" do
+      input = <<~INPUT
+        @_dev_
+
+        ```ruby
+        @_no_escape_codeblock
+        ```
+
+        `@_no_escape_code`
+      INPUT
+
+      result = described_class.underscores_in_usernames(input)
+
+      expect(result).to include("@\\_dev\\_")
+      expect(result).to include("@_no_escape_codeblock", "@_no_escape_code")
     end
   end
 end

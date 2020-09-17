@@ -1,0 +1,99 @@
+@import 'variables';
+
+#page-content.podcasts-new,
+#page-content.podcasts-create {
+  .podcasts-form {
+    text-align: left;
+    margin: auto;
+    width: 100%;
+    position: relative;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //Invisible black
+    max-width: 750px;
+    padding-bottom: 30px;
+    @media screen and (min-width: 750px) {
+      margin-bottom: 30px;
+    }
+    @media screen and (min-width: 950px) {
+      width: 100%;
+      margin-left: 2.3%;
+      margin-right: 15px;
+      max-width: calc(100% - 380px);
+      float: left;
+    }
+    @media screen and (min-width: 1120px) {
+      max-width: calc(100% - 640px);
+    }
+    @media screen and (min-width: 1240px) {
+      width: 100%;
+      margin-left: 2.3%;
+      margin-right: 15px;
+      max-width: 604px;
+      float: left;
+    }
+  }
+  h2 {
+    font-size: 1.45em;
+  }
+  .podcast-errors {
+    background: $red;
+    color: $black;
+    padding: 20px;
+    border-radius: 3px;
+    h2 {
+      color: $black;
+      margin: 0;
+      font-size: 1.3em;
+    }
+    ul {
+      margin-bottom: 0;
+    }
+  }
+  form {
+    font-size: 15px;
+    input[type='checkbox'] {
+      display: inline;
+    }
+    input:not([type='checkbox']) {
+      width: 650px;
+      max-width: calc(100% - 30px);
+      padding: 12px;
+      font-size: 19px;
+      border: 1px solid rgb(222, 230, 233);
+      border-radius: 3px;
+      &[type='file'] {
+        border: 0px;
+        padding: 12px 0px;
+      }
+      &[type='submit'] {
+        width: 255px;
+        max-width: 100%;
+        padding: 14px 0px;
+        margin-top: 20px;
+        font-size: 1.5em;
+        cursor: pointer;
+        &.danger-button {
+          background: $red;
+        }
+        &:hover {
+          opacity: 0.88;
+        }
+      }
+    }
+    textarea {
+      width: 650px;
+      max-width: calc(100% - 30px);
+      padding: 12px;
+      font-size: 19px;
+      border: 1px solid rgb(222, 230, 233);
+      border-radius: 3px;
+    }
+    label {
+      display: inline-block;
+      vertical-align: top;
+      padding: 14px 0px 8px;
+    }
+    label.i_am_owner {
+      padding: 2px 0 2px 10px;
+    }
+  }
+}

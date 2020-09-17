@@ -1,39 +1,36 @@
-<% title "Contact The Practical Dev" %>
+<% title "Contact #{community_qualified_name}" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/contact" />
-  <meta name="description" content="Contact The Practical Dev">
-  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <link rel="canonical" href="<%= app_url("/contact") %>" />
+  <meta name="description" content="Contact #{community_qualified_name}">
+  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/contact" />
-  <meta property="og:title" content="Contact The Practical Dev" />
-  <meta property="og:image" content="http://i.imgur.com/B4JNl1w.png" />
-  <meta property="og:description" content="The Practical Dev is great!" />
-  <meta property="og:site_name" content="The Practical Dev" />
+  <meta property="og:url" content="<%= app_url("/contact") %>" />
+  <meta property="og:title" content="Contact #{community_qualified_name}" />
+  <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
+  <meta property="og:description" content="<%= community_qualified_name %> is great!" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
-  <meta name="twitter:title" content="Contact The Practical Dev">
-  <meta name="twitter:description" content="The Practical Dev is great!">
-  <meta name="twitter:image:src" content="http://i.imgur.com/B4JNl1w.png">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+  <meta name="twitter:title" content="Contact #{community_qualified_name}">
+  <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
+  <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 
-<div class="container article">
-  <div class="title">
-    <h1>
-      Contact
-    </h1>
-  </div>
-  <div class="body">
+<div class="crayons-layout crayons-layout--limited">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Contacts</h1>
+
     <p>
-      The Practical Dev would love to hear from you!
+      <%= community_qualified_name %> would love to hear from you!
     </p>
     <p>
-      Email: <a href="mailto:<%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %>"><%= ApplicationConfig["DEFAULT_SITE_EMAIL"] %></a> 😁
+      Email: <%= email_link %> 😁
     </p>
     <p>
-      Twitter: <a href="http://twitter.com/<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %></a> 👻
+      Twitter: <a href="http://twitter.com/<%= SiteConfig.social_media_handles["twitter"] %>">@<%= SiteConfig.social_media_handles["twitter"] %></a> 👻
     </p>
     <p>
       Report a vulnerability: <a href="https://dev.to/security">dev.to/security</a> 🐛

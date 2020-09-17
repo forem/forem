@@ -1,5 +1,6 @@
 class CreditsController < ApplicationController
   before_action :authenticate_user!
+  before_action :initialize_stripe
 
   def index
     @user_unspent_credits_count = current_user.credits.unspent.size
@@ -26,16 +27,24 @@ class CreditsController < ApplicationController
 
     return unless make_payment
 
-    credit_objects = Array.new(@number_to_purchase) do
+    credits_attributes = Array.new(@number_to_purchase) do
+      # unfortunately Rails requires the timestamps to be present and doesn't add them automatically
+      # see <https://github.com/rails/rails/issues/35493>
+      now = Time.current
+      attrs = { created_at: now, updated_at: now, cost: cost_per_credit / 100.0 }
+
       if params[:organization_id].present?
         @purchaser = Organization.find(params[:organization_id])
-        Credit.new(organization_id: params[:organization_id], cost: cost_per_credit / 100.0)
+        attrs[:organization_id] = params[:organization_id]
       else
         @purchaser = current_user
-        Credit.new(user_id: current_user.id, cost: cost_per_credit / 100.0)
+        attrs[:user_id] = current_user.id
       end
+
+      attrs
     end
-    Credit.import credit_objects
+    Credit.insert_all(credits_attributes)
+
     @purchaser.credits_count = @purchaser.credits.size
     @purchaser.spent_credits_count = @purchaser.credits.spent.size
     @purchaser.unspent_credits_count = @purchaser.credits.unspent.size
@@ -91,14 +100,17 @@ class CreditsController < ApplicationController
   end
 
   def cost_per_credit
-    if @number_to_purchase < 10
-      500
-    elsif @number_to_purchase < 100
-      400
-    elsif @number_to_purchase < 1000
-      300
+    prices = SiteConfig.credit_prices_in_cents
+
+    case @number_to_purchase
+    when ..9
+      prices[:small]
+    when 10..99
+      prices[:medium]
+    when 100..999
+      prices[:large]
     else
-      250
+      prices[:xlarge]
     end
   end
 end

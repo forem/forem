@@ -1,4 +1,5 @@
 class GaEventsController < ApplicationController
+  include ApplicationHelper
   # No authorization required for entirely public controller
 
   # This controller is for tracking activity when GA script fails
@@ -8,12 +9,12 @@ class GaEventsController < ApplicationController
     json = JSON.parse(request.raw_post)
     user_id = user_signed_in? ? current_user.id : nil
     client_id = "#{scrambled_ip[0..12]}_#{json['user_agent']}_#{user_id}"
-    tracker = Staccato.tracker(ApplicationConfig["GA_TRACKING_ID"], client_id)
+    tracker = Staccato.tracker(SiteConfig.ga_tracking_id, client_id)
     tracker.pageview(
       path: json["path"],
       user_id: user_id,
       user_language: json["user_language"],
-      referrer: (json["referrer"] if json["referrer"] && !json["referrer"].start_with?("https://dev.to")),
+      referrer: (json["referrer"] if json["referrer"] && !json["referrer"].start_with?(app_url)),
       user_agent: json["user_agent"],
       viewport_size: json["viewport_size"],
       screen_resolution: json["screen_resolution"],
@@ -23,7 +24,6 @@ class GaEventsController < ApplicationController
       cache_buster: rand(100_000_000_000).to_s,
       data_source: "web",
     )
-    logger.info("Server-Side Google Analytics Tracking - #{client_id}")
     render body: nil
   end
 
@@ -33,7 +33,7 @@ class GaEventsController < ApplicationController
   end
 
   def todays_key
-    RedisRailsCache.fetch("daily_random_key", expires_in: 48.hours) do
+    Rails.cache.fetch("daily_random_key", expires_in: 48.hours) do
       SecureRandom.random_bytes(32)
     end
   end

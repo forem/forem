@@ -1,4 +1,6 @@
 class NotificationsController < ApplicationController
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   # No authorization required because we provide authentication on notifications page
   def index
     return unless user_signed_in?
@@ -26,17 +28,20 @@ class NotificationsController < ApplicationController
                        @user.notifications
                      end
 
-    @notifications = @notifications.includes(:notifiable).without_past_aggregations.order(notified_at: :desc)
+    @notifications = @notifications.order(notified_at: :desc)
 
     # if offset based pagination is invoked by the frontend code, we filter out all earlier ones
     @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
 
-    @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
+    @notifications = @notifications.limit(num)
+
+    @notifications = NotificationDecorator.decorate_collection(@notifications)
 
     @last_user_reaction = @user.reactions.last&.id
     @last_user_comment = @user.comments.last&.id
 
     @organizations = @user.member_organizations if @user.organizations
+    @selected_organization = Organization.find(params[:org_id]) if params[:org_id].present?
 
     # The first call, the one coming from the browser URL bar will render the "index" view, which renders
     # the first few notifications. After that the JS frontend code (see `initNotification.js`)
@@ -44,6 +49,8 @@ class NotificationsController < ApplicationController
     # will be the partial rendering of only the list of notifications that will be attached to the DOM by JS
     render partial: "notifications_list" if notified_at_offset
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   private
 
@@ -60,6 +67,8 @@ class NotificationsController < ApplicationController
       @user.notifications.for_published_articles
     elsif params[:filter].to_s.casecmp("comments").zero?
       @user.notifications.for_comments.or(@user.notifications.for_mentions)
+    else
+      @user.notifications
     end
   end
 
@@ -74,6 +83,6 @@ class NotificationsController < ApplicationController
   end
 
   def allowed_user?
-    @user.organization_id == params[:org_id] || @user.admin?
+    @user.org_member?(params[:org_id]) || @user.admin?
   end
 end

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::RemoveAllByAction do
+RSpec.describe Notifications::RemoveAllByAction, type: :service do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:organization) { create(:organization) }
@@ -11,7 +11,8 @@ RSpec.describe Notifications::RemoveAllByAction do
   before do
     create(:notification, user: user, notifiable_id: article.id, notifiable_type: "Article", action: "Published")
     create(:notification, user: user2, notifiable_id: article.id, notifiable_type: "Article", action: "Published")
-    create(:notification, organization: organization, notifiable_id: comment.id, notifiable_type: "Comment", action: "Reaction")
+    create(:notification, organization: organization, notifiable_id: comment.id, notifiable_type: "Comment",
+                          action: "Reaction")
   end
 
   it "checks all notifications for an article are deleted and only for an article" do

@@ -2,44 +2,71 @@ require "rails_helper"
 
 RSpec.describe ChatChannel, type: :model do
   let(:chat_channel) { create(:chat_channel) }
-  let(:message) { create(:chat_channel, message_id: chat_channel.id) }
 
-  it { is_expected.to have_many(:messages) }
-  it { is_expected.to validate_presence_of(:channel_type) }
+  let(:users) { create_list(:user, 2) }
 
-  it "clears chat" do
-    allow(Pusher).to receive(:trigger)
-    chat_channel.clear_channel
-    expect(chat_channel.messages.size).to eq(0)
+  describe "validations" do
+    describe "builtin validations" do
+      subject { chat_channel }
+
+      it { is_expected.to have_many(:messages).dependent(:destroy) }
+      it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:users).through(:chat_channel_memberships) }
+
+      it { is_expected.to validate_inclusion_of(:channel_type).in_array(%w[open invite_only direct]) }
+      it { is_expected.to validate_inclusion_of(:status).in_array(%w[active inactive blocked]) }
+      it { is_expected.to validate_length_of(:description).is_at_most(200) }
+      it { is_expected.to validate_presence_of(:channel_type) }
+      it { is_expected.to validate_presence_of(:status) }
+      it { is_expected.to validate_uniqueness_of(:slug) }
+    end
   end
 
-  it "creates channel with users" do
-    chat_channel = described_class.create_with_users([create(:user), create(:user)])
-    expect(chat_channel.users.size).to eq(2)
-    expect(chat_channel.has_member?(User.first)).to eq(true)
+  describe "#clear_channel" do
+    before { allow(Pusher).to receive(:trigger) }
+
+    it "clears chat" do
+      create(:message, chat_channel: chat_channel, user: create(:user))
+      chat_channel.reload
+      expect(chat_channel.messages.size).to be_positive
+      chat_channel.clear_channel
+      expect(chat_channel.messages.size).to eq(0)
+    end
   end
 
-  it "lists active memberships" do
-    chat_channel = described_class.create_with_users([create(:user), create(:user)])
-    expect(chat_channel.active_users.size).to eq(2)
-    expect(chat_channel.channel_users.size).to eq(2)
-  end
+  describe "#add_users" do
+    it "adds users" do
+      expect do
+        chat_channel.add_users(users)
+      end.to change(chat_channel.users, :count).by(users.size)
+    end
 
-  it "decreases active users if one leaves" do
-    chat_channel = described_class.create_with_users([create(:user), create(:user)])
-    ChatChannelMembership.last.update(status: "left_channel")
-    expect(chat_channel.active_users.size).to eq(1)
-    expect(chat_channel.channel_users.size).to eq(1)
+    it "does not add users twice" do
+      expect do
+        chat_channel.add_users(users)
+        chat_channel.add_users(users)
+      end.to change(chat_channel.users, :count).by(users.size)
+    end
   end
 
   describe "#remove_user" do
-    let(:user) { create(:user) }
-
     it "removes a user from a channel" do
-      chat_channel.add_users(user)
-      expect(chat_channel.chat_channel_memberships.exists?(user_id: user.id)).to be(true)
-      chat_channel.remove_user(user)
-      expect(chat_channel.chat_channel_memberships.exists?(user_id: user.id)).to be(false)
+      chat_channel.add_users(users.first)
+      expect(chat_channel.chat_channel_memberships.exists?(user_id: users.first.id)).to be(true)
+      chat_channel.remove_user(users.first)
+      expect(chat_channel.chat_channel_memberships.exists?(user_id: users.first.id)).to be(false)
+    end
+  end
+
+  describe "#private_org_channel?" do
+    it "detects private org channel if name matches" do
+      chat_channel.channel_name = "@org private group chat"
+      expect(chat_channel.private_org_channel?).to be(true)
+    end
+
+    it "detects not private org channel if name does not match" do
+      chat_channel.channel_name = "@org magoo"
+      expect(chat_channel.private_org_channel?).to be(false)
     end
   end
 end

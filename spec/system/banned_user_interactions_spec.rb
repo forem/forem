@@ -5,6 +5,6 @@ RSpec.describe "Banned user", type: :system do
 
   it "tries to create an article" do
     sign_in banned_user
-    expect { visit "/new" }.to raise_error("BANNED")
+    expect { visit "/new" }.to raise_error("SUSPENDED")
   end
 end

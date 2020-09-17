@@ -1,3 +1,5 @@
+import { validateFileInputs } from '../packs/validateFileInputs';
+
 export function previewArticle(payload, successCb, failureCb) {
   fetch('/articles/preview', {
     method: 'POST',
@@ -11,7 +13,7 @@ export function previewArticle(payload, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -20,6 +22,7 @@ export function getArticle() {}
 
 function processPayload(payload) {
   const {
+    /* eslint-disable no-unused-vars */
     previewShowing,
     helpShowing,
     previewResponse,
@@ -27,6 +30,7 @@ function processPayload(payload) {
     imageManagementShowing,
     moreConfigShowing,
     errors,
+    /* eslint-enable no-unused-vars */
     ...neededPayload
   } = payload;
   return neededPayload;
@@ -47,13 +51,14 @@ export function submitArticle(payload, clearStorage, errorCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
-    .then(response => {
+    .then((response) => response.json())
+    .then((response) => {
       if (response.current_state_path) {
         clearStorage();
         window.location.replace(response.current_state_path);
       } else {
-        errorCb(response);
+        // If there is an error and the method is POST, we know they are trying to publish.
+        errorCb(response, method === 'POST');
       }
     })
     .catch(failureCb);
@@ -83,13 +88,34 @@ export function generateMainImage(payload, successCb, failureCb) {
     body: generateUploadFormdata(payload),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
-    .then(json => {
+    .then((response) => response.json())
+    .then((json) => {
       if (json.error) {
         throw new Error(json.error);
       }
-
-      return successCb(json);
+      const { links } = json;
+      const { image } = payload;
+      return successCb({ links, image });
     })
     .catch(failureCb);
+}
+
+/**
+ * Processes images for upload.
+ *
+ * @param {FileList} images Images to be uploaded.
+ * @param {Function} handleImageSuccess The handler that runs when the image is uploaded successfully.
+ * @param {Function} handleImageFailure The handler that runs when the image upload fails.
+ */
+export function processImageUpload(
+  images,
+  handleImageSuccess,
+  handleImageFailure,
+) {
+  // Currently only one image is supported for upload.
+  if (images.length > 0 && validateFileInputs()) {
+    const payload = { image: images };
+
+    generateMainImage(payload, handleImageSuccess, handleImageFailure);
+  }
 }

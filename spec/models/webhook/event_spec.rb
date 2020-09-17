@@ -2,12 +2,14 @@ require "rails_helper"
 
 RSpec.describe Webhook::Event, type: :model do
   let(:article) { create(:article) }
-  let!(:payload) { Webhook::PayloadAdapter.new(article).hash }
+  let(:payload) { Webhook::PayloadAdapter.new(article).hash }
 
-  it "raises an exception with a unknown event type" do
-    expect do
-      described_class.new(event_type: "cool_event")
-    end.to raise_error(Webhook::InvalidEvent)
+  describe "validations" do
+    it "raises an exception with a unknown event type" do
+      expect do
+        described_class.new(event_type: "cool_event")
+      end.to raise_error(Webhook::InvalidEvent)
+    end
   end
 
   describe "#as_json" do

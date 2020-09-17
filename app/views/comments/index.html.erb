@@ -1,65 +1,70 @@
 <% if @root_comment.present? %>
-  <% title @root_comment.title + " — DEV" %>
+  <% title("#{@root_comment.title} - #{community_name}") %>
 <% else %>
-  <% title "Discussion of " + @commentable.title + " — DEV" %>
+  <% title("Discussion of #{@commentable.title} - #{community_name}") %>
 <% end %>
 
 <%= content_for :page_meta do %>
   <meta name="description" content="<%= @commentable.description || "An article from the community" %>">
-  <meta name="keywords" content="software development, inclusive, community, engineering">
+  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:article] %>">
 
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Discussion of <%= @commentable.title %>" />
-  <meta property="og:description" content="<%= @commentable.description || "A DEV Comment" %>" />
-  <meta property="og:site_name" content="The DEV Community" />
-  <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
+  <meta property="og:description" content="<%= @commentable.description || "#{community_name} Comment" %>" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
   <meta name="twitter:title" content="<%= @commentable.title %>">
-  <meta name="twitter:description" content="<%= @commentable.description || "A DEV Comment" %>">
+  <meta name="twitter:description" content="<%= @commentable.description || "#{community_name} Comment" %>">
 
   <% if @root_comment.present? %>
-    <link rel="canonical" href="https://dev.to<%= @root_comment.path %>" />
-    <meta property="og:url" content="https://dev.to<%= @root_comment.path %>" />
-    <meta property="og:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — DEV" />
-    <meta name="twitter:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — DEV">
+    <link rel="canonical" href="<%= app_url(@root_comment.path) %>" />
+    <meta property="og:url" content="<%= app_url(@root_comment.path) %>" />
+    <meta property="og:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — <%= community_name %>" />
+    <meta name="twitter:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — <%= community_name %>">
     <meta property="og:image" content="<%= comment_social_image_url(@root_comment) %>" />
-    <meta name="twitter:image:src" content="<%= comment_social_image_url(@root_comment) %>">
+    <meta name="twitter:image" content="<%= comment_social_image_url(@root_comment) %>">
   <% else %>
-    <link rel="canonical" href="https://dev.to<%= @commentable.path %>/comments" />
-    <meta property="og:url" content="https://dev.to<%= @commentable.path %>/comments" />
-    <meta property="og:title" content="[Discussion] <%= @commentable.title %> — DEV" />
-    <meta name="twitter:title" content="[Discussion] <%= @commentable.title %> — DEV">
+    <link rel="canonical" href="<%= app_url("#{@commentable.path}/comments") %>" />
+    <meta property="og:url" content="<%= app_url("#{@commentable.path}/comments") %>" />
+    <meta property="og:title" content="[Discussion] <%= @commentable.title %> — <%= community_name %>" />
+    <meta name="twitter:title" content="[Discussion] <%= @commentable.title %> — <%= community_name %>">
     <% if @commentable.class.name == "Article" && @commentable.published %>
       <meta property="og:image" content="<%= article_social_image_url(@commentable) %>" />
-      <meta name="twitter:image:src" content="<%= article_social_image_url(@commentable) %>">
+      <meta name="twitter:image" content="<%= article_social_image_url(@commentable) %>">
     <% end %>
   <% end %>
 <% end %>
 
+<% if @commentable.class.name == "Article" %>
+  <%= render "shared/payment_pointer", user: @commentable.user %>
+  <div id="comment-article-indicator" data-article-id="<%= @commentable.id %>">
+<% end %>
 <% if @root_comment %>
   <div class="single-comment-header"></div>
 <% else %>
   <div class="article-header">
     <a href="<%= @commentable.path %>" class="header-link">
-      <% if @commentable.main_image.present? %>
+      <% if @commentable.respond_to?(:main_image) && @commentable.main_image.present? %>
         <div class="picture" style="background-image:url(<%= cloud_cover_url(@commentable.main_image) %>)"></div>
       <% else %>
         <div class="blank-comment-space"></div>
       <% end %>
       <h3 id="comments-header"><%= @commentable.title %></h3>
       <h4>
-        <%= @commentable.user.name %>
+        <%= @commentable.is_a?(PodcastEpisode) ? @commentable.podcast.name : @commentable.user.name %>
         <span class="published-at"><%= "on " + @commentable.published_at.strftime("%B %d, %Y") if @commentable.published_at %></span>
       </h4>
     </a>
     <% if @commentable.processed_html.present? %>
       <% if @commentable.processed_html.size < 350 %>
         <div class="body">
-          <%= sanitize_rendered_markdown(@commentable.processed_html.html_safe) %>
+          <%= sanitize_rendered_markdown(@commentable.processed_html) %>
         </div>
       <% else %>
         <div class="body">
-          <%= truncate(strip_tags(@commentable.processed_html), length: 150).html_safe %>
+          <%= truncate(sanitize(@commentable.processed_html, tags: []), length: 150) %>
           <a href="<%= @commentable.path %>"><span class="read-more">[Read Full]</span></a>
         </div>
       <% end %>
@@ -71,13 +76,15 @@
      data-commentable-id="<%= @commentable.id %>"
      data-commentable-type="<%= @commentable.class.name %>">
   <% if @root_comment %>
+    <div id="response-templates-data"></div>
+    <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
     <div class="top-level-actions">
       <h3>re: <%= @commentable.title %> <a href="<%= @commentable.path %>">VIEW POST</a></h3>
       <span class="comment-action-buttons">
         <% unless @root_comment.is_root? %>
           <a href="<%= @root_comment.root.path %>">TOP OF THREAD</a>
         <% end %>
-        <a href="<%= @commentable.path %>/comments">FULL DISCUSSION</a>
+        <a href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">FULL DISCUSSION</a>
       </span>
     </div>
   <% else %>
@@ -106,6 +113,14 @@
     <% end %>
   </div>
   <center style="margin:30px 0px 22px;">
+  <% if @commentable.any_comments_hidden %>
+    <div class="comments-hidden-message">
+      <p>
+        Some comments have been hidden by the post's author - <a href="/faq#what-does-comment-hidden-by-post-author-mean">find out more</a>
+      </p>
+    </div>
+  <% end %>
+
     <%= render "articles/conduct_and_abuse_actions", page: "comments_index" %>
   </center>
 </div>
@@ -114,8 +129,8 @@
 <% end %>
 
 <script async>
-  <%= TweetTag.script.html_safe %>
-  <%= YoutubeTag.script.html_safe %>
-  <%= PodcastTag.script.html_safe %>
-  <%= GistTag.script.html_safe %>
+  <%== TweetTag.script %>
+  <%== YoutubeTag.script %>
+  <%== PodcastTag.script %>
+  <%== GistTag.script %>
 </script>

@@ -3,16 +3,16 @@ RSpec.shared_examples "#sync_reactions_count" do |reactable_type|
     let(:reactable) { create(reactable_type) }
 
     before do
-      create_list(:reaction, 4, points: 1, reactable: reactable)
-      reaction = create(:reaction, reactable: reactable)
-      reaction.update_column(:points, 0)
+      create(:reaction, points: 1, reactable: reactable)
+      create(:reaction, points: 0, reactable: reactable)
     end
 
     it "syncs reactions count" do
-      reactable.update_column(:positive_reactions_count, 1)
+      expect(reactable.public_reactions_count).to eq(0)
       reactable.sync_reactions_count
       reactable.reload
-      expect(reactable.positive_reactions_count).to eq(4)
+      expected_count = reactable.reactions.public_category.size
+      expect(reactable.public_reactions_count).to eq(expected_count)
     end
   end
 end

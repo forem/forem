@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>DEV Community ❤️</title>
+  <title><%= community_name %> Community ❤️</title>
 </head>
 <body>
 <%= @html_variant.html.html_safe %>
@@ -80,12 +80,12 @@
         var metaTag = document.querySelector("meta[name='csrf-token']");
         meta.name = "csrf-param";
         meta.content = json.param;
-        document.getElementsByTagName('head')[0].appendChild(meta);
+        document.head.appendChild(meta);
         var meta = document.createElement('meta');
         meta.name = "csrf-token";
         meta.content = json.token;
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.getElementsByTagName('body')[0].dataset.loaded = "true";
+        document.head.appendChild(meta);
+        document.body.dataset.loaded = "true";
       }
     };
 
@@ -115,7 +115,7 @@
     m.parentNode.insertBefore(a, m)
   })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-  ga('create', '<%= ApplicationConfig["GA_TRACKING_ID"] %>', 'auto');
+  ga('create', '<%= SiteConfig.ga_tracking_id %>', 'auto');
   ga('set', 'anonymizeIp', true);
   ga('send', 'pageview');
   ga('send', 'event', 'view', '/badge version impression', '<%= @html_variant.name %>', null);

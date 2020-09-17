@@ -1,0 +1,10 @@
+<label class="rich-selector crayons-field crayons-field--radio navbar-selector--<%= navbar.tr(" ", "-") %>">
+  <%= f.radio_button :config_navbar, navbar, checked: @user.config_navbar.tr("_", " ") == navbar, class: "crayons-radio" %>
+  <div class="crayons-field__label">
+    <% if navbar == "default" %>
+      Fixed to window
+    <% else %>
+      Static top of page
+    <% end %>
+  </div>
+</label>

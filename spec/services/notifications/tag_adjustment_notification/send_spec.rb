@@ -1,12 +1,17 @@
 require "rails_helper"
 
-RSpec.describe Notifications::TagAdjustmentNotification::Send do
+RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let(:article) { create(:article, title: "My title", user: user2, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello") }
+  let(:article) do
+    body_markdown = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello"
+    create(:article, title: "My title", user: user2, body_markdown: body_markdown)
+  end
   let(:tag) { create(:tag) }
   let(:mod_user) { create(:user) }
-  let(:tag_adjustment) { create(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id, adjustment_type: "removal") }
+  let(:tag_adjustment) do
+    create(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id, adjustment_type: "addition")
+  end
   let(:notification) { described_class.call(tag_adjustment) }
 
   before do
@@ -18,7 +23,7 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send do
   end
 
   it "notifies the author of the article" do
-    perform_enqueued_jobs do
+    sidekiq_perform_enqueued_jobs do
       Notification.send_tag_adjustment_notification(tag_adjustment)
     end
     expect(Notification.first.user_id).to eq user2.id
@@ -33,7 +38,14 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send do
   it "tests JSON data" do
     json = notification.json_data
     expect(json["article"]["title"]).to start_with("Hello")
-    expect(json["adjustment_type"]). to eq "removal"
+    expect(json["adjustment_type"]).to eq "addition"
+  end
+
+  it "tests JSON data for removal" do
+    tag_adjustment.adjustment_type = "removal"
+    json = notification.json_data
+    expect(json["article"]["title"]).to start_with("Hello")
+    expect(json["adjustment_type"]).to eq "removal"
   end
 
   specify "notification to be inserted on DB" do

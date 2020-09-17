@@ -1,22 +1,22 @@
-<% title "About The Practical Dev" %>
+<% title "About #{community_qualified_name}" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/p/information" />
-  <meta name="description" content="All information about The Practical Dev">
-  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <link rel="canonical" href="<%= app_url("/p/information") %>" />
+  <meta name="description" content="All information about <%= community_qualified_name %>">
+  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/p/information" />
-  <meta property="og:title" content="All information about The Practical Dev" />
-  <meta property="og:image" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>" />
-  <meta property="og:description" content="The DEV Community is great!" />
-  <meta property="og:site_name" content="The DEV Community" />
+  <meta property="og:url" content="<%= app_url("/p/information") %>" />
+  <meta property="og:title" content="All information about <%= community_qualified_name %>" />
+  <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
+  <meta property="og:description" content="<%= community_qualified_name %> is great!" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:title" content="All information about The Practical Dev">
-  <meta name="twitter:description" content="The DEV Community is great!">
-  <meta name="twitter:image:src" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+  <meta name="twitter:title" content="All information about <%= community_qualified_name %>">
+  <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
+  <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 
 <style>
@@ -30,26 +30,18 @@
     filter: invert(0);
     filter: var(--theme-social-icon-invert, invert(0));
   }
-
-  .social-links img {
-    width: 35px;
-    height: 35px;
-    margin: 5px 10px;
-  }
 </style>
 
-<div class="blank-space"></div>
-<div class="container article">
-  <div class="title">
-    <h1>
-      More information about dev.to(👋)
-    </h1>
-  </div>
-  <div class="body">
-    <ul class="key-links">
+<div class="crayons-layout crayons-layout--limited">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">More information about <%= community_name %> 👋</h1>
+
+    <ul>
       <li><a href="/">Home</a></li>
       <li><a href="/about">About</a></li>
-      <li><a href="https://shop.dev.to/">DEV Shop</a></li>
+      <% if SiteConfig.shop_url.present? %>
+        <li><a href="<%= SiteConfig.shop_url %>"><%= community_name %> Shop</a></li>
+      <% end %>
       <li><a href="/sponsors">Sponsors</a></li>
       <li><a href="/faq">FAQ</a></li>
       <li><a href="/privacy">Privacy Policy</a></li>
@@ -59,12 +51,7 @@
       <li><a href="/code-of-conduct">Code of Conduct</a></li>
       <li><a href="/downloads">Get the mobile app</a></li>
     </ul>
-  </div>
-  <div class="social-links">
-    <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="DEV Twitter profile"></a>
-    <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="DEV GitHub profile"></a>
-    <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="DEV Instagram profile"></a>
-    <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="DEV Facebook profile"></a>
-    <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="DEV Twitch profile"></a>
+
+    <%= render partial: "layouts/social_media" %>
   </div>
 </div>

@@ -1,0 +1,32 @@
+<div class="ltag__reddit--container">
+  <div class="ltag__reddit--title-container">
+    <header>
+      <div class="ltag__reddit--title">
+        <h1>
+          <img src="<%= asset_path("reddit-icon.svg") %>" alt="Reddit Logo" />
+          <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
+            <%= title %>
+          </a>
+        </h1>
+        <div class="ltag__reddit--post-metadata">
+          <span><%= created_at %></span>
+          <span>Author: <%= author %></span>
+        </div>
+      </div>
+    </header>
+  </div>
+  <div class="ltag__reddit--body">
+    <p>
+      <% if post_hint == 'image' %>
+        <img src="<%= thumbnail %>" alt="<%= title %>">
+      <% else %>
+        <%= markdown_text %>
+      <% end %>
+    </p>
+  </div>
+  <div class="ltag__reddit--btn--container">
+    <button class="ltag__reddit--btn" type="button">
+      <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">See Full Post</a>
+    </button>
+  </div>
+</div>

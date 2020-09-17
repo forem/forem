@@ -1,0 +1,75 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/1242938461784608770.json?tweet_mode=extended
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/7.0.0
+      Connection:
+      - close
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Connection:
+      - close
+      Content-Disposition:
+      - attachment; filename=json.json
+      Content-Length:
+      - '2536'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Mon, 30 Mar 2020 14:41:40 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Mon, 30 Mar 2020 14:41:39 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - tsa_o
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Access-Level:
+      - read-write
+      X-Connection-Hash:
+      - ee25b08c77f7c2d79d39c0a58e58a36c
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Rate-Limit-Limit:
+      - '900'
+      X-Rate-Limit-Remaining:
+      - '898'
+      X-Rate-Limit-Reset:
+      - '1585579411'
+      X-Response-Time:
+      - '149'
+      X-Transaction:
+      - 0020d20c00f00aa5
+      X-Twitter-Response-Tags:
+      - BouncerCompliant
+      X-Xss-Protection:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: '{"created_at":"Wed Mar 25 22:16:36 +0000 2020","id":1242938461784608770,"id_str":"1242938461784608770","full_text":"@MattDomm_
+        Yes! :D","truncated":false,"display_text_range":[11,18],"entities":{"hashtags":[],"symbols":[],"user_mentions":[{"screen_name":"MattDomm_","name":"Matt
+        Domm","id":45042829,"id_str":"45042829","indices":[0,10]}],"urls":[]},"source":"\u003ca
+        href=\"https:\/\/mobile.twitter.com\" rel=\"nofollow\"\u003eTwitter Web App\u003c\/a\u003e","in_reply_to_status_id":1242837746315669505,"in_reply_to_status_id_str":"1242837746315669505","in_reply_to_user_id":45042829,"in_reply_to_user_id_str":"45042829","in_reply_to_screen_name":"MattDomm_","user":{"id":1105243879589195777,"id_str":"1105243879589195777","name":"Codeland","screen_name":"codelandconf","location":"NYC","description":"Produced
+        by @ThePracticalDev @CodeNewbies. The conference for new and growing developers.","url":"https:\/\/t.co\/Yu6ibinH6I","entities":{"url":{"urls":[{"url":"https:\/\/t.co\/Yu6ibinH6I","expanded_url":"https:\/\/codelandconf.com","display_url":"codelandconf.com","indices":[0,23]}]},"description":{"urls":[]}},"protected":false,"followers_count":2206,"friends_count":15,"listed_count":32,"created_at":"Mon
+        Mar 11 23:07:30 +0000 2019","favourites_count":2831,"utc_offset":null,"time_zone":null,"geo_enabled":false,"verified":false,"statuses_count":2495,"lang":null,"contributors_enabled":false,"is_translator":false,"is_translation_enabled":false,"profile_background_color":"000000","profile_background_image_url":"http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_image_url_https":"https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_tile":false,"profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/1233079056150736896\/qkSuQpiX_normal.jpg","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1233079056150736896\/qkSuQpiX_normal.jpg","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/1105243879589195777\/1585092823","profile_link_color":"FF01FF","profile_sidebar_border_color":"000000","profile_sidebar_fill_color":"000000","profile_text_color":"000000","profile_use_background_image":false,"has_extended_profile":false,"default_profile":false,"default_profile_image":false,"following":false,"follow_request_sent":false,"notifications":false,"translator_type":"none"},"geo":null,"coordinates":null,"place":null,"contributors":null,"is_quote_status":false,"retweet_count":0,"favorite_count":0,"favorited":false,"retweeted":false,"lang":"en"}'
+    http_version: null
+  recorded_at: Mon, 30 Mar 2020 14:41:40 GMT
+recorded_with: VCR 5.1.0

@@ -5,16 +5,23 @@ module Redcarpet
     class HTMLRouge < HTML
       include Rouge::Plugins::Redcarpet
 
+      # Rouge requires the hint language to be lower case, by overriding this
+      # method we can allow the hint language to be specified with other casings
+      # eg. `Ada` instead of `ada`
+      def block_code(code, language)
+        super(code, language.to_s.downcase)
+      end
+
       def link(link, _title, content)
         # Probably not the best fix but it does it's job of preventing
         # a nested links.
-        return nil if /<a\s.+\/a>/.match?(content)
+        return if %r{<a\s.+/a>}.match?(content)
 
         link_attributes = ""
         @options[:link_attributes]&.each do |attribute, value|
           link_attributes += %( #{attribute}="#{value}")
         end
-        if (/https?:\/\/[\S]+/.match? link) || link.nil?
+        if (%r{https?://\S+}.match? link) || link.nil?
           %(<a href="#{link}"#{link_attributes}>#{content}</a>)
         elsif /\.{1}/.match? link
           %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
@@ -43,7 +50,7 @@ module Redcarpet
       end
 
       def app_domain
-        ApplicationConfig["APP_DOMAIN"]
+        SiteConfig.app_domain
       end
 
       def slugify(string)

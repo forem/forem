@@ -1,4 +1,4 @@
-class CreatePodcastEpisodes < ActiveRecord::Migration
+class CreatePodcastEpisodes < ActiveRecord::Migration[4.2]
   def change
     create_table :podcast_episodes do |t|
       t.integer :podcast_id

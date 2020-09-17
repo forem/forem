@@ -1,11 +1,8 @@
-def yarn_integrity_enabled?
-  ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
-end
+# rubocop:disable Metrics/BlockLength
+# Silence all Ruby 2.7 deprecation warnings
+$VERBOSE = nil
 
 Rails.application.configure do
-  # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = yarn_integrity_enabled?
-
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
@@ -16,14 +13,17 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
-  # Show full error reports and disable caching.
+  # Show full error reports.
   config.consider_all_requests_local = true
 
   # Enable/disable caching. By default caching is disabled.
-  if Rails.root.join("tmp", "caching-dev.txt").exist?
+  # Run rails dev:cache to toggle caching.
+  if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true
 
-    config.cache_store = :memory_store
+    DEFAULT_EXPIRATION = 1.hour.to_i.freeze
+    config.cache_store = :redis_cache_store, { url: ENV["REDIS_URL"], expires_in: DEFAULT_EXPIRATION }
+
     config.public_file_server.headers = {
       "Cache-Control" => "public, max-age=#{2.days.to_i}"
     }
@@ -33,8 +33,13 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  # Store uploaded files on the local file system (see config/storage.yml for options)
+  # config.active_storage.service = :local
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
+
+  config.action_mailer.perform_caching = false
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
@@ -69,9 +74,12 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  config.app_domain = "localhost:3000"
+  config.hosts << ENV["APP_DOMAIN"] unless ENV["APP_DOMAIN"].nil?
+  if (gitpod_workspace_url = ENV["GITPOD_WORKSPACE_URL"])
+    config.hosts << /.*#{URI.parse(gitpod_workspace_url).host}/
+  end
+  config.app_domain = ENV["APP_DOMAIN"] || "localhost:3000"
 
-  config.action_mailer.default_url_options = { host: "localhost:3000" }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
   config.action_mailer.default_url_options = { host: config.app_domain }
@@ -82,30 +90,54 @@ Rails.application.configure do
     user_name: '<%= ENV["DEVELOPMENT_EMAIL_USERNAME"] %>',
     password: '<%= ENV["DEVELOPMENT_EMAIL_PASSWORD"] %>',
     authentication: :plain,
-    domain: "localhost:3000"
+    domain: config.app_domain
   }
 
-  config.action_mailer.preview_path = Rails.root.join("spec", "mailers", "previews")
+  config.action_mailer.preview_path = Rails.root.join("spec/mailers/previews")
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
   config.public_file_server.enabled = true
 
+  # Use an evented file watcher to asynchronously detect changes in source code,
+  # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  # Install the Timber.io logger
-  send_logs_to_timber = ENV["SEND_LOGS_TO_TIMBER"] || "false" # <---- set to false to stop sending dev logs to Timber.io
-  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ENV["TIMBER"]) : STDOUT
-  logger = Timber::Logger.new(log_device)
-  logger.level = config.log_level
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
+  # Debug is the default log_level, but can be changed per environment.
+  config.log_level = :debug
+
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new($stdout)
+    logger.formatter = config.log_formatter
+    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  end
 
   config.after_initialize do
+    # See <https://github.com/flyerhzm/bullet#configuration> for other Bullet config options
     Bullet.enable = true
+
+    Bullet.add_footer = true
     Bullet.console = true
     Bullet.rails_logger = true
+
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
+    # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+    # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+
+    # Check if there are any data update scripts to run during startup
+    if %w[c console runner s server].include?(ENV["COMMAND"]) && DataUpdateScript.scripts_to_run?
+      message = "Data update scripts need to be run before you can start the application. " \
+        "Please run 'rails data_updates:run'"
+      raise message
+    end
   end
 end
 
 Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }
+# rubocop:enable Metrics/BlockLength

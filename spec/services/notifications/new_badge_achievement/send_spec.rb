@@ -2,8 +2,9 @@ require "rails_helper"
 
 RSpec.describe Notifications::NewBadgeAchievement::Send, type: :service do
   let(:badge_achievement) { create(:badge_achievement) }
+  let(:blank_badge_achievement) { create(:badge_achievement, rewarding_context_message: nil) }
 
-  def expected_json_data
+  def expected_json_data(badge_achievement)
     {
       user: Notifications.user_data(badge_achievement.user),
       badge_achievement: {
@@ -25,8 +26,10 @@ RSpec.describe Notifications::NewBadgeAchievement::Send, type: :service do
   end
 
   it "creates a notification for the badge achievement user" do
-    notification = described_class.call(badge_achievement)
-    expect(notification.user).to eq(badge_achievement.user)
+    notification = described_class.call(blank_badge_achievement)
+    expect(notification.user).to eq(blank_badge_achievement.user)
+    json_data = notification.json_data.to_json
+    expect(JSON.parse(json_data)).to eq(JSON.parse(expected_json_data(blank_badge_achievement)))
   end
 
   it "creates a notification for the badge achievement" do
@@ -43,6 +46,6 @@ RSpec.describe Notifications::NewBadgeAchievement::Send, type: :service do
   it "creates a notification with the proper json data" do
     notification = described_class.call(badge_achievement)
     json_data = notification.json_data.to_json
-    expect(JSON.parse(json_data)).to eq(JSON.parse(expected_json_data))
+    expect(JSON.parse(json_data)).to eq(JSON.parse(expected_json_data(badge_achievement)))
   end
 end

@@ -5,7 +5,7 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }
   let(:organization)    { create(:organization) }
-  let(:article)         { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
+  let(:article)         { create(:article, user_id: user.id, page_views_count: 4000, public_reactions_count: 70) }
   let!(:follow)         { user.follow(user2) }
 
   def follow_data(follow)
@@ -22,7 +22,17 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
       tag_follow = user.follow(tag)
       expect do
         described_class.call(follow_data(tag_follow))
-      end.to raise_error(Dry::Struct::Error)
+      end.to raise_error(Notifications::NewFollower::FollowData::DataError)
+    end
+  end
+
+  context "when trying to pass follow data as a Hash with keys as strings" do
+    it "creates a notification" do
+      stringified_follow_data = follow_data(follow).stringify_keys
+
+      expect do
+        described_class.call(stringified_follow_data)
+      end.to change(Notification, :count).by(1)
     end
   end
 
@@ -42,7 +52,7 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
     end
 
     it "creates a read notification" do
-      notification = described_class.call(follow_data(follow), true)
+      notification = described_class.call(follow_data(follow), is_read: true)
       expect(notification.read).to be_truthy
     end
 
@@ -124,14 +134,11 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
     end
 
     context "when destroyed follow and notification exists" do
-      let(:unfollow) { user.stop_following(user2) }
-
-      before do
-        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: 1.year.ago)
-      end
-
       it "does not destroy a notification" do
+        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: 1.year.ago)
+
         expect do
+          unfollow = user.stop_following(user2)
           described_class.call(follow_data(unfollow))
         end.not_to change(Notification, :count)
       end

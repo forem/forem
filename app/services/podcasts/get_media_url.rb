@@ -33,8 +33,9 @@ module Podcasts
     end
 
     def url_reachable?(url)
+      url = Addressable::URI.parse(url).normalize.to_s
       HTTParty.head(url).code == 200
-    rescue Net::OpenTimeout, SystemCallError
+    rescue Net::OpenTimeout, SystemCallError, URI::InvalidURIError, Addressable::URI::InvalidURIError
       false
     end
   end

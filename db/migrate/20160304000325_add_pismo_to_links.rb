@@ -1,4 +1,4 @@
-class AddPismoToLinks < ActiveRecord::Migration
+class AddPismoToLinks < ActiveRecord::Migration[4.2]
   def change
     add_column :links, :pismo_response_json, :text
     add_column :links, :pismo_body, :text

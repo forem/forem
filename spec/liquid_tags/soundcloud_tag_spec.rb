@@ -1,7 +1,7 @@
 require "rails_helper"
 require "nokogiri"
 
-RSpec.describe SoundcloudTag, type: :liquid_template do
+RSpec.describe SoundcloudTag, type: :liquid_tag do
   describe "#link" do
     let(:soundcloud_link) { "https://soundcloud.com/user-261265215/dev-to-review-episode-2" }
     let(:url_segment) { "https://w.soundcloud.com/player/?url" }

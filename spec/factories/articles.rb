@@ -1,22 +1,26 @@
 FactoryBot.define do
+  sequence(:title) { |n| "#{Faker::Book.title}#{n}" }
+
   factory :article do
     transient do
-      title { Faker::Book.title + " #{rand(1000)}" }
+      title { generate :title }
       published { true }
       date { "01/01/2015" }
-      tags { Faker::Hipster.words(number: 4).join(", ") }
+      tags { "javascript, html, css" }
       canonical_url { Faker::Internet.url }
       with_canonical_url { false }
+      with_main_image { true }
       with_date { false }
       with_tags { true }
       with_hr_issue { false }
       with_tweet_tag { false }
+      with_user_subscription_tag { false }
       with_title { true }
       with_collection { nil }
     end
     association :user, factory: :user, strategy: :create
-    description   { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
-    main_image    { Faker::Avatar.image }
+    description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
+    main_image    { with_main_image ? Faker::Avatar.image : nil }
     language { "en" }
     experience_level_rating { rand(4..6) }
     body_markdown do
@@ -31,7 +35,8 @@ FactoryBot.define do
         ---
 
         #{Faker::Hipster.paragraph(sentence_count: 2)}
-        #{'{% tweet 1018911886862057472%}' if with_tweet_tag}
+        #{'{% tweet 1018911886862057472 %}' if with_tweet_tag}
+        #{'{% user_subscription CTA text %}' if with_user_subscription_tag}
         #{Faker::Hipster.paragraph(sentence_count: 1)}
         #{"\n\n---\n\n something \n\n---\n funky in the code? \n---\n That's nice" if with_hr_issue}
       HEREDOC
@@ -49,5 +54,9 @@ FactoryBot.define do
     after(:create) do |article|
       create(:notification_subscription, user_id: article.user_id, notifiable: article)
     end
+  end
+
+  trait :with_user_subscription_tag_role_user do
+    after(:build) { |article| article.user.add_role(:restricted_liquid_tag, LiquidTags::UserSubscriptionTag) }
   end
 end

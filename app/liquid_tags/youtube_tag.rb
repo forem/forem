@@ -1,7 +1,7 @@
 class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
 
-  def initialize(tag_name, id, tokens)
+  def initialize(_tag_name, id, _parse_context)
     super
     @id = parse_id(id)
     @width = 710
@@ -9,7 +9,7 @@ class YoutubeTag < LiquidTagBase
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         id: @id,
@@ -41,7 +41,7 @@ class YoutubeTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id =~ /\A[a-zA-Z0-9_-]{11}((\?t\=)?(\d{1}h)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/
+    id =~ /\A[a-zA-Z0-9_-]{11}((\?t=)?(\d{1}h)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/
   end
 end
 

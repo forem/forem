@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe LanguageDetector do
+RSpec.describe LanguageDetector, type: :labor do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:article_1) { create(:article, user_id: user.id) }
@@ -19,8 +19,10 @@ RSpec.describe LanguageDetector do
   end
 
   it "detects nil if non-sensicle" do
-    article_2.update_column(:body_markdown, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pharetra sapien orci, sit amet auctor nunc tempor quis.")
-    article_2.update_column(:title, "Mauris commodo felis et lacus volutpat fermentum.")
-    expect(described_class.new(article_2).detect).to eq(nil)
+    body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " \
+      "Donec pharetra sapien orci, sit amet auctor nunc tempor quis."
+    article_2.update_columns(body_markdown: body, title: "Mauris commodo felis et lacus volutpat fermentum.")
+
+    expect(described_class.new(article_2).detect).to be(nil)
   end
 end

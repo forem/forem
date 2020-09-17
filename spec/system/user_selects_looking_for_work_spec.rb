@@ -1,20 +1,20 @@
 require "rails_helper"
 
-RSpec.describe "Looking For Work" do
+RSpec.describe "Looking For Work", type: :system do
   let(:user) { create(:user) }
-  let(:tag) { create(:tag, name: "hiring") }
 
   before do
+    create(:tag, name: "hiring")
     sign_in(user)
-    tag
+    visit "/settings"
   end
 
-  it "user selects looking for work and autofollows hiring tag" do
-    visit "/settings"
+  it "user selects looking for work and autofollows hiring tag", js: true do
     page.check "Looking for work"
-    perform_enqueued_jobs do
-      click_button("SUBMIT")
-      expect(user.follows.count).to eq(1)
+    sidekiq_perform_enqueued_jobs do
+      click_button("Save")
     end
+    expect(page).to have_text("Your profile was successfully updated")
+    expect(user.follows.count).to eq(1)
   end
 end

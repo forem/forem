@@ -3,7 +3,7 @@
   <h3>
     <a href="/html_variants/<%= html_variant.id %>"><%= html_variant.name %></a>
   </h3>
-  <iframe src="/html_variants/<%= html_variant.id %>"></iframe>
+  <iframe src="/html_variants/<%= html_variant.id %>" loading="lazy"></iframe>
   <div class="html-variants-page-single-variant-details">
     <% if html_variant.published %>
       <span class='pill published'>published</span>

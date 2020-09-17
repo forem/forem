@@ -1,4 +1,4 @@
-class CreateAhoyMessages < ActiveRecord::Migration
+class CreateAhoyMessages < ActiveRecord::Migration[4.2]
   def change
     create_table :ahoy_messages do |t|
       t.string :token

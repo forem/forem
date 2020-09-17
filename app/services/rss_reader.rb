@@ -1,15 +1,20 @@
 class RssReader
-  def self.get_all_articles(force = true)
-    new.get_all_articles(force)
+  def self.get_all_articles(force: true)
+    new.get_all_articles(force: force)
   end
 
-  def get_all_articles(force = true)
+  def get_all_articles(force: true)
+    articles = []
+
     User.where.not(feed_url: [nil, ""]).find_each do |user|
       # unless forced, fetch sparingly
       next if force == false && (rand(2) == 1 || user.feed_fetched_at > 15.minutes.ago)
 
-      create_articles_for_user(user)
+      user_articles = create_articles_for_user(user)
+      articles.concat(user_articles) if user_articles
     end
+
+    articles
   end
 
   def fetch_user(user)
@@ -28,29 +33,35 @@ class RssReader
     user.update_column(:feed_fetched_at, Time.current)
     feed = fetch_rss(user.feed_url.strip)
 
+    articles = []
+
     feed.entries.reverse_each do |item|
-      make_from_rss_item(item, user, feed)
+      article = make_from_rss_item(item, user, feed)
+      articles.append(article)
     rescue StandardError => e
-      log_error(
-        "RssReaderError: occurred while creating article",
+      report_error(
+        e,
         rss_reader_info: {
-          user: user.username,
+          username: user.username,
           feed_url: user.feed_url,
           item_count: get_item_count_error(feed),
-          error: e
+          error: "RssReaderError: occurred while creating article #{item.url}"
         },
       )
     end
+
+    articles
   rescue StandardError => e
-    log_error(
-      "RssReaderError: occurred while fetching feed",
+    report_error(
+      e,
       rss_reader_info: {
-        user: user.username,
+        username: user.username,
         feed_url: user.feed_url,
         item_count: get_item_count_error(feed),
-        error: e
+        error_message: "RssReaderError: occurred while fetching feed"
       },
     )
+    []
   end
 
   def get_item_count_error(feed)
@@ -79,13 +90,15 @@ class RssReader
       organization_id: nil,
     )
 
-    send_slack_notification(article)
+    Slack::Messengers::ArticleFetchedFeed.call(article: article)
+
+    article
   end
 
   def get_host_without_www(url)
     url = "http://#{url}" if URI.parse(url).scheme.nil?
     host = URI.parse(url).host.downcase
-    host.start_with?("www.") ? host[4..-1] : host
+    host.start_with?("www.") ? host[4..] : host
   end
 
   def medium_reply?(item)
@@ -108,18 +121,8 @@ class RssReader
     relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
   end
 
-  def send_slack_notification(article)
-    return unless Rails.env.production?
-
-    SlackBotPingJob.perform_later(
-      message: "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
-      channel: "activity",
-      username: "article_bot",
-      icon_emoji: ":robot_face:",
-    )
-  end
-
-  def log_error(error_msg, metadata)
-    Rails.logger.error(error_msg, metadata)
+  def report_error(error, metadata)
+    Honeybadger.context(metadata)
+    Honeybadger.notify(error)
   end
 end

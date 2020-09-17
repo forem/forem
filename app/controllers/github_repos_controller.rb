@@ -1,47 +1,71 @@
 class GithubReposController < ApplicationController
+  before_action :authenticate_user!
   after_action :verify_authorized
 
-  def create
+  def index
     authorize GithubRepo
-    @client = create_octokit_client
-    @repo = GithubRepo.find_or_create(fetched_repo_params)
-    current_user.touch(:github_repos_updated_at)
-    if @repo.valid?
-      redirect_to "/settings/integrations", notice: "GitHub repo added"
-    else
-      redirect_to "/settings/integrations",
-                  error: "There was an error adding your Github repo"
-    end
+    known_repositories = current_user.github_repos.featured.distinct.to_a
+
+    # NOTE: this will invoke autopaging, by issuing multiple calls to GitHub
+    # to fetch all of the user's repositories. This could eventually become slow
+    @repos = fetch_repositories_from_github(known_repositories)
+  rescue Github::Errors::Unauthorized => e
+    render json: { error: "GitHub Unauthorized: #{e.message}", status: 401 }, status: :unauthorized
   end
 
-  def update
-    @repo = GithubRepo.find(params[:id])
+  def update_or_create
+    authorize GithubRepo
+
+    params[:github_repo] = JSON.parse(params[:github_repo])
+
+    fetched_repo = fetch_repository_from_github(repo_params[:github_id_code])
+    unless fetched_repo
+      render json: { error: "GitHub repository not found", status: 404 }, status: :not_found
+      return
+    end
+
+    repo = GithubRepo.upsert(current_user, fetched_repo_params(fetched_repo))
+
     current_user.touch(:github_repos_updated_at)
-    authorize @repo
-    if @repo.update(featured: false)
-      redirect_to "/settings/integrations", notice: "GitHub repo added"
+
+    if repo.valid?
+      render json: { featured: repo.featured }
     else
-      redirect_to "/settings/integrations",
-                  error: "There was an error removing your Github repo"
+      render json: { error: repo.errors.full_messages, status: 422 }, status: :unprocessable_entity
     end
   end
 
   private
 
-  def create_octokit_client
-    current_user_token = current_user.identities.where(provider: "github").last.token
-    client = Octokit::Client.new(access_token: current_user_token)
-    client&.repositories&.sort_by!(&:name)
-    client
+  def fetch_repositories_from_github(known_repositories)
+    client = Github::OauthClient.for_user(current_user)
+
+    repos = client.repositories(visibility: :public).map do |repo|
+      if (known_index = known_repositories.find_index { |known| known.github_id_code == repo.id })
+        repo.featured = true
+        known_repositories.delete_at(known_index)
+      end
+      repo
+    end
+
+    # Remove pinned repositorioes that were removed from GH or are now private,
+    # since the user will not be able to remove them by themselves.
+    known_repositories.each(&:destroy)
+
+    repos.sort_by(&:name)
   end
 
-  def fetched_repo_params
-    fetched_repo = @client.repositories.detect do |repo|
-      repo.id == permitted_attributes(GithubRepo)[:github_id_code].to_i
-    end
+  def fetch_repository_from_github(repository_id)
+    client = Github::OauthClient.for_user(current_user)
+
+    client.repository(repository_id)
+  rescue Github::Errors::NotFound
+    nil
+  end
+
+  def fetched_repo_params(fetched_repo)
     {
       github_id_code: fetched_repo.id,
-      user_id: current_user.id,
       name: fetched_repo.name,
       description: fetched_repo.description,
       language: fetched_repo.language,
@@ -50,8 +74,12 @@ class GithubReposController < ApplicationController
       bytes_size: fetched_repo.size,
       watchers_count: fetched_repo.watchers,
       stargazers_count: fetched_repo.stargazers_count,
-      featured: true,
+      featured: repo_params[:featured],
       info_hash: fetched_repo.to_hash
     }
+  end
+
+  def repo_params
+    permitted_attributes(GithubRepo)
   end
 end

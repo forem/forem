@@ -2,59 +2,137 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Webhooks", type: :request do
   let(:user) { create(:user) }
+  let!(:webhook) do
+    create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go")
+  end
 
   describe "GET /api/v0/webhooks" do
-    let!(:webhook) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go") }
-    let!(:webhook2) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook") }
-
-    before do
-      sign_in user
-      create(:webhook_endpoint)
+    let(:webhook2) do
+      create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook")
     end
 
-    it "returns 200 on success" do
-      get api_webhooks_path
-      expect(response).to have_http_status(:ok)
+    context "when accessing with oauth" do
+      it "returns a 401 if unauthorized" do
+        get api_webhooks_path
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "returns a 403 if public scope is missing (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        get api_webhooks_path, headers: headers
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns a 200 if authorized" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "public")
+        webhook = create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go2",
+                                            oauth_application_id: access_token.application_id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+        get api_webhooks_path, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.first).to eq(
+          "created_at" => webhook.created_at.rfc3339,
+          "events" => webhook.events,
+          "id" => webhook.id,
+          "source" => webhook.source,
+          "target_url" => webhook.target_url,
+          "type_of" => "webhook_endpoint",
+        )
+      end
     end
 
-    it "returns json on success" do
-      get api_webhooks_path
-      json = JSON.parse(response.body)
-      ids = json.map { |item| item["id"] }
-      urls = json.map { |item| item["target_url"] }
-      expect(ids).to eq([webhook.id, webhook2.id])
-      expect(urls).to eq(%w[https://api.example.com/go https://api.example.com/webhook])
+    context "when accessing via cookie" do
+      before do
+        sign_in user
+        create(:webhook_endpoint)
+      end
+
+      it "returns 200 on success" do
+        get api_webhooks_path
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns json on success" do
+        webhook2
+        get api_webhooks_path
+
+        expect(response.parsed_body).to include(
+          hash_including("id" => webhook.id, "target_url" => webhook.target_url),
+          hash_including("id" => webhook2.id, "target_url" => webhook2.target_url),
+        )
+      end
+
+      it "returns the correct json representation" do
+        get api_webhooks_path
+
+        expect(response.parsed_body.first).to eq(
+          "created_at" => webhook.created_at.rfc3339,
+          "events" => webhook.events,
+          "id" => webhook.id,
+          "source" => webhook.source,
+          "target_url" => webhook.target_url,
+          "type_of" => "webhook_endpoint",
+        )
+      end
     end
   end
 
   describe "GET /api/v0/webhooks/:id" do
-    let!(:webhook) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go") }
-
     before do
       sign_in user
     end
 
     it "returns 200 on success" do
       get api_webhook_path(webhook.id)
+
       expect(response).to have_http_status(:ok)
     end
 
     it "returns 404 if the webhook does not exist" do
       get api_webhook_path(9999)
+
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns 404 if another user webhook is accessed" do
       other_webhook = create(:webhook_endpoint, user: create(:user))
+
       get api_webhook_path(other_webhook.id)
+
       expect(response).to have_http_status(:not_found)
     end
 
-    it "returns json on success" do
+    it "returns the correct json representation" do
       get api_webhook_path(webhook.id)
-      json = JSON.parse(response.body)
-      expect(json["target_url"]).to eq(webhook.target_url)
-      expect(json["user"]["username"]).to eq(user.username)
+
+      expect(response.parsed_body).to include(
+        "created_at" => webhook.created_at.rfc3339,
+        "events" => webhook.events,
+        "id" => webhook.id,
+        "source" => webhook.source,
+        "target_url" => webhook.target_url,
+        "type_of" => "webhook_endpoint",
+      )
+    end
+
+    it "returns the correct json representation for the webhook user" do
+      get api_webhook_path(webhook.id)
+
+      response_webhook_user = response.parsed_body["user"]
+
+      expect(response_webhook_user).to eq({
+                                            "name" => webhook.user.name,
+                                            "username" => webhook.user.username,
+                                            "twitter_username" => webhook.user.twitter_username,
+                                            "github_username" => webhook.user.github_username,
+                                            "website_url" => webhook.user.processed_website_url,
+                                            "profile_image" => Images::Profile.call(webhook.user.profile_image_url,
+                                                                                   length: 640),
+                                            "profile_image_90" => Images::Profile.call(webhook.user.profile_image_url,
+                                                                                      length: 90)
+                                          })
     end
   end
 
@@ -89,15 +167,13 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
     it "returns :created and json response on success" do
       post api_webhooks_path, params: { webhook_endpoint: webhook_params }
       expect(response).to have_http_status(:created)
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       json = JSON.parse(response.body)
       expect(json["target_url"]).to eq(webhook_params[:target_url])
     end
   end
 
   describe "DELETE /api/v0/webhooks/:id" do
-    let!(:webhook) { create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go") }
-
     before do
       sign_in user
     end
@@ -130,11 +206,13 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
   describe "authorized with doorkeeper" do
     let!(:oauth_app) { create(:application) }
     let!(:oauth_app2) { create(:application) }
-    let(:access_token) { create :doorkeeper_access_token, resource_owner: user, application: oauth_app2, scopes: "public" }
+    let(:access_token) do
+      create :doorkeeper_access_token, resource_owner: user, application: oauth_app2, scopes: "public"
+    end
 
     it "renders index successfully" do
       get api_webhooks_path, params: { access_token: access_token.token }
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       expect(response).to have_http_status(:ok)
     end
 

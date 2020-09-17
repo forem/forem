@@ -76,18 +76,17 @@ class AnalyticsService
 
       article_ids = [@article_id]
     else
-      article_ids = @article_data.pluck(:id)
+      article_ids = @article_data.ids
     end
 
     # prepare relations for metrics
-    @comment_data = Comment.
-      where(commentable_id: article_ids, commentable_type: "Article").
-      where("score > 0")
-    @follow_data = Follow.
-      where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
-    @reaction_data = Reaction.
-      where(reactable_id: article_ids, reactable_type: "Article").
-      where("points > 0")
+    @comment_data = Comment
+      .where(commentable_id: article_ids, commentable_type: "Article")
+      .where("score > 0")
+    @follow_data = Follow
+      .where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
+    @reaction_data = Reaction.public_category
+      .where(reactable_id: article_ids, reactable_type: "Article")
     @page_view_data = PageView.where(article_id: article_ids)
 
     # filter data by date if needed
@@ -101,12 +100,12 @@ class AnalyticsService
   def calculate_reactions_totals
     # NOTE: the order of the keys needs to be the same as the one of the counts
     keys = %i[total like readinglist unicorn]
-    counts = reaction_data.pluck(
+    counts = reaction_data.pick(
       Arel.sql("COUNT(*)"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'like')"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'readinglist')"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'unicorn')"),
-    ).first
+    )
 
     # this transforms the counts, eg. [1, 0, 1, 0]
     # in a hash, eg. {total: 1, like: 0, readinglist: 1, unicorn: 0}
@@ -116,7 +115,7 @@ class AnalyticsService
   def calculate_page_views_totals
     total_views = article_data.sum(:page_views_count)
     logged_in_page_view_data = page_view_data.where.not(user_id: nil)
-    average = logged_in_page_view_data.pluck(Arel.sql("AVG(time_tracked_in_seconds)")).first
+    average = logged_in_page_view_data.pick(Arel.sql("AVG(time_tracked_in_seconds)"))
     average_read_time_in_seconds = (average || 0).round # average is a BigDecimal
 
     {

@@ -1,52 +1,38 @@
 module Articles
   class SocialImage
     include Rails.application.routes.url_helpers
-    include CloudinaryHelper
-
-    def initialize(article)
-      @article = article
-    end
 
     SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-04-22T00:00:00Z")
+
+    def initialize(article, **options)
+      @article = article
+      @height = options[:height] || 500
+      @width = options[:width] || 1000
+    end
 
     def url
       image = user_defined_image
       if image.present?
-        return cl_image_path(image,
-                             type: "fetch",
-                             width: "1000",
-                             height: "500",
-                             crop: "imagga_scale",
-                             quality: "auto",
-                             flags: "progressive",
-                             fetch_format: "auto",
-                             sign_url: true)
+        image = image.split("w_1000/").last if image.include?("w_1000/https://")
+        return Images::Optimizer.call(image, width: width, height: height, crop: "imagga_scale")
       end
       return legacy_article_social_image unless use_new_social_url?
 
-      article_social_preview_url(article, format: :png)
+      article_social_preview_url(article, format: :png, host: SiteConfig.app_domain)
     end
 
     private
 
-    attr_reader :article
+    attr_reader :article, :height, :width
 
     def legacy_article_social_image
-      cache_key = "article-social-img-#{article}-#{article.updated_at}-#{article.comments_count}"
+      cache_key = "article-social-img-#{article}-#{article.updated_at.rfc3339}-#{article.comments_count}"
 
       Rails.cache.fetch(cache_key, expires_in: 1.hour) do
         src = GeneratedImage.new(article).social_image
         return src if src.start_with? "https://res.cloudinary.com/"
 
-        cl_image_path(src,
-                      type: "fetch",
-                      width: "1000",
-                      height: "500",
-                      crop: "imagga_scale",
-                      quality: "auto",
-                      flags: "progressive",
-                      fetch_format: "auto",
-                      sign_url: true)
+        Images::Optimizer.call(src, width: "1000", height: "500", crop: "imagga_scale")
       end
     end
 

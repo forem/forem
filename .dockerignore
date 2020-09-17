@@ -1,5 +1,4 @@
 .dockerignore
-.git
 .gitignore
 logs/
 tmp/
@@ -59,5 +58,5 @@ package-lock.json
 #sitemap
 /public/sitemap.xml.gz
 
-# Development Docker storage location
-_docker-storage/
+# Development container gem storage location
+.gems

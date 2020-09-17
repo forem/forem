@@ -1,0 +1,460 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://medium.com/feed/@macsiri/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 19 May 2020 12:00:27 GMT
+      Content-Type:
+      - text/xml; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Opentracing:
+      - '{"ot-tracer-spanid":"76fe7c9c6aa68ca7","ot-tracer-traceid":"5d7e0fc4239c84c0","ot-tracer-sampled":"true"}'
+      Content-Security-Policy:
+      - 'default-src ''self''; connect-src https://localhost https://*.instapaper.com
+        https://*.stripe.com https://glyph.medium.com https://*.paypal.com https://*.braintree-api.com
+        https://*.braintreegateway.com https://getpocket.com https://medium.com https://*.medium.com
+        https://*.medium.com https://medium.com https://*.medium.com https://*.algolia.net
+        https://cdn-static-1.medium.com https://dnqgz544uhbo8.cloudfront.net https://cdn-videos-1.medium.com
+        https://cdn-audio-1.medium.com https://*.lightstep.com https://*.branch.io
+        ''self''; font-src data: https://*.amazonaws.com https://*.medium.com https://glyph.medium.com
+        https://medium.com https://*.gstatic.com https://dnqgz544uhbo8.cloudfront.net
+        https://cdn-static-1.medium.com ''self''; frame-src chromenull: https: webviewprogressproxy:
+        medium: ''self''; img-src blob: data: https: ''self''; media-src https://*.cdn.vine.co
+        https://d1fcbxp97j4nb2.cloudfront.net https://d262ilb51hltx0.cloudfront.net
+        https://*.medium.com https://gomiro.medium.com https://miro.medium.com https://pbs.twimg.com
+        ''self'' blob:; object-src ''self''; script-src ''unsafe-eval'' ''unsafe-inline''
+        about: https: ''self''; style-src ''unsafe-inline'' data: https: ''self'';
+        report-uri https://csp.medium.com'
+      X-Frame-Options:
+      - sameorigin
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Ua-Compatible:
+      - IE=edge, Chrome=1
+      X-Powered-By:
+      - Medium
+      X-Obvious-Tid:
+      - 1589889627349:79c0e9728a37
+      X-Obvious-Info:
+      - 41053-1bc14bc,1bc14bcede9
+      Link:
+      - <https://medium.com/humans.txt>; rel="humans"
+      Cache-Control:
+      - private, must-revalidate, max-age=900
+      Expires:
+      - Tue, 19 May 2020 12:15:27 GMT
+      Pragma:
+      - private
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 595da85a7b8e0e06-MXP
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-25=":443"; ma=86400, h3-24=":443"; ma=86400, h3-23=":443";
+        ma=86400
+      Cf-Request-Id:
+      - 02ce678c8900000e0633332200000001
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48cnNzIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6Y29udGVudD0iaHR0cDovL3B1cmwub3JnL3Jzcy8xLjAvbW9kdWxlcy9jb250ZW50LyIgeG1sbnM6YXRvbT0iaHR0cDovL3d3dy53My5vcmcvMjAwNS9BdG9tIiB2ZXJzaW9uPSIyLjAiIHhtbG5zOmNjPSJodHRwOi8vY3liZXIubGF3LmhhcnZhcmQuZWR1L3Jzcy9jcmVhdGl2ZUNvbW1vbnNSc3NNb2R1bGUuaHRtbCI+CiAgICA8Y2hhbm5lbD4KICAgICAgICA8dGl0bGU+PCFbQ0RBVEFbU3RvcmllcyBieSBNYWMgU2lyaSBvbiBNZWRpdW1dXT48L3RpdGxlPgogICAgICAgIDxkZXNjcmlwdGlvbj48IVtDREFUQVtTdG9yaWVzIGJ5IE1hYyBTaXJpIG9uIE1lZGl1bV1dPjwvZGVzY3JpcHRpb24+CiAgICAgICAgPGxpbms+aHR0cHM6Ly9tZWRpdW0uY29tL0BtYWNzaXJpP3NvdXJjZT1yc3MtNGIyNjA1ZGE5MzhmLS0tLS0tMjwvbGluaz4KICAgICAgICA8aW1hZ2U+CiAgICAgICAgICAgIDx1cmw+aHR0cHM6Ly9jZG4taW1hZ2VzLTEubWVkaXVtLmNvbS9maXQvYy8xNTAvMTUwLzAqdzJibXRXbGFsZEtGbGI4ZS48L3VybD4KICAgICAgICAgICAgPHRpdGxlPlN0b3JpZXMgYnkgTWFjIFNpcmkgb24gTWVkaXVtPC90aXRsZT4KICAgICAgICAgICAgPGxpbms+aHR0cHM6Ly9tZWRpdW0uY29tL0BtYWNzaXJpP3NvdXJjZT1yc3MtNGIyNjA1ZGE5MzhmLS0tLS0tMjwvbGluaz4KICAgICAgICA8L2ltYWdlPgogICAgICAgIDxnZW5lcmF0b3I+TWVkaXVtPC9nZW5lcmF0b3I+CiAgICAgICAgPGxhc3RCdWlsZERhdGU+VHVlLCAxOSBNYXkgMjAyMCAxMTo1MzoxMyBHTVQ8L2xhc3RCdWlsZERhdGU+CiAgICAgICAgPGF0b206bGluayBocmVmPSJodHRwczovL21lZGl1bS5jb20vZmVlZC9AbWFjc2lyaSIgcmVsPSJzZWxmIiB0eXBlPSJhcHBsaWNhdGlvbi9yc3MreG1sIi8+CiAgICAgICAgPHdlYk1hc3Rlcj48IVtDREFUQVt5b3VyZnJpZW5kc0BtZWRpdW0uY29tXV0+PC93ZWJNYXN0ZXI+CiAgICAgICAgPGF0b206bGluayBocmVmPSJodHRwOi8vbWVkaXVtLnN1cGVyZmVlZHIuY29tIiByZWw9Imh1YiIvPgogICAgICAgIDxpdGVtPgogICAgICAgICAgICA8dGl0bGU+PCFbQ0RBVEFbVGVzdGluZyBSU1MgRmVlZF1dPjwvdGl0bGU+CiAgICAgICAgICAgIDxsaW5rPmh0dHBzOi8vbWVkaXVtLmNvbS9AbWFjc2lyaS90ZXN0aW5nLXJzcy1mZWVkLTZhZjA0YjdlNTdlMT9zb3VyY2U9cnNzLTRiMjYwNWRhOTM4Zi0tLS0tLTI8L2xpbms+CiAgICAgICAgICAgIDxndWlkIGlzUGVybWFMaW5rPSJmYWxzZSI+aHR0cHM6Ly9tZWRpdW0uY29tL3AvNmFmMDRiN2U1N2UxPC9ndWlkPgogICAgICAgICAgICA8Y2F0ZWdvcnk+PCFbQ0RBVEFbdGVzdF1dPjwvY2F0ZWdvcnk+CiAgICAgICAgICAgIDxkYzpjcmVhdG9yPjwhW0NEQVRBW01hYyBTaXJpXV0+PC9kYzpjcmVhdG9yPgogICAgICAgICAgICA8cHViRGF0ZT5UdWUsIDAyIEphbiAyMDE4IDE5OjA2OjMwIEdNVDwvcHViRGF0ZT4KICAgICAgICAgICAgPGF0b206dXBkYXRlZD4yMDE5LTA2LTE5VDIxOjM4OjA3LjU0OVo8L2F0b206dXBkYXRlZD4KICAgICAgICAgICAgPGNvbnRlbnQ6ZW5jb2RlZD48IVtDREFUQVs8cD55b3V0dWJlIGxpbmvCoGhlcmU8L3A+PGlmcmFtZSBzcmM9Imh0dHBzOi8vY2RuLmVtYmVkbHkuY29tL3dpZGdldHMvbWVkaWEuaHRtbD9zcmM9aHR0cHMlM0ElMkYlMkZ3d3cueW91dHViZS5jb20lMkZlbWJlZCUyRlFPQ2FhY084d3VzJTNGZmVhdHVyZSUzRG9lbWJlZCZhbXA7dXJsPWh0dHAlM0ElMkYlMkZ3d3cueW91dHViZS5jb20lMkZ3YXRjaCUzRnYlM0RRT0NhYWNPOHd1cyZhbXA7aW1hZ2U9aHR0cHMlM0ElMkYlMkZpLnl0aW1nLmNvbSUyRnZpJTJGUU9DYWFjTzh3dXMlMkZocWRlZmF1bHQuanBnJmFtcDtrZXk9YTE5ZmNjMTg0Yjk3MTFlMWI0NzY0MDQwZDNkYzVjMDcmYW1wO3R5cGU9dGV4dCUyRmh0bWwmYW1wO3NjaGVtYT15b3V0dWJlIiB3aWR0aD0iODU0IiBoZWlnaHQ9IjQ4MCIgZnJhbWVib3JkZXI9IjAiIHNjcm9sbGluZz0ibm8iPjxhIGhyZWY9Imh0dHBzOi8vbWVkaXVtLmNvbS9tZWRpYS83ZGE3NGJiMzBmOGEyYTgyYjBhY2I4OWIyMTNhMDE4Yi9ocmVmIj5odHRwczovL21lZGl1bS5jb20vbWVkaWEvN2RhNzRiYjMwZjhhMmE4MmIwYWNiODliMjEzYTAxOGIvaHJlZjwvYT48L2lmcmFtZT48cD50d2VldCBoZXJlPC9wPjxzdHlsZT5ib2R5W2RhdGEtdHd0dHItcmVuZGVyZWQ9InRydWUiXSB7YmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7fS50d2l0dGVyLXR3ZWV0IHttYXJnaW46IGF1dG8gIWltcG9ydGFudDt9PC9zdHlsZT48YmxvY2txdW90ZSBjbGFzcz0idHdpdHRlci10d2VldCIgZGF0YS1jb252ZXJzYXRpb249Im5vbmUiIGRhdGEtYWxpZ249ImNlbnRlciIgZGF0YS1kbnQ9InRydWUiPjxwPkkmIzM5O20gYSBmdWxsLXN0YWNrIGRldmVsb3BlcjwvcD48cD4mI3gyMDBhOyZtZGFzaDsmI3gyMDBhOzxhIGhyZWY9Imh0dHBzOi8vdHdpdHRlci5jb20vYmVuZGhhbHBlcm4vc3RhdHVzLzk0ODI1NjA4MzM1MjczNTc0NCI+QGJlbmRoYWxwZXJuPC9hPjwvcD48L2Jsb2NrcXVvdGU+PHNjcmlwdCBzcmM9Ii8vcGxhdGZvcm0udHdpdHRlci5jb20vd2lkZ2V0cy5qcyIgY2hhcnNldD0idXRmLTgiPjwvc2NyaXB0PjxzY3JpcHQ+ZnVuY3Rpb24gbm90aWZ5UmVzaXplKGhlaWdodCkge2hlaWdodCA9IGhlaWdodCA/IGhlaWdodCA6IGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5vZmZzZXRIZWlnaHQ7IHZhciByZXNpemVkID0gZmFsc2U7IGlmICh3aW5kb3cuZG9ua2V5ICYmIGRvbmtleS5yZXNpemUpIHtkb25rZXkucmVzaXplKGhlaWdodCk7cmVzaXplZCA9IHRydWU7fWlmIChwYXJlbnQgJiYgcGFyZW50Ll9yZXNpemVJZnJhbWUpIHt2YXIgb2JqID0ge2lmcmFtZTogd2luZG93LmZyYW1lRWxlbWVudCwgaGVpZ2h0OiBoZWlnaHR9OyBwYXJlbnQuX3Jlc2l6ZUlmcmFtZShvYmopOyByZXNpemVkID0gdHJ1ZTt9aWYgKHdpbmRvdy5sb2NhdGlvbiAmJiB3aW5kb3cubG9jYXRpb24uaGFzaCA9PT0gIiNhbXA9MSIgJiYgd2luZG93LnBhcmVudCAmJiB3aW5kb3cucGFyZW50LnBvc3RNZXNzYWdlKSB7d2luZG93LnBhcmVudC5wb3N0TWVzc2FnZSh7c2VudGluZWw6ICJhbXAiLCB0eXBlOiAiZW1iZWQtc2l6ZSIsIGhlaWdodDogaGVpZ2h0fSwgIioiKTt9aWYgKHdpbmRvdy53ZWJraXQgJiYgd2luZG93LndlYmtpdC5tZXNzYWdlSGFuZGxlcnMgJiYgd2luZG93LndlYmtpdC5tZXNzYWdlSGFuZGxlcnMucmVzaXplKSB7d2luZG93LndlYmtpdC5tZXNzYWdlSGFuZGxlcnMucmVzaXplLnBvc3RNZXNzYWdlKGhlaWdodCk7IHJlc2l6ZWQgPSB0cnVlO31yZXR1cm4gcmVzaXplZDt9dHd0dHIuZXZlbnRzLmJpbmQoJ3JlbmRlcmVkJywgZnVuY3Rpb24gKGV2ZW50KSB7bm90aWZ5UmVzaXplKCk7fSk7IHR3dHRyLmV2ZW50cy5iaW5kKCdyZXNpemUnLCBmdW5jdGlvbiAoZXZlbnQpIHtub3RpZnlSZXNpemUoKTt9KTs8L3NjcmlwdD48c2NyaXB0PmlmIChwYXJlbnQgJiYgcGFyZW50Ll9yZXNpemVJZnJhbWUpIHt2YXIgbWF4V2lkdGggPSBwYXJzZUludCh3aW5kb3cuZnJhbWVFbGVtZW50LmdldEF0dHJpYnV0ZSgid2lkdGgiKSk7IGlmICggNTAwICA8IG1heFdpZHRoKSB7d2luZG93LmZyYW1lRWxlbWVudC5zZXRBdHRyaWJ1dGUoIndpZHRoIiwgIjUwMCIpO319PC9zY3JpcHQ+PHA+R2l0aHViIGdpc3TCoGhlcmU8L3A+PGlmcmFtZSBzcmM9IiIgd2lkdGg9IjAiIGhlaWdodD0iMCIgZnJhbWVib3JkZXI9IjAiIHNjcm9sbGluZz0ibm8iPjxhIGhyZWY9Imh0dHBzOi8vbWVkaXVtLmNvbS9tZWRpYS83NzdhZThiN2Q4OTE2ZTU2NWI4NGI3MDRjMDg4Y2YwYy9ocmVmIj5odHRwczovL21lZGl1bS5jb20vbWVkaWEvNzc3YWU4YjdkODkxNmU1NjViODRiNzA0YzA4OGNmMGMvaHJlZjwvYT48L2lmcmFtZT48cD5jb2RlIGJsb2NrPC9wPjxwcmU+dGVzdHNldHNldHNldHNldHNldHNldCBsZXRzIGludHJvZHVjZSBzb21lIHt7IGNoYW9zIH19PC9wcmU+PHByZT5IZXJlJiMzOTtzIG1vcmUge3sgd2hhdCB9fTwvcHJlPjxwPnNvbWUgbW9yZSBjb2RlIGFuZCB7eyBWQVJJQUJMRSB9fSBhbmQgPHN0cm9uZz48ZW0+e3sgSFRNTMKgfX08L2VtPjwvc3Ryb25nPjwvcD48aDM+e3sgaG93IGFib3V0IHRoaXPCoH19PC9oMz48aW1nIHNyYz0iaHR0cHM6Ly9tZWRpdW0uY29tL18vc3RhdD9ldmVudD1wb3N0LmNsaWVudFZpZXdlZCZyZWZlcnJlclNvdXJjZT1mdWxsX3JzcyZwb3N0SWQ9NmFmMDRiN2U1N2UxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIj5dXT48L2NvbnRlbnQ6ZW5jb2RlZD4KICAgICAgICA8L2l0ZW0+CiAgICA8L2NoYW5uZWw+CjwvcnNzPg==
+    http_version: null
+  recorded_at: Tue, 19 May 2020 12:00:27 GMT
+- request:
+    method: get
+    uri: https://medium.com/feed/@macsiri/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 19 May 2020 12:00:27 GMT
+      Content-Type:
+      - text/xml; charset=UTF-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Opentracing:
+      - '{"ot-tracer-spanid":"5b79c8094c160066","ot-tracer-traceid":"65dac72b418c8d89","ot-tracer-sampled":"true"}'
+      Content-Security-Policy:
+      - 'default-src ''self''; connect-src https://localhost https://*.instapaper.com
+        https://*.stripe.com https://glyph.medium.com https://*.paypal.com https://*.braintree-api.com
+        https://*.braintreegateway.com https://getpocket.com https://medium.com https://*.medium.com
+        https://*.medium.com https://medium.com https://*.medium.com https://*.algolia.net
+        https://cdn-static-1.medium.com https://dnqgz544uhbo8.cloudfront.net https://cdn-videos-1.medium.com
+        https://cdn-audio-1.medium.com https://*.lightstep.com https://*.branch.io
+        ''self''; font-src data: https://*.amazonaws.com https://*.medium.com https://glyph.medium.com
+        https://medium.com https://*.gstatic.com https://dnqgz544uhbo8.cloudfront.net
+        https://cdn-static-1.medium.com ''self''; frame-src chromenull: https: webviewprogressproxy:
+        medium: ''self''; img-src blob: data: https: ''self''; media-src https://*.cdn.vine.co
+        https://d1fcbxp97j4nb2.cloudfront.net https://d262ilb51hltx0.cloudfront.net
+        https://*.medium.com https://gomiro.medium.com https://miro.medium.com https://pbs.twimg.com
+        ''self'' blob:; object-src ''self''; script-src ''unsafe-eval'' ''unsafe-inline''
+        about: https: ''self''; style-src ''unsafe-inline'' data: https: ''self'';
+        report-uri https://csp.medium.com'
+      X-Frame-Options:
+      - sameorigin
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Ua-Compatible:
+      - IE=edge, Chrome=1
+      X-Powered-By:
+      - Medium
+      X-Obvious-Tid:
+      - 1589889627644:12a95937b4b1
+      X-Obvious-Info:
+      - 41053-1bc14bc,1bc14bcede9
+      Link:
+      - <https://medium.com/humans.txt>; rel="humans"
+      Cache-Control:
+      - private, must-revalidate, max-age=900
+      Expires:
+      - Tue, 19 May 2020 12:15:27 GMT
+      Pragma:
+      - private
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 595da85c5f82d604-MXP
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-25=":443"; ma=86400, h3-24=":443"; ma=86400, h3-23=":443";
+        ma=86400
+      Cf-Request-Id:
+      - 02ce678db50000d604d0344200000001
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48cnNzIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6Y29udGVudD0iaHR0cDovL3B1cmwub3JnL3Jzcy8xLjAvbW9kdWxlcy9jb250ZW50LyIgeG1sbnM6YXRvbT0iaHR0cDovL3d3dy53My5vcmcvMjAwNS9BdG9tIiB2ZXJzaW9uPSIyLjAiIHhtbG5zOmNjPSJodHRwOi8vY3liZXIubGF3LmhhcnZhcmQuZWR1L3Jzcy9jcmVhdGl2ZUNvbW1vbnNSc3NNb2R1bGUuaHRtbCI+CiAgICA8Y2hhbm5lbD4KICAgICAgICA8dGl0bGU+PCFbQ0RBVEFbU3RvcmllcyBieSBNYWMgU2lyaSBvbiBNZWRpdW1dXT48L3RpdGxlPgogICAgICAgIDxkZXNjcmlwdGlvbj48IVtDREFUQVtTdG9yaWVzIGJ5IE1hYyBTaXJpIG9uIE1lZGl1bV1dPjwvZGVzY3JpcHRpb24+CiAgICAgICAgPGxpbms+aHR0cHM6Ly9tZWRpdW0uY29tL0BtYWNzaXJpP3NvdXJjZT1yc3MtNGIyNjA1ZGE5MzhmLS0tLS0tMjwvbGluaz4KICAgICAgICA8aW1hZ2U+CiAgICAgICAgICAgIDx1cmw+aHR0cHM6Ly9jZG4taW1hZ2VzLTEubWVkaXVtLmNvbS9maXQvYy8xNTAvMTUwLzAqdzJibXRXbGFsZEtGbGI4ZS48L3VybD4KICAgICAgICAgICAgPHRpdGxlPlN0b3JpZXMgYnkgTWFjIFNpcmkgb24gTWVkaXVtPC90aXRsZT4KICAgICAgICAgICAgPGxpbms+aHR0cHM6Ly9tZWRpdW0uY29tL0BtYWNzaXJpP3NvdXJjZT1yc3MtNGIyNjA1ZGE5MzhmLS0tLS0tMjwvbGluaz4KICAgICAgICA8L2ltYWdlPgogICAgICAgIDxnZW5lcmF0b3I+TWVkaXVtPC9nZW5lcmF0b3I+CiAgICAgICAgPGxhc3RCdWlsZERhdGU+VHVlLCAxOSBNYXkgMjAyMCAxMTo1MzoxMyBHTVQ8L2xhc3RCdWlsZERhdGU+CiAgICAgICAgPGF0b206bGluayBocmVmPSJodHRwczovL21lZGl1bS5jb20vZmVlZC9AbWFjc2lyaSIgcmVsPSJzZWxmIiB0eXBlPSJhcHBsaWNhdGlvbi9yc3MreG1sIi8+CiAgICAgICAgPHdlYk1hc3Rlcj48IVtDREFUQVt5b3VyZnJpZW5kc0BtZWRpdW0uY29tXV0+PC93ZWJNYXN0ZXI+CiAgICAgICAgPGF0b206bGluayBocmVmPSJodHRwOi8vbWVkaXVtLnN1cGVyZmVlZHIuY29tIiByZWw9Imh1YiIvPgogICAgICAgIDxpdGVtPgogICAgICAgICAgICA8dGl0bGU+PCFbQ0RBVEFbVGVzdGluZyBSU1MgRmVlZF1dPjwvdGl0bGU+CiAgICAgICAgICAgIDxsaW5rPmh0dHBzOi8vbWVkaXVtLmNvbS9AbWFjc2lyaS90ZXN0aW5nLXJzcy1mZWVkLTZhZjA0YjdlNTdlMT9zb3VyY2U9cnNzLTRiMjYwNWRhOTM4Zi0tLS0tLTI8L2xpbms+CiAgICAgICAgICAgIDxndWlkIGlzUGVybWFMaW5rPSJmYWxzZSI+aHR0cHM6Ly9tZWRpdW0uY29tL3AvNmFmMDRiN2U1N2UxPC9ndWlkPgogICAgICAgICAgICA8Y2F0ZWdvcnk+PCFbQ0RBVEFbdGVzdF1dPjwvY2F0ZWdvcnk+CiAgICAgICAgICAgIDxkYzpjcmVhdG9yPjwhW0NEQVRBW01hYyBTaXJpXV0+PC9kYzpjcmVhdG9yPgogICAgICAgICAgICA8cHViRGF0ZT5UdWUsIDAyIEphbiAyMDE4IDE5OjA2OjMwIEdNVDwvcHViRGF0ZT4KICAgICAgICAgICAgPGF0b206dXBkYXRlZD4yMDE5LTA2LTE5VDIxOjM4OjA3LjU0OVo8L2F0b206dXBkYXRlZD4KICAgICAgICAgICAgPGNvbnRlbnQ6ZW5jb2RlZD48IVtDREFUQVs8cD55b3V0dWJlIGxpbmvCoGhlcmU8L3A+PGlmcmFtZSBzcmM9Imh0dHBzOi8vY2RuLmVtYmVkbHkuY29tL3dpZGdldHMvbWVkaWEuaHRtbD9zcmM9aHR0cHMlM0ElMkYlMkZ3d3cueW91dHViZS5jb20lMkZlbWJlZCUyRlFPQ2FhY084d3VzJTNGZmVhdHVyZSUzRG9lbWJlZCZhbXA7dXJsPWh0dHAlM0ElMkYlMkZ3d3cueW91dHViZS5jb20lMkZ3YXRjaCUzRnYlM0RRT0NhYWNPOHd1cyZhbXA7aW1hZ2U9aHR0cHMlM0ElMkYlMkZpLnl0aW1nLmNvbSUyRnZpJTJGUU9DYWFjTzh3dXMlMkZocWRlZmF1bHQuanBnJmFtcDtrZXk9YTE5ZmNjMTg0Yjk3MTFlMWI0NzY0MDQwZDNkYzVjMDcmYW1wO3R5cGU9dGV4dCUyRmh0bWwmYW1wO3NjaGVtYT15b3V0dWJlIiB3aWR0aD0iODU0IiBoZWlnaHQ9IjQ4MCIgZnJhbWVib3JkZXI9IjAiIHNjcm9sbGluZz0ibm8iPjxhIGhyZWY9Imh0dHBzOi8vbWVkaXVtLmNvbS9tZWRpYS83ZGE3NGJiMzBmOGEyYTgyYjBhY2I4OWIyMTNhMDE4Yi9ocmVmIj5odHRwczovL21lZGl1bS5jb20vbWVkaWEvN2RhNzRiYjMwZjhhMmE4MmIwYWNiODliMjEzYTAxOGIvaHJlZjwvYT48L2lmcmFtZT48cD50d2VldCBoZXJlPC9wPjxzdHlsZT5ib2R5W2RhdGEtdHd0dHItcmVuZGVyZWQ9InRydWUiXSB7YmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7fS50d2l0dGVyLXR3ZWV0IHttYXJnaW46IGF1dG8gIWltcG9ydGFudDt9PC9zdHlsZT48YmxvY2txdW90ZSBjbGFzcz0idHdpdHRlci10d2VldCIgZGF0YS1jb252ZXJzYXRpb249Im5vbmUiIGRhdGEtYWxpZ249ImNlbnRlciIgZGF0YS1kbnQ9InRydWUiPjxwPkkmIzM5O20gYSBmdWxsLXN0YWNrIGRldmVsb3BlcjwvcD48cD4mI3gyMDBhOyZtZGFzaDsmI3gyMDBhOzxhIGhyZWY9Imh0dHBzOi8vdHdpdHRlci5jb20vYmVuZGhhbHBlcm4vc3RhdHVzLzk0ODI1NjA4MzM1MjczNTc0NCI+QGJlbmRoYWxwZXJuPC9hPjwvcD48L2Jsb2NrcXVvdGU+PHNjcmlwdCBzcmM9Ii8vcGxhdGZvcm0udHdpdHRlci5jb20vd2lkZ2V0cy5qcyIgY2hhcnNldD0idXRmLTgiPjwvc2NyaXB0PjxzY3JpcHQ+ZnVuY3Rpb24gbm90aWZ5UmVzaXplKGhlaWdodCkge2hlaWdodCA9IGhlaWdodCA/IGhlaWdodCA6IGRvY3VtZW50LmRvY3VtZW50RWxlbWVudC5vZmZzZXRIZWlnaHQ7IHZhciByZXNpemVkID0gZmFsc2U7IGlmICh3aW5kb3cuZG9ua2V5ICYmIGRvbmtleS5yZXNpemUpIHtkb25rZXkucmVzaXplKGhlaWdodCk7cmVzaXplZCA9IHRydWU7fWlmIChwYXJlbnQgJiYgcGFyZW50Ll9yZXNpemVJZnJhbWUpIHt2YXIgb2JqID0ge2lmcmFtZTogd2luZG93LmZyYW1lRWxlbWVudCwgaGVpZ2h0OiBoZWlnaHR9OyBwYXJlbnQuX3Jlc2l6ZUlmcmFtZShvYmopOyByZXNpemVkID0gdHJ1ZTt9aWYgKHdpbmRvdy5sb2NhdGlvbiAmJiB3aW5kb3cubG9jYXRpb24uaGFzaCA9PT0gIiNhbXA9MSIgJiYgd2luZG93LnBhcmVudCAmJiB3aW5kb3cucGFyZW50LnBvc3RNZXNzYWdlKSB7d2luZG93LnBhcmVudC5wb3N0TWVzc2FnZSh7c2VudGluZWw6ICJhbXAiLCB0eXBlOiAiZW1iZWQtc2l6ZSIsIGhlaWdodDogaGVpZ2h0fSwgIioiKTt9aWYgKHdpbmRvdy53ZWJraXQgJiYgd2luZG93LndlYmtpdC5tZXNzYWdlSGFuZGxlcnMgJiYgd2luZG93LndlYmtpdC5tZXNzYWdlSGFuZGxlcnMucmVzaXplKSB7d2luZG93LndlYmtpdC5tZXNzYWdlSGFuZGxlcnMucmVzaXplLnBvc3RNZXNzYWdlKGhlaWdodCk7IHJlc2l6ZWQgPSB0cnVlO31yZXR1cm4gcmVzaXplZDt9dHd0dHIuZXZlbnRzLmJpbmQoJ3JlbmRlcmVkJywgZnVuY3Rpb24gKGV2ZW50KSB7bm90aWZ5UmVzaXplKCk7fSk7IHR3dHRyLmV2ZW50cy5iaW5kKCdyZXNpemUnLCBmdW5jdGlvbiAoZXZlbnQpIHtub3RpZnlSZXNpemUoKTt9KTs8L3NjcmlwdD48c2NyaXB0PmlmIChwYXJlbnQgJiYgcGFyZW50Ll9yZXNpemVJZnJhbWUpIHt2YXIgbWF4V2lkdGggPSBwYXJzZUludCh3aW5kb3cuZnJhbWVFbGVtZW50LmdldEF0dHJpYnV0ZSgid2lkdGgiKSk7IGlmICggNTAwICA8IG1heFdpZHRoKSB7d2luZG93LmZyYW1lRWxlbWVudC5zZXRBdHRyaWJ1dGUoIndpZHRoIiwgIjUwMCIpO319PC9zY3JpcHQ+PHA+R2l0aHViIGdpc3TCoGhlcmU8L3A+PGlmcmFtZSBzcmM9IiIgd2lkdGg9IjAiIGhlaWdodD0iMCIgZnJhbWVib3JkZXI9IjAiIHNjcm9sbGluZz0ibm8iPjxhIGhyZWY9Imh0dHBzOi8vbWVkaXVtLmNvbS9tZWRpYS83NzdhZThiN2Q4OTE2ZTU2NWI4NGI3MDRjMDg4Y2YwYy9ocmVmIj5odHRwczovL21lZGl1bS5jb20vbWVkaWEvNzc3YWU4YjdkODkxNmU1NjViODRiNzA0YzA4OGNmMGMvaHJlZjwvYT48L2lmcmFtZT48cD5jb2RlIGJsb2NrPC9wPjxwcmU+dGVzdHNldHNldHNldHNldHNldHNldCBsZXRzIGludHJvZHVjZSBzb21lIHt7IGNoYW9zIH19PC9wcmU+PHByZT5IZXJlJiMzOTtzIG1vcmUge3sgd2hhdCB9fTwvcHJlPjxwPnNvbWUgbW9yZSBjb2RlIGFuZCB7eyBWQVJJQUJMRSB9fSBhbmQgPHN0cm9uZz48ZW0+e3sgSFRNTMKgfX08L2VtPjwvc3Ryb25nPjwvcD48aDM+e3sgaG93IGFib3V0IHRoaXPCoH19PC9oMz48aW1nIHNyYz0iaHR0cHM6Ly9tZWRpdW0uY29tL18vc3RhdD9ldmVudD1wb3N0LmNsaWVudFZpZXdlZCZyZWZlcnJlclNvdXJjZT1mdWxsX3JzcyZwb3N0SWQ9NmFmMDRiN2U1N2UxIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIj5dXT48L2NvbnRlbnQ6ZW5jb2RlZD4KICAgICAgICA8L2l0ZW0+CiAgICA8L2NoYW5uZWw+CjwvcnNzPg==
+    http_version: null
+  recorded_at: Tue, 19 May 2020 12:00:27 GMT
+- request:
+    method: head
+    uri: https://medium.com/media/7da74bb30f8a2a82b0acb89b213a018b/href
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      Date:
+      - Tue, 19 May 2020 12:00:27 GMT
+      Content-Type:
+      - application/octet-stream
+      Connection:
+      - keep-alive
+      X-Opentracing:
+      - '{"ot-tracer-spanid":"64ff7f2f07782e04","ot-tracer-traceid":"52c6ddbe64df2046","ot-tracer-sampled":"true"}'
+      Content-Security-Policy:
+      - 'default-src ''self''; connect-src https://localhost https://*.instapaper.com
+        https://*.stripe.com https://glyph.medium.com https://*.paypal.com https://*.braintree-api.com
+        https://*.braintreegateway.com https://getpocket.com https://medium.com https://*.medium.com
+        https://*.medium.com https://medium.com https://*.medium.com https://*.algolia.net
+        https://cdn-static-1.medium.com https://dnqgz544uhbo8.cloudfront.net https://cdn-videos-1.medium.com
+        https://cdn-audio-1.medium.com https://*.lightstep.com https://*.branch.io
+        ''self''; font-src data: https://*.amazonaws.com https://*.medium.com https://glyph.medium.com
+        https://medium.com https://*.gstatic.com https://dnqgz544uhbo8.cloudfront.net
+        https://cdn-static-1.medium.com ''self''; frame-src chromenull: https: webviewprogressproxy:
+        medium: ''self''; img-src blob: data: https: ''self''; media-src https://*.cdn.vine.co
+        https://d1fcbxp97j4nb2.cloudfront.net https://d262ilb51hltx0.cloudfront.net
+        https://*.medium.com https://gomiro.medium.com https://miro.medium.com https://pbs.twimg.com
+        ''self'' blob:; object-src ''self''; script-src ''unsafe-eval'' ''unsafe-inline''
+        about: https: ''self''; style-src ''unsafe-inline'' data: https: ''self'';
+        report-uri https://csp.medium.com'
+      X-Frame-Options:
+      - sameorigin
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Ua-Compatible:
+      - IE=edge, Chrome=1
+      X-Powered-By:
+      - Medium
+      X-Obvious-Tid:
+      - 1589889627809:e022d5f7fd3
+      X-Obvious-Info:
+      - 41053-1bc14bc,1bc14bcede9
+      Link:
+      - <https://medium.com/humans.txt>; rel="humans"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Expires:
+      - Thu, 09 Sep 1999 09:09:09 GMT
+      Pragma:
+      - no-cache
+      Location:
+      - https://www.youtube.com/watch?v=QOCaacO8wus
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      Cf-Cache-Status:
+      - DYNAMIC
+      Expect-Ct:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Cf-Ray:
+      - 595da85d6e4e0e12-MXP
+      Alt-Svc:
+      - h3-27=":443"; ma=86400, h3-25=":443"; ma=86400, h3-24=":443"; ma=86400, h3-23=":443";
+        ma=86400
+      Cf-Request-Id:
+      - 02ce678e6400000e120e316200000001
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: null
+  recorded_at: Tue, 19 May 2020 12:00:27 GMT
+- request:
+    method: head
+    uri: https://www.youtube.com/watch?v=QOCaacO8wus
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Cookie:
+      - __cfduid=d2455308f90eadbbb35dc3819cd488ef71589889627; uid=lo_UYozN4jZpEBX;
+        sid=1:wCPsNHBDI2QKt4tW+GtS5H1tz3us4mA3wl6Te6q1rmcGIsSCax4aIlPFHhawMElq; optimizelyEndUserId=lo_UYozN4jZpEBX;
+        __cfruid=40a5c949fcf98c056d46132b757b79bf8e70df86-1589889627
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000
+      P3p:
+      - CP="This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl=it
+        for more info."
+      Expires:
+      - Tue, 27 Apr 1971 19:44:06 GMT
+      Content-Type:
+      - text/html; charset=utf-8
+      Date:
+      - Tue, 19 May 2020 12:00:28 GMT
+      Server:
+      - YouTube Frontend Proxy
+      X-Xss-Protection:
+      - '0'
+      Transfer-Encoding:
+      - chunked
+      Alt-Svc:
+      - h3-27=":443"; ma=2592000,h3-25=":443"; ma=2592000,h3-T050=":443"; ma=2592000,h3-Q050=":443";
+        ma=2592000,h3-Q049=":443"; ma=2592000,h3-Q048=":443"; ma=2592000,h3-Q046=":443";
+        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      Accept-Ranges:
+      - none
+      Vary:
+      - Accept-Encoding
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: null
+  recorded_at: Tue, 19 May 2020 12:00:28 GMT
+- request:
+    method: post
+    uri: https://api.twitter.com/oauth2/token
+    body:
+      encoding: UTF-8
+      string: grant_type=client_credentials
+    headers:
+      User-Agent:
+      - TwitterRubyGem/7.0.0 (http://localhost:3000)
+      Accept:
+      - "*/*"
+      Connection:
+      - close
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Connection:
+      - close
+      Content-Disposition:
+      - attachment; filename=json.json
+      Content-Length:
+      - '153'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 19 May 2020 12:00:28 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Tue, 19 May 2020 12:00:28 GMT
+      Ml:
+      - A
+      Pragma:
+      - no-cache
+      Server:
+      - tsa_o
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - d70632b8d317e8c8a5cddc69b917f639
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Response-Time:
+      - '114'
+      X-Transaction:
+      - 00caa01700a2b87e
+      X-Tsa-Request-Body-Time:
+      - '0'
+      X-Twitter-Response-Tags:
+      - BouncerCompliant
+      X-Ua-Compatible:
+      - IE=edge,chrome=1
+      X-Xss-Protection:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: '{"token_type":"bearer","access_token":"ACCESS_TOKEN"}'
+    http_version: null
+  recorded_at: Tue, 19 May 2020 12:00:28 GMT
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/948256083352735744.json?tweet_mode=extended
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/7.0.0 (http://localhost:3000)
+      Connection:
+      - close
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Connection:
+      - close
+      Content-Disposition:
+      - attachment; filename=json.json
+      Content-Length:
+      - '3878'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 19 May 2020 12:00:28 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Tue, 19 May 2020 12:00:28 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - tsa_o
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Access-Level:
+      - read
+      X-Connection-Hash:
+      - b294b1d400f435a17f368ccefd1eb242
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Rate-Limit-Limit:
+      - '900'
+      X-Rate-Limit-Remaining:
+      - '895'
+      X-Rate-Limit-Reset:
+      - '1589890100'
+      X-Response-Time:
+      - '134'
+      X-Transaction:
+      - '0031283e006dcc73'
+      X-Twitter-Response-Tags:
+      - BouncerCompliant
+      X-Xss-Protection:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: '{"created_at":"Tue Jan 02 18:14:02 +0000 2018","id":948256083352735744,"id_str":"948256083352735744","full_text":"I''m
+        a full-stack developer https:\/\/t.co\/wvFikfWJ7f","truncated":false,"display_text_range":[0,26],"entities":{"hashtags":[],"symbols":[],"user_mentions":[],"urls":[],"media":[{"id":948256051085770752,"id_str":"948256051085770752","indices":[27,50],"media_url":"http:\/\/pbs.twimg.com\/media\/DSjh2rkVAAApeFR.jpg","media_url_https":"https:\/\/pbs.twimg.com\/media\/DSjh2rkVAAApeFR.jpg","url":"https:\/\/t.co\/wvFikfWJ7f","display_url":"pic.twitter.com\/wvFikfWJ7f","expanded_url":"https:\/\/twitter.com\/bendhalpern\/status\/948256083352735744\/photo\/1","type":"photo","sizes":{"large":{"w":1536,"h":2048,"resize":"fit"},"thumb":{"w":150,"h":150,"resize":"crop"},"medium":{"w":900,"h":1200,"resize":"fit"},"small":{"w":510,"h":680,"resize":"fit"}}}]},"extended_entities":{"media":[{"id":948256051085770752,"id_str":"948256051085770752","indices":[27,50],"media_url":"http:\/\/pbs.twimg.com\/media\/DSjh2rkVAAApeFR.jpg","media_url_https":"https:\/\/pbs.twimg.com\/media\/DSjh2rkVAAApeFR.jpg","url":"https:\/\/t.co\/wvFikfWJ7f","display_url":"pic.twitter.com\/wvFikfWJ7f","expanded_url":"https:\/\/twitter.com\/bendhalpern\/status\/948256083352735744\/photo\/1","type":"photo","sizes":{"large":{"w":1536,"h":2048,"resize":"fit"},"thumb":{"w":150,"h":150,"resize":"crop"},"medium":{"w":900,"h":1200,"resize":"fit"},"small":{"w":510,"h":680,"resize":"fit"}}}]},"source":"\u003ca
+        href=\"http:\/\/twitter.com\/download\/iphone\" rel=\"nofollow\"\u003eTwitter
+        for iPhone\u003c\/a\u003e","in_reply_to_status_id":948243620846620673,"in_reply_to_status_id_str":"948243620846620673","in_reply_to_user_id":161419043,"in_reply_to_user_id_str":"161419043","in_reply_to_screen_name":"bendhalpern","user":{"id":161419043,"id_str":"161419043","name":"Ben
+        Halpern \ud83e\udd81","screen_name":"bendhalpern","location":"Brooklyn, NY\/Beacon,
+        NY","description":"Creator\/founder\/webmaster of https:\/\/t.co\/lhcCPP1ReQ
+        (@ThePracticalDev). Coder, buddhist, feminist, Batman. He\/Him.","url":"https:\/\/t.co\/qqIzCffhit","entities":{"url":{"urls":[{"url":"https:\/\/t.co\/qqIzCffhit","expanded_url":"http:\/\/dev.to\/ben","display_url":"dev.to\/ben","indices":[0,23]}]},"description":{"urls":[{"url":"https:\/\/t.co\/lhcCPP1ReQ","expanded_url":"http:\/\/dev.to","display_url":"dev.to","indices":[29,52]}]}},"protected":false,"followers_count":39142,"friends_count":2168,"listed_count":689,"created_at":"Wed
+        Jun 30 20:15:57 +0000 2010","favourites_count":35151,"utc_offset":null,"time_zone":null,"geo_enabled":true,"verified":true,"statuses_count":15326,"lang":null,"contributors_enabled":false,"is_translator":false,"is_translation_enabled":false,"profile_background_color":"EDECE9","profile_background_image_url":"http:\/\/abs.twimg.com\/images\/themes\/theme3\/bg.gif","profile_background_image_url_https":"https:\/\/abs.twimg.com\/images\/themes\/theme3\/bg.gif","profile_background_tile":false,"profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/855590922486136832\/g8m8zpCp_normal.jpg","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/855590922486136832\/g8m8zpCp_normal.jpg","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/161419043\/1492834234","profile_link_color":"3A1E75","profile_sidebar_border_color":"FFFFFF","profile_sidebar_fill_color":"E3E2DE","profile_text_color":"634047","profile_use_background_image":true,"has_extended_profile":true,"default_profile":false,"default_profile_image":false,"following":null,"follow_request_sent":null,"notifications":null,"translator_type":"none"},"geo":null,"coordinates":null,"place":null,"contributors":null,"is_quote_status":false,"retweet_count":65,"favorite_count":511,"favorited":false,"retweeted":false,"possibly_sensitive":false,"possibly_sensitive_appealable":false,"lang":"en"}'
+    http_version: null
+  recorded_at: Tue, 19 May 2020 12:00:29 GMT
+recorded_with: VCR 5.1.0

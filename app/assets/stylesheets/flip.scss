@@ -4,22 +4,24 @@
 .flip {
   margin: auto;
   width: 96%;
-  max-width:1200px;
-  padding-top:100px;
-  margin-bottom:100px;
-  min-height:500px;
+  max-width: 1200px;
+  padding-top: 100px;
+  margin-bottom: 100px;
+  min-height: 500px;
 }
-body{
+body {
 }
 
 .flip h1 {
-  color:#666666;
+  color: #666666;
   font-size: 229%;
   line-height: 44.928px;
   margin: 30px 0;
 }
 
-.flip th.name, .flip th.description, .flip th.status {
+.flip th.name,
+.flip th.description,
+.flip th.status {
   visibility: hidden;
 }
 
@@ -28,7 +30,8 @@ body{
   font-weight: bold;
 }
 
-.flip td.name, .flip td.description {
+.flip td.name,
+.flip td.description {
   vertical-align: top;
 }
 
@@ -44,13 +47,16 @@ body{
   font-size: 80%;
 }
 
-.flip th, .flip td {
+.flip th,
+.flip td {
   padding: 5px 10px;
   width: 160px;
   height: 40px;
 }
 
-.flip td.off, .flip td.on, .flip td.pass {
+.flip td.off,
+.flip td.on,
+.flip td.pass {
   text-align: center;
   text-transform: capitalize;
 }
@@ -71,7 +77,7 @@ body{
   display: inline;
 }
 
-.flip form input[type=submit] {
+.flip form input[type='submit'] {
   font-size: 80%;
   padding: 2px 5px;
   margin: 0;

@@ -1,9 +1,19 @@
 class PodcastTag < LiquidTagBase
   include ApplicationHelper
-  include CloudinaryHelper
+  include ActionView::Helpers::AssetUrlHelper
 
   attr_reader :episode, :podcast
+
   PARTIAL = "podcast_episodes/liquid".freeze
+
+  SCRIPT = <<~JAVASCRIPT.freeze
+    var waitingOnPodcast = setInterval(function() {
+      if (typeof initializePodcastPlayback !== 'undefined') {
+        initializePodcastPlayback();
+        clearInterval(waitingOnPodcast);
+      }
+    }, 1);
+  JAVASCRIPT
 
   IMAGE_LINK = {
     itunes: "https://d.ibtimes.co.uk/en/full/1423047/itunes-12.png",
@@ -12,35 +22,24 @@ class PodcastTag < LiquidTagBase
     rss: "https://temenos.com/globalassets/img/marketplace/temenos/rss/rss.png"
   }.freeze
 
-  def initialize(_tag_name, link, _tokens)
+  def initialize(_tag_name, link, _parse_context)
+    super
     @episode = fetch_podcast(link)
     @podcast ||= Podcast.new
-    @podcast_links = [["iTunes", @podcast.itunes_url, cloudinary(IMAGE_LINK["iTunes".downcase.to_sym], 40, 90, "png")],
-                      ["Overcast", @podcast.overcast_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
-                      ["Android", @podcast.android_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
-                      ["RSS", @podcast.feed_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")]]
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         episode: @episode,
-        podcast: @podcast,
-        podcast_links: @podcast_links
+        podcast: @podcast
       },
     )
   end
 
   def self.script
-    <<~JAVASCRIPT
-      var waitingOnPodcast = setInterval(function(){
-        if (typeof initializePodcastPlayback !== 'undefined') {
-          initializePodcastPlayback();
-          clearInterval(waitingOnPodcast);
-        }
-      },1);
-    JAVASCRIPT
+    SCRIPT
   end
 
   private
@@ -67,4 +66,5 @@ class PodcastTag < LiquidTagBase
     raise StandardError, "Invalid podcast link"
   end
 end
+
 Liquid::Template.register_tag("podcast", PodcastTag)

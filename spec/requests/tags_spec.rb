@@ -4,7 +4,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
   describe "GET /tags" do
     it "returns proper page" do
       get "/tags"
-      expect(response.body).to include("Top 100 Tags")
+      expect(response.body).to include("Top tags")
     end
   end
 
@@ -14,6 +14,10 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     let(:unauthorized_user)    { create(:user) }
     let(:tag_moderator)        { create(:user) }
     let(:super_admin)          { create(:user, :super_admin) }
+
+    before do
+      allow(SiteConfig).to receive(:suggested_tags).and_return(%w[beginners javascript career])
+    end
 
     it "does not allow not logged-in users" do
       get "/t/#{tag}/edit"
@@ -104,6 +108,58 @@ RSpec.describe "Tags", type: :request, proper_status: true do
         patch("/tag/#{another_tag.id}", params: valid_params)
         expect(response).to have_http_status(:not_found)
       end
+    end
+  end
+
+  describe "GET /tags/onboarding" do
+    let(:headers) do
+      {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    end
+
+    before do
+      allow(SiteConfig).to receive(:suggested_tags).and_return(%w[beginners javascript career])
+    end
+
+    it "returns tags" do
+      create(:tag, name: SiteConfig.suggested_tags.first)
+
+      get onboarding_tags_path, headers: headers
+
+      expect(response.parsed_body.size).to eq(1)
+    end
+
+    it "returns tags with the correct json representation" do
+      tag = create(:tag, name: SiteConfig.suggested_tags.first)
+
+      get onboarding_tags_path, headers: headers
+
+      response_tag = response.parsed_body.first
+      expect(response_tag.keys).to match_array(%w[id name bg_color_hex text_color_hex following])
+      expect(response_tag["id"]).to eq(tag.id)
+      expect(response_tag["name"]).to eq(tag.name)
+      expect(response_tag["bg_color_hex"]).to eq(tag.bg_color_hex)
+      expect(response_tag["text_color_hex"]).to eq(tag.text_color_hex)
+      expect(response_tag["following"]).to be_nil
+    end
+
+    it "returns only suggested tags" do
+      not_suggested_tag = create(:tag, name: "definitelynotasuggestedtag")
+
+      get onboarding_tags_path, headers: headers
+
+      expect(response.parsed_body.filter { |t| t["name"] == not_suggested_tag.name }).to be_empty
+    end
+
+    it "sets the correct edge caching surrogate key for all tags" do
+      tag = create(:tag, name: SiteConfig.suggested_tags.first)
+
+      get onboarding_tags_path, headers: headers
+
+      expected_key = ["tags", tag.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
   end
 end

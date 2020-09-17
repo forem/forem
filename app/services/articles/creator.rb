@@ -11,22 +11,28 @@ module Articles
     end
 
     def call
-      raise if RateLimitChecker.new(user).limit_by_action("published_article_creation")
+      rate_limit!
 
       article = save_article
+
       if article.persisted?
-        NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article", config: "all_comments")
+        NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article",
+                                        config: "all_comments")
         Notification.send_to_followers(article, "Published") if article.published?
 
         dispatch_event(article)
       end
 
-      article.decorate
+      article
     end
 
     private
 
     attr_reader :user, :article_params, :event_dispatcher
+
+    def rate_limit!
+      user.rate_limiter.check_limit!(:published_article_creation)
+    end
 
     def dispatch_event(article)
       return unless article.published?

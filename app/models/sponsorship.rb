@@ -1,6 +1,6 @@
 class Sponsorship < ApplicationRecord
   LEVELS = %w[gold silver bronze tag media devrel].freeze
-  LEVELS_WITH_EXPIRATION = %w[gold silver bronze].freeze
+  METAL_LEVELS = %w[gold silver bronze].freeze
   STATUSES = %w[none pending live].freeze
   # media has no fixed amount of credits
   CREDITS = {
@@ -19,26 +19,31 @@ class Sponsorship < ApplicationRecord
   validates :level, inclusion: { in: LEVELS }
   validates :status, inclusion: { in: STATUSES }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[http https] }
-  validates :level,
-            uniqueness: {
-              scope: :organization,
-              message: "You can have only one sponsorship of #{LEVELS_WITH_EXPIRATION}"
-            },
-            if: proc { LEVELS_WITH_EXPIRATION.include?(level) }
-  validates :level,
-            uniqueness: {
-              scope: [:sponsorable],
-              message: proc { "The tag is already sponsored" }
-            },
-            if: proc { level.to_s == "tag" }
+  validate :validate_tag_uniqueness, if: proc { level.to_s == "tag" }
+  validate :validate_level_uniqueness, if: proc { METAL_LEVELS.include?(level) }
 
-  scope :gold, -> { where(level: :gold) }
-  scope :silver, -> { where(level: :silver) }
-  scope :bronze, -> { where(level: :bronze) }
-  scope :tag, -> { where(level: :tag) }
-  scope :media, -> { where(level: :media) }
-  scope :devrel, -> { where(level: :devrel) }
+  LEVELS.each do |level|
+    scope level, -> { where(level: level) }
+  end
 
   scope :live, -> { where(status: :live) }
   scope :pending, -> { where(status: :pending) }
+
+  scope :unexpired, -> { where("expires_at > ?", Time.current) }
+
+  private
+
+  def validate_tag_uniqueness
+    return unless self.class.where(sponsorable: sponsorable, level: :tag)
+      .exists?(["expires_at > ? AND id != ?", Time.current, id.to_i])
+
+    errors.add(:level, "The tag is already sponsored")
+  end
+
+  def validate_level_uniqueness
+    return unless self.class.where(organization: organization)
+      .exists?(["level IN (?) AND expires_at > ? AND id != ?", METAL_LEVELS, Time.current, id.to_i])
+
+    errors.add(:level, "You can have only one sponsorship of #{METAL_LEVELS.join(', ')}")
+  end
 end

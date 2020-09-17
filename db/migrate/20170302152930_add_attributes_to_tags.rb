@@ -1,4 +1,4 @@
-class AddAttributesToTags < ActiveRecord::Migration
+class AddAttributesToTags < ActiveRecord::Migration[4.2]
   def change
     add_column :tags, :wiki_body_markdown, :text
     add_column :tags, :wiki_body_html, :text

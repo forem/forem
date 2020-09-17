@@ -1,8 +1,8 @@
 require "rails_helper"
 
-RSpec.describe Notifications::Milestone::Send do
+RSpec.describe Notifications::Milestone::Send, type: :service do
   let(:user) { create(:user) }
-  let(:article) { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
+  let(:article) { create(:article, user_id: user.id, page_views_count: 4000, public_reactions_count: 70) }
 
   context "when a user has never received a milestone notification" do
     it "sends the appropriate level view milestone notification" do
@@ -25,7 +25,7 @@ RSpec.describe Notifications::Milestone::Send do
 
     def mock_previous_reaction_milestone_notification
       send_milestone_notification_reaction
-      article.update_column(:positive_reactions_count, 150)
+      article.update_column(:public_reactions_count, 150)
       send_milestone_notification_reaction
     end
 
@@ -47,16 +47,17 @@ RSpec.describe Notifications::Milestone::Send do
         expect(user.notifications.count).to eq 2
       end
 
-      it "does not send a view milestone notification again if the latest number of views is not past the next milestone" do
+      it "does not send a view milestone notification again if the latest num of views isn't past the next milestone" do
         article.update_column(:page_views_count, rand(9002..16_383))
         send_milestone_notification_view
         expect(user.notifications.count).to eq 2
       end
 
       it "checks notification json data", :aggregate_failures do
-        expect(user.notifications.where(notifiable_type: "Article").first.json_data["article"]["class"]["name"]).to eq "Article"
-        expect(user.notifications.where(notifiable_id: article.id).first.json_data["article"]["id"]).to eq article.id
-        expect(user.notifications.where(notifiable_id: article.id).first.json_data["article"]["title"]).to eq article.title
+        nots = user.notifications
+        expect(nots.where(notifiable_type: "Article").first.json_data["article"]["class"]["name"]).to eq("Article")
+        expect(nots.where(notifiable_id: article.id).first.json_data["article"]["id"]).to eq(article.id)
+        expect(nots.where(notifiable_id: article.id).first.json_data["article"]["title"]).to eq(article.title)
       end
     end
 

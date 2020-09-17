@@ -1,0 +1,80 @@
+<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
+
+<%= form_with(model: podcast, local: true) do |form| %>
+  <div>
+    <header>
+      <a href="/pod" class="podcast-back-button">&lt; return to podcasts</a>
+      <h2>Suggest a Podcast</h2>
+    </header>
+    <% if podcast.errors.any? %>
+      <div class="podcast-errors">
+        <h2><%= pluralize(podcast.errors.count, "error") %> while creating a podcast:</h2>
+        <ul>
+        <% podcast.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div id="podcast-form-data">
+      <div class="field">
+        <%= check_box_tag :i_am_owner %><%= label_tag :i_am_owner, "I am the owner of this podcast", class: "i_am_owner" %>
+      </div>
+      <div class="field">
+        <%= form.label :title %>
+        <%= form.text_field :title, placeholder: "" %>
+      </div>
+      <div class="field">
+        <%= form.label :description, "Description" %>
+        <%= form.text_area :description, placeholder: "" %>
+      </div>
+      <div class="field">
+        <%= form.label :website_url %>
+        <%= form.text_field :website_url %>
+      </div>
+      <div class="field">
+        <%= form.label :feed_url %>
+        <%= form.text_field :feed_url %>
+      </div>
+      <div class="field">
+        <%= form.label :twitter_username %>
+        <%= form.text_field :twitter_username %>
+      </div>
+      <div class="field">
+        <%= form.label :slug %>
+        <%= form.text_field :slug %>
+      </div>
+      <div class="field">
+        <%= form.label :main_color_hex %>
+        <%= form.text_field :main_color_hex, placeholder: "FF00FF" %>
+      </div>
+      <div class="field">
+        <%= form.label :image %>
+        <%= form.file_field :image, accept: "image/*" %>
+      </div>
+      <div class="field">
+        <%= form.label :pattern_image %>
+        <%= form.file_field :pattern_image, accept: "image/*" %>
+      </div>
+      <div class="field">
+        <%= form.label :android_url %>
+        <%= form.text_field :android_url %>
+      </div>
+      <div class="field">
+        <%= form.label :itunes_url %>
+        <%= form.text_field :itunes_url %>
+      </div>
+      <div class="field">
+        <%= form.label :overcast_url %>
+        <%= form.text_field :overcast_url %>
+      </div>
+      <div class="field">
+        <%= form.label :soundcloud_url %>
+        <%= form.text_field :soundcloud_url %>
+      </div>
+      <div class="field">
+        <%= form.submit "Suggest", class: "cta" %>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe GistTag, type: :liquid_template do
+RSpec.describe GistTag, type: :liquid_tag do
   describe "#link" do
     let(:gist_links) do
       [
@@ -21,7 +21,9 @@ RSpec.describe GistTag, type: :liquid_template do
 
     let(:gist_link) { "https://gist.github.com/amochohan/8cb599ee5dc0af5f4246" }
     let(:link_with_file_option) { "#{gist_link} file=01_Laravel 5 Simple ACL manager_Readme.md" }
-    let(:gist_link_with_version) { "https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/44c4e7fa81592f917fffacf689dd76f469ca954c" }
+    let(:gist_link_with_version) do
+      "https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/44c4e7fa81592f917fffacf689dd76f469ca954c"
+    end
 
     def generate_new_liquid(link)
       Liquid::Template.register_tag("gist", GistTag)
@@ -71,7 +73,7 @@ RSpec.describe GistTag, type: :liquid_template do
 
     it "rejects XSS attempts" do
       bad_links.each do |link|
-        expect { generate_new_liquid(link) } .to raise_error(StandardError)
+        expect { generate_new_liquid(link) }.to raise_error(StandardError)
       end
     end
   end

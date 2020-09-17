@@ -1,13 +1,14 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
-import Title from './elements/title';
-import BodyMarkdown from './elements/bodyMarkdown';
-import Categories from './elements/categories';
-import ContactViaConnect from './elements/contactViaConnect';
-import ExpireDate from './elements/expireDate';
 import Tags from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
+import { DEFAULT_TAG_FORMAT } from '../article-form/components/TagsField';
+import Title from './components/Title';
+import BodyMarkdown from './components/BodyMarkdown';
+import Categories from './components/Categories';
+import ContactViaConnect from './components/ContactViaConnect';
+import ExpireDate from './components/ExpireDate';
 
 export default class ListingForm extends Component {
   constructor(props) {
@@ -41,7 +42,7 @@ export default class ListingForm extends Component {
     };
   }
 
-  handleOrgIdChange = e => {
+  handleOrgIdChange = (e) => {
     const organizationId = e.target.selectedOptions[0].value;
     this.setState({ organizationId });
   };
@@ -66,7 +67,7 @@ export default class ListingForm extends Component {
         <div className="field">
           <label htmlFor="organizationId">Post under an organization:</label>
           <OrganizationPicker
-            name="classified_listing[organization_id]"
+            name="listing[organization_id]"
             id="listing_organization_id"
             organizations={organizations}
             organizationId={organizationId}
@@ -100,6 +101,7 @@ export default class ListingForm extends Component {
             maxTags={8}
             autocomplete="off"
             listing
+            pattern={DEFAULT_TAG_FORMAT}
           />
           <ExpireDate
             defaultValue={expireDate}

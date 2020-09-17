@@ -1,7 +1,6 @@
 module Exporter
   class Comments
-    attr_reader :name
-    attr_reader :user
+    attr_reader :name, :user
 
     def initialize(user)
       @name = :comments
@@ -26,7 +25,7 @@ module Exporter
         edited_at
         id_code
         markdown_character_count
-        positive_reactions_count
+        public_reactions_count
         processed_html
         receive_notifications
       ]
@@ -39,8 +38,8 @@ module Exporter
       attributes_to_select = %i[id commentable_id commentable_type] + allowed_attributes
       comments.includes(:commentable).select(attributes_to_select).find_each do |comment|
         # merge final json with the path of the commentable
-        comments_to_jsonify << comment.as_json(only: allowed_attributes).
-          merge(commentable_path: comment.commentable&.path)
+        comments_to_jsonify << comment.as_json(only: allowed_attributes)
+          .merge(commentable_path: comment.commentable&.path)
       end
 
       comments_to_jsonify.to_json

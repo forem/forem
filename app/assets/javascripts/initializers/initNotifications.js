@@ -1,14 +1,17 @@
+/* global checkUserLoggedIn, instantClick, InstantClick, sendHapticMessage */
+
 function initNotifications() {
   fetchNotificationsCount();
   markNotificationsAsRead();
   initReactions();
   listenForNotificationsBellClick();
+  initFilter();
   initPagination();
   initLoadMoreButton();
 }
 
 function markNotificationsAsRead() {
-  setTimeout(function() {
+  setTimeout(function () {
     if (document.getElementById('notifications-container')) {
       var xmlhttp;
       var locationAsArray = window.location.pathname.split('/');
@@ -23,7 +26,7 @@ function markNotificationsAsRead() {
       } else {
         xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
       }
-      xmlhttp.onreadystatechange = function() {};
+      xmlhttp.onreadystatechange = function () {};
 
       var csrfToken = document.querySelector("meta[name='csrf-token']").content;
 
@@ -47,54 +50,27 @@ function fetchNotificationsCount() {
     document.getElementById('notifications-container') == null &&
     checkUserLoggedIn()
   ) {
-    var xmlhttp;
-    if (window.XMLHttpRequest) {
-      xmlhttp = new XMLHttpRequest();
-    } else {
-      xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+    // Prefetch notifications page
+    if (instantClick) {
+      InstantClick.removeExpiredKeys('force');
+      setTimeout(function () {
+        InstantClick.preload(
+          document.getElementById('notifications-link').href,
+          'force',
+        );
+      }, 30);
     }
-    xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState == XMLHttpRequest.DONE) {
-        var count = xmlhttp.response;
-        if (isNaN(count)) {
-          document
-            .getElementById('notifications-number')
-            .classList.remove('showing');
-        } else if (count != '0' && count != undefined && count != '') {
-          document.getElementById('notifications-number').innerHTML =
-            xmlhttp.response;
-          document
-            .getElementById('notifications-number')
-            .classList.add('showing');
-          if (instantClick) {
-            InstantClick.removeExpiredKeys('force');
-            setTimeout(function() {
-              InstantClick.preload(
-                document.getElementById('notifications-link').href,
-                'force',
-              );
-            }, 30);
-          }
-        } else {
-          document
-            .getElementById('notifications-number')
-            .classList.remove('showing');
-        }
-      }
-    };
-
-    xmlhttp.open('GET', '/notifications/counts', true);
-    xmlhttp.send();
   }
 }
 
 function initReactions() {
-  setTimeout(function() {
+  setTimeout(function () {
     if (document.getElementById('notifications-container')) {
       var butts = document.getElementsByClassName('reaction-button');
+
       for (var i = 0; i < butts.length; i++) {
         var butt = butts[i];
-        butt.onclick = function(event) {
+        butt.onclick = function (event) {
           event.preventDefault();
           sendHapticMessage('medium');
           var thisButt = this;
@@ -115,24 +91,27 @@ function initReactions() {
 
           getCsrfToken()
             .then(sendFetch('reaction-creation', formData))
-            .then(function(response) {
+            .then(function (response) {
               if (response.status === 200) {
                 response.json().then(successCb);
               }
             });
         };
       }
-      var butts = document.getElementsByClassName('toggle-reply-form');
-      for (var i = 0; i < butts.length; i++) {
-        var butt = butts[i];
-        butt.onclick = function(event) {
+
+      butts = document.getElementsByClassName('toggle-reply-form');
+
+      for (let i = 0; i < butts.length; i++) {
+        const butt = butts[i];
+
+        butt.onclick = function (event) {
           event.preventDefault();
           var thisButt = this;
           document
             .getElementById('comment-form-for-' + thisButt.dataset.reactableId)
             .classList.add('showing');
           thisButt.innerHTML = '';
-          setTimeout(function() {
+          setTimeout(function () {
             document
               .getElementById(
                 'comment-textarea-for-' + thisButt.dataset.reactableId,
@@ -146,13 +125,26 @@ function initReactions() {
 }
 
 function listenForNotificationsBellClick() {
-  setTimeout(function() {
-    document.getElementById('notifications-link').onclick = function() {
-      document
-        .getElementById('notifications-number')
-        .classList.remove('showing');
-    };
-  }, 180);
+  var notificationsLink = document.getElementById('notifications-link');
+  if (notificationsLink) {
+    setTimeout(function () {
+      notificationsLink.onclick = function () {
+        document.getElementById('notifications-number').classList.add('hidden');
+      };
+    }, 180);
+  }
+}
+
+function initFilter() {
+  const notificationsFilterSelect = document.getElementById(
+    'notifications-filter__select',
+  );
+  const changeNotifications = (event) => {
+    window.location.href = event.target.value;
+  };
+  if (notificationsFilterSelect) {
+    notificationsFilterSelect.addEventListener('change', changeNotifications);
+  }
 }
 
 function initPagination() {
@@ -167,9 +159,9 @@ function initPagination() {
           method: 'GET',
           credentials: 'same-origin',
         })
-        .then(function(response) {
+        .then(function (response) {
           if (response.status === 200) {
-            response.text().then(function(html) {
+            response.text().then(function (html) {
               const markup = html.trim();
 
               if (markup) {

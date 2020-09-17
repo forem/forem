@@ -1,14 +1,70 @@
 require "rails_helper"
 
-RSpec.describe CacheBuster do
-  let(:cache_buster) { described_class.new }
+RSpec.describe CacheBuster, type: :labor do
+  let(:cache_buster) { described_class }
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
-  let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment) { create(:comment, user_id: user.id, commentable: article) }
   let(:organization) { create(:organization) }
-  let(:listing) { create(:classified_listing, user_id: user.id, category: "cfp") }
+  let(:listing) { create(:listing, user_id: user.id) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
+  let(:tag) { create(:tag) }
+
+  describe "#bust_nginx_cache" do
+    before do
+      # Stub out Fastly since we check for fastly_enabled? before nginx_enabled?
+      allow(cache_buster).to receive(:fastly_enabled?).and_return(false)
+      allow(cache_buster).to receive(:bust_nginx_cache).and_call_original
+
+      allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return("localhost:9090")
+    end
+
+    context "when nginx is available and openresty is configured" do
+      it "can bust an nginx cache" do
+        cache_buster.bust("/#{user.username}")
+        expect(cache_buster).to have_received(:bust_nginx_cache)
+      end
+    end
+
+    context "when nginx is unavailable and openresty is configured" do
+      before do
+        allow(cache_buster).to receive(:bust)
+        allow(cache_buster).to receive(:nginx_available?).and_return(false)
+      end
+
+      it "does not bust an nginx cache" do
+        cache_buster.bust("/#{user.username}")
+        expect(cache_buster).not_to have_received(:bust_nginx_cache)
+      end
+    end
+
+    context "when openresty is not configured" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return(nil)
+      end
+
+      it "does not bust an nginx cache" do
+        cache_buster.bust("/#{user.username}")
+        expect(cache_buster).not_to have_received(:bust_nginx_cache)
+      end
+    end
+  end
+
+  describe "#bust_fastly_cache" do
+    before do
+      allow(cache_buster).to receive(:bust_fastly_cache).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("fake-key")
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return("fake-key")
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("localhost:3000")
+    end
+
+    it "can bust a fastly cache when configured" do
+      cache_buster.bust_fastly_cache("/#{user.username}")
+    end
+  end
 
   describe "#bust_comment" do
     it "busts comment" do
@@ -40,7 +96,7 @@ RSpec.describe CacheBuster do
 
   describe "#bust_tag" do
     it "busts tag name + tags" do
-      cache_buster.bust_tag("cfp")
+      expect { cache_buster.bust_tag(tag) }.not_to raise_error
     end
   end
 
@@ -79,16 +135,15 @@ RSpec.describe CacheBuster do
 
     it "logs an error from bust_podcast_episode" do
       allow(Rails.logger).to receive(:warn)
-      allow(described_class).to receive(:new).and_return(cache_buster)
       allow(cache_buster).to receive(:bust).and_raise(StandardError)
       cache_buster.bust_podcast_episode(podcast_episode, 12, "-007")
       expect(Rails.logger).to have_received(:warn).once
     end
   end
 
-  describe "#bust_classified_listings" do
-    it "busts classified listings" do
-      cache_buster.bust_classified_listings(listing)
+  describe "#bust_listings" do
+    it "busts listings" do
+      expect { cache_buster.bust_listings(listing) }.not_to raise_error
     end
   end
 
@@ -96,9 +151,9 @@ RSpec.describe CacheBuster do
     it "busts a user" do
       allow(cache_buster).to receive(:bust)
       cache_buster.bust_user(user)
-      expect(cache_buster).to have_received(:bust).with("/" + user.username.to_s)
-      expect(cache_buster).to have_received(:bust).with("/" + user.username.to_s + "/comments?i=i")
-      expect(cache_buster).to have_received(:bust).with("/feed/" + user.username.to_s)
+      expect(cache_buster).to have_received(:bust).with("/#{user.username}")
+      expect(cache_buster).to have_received(:bust).with("/#{user.username}/comments?i=i")
+      expect(cache_buster).to have_received(:bust).with("/feed/#{user.username}")
     end
   end
 end

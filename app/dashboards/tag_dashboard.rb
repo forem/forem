@@ -18,7 +18,6 @@ class TagDashboard < Administrate::BaseDashboard
     short_summary: Field::String,
     requires_approval: Field::Boolean,
     submission_template: Field::Text,
-    submission_rules_headsup: Field::String,
     pretty_name: Field::String,
     profile_image: CarrierwaveField,
     social_image: CarrierwaveField,
@@ -54,7 +53,6 @@ class TagDashboard < Administrate::BaseDashboard
     short_summary
     requires_approval
     submission_template
-    submission_rules_headsup
     pretty_name
     profile_image
     social_image
@@ -75,7 +73,6 @@ class TagDashboard < Administrate::BaseDashboard
     short_summary
     requires_approval
     submission_template
-    submission_rules_headsup
     pretty_name
     profile_image
     social_image

@@ -1,0 +1,47 @@
+@import '../config/import';
+
+.crayons-notice {
+  padding: var(--su-4);
+  @include generate-box(
+    $level: 1,
+    $bg: var(--card-bg),
+    $border: var(--card-color),
+    $color: var(--card-color)
+  );
+
+  &--danger {
+    @include generate-box(
+      $level: 1,
+      $bg: var(--accent-danger-a10),
+      $border: var(--accent-danger),
+      $color: var(--card-color)
+    );
+  }
+
+  &--warning {
+    @include generate-box(
+      $level: 1,
+      $bg: var(--accent-warning-a10),
+      $border: var(--accent-warning),
+      $color: var(--card-color)
+    );
+  }
+
+  &--success {
+    @include generate-box(
+      $level: 1,
+      $bg: var(--accent-success-a10),
+      $border: var(--accent-success),
+      $color: var(--card-color)
+    );
+  }
+
+  &--info {
+    @include generate-box(
+      $level: 1,
+      $bg: var(--accent-brand-a10),
+      $border: var(--accent-brand),
+      $color: var(--card-color)
+    );
+  }
+}
