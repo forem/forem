@@ -565,7 +565,7 @@ class Article < ApplicationRecord
     return unless co_author_ids
 
     co_author = co_author_ids.map { |id| id }
-    return if co_author_ids != co_author
+    return if co_author_ids.include?(co_author)
 
     errors.add(:base, "must not be the same user as the co-author")
   end
