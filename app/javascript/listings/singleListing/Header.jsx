@@ -30,7 +30,7 @@ const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
           {title}
         </a>
       </h2>
-      <DateTime datetime={listingDate} className="single-listing__date" />
+      <DateTime dateTime={listingDate} className="single-listing__date" />
       <TagLinks tags={listing.tags} onClick={onAddTag} />
 
       <DropdownMenu listing={listing} isOwner={currentUserId === userId} />
