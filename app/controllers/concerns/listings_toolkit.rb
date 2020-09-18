@@ -135,7 +135,7 @@ module ListingsToolkit
       process_after_unpublish
       return
     elsif listing_params[:action] == "publish"
-      unless @listing.originally_published_at?
+      unless @listing.bumped_at?
         first_publish(cost)
         return
       end
