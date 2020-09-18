@@ -69,6 +69,9 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
     end
 
     it "renders a repository with a missing README" do
+      allow(SiteConfig).to receive(:github_key).and_return("test")
+      allow(SiteConfig).to receive(:github_secret).and_return("test")
+
       allow(Github::OauthClient.new).to receive(:readme).and_raise(Github::Errors::NotFound)
 
       VCR.use_cassette("github_client_repository") do
