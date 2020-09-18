@@ -41,7 +41,7 @@ module Stories
 
     def signed_in_base_feed
       if SiteConfig.feed_strategy == "basic"
-        Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag]).feed
+        Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag]).feed
       else
         optimized_signed_in_feed
       end
@@ -49,25 +49,25 @@ module Stories
 
     def signed_out_base_feed
       if SiteConfig.feed_strategy == "basic"
-        Feeds::Basic.new(user: nil, page: @page, tag: params[:tag]).feed
+        Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag]).feed
       else
-        Feeds::Optimized.new(user: current_user, page: @page, tag: params[:tag])
+        Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
           .default_home_feed(user_signed_in: user_signed_in?)
       end
     end
 
     def timeframe_feed
-      feed = Feeds::Optimized.new(user: current_user, page: @page, tag: params[:tag])
+      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
       feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     end
 
     def latest_feed
-      feed = Feeds::Optimized.new(user: current_user, page: @page, tag: params[:tag])
+      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
       feed.latest_feed
     end
 
     def optimized_signed_in_feed
-      feed = Feeds::Optimized.new(user: current_user, page: @page, tag: params[:tag])
+      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
       test_variant = field_test(:user_home_feed, participant: current_user)
       Honeycomb.add_field("field_test_user_home_feed", test_variant) # Monitoring different variants
       if VARIANTS[test_variant].nil? || test_variant == "base"

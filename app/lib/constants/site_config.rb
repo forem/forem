@@ -98,7 +98,8 @@ module Constants
         placeholder: "https://image.url"
       },
       feed_strategy: {
-        description: "Determines the main feed algorithm approach the app takes (basic or optimized)",
+        description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
+        (which should only be used for 10k+ member communities)",
         placeholder: "basic"
       },
       feed_style: {

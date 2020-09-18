@@ -105,17 +105,17 @@ RSpec.describe "Stories::Feeds", type: :request do
     end
 
     context "when timeframe parameter is present" do
-      let(:feed_service) { Feeds::Optimized.new(number_of_articles: 1, page: 1, tag: []) }
+      let(:feed_service) { Articles::Feeds::LargeForemExperimental.new(number_of_articles: 1, page: 1, tag: []) }
 
       it "calls the feed service for a timeframe" do
-        allow(Feeds::Optimized).to receive(:new).and_return(feed_service)
+        allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(feed_service)
         allow(feed_service).to receive(:top_articles_by_timeframe).with(timeframe: "week").and_call_original
         get "/stories/feed/week", headers: headers
         expect(feed_service).to have_received(:top_articles_by_timeframe).with(timeframe: "week")
       end
 
       it "calls the feed service for latest" do
-        allow(Feeds::Optimized).to receive(:new).and_return(feed_service)
+        allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(feed_service)
         allow(feed_service).to receive(:latest_feed).and_call_original
         get "/stories/feed/latest", headers: headers
         expect(feed_service).to have_received(:latest_feed)
