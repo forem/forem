@@ -13,7 +13,7 @@ services:
       - db
       - elasticsearch
       - redis
-      - yarn
+#      - yarn
     environment:
       RAILS_ENV: test
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_test
@@ -41,16 +41,16 @@ services:
     entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-timeout", "2700s", "./scripts/entrypoint-dev.sh"]
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
-  yarn:
-    image: forem-rails:latest
-    container_name: forem_yarn
-    environment:
-      RAILS_ENV: test
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_test
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-    entrypoint: ["bash", "-c"]
-    command: ["yarn install --dev"]
+  # yarn:
+  #   image: forem-rails:latest
+  #   container_name: forem_yarn
+  #   environment:
+  #     RAILS_ENV: test
+  #     REDIS_SIDEKIQ_URL: redis://redis:6379
+  #     DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_test
+  #     ELASTICSEARCH_URL: http://elasticsearch:9200
+  #   entrypoint: ["bash", "-c"]
+  #   command: ["yarn install --dev"]
 
   db:
     image: postgres:11-alpine

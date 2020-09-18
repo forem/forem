@@ -2,6 +2,10 @@
 
 set -euo pipefail
 
+echo "******************"
+echo "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC"
+echo "******************"
+
 if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC" = "" ]; then
   KNAPSACK_PRO_ENDPOINT=https://api-disabled-for-fork.knapsackpro.com \
     KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
