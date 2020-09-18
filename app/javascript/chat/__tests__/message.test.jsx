@@ -11,7 +11,7 @@ const msg = {
   color: '#00FFFF',
 };
 
-const getMessage = (message, props = {}) => (
+const getMessage = (message, props) => (
   <Message
     user={message.username}
     userID={message.user_id}
