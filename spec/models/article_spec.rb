@@ -60,7 +60,8 @@ RSpec.describe Article, type: :model do
       end
 
       it "is invalid if there are duplicate co_authors for the same article" do
-        article.co_author_ids = [article.co_author_ids]
+        co_author1 = create(:user)
+        article.co_author_ids = [co_author1, co_author1]
 
         expect(article).not_to be_valid
       end
