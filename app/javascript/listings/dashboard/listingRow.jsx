@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
+import DateTime from '../../shared/components/dateTime';
 import ListingDate from './rowElements/listingDate';
 import Tags from './rowElements/tags';
 import Location from './rowElements/location';
@@ -16,14 +17,7 @@ export const ListingRow = ({ listing }) => {
     ? `${listing.category}/${listing.slug}`
     : `${listing.id}/edit`;
 
-  const expiryDate = listing.expires_at
-    ? new Date(listing.expires_at.toString()).toLocaleDateString('default', {
-        day: '2-digit',
-        month: 'short',
-      })
-    : '';
-
-  const listingExpiry = expiryDate !== '' ? ` | Expires on: ${expiryDate}` : '';
+  const expiryDate = listing.expires_at ? listing.expires_at.toString() : '';
 
   return (
     <div
@@ -42,7 +36,12 @@ export const ListingRow = ({ listing }) => {
         bumpedAt={listing.bumped_at}
         updatedAt={listing.updated_at}
       />
-      {listingExpiry}
+      {expiryDate && (
+        <Fragment>
+          {' | Expires on: '}
+          <DateTime dateTime={expiryDate} />
+        </Fragment>
+      )}
       {listing.location && <Location location={listing.location} />}
       <span className="dashboard-listing-category">
         <a href={`/listings/${listing.category}`}>{listing.category}</a>

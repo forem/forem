@@ -5,7 +5,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
   if (user && !user.codeOfConduct && user.commentCount < 1){
     codeOfConductHTML =   '<div class="code-of-conduct sub-comment-code-of-conduct" style="display:block" id="toggle-code-of-conduct-checkbox">\
                             <input class="checkbox" type="checkbox" name="checked_code_of_conduct" required />\
-                            <label for="checked_code_of_conduct">I\'ve read the <a href="<%= URL.url('code-of-conduct') %>">code of conduct</a></label>\
+                            <label for="checked_code_of_conduct">I\'ve read the <a href="/code-of-conduct">code of conduct</a></label>\
                           </div>'
   }
   var randomIdNumber = Math.floor(Math.random() * 1991)

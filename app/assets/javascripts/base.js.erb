@@ -685,9 +685,9 @@ var instantClick
 // INITIALIZE/ERROR HANDLING
 
   Honeybadger.configure({
-    apiKey: "<%= ApplicationConfig['HONEYBADGER_JS_API_KEY'] %>",
+    apiKey: document.body.dataset.honeybadgerKey,
     environment: "<%= Rails.env %>",
-    revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>",
+    revision: document.body.dataset.releaseFootprint,
     ignorePatterns: [/ResizeObserver/i, /MetaMask/i],
   });
 

@@ -2,7 +2,7 @@ require "rails_helper"
 
 describe BulkSqlDelete, type: :service do
   let(:sql) do
-    <<-SQL
+    <<-SQL.squish
       DELETE FROM notifications
       WHERE notifications.id IN (
         SELECT notifications.id

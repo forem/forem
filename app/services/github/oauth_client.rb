@@ -111,7 +111,6 @@ module Github
       # <https://github.com/octokit/octokit.rb#caching>
       # and <https://github.com/octokit/octokit.rb/blob/master/lib/octokit/default.rb>
       Faraday::RackBuilder.new do |builder|
-        builder.use Faraday::HttpCache, store: Rails.cache, serializer: Marshal, shared_cache: false
         builder.use Faraday::Request::Retry, exceptions: [Octokit::ServerError]
         builder.use Octokit::Middleware::FollowRedirects
         builder.use Octokit::Response::RaiseError

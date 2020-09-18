@@ -21,4 +21,16 @@ RSpec.describe Search::ArticleSerializer do
     result = Article::SEARCH_CLASS.index(article.id, data_hash)
     expect(result["result"]).to eq("created")
   end
+
+  it "correctly serializes video duration in minutes when video_duration_in_seconds is nil" do
+    data_hash = described_class.new(article).serializable_hash.dig(:data, :attributes)
+    expect(data_hash[:video_duration_in_minutes]).to eq(0)
+  end
+
+  it "correctly serializes video duration in minutes when video_duration_in_seconds is not nil" do
+    duration = (1.hour + 1.minute).to_i
+    allow(article).to receive(:video_duration_in_seconds).and_return(duration)
+    data_hash = described_class.new(article).serializable_hash.dig(:data, :attributes)
+    expect(data_hash[:video_duration_in_minutes]).to eq(61)
+  end
 end

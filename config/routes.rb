@@ -284,6 +284,8 @@ Rails.application.routes.draw do
     resources :profiles, only: %i[update]
     resources :profile_field_groups, only: %i[index], defaults: { format: :json }
 
+    resources :liquid_tags, only: %i[index], defaults: { format: :json }
+
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags" => "search#tags"
     get "/search/chat_channels" => "search#chat_channels"
@@ -450,6 +452,10 @@ Rails.application.routes.draw do
     # serviceworkers
     get "/serviceworker" => "service_worker#index"
     get "/manifest" => "service_worker#manifest"
+
+    # open search
+    get "/open-search" => "open_search#show",
+        :constraints => { format: /xml/ }
 
     get "/shell_top" => "shell#top"
     get "/shell_bottom" => "shell#bottom"
