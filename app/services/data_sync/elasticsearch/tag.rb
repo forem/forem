@@ -4,7 +4,6 @@ module DataSync
       RELATED_DOCS = %i[
         articles
         podcast_episodes
-        reactions
       ].freeze
 
       SHARED_FIELDS = %i[
