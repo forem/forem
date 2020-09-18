@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe EdgeCache::Buster, type: :service do
+RSpec.describe EdgeCache::Bust, type: :service do
   let(:user) { create(:user) }
   let(:path) { "/#{user.username}" }
 
@@ -11,14 +11,14 @@ RSpec.describe EdgeCache::Buster, type: :service do
         stub_nginx
       end
 
-      let(:cache_buster_service) { described_class.new(path) }
+      let(:cache_bust_service) { described_class.new(path) }
 
       it "does not bust a fastly cache" do
-        allow(cache_buster_service).to receive(:bust_fastly_cache)
+        allow(cache_bust_service).to receive(:bust_fastly_cache)
 
-        cache_buster_service.call
-        expect(cache_buster_service.provider).to be(nil)
-        expect(cache_buster_service).not_to have_received(:bust_fastly_cache)
+        cache_bust_service.call
+        expect(cache_bust_service.provider).to be(nil)
+        expect(cache_bust_service).not_to have_received(:bust_fastly_cache)
       end
     end
 
@@ -28,14 +28,14 @@ RSpec.describe EdgeCache::Buster, type: :service do
         stub_nginx
       end
 
-      let(:cache_buster_service) { described_class.new(path) }
+      let(:cache_bust_service) { described_class.new(path) }
 
       it "can bust a fastly cache" do
-        allow(cache_buster_service).to receive(:bust_fastly_cache)
+        allow(cache_bust_service).to receive(:bust_fastly_cache)
 
-        cache_buster_service.call
-        expect(cache_buster_service.provider).to eq("fastly")
-        expect(cache_buster_service).to have_received(:bust_fastly_cache)
+        cache_bust_service.call
+        expect(cache_bust_service.provider).to eq("fastly")
+        expect(cache_bust_service).to have_received(:bust_fastly_cache)
       end
     end
   end
@@ -52,14 +52,14 @@ RSpec.describe EdgeCache::Buster, type: :service do
         stub_nginx
       end
 
-      let(:cache_buster_service) { described_class.new(path) }
+      let(:cache_bust_service) { described_class.new(path) }
 
       it "does not bust an nginx cache" do
-        allow(cache_buster_service).to receive(:bust_nginx_cache)
+        allow(cache_bust_service).to receive(:bust_nginx_cache)
 
-        cache_buster_service.call
-        expect(cache_buster_service.provider).to eq(nil)
-        expect(cache_buster_service).not_to have_received(:bust_nginx_cache)
+        cache_bust_service.call
+        expect(cache_bust_service.provider).to eq(nil)
+        expect(cache_bust_service).not_to have_received(:bust_nginx_cache)
       end
     end
 
@@ -68,14 +68,14 @@ RSpec.describe EdgeCache::Buster, type: :service do
         configure_nginx
       end
 
-      let(:cache_buster_service) { described_class.new(path) }
+      let(:cache_bust_service) { described_class.new(path) }
 
       it "can bust an nginx cache" do
-        allow(cache_buster_service).to receive(:bust_nginx_cache)
+        allow(cache_bust_service).to receive(:bust_nginx_cache)
 
-        cache_buster_service.call
-        expect(cache_buster_service.provider).to eq("nginx")
-        expect(cache_buster_service).to have_received(:bust_nginx_cache)
+        cache_bust_service.call
+        expect(cache_bust_service.provider).to eq("nginx")
+        expect(cache_bust_service).to have_received(:bust_nginx_cache)
       end
     end
   end
