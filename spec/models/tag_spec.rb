@@ -17,7 +17,6 @@ RSpec.describe Tag, type: :model do
       it do
         expect(subject).to belong_to(:mod_chat_channel)
           .class_name("ChatChannel")
-          .with_foreign_key("mod_chat_channel_id")
           .optional
       end
       # rubocop:enable RSpec/NamedSubject
