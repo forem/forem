@@ -53,6 +53,8 @@ describe('<Message />', () => {
 
     const profileLink = getByText(`@${testMessage.username}`);
 
-    expect(profileLink.parentElement.innerHTML).toMatch(/<mark>.*<\/mark>/i);
+    expect(profileLink.parentElement.innerHTML).toMatch(
+      new RegExp(`<mark>@${testMessage.username}</mark>`, 'i'),
+    );
   });
 });
