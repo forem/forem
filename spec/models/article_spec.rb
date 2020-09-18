@@ -7,28 +7,50 @@ RSpec.describe Article, type: :model do
     article
   end
 
-  let_it_be(:user) { create(:user) }
+  let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
 
   include_examples "#sync_reactions_count", :article
   it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
-    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
-    it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
-    it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
-    it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_length_of(:title).is_at_most(128) }
-    it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
-    it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:collection).optional }
-    it { is_expected.to have_many(:comments) }
-    it { is_expected.to have_many(:reactions).dependent(:destroy) }
-    it { is_expected.to have_many(:notifications).dependent(:delete_all) }
+    it { is_expected.to belong_to(:organization).optional }
+    it { is_expected.to belong_to(:user) }
+
+    it { is_expected.to have_many(:buffer_updates).dependent(:destroy) }
+    it { is_expected.to have_many(:comments).dependent(:nullify) }
+    it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
+    it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_many(:notifications).dependent(:delete_all) }
+    it { is_expected.to have_many(:page_views).dependent(:destroy) }
+    it { is_expected.to have_many(:polls).dependent(:destroy) }
+    it { is_expected.to have_many(:profile_pins).dependent(:destroy) }
+    it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+    it { is_expected.to have_many(:sourced_subscribers) }
+    it { is_expected.to have_many(:reactions).dependent(:destroy) }
+    it { is_expected.to have_many(:tags) }
+    it { is_expected.to have_many(:user_subscriptions).dependent(:nullify) }
+
+    it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
+    it { is_expected.to validate_length_of(:title).is_at_most(128) }
+    it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
+    it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
+    it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_nil }
+    it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
+
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
+
+    describe "#body_markdown" do
+      it "is unique scoped for user_id and title" do
+        art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
+
+        expect(art2).not_to be_valid
+        expect(art2.errors.full_messages.to_sentence).to match("markdown has already been taken")
+      end
+    end
 
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
@@ -41,7 +63,8 @@ RSpec.describe Article, type: :model do
       it "on destroy enqueues job to delete article from elasticsearch" do
         article = create(:article)
 
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                     args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
         end
       end
@@ -93,7 +116,7 @@ RSpec.describe Article, type: :model do
     context "when published" do
       before do
         # rubocop:disable RSpec/NamedSubject
-        allow(subject).to receive(:published?).and_return(true)
+        allow(subject).to receive(:published?).and_return(true) # rubocop:disable RSpec/SubjectStub
         # rubocop:enable RSpec/NamedSubject
       end
 
@@ -445,7 +468,7 @@ RSpec.describe Article, type: :model do
       article.update(body_markdown: body, approved: true)
 
       Timecop.travel(1.second.from_now) do
-        article.update(body_markdown: body + "s")
+        article.update(body_markdown: "#{body}s")
       end
 
       expect(article.featured_number).not_to eq(article.updated_at.to_i)
@@ -742,6 +765,15 @@ RSpec.describe Article, type: :model do
         end
         expect(article).to have_received(:update_main_image_background_hex)
       end
+
+      it "does not enqueue a job if main_image has not changed" do
+        article.save
+        allow(article).to receive(:update_main_image_background_hex).and_call_original
+        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
+          article.save
+        end
+        expect(article).to have_received(:update_main_image_background_hex)
+      end
     end
 
     describe "async score calc" do
@@ -873,32 +905,6 @@ RSpec.describe Article, type: :model do
       sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, article.id]) do
         article.touch_by_reaction
       end
-    end
-  end
-
-  describe "#liquid_tags_used" do
-    let(:user_liquid_tag) { "{% user #{user.username} %}" }
-    let(:article_body_markdown) { "---\ntitle: Tag Liquid Tag#{rand(1000)}\npublished: true\n---\n\n#{user_liquid_tag}" }
-    let(:article_with_user_liquid_tag) { create(:article, body_markdown: article_body_markdown) }
-    let(:tag) { create(:tag) }
-    let(:tag_liquid_tag) { "{% tag #{tag.name} %}" }
-    let(:comment_with_tag_liquid_tag) { create(:comment, body_markdown: tag_liquid_tag, commentable: article_with_user_liquid_tag, score: 20) }
-
-    before do
-      comment_with_tag_liquid_tag
-      article_with_user_liquid_tag.reload
-    end
-
-    it "returns liquid tags from both the body and comments by default" do
-      expect(article_with_user_liquid_tag.liquid_tags_used).to match_array([TagTag, UserTag])
-    end
-
-    it "returns liquid tags from only the body of the Article" do
-      expect(article_with_user_liquid_tag.liquid_tags_used(:body)).to match_array([UserTag])
-    end
-
-    it "returns liquid tags from only the comments of the Article" do
-      expect(article_with_user_liquid_tag.liquid_tags_used(:comments)).to match_array([TagTag])
     end
   end
 end

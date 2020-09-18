@@ -4,6 +4,8 @@ class MailchimpBot
   def initialize(user)
     @user = user
     @saved_changes = user.saved_changes
+    Gibbon::Request.api_key = SiteConfig.mailchimp_api_key
+    Gibbon::Request.timeout = 15
     @gibbon = Gibbon::Request.new
   end
 
@@ -191,6 +193,6 @@ class MailchimpBot
   end
 
   def previously_subcribed?(error)
-    error.title.match?(/Member In Compliance State/)
+    error.title.include?("Member In Compliance State")
   end
 end

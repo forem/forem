@@ -42,7 +42,7 @@ module Github
     end
 
     # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
-    def respond_to_missing?(method, _include_all = false)
+    def respond_to_missing?(method, _include_all = false) # rubocop:disable Style/OptionalBooleanParameter
       target.respond_to?(method, false) || super
     end
 
@@ -111,7 +111,6 @@ module Github
       # <https://github.com/octokit/octokit.rb#caching>
       # and <https://github.com/octokit/octokit.rb/blob/master/lib/octokit/default.rb>
       Faraday::RackBuilder.new do |builder|
-        builder.use Faraday::HttpCache, store: Rails.cache, serializer: Marshal, shared_cache: false
         builder.use Faraday::Request::Retry, exceptions: [Octokit::ServerError]
         builder.use Octokit::Middleware::FollowRedirects
         builder.use Octokit::Response::RaiseError

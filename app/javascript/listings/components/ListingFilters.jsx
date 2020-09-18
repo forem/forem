@@ -16,12 +16,7 @@ const ListingFilters = ({
   query,
 }) => {
   return (
-    <div className="listing-filters" id="listing-filters">
-      <ListingFiltersCategories
-        categories={categories}
-        category={category}
-        onClick={onSelectCategory}
-      />
+    <aside className="crayons-layout__sidebar-left">
       <ListingFiltersTags
         message={message}
         onKeyUp={onKeyUp}
@@ -31,7 +26,12 @@ const ListingFilters = ({
         onKeyPress={onKeyPress}
         query={query}
       />
-    </div>
+      <ListingFiltersCategories
+        categories={categories}
+        category={category}
+        onClick={onSelectCategory}
+      />
+    </aside>
   );
 };
 

@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   include ApplicationHelper
 
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit manage update destroy stats]
+  before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish]
   before_action :raise_suspended, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -17,6 +17,8 @@ class ArticlesController < ApplicationController
     alt class colspan data-conversation data-lang em height href id ref rel
     rowspan size span src start strong title value width
   ].freeze
+
+  RESTRICTED_LIQUID_TAGS = [UserSubscriptionTag].freeze
 
   def feed
     skip_authorization
@@ -52,12 +54,13 @@ class ArticlesController < ApplicationController
   def new
     base_editor_assigments
 
-    @article, needs_authorization = Articles::Builder.new(@user, @tag, @prefill).build
+    @article, needs_authorization = Articles::Builder.call(@user, @tag, @prefill)
 
     if needs_authorization
-      authorize Article
+      authorize(Article)
     else
       skip_authorization
+      store_location_for(:user, request.path)
     end
   end
 
@@ -67,6 +70,7 @@ class ArticlesController < ApplicationController
     @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
     @organizations = @user&.organizations
+    set_user_approved_liquid_tags
   end
 
   def manage
@@ -87,7 +91,7 @@ class ArticlesController < ApplicationController
     begin
       fixed_body_markdown = MarkdownFixer.fix_for_preview(params[:article_body])
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed_markdown = MarkdownParser.new(parsed.content, source: Article.new(user: current_user))
+      parsed_markdown = MarkdownParser.new(parsed.content, source: Article.new, user: current_user)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
@@ -113,7 +117,8 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
 
-    article = Articles::Creator.call(current_user, article_params_json)
+    @user = current_user
+    article = Articles::Creator.call(@user, article_params_json)
 
     render json: if article.persisted?
                    { id: article.id, current_state_path: article.decorate.current_state_path }.to_json
@@ -148,7 +153,7 @@ class ArticlesController < ApplicationController
           return
         end
         if params[:article][:video_thumbnail_url]
-          redirect_to(@article.path + "/edit")
+          redirect_to("#{@article.path}/edit")
           return
         end
         render json: { status: 200 }
@@ -185,6 +190,21 @@ class ArticlesController < ApplicationController
     @organization_id = @article.organization_id
   end
 
+  def admin_unpublish
+    authorize @article
+    if @article.has_frontmatter?
+      @article.body_markdown.sub!(/\npublished:\s*true\s*\n/, "\npublished: false\n")
+    else
+      @article.published = false
+    end
+
+    if @article.save
+      render json: { message: "success", path: @article.current_state_path }, status: :ok
+    else
+      render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def base_editor_assigments
@@ -193,6 +213,18 @@ class ArticlesController < ApplicationController
     @organizations = @user&.organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
+    set_user_approved_liquid_tags
+  end
+
+  def set_user_approved_liquid_tags
+    @user_approved_liquid_tags =
+      if @user
+        RESTRICTED_LIQUID_TAGS.filter_map do |liquid_tag|
+          liquid_tag if liquid_tag::VALID_ROLES.any? { |role| @user.has_role?(*Array(role)) }
+        end
+      else
+        []
+      end
   end
 
   def handle_user_or_organization_feed
@@ -271,22 +303,12 @@ class ArticlesController < ApplicationController
     if updated && @article.published && @article.saved_changes["published"] == [false, true]
       Notification.send_to_followers(@article, "Published")
     elsif @article.saved_changes["published"] == [true, false]
-      Notification.remove_all_by_action_without_delay(notifiable_ids: @article.id, notifiable_type: "Article", action: "Published")
-      Notification.remove_all(notifiable_ids: @article.comments.pluck(:id), notifiable_type: "Comment") if @article.comments.exists?
-    end
-  end
-
-  def redirect_after_creation
-    @article.decorate
-    if @article.persisted?
-      redirect_to @article.current_state_path, notice: "Article was successfully created."
-    else
-      if @article.errors.to_h[:body_markdown] == "has already been taken"
-        @article = current_user.articles.find_by(body_markdown: @article.body_markdown)
-        redirect_to @article.current_state_path
-        return
+      Notification.remove_all_by_action_without_delay(notifiable_ids: @article.id, notifiable_type: "Article",
+                                                      action: "Published")
+      if @article.comments.exists?
+        Notification.remove_all(notifiable_ids: @article.comments.ids,
+                                notifiable_type: "Comment")
       end
-      render :new
     end
   end
 

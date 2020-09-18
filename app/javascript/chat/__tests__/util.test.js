@@ -30,7 +30,7 @@ describe('Chat utilities', () => {
       );
     });
 
-    test('should resolve if user and csrf token found.', () => {
+    test('should resolve if user and csrf token found.', async () => {
       const csrfToken = 'some-csrf-token';
       const currentUser = {
         id: 41,
@@ -49,7 +49,7 @@ describe('Chat utilities', () => {
       document.head.innerHTML = `<meta name="csrf-token" content="${csrfToken}" />`;
       document.body.setAttribute('data-user', JSON.stringify(currentUser));
 
-      expect(getUserDataAndCsrfToken(document)).resolves.toEqual({
+      expect(await getUserDataAndCsrfToken(document)).toEqual({
         currentUser,
         csrfToken,
       });

@@ -19,7 +19,7 @@ RSpec.describe "Using the editor", type: :system do
 
   def fill_markdown_with(content)
     visit "/new"
-    fill_in "article_body_markdown", with: content
+    within("#article-form") { fill_in "article_body_markdown", with: content }
   end
 
   describe "Previewing an article", js: true do
@@ -35,7 +35,7 @@ RSpec.describe "Using the editor", type: :system do
 
     it "fills out form with rich content and click preview" do
       article_body = find("div.crayons-article__body")["innerHTML"]
-      article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
+      article_body.gsub!(%r{"https://res\.cloudinary\.com/.{1,}"}, "cloudinary_link")
 
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
@@ -46,7 +46,7 @@ RSpec.describe "Using the editor", type: :system do
       fill_markdown_with(read_from_file(raw_text))
       find("button", text: /\ASave changes\z/).click
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
-      article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
+      article_body.gsub!(%r{"https://res\.cloudinary\.com/.{1,}"}, "cloudinary_link")
 
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end

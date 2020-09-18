@@ -19,6 +19,7 @@ module ApplicationHelper
     "#{controller_name}-#{controller.action_name}"
   end
 
+  # rubocop:disable Rails/HelperInstanceVariable
   def view_class
     if @podcast_episode_show # custom due to edge cases
       "stories stories-show podcast_episodes-show"
@@ -28,6 +29,7 @@ module ApplicationHelper
       "#{controller_name} #{controller_name}-#{controller.action_name}"
     end
   end
+  # rubocop:enable Rails/HelperInstanceVariable
 
   def title(page_title)
     derived_title = if page_title.include?(community_name)
@@ -74,15 +76,18 @@ module ApplicationHelper
     "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
-  def cloudinary(url, width = "500", quality = 80, format = "auto")
-    cl_image_path(url || asset_path("#{rand(1..40)}.png"),
-                  type: "fetch",
-                  width: width,
-                  crop: "limit",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: format,
-                  sign_url: true)
+  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto")
+    image_url = url.presence || asset_path("#{rand(1..40)}.png")
+
+    Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: fetch_format)
+  end
+
+  def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
+    image_options[:width] ||= optimizer_options[:width]
+    image_options[:height] ||= optimizer_options[:height]
+    updated_image_url = Images::Optimizer.call(image_url, optimizer_options)
+
+    image_tag(updated_image_url, image_options)
   end
 
   def cloud_cover_url(url)
@@ -99,8 +104,12 @@ module ApplicationHelper
     end
   end
 
+  def any_selfserve_auth?
+    authentication_enabled_providers.any?
+  end
+
   def beautified_url(url)
-    url.sub(/\A((https?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end
@@ -123,7 +132,7 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     tag :button, # Yikes
-        class: "crayons-btn follow-action-button " + classes,
+        class: "crayons-btn follow-action-button #{classes}",
         data: {
           :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
@@ -153,34 +162,45 @@ module ApplicationHelper
 
   def logo_svg
     if SiteConfig.logo_svg.present?
-      SiteConfig.logo_svg.html_safe
+      SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
     else
       inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end
   end
 
+  def safe_logo_url(logo)
+    logo.presence || SiteConfig.logo_png
+  end
+
   def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
+    @community_name ||= SiteConfig.community_name
   end
 
   def community_qualified_name
     "#{community_name} Community"
   end
 
-  def cache_key_heroku_slug(path)
-    heroku_slug_commit = ApplicationConfig["HEROKU_SLUG_COMMIT"]
-    return path if heroku_slug_commit.blank?
+  def release_adjusted_cache_key(path)
+    release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
+    return path if release_footprint.blank?
 
-    "#{path}-#{heroku_slug_commit}"
+    "#{path}-#{params[:locale]}-#{release_footprint}"
   end
 
   def copyright_notice
-    start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
+    start_year = SiteConfig.community_copyright_start_year.to_s
     current_year = Time.current.year.to_s
     return start_year if current_year == start_year
-    return current_year if start_year.strip.length.zero?
+    return current_year if start_year.strip.length < 4 # 978 is not a valid year!
 
     "#{start_year} - #{current_year}"
+  end
+
+  def collection_link(collection, **kwargs)
+    size_string = "#{collection.articles.published.size} Part Series"
+    body = collection.slug.present? ? "#{collection.slug} (#{size_string})" : size_string
+
+    link_to body, collection.path, **kwargs
   end
 
   def email_link(type = :default, text: nil, additional_info: nil)
@@ -194,14 +214,6 @@ module ApplicationHelper
     SiteConfig.community_member_label.pluralize
   end
 
-  # Creates an app internal URL
-  #
-  # @note Uses protocol and domain specified in the environment, ensure they are set.
-  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
-  # @example Retrieve the base URL
-  #  app_url #=> "https://dev.to"
-  # @example Add a path
-  #  app_url("internal") #=> "https://dev.to/internal"
   def app_url(uri = nil)
     URL.url(uri)
   end
@@ -238,4 +250,15 @@ module ApplicationHelper
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
+
+  # rubocop:disable Rails/OutputSafety
+  def admin_config_label(method, content = nil)
+    content ||= raw("<span>#{method.to_s.humanize}</span>")
+    if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+      content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+    end
+
+    tag.label(content, class: "site-config__label", for: "site_config_#{method}")
+  end
+  # rubocop:enable Rails/OutputSafety
 end

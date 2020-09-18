@@ -1,23 +1,23 @@
 ---
-title: Javascript and Initializers
+title: JavaScript and Initializers
 ---
 
-# Javascript and Initializers
+# JavaScript and Initializers
 
-DEV has two Javascript codebases.
+Forem has two JavaScript codebases.
 
 One is located in the directory `app/assets/javascripts` and contains plain
-Javascript (mostly ES5+) being served using
+JavaScript (mostly ES5+) being served using
 [Sprockets](https://github.com/rails/sprockets-rails) which packages static
 assets.
 
-Webpacker manages the other one, and you can read more about [in its own
-guide](/frontend/webpacker).
+Webpacker manages the other one,
+[which you can read more about in this guide](/frontend/webpacker).
 
 This source code is not transpiled, only packaged and minified, and will be
-limited to whatever flavour of Javascript can run on the user's web browser.
+limited to whatever flavor of JavaScript can run on the user's web browser.
 
-`app/assets/javascripts/application.js` contains the manifest Javascript file
+`app/assets/javascripts/application.js` contains the manifest JavaScript file
 which is included globally in the primary template,
 `app/views/layouts/application.html.erb`.
 
@@ -28,7 +28,7 @@ which is included globally in the primary template,
 ```
 
 One JS file in particular, `app/assets/javascripts/initializePage.js.erb`,
-boostraps the majority of the functionality. You will notice, within this file,
+bootstraps the majority of the functionality. You will notice, within this file,
 that major sections of the websites are bootstrapped, for example:
 
 ```javascript

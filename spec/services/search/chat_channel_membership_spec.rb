@@ -22,7 +22,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
 
         chat_channel_membership_docs = described_class.search_documents(params: name_params)
         expect(chat_channel_membership_docs.count).to eq(2)
-        doc_ids = chat_channel_membership_docs.map { |t| t.dig("id") }
+        doc_ids = chat_channel_membership_docs.map { |t| t["id"] }
         expect(doc_ids).to include(chat_channel_membership1.id, chat_channel_membership2.id)
       end
     end
@@ -82,7 +82,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
 
         chat_channel_membership_docs = described_class.search_documents(params: name_params)
         expect(chat_channel_membership_docs.count).to eq(1)
-        doc_ids = chat_channel_membership_docs.map { |t| t.dig("id") }
+        doc_ids = chat_channel_membership_docs.map { |t| t["id"] }
         expect(doc_ids).to include(chat_channel_membership1.id)
       end
     end
@@ -128,7 +128,8 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
       chat_channel_membership_docs = described_class.search_documents(params: first_page_params)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership1.id)
 
-      second_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc", user_id: [user.id] }
+      second_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc",
+                             user_id: [user.id] }
 
       chat_channel_membership_docs = described_class.search_documents(params: second_page_params)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership2.id)

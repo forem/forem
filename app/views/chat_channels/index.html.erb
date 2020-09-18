@@ -16,9 +16,7 @@
       data-chat-channels="<%= [] %>"
       data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id, currentUserId: current_user.id }.to_json %>">
       <div class="chat" id="chat_placeholder">
-        <div class="chat__channels chat__channels--expanded chat__channels--placeholder">
-          <button class="chat__channelstogglebutt" onClick={this.toggleExpand}>&lt;</button>
-          <button class="chat__channelstogglebutt chat__channelstogglebutt--placeholderunexpanded">&gt;</button>
+        <div class="chat__channels chat__channels--placeholder">
         </div>
         <div class="chat__activechat">
           <div class="activechatchannel">
@@ -39,7 +37,9 @@
   }
 </style>
 <script>
-  if (navigator.userAgent.match(/iPhone/i) && !navigator.userAgent.match('CriOS')) {
-    document.getElementById("chat").classList.add("live-chat--iossafari")
-  }
+    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+  let vh = window.innerHeight * 0.01;
+  // Then we set the value in the --vh custom property to the root of the document
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+  document.body.style.setProperty('min-height','-webkit-fill-available')
 </script>

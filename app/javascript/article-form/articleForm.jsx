@@ -61,6 +61,25 @@ export default class ArticleForm extends Component {
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
     this.url = window.location.href;
+
+    const previousContent =
+      JSON.parse(
+        localStorage.getItem(`editor-${version}-${window.location.href}`),
+      ) || {};
+    const isLocalstorageNewer =
+      new Date(previousContent.updatedAt) > new Date(this.article.updated_at);
+
+    const previousContentState =
+      previousContent && isLocalstorageNewer
+        ? {
+            title: previousContent.title || '',
+            tagList: previousContent.tagList || '',
+            mainImage: previousContent.mainImage || null,
+            bodyMarkdown: previousContent.bodyMarkdown || '',
+            edited: true,
+          }
+        : {};
+
     this.state = {
       id: this.article.id || null, // eslint-disable-line react/no-unused-state
       title: this.article.title || '',
@@ -85,33 +104,21 @@ export default class ArticleForm extends Component {
       logoSvg,
       helpFor: null,
       helpPosition: null,
+      ...previousContentState,
     };
   }
 
   componentDidMount() {
-    const { version, updatedAt } = this.state;
-    const previousContent =
-      JSON.parse(
-        localStorage.getItem(`editor-${version}-${window.location.href}`),
-      ) || {};
-    const isLocalstorageNewer =
-      new Date(previousContent.updatedAt) > new Date(updatedAt);
-
-    if (previousContent && isLocalstorageNewer) {
-      this.setState({
-        title: previousContent.title || '',
-        tagList: previousContent.tagList || '',
-        mainImage: previousContent.mainImage || null,
-        bodyMarkdown: previousContent.bodyMarkdown || '',
-        edited: true,
-      });
-    }
-
     window.addEventListener('beforeunload', this.localStoreContent);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.localStoreContent);
   }
 
   componentDidUpdate() {
     const { previewResponse } = this.state;
+
     if (previewResponse) {
       this.constructor.handleGistPreview();
       this.constructor.handleRunkitPreview();

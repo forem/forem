@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
-  let_it_be_readonly(:dev_account) { create(:user) }
-  let_it_be_readonly(:mascot_account) { create(:user) }
-  let_it_be_changeable(:user) { create(:user) }
-  let_it_be_changeable(:organization) { create(:organization) }
+  let(:dev_account) { create(:user) }
+  let(:mascot_account) { create(:user) }
+  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)
@@ -25,17 +25,19 @@ RSpec.describe "NotificationsIndex", type: :request do
     end
 
     context "when signed out" do
-      it "renders the signup cue" do
+      it "renders the signup page" do
         get "/notifications"
-        expect(response.body).to include "Great to have you"
+
+        expect(response.body).to include("Continue with")
       end
     end
 
     context "when signed in" do
       it "does not render the signup cue" do
         sign_in user
+
         get "/notifications"
-        expect(response.body).not_to include "Create your account"
+        expect(response.body).not_to include("Continue with")
       end
     end
 
@@ -172,7 +174,9 @@ RSpec.describe "NotificationsIndex", type: :request do
             category: categories.sample,
           )
         end
-        reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user) }
+        reactions.each do |reaction|
+          Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+        end
       end
 
       it "renders the correct user for a single reaction" do
@@ -244,7 +248,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         reactions = users.map do |user|
           create(:reaction, user: user, reactable: reactable, category: categories.sample)
         end
-        reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) }
+        reactions.each do |reaction|
+          Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
+        end
 
         users
       end
@@ -445,7 +451,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
         get notifications_path(filter: :org)
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.map(&:organization_id).compact.size).to eq(0)
+        expect(notifications.filter_map(&:organization_id).size).to eq(0)
       end
 
       it "does not render notifications belonging to other orgs" do
@@ -478,8 +484,14 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:user2)    { create(:user) }
       let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
-      let(:second_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: comment.id) }
-      let(:third_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: second_comment.id) }
+      let(:second_comment) do
+        create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article",
+                         parent_id: comment.id)
+      end
+      let(:third_comment) do
+        create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article",
+                         parent_id: second_comment.id)
+      end
 
       before do
         sign_in user

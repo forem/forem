@@ -55,11 +55,11 @@
     </p>
     <h3><strong><%= community_name %> Article/Post Embed</strong></h3>
     <p>All you need is the full link of the article:</p>
-    <code>{% link https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}</code>
+    <code>{% link <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
     <p>You can also use the slug like this:</p>
     <code>{% link kazz/boost-your-productivity-using-markdown-1be %}</code>
     <p>You can also use the alias post instead of link like this:</p>
-    <code>{% post https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}</code>
+    <code>{% post <%= app_url("/kazz/boost-your-productivity-using-markdown-1be") %> %}</code>
     <p>or this:</p>
     <code>{% post kazz/boost-your-productivity-using-markdown-1be %}</code>
     <h3><strong><%= community_name %> User Embed</strong></h3>
@@ -75,13 +75,22 @@
     <code>{% comment 2d1a %}</code>
     <h3><strong><%= community_name %> Podcast Episode Embed</strong></h3>
     <p>All you need is the full link of the podcast episode:</p>
-    <code>{% podcast https://dev.to/basecspodcast/s2e2--queues-irl %}</code>
+    <code>{% podcast <%= app_url("/basecspodcast/s2e2--queues-irl") %> %}</code>
     <h3><strong><%= community_name %> Listing Embed</strong></h3>
     <p>All you need is the full link of the listing:</p>
-    <code>{% listing https://dev.to/listings/collabs/dev-is-open-source-823 %}</code>
+    <code>{% listing <%= app_url("/listings/collabs/dev-is-open-source-823") %> %}</code>
     <p>You can also use the category and slug like this:</p>
     <code>{% listing collabs/dev-is-open-source-823 %}</code>
     <p>Note: Expired listings will raise an error. Make sure the listing is published or recently bumped.</p>
+    <h3><strong>Details Embed</strong></h3>
+    <p>You can embed a details HTML element by using details, spoiler, or
+    collapsible. The <em>summary</em> will be what the dropdown title displays.
+    The <em>content</em> will be the text hidden behind the dropdown. This is
+    great for when you want to hide text (i.e. answers to questions) behind a
+    user action/intent (i.e. a click).</p>
+    <p><code>{% details summary %} content {% enddetails %}</code></p>
+    <p><code>{% spoiler summary %} content {% endspoiler %}</code></p>
+    <p><code>{% collapsible summary %} content {% endcollapsible %}</code></p>
     <h3><strong>Twitter Embed</strong></h3>
     <p>Using the Twitter Liquid tag will allow the tweet to pre-render from the server, providing your reader with a better experience. All you need is the tweet
       <code>id</code> from the url.</p>
@@ -126,17 +135,17 @@
     </dl>
     <h3><strong>GitHub Repo Embed</strong></h3>
     <p>All you need is the GitHub username and repo:</p>
-    <code>{% github thepracticaldev/dev.to %}</code>
+    <code>{% github forem/forem %}</code>
     <dl>
       <dt><code>no-readme</code></dt>
       <dd>
         You can add a no-readme option to your GitHub tag to hide the readme file from the preview.<br>
-        <code>{% github thepracticaldev/dev.to no-readme %}</code>
+        <code>{% github forem/forem no-readme %}</code>
       </dd>
     </dl>
     <h3><strong>GitHub Issue, Pull request or Comment Embed</strong></h3>
     <p>All you need is the GitHub issue, PR or comment URL:</p>
-    <code>{% github https://github.com/thepracticaldev/dev.to/issues/9 %}</code>
+    <code>{% github https://github.com/forem/forem/issues/9 %}</code>
     <h3><strong>GitHub Gist Embed</strong></h3>
     <p>All you need is the gist link:</p>
     <code>
@@ -274,6 +283,14 @@
         <h3><strong>repl.it Embed</strong></h3>
         <p>All you need is the URL after the domain name:</p>
         <code>{% replit @WigWog/PositiveFineOpensource %}</code>
+
+        <h3><strong>Stackery Embed</strong></h3>
+        <p>Visualize your AWS Serverless Application Model templates with <a href="https://www.stackery.io/">Stackery's</a> visualizer embed</p>
+        <p>All you need is the repository owner, repository name, and branch that you would like visualized</p>
+        <code>{% stackery deeheber lambda-layer-example master %}</code>
+        <br/>
+        <p>The repository must be a public GitHub repository and have a valid AWS SAM template in the project root titled template.yaml</p>
+
         <h3><strong>Next Tech Embed</strong></h3>
         <p>All you need is the share URL for your sandbox. You can get the share URL by clicking
         the "Share" button in the top right when the sandbox is open.</p>

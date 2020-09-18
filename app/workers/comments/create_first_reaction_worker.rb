@@ -5,7 +5,7 @@ module Comments
     sidekiq_options queue: :high_priority, retry: 10
 
     def perform(comment_id, user_id)
-      return unless Comment.where(id: comment_id).exists?
+      return unless Comment.exists?(id: comment_id)
 
       Reaction.create(
         user_id: user_id,

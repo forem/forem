@@ -24,6 +24,8 @@ class ChatChannelMembership < ApplicationRecord
   delegate :channel_type, to: :chat_channel
 
   scope :eager_load_serialized_data, -> { includes(:user, :channel) }
+  scope :filter_by_status, ->(status) { where status: status }
+  scope :filter_by_role, ->(role) { where role: role }
 
   def channel_last_message_at
     chat_channel.last_message_at
@@ -48,7 +50,7 @@ class ChatChannelMembership < ApplicationRecord
 
   def channel_image
     if chat_channel.channel_type == "direct"
-      ProfileImage.new(other_user).get(width: 90)
+      Images::Profile.call(other_user.profile_image_url, length: 90)
     else
       ActionController::Base.helpers.asset_path("organization.svg")
     end
@@ -64,7 +66,7 @@ class ChatChannelMembership < ApplicationRecord
 
   def channel_modified_slug
     if chat_channel.channel_type == "direct"
-      "@" + other_user&.username
+      "@#{other_user&.username}"
     else
       chat_channel.slug
     end

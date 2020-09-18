@@ -5,7 +5,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
   let(:article) do
     create(:article, user_id: user.id, title: "test this please", tags: "html, rss, css")
   end
-  let(:org) { build_stubbed(:organization) }
+  let(:org) { create(:organization) }
   let(:org_user) do
     user = create(:user)
     build_stubbed(:organization_membership, user: user, organization: org)
@@ -30,12 +30,12 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   def correct_link_html(article)
-    tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join("\n" + "\s" * 8)
+    tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join("\n#{"\s" * 8}")
     <<~HTML
       <div class='ltag__link'>
         <a href='#{article.user.path}' class='ltag__link__link'>
           <div class='ltag__link__pic'>
-            <img src='#{ProfileImage.new(article.user).get(width: 150)}' alt='#{article.user.username} image'>
+            <img src='#{Images::Profile.call(article.user.profile_image_url, length: 150)}' alt='#{article.user.username} image'>
           </div>
         </a>
         <a href='#{article.path}' class='ltag__link__link'>
@@ -69,8 +69,8 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   it "does not raise an error when invalid" do
-    expect { generate_new_liquid("fake_username/fake_article_slug") }.
-      not_to raise_error("Invalid link URL or link URL does not exist")
+    expect { generate_new_liquid("fake_username/fake_article_slug") }
+      .not_to raise_error("Invalid link URL or link URL does not exist")
   end
 
   it "renders a proper link tag" do

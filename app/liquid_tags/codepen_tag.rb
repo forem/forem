@@ -1,15 +1,17 @@
 class CodepenTag < LiquidTagBase
   PARTIAL = "liquids/codepen".freeze
-  URL_REGEXP = /\A(http|https):\/\/(codepen\.io|codepen\.io\/team)\/[a-zA-Z0-9_\-]{1,30}\/pen\/([a-zA-Z]{5,7})\/{0,1}\z/.freeze
+  URL_REGEXP =
+    %r{\A(http|https)://(codepen\.io|codepen\.io/team)/[a-zA-Z0-9_\-]{1,30}/pen/([a-zA-Z]{5,7})/{0,1}\z}
+      .freeze
 
-  def initialize(tag_name, link, tokens)
+  def initialize(_tag_name, link, _parse_context)
     super
     @link = parse_link(link)
     @build_options = parse_options(link)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         link: @link,

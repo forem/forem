@@ -21,7 +21,7 @@
         <a href="<%= videos_path %>" class="crayons-link crayons-link--block">Videos</a>
         <a href="<%= tags_path %>" class="crayons-link crayons-link--block">Tags</a>
         <% unless user_signed_in? %>
-          <a href="/enter" class="crayons-link crayons-link--block fw-bold">
+          <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
             Sign In/Up
           </a>
         <% else %>
@@ -50,13 +50,10 @@
       <%= image_tag(SiteConfig.mascot_footer_image_url,
                     class: "crayons-footer__mascot",
                     alt: SiteConfig.mascot_image_description,
-                    width: 52,
-                    height: 120,
+                    width: SiteConfig.mascot_footer_image_width,
+                    height: SiteConfig.mascot_footer_image_height,
                     loading: "lazy") %>
     <% end %>
   </div>
 </footer>
 <div id="snack-zone"></div>
-<% if Rails.env.production? %>
-  <%= javascript_include_tag "hello-dev.js", defer: true %>
-<% end %>

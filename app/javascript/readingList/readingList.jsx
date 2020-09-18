@@ -130,9 +130,9 @@ export class ReadingList extends Component {
           />
           <h3>
             Hit the
-            <span className="highlight">SAVE</span>
+            <span className="btn--highlight">SAVE</span>
             or
-            <span className="highlight">
+            <span className="btn--highlight">
               Bookmark
               <span role="img" aria-label="Bookmark">
                 🔖

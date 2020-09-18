@@ -43,12 +43,12 @@ RSpec.describe "Moderations", type: :request do
     end
 
     it "grants access to comment moderation" do
-      get comment.path + "/mod"
+      get "#{comment.path}/mod"
       expect(response).to have_http_status(:ok)
     end
 
     it "grant access to article moderation" do
-      get article.path + "/mod"
+      get "#{article.path}/mod"
       expect(response).to have_http_status(:ok)
     end
 
@@ -67,7 +67,7 @@ RSpec.describe "Moderations", type: :request do
     it "grants access to /mod/:tag index with articles" do
       create(:article, published: true)
       get "/mod/#{article.tags.first}"
-      expect(response.body).to include("#" + article.tags.first.name)
+      expect(response.body).to include("##{article.tags.first.name}")
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
@@ -76,7 +76,9 @@ RSpec.describe "Moderations", type: :request do
     end
 
     it "renders not_found when an article can't be found" do
-      expect { get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/" }.to raise_exception(ActiveRecord::RecordNotFound)
+      expect do
+        get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/"
+      end.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
 

@@ -2,7 +2,7 @@ class Broadcast < ApplicationRecord
   VALID_BANNER_STYLES = %w[default brand success warning error].freeze
   resourcify
 
-  has_many :notifications, as: :notifiable, inverse_of: :notifiable
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
 
   validates :title, uniqueness: { scope: :type_of }, presence: true
   validates :type_of, :processed_html, presence: true
@@ -30,7 +30,7 @@ class Broadcast < ApplicationRecord
     first_broadcast = active_broadcasts.order(id: :asc).limit(1)
     return unless active &&
       type_of == "Announcement" &&
-      ![nil, id].include?(first_broadcast.pick(:id))
+      [nil, id].exclude?(first_broadcast.pick(:id))
 
     errors.add(:base, "You can only have one active announcement broadcast")
   end

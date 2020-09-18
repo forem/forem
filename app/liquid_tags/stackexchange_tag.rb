@@ -13,7 +13,7 @@ class StackexchangeTag < LiquidTagBase
 
   attr_reader :site, :post_type
 
-  def initialize(tag_name, input, tokens)
+  def initialize(_tag_name, input, _parse_context)
     super
 
     @site = parse_site(input.strip)
@@ -24,7 +24,7 @@ class StackexchangeTag < LiquidTagBase
   def render(_context)
     default_link = "https://stackoverflow.com/a/#{@json_content['answer_id'] || @json_content['question_id']}"
 
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         site: @site,
@@ -63,7 +63,10 @@ class StackexchangeTag < LiquidTagBase
 
   def handle_response_error(response, input)
     raise StandardError, "Calling StackExchange API failed: #{response&.error_message}" if response.code != 200
-    raise StandardError, "Couldn't find a post with that ID: {% #{tag_name} #{input} %}" if response["items"].length.zero?
+
+    return unless response["items"].length.zero?
+
+    raise StandardError, "Couldn't find a post with that ID: {% #{tag_name} #{input} %}"
   end
 
   def get_data(input)
@@ -71,13 +74,17 @@ class StackexchangeTag < LiquidTagBase
 
     id = input.split(" ")[0]
 
-    post_response = HTTParty.get("#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
+    url = "#{API_URL}posts/#{id}?site=#{@site}&filter=#{FILTERS['post']}" \
+      "&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
+    post_response = HTTParty.get(url)
 
     handle_response_error(post_response, input)
 
     @post_type = post_response["items"][0]["post_type"]
 
-    final_response = HTTParty.get("#{API_URL}#{@post_type.pluralize}/#{id}?site=#{@site}&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}")
+    url = "#{API_URL}#{@post_type.pluralize}/#{id}?site=#{@site}" \
+      "&filter=#{FILTERS[@post_type]}&key=#{ApplicationConfig['STACK_EXCHANGE_APP_KEY']}"
+    final_response = HTTParty.get(url)
 
     handle_response_error(final_response, input)
 

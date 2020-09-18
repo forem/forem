@@ -1,11 +1,10 @@
-<% SiteConfig.social_media_handles.keys.each do |social_media_type| %>
-  <% if SiteConfig.social_media_handles[social_media_type].present? %>
-    <a
-      href="<%= "https://#{social_media_type}.com/#{SiteConfig.social_media_handles[social_media_type]}" %>"
-      target="_blank"
-      class="crayons-link crayons-link--secondary mx-2"
-      rel="noopener">
-      <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: social_media_type.capitalize, class: "crayons-icon social-media-svg") %>
-    </a>
-  <% end %>
+<% SiteConfig.social_media_handles.each do |social_media_type, handle| %>
+  <% next if handle.blank? %>
+  <a
+    href="<%= "https://#{social_media_type}.com/#{handle}" %>"
+    target="_blank"
+    class="crayons-link crayons-link--secondary mx-2"
+    rel="noopener">
+    <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: social_media_type.capitalize, class: "crayons-icon social-media-svg") %>
+  </a>
 <% end %>

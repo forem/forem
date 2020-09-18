@@ -16,7 +16,8 @@ module Articles
       article = save_article
 
       if article.persisted?
-        NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article", config: "all_comments")
+        NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article",
+                                        config: "all_comments")
         Notification.send_to_followers(article, "Published") if article.published?
 
         dispatch_event(article)

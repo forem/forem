@@ -1,0 +1,8 @@
+#!/bin/bash
+if [ "$RAILS_ENV" = "test" ]; then
+  RAILS_ENV=production bundle exec rails db:create
+  RAILS_ENV=production SAFETY_ASSURED=1 bundle exec rails db:schema:load
+  bundle exec rails runner -e production 'puts "App booted successfully"'
+else
+  echo "Not in safe test environment" && exit 1
+fi

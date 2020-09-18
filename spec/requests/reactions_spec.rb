@@ -5,8 +5,8 @@ RSpec.describe "Reactions", type: :request do
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, commentable: article) }
 
-  let_it_be(:max_age) { 1.day.to_i }
-  let_it_be(:stale_if_error) { 26_400 }
+  let(:max_age) { 1.day.to_i }
+  let(:stale_if_error) { 26_400 }
 
   describe "GET /reactions?article_id=:article_id" do
     before do
@@ -33,8 +33,12 @@ RSpec.describe "Reactions", type: :request do
         expect(result["reactions"].to_json).to eq(user.reactions.where(reactable: article).to_json)
       end
 
-      it "does not set cache control headers" do
+      it "does not set Surrogate-Key cache control headers" do
         expect(response.headers["Surrogate-Key"]).to eq(nil)
+      end
+
+      it "does not set X-Accel-Expires headers" do
+        expect(response.headers["X-Accel-Expires"]).to eq(nil)
       end
 
       it "does not set Fastly cache control and surrogate control headers" do
@@ -63,6 +67,10 @@ RSpec.describe "Reactions", type: :request do
 
       it "sets the surrogate key header equal to params for article" do
         expect(response.headers["Surrogate-Key"]).to eq(controller.params.to_s)
+      end
+
+      it "sets the x-accel-expires header equal to max-age for article" do
+        expect(response.headers["X-Accel-Expires"]).to eq(max_age.to_s)
       end
 
       it "sets Fastly cache control and surrogate control headers" do
@@ -98,6 +106,10 @@ RSpec.describe "Reactions", type: :request do
         expect(response.headers["surrogate-key"]).to be_nil
       end
 
+      it "does not set x-accel-expires headers" do
+        expect(response.headers["x-accel-expires"]).to be_nil
+      end
+
       it "does not set Fastly cache control and surrogate control headers" do
         expect(response.headers.to_hash).not_to include(
           "Cache-Control" => "public, no-cache",
@@ -119,6 +131,10 @@ RSpec.describe "Reactions", type: :request do
 
       it "sets the surrogate key header equal to params" do
         expect(response.headers["Surrogate-Key"]).to eq(controller.params.to_s)
+      end
+
+      it "sets the x-accel-expires header equal to max-age for article" do
+        expect(response.headers["X-Accel-Expires"]).to eq(max_age.to_s)
       end
 
       it "sets Fastly cache control and surrogate control headers" do
@@ -269,13 +285,13 @@ RSpec.describe "Reactions", type: :request do
     end
 
     context "when signed in as admin" do
-      let_it_be(:admin) { create(:user, :admin) }
+      let(:admin) { create(:user, :admin) }
 
       before do
         sign_in admin
       end
 
-      it "automatically approves vomits on users" do
+      it "automatically confirms vomits on users" do
         post "/reactions", params: user_params
 
         reaction = Reaction.find_by(reactable_id: user.id)
@@ -283,12 +299,20 @@ RSpec.describe "Reactions", type: :request do
         expect(reaction.status).to eq("confirmed")
       end
 
-      it "automatically approves vomits on articles" do
+      it "automatically confirms vomits on articles" do
         post "/reactions", params: article_params.merge(category: "vomit")
 
         reaction = Reaction.find_by(reactable_id: article.id)
         expect(reaction.category).to eq("vomit")
         expect(reaction.status).to eq("confirmed")
+      end
+
+      it "does not automatically confirm positive reactions" do
+        post "/reactions", params: article_params
+
+        reaction = Reaction.find_by(reactable_id: article.id)
+        expect(reaction.category).to eq("like")
+        expect(reaction.status).to eq("valid")
       end
     end
 
@@ -300,7 +324,8 @@ RSpec.describe "Reactions", type: :request do
 
       it "converts field test" do
         post "/reactions", params: article_params
-        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_reaction")
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed,
+                                                                                        "user_creates_reaction")
       end
     end
 

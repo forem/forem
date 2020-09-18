@@ -1,14 +1,15 @@
-require_relative "../lib/acts_as_taggable_on/tag.rb"
+require_relative "../lib/acts_as_taggable_on/tag"
 
 class Tag < ActsAsTaggableOn::Tag
-  attr_accessor :points
+  attr_accessor :points, :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
   resourcify
 
+  # This model doesn't inherit from ApplicationRecord so this has to be included
+  include Purgeable
+  include Searchable
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
-
-  attr_accessor :tag_moderator_id, :remove_moderator_id
 
   belongs_to :badge, optional: true
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
@@ -38,13 +39,9 @@ class Tag < ActsAsTaggableOn::Tag
 
   scope :eager_load_serialized_data, -> {}
 
-  include Searchable
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
   DATA_SYNC_CLASS = DataSync::Elasticsearch::Tag
-
-  # This model doesn't inherit from ApplicationRecord so this has to be included
-  include Purgeable
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
@@ -56,7 +53,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def tag_moderator_ids
-    User.with_role(:tag_moderator, self).order("id ASC").pluck(:id)
+    User.with_role(:tag_moderator, self).order(id: :asc).ids
   end
 
   def self.bufferized_tags
@@ -82,7 +79,10 @@ class Tag < ActsAsTaggableOn::Tag
 
   def validate_name
     errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
-    errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)
+    # [:alnum:] is not used here because it supports diacritical characters.
+    # If we decide to allow diacritics in the future, we should replace the
+    # following regex with [:alnum:].
+    errors.add(:name, "contains non-ASCII characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
   end
 
   def mod_chat_channel
@@ -97,12 +97,12 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def calculate_hotness_score
-    self.hotness_score = Article.tagged_with(name).
-      where("articles.featured_number > ?", 7.days.ago.to_i).
-      map do |article|
+    self.hotness_score = Article.tagged_with(name)
+      .where("articles.featured_number > ?", 7.days.ago.to_i)
+      .map do |article|
         (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
-      end.
-      sum
+      end
+      .sum
   end
 
   def bust_cache

@@ -135,7 +135,7 @@
     --layout-gap: var(--su-4);
     --layout-sidebar-right-width: 3fr;
     --layout-sidebar-left-row-end: initial;
-    --layout-content-width: minmax(0, 7fr);
+    --layout-content-width: 7fr;
     --layout: var(--layout-sidebar-left-width) var(--layout-content-width)
       var(--layout-sidebar-right-width);
   }

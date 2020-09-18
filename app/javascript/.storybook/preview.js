@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
-import { withA11y } from '@storybook/addon-a11y';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/crayons.scss';
@@ -66,7 +65,6 @@ const themeSwitcherDecorator = (storyFn) => {
 };
 
 addDecorator(themeSwitcherDecorator);
-addDecorator(withA11y);
 
 addParameters({
   options: {

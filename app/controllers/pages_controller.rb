@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show rlyweb badge bounty faq robots]
+  before_action :set_cache_control_headers, only: %i[show badge bounty faq robots]
 
   def show
     @page = Page.find_by!(slug: params[:slug])
@@ -68,18 +68,15 @@ class PagesController < ApplicationController
   end
 
   def robots
+    # dynamically-generated static page
     respond_to :text
     set_surrogate_key_header "robots_page"
-  end
-
-  def rlyweb
-    set_surrogate_key_header "rlyweb"
   end
 
   def welcome
     daily_thread = Article.admin_published_with("welcome").first
     if daily_thread
-      redirect_to daily_thread.path
+      redirect_to URI.parse(daily_thread.path).path
     else
       # fail safe if we haven't made the first welcome thread
       redirect_to "/notifications"
@@ -89,7 +86,7 @@ class PagesController < ApplicationController
   def challenge
     daily_thread = Article.admin_published_with("challenge").first
     if daily_thread
-      redirect_to daily_thread.path
+      redirect_to URI.parse(daily_thread.path).path
     else
       redirect_to "/notifications"
     end
@@ -97,14 +94,14 @@ class PagesController < ApplicationController
 
   def checkin
     daily_thread =
-      Article.
-        published.
-        where(user: User.find_by(username: "codenewbiestaff")).
-        order("articles.published_at" => :desc).
-        first
+      Article
+        .published
+        .where(user: User.find_by(username: "codenewbiestaff"))
+        .order("articles.published_at" => :desc)
+        .first
 
     if daily_thread
-      redirect_to daily_thread.path
+      redirect_to URI.parse(daily_thread.path).path
     else
       redirect_to "/notifications"
     end

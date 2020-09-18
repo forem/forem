@@ -1,7 +1,5 @@
 module Search
-  class NestedUserSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class NestedUserSerializer < ApplicationSerializer
     attributes :id, :name, :pro, :profile_image_90, :username
   end
 end

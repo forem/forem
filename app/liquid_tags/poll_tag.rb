@@ -1,5 +1,10 @@
 class PollTag < LiquidTagBase
   PARTIAL = "liquids/poll".freeze
+  VALID_CONTEXTS = %w[Article].freeze
+  VALID_ROLES = %i[
+    admin
+    super_admin
+  ].freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze
     if (document.head.querySelector('meta[name="user-signed-in"][content="true"]')) {
@@ -95,12 +100,13 @@ class PollTag < LiquidTagBase
     }
   JAVASCRIPT
 
-  def initialize(_tag_name, id_code, _tokens)
+  def initialize(_tag_name, id_code, _parse_context)
+    super
     @poll = Poll.find(id_code)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         poll: @poll

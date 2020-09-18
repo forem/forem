@@ -1,9 +1,12 @@
 import { h } from 'preact';
 import { Fieldset } from '../../../storybook-utilities/Fieldset';
-
 import '../../../storybook-utilities/designSystem.scss';
+import notes from '../../form-elements.md';
 
-export default { title: '3_Components/Form Components/Checkbox/HTML' };
+export default {
+  title: '3_Components/Form Components/Checkbox/HTML',
+  parameters: { notes },
+};
 
 export const Default = () => (
   <input type="checkbox" className="crayons-checkbox" />

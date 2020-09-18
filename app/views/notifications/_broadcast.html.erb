@@ -3,10 +3,10 @@
 <% cache "broadcast-html-#{notification.json_data['broadcast']['title']}" do %>
   <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
     <div class="small-pic">
-      <img src="<%= ProfileImage.new(user).get %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
+      <img src="<%= Images::Profile.call(user.profile_image_url) %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
     </div>
   </a>
-  <div class="content notification-content broadcast-content" id="<%= sanitized_broadcast_id(json_data['broadcast']['title']) %>">
+  <div class="content notification-content broadcast-content" id="<%= sanitized_broadcast_id(json_data["broadcast"]["title"]) %>">
     <%= json_data["broadcast"]["processed_html"].html_safe %>
 
     <% if notification.json_data['broadcast']['type_of'] == "Welcome" %>

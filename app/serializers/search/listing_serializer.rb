@@ -1,7 +1,5 @@
 module Search
-  class ListingSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class ListingSerializer < ApplicationSerializer
     attributes :id,
                :body_markdown,
                :bumped_at,
@@ -18,9 +16,9 @@ module Search
     attribute :tags, &:tag_list
 
     attribute :author do |cl|
-      ListingAuthorSerializer.new(cl.author).
-        serializable_hash.
-        dig(:data, :attributes)
+      ListingAuthorSerializer.new(cl.author)
+        .serializable_hash
+        .dig(:data, :attributes)
     end
   end
 end

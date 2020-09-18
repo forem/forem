@@ -2,15 +2,16 @@ class RedditTag < LiquidTagBase
   include ActionView::Helpers::SanitizeHelper
 
   PARTIAL = "liquids/reddit".freeze
-  URL_REGEXP = /\Ahttps:\/\/(www.)?reddit.com/.freeze
+  URL_REGEXP = %r{\Ahttps://(www.)?reddit.com}.freeze
 
-  def initialize(_tag_name, url, _tokens)
+  def initialize(_tag_name, url, _parse_context)
+    super
     @url = ActionController::Base.helpers.strip_tags(url).strip
     @reddit_content = parse_url
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         author: @reddit_content[:author],
@@ -32,7 +33,8 @@ class RedditTag < LiquidTagBase
     validate_url
 
     # Requests to Reddit require a custom `User-Agent` header to prevent 429 errors
-    json = HTTParty.get("#{@url}.json", headers: { "User-Agent" => "#{ApplicationConfig['COMMUNITY_NAME']} (#{URL.url})" })
+    json = HTTParty.get("#{@url}.json",
+                        headers: { "User-Agent" => "#{SiteConfig.community_name} (#{URL.url})" })
 
     # The JSON response is an array with two items.
     # The first one is the post itself, the second one are the comments

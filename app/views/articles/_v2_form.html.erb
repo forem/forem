@@ -37,7 +37,7 @@
       </div>
 
       <div class="crayons-article-form__close">
-        <a href="/" class="crayons-btn crayons-btn--ghost crayons-btn--icon" title="Close the editor">
+        <a href="/" class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon" title="Close the editor">
           <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Close") %>
         </a>
       </div>
@@ -61,13 +61,13 @@
             <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px; "><%= article.title %></textarea>
           </div>
           <div class="crayons-article-form__tagsfield">
-            <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
+            <input type="text" class="crayons-textfield crayons-textfield--ghost ff-monospace" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
           </div>
         </div>
       <% end %>
       <div class="crayons-article-form__body text-padding">
         <div class="crayons-article-form__toolbar">
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left fw-normal" type="button">
+          <button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-left fw-normal" type="button">
             <%= (inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") + "Upload image").delete!("\n").html_safe %>
             <input type="file" id="image-upload-field" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" multiple accept="image/*" data-max-file-size-mb="25" />
           </button>

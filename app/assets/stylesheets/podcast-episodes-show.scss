@@ -1,7 +1,11 @@
 @import 'variables';
 
+:root {
+  --podcast-spinning-animation: spin 20s linear infinite;
+}
+
 .podcast-episode-container {
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
 
   .hero {
     padding-bottom: 30px;
@@ -126,8 +130,7 @@
     .playing {
       .record {
         .main-image {
-          animation: spin 20s linear infinite;
-          -webkit-backface-visibility: hidden;
+          animation-play-state: running;
         }
         .play-butt {
           display: none;
@@ -161,6 +164,9 @@
         width: 100%;
         height: 100%;
         min-height: 160px;
+        animation: var(--podcast-spinning-animation);
+        animation-play-state: paused;
+        -webkit-backface-visibility: hidden;
         @media screen and (min-width: 680px) {
           width: 290px;
           min-height: 290px;
@@ -181,8 +187,7 @@
       }
       &.playing {
         .main-image {
-          animation: spin 20s linear infinite;
-          -webkit-backface-visibility: hidden;
+          animation-play-state: running;
         }
         .play-butt {
           display: none;
@@ -205,7 +210,7 @@
   }
   .body {
     padding: calc(0.7vw + 4px) 0px calc(0.5vw + 2px);
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     img {
       min-height: 0px !important;
     }

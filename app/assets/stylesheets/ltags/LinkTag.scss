@@ -1,4 +1,4 @@
-@import 'variables';
+@import '../variables';
 .ltag__link__link {
   color: $black !important;
   color: var(--body-color) !important;
@@ -7,7 +7,7 @@
   }
 }
 .ltag__link {
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   border: 1px solid $light-medium-gray;
   box-shadow: $shadow;
   border-radius: 3px;
