@@ -163,7 +163,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should not exist" do
         user_associations.each do |user_association|
-          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound), user_association
         end
       end
     end

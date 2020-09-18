@@ -1,5 +1,7 @@
 require "sitemap_generator/s3_adapter"
 
+# @forem/systems: It's fine if this doesn't 100% work correctly right now, as long as it doesn't break stuff at runtime.
+
 if Rails.env.production?
   region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
   config_hash = if ENV["FOREM_CONTEXT"] == "forem_cloud" # @forem/systems jdoss's special sauce.

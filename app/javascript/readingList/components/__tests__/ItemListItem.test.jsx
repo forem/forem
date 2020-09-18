@@ -9,7 +9,7 @@ function getItem() {
     reactable: {
       path: '/article',
       title: 'Title',
-      published_date_string: 'Jun 29',
+      readable_publish_date_string: 'Jun 29',
       reading_time: 1,
       user: {
         username: 'bob',

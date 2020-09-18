@@ -188,8 +188,7 @@ class ChatChannelMembershipsController < ApplicationController
     if params[:user_action] == "accept"
       membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
       if !membership
-        membership = ChatChannelMembership.new(user_id: current_user.id, chat_channel_id: chat_channel.id)
-        membership.save
+        membership = ChatChannelMembership.create(user_id: current_user.id, chat_channel_id: chat_channel.id)
         unless membership&.errors&.any?
           send_chat_action_message("@#{membership.user.username} join the channel", current_user, chat_channel.id,
                                    "joined")

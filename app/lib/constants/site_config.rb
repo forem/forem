@@ -141,6 +141,10 @@ module Constants
         description: "Used as the main image in social networks and OpenGraph",
         placeholder: "https://image.url"
       },
+      mailchimp_api_key: {
+        description: "API key used to connect Mailchimp account. Found in Mailchimp backend",
+        placeholder: ""
+      },
       mailchimp_newsletter_id: {
         description: "Main Newsletter ID",
         placeholder: ""

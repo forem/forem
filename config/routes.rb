@@ -454,6 +454,10 @@ Rails.application.routes.draw do
     get "/serviceworker" => "service_worker#index"
     get "/manifest" => "service_worker#manifest"
 
+    # open search
+    get "/open-search" => "open_search#show",
+        :constraints => { format: /xml/ }
+
     get "/shell_top" => "shell#top"
     get "/shell_bottom" => "shell#bottom"
 
