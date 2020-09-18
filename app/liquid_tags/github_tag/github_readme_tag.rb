@@ -10,7 +10,7 @@ class GithubTag
     end
 
     def render
-      content = Github::Client.repository(repository_path)
+      content = Github::OauthClient.new.repository(repository_path)
 
       if show_readme?
         readme_html = fetch_readme(repository_path)
@@ -59,8 +59,8 @@ class GithubTag
     end
 
     def fetch_readme(repository_path)
-      readme_html = Github::Client.readme(repository_path, accept: "application/vnd.github.html")
-      readme = Github::Client.readme(repository_path)
+      readme_html = Github::OauthClient.new.readme(repository_path, accept: "application/vnd.github.html")
+      readme = Github::OauthClient.new.readme(repository_path)
       clean_relative_path!(readme_html, readme.download_url)
     rescue Github::Errors::NotFound
       nil

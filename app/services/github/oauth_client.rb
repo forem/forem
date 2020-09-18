@@ -5,7 +5,11 @@ module Github
     APP_AUTH_CREDENTIALS_PRESENT = proc { |key, value| APP_AUTH_CREDENTIALS.include?(key) && value.present? }.freeze
 
     # @param credentials [Hash] the OAuth credentials, {client_id:, client_secret:} or {access_token:}
-    def initialize(credentials)
+    def initialize(credentials = nil)
+      credentials ||= {
+        client_id: SiteConfig.github_key,
+        client_secret: SiteConfig.github_secret
+      }
       @credentials = check_credentials!(credentials)
     end
 
