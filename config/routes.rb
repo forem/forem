@@ -162,7 +162,11 @@ Rails.application.routes.draw do
           end
         end
         resources :tags, only: [:index]
-        resources :follows, only: [:create]
+        resources :follows, only: [:create] do
+          collection do
+            get :tags
+          end
+        end
         namespace :followers do
           get :users
           get :organizations
