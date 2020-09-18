@@ -9,8 +9,8 @@ RSpec.describe ChatChannel, type: :model do
     describe "builtin validations" do
       subject { chat_channel }
 
-      it { is_expected.to have_many(:messages).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:messages).dependent(:destroy) }
       it { is_expected.to have_many(:users).through(:chat_channel_memberships) }
 
       it { is_expected.to validate_inclusion_of(:channel_type).in_array(%w[open invite_only direct]) }
@@ -19,6 +19,17 @@ RSpec.describe ChatChannel, type: :model do
       it { is_expected.to validate_presence_of(:channel_type) }
       it { is_expected.to validate_presence_of(:status) }
       it { is_expected.to validate_uniqueness_of(:slug) }
+
+      # rubocop:disable RSpec/NamedSubject
+      it do
+        expect(subject).to have_one(:mod_tag)
+          .class_name("Tag")
+          .inverse_of(:mod_chat_channel)
+          .with_foreign_key(:mod_chat_channel_id)
+          .dependent(:nullify)
+          .optional
+      end
+      # rubocop:enable RSpec/NamedSubject
     end
   end
 

@@ -28,6 +28,9 @@ class ChatChannel < ApplicationRecord
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
+  has_one :mod_tag, class_name: "Tag", foreign_key: "mod_chat_channel_id",
+                    inverse_of: :mod_chat_channel, dependent: :nullify
+
   validates :channel_type, presence: true, inclusion: { in: CHANNEL_TYPES }
   validates :status, presence: true, inclusion: { in: STATUSES }
   validates :slug, uniqueness: true, presence: true
