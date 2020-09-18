@@ -12,10 +12,10 @@ module Api
       end
 
       def tags
-        @follows = @user.follows_by_type("ActsAsTaggableOn::Tag").
-          select(%i[id followable_id followable_type points]).
-          includes(:followable).
-          order(points: :desc)
+        @follows = @user.follows_by_type("ActsAsTaggableOn::Tag")
+          .select(%i[id followable_id followable_type points])
+          .includes(:followable)
+          .order(points: :desc)
       end
     end
   end
