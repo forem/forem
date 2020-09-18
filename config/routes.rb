@@ -154,7 +154,6 @@ Rails.application.routes.draw do
           end
         end
         resources :comments, only: %i[index show]
-        resources :site_config, only: %i[show]
         resources :videos, only: [:index]
         resources :podcast_episodes, only: [:index]
         resources :users, only: %i[show] do
@@ -184,6 +183,10 @@ Rails.application.routes.draw do
             get :database
             get :cache
           end
+        end
+
+        namespace :admin do
+          resource :config, only: %i[show]
         end
       end
     end
