@@ -11,58 +11,22 @@ RSpec.describe CacheBuster, type: :labor do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:tag) { create(:tag) }
 
-  describe "#bust_nginx_cache" do
-    before do
-      # Stub out Fastly since we check for fastly_enabled? before nginx_enabled?
-      allow(cache_buster).to receive(:fastly_enabled?).and_return(false)
-      allow(cache_buster).to receive(:bust_nginx_cache).and_call_original
+  describe "#bust" do
+    let(:path) { "/#{user.username}" }
 
-      allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return("http://")
-      allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return("localhost:9090")
+    it "returns nil if no edge caching service is configured" do
+      expect(cache_buster.bust(path)).to eq(nil)
     end
 
-    context "when nginx is available and openresty is configured" do
-      it "can bust an nginx cache" do
-        cache_buster.bust("/#{user.username}")
-        expect(cache_buster).to have_received(:bust_nginx_cache)
-      end
-    end
-
-    context "when nginx is unavailable and openresty is configured" do
-      before do
-        allow(cache_buster).to receive(:bust)
-        allow(cache_buster).to receive(:nginx_available?).and_return(false)
-      end
-
-      it "does not bust an nginx cache" do
-        cache_buster.bust("/#{user.username}")
-        expect(cache_buster).not_to have_received(:bust_nginx_cache)
-      end
-    end
-
-    context "when openresty is not configured" do
-      before do
-        allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return(nil)
-        allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return(nil)
-      end
-
-      it "does not bust an nginx cache" do
-        cache_buster.bust("/#{user.username}")
-        expect(cache_buster).not_to have_received(:bust_nginx_cache)
-      end
-    end
-  end
-
-  describe "#bust_fastly_cache" do
-    before do
-      allow(cache_buster).to receive(:bust_fastly_cache).and_call_original
-      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("fake-key")
+    it "returns an EdgeCache::Bust if an edge caching service is configured" do
       allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return("fake-key")
-      allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("localhost:3000")
-    end
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("fake-service-id")
 
-    it "can bust a fastly cache when configured" do
-      cache_buster.bust_fastly_cache("/#{user.username}")
+      edge_cache_bust_service = cache_buster.bust(path)
+
+      expect(edge_cache_bust_service.path).to eq(path)
+      expect(edge_cache_bust_service.provider).to eq("fastly")
+      expect(edge_cache_bust_service.class).to eq(EdgeCache::Bust)
     end
   end
 
