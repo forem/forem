@@ -13,7 +13,8 @@ VCR.configure do |config|
     "github.com/mozilla/geckodriver/releases",
     "selenium-release.storage.googleapis.com",
     "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
-    "api.knapsackpro.com", "localhost", "127.0.0.1", "0.0.0.0"
+    "api.knapsackpro.com", "localhost", "127.0.0.1", "0.0.0.0",
+    "elasticsearch", "redis"
   )
 
   # Removes all private data (Basic Auth, Set-Cookie headers...)
