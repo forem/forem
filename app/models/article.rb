@@ -564,10 +564,9 @@ class Article < ApplicationRecord
   def validate_co_authors_must_not_be_the_same
     return unless co_author_ids
 
-    co_author = co_author_ids.map { |id| id }
-    return if co_author_ids.include?(co_author)
+    return if co_author_ids.uniq.count == co_author_ids.count
 
-    errors.add(:base, "must not be the same user as the co-author")
+    errors.add(:base, "co-author IDs must be unique")
   end
 
   def past_or_present_date
