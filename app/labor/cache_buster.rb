@@ -7,7 +7,7 @@ module CacheBuster
   ].freeze
 
   def self.bust(path)
-    EdgeCache::Service.call(path)
+    EdgeCache::Buster.call(path)
   end
 
   def self.bust_comment(commentable)

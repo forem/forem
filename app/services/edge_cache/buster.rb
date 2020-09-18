@@ -1,14 +1,14 @@
 module EdgeCache
-  class Service
+  class Buster
     PROVIDERS = %w[fastly nginx].freeze
 
     def initialize(path)
       # TODO: (Vaidehi Joshi) - Right now, we are checking that nginx is
-      # available on every purge request/call to this service. If we are going
+      # available on every purge request/call to this buster service. If we are going
       # to bust multiple paths, we should be able to check that nginx is
       # available just once, and persist it on the class with @provider_available?.
       # Then, we could allow for an array of @paths = [] to be passed in,
-      # and on single service instance could bust multiple paths in order.
+      # and on single buster instance could bust multiple paths in order.
 
       @path = path
       @provider = set_provider
@@ -29,8 +29,8 @@ module EdgeCache
       else
         # We theoretically should never hit this unless someone adds a provider
         # but doesn't add the implementation for it into the #call method.
-        Rails.logger.warn("EdgeCache::Service was called with an invalid provider: #{provider}")
-        DatadogStatsClient.increment("edgecache_service.invalid_provider", tags: ["provider:#{provider}"])
+        Rails.logger.warn("EdgeCache::Buster was called with an invalid provider: #{provider}")
+        DatadogStatsClient.increment("edgecache_buster.invalid_provider", tags: ["provider:#{provider}"])
       end
 
       self
@@ -99,7 +99,7 @@ module EdgeCache
       # If we can't connect to Openresty, alert ourselves that
       # it is unavailable and return false.
       Rails.logger.error("Could not connect to Openresty via #{openresty_path}!")
-      DatadogStatsClient.increment("edgecache_service.service_unavailable", tags: ["path:#{openresty_path}"])
+      DatadogStatsClient.increment("edgecache_buster.service_unavailable", tags: ["path:#{openresty_path}"])
       false
     end
   end

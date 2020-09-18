@@ -18,15 +18,15 @@ RSpec.describe CacheBuster, type: :labor do
       expect(cache_buster.bust(path)).to eq(nil)
     end
 
-    it "returns an EdgeCache::Service if an edge caching service is configured" do
+    it "returns an EdgeCache::Buster if an edge caching service is configured" do
       allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return("fake-key")
       allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("fake-service-id")
 
-      edge_cache_service = cache_buster.bust(path)
+      edge_cache_buster = cache_buster.bust(path)
 
-      expect(edge_cache_service.path).to eq(path)
-      expect(edge_cache_service.provider).to eq("fastly")
-      expect(edge_cache_service.class).to eq(EdgeCache::Service)
+      expect(edge_cache_buster.path).to eq(path)
+      expect(edge_cache_buster.provider).to eq("fastly")
+      expect(edge_cache_buster.class).to eq(EdgeCache::Buster)
     end
   end
 
