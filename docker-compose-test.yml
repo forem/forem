@@ -2,7 +2,7 @@ version: "3"
 services:
   rails:
     build:
-      context: .
+      context: .buildkite/
       args:
         - RAILS_ENV=test
     image: forem-rails:latest
@@ -39,7 +39,7 @@ services:
       KNAPSACK_PRO_LOG_LEVEL: info
       KNAPSACK_PRO_CI_NODE_TOTAL: 3
       COVERAGE_REPORTS_TOTAL: 4
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "tcp://selenium-chrome-standalone:4444", "-timeout", "2700s", "./scripts/entrypoint-dev.sh"]
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-timeout", "2700s", "./scripts/entrypoint-dev.sh"]
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
   chrome:
