@@ -2,9 +2,7 @@
 
 set -euo pipefail
 
-echo "******************"
-echo "$PWD"
-echo "******************"
+cp .env_sample .env
 
 # if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC" = "" ]; then
   KNAPSACK_PRO_ENDPOINT=https://api-disabled-for-fork.knapsackpro.com \
