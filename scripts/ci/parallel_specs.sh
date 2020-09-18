@@ -3,7 +3,7 @@
 set -euo pipefail
 
 echo "******************"
-echo "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC"
+echo "$PWD"
 echo "******************"
 
 if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC" = "" ]; then
