@@ -93,7 +93,7 @@ class Organization < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(width: 90)
+    Images::Profile.call(profile_image_url, length: 90)
   end
 
   def enough_credits?(num_credits_needed)

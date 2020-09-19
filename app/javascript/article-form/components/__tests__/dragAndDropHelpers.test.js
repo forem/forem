@@ -9,6 +9,17 @@ import { processImageUpload } from '../../actions';
 jest.mock('../../../Snackbar');
 jest.mock('../../actions');
 
+function getDropZoneElement() {
+  const textArea = document.createElement('textarea');
+  const dropZoneElement = document.createElement('div');
+
+  dropZoneElement.setAttribute('class', 'drop-area drop-area--active');
+
+  dropZoneElement.appendChild(textArea);
+
+  return textArea;
+}
+
 describe('Article drag and drop helpers', () => {
   beforeEach(() => {
     addSnackbarItem.mockReset();
@@ -66,9 +77,10 @@ describe('Article drag and drop helpers', () => {
       const successHandler = jest.fn();
       const failureHandler = jest.fn();
       const imageHandler = handleImageDrop(successHandler, failureHandler);
+
       const dropEvent = {
         preventDefault: jest.fn(),
-        currentTarget: document.createElement('textarea'),
+        currentTarget: getDropZoneElement(),
         dataTransfer: {
           types: ['Files'],
           files: [
@@ -92,9 +104,10 @@ describe('Article drag and drop helpers', () => {
       const successHandler = jest.fn();
       const failureHandler = jest.fn();
       const imageHandler = handleImageDrop(successHandler, failureHandler);
+
       const dropEvent = {
         preventDefault: jest.fn(),
-        currentTarget: document.createElement('textarea'),
+        currentTarget: getDropZoneElement(),
         dataTransfer: {
           types: ['Files'],
           files: [

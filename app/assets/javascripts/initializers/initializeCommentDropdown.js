@@ -3,12 +3,6 @@
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
-  function isClipboardSupported() {
-    return (
-      typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-    );
-  }
-
   function removeClass(className) {
     return (element) => element.classList.remove(className);
   }
@@ -34,51 +28,18 @@ function initializeCommentDropdown() {
     }
   }
 
-  function execCopyText() {
-    document.execCommand('copy');
-  }
-
-  function copyText(text) {
-    return new Promise((resolve, reject) => {
-      if (Runtime.isNativeAndroid('copyToClipboard')) {
-        AndroidBridge.copyToClipboard(text);
-        resolve();
-      } else if (isClipboardSupported()) {
-        navigator.clipboard
-          .writeText(text)
-          .then(() => {
-            resolve();
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      } else {
-        reject();
-      }
-    });
-  }
-
   function copyPermalink(event) {
     event.preventDefault();
     const permalink = event.target.href;
-
-    copyText(permalink).catch((err) => {
-      event.clipboardData.setData('text/plain', permalink);
-      execCopyText();
-    });
+    
+    Runtime.copyToClipboard(permalink);
   }
 
   function copyArticleLink() {
     const inputValue = document.getElementById('article-copy-link-input').value;
-
-    copyText(inputValue)
-      .then(() => {
-        showAnnouncer();
-      })
-      .catch((err) => {
-        showAnnouncer();
-        execCopyText();
-      });
+    Runtime.copyToClipboard(inputValue).then(() => {
+      showAnnouncer();
+    });
   }
 
   function shouldCloseDropdown(event) {
@@ -86,8 +47,7 @@ function initializeCommentDropdown() {
       event.target.matches('.dropdown-icon') ||
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
-      event.target.matches('clipboard-copy input') ||
-      event.target.matches('clipboard-copy svg') ||
+      document.getElementById('article-copy-icon').contains(event.target) ||
       event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }

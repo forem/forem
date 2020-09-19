@@ -21,7 +21,7 @@ environments. Examples:
 
 Settings managed via your ENV can be found in
 [Configuring Environment Variables](../getting-started/config-env.md)) and
-viewed at `/admin/config` (see [the Admin guide](../admin/readme.md)):
+viewed at `/admin/config` (see [the Admin guide](/admin)):
 
 ![Screenshot of env variable admin interface](https://user-images.githubusercontent.com/47985/73627243-67d41f80-467e-11ea-9121-221275ff8a89.png)
 
@@ -37,7 +37,7 @@ Examples:
 These settings can be accessed via the
 [`SiteConfig`](https://github.com/forem/forem/blob/master/app/models/site_config.rb)
 object and viewed / modified via `/admin/config` (see
-[the Admin guide](../admin/readme.md)).
+[the Admin guide](/admin)).
 
 ![Screenshot of site configuration admin interface](https://user-images.githubusercontent.com/47985/73627238-6276d500-467e-11ea-8724-afb703f056bc.png)
 

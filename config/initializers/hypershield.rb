@@ -3,7 +3,7 @@
 # tools like Blazer.
 # further setup instructions: https://github.com/ankane/hypershield#database-setup
 
-if Rails.env.production?
+if Rails.env.production? && ENV["ENV_AVAILABLE"] == "true"
   Hypershield.enabled = ENV["ENABLE_HYPERSHIELD"].present?
 
   # Validate that hypershield schema exists before trying to use it
@@ -17,6 +17,7 @@ if Rails.env.production?
           hide: [
             "ahoy_messages.content",
             "ahoy_messages.to",
+            "backup_data.json_data",
             "email",
             "encrypted",
             "encrypted_password",

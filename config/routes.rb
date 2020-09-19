@@ -162,7 +162,11 @@ Rails.application.routes.draw do
           end
         end
         resources :tags, only: [:index]
-        resources :follows, only: [:create]
+        resources :follows, only: [:create] do
+          collection do
+            get :tags
+          end
+        end
         namespace :followers do
           get :users
           get :organizations
@@ -283,6 +287,8 @@ Rails.application.routes.draw do
     resource :onboarding, only: :show
     resources :profiles, only: %i[update]
     resources :profile_field_groups, only: %i[index], defaults: { format: :json }
+
+    resources :liquid_tags, only: %i[index], defaults: { format: :json }
 
     get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
     get "/search/tags" => "search#tags"
@@ -450,6 +456,10 @@ Rails.application.routes.draw do
     # serviceworkers
     get "/serviceworker" => "service_worker#index"
     get "/manifest" => "service_worker#manifest"
+
+    # open search
+    get "/open-search" => "open_search#show",
+        :constraints => { format: /xml/ }
 
     get "/shell_top" => "shell#top"
     get "/shell_bottom" => "shell#bottom"

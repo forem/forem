@@ -63,10 +63,6 @@
   &:hover {
     opacity: 1;
   }
-  h4 {
-    margin: 0;
-  }
-
   &.showing {
     display: block;
   }
@@ -267,51 +263,6 @@
     }
   }
 
-  // Filtering / todo: replace with tabs?
-  .query-filter-button {
-    font-size: 15px;
-    font-weight: bold;
-    background: transparent;
-    border: 0px;
-    display: block;
-    padding: 6px 8px;
-    width: calc(100% - 16px);
-    text-align: left;
-    border-radius: 0px;
-    color: var(--body-color);
-    cursor: pointer;
-    &:hover {
-      @include themeable(
-        background,
-        theme-container-background-hover,
-        lighten($bold-blue, 38%)
-      );
-    }
-    &.selected {
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        lighten($bold-blue, 10%)
-      );
-      color: var(--card-color);
-    }
-    &.query-type-filter-button {
-      &:hover {
-        @include themeable(
-          background,
-          theme-container-background-hover,
-          $light-green
-        );
-      }
-      &.selected {
-        @include themeable(
-          background,
-          theme-container-accent-background,
-          darken($light-green, 10%)
-        );
-      }
-    }
-  }
   p {
     margin: 8px 0;
   }
@@ -391,13 +342,6 @@
       text-transform: uppercase;
     }
   }
-}
-
-.query-filter-button {
-  box-sizing: border-box;
-  display: inline-block;
-  padding: var(--su-2) 0;
-  width: 100%;
 }
 
 // Sidebar sponsors

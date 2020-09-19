@@ -23,7 +23,7 @@
 
         <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
           <a href="/<%= @user.username %>">
-            <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
+            <img class="profile-pic" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" />
             <span class="comment-username">
               <span class="comment-username-inner">
                 <%= @user.name %>

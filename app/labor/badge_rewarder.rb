@@ -82,7 +82,7 @@ module BadgeRewarder
     return unless badge
 
     REPOSITORIES.each do |repo|
-      commits = Github::Client.commits(repo, since: since.utc.iso8601)
+      commits = Github::OauthClient.new.commits(repo, since: since.utc.iso8601)
 
       authors_uids = commits.map { |commit| commit.author.id }
       Identity.github.where(uid: authors_uids).find_each do |i|

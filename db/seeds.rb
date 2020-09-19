@@ -218,7 +218,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "2faa4a",
       overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
       android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
     {
@@ -231,7 +231,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "111111",
       overcast_url: "https://overcast.fm/itunes769189585/coding-blocks",
       android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
     {
@@ -244,7 +244,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "181a1c",
       overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me",
       android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
     {
@@ -258,7 +258,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "343d46",
       overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
       android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
   ]

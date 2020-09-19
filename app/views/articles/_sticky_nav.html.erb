@@ -4,7 +4,7 @@
     <div class="-mt-4">
       <a href="<%= @actor.path %>" class="flex">
         <span class="<% if @actor.class.name == "User" %>crayons-avatar crayons-avatar--xl<% elsif @actor.class.name == "Organization" %>crayons-logo crayons-logo--xl<% end %>  mr-2 shrink-0">
-          <img src="<%= ProfileImage.new(@actor).get(width: 90) %>" class="<% if @actor.class.name == "User" %>crayons-avatar__image<% elsif @actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="<%= @actor.name %> profile image">
+          <img src="<%= Images::Profile.call(@actor.profile_image_url, length: 90) %>" class="<% if @actor.class.name == "User" %>crayons-avatar__image<% elsif @actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="<%= @actor.name %> profile image">
         </span>
         <span class="crayons-link fs-l fw-bold mt-5"><%= @actor.name %></span>
       </a>
@@ -72,7 +72,7 @@
           <% @sticky_articles.each_with_index do |article, index| %>
             <a class="crayons-link crayons-link--contentful flex" href="<%= article.path %>">
               <span class="crayons-avatar mr-2 shrink-0">
-                <img src="<%= ProfileImage.new(article.user).get(width: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.user.name %> profile image">
+                <img src="<%= Images::Profile.call(article.cached_user.profile_image_url, length: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.cached_user.name %> profile image">
               </span>
               <div>
                 <%= article.title %>
