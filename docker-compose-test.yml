@@ -2,7 +2,7 @@ version: "3"
 services:
   rails:
     build:
-      context: .buildkite/
+      context: .
       args:
         - RAILS_ENV=test
     image: forem-rails:latest
@@ -43,7 +43,7 @@ services:
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
   chrome:
-    image: selenium/standalone-chrome
+    image: selenium/node-chrome
     expose:
       - 4444
 
