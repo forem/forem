@@ -62,10 +62,7 @@ function initializeSwipeGestures() {
   setTimeout(function () {
     // window.onload=function(){
     slideContent(document);
-    var h = function (e) {
-      // eslint-disable-next-line no-console
-      console.log(e.type, e);
-    };
+    var h = function (e) {};
     document.body.addEventListener(
       'swl',
       (e) => {
