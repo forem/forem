@@ -21,6 +21,8 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       REDIS_URL: redis://redis:6379
       REDIS_SESSIONS_URL: redis://redis:6379
+      REDIS_SIDEKIQ_URL: redis://redis:6379
+      SELENIUM_URL: http://chrome:4444/wd/hub
       RACK_TIMEOUT_WAIT_TIMEOUT: 10000
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
@@ -43,7 +45,7 @@ services:
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
   chrome:
-    image: selenium/node-chrome
+    image: selenium/standalone-chrome
     expose:
       - 4444
 

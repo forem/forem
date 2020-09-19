@@ -48,24 +48,11 @@ RUN if [ "$RAILS_ENV" != "test" ] ; then bundle config build.sassc --disable-mar
 RUN bundle check || bundle install --jobs 20 --retry 5
 RUN echo $(date --utc +%FT%T%Z) > /opt/apps/bundle/bundle_finished
 
-<<<<<<< HEAD
-=======
-COPY ./package.json ./yarn.lock ./.yarnrc "${APP_HOME}"
-COPY ./.yarn "${APP_HOME}"/.yarn
-RUN yarn install
-
->>>>>>> switch back to main dockerfile, start npm
 RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
 COPY . "${APP_HOME}"/
 
-<<<<<<< HEAD
 RUN if [ "$RAILS_ENV" != "test" ] ; then AILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile ; fi
-=======
-RUN if [ "$RAILS_ENV" != "test" ] ; then bundle exec rake assets:precompile ; fi
-RUN if [ "$RAILS_ENV" = "test" ] ; then npm install ; fi
-RUN if [ "$RAILS_ENV" = "test" ] ; then npm run ; fi
->>>>>>> switch back to main dockerfile, start npm
 
 RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
     echo $(git rev-parse --short HEAD) >> "${APP_HOME}"/FOREM_BUILD_SHA && \
