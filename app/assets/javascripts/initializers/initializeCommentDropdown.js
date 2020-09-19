@@ -1,4 +1,5 @@
 /* global Runtime */
+import { addSnackbarItem } from '../../Snackbar';
 
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
@@ -31,8 +32,14 @@ function initializeCommentDropdown() {
   function copyPermalink(event) {
     event.preventDefault();
     const permalink = event.target.href;
-    
-    Runtime.copyToClipboard(permalink);
+
+    Runtime.copyToClipboard(permalink)
+      .then(() => {
+        addSnackbarItem({ message: 'Copied to clipboard' });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   function copyArticleLink() {
@@ -47,7 +54,6 @@ function initializeCommentDropdown() {
       event.target.matches('.dropdown-icon') ||
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
-      document.getElementById('article-copy-icon').contains(event.target) ||
       event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }
