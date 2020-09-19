@@ -50,10 +50,13 @@ function initializeCommentDropdown() {
   }
 
   function shouldCloseDropdown(event) {
+    var copyIcon = document.getElementById('article-copy-icon');
+    var isCopyIconChild = copyIcon && copyIcon.contains(event.target);
     return !(
       event.target.matches('.dropdown-icon') ||
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
+      isCopyIconChild ||
       event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }
