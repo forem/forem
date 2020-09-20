@@ -74,6 +74,7 @@ class AsyncInfoController < ApplicationController
   def user_cache_key
     "user-info-#{current_user&.id}__
     #{current_user&.last_sign_in_at}__
+    #{current_user&.following_tags_count}__
     #{current_user&.last_followed_at}__
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
