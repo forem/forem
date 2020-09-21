@@ -56,6 +56,8 @@ class UsersController < ApplicationController
         ExportContentWorker.perform_async(@user.id)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
+      # TODO: [@forem/oss] This doesn't make sense for non DEV communities. We
+      # should either remove it or special case it.
       follow_hiring_tag(@user)
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
