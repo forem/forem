@@ -159,7 +159,7 @@ function toggleCodeOfConduct() {
   var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox');
   if (checkboxWrapper && !codeOfConduct) {
     checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
-                                  <label for="checked_code_of_conduct">I\'ve read the <a href="<%= URL.url('code-of-conduct') %>">code of conduct</a></label>'
+                                  <label for="checked_code_of_conduct">I\'ve read the <a href="/code-of-conduct">code of conduct</a></label>'
   }
 }
 

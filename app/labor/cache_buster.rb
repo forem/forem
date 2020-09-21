@@ -7,77 +7,7 @@ module CacheBuster
   ].freeze
 
   def self.bust(path)
-    # TODO: (Alex Smith) - It would be "nice to have" the ability to use the
-    # Fastly gem here instead of custom API calls. We'd want to keep thread
-    # safety in mind. We'll also want to consider making this modular for those
-    # who don't want to use Fastly at all.
-    #
-    # Instead of HTTP calls, we could do:
-    # fastly  = Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
-    # service = Fastly::Service.new({ id: ApplicationConfig["FASTLY_SERVICE_ID"] }, fastly)
-    # fastly.purge(path)
-    #
-    # https://github.com/fastly/fastly-ruby#efficient-purging
-    if fastly_enabled?
-      bust_fastly_cache(path)
-    elsif nginx_enabled? && nginx_available?
-      bust_nginx_cache(path)
-    end
-  rescue URI::InvalidURIError => e
-    Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
-    DatadogStatsClient.increment("cache_buster.invalid_uri", tags: ["path:#{path}"])
-  end
-
-  def self.fastly_enabled?
-    ApplicationConfig["FASTLY_API_KEY"].present? && ApplicationConfig["FASTLY_SERVICE_ID"].present?
-  end
-
-  def self.nginx_enabled?
-    ApplicationConfig["OPENRESTY_PROTOCOL"].present? && ApplicationConfig["OPENRESTY_DOMAIN"].present?
-  end
-
-  def self.openresty_path
-    "#{ApplicationConfig['OPENRESTY_PROTOCOL']}#{ApplicationConfig['OPENRESTY_DOMAIN']}"
-  end
-
-  def self.nginx_available?
-    uri = URI.parse(openresty_path)
-    http = Net::HTTP.new(uri.host, uri.port)
-    response = http.get(uri.request_uri)
-
-    return true if response.is_a?(Net::HTTPSuccess)
-  rescue StandardError
-    # If we can't connect to openresty, alert ourselves that
-    # it is unavailable and return false.
-    Rails.logger.error("Could not connect to Openresty via #{openresty_path}!")
-    DatadogStatsClient.increment("cache_buster.service_unavailable", tags: ["path:#{openresty_path}"])
-    false
-  end
-
-  def self.bust_fastly_cache(path)
-    # @forem/systems Fastly-enabled forems don't need "flexible" domains.
-    HTTParty.post(
-      "https://api.fastly.com/purge/https://#{URL.domain}#{path}",
-      headers: {
-        "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
-      },
-    )
-    HTTParty.post(
-      "https://api.fastly.com/purge/https://#{URL.domain}#{path}?i=i",
-      headers: {
-        "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
-      },
-    )
-  end
-
-  def self.bust_nginx_cache(path)
-    uri = URI.parse("#{openresty_path}#{path}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    response = http.request Net::HTTP::NginxPurge.new(uri.request_uri)
-
-    raise StandardError, "NginxPurge request failed: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
-
-    response.body
+    EdgeCache::Bust.call(path)
   end
 
   def self.bust_comment(commentable)
@@ -255,13 +185,4 @@ module CacheBuster
       bust("?i=i")
     end
   end
-end
-
-# Creates our own purge method for an HTTP request,
-# which is used by Nginx to bust a cache.
-# See Net::HTTPGenericRequest for attributes/methods.
-class Net::HTTP::NginxPurge < Net::HTTPRequest # rubocop:disable Style/ClassAndModuleChildren
-  METHOD = "PURGE".freeze
-  REQUEST_HAS_BODY = false
-  RESPONSE_HAS_BODY = true
 end
