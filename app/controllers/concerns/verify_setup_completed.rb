@@ -32,16 +32,20 @@ module VerifySetupCompleted
   end
 
   def missing_configs
-    MANDATORY_CONFIGS.reject { |config| SiteConfig.public_send(config).present? }
+    @missing_configs ||= MANDATORY_CONFIGS.reject { |config| SiteConfig.public_send(config).present? }
   end
 
   private
+
+  def missing_configs_text
+    display_missing = missing_configs.size > 3 ? missing_configs.first(3) + ["others"] : missing_configs
+    display_missing.map { |c| c.to_s.tr("_", " ") }.to_sentence
+  end
 
   def verify_setup_completed
     return if config_path? || setup_completed? || SiteConfig.waiting_on_first_user
 
     link = helpers.link_to("the configuration page", admin_config_path, "data-no-instant" => true)
-    missing_configs_text = missing_configs.map { |c| c.to_s.tr("_", " ") }.join(", ")
     # rubocop:disable Rails/OutputSafety
     flash[:global_notice] = "Setup not completed yet, missing #{missing_configs_text}. Please visit #{link}.".html_safe
     # rubocop:enable Rails/OutputSafety
