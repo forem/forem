@@ -2,7 +2,12 @@ Imgproxy.configure do |config|
   # imgproxy endpoint
   #
   # Full URL to where your imgproxy lives.
-  config.endpoint = ApplicationConfig["IMGPROXY_ENDPOINT"]
+  #
+  config.endpoint = if Rails.env.production?
+                      URL.url("images")
+                    else
+                      ApplicationConfig["IMGPROXY_ENDPOINT"]
+                    end
 
   # Next, you have to provide your signature key and salt.
   # If unsure, check out https://github.com/imgproxy/imgproxy/blob/master/docs/configuration.md first.
