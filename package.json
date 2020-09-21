@@ -128,7 +128,7 @@
     "lint-staged": "^10.4.0",
     "markdown-loader": "^5.1.0",
     "node-sass": "^4.14.1",
-    "prettier": "^2.1.1",
+    "prettier": "^2.1.2",
     "redoc-cli": "0.9.12",
     "sass-loader": "^10.0.2",
     "style-loader": "^1.2.1",
