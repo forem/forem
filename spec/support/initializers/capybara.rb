@@ -17,7 +17,7 @@ RSpec.configure do |config|
       Capybara.server_host = ENV.fetch("CAPYBARA_SERVER_HOST") { "0.0.0.0" }
       ip = Socket.ip_address_list.detect(&:ipv4_private?).ip_address
       host! URI::HTTP.build(host: ip, port: Capybara.server_port).to_s
-
+      puts "**" * 100
       Capybara.server_port = "43447"
       # session_server       = Capybara.current_session.server
       # Capybara.app_host    = "http://#{session_server.host}:#{session_server.port}"
