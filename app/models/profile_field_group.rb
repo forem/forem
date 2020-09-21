@@ -7,7 +7,7 @@ class ProfileFieldGroup < ApplicationRecord
     includes(:profile_fields).where(profile_fields: { show_in_onboarding: true })
   }
 
-  scope :with_non_empty_groups, lambda {
+  scope :non_empty_groups, lambda {
     joins(:profile_fields).includes(:profile_fields).order(:name).uniq
   }
 end
