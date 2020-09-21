@@ -54,6 +54,8 @@ COPY . "${APP_HOME}"/
 
 RUN if [ "$RAILS_ENV" != "test" ] ; then AILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile ; fi
 
+RUN if [ "$RAILS_ENV" = "test" ] ; then yum -y install chromedriver chromium gnu-free-sans-fonts xorg-x11-server-Xvfb && yum clean all && : ; fi
+
 RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
     echo $(git rev-parse --short HEAD) >> "${APP_HOME}"/FOREM_BUILD_SHA && \
     rm -rf "${APP_HOME}"/.git/
