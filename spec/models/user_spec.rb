@@ -110,13 +110,6 @@ RSpec.describe User, type: :model do
       end
 
       it do
-        expect(subject).to have_many(:backup_data)
-          .class_name("BackupData")
-          .with_foreign_key("instance_user_id")
-          .dependent(:delete_all)
-      end
-
-      it do
         expect(subject).to have_many(:blocked_blocks)
           .class_name("UserBlock")
           .with_foreign_key("blocked_id")
