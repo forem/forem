@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_14_145500) do
+ActiveRecord::Schema.define(version: 2020_09_17_114525) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -374,6 +374,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_145500) do
     t.datetime "last_buffered"
     t.string "location"
     t.bigint "organization_id"
+    t.datetime "originally_published_at"
     t.text "processed_html"
     t.boolean "published"
     t.string "slug"
