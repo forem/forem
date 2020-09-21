@@ -299,7 +299,7 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    field_test (0.4.0)
+    field_test (0.4.1)
       activerecord (>= 5)
       browser (>= 2.0)
       distribution
