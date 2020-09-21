@@ -1,6 +1,6 @@
 steps:
   - name: ":rspec:"
-    command: "scripts/ci/parallel_specs.sh"
+    command: "xvfb-run -wait && scripts/ci/parallel_specs.sh"
     artifact_paths: "log/**/*"
     env:
       RAILS_ENV: test
