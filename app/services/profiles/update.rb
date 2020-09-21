@@ -9,8 +9,8 @@ module Profiles
     def initialize(user, updated_attributes)
       @user = user
       @profile = user.profile
-      @updated_profile_attributes = updated_attributes[:profile]
-      @updated_user_attributes = updated_attributes[:user]
+      @updated_profile_attributes = updated_attributes[:profile] || {}
+      @updated_user_attributes = updated_attributes[:user] || {}
       @success = false
     end
 
