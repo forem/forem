@@ -36,8 +36,8 @@ WORKDIR "${APP_HOME}"
 # https://github.com/containers/podman-compose/issues/166
 # USER "${APP_USER}"
 
-COPY ./.ruby-version "${APP_HOME}"
-COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"
+COPY ./.ruby-version "${APP_HOME}"/
+COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"/
 COPY ./vendor/cache "${APP_HOME}"/vendor/cache
 
 # Fixes https://github.com/sass/sassc-ruby/issues/146
@@ -47,7 +47,7 @@ RUN bundle check || bundle install --jobs 20 --retry 5
 
 RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
-COPY . "${APP_HOME}"
+COPY . "${APP_HOME}"/
 
 RUN RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile
 
