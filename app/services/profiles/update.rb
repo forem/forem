@@ -54,7 +54,7 @@ module Profiles
       end
       @profile.user._skip_profile_sync = true
       if @profile.user.update(profile_attributes.except("custom_attributes"))
-        update_user
+        update_user_attributes
       else
         @error_message = @user.errors_as_sentence
       end
@@ -62,7 +62,7 @@ module Profiles
       @profile.user._skip_profile_sync = false
     end
 
-    def update_user
+    def update_user_attributes
       if @user.update(@updated_user_attributes.to_h)
         @success = true
       else
