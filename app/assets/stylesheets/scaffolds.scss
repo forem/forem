@@ -261,3 +261,61 @@ body.hidden-shell {
     opacity: 0.6;
   }
 }
+
+@keyframes foobar {
+  0% {
+    filter: hue-rotate(0deg);
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+    transform: rotate(-2deg);
+  }
+}
+
+[data-app-name='dev_prod'] {
+  &[data-user*='"id":1'],
+  &[data-user*='"id":264'],
+  &[data-user*='"id":560'],
+  &[data-user*='"id":938'],
+  &[data-user*='"id":1548'],
+  &[data-user*='"id":2693'],
+  &[data-user*='"id":2882'],
+  &[data-user*='"id":9597'],
+  &[data-user*='"id":13962'],
+  &[data-user*='"id":38578'],
+  &[data-user*='"id":48943'],
+  &[data-user*='"id":83655'],
+  &[data-user*='"id":129358'],
+  &[data-user*='"id":247053'],
+  &[data-user*='"id":247560'],
+  &[data-user*='"id":256524'],
+  &[data-user*='"id":285767'],
+  &[data-user*='"id":316487'],
+  &[data-user*='"id":342975'],
+  &[data-user*='"id":444526'],
+  &[data-user*='"id":454793'] {
+    animation-name: foobar;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-play-state: running;
+
+    &::after {
+      content: '\0057\0065\006C\0063\006F\006D\0065\0020\0062\0061\0063\006B\0021';
+      pointer-events: none;
+      background: white;
+      color: red;
+      text-align: center;
+      font-size: 80px;
+      font-weight: bold;
+      z-index: 999;
+      position: fixed;
+      left: 40%;
+      top: 40vh;
+      width: 20%;
+    }
+  }
+}
