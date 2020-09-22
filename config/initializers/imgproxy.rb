@@ -4,8 +4,13 @@ Imgproxy.configure do |config|
   # Full URL to where your imgproxy lives.
   #
   config.endpoint = if Rails.env.production?
-                      URL.url("images")
+                      # Use /images with the same domain on Production as
+                      # our default configuration
+                      URL.url("images") # ie. https://forem.dev/images
                     else
+                      # On other environments, rely on ApplicationConfig for a
+                      # more flexible configuration
+                      # ie. default imgproxy endpoint is localhost:8080
                       ApplicationConfig["IMGPROXY_ENDPOINT"]
                     end
 
