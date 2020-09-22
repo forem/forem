@@ -12,12 +12,10 @@
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <% if @article_show %>
-      <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
       <%= Rails.application.assets["sticky-nav.css"].to_s.html_safe %>
       <% else %>
-      <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <%= Rails.application.assets["podcast-episodes-show.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <% end %>
@@ -67,7 +65,6 @@
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
       <% if view_class.include? "comments-settings" %>
-      <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <% end %>
     </style>
   <% elsif view_class.include?("registrations") || @new_article_not_logged_in %>
