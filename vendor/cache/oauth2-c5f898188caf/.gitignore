@@ -1,0 +1,35 @@
+# Build Artifacts
+/pkg/
+/tmp/
+
+# rspec failure tracking
+.rspec_status
+
+# Bundler
+Gemfile.lock
+/.bundle/
+/gemfiles/.bundle/
+/gemfiles/.bundle/config
+/gemfiles/vendor/
+
+/gemfiles/*.lock
+
+# Specs
+/coverage/
+/spec/reports/
+
+# Documentation
+/.yardoc
+/_yardoc/
+/doc/
+/rdoc/
+
+# RVM
+.rvmrc
+
+# Editors
+.idea
+*~
+
+# Other
+/measurement/

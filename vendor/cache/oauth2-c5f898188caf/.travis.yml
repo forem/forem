@@ -1,0 +1,71 @@
+before_install:
+  # rubygems 2.7.8 and greater include bundler
+  # - Ruby 2.2, and under, get RubyGems ~> 2.7.10, (includes bundler 1.17.3)
+  # - Anything else, including Ruby 2.3, and above, gets RubyGems ~> 3, and update bundler to latest
+  # - NOTE ON JRUBY: identifies as RUBY_VERSION ~> 1.9, 2.0, 2.3, or 2.5.
+  # - NOTE ON TRUFFLERUBY: identifies as RUBY_VERSION ~> 2.6
+  - |
+    rv="$(ruby -e 'STDOUT.write RUBY_VERSION')"
+    echo "Discovered Ruby Version of =====> $rv"
+    if   [ "$rv" \< "2.3" ]; then
+      gem update --system 2.7.10
+    elif   [ "$rv" \< "2.4" ]; then
+      gem update --system 2.7.10 --no-document
+    elif [ "$rv" = "2.5.3" ]; then
+      # JRUBY 9.2 Identifies as 2.5.3, and it fails to update rubygems
+      gem install --no-document bundler "bundler:>=2.0"
+    else
+      gem update --system --no-document --conservative
+      gem install --no-document bundler "bundler:>=2.0"
+    fi
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
+bundler_args: --no-deployment --jobs 3 --retry 3
+
+cache: bundler
+
+env:
+  global:
+    - JRUBY_OPTS="$JRUBY_OPTS -Xcli.debug=true --debug"
+    - CC_TEST_REPORTER_ID=29caf9cf27d27ae609c088feb9d4ba34460f7a39251f2e8615c9a16f3075530e
+
+language: ruby
+
+matrix:
+  allow_failures:
+    - rvm: jruby-head
+    - rvm: ruby-head
+    - rvm: truffleruby
+    - rvm: jruby-9.1 # jruby-9.1 often fails to download, thus failing the build.
+    - rvm: jruby-9.2 # jruby-9.2 often fails to download, thus failing the build.
+  fast_finish: true
+  include:
+    - rvm: 2.2
+      gemfile: gemfiles/ruby_2.2.gemfile
+    - rvm: jruby-9.1 # targets MRI v2.3
+      gemfile: gemfiles/jruby_9.1.gemfile
+    - rvm: 2.3
+      gemfile: gemfiles/ruby_2.3.gemfile
+    - rvm: 2.4
+      gemfile: gemfiles/ruby_2.4.gemfile
+    - rvm: jruby-9.2 # targets MRI v2.5
+      gemfile: gemfiles/jruby_9.2.gemfile
+    - rvm: 2.5
+      gemfile: gemfiles/ruby_2.5.gemfile
+    - rvm: 2.6
+      gemfile: gemfiles/ruby_2.6.gemfile
+    - rvm: 2.7
+      gemfile: gemfiles/ruby_2.7.gemfile
+    - rvm: jruby-head
+      gemfile: gemfiles/jruby_head.gemfile
+    - rvm: ruby-head
+      gemfile: gemfiles/ruby_head.gemfile
+    - rvm: truffleruby
+      gemfile: gemfiles/truffleruby.gemfile

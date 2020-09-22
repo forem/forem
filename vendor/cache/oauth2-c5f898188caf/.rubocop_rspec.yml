@@ -1,0 +1,26 @@
+RSpec/FilePath:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/InstanceVariable:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
+  
+RSpec/ExpectInHook:
+  Enabled: false

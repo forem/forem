@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+
+group :test do
+    gem 'rake', [">= 10.0", "< 12"]
+end
+
+gemspec :path => '../'

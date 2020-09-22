@@ -1,4 +1,25 @@
 GIT
+  remote: git@github.com:fdoxyz/oauth2.git
+  revision: c5f898188caf64a2140824ea0755680772f9fe9b
+  branch: deep-debug
+  specs:
+    oauth2 (1.4.3)
+      faraday (>= 0.8, < 2.0)
+      jwt (>= 1.0, < 3.0)
+      multi_json (~> 1.3)
+      multi_xml (~> 0.5)
+      rack (>= 1.2, < 3)
+
+GIT
+  remote: git@github.com:fdoxyz/omniauth-oauth2.git
+  revision: ec6d0c1211c4bd4d2e15d55aaa924cff99bad196
+  branch: deep-debug
+  specs:
+    omniauth-oauth2 (1.7.0)
+      oauth2 (~> 1.4)
+      omniauth (~> 1.9)
+
+GIT
   remote: https://github.com/thepracticaldev/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
@@ -483,12 +504,6 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     oauth (0.5.4)
-    oauth2 (1.4.4)
-      faraday (>= 0.8, < 2.0)
-      jwt (>= 1.0, < 3.0)
-      multi_json (~> 1.3)
-      multi_xml (~> 0.5)
-      rack (>= 1.2, < 3)
     octokit (4.18.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
@@ -504,9 +519,6 @@ GEM
     omniauth-oauth (1.1.0)
       oauth
       omniauth (~> 1.0)
-    omniauth-oauth2 (1.7.0)
-      oauth2 (~> 1.4)
-      omniauth (~> 1.9)
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
@@ -921,11 +933,13 @@ DEPENDENCIES
   mini_racer (~> 0.3.1)
   nakayoshi_fork (~> 0.0.4)
   nokogiri (~> 1.10)
+  oauth2!
   octokit (~> 4.16)
   oj (~> 3.10)
   omniauth (~> 1.9)
   omniauth-facebook (~> 7.0)
   omniauth-github (~> 1.3)
+  omniauth-oauth2!
   omniauth-twitter (~> 1.4)
   patron (~> 0.13.3)
   pg (~> 1.2)

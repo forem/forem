@@ -1,0 +1,11 @@
+source 'https://rubygems.org'
+
+gem 'faraday', '~> 0.15.4'
+
+gem 'json', '< 2.0'
+gem 'rack', '~> 1.2'
+gem 'rake', [">= 10.0", "< 12"]
+gem 'term-ansicolor', '< 1.4.0'
+gem 'tins', '< 1.7'
+
+gemspec :path => '../'
