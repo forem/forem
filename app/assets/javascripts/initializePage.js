@@ -12,7 +12,7 @@
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
   initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast,
-  initializeDateHelpers
+  initializeDateHelpers, initializeHamburgerNavigation
 */
 
 function callInitializers() {
@@ -38,6 +38,7 @@ function callInitializers() {
     }
   }, 1);
 
+  initializeHamburgerNavigation();
   initializeSpecialNavigationFunctionality();
   initializeBaseTracking();
   initializePaymentPointers();

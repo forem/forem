@@ -213,3 +213,37 @@
     }
   }
 }
+
+.hamburger {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: none;
+
+  &__content {
+    background: white;
+    max-width: 300px;
+    width: 100%;
+    z-index: 1000;
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  &__overlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 999;
+  }
+
+  .hamburger-open & {
+    display: block;
+  }
+}
