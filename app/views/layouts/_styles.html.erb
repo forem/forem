@@ -14,8 +14,6 @@
       <% if @article_show %>
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
-      <%= Rails.application.assets["more-articles.css"].to_s.html_safe %>
-      <%= Rails.application.assets["syntax.css"].to_s.html_safe %>
       <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
       <%= Rails.application.assets["sticky-nav.css"].to_s.html_safe %>
       <% else %>
@@ -68,7 +66,6 @@
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
-      <%= Rails.application.assets["syntax.css"].to_s.html_safe %>
       <% if view_class.include? "comments-settings" %>
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <% end %>
