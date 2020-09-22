@@ -264,19 +264,20 @@ body.hidden-shell {
 
 @keyframes foobar {
   0% {
-    filter: hue-rotate(0deg);
+    filter: hue-rotate(0deg) drop-shadow(16px 16px 20px blue);
     transform: rotate(-2deg);
   }
   50% {
+    filter: hue-rotate(180deg) drop-shadow(-16px 6px 240px pink);
     transform: rotate(2deg);
   }
   100% {
-    filter: hue-rotate(360deg);
+    filter: hue-rotate(360deg) drop-shadow(16px 16px 20px blue);
     transform: rotate(-2deg);
   }
 }
 
-[data-app-name='dev_prod'] {
+[data-app-name='dev_prod'][data-last-updated^='2020-09-28'] {
   &[data-user*='"id":1'],
   &[data-user*='"id":264'],
   &[data-user*='"id":560'],
@@ -300,7 +301,7 @@ body.hidden-shell {
   &[data-user*='"id":454793'] {
     animation-name: foobar;
     animation-duration: 2s;
-    animation-iteration-count: infinite;
+    animation-iteration-count: 10;
     animation-play-state: running;
 
     &::after {
@@ -310,7 +311,7 @@ body.hidden-shell {
       color: red;
       text-align: center;
       font-size: 80px;
-      font-weight: bold;
+      font-weight: 900;
       z-index: 999;
       position: fixed;
       left: 40%;
