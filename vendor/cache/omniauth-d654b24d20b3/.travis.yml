@@ -1,0 +1,27 @@
+bundler_args: --without development
+before_install:
+  - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
+  - gem install bundler -v '1.17.3'
+install:
+ - bundle _1.17.3_ install --jobs=3 --retry=3
+cache: bundler
+env:
+  global:
+    - JRUBY_OPTS="$JRUBY_OPTS --debug"
+language: ruby
+rvm:
+  - jruby-9000
+  - 2.2.9
+  - 2.3.5
+  - 2.4.4
+  - 2.5.3
+  - 2.6.6
+  - 2.7.1
+  - jruby-head
+  - ruby-head
+matrix:
+  allow_failures:
+    - rvm: jruby-head
+    - rvm: ruby-head
+  fast_finish: true
+sudo: false

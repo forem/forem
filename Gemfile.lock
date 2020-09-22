@@ -20,6 +20,15 @@ GIT
       omniauth (~> 1.9)
 
 GIT
+  remote: git@github.com:fdoxyz/omniauth.git
+  revision: d654b24d20b375faa2273b2f9d10449e90a51660
+  branch: deep-debug
+  specs:
+    omniauth (1.9.1)
+      hashie (>= 3.4.6)
+      rack (>= 1.6.2, < 3)
+
+GIT
   remote: https://github.com/thepracticaldev/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
@@ -508,9 +517,6 @@ GEM
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     oj (3.10.14)
-    omniauth (1.9.1)
-      hashie (>= 3.4.6)
-      rack (>= 1.6.2, < 3)
     omniauth-facebook (7.0.0)
       omniauth-oauth2 (~> 1.2)
     omniauth-github (1.4.0)
@@ -936,7 +942,7 @@ DEPENDENCIES
   oauth2!
   octokit (~> 4.16)
   oj (~> 3.10)
-  omniauth (~> 1.9)
+  omniauth!
   omniauth-facebook (~> 7.0)
   omniauth-github (~> 1.3)
   omniauth-oauth2!

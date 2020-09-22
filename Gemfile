@@ -62,7 +62,8 @@ gem "mini_racer", "~> 0.3.1" # Minimal embedded v8
 gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.16" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.10" # JSON parser and object serializer
-gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider authentication
+# gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider authentication
+gem "omniauth", git: "git@github.com:fdoxyz/omniauth.git", branch: "deep-debug"
 gem "oauth2", git: "git@github.com:fdoxyz/oauth2.git", branch: "deep-debug"
 gem "omniauth-oauth2", git: "git@github.com:fdoxyz/omniauth-oauth2.git", branch: "deep-debug"
 gem "omniauth-facebook", "~> 7.0" # OmniAuth strategy for Facebook
