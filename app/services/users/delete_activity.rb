@@ -14,7 +14,6 @@ module Users
       user.blocked_blocks.delete_all
       user.webhook_endpoints.delete_all
       user.authored_notes.delete_all
-      user.backup_data.delete_all
       user.display_ad_events.delete_all
       user.email_messages.delete_all
       user.html_variants.delete_all

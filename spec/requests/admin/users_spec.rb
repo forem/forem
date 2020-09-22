@@ -88,24 +88,6 @@ RSpec.describe "admin/users", type: :request do
     end
   end
 
-  describe "POST admin/users/:id/recover_identity" do
-    it "recovers a deleted identity" do
-      identity = user.identities.first
-      backup = BackupData.backup!(identity)
-      identity.delete
-      post "/admin/users/#{user.id}/recover_identity", params: { user: { backup_data_id: backup.id } }
-      expect(identity).to eq Identity.first
-    end
-
-    it "deletes the backup data" do
-      identity = user.identities.first
-      backup = BackupData.backup!(identity)
-      identity.delete
-      post "/admin/users/#{user.id}/recover_identity", params: { user: { backup_data_id: backup.id } }
-      expect { backup.reload }.to raise_error ActiveRecord::RecordNotFound
-    end
-  end
-
   describe "PATCH admin/users/:id/unlock_access" do
     it "unlocks a locked user account" do
       user.lock_access!
