@@ -806,7 +806,7 @@
   height: inherit;
   align-items: stretch;
   position: relative;
-  height: 40px;
+  height: auto;
   padding: var(--su-4);
 
   textarea {
@@ -1028,7 +1028,16 @@
 
 .composer-textarea__edit {
   height: 80px;
+  max-height: 8rem;
   margin-bottom: var(--su-4);
+}
+
+.composer-textarea {
+  height: auto;
+  margin-bottom: var(--su-4);
+  min-height: 2.5rem;
+  resize: vertical;
+  max-height: 8rem;
 }
 
 .composer-btn-group {
