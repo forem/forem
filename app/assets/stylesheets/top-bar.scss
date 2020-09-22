@@ -30,6 +30,12 @@
     display: flex;
     align-items: center;
     position: relative;
+    justify-content: space-between;
+    height: var(--header-height);
+
+    @media (min-width: $breakpoint-s) {
+      justify-content: flex-start;
+    }
 
     @media (min-width: $breakpoint-m) {
       padding-left: var(--layout-padding);
@@ -69,25 +75,7 @@
   }
 }
 
-// Actions on right side...
-.top-bar__links {
-  height: var(--header-height);
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-}
-
 .top-bar__link {
-  position: relative;
-  display: flex;
-  padding: var(--su-2);
-  margin: 0 var(--su-1);
-  border-radius: 50%;
-  align-items: center;
-  color: var(--header-icons-color);
-  outline: 0;
-  transition: background var(--transition-props);
-
   &:hover,
   &:focus {
     --indicator-outline: var(--header-bg-hover);
