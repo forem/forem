@@ -13,8 +13,6 @@ FACEBOOK_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:client_id] = SiteConfig.facebook_key
   env["omniauth.strategy"].options[:client_secret] = SiteConfig.facebook_secret
   env["omniauth.strategy"].options[:token_params][:parse] = :json
-  puts "Building FB OMNIAUTH options: #{URL.url}"
-  env["omniauth.strategy"].options[:full_host] = URL.url
 end
 
 Devise.setup do |config|
