@@ -500,6 +500,7 @@ ActiveRecord::Schema.define(version: 2020_09_17_114525) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
+    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
