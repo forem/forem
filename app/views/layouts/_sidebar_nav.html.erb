@@ -1,16 +1,8 @@
-<nav class="mb-6" id="sidebar-nav" aria-label="Primary sidebar nav">
-  <% unless user_signed_in? %>
-    <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
-      <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
-      Sign In/Up
-    </a>
-  <% end %>
-  <% if false # Let's bring it when ready %>
-    <a href="/" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
-      Home
-    </a>
-  <% end %>
+<nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" id="sidebar-nav" aria-label="Primary sidebar nav">
+  <a href="/" class="crayons-link crayons-link--block">
+    <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
+    Home
+  </a>
   <% if user_signed_in? %>
     <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
       <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
