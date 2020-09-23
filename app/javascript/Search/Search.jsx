@@ -15,7 +15,7 @@ const ENTER_KEY = 'Enter';
 
 export class Search extends Component {
   static defaultProps = {
-    searchBoxId: 'nav-search',
+    searchBoxSelector: 'js-search-input',
   };
 
   constructor(props) {
@@ -87,8 +87,8 @@ export class Search extends Component {
   }
 
   registerGlobalKeysListener() {
-    const { searchBoxId } = this.props;
-    const searchBox = document.getElementById(searchBoxId);
+    const { searchBoxSelector } = this.props;
+    const searchBox = document.querySelector(searchBoxSelector);
 
     this.globalKeysListener = (event) => {
       const { tagName, classList } = document.activeElement;
@@ -120,7 +120,7 @@ export class Search extends Component {
     document.addEventListener('keydown', this.globalKeysListener);
   }
 
-  render({ searchBoxId }, { searchTerm = '' }) {
+  render({ searchBoxSelector }, { searchTerm = '' }) {
     return (
       <SearchForm
         searchTerm={searchTerm}
@@ -132,12 +132,12 @@ export class Search extends Component {
           this.search(key, value);
         }}
         onSubmitSearch={this.submit}
-        searchBoxId={searchBoxId}
+        searchBoxSelector={searchBoxSelector}
       />
     );
   }
 }
 
 Search.propTypes = {
-  searchBoxId: PropTypes.string,
+  searchBoxSelector: PropTypes.string,
 };

@@ -1,0 +1,85 @@
+<div class="hamburger">
+  <div class="hamburger__content">
+    <header class="hamburger__content__header">
+      <h2 class="fs-l fw-bold flex-1 break-word lh-tight"><%= community_qualified_name.to_s %></h2>
+
+      <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded js-hamburger-trigger shrink-0">
+        <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Close") %>
+      </button>
+    </header>
+
+    <% unless user_signed_in? %>
+      <div class="crayons-card crayons-card--secondary m-4 mb-0 p-4">
+        <h2 class="fs-l fw-bold mb-2">
+          <a href="<%= about_path %>"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
+        </h2>
+        <p class="color-base-70 mb-2">
+          <% if SiteConfig.tagline.present? %>
+            <%= SiteConfig.tagline %>
+          <% else %>
+            Log in to customize your experience and get involved.
+          <% end %>
+        </p>
+        <div>
+          <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn w-100 mb-2" aria-label="Create new account">Create new account</a>
+          <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand w-100" aria-label="Log in">Log in</a>
+        </div>
+      </div>
+    <% end %>
+
+    <nav class="mb-6 p-2" aria-label="Primary nav">
+      <% unless user_signed_in? %>
+        <a href="/about" class="crayons-link crayons-link--block">
+          <%= inline_svg_tag("rainbowdev.svg", aria: true, width: 24, height: 24, class: "crayons-icon crayons-icon--default p-1", title: "About") %>
+          About
+        </a>
+      <% end %>
+      <a href="/" class="crayons-link crayons-link--block">
+        <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
+        Home
+      </a>
+      <% if user_signed_in? %>
+        <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
+          <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
+          Reading list <span id="reading-list-count" class="crayons-indicator"></span>
+        </a>
+      <% end %>
+      <a href="<%= listings_path %>" class="crayons-link crayons-link--block">
+        <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
+        Listings
+      </a>
+      <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
+        <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
+        Podcasts
+      </a>
+      <a href="<%= videos_path %>" class="crayons-link crayons-link--block">
+        <%= inline_svg_tag("twemoji/camera.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Videos") %>
+        Videos
+      </a>
+      <a href="<%= tags_path %>" class="crayons-link crayons-link--block">
+        <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
+        Tags
+      </a>
+
+      <div class="fs-s p-3">
+        <a href="/code-of-conduct" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Code of Conduct</a>
+        <a href="/faq" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">FAQ</a>
+        <% if SiteConfig.shop_url.present? %>
+          <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block"><%= community_name %> Shop</a>
+        <% end %>
+        <a href="/sponsors" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Sponsors</a>
+        <% if user_signed_in? %>
+          <a href="/about" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">About</a>
+        <% end %>
+        <a href="/privacy" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Privacy policy</a>
+        <a href="/terms" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Terms of use</a>
+        <a href="/contact" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Contact</a>
+      </div>
+
+      <div class="flex pt-2 pl-2">
+        <%= render partial: "layouts/social_media" %>
+      </div>
+    </nav>
+  </div>
+  <div class="hamburger__overlay js-hamburger-trigger"></div>
+</div>

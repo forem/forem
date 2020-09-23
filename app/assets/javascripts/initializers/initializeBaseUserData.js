@@ -1,21 +1,7 @@
 /* global filterXSS */
 
-function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile--avatar').src =
-    user.profile_image_90;
-  document.getElementById('sidebar-profile--avatar').alt = user.username;
-
-  document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
-    user.name,
-  );
-  document.getElementById('sidebar-profile--username').innerHTML =
-    '@' + user.username;
-  document.getElementById('sidebar-profile').href = '/' + user.username;
-}
-
 function initializeUserSidebar(user) {
   if (!document.getElementById('sidebar-nav')) return;
-  initializeUserProfileContent(user);
 
   let followedTags = JSON.parse(user.followed_tags);
   const tagSeparatorLabel =
@@ -105,17 +91,12 @@ function addRelevantButtonsToComments(user) {
 
 function initializeBaseUserData() {
   const user = userData();
-  const userProfileLinkHTML =
-    '<a href="/' +
-    user.username +
-    '" id="first-nav-link" class="crayons-link crayons-link--block"><div>' +
-    '<span class="fw-medium block">' +
-    user.name +
-    '</span>' +
-    '<small class="fs-s color-base-50">@' +
-    user.username +
-    '</small>' +
-    '</div></a>';
+  const userProfileLinkHTML = `<a href="/${user.username}" id="first-nav-link" class="crayons-link crayons-link--block">
+      <div>
+        <span class="fw-medium block">${user.name}</span>
+        <small class="fs-s color-base-50">@${user.username}</small>
+      </div>
+    </a>`;
   document.getElementById(
     'user-profile-link-placeholder',
   ).innerHTML = userProfileLinkHTML;

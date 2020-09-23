@@ -6,7 +6,7 @@ export const SearchForm = ({
   searchTerm,
   onSearch,
   onSubmitSearch,
-  searchBoxId,
+  searchBoxSelector,
 }) => (
   <form
     action="/search"
@@ -16,10 +16,9 @@ export const SearchForm = ({
   >
     <input name="utf8" type="hidden" value="✓" />
     <input
-      className="top-bar--search-input crayons-textfield"
+      className={`crayons-textfield ${searchBoxSelector}`}
       type="text"
       name="q"
-      id={searchBoxId}
       placeholder="Search..."
       autoComplete="off"
       aria-label="search"
@@ -31,7 +30,7 @@ export const SearchForm = ({
 
 SearchForm.propTypes = {
   searchTerm: PropTypes.string.isRequired,
-  searchBoxId: PropTypes.string.isRequired,
+  searchBoxSelector: PropTypes.string.isRequired,
   onSearch: PropTypes.func.isRequired,
   onSubmitSearch: PropTypes.func.isRequired,
 };

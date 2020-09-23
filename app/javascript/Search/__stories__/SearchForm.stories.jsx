@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { SearchForm } from '..';
 
 const commonProps = {
-  searchBoxId: 'nav-search',
+  searchBoxSelector: '.js-search-input',
   onSearch: action('on preloading search'),
   onSubmitSearch: (e) => {
     e.preventDefault();
@@ -14,7 +14,7 @@ const commonProps = {
 
 class FocusedForm extends Component {
   componentDidMount() {
-    document.getElementById('nav-search').focus();
+    document.querySelector('.js-search-input').focus();
   }
 
   render() {

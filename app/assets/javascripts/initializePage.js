@@ -11,8 +11,8 @@
   initializeVideoPlayback, initializeDrawerSliders,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast,
-  initializeDateHelpers
+  initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
+  initializeTopBarIcons
 */
 
 function callInitializers() {
@@ -38,7 +38,7 @@ function callInitializers() {
     }
   }, 1);
 
-  initializeSpecialNavigationFunctionality();
+  initializeTopBarIcons();
   initializeBaseTracking();
   initializePaymentPointers();
   initializeTouchDevice();

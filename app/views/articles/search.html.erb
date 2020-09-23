@@ -5,7 +5,13 @@
 <header class="crayons-layout crayons-layout--limited crayons-layout--1-col p-4 block s:flex items-center space-between">
   <h1 class="fs-2xl s:fs-3xl">Search results</h1>
 
-  <nav id="sorting-option-tabs" class="crayons-tabs ml-auto">
+  <div class="js-search-form block s:hidden py-2">
+    <form acceptCharset="UTF-8" method="get" action="/search">
+      <input class="js-search-input crayons-textfield" type="text" name="q" placeholder="Search..." autoComplete="off" />
+    </form>
+  </div>
+
+  <nav id="sorting-option-tabs" class="crayons-tabs crayons-tabs--wrapped ml-auto">
     <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>">Most Relevant</a>
     <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
     <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>

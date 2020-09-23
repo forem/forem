@@ -3,7 +3,7 @@ import { Search } from '../Search';
 import 'focus-visible';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('top-bar--search');
-
-  render(<Search />, root);
+  document.querySelectorAll('.js-search-form').forEach(function (search) {
+    render(<Search />, search);
+  });
 });
