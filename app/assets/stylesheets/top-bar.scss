@@ -224,7 +224,7 @@
   display: none;
 
   &__content {
-    background: white;
+    background: var(--card-bg);
     max-width: 300px;
     width: 100%;
     z-index: 1000;
@@ -234,7 +234,8 @@
   }
 
   &__overlay {
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--base-100);
+    opacity: 0.5;
     position: absolute;
     left: 0;
     right: 0;
