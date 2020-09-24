@@ -19,6 +19,10 @@
     border-radius: var(--radius);
   }
 
+  @media (min-width: $breakpoint-l) {
+    margin-bottom: var(--su-3);
+  }
+
   --story-padding: var(--su-3) var(--su-3) var(--su-2);
   --title-font-size: var(--fs-xl);
 
