@@ -22,8 +22,8 @@
   <% end %>
   <% if user_signed_in? %>
     <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
-      Reading list <span id="reading-list-count" class="crayons-indicator"></span>
+      <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Saved") %>
+      Saved <span id="reading-list-count" class="crayons-indicator"></span>
     </a>
   <% end %>
   <a href="<%= listings_path %>" class="crayons-link crayons-link--block">
