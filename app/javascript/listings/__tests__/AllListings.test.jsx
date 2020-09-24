@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import AllListings from '../components/AllListings';
+import '../../../assets/javascripts/utilities/localDateTime';
 
 const firstListing = {
   id: 20,
@@ -85,7 +86,15 @@ const getProps = () => ({
 
 const renderAllListings = () => render(<AllListings {...getProps()} />);
 
+/* eslint-disable no-unused-vars */
+/* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
+
 describe('<AllListings />', () => {
+  afterAll(() => {
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = renderAllListings();
     const results = await axe(container);

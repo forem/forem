@@ -66,20 +66,6 @@ RSpec.describe Users::Delete, type: :service do
     expect { article.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
   end
 
-  it "removes reactions from Elasticsearch" do
-    article = create(:article, user: user)
-    reaction = create(:reaction, category: "readinglist", reactable: article)
-    user_reaction = create(:reaction, user_id: user.id, category: "readinglist")
-    sidekiq_perform_enqueued_jobs
-    expect(reaction.elasticsearch_doc).not_to be_nil
-    expect(user_reaction.elasticsearch_doc).not_to be_nil
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user)
-    end
-    expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-    expect { user_reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-  end
-
   it "deletes field tests memberships" do
     create(:field_test_membership, participant_id: user.id)
 
@@ -163,7 +149,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should not exist" do
         user_associations.each do |user_association|
-          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound), user_association
         end
       end
     end

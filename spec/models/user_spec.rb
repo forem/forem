@@ -110,13 +110,6 @@ RSpec.describe User, type: :model do
       end
 
       it do
-        expect(subject).to have_many(:backup_data)
-          .class_name("BackupData")
-          .with_foreign_key("instance_user_id")
-          .dependent(:delete_all)
-      end
-
-      it do
         expect(subject).to have_many(:blocked_blocks)
           .class_name("UserBlock")
           .with_foreign_key("blocked_id")
@@ -152,35 +145,16 @@ RSpec.describe User, type: :model do
       end
       # rubocop:enable RSpec/NamedSubject
 
-      it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
-      it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
-      it { is_expected.to allow_value("#aabbcc").for(:bg_color_hex) }
-      it { is_expected.to allow_value("#aabbcc").for(:text_color_hex) }
-      it { is_expected.to allow_value("#abc").for(:bg_color_hex) }
-      it { is_expected.to allow_value("#abc").for(:text_color_hex) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
-      it { is_expected.to validate_length_of(:available_for).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:behance_url).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:currently_hacking_on).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:currently_learning).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:education).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
-      it { is_expected.to validate_length_of(:employer_name).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:employer_url).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:employment_title).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
-      it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
-      it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
-      it { is_expected.to validate_url_of(:employer_url) }
-      it { is_expected.to validate_url_of(:website_url) }
 
       Authentication::Providers.username_fields.each do |username_field|
         it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
@@ -312,224 +286,6 @@ RSpec.describe User, type: :model do
       it "does not allow to change to a username that is taken by an organization" do
         user.username = create(:organization).slug
         expect(user).not_to be_valid
-      end
-    end
-
-    describe "#website_url" do
-      it "does not accept invalid website url" do
-        user.website_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid http website url" do
-        user.website_url = "http://ben.com"
-        expect(user).to be_valid
-      end
-    end
-
-    describe "#mastodon_url" do
-      it "accepts valid https mastodon url" do
-        user.mastodon_url = "https://mastodon.social/@test"
-        expect(user).to be_valid
-      end
-
-      it "does not accept a denied mastodon instance" do
-        user.mastodon_url = "https://SpammyMcSpamface.com/"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept invalid mastodon url" do
-        user.mastodon_url = "mastodon.social/@test"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept an invalid url" do
-        user.mastodon_url = "ben .com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#facebook_url" do
-      it "accepts valid https facebook url", :aggregate_failures do
-        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
-          user.facebook_url = "https://facebook.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid facebook url" do
-        user.facebook_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#youtube_url" do
-      it "accepts valid https youtube url", :aggregate_failures do
-        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
-          user.youtube_url = "https://youtube.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid youtube url" do
-        user.youtube_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#behance_url" do
-      it "accepts valid https behance url", :aggregate_failures do
-        %w[jess jess/ je-ss jes_ss].each do |username|
-          user.behance_url = "https://behance.net/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid behance url" do
-        user.behance_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#twitch_url" do
-      it "does not accept invalid twitch url" do
-        user.twitch_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid https twitch url", :aggregate_failures do
-        %w[pandyzhao pandyzhao/ PandyZhao_ pandy_Zhao].each do |username|
-          user.twitch_url = "https://twitch.tv/#{username}"
-          expect(user).to be_valid
-        end
-      end
-    end
-
-    describe "#stackoverflow_url" do
-      it "accepts valid https stackoverflow url", :aggregate_failures do
-        %w[pandyzhao pandyzhao/ pandy-zhao].each do |username|
-          user.stackoverflow_url = "https://stackoverflow.com/users/7381391/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid stackoverflow url" do
-        user.stackoverflow_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid stackoverflow sub community url", :aggregate_failures do
-        %w[pt ru es ja].each do |subcommunity|
-          user.stackoverflow_url = "https://#{subcommunity}.stackoverflow.com/users/7381391/mazen"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid stackoverflow sub community url" do
-        user.stackoverflow_url = "https://fr.stackoverflow.com/users/7381391/mazen"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#linkedin_url" do
-      it "accepts valid https linkedin url", :aggregate_failures do
-        %w[jessleenyc jessleenyc/ jess-lee-nyc].each do |username|
-          user.linkedin_url = "https://linkedin.com/in/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "accepts valid country specific https linkedin url" do
-        user.linkedin_url = "https://mx.linkedin.com/in/jessleenyc"
-        expect(user).to be_valid
-      end
-
-      it "does not accept three letters country codes in http linkedin url" do
-        user.linkedin_url = "http://mex.linkedin.com/in/jessleenyc"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept three letters country codes in https linkedin url" do
-        user.linkedin_url = "https://mex.linkedin.com/in/jessleenyc"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept invalid linkedin url" do
-        user.linkedin_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#dribbble_url", :aggregate_failures do
-      it "accepts valid https dribbble url" do
-        %w[jess jess/ je-ss je_ss].each do |username|
-          user.dribbble_url = "https://dribbble.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid dribbble url" do
-        user.dribbble_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#medium_url" do
-      it "accepts valid https medium url", :aggregate_failures do
-        %w[jess jess/ je-ss je_ss].each do |username|
-          user.medium_url = "https://medium.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid medium url" do
-        user.medium_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#instagram_url" do
-      it "does not accept invalid instagram url" do
-        user.instagram_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid instagram url", :aggregate_failures do
-        %w[jess je_ss je_ss.tt A.z.E.r.T.y].each do |username|
-          user.instagram_url = "https://instagram.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-    end
-
-    describe "#gitlab_url" do
-      it "accepts valid https gitlab url", :aggregate_failures do
-        %w[jess jess/ je-ss je_ss].each do |username|
-          user.gitlab_url = "https://gitlab.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid gitlab url" do
-        user.gitlab_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#employer_url" do
-      it "does not accept invalid employer url" do
-        user.employer_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "does accept valid http employer url" do
-        user.employer_url = "http://ben.com"
-        expect(user).to be_valid
-      end
-
-      it "does accept valid https employer url" do
-        user.employer_url = "https://ben.com"
-        expect(user).to be_valid
       end
     end
 

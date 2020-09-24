@@ -1,7 +1,6 @@
 @import 'variables';
 @import 'mixins';
 @import 'functions';
-$input-width: 650px;
 
 .github-repos {
   max-height: 400px;
@@ -132,16 +131,6 @@ $input-width: 650px;
   }
 }
 
-.membership-purchase-link {
-  font-size: 2rem;
-}
-
 .crayons-notice--danger h3 {
   color: var(--accent-danger-darker);
-}
-
-.sticky-save-footer {
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  bottom: 0;
 }

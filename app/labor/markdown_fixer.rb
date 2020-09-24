@@ -4,7 +4,7 @@ class MarkdownFixer
   class << self
     def fix_all(markdown)
       methods = %i[
-        add_quotes_to_title add_quotes_to_description
+        add_quotes_to_title add_quotes_to_description lowercase_published
         modify_hr_tags convert_new_lines split_tags underscores_in_usernames
       ]
       methods.reduce(markdown) { |acc, elem| public_send(elem, acc) }
@@ -33,6 +33,12 @@ class MarkdownFixer
     def modify_hr_tags(markdown)
       markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
         front_matter.gsub(/^---/).with_index { |match, i| i > 1 ? "#{match}-----" : match }
+      end
+    end
+
+    def lowercase_published(markdown)
+      markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
+        front_matter.gsub(/^published: /i, "published: ")
       end
     end
 

@@ -28,8 +28,6 @@ RSpec.describe Moderator::MergeUser, type: :service do
       drain_all_sidekiq_jobs
       expect(article.elasticsearch_doc.dig("_source", "user", "id")).to eq(delete_user_id)
       expect(comment.elasticsearch_doc.dig("_source", "user", "id")).to eq(delete_user_id)
-      expect(reaction.elasticsearch_doc.dig("_source", "user_id")).to eq(delete_user_id)
-      expect(article_reaction.elasticsearch_doc.dig("_source", "reactable", "user", "id")).to eq(delete_user_id)
 
       sidekiq_perform_enqueued_jobs do
         described_class.call(admin: admin, keep_user: keep_user, delete_user_id: delete_user.id)
@@ -37,8 +35,6 @@ RSpec.describe Moderator::MergeUser, type: :service do
       drain_all_sidekiq_jobs
       expect(article.reload.elasticsearch_doc.dig("_source", "user", "id")).to eq(keep_user.id)
       expect(comment.reload.elasticsearch_doc.dig("_source", "user", "id")).to eq(keep_user.id)
-      expect(reaction.reload.elasticsearch_doc.dig("_source", "user_id")).to eq(keep_user.id)
-      expect(article_reaction.reload.elasticsearch_doc.dig("_source", "reactable", "user", "id")).to eq(keep_user.id)
     end
 
     it "updates badge_achievements_count" do
