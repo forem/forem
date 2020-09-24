@@ -24,11 +24,11 @@ const READING_LIST_PATH = '/readinglist';
 
 const FilterText = ({ selectedTags, query, value }) => {
   return (
-    <h3 className="fw-bold fs-l">
+    <h2 className="fw-bold fs-l">
       {selectedTags.length === 0 && query.length === 0
         ? value
         : 'Nothing with this filter 🤔'}
-    </h3>
+    </h2>
   );
 };
 
@@ -129,7 +129,10 @@ export class ReadingList extends Component {
             query={query}
             value="Your Saved list is empty"
           />
-          <p class="color-base-60 pt-2">Hit the <span class="fw-bold">Save</span> button to start your Collection.</p>
+          <p class="color-base-60 pt-2">
+            Hit the <span class="fw-bold">Save</span> button to start your
+            Collection.
+          </p>
         </div>
       );
     }
@@ -148,7 +151,6 @@ export class ReadingList extends Component {
   render() {
     const {
       items,
-      itemsLoaded,
       totalCount,
       availableTags,
       selectedTags,
