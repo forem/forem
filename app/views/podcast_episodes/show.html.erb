@@ -86,22 +86,20 @@
         <a href="<%= @episode.website_url %>">Episode source</a>
       </p>
     </div>
-    <div class="comments-container-container">
-      <div
-        class="comments-container"
-        id="comments-container"
-        data-commentable-id="<%= @episode.id %>"
-        data-commentable-type="PodcastEpisode">
-        <%= render "/comments/form",
-                   commentable: @episode,
-                   commentable_type: "PodcastEpisode" %>
-        <div class="comment-trees" id="comment-trees-container">
-          <% Comment.tree_for(@episode, 12).each do |comment, sub_comments| %>
-            <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-              <%= tree_for(comment, sub_comments, @episode) %>
-            <% end %>
+    <div
+      class="comments-container"
+      id="comments-container"
+      data-commentable-id="<%= @episode.id %>"
+      data-commentable-type="PodcastEpisode">
+      <%= render "/comments/form",
+                 commentable: @episode,
+                 commentable_type: "PodcastEpisode" %>
+      <div class="comment-trees" id="comment-trees-container">
+        <% Comment.tree_for(@episode, 12).each do |comment, sub_comments| %>
+          <% cache ["comment_root_#{user_signed_in?}", comment] do %>
+            <%= tree_for(comment, sub_comments, @episode) %>
           <% end %>
-        </div>
+        <% end %>
       </div>
     </div>
   </div>

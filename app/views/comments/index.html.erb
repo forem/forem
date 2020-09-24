@@ -54,7 +54,7 @@
       <h3 id="comments-header"><%= @commentable.title %></h3>
       <h4>
         <%= @commentable.is_a?(PodcastEpisode) ? @commentable.podcast.name : @commentable.user.name %>
-        <span class="published-at"><%= "on " + @commentable.published_at.strftime("%B %d, %Y") if @commentable.published_at %></span>
+        <span class="published-at"><%= "on #{@commentable.published_at.strftime('%B %d, %Y')}" if @commentable.published_at %></span>
       </h4>
     </a>
     <% if @commentable.processed_html.present? %>
@@ -114,7 +114,7 @@
   </div>
   <center style="margin:30px 0px 22px;">
   <% if @commentable.any_comments_hidden %>
-    <div class="comments-hidden-message">
+    <div class="fs-s color-base-60">
       <p>
         Some comments have been hidden by the post's author - <a href="/faq#what-does-comment-hidden-by-post-author-mean">find out more</a>
       </p>
