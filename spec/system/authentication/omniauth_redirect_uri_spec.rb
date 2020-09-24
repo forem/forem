@@ -7,10 +7,12 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
   after { SiteConfig.app_domain = test_app_domain }
 
   def provider_redirect_regex(provider_name)
+    # URL encoding translates the query params (i.e. colons/slashes/etc)
     %r{
       /users/auth/#{provider_name}
-      \?callback_url=#{URL.protocol}%3A%2F%2F
-      #{SiteConfig.app_domain}%2Fusers%2Fauth%2F#{provider_name}%2Fcallback
+      \?callback_url=#{ERB::Util.url_encode(URL.protocol)}
+      #{ERB::Util.url_encode(SiteConfig.app_domain)}
+      #{ERB::Util.url_encode("/users/auth/#{provider_name}/callback")}
     }x
   end
 
