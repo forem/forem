@@ -82,6 +82,12 @@
       width: 100%;
     }
   }
+
+  &--inverted {
+    @media (min-width: $breakpoint-m) {
+      --layout: var(--layout-content-width) var(--layout-sidebar-left-width);
+    }
+  }
 }
 
 .crayons-layout--3-cols {
