@@ -1,24 +1,5 @@
 /* global swipeState: true, InstantClick, initializeSwipeGestures, slideSidebar */
 
-function listenForNarrowMenuClick(event) {
-  let navLinks = document.getElementsByClassName('narrow-nav-menu');
-  let narrowFeedButt = document.getElementById('narrow-feed-butt');
-
-  for (let i = 0; i < navLinks.length; i++) {
-    document.getElementById('narrow-nav-menu').classList.remove('showing');
-  }
-  if (narrowFeedButt) {
-    narrowFeedButt.onclick = (_event) => {
-      document.getElementById('narrow-nav-menu').classList.add('showing');
-    };
-  }
-  for (let i = 0; i < navLinks.length; i++) {
-    navLinks[i].onclick = (_event) => {
-      document.getElementById('narrow-nav-menu').classList.remove('showing');
-    };
-  }
-}
-
 function initializeDrawerSliders() {
   if (!initializeSwipeGestures.called) {
     swipeState = 'middle';
@@ -55,8 +36,6 @@ function initializeDrawerSliders() {
       slideSidebar('right', 'outOfView');
       slideSidebar('left', 'outOfView');
     });
-
-    listenForNarrowMenuClick();
   }
 
   const feedFilterSelect = document.getElementById('feed-filter-select');
