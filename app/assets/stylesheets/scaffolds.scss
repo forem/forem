@@ -315,16 +315,17 @@ body.hidden-shell {
     &::after {
       content: '\0057\0065\006C\0063\006F\006D\0065\0020\0062\0061\0063\006B\0021';
       pointer-events: none;
-      background: white;
       color: red;
       text-align: center;
       font-size: 80px;
       font-weight: 900;
       z-index: 999;
       position: fixed;
-      left: 40%;
+      width: 100%;
+      text-align: center;
       top: 40vh;
-      width: 20%;
+      text-shadow: 20px 0 100px yellow, -20px 0 100px purple,
+        0 -20px 100px green, 4px 4px 0 black, -4px -4px 0 blue;
       animation-name: bar;
       animation-delay: 9.9s;
       animation-duration: 0.1;
