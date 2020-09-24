@@ -4,13 +4,11 @@ import { h } from 'preact';
 const domId = 1;
 
 const Title = ({ onChange, defaultValue }) => (
-  <div className="field">
-    <label className="listingform__label" htmlFor={domId}>
-      Title
-    </label>
+  <div className="crayons-field">
+    <label className="crayons-field__label" htmlFor={domId}>Title</label>
     <input
       type="text"
-      className="listingform__input"
+      className="crayons-textfield"
       id={domId}
       name="listing[title]"
       maxLength="128"
