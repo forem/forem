@@ -9,7 +9,7 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
   def provider_redirect_regex(provider_name)
     %r{
       /users/auth/#{provider_name}
-      \?callback_url=https%3A%2F%2F
+      \?callback_url=#{URL.protocol}%3A%2F%2F
       #{SiteConfig.app_domain}%2Fusers%2Fauth%2F#{provider_name}%2Fcallback
     }x
   end
