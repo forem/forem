@@ -20,13 +20,22 @@ RSpec.describe "Admin manages configuration", type: :system do
   context "when mandatory options are missing" do
     it "does not show the banner on the config page" do
       allow(SiteConfig).to receive(:tagline).and_return(nil)
-      expect(page).not_to have_content("Setup not completed yet, please visit the configuration page.")
+      expect(page).not_to have_content("Setup not completed yet")
     end
 
     it "does show the banner on other pages" do
       allow(SiteConfig).to receive(:tagline).and_return(nil)
       visit root_path
-      expect(page).to have_content("Setup not completed yet, please visit the configuration page.")
+      expect(page).to have_content("Setup not completed yet")
+    end
+
+    it "includes information about missing fields on the config pages" do
+      allow(SiteConfig).to receive(:tagline).and_return(nil)
+      allow(SiteConfig).to receive(:suggested_users).and_return(nil)
+      allow(SiteConfig).to receive(:suggested_tags).and_return(nil)
+      allow(SiteConfig).to receive(:community_action).and_return(nil)
+      visit root_path
+      expect(page.body).to match(/Setup not completed yet, missing(.*)community action(.*), and others/)
     end
   end
 end

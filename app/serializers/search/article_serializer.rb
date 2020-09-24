@@ -12,7 +12,9 @@ module Search
     # however, it really is a string in the format 00:00 which is why we
     # added an extra field to handle that string
     attribute :video_duration_string, &:video_duration_in_minutes
-    attribute :video_duration_in_minutes, &:video_duration_in_minutes_integer
+    attribute :video_duration_in_minutes do |article|
+      article.video_duration_in_seconds.to_i / 60
+    end
 
     attribute :readable_publish_date_string, &:readable_publish_date
 

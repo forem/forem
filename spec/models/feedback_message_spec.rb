@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe FeedbackMessage, type: :model do
   subject(:feedback_message) { create(:feedback_message) }
 
+  it { is_expected.to have_one(:email_message).dependent(:nullify).optional }
+
   it { is_expected.to validate_presence_of(:feedback_type) }
   it { is_expected.to validate_presence_of(:message) }
   it { is_expected.to validate_length_of(:reported_url).is_at_most(250) }

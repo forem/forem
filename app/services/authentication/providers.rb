@@ -1,3 +1,12 @@
+# We require all authentication modules to make sure providers
+# are correctly preloaded and ready to be used at this point as the loading
+# order is important
+require_dependency Rails.root.join("app/services/authentication/providers/provider.rb")
+
+Dir[Rails.root.join("app/services/authentication/**/*.rb")].each do |f|
+  require_dependency(f)
+end
+
 module Authentication
   module Providers
     # Retrieves a provider that is both available and enabled

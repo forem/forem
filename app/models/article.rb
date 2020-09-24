@@ -8,7 +8,6 @@ class Article < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
-  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
   acts_as_taggable_on :tags
   resourcify
@@ -19,11 +18,12 @@ class Article < ApplicationRecord
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
 
-  belongs_to :user
-  belongs_to :organization, optional: true
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
   belongs_to :collection, optional: true
+
+  belongs_to :organization, optional: true
+  belongs_to :user
 
   counter_culture :user
   counter_culture :organization
@@ -90,7 +90,6 @@ class Article < ApplicationRecord
                                                  }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   serialize :cached_user
@@ -143,7 +142,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
            :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html)
+           :email_digest_eligible, :processed_html, :second_user_id, :third_user_id)
   }
 
   scope :boosted_via_additional_articles, lambda {
@@ -360,10 +359,6 @@ class Article < ApplicationRecord
     "#{duration[:hours]}:#{minutes_and_seconds}"
   end
 
-  def video_duration_in_minutes_integer
-    (video_duration_in_seconds.to_i / 60) % 60
-  end
-
   def update_score
     new_score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
     update_columns(score: new_score,
@@ -426,6 +421,7 @@ class Article < ApplicationRecord
   end
 
   def update_main_image_background_hex
+    return unless saved_changes.key?("main_image")
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
     Articles::UpdateMainImageBackgroundHexWorker.perform_async(id)

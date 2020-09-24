@@ -2,25 +2,31 @@
   <%= render "articles/search/meta" %>
 <% end %>
 <div id="query-wrapper"></div>
-<div class="home sub-home" id="index-container"
+<header class="crayons-layout crayons-layout--limited crayons-layout--1-col p-4 block s:flex items-center space-between">
+  <h1 class="fs-2xl s:fs-3xl">Search results</h1>
+
+  <nav id="sorting-option-tabs" class="crayons-tabs ml-auto">
+    <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>">Most Relevant</a>
+    <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
+    <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
+  </nav>
+</header>
+
+<div class="crayons-layout crayons-layout--limited crayons-layout--2-cols pt-0" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
      data-tag=""
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
-  <%= render "articles/search/sidebar" %>
-  <div class="articles-list" id="articles-list">
+
+  <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+    <div class="sidebar-bg" id="sidebar-bg-left"></div>
+    <%= render "articles/search/nav_menu" %>
+  </div>
+
+  <div class="articles-list crayons-layout__content" id="articles-list">
     <div id="banner-section"></div>
-    <div class="flex-1 flex items-center justify-between">
-      <h2 class="fs-l fw-heavy">Results</h2>
-      <nav id="sorting-option-tabs" class="crayons-tabs hidden s:flex">
-        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>">Most Relevant</a>
-        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
-        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
-      </nav>
-    </div>
     <div class="substories" id="substories">
-      <div class="query-results-nothing">
-        <div class="query-results-loader"></div>
+      <div class="p-9 align-center crayons-card">
         <br />
       </div>
     </div>
@@ -28,9 +34,7 @@
       loading...
     </div>
   </div>
-  <%= render "articles/search/sidebar_additional" %>
 </div>
 <%= render "articles/search" %>
 
-<%= render "stories/narrow_nav_menu" %>
 <%= render "stories/stories_list_script" %>

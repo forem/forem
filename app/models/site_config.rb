@@ -11,14 +11,16 @@ class SiteConfig < RailsSettings::Base
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
 
+  # Core setup
   field :waiting_on_first_user, type: :boolean, default: !User.exists?
+  field :app_domain, type: :string, default: ApplicationConfig["APP_DOMAIN"]
 
   # API Tokens
   field :health_check_token, type: :string
 
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
-  field :authentication_providers, type: :array, default: Authentication::Providers.available
+  field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
   field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
@@ -101,6 +103,7 @@ class SiteConfig < RailsSettings::Base
 
   # Newsletter
   # <https://mailchimp.com/developer/>
+  field :mailchimp_api_key, type: :string, default: ApplicationConfig["MAILCHIMP_API_KEY"]
   field :mailchimp_newsletter_id, type: :string, default: ""
   field :mailchimp_sustaining_members_id, type: :string, default: ""
   field :mailchimp_tag_moderators_id, type: :string, default: ""
@@ -168,4 +171,9 @@ class SiteConfig < RailsSettings::Base
     large: 300,
     xlarge: 250
   }
+
+  # Returns true if we are operating on a local installation, false otherwise
+  def self.local?
+    app_domain.include?("localhost")
+  end
 end

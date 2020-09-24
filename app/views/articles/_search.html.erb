@@ -22,7 +22,7 @@
     var sortBy = filterXSS(params.sort_by || "");
     var sortDirection = filterXSS(params.sort_direction || "");
 
-    substories.innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>';
+    substories.innerHTML = '<div class="p-9 align-center crayons-card"><br></div>';
     if (document.getElementById("query-wrapper")) {
       search(query, filters, sortBy, sortDirection);
       initializeFilters(query, filters);
@@ -70,7 +70,7 @@
     var filterButts = document.getElementsByClassName("query-filter-button");
     for (var i = 0; i < filterButts.length; i++) {
       if (filters == filterButts[i].dataset.filter) {
-        filterButts[i].classList.add("selected");
+        filterButts[i].classList.add("crayons-link--current");
       }
       filterButts[i].onclick = function (e) {
         var currentParams = getQueryParams(document.location.search);
@@ -86,10 +86,10 @@
         window.history.pushState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
         var className = e.target.className;
         for (var i = 0; i < filterButts.length; i++) {
-          filterButts[i].classList.remove("selected");
+          filterButts[i].classList.remove("crayons-link--current");
         }
-        if (className.indexOf("selected") == -1) {
-          e.target.classList.add("selected");
+        if (className.indexOf("crayons-link--current") == -1) {
+          e.target.classList.add("crayons-link--current");
           window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
           search(query, filters, sortBy, sortDirection);
         } else {
@@ -181,7 +181,7 @@
         initializeUserFollowButts();
         document.getElementById("substories").classList.add("search-results-loaded");
         if (content.result.length == 0) {
-          document.getElementById("substories").innerHTML = '<div class="query-results-nothing">No results match that query</div>'
+          document.getElementById("substories").innerHTML = '<div class="p-9 align-center crayons-card">No results match that query</div>'
         }
       });
   }

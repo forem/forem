@@ -4,7 +4,6 @@ module Search
       Search::ChatChannelMembership,
       Search::Listing,
       Search::FeedContent,
-      Search::Reaction,
       Search::Tag,
       Search::User,
     ].freeze
@@ -18,6 +17,7 @@ module Search
       def setup_indexes
         update_settings
         create_indexes
+        update_indexes
         add_aliases
         update_mappings
       end
@@ -28,10 +28,14 @@ module Search
 
       def create_indexes
         SEARCH_CLASSES.each do |search_class|
-          next if Search::Client.indices.exists(index: search_class::INDEX_NAME)
+          next if search_class.index_exists?
 
           search_class.create_index
         end
+      end
+
+      def update_indexes
+        SEARCH_CLASSES.each(&:update_index)
       end
 
       def add_aliases

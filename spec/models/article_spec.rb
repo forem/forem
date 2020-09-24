@@ -14,9 +14,9 @@ RSpec.describe Article, type: :model do
   it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
-    it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:collection).optional }
+    it { is_expected.to belong_to(:organization).optional }
+    it { is_expected.to belong_to(:user) }
 
     it { is_expected.to have_many(:buffer_updates).dependent(:destroy) }
     it { is_expected.to have_many(:comments).dependent(:nullify) }
@@ -43,6 +43,15 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
+    describe "#body_markdown" do
+      it "is unique scoped for user_id and title" do
+        art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
+
+        expect(art2).not_to be_valid
+        expect(art2.errors.full_messages.to_sentence).to match("markdown has already been taken")
+      end
+    end
+
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save
@@ -57,49 +66,6 @@ RSpec.describe Article, type: :model do
         sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
                                      args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
-        end
-      end
-
-      it "on update syncs elasticsearch data" do
-        allow(article).to receive(:sync_related_elasticsearch_docs)
-        article.save
-        expect(article).to have_received(:sync_related_elasticsearch_docs)
-      end
-    end
-
-    describe "#after_update_commit" do
-      it "if article is unpublished removes reading list reactions from index" do
-        reaction = create(:reaction, reactable: article, category: "readinglist")
-        sidekiq_perform_enqueued_jobs
-        expect(reaction.elasticsearch_doc).not_to be_nil
-
-        unpublished_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: false\ntags: hiring\n---\n\nHello"
-        article.update(body_markdown: unpublished_body)
-        sidekiq_perform_enqueued_jobs
-        expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-      end
-
-      it "if article is published indexes reading list reactions" do
-        reaction = create(:reaction, reactable: article, category: "readinglist")
-        sidekiq_perform_enqueued_jobs
-        unpublished_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: false\ntags: hiring\n---\n\nHello"
-        article.update(body_markdown: unpublished_body)
-        sidekiq_perform_enqueued_jobs
-        expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-
-        published_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
-        article.update(body_markdown: published_body)
-        sidekiq_perform_enqueued_jobs
-        expect(reaction.elasticsearch_doc).not_to be_nil
-      end
-
-      it "indexes reaction if a REACTION_INDEXED_FIELDS is changed" do
-        reaction = create(:reaction, reactable: article, category: "readinglist")
-        allow(article).to receive(:index_to_elasticsearch)
-        allow(article.user).to receive(:index_to_elasticsearch)
-
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Reaction", reaction.id]) do
-          article.update(body_markdown: "---\ntitle: NEW TITLE#{rand(1000)}\n")
         end
       end
     end
@@ -750,6 +716,15 @@ RSpec.describe Article, type: :model do
 
       it "does not enqueue a job to update the main image background if not #dddddd" do
         article.main_image_background_hex_color = "#fff000"
+        allow(article).to receive(:update_main_image_background_hex).and_call_original
+        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
+          article.save
+        end
+        expect(article).to have_received(:update_main_image_background_hex)
+      end
+
+      it "does not enqueue a job if main_image has not changed" do
+        article.save
         allow(article).to receive(:update_main_image_background_hex).and_call_original
         sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
           article.save

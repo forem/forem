@@ -45,6 +45,8 @@ module Admin
       article.boosted_additional_articles = article_params[:boosted_additional_articles].to_s == "true"
       article.boosted_dev_digest_email = article_params[:boosted_dev_digest_email].to_s == "true"
       article.user_id = article_params[:user_id].to_i
+      article.second_user_id = article_params[:second_user_id].to_i
+      article.third_user_id = article_params[:third_user_id].to_i
       article.update!(article_params)
       render body: nil
     end
@@ -129,6 +131,8 @@ module Admin
                           main_image_background_hex_color
                           featured_number
                           user_id
+                          second_user_id
+                          third_user_id
                           last_buffered]
       params.require(:article).permit(allowed_params)
     end

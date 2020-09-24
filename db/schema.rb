@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_04_151734) do
+ActiveRecord::Schema.define(version: 2020_09_21_160153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_151734) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
+    t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["comment_score"], name: "index_articles_on_comment_score"
@@ -178,15 +179,6 @@ ActiveRecord::Schema.define(version: 2020_09_04_151734) do
     t.bigint "user_id"
     t.index ["data"], name: "index_audit_logs_on_data", using: :gin
     t.index ["user_id"], name: "index_audit_logs_on_user_id"
-  end
-
-  create_table "backup_data", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "instance_id", null: false
-    t.string "instance_type", null: false
-    t.bigint "instance_user_id"
-    t.jsonb "json_data", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "badge_achievements", force: :cascade do |t|
@@ -373,6 +365,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_151734) do
     t.datetime "last_buffered"
     t.string "location"
     t.bigint "organization_id"
+    t.datetime "originally_published_at"
     t.text "processed_html"
     t.boolean "published"
     t.string "slug"
@@ -1381,9 +1374,11 @@ ActiveRecord::Schema.define(version: 2020_09_04_151734) do
 
   add_foreign_key "ahoy_events", "ahoy_visits", column: "visit_id", on_delete: :cascade
   add_foreign_key "ahoy_events", "users", on_delete: :cascade
+  add_foreign_key "ahoy_messages", "feedback_messages", on_delete: :nullify
   add_foreign_key "ahoy_messages", "users", on_delete: :cascade
   add_foreign_key "ahoy_visits", "users", on_delete: :cascade
   add_foreign_key "api_secrets", "users", on_delete: :cascade
+  add_foreign_key "articles", "collections", on_delete: :nullify
   add_foreign_key "articles", "organizations", on_delete: :nullify
   add_foreign_key "articles", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"

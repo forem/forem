@@ -33,8 +33,18 @@ module Search
         Search::Client.delete(id: doc_id, index: self::INDEX_ALIAS)
       end
 
+      def index_exists?(index_name: self::INDEX_NAME)
+        Search::Client.indices.exists(index: index_name)
+      end
+
       def create_index(index_name: self::INDEX_NAME)
         Search::Client.indices.create(index: index_name, body: settings)
+      end
+
+      def update_index(index_name: self::INDEX_NAME)
+        return unless dynamic_index_settings.any?
+
+        Search::Client.indices.put_settings(index: index_name, body: dynamic_settings)
       end
 
       def delete_index(index_name: self::INDEX_NAME)
@@ -95,6 +105,14 @@ module Search
 
       def index_settings
         raise "Search classes must implement their own index settings"
+      end
+
+      def dynamic_settings
+        { settings: { index: dynamic_index_settings } }
+      end
+
+      def dynamic_index_settings
+        {}
       end
 
       def process_hashes(indexing_hashes)

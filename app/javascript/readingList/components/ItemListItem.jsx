@@ -7,7 +7,7 @@ export const ItemListItem = ({ item, children }) => {
     path: item.reactable.path,
     title: item.reactable.title,
     user: item.reactable.user,
-    publishedDate: item.reactable.published_date_string,
+    publishedDate: item.reactable.readable_publish_date_string,
     readingTime: item.reactable.reading_time,
     tags: item.reactable.tags,
   };
@@ -59,7 +59,7 @@ const readingListItemPropTypes = PropTypes.shape({
     path: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     reading_time: PropTypes.number.isRequired,
-    published_date_string: PropTypes.string.isRequired,
+    readable_publish_date_string: PropTypes.string.isRequired,
     user: PropTypes.shape({
       username: PropTypes.string.isRequired,
       profile_image_90: PropTypes.string.isRequired,
