@@ -17,7 +17,6 @@ if Rails.env.production? && ENV["ENV_AVAILABLE"] == "true"
           hide: [
             "ahoy_messages.content",
             "ahoy_messages.to",
-            "backup_data.json_data",
             "email",
             "encrypted",
             "encrypted_password",

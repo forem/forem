@@ -71,13 +71,14 @@ module OmniauthHelpers
     OmniAuth.config.mock_auth[provider] = :invalid_credentials
   end
 
-  def omniauth_setup_authentication_error(error)
+  def omniauth_setup_authentication_error(error, params = nil)
     # this hack is needed due to a limitation in how OmniAuth handles
     # failures in mocked/testing environments,
     # see <https://github.com/omniauth/omniauth/issues/654#issuecomment-610851884>
     # for more details
     local_failure_handler = lambda do |env|
       env["omniauth.error"] = error
+      env["omniauth.params"] = params unless params.nil?
       env
     end
 

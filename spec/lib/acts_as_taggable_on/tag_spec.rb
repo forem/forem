@@ -15,16 +15,12 @@ RSpec.describe ActsAsTaggableOn::Tag, type: :lib do
       podcast_episode = create(:podcast_episode)
       tag = article.tags.first
       podcast_episode.tags << tag
-      reaction = create(:reaction, reactable: article, category: "readinglist")
       new_keywords = "keyword1, keyword2, keyword3"
       sidekiq_perform_enqueued_jobs
 
       tag.update(keywords_for_search: new_keywords)
       sidekiq_perform_enqueued_jobs
       expect(collect_keywords(article)).to include(new_keywords)
-      expect(
-        reaction.elasticsearch_doc.dig("_source", "reactable", "tags").flat_map { |t| t["keywords_for_search"] },
-      ).to include(new_keywords)
       expect(collect_keywords(podcast_episode)).to include(new_keywords)
     end
   end
