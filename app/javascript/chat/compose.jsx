@@ -13,6 +13,7 @@ export default class Chat extends Component {
     markdownEdited: PropTypes.bool.isRequired,
     editMessageMarkdown: PropTypes.string.isRequired,
     handleEditMessageClose: PropTypes.func.isRequired,
+    handleFilePaste: PropTypes.func.isRequired,
   };
 
   componentDidUpdate() {
@@ -30,6 +31,7 @@ export default class Chat extends Component {
       handleEditMessageClose,
       handleMention,
       handleKeyUp,
+      handleFilePaste,
     } = this.props;
 
     return (
@@ -41,6 +43,7 @@ export default class Chat extends Component {
           onKeyDown={handleKeyDownEdit}
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
+          onPaste={handleFilePaste}
           maxLength="1000"
           aria-label="Let's connect"
         />
@@ -74,6 +77,7 @@ export default class Chat extends Component {
       handleKeyDown,
       handleMention,
       handleKeyUp,
+      handleFilePaste,
     } = this.props;
     return (
       <div className="messagecomposer">
@@ -84,6 +88,7 @@ export default class Chat extends Component {
           onKeyDown={handleKeyDown}
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
+          onPaste={handleFilePaste}
           maxLength="1000"
           aria-label="Compose a message"
         />
