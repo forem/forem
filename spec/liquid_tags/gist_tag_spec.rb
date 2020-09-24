@@ -12,6 +12,7 @@ RSpec.describe GistTag, type: :liquid_tag do
 
     let(:bad_links) do
       [
+        nil,
         "//pastebin.com/raw/b77FrXUA#gist.github.com",
         "https://gist.github.com@evil.com",
         "https://gist.github.com.evil.com",
