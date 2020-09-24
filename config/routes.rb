@@ -103,7 +103,6 @@ Rails.application.routes.draw do
           patch "user_status"
           post "merge"
           delete "remove_identity"
-          post "recover_identity"
           post "send_email"
           post "verify_email_ownership"
           patch "unlock_access"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_17_114525) do
+ActiveRecord::Schema.define(version: 2020_09_21_160153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -179,15 +179,6 @@ ActiveRecord::Schema.define(version: 2020_09_17_114525) do
     t.bigint "user_id"
     t.index ["data"], name: "index_audit_logs_on_data", using: :gin
     t.index ["user_id"], name: "index_audit_logs_on_user_id"
-  end
-
-  create_table "backup_data", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "instance_id", null: false
-    t.string "instance_type", null: false
-    t.bigint "instance_user_id"
-    t.jsonb "json_data", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "badge_achievements", force: :cascade do |t|

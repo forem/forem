@@ -78,8 +78,6 @@ class User < ApplicationRecord
   has_many :articles, dependent: :destroy
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
-  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user,
-                         class_name: "BackupData", dependent: :delete_all
   has_many :badge_achievements, dependent: :destroy
   has_many :badges, through: :badge_achievements
   has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id,
