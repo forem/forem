@@ -94,14 +94,18 @@
     <% end %>
 
     <div class="crayons-card crayons-card--secondary p-3 m:p-4 mb-2 m:mb-4">
-      <p class="pb-3 mb-3 border-b-1 border-solid border-0 border-base-10">
+      <p>
         <% if (@listing.natural_expiration_date) < Date.today %>
           Expired <%= time_ago_in_words @listing.natural_expiration_date %> ago
         <% else %>
           Expires in <%= time_ago_in_words @listing.natural_expiration_date %>
         <% end %>
       </p>
-      <p>Last Published/Bumped: <%= time_ago_in_words @listing.bumped_at %> ago</p>
+      <% if @listing.bumped_at %>
+        <p class="pt-3 mt-3 border-t-1 border-solid border-0 border-base-10">
+          Last Published/Bumped: <%= time_ago_in_words @listing.bumped_at %> ago
+        </p>
+      <% end %>
     </div>
   </aside>
 </main>
