@@ -12,7 +12,6 @@ RSpec.describe GistTag, type: :liquid_tag do
 
     let(:bad_links) do
       [
-        nil,
         "//pastebin.com/raw/b77FrXUA#gist.github.com",
         "https://gist.github.com@evil.com",
         "https://gist.github.com.evil.com",
@@ -69,6 +68,12 @@ RSpec.describe GistTag, type: :liquid_tag do
     it "rejects invalid gist url" do
       expect do
         generate_new_liquid("really_long_invalid_id")
+      end.to raise_error(StandardError)
+    end
+
+    it "rejects empty gist url" do
+      expect do
+        generate_new_liquid
       end.to raise_error(StandardError)
     end
 
