@@ -12,8 +12,8 @@
     <div class="crayons-card crayons-card--secondary p-3 m:p-6 mb-2 m:mb-4">
       <span class="color-base-60">Personal credits</span>
       <div class="flex m:flex-col items-center m:items-start justify-between">
-        <strong class="fs-2xl m:fs-3xl lh-tight color-base-90 m:mb-4 block"><%= @credits.size %></strong>
-        <a target="_blank" rel="noopener noreferrer" class="crayons-btn crayons-btn--secondary m:w-100" href="/credits/purchase" data-no-instant>Buy More</a>
+        <strong class="fs-2xl m:fs-3xl lh-tight color-base-90 m:mb-4 block" id="test-credits-size"><%= @credits.size %></strong>
+        <a target="_blank" rel="noopener noreferrer" class="crayons-btn crayons-btn--secondary m:w-100" href="/credits/purchase" data-no-instant>Buy more</a>
       </div>
     </div>
 
@@ -29,7 +29,7 @@
         <% end %>
         <div class="flex m:flex-col items-center m:items-start justify-between">
           <strong class="fs-2xl m:fs-3xl lh-tight color-base-90 m:mb-4 block" id="org-credits-number"><%= @organizations.first.credits.unspent.size %></strong>
-          <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" class="crayons-btn crayons-btn--secondary m:w-100" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
+          <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" class="crayons-btn crayons-btn--secondary m:w-100" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy more</a>
         </div>
         <%= javascript_packs_with_chunks_tag "listingForm", "orgCreditsSelector", defer: true %>
       </div>
