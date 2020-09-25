@@ -12,7 +12,7 @@
           <%= form.label "title", class: "crayons-label" %>
           <%= form.text_field "title", placeholder: "128 characters max, plain text", class: "crayons-textfield" %>
         </div>
-        
+
         <div class="crayons-field">
           <%= form.label "body_markdown", "Body Markdown", class: "crayons-field__label" %>
           <%= form.text_area "body_markdown", placeholder: "...", class: "crayons-textfield" %>
@@ -53,14 +53,13 @@
           <input
             type="date"
             class="crayons-textfield m:max-w-50"
-            id="expires_at_placeholder"
-          />
+            id="expires_at_placeholder" />
         </div>
 
         <% if @organizations.present? && @organizations.size > 0 %>
           <div class="crayons-field">
-            <%= form.label "organization_id", "Post under an organization:", class: "crayons-field__label" %>
-            <%= form.select :organization_id, {"None" => "None"}, {}, {class: "crayons-select"} %>
+            <%= form.label "organization_id", "Post under an organization", class: "crayons-field__label" %>
+            <%= form.select :organization_id, { "None" => "None"}, {}, {class: "crayons-select m:max-w-50"} %>
             <p class="crayons-field__description">Posting on behalf of an organization spends the organization's credits.</p>
           </div>
         <% end %>
@@ -70,8 +69,7 @@
             type="checkbox"
             class="crayons-checkbox"
             id="contact_via_connect_placeholder"
-            checked=true
-          />
+            checked=true />
 
           <label class="crayons-field__label" for="contact_via_connect_placeholder">
             Connect messaging
@@ -87,7 +85,7 @@
 
     <div class="crayons-field">
       <%= form.label "location", "Location (If applicable for events, etc.)", class: "crayons-field__label" %>
-      <%= form.text_field "location", placeholder: "New York", class: "crayons-textfield" %>
+      <%= form.text_field "location", placeholder: "New York", class: "crayons-textfield m:max-w-50" %>
       <p class="crayons-field__description">32 characters max, plain text</p>
     </div>
   </div>

@@ -66,12 +66,12 @@ export default class ListingForm extends Component {
       organizations && organizations.length > 0 ? (
         <div className="crayons-field">
           <label htmlFor="organizationId" className="crayons-field__label">
-            Post under an organization:
+            Post under an organization
           </label>
           <OrganizationPicker
             name="listing[organization_id]"
             id="listing_organization_id"
-            className="crayons-select"
+            className="crayons-select m:max-w-50"
             organizations={organizations}
             organizationId={organizationId}
             onToggle={this.handleOrgIdChange}
