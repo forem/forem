@@ -436,7 +436,7 @@ RSpec.describe "ChatChannels", type: :request do
 
   describe "POST /create_channel" do
     it "create channel by mod users only" do
-      user.add_role(:mod_relations_admin)
+      user.add_role(:tag_moderator)
       post "/create_channel", params: {
         chat_channel: {
           channel_name: "dummy test",
