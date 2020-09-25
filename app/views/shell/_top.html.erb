@@ -45,7 +45,7 @@
       <meta property="fb:pages" content="568966383279687" />
       <meta name="theme-color" content="#000000" />
       <link rel="manifest" href="/manifest.json" />
-      <link rel="search" href="<%= asset_path("search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_qualified_name %>" />
+      <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_qualified_name %>" />
     <% end %>
   </head>
   <% unless internal_navigation? %>
@@ -55,6 +55,8 @@
         class="<%= SiteConfig.default_font.tr("_", "-") %>-article-body"
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
         data-app-name="<%= ApplicationConfig["APP_NAME"] %>"
+        data-honybadger-key="<%= ApplicationConfig['HONEYBADGER_JS_API_KEY'] %>"
+        data-release-footprint="<%= ApplicationConfig['RELEASE_FOOTPRINT'] %>"
         data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
         <div id="body-styles">
           <style>
