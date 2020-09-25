@@ -40,6 +40,7 @@ import Compose from './compose';
 import Message from './message';
 import ActionMessage from './actionMessage';
 import Content from './content';
+import ActiveChannelChatMessage from './ActiveChannelChatMessage';
 import { VideoContent } from './videoContent';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 
@@ -1463,6 +1464,13 @@ export default class Chat extends Component {
   }
   renderActiveChatChannel = (channelHeader) => {
     const { state, props } = this;
+    const {
+      activeChannelId,
+      messages,
+      showTimestamp,
+      activeChannel,
+      currentUserId,
+    } = state;
 
     return (
       <div className="activechatchannel">
@@ -1670,6 +1678,7 @@ export default class Chat extends Component {
       channelUsers,
       memberFilterQuery,
     } = this.state;
+
     const filterRegx = new RegExp(memberFilterQuery, 'gi');
     return (
       <div
