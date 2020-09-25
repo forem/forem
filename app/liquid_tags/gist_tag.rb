@@ -6,6 +6,9 @@ class GistTag < LiquidTagBase
 
   def initialize(_tag_name, link, _parse_context)
     super
+
+    raise StandardError, "Invalid Gist link: You must provide a Gist link" if link.blank?
+
     @uri = build_uri(link)
   end
 
@@ -32,10 +35,6 @@ class GistTag < LiquidTagBase
   end
 
   def parse_link(link)
-    if link.nil?
-      raise StandardError, "Invalid Gist link: You must provide a Gist link"
-    end
-
     input_no_space = link.delete(" ").gsub(".js", "")
     if valid_link?(input_no_space)
       input_no_space
