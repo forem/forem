@@ -53,13 +53,14 @@ export default class Chat extends Component {
     chatChannels: PropTypes.string.isRequired,
     chatOptions: PropTypes.string.isRequired,
     githubToken: PropTypes.string.isRequired,
-    superAdmin: PropTypes.bool.isRequired,
+    tagModerator: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
     const chatChannels = JSON.parse(props.chatChannels);
     const chatOptions = JSON.parse(props.chatOptions);
+    const tagModerator = JSON.parse(props.tagModerator);
 
     this.debouncedChannelFilter = debounceAction(
       this.triggerChannelFilter.bind(this),
@@ -104,7 +105,7 @@ export default class Chat extends Component {
       rerenderIfUnchangedCheck: null,
       userRequestCount: 0,
       openModal: false,
-      superAdmin: props.superAdmin,
+      isTagModerator: tagModerator.isTagModerator,
     };
     if (chatOptions.activeChannelId) {
       getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
@@ -1319,7 +1320,7 @@ export default class Chat extends Component {
                 ) : null}
               </span>
             </button>
-            {this.state.superAdmin === 'true' ? (
+            {this.state.isTagModerator ? (
               <button
                 className="chat__channelssearchtoggle "
                 aria-label="Toggle request manager"

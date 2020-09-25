@@ -78,6 +78,7 @@ function getRootData() {
     }),
     githubToken: 'somegithubtoken',
     pusherKey: 'somepusherkey',
+    tagModerator: JSON.stringify({ isTagModerator: true }),
   };
 }
 
