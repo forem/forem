@@ -33,7 +33,7 @@ module Admin
 
     def update
       @user = User.find(params[:id])
-      Users::ManageCredits.call(@user, user_params)
+      Credits::Manage.call(@user, user_params)
       add_note if user_params[:new_note]
       redirect_to "/admin/users/#{params[:id]}"
     end
