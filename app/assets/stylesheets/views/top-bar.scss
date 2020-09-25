@@ -24,22 +24,13 @@
 
   &__container {
     max-width: var(--site-width);
-    padding-left: var(--su-2);
-    padding-right: var(--layout-padding);
+    padding: 0 var(--layout-padding);
     margin: auto;
     display: flex;
     align-items: center;
     position: relative;
     justify-content: space-between;
     height: var(--header-height);
-
-    @media (min-width: $breakpoint-s) {
-      justify-content: flex-start;
-    }
-
-    @media (min-width: $breakpoint-m) {
-      padding-left: var(--layout-padding);
-    }
   }
 
   .crayons-indicator {
@@ -71,13 +62,14 @@
   margin: 0 var(--su-2);
   display: none;
 
-  @media (min-width: $breakpoint-s) {
+  @media (min-width: $breakpoint-m) {
     margin: 0 var(--su-4);
     display: block;
   }
 }
 
 .top-bar__icon {
+  margin: 0 var(--su-1);
   &:hover,
   &:focus {
     --indicator-outline: var(--header-bg-hover);
