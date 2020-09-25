@@ -19,7 +19,8 @@ class UserDecorator < ApplicationDecorator
   ].freeze
 
   def cached_followed_tags
-    follows_map = Rails.cache.fetch("user-#{id}-#{last_followed_at&.rfc3339}/followed_tags", expires_in: 20.hours) do
+    follows_map = Rails.cache.fetch("user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tags",
+                                    expires_in: 20.hours) do
       Follow.follower_tag(id).pluck(:followable_id, :points).to_h
     end
 
