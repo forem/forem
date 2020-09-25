@@ -33,7 +33,7 @@ class GistTag < LiquidTagBase
 
   def parse_link(link)
     if link.nil?
-      raise StandardError, "You have not provided Gist link"
+      raise StandardError, "You have not provided link to the Gist"
     end
 
     input_no_space = link.delete(" ").gsub(".js", "")
