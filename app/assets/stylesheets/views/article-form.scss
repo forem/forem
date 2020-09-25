@@ -261,10 +261,8 @@
   }
 
   &__tagname {
-    font-family: var(--ff-monospace);
     color: var(--base-90);
-    letter-spacing: -0.05em;
-    font-weight: bold;
+    font-weight: var(--fw-medium);
   }
 
   &__tagoptionrow {

@@ -97,17 +97,19 @@ export default class ListingForm extends Component {
             onChange={linkState(this, 'category')}
             category={category}
           />
-          <Tags
-            defaultValue={tagList}
-            category={category}
-            onInput={linkState(this, 'tagList')}
-            classPrefix="listingform"
-            fieldClassName="crayons-textfield"
-            maxTags={8}
-            autocomplete="off"
-            listing
-            pattern={DEFAULT_TAG_FORMAT}
-          />
+          <div className="relative">
+            <Tags
+              defaultValue={tagList}
+              category={category}
+              onInput={linkState(this, 'tagList')}
+              classPrefix="listingform"
+              fieldClassName="crayons-textfield"
+              maxTags={8}
+              autocomplete="off"
+              listing
+              pattern={DEFAULT_TAG_FORMAT}
+            />
+          </div>
           <ExpireDate
             defaultValue={expireDate}
             onChange={linkState(this, 'expireDate')}
