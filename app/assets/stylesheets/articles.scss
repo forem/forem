@@ -140,37 +140,6 @@
   }
 }
 
-// MOBILE ONLY navigation to switch between tabs (these on top of the feed).
-// Although it uses different markup :/.
-.narrow-nav-menu {
-  position: absolute;
-  top: 48px;
-  left: 0;
-  right: 0;
-  background: white;
-  z-index: 500;
-  font-family: $helvetica-condensed;
-  font-stretch: condensed;
-  font-weight: 600;
-  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.3);
-  padding: 5px 0px 15px;
-  display: none;
-  font-size: 1.1em;
-  background: var(--card-bg);
-  a {
-    display: block;
-    text-align: center;
-    color: var(--card-color);
-    padding: 20px 0px;
-    &.selected {
-      background: var(--accent-brand-lighter);
-    }
-  }
-  &.showing {
-    display: block;
-  }
-}
-
 ////////////////////////////////////////////////
 // TO COMPONENTIZE //////////////////////////////
 ////////////////////////////////////////////////
@@ -769,10 +738,6 @@
   }
 }
 
-#homepage-feed {
-  min-height: 100vh;
-}
-
 // Podcast episode that goes within the <TodaysPodcast /> component.
 .individual-podcast-link {
   display: flex;
@@ -809,15 +774,4 @@
       $light-gray
     );
   }
-}
-
-////////////////////////////////////////////////
-// OTHER VIEWS /////////////////////////////////
-////////////////////////////////////////////////
-
-// Search results: empty
-.query-results-nothing {
-  @include dev-card;
-  padding: 48px 24px;
-  text-align: center;
 }

@@ -22,7 +22,7 @@
     var sortBy = filterXSS(params.sort_by || "");
     var sortDirection = filterXSS(params.sort_direction || "");
 
-    substories.innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>';
+    substories.innerHTML = '<div class="p-9 align-center crayons-card"><br></div>';
     if (document.getElementById("query-wrapper")) {
       search(query, filters, sortBy, sortDirection);
       initializeFilters(query, filters);
@@ -181,7 +181,7 @@
         initializeUserFollowButts();
         document.getElementById("substories").classList.add("search-results-loaded");
         if (content.result.length == 0) {
-          document.getElementById("substories").innerHTML = '<div class="query-results-nothing">No results match that query</div>'
+          document.getElementById("substories").innerHTML = '<div class="p-9 align-center crayons-card">No results match that query</div>'
         }
       });
   }
