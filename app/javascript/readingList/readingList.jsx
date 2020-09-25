@@ -127,7 +127,7 @@ export class ReadingList extends Component {
           <FilterText
             selectedTags={selectedTags}
             query={query}
-            value="Your Saved list is empty"
+            value="Your reading list is empty"
           />
           <p class="color-base-60 pt-2">
             Hit the <span class="fw-bold">Save</span> button to start your
@@ -142,7 +142,7 @@ export class ReadingList extends Component {
         <FilterText
           selectedTags={selectedTags}
           query={query}
-          value="Your Archive List is empty..."
+          value="Your Archive is empty..."
         />
       </div>
     );
@@ -183,7 +183,7 @@ export class ReadingList extends Component {
       <div>
         <header className="crayons-layout flex justify-between items-center pb-0">
           <h1 class="fs-2xl s:fs-3xl">
-            {isStatusViewValid ? 'Saved posts' : 'Archive'}
+            {isStatusViewValid ? 'Reading list' : 'Archive'}
             {` (${totalCount > 0 ? totalCount : '0'})`}
           </h1>
 
@@ -196,7 +196,7 @@ export class ReadingList extends Component {
               tagName="a"
               data-no-instant
             >
-              {isStatusViewValid ? 'View archive' : 'View saved'}
+              {isStatusViewValid ? 'View archive' : 'View reading list'}
             </Button>
             <input
               aria-label="Search..."
