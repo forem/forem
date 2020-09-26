@@ -4,6 +4,7 @@ class ChatChannelsController < ApplicationController
   after_action :verify_authorized
 
   include MessagesHelper
+  include ChatChannelsHelper
 
   CHANNEL_ATTRIBUTES_FOR_SERIALIZATION = %i[id description channel_name].freeze
   private_constant :CHANNEL_ATTRIBUTES_FOR_SERIALIZATION
@@ -13,15 +14,19 @@ class ChatChannelsController < ApplicationController
     when "unopened"
       authorize ChatChannel
       render_unopened_json_response
+      render "index.json"
     when "unopened_ids"
       authorize ChatChannel
       render_unopened_ids_response
+      render json: { unopened_ids: @unopened_ids }
     when "pending"
       authorize ChatChannel
       render_pending_json_response
+      render "index.json"
     when "joining_request"
       authorize ChatChannel
       render_joining_request_json_response
+      render "index.json"
     else
       skip_authorization
       render_channels_html
@@ -218,56 +223,6 @@ class ChatChannelsController < ApplicationController
 
   def chat_channel_params
     params.require(:chat_channel).permit(policy(ChatChannel).permitted_attributes)
-  end
-
-  def render_unopened_json_response
-    @chat_channels_memberships = if session_current_user_id
-                                   ChatChannelMembership.where(user_id: session_current_user_id)
-                                     .where(has_unopened_messages: true)
-                                     .where(show_global_badge_notification: true)
-                                     .where.not(status: %w[removed_from_channel left_channel])
-                                     .includes(%i[chat_channel user])
-                                     .order("chat_channel_memberships.updated_at" => :desc)
-                                 else
-                                   []
-                                 end
-    render "index.json"
-  end
-
-  def render_pending_json_response
-    @chat_channels_memberships = if current_user
-                                   current_user
-                                     .chat_channel_memberships.includes(:chat_channel)
-                                     .where(status: "pending")
-                                     .order("chat_channel_memberships.updated_at" => :desc)
-                                 else
-                                   []
-                                 end
-    render "index.json"
-  end
-
-  def render_unopened_ids_response
-    @unopened_ids = ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel)
-      .where(has_unopened_messages: true).where.not(status: %w[removed_from_channel
-                                                               left_channel]).pluck(:chat_channel_id)
-    render json: { unopened_ids: @unopened_ids }
-  end
-
-  def render_joining_request_json_response
-    requested_memberships_id = current_user
-      .chat_channel_memberships
-      .includes(:chat_channel)
-      .where(chat_channels: { discoverable: true }, role: "mod")
-      .pluck(:chat_channel_id)
-      .map { |membership_id| ChatChannel.find_by(id: membership_id).requested_memberships }
-      .flatten
-      .map(&:id)
-
-    @chat_channels_memberships = ChatChannelMembership
-      .includes(%i[user chat_channel])
-      .where(id: requested_memberships_id)
-
-    render "index.json"
   end
 
   def render_channels_html

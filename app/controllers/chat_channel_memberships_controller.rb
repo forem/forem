@@ -3,6 +3,7 @@ class ChatChannelMembershipsController < ApplicationController
   after_action :verify_authorized, except: %w[join_channel request_details]
 
   include MessagesHelper
+  include ChatChannelMembershipsHelper
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -251,7 +252,7 @@ class ChatChannelMembershipsController < ApplicationController
       notice = "Invitation rejected."
     end
 
-    membership_user = helpers.format_membership(@chat_channel_membership)
+    membership_user = format_membership(@chat_channel_membership)
     flash[:settings_notice] = notice
 
     respond_to do |format|
@@ -268,7 +269,7 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def send_chat_action_message(message, user, channel_id, action)
-    temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
+    temp_message_id = SecureRandom.hex(20)
     message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
                              "chat_action" => action)
     pusher_message_created(false, message, temp_message_id)
