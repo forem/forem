@@ -17,7 +17,7 @@ gem "addressable", "~> 2.7" # A replacement for the URI implementation that is p
 gem "administrate", "~> 0.14" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.0" # Tracking analytics for Rails
-gem "ancestry", "~> 3.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
+gem "ancestry", "~> 3.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.2.7" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
