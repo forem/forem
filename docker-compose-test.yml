@@ -47,6 +47,8 @@ services:
 
   chrome:
     image: selenium/standalone-chrome
+    expose:
+      - 4444
 
   yarn:
     image: forem-rails:latest
