@@ -1,47 +1,44 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+
+import useNavigation from '../utilities/hooks/useNavigation';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
-export class Feed extends Component {
-  constructor(props) {
-    super(props);
+export const Feed = ({ timeFrame, renderFeed }) => {
+  const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
+  const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
+    new Set(reading_list_ids),
+  );
 
-    const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
+  const [feedItems, setFeedItems] = useState([]);
+  const [podcastEpisodes, setPodcastEpisodes] = useState([]);
 
-    this.state = { bookmarkedFeedItems: new Set(reading_list_ids) };
-  }
+  useEffect(() => {
+    setPodcastEpisodes(getPodcastEpisodes());
+  }, []);
 
-  componentDidMount() {
-    const { timeFrame } = this.props;
+  useEffect(() => {
+    const fetchFeedItems = async () => {
+      const feedItems = await getFeedItems(timeFrame);
 
-    Feed.getFeedItems(timeFrame).then((feedItems) => {
       // Ensure first article is one with a main_image
       const featuredStory = feedItems.find(
         (story) => story.main_image !== null,
       );
+
       // Remove that first one from the array.
       const index = feedItems.indexOf(featuredStory);
       feedItems.splice(index, 1);
       const subStories = feedItems;
       const organizedFeedItems = [featuredStory, subStories].flat();
 
-      this.setState({
-        feedItems: organizedFeedItems,
-        podcastEpisodes: Feed.getPodcastEpisodes(),
-      });
-    });
-  }
+      setFeedItems(organizedFeedItems);
+    };
 
-  componentDidUpdate(prevProps) {
-    const { timeFrame } = this.props;
-    if (prevProps.timeFrame !== timeFrame) {
-      // The feed timeframe has changed. Get new feed data.
-      Feed.getFeedItems(timeFrame).then((feedItems) => {
-        this.setState((_prevState) => ({ feedItems }));
-      });
-    }
-  }
+    fetchFeedItems();
+  }, [timeFrame]);
 
   /**
    * Retrieves feed data.
@@ -50,8 +47,8 @@ export class Feed extends Component {
    *
    * @returns {Promise} A promise containing the JSON response for the feed data.
    */
-  static getFeedItems(timeFrame = '', page = 1) {
-    return fetch(`/stories/feed/${timeFrame}?page=${page}`, {
+  const getFeedItems = async (timeFrame = '', page = 1) => {
+    const response = await fetch(`/stories/feed/${timeFrame}?page=${page}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -59,10 +56,11 @@ export class Feed extends Component {
         'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
-    }).then((response) => response.json());
-  }
+    });
+    return await response.json();
+  };
 
-  static getPodcastEpisodes() {
+  const getPodcastEpisodes = () => {
     const el = document.getElementById('followed-podcasts');
     const user = userData(); // Global
     const episodes = [];
@@ -79,14 +77,20 @@ export class Feed extends Component {
       });
     }
     return episodes;
-  }
+  };
+
+  useNavigation(
+    'article[id=featured-story-marker],article[id^=article-]',
+    'a[id^=article-link-]',
+    'div.paged-stories',
+  );
 
   /**
    * Dispatches a click event to bookmark/unbook,ard an article.
    *
    * @param {Event} event
    */
-  bookmarkClick = (event) => {
+  const bookmarkClick = async (event) => {
     // The assumption is that the user is logged on at this point.
     const { userStatus } = document.body;
     event.preventDefault();
@@ -100,67 +104,45 @@ export class Feed extends Component {
     const { currentTarget: button } = event;
     const data = buttonFormData(button);
 
-    getCsrfToken()
-      .then(sendFetch('reaction-creation', data))
-      // eslint-disable-next-line consistent-return
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json().then((json) => {
-            const articleId = Number(button.dataset.reactableId);
+    const csrfToken = await getCsrfToken();
+    if (!csrfToken) return;
 
-            this.setState((previousState) => {
-              const { bookmarkedFeedItems } = previousState;
+    const fetchCallback = sendFetch('reaction-creation', data);
+    const response = await fetchCallback(csrfToken);
+    if (response.status === 200) {
+      const json = await response.json();
+      const articleId = Number(button.dataset.reactableId);
 
-              const { result } = json;
-              const updatedBookmarkedFeedItems = new Set([
-                ...bookmarkedFeedItems.values(),
-              ]);
+      const { result } = json;
+      const updatedBookmarkedFeedItems = new Set([
+        ...bookmarkedFeedItems.values(),
+      ]);
 
-              if (result === 'create') {
-                updatedBookmarkedFeedItems.add(articleId);
-              }
+      if (result === 'create') {
+        updatedBookmarkedFeedItems.add(articleId);
+      }
 
-              if (result === 'destroy') {
-                updatedBookmarkedFeedItems.delete(articleId);
-              }
+      if (result === 'destroy') {
+        updatedBookmarkedFeedItems.delete(articleId);
+      }
 
-              renderNewSidebarCount(button, json);
+      renderNewSidebarCount(button, json);
 
-              return {
-                ...previousState,
-                bookmarkedFeedItems: updatedBookmarkedFeedItems,
-              };
-            });
-          });
-        }
-      });
+      setBookmarkedFeedItems(updatedBookmarkedFeedItems);
+    }
   };
 
-  render() {
-    const { renderFeed } = this.props;
-    const {
-      feedItems = [],
-      podcastEpisodes = [],
-      bookmarkedFeedItems = new Set(),
-    } = this.state;
-
-    return (
-      <div
-        id='rendered-article-feed'
-        ref={(element) => {
-          this.feedContainer = element;
-        }}
-      >
-        {renderFeed({
-          feedItems,
-          podcastEpisodes,
-          bookmarkedFeedItems,
-          bookmarkClick: this.bookmarkClick,
-        })}
-      </div>
-    );
-  }
-}
+  return (
+    <div id="rendered-article-feed">
+      {renderFeed({
+        feedItems,
+        podcastEpisodes,
+        bookmarkedFeedItems,
+        bookmarkClick,
+      })}
+    </div>
+  );
+};
 
 Feed.defaultProps = {
   timeFrame: '',

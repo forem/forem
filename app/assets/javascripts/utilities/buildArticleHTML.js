@@ -259,6 +259,8 @@ function buildArticleHTML(article) {
     return (
       '<article class="crayons-story" data-article-path="' +
       article.path +
+      '" id="article-' +
+      article.id +
       '" data-content-user-id="' +
       article.user_id +
       '">\
