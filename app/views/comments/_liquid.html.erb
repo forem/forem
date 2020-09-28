@@ -1,4 +1,5 @@
 <div class="liquid-comment">
+<% if comment %>
   <div class="details">
     <a href="/<%= comment.user.username %>">
       <img class="profile-pic" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" />
@@ -21,4 +22,9 @@
   <div class="body">
     <%= comment.safe_processed_html %>
   </div>
+  <% else %>
+  <div class="body">
+    Comment Not Found
+  </div>
+  <% end %>
 </div>
