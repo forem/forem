@@ -11,19 +11,21 @@ module Admin
 
     def create
       clean_up_params
-
-      config_params.each do |key, value|
-        if value.is_a?(Array)
-          SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
-        elsif value.respond_to?(:to_h)
-          SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
-        else
-          SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
+      if valid_params
+        config_params.each do |key, value|
+          if value.is_a?(Array)
+            SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
+          elsif value.respond_to?(:to_h)
+            SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
+          else
+            SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
+          end
         end
-      end
 
-      bust_relevant_caches
-      redirect_to admin_config_path, notice: "Site configuration was successfully updated."
+        bust_relevant_caches
+        flash[:notice] = "Site configuration was successfully updated."
+      end
+      redirect_to admin_config_path
     end
 
     private
@@ -77,7 +79,7 @@ module Admin
         email_addresses: SiteConfig.email_addresses.keys,
         meta_keywords: SiteConfig.meta_keywords.keys,
         credit_prices_in_cents: SiteConfig.credit_prices_in_cents.keys,
-        navigation: [:name, :url, :icon]
+        navigation: %i[name url icon],
       )
     end
 
@@ -214,6 +216,17 @@ module Admin
         jobs_url
         display_jobs_banner
       ]
+    end
+
+    def valid_params
+      if config_params["navigation"].present?
+        update_navigation_links = SiteConfigs::UpdateNavigation.call(config_params["navigation"])
+        unless update_navigation_links.success?
+          flash[:danger] = "Navigation Links error: #{update_navigation_links.errors[0].join(' , ')}"
+          return false
+        end
+      end
+      true
     end
   end
 end
