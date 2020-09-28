@@ -14,15 +14,26 @@ RSpec.configure do |config|
   config.before(:each, type: :system, js: true) do
     if ENV["SELENIUM_URL"].present?
       # Support use of remote chrome testing.
-      Capybara.server_host = ENV.fetch("CAPYBARA_SERVER_HOST") { "0.0.0.0" }
-      ip = Socket.ip_address_list.detect(&:ipv4_private?).ip_address
-      host! URI::HTTP.build(host: ip, port: Capybara.server_port).to_s
+      # Capybara.server_host = ENV.fetch("CAPYBARA_SERVER_HOST") { "0.0.0.0" }
+      # ip = Socket.ip_address_list.detect(&:ipv4_private?).ip_address
+      # host! URI::HTTP.build(host: ip, port: Capybara.server_port).to_s
       puts "**" * 100
-      Capybara.server_port = "43447"
-      # session_server       = Capybara.current_session.server
-      # Capybara.app_host    = "http://#{session_server.host}:#{session_server.port}"
 
-      driven_by :selenium, using: :chrome, screen_size: [1400, 2000], options: { url: ENV["SELENIUM_URL"] }
+      # Find Docker IP address
+      Capybara.server_host = if ENV["HEADLESS"] == "true"
+                               `/sbin/ip route|awk '/scope/ { print $9 }'`.strip
+                             else
+                               "0.0.0.0"
+                             end
+      Capybara.server_port = "43447"
+      session_server       = Capybara.current_session.server
+      Capybara.app_host    = "http://#{session_server.host}:#{session_server.port}"
+
+      driven_by :selenium, using: :chrome, screen_size: [1400, 2000], options: {
+        browser: :remote,
+        url: ENV["SELENIUM_URL"],
+        desired_capabilities: :chrome
+      }
     else
       # options from https://github.com/teamcapybara/capybara#selenium
       chrome = ENV["HEADLESS"] == "false" ? :selenium_chrome : :selenium_chrome_headless

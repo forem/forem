@@ -52,7 +52,7 @@ RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
 COPY . "${APP_HOME}"/
 
-RUN if [ "$RAILS_ENV" != "test" ] ; then AILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile ; fi
+RUN if [ "$RAILS_ENV" != "test" ] ; then RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile ; fi
 
 RUN if [ "$RAILS_ENV" = "test" ] ; then yum -y install chromedriver chromium gnu-free-sans-fonts xorg-x11-server-Xvfb && yum clean all && : ; fi
 
