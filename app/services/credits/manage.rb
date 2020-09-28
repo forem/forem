@@ -54,7 +54,7 @@ module Credits
     end
 
     def organization
-      Organization.find(org_params[:organization_id])
+      @organization ||= Organization.find(org_params[:organization_id])
     end
   end
 end
