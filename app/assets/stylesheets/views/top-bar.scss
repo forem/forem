@@ -33,10 +33,6 @@
     justify-content: space-between;
     height: var(--header-height);
 
-    @media (min-width: $breakpoint-s) {
-      justify-content: flex-start;
-    }
-
     @media (min-width: $breakpoint-m) {
       padding-left: var(--layout-padding);
     }
@@ -95,6 +91,12 @@
       display: none;
     }
   }
+}
+
+// Actions
+.top-bar--actions-container {
+  display: flex;
+  grid-gap: var(--su-2);
 }
 
 // Dropdown under profile picture / hamburger icon
