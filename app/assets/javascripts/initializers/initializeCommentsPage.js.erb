@@ -405,6 +405,7 @@ function handleKeyDown(event) {
 function handleFormClose(event) {
   event.target.closest('.inner-comment').classList.remove("replying");
   event.target.closest('.new_comment').remove();
+  initializeCommentsPage();
 }
 
 function handleSizeChange(event) {

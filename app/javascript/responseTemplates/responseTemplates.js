@@ -264,9 +264,11 @@ function observeForReplyClick() {
   const config = { childList: true, subtree: true };
 
   const callback = (mutations) => {
-    const form = mutations[0].addedNodes[0];
-    if (form.nodeName === 'FORM') {
-      prepareOpenButton(form);
+    const form = Array.from(mutations[0].addedNodes).filter(
+      (node) => node.nodeName === 'FORM',
+    );
+    if (form.length > 0) {
+      prepareOpenButton(form[0]);
     }
   };
 
