@@ -562,7 +562,7 @@ class Article < ApplicationRecord
   end
 
   def validate_co_authors_must_not_be_the_same
-    return unless co_author_ids
+    return if co_author_ids.blank?
 
     return if co_author_ids.uniq.count == co_author_ids.count
 
