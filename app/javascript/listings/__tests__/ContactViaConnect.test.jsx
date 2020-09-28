@@ -31,7 +31,7 @@ describe('<ContactViaConnect />', () => {
 
     const checkbox = getByText('Allow Users to message me via Connect.');
 
-    fireEvent.input(checkbox, { target: { checked: true } });
+    fireEvent.click(checkbox);
 
     expect(onChange).toHaveBeenCalledTimes(1);
   });
