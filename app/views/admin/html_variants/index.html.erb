@@ -1,0 +1,54 @@
+<nav class="flex mb-4" aria-label="Sponsorships navigation">
+  <div class="crayons-tabs">
+    <%= link_to "Leaderboard", admin_html_variants_path, class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state].blank?}" %>
+    <%= link_to "Mine", admin_html_variants_path(state: "mine"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'mine'}" %>
+    <%= link_to "Admin", admin_html_variants_path(state: "admin"), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == 'admin'}" %>
+    <% HtmlVariant::GROUP_NAMES.each do |group_name| %>
+      <%= link_to group_name.humanize.capitalize, admin_html_variants_path(state: group_name), class: "crayons-tabs__item #{'crayons-tabs__item--current' if params[:state] == group_name}" %>
+    <% end %>
+  </div>
+  <div class="ml-auto">
+    <div class="justify-content-end">
+      <%= link_to "New HTML Variant", new_admin_html_variant_path, class: "crayons-btn" %>
+    </div>
+  </div>
+</nav>
+
+<hr>
+
+<%= paginate @html_variants %>
+
+<table class="crayons-table" width="100%">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">User</th>
+      <th scope="col">Group</th>
+      <th scope="col">Published</th>
+      <th scope="col">Approved</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody class="crayons-card">
+    <% @html_variants.each do |html_variant| %>
+        <tr>
+          <td><%= link_to html_variant.name, admin_html_variant_path(html_variant) %></td>
+          <td><%= link_to "@#{html_variant.user.username}", "/#{html_variant.user.username}" %></td>
+          <td><%= html_variant.group %></td>
+          <td><%= html_variant.published %></td>
+          <td><%= html_variant.approved %></td>
+          <td>
+            <%= link_to "Fork", new_admin_html_variant_path(fork_id: html_variant.id), class: "crayons-btn crayons-btn--outlined" %>
+          </td>
+          <td>
+            <%= link_to "Edit", edit_admin_html_variant_path(html_variant), class: "crayons-btn" %>
+          </td>
+          <td>
+            <%= link_to "Destroy", admin_html_variant_path(html_variant), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %>
+          </td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @html_variants %>
