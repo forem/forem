@@ -714,7 +714,7 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Navigation",
+                       header: "Navigation Links",
                        state: "collapse",
                        target: "navigationBodyContainer",
                        expanded: "false"
@@ -726,17 +726,17 @@
                   <div>
                     <%= admin_config_label "name" %>
                     <%= f.text_field "navigation[][name]",
-                                                      class: "form-control",
-                                                      value: hash[:name],
-                                                      placeholder: "" %>
+                                     class: "form-control",
+                                     value: hash[:name],
+                                     placeholder: "" %>
                     <div class="alert alert-info">Used as the friendly name for the nav item</div>
                   </div>
                   <div>
                     <%= admin_config_label "url" %>
                     <%= f.text_field "navigation[][url]",
-                                                      class: "form-control",
-                                                      value: hash[:url],
-                                                      placeholder: "" %>
+                                     class: "form-control",
+                                     value: hash[:url],
+                                     placeholder: "" %>
                     <div class="alert alert-info">Used as the url for the nav item</div>
                   </div>
                   <div>
