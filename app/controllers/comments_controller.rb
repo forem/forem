@@ -150,12 +150,14 @@ class CommentsController < ApplicationController
       @commentable_type = @comment.commentable_type
 
       case @commentable_type
-      when "Podcast"
-        @user = @commentable
+      when "PodcastEpisode"
+        @user = @commentable&.podcast
       when "Article"
         # user could be a user or an organization
         @user = @commentable.user
         @article = @commentable
+      else
+        @user = @commentable.user
       end
 
       render :index
