@@ -21,6 +21,12 @@ describe('toggling the actions panel', () => {
 
     test('it should have a click listener that toggles the appropriate classes', () => {
       initializeActionsPanel(path);
+
+      const modContainer = document.getElementById('mod-container');
+      modContainer.contentWindow.document.write(
+        `<html><body><button class="close-actions-panel hidden"></body></html>`,
+      );
+
       const modActionsMenu = document.querySelector('.mod-actions-menu');
       const modActionsMenuBtn = document.querySelector('.mod-actions-menu-btn');
 
@@ -28,6 +34,11 @@ describe('toggling the actions panel', () => {
 
       expect(modActionsMenu.classList.contains('showing')).toBeTruthy();
       expect(modActionsMenuBtn.classList.contains('hidden')).toBeTruthy();
+
+      const panelDocument = modContainer.contentDocument;
+
+      const closeButton = panelDocument.querySelector('.close-actions-panel');
+      expect(closeButton.classList.contains('hidden')).toBeFalsy();
     });
   });
 });
