@@ -126,6 +126,7 @@ Rails.application.routes.draw do
       resource :config
       resources :badges, only: %i[index edit update new create]
       resources :display_ads, only: %i[index edit update new create destroy]
+      resources :html_variants, only: %i[index edit update new create show destroy]
       # These redirects serve as a safegaurd to prevent 404s for any Admins
       # who have the old badge_achievement URLs bookmarked.
       get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
@@ -249,7 +250,6 @@ Rails.application.routes.draw do
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
-    resources :html_variants, only: %i[index new create show edit update]
     resources :html_variant_trials, only: [:create]
     resources :html_variant_successes, only: [:create]
     resources :tag_adjustments, only: %i[create destroy]
