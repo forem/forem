@@ -15,7 +15,7 @@ services:
       - elasticsearch
       - redis
       - yarn
-      - chrome
+      - selenium
     environment:
       RAILS_ENV: test
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_test
@@ -45,7 +45,7 @@ services:
       COVERAGE_REPORTS_TOTAL: 4
     entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-timeout", "2700s", "./scripts/entrypoint-dev.sh"]
 
-  chrome:
+  selenium:
     image: selenium/standalone-chrome
     expose:
       - 4444
