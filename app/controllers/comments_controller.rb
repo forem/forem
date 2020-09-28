@@ -154,19 +154,19 @@ class CommentsController < ApplicationController
         @user = @commentable&.podcast
       when "Article"
         # user could be a user or an organization
-        @user = @commentable.user
+        @user = @commentable&.user
         @article = @commentable
       else
-        @user = @commentable.user
+        @user = @commentable&.user
       end
 
       render :index
     else
-      @commentable = @comment.commentable
+      @commentable = @comment&.commentable
       render :edit
     end
   rescue StandardError => e
-    @commentable = @comment.commentable
+    @commentable = @comment&.commentable
     flash.now[:error] = "There was an error in your markdown: #{e}"
     render :edit
   end
