@@ -153,7 +153,7 @@ class CommentsController < ApplicationController
       when "Podcast"
         @user = @commentable
       when "Article"
-        # User could be a user or an organization
+        # user could be a user or an organization
         @user = @commentable.user
         @article = @commentable
       end
