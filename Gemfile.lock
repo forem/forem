@@ -797,7 +797,7 @@ GEM
     unicode_plot (0.0.4)
       enumerable-statistics (>= 2.0.1)
     uniform_notifier (1.13.0)
-    validate_url (1.0.11)
+    validate_url (1.0.13)
       activemodel (>= 3.0.0)
       public_suffix
     vault (0.15.0)
