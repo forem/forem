@@ -17,16 +17,16 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.7.0"
+  version: "0.8.0"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
     url: https://dev.to/contact
     email: yo@dev.to
   x-logo:
-    url: https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-128-1a9016906487b8ba17f2d3d3c28f9d1cb3ae9b45d685cc2711e20f6b3c6730df.png
-    backgroundColor: "#000"
-    altText: "DEV logo"
+    url: https://res.cloudinary.com/practicaldev/image/fetch/s--EYllUmBG--/c_limit,f_auto,fl_progressive,q_80,w_190/https://res.cloudinary.com/practicaldev/image/fetch/s--m5i3pkpk--/c_limit%252cf_auto%252cfl_progressive%252cq_auto%252cw_880/https://dev-to-uploads.s3.amazonaws.com/i/sf6uve8ehm4ogwka0mez.png
+    backgroundColor: ""
+    altText: "Forem logo"
 
 servers:
   - url: https://dev.to/api
@@ -342,8 +342,6 @@ components:
       properties:
         article:
           type: object
-          required:
-            - title
           properties:
             title:
               type: string
@@ -628,6 +626,23 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Comment"
+
+    FollowedTag:
+      type: object
+      required:
+        - id
+        - name
+        - points
+      properties:
+        id:
+          description: Tag id
+          type: integer
+          format: int64
+        name:
+          type: string
+        points:
+          type: number
+          format: float
 
     Follower:
       type: object
@@ -1226,7 +1241,7 @@ components:
           children: []
         - type_of: comment
           id_code: m357
-          created_at: 2020-07-02T17:19:40Z          
+          created_at: 2020-07-02T17:19:40Z
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1246,7 +1261,7 @@ components:
           children:
           - type_of: comment
             id_code: m35m
-            created_at: 2020-08-01T11:59:40Z          
+            created_at: 2020-08-01T11:59:40Z
             body_html: |
               <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
               <html><body>
@@ -1317,7 +1332,7 @@ components:
       value:
         type_of: comment
         id_code: m357
-        created_at: 2020-08-02T17:19:40Z          
+        created_at: 2020-08-02T17:19:40Z
         body_html: |
           <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
           <html><body>
@@ -1337,7 +1352,7 @@ components:
         children:
         - type_of: comment
           id_code: m35m
-          created_at: 2020-07-02T17:19:40Z          
+          created_at: 2020-07-02T17:19:40Z
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1540,6 +1555,14 @@ components:
           name: webdev
           bg_color_hex: "#562765"
           text_color_hex: "#ffffff"
+    TagsFollowed:
+      value:
+        - id: 13
+          name: discuss
+          points: 3
+        - id: 12
+          name: webdev
+          points: 1
 
     User:
       value:
@@ -1585,6 +1608,8 @@ tags:
     description: Articles are all the posts users create on DEV
   - name: comments
     description: Users can leave comments to articles and podcasts episodes
+  - name: follows
+    description: Resources are user can follow
   - name: followers
     description: Users can follow other users on the website
   - name: listings
@@ -2384,6 +2409,46 @@ paths:
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/followers/users
+
+  /follows/tags:
+    get:
+      operationId: getFollowedTags
+      summary: Followed tags
+      description: |
+        This endpoint allows the client to retrieve a list of the tags
+        they follow.
+      tags:
+        - follows
+        - tags
+      responses:
+        "200":
+          description: A list of followed tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FollowedTag"
+              examples:
+                followers-success:
+                  $ref: "#/components/examples/TagsFollowed"
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+      security:
+        - api_key: []
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/follows/tags
 
   /listings:
     get:
