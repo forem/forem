@@ -18,7 +18,6 @@ class Runtime {
   static isNativeIOS(namespace = null) {
     const nativeCheck =
       /DEV-Native-ios|forem-native-ios/i.test(navigator.userAgent) &&
-      navigator.userAgent === '' &&
       window &&
       window.webkit &&
       window.webkit.messageHandlers;
