@@ -215,7 +215,7 @@ export class ReadingList extends Component {
           />
 
           <main className="crayons-layout__content">
-            <div className="crayons-card">
+            <div className="crayons-card mb-4">
               {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
             </div>
 
