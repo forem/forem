@@ -1,11 +1,16 @@
 import { isInViewport } from '../viewport';
-import useKeyEventListener from './useKeyEventListener';
+import useGlobalKeyEventListener from './useGlobalKeyEventListener';
 
 const NAVIGATION_UP_KEYS = ['k', 'ArrowUp'];
 const NAVIGATION_DOWN_KEYS = ['j', 'ArrowDown'];
 const EVENTFUL_KEYS = ['ArrowUp', 'ArrowDown'];
 
-const useNavigation = (
+const DIRECTIONS = {
+  UP: 'up',
+  DOWN: 'down',
+};
+
+export default (
   itemContainerSelector,
   focusableSelector,
   waterfallItemContainerSelector = undefined,
@@ -22,18 +27,20 @@ const useNavigation = (
     return Array.prototype.find.call(elements, isInViewport);
   };
 
-  useKeyEventListener(
+  useGlobalKeyEventListener(
     [...NAVIGATION_UP_KEYS, ...NAVIGATION_DOWN_KEYS],
     (event) => {
-      const direction = NAVIGATION_UP_KEYS.includes(event.key) ? 'up' : 'down';
+      const direction = NAVIGATION_UP_KEYS.includes(event.key)
+        ? DIRECTIONS.UP
+        : DIRECTIONS.DOWN;
 
-      let closestContainer = document.activeElement?.closest(
+      const closestContainer = document.activeElement?.closest(
         itemContainerSelector,
       );
 
-      let nextContainer = !closestContainer
+      const nextContainer = !closestContainer
         ? getFirstElement()
-        : direction === 'up'
+        : direction === DIRECTIONS.UP
         ? getPreviousElement(closestContainer)
         : getNextElement(closestContainer);
 
@@ -47,5 +54,3 @@ const useNavigation = (
     },
   );
 };
-
-export default useNavigation;

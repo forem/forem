@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 
-import useNavigation from '../utilities/hooks/useNavigation';
+import useGlobalListNavigation from '../utilities/hooks/useGlobalListNavigation';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
@@ -79,7 +79,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     return episodes;
   };
 
-  useNavigation(
+  useGlobalListNavigation(
     'article[id=featured-story-marker],article[id^=article-]',
     'a[id^=article-link-]',
     'div.paged-stories',
