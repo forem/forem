@@ -22,7 +22,8 @@ RSpec.configure do |config|
       driven_by :selenium, using: :chrome, screen_size: [1400, 2000], options: {
         browser: :remote,
         url: ENV["SELENIUM_URL"],
-        desired_capabilities: :chrome
+        desired_capabilities: :chrome,
+        args: "--headless --disable-gpu --no-sandbox"
       }
 
       # Find Docker IP address
