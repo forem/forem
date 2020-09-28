@@ -16,7 +16,7 @@ const useKeyEventListener = (keys, callback) => {
       callback(event);
     };
 
-    if ((keys || []) && callback) {
+    if ((keys || []).length > 0 && callback) {
       window.addEventListener('keydown', eventListener);
       return () => window.removeEventListener('keydown', eventListener);
     }
