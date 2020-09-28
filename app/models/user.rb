@@ -36,27 +36,12 @@ class User < ApplicationRecord
     end
   end
 
-  BEHANCE_URL_REGEXP = %r{\A(http(s)?://)?(www.behance.net|behance.net)/.*\z}.freeze
-  COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
-  DRIBBBLE_URL_REGEXP = %r{\A(http(s)?://)?(www.dribbble.com|dribbble.com)/.*\z}.freeze
   EDITORS = %w[v1 v2].freeze
-  FACEBOOK_URL_REGEXP = %r{\A(http(s)?://)?(www.facebook.com|facebook.com)/.*\z}.freeze
   FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
-  GITLAB_URL_REGEXP = %r{\A(http(s)?://)?(www.gitlab.com|gitlab.com)/.*\z}.freeze
   INBOXES = %w[open private].freeze
-  INSTAGRAM_URL_REGEXP =
-    %r{\A(http(s)?://)?(?:www.)?instagram.com/(?=.{1,30}/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+/?\z}.freeze
-
-  LINKEDIN_URL_REGEXP = %r{\A(http(s)?://)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)/.*\z}.freeze
-  MEDIUM_URL_REGEXP = %r{\A(http(s)?://)?(www.medium.com|medium.com)/.*\z}.freeze
   NAVBARS = %w[default static].freeze
-  STACKOVERFLOW_URL_REGEXP =
-    %r{\A(http(s)?://)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)/.*\z}.freeze
-
-  YOUTUBE_URL_REGEXP = %r{\A(http(s)?://)?(www.youtube.com|youtube.com)/.*\z}.freeze
   STREAMING_PLATFORMS = %w[twitch].freeze
   THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
-  TWITCH_URL_REGEXP = %r{\A(http(s)?://)?(www.twitch.tv|twitch.tv)/.*\z}.freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
   MESSAGES = {
@@ -93,8 +78,6 @@ class User < ApplicationRecord
   has_many :articles, dependent: :destroy
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
-  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user,
-                         class_name: "BackupData", dependent: :delete_all
   has_many :badge_achievements, dependent: :destroy
   has_many :badges, through: :badge_achievements
   has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id,
@@ -154,42 +137,23 @@ class User < ApplicationRecord
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
          :recoverable, :lockable
 
-  validates :behance_url, length: { maximum: 100 }, allow_blank: true, format: BEHANCE_URL_REGEXP
-  validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :config_font, inclusion: { in: FONTS + ["default".freeze], message: MESSAGES[:invalid_config_font] }
   validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }
   validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
   validates :currently_streaming_on, inclusion: { in: STREAMING_PLATFORMS }, allow_nil: true
-  validates :dribbble_url, length: { maximum: 100 }, allow_blank: true, format: DRIBBBLE_URL_REGEXP
   validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
-  validates :employer_name, :employer_url, length: { maximum: 100 }
-  validates :employment_title, :education, :location, length: { maximum: 100 }
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
-  validates :facebook_url, length: { maximum: 1000 }, format: FACEBOOK_URL_REGEXP, allow_blank: true
   validates :feed_referential_link, inclusion: { in: [true, false] }
   validates :feed_url, length: { maximum: 500 }, allow_nil: true
-  validates :gitlab_url, length: { maximum: 100 }, allow_blank: true, format: GITLAB_URL_REGEXP
   validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
   validates :inbox_type, inclusion: { in: INBOXES }
-  validates :instagram_url, length: { maximum: 100 }, allow_blank: true, format: INSTAGRAM_URL_REGEXP
-  validates :linkedin_url, length: { maximum: 350 }, allow_blank: true, format: LINKEDIN_URL_REGEXP
-  validates :mastodon_url, length: { maximum: 100 }
-  validates :medium_url, length: { maximum: 200 }, allow_blank: true, format: MEDIUM_URL_REGEXP
-  validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for, length: { maximum: 500 }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
-  validates :stackoverflow_url, length: { maximum: 150 }, allow_blank: true, format: STACKOVERFLOW_URL_REGEXP
-  validates :summary, length: { maximum: 1300 }, allow_nil: true
-  validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
-  validates :twitch_url, length: { maximum: 100 }, allow_blank: true, format: TWITCH_URL_REGEXP
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
   validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
-  validates :website_url, :employer_url, url: { allow_blank: true, no_local: true }
-  validates :website_url, length: { maximum: 100 }, allow_nil: true
-  validates :youtube_url, length: { maximum: 1000 }, format: YOUTUBE_URL_REGEXP, allow_blank: true
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -666,6 +630,8 @@ class User < ApplicationRecord
   end
 
   def index_roles(_role)
+    return unless persisted?
+
     index_to_elasticsearch_inline
   end
 

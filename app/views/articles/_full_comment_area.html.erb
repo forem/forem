@@ -2,7 +2,7 @@
   <section id="comments" data-updated-at="<%= Time.current %>" class="crayons-card text-padding mb-4">
     <% if @article.show_comments %>
       <header class="relative flex justify-between items-center">
-        <h3 class="fs-2xl fw-bold">Discussion</h3>
+        <h3 class="fs-2xl m:fs-3xl fw-bold">Discussion</h3>
         <div id="comment-subscription">
           <div role="presentation" class="crayons-btn-group">
             <span class="crayons-btn crayons-btn--outlined">Subscribe</span>
@@ -27,9 +27,7 @@
           <% end %>
         </div>
       </div>
-      <div class="show-comments-footer">
-        <%= render "articles/comments_actions" %>
-      </div>
+      <%= render "articles/comments_actions" %>
     <% end %>
   </section>
 <% end %>

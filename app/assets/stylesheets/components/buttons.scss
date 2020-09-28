@@ -1,6 +1,6 @@
 @import '../config/import';
 
-:root {
+.crayons-btn {
   --brand-apple-bg: #000;
   --brand-apple-color: #fff;
   --brand-apple-bg-hover: #1b1b1b;
@@ -13,7 +13,7 @@
   --brand-github-color: #fff;
   --brand-github-bg-hover: #000;
 
-  --brand-facebook-bg: #4267B2;
+  --brand-facebook-bg: #4267b2;
   --brand-facebook-color: #fff;
   --brand-facebook-bg-hover: #476fbf;
 }
@@ -275,7 +275,6 @@
   --color-inverted: var(--brand-facebook-color);
   --color-inverted-hover: var(--brand-facebook-color);
 }
-
 
 // Icon alone
 .crayons-btn--icon,

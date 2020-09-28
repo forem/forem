@@ -26,7 +26,8 @@ class ApplicationController < ActionController::Base
                           omniauth_callbacks
                           registrations
                           confirmations
-                          passwords].freeze
+                          passwords
+                          health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   def verify_private_forem
