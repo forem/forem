@@ -1,6 +1,7 @@
 // Load more button for item list
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 export const ItemListLoadMoreButton = ({ show, onClick }) => {
   if (!show) {
@@ -8,10 +9,8 @@ export const ItemListLoadMoreButton = ({ show, onClick }) => {
   }
 
   return (
-    <div className="load-more-wrapper">
-      <button onClick={onClick} type="button">
-        Load More
-      </button>
+    <div>
+      <Button onClick={onClick} className="w-100" variant="secondary">Load more</Button>
     </div>
   );
 };
