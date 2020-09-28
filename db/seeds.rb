@@ -487,6 +487,7 @@ seeder.create_if_none(Listing) do
         listing_category_id: category_id,
         contact_via_connect: true,
         published: true,
+        originally_published_at: Time.current,
         bumped_at: Time.current,
         tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
       )

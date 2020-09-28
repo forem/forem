@@ -1,6 +1,5 @@
 class Identity < ApplicationRecord
   belongs_to :user
-  has_many :backup_data, as: :instance, class_name: "BackupData", dependent: :destroy
 
   scope :enabled, -> { where(provider: Authentication::Providers.enabled) }
 

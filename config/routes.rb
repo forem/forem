@@ -103,7 +103,6 @@ Rails.application.routes.draw do
           patch "user_status"
           post "merge"
           delete "remove_identity"
-          post "recover_identity"
           post "send_email"
           post "verify_email_ownership"
           patch "unlock_access"
@@ -162,7 +161,11 @@ Rails.application.routes.draw do
           end
         end
         resources :tags, only: [:index]
-        resources :follows, only: [:create]
+        resources :follows, only: [:create] do
+          collection do
+            get :tags
+          end
+        end
         namespace :followers do
           get :users
           get :organizations

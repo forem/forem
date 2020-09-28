@@ -100,6 +100,7 @@ module ListingsToolkit
       # save the listing
       @listing.bumped_at = Time.current
       @listing.published = true
+      @listing.originally_published_at = Time.current
 
       # since we can't raise active record errors in this transaction
       # due to the fact that we need to display them in the :new view,
