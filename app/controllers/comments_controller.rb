@@ -162,11 +162,11 @@ class CommentsController < ApplicationController
 
       render :index
     else
-      @commentable = @comment&.commentable
+      @commentable = @comment.commentable
       render :edit
     end
   rescue StandardError => e
-    @commentable = @comment&.commentable
+    @commentable = @comment.commentable
     flash.now[:error] = "There was an error in your markdown: #{e}"
     render :edit
   end
