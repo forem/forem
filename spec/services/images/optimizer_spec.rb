@@ -8,7 +8,7 @@ RSpec.describe Images::Optimizer, type: :service do
   def stub_imgproxy
     imgproxy_config_stub = Imgproxy::Config.new.tap do |config|
       config.key = "secret"
-      config.endpoint = "https://dev.to"
+      config.salt = "secret"
       config.base64_encode_urls = true
     end
     allow(Imgproxy).to receive(:config).and_return(imgproxy_config_stub)
@@ -25,13 +25,13 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class).to have_received(:cloudinary)
     end
 
-    it "calls cloudinary if imgproxy's key and endpoint is missing" do
+    it "calls cloudinary if imgproxy's key and salt is missing" do
       allow(Imgproxy).to receive(:config).and_return(Imgproxy::Config.new)
       described_class.call(image_url, service: :imgproxy)
       expect(described_class).to have_received(:cloudinary)
     end
 
-    it "calls imgproxy if imgproxy's key and endpoint is provided" do
+    it "calls imgproxy if imgproxy's key and salt is provided" do
       stub_imgproxy
       described_class.call(image_url, service: :imgproxy)
       expect(described_class).to have_received(:imgproxy)
@@ -66,7 +66,7 @@ RSpec.describe Images::Optimizer, type: :service do
     it "works" do
       stub_imgproxy
       imgproxy_url = described_class.imgproxy(image_url, service: :imgproxy, width: 500, height: 500)
-      expect(imgproxy_url).to match(%r{/unsafe/s:500:500/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(imgproxy_url).to match(%r{/s:500:500/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 end
