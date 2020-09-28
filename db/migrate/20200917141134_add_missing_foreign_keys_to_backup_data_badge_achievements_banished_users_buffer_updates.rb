@@ -1,7 +1,5 @@
 class AddMissingForeignKeysToBackupDataBadgeAchievementsBanishedUsersBufferUpdates < ActiveRecord::Migration[6.0]
   def change
-    add_foreign_key :backup_data, :users, column: :instance_user_id, on_delete: :cascade, validate: false
-
     add_foreign_key :badge_achievements, :users, column: :rewarder_id, on_delete: :nullify, validate: false
 
     add_foreign_key :banished_users, :users, column: :banished_by_id, on_delete: :nullify, validate: false

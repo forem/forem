@@ -1379,7 +1379,6 @@ ActiveRecord::Schema.define(version: 2020_09_21_160153) do
   add_foreign_key "articles", "organizations", on_delete: :nullify
   add_foreign_key "articles", "users", on_delete: :cascade
   add_foreign_key "audit_logs", "users"
-  add_foreign_key "backup_data", "users", column: "instance_user_id", on_delete: :cascade
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "badge_achievements", "users", column: "rewarder_id", on_delete: :nullify

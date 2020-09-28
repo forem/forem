@@ -1,7 +1,5 @@
 class ValidateMissingForeignKeysToBackupDataBadgeAchievementsBanishedUsersBufferUpdates < ActiveRecord::Migration[6.0]
   def change
-    validate_foreign_key :backup_data, :users, column: :instance_user_id
-
     validate_foreign_key :badge_achievements, :users, column: :rewarder_id
 
     validate_foreign_key :banished_users, :users, column: :banished_by_id
