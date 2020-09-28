@@ -50,6 +50,7 @@ allowed_sites = [
   "api.knapsackpro.com",
   "elasticsearch",
   "redis",
+  "selenium",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
