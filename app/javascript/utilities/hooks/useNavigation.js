@@ -27,17 +27,17 @@ const useNavigation = (
     (event) => {
       const direction = NAVIGATION_UP_KEYS.includes(event.key) ? 'up' : 'down';
 
-      let closestWrapper = document.activeElement?.closest(
+      let closestContainer = document.activeElement?.closest(
         itemContainerSelector,
       );
 
-      let nextWrapper = !closestWrapper
+      let nextContainer = !closestContainer
         ? getFirstElement()
         : direction === 'up'
-        ? getPreviousElement(closestWrapper)
-        : getNextElement(closestWrapper);
+        ? getPreviousElement(closestContainer)
+        : getNextElement(closestContainer);
 
-      const nextFocusable = nextWrapper?.querySelector(focusableSelector);
+      const nextFocusable = nextContainer?.querySelector(focusableSelector);
       if (nextFocusable) {
         if (EVENTFUL_KEYS.includes(event.key)) {
           event.preventDefault();
