@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
 
-const Chat = ({
+const Compose = ({
   handleKeyDown,
   handleKeyDownEdit,
   handleSubmitOnClick,
@@ -102,7 +102,7 @@ const Chat = ({
   );
 };
 
-Chat.propTypes = {
+Compose.propTypes = {
   handleKeyDown: PropTypes.func.isRequired,
   handleKeyDownEdit: PropTypes.func.isRequired,
   handleSubmitOnClick: PropTypes.func.isRequired,
@@ -115,4 +115,4 @@ Chat.propTypes = {
   handleEditMessageClose: PropTypes.func.isRequired,
 };
 
-export default Chat;
+export default Compose;
