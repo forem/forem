@@ -601,7 +601,6 @@ export default class Chat extends Component {
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
         this.handleMessageSubmit(e.target.value);
-        e.target.value = '';
       }
     }
     if (e.target.value.includes('@')) {
@@ -678,7 +677,6 @@ export default class Chat extends Component {
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
         this.handleMessageSubmitEdit(e.target.value);
-        e.target.value = '';
       }
     }
   };
@@ -839,7 +837,6 @@ export default class Chat extends Component {
     const message = document.getElementById('messageform').value;
     if (message.length > 0) {
       this.handleMessageSubmit(message);
-      document.getElementById('messageform').value = '';
     }
   };
 
@@ -848,7 +845,6 @@ export default class Chat extends Component {
     const message = document.getElementById('messageform').value;
     if (message.length > 0) {
       this.handleMessageSubmitEdit(message);
-      document.getElementById('messageform').value = '';
     }
   };
 
@@ -1717,13 +1713,11 @@ export default class Chat extends Component {
   };
 
   handleEditMessageClose = () => {
-    const textarea = document.getElementById('messageform');
     this.setState({
       startEditing: false,
       markdownEdited: false,
       activeEditMessage: { message: '', markdown: '' },
     });
-    textarea.value = '';
   };
 
   renderDeleteModal = () => {
