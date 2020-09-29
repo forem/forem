@@ -265,6 +265,7 @@ function handleCommentSubmit(event) {
 }
 
 function handleFocus(event) {
+  handleButtonsActivation(event);
   var userStatus = document.body.getAttribute('data-user-status');
   var area = event.target;
   if (userStatus == 'logged-out') {
@@ -276,8 +277,8 @@ function handleFocus(event) {
       showModal('reply-to-comment');
     }, 100);
   } else {
-    var formWrapper = event.target.closest(".comment-form");
-    formWrapper.classList.add("comment-form--initiated");
+    var form = event.target.closest(".comment-form");
+    form.classList.add("comment-form--initiated");
     handleSizeChange(event);
   }
 }
@@ -293,6 +294,7 @@ function handleBlur(event) {
 
 function handleKeyUp(event) {
   handleSizeChange(event);
+  handleButtonsActivation(event);
 }
 
 // Handler for when Ctrl+Enter OR Command+Enter is pressed
@@ -404,7 +406,7 @@ function handleKeyDown(event) {
 
 function handleFormClose(event) {
   event.target.closest('.inner-comment').classList.remove("replying");
-  event.target.closest('.new_comment').remove();
+  event.target.closest('.comment-form').remove();
   initializeCommentsPage();
 }
 
@@ -424,6 +426,18 @@ function handleSizeChange(event) {
   }
 }
 
+function handleButtonsActivation(event) {
+  var textarea = event.target;
+  var buttons = textarea.closest('.comment-form').querySelectorAll('.js-btn-enable');
+  buttons.forEach(function(button) {
+    if( textarea.value.length > 0) {
+      button.disabled = false;
+    } else {
+      button.disabled = true;
+    }
+  });
+}
+
 function validateField(event) {
   if (document.getElementById('text-area')) {
     var commentField = document.getElementById('text-area').value;
@@ -431,6 +445,10 @@ function validateField(event) {
       event.preventDefault();
     }
   }
+}
+
+function handleChange(event) {
+  handleButtonsActivation(event);
 }
 
 function generateUploadFormdata(image) {

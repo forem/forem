@@ -2,6 +2,10 @@
 
 .comment-form {
   display: flex;
+  // &__wrapper {
+  //   display: flex;
+  // }
+  
   &__field {
     display: flex;
     flex: 1 auto;
@@ -70,6 +74,7 @@
     padding: var(--su-4);
     border: 1px solid var(--base-20);
     margin-bottom: var(--su-3);
+    background: var(--card-bg);
   }
 }
 
@@ -87,7 +92,7 @@
   }
 }
 
-.new_comment {
+.comment-form {
   .comment-form__preview {
     display: none;
   }

@@ -136,6 +136,7 @@ function addClickListeners(form) {
 
       if (textAreaReplaceable) {
         textArea.value = content;
+        textArea.focus();
         responsesContainer.classList.toggle('hidden');
       }
     });
@@ -275,7 +276,9 @@ function observeForReplyClick() {
   const observer = new MutationObserver(callback);
 
   const commentTree = document.getElementById('comment-trees-container');
-  observer.observe(commentTree, config);
+  if ( commentTree) {
+    observer.observe(commentTree, config);
+  }
 
   window.addEventListener('beforeunload', () => {
     observer.disconnect();
