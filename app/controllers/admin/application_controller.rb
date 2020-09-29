@@ -16,6 +16,7 @@ module Admin
       { name: "display_ads",           controller: "display_ads" },
       { name: "events",                controller: "events" },
       { name: "growth",                controller: "growth" },
+      { name: "html_variants",         controller: "html_variants" },
       { name: "listings",              controller: "listings" },
       { name: "moderator_actions",     controller: "moderator_actions" },
       { name: "mods",                  controller: "mods" },

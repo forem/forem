@@ -423,6 +423,13 @@ RSpec.describe "/listings", type: :request do
         expect(listing_draft.reload.published).to eq(true)
       end
 
+      it "publishes a draft and ensures it has originally_published_at" do
+        cost = listing_draft.cost
+        create_list(:credit, cost, user: user)
+        put "/listings/#{listing_draft.id}", params: params
+        expect(listing_draft.reload.originally_published_at).not_to eq(nil)
+      end
+
       it "publishes an org draft and charges org credits if first publish" do
         cost = org_listing_draft.cost
         create_list(:credit, cost, organization: organization)

@@ -10,20 +10,13 @@
       <% Rails.application.config.assets.compile = true %>
       <%= Rails.application.assets["crayons.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <% if @article_show %>
-      <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
-      <%= Rails.application.assets["more-articles.css"].to_s.html_safe %>
-      <%= Rails.application.assets["syntax.css"].to_s.html_safe %>
       <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
-      <%= Rails.application.assets["sticky-nav.css"].to_s.html_safe %>
       <% else %>
-      <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <%= Rails.application.assets["podcast-episodes-show.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <% end %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
     </style>
   <% elsif @article_index %>
     <style>
@@ -33,14 +26,11 @@
       <%= Rails.application.assets["articles.css"].to_s.html_safe %>
       <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
       <%= Rails.application.assets["widgets.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <%= Rails.application.assets["preact/sidebar-widget.css"].to_s.html_safe %>
       <% unless @home_page %>
       <%= Rails.application.assets["user-profile-header.css"].to_s.html_safe %>
       <%= Rails.application.assets["sidebar-data.css"].to_s.html_safe %>
       <%= Rails.application.assets["index-comments.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <% end %>
     </style>
   <% elsif @notifications_index || @reading_list_items_index || @history_index %>
@@ -49,61 +39,45 @@
       <%= Rails.application.assets["crayons.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
       <%= Rails.application.assets["readinglist.css"].to_s.html_safe %>
-      <%= Rails.application.assets["history.css"].to_s.html_safe %>
       <%= Rails.application.assets["articles.css"].to_s.html_safe %>
       <%= Rails.application.assets["buttons.css"].to_s.html_safe %>
       <%= Rails.application.assets["widgets.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["notifications.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["user-profile-header.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
     </style>
   <% elsif view_class.start_with? "comments" %>
     <style>
       <%= Rails.application.assets["crayons.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["comments.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
       <%= Rails.application.assets["ltags/LiquidTags.css"].to_s.html_safe %>
-      <%= Rails.application.assets["syntax.css"].to_s.html_safe %>
       <% if view_class.include? "comments-settings" %>
-      <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <% end %>
     </style>
   <% elsif view_class.include?("registrations") || @new_article_not_logged_in %>
     <style>
       <%= Rails.application.assets["crayons.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
-      <%= Rails.application.assets["article-form-needed-legacy.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
     </style>
   <% elsif view_class.include? "listings-" %>
     <style>
       <%= Rails.application.assets["crayons.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["listings.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
     </style>
   <% elsif view_class.include? "credits-" %>
     <style>
       <%= Rails.application.assets["crayons.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["credits.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
     </style>
   <% elsif view_class.include? "videos-index" %>
     <style>
       <%= Rails.application.assets["crayons.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
-      <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["video-collection.css"].to_s.html_safe %>
-      <%= Rails.application.assets["footer.css"].to_s.html_safe %>
     </style>
   <% elsif view_class.include? "badges-index" %>
     <%= stylesheet_link_tag "crayons", media: "all" %>

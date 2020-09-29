@@ -1,0 +1,9 @@
+<h2 class="fs-2xl s:fs-3xl mb-6">Edit HTML Variant:</h2>
+<div class="crayons-card p-6">
+  <%= form_for([:admin, @html_variant], method: :patch) do %>
+    <%= render "form" %>
+    <%= submit_tag "Update HTML Variant", class: "crayons-btn" %>
+    <%= link_to "Preview", admin_html_variant_path(@html_variant), class: "crayons-btn crayons-btn--outlined float-right mx-2" %>
+    <%= link_to "Fork", new_admin_html_variant_path(fork_id: @html_variant.id), class: "crayons-btn crayons-btn--outlined float-right" %>
+  <% end %>
+</div>
