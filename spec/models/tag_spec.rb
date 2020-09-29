@@ -13,6 +13,14 @@ RSpec.describe Tag, type: :model do
 
       it { is_expected.to validate_length_of(:name).is_at_most(30) }
       it { is_expected.not_to allow_value("#Hello", "c++", "AWS-Lambda").for(:name) }
+
+      # rubocop:disable RSpec/NamedSubject
+      it do
+        expect(subject).to belong_to(:mod_chat_channel)
+          .class_name("ChatChannel")
+          .optional
+      end
+      # rubocop:enable RSpec/NamedSubject
     end
 
     describe "bg_color_hex" do
