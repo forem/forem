@@ -69,7 +69,7 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
     end
 
     it "renders a repository with a missing README" do
-      allow_any_instance_of(Github::OauthClient).to receive(:readme).and_raise(Github::Errors::NotFound)
+      allow_any_instance_of(Github::OauthClient).to receive(:readme).and_raise(Github::Errors::NotFound) # rubocop:disable RSpec/AnyInstance
 
       VCR.use_cassette("github_client_repository") do
         template = generate_tag(url_repository).render
