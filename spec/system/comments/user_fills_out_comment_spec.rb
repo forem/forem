@@ -65,8 +65,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     fill_in "text-area", with: raw_comment
     click_button("Preview")
     expect(page).to have_text(raw_comment)
-    expect(page).to have_text("Edit")
-    click_button("Edit")
+    expect(page).to have_text("Continue editing")
+    click_button("Continue editing")
     expect(page).to have_text("Preview")
     click_button("Submit")
     expect(page).to have_text(raw_comment)
@@ -79,7 +79,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     wait_for_javascript
 
     find(".toggle-reply-form").click
-    find(:xpath, "//div[@class='actions']/form[@class='new_comment']/textarea").set(raw_comment)
+    find(:xpath, "//div[@class='actions']/form[@class='comment-form']/textarea").set(raw_comment)
     find(:xpath, "//div[contains(@class, 'reply-actions')]/input[@name='commit']").click
     expect(page).to have_text(raw_comment)
   end

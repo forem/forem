@@ -16,7 +16,7 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   end
 
   def assert_updated
-    expect(page).to have_css("textarea[autofocus='autofocus']")
+    expect(page).to have_css("textarea")
     fill_in "text-area", with: new_comment_text
     click_button("Submit")
     expect(page).to have_text(new_comment_text)
@@ -49,7 +49,7 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
     it "cancels to the article page" do
       user.reload
       visit "#{comment.path}/edit"
-      expect(page).to have_button("Dismiss")
+      expect(page).to have_link("Dismiss")
     end
   end
 end
