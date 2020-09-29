@@ -13,6 +13,9 @@ class Tag < ActsAsTaggableOn::Tag
 
   belongs_to :badge, optional: true
   belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
+
+  has_many :buffer_updates, dependent: :nullify
+
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
