@@ -99,8 +99,14 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   it "renders with a full link" do
-    liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}")
+    liquid = generate_new_liquid("https://#{SiteConfig.app_domain}/#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
+  end
+
+  it "raise error when url belongs to different domain" do
+    expect do
+      generate_new_liquid("https://xkcd.com/2363/")
+    end.to raise_error(StandardError)
   end
 
   it "renders default reading time of 1 minute for short articles" do
@@ -116,13 +122,13 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   it "renders with a full link with a trailing slash" do
-    liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid("https://#{SiteConfig.app_domain}/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "renders with missing article" do
     article.delete
-    liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid("https://#{SiteConfig.app_domain}/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(missing_article_html)
   end
 

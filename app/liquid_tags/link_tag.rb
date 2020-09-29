@@ -21,7 +21,15 @@ class LinkTag < LiquidTagBase
   end
 
   def article_hash(slug)
-    path = Addressable::URI.parse(slug).path
+    url = Addressable::URI.parse(slug)
+    domain = url.port ? "#{url.host}:#{url.port}" : url.host
+    path = url.path
+
+    # If domain is present in url check if it belongs to the app
+    unless domain.blank? || domain&.casecmp?(SiteConfig.app_domain)
+      raise StandardError, "This URL is not an article link: {% link #{slug} %}"
+    end
+
     path.slice!(0) if path.starts_with?("/") # remove leading slash if present
     path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
     extracted_hash = Addressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
