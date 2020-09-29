@@ -1381,7 +1381,12 @@ ActiveRecord::Schema.define(version: 2020_09_21_160153) do
   add_foreign_key "audit_logs", "users"
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
+  add_foreign_key "badge_achievements", "users", column: "rewarder_id", on_delete: :nullify
+  add_foreign_key "banished_users", "users", column: "banished_by_id", on_delete: :nullify
   add_foreign_key "buffer_updates", "articles", on_delete: :cascade
+  add_foreign_key "buffer_updates", "tags", on_delete: :nullify
+  add_foreign_key "buffer_updates", "users", column: "approver_user_id", on_delete: :nullify
+  add_foreign_key "buffer_updates", "users", column: "composer_user_id", on_delete: :nullify
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "classified_listing_endorsements", "classified_listings"
