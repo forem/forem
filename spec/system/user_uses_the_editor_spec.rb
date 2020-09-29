@@ -41,7 +41,7 @@ RSpec.describe "Using the editor", type: :system do
     end
   end
 
-  describe "Submitting an article", js: true do
+  xdescribe "Submitting an article", js: true do
     it "fill out form and submit" do
       fill_markdown_with(read_from_file(raw_text))
       find("button", text: /\ASave changes\z/).click
@@ -71,7 +71,7 @@ RSpec.describe "Using the editor", type: :system do
     end
   end
 
-  describe "using v2 editor", js: true, stub_elasticsearch: true do
+  xdescribe "using v2 editor", js: true, stub_elasticsearch: true do
     before { user.update(editor_version: "v2") }
 
     it "fill out form with rich content and click publish" do

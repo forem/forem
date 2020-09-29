@@ -17,14 +17,14 @@ RSpec.configure do |config|
       # Capybara.server_host = ENV.fetch("CAPYBARA_SERVER_HOST") { "0.0.0.0" }
       # ip = Socket.ip_address_list.detect(&:ipv4_private?).ip_address
       # host! URI::HTTP.build(host: ip, port: Capybara.server_port).to_s
-      puts "*" * 10
 
+      #       driven_by :selenium_chrome
       driven_by :selenium, using: :chrome, screen_size: [1400, 2000], options: {
         browser: :remote,
         url: ENV["SELENIUM_URL"],
-        desired_capabilities: :chrome,
-        args: "--headless --disable-gpu --no-sandbox"
+        desired_capabilities: :chrome
       }
+      puts "*" * 10
 
       # Find Docker IP address
       Capybara.server_host = if ENV["HEADLESS"] == "true"
@@ -34,7 +34,9 @@ RSpec.configure do |config|
                              end
       Capybara.server_port = "43447"
       session_server       = Capybara.current_session.server
-      Capybara.app_host    = "http://#{session_server.host}:#{session_server.port}"
+      # Capybara.app_host    = "http://#{session_server.host}:#{session_server.port}"
+      puts "http://#{session_server.host}:#{session_server.port}"
+      Capybara.app_host = ENV["SELENIUM_URL"]
 
       # driven_by :selenium, using: :chrome, screen_size: [1400, 2000], options: {
       #   browser: :remote,
