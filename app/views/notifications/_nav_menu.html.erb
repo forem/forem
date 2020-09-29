@@ -1,7 +1,7 @@
 <nav class="notification-nav">
   <% if @organizations.present? %>
     <header>
-      <h3 class="crayons-link--header">
+      <h3 class="crayons-subheader">
         <%= @user.name %>
       </h3>
     </header>
@@ -20,7 +20,7 @@
   <% if @organizations.present? %>
     <% @organizations.each do |org| %>
       <header>
-        <h3 class="crayons-link--header">
+        <h3 class="crayons-subheader">
           <%= org.name %>
         </h3>
       </header>
