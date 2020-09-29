@@ -6,4 +6,8 @@ namespace :forem do
     ProfileField.destroy_all
     ProfileFields::AddBaseFields.call
   end
+
+  task health_check_token: :environment do
+    puts SiteConfig.health_check_token
+  end
 end

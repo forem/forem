@@ -1,10 +1,13 @@
 <nav class="mb-6" id="sidebar-nav" aria-label="Primary sidebar nav">
   <% if user_signed_in? %>
-    <a class="sidebar-profile" id="sidebar-profile" href="#">
-      <img src="" class="sidebar-profile--avatar" id="sidebar-profile--avatar" alt="" width="48" height="48">
-      <div class="sidebar-profile--details">
-        <h4 class="sidebar-profile--name" id="sidebar-profile--name"></h4>
-        <small class="sidebar-profile--username" id="sidebar-profile--username"></small>
+    <a class="crayons-link crayons-link--block mb-2 flex break-word items-start" id="sidebar-profile" href="#">
+      <span class="crayons-avatar crayons-avatar--xl shrink-0 mr-2">
+        <img src="" class="crayons-avatar__image" id="sidebar-profile--avatar" alt="" width="48" height="48">
+      </span>
+
+      <div class="flex-1">
+        <h4 class="fs-base fw-bold" id="sidebar-profile--name"></h4>
+        <small class="fs-s opacity-75" id="sidebar-profile--username"></small>
       </div>
     </a>
   <% end %>

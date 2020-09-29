@@ -28,4 +28,10 @@
   &__tags {
     min-height: var(--su-4);
   }
+
+  &__date {
+    font-size: 0.85em;
+    min-height: var(--su-4);
+    color: var(--card-color-tertiary);
+  }
 }

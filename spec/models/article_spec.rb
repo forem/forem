@@ -68,49 +68,6 @@ RSpec.describe Article, type: :model do
           article.destroy
         end
       end
-
-      it "on update syncs elasticsearch data" do
-        allow(article).to receive(:sync_related_elasticsearch_docs)
-        article.save
-        expect(article).to have_received(:sync_related_elasticsearch_docs)
-      end
-    end
-
-    describe "#after_update_commit" do
-      it "if article is unpublished removes reading list reactions from index" do
-        reaction = create(:reaction, reactable: article, category: "readinglist")
-        sidekiq_perform_enqueued_jobs
-        expect(reaction.elasticsearch_doc).not_to be_nil
-
-        unpublished_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: false\ntags: hiring\n---\n\nHello"
-        article.update(body_markdown: unpublished_body)
-        sidekiq_perform_enqueued_jobs
-        expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-      end
-
-      it "if article is published indexes reading list reactions" do
-        reaction = create(:reaction, reactable: article, category: "readinglist")
-        sidekiq_perform_enqueued_jobs
-        unpublished_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: false\ntags: hiring\n---\n\nHello"
-        article.update(body_markdown: unpublished_body)
-        sidekiq_perform_enqueued_jobs
-        expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-
-        published_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
-        article.update(body_markdown: published_body)
-        sidekiq_perform_enqueued_jobs
-        expect(reaction.elasticsearch_doc).not_to be_nil
-      end
-
-      it "indexes reaction if a REACTION_INDEXED_FIELDS is changed" do
-        reaction = create(:reaction, reactable: article, category: "readinglist")
-        allow(article).to receive(:index_to_elasticsearch)
-        allow(article.user).to receive(:index_to_elasticsearch)
-
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Reaction", reaction.id]) do
-          article.update(body_markdown: "---\ntitle: NEW TITLE#{rand(1000)}\n")
-        end
-      end
     end
 
     context "when published" do

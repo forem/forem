@@ -15,6 +15,7 @@ import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
 import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
 import { ItemListTags } from './components/ItemListTags';
+import { Button } from '@crayons';
 
 const STATUS_VIEW_VALID = 'valid,confirmed';
 const STATUS_VIEW_ARCHIVED = 'archived';
@@ -23,11 +24,11 @@ const READING_LIST_PATH = '/readinglist';
 
 const FilterText = ({ selectedTags, query, value }) => {
   return (
-    <h1>
+    <h2 className="fw-bold fs-l">
       {selectedTags.length === 0 && query.length === 0
         ? value
         : 'Nothing with this filter 🤔'}
-    </h1>
+    </h2>
   );
 };
 
@@ -122,34 +123,26 @@ export class ReadingList extends Component {
 
     if (itemsLoaded && this.statusViewValid()) {
       return (
-        <div className="items-empty">
+        <div className="align-center p-9 py-10 color-base-80">
           <FilterText
             selectedTags={selectedTags}
             query={query}
-            value="Your Reading List is Lonely"
+            value="Your reading list is empty"
           />
-          <h3>
-            Hit the
-            <span className="btn--highlight">SAVE</span>
-            or
-            <span className="btn--highlight">
-              Bookmark
-              <span role="img" aria-label="Bookmark">
-                🔖
-              </span>
-            </span>
-            to start your Collection
-          </h3>
+          <p class="color-base-60 pt-2">
+            Hit the <span class="fw-bold">Save</span> button to start your
+            Collection.
+          </p>
         </div>
       );
     }
 
     return (
-      <div className="items-empty">
+      <div className="align-center p-9 py-10 color-base-80">
         <FilterText
           selectedTags={selectedTags}
           query={query}
-          value="Your Archive List is Lonely"
+          value="Your Archive is empty..."
         />
       </div>
     );
@@ -158,7 +151,6 @@ export class ReadingList extends Component {
   render() {
     const {
       items,
-      itemsLoaded,
       totalCount,
       availableTags,
       selectedTags,
@@ -168,7 +160,7 @@ export class ReadingList extends Component {
 
     const isStatusViewValid = this.statusViewValid();
 
-    const archiveButtonLabel = isStatusViewValid ? 'archive' : 'unarchive';
+    const archiveButtonLabel = isStatusViewValid ? 'Archive' : 'Unarchive';
     const itemsToRender = items.map((item) => {
       return (
         <ItemListItem item={item}>
@@ -188,67 +180,53 @@ export class ReadingList extends Component {
       ''
     );
     return (
-      <div className="home item-list">
-        <div className="side-bar">
-          <div className="widget filters">
+      <div>
+        <header className="crayons-layout flex justify-between items-center pb-0">
+          <h1 class="fs-2xl s:fs-3xl">
+            {isStatusViewValid ? 'Reading list' : 'Archive'}
+            {` (${totalCount > 0 ? totalCount : '0'})`}
+          </h1>
+
+          <div class="flex items-center">
+            <Button
+              onClick={(e) => this.toggleStatusView(e)}
+              className="mr-2 whitespace-nowrap"
+              variant="outlined"
+              url={READING_LIST_ARCHIVE_PATH}
+              tagName="a"
+              data-no-instant
+            >
+              {isStatusViewValid ? 'View archive' : 'View reading list'}
+            </Button>
             <input
-              aria-label="Search your list"
+              aria-label="Search..."
               onKeyUp={this.onSearchBoxType}
-              placeHolder="search your list"
+              placeholder="Search..."
+              className="crayons-textfield"
             />
-            <div className="filters-header">
-              <h4 className="filters-header-text">my tags</h4>
-              {Boolean(selectedTags.length) && (
-                <a
-                  className="filters-header-action"
-                  href={
-                    isStatusViewValid
-                      ? READING_LIST_PATH
-                      : READING_LIST_ARCHIVE_PATH
-                  }
-                  onClick={this.clearSelectedTags}
-                  data-no-instant
-                >
-                  clear all
-                </a>
-              )}
-            </div>
-            <ItemListTags
-              availableTags={availableTags}
-              selectedTags={selectedTags}
-              onClick={this.toggleTag}
-            />
-
-            <div className="status-view-toggle">
-              <a
-                href={READING_LIST_ARCHIVE_PATH}
-                onClick={(e) => this.toggleStatusView(e)}
-                data-no-instant
-              >
-                {isStatusViewValid ? 'View Archive' : 'View Reading List'}
-              </a>
-            </div>
           </div>
-        </div>
+        </header>
 
-        <div className="items-container">
-          <div className={`results ${itemsLoaded ? 'results--loaded' : ''}`}>
-            <div className="results-header">
-              {isStatusViewValid ? 'Reading List' : 'Archive'}
-              {` (${totalCount > 0 ? totalCount : 'empty'})`}
-            </div>
-            <div>
+        <div className="crayons-layout crayons-layout--2-cols">
+          <ItemListTags
+            availableTags={availableTags}
+            selectedTags={selectedTags}
+            onClick={this.toggleTag}
+          />
+
+          <main className="crayons-layout__content">
+            <div className="crayons-card mb-4">
               {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
             </div>
-          </div>
 
-          <ItemListLoadMoreButton
-            show={showLoadMoreButton}
-            onClick={this.loadNextPage}
-          />
+            <ItemListLoadMoreButton
+              show={showLoadMoreButton}
+              onClick={this.loadNextPage}
+            />
+          </main>
+
+          {snackBar}
         </div>
-
-        {snackBar}
       </div>
     );
   }

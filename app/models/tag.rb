@@ -12,6 +12,7 @@ class Tag < ActsAsTaggableOn::Tag
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
 
   belongs_to :badge, optional: true
+  belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -83,10 +84,6 @@ class Tag < ActsAsTaggableOn::Tag
     # If we decide to allow diacritics in the future, we should replace the
     # following regex with [:alnum:].
     errors.add(:name, "contains non-ASCII characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
-  end
-
-  def mod_chat_channel
-    ChatChannel.find(mod_chat_channel_id) if mod_chat_channel_id
   end
 
   private

@@ -1,13 +1,9 @@
 class Reaction < ApplicationRecord
-  include Searchable
   BASE_POINTS = {
     "vomit" => -50.0,
     "thumbsup" => 5.0,
     "thumbsdown" => -10.0
   }.freeze
-
-  SEARCH_SERIALIZER = Search::ReactionSerializer
-  SEARCH_CLASS = Search::Reaction
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsup thumbsdown vomit].freeze
   PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
@@ -41,8 +37,6 @@ class Reaction < ApplicationRecord
   after_create_commit :record_field_test_event
   after_commit :async_bust
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
-  after_commit :index_to_elasticsearch, if: :indexable?, on: %i[create update]
-  after_commit :remove_from_elasticsearch, if: :indexable?, on: [:destroy]
 
   class << self
     def count_for_article(id)

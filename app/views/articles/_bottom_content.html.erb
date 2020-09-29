@@ -1,21 +1,20 @@
 <% if articles %>
-<div class="more-articles crayons-card crayons-card--secondary">
-  <h1 class="fs-4xl fw-bold mb-4">
-    Read Next
-  </h1>
+<div class="crayons-card crayons-card--secondary text-padding mb-4">
+  <h2 class="fs-2xl m:fs-3xl fw-bold">Read next</h2>
+
   <% articles.each do |article| %>
-    <a href="<%= article.path %>" data-preload-image="<%= cloud_cover_url(article.main_image) %>">
-      <div class="single-other-article">
-        <div class="picture">
+    <a href="<%= article.path %>" data-preload-image="<%= cloud_cover_url(article.main_image) %>" class="crayons-link mt-6 block">
+      <div class="flex items-center">
+        <span class="crayons-avatar crayons-avatar--2xl mr-4 shrink-0">
           <%= optimized_image_tag(article.cached_user.profile_image_url,
                                   optimizer_options: { crop: "imagga_scale", width: 100, height: 100 },
-                                  image_options: { loading: "lazy", alt: "#{article.cached_user.username} profile image" }) %>
-        </div>
-        <div class="content">
-          <h3 class="fs-2xl fw-bold mb-0"><%= article.title %></h3>
-          <h4 class="fs-base">
+                                  image_options: { loading: "lazy", alt: "#{article.cached_user.username} profile image", class: "crayons-avatar__image" }) %>
+        </span>
+        <div>
+          <h3 class="fs-xl mb-0 lh-tight"><%= article.title %></h3>
+          <p class="opacity-75 pt-1">
             <%= article.cached_user.name %> - <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
-          </h4>
+          </p>
         </div>
       </div>
     </a>

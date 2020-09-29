@@ -164,6 +164,7 @@
   }
 
   &__toolbar {
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     background: var(--base-0);

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_14_145500) do
+ActiveRecord::Schema.define(version: 2020_09_21_160153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -179,15 +179,6 @@ ActiveRecord::Schema.define(version: 2020_09_14_145500) do
     t.bigint "user_id"
     t.index ["data"], name: "index_audit_logs_on_data", using: :gin
     t.index ["user_id"], name: "index_audit_logs_on_user_id"
-  end
-
-  create_table "backup_data", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.bigint "instance_id", null: false
-    t.string "instance_type", null: false
-    t.bigint "instance_user_id"
-    t.jsonb "json_data", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "badge_achievements", force: :cascade do |t|
@@ -374,6 +365,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_145500) do
     t.datetime "last_buffered"
     t.string "location"
     t.bigint "organization_id"
+    t.datetime "originally_published_at"
     t.text "processed_html"
     t.boolean "published"
     t.string "slug"
@@ -1407,6 +1399,9 @@ ActiveRecord::Schema.define(version: 2020_09_14_145500) do
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
+  add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
+  add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
+  add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
   add_foreign_key "github_repos", "users", on_delete: :cascade
   add_foreign_key "html_variant_successes", "articles", on_delete: :nullify
   add_foreign_key "html_variant_successes", "html_variants", on_delete: :cascade
@@ -1417,6 +1412,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_145500) do
   add_foreign_key "mentions", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
+  add_foreign_key "notes", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "notifications", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
@@ -1448,11 +1444,15 @@ ActiveRecord::Schema.define(version: 2020_09_14_145500) do
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
   add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
+  add_foreign_key "taggings", "tags", on_delete: :cascade
+  add_foreign_key "tags", "badges", on_delete: :nullify
+  add_foreign_key "tags", "chat_channels", column: "mod_chat_channel_id", on_delete: :nullify
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
+  add_foreign_key "users_roles", "roles", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"

@@ -1,0 +1,227 @@
+@import '../config/import';
+
+.top-bar {
+  --indicator-outline: var(--header-bg);
+  --dropdown-display: none;
+
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
+  height: var(--header-height);
+  background: var(--header-bg);
+  box-shadow: 0 1px 1px var(--header-shadow);
+
+  &,
+  &::after,
+  &::before,
+  & *,
+  & *::after,
+  & *::before {
+    box-sizing: border-box; // todo: make it global when ready
+  }
+
+  &__container {
+    max-width: var(--site-width);
+    padding-left: var(--su-2);
+    padding-right: var(--layout-padding);
+    margin: auto;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    @media (min-width: $breakpoint-m) {
+      padding-left: var(--layout-padding);
+    }
+  }
+
+  .crayons-indicator {
+    position: absolute;
+    top: calc(var(--su-1) * -1);
+    right: 0;
+    box-shadow: 0 0 0 2px var(--indicator-outline);
+  }
+}
+
+// Logo
+.top-bar--logo {
+  display: flex;
+
+  .logo {
+    width: 50px;
+    height: 40px;
+    padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
+    background: var(--logo-bg);
+    fill: var(--logo-color);
+    border-radius: 3px;
+  }
+}
+
+// Search bar
+.top-bar--search {
+  max-width: 420px;
+  flex: 1 auto;
+  margin: 0 var(--su-2);
+
+  @media (min-width: $breakpoint-s) {
+    margin: 0 var(--su-4);
+  }
+}
+
+// Actions on right side...
+.top-bar__links {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.top-bar__link {
+  position: relative;
+  display: flex;
+  padding: var(--su-2);
+  margin: 0 var(--su-1);
+  border-radius: 50%;
+  align-items: center;
+  color: var(--header-icons-color);
+  outline: 0;
+  transition: background var(--transition-props);
+
+  &:hover,
+  &:focus {
+    --indicator-outline: var(--header-bg-hover);
+
+    color: var(--header-icons-color-hover);
+    background: var(--header-bg-hover);
+  }
+
+  &--current {
+    --indicator-outline: var(--header-bg-current);
+
+    color: var(--header-icons-color-hover);
+    background: var(--header-bg-current) !important;
+    .crayons-indicator {
+      display: none;
+    }
+  }
+}
+
+// Dropdown under profile picture / hamburger icon
+.top-bar__menu {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 20;
+  &__trigger {
+    all: unset;
+    padding: var(--su-1);
+    margin: 0 var(--su-1);
+    border-radius: 50%;
+    color: var(--header-icons-color);
+    cursor: pointer;
+  }
+
+  &__dropdown {
+    display: var(--dropdown-display);
+    top: var(--header-height);
+  }
+
+  &.showing,
+  &.desktop:hover,
+  &.desktop:focus {
+    --dropdown-display: block;
+
+    .top-bar__menu__trigger {
+      color: var(--header-icons-color-hover);
+      background: var(--header-bg-hover);
+    }
+  }
+}
+
+.skip-content-link {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100px);
+  background: var(--body-color);
+  color: var(--body-color-inverted);
+  z-index: 9999;
+  padding: var(--su-4);
+  pointer-events: none;
+  opacity: 0;
+  border-radius: var(--radius);
+  outline: 0;
+
+  &:focus {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translate(-50%, var(--header-height) / 2);
+  }
+}
+
+.pwa-nav-buttons {
+  height: 100%;
+  display: none;
+  padding-left: var(--su-2);
+  button {
+    all: unset;
+    padding: 0 var(--su-2);
+    color: var(--header-icons-color);
+
+    &:hover {
+      color: var(--header-icons-color-hover);
+    }
+  }
+  @media (min-width: $breakpoint-m) {
+    &.pwa-nav-buttons--showing {
+      display: flex;
+    }
+  }
+}
+
+.authentication-header {
+  &__container {
+    padding: var(--su-6);
+  }
+
+  &__image-container {
+    width: var(--su-8);
+    height: var(--su-8);
+    margin-bottom: var(--su-2);
+  }
+
+  &__image {
+    border-radius: var(--radius);
+    transform: rotate(-10deg);
+    height: auto;
+    width: 100%;
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-2xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+    margin-bottom: var(--su-4);
+  }
+
+  &__actions {
+    display: grid;
+    grid-gap: var(--su-1);
+
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      flex-direction: column;
+      width: max-content;
+      justify-self: center;
+    }
+  }
+}

@@ -1,8 +1,6 @@
 @import 'variables';
 @import 'fundamentals';
 @import 'scaffolds';
-@import 'top-bar';
-@import 'footer';
 @import 'articles';
 @import 'index-comments';
 @import 'article-show';
@@ -11,15 +9,11 @@
 @import 'settings';
 @import 'podcast-episodes-show';
 @import 'podcast-form';
-@import 'more-articles';
 @import 'user-profile-header';
 @import 'comments';
-@import 'leaderboard';
 @import 'notifications';
 @import 'notifications-welcome-broadcast';
-@import 'syntax';
 @import 'signup-modal';
-@import 'tags';
 @import 'live';
 @import 'preact/sidebar-widget';
 @import 'preact/article-form';
@@ -29,14 +23,12 @@
 @import 'video-player';
 @import 'listings';
 @import 'credits';
-@import 'item-list';
 @import 'color-picker';
 @import 'moderators';
 @import 'theme-selector';
 @import 'snackbars';
 @import 'buttons';
 @import 'widgets';
-@import 'social_media';
 @import 'onboarding';
 
 @import 'ltags/LiquidTags';
@@ -44,5 +36,3 @@
 @import 'chat';
 
 @import 'email_subscriptions';
-
-@import 'article-form-needed-legacy';
