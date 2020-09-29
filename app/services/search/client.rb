@@ -21,7 +21,7 @@ module Search
       end
 
       # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
-      def respond_to_missing?(method, _include_all = false) # rubocop:disable Style/OptionalBooleanParameter
+      def respond_to_missing?(method, _include_all = false)
         target.respond_to?(method, false) || super
       end
 
