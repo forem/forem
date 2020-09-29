@@ -19,3 +19,89 @@
     <div class="single-article-small-pic" id="article-index-hidden-div" style="display:none"></div>
   <% end %>
 </div>
+
+<script>
+function isInViewport(element) {
+  const boundingRect = element.getBoundingClientRect();
+  const clientHeight =
+    window.innerHeight || document.documentElement.clientHeight;
+  const clientWidth = window.innerWidth || document.documentElement.clientWidth;
+  return (
+    boundingRect.top >= 0 &&
+    boundingRect.left >= 0 &&
+    boundingRect.bottom <= clientHeight &&
+    boundingRect.right <= clientWidth
+  );
+}
+
+function getFirstArticle() {
+  const elements = document.querySelectorAll('.crayons-story');
+  return Array.prototype.find.call(elements, isInViewport);
+}
+
+function getNextArticle(article) {
+  const sibling = article?.nextElementSibling;
+  if (
+    sibling &&
+    !sibling.classList.contains('crayons-story') &&
+    !sibling.classList.contains('paged-stories')
+  ) {
+    return sibling.nextElementSibling;
+  }
+  return sibling;
+}
+
+function getPreviousArticle(article) {
+  const sibling =
+    article?.previousElementSibling ||
+    article?.closest('div.substories,div.paged-stories')?.previousElementSibling;
+  if (!sibling?.classList.contains('crayons-story')) {
+    return sibling.previousElementSibling;
+  }
+  return sibling;
+}
+
+const ARTICLE_NAVIGATION_UP_KEYS = ['k', 'ArrowUp'];
+const ARTICLE_NAVIGATION_DOWN_KEYS = ['j', 'ArrowDown'];
+
+function articleKeyEventListener(event) {
+  const { activeElement } = document;
+
+  if (
+    ![...ARTICLE_NAVIGATION_UP_KEYS, ...ARTICLE_NAVIGATION_DOWN_KEYS].includes(
+      event.key,
+    ) ||
+    ['INPUT', 'TEXTAREA'].includes(activeElement.tagName) ||
+    activeElement.classList.contains('input')
+  ) {
+    return;
+  }
+
+  const direction = ARTICLE_NAVIGATION_UP_KEYS.includes(event.key)
+    ? 'up'
+    : 'down';
+
+  const closestArticle = document.activeElement?.closest('.crayons-story');
+
+  const nextArticle = !closestArticle
+    ? getFirstArticle()
+    : direction === 'up'
+    ? getPreviousArticle(closestArticle)
+    : getNextArticle(closestArticle);
+
+  const nextArticleLink = nextArticle?.querySelector('a[id^=article-link-]');
+
+  if (nextArticleLink) {
+    if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+      event.preventDefault();
+    }
+    nextArticleLink.focus();
+  }
+}
+
+function registerArticleKeyNavigation() {
+  window.addEventListener('keydown', articleKeyEventListener);
+}
+
+registerArticleKeyNavigation();
+</script>
