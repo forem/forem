@@ -93,5 +93,16 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
         end
       end
     end
+
+    describe "regressions" do
+      it "parses a repository with invalid img tags" do
+        VCR.use_cassette("github_client_repository_invalid_img_tag") do
+          # this particular repository contains the tag `<img style="max-width:100%;">`
+          # which shouldn't fail rendering
+          html = generate_tag("sirixdb/sirix").render
+          expect(html).to include("sirix")
+        end
+      end
+    end
   end
 end
