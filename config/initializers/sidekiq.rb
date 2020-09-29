@@ -38,7 +38,7 @@ Sidekiq.configure_server do |config|
   sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"]
   # On Heroku this configuration is overridden and Sidekiq will point at the redis
   # instance given by the ENV variable REDIS_PROVIDER
-  config.redis = { url: sidekiq_url }
+  config.redis = { url: sidekiq_url, namespace: ENV["APP_NAME"] }
 
   config.server_middleware do |chain|
     chain.add Sidekiq::HoneycombMiddleware
