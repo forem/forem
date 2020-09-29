@@ -58,6 +58,7 @@ const Compose = ({
               : 'crayons-textfield composer-textarea'
           }
           id="messageform"
+          data-testid="messageform"
           placeholder={placeholder}
           onKeyDown={onKeyDown}
           onKeyPress={handleMention}
