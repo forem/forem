@@ -142,8 +142,15 @@ class CommentsController < ApplicationController
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
 
-      # The following sets variables used in the index view. We render the index
-      # view directly to avoid having to redirect which leads to caching issues.
+      # The following sets variables used in the index view. We render the
+      # index view directly to avoid having to redirect.
+      #
+      # Redirects lead to a race condition where we redirect to a cached view
+      # after updating data and we don't bust the cache fast enough before
+      # hitting the view, therefore stale content ends up being served from
+      # cache.
+      #
+      # https://github.com/forem/forem/issues/10338#issuecomment-693401481
       @on_comments_page = true
       @root_comment = @comment
       @commentable = @comment.commentable
