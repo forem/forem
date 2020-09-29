@@ -38,7 +38,7 @@ function handleCommentPreview(event) {
       getAndShowPreview(preview, editor);
       const editorHeight = editor.offsetHeight + 43; // not ideal but prevents jumping screen
       preview.style.minHeight = `${editorHeight}px`;
-      trigger.innerHTML = 'Edit';
+      trigger.innerHTML = 'Continue editing';
       form.classList.toggle('preview-open');
     }
   }
