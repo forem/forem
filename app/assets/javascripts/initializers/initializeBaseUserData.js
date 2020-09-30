@@ -103,28 +103,18 @@ function addRelevantButtonsToComments(user) {
   }
 }
 
-function initializeBaseUserData() {
-  const user = userData();
-  const userProfileLinkHTML =
-    '<a href="/' +
-    user.username +
-    '" id="first-nav-link" class="crayons-link crayons-link--block"><div>' +
-    '<span class="fw-medium block">' +
-    user.name +
-    '</span>' +
-    '<small class="fs-s color-base-50">@' +
-    user.username +
-    '</small>' +
-    '</div></a>';
-  document.getElementById(
-    'user-profile-link-placeholder',
-  ).innerHTML = userProfileLinkHTML;
+function setCurrentUserToNavBar(user) {
   const userNavLink = document.getElementById('first-nav-link');
   userNavLink.href = `/${user.username}`;
   userNavLink.querySelector('span').textContent = user.name;
   userNavLink.querySelector('small').textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
+}
 
+function initializeBaseUserData() {
+  const user = userData();
+
+  setCurrentUserToNavBar(user);
   initializeUserSidebar(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);
