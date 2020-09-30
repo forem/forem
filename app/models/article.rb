@@ -74,6 +74,7 @@ class Article < ApplicationRecord
   validate :validate_video
   validate :validate_co_authors
   validate :validate_co_authors_must_not_be_the_same
+  validate :validate_co_authors_exist
 
   before_validation :evaluate_markdown, :create_slug
   before_save :update_cached_user
@@ -567,6 +568,13 @@ class Article < ApplicationRecord
     return if co_author_ids.uniq.count == co_author_ids.count
 
     errors.add(:base, "co-author IDs must be unique")
+  end
+
+  def validate_co_authors_exist
+    valid_co_authors = User.where(id: co_author_ids).count == co_author_ids.count
+    return if valid_co_authors
+
+    errors.add(:co_author_ids, "must be valid user IDs containing only numbers")
   end
 
   def past_or_present_date
