@@ -133,9 +133,7 @@ class ListingsController < ApplicationController
     # cache.
     #
     # https://github.com/forem/forem/issues/10338#issuecomment-693401481
-    published_listings = Listing.where(published: true)
-
-    @listings = published_listings
+    @listings = Listing.where(published: true)
       .order(bumped_at: :desc)
       .includes(:user, :organization, :taggings)
       .limit(12)
