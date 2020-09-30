@@ -8,6 +8,7 @@ class GenericPins < ApplicationRecord #migrate later
   validates :pinnable_type, inclusion: { in: %w[Article Comment] } # Future could be comments, etc.
   validate :only_five_pins_per_profile, on: :create
   validate :pinnable_belongs_to_profile
+  validate :article_to_article
 
   private
 
