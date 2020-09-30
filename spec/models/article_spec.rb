@@ -73,7 +73,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "is invalid if the co_author ID is not greater than 0" do
-        article.co_author_ids = [user.id, "0"]
+        article.co_author_ids = [user.id, 0]
 
         expect(article).not_to be_valid
       end

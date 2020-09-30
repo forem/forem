@@ -556,27 +556,25 @@ class Article < ApplicationRecord
   end
 
   def validate_co_authors
-    return unless co_author_ids
+    return if co_author_ids.blank?
+
     return unless co_author_ids.include?(user_id)
 
     errors.add(:co_author_ids, "must not be the same user as the author")
   end
 
   def validate_co_authors_must_not_be_the_same
-    return if co_author_ids.blank?
-
-    return if co_author_ids.uniq.count == co_author_ids.count
+    return if co_author_ids.blank? || co_author_ids.uniq.count == co_author_ids.count
 
     errors.add(:base, "co-author IDs must be unique")
   end
 
   def validate_co_authors_exist
-    return unless co_author_ids
+    return if co_author_ids.blank?
 
-    valid_co_authors = User.where(id: co_author_ids).count == co_author_ids.count
-    return if valid_co_authors
+    return if User.where(id: co_author_ids).count == co_author_ids.count
 
-    errors.add(:co_author_ids, "must be valid user IDs containing only numbers")
+    errors.add(:co_author_ids, "must be valid user IDs")
   end
 
   def past_or_present_date
