@@ -11,6 +11,6 @@
     </a>
   </div>
   <div>
-    <div><%= link_to "Delete Group", admin_navigation_links_path, data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %></div>
+    <div><%= link_to "Delete", admin_navigation_link_path(id: link[:name]), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %></div>
   </div>
 <% end %>

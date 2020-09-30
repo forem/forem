@@ -22,6 +22,16 @@ module Admin
       redirect_to admin_navigation_links_url
     end
 
+    def destroy
+      navigation_links = SiteConfig.navigation
+      updated_navigation_links = navigation_links.reject { |link| link[:name] == params[:id] }
+      SiteConfig.navigation = updated_navigation_links
+
+      # how would this fail?
+      flash[:success] = "Navigation Link #{params[:id]} deleted"
+      redirect_to admin_navigation_links_url
+    end
+
     private
 
     def config_params
