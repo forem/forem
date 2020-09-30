@@ -79,7 +79,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     wait_for_javascript
 
     find(".toggle-reply-form").click
-    find(:xpath, "//div[@class='actions']/form[@class='comment-form']/textarea").set(raw_comment)
+    wait_for_javascript
+    find(:xpath, "//textarea[contains(@id, \"textarea-for\")]").set(raw_comment)
     find(:xpath, "//div[contains(@class, 'reply-actions')]/input[@name='commit']").click
     expect(page).to have_text(raw_comment)
   end
@@ -112,10 +113,10 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       visible: :hidden,
     )
 
-    expect(page).to have_css("div.file-upload-error")
     expect(page).to have_css(
       "div.file-upload-error",
       text: "File size too large (0.07 MB). The limit is 0 MB.",
+      visible: :hidden,
     )
   end
 
@@ -132,10 +133,10 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       visible: :hidden,
     )
 
-    expect(page).to have_css("div.file-upload-error")
     expect(page).to have_css(
       "div.file-upload-error",
       text: "Invalid file format (image). Only video files are permitted.",
+      visible: :hidden,
     )
   end
 
@@ -152,10 +153,10 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       visible: :hidden,
     )
 
-    expect(page).to have_css("div.file-upload-error")
     expect(page).to have_css(
       "div.file-upload-error",
       text: "File name is too long. It can't be longer than 5 characters.",
+      visible: :hidden,
     )
   end
 end
