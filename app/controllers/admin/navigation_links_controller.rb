@@ -24,6 +24,7 @@ module Admin
 
     def destroy
       navigation_links = SiteConfig.navigation
+      # use a variable thats unique, or make name unique
       updated_navigation_links = navigation_links.reject { |link| link[:name] == params[:id] }
       SiteConfig.navigation = updated_navigation_links
 
