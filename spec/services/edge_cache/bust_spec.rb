@@ -4,6 +4,21 @@ RSpec.describe EdgeCache::Bust, type: :service do
   let(:user) { create(:user) }
   let(:path) { "/#{user.username}" }
 
+  describe "#call" do
+    before do
+      configure_fastly
+    end
+
+    let(:cache_bust_service) { described_class.new(path) }
+
+    it "returns cache bust response" do
+      allow(cache_bust_service).to receive(:bust_fastly_cache).and_return("success")
+
+      cache_bust_service.call
+      expect(cache_bust_service.response).to eq("success")
+    end
+  end
+
   describe "#bust_fastly_cache" do
     context "when fastly is not configured" do
       before do

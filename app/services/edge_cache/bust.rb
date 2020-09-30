@@ -16,6 +16,7 @@ module EdgeCache
 
       @path = path
       @provider = determine_provider
+      @response = nil
     end
 
     def call
@@ -23,10 +24,11 @@ module EdgeCache
 
       bust_method = "bust_#{provider}_cache"
       if respond_to?(bust_method, true)
-        __send__(bust_method)
+        @response = __send__(bust_method)
       else
         # We theoretically should never hit this unless someone adds a provider
         # but doesn't add the implementation for it into the #call method.
+        @response = nil
         Rails.logger.warn("EdgeCache::Bust was called with an invalid provider: #{provider}")
         DatadogStatsClient.increment("edgecache_bust.invalid_provider", tags: ["provider:#{provider}"])
       end
@@ -34,7 +36,7 @@ module EdgeCache
       self
     end
 
-    attr_reader :provider, :path
+    attr_reader :provider, :path, :response
 
     private
 
