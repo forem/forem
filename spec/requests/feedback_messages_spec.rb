@@ -69,7 +69,7 @@ RSpec.describe "feedback_messages", type: :request do
       end
     end
 
-    context "when a user submits a report" do
+    context "when a user that qualifies to bypass_recaptcha? submits a report" do
       let(:user) { create(:user, created_at: 2.months.ago) }
 
       before do
