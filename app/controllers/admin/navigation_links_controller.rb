@@ -9,11 +9,15 @@ module Admin
     def create
       return if config_params["navigation"].blank?
 
-      update_navigation_links = SiteConfigs::UpdateNavigation.call(config_params["navigation"])
-      if SiteConfigs::UpdateNavigation.call(config_params["navigation"]).success?
+      new_links = config_params["navigation"]
+      validation = SiteConfigs::ValidateNavigation.call(new_links)
+      if validation.success?
+        update_navigation_links = SiteConfig.navigation + new_links
+        SiteConfig.navigation = update_navigation_links
+
         flash[:notice] = "Navigation Link #{config_params['navigation'][0]['name']} was successfully added."
       else
-        flash[:danger] = "Navigation Links error: #{update_navigation_links.errors[0].join(' , ')}"
+        flash[:danger] = "Navigation Links error: #{validation.errors[0].join(' , ')}"
       end
       redirect_to admin_navigation_links_url
     end
