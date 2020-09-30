@@ -40,7 +40,7 @@ import Compose from './compose';
 import Message from './message';
 import ActionMessage from './actionMessage';
 import Content from './content';
-import ActiveChannelChatMessage from './ActiveChannelChatMessage';
+import ChatMessages from './ActiveChatChannel/ChatMessages.js';
 import { VideoContent } from './videoContent';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 
@@ -1489,7 +1489,16 @@ export default class Chat extends Component {
               }}
               id="messagelist"
             >
-              {this.renderMessages()}
+              <ChatMessages
+                activeChannelId={activeChannelId}
+                messages={messages}
+                showTimestamp={showTimestamp}
+                activeChannel={activeChannel}
+                currentUserId={currentUserId}
+                triggerActiveContent={this.triggerActiveContent}
+                triggerEditMessage={this.triggerEditMessage}
+                triggerDeleteMessage={this.triggerDeleteMessage}
+              />
               <div
                 className="messagelist__sentinel"
                 id="messagelist__sentinel"
@@ -1623,6 +1632,7 @@ export default class Chat extends Component {
     el.selectionStart = start + name.length + 1;
     el.selectionEnd = start + name.length + 1;
     el.focus();
+    console.log(text, end, after, start, el, name, el.value);
     this.setState({ showMemberlist: false });
   };
 

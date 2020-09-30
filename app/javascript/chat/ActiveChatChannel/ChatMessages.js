@@ -5,7 +5,7 @@ import Message from '../message';
 import DirectChatInfoMessage from './IntroductionMessages/DireactIntoMessage';
 import OpenChatInfoMessagge from './IntroductionMessages/OpenIntroMessage';
 
-const ActiveChannelChatMessage = ({
+const ChatMessages = ({
   activeChannelId,
   messages,
   showTimestamp,
@@ -70,4 +70,4 @@ Message.propTypes = {
   triggerDeleteMessage: PropTypes.func,
 };
 
-export default ActiveChannelChatMessage;
+export default ChatMessages;
