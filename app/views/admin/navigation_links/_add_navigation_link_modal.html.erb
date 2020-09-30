@@ -1,4 +1,4 @@
-<div onclick="showAddNavigationLinkModal()">
+<div onclick="toggleNavigationLinkModal()" class="crayons-btn crayons-btn--secondary">
   Add New Navigation Link
 </div>
 
@@ -7,7 +7,7 @@
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
         <h2>Add Navigation Link</h2>
-        <button type="button" onclick="hideNavigationLinkModal()" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
+        <button type="button" onclick="toggleNavigationLinkModal()" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
           <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -16,7 +16,7 @@
       <div class="crayons-modal__box__body">
         <div class="form-group grid p-6 mb-6 gap-1">
           <div class="form-group grid p-6 mb-6 gap-1">
-            <%= form_for(SiteConfig.new, url: admin_config_path) do |form| %>
+            <%= form_for(SiteConfig.new, url: admin_navigation_links_path) do |form| %>
               <div class="form-group">
                 <%= form.label :name %>
                 <%= form.text_field "navigation[][name]", value: "", class: "form-control" %>
@@ -29,12 +29,7 @@
                 <%= form.label :icon %>
                 <%= form.text_field "navigation[][icon]", value: "", class: "form-control" %>
               </div>
-              <div class="form-group">
-                <%= label_tag :confirmation %>
-                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
-                <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
-                <%= form.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
-              </div>
+              <%= form.submit "Add link", class: "crayons-btn" %>
             <% end %>
           </div>
 
@@ -46,17 +41,10 @@
 </div>
 
 <script>
-  function showAddNavigationLinkModal() {
+  function toggleNavigationLinkModal() {
     const confirmationModal = document.getElementById(`add-navigation-link-modal`);
     if (confirmationModal) {
-      confirmationModal.classList.remove("hidden");
-    }
-  }
-
-  function hideNavigationLinkModal() {
-    const confirmationModal = document.getElementById(`add-navigation-link-modal`);
-    if (confirmationModal) {
-      confirmationModal.classList.add("hidden");
+      confirmationModal.classList.toggle("hidden");
     }
   }
 </script>
