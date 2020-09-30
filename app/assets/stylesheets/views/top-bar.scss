@@ -29,7 +29,6 @@
     display: flex;
     align-items: center;
     position: relative;
-    justify-content: space-between;
     height: var(--header-height);
   }
 
@@ -69,7 +68,7 @@
 }
 
 .top-bar__icon {
-  margin: 0 var(--su-1);
+  margin: 0 var(--su-2);
   &:hover,
   &:focus {
     --indicator-outline: var(--header-bg-hover);
@@ -98,7 +97,7 @@
   &__trigger {
     all: unset;
     padding: var(--su-1);
-    margin: 0 var(--su-1);
+    margin: 0 var(--su-2);
     border-radius: 50%;
     color: var(--header-icons-color);
     cursor: pointer;

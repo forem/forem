@@ -2,7 +2,7 @@
 </div>
 <header class="top-bar" id="top-bar" role="banner">
   <a href="#articles-list" class="skip-content-link">Skip to content</a>
-  <div class="top-bar__container">
+  <div class="top-bar__container <% unless user_signed_in? %>justify-between m:justify-start<% end %>">
     <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded js-hamburger-trigger inline-block m:hidden mx-2">
       <%= inline_svg_tag("hamburger.svg", aria: true, class: "crayons-icon", title: "Navigation menu") %>
     </button>
@@ -26,14 +26,14 @@
       </form>
     </div>
 
-    <div class="flex items-center h-100 <% if user_signed_in? %>flex-1 justify-around<% else %>justify-end m:ml-auto<% end %>">
+    <div class="flex items-center h-100 m:mr-0 <% if user_signed_in? %>ml-auto<% end %>">
       <a class="top-bar__icon crayons-btn crayons-btn--ghost crayons-btn--icon-rounded m:hidden <% unless user_signed_in? %>mx-2<% end %>" id="search-link" aria-label="Search" href="<%= search_path %>">
         <%= inline_svg_tag("search.svg", aria: true, class: "crayons-icon", title: "Search") %>
       </a>
       <% if user_signed_in? %>
         <a href="/new" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto">Write a post</a>
 
-        <a id="moderation-link" class="top-bar__icon crayons-btn crayons-btn--ghost crayons-btn--icon-rounded hidden s:flex" aria-label="Moderation" href="<%= mod_path %>">
+        <a id="moderation-link" class="top-bar__icon crayons-btn crayons-btn--ghost crayons-btn--icon-rounded hidden m:flex" aria-label="Moderation" href="<%= mod_path %>">
           <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
         </a>
 
@@ -53,7 +53,9 @@
           </button>
           <%= render "layouts/nav_menu" %>
         </div>
-      <% else %>
+      <% end %>
+    </div>
+    <% unless user_signed_in? %>
         <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap m:block ml-auto" data-no-instant>
           Log in
         </a>
@@ -62,7 +64,6 @@
           Create account
         </a>
       <% end %>
-    </div>
   </div>
   <% if user_signed_in? %>
     <script async>
