@@ -19,12 +19,12 @@ RSpec.describe LinkTag, type: :liquid_tag do
     create(:article, user_id: user.id, title: "Hello & Hi <3 <script>", tags: "tag")
   end
 
-  def generate_new_liquid(slug)
+  def generate_new_liquid(slug:)
     Liquid::Template.register_tag("link", LinkTag)
     Liquid::Template.parse("{% link #{slug} %}")
   end
 
-  def generate_new_liquid_alias(slug)
+  def generate_new_liquid_alias(slug:)
     Liquid::Template.register_tag("post", described_class)
     Liquid::Template.parse("{% post #{slug} %}")
   end
@@ -64,70 +64,76 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   it 'can use "post" as an alias' do
-    liquid = generate_new_liquid_alias("/#{user.username}/#{article.slug}")
+    liquid = generate_new_liquid_alias(slug: "/#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "does not raise an error when invalid" do
-    expect { generate_new_liquid("fake_username/fake_article_slug") }
+    expect { generate_new_liquid(slug: "fake_username/fake_article_slug") }
       .not_to raise_error("Invalid link URL or link URL does not exist")
   end
 
   it "renders a proper link tag" do
-    liquid = generate_new_liquid("#{user.username}/#{article.slug}")
+    liquid = generate_new_liquid(slug: "#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "also tries to look for article by organization if failed to find by username" do
-    liquid = generate_new_liquid("#{org_article.username}/#{org_article.slug}")
+    liquid = generate_new_liquid(slug: "#{org_article.username}/#{org_article.slug}")
     expect(liquid.render).to eq(correct_link_html(org_article))
   end
 
   it "renders with a leading slash" do
-    liquid = generate_new_liquid("/#{user.username}/#{article.slug}")
+    liquid = generate_new_liquid(slug: "/#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "renders with a trailing slash" do
-    liquid = generate_new_liquid("#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid(slug: "#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "renders with both leading and trailing slashes" do
-    liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid(slug: "/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "renders with a full link" do
-    liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}")
+    liquid = generate_new_liquid(slug: "https://#{SiteConfig.app_domain}/#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
+  it "raise error when url belongs to different domain" do
+    expect do
+      generate_new_liquid(slug: "https://xkcd.com/2363/")
+    end.to raise_error(StandardError)
+  end
+
   it "renders default reading time of 1 minute for short articles" do
-    liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid(slug: "/#{user.username}/#{article.slug}/")
     expect(liquid.render).to include("1 min read")
   end
 
   it "renders reading time of article lengthy articles" do
     template = file_fixture("article_long_content.txt").read
     article = create(:article, user: user, body_markdown: template)
-    liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid(slug: "/#{user.username}/#{article.slug}/")
     expect(liquid.render).to include("3 min read")
   end
 
   it "renders with a full link with a trailing slash" do
-    liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid(slug: "https://#{SiteConfig.app_domain}/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
   it "renders with missing article" do
     article.delete
-    liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
+    liquid = generate_new_liquid(slug: "https://#{SiteConfig.app_domain}/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(missing_article_html)
   end
 
   it "escapes title" do
-    liquid = generate_new_liquid("/#{user.username}/#{escaped_article.slug}/")
+    liquid = generate_new_liquid(slug: "/#{user.username}/#{escaped_article.slug}/")
     expect(liquid.render).to eq(correct_link_html(escaped_article))
   end
 end

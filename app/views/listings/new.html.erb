@@ -1,5 +1,44 @@
 <% title "New Listing" %>
 
-<div class="listings-container listings-form-container" id="listings-container">
-  <%= render "form", listing: @listing %>
-</div>
+<header class="crayons-layout crayons-layout--limited flex items-center justify-between p-2 l:p-4 l:pb-0">
+  <h1 class="fs-2xl s:fs-3xl">Create a Community Listing</h1>
+</header>
+
+<main class="crayons-layout crayons-layout--2-cols crayons-layout--2-cols--inverted crayons-layout--limited">
+  <div class="crayons-layout__content">
+    <%= render "form", listing: @listing %>
+  </div>
+  <aside class="crayons-layout__sidebar-right px-3 m:px-0">
+    <div class="crayons-card crayons-card--secondary p-3 m:p-6 mb-2 m:mb-4">
+      <span class="color-base-60">Personal credits</span>
+      <div class="flex m:flex-col items-center m:items-start justify-between">
+        <strong class="fs-2xl m:fs-3xl lh-tight color-base-90 m:mb-4 block" id="test-credits-size"><%= @credits.size %></strong>
+        <a target="_blank" rel="noopener noreferrer" class="crayons-btn crayons-btn--secondary m:w-100" href="/credits/purchase" data-no-instant>Buy more</a>
+      </div>
+    </div>
+
+    <% if @organizations.present? %>
+      <div class="crayons-card crayons-card--secondary p-3 m:p-6 mb-4">
+        <span class="color-base-60">Organization credits</label>
+        <% if @organizations.size > 1 %>
+          <select id="org-credits-select" class="org-credits-select crayons-select my-2">
+            <% @organizations.each do |org| %>
+              <option value="<%= org.id %>" data-credits="<%= org.credits.unspent.size %>"><%= org.name %></option>
+            <% end %>
+          </select>
+        <% end %>
+        <div class="flex m:flex-col items-center m:items-start justify-between">
+          <strong class="fs-2xl m:fs-3xl lh-tight color-base-90 m:mb-4 block" id="org-credits-number"><%= @organizations.first.credits.unspent.size %></strong>
+          <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" class="crayons-btn crayons-btn--secondary m:w-100" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy more</a>
+        </div>
+        <%= javascript_packs_with_chunks_tag "listingForm", "orgCreditsSelector", defer: true %>
+      </div>
+    <% end %>
+
+    <div class="fs-s color-base-60 mb-4">
+      <h3 class="fs-base fw-bold color-base-70 mb-2">Disclaimer</h3>
+      <p class="mb-2"><%= community_name %> admins may modify tags and categories to ensure accuracy. We may also take down and refund inappropriate listings.</p>
+      <p>Listings expire 30 days after they are published or "bumped".</p>
+    </div>
+  </aside>
+</main>

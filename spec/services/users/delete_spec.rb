@@ -81,6 +81,9 @@ RSpec.describe Users::Delete, type: :service do
       %i[
         affected_feedback_messages
         audit_logs
+        banished_users
+        buffer_updates_approved
+        buffer_updates_composed
         created_podcasts
         offender_feedback_messages
         page_views
@@ -137,7 +140,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should exist" do
         kept_associations.each do |kept_association|
-          expect { kept_association.reload }.not_to raise_error
+          expect { kept_association.reload }.not_to raise_error, kept_association
         end
       end
     end
