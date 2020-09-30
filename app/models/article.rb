@@ -571,6 +571,8 @@ class Article < ApplicationRecord
   end
 
   def validate_co_authors_exist
+    return unless co_author_ids
+
     valid_co_authors = User.where(id: co_author_ids).count == co_author_ids.count
     return if valid_co_authors
 

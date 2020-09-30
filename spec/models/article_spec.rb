@@ -66,6 +66,18 @@ RSpec.describe Article, type: :model do
         expect(article).not_to be_valid
       end
 
+      it "is invalid if the co_author is entered as a text value rather than an integer" do
+        article.co_author_ids = [user.id, "abc"]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if the co_author ID is not greater than 0" do
+        article.co_author_ids = [user.id, "0"]
+
+        expect(article).not_to be_valid
+      end
+
       it "is valid if co_author_ids is nil" do
         article.co_author_ids = nil
 
