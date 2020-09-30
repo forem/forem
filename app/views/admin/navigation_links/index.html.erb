@@ -1,0 +1,16 @@
+<%= render "add_navigation_link_modal" %>
+
+<% @navigation_links.each do |link| %>
+  <%= link[:name] %>
+  <div>
+    <a href="<%= link[:url] %>" class="crayons-link crayons-link--block">
+      <% if link[:icon].present? %>
+        <%= link[:icon].html_safe %>
+      <% end %>
+      <span class="crayons-indicator"></span>
+    </a>
+  </div>
+  <div>
+    <div><%= link_to "Delete Group", admin_navigation_links_path, data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %></div>
+  </div>
+<% end %>
