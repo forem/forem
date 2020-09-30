@@ -12,7 +12,7 @@ CarrierWave.configure do |config|
     config.storage = :file
     config.enable_processing = Rails.env.development?
   elsif ENV["FILE_STORAGE_LOCATION"] == "file" # @forem/systems production version of file store
-    config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/remoteimages"
+    config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
     config.storage = :file
   else
     config.fog_provider = "fog/aws"
@@ -35,7 +35,7 @@ CarrierWave.configure do |config|
       config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
     else
       # Fallback on file storage if AWS creds are not present
-      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/remoteimages"
+      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
       config.storage = :file
     end
     config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
