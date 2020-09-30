@@ -82,6 +82,18 @@
       width: 100%;
     }
   }
+
+  &--inverted {
+    .crayons-layout__sidebar-right {
+      order: -1;
+    }
+    @media (min-width: $breakpoint-m) {
+      --layout: var(--layout-content-width) var(--layout-sidebar-left-width);
+      .crayons-layout__sidebar-right {
+        order: 1;
+      }
+    }
+  }
 }
 
 .crayons-layout--3-cols {
