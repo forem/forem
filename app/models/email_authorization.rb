@@ -5,7 +5,6 @@ class EmailAuthorization < ApplicationRecord
   # leaving us with the incorrect uuid
   TYPES = %w[merge_request account_lockout uuid_issue account_ownership].freeze
 
-  validates :json_data, presence: true
   validates :type_of, presence: true, inclusion: { in: TYPES }
 
   alias_attribute :sent_at, :created_at

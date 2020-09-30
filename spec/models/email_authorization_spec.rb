@@ -9,7 +9,6 @@ RSpec.describe EmailAuthorization, type: :model do
 
       it { is_expected.to validate_inclusion_of(:type_of).in_array(EmailAuthorization::TYPES) }
 
-      it { is_expected.to validate_presence_of(:json_data) }
       it { is_expected.to validate_presence_of(:type_of) }
     end
   end

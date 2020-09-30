@@ -7,13 +7,13 @@ RSpec.describe NotificationSubscription, type: :model do
 
   describe "validations" do
     describe "builtin validations" do
-      subject(:notification_subscription) { notification_subscription }
+      subject(:subscription) { notification_subscription }
 
       it { is_expected.to belong_to(:notifiable) }
       it { is_expected.to belong_to(:user) }
 
       it do
-        expect(notification_subscription).to(
+        expect(subscription).to(
           validate_inclusion_of(:config).in_array(%w[all_comments top_level_comments only_author_comments]),
         )
       end
