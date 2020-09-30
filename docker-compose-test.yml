@@ -11,6 +11,7 @@ services:
       - "3000:3000"
       - "43447:43447"
     depends_on:
+      - bundle
       - db
       - elasticsearch
       - redis
@@ -43,6 +44,9 @@ services:
       KNAPSACK_PRO_CI_NODE_TOTAL: 3
       KNAPSACK_PRO_TEST_FILE_PATTERN: "spec/system/user_uses_the_editor_spec.rb"
       COVERAGE_REPORTS_TOTAL: 4
+    volumes:
+      - .:/opt/apps/forem:delegated
+      - ./.gems:/opt/apps/bundle:delegated
     entrypoint: ["dockerize", "-wait", "http://selenium:4444", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-timeout", "2700s", "./scripts/entrypoint-dev.sh"]
 
   selenium:
@@ -50,13 +54,27 @@ services:
     expose:
       - 4444
 
+  bundle:
+    image: forem-test:latest
+    container_name: forem_bundle
+    environment:
+      RAILS_ENV: test
+    volumes:
+      - .:/opt/apps/forem:delegated
+      - ./.gems:/opt/apps/bundle:delegated
+    entrypoint: ["bash"]
+    command: ["./scripts/bundle.sh"]
+
   yarn:
     image: forem-test:latest
     container_name: forem_yarn
     environment:
       RAILS_ENV: test
     entrypoint: ["bash", "-c"]
-    command: ["yarn install --frozen-lockfile"]
+    volumes:
+      - .:/opt/apps/forem:delegated
+    entrypoint: ["bash", "-c"]
+    command: ["yarn install --dev"]
 
   db:
     image: postgres:11-alpine

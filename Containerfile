@@ -43,16 +43,13 @@ COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"/
 COPY ./vendor/cache "${APP_HOME}"/vendor/cache
 
 # Fixes https://github.com/sass/sassc-ruby/issues/146
-RUN if [ "$RAILS_ENV" != "test" ] ; then bundle config build.sassc --disable-march-tune-native ; fi
+RUN bundle config build.sassc --disable-march-tune-native
 
 RUN bundle check || bundle install --jobs 20 --retry 5
-RUN echo $(date --utc +%FT%T%Z) > /opt/apps/bundle/bundle_finished
 
 RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
 COPY . "${APP_HOME}"/
-
-RUN yarn install && yarn check --integrity
 
 RUN if [ "$RAILS_ENV" != "test" ] ; then RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile ; fi
 
