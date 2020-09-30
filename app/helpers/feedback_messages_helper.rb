@@ -1,6 +1,9 @@
 module FeedbackMessagesHelper
   def bypass_recaptcha?
-    user_signed_in? && !current_user.vomitted_on? && current_user.created_at < 1.month.ago
+    return false unless user_signed_in?
+    return true if current_user.auditable? # User is trusted/mod/admin
+
+    !current_user.vomitted_on? && current_user.created_at < 1.month.ago
   end
 
   def offender_email_details
