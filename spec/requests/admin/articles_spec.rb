@@ -19,7 +19,7 @@ RSpec.describe "/admin/articles", type: :request do
 
       expect do
         article.update_columns(co_author_ids: [1])
-      end.to change(article, :co_author_ids).from(nil).to([1])
+      end.to change(article, :co_author_ids).from([]).to([1])
     end
 
     it "allows an Admin to add co-authors to an individual article" do
