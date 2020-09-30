@@ -37,6 +37,13 @@ RSpec.describe EdgeCache::Bust, type: :service do
         expect(cache_bust_service.provider).to eq("fastly")
         expect(cache_bust_service).to have_received(:bust_fastly_cache)
       end
+
+      it "returns cache bust response" do
+        allow(cache_bust_service).to receive(:bust_fastly_cache).and_return("success")
+
+        cache_bust_service.call
+        expect(cache_bust_service.response).to eq("success")
+      end
     end
   end
 
