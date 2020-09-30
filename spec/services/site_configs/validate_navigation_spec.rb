@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SiteConfigs::UpdateNavigation, type: :service do
+RSpec.describe SiteConfigs::ValidateNavigation, type: :service do
   let(:valid_link) do
     { name: "Test", url: "http://examle.com", icon: "<svg ...>" }
   end
@@ -21,7 +21,7 @@ RSpec.describe SiteConfigs::UpdateNavigation, type: :service do
     { name: "", url: "test", icon: "test.png" }
   end
 
-  it "updates SiteConfig.navigation when all links are valid" do
+  it "returns success to be true when a link is valid" do
     links = [valid_link]
     result = described_class.call(links)
     expect(result.success?).to be true

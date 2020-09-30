@@ -1,5 +1,5 @@
 module SiteConfigs
-  class UpdateNavigation
+  class ValidateNavigation
     class NavigationLink
       include ActiveModel::Validations
 
@@ -41,9 +41,6 @@ module SiteConfigs
 
         @errors[index] = navigation_link.errors.to_a
       end
-
-      updated_navigation_list = SiteConfig.navigation + @navigation_links
-      SiteConfig.navigation = updated_navigation_list if success?
       self
     end
 
