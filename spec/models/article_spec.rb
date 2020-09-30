@@ -35,8 +35,18 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
+
+    it { is_expected.to validate_presence_of(:boost_states) }
+    it { is_expected.to validate_presence_of(:comments_count) }
+    it { is_expected.to validate_presence_of(:positive_reactions_count) }
+    it { is_expected.to validate_presence_of(:previous_public_reactions_count) }
+    it { is_expected.to validate_presence_of(:public_reactions_count) }
+    it { is_expected.to validate_presence_of(:rating_votes_count) }
+    it { is_expected.to validate_presence_of(:reactions_count) }
+    it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
+
     it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
