@@ -42,7 +42,8 @@ module SiteConfigs
         @errors[index] = navigation_link.errors.to_a
       end
 
-      SiteConfig.navigation = @navigation_links if success?
+      updated_navigation_list = SiteConfig.navigation + @navigation_links
+      SiteConfig.navigation = updated_navigation_list if success?
       self
     end
 
