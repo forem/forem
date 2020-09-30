@@ -73,8 +73,6 @@ RSpec.describe "feedback_messages", type: :request do
       let(:user) { create(:user) }
 
       before do
-        mock_recaptcha_verification
-
         sign_in user
       end
 

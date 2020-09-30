@@ -67,9 +67,11 @@
     <%= f.text_area :message, class: "crayons-textfield", placeholder: "...", value: @previous_message %>
   </div>
 
-  <div>
-    <%= recaptcha_tags site_key: ApplicationConfig["RECAPTCHA_SITE"] %>
-  </div>
+  <% unless user_signed_in? %>
+    <div>
+      <%= recaptcha_tags site_key: ApplicationConfig["RECAPTCHA_SITE"] %>
+    </div>
+  <% end %>
 
   <div><button type="submit" name="commit" class="crayons-btn">Send Feedback</button></div>
 <% end %>
