@@ -1,4 +1,8 @@
 module FeedbackMessagesHelper
+  def bypass_recaptcha?
+    user_signed_in? && !current_user.vomitted_on?
+  end
+
   def offender_email_details
     body = <<~HEREDOC
       Hello,

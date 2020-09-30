@@ -67,7 +67,7 @@
     <%= f.text_area :message, class: "crayons-textfield", placeholder: "...", value: @previous_message %>
   </div>
 
-  <% unless user_signed_in? %>
+  <% unless bypass_recaptcha? %>
     <div>
       <%= recaptcha_tags site_key: ApplicationConfig["RECAPTCHA_SITE"] %>
     </div>

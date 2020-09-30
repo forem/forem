@@ -1,6 +1,7 @@
 class FeedbackMessagesController < ApplicationController
   # No authorization required for entirely public controller
   skip_before_action :verify_authenticity_token
+  include FeedbackMessagesHelper
 
   def create
     flash.clear
@@ -9,7 +10,7 @@ class FeedbackMessagesController < ApplicationController
     params = feedback_message_params.merge(reporter_id: current_user&.id)
     @feedback_message = FeedbackMessage.new(params)
 
-    if (user_signed_in? || recaptcha_verified?) && @feedback_message.save
+    if (bypass_recaptcha? || recaptcha_verified?) && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
         type: feedback_message_params[:feedback_type],
