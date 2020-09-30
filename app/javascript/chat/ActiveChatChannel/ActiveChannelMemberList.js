@@ -17,7 +17,7 @@ const ActiveChannelMemberList = ({
       }
       id="mentionList"
     >
-      {showMemberlist && channelUsers
+      {showMemberlist
         ? Object.values(channelUsers[activeChannelId])
             .filter((user) => user.username.match(filterRegx))
             .map((user) => (

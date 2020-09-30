@@ -32,17 +32,11 @@ import {
   scrollToBottom,
   setupObserver,
   getCurrentUser,
-  channelSorter,
 } from './util';
-import Alert from './alert';
 import Channels from './channels';
-import Compose from './compose';
 import Message from './message';
 import ActionMessage from './actionMessage';
-import Content from './content';
-import ChatMessages from './ActiveChatChannel/ChatMessages.js';
-import { VideoContent } from './videoContent';
-import { DragAndDropZone } from '@utilities/dragAndDrop';
+import ActiveChatChannel from './ActiveChatChannel';
 
 const NARROW_WIDTH_LIMIT = 767;
 const WIDE_WIDTH_LIMIT = 1600;
@@ -1429,41 +1423,6 @@ export default class Chat extends Component {
       .classList.remove('chatchanneljumpback__hide');
   };
 
-  handleDragOver = (event) => {
-    event.preventDefault();
-    event.currentTarget.classList.add('opacity-25');
-  };
-
-  handleDragExit = (event) => {
-    event.preventDefault();
-    event.currentTarget.classList.remove('opacity-25');
-  };
-
-  handleImageDrop = (event) => {
-    event.preventDefault();
-    const { files } = event.dataTransfer;
-
-    event.currentTarget.classList.remove('opacity-25');
-    processImageUpload(files, this.handleImageSuccess, this.handleImageFailure);
-  };
-  handleImageSuccess = (res) => {
-    const { links, image } = res;
-    const mLink = `![${image[0].name}](${links[0]})`;
-    const el = document.getElementById('messageform');
-    const start = el.selectionStart;
-    const end = el.selectionEnd;
-    const text = el.value;
-    let before = text.substring(0, start);
-    before = text.substring(0, before.lastIndexOf('@') + 1);
-    const after = text.substring(end, text.length);
-    el.value = `${before + mLink} ${after}`;
-    el.selectionStart = start + mLink.length + 1;
-    el.selectionEnd = el.selectionStart;
-    el.focus();
-  };
-  handleImageFailure = (e) => {
-    addSnackbarItem({ message: e.message, addCloseButton: true });
-  };
   handleDragHover(e) {
     e.preventDefault();
     const messageArea = document.getElementById('messagelist');
@@ -1474,100 +1433,6 @@ export default class Chat extends Component {
     const messageArea = document.getElementById('messagelist');
     messageArea.classList.remove('opacity-25');
   }
-  renderActiveChatChannel = (channelHeader) => {
-    const { state, props } = this;
-    const {
-      activeChannelId,
-      messages,
-      showTimestamp,
-      activeChannel,
-      currentUserId,
-    } = state;
-
-    return (
-      <div className="activechatchannel">
-        <div className="activechatchannel__conversation">
-          {channelHeader}
-          <DragAndDropZone
-            onDragOver={this.handleDragOver}
-            onDragExit={this.handleDragExit}
-            onDrop={this.handleImageDrop}
-          >
-            <div
-              className="activechatchannel__messages"
-              onScroll={this.handleMessageScroll}
-              ref={(scroller) => {
-                this.scroller = scroller;
-              }}
-              id="messagelist"
-            >
-              <ChatMessages
-                activeChannelId={activeChannelId}
-                messages={messages}
-                showTimestamp={showTimestamp}
-                activeChannel={activeChannel}
-                currentUserId={currentUserId}
-                triggerActiveContent={this.triggerActiveContent}
-                triggerEditMessage={this.triggerEditMessage}
-                triggerDeleteMessage={this.triggerDeleteMessage}
-              />
-              <div
-                className="messagelist__sentinel"
-                id="messagelist__sentinel"
-              />
-            </div>
-          </DragAndDropZone>
-          <div
-            className="chatchanneljumpback chatchanneljumpback__hide"
-            id="jumpback_button"
-          >
-            <div
-              role="button"
-              className="chatchanneljumpback__messages"
-              onClick={this.jumpBacktoBottom}
-              tabIndex="0"
-              onKeyUp={(e) => {
-                if (e.keyCode === 13) this.jumpBacktoBottom();
-              }}
-            >
-              Scroll to Bottom
-            </div>
-          </div>
-          {this.renderDeleteModal()}
-          <div className="activechatchannel__alerts">
-            <Alert showAlert={state.showAlert} />
-          </div>
-          {this.renderChannelMembersList()}
-          <div className="activechatchannel__form">
-            <Compose
-              handleSubmitOnClick={this.handleSubmitOnClick}
-              handleKeyDown={this.handleKeyDown}
-              handleSubmitOnClickEdit={this.handleSubmitOnClickEdit}
-              handleMention={this.handleMention}
-              handleKeyUp={this.handleKeyUp}
-              handleKeyDownEdit={this.handleKeyDownEdit}
-              activeChannelId={state.activeChannelId}
-              startEditing={state.startEditing}
-              markdownEdited={state.markdownEdited}
-              editMessageMarkdown={state.activeEditMessage.markdown}
-              handleEditMessageClose={this.handleEditMessageClose}
-            />
-          </div>
-        </div>
-        <Content
-          onTriggerContent={this.triggerActiveContent}
-          resource={state.activeContent[state.activeChannelId]}
-          activeChannel={state.activeChannel}
-          fullscreen={state.fullscreenContent === 'sidecar'}
-        />
-        <VideoContent
-          videoPath={state.videoPath}
-          onTriggerVideoContent={this.onTriggerVideoContent}
-          fullscreen={state.fullscreenContent === 'video'}
-        />
-      </div>
-    );
-  };
 
   onTriggerVideoContent = (e) => {
     if (e.target.dataset.content === 'exit') {
@@ -1692,60 +1557,6 @@ export default class Chat extends Component {
     return null;
   };
 
-  renderChannelMembersList = () => {
-    const {
-      showMemberlist,
-      activeChannelId,
-      channelUsers,
-      memberFilterQuery,
-    } = this.state;
-
-    const filterRegx = new RegExp(memberFilterQuery, 'gi');
-    return (
-      <div
-        className={
-          showMemberlist ? 'mention__list mention__visible' : 'mention__list'
-        }
-        id="mentionList"
-      >
-        {showMemberlist
-          ? Object.values(channelUsers[activeChannelId])
-              .filter((user) => user.username.match(filterRegx))
-              .map((user) => (
-                <div
-                  key={user.username}
-                  className="mention__user"
-                  role="button"
-                  onClick={this.addUserName}
-                  tabIndex="0"
-                  data-content={user.username}
-                  onKeyUp={(e) => {
-                    if (e.keyCode === 13) this.addUserName();
-                  }}
-                >
-                  <img
-                    className="mention__user__image"
-                    src={user.profile_image}
-                    alt={user.name}
-                    style={!user.profile_image ? { display: 'none' } : ' '}
-                  />
-                  <span
-                    style={{
-                      padding: '3px 0px',
-                      'font-size': '16px',
-                    }}
-                  >
-                    {'@'}
-                    {user.username}
-                    <p>{user.name}</p>
-                  </span>
-                </div>
-              ))
-          : ' '}
-      </div>
-    );
-  };
-
   handleEditMessageClose = () => {
     const textarea = document.getElementById('messageform');
     this.setState({
@@ -1754,55 +1565,6 @@ export default class Chat extends Component {
       activeEditMessage: { message: '', markdown: '' },
     });
     textarea.value = '';
-  };
-
-  renderDeleteModal = () => {
-    const { showDeleteModal } = this.state;
-    return (
-      <div
-        id="message"
-        className={
-          showDeleteModal
-            ? 'message__delete__modal crayons-modal crayons-modal--s absolute'
-            : 'message__delete__modal message__delete__modal__hide crayons-modal crayons-modal--s absolute'
-        }
-        aria-hidden={showDeleteModal}
-        role="dialog"
-      >
-        <div className="crayons-modal__box">
-          <div className="crayons-modal__box__body">
-            <h3>Are you sure, you want to delete this message?</h3>
-            <div className="delete-actions__container">
-              <div
-                role="button"
-                className="crayons-btn crayons-btn--danger message__delete__button"
-                onClick={this.handleMessageDelete}
-                tabIndex="0"
-                onKeyUp={(e) => {
-                  if (e.keyCode === 13) this.handleMessageDelete();
-                }}
-              >
-                {' '}
-                Delete
-              </div>
-              <div
-                role="button"
-                className="crayons-btn crayons-btn--secondary message__cancel__button"
-                onClick={this.handleCloseDeleteModal}
-                tabIndex="0"
-                onKeyUp={(e) => {
-                  if (e.keyCode === 13) this.handleCloseDeleteModal();
-                }}
-              >
-                {' '}
-                Cancel
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="crayons-modal__overlay" />
-      </div>
-    );
   };
 
   handleCloseDeleteModal = () => {
@@ -1932,6 +1694,13 @@ export default class Chat extends Component {
 
   render() {
     const { state } = this;
+    const {
+      activeChannelId,
+      messages,
+      showTimestamp,
+      activeChannel,
+      currentUserId,
+    } = state;
     let channelHeader = <div className="active-channel__header">&nbsp;</div>;
     if (state.activeChannel) {
       channelHeader = (
@@ -1964,7 +1733,25 @@ export default class Chat extends Component {
       >
         {this.renderChatChannels()}
         <div data-testid="active-chat" className="chat__activechat">
-          {this.renderActiveChatChannel(channelHeader)}
+          <ActiveChatChannel
+            state={state}
+            channelHeader={channelHeader}
+            addUserName={this.addUserName}
+            handleMessageScroll={this.handleMessageScroll}
+            triggerDeleteMessage={this.triggerDeleteMessage}
+            jumpBacktoBottom={this.jumpBacktoBottom}
+            onTriggerVideoContent={this.onTriggerVideoContent}
+            handleSubmitOnClick={this.handleSubmitOnClick}
+            handleKeyDown={this.handleKeyDown}
+            handleSubmitOnClickEdit={this.handleSubmitOnClickEdit}
+            handleMention={this.handleMention}
+            handleKeyUp={this.handleKeyUp}
+            handleKeyDownEdit={this.handleKeyDownEdit}
+            handleEditMessageClose={this.handleEditMessageClose}
+            triggerEditMessage={this.triggerEditMessage}
+            handleCloseDeleteModal={this.handleCloseDeleteModal}
+            handleMessageDelete={this.handleMessageDelete}
+          />
         </div>
       </div>
     );
