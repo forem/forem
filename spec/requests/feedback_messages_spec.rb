@@ -70,7 +70,7 @@ RSpec.describe "feedback_messages", type: :request do
     end
 
     context "when a user submits a report" do
-      let(:user) { create(:user) }
+      let(:user) { create(:user, created_at: 2.months.ago) }
 
       before do
         sign_in user
