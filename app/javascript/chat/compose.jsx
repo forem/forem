@@ -109,7 +109,6 @@ export default class Chat extends Component {
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
           maxLength="1000"
-          value={this.state.value}
           onInput={handleInput}
           aria-label="Compose a message"
         />
