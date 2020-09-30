@@ -21,7 +21,7 @@ RSpec.describe URL, type: :lib do
 
   describe ".url" do
     it "creates the correct base app URL" do
-      expect(described_class.url).to eq("https://dev.to")
+      expect(described_class.url).to eq("https://devdevdev.to")
     end
 
     it "creates a URL with a path" do
