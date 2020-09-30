@@ -124,7 +124,25 @@ class ListingsController < ApplicationController
   end
 
   def process_after_update
-    redirect_to "/listings"
+    # The following sets variables used in the index view. We render the
+    # index view directly to avoid having to redirect.
+    #
+    # Redirects lead to a race condition where we redirect to a cached view
+    # after updating data and we don't bust the cache fast enough before
+    # hitting the view, therefore stale content ends up being served from
+    # cache.
+    #
+    # https://github.com/forem/forem/issues/10338#issuecomment-693401481
+    published_listings = Listing.where(published: true)
+
+    @listings = published_listings
+      .order(bumped_at: :desc)
+      .includes(:user, :organization, :taggings)
+      .limit(12)
+
+    @listings_json = @listings.to_json(INDEX_JSON_OPTIONS)
+
+    render :index
   end
 
   def process_after_unpublish

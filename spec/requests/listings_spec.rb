@@ -521,6 +521,15 @@ RSpec.describe "/listings", type: :request do
         expect(listing.title).not_to eq("New title!")
         expect(listing.cached_tag_list).not_to include("hey")
       end
+
+      it "doesn't redirect on a successful update" do
+        put "/listings/#{listing.id}", params: {
+          listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }
+        }
+
+        expect(response).not_to have_http_status(:redirect)
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 
