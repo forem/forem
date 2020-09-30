@@ -8,6 +8,7 @@ class Badge < ApplicationRecord
 
   validates :badge_image, presence: true
   validates :description, presence: true
+  validates :slug, presence: true
   validates :title, presence: true, uniqueness: true
 
   before_validation :generate_slug
