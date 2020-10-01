@@ -263,7 +263,7 @@ class CommentsController < ApplicationController
       redirect_url = @comment.commentable&.path
       if redirect_url
         flash[:success] = "Comment was successfully deleted."
-        redirect_to redirect_url
+        redirect_to URI.parse(redirect_url).path
       else
         redirect_to_comment_path
       end
