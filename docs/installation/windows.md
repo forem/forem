@@ -12,6 +12,11 @@ system machine
 - updated to _version 1903, Build 18362_ or _higher_ for **x64 system**
 - updated to _version 2004, Build 19041_ or _higher_ for **ARM64 system**
 
+For further information regarding system requirements, head over to the
+[Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/install-win10#requirements)
+or
+[Microsoft's blog on extending WSL 2 Support](https://devblogs.microsoft.com/commandline/wsl-2-support-is-coming-to-windows-10-versions-1903-and-1909/).
+
 To check your Windows version, press `Win Logo key` + `R`, type `winver`, then
 click OK.
 
