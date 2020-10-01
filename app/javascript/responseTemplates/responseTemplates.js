@@ -115,9 +115,7 @@ function addClickListeners(form) {
     '.response-templates-container',
   );
   const parentCommentId =
-    form.id !== 'new_comment'
-      ? form.querySelector('input#comment_parent_id').value
-      : null;
+    form.id !== 'new_comment' && !form.id.includes('edit_comment');
   const insertButtons = Array.from(
     responsesContainer.getElementsByClassName('insert-template-button'),
   );
@@ -276,7 +274,7 @@ function observeForReplyClick() {
   const observer = new MutationObserver(callback);
 
   const commentTree = document.getElementById('comment-trees-container');
-  if ( commentTree) {
+  if (commentTree) {
     observer.observe(commentTree, config);
   }
 
@@ -291,17 +289,17 @@ function observeForReplyClick() {
 
 function handleLoggedOut() {
   // global method from app/assets/javascripts/utilities/showModal.js
-  /* eslint-disable-next-line no-undef */
   document
     .querySelector('.response-templates-button')
-    ?.addEventListener('click', showModal);
+    ?.addEventListener('click', showModal); /* eslint-disable-line no-undef */
 }
 /* eslint-enable no-alert */
 /* eslint-enable no-restricted-globals */
 
 export function loadResponseTemplates() {
   const { userStatus } = document.body.dataset;
-  const form = document.getElementById('new_comment');
+
+  const form = document.querySelector('.comment-form');
 
   if (document.getElementById('response-templates-data')) {
     if (userStatus === 'logged-out') {
