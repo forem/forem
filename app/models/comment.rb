@@ -41,6 +41,9 @@ class Comment < ApplicationRecord
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
   validates :commentable_id, presence: true, if: :commentable_type
   validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }, if: :commentable_id
+  validates :positive_reactions_count, presence: true
+  validates :public_reactions_count, presence: true
+  validates :reactions_count, presence: true
   validates :user_id, presence: true
 
   after_create_commit :record_field_test_event
