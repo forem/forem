@@ -23,15 +23,6 @@
       Home
     </a>
   <% end %>
-  <!-- just added this as a test -->
-  <% SiteConfig.navigation.each do |hash| %>
-    <a href="<%= hash[:url] %>" class="crayons-link crayons-link--block">
-      <div class="crayons-icon crayons-icon--default">
-          <%= hash[:icon].html_safe %>
-      </div>
-      <%= hash[:name] %><span id="reading-list-count" class="crayons-indicator"></span>
-    </a>
-  <% end %>
 
   <% if user_signed_in? %>
     <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
