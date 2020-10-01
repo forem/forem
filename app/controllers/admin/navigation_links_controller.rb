@@ -6,7 +6,7 @@ module Admin
     layout "admin"
 
     def index
-      @navigation_links = NavigationLink.all
+      @navigation_links = NavigationLink.all.order(:name)
     end
 
     def create
