@@ -20,10 +20,12 @@ class PodcastEpisode < ApplicationRecord
   mount_uploader :image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
-  validates :title, presence: true
-  validates :slug, presence: true
-  validates :media_url, presence: true, uniqueness: true
+  validates :comments_count, presence: true
   validates :guid, presence: true, uniqueness: true
+  validates :media_url, presence: true, uniqueness: true
+  validates :reactions_count, presence: true
+  validates :slug, presence: true
+  validates :title, presence: true
 
   before_validation :process_html_and_prefix_all_images
   # NOTE: Any create callbacks will not be run since we use activerecord-import to create episodes
