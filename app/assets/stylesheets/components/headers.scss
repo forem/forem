@@ -1,3 +1,15 @@
+@import '../config/import';
+
+.crayons-header {
+  color: var(--base-100);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+
+  @media (min-width: $breakpoint-s) {
+    font-size: var(--fs-3xl);
+  }
+}
+
 .crayons-subheader {
   color: var(--base-90);
   font-size: var(--fs-base);
