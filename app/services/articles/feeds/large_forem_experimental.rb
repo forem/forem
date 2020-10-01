@@ -1,7 +1,7 @@
 module Articles
   module Feeds
     class LargeForemExperimental
-      RANDOM_OFFSET_VALUES = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].freeze
+      RANDOM_OFFSET_VALUES = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].freeze
       MINIMUM_SCORE_LATEST_FEED = -20
 
       def initialize(user: nil, number_of_articles: 35, page: 1, tag: nil)
