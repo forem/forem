@@ -1,9 +1,9 @@
 <nav class="notification-nav">
   <% if @organizations.present? %>
-    <header class="pl-2 mb-2">
-      <h4>
+    <header>
+      <h3 class="crayons-subheader">
         <%= @user.name %>
-      </h4>
+      </h3>
     </header>
   <% end %>
   <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].blank? %>" href="/notifications">
@@ -19,10 +19,10 @@
 <nav class="notification-nav">
   <% if @organizations.present? %>
     <% @organizations.each do |org| %>
-      <header class="pl-2 mb-2">
-        <h4>
+      <header>
+        <h3 class="crayons-subheader">
           <%= org.name %>
-        </h4>
+        </h3>
       </header>
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
         All

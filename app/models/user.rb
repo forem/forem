@@ -79,11 +79,19 @@ class User < ApplicationRecord
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
   has_many :badge_achievements, dependent: :destroy
+  has_many :badge_achievements_rewarded, class_name: "BadgeAchievement", foreign_key: :rewarder_id,
+                                         inverse_of: :rewarder, dependent: :nullify
   has_many :badges, through: :badge_achievements
+  has_many :banished_users, class_name: "BanishedUser", foreign_key: :banished_by_id,
+                            inverse_of: :banished_by, dependent: :nullify
   has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id,
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
+  has_many :buffer_updates_approved, class_name: "BufferUpdate", foreign_key: :approver_user_id,
+                                     inverse_of: :approver_user, dependent: :nullify
+  has_many :buffer_updates_composed, class_name: "BufferUpdate", foreign_key: :composer_user_id,
+                                     inverse_of: :composer_user, dependent: :nullify
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :collections, dependent: :destroy

@@ -1,0 +1,38 @@
+<% if params[:action] == 'edit' %>
+  <div class="form-group">
+    <%= label_tag :user_id, "User ID:" %>
+    <%= text_field_tag :user_id, @html_variant.user_id, class: "form-control", disabled: true %>
+  </div>
+<% end %>
+
+<div class="form-group">
+  <%= label_tag :name, "Name:" %>
+  <%= text_field_tag :name, @html_variant.name, class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :group, "Group:" %>
+  <%= select_tag :group, options_for_select(HtmlVariant::GROUP_NAMES, selected: @html_variant.group) %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :target_tag, "Target Tag:" %>
+  <%= text_field_tag :target_tag, @html_variant.target_tag, size: "100x10", class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :html, "HTML:" %>
+  <%= text_area_tag :html, @html_variant.html, size: "100x10", class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :published, "Published:" %>
+  <%= select_tag :published, options_for_select([false, true], selected: @html_variant.published) %>
+</div>
+
+<% if params[:action] == 'edit' %>
+  <div class="form-group">
+    <%= label_tag :approved, "Approved:" %>
+    <%= select_tag :approved, options_for_select([false, true], selected: @html_variant.approved) %>
+  </div>
+<% end %>
