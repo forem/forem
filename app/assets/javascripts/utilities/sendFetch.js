@@ -1,7 +1,7 @@
 'use strict';
 
 const fetchCallback = ({ url, headers = {}, addTokenToBody = false, body }) => {
-  return csrfToken => {
+  return (csrfToken) => {
     if (addTokenToBody) {
       body.append('authenticity_token', csrfToken);
     }
@@ -17,67 +17,42 @@ const fetchCallback = ({ url, headers = {}, addTokenToBody = false, body }) => {
   };
 };
 
+const applicationHeader = { 'Content-Type': 'application/json' };
+const applicationHeaderAccept = {
+  Accept: 'application/json',
+  ...applicationHeader,
+};
+
+function getFetchObject(url, body, headers) {
+  return { url: url, headers: headers, body };
+}
+
+function getFetchObjectWithToken(url, body) {
+  return { url: url, addTokenToBody: true, body };
+}
+
 function sendFetch(switchStatement, body) {
+  fetchCallback(getFetchCallbackObject(switchStatement, body));
+}
+
+function getFetchCallbackObject(switchStatement, body) {
   switch (switchStatement) {
     case 'article-preview':
-      return fetchCallback({
-        url: '/articles/preview',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body,
-      });
+      return getFetchObject('/articles/preview', applicationHeaderAccept, body);
     case 'reaction-creation':
-      return fetchCallback({
-        url: '/reactions',
-        addTokenToBody: true,
-        body,
-      });
+      return getFetchObjectWithToken('/reactions', body);
     case 'image-upload':
-      return fetchCallback({
-        url: '/image_uploads',
-        addTokenToBody: true,
-        body,
-      });
+      return getFetchObjectWithToken('/image_uploads', body);
     case 'follow-creation':
-      return fetchCallback({
-        url: '/follows',
-        addTokenToBody: true,
-        body,
-      });
+      return getFetchObjectWithToken('/follows', body);
     case 'chat-creation':
-      return fetchCallback({
-        url: '/chat_channels/create_chat',
-        addTokenToBody: true,
-        body,
-      });
+      return getFetchObjectWithToken('/chat_channels/create_chat', body);
     case 'block-user':
-      return fetchCallback({
-        url: '/user_blocks',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        addTokenToBody: false,
-        body,
-      });
+      return getFetchObject('/user_blocks', body, applicationHeaderAccept);
     case 'comment-creation':
-      return fetchCallback({
-        url: '/comments',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body,
-      });
+      return getFetchObject('/comments', applicationHeader);
     case 'comment-preview':
-      return fetchCallback({
-        url: '/comments/preview',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body,
-      });
+      return getFetchObject('/comments/preview', body, applicationHeader);
     default:
       console.log('A wrong switchStatement was used.'); // eslint-disable-line no-console
       break;
