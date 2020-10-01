@@ -6,8 +6,8 @@ RSpec.describe "dashboards/show.html.erb", type: :view do
     stub_template "dashboards/_analytics.html.erb" => "stubbed content"
     stub_template "dashboards/_actions.html.erb" => "stubbed content"
 
-    Imgproxy.config.key = "hmm"
-    Imgproxy.config.endpoint = "https://dev.to"
+    Imgproxy.config.key = "secret"
+    Imgproxy.config.salt = "secret"
     SiteConfig.mascot_image_url = "https://i.imgur.com/fKYKgo4.png"
   end
 
@@ -22,7 +22,7 @@ RSpec.describe "dashboards/show.html.erb", type: :view do
       assign(:user, create(:user))
       assign(:articles, [])
       render
-      expect(rendered).to match(%r{unsafe/w:300/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(rendered).to match(%r{/w:300/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 end

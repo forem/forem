@@ -40,7 +40,7 @@ module Images
     end
 
     def self.imgproxy_enabled?
-      Imgproxy.config.key.present? && Imgproxy.config.endpoint.present?
+      Imgproxy.config.key.present? && Imgproxy.config.salt.present?
     end
   end
 end

@@ -1,82 +1,111 @@
 <% title "Edit Listing" %>
 
-<div class="listings-container listings-form-container">
-  <%= form_for(@listing) do |f| %>
-    <header>
-      <a href="/listings/dashboard" class="listings-back-button">&lt; return to listings dashboard</a>
-      <h2>You can only edit title/body/tags of drafts or within the first 24 hours of listing or bumping</h2>
-    </header>
-    <div class="listings-form-inner">
-      <%= render partial: "form_errors", locals: { listing: @listing } %>
+<header class="crayons-layout crayons-layout--limited flex items-center justify-between p-2 l:p-4 l:pb-0">
+  <h1 class="fs-2xl s:fs-3xl">Edit Listing</h1>
+</header>
 
-      <% if (@listing.bumped_at && @listing.bumped_at > 24.hours.ago) || @listing.updated_at && !@listing.published %>
-        <div class="field">
-          <%= f.label "title", "Title" %>
-          <%= f.text_field "title", maxlength: 128, placeholder: "128 characters max, plain text" %>
-        </div>
-        <div class="field">
-          <%= f.label "body_markdown", "Body Markdown" %>
-          <%= f.text_area "body_markdown", maxlength: 400, placeholder: "400 characters max, 12 line break max, no images allowed" %>
-        </div>
-        <div class="field">
-          <%= f.label "tag_list", "Tags" %>
-          <%= f.text_field "tag_list", value: @listing.cached_tag_list, placeholder: "8 tags max, comma separated, no spaces or special characters" %>
-        </div>
-        <div class="field">
-          <%= f.label "location", "Location" %>
-          <%= f.text_field "location", maxlength: 32, placeholder: "32 characters max, plain text" %>
-        </div>
-        <div class="field">
-          <%= f.label "expires_at", "Custom Expire Date" %>
-          <%= f.date_field "expires_at", min: Date.tomorrow, max: @listing.natural_expiration_date %>
-        </div>
-        <div class="field">
-          <%= f.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (#{community_name} Connect)" %>
-          <%= f.check_box "contact_via_connect" %>
-        </div>
-        <% if @listing.published %>
-          <%= f.submit "Update Listings Info", class: "cta cta-main-listing-form" %>
+<main class="crayons-layout crayons-layout--2-cols crayons-layout--2-cols--inverted crayons-layout--limited">
+  <div class="crayons-layout__content">
+    <div class="crayons-card mb-6 p-6">
+      <%= form_for(@listing, html: { class: "grid gap-6 mb-6" }) do |f| %>
+        <div class="crayons-notice">You can only edit title/body/tags of drafts or within the first 24 hours of listing or bumping</div>
+
+        <%= render partial: "form_errors", locals: { listing: @listing } %>
+
+        <% if (@listing.bumped_at && @listing.bumped_at > 24.hours.ago) || @listing.updated_at && !@listing.published %>
+          <div class="crayons-field">
+            <%= f.label "title", "Title", class: "crayons-field__label" %>
+            <%= f.text_field "title", maxlength: 128, placeholder: "128 characters max, plain text", class: "crayons-textfield" %>
+          </div>
+          <div class="crayons-field">
+            <%= f.label "body_markdown", "Body Markdown", class: "crayons-field__label" %>
+            <%= f.text_area "body_markdown", maxlength: 400, placeholder: "...", class: "crayons-textfield" %>
+            <p class="crayons-field__description">400 characters max, 12 line break max, no images allowed, *markdown is encouraged*</p>
+          </div>
+          <div class="crayons-field">
+            <%= f.label "tag_list", "Tags", class: "crayons-field__label" %>
+            <%= f.text_field "tag_list", value: @listing.cached_tag_list, placeholder: "8 tags max, comma separated, no spaces or special characters", class: "crayons-textfield" %>
+          </div>
+          <div class="crayons-field">
+            <%= f.label "expires_at", "Custom Expire Date", class: "crayons-field__label" %>
+            <%= f.date_field "expires_at", min: Date.tomorrow, max: @listing.natural_expiration_date, class: "crayons-textfield m:max-w-50" %>
+            <p class="crayons-field__description">
+                If applicable for time sensitive events, deadlines, etc.
+              </p>
+          </div>
+          <div class="crayons-field crayons-field--checkbox">
+            <%= f.check_box "contact_via_connect", class: "crayons-checkbox" %>
+            <label class="crayons-field__label" for="contact_via_connect">
+              Connect messaging
+              <p class="crayons-field__description">Allow Users to message me via Connect.</p>
+            </label>
+          </div>
+          <div class="crayons-field">
+            <%= f.label "location", "Location", class: "crayons-field__label" %>
+            <%= f.text_field "location", maxlength: 32, placeholder: "New York", class: "crayons-textfield m:max-w-50" %>
+            <p class="crayons-field__description">32 characters max, plain text</p>
+          </div>
+          <div>
+            <% if @listing.published %>
+              <%= f.submit "Update listing", class: "crayons-btn" %>
+            <% else %>
+              <%= f.submit "Update draft", class: "crayons-btn crayons-btn--secondary" %>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <%= form_for(@listing, html: { class: "pt-6 mt-6 border-t-1 border-solid border-0 border-base-20 flex items-center" }) do |f| %>
+        <% if @listing.published == false %>
+          <input type="hidden" name="listing[action]" value="publish" />
+          <%= f.submit "Publish listing", class: "crayons-btn mr-4" %>
+          <p>This listing is <strong class="color-accent-danger">not</strong> published.</p>
         <% else %>
-          <%= f.submit "Update Draft", class: "cta cta-main-listing-form cta-draft" %>
+          <input type="hidden" name="listing[action]" value="unpublish" />
+          <%= f.submit "Unpublish listing", class: "crayons-btn crayons-btn--danger" %>
         <% end %>
       <% end %>
     </div>
-  <% end %>
-  <% if @listing.bumped_at %>
-    <%= form_for(@listing) do |f| %>
-      <header>
-        <a href="<%= @listing.path %>" class="listings-back-button" style="font-size: 1.1em;">Last Published/Bumped: <%= time_ago_in_words @listing.bumped_at %> ago</a>
-        <h2>You can bump your listing for the same price as the original listing</h2>
-      </header>
-      <div class="listing-form-inner">
-        <% if (@listing.natural_expiration_date) < Date.today %>
-          <h4>
-            (Expired <%= time_ago_in_words @listing.natural_expiration_date %> ago)
-          </h4>
-        <% else %>
-          <h4>
-            (Expires in <%= time_ago_in_words @listing.natural_expiration_date %>)
-          </h4>
-        <% end %>
+
+    <% if @listing.bumped_at %>
+      <%= form_for(@listing, html: { class: "crayons-card grid gap-6 p-6 mb-6" }) do |f| %>
+        <header>
+          <h2 class="mb-2">Bump your listing</h2>
+          <p>You can bump your listing for the same price as the original listing</p>
+        </header>
+        <div class="flex items-center">
+          <%= f.submit "Bump listing", class: "crayons-btn crayons-btn--secondary mr-4" %>
+          <p class="color-base-70">Last Published/Bumped: <%= time_ago_in_words @listing.bumped_at %> ago</p>
+        </div>
         <input type="hidden" name="listing[action]" value="bump" />
-        <%= f.submit "Bump Listing", class: "cta cta-main-listing-form" %>
-      </div>
-    <% end %>
-  <% end %>
-  <%= form_for(@listing) do |f| %>
-    <div class="listing-form-inner">
-      <% unless @listing.published %>
-        <h2 style="text-align: center; margin-top: 15px;">
-          This listing is not published
-        </h2>
       <% end %>
-      <% if @listing.published == false %>
+    <% end %>
+  </div>
+
+  <aside class="crayons-layout__sidebar-right px-3 m:px-0">
+    <% unless @listing.published %>
+      <%= form_for(@listing, html: { class: "crayons-card crayons-card--secondary p-3 m:p-4 mb-2 m:mb-4" }) do |f| %>
+        <p class="pb-4">
+          This listing is <strong class="color-accent-danger">not</strong> published
+        </p>
         <input type="hidden" name="listing[action]" value="publish" />
-        <%= f.submit "Publish Listing", class: "cta listings-publish cta-main-listing-form" %>
-      <% else %>
-        <input type="hidden" name="listing[action]" value="unpublish" />
-        <%= f.submit "Unpublish Listing", class: "cta listings-unpublish cta-main-listing-form" %>
+        <%= f.submit "Publish listing", class: "crayons-btn w-100" %>
+      <% end %>
+    <% end %>
+
+    <div class="crayons-card crayons-card--secondary p-3 m:p-4 mb-2 m:mb-4">
+      <p>
+        <% if (@listing.natural_expiration_date) < Date.today %>
+          Expired <%= time_ago_in_words @listing.natural_expiration_date %> ago
+        <% else %>
+          Expires in <%= time_ago_in_words @listing.natural_expiration_date %>
+        <% end %>
+      </p>
+      <% if @listing.bumped_at %>
+        <p class="pt-3 mt-3 border-t-1 border-solid border-0 border-base-10">
+          Last Published/Bumped: <%= time_ago_in_words @listing.bumped_at %> ago
+        </p>
       <% end %>
     </div>
-  <% end %>
-</div>
+  </aside>
+</main>

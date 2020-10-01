@@ -7,11 +7,8 @@ function initializeSpecialNavigationFunctionality() {
     if (document.getElementById('notifications-container')) {
       notificationsLink.blur();
       notificationsLink.classList.add('top-bar__link--current');
-      document.querySelector('body').dataset.currentPage =
-        'notifications-index';
     } else {
       notificationsLink.classList.remove('top-bar__link--current');
-      delete document.querySelector('body').dataset.currentPage;
     }
     if (document.getElementById('chat')) {
       connectLink.blur();

@@ -17,7 +17,7 @@ gem "addressable", "~> 2.7" # A replacement for the URI implementation that is p
 gem "administrate", "~> 0.14" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.0" # Tracking analytics for Rails
-gem "ancestry", "~> 3.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
+gem "ancestry", "~> 3.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.2.7" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
@@ -37,9 +37,9 @@ gem "emoji_regex", "~> 3.0" # A pair of Ruby regular expressions for matching Un
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
-gem "flipper", "~> 0.18.0" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.18.0" # Store Flipper flags in ActiveRecord
-gem "flipper-ui", "~> 0.18.0"
+gem "flipper", "~> 0.19.0" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.19.0" # Store Flipper flags in ActiveRecord
+gem "flipper-ui", "~> 0.19.0"
 gem "fog-aws", "~> 3.6" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
@@ -96,7 +96,7 @@ gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
-gem "store_attribute", "~> 0.7.1" # ActiveRecord extension which adds typecasting to store accessors.
+gem "store_attribute", "~> 0.8.0" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 5.25" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
@@ -114,7 +114,7 @@ group :development do
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
   gem "brakeman", "~> 4.9", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.7" # bundler-audit provides patch-level verification for Bundled apps
-  gem "derailed_benchmarks", "~> 1.7", require: false # A series of things you can use to benchmark a Rails or Ruby app
+  gem "derailed_benchmarks", "~> 1.8", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", "~> 0.0.34", require: false # ERB Linter tool
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
@@ -135,11 +135,11 @@ group :development, :test do
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.33" # Capybara is an integration testing tool for rack based web applications
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
-  gem "faker", "~> 2.13" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.3.0" # Help parallelize Ruby spec builds
+  gem "faker", "~> 2.14" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "knapsack_pro", "~> 2.6.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.90.0", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.92.0", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.8", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.8", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.43", require: false # Code style checking for RSpec files
