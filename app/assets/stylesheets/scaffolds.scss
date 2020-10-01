@@ -12,9 +12,11 @@ body {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 
   &.default-navbar-config {
     padding-top: var(--header-height);
+    min-height: calc(100vh - var(--header-height));
   }
 }
 
