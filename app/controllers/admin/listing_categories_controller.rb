@@ -19,10 +19,26 @@ module Admin
       @listing_category = ListingCategory.find(params[:id])
     end
 
+    def update
+      @listing_category = ListingCategory.find(params[:id])
+
+      if @listing_category.update(listing_category_params)
+        flash[:success] = "Listing Category has been updated!"
+        redirect_to admin_listing_categories_path
+      else
+        flash[:danger] = @listing_category.errors_as_sentence
+        render :edit
+      end
+    end
+
     def create; end
 
-    def update; end
-
     def destroy; end
+
+    private
+
+    def listing_category_params
+      params.permit(:name, :cost, :rules, :slug, :social_preview_color, :social_preview_description)
+    end
   end
 end

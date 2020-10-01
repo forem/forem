@@ -1,25 +1,25 @@
 <div class="form-group">
-  <%= label_tag :name, "Name:" %>
+  <%= label_tag :name, "Name" %>
   <%= text_field_tag :name, @listing_category.name, class: "form-control" %>
 </div>
 
 <div class="form-group">
-  <%= label_tag :cost, "Cost:" %>
+  <%= label_tag :cost, "Cost" %>
   <%= number_field_tag :cost, @listing_category.cost, class: "form-control" %>
 </div>
 
 <div class="form-group">
-  <%= label_tag :rules, "Rules:" %>
+  <%= label_tag :rules, "Rules" %>
   <%= text_field_tag :rules, @listing_category.rules, class: "form-control" %>
 </div>
 
 <div class="form-group">
-  <%= label_tag :slug, "Slug:" %>
+  <%= label_tag :slug, "Slug" %>
   <%= text_field_tag :slug, @listing_category.slug, class: "form-control" %>
 </div>
 
 <div class="form-group">
-  <%= label_tag :color, "Color:" %>
+  <%= label_tag :color, "Color hex" %>
   <%= text_field_tag :color, @listing_category.social_preview_color, class: "form-control" %>
 </div>
 
