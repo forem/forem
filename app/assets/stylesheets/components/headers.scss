@@ -3,8 +3,7 @@
 .crayons-title,
 .crayons-subtitle-1,
 .crayons-subtitle-2,
-.crayons-subtitle-3,
-.crayons-subtitle-4 {
+.crayons-subtitle-3 {
   font-weight: var(--fw-bold);
   color: var(--base-90);
 }
@@ -37,8 +36,4 @@
   @media (min-width: $breakpoint-s) {
     font-size: var(--fs-l);
   }
-}
-
-.crayons-subtitle-4 {
-  font-size: var(--fs-base);
 }
