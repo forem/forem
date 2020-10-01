@@ -27,7 +27,7 @@ module Admin
         flash[:success] = "Listing Category has been created!"
         redirect_to admin_listing_categories_path
       else
-        flash[:danger] = @display_ad.errors_as_sentence
+        flash[:danger] = @listing_category.errors_as_sentence
         render new_admin_listing_category_path
       end
     end
@@ -60,6 +60,10 @@ module Admin
 
     def listing_category_params
       params.permit(:name, :cost, :rules, :slug, :social_preview_color, :social_preview_description)
+    end
+
+    def authorize_admin
+      authorize ListingCategory, :access?, policy_class: InternalPolicy
     end
   end
 end
