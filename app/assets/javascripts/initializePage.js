@@ -38,6 +38,31 @@ function callInitializers() {
     }
   }, 1);
 
+  callDefaultInitializers();
+
+  function freezeScrolling(event) {
+    event.preventDefault();
+  }
+
+  nextPage = 0;
+  fetching = false;
+  done = false;
+  adClicked = false;
+  setTimeout(function undone() {
+    done = false;
+  }, 300);
+  if (!initScrolling.called) {
+    initScrolling();
+  }
+}
+
+function initializePage() {
+  initializeLocalStorageRender();
+  initializeStylesheetAppend();
+  callInitializers();
+}
+
+function callDefaultInitializers() {
   initializeSpecialNavigationFunctionality();
   initializeBaseTracking();
   initializePaymentPointers();
@@ -64,25 +89,4 @@ function callInitializers() {
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
   initializeDateHelpers();
-
-  function freezeScrolling(event) {
-    event.preventDefault();
-  }
-
-  nextPage = 0;
-  fetching = false;
-  done = false;
-  adClicked = false;
-  setTimeout(function undone() {
-    done = false;
-  }, 300);
-  if (!initScrolling.called) {
-    initScrolling();
-  }
-}
-
-function initializePage() {
-  initializeLocalStorageRender();
-  initializeStylesheetAppend();
-  callInitializers();
 }
