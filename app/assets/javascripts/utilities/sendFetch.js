@@ -24,18 +24,14 @@ const applicationHeaderAccept = {
 };
 
 function getFetchObject(url, body, headers) {
-  return { url: url, headers: headers, body };
+  return fetchCallback({ url: url, headers: headers, body });
 }
 
 function getFetchObjectWithToken(url, body) {
-  return { url: url, addTokenToBody: true, body };
+  return fetchCallback({ url: url, addTokenToBody: true, body });
 }
 
 function sendFetch(switchStatement, body) {
-  fetchCallback(getFetchCallbackObject(switchStatement, body));
-}
-
-function getFetchCallbackObject(switchStatement, body) {
   switch (switchStatement) {
     case 'article-preview':
       return getFetchObject('/articles/preview', body, applicationHeaderAccept);
