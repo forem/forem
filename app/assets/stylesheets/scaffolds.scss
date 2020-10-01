@@ -95,33 +95,6 @@ div {
   display: none;
 }
 
-.cta {
-  color: $black;
-  background: $green;
-  font-family: $helvetica-condensed;
-  -webkit-appearance: none;
-  font-stretch: condensed;
-  font-weight: bold;
-  &.cta-danger {
-    background: $red;
-  }
-}
-
-button {
-  cursor: pointer;
-}
-
-input[type='submit'] {
-  cursor: pointer;
-}
-
-input[type='text'],
-textarea,
-input[type='url'],
-input[type='email'] {
-  outline: 0;
-}
-
 .partner-image-dark-mode {
   display: none !important;
 }

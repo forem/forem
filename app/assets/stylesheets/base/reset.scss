@@ -83,12 +83,22 @@ textarea {
   margin: 0;
 }
 
+// Drop default outline (Crayons provides custom)
+input[type='text'],
+textarea,
+input[type='url'],
+input[type='email'],
+input[type='password'] {
+  outline: 0;
+}
+
 // Correct the inability to style clickable types in iOS and Safari.
 button,
 [type='button'],
 [type='reset'],
 [type='submit'] {
   -webkit-appearance: button;
+  cursor: pointer;
 }
 
 // Remove default stylings for fieldset
