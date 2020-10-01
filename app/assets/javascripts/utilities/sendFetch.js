@@ -50,7 +50,7 @@ function getFetchCallbackObject(switchStatement, body) {
     case 'block-user':
       return getFetchObject('/user_blocks', body, applicationHeaderAccept);
     case 'comment-creation':
-      return getFetchObject('/comments', applicationHeader);
+      return getFetchObject('/comments', body, applicationHeader);
     case 'comment-preview':
       return getFetchObject('/comments/preview', body, applicationHeader);
     default:
