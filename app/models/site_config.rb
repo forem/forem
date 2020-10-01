@@ -10,8 +10,6 @@ class SiteConfig < RailsSettings::Base
 
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
-  LISTING_ICON = File.read(Rails.root.join("app/assets/images/twemoji/listing.svg")).freeze
-  MIC_ICON = File.read(Rails.root.join("app/assets/images/twemoji/mic.svg")).freeze
 
   # Core setup
   field :waiting_on_first_user, type: :boolean, default: !User.exists?
@@ -56,11 +54,6 @@ class SiteConfig < RailsSettings::Base
     privacy: ApplicationConfig["DEFAULT_EMAIL"],
     members: ApplicationConfig["DEFAULT_EMAIL"]
   }
-
-  field :navigation, type: :array, default: [
-    { name: 'Reading List', url: 'abc.com', icon: LISTING_ICON },
-    { name: 'Listing', url: 'def.com', icon: MIC_ICON }
-  ]
 
   # Email digest frequency
   field :periodic_email_digest_max, type: :integer, default: 0

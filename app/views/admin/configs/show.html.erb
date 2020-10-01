@@ -714,51 +714,6 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Navigation Links",
-                       state: "collapse",
-                       target: "navigationBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="navigationBodyContainer" class="card-body collapse hide" aria-labelledby="navigationBodyContainer">
-            <div class="form-group">
-              <% SiteConfig.navigation.each do |hash| %>
-                <hr>
-                <div>
-                  <%= admin_config_label "name" %>
-                  <%= f.text_field "navigation[][name]",
-                                   class: "form-control",
-                                   value: hash[:name],
-                                   placeholder: "" %>
-                  <div class="alert alert-info">The display name for a navigation link on the sidebar</div>
-                </div>
-                <div>
-                  <%= admin_config_label "url" %>
-                  <%= f.text_field "navigation[][url]",
-                                   class: "form-control",
-                                   value: hash[:url],
-                                   placeholder: "" %>
-                  <div class="alert alert-info">The URL for a navigation link on the sidebar</div>
-                </div>
-                <div>
-                  <%= admin_config_label "icon" %>
-                  <%= f.text_area "navigation[][icon]",
-                                  class: "form-control",
-                                  value: hash[:icon],
-                                  rows: 6,
-                                  placeholder: "<svg ...></svg>" %>
-                  <div class="alert alert-info">The SVG icon for a navigation link on the sidebar</div>
-                  <% if hash[:icon].present? %>
-                    <%= hash[:icon].html_safe %>
-                  <% end %>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
                        header: "Newsletter",
                        state: "collapse",
                        target: "newsletterBodyContainer",
