@@ -54,32 +54,26 @@ function getNextArticle(article) {
 function getPreviousArticle(article) {
   const sibling =
     article?.previousElementSibling ||
-    article?.closest('div.substories,div.paged-stories')?.previousElementSibling;
+    article?.closest('div.substories,div.paged-stories')
+      ?.previousElementSibling;
   if (!sibling?.classList.contains('crayons-story')) {
     return sibling.previousElementSibling;
   }
   return sibling;
 }
 
-const ARTICLE_NAVIGATION_UP_KEYS = ['k', 'ArrowUp'];
-const ARTICLE_NAVIGATION_DOWN_KEYS = ['j', 'ArrowDown'];
-
 function articleKeyEventListener(event) {
   const { activeElement } = document;
 
   if (
-    ![...ARTICLE_NAVIGATION_UP_KEYS, ...ARTICLE_NAVIGATION_DOWN_KEYS].includes(
-      event.key,
-    ) ||
+    !['j', 'k'].includes(event.key) ||
     ['INPUT', 'TEXTAREA'].includes(activeElement.tagName) ||
     activeElement.classList.contains('input')
   ) {
     return;
   }
 
-  const direction = ARTICLE_NAVIGATION_UP_KEYS.includes(event.key)
-    ? 'up'
-    : 'down';
+  const direction = event.key === 'k' ? 'up' : 'down';
 
   const closestArticle = document.activeElement?.closest('.crayons-story');
 

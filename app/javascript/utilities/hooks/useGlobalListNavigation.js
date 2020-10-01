@@ -1,9 +1,8 @@
 import { isInViewport } from '../viewport';
 import useGlobalKeyEventListener from './useGlobalKeyEventListener';
 
-const NAVIGATION_UP_KEYS = ['k', 'ArrowUp'];
-const NAVIGATION_DOWN_KEYS = ['j', 'ArrowDown'];
-const EVENTFUL_KEYS = ['ArrowUp', 'ArrowDown'];
+const NAVIGATION_UP_KEY = 'k';
+const NAVIGATION_DOWN_KEY = 'j';
 
 const DIRECTIONS = {
   UP: 'up',
@@ -28,11 +27,10 @@ export default (
   };
 
   useGlobalKeyEventListener(
-    [...NAVIGATION_UP_KEYS, ...NAVIGATION_DOWN_KEYS],
+    [NAVIGATION_UP_KEY, NAVIGATION_DOWN_KEY],
     (event) => {
-      const direction = NAVIGATION_UP_KEYS.includes(event.key)
-        ? DIRECTIONS.UP
-        : DIRECTIONS.DOWN;
+      const direction =
+        event.key === NAVIGATION_UP_KEY ? DIRECTIONS.UP : DIRECTIONS.DOWN;
 
       const closestContainer = document.activeElement?.closest(
         itemContainerSelector,
@@ -46,9 +44,6 @@ export default (
 
       const nextFocusable = nextContainer?.querySelector(focusableSelector);
       if (nextFocusable) {
-        if (EVENTFUL_KEYS.includes(event.key)) {
-          event.preventDefault();
-        }
         nextFocusable.focus();
       }
     },
