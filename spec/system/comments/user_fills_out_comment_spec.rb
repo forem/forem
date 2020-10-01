@@ -79,9 +79,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     wait_for_javascript
 
     find(".toggle-reply-form").click
-    wait_for_javascript
     find(:xpath, "//textarea[contains(@id, \"textarea-for\")]").set(raw_comment)
-    find(:xpath, "//div[contains(@class, 'reply-actions')]/input[@name='commit']").click
+    click_button("SUBMIT")
     expect(page).to have_text(raw_comment)
   end
 
