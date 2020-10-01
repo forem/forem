@@ -69,14 +69,62 @@ RSpec.describe "feedback_messages", type: :request do
       end
     end
 
-    context "when a user that qualifies to bypass_recaptcha? submits a report" do
+    context "when a user qualifies to bypass_recaptcha? submits a report" do
       let(:user) { create(:user, created_at: 2.months.ago) }
 
       before do
         sign_in user
       end
 
-      it "creates a feedback message reported by the user" do
+      it "creates a feedback message reported by the user without recaptcha" do
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
+      end
+
+      it "queues a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
+          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        end
+      end
+    end
+
+    context "when a user doesn't qualify to bypass_recaptcha? submits a report" do
+      let(:user) do
+        user = create(:user, created_at: 2.months.ago)
+        create(:reaction,
+               category: "vomit",
+               reactable: user,
+               user: create(:user, :trusted),
+               status: "confirmed")
+        user
+      end
+
+      before do
+        sign_in user
+      end
+
+      it "fails to create a feedback message reported without recaptcha" do
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(false)
+      end
+
+      it "doesn't queue a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(0, only: Slack::Messengers::Worker) do
+          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        end
+      end
+    end
+
+    context "when a moderator submits a report" do
+      let(:user) { create(:user, :tag_moderator) }
+
+      before do
+        sign_in user
+      end
+
+      it "creates a feedback message reported by the moderator without recaptcha" do
         post feedback_messages_path, params: valid_abuse_report_params, headers: headers
 
         expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
