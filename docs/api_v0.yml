@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.8.0"
+  version: "0.9.0"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -1047,6 +1047,17 @@ components:
         user:
           $ref: "#/components/schemas/SharedUser"
 
+    ProfileImage:
+      description: Profile image
+      type: object
+      properties:
+        profile_image:
+          type: string
+          description: Profile image (640x640)
+        profile_image_90:
+          type: string
+          description: Profile image (90x90)
+
   examples:
     ErrorBadRequest:
       value:
@@ -1603,6 +1614,12 @@ components:
           profile_image: "..."
           profile_image_90: "..."
 
+    ProfileImage:
+      value:
+        type_of: profile_image
+        profile_image: https://res.cloudinary.com/...jpeg
+        profile_image_90: https://res.cloudinary.com/...jpeg
+
 tags:
   - name: articles
     description: Articles are all the posts users create on DEV
@@ -1624,6 +1641,8 @@ tags:
     description: Video articles
   - name: webhooks
     description: Webhooks are HTTP endpoints registered to receive events
+  - name: profile images
+    description: User or organization profile images
 
 paths:
   /articles:
@@ -2976,6 +2995,48 @@ paths:
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/users/me
+
+  /profile_images/{username}:
+    get:
+      operationId: getProfileImage
+      summary: User or organization profile picture
+      description: |
+        This endpoint allows the client to retrieve a user or organization
+        profile image information by its corresponding username
+      tags:
+        - profile images
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: Username of the user or organization
+          schema:
+            type: string
+          example: "diogoosorio"
+      responses:
+        "200":
+          description: The profile image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileImage"
+              examples:
+                profile-image-success:
+                  $ref: "#/components/examples/ProfileImage"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                profile-image-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/profile_images/diogoosorio
 
   /videos:
     get:
