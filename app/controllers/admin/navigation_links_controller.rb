@@ -1,7 +1,7 @@
 module Admin
   class NavigationLinksController < Admin::ApplicationController
     ALLOWED_PARAMS = %i[
-      name url icon
+      name url icon requires_auth
     ].freeze
     layout "admin"
 
