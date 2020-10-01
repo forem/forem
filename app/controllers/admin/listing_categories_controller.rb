@@ -44,7 +44,17 @@ module Admin
       end
     end
 
-    def destroy; end
+    def destroy
+      @listing_category = ListingCategory.find(params[:id])
+
+      if @listing_category.destroy
+        flash[:success] = "Listing Category has been deleted!"
+        redirect_to admin_listing_categories_path
+      else
+        flash[:danger] = "Something went wrong with deleting the Listing Category."
+        render :edit
+      end
+    end
 
     private
 
