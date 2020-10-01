@@ -1,13 +1,13 @@
-<div onclick="toggleEditNavigationLinkModal()" class="color-accent-warning-darker">
+<div onclick="toggleEditNavigationLinkModal('<%= link[:id] %>')" class="color-accent-warning-darker">
   Edit Link
 </div>
 
-<div id="edit-navigation-link-modal" class="hidden">
+<div id="edit-navigation-link-<%= link[:id] %>-modal" class="hidden">
   <div class="crayons-modal crayons-modal--s">
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
         <h2>Edit Link</h2>
-        <button type="button" onclick="toggleEditNavigationLinkModal()" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
+        <button type="button" onclick="toggleEditNavigationLinkModal('<%= link[:id] %>')" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
           <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -38,8 +38,8 @@
 </div>
 
 <script>
-  function toggleEditNavigationLinkModal() {
-    const confirmationModal = document.getElementById(`edit-navigation-link-modal`);
+  function toggleEditNavigationLinkModal(link_id) {
+    const confirmationModal = document.getElementById(`edit-navigation-link-${link_id}-modal`);
     if (confirmationModal) {
       confirmationModal.classList.toggle("hidden");
     }
