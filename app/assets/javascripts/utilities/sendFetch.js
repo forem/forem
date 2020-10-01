@@ -38,7 +38,7 @@ function sendFetch(switchStatement, body) {
 function getFetchCallbackObject(switchStatement, body) {
   switch (switchStatement) {
     case 'article-preview':
-      return getFetchObject('/articles/preview', applicationHeaderAccept, body);
+      return getFetchObject('/articles/preview', body, applicationHeaderAccept);
     case 'reaction-creation':
       return getFetchObjectWithToken('/reactions', body);
     case 'image-upload':
