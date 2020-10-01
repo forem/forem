@@ -80,7 +80,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     find(".toggle-reply-form").click
     find(:xpath, "//textarea[contains(@id, \"textarea-for\")]").set(raw_comment)
-    click_button("SUBMIT")
+    click_button("Submit")
     expect(page).to have_text(raw_comment)
   end
 
