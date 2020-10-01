@@ -1,7 +1,6 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-
 import useGlobalListNavigation from '../utilities/hooks/useGlobalListNavigation';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
@@ -11,9 +10,9 @@ export const Feed = ({ timeFrame, renderFeed }) => {
   const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
     new Set(reading_list_ids),
   );
-
   const [feedItems, setFeedItems] = useState([]);
   const [podcastEpisodes, setPodcastEpisodes] = useState([]);
+  const [onError, setOnError] = useState(false);
 
   useEffect(() => {
     setPodcastEpisodes(getPodcastEpisodes());
@@ -21,20 +20,26 @@ export const Feed = ({ timeFrame, renderFeed }) => {
 
   useEffect(() => {
     const fetchFeedItems = async () => {
-      const feedItems = await getFeedItems(timeFrame);
+      try {
+        if (onError) setOnError(false);
 
-      // Ensure first article is one with a main_image
-      const featuredStory = feedItems.find(
-        (story) => story.main_image !== null,
-      );
+        const feedItems = await getFeedItems(timeFrame);
 
-      // Remove that first one from the array.
-      const index = feedItems.indexOf(featuredStory);
-      feedItems.splice(index, 1);
-      const subStories = feedItems;
-      const organizedFeedItems = [featuredStory, subStories].flat();
+        // Ensure first article is one with a main_image
+        const featuredStory = feedItems.find(
+          (story) => story.main_image !== null,
+        );
 
-      setFeedItems(organizedFeedItems);
+        // Remove that first one from the array.
+        const index = feedItems.indexOf(featuredStory);
+        feedItems.splice(index, 1);
+        const subStories = feedItems;
+        const organizedFeedItems = [featuredStory, subStories].flat();
+
+        setFeedItems(organizedFeedItems);
+      } catch {
+        if (!onError) setOnError(true);
+      }
     };
 
     fetchFeedItems();
@@ -134,12 +139,18 @@ export const Feed = ({ timeFrame, renderFeed }) => {
 
   return (
     <div id="rendered-article-feed">
-      {renderFeed({
-        feedItems,
-        podcastEpisodes,
-        bookmarkedFeedItems,
-        bookmarkClick,
-      })}
+      {onError ? (
+        <div className="crayons-notice crayons-notice--danger">
+          There was a problem fetching your feed.
+        </div>
+      ) : (
+        renderFeed({
+          feedItems,
+          podcastEpisodes,
+          bookmarkedFeedItems,
+          bookmarkClick,
+        })
+      )}
     </div>
   );
 };
