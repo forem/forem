@@ -51,7 +51,7 @@ module Admin
         flash[:success] = "Listing Category has been deleted!"
         redirect_to admin_listing_categories_path
       else
-        flash[:danger] = "Something went wrong with deleting the Listing Category."
+        flash[:danger] = @listing_category.errors.full_messages.to_sentence
         render :edit
       end
     end
