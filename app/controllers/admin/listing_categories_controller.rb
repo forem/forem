@@ -12,10 +12,24 @@ module Admin
       @listing_categories = @listing_categories.where("name ILIKE :search", search: "%#{params[:search]}%")
     end
 
-    def new; end
+    def new
+      @listing_category = ListingCategory.new
+    end
 
     def edit
       @listing_category = ListingCategory.find(params[:id])
+    end
+
+    def create
+      @listing_category = ListingCategory.new(listing_category_params)
+
+      if @listing_category.save
+        flash[:success] = "Listing Category has been created!"
+        redirect_to admin_listing_categories_path
+      else
+        flash[:danger] = @display_ad.errors_as_sentence
+        render new_admin_listing_category_path
+      end
     end
 
     def update
@@ -29,8 +43,6 @@ module Admin
         render :edit
       end
     end
-
-    def create; end
 
     def destroy; end
 
