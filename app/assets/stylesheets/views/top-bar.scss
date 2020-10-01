@@ -13,6 +13,10 @@
   background: var(--header-bg);
   box-shadow: 0 1px 1px var(--header-shadow);
 
+  .static-navbar-config & {
+    position: relative;
+  }
+
   &,
   &::after,
   &::before,

@@ -10,9 +10,12 @@ body {
   padding: 0;
   margin: 0;
   overflow-y: scroll;
-  padding-top: var(--header-height);
   display: flex;
   flex-direction: column;
+
+  &.default-navbar-config {
+    padding-top: var(--header-height);
+  }
 }
 
 #audiocontent {
@@ -160,6 +163,10 @@ body.ten-x-hacker-theme {
   text-align: center;
   width: 100%;
   z-index: 101; // Must be higher than the z-index of the sticky-nav.
+
+  .static-navbar-config & {
+    position: relative;
+  }
 }
 
 .broadcast-visible {
@@ -169,17 +176,6 @@ body.ten-x-hacker-theme {
 .broadcast-data {
   flex-grow: 1;
   align-self: center;
-}
-
-body.static-navbar-config {
-  padding-top: 0;
-  .top-bar {
-    position: relative !important;
-  }
-
-  .broadcast-wrapper {
-    position: relative; // Unset fixed position for static navbar config.
-  }
 }
 
 .trusted-visible-block {
