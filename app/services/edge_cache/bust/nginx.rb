@@ -18,6 +18,12 @@ module EdgeCache
       end
 
       def self.nginx_available?
+        # TODO: (Vaidehi Joshi) - Right now, we are checking that nginx is
+        # available on every purge request/call to this bust service. If we are going
+        # to bust multiple paths, we should be able to check that nginx is
+        # available just once, and persist it on the class with @provider_available?.
+        # Then, we could allow for an array of @paths = [] to be passed in,
+        # and on single bust instance could bust multiple paths in order.
         uri = URI.parse(openresty_path)
         http = Net::HTTP.new(uri.host, uri.port)
         response = http.get(uri.request_uri)
