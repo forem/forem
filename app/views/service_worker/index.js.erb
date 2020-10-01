@@ -8,20 +8,20 @@
   self.addEventListener('install', event => {
     self.skipWaiting();
     if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
-       // iOS seems to have issues.
-       return;
+      // iOS seems to have issues.
+      return;
     }
     // Populate initial serviceworker cache.
     event.waitUntil(
       caches.open(staticCacheName)
-        .then(cache => cache.addAll([
-          "/shell_top", // head, top bar, inline styles
-          "/shell_bottom", // footer
-          "/async_info/shell_version", // For comparing changes in the shell. Should be incremented with style changes.
-          "/404.html", // Not found page
-          "/500.html", // Error page
-          "/offline.html" //Offline page
-        ]))
+      .then(cache => cache.addAll([
+        "/shell_top",                // head, top bar, inline styles
+        "/shell_bottom",             // footer
+        "/async_info/shell_version", // For comparing changes in the shell. Should be incremented with style changes.
+        "/404.html",                 // Not found page
+        "/500.html",                 // Error page
+        "/offline.html"              //Offline page
+      ]))
     );
   });
 
@@ -87,105 +87,106 @@
     });
   }
 
+  function includesUnsupportedPath(url) {
+    return [
+      '/%F0%9F%92%B8',         // 💸 (hiring)
+      '/abtests',              // Skip for field_test dashboard
+      '/admin',                // Don't fetch for admin dashboard.
+      '/ahoy/',                // Skip for ahoy message redirects
+      '/api',                  // redirects
+      '/api/',                 // Don't run on API endpoints.
+      '/checkin',              // Don't run on checkin reroutes.
+      '/embed/',               // Don't fetch for embeded content.
+      '/enter',                // Don't run on registration.
+      '/feed',                 // Skip the RSS feed
+      '/forem',                // redirects
+      '/future',               // Skip for /future.
+      '/i/',                   // Ignore locally stored image path
+      '/internal',             // redirects
+      '/locale/',              // Don't run on explicit locale endpoints.
+      '/new',
+      '/oauth/',               // Skip oauth apps
+      '/onboarding',           // Don't run on onboarding.
+      '/podcasts',             // redirects
+      '/rails/mailers',        // Skip for mailers previews in development mode
+      '/resource_admin',       // Don't fetch for administrate dashboard.
+      '/robots.txt',           // Skip robots for web crawlers
+      '/rss',                  // Skip the RSS feed alternative path
+      '/search/chat_channels', // Don't run on search endpoints
+      '/search/feed_content',
+      '/search/listings',
+      '/search/reactions',
+      '/search/tags',
+      '/search/users',
+      '/shell_',               // Don't fetch for shell.
+      '/shop',                 // redirects
+      '/sidekiq',              // Skip for Sidekiq dashboard
+      '/sitemap-',             // Don't run on registration.
+      '/social_previews',      // Skip for social previews
+      '/survey',               // redirects
+      '/uploads/',             // Ignore locally stored image path
+      '/users/auth',           // Don't run on authentication.
+      '/welcome',              // Don't run on welcome reroutes.
+      '/workshops',            // redirects
+    ].some(path => url.href.includes(path))
+  }
+
   self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
     if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
-       // iOS seems to have issues.
-       return;
+      // iOS seems to have issues.
+      return;
     }
+
     if (url.origin === location.origin) {
       if (event.clientId === "" && // Not fetched via AJAX after page load.
         event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
         !event.request.referrer.includes('/signout_confirm') && // If this is the referrer, we instead want to flush.
-
-        url.pathname !== '/new' && // We have no shell for /new
-
         !url.href.includes('i=i') && // Parameter representing "internal" navigation.
         !url.href.includes('.css') && // Don't run on CSS.
         !url.href.includes('.js') && // Don't run on JS.
         !url.href.includes('?preview=') && // Skip for preview pages.
         !url.href.includes('?signin') && // Don't run on sign in.
-
-        !url.href.includes('/resource_admin') && // Don't fetch for administrate dashboard.
-        !url.href.includes('/api/') && // Don't run on API endpoints.
-        !url.href.includes('/locale/') && // Don't run on explicit locale endpoints.
-        !url.href.includes('/embed/') && // Don't fetch for embeded content.
-        !url.href.includes('/feed') && // Skip the RSS feed
-        !url.href.includes('/rss') && // Skip the RSS feed alternative path
-        !url.href.includes('/future') && // Skip for /future.
-        !url.href.includes('/admin') && // Don't fetch for admin dashboard.
-        !url.href.includes('/oauth/') && // Skip oauth apps
-        !url.href.includes('/onboarding') && // Don't run on onboarding.
-        !url.href.includes('/rails/mailers') && // Skip for mailers previews in development mode
-        !url.href.includes('/robots.txt') && // Skip robots for web crawlers
-        !url.href.includes('/shell_') && // Don't fetch for shell.
-        !url.href.includes('/sidekiq') && // Skip for Sidekiq dashboard
-        !url.href.includes('/ahoy/') && // Skip for ahoy message redirects
-        !url.href.includes('/abtests') && // Skip for field_test dashboard
-        !url.href.includes('/social_previews') && // Skip for social previews
-        !url.href.includes('/users/auth') && // Don't run on authentication.
-        !url.href.includes('/enter') && // Don't run on registration.
-        !url.href.includes('/sitemap-') && // Don't run on registration.
-        !url.href.includes('/welcome') && // Don't run on welcome reroutes.
-        !url.href.includes('/checkin') && // Don't run on checkin reroutes.
-
-        // Don't run on search endpoints
-        !url.href.includes('/search/tags') &&
-        !url.href.includes('/search/chat_channels') &&
-        !url.href.includes('/search/listings') &&
-        !url.href.includes('/search/reactions') &&
-        !url.href.includes('/search/feed_content') &&
-        !url.href.includes('/search/users') &&
-
-        // Don't run on harcoded redirects (see config/routes.rb for the list)
-        !url.href.includes('/%F0%9F%92%B8') && // 💸 (hiring)
-        !url.href.includes('/api') &&
-        !url.href.includes('/forem') &&
-        !url.href.includes('/future') &&
-        !url.href.includes('/internal') &&
-        !url.href.includes('/podcasts') &&
-        !url.href.includes('/shop') &&
-        !url.href.includes('/survey') &&
-        !url.href.includes('/workshops') &&
-
+        !includesUnsupportedPath(url) &&
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
-        caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
-        event.respondWith(createPageStream(event.request)); // Respond with the stream
+        caches.match('/shell_bottom') // Ensure shell_bottom is in the cache.
+    ) {
+      event.respondWith(createPageStream(event.request)); // Respond with the stream
 
-        // Ping version endpoint to see if we should fetch new shell.
-        if (!caches.match('/async_info/shell_version')) { // Check if we have a cached shell version
-          caches.open(staticCacheName)
+      // Ping version endpoint to see if we should fetch new shell.
+      if (!caches.match('/async_info/shell_version')) { // Check if we have a cached shell version
+        caches.open(staticCacheName)
           .then(cache => cache.addAll([
             "/async_info/shell_version",
           ]));
-          return;
-        }
+        return;
+      }
 
-        fetch('/async_info/shell_version').then(response => response.json()).then(json => {
-          caches.match('/async_info/shell_version')
+      fetch('/async_info/shell_version').then(response => response.json()).then(json => {
+        caches.match('/async_info/shell_version')
           .then(cachedResponse => (cachedResponse === undefined) ? {} : cachedResponse.json())
           .then(cacheJson => {
             if (cacheJson['version'] != json['version']) {
               caches.open(staticCacheName)
-              .then(cache => cache.addAll([
-                "/shell_top",
-                "/shell_bottom",
-                "/async_info/shell_version"
-              ]));
+                .then(cache => cache.addAll([
+                  "/shell_top",
+                  "/shell_bottom",
+                  "/async_info/shell_version"
+                ]));
             }
           })
-        })
-        return;
-      }
+      })
+      return;
+    }
 
       // Fetch new shell upon events that signify change in session.
       if (event.clientId === "" &&
         (event.request.referrer.includes('/signout_confirm') || url.href.includes('?signin') || url.href.includes('/onboarding'))) {
         caches.open(staticCacheName)
-        .then(cache => cache.addAll([
-          "/shell_top",
-          "/shell_bottom",
-        ]));
+          .then(cache => cache.addAll([
+            "/shell_top",
+            "/shell_bottom",
+          ]));
       }
     }
   });
