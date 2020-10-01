@@ -5,8 +5,6 @@ module Admin
 
     def index
       @listing_categories = ListingCategory.order(id: :desc)
-        # .joins(:organization)
-        # .includes([:organization])
         .page(params[:page]).per(50)
 
       return if params[:search].blank?
@@ -17,7 +15,9 @@ module Admin
 
     def new; end
 
-    def edit; end
+    def edit
+      @listing_category = ListingCategory.find(params[:id])
+    end
 
     def create; end
 
