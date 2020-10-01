@@ -9,8 +9,7 @@ module Admin
 
       return if params[:search].blank?
 
-      # @listing_categories = @listing_categories.where("organizations.name ILIKE :search",
-      # search: "%#{params[:search]}%")
+      @listing_categories = @listing_categories.where("name ILIKE :search", search: "%#{params[:search]}%")
     end
 
     def new; end
