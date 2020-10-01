@@ -10,7 +10,9 @@
       <span class="crayons-indicator"></span>
     </a>
   </div>
+
   <div>
-    <div><%= link_to "Delete", admin_navigation_link_path(id: link[:name]), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %></div>
+    <%= render partial: "edit_navigation_link_modal", locals: { link: link } %>
+    <div><%= link_to "Delete", admin_navigation_link_path(link), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %></div>
   </div>
 <% end %>

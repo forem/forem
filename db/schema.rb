@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_21_160153) do
+ActiveRecord::Schema.define(version: 2020_10_01_095312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -673,6 +673,15 @@ ActiveRecord::Schema.define(version: 2020_09_21_160153) do
     t.bigint "user_id", null: false
     t.index ["chat_channel_id"], name: "index_messages_on_chat_channel_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
+  create_table "navigation_links", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.string "icon"
+    t.string "name"
+    t.boolean "requires_auth"
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "url"
   end
 
   create_table "notes", force: :cascade do |t|

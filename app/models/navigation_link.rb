@@ -1,7 +1,9 @@
 class NavigationLink < ApplicationRecord
-  resourcify
-  # This class exists to take advantage of Rolify for limiting authorization
-  # on internal reports.
-  # NOTE: It is not backed by a database table and should not be expected to
-  # function like a traditional Rails model
+  URI_REGEXP = URI::DEFAULT_PARSER.make_regexp(%w[http https]).freeze
+  SVG_REGEXP = /\A<svg .*>/i.freeze
+
+  validates :name, :url, :icon, presence: true
+
+  validates :url, format: URI_REGEXP
+  validates :icon, format: SVG_REGEXP
 end

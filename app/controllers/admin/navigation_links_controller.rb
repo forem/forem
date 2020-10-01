@@ -1,44 +1,49 @@
 module Admin
   class NavigationLinksController < Admin::ApplicationController
+    ALLOWED_PARAMS = %i[
+      name url icon
+    ].freeze
     layout "admin"
 
     def index
-      @navigation_links = SiteConfig.navigation
+      @navigation_links = NavigationLink.all
     end
 
     def create
-      return if config_params["navigation"].blank?
-
-      new_links = config_params["navigation"]
-      validation = SiteConfigs::ValidateNavigation.call(new_links)
-      if validation.success?
-        update_navigation_links = SiteConfig.navigation + new_links
-        SiteConfig.navigation = update_navigation_links
-
-        flash[:notice] = "Navigation Link #{config_params['navigation'][0]['name']} was successfully added."
+      navigation_link = NavigationLink.new(navigation_link_params)
+      if navigation_link.save
+        flash[:success] = "Successfully created navigation link: #{navigation_link.name}"
       else
-        flash[:danger] = "Navigation Links error: #{validation.errors[0].join(' , ')}"
+        flash[:error] = "Error: #{navigation_link.errors_as_sentence}"
+      end
+      redirect_to admin_navigation_links_url
+    end
+
+    def update
+      navigation_link = NavigationLink.find(params[:id])
+      if navigation_link.update(navigation_link_params)
+        flash[:success] = "Successfully updated navigation link: #{navigation_link.name}"
+      else
+        flash[:error] = "Error: #{navigation_link.errors_as_sentence}"
       end
       redirect_to admin_navigation_links_url
     end
 
     def destroy
-      navigation_links = SiteConfig.navigation
-      # use a variable thats unique, or make name unique
-      updated_navigation_links = navigation_links.reject { |link| link[:name] == params[:id] }
-      SiteConfig.navigation = updated_navigation_links
-
-      # how would this fail?
-      flash[:success] = "Navigation Link #{params[:id]} deleted"
+      navigation_link = NavigationLink.find(params[:id])
+      if navigation_link.destroy
+        flash[:success] = "Navigation Link #{navigation_link.name} deleted"
+      else
+        flash[:error] = "Error: #{navigation_link.errors_as_sentence}"
+      end
       redirect_to admin_navigation_links_url
     end
 
     private
 
-    def config_params
-      params.require(:site_config).permit(
-        navigation: %i[name url icon],
-      )
+    def navigation_link_params
+      allowed_params = ALLOWED_PARAMS
+      params.require(:navigation_link).permit(allowed_params)
     end
   end
 end
