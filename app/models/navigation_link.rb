@@ -3,7 +3,6 @@ class NavigationLink < ApplicationRecord
   SVG_REGEXP = /\A<svg .*>/i.freeze
 
   validates :name, :url, :icon, presence: true
-
   validates :url, format: URI_REGEXP
   validates :icon, format: SVG_REGEXP
 end
