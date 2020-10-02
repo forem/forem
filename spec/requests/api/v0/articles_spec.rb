@@ -445,7 +445,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns success when requesting publiched articles with public token" do
+      it "returns success when requesting published articles with public token" do
         public_token = create(:doorkeeper_access_token, resource_owner: user, scopes: "public")
         get me_api_articles_path(status: :published), params: { access_token: public_token.token }
         expect(response.media_type).to eq("application/json")
@@ -501,6 +501,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
         get me_api_articles_path(status: :all), params: { access_token: access_token.token }
         expected_order = response.parsed_body.map { |resp| resp["published"] }
         expect(expected_order).to eq([false, true])
+      end
+
+      it "return authenticated user readinglist articles when asking for readlist articles" do
+        reaction = create(:reading_reaction, user: user)
+        get me_api_articles_path(status: :readinglist), params: { access_token: access_token.token }
+        expected_acticle_id = reaction.reactable_id
+        expect(response.parsed_body.map { |resp| resp["id"] }).to eq([expected_acticle_id])
       end
     end
   end

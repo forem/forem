@@ -149,6 +149,7 @@ Rails.application.routes.draw do
             constraints: ApiConstraints.new(version: 0, default: true) do
         resources :articles, only: %i[index show create update] do
           collection do
+            get "me/readinglist", to: "articles#reading_list"
             get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
             get "/:username/:slug", to: "articles#show_by_slug", as: :slug
           end

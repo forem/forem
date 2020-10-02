@@ -1,7 +1,7 @@
 module Api
   module V0
     class ArticlesController < ApiController
-      before_action :authenticate!, only: %i[create update me]
+      before_action :authenticate!, only: %i[create update me reading_list]
       before_action -> { doorkeeper_authorize! :public }, only: %w[index show show_by_slug], if: -> { doorkeeper_token }
       before_action -> { doorkeeper_authorize! :write_articles }, only: %w[create update], if: -> { doorkeeper_token }
 
@@ -102,6 +102,23 @@ module Api
           .page(params[:page])
           .per(num)
           .decorate
+      end
+
+      def reading_list
+        per_page = (params[:per_page] || 30).to_i
+        num = [per_page, 1000].min
+
+        @articles = Article
+          .includes(:user, :organization)
+          .joins(:reactions)
+          .merge(Reaction.readinglist.where(user_id: @user.id).where.not(status: "archived"))
+          .select(INDEX_ATTRIBUTES_FOR_SERIALIZATION)
+          .order("reactions.created_at" => :desc)
+          .page(params[:page])
+          .per(num)
+          .decorate
+
+        render "index"
       end
 
       private
