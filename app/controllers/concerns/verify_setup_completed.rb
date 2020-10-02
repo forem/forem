@@ -24,6 +24,7 @@ module VerifySetupCompleted
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :verify_setup_completed, only: %i[index new edit show]
+    before_action :verify_sidekiq_running, only: %i[index show], if: proc { Rails.env.development? }
     # rubocop:enable Rails/LexicallyScopedActionFilter
   end
 
@@ -49,6 +50,13 @@ module VerifySetupCompleted
     # rubocop:disable Rails/OutputSafety
     flash[:global_notice] = "Setup not completed yet, missing #{missing_configs_text}. Please visit #{link}.".html_safe
     # rubocop:enable Rails/OutputSafety
+  end
+
+  def verify_sidekiq_running
+    return if Sidekiq::ProcessSet.new.size.positive?
+
+    flash[:global_notice] = "Sidekiq is not running and is needed for the app to function properly. \
+                            Try `bundle exec sidekiq` to get it going.".html_safe
   end
 
   def config_path?
