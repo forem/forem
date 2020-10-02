@@ -137,12 +137,10 @@ ActiveRecord::Schema.define(version: 2020_10_02_104711) do
     t.integer "score", default: 0
     t.string "search_optimized_description_replacement"
     t.string "search_optimized_title_preamble"
-    t.bigint "second_user_id"
     t.boolean "show_comments", default: true
     t.text "slug"
     t.string "social_image"
     t.integer "spaminess_rating", default: 0
-    t.bigint "third_user_id"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
