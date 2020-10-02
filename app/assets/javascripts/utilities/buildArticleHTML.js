@@ -35,14 +35,12 @@ function buildArticleHTML(article) {
       flareTag =
         "<a href='/t/" +
         article.flare_tag.name +
-        "' class='crayons-tag'>" +
-        "<span class='crayons-story__flare-tag' style='background:" +
+        "' class='crayons-tag' style='background:" +
         article.flare_tag.bg_color_hex +
         ';color:' +
         article.flare_tag.text_color_hex +
         "'><span className='crayons-tag__prefix'>#</span>" +
         article.flare_tag.name +
-        '</span>' +
         '</a>';
     }
     if (article.class_name === 'PodcastEpisode') {

@@ -133,21 +133,6 @@
     }
   }
 
-  &__flare-tag {
-    font-weight: normal;
-    // font-size: 0.6em;
-    padding: 0.3em;
-    vertical-align: middle;
-    position: relative;
-    top: -2px;
-    line-height: 1em;
-    display: inline-block;
-    border-radius: var(--radius);
-    background: var(--base-60);
-    margin-right: var(--su-1);
-    color: var(--base-inverted);
-  }
-
   &__bottom {
     display: flex;
     justify-content: space-between;

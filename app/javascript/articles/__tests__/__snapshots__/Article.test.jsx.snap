@@ -94,18 +94,14 @@ Object {
                 <a
                   class="crayons-tag"
                   href="/t/javascript"
+                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                 >
                   <span
-                    class="crayons-story__flare-tag"
-                    style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
+                    class="crayons-tag__prefix"
                   >
-                    <span
-                      class="crayons-tag__prefix"
-                    >
-                      #
-                    </span>
-                    javascript
+                    #
                   </span>
+                  javascript
                 </a>
                 <a
                   class="crayons-tag"
@@ -303,18 +299,14 @@ Object {
               <a
                 class="crayons-tag"
                 href="/t/javascript"
+                style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
               >
                 <span
-                  class="crayons-story__flare-tag"
-                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
+                  class="crayons-tag__prefix"
                 >
-                  <span
-                    class="crayons-tag__prefix"
-                  >
-                    #
-                  </span>
-                  javascript
+                  #
                 </span>
+                javascript
               </a>
               <a
                 class="crayons-tag"

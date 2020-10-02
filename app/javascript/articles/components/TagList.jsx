@@ -9,17 +9,16 @@ export const TagList = ({ tags = [], flare_tag }) => {
   return (
     <div className="crayons-story__tags">
       {flare_tag && (
-        <a className="crayons-tag" href={`/t/${flare_tag.name}`}>
-          <span
-            className="crayons-story__flare-tag"
-            style={{
-              background: flare_tag.bg_color_hex,
-              color: flare_tag.text_color_hex,
-            }}
-          >
-            <span className="crayons-tag__prefix">#</span>
-            {flare_tag.name}
-          </span>
+        <a
+          className="crayons-tag"
+          href={`/t/${flare_tag.name}`}
+          style={{
+            background: flare_tag.bg_color_hex,
+            color: flare_tag.text_color_hex,
+          }}
+        >
+          <span className="crayons-tag__prefix">#</span>
+          {flare_tag.name}
         </a>
       )}
       {tagsToDisplay.map((tag) => (
