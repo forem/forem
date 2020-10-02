@@ -18,6 +18,7 @@ module Constants
                      "Resource Admin: Config",
                      "Resource Admin: Broadcast",
                      "Resource Admin: HtmlVariant",
-                     "Resource Admin: DisplayAd"].freeze
+                     "Resource Admin: DisplayAd",
+                     "Resource Admin: ListingCategory"].freeze
   end
 end
