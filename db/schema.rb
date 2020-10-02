@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_01_154006) do
+ActiveRecord::Schema.define(version: 2020_10_02_104711) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -677,9 +677,9 @@ ActiveRecord::Schema.define(version: 2020_10_01_154006) do
 
   create_table "navigation_links", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
+    t.boolean "display_when_signed_in", default: false
     t.string "icon", null: false
     t.string "name", null: false
-    t.boolean "requires_auth", default: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "url", null: false
   end
