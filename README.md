@@ -53,7 +53,7 @@ communities.
 
 ## What is Forem?
 
-Forem is open source software for building communities. Communities for your
+Forem is an open source software for building communities. Communities for your
 peers, customers, fanbases, families, friends, and any other time and space
 where people need to come together to be part of a collective.
 [See our announcement post](https://dev.to/devteam/for-empowering-community-2k6h)
