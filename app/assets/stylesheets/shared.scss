@@ -1,5 +1,4 @@
 @import 'config/import';
-@import 'variables';
 
 #audiocontent {
   position: fixed;
@@ -187,36 +186,10 @@
   }
 }
 
-.navigation-progress {
-  --duration: 3600ms;
-  --delay: 250ms;
-  position: fixed;
-  top: 0;
-  background: var(--accent-brand);
-  z-index: 103;
-  height: var(--su-1);
-  width: 0;
-  &.showing {
-    display: block;
-    animation: showProgressBar var(--duration) ease-in-out;
-    animation-delay: var(--delay);
-    animation-fill-mode: forwards;
-  }
-}
-
-@keyframes showProgressBar {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 100%;
-  }
-}
-
 .global-notice {
   font-family: var(--ff-sans-serif);
-  background: $green;
-  color: black;
+  background: var(--accent-success-darker);
+  color: white;
   padding: 20px 0px 20px;
   text-align: center;
   position: relative;

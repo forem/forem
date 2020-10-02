@@ -24,19 +24,19 @@
   <%= stylesheet_link_tag "admin" %>
 
 </head>
-<body class="admin"
+<body class="admin default-header"
   data-honybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
   data-release-footprint="<%= ApplicationConfig["RELEASE_FOOTPRINT"] %>"
   data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
-  <header class="top-bar" id="top-bar" role="banner">
-    <div class="top-bar__container">
-      <a href="/" class="top-bar--logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+  <header class="crayons-header" role="banner">
+    <div class="crayons-header__container">
+      <a href="/" class="site-logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
       <h1 class="pl-4 fs-l">
         Admin
         <span class="color-base-40">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>
       </h1>
 
-      <div class="top-bar__links">
+      <div class="crayons-header__links">
         <a href="/" aria-label="<%= community_name %> Home">Go to <%= community_name %> home page</a>
       </div>
     </div>
