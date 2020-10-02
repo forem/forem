@@ -165,7 +165,6 @@ ActiveRecord::Schema.define(version: 2020_10_02_104711) do
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
-    t.index ["slug"], name: "index_articles_on_slug"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
@@ -190,9 +189,7 @@ ActiveRecord::Schema.define(version: 2020_10_02_104711) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["badge_id", "user_id"], name: "index_badge_achievements_on_badge_id_and_user_id", unique: true
-    t.index ["badge_id"], name: "index_badge_achievements_on_badge_id"
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
-    t.index ["user_id"], name: "index_badge_achievements_on_user_id"
   end
 
   create_table "badges", force: :cascade do |t|
@@ -312,9 +309,7 @@ ActiveRecord::Schema.define(version: 2020_10_02_104711) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["chat_channel_id", "user_id"], name: "index_chat_channel_memberships_on_chat_channel_id_and_user_id", unique: true
-    t.index ["chat_channel_id"], name: "index_chat_channel_memberships_on_chat_channel_id"
     t.index ["user_id", "chat_channel_id"], name: "index_chat_channel_memberships_on_user_id_and_chat_channel_id"
-    t.index ["user_id"], name: "index_chat_channel_memberships_on_user_id"
   end
 
   create_table "chat_channels", force: :cascade do |t|
@@ -977,7 +972,6 @@ ActiveRecord::Schema.define(version: 2020_10_02_104711) do
     t.string "profile_type"
     t.datetime "updated_at", null: false
     t.index ["pinnable_id", "profile_id", "profile_type", "pinnable_type"], name: "idx_pins_on_pinnable_id_profile_id_profile_type_pinnable_type", unique: true
-    t.index ["pinnable_id"], name: "index_profile_pins_on_pinnable_id"
     t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
 
@@ -999,7 +993,6 @@ ActiveRecord::Schema.define(version: 2020_10_02_104711) do
     t.bigint "user_id"
     t.index ["article_id"], name: "index_rating_votes_on_article_id"
     t.index ["user_id", "article_id", "context"], name: "index_rating_votes_on_user_id_and_article_id_and_context", unique: true
-    t.index ["user_id"], name: "index_rating_votes_on_user_id"
   end
 
   create_table "reactions", force: :cascade do |t|
@@ -1015,10 +1008,8 @@ ActiveRecord::Schema.define(version: 2020_10_02_104711) do
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
     t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
-    t.index ["reactable_id"], name: "index_reactions_on_reactable_id"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
-    t.index ["user_id"], name: "index_reactions_on_user_id"
   end
 
   create_table "response_templates", force: :cascade do |t|
@@ -1032,7 +1023,6 @@ ActiveRecord::Schema.define(version: 2020_10_02_104711) do
     t.index ["content", "user_id", "type_of", "content_type"], name: "idx_response_templates_on_content_user_id_type_of_content_type", unique: true
     t.index ["type_of"], name: "index_response_templates_on_type_of"
     t.index ["user_id", "type_of"], name: "index_response_templates_on_user_id_and_type_of"
-    t.index ["user_id"], name: "index_response_templates_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -1189,7 +1179,6 @@ ActiveRecord::Schema.define(version: 2020_10_02_104711) do
     t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
     t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
     t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
-    t.index ["subscriber_id"], name: "index_user_subscriptions_on_subscriber_id"
     t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
   end
 

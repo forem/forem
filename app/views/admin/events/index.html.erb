@@ -1,5 +1,5 @@
 <div class="crayons-card p-6 mb-6">
-  <h2 class="fs-2xl s:fs-3xl mb-6">Create New Event</h2>
+  <h2 class="crayons-title mb-6">Create New Event</h2>
 
   <%= form_for @event, url: { controller: "events", action: "create" } do |f| %>
     <%= render "event_form", f: f, event: @event %>
@@ -7,7 +7,7 @@
 </div>
 
 <div class="crayons-card p-6 mb-6">
-  <h2 class="fs-2xl s:fs-3xl mb-6">Upcoming Events</h2>
+  <h2 class="crayons-title mb-6">Upcoming Events</h2>
   <% @events.each do |event| %>
     <% if event.starts_at.future? %>
       <img src="<%= event.cover_image_url %>" alt="event cover image">
@@ -19,7 +19,7 @@
 </div>
 
 <div class="crayons-card p-6 mb-6">
-  <h2 class="fs-2xl s:fs-3xl mb-6">Past Events</h2>
+  <h2 class="crayons-title mb-6">Past Events</h2>
   <% @events.each do |event| %>
     <% if !event.starts_at.future? %>
       <img src="<%= event.cover_image_url %>" alt="event cover image">
