@@ -1,6 +1,7 @@
 class Profile < ApplicationRecord
   belongs_to :user
 
+  validates :data, presence: true
   validates :user_id, uniqueness: true
 
   has_many :custom_profile_fields, dependent: :destroy

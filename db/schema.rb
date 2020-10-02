@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_21_160153) do
+ActiveRecord::Schema.define(version: 2020_10_01_154006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -714,11 +714,9 @@ ActiveRecord::Schema.define(version: 2020_09_21_160153) do
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
     t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
-    t.index ["organization_id"], name: "index_notifications_on_organization_id"
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
-    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
