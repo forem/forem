@@ -1,6 +1,14 @@
 <span class="color-base-30 px-2" role="presentation">&bull;</span>
+
 <a href="<%= URL.comment(decorated_comment) %>" class="comment-date crayons-link crayons-link--secondary fs-s">
   <time datetime="<%= decorated_comment.published_timestamp %>">
     <%= decorated_comment.readable_publish_date %>
   </time>
+
+  <% if decorated_comment.edited_at.present? %>
+    •
+    <span title="<%= decorated_comment.edited_at.strftime('%A, %d %B %Y, %T') %>">
+      EDITED
+    </span>
+  <% end %>
 </a>
