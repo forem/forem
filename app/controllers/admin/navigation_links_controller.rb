@@ -6,7 +6,7 @@ module Admin
     layout "admin"
 
     def index
-      @navigation_links = NavigationLink.all.order(:name)
+      @navigation_links = NavigationLink.order(:name)
     end
 
     def create
@@ -42,8 +42,7 @@ module Admin
     private
 
     def navigation_link_params
-      allowed_params = ALLOWED_PARAMS
-      params.require(:navigation_link).permit(allowed_params)
+      params.require(:navigation_link).permit(ALLOWED_PARAMS)
     end
   end
 end

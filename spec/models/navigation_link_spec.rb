@@ -8,7 +8,7 @@ RSpec.describe NavigationLink, type: :model do
       it { is_expected.to validate_presence_of(:icon) }
     end
 
-    describe "regex vaidations" do
+    describe "regex validations" do
       let(:navigation_link) { create(:navigation_link) }
 
       it "vaidates the url" do
