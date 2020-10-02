@@ -83,12 +83,6 @@ Object {
                   href="/some-post/path"
                   id="article-link-62407"
                 >
-                  <span
-                    class="crayons-story__flare-tag"
-                    style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                  >
-                    #javascript
-                  </span>
                   <span>
                     Unbranded Home Loan Account
                   </span>
@@ -102,11 +96,11 @@ Object {
                   href="/t/javascript"
                 >
                   <span
-                    class="crayons-tag__prefix"
+                    class="crayons-story__flare-tag"
+                    style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                   >
-                    #
+                    #javascript
                   </span>
-                  javascript
                 </a>
                 <a
                   class="crayons-tag"
@@ -293,12 +287,6 @@ Object {
                 href="/some-post/path"
                 id="article-link-62407"
               >
-                <span
-                  class="crayons-story__flare-tag"
-                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                >
-                  #javascript
-                </span>
                 <span>
                   Unbranded Home Loan Account
                 </span>
@@ -312,11 +300,11 @@ Object {
                 href="/t/javascript"
               >
                 <span
-                  class="crayons-tag__prefix"
+                  class="crayons-story__flare-tag"
+                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                 >
-                  #
+                  #javascript
                 </span>
-                javascript
               </a>
               <a
                 class="crayons-tag"
