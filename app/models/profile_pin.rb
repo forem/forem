@@ -1,4 +1,4 @@
-class GenericPins < ApplicationRecord #migrate later
+class ProfilePin < ApplicationRecord 
   belongs_to :pinnable, polymorphic: true
   belongs_to :profile, polymorphic: true
 
@@ -11,6 +11,21 @@ class GenericPins < ApplicationRecord #migrate later
   validate :article_to_article
 
   private
+
+  #Pseudo for a list of pinned comments on an article
+  #could possibly be recycled for going through a list of pinned articles
+  index = 0
+  display current profile_pins[index]
+
+  def BrowsePinsList
+    increase index by 1
+    scroll to new profile_pins[index] 
+
+    if profile_pins[index] reaches end of profile_pins length:
+      reset index or return
+    end
+  end    
+  #-----------------------------------------------------------------
 
   def only_five_pins_per_profile
     errors.add(:base, "cannot have more than five total pinned posts") if profile.profile_pins.size > 4
