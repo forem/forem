@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 2020_10_02_102303) do
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
+    t.bigint "co_author_ids", default: [], array: true
     t.bigint "collection_id"
     t.integer "comment_score", default: 0
     t.string "comment_template"
