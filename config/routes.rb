@@ -62,6 +62,9 @@ Rails.application.routes.draw do
       resources :broadcasts
       resources :buffer_updates, only: %i[create update]
       resources :listings, only: %i[index edit update destroy]
+      resources :listing_categories, only: %i[index edit update new create
+                                              destroy], path: "listings/categories"
+
       resources :comments, only: [:index]
       resources :events, only: %i[index create update]
       resources :feedback_messages, only: %i[index show]
@@ -126,6 +129,7 @@ Rails.application.routes.draw do
       resource :config
       resources :badges, only: %i[index edit update new create]
       resources :display_ads, only: %i[index edit update new create destroy]
+
       resources :html_variants, only: %i[index edit update new create show destroy]
       # These redirects serve as a safegaurd to prevent 404s for any Admins
       # who have the old badge_achievement URLs bookmarked.
