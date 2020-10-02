@@ -99,7 +99,12 @@ Object {
                     class="crayons-story__flare-tag"
                     style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                   >
-                    #javascript
+                    <span
+                      class="crayons-tag__prefix"
+                    >
+                      #
+                    </span>
+                    javascript
                   </span>
                 </a>
                 <a
@@ -303,7 +308,12 @@ Object {
                   class="crayons-story__flare-tag"
                   style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                 >
-                  #javascript
+                  <span
+                    class="crayons-tag__prefix"
+                  >
+                    #
+                  </span>
+                  javascript
                 </span>
               </a>
               <a

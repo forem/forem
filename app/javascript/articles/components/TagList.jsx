@@ -17,7 +17,8 @@ export const TagList = ({ tags = [], flare_tag }) => {
               color: flare_tag.text_color_hex,
             }}
           >
-            {`#${flare_tag.name}`}
+            <span className="crayons-tag__prefix">#</span>
+            {flare_tag.name}
           </span>
         </a>
       )}
