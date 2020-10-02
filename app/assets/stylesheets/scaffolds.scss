@@ -24,16 +24,6 @@
   height: 90vh;
 }
 
-/* Hide headers for screen readers */
-// TODO: remove when #10424 and #10508 are merged.
-.visually-hidden-header {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
 a {
   color: var(--link-brand-color);
   text-decoration: none;

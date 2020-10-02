@@ -31,9 +31,3 @@ body {
   visibility: visible;
   font-size: 18px;
 }
-
-@media print {
-  .print-hidden {
-    display: none;
-  }
-}
