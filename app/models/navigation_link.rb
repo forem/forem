@@ -1,5 +1,5 @@
 class NavigationLink < ApplicationRecord
-  SVG_REGEXP = /\A<svg .*>/i.freeze
+  SVG_REGEXP = /<svg .*>/i.freeze
 
   validates :name, :url, :icon, presence: true
   validates :url, url: { schemes: %w[https http] }
