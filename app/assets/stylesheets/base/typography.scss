@@ -2,12 +2,12 @@
 @import '../config/import';
 
 :root {
-  --article-rythm: var(--su-2);
-  --article-font-size: var(--fs-l);
+  --content-rythm: var(--su-2);
+  --content-font-size: var(--fs-l);
 
   @media (min-width: $breakpoint-m) {
-    --article-rythm: var(--su-4);
-    --article-font-size: var(--fs-xl);
+    --content-rythm: var(--su-4);
+    --content-font-size: var(--fs-xl);
   }
 }
 
@@ -60,7 +60,7 @@ body {
 }
 
 .text-styles {
-  font-size: var(--article-font-size);
+  font-size: var(--content-font-size);
   font-family: var(--content-font-family);
 
   a {
@@ -85,8 +85,8 @@ body {
   h5,
   h6 {
     font-family: var(--ff-sans-serif);
-    margin: var(--article-rythm) 0;
-    margin-top: calc(var(--article-rythm) * 2);
+    margin: var(--content-rythm) 0;
+    margin-top: calc(var(--content-rythm) * 2);
     padding: 0;
   }
 
@@ -116,13 +116,13 @@ body {
   }
 
   p {
-    margin: var(--article-rythm) 0;
+    margin: var(--content-rythm) 0;
   }
 
   ul,
   ol {
     padding-left: var(--su-6);
-    margin: var(--article-rythm) 0;
+    margin: var(--content-rythm) 0;
     br {
       line-height: 0;
       margin: 0;
@@ -173,7 +173,7 @@ body {
   blockquote {
     border-left: 4px solid var(--base-50);
     padding: 0 var(--su-4);
-    margin: var(--article-rythm) 0;
+    margin: var(--content-rythm) 0;
 
     p:first-child {
       margin: var(--su-2) 0;
@@ -220,7 +220,7 @@ body {
 
   pre:not(.highlight),
   div.highlight {
-    margin: var(--article-rythm) 0;
+    margin: var(--content-rythm) 0;
   }
 
   img {
@@ -240,11 +240,11 @@ body {
   iframe {
     width: 100%;
     border: 0;
-    margin: var(--article-rythm) 0;
+    margin: var(--content-rythm) 0;
   }
 
   .fluidvids {
-    margin: var(--article-rythm) 0;
+    margin: var(--content-rythm) 0;
 
     iframe {
       margin: 0;
