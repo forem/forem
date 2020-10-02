@@ -20,6 +20,7 @@ module Admin
       { name: "listings",              controller: "listings" },
       { name: "moderator_actions",     controller: "moderator_actions" },
       { name: "mods",                  controller: "mods" },
+      { name: "navigation_links",      controller: "navigation_links" },
       { name: "privileged_reactions",  controller: "privileged_reactions" },
       { name: "organizations",         controller: "organizations" },
       { name: "pages",                 controller: "pages" },
