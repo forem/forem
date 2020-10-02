@@ -83,9 +83,9 @@ within our community. ❤️
 
 ## Contributing
 
-We encourage you to contribute to Forem! Please check out the
+We encourage you to contribute to Forem! It will sharp your programming skills. Please check out the
 [Contributing to Forem guide](CONTRIBUTING.md) for guidelines about how to
-proceed.
+proceed. 
 
 ## Getting Started
 
