@@ -1,5 +1,5 @@
 <div class="crayons-card p-6 mb-6">
-  <h2 class="fs-2xl s:fs-3xl mb-6">Create Channel</h2>
+  <h2 class="crayons-title mb-6">Create Channel</h2>
   <%= form_for [:admin, ChatChannel.new], html: { class: "inline-form" } do |f| %>
     <div class="form-row">
       <div class="form-group">
@@ -15,7 +15,7 @@
 
 <div class="crayons-card p-6">
   <header class="flex mb-6">
-    <h2 class="fs-2xl s:fs-3xl mb-6">Channels</h2>
+    <h2 class="crayons-title mb-6">Channels</h2>
     <%= search_form_for @q, url: admin_chat_channels_path, class: "form-inline ml-auto" do |f| %>
       <%= f.label :channel_name_cont, "Channel Name", class: "sr-only" %>
       <%= f.search_field :channel_name_cont, placeholder: "Channel Name", class: "form-control mx-3" %>

@@ -180,12 +180,34 @@ RSpec.describe User, type: :model do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
+      it { is_expected.to validate_inclusion_of(:email_digest_periodic).in_array([true, false]) }
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+      it { is_expected.to validate_inclusion_of(:welcome_notifications).in_array([true, false]) }
+
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
       it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+
+      it { is_expected.to validate_presence_of(:articles_count) }
+      it { is_expected.to validate_presence_of(:badge_achievements_count) }
+      it { is_expected.to validate_presence_of(:blocked_by_count) }
+      it { is_expected.to validate_presence_of(:blocking_others_count) }
+      it { is_expected.to validate_presence_of(:comments_count) }
+      it { is_expected.to validate_presence_of(:config_font) }
+      it { is_expected.to validate_presence_of(:config_navbar) }
+      it { is_expected.to validate_presence_of(:config_theme) }
+      it { is_expected.to validate_presence_of(:credits_count) }
+      it { is_expected.to validate_presence_of(:following_orgs_count) }
+      it { is_expected.to validate_presence_of(:following_tags_count) }
+      it { is_expected.to validate_presence_of(:following_users_count) }
+      it { is_expected.to validate_presence_of(:rating_votes_count) }
+      it { is_expected.to validate_presence_of(:reactions_count) }
+      it { is_expected.to validate_presence_of(:sign_in_count) }
+      it { is_expected.to validate_presence_of(:spent_credits_count) }
+      it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
+
       it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
 
       Authentication::Providers.username_fields.each do |username_field|

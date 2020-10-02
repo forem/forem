@@ -72,7 +72,6 @@ function initializeVideoPlayback() {
         playerInstance.setup({
           file: metadata.video_source_url,
           mediaid: metadata.video_code,
-          autostart: true,
           image: metadata.video_thumbnail_url,
           playbackRateControls: true,
           tracks: [
@@ -85,9 +84,6 @@ function initializeVideoPlayback() {
           ],
         });
         if (seconds) {
-          jwplayer().on('ready', function (event) {
-            jwplayer().play();
-          });
           jwplayer().on('firstFrame', function () {
             jwplayer().seek(seconds);
           });
