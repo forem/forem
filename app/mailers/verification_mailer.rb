@@ -5,7 +5,7 @@ class VerificationMailer < ApplicationMailer
 
   def account_ownership_verification_email
     @user = User.find(params[:user_id])
-    email_authorization = EmailAuthorization.create(user: @user, type_of: "account_ownership")
+    email_authorization = EmailAuthorization.create!(user: @user, type_of: "account_ownership")
     @confirmation_token = email_authorization.confirmation_token
 
     mail(to: @user.email, subject: "Verify Your #{SiteConfig.community_name} Account Ownership")

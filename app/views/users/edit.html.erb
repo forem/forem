@@ -21,7 +21,7 @@
 
 <header class="crayons-layout crayons-layout--limited crayons-layout--1-col p-4">
   <% if @tab == "organization" && @organizations.present? %>
-    <h1 class="fs-2xl s:fs-3xl">Settings for
+    <h1 class="crayons-title">Settings for
       <span class="organization-dropdown">
         <select id="organization-dropdown-select" onchange="window.location.href=this.value">
           <% options = @organizations.pluck(:slug, :id).each do |arr| %>
@@ -36,7 +36,7 @@
       </span>
     </h1>
   <% else %>
-    <h1 class="fs-2xl s:fs-3xl">
+    <h1 class="crayons-title">
       Settings for <a href="<%= user_url(@user) || "#" %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
     </h1>
   <% end %>
@@ -92,6 +92,6 @@
       <%= render partial: "users/errors", locals: { errors: @organization.errors, title_suffix: "prohibited your organization profile from being saved" } %>
     <% end %>
 
-    <%= render "users/" + @tab.tr("-", "_"), tab: @tab %>
+    <%= render "users/#{@tab.tr('-', '_')}", tab: @tab %>
   </div>
 </main>

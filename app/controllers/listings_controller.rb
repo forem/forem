@@ -33,8 +33,7 @@ class ListingsController < ApplicationController
   # rubocop:enable Rails/LexicallyScopedActionFilter
 
   def index
-    published_listings = Listing.where(published: true)
-    @displayed_listing = published_listings.find_by(slug: params[:slug]) if params[:slug]
+    @displayed_listing = Listing.where(published: true).find_by(slug: params[:slug]) if params[:slug]
 
     if params[:view] == "moderate"
       not_found unless @displayed_listing
@@ -43,10 +42,7 @@ class ListingsController < ApplicationController
 
     @listings =
       if params[:category].blank?
-        published_listings
-          .order(bumped_at: :desc)
-          .includes(:user, :organization, :taggings)
-          .limit(12)
+        listings_for_index_view
       else
         Listing.none
       end
@@ -124,7 +120,19 @@ class ListingsController < ApplicationController
   end
 
   def process_after_update
-    redirect_to "/listings"
+    # The following sets variables used in the index view. We render the
+    # index view directly to avoid having to redirect.
+    #
+    # Redirects lead to a race condition where we redirect to a cached view
+    # after updating data and we don't bust the cache fast enough before
+    # hitting the view, therefore stale content ends up being served from
+    # cache.
+    #
+    # https://github.com/forem/forem/issues/10338#issuecomment-693401481
+    @listings = listings_for_index_view
+    @listings_json = @listings.to_json(INDEX_JSON_OPTIONS)
+
+    render :index
   end
 
   def process_after_unpublish
@@ -133,5 +141,14 @@ class ListingsController < ApplicationController
 
   def check_limit
     rate_limit!(:listing_creation)
+  end
+
+  # This is a convenience method to query listings for use in the index view in
+  # the index action and process_after_update method
+  def listings_for_index_view
+    Listing.where(published: true)
+      .order(bumped_at: :desc)
+      .includes(:user, :organization, :taggings)
+      .limit(12)
   end
 end

@@ -10,8 +10,10 @@ RSpec.describe PodcastEpisode, type: :model do
       it { is_expected.to belong_to(:podcast) }
       it { is_expected.to have_many(:comments).inverse_of(:commentable).dependent(:nullify) }
 
+      it { is_expected.to validate_presence_of(:comments_count) }
       it { is_expected.to validate_presence_of(:guid) }
       it { is_expected.to validate_presence_of(:media_url) }
+      it { is_expected.to validate_presence_of(:reactions_count) }
       it { is_expected.to validate_presence_of(:slug) }
       it { is_expected.to validate_presence_of(:title) }
     end

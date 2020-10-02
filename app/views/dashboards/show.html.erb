@@ -2,7 +2,7 @@
 
 <main>
   <header class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0">Dashboard</h1>
+    <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard</h1>
     <%= render "actions_mobile" %>
     <%= render "analytics" %>
   </header>
@@ -14,7 +14,7 @@
 
     <div class="crayons-layout__content flex flex-col">
       <div class="flex items-center justify-between mb-3">
-        <h2 class="hidden m:block fs-l fw-heavy">Posts</h2>
+        <h2 class="hidden m:block crayons-subtitle-2">Posts</h2>
 
         <div class="flex flex-wrap">
           <% if params[:which] != "organization" %>
