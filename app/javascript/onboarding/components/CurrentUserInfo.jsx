@@ -17,4 +17,4 @@ CurrentUserInfo.propTypes = {
   imagePath: PropTypes.string.isRequired,
 };
 
-export { CurrentUserInfo };
+export default CurrentUserInfo;

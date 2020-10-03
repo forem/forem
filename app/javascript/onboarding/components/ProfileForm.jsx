@@ -1,12 +1,10 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { userData, getContentOfToken, updateOnboarding } from '../../utilities';
-import Navigation from '../Navigation';
-import {
-  OnboardingForm,
-  CurrentUserInfo,
-  OnboardingContentHeader,
-} from './components';
+import { userData, getContentOfToken, updateOnboarding } from '../utilities';
+import Navigation from './Navigation';
+import OnboardingForm from './OnboardingForm';
+import CurrentUserInfo from './CurrentUserInfo';
+import OnboardingContentHeader from './OnboardingContentHeader';
 
 class ProfileForm extends Component {
   constructor(props) {

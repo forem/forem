@@ -16,4 +16,4 @@ OnboardingContentHeader.propTypes = {
   communityName: PropTypes.string.isRequired,
 };
 
-export { OnboardingContentHeader };
+export default OnboardingContentHeader;

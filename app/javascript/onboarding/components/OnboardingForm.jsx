@@ -54,4 +54,4 @@ OnboardingForm.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export { OnboardingForm };
+export default OnboardingForm;
