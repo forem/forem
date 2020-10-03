@@ -4,7 +4,6 @@ import { useEffect, useState } from 'preact/hooks';
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
 import OnboardingForm from './OnboardingForm';
-import CurrentUserInfo from './CurrentUserInfo';
 import OnboardingContentHeader from './OnboardingContentHeader';
 
 const lastOnboardingPage = 'v2: personal info form';
@@ -78,11 +77,17 @@ const ProfileForm = ({
           <OnboardingContentHeader
             communityName={communityConfig.communityName}
           />
-          <CurrentUserInfo
-            name={name}
-            username={username}
-            imagePath={profile_image_90}
-          />
+          <div className="current-user-info">
+            <figure className="current-user-avatar-container">
+              <img
+                className="current-user-avatar"
+                alt="profile"
+                src={profile_image_90}
+              />
+            </figure>
+            <h3>{name}</h3>
+            <p>{username}</p>
+          </div>
           <OnboardingForm onChange={handleChange} />
         </div>
       </div>
