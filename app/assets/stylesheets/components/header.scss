@@ -1,25 +1,19 @@
 @import '../config/import';
 
-.top-bar {
+.crayons-header {
   --indicator-outline: var(--header-bg);
   --dropdown-display: none;
 
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
   height: var(--header-height);
   background: var(--header-bg);
   box-shadow: 0 1px 1px var(--header-shadow);
 
-  &,
-  &::after,
-  &::before,
-  & *,
-  & *::after,
-  & *::before {
-    box-sizing: border-box; // todo: make it global when ready
+  .default-header & {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
   }
 
   &__container {
@@ -45,7 +39,7 @@
 }
 
 // Logo
-.top-bar--logo {
+.site-logo {
   display: flex;
 
   .logo {
@@ -59,7 +53,7 @@
 }
 
 // Search bar
-.top-bar--search {
+.crayons-header--search {
   max-width: 420px;
   flex: 1 auto;
   margin: 0 var(--su-2);
@@ -70,45 +64,47 @@
 }
 
 // Actions on right side...
-.top-bar__links {
-  height: var(--header-height);
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-}
-
-.top-bar__link {
-  position: relative;
-  display: flex;
-  padding: var(--su-2);
-  margin: 0 var(--su-1);
-  border-radius: 50%;
-  align-items: center;
-  color: var(--header-icons-color);
-  outline: 0;
-  transition: background var(--transition-props);
-
-  &:hover,
-  &:focus {
-    --indicator-outline: var(--header-bg-hover);
-
-    color: var(--header-icons-color-hover);
-    background: var(--header-bg-hover);
+.crayons-header {
+  &__links {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    margin-left: auto;
   }
 
-  &--current {
-    --indicator-outline: var(--header-bg-current);
+  &__link {
+    position: relative;
+    display: flex;
+    padding: var(--su-2);
+    margin: 0 var(--su-1);
+    border-radius: 50%;
+    align-items: center;
+    color: var(--header-icons-color);
+    outline: 0;
+    transition: background var(--transition-props);
 
-    color: var(--header-icons-color-hover);
-    background: var(--header-bg-current) !important;
-    .crayons-indicator {
-      display: none;
+    &:hover,
+    &:focus {
+      --indicator-outline: var(--header-bg-hover);
+
+      color: var(--header-icons-color-hover);
+      background: var(--header-bg-hover);
+    }
+
+    &--current {
+      --indicator-outline: var(--header-bg-current);
+
+      color: var(--header-icons-color-hover);
+      background: var(--header-bg-current) !important;
+      .crayons-indicator {
+        display: none;
+      }
     }
   }
 }
 
 // Dropdown under profile picture / hamburger icon
-.top-bar__menu {
+.crayons-header__menu {
   height: 100%;
   display: flex;
   align-items: center;
@@ -132,7 +128,7 @@
   &.desktop:focus {
     --dropdown-display: block;
 
-    .top-bar__menu__trigger {
+    .crayons-header__menu__trigger {
       color: var(--header-icons-color-hover);
       background: var(--header-bg-hover);
     }
@@ -223,5 +219,31 @@
       width: max-content;
       justify-self: center;
     }
+  }
+}
+
+.navigation-progress {
+  --duration: 3600ms;
+  --delay: 250ms;
+  position: fixed;
+  top: 0;
+  background: var(--accent-brand);
+  z-index: 103;
+  height: var(--su-1);
+  width: 0;
+  &.showing {
+    display: block;
+    animation: showProgressBar var(--duration) ease-in-out;
+    animation-delay: var(--delay);
+    animation-fill-mode: forwards;
+  }
+}
+
+@keyframes showProgressBar {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
   }
 }
