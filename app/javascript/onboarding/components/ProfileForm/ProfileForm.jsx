@@ -2,9 +2,8 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { userData, getContentOfToken, updateOnboarding } from '../../utilities';
 import Navigation from '../Navigation';
-import { OnboardingForm } from './components/OnboardingForm';
+import { OnboardingForm, CurrentUserInfo } from './components';
 
-/* eslint-disable camelcase */
 class ProfileForm extends Component {
   constructor(props) {
     super(props);
@@ -98,17 +97,11 @@ class ProfileForm extends Component {
                 able to edit this later in your Settings.
               </h2>
             </header>
-            <div className="current-user-info">
-              <figure className="current-user-avatar-container">
-                <img
-                  className="current-user-avatar"
-                  alt="profile"
-                  src={profile_image_90}
-                />
-              </figure>
-              <h3>{name}</h3>
-              <p>{username}</p>
-            </div>
+            <CurrentUserInfo
+              name={name}
+              username={username}
+              imagePath={profile_image_90}
+            />
             <OnboardingForm onChange={this.handleChange} />
           </div>
         </div>
@@ -129,5 +122,3 @@ ProfileForm.propTypes = {
 };
 
 export default ProfileForm;
-
-/* eslint-enable camelcase */
