@@ -6,6 +6,8 @@ RSpec.describe GlitchTag, type: :liquid_tag do
 
   describe "#id" do
     let(:valid_id) { "BXgGcAUjM39" }
+    let(:id_starting_with_tilde) { "~some-id" }
+    let(:id_with_tilde_in_the_middle) { "some~id" }
     let(:id_with_quotes) { 'some-id" onload="alert(42)"' }
     let(:id_with_app_option) { "some-id app" }
     let(:id_with_code_option) { "some-id code" }
@@ -19,6 +21,14 @@ RSpec.describe GlitchTag, type: :liquid_tag do
     def generate_tag(id)
       Liquid::Template.register_tag("glitch", GlitchTag)
       Liquid::Template.parse("{% glitch #{id} %}")
+    end
+
+    it "accepts a id starting with tilde" do
+      expect { generate_tag(id_starting_with_tilde) }.not_to raise_error
+    end
+
+    it "does not accept ids with tilde in the middle" do
+      expect { generate_tag(id_with_tilde_in_the_middle) }.to raise_error(StandardError)
     end
 
     it "accepts a valid id" do
