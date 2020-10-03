@@ -1,56 +1,51 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'preact/hooks';
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
 import OnboardingForm from './OnboardingForm';
 import CurrentUserInfo from './CurrentUserInfo';
 import OnboardingContentHeader from './OnboardingContentHeader';
 
-class ProfileForm extends Component {
-  constructor(props) {
-    super(props);
+const lastOnboardingPage = 'v2: personal info form';
 
-    this.handleChange = this.handleChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-    this.user = userData();
+const ProfileForm = ({
+  prev,
+  slidesCount,
+  currentSlideIndex,
+  communityConfig,
+  next,
+}) => {
+  const [formValues, setFormValues] = useState({
+    summary: '',
+    location: '',
+    employment_title: '',
+    employer_name: '',
+  });
+  const [canSkip, setCanSkip] = useState(true);
 
-    this.state = {
-      formValues: {
-        summary: '',
-        location: '',
-        employment_title: '',
-        employer_name: '',
-      },
-      last_onboarding_page: 'v2: personal info form',
-      canSkip: true,
-    };
-  }
+  useEffect(() => {
+    updateOnboarding(lastOnboardingPage);
+  }, []);
 
-  componentDidMount() {
-    updateOnboarding('v2: personal info form');
-  }
-
-  onSubmit() {
+  const onSubmit = () => {
     const csrfToken = getContentOfToken('csrf-token');
-    const { formValues, last_onboarding_page } = this.state;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { ...formValues, last_onboarding_page } }),
+      body: JSON.stringify({ user: { ...formValues, lastOnboardingPage } }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {
-        const { next } = this.props;
         next();
       }
     });
-  }
+  };
 
-  handleChange(e) {
-    const { formValues } = { ...this.state };
+  const handleChange = (e) => {
     const currentFormState = formValues;
     const { name, value } = e.target;
 
@@ -60,49 +55,40 @@ class ProfileForm extends Component {
     // and use that value to set the `canSkip` property on the state.
     const formIsEmpty =
       Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
+    setFormValues(currentFormState);
+    setCanSkip(formIsEmpty);
+  };
 
-    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
-  }
+  const { profile_image_90, username, name } = userData();
 
-  render() {
-    const {
-      prev,
-      slidesCount,
-      currentSlideIndex,
-      communityConfig,
-    } = this.props;
-    const { profile_image_90, username, name } = this.user;
-    const { canSkip } = this.state;
-
-    return (
-      <div
-        data-testid="onboarding-profile-form"
-        className="onboarding-main crayons-modal"
-      >
-        <div className="crayons-modal__box">
-          <Navigation
-            prev={prev}
-            next={this.onSubmit}
-            canSkip={canSkip}
-            slidesCount={slidesCount}
-            currentSlideIndex={currentSlideIndex}
+  return (
+    <div
+      data-testid="onboarding-profile-form"
+      className="onboarding-main crayons-modal"
+    >
+      <div className="crayons-modal__box">
+        <Navigation
+          prev={prev}
+          next={onSubmit}
+          canSkip={canSkip}
+          slidesCount={slidesCount}
+          currentSlideIndex={currentSlideIndex}
+        />
+        <div className="onboarding-content about">
+          <OnboardingContentHeader
+            communityName={communityConfig.communityName}
           />
-          <div className="onboarding-content about">
-            <OnboardingContentHeader
-              communityName={communityConfig.communityName}
-            />
-            <CurrentUserInfo
-              name={name}
-              username={username}
-              imagePath={profile_image_90}
-            />
-            <OnboardingForm onChange={this.handleChange} />
-          </div>
+          <CurrentUserInfo
+            name={name}
+            username={username}
+            imagePath={profile_image_90}
+          />
+          <OnboardingForm onChange={handleChange} />
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 ProfileForm.propTypes = {
   prev: PropTypes.func.isRequired,
