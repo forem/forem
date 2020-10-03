@@ -19,6 +19,9 @@ RSpec.describe Comment, type: :model do
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
 
       it { is_expected.to validate_presence_of(:body_markdown) }
+      it { is_expected.to validate_presence_of(:positive_reactions_count) }
+      it { is_expected.to validate_presence_of(:public_reactions_count) }
+      it { is_expected.to validate_presence_of(:reactions_count) }
       it { is_expected.to validate_presence_of(:user_id) }
     end
 

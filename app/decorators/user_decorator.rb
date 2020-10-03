@@ -58,7 +58,7 @@ class UserDecorator < ApplicationDecorator
       config_theme.tr("_", "-"),
       "#{config_font_name.tr('_', '-')}-article-body",
       "trusted-status-#{trusted}",
-      "#{config_navbar.tr('_', '-')}-navbar-config",
+      "#{config_navbar.tr('_', '-')}-header",
     ]
     body_class.join(" ")
   end

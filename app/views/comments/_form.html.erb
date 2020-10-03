@@ -61,7 +61,7 @@
           <input class="hidden" id="uploaded-image-main" />
         </div>
 
-        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed response-templates-button fs-base" title="Use a response template" data-has-listener="false" data-form-id="new_comment">
+        <button type="button" class="crayons-btn crayons-btn--s crayons-btn--icon-left crayons-btn--ghost-dimmed response-templates-button" title="Use a response template" data-has-listener="false" data-form-id="new_comment">
           <%= inline_svg_tag("templates.svg", aria: true, class: "crayons-icon", title: "Templates") %>
           <span class="hidden s:inline-block">Templates</span>
         </button>
@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <div class="response-templates-container crayons-card crayons-card--secondary p-4 mb-4 comment-form__templates hidden">
+    <div class="response-templates-container crayons-card crayons-card--secondary p-4 mb-4 comment-form__templates fs-base hidden">
       <header>
         <button type="button" class="personal-template-button active" data-target-type="personal" data-form-id="new_comment">Personal</button>
         <button type="button" class="moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment">Moderator</button>
@@ -93,7 +93,7 @@
       <p>Templates let you quickly answer FAQs or store snippets for re-use.</p>
     </div>
 
-    <div class="comment-form__preview text-styles text-styles--comment" id="preview-div"></div>
+    <div class="comment-form__preview text-styles text-styles--secondary" id="preview-div"></div>
 
     <div class="comment-form__buttons mb-4">
       <button type="submit" class="crayons-btn mr-2 js-btn-enable" onclick="validateField(event)" disabled>Submit</button>

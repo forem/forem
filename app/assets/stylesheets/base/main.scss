@@ -1,0 +1,33 @@
+@import '../config/import';
+
+body {
+  background: var(--body-bg);
+  color: var(--body-color);
+  font-family: var(--ff-sans-serif);
+  padding: 0;
+  margin: 0;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  &.hidden-shell {
+    padding-top: 0 !important;
+
+    .crayons-header,
+    .crayons-footer {
+      display: none;
+    }
+  }
+
+  &.default-header {
+    padding-top: var(--header-height);
+    min-height: calc(100vh - var(--header-height));
+  }
+}
+
+.wrapper {
+  flex: 1 auto;
+  visibility: visible;
+  font-size: 18px;
+}

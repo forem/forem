@@ -168,10 +168,10 @@
     position: sticky;
     top: 0;
     background: var(--base-0);
-    padding: var(--su-2) var(--article-padding-x);
-    margin: calc(var(--article-padding-y) * -1)
-      calc(var(--article-padding-x) * -1) var(--su-6)
-      calc(var(--article-padding-x) * -1);
+    padding: var(--su-2) var(--content-padding-x);
+    margin: calc(var(--content-padding-y) * -1)
+      calc(var(--content-padding-x) * -1) var(--su-6)
+      calc(var(--content-padding-x) * -1);
 
     > :first-child {
       margin-left: calc(var(--su-2) * -1);

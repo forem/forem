@@ -202,3 +202,47 @@
     right: 0;
   }
 }
+
+// Zen Mode
+// It's here because it affects the layout.
+.zen-mode {
+  --site-width: 1024px;
+  --header-height: 0;
+  .crayons-layout {
+    --layout: var(--layout-sidebar-left-width) 1fr;
+    @media (min-width: $breakpoint-m) {
+      --layout: var(--layout-sidebar-left-width) 1fr;
+    }
+  }
+  .crayons-header,
+  .crayons-footer,
+  .crayons-article-sticky,
+  .crayons-layout__sidebar-right {
+    display: none;
+  }
+}
+
+// Used for bigger sections paddings (posts for example)
+// It's here because it affects the layout.
+:root {
+  --content-padding-x: var(--su-3);
+  --content-padding-y: var(--su-3);
+
+  @media (min-width: $breakpoint-s) {
+    --content-padding-x: var(--su-5);
+    --content-padding-y: var(--su-5);
+  }
+
+  @media (min-width: $breakpoint-m) {
+    --content-padding-x: var(--su-8);
+    --content-padding-y: var(--su-7);
+  }
+
+  @media (min-width: $breakpoint-xl) {
+    --content-padding-x: var(--su-9);
+  }
+}
+
+.text-padding {
+  padding: var(--content-padding-y) var(--content-padding-x);
+}

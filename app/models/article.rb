@@ -48,17 +48,25 @@ class Article < ApplicationRecord
            class_name: "Comment"
 
   validates :body_markdown, length: { minimum: 0, allow_nil: false }, uniqueness: { scope: %i[user_id title] }
+  validates :boost_states, presence: true
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url, uniqueness: { allow_nil: true }
   validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
+  validates :comments_count, presence: true
   validates :feed_source_url, uniqueness: { allow_nil: true }
   validates :feed_source_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  validates :positive_reactions_count, presence: true
+  validates :previous_public_reactions_count, presence: true
+  validates :public_reactions_count, presence: true
+  validates :rating_votes_count, presence: true
+  validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
   validates :slug, uniqueness: { scope: :user_id }
   validates :title, presence: true, length: { maximum: 128 }
   validates :user_id, presence: true
+  validates :user_subscriptions_count, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
@@ -71,6 +79,9 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_tag
   validate :validate_video
+  validate :validate_co_authors, unless: -> { co_author_ids.blank? }
+  validate :validate_co_authors_must_not_be_the_same, unless: -> { co_author_ids.blank? }
+  validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
   before_validation :evaluate_markdown, :create_slug
   before_save :update_cached_user
@@ -142,7 +153,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
            :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-           :email_digest_eligible, :processed_html, :second_user_id, :third_user_id)
+           :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :boosted_via_additional_articles, lambda {
@@ -548,6 +559,24 @@ class Article < ApplicationRecord
     return unless collection && collection.user_id != user_id
 
     errors.add(:collection_id, "must be one you have permission to post to")
+  end
+
+  def validate_co_authors
+    return if co_author_ids.exclude?(user_id)
+
+    errors.add(:co_author_ids, "must not be the same user as the author")
+  end
+
+  def validate_co_authors_must_not_be_the_same
+    return if co_author_ids.uniq.count == co_author_ids.count
+
+    errors.add(:base, "co-author IDs must be unique")
+  end
+
+  def validate_co_authors_exist
+    return if User.where(id: co_author_ids).count == co_author_ids.count
+
+    errors.add(:co_author_ids, "must be valid user IDs")
   end
 
   def past_or_present_date

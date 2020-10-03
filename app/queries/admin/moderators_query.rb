@@ -24,7 +24,7 @@ module Admin
     end
 
     def self.role_id_for(role)
-      Role.find_by!(name: role).id
+      Role.find_by(name: role)&.id
     end
 
     def self.search_relation(relation, search)

@@ -35,8 +35,18 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
+
+    it { is_expected.to validate_presence_of(:boost_states) }
+    it { is_expected.to validate_presence_of(:comments_count) }
+    it { is_expected.to validate_presence_of(:positive_reactions_count) }
+    it { is_expected.to validate_presence_of(:previous_public_reactions_count) }
+    it { is_expected.to validate_presence_of(:public_reactions_count) }
+    it { is_expected.to validate_presence_of(:rating_votes_count) }
+    it { is_expected.to validate_presence_of(:reactions_count) }
+    it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
+
     it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
@@ -49,6 +59,39 @@ RSpec.describe Article, type: :model do
 
         expect(art2).not_to be_valid
         expect(art2.errors.full_messages.to_sentence).to match("markdown has already been taken")
+      end
+    end
+
+    describe "#validate co_authors" do
+      it "is invalid if the co_author is the same as the author" do
+        article.co_author_ids = [user.id]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if there are duplicate co_authors for the same article" do
+        co_author1 = create(:user)
+        article.co_author_ids = [co_author1, co_author1]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if the co_author is entered as a text value rather than an integer" do
+        article.co_author_ids = [user.id, "abc"]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if the co_author ID is not greater than 0" do
+        article.co_author_ids = [user.id, 0]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is valid if co_author_ids is nil" do
+        article.co_author_ids = nil
+
+        expect(article).to be_valid
       end
     end
 
