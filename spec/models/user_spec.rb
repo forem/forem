@@ -794,7 +794,7 @@ RSpec.describe User, type: :model do
 
   describe "theming properties" do
     it "creates proper body class with defaults" do
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
@@ -816,28 +816,28 @@ RSpec.describe User, type: :model do
     it "creates proper body class with sans serif config" do
       user.config_font = "sans_serif"
 
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.config_font = "open_dyslexic"
 
-      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
 
-      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
 
-      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end

@@ -1,9 +1,8 @@
-<div class="navigation-progress" id="navigation-progress">
-</div>
-<header class="top-bar" id="top-bar" role="banner">
+<div class="navigation-progress" id="navigation-progress"></div>
+<header class="crayons-header print-hidden" role="banner">
   <a href="#articles-list" class="skip-content-link">Skip to content</a>
-  <div class="top-bar__container">
-    <a href="/" class="top-bar--logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+  <div class="crayons-header__container">
+    <a href="/" class="site-logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
 
     <div id="pwa-nav-buttons" class="pwa-nav-buttons">
       <button type="button" id="app-back-button">
@@ -17,26 +16,26 @@
       </button>
     </div>
 
-    <div class="top-bar--search" id="top-bar--search">
+    <div class="crayons-header--search" id="header-search">
       <form acceptCharset="UTF-8" method="get" action="/search">
-        <input class="top-bar--search-input crayons-textfield" type="text" name="q" id="nav-search" placeholder="Search..." autoComplete="off" />
+        <input class="crayons-header--search-input crayons-textfield" type="text" name="q" id="nav-search" placeholder="Search..." autoComplete="off" />
       </form>
     </div>
 
-    <div class="top-bar__links">
+    <div class="crayons-header__links">
       <% if user_signed_in? %>
         <a href="/new" class="crayons-btn hidden mr-2 whitespace-nowrap s:block">Write a post</a>
 
-        <a id="moderation-link" class="top-bar__link trusted-visible-block" aria-label="Moderation" href="<%= mod_path %>">
+        <a id="moderation-link" class="crayons-header__link trusted-visible-block" aria-label="Moderation" href="<%= mod_path %>">
           <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
         </a>
 
-        <a href="/connect" id="connect-link" class="top-bar__link" aria-label="Connect">
+        <a href="/connect" id="connect-link" class="crayons-header__link" aria-label="Connect">
           <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Connect") %>
           <span class="crayons-indicator crayons-indicator--accent hidden" id="connect-number"></span>
         </a>
 
-        <a href="/notifications" id="notifications-link" class="top-bar__link" aria-label="Notifications">
+        <a href="/notifications" id="notifications-link" class="crayons-header__link" aria-label="Notifications">
           <%= inline_svg_tag("bell.svg", aria: true, class: "crayons-icon", title: "Notifications") %>
           <span class="crayons-indicator crayons-indicator--critical hidden" id="notifications-number"></span>
         </a>
@@ -45,12 +44,12 @@
           Log in
         </a>
 
-        <a href="<%= sign_up_path(state:"new-user") %>" class="crayons-btn hidden mr-2 whitespace-nowrap s:block" data-no-instant>
+        <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn hidden mr-2 whitespace-nowrap s:block" data-no-instant>
           Create account
         </a>
       <% end %>
-      <div class="top-bar__menu <% unless user_signed_in? %>s:hidden<% end %>" id="top-bar__menu">
-        <button type="button" class="top-bar__menu__trigger" id="navigation-butt" aria-label="Navigation menu">
+      <div class="crayons-header__menu <% unless user_signed_in? %>s:hidden<% end %>" id="crayons-header__menu">
+        <button type="button" class="crayons-header__menu__trigger" id="navigation-butt" aria-label="Navigation menu">
           <% if user_signed_in? %>
             <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" /></span>
           <% else %>
