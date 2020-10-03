@@ -2,7 +2,11 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { userData, getContentOfToken, updateOnboarding } from '../../utilities';
 import Navigation from '../Navigation';
-import { OnboardingForm, CurrentUserInfo } from './components';
+import {
+  OnboardingForm,
+  CurrentUserInfo,
+  OnboardingContentHeader,
+} from './components';
 
 class ProfileForm extends Component {
   constructor(props) {
@@ -86,17 +90,9 @@ class ProfileForm extends Component {
             currentSlideIndex={currentSlideIndex}
           />
           <div className="onboarding-content about">
-            <header className="onboarding-content-header">
-              <h1 className="title">Build your profile</h1>
-              <h2
-                data-testid="onboarding-profile-subtitle"
-                className="subtitle"
-              >
-                Tell us a little bit about yourself — this is how others will
-                see you on {communityConfig.communityName}. You’ll always be
-                able to edit this later in your Settings.
-              </h2>
-            </header>
+            <OnboardingContentHeader
+              communityName={communityConfig.communityName}
+            />
             <CurrentUserInfo
               name={name}
               username={username}
