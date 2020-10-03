@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import { userData, getContentOfToken, updateOnboarding } from '../utilities';
-import Navigation from './Navigation';
+import { userData, getContentOfToken, updateOnboarding } from '../../utilities';
+import Navigation from '../Navigation';
 
 /* eslint-disable camelcase */
 class ProfileForm extends Component {
