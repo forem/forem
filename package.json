@@ -113,7 +113,7 @@
     "eslint-import-resolver-webpack": "^0.12.2",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-ignore-erb": "^0.1.1",
-    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.21.2",
     "faker": "^5.1.0",
