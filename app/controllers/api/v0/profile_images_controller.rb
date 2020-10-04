@@ -1,12 +1,10 @@
 module Api
   module V0
     class ProfileImagesController < ApiController
-      before_action :set_cache_control_headers, only: %i[show]
-
       def show
         not_found unless profile_image_owner
 
-        @profile_image_url = profile_image_owner.profile_image_url
+        @profile_image_owner = profile_image_owner
       end
 
       private
@@ -16,8 +14,8 @@ module Api
       end
 
       def user
-        @user ||= User.select(:id, :profile_image)
-          .find_by(username: params[:username], registered: true)
+        @user ||= User.registered.select(:id, :profile_image)
+          .find_by(username: params[:username])
       end
 
       def organization

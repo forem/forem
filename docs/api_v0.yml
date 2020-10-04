@@ -1051,6 +1051,13 @@ components:
       description: Profile image
       type: object
       properties:
+        type_of:
+          type: string
+          enum: [profile_image]
+        image_of:
+          description: "Discriminates what is the type of the profile image owner (user or organization)"
+          type: string
+          enum: [user, organization]
         profile_image:
           type: string
           description: Profile image (640x640)
@@ -1617,6 +1624,7 @@ components:
     ProfileImage:
       value:
         type_of: profile_image
+        image_of: user
         profile_image: https://res.cloudinary.com/...jpeg
         profile_image_90: https://res.cloudinary.com/...jpeg
 
