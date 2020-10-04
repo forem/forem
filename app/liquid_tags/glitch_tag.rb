@@ -37,7 +37,7 @@ class GlitchTag < LiquidTagBase
 
   def parse_id(input)
     id = input.split(" ").first
-    id.gsub!(TILDE_PREFIX_REGEXP, '')
+    id.gsub!(TILDE_PREFIX_REGEXP, "")
     raise StandardError, "Invalid Glitch ID" unless valid_id?(id)
 
     id
