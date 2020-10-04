@@ -30,7 +30,7 @@ class TwitchTag < LiquidTagBase
 
   # prevent param injection
   def parsed_slug(slug)
-    slug.split("&")[0].strip
+    slug.strip.split("&")[0]
   end
 end
 
