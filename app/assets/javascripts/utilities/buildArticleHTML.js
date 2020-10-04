@@ -55,7 +55,7 @@ function buildArticleHTML(article) {
     }
 
     var tagString = '';
-    var tagList = article.tag_list || article.cached_tag_list_array;
+    var tagList = article.tag_list || article.cached_tag_list_array || [];
     if (flareTag) {
       tagList = tagList.filter(function (tag) {
         return tag !== article.flare_tag.name;
