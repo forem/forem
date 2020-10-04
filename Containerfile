@@ -4,7 +4,7 @@ USER root
 
 RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
     dnf install -y bash curl git ImageMagick iproute jemalloc less libcurl libcurl-devel \
-                   libffi-devel libsodium-devel libxml2-devel libxslt-devel nodejs pcre-devel \
+                   libffi-devel libsodium libxml2-devel libxslt-devel nodejs pcre-devel \
                    postgresql postgresql-devel ruby-devel tzdata yarn \
                    && dnf -y clean all \
                    && rm -rf /var/cache/yum
