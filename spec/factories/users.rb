@@ -83,6 +83,13 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:banned) }
     end
 
+    trait :invited do
+      after(:build) do |user|
+        user.registered = false
+        user.registered_at = nil
+      end
+    end
+
     trait :ignore_mailchimp_subscribe_callback do
       after(:build) do |user|
         user.define_singleton_method(:subscribe_to_mailchimp_newsletter) {}
