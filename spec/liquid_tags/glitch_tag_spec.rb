@@ -6,8 +6,6 @@ RSpec.describe GlitchTag, type: :liquid_tag do
 
   describe "#id" do
     let(:valid_id) { "BXgGcAUjM39" }
-    let(:id_starting_with_tilde) { "~some-id" }
-    let(:id_with_tilde_in_the_middle) { "some~id" }
     let(:id_with_quotes) { 'some-id" onload="alert(42)"' }
     let(:id_with_app_option) { "some-id app" }
     let(:id_with_code_option) { "some-id code" }
@@ -17,18 +15,11 @@ RSpec.describe GlitchTag, type: :liquid_tag do
     let(:id_with_file_option) { "some-id file=script.js" }
     let(:id_with_app_and_code_option) { "some-id app code" }
     let(:id_with_many_options) { "some-id app no-attribution no-files file=script.js" }
+    let(:id_starting_with_tilde) { "~some-id" }
 
     def generate_tag(id)
       Liquid::Template.register_tag("glitch", GlitchTag)
       Liquid::Template.parse("{% glitch #{id} %}")
-    end
-
-    it "accepts a id starting with tilde" do
-      expect { generate_tag(id_starting_with_tilde) }.not_to raise_error
-    end
-
-    it "does not accept ids with tilde in the middle" do
-      expect { generate_tag(id_with_tilde_in_the_middle) }.to raise_error(StandardError)
     end
 
     it "accepts a valid id" do
@@ -83,6 +74,12 @@ RSpec.describe GlitchTag, type: :liquid_tag do
 
     it "'app' and 'code' cancel each other" do
       template = generate_tag(id_with_app_and_code_option)
+      expected = "src=\"#{base_uri}some-id?path=index.html"
+      expect(template.render(nil)).to include(expected)
+    end
+
+    it "removes the tilde prefix of ids" do
+      template = generate_tag(id_starting_with_tilde)
       expected = "src=\"#{base_uri}some-id?path=index.html"
       expect(template.render(nil)).to include(expected)
     end
