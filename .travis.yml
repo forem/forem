@@ -20,6 +20,7 @@ env:
   global:
     - RAILS_ENV=test
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
+    - TR_UPLOAD_TOKEN=GkHrviBPkSehEFWVtkRngguLOmJEkm
     - DATABASE_URL=postgres://postgres@localhost/
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
@@ -68,9 +69,16 @@ script:
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
   - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
+before_script:
+  - curl -o tr-reporter https://get.testrecall.com/r/latest/reporter.linux-amd64
+  - chmod +x tr-reporter
 after_script:
   - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
   - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+after_success:
+  - ./tr-reporter -multi partial
+after_failure:
+  - ./tr-reporter -multi after
 notifications:
   slack:
     if: branch = master
@@ -80,8 +88,17 @@ notifications:
     rooms:
       secure: vzIee4jDgPSRY4szZPdD/jW7YW4GzGqo5NoLV9Exz9TBoWH9UqJnc0TOb2YN84Ys5baRK7LOqxpfp8kFveZkrKGi7/ypeEJlpc9E5UqVh/bwQhvOGrKEg1fvNXbARRnO/sJ49o1CMvroMWvt3GurzuuY9Qu2r+3NBjn9aVwLnLzXsBuF+m2lLoeSkHnW13OC73EeJMsse6JBoCe3gp/srDwISp9+MU+sEAPaY333WK9Vk1kdG7D5oUIuT7743airLRiyWiNUCD1450g864628CEOEZKJAAtqk6kTmvwB91DJMnhD/XhMm4H21kd54YHy0fhqzcG8hYd1lDZuUfrOBfpdEtfnpcRwMyMpY+FPPHXkHhck3OiLJnzkV4L+Lr5W/RvDJ63Ye2nxT4hOItLWaoZWax/LhoIrhZjgYBc4JhiGRQJ8m2HzoRyceeG9Y80vayGVN7y46sjYHP5NHRI36qmJipneDRAJklBTXLdYATvVM/6Mh9B7+H/nBGR6UVJLBC/txi2C8rZRjKBZ/i9e+q/MZs0UEvOuvbz9BXKU08rI+rarJqH3h5Ji9G/k3M0mQ8EfvadabA9lu+gNUAAnq+vwLETweKvfbRpDQjVBKnWsOJoUl9aarfkBn3lhQE8fxZJT/GchLGZPx/CWUE4o1OhliBA9avJ7WINyYStM4Mc=
 
+stages:
+  - setup
+  - test
+  - upload
+
 jobs:
   include:
+    - stage: setup
+      script: ./tr-reporter -multi before
+    - stage: upload
+      script: ./tr-reporter -multi after
     - stage: Deploy
       if: type != pull_request
       script: skip
