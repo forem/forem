@@ -100,7 +100,7 @@
     "@storybook/preact": "^6.0.22",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/preact": "^2.0.0",
-    "@testing-library/preact-hooks": "^1.0.6",
+    "@testing-library/preact-hooks": "^1.1.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.3.0",
