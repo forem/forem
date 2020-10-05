@@ -399,7 +399,6 @@ Rails.application.routes.draw do
     get "/search" => "stories#search"
     post "articles/preview" => "articles#preview"
     post "comments/preview" => "comments#preview"
-    get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
     get "/about" => "pages#about"
