@@ -4,6 +4,11 @@
 :root {
   --content-rythm: var(--su-2);
   --content-font-size: var(--fs-l);
+  --content-secondary-font-size: var(--fs-base);
+
+  @media (min-width: $breakpoint-s) {
+    --content-secondary-font-size: var(--fs-l);
+  }
 
   @media (min-width: $breakpoint-m) {
     --content-rythm: var(--su-4);
@@ -62,6 +67,10 @@ body {
 .text-styles {
   font-size: var(--content-font-size);
   font-family: var(--content-font-family);
+
+  &--secondary {
+    font-size: var(--content-secondary-font-size);
+  }
 
   a {
     code {
