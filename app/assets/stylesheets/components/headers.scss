@@ -33,7 +33,4 @@
 
 .crayons-subtitle-3 {
   font-size: var(--fs-base);
-  @media (min-width: $breakpoint-s) {
-    font-size: var(--fs-l);
-  }
 }

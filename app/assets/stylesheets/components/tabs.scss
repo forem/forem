@@ -13,9 +13,11 @@
   }
 
   &--scrollable {
+    overflow-x: auto;
     overflow-y: auto;
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
   }
 
   &__item {
