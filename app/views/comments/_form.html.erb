@@ -29,11 +29,7 @@
   <% end %>
 
   <span class="crayons-avatar crayons-avatar--l mr-2 shrink-0">
-    <% if user_signed_in? %>
-      <img src="<%= Images::Profile.call(current_user.profile_image_url, length: 50) %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
-    <% else %>
-      <img src="<%= image_path("android-icon-128x128.png") %>" width="32" height="32" alt="pic" class="crayons-avatar__image">
-    <% end %>
+    <img src="<%= SiteConfig.logo_png %>" width="32" height="32" alt="pic" class="crayons-avatar__image" id="comment-primary-user-profile--avatar">
   </span>
   <div class="comment-form__inner">
     <div class="comment-form__field">
