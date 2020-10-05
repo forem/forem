@@ -77,6 +77,17 @@ components:
         minimum: 1
         maximum: 1000
         default: 30
+    perPageParam30to100:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+        default: 30
     perPageParam80to1000:
       in: query
       name: per_page
@@ -828,6 +839,34 @@ components:
                 It will take priority on any other param in the payload.
               type: string
               enum: [bump, publish, unpublish]
+
+    Readinglist:
+      type: object
+      required:
+        - type_of
+        - id
+        - status
+        - created_at
+        - article
+      properties:
+        type_of:
+          type: string
+        id:
+          description: Follow id
+          type: integer
+          format: int32
+        status:
+          type: string
+          enum:
+            - valid
+            - invalid
+            - confirmed
+            - archived
+        created_at:
+          type: string
+          format: date-time
+        article:
+          $ref: "#/components/schemas/ArticleIndex"
 
     PodcastEpisode:
       type: object
@@ -1616,6 +1655,8 @@ tags:
     description: Listings are classified ads
   - name: podcast-episodes
     description: Podcast episodes
+  - name: readinglist
+    description: User readinglist
   - name: tags
     description: Tags for articles
   - name: users
@@ -2249,56 +2290,6 @@ paths:
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/articles/me/all
 
-  /articles/me/readinglist:
-    get:
-      operationId: getUserReadinglistArticles
-      summary: User's reading list articles
-      description: |
-        This endpoint allows the client to retrieve a list of the articles
-        in the reading list of an authenticated user.
-
-        "Articles" are all the posts that users create on DEV that typically
-        show up in the feed. They can be a blog post, a discussion question,
-        a help thread etc. but is referred to as article within the code.
-
-        Reading list articles will be in reverse chronological order base
-        on when it was added in the reading list.
-
-        It will return articles in the reading list with pagination.
-        By default a page will contain `30` articles.
-      tags:
-        - articles
-        - users
-      parameters:
-        - $ref: '#/components/parameters/pageParam'
-        - $ref: '#/components/parameters/perPageParam30to1000'
-      responses:
-        "200":
-          description: A list of reading list articles
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ArticleIndex"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIError"
-              examples:
-                error-unauthorized:
-                  $ref: "#/components/examples/ErrorUnauthorized"
-      security:
-        - api_key: []
-        - oauth2: []
-      x-code-samples:
-        - lang: Shell
-          label: curl
-          source: |
-            curl -H "api-key: API_KEY" https://dev.to/api/articles/me/readinglist
-
   /comments:
     get:
       operationId: getCommentsByArticleId
@@ -2839,6 +2830,54 @@ paths:
               -H "api-key: API_KEY" \
               -d '{"listing":{"title":"Title"}' \
               https://dev.to/api/listings/{id}
+
+  /readinglist:
+    get:
+      operationId: getReadinglist
+      summary: User's readinglist
+      description: |
+        This endpoint allows the client to retrieve a list of the reactions with the type readinglist along with the related article for the authenticated user.
+
+        "Articles" are all the posts that users create on DEV that typically
+        show up in the feed. They can be a blog post, a discussion question,
+        a help thread etc. but is referred to as article within the code.
+
+        Reading list will be in reverse chronological order base
+        on the creation if the reaction.
+
+        It will return the reading list with his article with pagination.
+        By default a page will contain `30` articles.
+      tags:
+        - readinglist
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to100'
+      responses:
+        "200":
+          description: The readinglist with a overwiew of the article
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Readinglist"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/readinglist
 
   /podcast_episodes:
     get:

@@ -502,13 +502,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expected_order = response.parsed_body.map { |resp| resp["published"] }
         expect(expected_order).to eq([false, true])
       end
-
-      it "return authenticated user readinglist articles when asking for readlist articles" do
-        reaction = create(:reading_reaction, user: user)
-        get me_api_articles_path(status: :readinglist), params: { access_token: access_token.token }
-        expected_acticle_id = reaction.reactable_id
-        expect(response.parsed_body.map { |resp| resp["id"] }).to eq([expected_acticle_id])
-      end
     end
   end
 
