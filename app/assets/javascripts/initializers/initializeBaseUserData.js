@@ -13,6 +13,12 @@ function initializeUserProfileContent(user) {
   document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
+function initializeProfileImage(user) {
+  if (!document.getElementById('comment-primary-user-profile--avatar')) return;
+  document.getElementById('comment-primary-user-profile--avatar').src =
+  user.profile_image_90;
+}
+
 function initializeUserSidebar(user) {
   if (!document.getElementById('sidebar-nav')) return;
   initializeUserProfileContent(user);
@@ -116,6 +122,7 @@ function initializeBaseUserData() {
 
   setCurrentUserToNavBar(user);
   initializeUserSidebar(user);
+  initializeProfileImage(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);
 }
