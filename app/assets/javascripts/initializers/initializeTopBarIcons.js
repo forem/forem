@@ -5,9 +5,9 @@ function triggerIcon(page, triggerID) {
   if (trigger) {
     if (currentPage === page) {
       trigger.blur();
-      trigger.classList.add('top-bar__icon--current');
+      trigger.classList.add('crayons-header__link--current');
     } else {
-      trigger.classList.remove('top-bar__icon--current');
+      trigger.classList.remove('crayons-header__link--current');
     }
   }
 }
@@ -19,6 +19,6 @@ function initializeTopBarIcons() {
   triggerIcon('stories-search', 'search-link');
 }
 
-document.querySelectorAll('.top-bar__icon').forEach(function (icon) {
+document.querySelectorAll('.crayons-header__link').forEach(function (icon) {
   icon.addEventListener('click', initializeTopBarIcons);
 });
