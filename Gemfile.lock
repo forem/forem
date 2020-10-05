@@ -276,7 +276,7 @@ GEM
     eventmachine (1.2.5)
     excon (0.76.0)
     execjs (2.7.0)
-    exifr (1.3.7)
+    exifr (1.3.8)
     factory_bot (6.1.0)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.1.0)
