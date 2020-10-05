@@ -62,16 +62,14 @@ export default class SingleArticle extends Component {
           onClick={this.activateToggle}
         >
           <span className="article-title">
-            <header>
-              <h3 className="fs-base fw-bold lh-tight">{title}</h3>
-            </header>
+            <h3 className="article-title--label">{title}</h3>
             {tags}
           </span>
-          <span className="article-author fs-s lw-medium lh-tight">
+          <span className="article-author">
             {newAuthorNotification}
             {user.name}
           </span>
-          <span className="article-published-at fs-s fw-bold lh-tight">
+          <span className="article-published-at">
             <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
           </span>
           <div
