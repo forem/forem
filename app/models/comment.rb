@@ -254,7 +254,7 @@ class Comment < ApplicationRecord
     Reaction.create(
       user_id: SiteConfig.mascot_user_id,
       reactable_id: id,
-      reactable_type: "Article",
+      reactable_type: "Comment",
       category: "vomit",
     )
   end

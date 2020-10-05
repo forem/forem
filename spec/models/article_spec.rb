@@ -777,9 +777,12 @@ RSpec.describe Article, type: :model do
     end
 
     describe "spam" do
+      before do
+        allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+        allow(SiteConfig).to receive(:spam_trigger_terms).and_return("yahoomagoo gogo")
+      end
+
       it "creates vomit reaction if possible spam" do
-        SiteConfig.mascot_user_id = user.id
-        SiteConfig.spam_trigger_terms = "yahoomagoo gogo"
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
         article.save
         expect(Reaction.last.category).to eq("vomit")
@@ -787,9 +790,6 @@ RSpec.describe Article, type: :model do
       end
 
       it "does not create vomit reaction if does not have matching title" do
-        SiteConfig.mascot_user_id = user.id
-        SiteConfig.spam_trigger_terms = "yahoomagoo gogo"
-
         article.save
         expect(Reaction.last).to be nil
       end
