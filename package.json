@@ -93,7 +93,7 @@
     "@storybook/addon-a11y": "^6.0.22",
     "@storybook/addon-actions": "^6.0.22",
     "@storybook/addon-knobs": "^6.0.22",
-    "@storybook/addon-links": "^6.0.22",
+    "@storybook/addon-links": "^6.0.25",
     "@storybook/addon-notes": "^5.3.21",
     "@storybook/addon-storyshots": "^6.0.20",
     "@storybook/addons": "^6.0.22",
