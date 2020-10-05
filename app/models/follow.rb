@@ -16,7 +16,7 @@ class Follow < ApplicationRecord
 
   # Follows belong to the "followable" interface, and also to followers
   belongs_to :followable, polymorphic: true
-  belongs_to :follower,   polymorphic: true
+  belongs_to :follower, polymorphic: true
 
   scope :followable_user, ->(id) { where(followable_id: id, followable_type: "User") }
   scope :followable_tag, ->(id) { where(followable_id: id, followable_type: "ActsAsTaggableOn::Tag") }
@@ -33,7 +33,12 @@ class Follow < ApplicationRecord
   after_save :touch_follower
   after_create_commit :create_chat_channel
 
-  validates :subscription_status, inclusion: { in: %w[all_articles none] }
+  validates :blocked, inclusion: { in: [true, false] }
+  validates :followable_id, presence: true
+  validates :followable_type, presence: true
+  validates :follower_id, presence: true
+  validates :follower_type, presence: true
+  validates :subscription_status, presence: true, inclusion: { in: %w[all_articles none] }
 
   def self.need_new_follower_notification_for?(followable_type)
     %w[User Organization].include?(followable_type)

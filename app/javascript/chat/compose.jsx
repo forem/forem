@@ -14,6 +14,7 @@ const Compose = ({
   markdownEdited,
   editMessageMarkdown,
   handleEditMessageClose,
+  handleFilePaste,
 }) => {
   const [value, setValue] = useState('');
 
@@ -63,6 +64,7 @@ const Compose = ({
           onKeyDown={onKeyDown}
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
+          onPaste={handleFilePaste}
           maxLength="1000"
           value={value}
           onInput={(event) => setValue(event.target.value)}
@@ -114,6 +116,7 @@ Compose.propTypes = {
   markdownEdited: PropTypes.bool.isRequired,
   editMessageMarkdown: PropTypes.string.isRequired,
   handleEditMessageClose: PropTypes.func.isRequired,
+  handleFilePaste: PropTypes.func.isRequired,
 };
 
 export default Compose;

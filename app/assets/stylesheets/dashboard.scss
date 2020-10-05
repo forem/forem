@@ -398,7 +398,6 @@
 }
 
 .toggles button {
-  @include themeable-important(color, theme-color, $black);
   display: inline-block;
   padding: 2px 8px;
   margin: 8px;

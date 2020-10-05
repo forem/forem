@@ -91,7 +91,6 @@ RSpec.describe "/listings", type: :request do
     context "when the user has no credits" do
       it "shows the proper messages" do
         get "/listings/new"
-        expect(response.body).to include "Listings Require Credits"
         expect(response.body).to include "You need at least one credit to create a listing."
       end
     end
@@ -101,7 +100,8 @@ RSpec.describe "/listings", type: :request do
         random_number = rand(2..100)
         create_list(:credit, random_number, user: user)
         get "/listings/new"
-        expect(response.body).to include "You have #{random_number} credits available"
+        expect(response.body).to include "Personal credits"
+        expect(response.body).to include random_number.to_s
       end
     end
 
@@ -112,21 +112,23 @@ RSpec.describe "/listings", type: :request do
 
       it "shows the proper message when both user and org have no credits" do
         get "/listings/new"
-        expect(response.body).to include "Listings Require Credits"
+        expect(response.body).to include "You need at least one credit to create a listing."
       end
 
       it "shows the number of credits of the user if the user has credits but the org has no credits" do
         random_number = rand(2..100)
         create_list(:credit, random_number, user: user)
         get "/listings/new"
-        expect(response.body).to include "You have #{random_number} credits available"
+        expect(response.body).to include "Personal credits"
+        expect(response.body).to include random_number.to_s
       end
 
       it "shows the number of credits of the organization if the org has credits" do
         random_number = rand(2..100)
         create_list(:credit, random_number, organization: organization)
         get "/listings/new"
-        expect(response.body).to include "has <span id=\"org-credits-number\">#{random_number}</span> credits"
+        expect(response.body).to include "Organization credits"
+        expect(response.body).to include random_number.to_s
       end
 
       it "shows the number of credits of both the user and the organization if they both have credits" do
@@ -134,8 +136,8 @@ RSpec.describe "/listings", type: :request do
         create_list(:credit, random_number, organization: organization)
         create_list(:credit, random_number, user: user)
         get "/listings/new"
-        expect(response.body).to include "has <span id=\"org-credits-number\">#{random_number}</span> credits"
-        expect(response.body).to include "You have #{random_number} credits available"
+        expect(response.body).to include "Personal credits"
+        expect(response.body).to include random_number.to_s
       end
     end
   end
@@ -518,6 +520,15 @@ RSpec.describe "/listings", type: :request do
         listing.reload
         expect(listing.title).not_to eq("New title!")
         expect(listing.cached_tag_list).not_to include("hey")
+      end
+
+      it "doesn't redirect on a successful update" do
+        put "/listings/#{listing.id}", params: {
+          listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }
+        }
+
+        expect(response).not_to have_http_status(:redirect)
+        expect(response).to have_http_status(:ok)
       end
     end
   end

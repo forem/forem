@@ -3,7 +3,7 @@
   <div id="base-payment-pointer" data-payment-pointer="<%= SiteConfig.payment_pointer %>"></div>
 <% end %>
 <style>.app-shell-loader {display: none;}</style>
-<div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
+<div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>
     <div class="global-notice">
       <%= flash[:global_notice] %>

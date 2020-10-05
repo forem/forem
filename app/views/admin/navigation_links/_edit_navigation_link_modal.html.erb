@@ -1,0 +1,51 @@
+<div onclick="toggleEditNavigationLinkModal('<%= link[:id] %>')" class="color-accent-warning-darker cursor-pointer">
+  Edit Link
+</div>
+
+<div id="edit-navigation-link-<%= link[:id] %>-modal" class="hidden">
+  <div class="crayons-modal crayons-modal--s">
+    <div class="crayons-modal__box">
+      <header class="crayons-modal__box__header">
+        <h2>Edit Link</h2>
+        <button type="button" onclick="toggleEditNavigationLinkModal('<%= link[:id] %>')" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
+          <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
+          </svg>
+        </button>
+      </header>
+      <div class="crayons-modal__box__body">
+        <div class="form-group grid p-6 mb-6 gap-1">
+          <%= form_for [:admin, link] do |form| %>
+            <div class="form-group">
+              <%= form.label :name %>
+              <%= form.text_field :name, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= form.label :url %>
+              <%= form.text_field :url, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= form.label :icon %>
+              <%= form.text_field :icon, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= form.check_box :display_when_signed_in %>
+              <%= form.label :display_when_signed_in %>
+            </div>
+            <%= form.submit class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="crayons-modal__overlay"></div>
+  </div>
+</div>
+
+<script>
+  function toggleEditNavigationLinkModal(link_id) {
+    const confirmationModal = document.getElementById(`edit-navigation-link-${link_id}-modal`);
+    if (confirmationModal) {
+      confirmationModal.classList.toggle("hidden");
+    }
+  }
+</script>
