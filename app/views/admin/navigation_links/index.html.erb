@@ -1,0 +1,22 @@
+<%= render "add_navigation_link_modal" %>
+<% @navigation_links.each do |link| %>
+  <div class="flex pt-5">
+    <div class="admin-navigation-links">
+      <a href="<%= link[:url] %>" class="crayons-link crayons-link--block bg-base-20">
+        <div class="crayons-icon crayons-icon--default">
+            <%= link[:icon].html_safe %>
+        </div>
+        <%= link[:name] %><span id="reading-list-count" class="crayons-indicator"></span>
+      </a>
+    </div>
+
+    <div class="flex items-center mx-5">
+      <div class="mx-3">
+        <%= render partial: "edit_navigation_link_modal", locals: { link: link } %>
+      </div>
+      <div class="mx-3">
+        <%= link_to "Delete", admin_navigation_link_path(link), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %>
+      </div>
+    </div>
+  </div>
+<% end %>

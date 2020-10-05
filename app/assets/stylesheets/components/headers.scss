@@ -1,7 +1,39 @@
-.crayons-subheader {
-  color: var(--base-90);
-  font-size: var(--fs-base);
+@import '../config/import';
+
+.crayons-title,
+.crayons-subtitle-1,
+.crayons-subtitle-2,
+.crayons-subtitle-3 {
   font-weight: var(--fw-bold);
-  padding-left: var(--su-2);
-  margin-bottom: var(--su-2);
+  color: var(--base-90);
+}
+
+.crayons-title {
+  color: var(--base-100);
+  font-size: var(--fs-2xl);
+
+  @media (min-width: $breakpoint-s) {
+    font-size: var(--fs-3xl);
+  }
+}
+
+.crayons-subtitle-1 {
+  font-size: var(--fs-xl);
+  @media (min-width: $breakpoint-s) {
+    font-size: var(--fs-2xl);
+  }
+}
+
+.crayons-subtitle-2 {
+  font-size: var(--fs-l);
+  @media (min-width: $breakpoint-s) {
+    font-size: var(--fs-xl);
+  }
+}
+
+.crayons-subtitle-3 {
+  font-size: var(--fs-base);
+  @media (min-width: $breakpoint-s) {
+    font-size: var(--fs-l);
+  }
 }

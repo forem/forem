@@ -182,7 +182,7 @@ export class ReadingList extends Component {
     return (
       <div>
         <header className="crayons-layout flex justify-between items-center pb-0">
-          <h1 class="fs-2xl s:fs-3xl">
+          <h1 class="crayons-title">
             {isStatusViewValid ? 'Reading list' : 'Archive'}
             {` (${totalCount > 0 ? totalCount : '0'})`}
           </h1>

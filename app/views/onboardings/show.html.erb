@@ -4,10 +4,9 @@
   <% cache(release_adjusted_cache_key("onboarding-css"), expires_in: 10.hours) do %>
     <%= Rails.application.assets["preact/onboarding-modal.css"].to_s.html_safe %>
   <% end %>
-  footer {
-    display: none;
-  }
-  .top-bar {
+
+  .crayons-header,
+  .crayons-footer {
     display: none;
   }
 </style>

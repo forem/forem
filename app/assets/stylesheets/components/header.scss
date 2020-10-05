@@ -1,25 +1,19 @@
 @import '../config/import';
 
-.top-bar {
+.crayons-header {
   --indicator-outline: var(--header-bg);
   --dropdown-display: none;
 
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
   height: var(--header-height);
   background: var(--header-bg);
   box-shadow: 0 1px 1px var(--header-shadow);
 
-  &,
-  &::after,
-  &::before,
-  & *,
-  & *::after,
-  & *::before {
-    box-sizing: border-box; // todo: make it global when ready
+  .default-header & {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
   }
 
   &__container {
@@ -41,7 +35,7 @@
 }
 
 // Logo
-.top-bar--logo {
+.site-logo {
   display: flex;
 
   .logo {
@@ -55,7 +49,7 @@
 }
 
 // Search bar
-.top-bar--search {
+.crayons-header--search {
   max-width: 420px;
   flex: 1 auto;
   margin: 0 var(--su-2);
@@ -67,29 +61,30 @@
   }
 }
 
-.top-bar__icon {
+.crayons-header__link {
   margin: 0 var(--su-2);
+
   &:hover,
   &:focus {
     --indicator-outline: var(--header-bg-hover);
 
     color: var(--header-icons-color-hover);
     background: var(--header-bg-hover);
-  }
 
-  &--current {
-    --indicator-outline: var(--header-bg-current);
+    &--current {
+      --indicator-outline: var(--header-bg-current);
 
-    color: var(--header-icons-color-hover);
-    background: var(--header-bg-current) !important;
-    .crayons-indicator {
-      display: none;
+      color: var(--header-icons-color-hover);
+      background: var(--header-bg-current) !important;
+      .crayons-indicator {
+        display: none;
+      }
     }
   }
 }
 
 // Dropdown under profile picture / hamburger icon
-.top-bar__menu {
+.crayons-header__menu {
   height: 100%;
   display: flex;
   align-items: center;
@@ -113,7 +108,7 @@
   &.desktop:focus {
     --dropdown-display: block;
 
-    .top-bar__menu__trigger {
+    .crayons-header__menu__trigger {
       color: var(--header-icons-color-hover);
       background: var(--header-bg-hover);
     }
@@ -158,5 +153,77 @@
     &.pwa-nav-buttons--showing {
       display: flex;
     }
+  }
+}
+
+.authentication-header {
+  &__container {
+    padding: var(--su-6);
+  }
+
+  &__image-container {
+    width: var(--su-8);
+    height: var(--su-8);
+    margin-bottom: var(--su-2);
+  }
+
+  &__image {
+    border-radius: var(--radius);
+    transform: rotate(-10deg);
+    height: auto;
+    width: 100%;
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-2xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+    margin-bottom: var(--su-4);
+  }
+
+  &__actions {
+    display: grid;
+    grid-gap: var(--su-1);
+
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      flex-direction: column;
+      width: max-content;
+      justify-self: center;
+    }
+  }
+}
+
+.navigation-progress {
+  --duration: 3600ms;
+  --delay: 250ms;
+  position: fixed;
+  top: 0;
+  background: var(--accent-brand);
+  z-index: 103;
+  height: var(--su-1);
+  width: 0;
+  &.showing {
+    display: block;
+    animation: showProgressBar var(--duration) ease-in-out;
+    animation-delay: var(--delay);
+    animation-fill-mode: forwards;
+  }
+}
+
+@keyframes showProgressBar {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
   }
 }

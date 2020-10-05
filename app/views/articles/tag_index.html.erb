@@ -45,7 +45,7 @@
         </button>
         <% if user_signed_in? %>
           <div class="flex-1 flex items-center justify-between">
-            <h2 class="fs-l fw-heavy">Posts</h2>
+            <h2 class="crayons-subtitle-2">Posts</h2>
             <nav class="crayons-tabs hidden s:flex">
               <a href="<%= list_path %>/" class="crayons-tabs__item <%= "crayons-tabs__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>">Feed</a>
 
