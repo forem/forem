@@ -2,9 +2,9 @@ module BadgeRewarder
   YEARS = { 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six", 7 => "seven" }.freeze
   REPOSITORIES = [
     "forem/forem",
-    "thepracticaldev/DEV-ios",
-    "thepracticaldev/DEV-Android",
     "forem/forem-browser-extension",
+    "thepracticaldev/DEV-Android",
+    "thepracticaldev/DEV-ios",
   ].freeze
 
   LONGEST_STREAK_WEEKS = 16
