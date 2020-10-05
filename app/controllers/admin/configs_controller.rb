@@ -56,6 +56,7 @@ module Admin
         facebook_secret
         allow_email_password_registration
         primary_brand_color_hex
+        spam_trigger_terms
       ]
 
       allowed_params = allowed_params |

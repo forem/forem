@@ -776,6 +776,25 @@ RSpec.describe Article, type: :model do
       end
     end
 
+    describe "spam" do
+      it "creates vomit reaction if possible spam" do
+        SiteConfig.mascot_user_id = user.id
+        SiteConfig.spam_trigger_terms = "yahoomagoo gogo"
+        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
+        article.save
+        expect(Reaction.last.category).to eq("vomit")
+        expect(Reaction.last.user_id).to eq(user.id)
+      end
+
+      it "does not create vomit reaction if does not have matching title" do
+        SiteConfig.mascot_user_id = user.id
+        SiteConfig.spam_trigger_terms = "yahoomagoo gogo"
+
+        article.save
+        expect(Reaction.last).to be nil
+      end
+    end
+
     describe "async score calc" do
       it "enqueues Articles::ScoreCalcWorker if published" do
         sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do

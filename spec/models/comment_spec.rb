@@ -397,6 +397,34 @@ RSpec.describe Comment, type: :model do
     end
   end
 
+  describe "spam" do
+    it "creates vomit reaction if possible spam" do
+      SiteConfig.mascot_user_id = user.id
+      SiteConfig.spam_trigger_terms = "yahoomagoo gogo"
+      comment.body_markdown = "This post is about Yahoomagoo gogo"
+      comment.save
+      expect(Reaction.last.category).to eq("vomit")
+      expect(Reaction.last.user_id).to eq(user.id)
+    end
+
+    it "does not create vomit reaction if user is established in this context" do
+      SiteConfig.mascot_user_id = user.id
+      SiteConfig.spam_trigger_terms = "yahoomagoo gogo"
+      user.update_column(:registered_at, 10.days.ago)
+      comment.body_markdown = "This post is about Yahoomagoo gogo"
+      comment.save
+      expect(Reaction.last).to be nil
+    end
+
+    it "does not create vomit reaction if does not have matching title" do
+      SiteConfig.mascot_user_id = user.id
+      SiteConfig.spam_trigger_terms = "yahoomagoo gogo"
+
+      comment.save
+      expect(Reaction.last).to be nil
+    end
+  end
+
   context "when callbacks are triggered before save" do
     it "generates character count before saving" do
       comment.save

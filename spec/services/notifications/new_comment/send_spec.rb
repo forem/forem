@@ -27,6 +27,13 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
     expect(notification.json_data["user"]["username"]).to eq(child_comment.user.username)
   end
 
+  it "does not send if comment has negative score already" do
+    described_class.call(child_comment)
+
+    notification = child_comment.notifications.last
+    expect(notification).to be_nil
+  end
+
   it "creates the correct comment data for the notification" do
     described_class.call(child_comment)
 
