@@ -23,7 +23,7 @@ RSpec.describe "ProfileFieldGroups", type: :request do
     it "returns all groups with all fields by default" do
       get profile_field_groups_path
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:profile_field_groups].size).to eq 2
+      expect(json_response[:profile_field_groups].size).to eq ProfileFieldGroup.all.size
     end
 
     it "returns only groups with onboarding fields when onboarding=true" do

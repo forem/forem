@@ -135,7 +135,7 @@ GEM
       safely_block (>= 0.1.1)
     bootsnap (1.4.8)
       msgpack (~> 1.0)
-    brakeman (4.9.1)
+    brakeman (4.10.0)
     browser (4.2.0)
     buffer (0.1.3)
       addressable
@@ -180,7 +180,7 @@ GEM
     childprocess (3.0.0)
     cld (0.8.0)
       ffi
-    cloudinary (1.17.1)
+    cloudinary (1.18.1)
       aws_cf_signer
       rest-client
     coderay (1.1.3)
@@ -757,7 +757,7 @@ GEM
     storext (3.1.0)
       activerecord (>= 4.0, < 6.1)
       virtus
-    stripe (5.25.0)
+    stripe (5.26.0)
     stripe-ruby-mock (3.0.1)
       dante (>= 0.2.0)
       multi_json (~> 1.0)
@@ -858,7 +858,7 @@ DEPENDENCIES
   binding_of_caller (~> 0.8)
   blazer (~> 2.2.7)
   bootsnap (>= 1.1.0)
-  brakeman (~> 4.9)
+  brakeman (~> 4.10)
   buffer (~> 0.1)
   bullet (~> 6.1)
   bundler-audit (~> 0.7)
@@ -866,7 +866,7 @@ DEPENDENCIES
   carrierwave (~> 2.0)
   carrierwave-bombshelter (~> 0.2)
   cld (~> 0.8)
-  cloudinary (~> 1.17)
+  cloudinary (~> 1.18)
   counter_culture (~> 2.6)
   database_cleaner-active_record (~> 1.8.0)
   ddtrace (~> 0.41.0)
@@ -974,7 +974,7 @@ DEPENDENCIES
   stackprof (~> 0.2)
   store_attribute (~> 0.8.0)
   storext (~> 3.1)
-  stripe (~> 5.25)
+  stripe (~> 5.26)
   stripe-ruby-mock (~> 3.0)
   strong_migrations (~> 0.7)
   test-prof (~> 0.12)

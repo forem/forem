@@ -51,13 +51,6 @@ class StoriesController < ApplicationController
     end
   end
 
-  def warm_comments
-    @article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate || not_found
-    @warm_only = true
-    assign_article_show_variables
-    render partial: "articles/full_comment_area"
-  end
-
   private
 
   def assign_hero_html
