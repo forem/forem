@@ -1625,12 +1625,11 @@
     lodash "^4.17.15"
     safe-stable-stringify "^1.1"
 
-"@stoplight/lifecycle@2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/lifecycle/-/lifecycle-2.3.0.tgz#072036efe0984e52502449172373b7f427c85954"
-  integrity sha512-nVeciLEYlj97W4OEwGp7UVGzdTkux8mSacbAARPJboEvVrqW/QHfAc830rcZ/UBvpWuni5WbMAPFpQ9t9Jb/AA==
+"@stoplight/lifecycle@2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@stoplight/lifecycle/-/lifecycle-2.3.1.tgz#9cb0b2e260e3d4a52a14f7a92403807ee2c2b53f"
+  integrity sha512-On7qGYPDG1sgx2AOuJp8Hmm6WdK8+1PpCs7DEYoJ1GWtruPij9Q/pW0AV9CuR8KbCrOnvYcBsplaanB+Q3g/7Q==
   dependencies:
-    strict-event-emitter-types "^2.0.0"
     wolfy87-eventemitter "~5.2.8"
 
 "@stoplight/ordered-object-literal@^1.0.1":
@@ -1643,16 +1642,16 @@
   resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.3.2.tgz#96e591496b72fde0f0cdae01a61d64f065bd9ede"
   integrity sha512-lyIc6JUlUA8Ve5ELywPC8I2Sdnh1zc1zmbYgVarhXIp9YeAB0ReeqmGEOWNtlHkbP2DAA1AL65Wfn2ncjK/jtQ==
 
-"@stoplight/spectral@5.5.0", "@stoplight/spectral@^5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.5.0.tgz#5fe80e993ee639e8e448510186eb54908469263b"
-  integrity sha512-2TtADRz9yNhBs4m7p9Y25VX/5aoZPNETWRFo14A/a9Tu4oPFmJojJO1FFhk8Hu2kjKHtZeB4zXVuvtmbq/fPtQ==
+"@stoplight/spectral@5.6.0", "@stoplight/spectral@^5.5.0":
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.6.0.tgz#b69efc2d32bb7db5f165339a3131d9bb619c5e98"
+  integrity sha512-BLHAC/J56njpju3Z7TY9VMBbTxo4nY/WK7a3s5tYxIY6rOvNeS+qne3xK14qWnk4FS/gxAkVH9s1wZDWh/SVlw==
   dependencies:
     "@stoplight/better-ajv-errors" "0.0.0"
     "@stoplight/json" "3.9.0"
     "@stoplight/json-ref-readers" "1.2.1"
     "@stoplight/json-ref-resolver" "3.1.0"
-    "@stoplight/lifecycle" "2.3.0"
+    "@stoplight/lifecycle" "2.3.1"
     "@stoplight/path" "1.3.2"
     "@stoplight/types" "^11.9.0"
     "@stoplight/yaml" "4.2.1"
@@ -1662,6 +1661,7 @@
     blueimp-md5 "2.13.0"
     chalk "4.0.0"
     eol "0.9.1"
+    expression-eval "3.1.2"
     fast-glob "3.1.0"
     jsonpath-plus "4.0.0"
     lodash "4.17.19"
@@ -7806,6 +7806,13 @@ express@^4.17.0, express@^4.17.1:
     utils-merge "1.0.1"
     vary "~1.1.2"
 
+expression-eval@3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/expression-eval/-/expression-eval-3.1.2.tgz#45ddf0b8fdb8bf0633d02f4061d6f25516eddb30"
+  integrity sha512-c8ZN8fuAz0TRYKoGsrIq5kLNHtm81KAqWSBORHIY0DpJmZZrwK/r2zFDOhFIAJDV47gJ6irV7dWf1TOFpKvULQ==
+  dependencies:
+    jsep "^0.3.0"
+
 extend-shallow@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/extend-shallow/-/extend-shallow-2.0.1.tgz#51af7d614ad9a9f610ea1bafbb989d6b1c56890f"
@@ -10585,7 +10592,7 @@ jsdom@^16.2.2, jsdom@^16.4.0:
     ws "^7.2.3"
     xml-name-validator "^3.0.0"
 
-jsep@^0.3.4:
+jsep@^0.3.0, jsep@^0.3.4:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/jsep/-/jsep-0.3.5.tgz#3fd79ebd92f6f434e4857d5272aaeef7d948264d"
   integrity sha512-AoRLBDc6JNnKjNcmonituEABS5bcfqDhQAWWXNTFrqu6nVXBpBAGfcoTGZMFlIrh9FjmE1CQyX9CTNwZrXMMDA==
@@ -16092,11 +16099,6 @@ stream-shift@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/stream-shift/-/stream-shift-1.0.1.tgz#d7088281559ab2778424279b0877da3c392d5a3d"
   integrity sha512-AiisoFqQ0vbGcZgQPY1cdP2I76glaVA/RauYR4G4thNFgkTqr90yXTo4LYX60Jl+sIlPNHHdGSwo01AvbKUSVQ==
-
-strict-event-emitter-types@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/strict-event-emitter-types/-/strict-event-emitter-types-2.0.0.tgz#05e15549cb4da1694478a53543e4e2f4abcf277f"
-  integrity sha512-Nk/brWYpD85WlOgzw5h173aci0Teyv8YdIAEtV+N88nDB0dLlazZyJMIsN6eo1/AR61l+p6CJTG1JIyFaoNEEA==
 
 strict-uri-encode@^1.0.0:
   version "1.1.0"
