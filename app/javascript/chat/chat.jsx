@@ -1541,7 +1541,6 @@ export default class Chat extends Component {
   };
 
   handleFilePaste = (e) => {
-    e.preventDefault();
     if (!e.clipboardData || !e.clipboardData.items) {
       return;
     }
