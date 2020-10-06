@@ -300,15 +300,6 @@
               </div>
 
               <div class="form-group">
-                <%= admin_config_label :community_action %>
-                <%= f.text_field :community_action,
-                                 class: "form-control",
-                                 value: SiteConfig.community_action,
-                                 placeholder: Constants::SiteConfig::DETAILS[:community_action][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:community_action][:description] %></div>
-              </div>
-
-              <div class="form-group">
                 <%= admin_config_label :community_copyright_start_year %>
                 <%= f.text_field :community_copyright_start_year,
                                  class: "form-control",
