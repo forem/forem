@@ -66,7 +66,7 @@ export function registerGlobalKeyEventListener(keys, callback) {
 /**
  * Hook to register a key event listener to the window
  *
- * @example import useGlobalKeyEventListener from './useGlobalKeyEventListener';
+ * @example import { useGlobalKeyEventListener } from './useGlobalKeyEventListener';
  *
  * useGlobalKeyEventListener(
  *   ['j', 'k'],
@@ -81,11 +81,11 @@ export function registerGlobalKeyEventListener(keys, callback) {
  * @param {function(object)} callback The function that should be called when
  * one of the keys is pressed
  */
-export default (keys, callback) => {
+export function useGlobalKeyEventListener(keys, callback) {
   useEffect(() => {
     const eventListener = registerGlobalKeyEventListener(keys, callback);
     if (eventListener) {
       return () => window.removeEventListener('keydown', eventListener);
     }
   }, [keys, callback]);
-};
+}

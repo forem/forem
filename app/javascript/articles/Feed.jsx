@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import useGlobalListNavigation from '../utilities/hooks/useGlobalListNavigation';
+import { useGlobalListNavigation } from '../utilities/hooks/useGlobalListNavigation';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 

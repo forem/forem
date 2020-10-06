@@ -1,5 +1,5 @@
 import { isInViewport } from '../viewport';
-import useGlobalKeyEventListener from './useGlobalKeyEventListener';
+import { useGlobalKeyEventListener } from './useGlobalKeyEventListener';
 
 const NAVIGATION_UP_KEY = 'k';
 const NAVIGATION_DOWN_KEY = 'j';
@@ -44,11 +44,11 @@ const DIRECTIONS = {
  * @param {string} focusableSelector - The selector for the element that should be focused on inside an item
  * @param {string} [waterfallItemContainerSelector = undefined] - The selector for the waterfall item container if the list uses a waterfall structure at any point
  */
-export default (
+export function useGlobalListNavigation(
   itemContainerSelector,
   focusableSelector,
   waterfallItemContainerSelector = undefined,
-) => {
+) {
   function getNextElement(element) {
     return element.nextSibling;
   }
@@ -90,4 +90,4 @@ export default (
       }
     },
   );
-};
+}
