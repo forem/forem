@@ -192,6 +192,7 @@ class FollowUsers extends Component {
                       data-testid="onboarding-user-following-status"
                       type="button"
                       className="user-following-status"
+                      aria-pressed={selectedUsers.includes(user)}
                     >
                       {selectedUsers.includes(user) ? 'Following' : 'Follow'}
                     </button>
