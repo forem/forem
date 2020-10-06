@@ -9,6 +9,41 @@ const DIRECTIONS = {
   DOWN: 'down',
 };
 
+/**
+ * Registers global key event listeners for 'j' and 'k' to navigate up and down
+ * in a list of items
+ *
+ * @example
+ * import { useGlobalListNavigation } from '../utilities/hooks/useGlobalListNavigation';
+ *
+ * useGlobalListNavigation(
+ *   'article[id=featured-story-marker],article[id^=article-]', // the container
+ *   'a[id^=article-link-]', // what should be focused on
+ *   'div.paged-stories', // waterfall container
+ * );
+ *
+ * Note:
+ * To avoid conflicts, only one of these should be called per page.
+ *
+ * Note on waterfalls:
+ * In the next example, the waterfall container would be 'div.paged-stories':
+ * <article />
+ * <article />
+ * <div class="paged-stories">
+ *   <!-- level 1 -->
+ *   <article />
+ *   <article />
+ *   <div class="paged-stories">
+ *     <!-- level 2 -->
+ *     <article />
+ *     <article />
+ *   </div>
+ * </div>
+ *
+ * @param {string} itemContainerSelector - The selector for the highest level container of an item
+ * @param {string} focusableSelector - The selector for the element that should be focused on inside an item
+ * @param {string} [waterfallItemContainerSelector = undefined] - The selector for the waterfall item container if the list uses a waterfall structure at any point
+ */
 export default (
   itemContainerSelector,
   focusableSelector,

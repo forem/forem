@@ -6,7 +6,7 @@ const FOCUSED_TAG_EXCLUDE_LIST = ['INPUT', 'TEXTAREA'];
  * Registers a key event listener to the window
  *
  * @example
- * import { registerGlobalKeyEventListener } from '@utilities/hooks/useGlobalKeyEventListener';
+ * import { registerGlobalKeyEventListener } from '../utilities/hooks/useGlobalKeyEventListener';
  *
  * componentDidMount() {
  *   this.globalKeyEventListener = registerGlobalKeyEventListener(
@@ -22,10 +22,12 @@ const FOCUSED_TAG_EXCLUDE_LIST = ['INPUT', 'TEXTAREA'];
  * }
  *
  * Note:
- * This function is used by class-based components. The registered event
- * listener is returned so that it can be unregistered manually on component
- * unmount. For functional components, use the useGlobalKeyEventListener hook
- * below which takes care of of the unregistering automatically.
+ * This function is used by class-based components. The
+ * registered event listener is returned so that it can
+ * be unregistered manually on component unmount. For
+ * functional components, use the useGlobalKeyEventListener
+ * hook below which takes care of of the unregistering
+ * automatically.
  *
  * @param {string[]} keys The keys that should be listened to
  * @param {function(object)} callback The function that should be called when one of the keys is pressed
@@ -73,8 +75,7 @@ export function registerGlobalKeyEventListener(keys, callback) {
  *   }
  * );
  *
- * Note: The hook unregisters the event listener automatically when the
- * component unmounts
+ * Note: The hook unregisters the event listener automatically when the component unmounts
  *
  * @param {string[]} keys The keys that should be listened to
  * @param {function(object)} callback The function that should be called when

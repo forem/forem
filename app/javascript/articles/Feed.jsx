@@ -43,7 +43,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     };
 
     fetchFeedItems();
-  }, [timeFrame]);
+  }, [timeFrame, onError]);
 
   /**
    * Retrieves feed data.
