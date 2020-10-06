@@ -834,7 +834,7 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Rate limits",
+                       header: "Rate limits and anti-spam",
                        state: "collapse",
                        target: "rateLimitsBodyContainer",
                        expanded: "false"
@@ -851,6 +851,14 @@
                 <div class="alert alert-info"><%= field_hash[:description] %></div>
               </div>
             <% end %>
+            <div class="form-group">
+              <%= admin_config_label :spam_trigger_terms %>
+              <%= f.text_field :spam_trigger_terms,
+                               class: "form-control",
+                               value: SiteConfig.spam_trigger_terms.to_s,
+                               placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %></div>
+            </div>
           </div>
         </div>
 

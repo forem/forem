@@ -453,7 +453,7 @@ RSpec.describe "/admin/config", type: :request do
         end
       end
 
-      describe "Rate Limits" do
+      describe "Rate Limits and spam" do
         it "updates rate_limit_follow_count_daily" do
           expect do
             post "/admin/config", params: { site_config: { rate_limit_follow_count_daily: 3 },
@@ -543,6 +543,13 @@ RSpec.describe "/admin/config", type: :request do
             post "/admin/config", params: { site_config: { rate_limit_send_email_confirmation: 3 },
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(2).to(3)
+        end
+
+        it "updates spam_trigger_terms" do
+          spam_trigger_terms = "hey, pokemon go hack"
+          post "/admin/config", params: { site_config: { spam_trigger_terms: spam_trigger_terms },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.spam_trigger_terms).to eq(["hey", "pokemon go hack"])
         end
       end
 

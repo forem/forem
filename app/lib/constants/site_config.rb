@@ -222,6 +222,10 @@ module Constants
         description: "Used as the secondary logo",
         placeholder: "https://image.url"
       },
+      spam_trigger_terms: {
+        description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
+        placeholder: "used cares near you, pokemon go hack"
+      },
       shop_url: {
         description: "Used as the shop url of the community",
         placeholder: "https://shop.url"
