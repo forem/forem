@@ -15,7 +15,12 @@ module Profiles
     end
 
     def call
-      update_profile && sync_to_user
+      if update_profile && sync_to_user
+        perform_after_update_actions
+      else
+        Honeycomb.add_field("error", @error_message)
+        Honeycomb.add_field("errored", true)
+      end
       self
     end
 
@@ -69,6 +74,11 @@ module Profiles
       else
         @error_message = @user.errors_as_sentence
       end
+    end
+
+    def perform_after_update_actions
+      RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
+      @user.touch(:profile_updated_at)
     end
   end
 end

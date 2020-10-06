@@ -46,4 +46,15 @@ RSpec.describe Profiles::Update, type: :service do
     described_class.call(user, profile: { custom_attribute => "Test" }, user: {})
     expect(profile.custom_attributes[custom_attribute]).to eq "Test"
   end
+
+  it "performs additional actions after successful updates", :agregate_failures do
+    allow(RssReaderFetchUserWorker).to receive(:perform_async).with(user.id)
+    allow(user).to receive(:feed_url).and_return("https://example.com/feed")
+
+    expect do
+      described_class.call(user, profile: { name: 123, looking_for_work: "false" })
+    end.to change { user.reload.profile_updated_at }
+
+    expect(RssReaderFetchUserWorker).to have_received(:perform_async)
+  end
 end
