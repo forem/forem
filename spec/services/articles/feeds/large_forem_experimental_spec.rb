@@ -15,7 +15,7 @@ NON_DEFAULT_EXPERIMENTS = %i[
   mix_of_everything_experiment
 ].freeze
 
-RSpec.describe Articles::Feed, type: :service do
+RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   let(:user) { create(:user) }
   let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
   let!(:article) { create(:article) }

@@ -93,6 +93,11 @@ module Constants
         description: "Used as the site favicon",
         placeholder: "https://image.url"
       },
+      feed_strategy: {
+        description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
+        (which should only be used for 10k+ member communities)",
+        placeholder: "basic"
+      },
       feed_style: {
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
         placeholder: "basic, rich, or compact"

@@ -597,9 +597,16 @@ RSpec.describe "/admin/config", type: :request do
       describe "User Experience" do
         it "updates the feed_style" do
           feed_style = "basic"
-          post "/admin/config", params: { site_config: { mascot_user_id: feed_style },
+          post "/admin/config", params: { site_config: { feed_style: feed_style },
                                           confirmation: confirmation_message }
           expect(SiteConfig.feed_style).to eq(feed_style)
+        end
+
+        it "updates the feed_strategy" do
+          feed_strategy = "optimized"
+          post "/admin/config", params: { site_config: { feed_strategy: feed_strategy },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.feed_strategy).to eq(feed_strategy)
         end
 
         it "updates the brand color if proper hex" do
