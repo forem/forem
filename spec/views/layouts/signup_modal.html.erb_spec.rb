@@ -12,6 +12,6 @@ RSpec.describe "layouts/_signup_modal.html.erb", type: :view do
   it "does not render the tagline if it is not set" do
     allow(SiteConfig).to receive(:tagline).and_return(nil)
     render
-    expect(rendered).to have_no_text(tagline_text)
+    expect(rendered).not_to have_text(tagline_text)
   end
 end

@@ -24,8 +24,8 @@
       <div id="getStartedBodyContainer" class="<%= VerifySetupCompleted.setup_completed? ? "hide collapse" : "show expand" %> p-3" aria-labelledby="siteConfigHeader">
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
 
-          <!-- we need to list the config as separate fields if the data structure is a Hash -->
           <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
+            <%# we need to list the config as separate fields if the data structure is a Hash %>
             <% if SiteConfig.public_send(config_key).is_a?(Hash) %>
               <%= admin_config_label config_key.to_s %>
               <div class="form-group">
