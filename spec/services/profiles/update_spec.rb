@@ -12,6 +12,14 @@ RSpec.describe Profiles::Update, type: :service do
     Profile.refresh_attributes!
   end
 
+  it "only tries to sync changes to User if the profile update succeeds" do
+    service = described_class.new(user, profile: {}, user: {})
+    allow(service).to receive(:update_profile).and_return(false)
+
+    expect(service).not_to receive(:sync_to_user) # rubocop:disable RSpec/MessageSpies
+    service.call
+  end
+
   it "correctly typecasts new attributes", :aggregate_failures do
     described_class.call(user, profile: { name: 123, looking_for_work: "false" })
     expect(profile.name).to eq "123"

@@ -15,8 +15,7 @@ module Profiles
     end
 
     def call
-      update_profile
-      sync_to_user
+      update_profile && sync_to_user
       self
     end
 
@@ -43,7 +42,7 @@ module Profiles
       # Before saving, filter out obsolete profile fields
       @profile.data.slice!(*Profile.attributes)
 
-      return unless @profile.save
+      @profile.save
     end
 
     # Propagate changes back to the `users` table
@@ -58,6 +57,8 @@ module Profiles
       else
         @error_message = @user.errors_as_sentence
       end
+
+      @success
     ensure
       @profile.user._skip_profile_sync = false
     end
