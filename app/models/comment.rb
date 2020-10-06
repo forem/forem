@@ -257,6 +257,17 @@ class Comment < ApplicationRecord
       reactable_type: "Comment",
       category: "vomit",
     )
+
+    return unless Reaction.comment_vomits.where(reactable_id: user.comments.pluck(:id)).size > 2
+
+    user.add_role(:banned)
+    Note.create(
+      author_id: SiteConfig.mascot_user_id,
+      noteable_id: user_id,
+      noteable_type: "User",
+      reason: "automatic_ban",
+      content: "User banned for too many spammy articles, triggered by autovomit.",
+    )
   end
 
   def should_send_email_notification?
