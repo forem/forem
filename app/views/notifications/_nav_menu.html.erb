@@ -13,8 +13,8 @@
   </a>
 </nav>
 <% if @organizations.present? %>
-  <nav class="notification-nav pt-6">
-    <% @organizations.each do |org| %>
+  <% @organizations.each do |org| %>
+    <nav class="notification-nav pt-6">
       <h3 class="crayons-subtitle-3 mb-4 pl-2"><%= org.name %></h3>
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
         All
@@ -22,6 +22,6 @@
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
         Comments
       </a>
-    <% end %>
-  </nav>
+    </nav>
+  <% end %>
 <% end %>
