@@ -43,7 +43,13 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     it "appends the RELEASE_FOOTPRINT if it is set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
-      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me-abc123")
+      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me--abc123")
+    end
+
+    it "includes locale param if it is set" do
+      allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
+      params[:locale] = "fr-ca"
+      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me-fr-ca-abc123")
     end
   end
 
@@ -76,6 +82,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     before do
       allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
       allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("dev.to")
+      allow(SiteConfig).to receive(:app_domain).and_return("dev.to")
     end
 
     it "creates the correct base app URL" do

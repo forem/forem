@@ -4,6 +4,8 @@
 class SiteConfig < RailsSettings::Base
   self.table_name = "site_configs"
 
+  validates :var, presence: true
+
   # the site configuration is cached, change this if you want to force update
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
@@ -11,14 +13,16 @@ class SiteConfig < RailsSettings::Base
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
 
+  # Core setup
   field :waiting_on_first_user, type: :boolean, default: !User.exists?
+  field :app_domain, type: :string, default: ApplicationConfig["APP_DOMAIN"]
 
   # API Tokens
   field :health_check_token, type: :string
 
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
-  field :authentication_providers, type: :array, default: Authentication::Providers.available
+  field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
   field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
@@ -38,7 +42,6 @@ class SiteConfig < RailsSettings::Base
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
-  field :community_action, type: :string
   field :tagline, type: :string
   field :community_copyright_start_year, type: :integer,
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
@@ -97,6 +100,7 @@ class SiteConfig < RailsSettings::Base
 
   # Newsletter
   # <https://mailchimp.com/developer/>
+  field :mailchimp_api_key, type: :string, default: ApplicationConfig["MAILCHIMP_API_KEY"]
   field :mailchimp_newsletter_id, type: :string, default: ""
   field :mailchimp_sustaining_members_id, type: :string, default: ""
   field :mailchimp_tag_moderators_id, type: :string, default: ""
@@ -112,7 +116,7 @@ class SiteConfig < RailsSettings::Base
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
 
-  # Rate limits
+  # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_listing_creation, type: :integer, default: 1
@@ -126,6 +130,8 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
   field :rate_limit_user_update, type: :integer, default: 5
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
+
+  field :spam_trigger_terms, type: :array, default: []
 
   # Social Media
   field :social_media_handles, type: :hash, default: {
@@ -165,4 +171,9 @@ class SiteConfig < RailsSettings::Base
     large: 300,
     xlarge: 250
   }
+
+  # Returns true if we are operating on a local installation, false otherwise
+  def self.local?
+    app_domain.include?("localhost")
+  end
 end

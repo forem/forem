@@ -173,7 +173,7 @@ module ApplicationHelper
   end
 
   def community_name
-    @community_name ||= SiteConfig.community_name # rubocop:disable Rails/HelperInstanceVariable
+    @community_name ||= SiteConfig.community_name
   end
 
   def community_qualified_name
@@ -184,7 +184,7 @@ module ApplicationHelper
     release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
     return path if release_footprint.blank?
 
-    "#{path}-#{release_footprint}"
+    "#{path}-#{params[:locale]}-#{release_footprint}"
   end
 
   def copyright_notice

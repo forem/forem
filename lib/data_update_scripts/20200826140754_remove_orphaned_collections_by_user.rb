@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       # Delete all Collections belonging to Users that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           DELETE FROM collections
           WHERE user_id NOT IN (SELECT id FROM users);
         SQL

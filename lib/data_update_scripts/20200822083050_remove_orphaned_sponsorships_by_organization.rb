@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       # Delete all Sponsorships belonging to Organizations that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           DELETE FROM sponsorships
           WHERE organization_id NOT IN (SELECT id FROM organizations);
         SQL

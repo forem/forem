@@ -79,8 +79,6 @@ describe('<ArticleCoverImage />', () => {
     });
 
     it('allows a user to change the image', async () => {
-      global.DragEvent = jest.fn();
-
       fetch.mockResponse(
         JSON.stringify({
           image: ['/i/changed-fake-link.jpg'],

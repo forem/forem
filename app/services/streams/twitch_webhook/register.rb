@@ -47,7 +47,7 @@ module Streams
 
       def twitch_stream_updates_url_for_user(user)
         Rails.application.routes.url_helpers.user_twitch_stream_updates_url(user_id: user.id,
-                                                                            host: ApplicationConfig["APP_DOMAIN"])
+                                                                            host: SiteConfig.app_domain)
       end
     end
   end

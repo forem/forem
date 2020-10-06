@@ -27,9 +27,6 @@
     if (navigator.userAgent === 'DEV-Native-ios') {
       document.body.classList.add("dev-ios-native-body");
     }
-    if (localStorage.getItem('config_minimize_newest_listings') === 'yes') {
-      document.body.classList.add("config_minimize_newest_listings");
-    }
     if (window.frameElement) { // Hide top bar and footer when loaded within iframe
       document.body.classList.add("hidden-shell");
     }

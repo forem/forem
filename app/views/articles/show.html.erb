@@ -124,7 +124,7 @@
             <% if @organization %>
               <a href="<%= @organization.path %>" class="flex items-center mb-4 fs-l fw-medium crayons-link">
                 <span class="crayons-logo crayons-logo--l mr-3">
-                  <img src="<%= ProfileImage.new(@organization).get(width: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image">
+                  <img src="<%= Images::Profile.call(@organization.profile_image_url, length: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image">
                 </span>
                 <%= @organization.name %>
               </a>
@@ -147,7 +147,7 @@
 
             <div class="crayons-article__subheader">
               <a href="/<%= @user.username %>" class="flex items-center mr-4 mb-4 s:mb-0 fw-medium crayons-link">
-                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" /></span>
+                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" /></span>
                 <%= @user.name %>
               </a>
 
@@ -155,11 +155,8 @@
                 <% if @article.published_timestamp.present? %>
                   <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
                 <% end %>
-                <% if @second_user.present? %>
-                  <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
-                <% end %>
-                <% if @third_user.present? %>
-                  <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
+                <% if @article.co_author_ids.present? %>
+                  <em>with <%= @article.co_author_name_and_path.html_safe %></em>
                 <% end %>
 
                 <% if should_show_updated_on?(@article) %>

@@ -2,10 +2,6 @@ class KatexTag < Liquid::Block
   PARTIAL = "liquids/katex".freeze
   KATEX_EXISTED = "katex_existed".freeze
 
-  def initialize(_tag_name, markup, _parse_context)
-    super
-  end
-
   def render(context)
     block = Nokogiri::HTML(super).at("body").text
 

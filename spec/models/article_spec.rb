@@ -14,9 +14,9 @@ RSpec.describe Article, type: :model do
   it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
-    it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:collection).optional }
+    it { is_expected.to belong_to(:organization).optional }
+    it { is_expected.to belong_to(:user) }
 
     it { is_expected.to have_many(:buffer_updates).dependent(:destroy) }
     it { is_expected.to have_many(:comments).dependent(:nullify) }
@@ -35,13 +35,65 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
+
+    it { is_expected.to validate_presence_of(:boost_states) }
+    it { is_expected.to validate_presence_of(:comments_count) }
+    it { is_expected.to validate_presence_of(:positive_reactions_count) }
+    it { is_expected.to validate_presence_of(:previous_public_reactions_count) }
+    it { is_expected.to validate_presence_of(:public_reactions_count) }
+    it { is_expected.to validate_presence_of(:rating_votes_count) }
+    it { is_expected.to validate_presence_of(:reactions_count) }
+    it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
+
     it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
-    it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
+    it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
+
+    describe "#body_markdown" do
+      it "is unique scoped for user_id and title" do
+        art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
+
+        expect(art2).not_to be_valid
+        expect(art2.errors.full_messages.to_sentence).to match("markdown has already been taken")
+      end
+    end
+
+    describe "#validate co_authors" do
+      it "is invalid if the co_author is the same as the author" do
+        article.co_author_ids = [user.id]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if there are duplicate co_authors for the same article" do
+        co_author1 = create(:user)
+        article.co_author_ids = [co_author1, co_author1]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if the co_author is entered as a text value rather than an integer" do
+        article.co_author_ids = [user.id, "abc"]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if the co_author ID is not greater than 0" do
+        article.co_author_ids = [user.id, 0]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is valid if co_author_ids is nil" do
+        article.co_author_ids = nil
+
+        expect(article).to be_valid
+      end
+    end
 
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
@@ -57,49 +109,6 @@ RSpec.describe Article, type: :model do
         sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
                                      args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
-        end
-      end
-
-      it "on update syncs elasticsearch data" do
-        allow(article).to receive(:sync_related_elasticsearch_docs)
-        article.save
-        expect(article).to have_received(:sync_related_elasticsearch_docs)
-      end
-    end
-
-    describe "#after_update_commit" do
-      it "if article is unpublished removes reading list reactions from index" do
-        reaction = create(:reaction, reactable: article, category: "readinglist")
-        sidekiq_perform_enqueued_jobs
-        expect(reaction.elasticsearch_doc).not_to be_nil
-
-        unpublished_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: false\ntags: hiring\n---\n\nHello"
-        article.update(body_markdown: unpublished_body)
-        sidekiq_perform_enqueued_jobs
-        expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-      end
-
-      it "if article is published indexes reading list reactions" do
-        reaction = create(:reaction, reactable: article, category: "readinglist")
-        sidekiq_perform_enqueued_jobs
-        unpublished_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: false\ntags: hiring\n---\n\nHello"
-        article.update(body_markdown: unpublished_body)
-        sidekiq_perform_enqueued_jobs
-        expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-
-        published_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
-        article.update(body_markdown: published_body)
-        sidekiq_perform_enqueued_jobs
-        expect(reaction.elasticsearch_doc).not_to be_nil
-      end
-
-      it "indexes reaction if a REACTION_INDEXED_FIELDS is changed" do
-        reaction = create(:reaction, reactable: article, category: "readinglist")
-        allow(article).to receive(:index_to_elasticsearch)
-        allow(article.user).to receive(:index_to_elasticsearch)
-
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Reaction", reaction.id]) do
-          article.update(body_markdown: "---\ntitle: NEW TITLE#{rand(1000)}\n")
         end
       end
     end
@@ -755,6 +764,34 @@ RSpec.describe Article, type: :model do
           article.save
         end
         expect(article).to have_received(:update_main_image_background_hex)
+      end
+
+      it "does not enqueue a job if main_image has not changed" do
+        article.save
+        allow(article).to receive(:update_main_image_background_hex).and_call_original
+        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
+          article.save
+        end
+        expect(article).to have_received(:update_main_image_background_hex)
+      end
+    end
+
+    describe "spam" do
+      before do
+        allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+        allow(SiteConfig).to receive(:spam_trigger_terms).and_return(["yahoomagoo gogo", "testtestetest"])
+      end
+
+      it "creates vomit reaction if possible spam" do
+        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
+        article.save
+        expect(Reaction.last.category).to eq("vomit")
+        expect(Reaction.last.user_id).to eq(user.id)
+      end
+
+      it "does not create vomit reaction if does not have matching title" do
+        article.save
+        expect(Reaction.last).to be nil
       end
     end
 

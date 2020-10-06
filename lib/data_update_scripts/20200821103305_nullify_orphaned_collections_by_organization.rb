@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       # Nullify organization_id for all Collections linked to a non existing Organization
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           UPDATE collections
           SET organization_id = NULL
           WHERE organization_id IS NOT NULL

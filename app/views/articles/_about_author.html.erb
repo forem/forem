@@ -5,7 +5,7 @@
 
   <div class="flex">
     <a href="<%= URL.user(@user) %>" class="crayons-avatar crayons-avatar--2xl shrink-0 mr-4">
-      <img class="crayons-avatar__image" src="<%= ProfileImage.new(@user).get(width: 180) %>" alt="<%= @user.username %> profile" />
+      <img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 180) %>" alt="<%= @user.username %> profile" />
     </a>
     <div>
       <h3 class="fs-l s:fs-xl m:fs-2xl l:fs-3xl fw-medium"><a href="<%= URL.user(@user) %>" class="crayons-link"><%= @user.name %></a></h3>

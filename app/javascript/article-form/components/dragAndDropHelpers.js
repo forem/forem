@@ -23,7 +23,9 @@ export function handleImageDrop(handleImageSuccess, handleImageFailure) {
       return;
     }
 
-    event.currentTarget.classList.remove('opacity-25');
+    event.currentTarget
+      .closest('.drop-area')
+      .classList.remove('drop-area--active');
 
     const { files } = event.dataTransfer;
 
@@ -46,7 +48,9 @@ export function handleImageDrop(handleImageSuccess, handleImageFailure) {
  */
 export function onDragOver(event) {
   event.preventDefault();
-  event.currentTarget.classList.add('opacity-25');
+  event.currentTarget
+    .closest('.drop-area')
+    .classList.add('drop-area--active');
 }
 
 /**
@@ -56,7 +60,9 @@ export function onDragOver(event) {
  */
 export function onDragExit(event) {
   event.preventDefault();
-  event.currentTarget.classList.remove('opacity-25');
+  event.currentTarget
+    .closest('.drop-area')
+    .classList.remove('drop-area--active');
 }
 
 /**

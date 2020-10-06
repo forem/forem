@@ -2,6 +2,9 @@ import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
+
+import '../../../assets/javascripts/utilities/localDateTime';
+
 import { ListingDashboard } from '../listingDashboard';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -180,7 +183,15 @@ const listings = {
   selectedListings: 'user',
 };
 
+/* eslint-disable no-unused-vars */
+/* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
+
 describe('<ListingDashboard />', () => {
+  afterAll(() => {
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(<ListingDashboard />);
     const results = await axe(container);
@@ -227,7 +238,7 @@ describe('<ListingDashboard />', () => {
     };
 
     getByText('asdfasdf (expired)', listing1GetByTextOptions);
-    getByText('Jun 11', listing1GetByTextOptions);
+    getByText('Jun 11, 2019', listing1GetByTextOptions);
 
     // listing category
     const listing1CfpCategory = getByText('cfp', listing1GetByTextOptions);
@@ -265,7 +276,7 @@ describe('<ListingDashboard />', () => {
     };
 
     getByText('YOYOYOYOYOOOOOOOO (expired)', listing2GetByTextOptions);
-    getByText('May 11', listing2GetByTextOptions);
+    getByText('May 11, 2019', listing2GetByTextOptions);
 
     // listing category
     const listing2EventsCategory = getByText(
@@ -318,7 +329,7 @@ describe('<ListingDashboard />', () => {
     };
 
     getByText('hehhehe (expired)', listing3GetByTextOptions);
-    getByText('Apr 11', listing3GetByTextOptions);
+    getByText('Apr 11, 2019', listing3GetByTextOptions);
 
     // listing category
     const listing3CfpCategory = getByText('cfp', listing3GetByTextOptions);

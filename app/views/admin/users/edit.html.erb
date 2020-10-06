@@ -84,22 +84,6 @@
             <%= f.submit "Delete #{identity.provider.capitalize} Identity", class: "btn btn-danger" %>
           <% end %>
         <% end %>
-        <h3>This should be done only do this if you are certain the user is having the specific problem(s) listed above.</h3>
-        <% if @user.backup_data.any? %>
-          <hr>
-          <h2>Recover a deleted identity:</h2>
-          <ul>
-            <% @user.backup_data.where(instance_type: "Identity").each do |data| %>
-              <li>
-                <%= "#{data.json_data['provider'].capitalize} #{data.instance_type} - UID: #{data.json_data['uid']}" %>
-                <%= form_for(@user, url: recover_identity_admin_user_path(@user), html: { method: :post, onsubmit: "return confirm('Please confirm you want to recover the #{data.json_data['provider'].capitalize} identity.')" }) do |f| %>
-                  <%= f.hidden_field :backup_data_id, value: data.id %>
-                  <%= f.submit "Recover #{data.json_data['provider'].capitalize} Identity" %>
-                <% end %>
-              </li>
-            <% end %>
-          </ul>
-        <% end %>
       </ul>
     </div>
   </div>

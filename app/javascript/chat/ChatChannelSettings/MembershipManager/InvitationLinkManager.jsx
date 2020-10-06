@@ -5,12 +5,6 @@ import PropTypes from 'prop-types';
 
 import { Button } from '@crayons';
 
-function isClipboardSupported() {
-  return (
-    typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-  );
-}
-
 const CopyIcon = () => (
   <svg
     width="24"
@@ -47,31 +41,10 @@ export default class InvitationLinkManager extends Component {
       'chat-channel-unviation-url',
     );
 
-    if (Runtime.isNativeAndroid('copyToClipboard')) {
-      AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
+    Runtime.copyToClipboard(this.imageMarkdownInput.value).then(() => {
       this.setState({ showImageCopiedMessage: true });
-    } else if (isClipboardSupported()) {
-      navigator.clipboard
-        .writeText(this.imageMarkdownInput.value)
-        .then(() => {
-          this.setState({ showImageCopiedMessage: true });
-        })
-        .catch((_err) => {
-          this.execCopyText();
-        });
-    } else {
-      this.execCopyText();
-    }
+    });
   };
-
-  execCopyText() {
-    this.imageMarkdownInput.setSelectionRange(
-      0,
-      this.imageMarkdownInput.value.length,
-    );
-    document.execCommand('copy');
-    this.setState({ showImageCopiedMessage: true });
-  }
 
   render() {
     const {

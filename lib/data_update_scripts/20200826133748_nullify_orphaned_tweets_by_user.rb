@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       # Nullify user_id for all Tweets linked to a non existing User
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           UPDATE tweets
           SET user_id = NULL
           WHERE user_id IS NOT NULL

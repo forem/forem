@@ -50,7 +50,7 @@ RSpec.describe "/admin/profile_field_groups", type: :request do
   end
 
   describe "DELETE /admin/profile_fields/:id" do
-    let(:profile_field_group) { create(:profile_field_group) }
+    let!(:profile_field_group) { create(:profile_field_group) }
 
     it "redirects successfully" do
       delete "#{admin_profile_field_groups_path}/#{profile_field_group.id}"
@@ -58,8 +58,9 @@ RSpec.describe "/admin/profile_field_groups", type: :request do
     end
 
     it "removes a profile_field_group" do
-      delete "#{admin_profile_field_groups_path}/#{profile_field_group.id}"
-      expect(ProfileFieldGroup.count).to eq(0)
+      expect do
+        delete "#{admin_profile_field_groups_path}/#{profile_field_group.id}"
+      end.to change(ProfileFieldGroup, :count).by(-1)
     end
   end
 end

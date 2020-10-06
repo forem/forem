@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   skip_before_action :track_ahoy_visit
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
+  before_action :remember_cookie_sync
 
   include SessionCurrentUser
   include ValidRequest
@@ -10,6 +11,7 @@ class ApplicationController < ActionController::Base
   include CachingHeaders
   include ImageUploads
   include VerifySetupCompleted
+  include Devise::Controllers::Rememberable
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
@@ -24,7 +26,8 @@ class ApplicationController < ActionController::Base
                           omniauth_callbacks
                           registrations
                           confirmations
-                          passwords].freeze
+                          passwords
+                          health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   def verify_private_forem
@@ -142,6 +145,16 @@ class ApplicationController < ActionController::Base
     return unless Rails.env.development? && Stripe.api_key.present?
 
     Stripe.log_level = Stripe::LEVEL_INFO
+  end
+
+  def remember_cookie_sync
+    # Set remember cookie token in case not properly set.
+    if user_signed_in? &&
+        cookies[:remember_user_token].blank?
+      current_user.remember_me = true
+      current_user.remember_me!
+      remember_me(current_user)
+    end
   end
 
   protected

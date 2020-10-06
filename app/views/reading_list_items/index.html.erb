@@ -17,8 +17,6 @@
   <meta name="twitter:description" content="My saved posts.">
 <% end %>
 
-<div class="home">
-  <div class="item-list-container" id="reading-list" data-view="<%= @view %>">
-  </div>
-</div>
+<div id="reading-list" data-view="<%= @view %>"></div>
+
 <%= javascript_packs_with_chunks_tag "readingList", defer: true %>

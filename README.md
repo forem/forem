@@ -26,7 +26,7 @@
   <a href="https://www.codetriage.com/thepracticaldev/dev.to">
     <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge">
   </a>
-  <img src="https://badgen.net/dependabot/thepracticaldev/dev.to?icon=dependabot" alt="Dependabot Badge">
+  <img src="https://badgen.net/dependabot/forem/forem?icon=dependabot" alt="Dependabot Badge">
   <a href="https://gitpod.io/from-referrer/">
     <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
   </a>

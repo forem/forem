@@ -33,10 +33,6 @@ module Constants
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
       },
-      community_action: {
-        description: "Used to determine the action of community e.g coding, reading, training etc.",
-        placeholder: "coding"
-      },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
@@ -146,6 +142,10 @@ module Constants
         description: "Used as the main image in social networks and OpenGraph",
         placeholder: "https://image.url"
       },
+      mailchimp_api_key: {
+        description: "API key used to connect Mailchimp account. Found in Mailchimp backend",
+        placeholder: ""
+      },
       mailchimp_newsletter_id: {
         description: "Main Newsletter ID",
         placeholder: ""
@@ -222,6 +222,10 @@ module Constants
       secondary_logo_url: {
         description: "Used as the secondary logo",
         placeholder: "https://image.url"
+      },
+      spam_trigger_terms: {
+        description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
+        placeholder: "used cares near you, pokemon go hack"
       },
       shop_url: {
         description: "Used as the shop url of the community",

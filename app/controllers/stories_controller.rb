@@ -51,13 +51,6 @@ class StoriesController < ApplicationController
     end
   end
 
-  def warm_comments
-    @article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate || not_found
-    @warm_only = true
-    assign_article_show_variables
-    render partial: "articles/full_comment_area"
-  end
-
   private
 
   def assign_hero_html
@@ -295,8 +288,8 @@ class StoriesController < ApplicationController
     end
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
-    assign_second_and_third_user
     set_article_json_ld
+    assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
@@ -304,11 +297,10 @@ class StoriesController < ApplicationController
     !@article.published && params[:preview] != @article.password
   end
 
-  def assign_second_and_third_user
-    return if @article.second_user_id.blank?
+  def assign_co_authors
+    return if @article.co_author_ids.blank?
 
-    @second_user = User.find(@article.second_user_id)
-    @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
+    @co_author_ids = User.find(@article.co_author_ids)
   end
 
   def assign_user_comments
@@ -379,7 +371,7 @@ class StoriesController < ApplicationController
       },
       "url": URL.user(@user),
       "sameAs": user_same_as,
-      "image": ProfileImage.new(@user).get(width: 320),
+      "image": Images::Profile.call(@user.profile_image_url, length: 320),
       "name": @user.name,
       "email": @user.email_public ? @user.email : nil,
       "jobTitle": @user.employment_title.presence,
@@ -445,7 +437,7 @@ class StoriesController < ApplicationController
         "@id": URL.organization(@organization)
       },
       "url": URL.organization(@organization),
-      "image": ProfileImage.new(@organization).get(width: 320),
+      "image": Images::Profile.call(@organization.profile_image_url, length: 320),
       "name": @organization.name,
       "description": @organization.summary.presence || "404 bio not found"
     }
