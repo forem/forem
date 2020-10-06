@@ -33,10 +33,6 @@ module Constants
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
       },
-      community_action: {
-        description: "Used to determine the action of community e.g coding, reading, training etc.",
-        placeholder: "coding"
-      },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
