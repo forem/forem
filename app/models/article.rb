@@ -681,11 +681,23 @@ class Article < ApplicationRecord
   def create_conditional_autovomits
     return unless SiteConfig.spam_trigger_terms.any? { |term| title.downcase.include?(term.downcase) }
 
+    self.score = -25
     Reaction.create(
       user_id: SiteConfig.mascot_user_id,
       reactable_id: id,
       reactable_type: "Article",
       category: "vomit",
+    )
+
+    return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
+
+    user.add_role(:banned)
+    Note.create(
+      author_id: SiteConfig.mascot_user_id,
+      noteable_id: user_id,
+      noteable_type: "User",
+      reason: "automatic_ban",
+      content: "User banned for too many spammy articles, triggered by autovomit.",
     )
   end
 

@@ -23,6 +23,8 @@ class Reaction < ApplicationRecord
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
+  scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
+  scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
