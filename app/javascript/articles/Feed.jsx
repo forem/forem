@@ -52,7 +52,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
    *
    * @returns {Promise} A promise containing the JSON response for the feed data.
    */
-  const getFeedItems = async (timeFrame = '', page = 1) => {
+  async function getFeedItems(timeFrame = '', page = 1) {
     const response = await fetch(`/stories/feed/${timeFrame}?page=${page}`, {
       method: 'GET',
       headers: {
@@ -63,9 +63,9 @@ export const Feed = ({ timeFrame, renderFeed }) => {
       credentials: 'same-origin',
     });
     return await response.json();
-  };
+  }
 
-  const getPodcastEpisodes = () => {
+  function getPodcastEpisodes() {
     const el = document.getElementById('followed-podcasts');
     const user = userData(); // Global
     const episodes = [];
@@ -82,7 +82,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
       });
     }
     return episodes;
-  };
+  }
 
   useGlobalListNavigation(
     'article[id=featured-story-marker],article[id^=article-]',
@@ -95,7 +95,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
    *
    * @param {Event} event
    */
-  const bookmarkClick = async (event) => {
+  async function bookmarkClick(event) {
     // The assumption is that the user is logged on at this point.
     const { userStatus } = document.body;
     event.preventDefault();
@@ -135,7 +135,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
 
       setBookmarkedFeedItems(updatedBookmarkedFeedItems);
     }
-  };
+  }
 
   return (
     <div id="rendered-article-feed">

@@ -14,17 +14,24 @@ export default (
   focusableSelector,
   waterfallItemContainerSelector = undefined,
 ) => {
-  const getNextElement = (element) => element.nextSibling;
+  function getNextElement(element) {
+    return element.nextSibling;
+  }
 
-  const getPreviousElement = (element) =>
-    element.previousSibling ||
-    (waterfallItemContainerSelector &&
-      element.closest(waterfallItemContainerSelector)?.previousSibling);
+  function getPreviousElement(element) {
+    if (element.previousSibling) {
+      return element.previousSibling;
+    }
+    if (waterfallItemContainerSelector) {
+      return element.closest(waterfallItemContainerSelector)?.previousSibling;
+    }
+    return null;
+  }
 
-  const getFirstElement = () => {
+  function getFirstElement() {
     const elements = document.querySelectorAll(itemContainerSelector);
     return Array.prototype.find.call(elements, isInViewport);
-  };
+  }
 
   useGlobalKeyEventListener(
     [NAVIGATION_UP_KEY, NAVIGATION_DOWN_KEY],

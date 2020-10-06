@@ -2,7 +2,7 @@ import { useEffect } from 'preact/hooks';
 
 const FOCUSED_TAG_EXCLUDE_LIST = ['INPUT', 'TEXTAREA'];
 
-export const registerGlobalKeyEventListener = (keys, callback) => {
+export function registerGlobalKeyEventListener(keys, callback) {
   if (!keys || keys.length === 0 || !callback) {
     return null;
   }
@@ -23,7 +23,7 @@ export const registerGlobalKeyEventListener = (keys, callback) => {
   window.addEventListener('keydown', eventListener);
 
   return eventListener;
-};
+}
 
 export default (keys, callback) => {
   useEffect(() => {
