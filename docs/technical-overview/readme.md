@@ -2,7 +2,7 @@
 items:
   - stack.md
   - architecture.md
-  - feed_algorithm.md
+  - feed.md
 ---
 
 # Technical Overview
