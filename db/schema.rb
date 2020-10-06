@@ -679,7 +679,6 @@ ActiveRecord::Schema.define(version: 2020_10_05_181510) do
     t.integer "order"
     t.datetime "updated_at", precision: 6, null: false
     t.string "url", null: false
-    t.index ["order"], name: "index_navigation_links_on_order", unique: true
   end
 
   create_table "notes", force: :cascade do |t|
