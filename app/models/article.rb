@@ -90,6 +90,7 @@ class Article < ApplicationRecord
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
+  before_save :create_conditional_autovomits
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
@@ -675,6 +676,17 @@ class Article < ApplicationRecord
   def calculate_base_scores
     self.hotness_score = 1000 if hotness_score.blank?
     self.spaminess_rating = 0 if new_record?
+  end
+
+  def create_conditional_autovomits
+    return unless SiteConfig.spam_trigger_terms.any? { |term| title.downcase.include?(term.downcase) }
+
+    Reaction.create(
+      user_id: SiteConfig.mascot_user_id,
+      reactable_id: id,
+      reactable_type: "Article",
+      category: "vomit",
+    )
   end
 
   def async_bust

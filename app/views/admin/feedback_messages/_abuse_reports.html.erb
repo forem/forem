@@ -26,6 +26,9 @@
             <div class="d-flex justify-content-between" data-controller="reaction" data-reaction-id="<%= reaction.id %>">
               <span>
                 🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
+                <% if reaction.user_id == SiteConfig.mascot_user_id %>
+                  <strong>(auto-generated)</strong>
+                <% end %>
               </span>
               <span>
                 <strong><%= reaction.reactable_type %>:</strong>

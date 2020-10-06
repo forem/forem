@@ -117,7 +117,7 @@ class SiteConfig < RailsSettings::Base
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
 
-  # Rate limits
+  # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_listing_creation, type: :integer, default: 1
@@ -131,6 +131,8 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
   field :rate_limit_user_update, type: :integer, default: 5
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
+
+  field :spam_trigger_terms, type: :array, default: []
 
   # Social Media
   field :social_media_handles, type: :hash, default: {
