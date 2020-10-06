@@ -32,7 +32,7 @@ const FOCUSED_TAG_EXCLUDE_LIST = ['INPUT', 'TEXTAREA'];
  * @param {string[]} keys The keys that should be listened to
  * @param {function(object)} callback The function that should be called when one of the keys is pressed
  *
- * @return {function(event)} eventListener The registered event listener
+ * @returns {function(event)} eventListener The registered event listener
  */
 export function registerGlobalKeyEventListener(keys, callback) {
   if (!keys || keys.length === 0 || !callback) {

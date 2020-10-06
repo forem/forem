@@ -104,7 +104,7 @@ export function useGlobalListNavigation(
  * @param {string} focusableSelector - The selector for the element that should be focused on inside an item
  * @param {string} [waterfallItemContainerSelector = undefined] - The selector for the waterfall item container if the list uses a waterfall structure at any point
  *
- * @return {function(event)} eventListener The registered event listener
+ * @returns {function(event)} eventListener The registered event listener
  */
 export function registerGlobalListNavigation(
   itemContainerSelector,
