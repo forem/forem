@@ -9,6 +9,8 @@ RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo 
                    && dnf -y clean all \
                    && rm -rf /var/cache/yum
 
+ARG APP_PROTOCOL
+
 ENV APP_USER=forem
 ENV APP_UID=1000
 ENV APP_GID=1000

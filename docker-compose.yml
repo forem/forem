@@ -1,7 +1,11 @@
 version: "3"
 services:
   rails:
-    build: .
+    build:
+
+      context: .
+      args:
+        - APP_PROTOCOL=${APP_PROTOCOL}
     image: forem-rails:latest
     container_name: forem_rails
     ports:
