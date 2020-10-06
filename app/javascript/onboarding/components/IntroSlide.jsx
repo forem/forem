@@ -147,6 +147,7 @@ class IntroSlide extends Component {
                       <a
                         href="/code-of-conduct"
                         data-no-instant
+                        className="m-0 mx-1"
                         onClick={(e) => this.handleShowText(e, 'coc')}
                       >
                         Code of Conduct
@@ -171,6 +172,7 @@ class IntroSlide extends Component {
                       <a
                         href="/terms"
                         data-no-instant
+                        className="m-0 mx-1"
                         onClick={(e) => this.handleShowText(e, 'terms')}
                       >
                         Terms and Conditions

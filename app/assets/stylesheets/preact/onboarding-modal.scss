@@ -681,10 +681,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
         margin-bottom: 0;
       }
 
-      a {
-        display: contents;
-      }
-
       input[type='checkbox'] {
         @extend .crayons-checkbox;
         margin-right: var(--su-2) !important;
