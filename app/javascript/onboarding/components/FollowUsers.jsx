@@ -158,45 +158,47 @@ class FollowUsers extends Component {
               <h2 className="subtitle">Let&apos;s review a few things first</h2>
             </header>
 
-            <div
+            <ul
               data-testid="onboarding-users"
               className="onboarding-modal-scroll-container"
             >
               {users.map((user) => (
-                <button
-                  data-testid="onboarding-user-button"
-                  type="button"
-                  onClick={() => this.handleClick(user)}
-                  onKeyDown={() => this.handleKeyDown(user)}
-                  className={
-                    selectedUsers.includes(user)
-                      ? 'user content-row selected'
-                      : 'user content-row unselected'
-                  }
-                >
-                  <figure className="user-avatar-container">
-                    <img
-                      className="user-avatar"
-                      src={user.profile_image_url}
-                      alt="profile"
-                    />
-                  </figure>
-                  <div className="user-info">
-                    <h4 className="user-name">{user.name}</h4>
-                    <p className="user-summary">
-                      {he.unescape(user.summary || '')}
-                    </p>
-                  </div>
+                <li key={user.name}>
                   <button
-                    data-testid="onboarding-user-following-status"
+                    data-testid="onboarding-user-button"
                     type="button"
-                    className="user-following-status"
+                    onClick={() => this.handleClick(user)}
+                    onKeyDown={() => this.handleKeyDown(user)}
+                    className={
+                      selectedUsers.includes(user)
+                        ? 'user content-row selected'
+                        : 'user content-row unselected'
+                    }
                   >
-                    {selectedUsers.includes(user) ? 'Following' : 'Follow'}
+                    <figure className="user-avatar-container">
+                      <img
+                        className="user-avatar"
+                        src={user.profile_image_url}
+                        alt="profile"
+                      />
+                    </figure>
+                    <div className="user-info">
+                      <h4 className="user-name">{user.name}</h4>
+                      <p className="user-summary">
+                        {he.unescape(user.summary || '')}
+                      </p>
+                    </div>
+                    <button
+                      data-testid="onboarding-user-following-status"
+                      type="button"
+                      className="user-following-status"
+                    >
+                      {selectedUsers.includes(user) ? 'Following' : 'Follow'}
+                    </button>
                   </button>
-                </button>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
           <div className="onboarding-selection-status">
             <div className="selection-status-content">

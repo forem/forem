@@ -118,9 +118,9 @@ class FollowTags extends Component {
               <h2 className="subtitle">Follow tags to customize your feed</h2>
             </header>
             <div className="onboarding-modal-scroll-container">
-              <div data-testid="onboarding-tags" className="onboarding-tags">
+              <ul data-testid="onboarding-tags" className="onboarding-tags">
                 {allTags.map((tag) => (
-                  <div
+                  <li
                     className={`onboarding-tags__item ${
                       selectedTags.includes(tag) &&
                       'onboarding-tags__item--selected'
@@ -166,9 +166,9 @@ class FollowTags extends Component {
                         )}
                       </button>
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
             <div className="onboarding-selection-status">
               <div className="selection-status-content">
