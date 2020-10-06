@@ -27,23 +27,49 @@ module Stories
     private
 
     def assign_feed_stories
-      feed = Articles::Feed.new(user: current_user, page: @page, tag: params[:tag])
       stories = if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
-                  feed.top_articles_by_timeframe(timeframe: params[:timeframe])
+                  timeframe_feed
                 elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
-                  feed.latest_feed
+                  latest_feed
                 elsif user_signed_in?
-                  ab_test_user_signed_in_feed(feed)
+                  signed_in_base_feed
                 else
-                  feed.default_home_feed(user_signed_in: user_signed_in?)
+                  signed_out_base_feed
                 end
       ArticleDecorator.decorate_collection(stories)
     end
 
-    def ab_test_user_signed_in_feed(feed)
+    def signed_in_base_feed
+      if SiteConfig.feed_strategy == "basic"
+        Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag]).feed
+      else
+        optimized_signed_in_feed
+      end
+    end
+
+    def signed_out_base_feed
+      if SiteConfig.feed_strategy == "basic"
+        Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag]).feed
+      else
+        Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+          .default_home_feed(user_signed_in: user_signed_in?)
+      end
+    end
+
+    def timeframe_feed
+      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+      feed.top_articles_by_timeframe(timeframe: params[:timeframe])
+    end
+
+    def latest_feed
+      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
+      feed.latest_feed
+    end
+
+    def optimized_signed_in_feed
+      feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
       test_variant = field_test(:user_home_feed, participant: current_user)
       Honeycomb.add_field("field_test_user_home_feed", test_variant) # Monitoring different variants
-
       if VARIANTS[test_variant].nil? || test_variant == "base"
         feed.default_home_feed(user_signed_in: true)
       else

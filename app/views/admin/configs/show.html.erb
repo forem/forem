@@ -916,7 +916,6 @@
               </div>
             </div>
           </div>
-
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -953,6 +952,14 @@
                                  value: SiteConfig.feed_style,
                                  placeholder: Constants::SiteConfig::DETAILS[:feed_style][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:feed_style][:description] %></div>
+              </div>
+              <div class="form-group">
+                <%= f.label :feed_strategy %>
+                <%= f.text_field :feed_strategy,
+                                 class: "form-control",
+                                 value: SiteConfig.feed_strategy,
+                                 placeholder: Constants::SiteConfig::DETAILS[:feed_strategy][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:feed_strategy][:description] %></div>
               </div>
               <div class="form-group">
                 <%= f.label :default_font %>
