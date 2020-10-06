@@ -90,10 +90,10 @@ class Article < ApplicationRecord
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
-  before_save :create_conditional_autovomits
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
+  after_save :create_conditional_autovomits
   after_save :bust_cache, :detect_human_language
   after_save :notify_slack_channel_about_publication
 
@@ -681,7 +681,6 @@ class Article < ApplicationRecord
   def create_conditional_autovomits
     return unless SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
 
-    self.score = -25
     Reaction.create(
       user_id: SiteConfig.mascot_user_id,
       reactable_id: id,
