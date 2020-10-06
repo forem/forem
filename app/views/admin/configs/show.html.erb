@@ -855,7 +855,7 @@
               <%= admin_config_label :spam_trigger_terms %>
               <%= f.text_field :spam_trigger_terms,
                                class: "form-control",
-                               value: SiteConfig.spam_trigger_terms.to_s,
+                               value: SiteConfig.spam_trigger_terms.join(","),
                                placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
               <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %></div>
             </div>
