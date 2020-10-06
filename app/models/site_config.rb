@@ -42,7 +42,6 @@ class SiteConfig < RailsSettings::Base
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
-  field :community_action, type: :string
   field :tagline, type: :string
   field :community_copyright_start_year, type: :integer,
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||

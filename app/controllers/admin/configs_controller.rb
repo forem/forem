@@ -141,7 +141,6 @@ module Admin
         community_name
         community_description
         community_member_label
-        community_action
         community_copyright_start_year
         staff_user_id
         tagline
