@@ -32,7 +32,7 @@
   flex: 1 0 auto;
   padding: var(--su-4);
   width: 100%;
-  max-height: calc(100vh - 70px);
+  max-height: calc(100vh - 102px);
   overflow: auto;
 
   @media screen and (min-width: $breakpoint-s) {
@@ -246,7 +246,7 @@
 }
 // modal overflow scrolling
 .onboarding-modal-scroll-container {
-  height: calc(100vh - 289px);
+  height: calc(100vh - 332px);
   overflow-y: scroll;
   border-bottom: 1px solid var(--base-20);
 
