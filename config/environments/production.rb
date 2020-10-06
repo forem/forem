@@ -74,8 +74,8 @@ Rails.application.configure do
   # DEV uses the RedisCloud Heroku Add-On which comes with the predefined env variable REDISCLOUD_URL
   redis_url = ENV["REDISCLOUD_URL"]
   redis_url ||= ENV["REDIS_URL"]
-  DEFAULT_EXPIRATION = 24.hours.to_i.freeze
-  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: DEFAULT_EXPIRATION }
+  default_expiration = 24.hours.to_i
+  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: default_expiration }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque

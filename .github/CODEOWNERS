@@ -3,20 +3,11 @@
 # for further details
 
 /*.md                                               @forem/oss
-/app/assets/stylesheets/admin/                      @forem/snackcase
 /app/controllers/articles_controller.rb             @forem/hells-bells
-/app/controllers/admin/                             @forem/snackcase
-/app/services/notifications/                        @forem/delightful
-/app/controllers/notifications/                     @forem/delightful
-/app/workers/notifications/                         @forem/delightful
-/app/controllers/admin/broadcasts_controller.rb     @forem/delightful
 /app/controllers/async_info_controller.rb           @forem/sre
 /app/controllers/stories_controller.rb              @forem/hells-bells
 /app/services/search/                               @forem/sre
 /app/views/articles/                                @forem/hells-bells
-/app/views/admin/                                   @forem/snackcase
-/app/views/moderation/                              @forem/snackcase
-/app/views/notifications/                           @forem/delightful
 /app/views/stories/                                 @forem/hells-bells
 /app/workers/                                       @forem/sre
 /config/                                            @forem/sre
@@ -25,9 +16,7 @@
 /lib/data_update_scripts/                           @forem/sre
 /lib/sidekiq/                                       @forem/sre
 /spec/rails_helper.rb                               @forem/sre
-/spec/requests/admin/                               @forem/snackcase
 /spec/support/                                      @forem/sre
-/spec/system/admin/                                 @forem/snackcase
 Gemfile                                             @forem/sre    @forem/oss
 Gemfile.lock                                        @forem/sre    @forem/oss
 package.json                                        @forem/oss    @nickytonline

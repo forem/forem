@@ -79,11 +79,19 @@ class User < ApplicationRecord
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
   has_many :badge_achievements, dependent: :destroy
+  has_many :badge_achievements_rewarded, class_name: "BadgeAchievement", foreign_key: :rewarder_id,
+                                         inverse_of: :rewarder, dependent: :nullify
   has_many :badges, through: :badge_achievements
+  has_many :banished_users, class_name: "BanishedUser", foreign_key: :banished_by_id,
+                            inverse_of: :banished_by, dependent: :nullify
   has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id,
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
+  has_many :buffer_updates_approved, class_name: "BufferUpdate", foreign_key: :approver_user_id,
+                                     inverse_of: :approver_user, dependent: :nullify
+  has_many :buffer_updates_composed, class_name: "BufferUpdate", foreign_key: :composer_user_id,
+                                     inverse_of: :composer_user, dependent: :nullify
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :collections, dependent: :destroy
@@ -137,23 +145,43 @@ class User < ApplicationRecord
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
          :recoverable, :lockable
 
+  validates :articles_count, presence: true
+  validates :badge_achievements_count, presence: true
+  validates :blocked_by_count, presence: true
+  validates :blocking_others_count, presence: true
+  validates :comments_count, presence: true
   validates :config_font, inclusion: { in: FONTS + ["default".freeze], message: MESSAGES[:invalid_config_font] }
+  validates :config_font, presence: true
   validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }
+  validates :config_navbar, presence: true
   validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
+  validates :config_theme, presence: true
+  validates :credits_count, presence: true
   validates :currently_streaming_on, inclusion: { in: STREAMING_PLATFORMS }, allow_nil: true
   validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
+  validates :email_digest_periodic, inclusion: { in: [true, false] }
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :feed_referential_link, inclusion: { in: [true, false] }
   validates :feed_url, length: { maximum: 500 }, allow_nil: true
+  validates :following_orgs_count, presence: true
+  validates :following_tags_count, presence: true
+  validates :following_users_count, presence: true
   validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
   validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
-  validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
+  validates :rating_votes_count, presence: true
+  validates :reactions_count, presence: true
+  validates :sign_in_count, presence: true
+  validates :spent_credits_count, presence: true
+  validates :subscribed_to_user_subscriptions_count, presence: true
+  validates :unspent_credits_count, presence: true
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
+  validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
   validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
+  validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -550,9 +578,9 @@ class User < ApplicationRecord
   end
 
   def set_config_input
-    self.config_theme = config_theme.tr(" ", "_")
-    self.config_font = config_font.tr(" ", "_")
-    self.config_navbar = config_navbar.tr(" ", "_")
+    self.config_theme = config_theme&.tr(" ", "_")
+    self.config_font = config_font&.tr(" ", "_")
+    self.config_navbar = config_navbar&.tr(" ", "_")
   end
 
   def check_for_username_change

@@ -38,7 +38,7 @@ RSpec.describe Admin::ModeratorsQuery, type: :query do
     context "when state does not exist" do
       let(:options) { { state: "non_existent_role" } }
 
-      it { within_block_is_expected.to raise_error(ActiveRecord::RecordNotFound) }
+      it { is_expected.to match_array([]) }
     end
   end
 end

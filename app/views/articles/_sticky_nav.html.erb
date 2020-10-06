@@ -1,12 +1,12 @@
 <% @actor = @article.organization || @article.user %>
-<div class="crayons-article-sticky grid gap-4 break-word" id="article-show-primary-sticky-nav">
+<div class="crayons-article-sticky grid gap-4 break-word print-hidden" id="article-show-primary-sticky-nav">
   <div class="crayons-card crayons-card--secondary branded-7 p-4 pt-0 hidden l:grid gap-4" style="border-top-color: <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %>;">
     <div class="-mt-4">
       <a href="<%= @actor.path %>" class="flex">
         <span class="<% if @actor.class.name == "User" %>crayons-avatar crayons-avatar--xl<% elsif @actor.class.name == "Organization" %>crayons-logo crayons-logo--xl<% end %>  mr-2 shrink-0">
           <img src="<%= Images::Profile.call(@actor.profile_image_url, length: 90) %>" class="<% if @actor.class.name == "User" %>crayons-avatar__image<% elsif @actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="<%= @actor.name %> profile image">
         </span>
-        <span class="crayons-link fs-l fw-bold mt-5"><%= @actor.name %></span>
+        <span class="crayons-link crayons-subtitle-2 mt-5"><%= @actor.name %></span>
       </a>
     </div>
     <% if @actor.tag_line.present? %>
@@ -43,7 +43,7 @@
     <% if @user_stickies.present? %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
-          <h3 class="crayons-card__header__headline">
+          <h3 class="crayons-subtitle-2">
             More from <a href="<%= @actor.path %>"><%= @actor.name %></a>
           </h3>
         </header>
@@ -63,7 +63,7 @@
     <% elsif @sticky_articles.present? %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
-          <h3 class="crayons-card__header__headline">
+          <h3 class="crayons-subtitle-2">
             Trending on <a href="<%= app_url %>"><%= community_name %></a>
             <%= inline_svg_tag("twemoji/fire.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Hot") %>
           </h3>

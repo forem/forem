@@ -276,7 +276,7 @@ class ChatChannelMembershipsController < ApplicationController
     temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
     message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
                              "chat_action" => action)
-    pusher_message_created(false, message, temp_message_id)
+    pusher_message_created(false, message, temp_message_id) unless message.left_channel?
   end
 
   def user_not_authorized

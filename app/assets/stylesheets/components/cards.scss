@@ -1,7 +1,5 @@
 @import '../config/import';
 
-$card-divider: 1px solid var(--body-bg);
-
 .crayons-card {
   border-radius: var(--radius);
   background: var(--card-bg);
@@ -16,55 +14,13 @@ $card-divider: 1px solid var(--body-bg);
 
   &__header {
     padding: var(--su-3) var(--su-4);
-    border-bottom: $card-divider;
+    border-bottom: 1px solid var(--body-bg);
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    &__headline {
-      font-size: var(--fs-l);
-      font-weight: var(--fw-bold);
-      color: var(--base-100);
-
-      a {
-        color: inherit;
-        &:hover {
-          color: var(--link-color-hover);
-        }
-      }
-    }
-  }
-
-  &__subheader {
-    padding: var(--su-2) 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    &__title {
-      color: var(--base-80);
-      font-weight: var(--fw-bold);
-    }
-  }
-
-  &__title {
-    color: var(--card-headline);
-    font-weight: var(--fw-bold);
   }
 
   &__body {
     padding: var(--su-4);
-  }
-
-  &__inner-section {
-    margin-bottom: var(--su-4);
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-
-    .crayons-card__section-header {
-      padding-top: 0;
-    }
   }
 }
