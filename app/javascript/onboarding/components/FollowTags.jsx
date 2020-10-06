@@ -138,6 +138,7 @@ class FollowTags extends Component {
                       #{tag.name}
                       <button
                         type="button"
+                        aria-pressed={selectedTags.includes(tag)}
                         onClick={() => this.handleClick(tag)}
                         className={`onboarding-tags__button ${
                           selectedTags.includes(tag) &&
@@ -151,6 +152,7 @@ class FollowTags extends Component {
                             ? tag.bg_color_hex
                             : tag.text_color_hex,
                         }}
+                        aria-label={tag.name}
                       >
                         {selectedTags.includes(tag) ? (
                           <span>
