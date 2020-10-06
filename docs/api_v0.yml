@@ -840,7 +840,7 @@ components:
               type: string
               enum: [bump, publish, unpublish]
 
-    Readinglist:
+    ReadingList:
       type: object
       required:
         - type_of
@@ -1656,7 +1656,7 @@ tags:
   - name: podcast-episodes
     description: Podcast episodes
   - name: readinglist
-    description: User readinglist
+    description: User's reading list
   - name: tags
     description: Tags for articles
   - name: users
@@ -2834,19 +2834,15 @@ paths:
   /readinglist:
     get:
       operationId: getReadinglist
-      summary: User's readinglist
+      summary: User's reading list
       description: |
-        This endpoint allows the client to retrieve a list of the reactions with the type readinglist along with the related article for the authenticated user.
-
-        "Articles" are all the posts that users create on DEV that typically
-        show up in the feed. They can be a blog post, a discussion question,
-        a help thread etc. but is referred to as article within the code.
+        This endpoint allows the client to retrieve a list of readinglist reactions along with the related article for the authenticated user.
 
         Reading list will be in reverse chronological order base
-        on the creation if the reaction.
+        on the creation of the reaction.
 
-        It will return the reading list with his article with pagination.
-        By default a page will contain `30` articles.
+        It will return paginated reading list items along with the articles
+        they refer to. By default a page will contain `30` items
       tags:
         - readinglist
       parameters:
@@ -2854,13 +2850,13 @@ paths:
         - $ref: '#/components/parameters/perPageParam30to100'
       responses:
         "200":
-          description: The readinglist with a overwiew of the article
+          description: The reading list with a overwiew of the article
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Readinglist"
+                  $ref: "#/components/schemas/ReadingList"
         "401":
           description: Unauthorized
           content:
