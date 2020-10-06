@@ -679,7 +679,7 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
-    return unless SiteConfig.spam_trigger_terms.any? { |term| title.downcase.include?(term.downcase) }
+    return unless SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
 
     self.score = -25
     Reaction.create(

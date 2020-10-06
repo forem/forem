@@ -247,7 +247,7 @@ class Comment < ApplicationRecord
 
   def create_conditional_autovomits
     return unless
-      SiteConfig.spam_trigger_terms.any? { |term| body_markdown.downcase.include?(term.downcase) } &&
+      SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) } &&
         user.registered_at > 5.days.ago
 
     self.score = -1
