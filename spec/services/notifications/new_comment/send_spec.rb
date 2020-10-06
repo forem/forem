@@ -29,6 +29,7 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
 
   it "does not send if comment has negative score already" do
     prior_notification_size = Notification.all.size
+    child_comment.update_column(:score, -1)
     described_class.call(child_comment)
     expect(Notification.all.size).to eq prior_notification_size
   end
