@@ -127,8 +127,8 @@ var instantClick
 
       var hashIndex = newUrl.indexOf('#'),
           hashElem = hashIndex > -1 && (
-            document.getElementById(newUrl.substr(hashIndex + 1)) ||
-            document.querySelector('[name='+newUrl.substr(hashIndex + 1))+'].anchor')
+            document.getElementById('[name='+newUrl.substr(hashIndex + 1)+']) ||
+            document.querySelector('[name='+newUrl.substr(hashIndex + 1)+'].anchor')
           ),
           offset = 0,
           samePage = newUrl.indexOf("samepage=true") > -1;
