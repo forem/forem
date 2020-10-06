@@ -95,6 +95,8 @@
 
     @media (min-width: $breakpoint-m) {
       font-weight: var(--fw-bold);
+      align-self: center;
+      justify-self: center;
     }
   }
 
