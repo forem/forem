@@ -3,6 +3,16 @@ import PropTypes from 'prop-types';
 
 const FOCUSED_TAG_EXCLUDE_LIST = ['INPUT', 'TEXTAREA'];
 
+/**
+ * Calls a hook that registers a key event listener to the window
+ *
+ * <KeyEventListener
+ *   keys=['j', 'k']
+ *   onPress={(event) => {
+ *     // navigate
+ *   }}
+ * />
+ */
 export function KeyEventListener({ keys, onPress }) {
   useGlobalKeyEventListener(keys, onPress);
 
