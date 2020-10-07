@@ -1,7 +1,14 @@
-import { registerGlobalListNavigation } from '../utilities/hooks/useGlobalListNavigation';
+import { h, render } from 'preact';
+import { ListNavigation } from '../shared/components/listNavigation';
 
-registerGlobalListNavigation(
-  '.crayons-story',
-  'a[id^=article-link-]',
-  'div.paged-stories,div.substories',
-);
+document.addEventListener('DOMContentLoaded', () => {
+  const root = document.querySelector('#articles-list');
+  render(
+    <ListNavigation
+      itemContainerSelector=".crayons-story"
+      focusableSelector="a[id^=article-link-]"
+      waterfallItemContainerSelector="div.paged-stories,div.substories"
+    />,
+    root,
+  );
+});

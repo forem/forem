@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import { useGlobalListNavigation } from '../utilities/hooks/useGlobalListNavigation';
+import { ListNavigation } from '../shared/components/listNavigation.jsx';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
@@ -84,12 +84,6 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     return episodes;
   }
 
-  useGlobalListNavigation(
-    'article[id=featured-story-marker],article[id^=article-]',
-    'a[id^=article-link-]',
-    'div.paged-stories',
-  );
-
   /**
    * Dispatches a click event to bookmark/unbook,ard an article.
    *
@@ -139,6 +133,11 @@ export const Feed = ({ timeFrame, renderFeed }) => {
 
   return (
     <div id="rendered-article-feed">
+      <ListNavigation
+        itemContainerSelector="article[id=featured-story-marker],article[id^=article-]"
+        focusableSelector="a[id^=article-link-]"
+        waterfallItemContainerSelector="div.paged-stories"
+      />
       {onError ? (
         <div className="crayons-notice crayons-notice--danger">
           There was a problem fetching your feed.

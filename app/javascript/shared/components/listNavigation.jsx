@@ -1,8 +1,6 @@
-import { isInViewport } from '../viewport';
-import {
-  useGlobalKeyEventListener,
-  registerGlobalKeyEventListener,
-} from './useGlobalKeyEventListener';
+import PropTypes from 'prop-types';
+import { isInViewport } from '../../utilities/viewport';
+import { useGlobalKeyEventListener } from './keyEventListener';
 
 const NAVIGATION_UP_KEY = 'k';
 const NAVIGATION_DOWN_KEY = 'j';
@@ -10,6 +8,26 @@ const NAVIGATION_DOWN_KEY = 'j';
 const DIRECTIONS = {
   UP: 'up',
   DOWN: 'down',
+};
+
+export function ListNavigation({
+  itemContainerSelector,
+  focusableSelector,
+  waterfallItemContainerSelector,
+}) {
+  useGlobalListNavigation(
+    itemContainerSelector,
+    focusableSelector,
+    waterfallItemContainerSelector,
+  );
+
+  return null;
+}
+
+ListNavigation.propTypes = {
+  itemContainerSelector: PropTypes.string.isRequired,
+  focusableSelector: PropTypes.string.isRequired,
+  waterfallItemContainerSelector: PropTypes.string,
 };
 
 /**
@@ -62,70 +80,6 @@ export function useGlobalListNavigation(
       waterfallItemContainerSelector,
     );
   });
-}
-
-/**
- * Registers global key event listeners for 'j' and 'k' to navigate up and down in a list of items
- *
- * @example
- * import { registerGlobalListNavigation } from '../utilities/hooks/useGlobalListNavigation';
- *
- * componentDidMount() {
- *   this.globalListNavigation = registerGlobalListNavigation(
- *     'article[id=featured-story-marker],article[id^=article-]', // the container
- *     'a[id^=article-link-]', // what should be focused on
- *     'div.paged-stories', // waterfall container
- *   )
- * }
- *
- * componentDidUnmount() {
- *   document.removeEventListener('keydown', this.globalListNavigation);
- * }
- *
- * Note:
- * To avoid conflicts, only one of these should be called per page.
- *
- * Note on waterfalls:
- * In the next example, the waterfall container would be 'div.paged-stories':
- * <article />
- * <article />
- * <div class="paged-stories">
- *   <!-- level 1 -->
- *   <article />
- *   <article />
- *   <div class="paged-stories">
- *     <!-- level 2 -->
- *     <article />
- *     <article />
- *   </div>
- * </div>
- *
- * @param {string} itemContainerSelector - The selector for the highest level container of an item
- * @param {string} focusableSelector - The selector for the element that should be focused on inside an item
- * @param {string} [waterfallItemContainerSelector = undefined] - The selector for the waterfall item container if the list uses a waterfall structure at any point
- *
- * @returns {function(event)} eventListener The registered event listener
- */
-export function registerGlobalListNavigation(
-  itemContainerSelector,
-  focusableSelector,
-  waterfallItemContainerSelector,
-) {
-  const eventListener = function (event) {
-    keyEventListener(
-      event,
-      itemContainerSelector,
-      focusableSelector,
-      waterfallItemContainerSelector,
-    );
-  };
-
-  registerGlobalKeyEventListener(
-    [NAVIGATION_UP_KEY, NAVIGATION_DOWN_KEY],
-    eventListener,
-  );
-
-  return eventListener;
 }
 
 /**

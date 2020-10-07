@@ -1,5 +1,5 @@
 import 'preact/devtools';
-import { Component, h } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import {
   getInitialSearchTerm,
@@ -7,7 +7,7 @@ import {
   preloadSearchResults,
   displaySearchResults,
 } from '../utilities/search';
-import { registerGlobalKeyEventListener } from '../utilities/hooks/useGlobalKeyEventListener';
+import { KeyEventListener } from '../shared/components/keyEventListener';
 import { SearchForm } from './SearchForm';
 
 const GLOBAL_MINIMIZE_KEY = '0';
@@ -50,27 +50,6 @@ export class Search extends Component {
   }
 
   componentDidMount() {
-    const { searchBoxId } = this.props;
-    const searchBox = document.getElementById(searchBoxId);
-
-    this.globalKeyEventListener = registerGlobalKeyEventListener(
-      [GLOBAL_SEARCH_KEY, GLOBAL_MINIMIZE_KEY],
-      (event) => {
-        if (event.key === GLOBAL_SEARCH_KEY) {
-          event.preventDefault();
-          document.body.classList.remove('zen-mode');
-          searchBox.focus();
-          searchBox.select();
-        } else if (
-          event.key === GLOBAL_MINIMIZE_KEY &&
-          !this.hasKeyModifiers(event)
-        ) {
-          event.preventDefault();
-          document.body.classList.toggle('zen-mode');
-        }
-      },
-    );
-
     InstantClick.on('change', this.enableSearchPageListener);
   }
 
@@ -103,24 +82,47 @@ export class Search extends Component {
   }
 
   componentDidUnmount() {
-    document.removeEventListener('keydown', this.globalKeyEventListener);
     InstantClick.off('change', this.enableSearchPageListener);
   }
 
+  onKeyPress = (event) => {
+    if (event.key === GLOBAL_SEARCH_KEY) {
+      event.preventDefault();
+      document.body.classList.remove('zen-mode');
+
+      const { searchBoxId } = this.props;
+      const searchBox = document.getElementById(searchBoxId);
+      searchBox.focus();
+      searchBox.select();
+    } else if (
+      event.key === GLOBAL_MINIMIZE_KEY &&
+      !this.hasKeyModifiers(event)
+    ) {
+      event.preventDefault();
+      document.body.classList.toggle('zen-mode');
+    }
+  };
+
   render({ searchBoxId }, { searchTerm = '' }) {
     return (
-      <SearchForm
-        searchTerm={searchTerm}
-        onSearch={(event) => {
-          const {
-            key,
-            target: { value },
-          } = event;
-          this.search(key, value);
-        }}
-        onSubmitSearch={this.submit}
-        searchBoxId={searchBoxId}
-      />
+      <Fragment>
+        <KeyEventListener
+          keys={[GLOBAL_SEARCH_KEY, GLOBAL_MINIMIZE_KEY]}
+          onPress={this.onKeyPress}
+        />
+        <SearchForm
+          searchTerm={searchTerm}
+          onSearch={(event) => {
+            const {
+              key,
+              target: { value },
+            } = event;
+            this.search(key, value);
+          }}
+          onSubmitSearch={this.submit}
+          searchBoxId={searchBoxId}
+        />
+      </Fragment>
     );
   }
 }
