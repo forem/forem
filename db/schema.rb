@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_05_181510) do
+ActiveRecord::Schema.define(version: 2020_10_07_091041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -676,9 +676,10 @@ ActiveRecord::Schema.define(version: 2020_10_05_181510) do
     t.boolean "display_only_when_signed_in", default: false
     t.string "icon", null: false
     t.string "name", null: false
-    t.integer "order"
+    t.integer "position"
     t.datetime "updated_at", precision: 6, null: false
     t.string "url", null: false
+    t.index ["url", "name"], name: "index_navigation_links_on_url_and_name", unique: true
   end
 
   create_table "notes", force: :cascade do |t|
