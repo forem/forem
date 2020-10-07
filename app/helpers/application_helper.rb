@@ -216,6 +216,12 @@ module ApplicationHelper
     SiteConfig.community_member_label.pluralize
   end
 
+  def meta_keywords_default
+    return if SiteConfig.meta_keywords[:default].blank?
+
+    tag.meta name: "keywords", content: SiteConfig.meta_keywords[:default]
+  end
+
   def meta_keywords_tag(tag_name)
     return if SiteConfig.meta_keywords[:tag].blank?
 
