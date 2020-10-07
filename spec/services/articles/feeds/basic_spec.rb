@@ -11,8 +11,8 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
 
   it "returns articles in approximately published order" do
     result = feed.feed
-    expect(result.first).to eq article
-    expect(result.second).to eq hot_story
+    expect(result.first).to eq hot_story
+    expect(result.second).to eq article
     expect(result.third).to eq old_story
     expect(result.last).to eq month_old_story
   end
