@@ -55,4 +55,8 @@ class Profile < ApplicationRecord
   def custom_profile_attributes
     custom_profile_fields.pluck(:attribute_name)
   end
+
+  def clear!
+    update(data: {})
+  end
 end
