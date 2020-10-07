@@ -12,15 +12,15 @@ module DataUpdateScripts
 
     def run
       NavigationLink.where(name: "Reading List", url: "#{BASE_URL}/readinglist", icon: READING_ICON,
-                           display_only_when_signed_in: true, order: 0).first_or_create
+                           display_only_when_signed_in: true, position: 0).first_or_create
       NavigationLink.where(name: "Code of Conduct", url: "#{BASE_URL}/code-of-conduct", icon: THUMB_UP_ICON,
-                           display_only_when_signed_in: false, order: 1).first_or_create
+                           display_only_when_signed_in: false, position: 1).first_or_create
       NavigationLink.where(name: "Privacy Policy", url: "#{BASE_URL}/privacy", icon: SMART_ICON,
-                           display_only_when_signed_in: false, order: 2).first_or_create
+                           display_only_when_signed_in: false, position: 2).first_or_create
       NavigationLink.where(name: "Terms of use", url: "#{BASE_URL}/terms", icon: LOOK_ICON,
-                           display_only_when_signed_in: false, order: 3).first_or_create
+                           display_only_when_signed_in: false, position: 3).first_or_create
       NavigationLink.where(name: "Contact", url: "#{BASE_URL}/contact", icon: CONTACT_ICON,
-                           display_only_when_signed_in: false, order: 4).first_or_create
+                           display_only_when_signed_in: false, position: 4).first_or_create
     end
   end
 end
