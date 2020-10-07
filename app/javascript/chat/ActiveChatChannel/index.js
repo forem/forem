@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { useContext } from 'preact/hooks';
 import { processImageUpload } from '../../article-form/actions';
 import Message from '../message';
 import { VideoContent } from '../videoContent';
@@ -7,13 +8,13 @@ import Compose from '../compose';
 import Content from '../content';
 import Alert from '../alert';
 import { addSnackbarItem } from '../../Snackbar';
+import { store } from '../components/ConnectStateProvider';
 import ChatMessages from './ChatMessages';
 import DeleteModal from './Modal/DeleteModal';
 import ActiveChannelMembershipList from './ActiveChannelMemberList';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 
 const ActiveChatChannel = ({
-  state,
   channelHeader,
   addUserName,
   handleMessageScroll,
@@ -29,9 +30,12 @@ const ActiveChatChannel = ({
   handleMention,
   handleKeyUp,
   handleKeyDownEdit,
-  handleCloseDeleteModal,
+  // handleCloseDeleteModal,
   handleMessageDelete,
 }) => {
+  const { state } = useContext(store);
+  console.log(state);
+
   const handleDragOver = (event) => {
     event.preventDefault();
     event.currentTarget.classList.add('opacity-25');
@@ -69,6 +73,21 @@ const ActiveChatChannel = ({
   const handleImageFailure = (e) => {
     addSnackbarItem({ message: e.message, addCloseButton: true });
   };
+
+  const handleCloseDeleteModal = () => {
+    // dispatch({
+    //   type: 'closeDeleteModal',
+    //   payload: {
+    //     showDeleteModal: false
+    //   }
+    // });
+    // this.setState({ showDeleteModal: false, messageDeleteId: null });
+  };
+  // dispatch({
+  //   type: "add_message",
+  // })
+  // this.setState({ showDeleteModal: false, messageDeleteId: null });
+  // }
 
   return (
     <div className="activechatchannel">
@@ -164,7 +183,6 @@ const ActiveChatChannel = ({
 
 Message.propTypes = {
   channelHeader: PropTypes.element,
-  state: PropTypes.object,
   addUserName: PropTypes.func,
   handleMessageScroll: PropTypes.func,
   triggerDeleteMessage: PropTypes.func,
@@ -179,7 +197,7 @@ Message.propTypes = {
   handleEditMessageClose: PropTypes.func,
   triggerEditMessage: PropTypes.func,
   handleMessageDelete: PropTypes.func,
-  handleCloseDeleteModal: PropTypes.func,
+  // handleCloseDeleteModal: PropTypes.func,
 };
 
 export default ActiveChatChannel;

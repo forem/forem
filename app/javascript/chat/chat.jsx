@@ -10,6 +10,8 @@ import { setupPusher } from '../utilities/connect';
 import debounceAction from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
 import { processImageUpload } from '../article-form/actions';
+import { ConnectStateProvider } from './components/ConnectStateProvider';
+import { connectReducer } from './connectReducer';
 import {
   conductModeration,
   getAllMessages,
@@ -1718,42 +1720,46 @@ export default class Chat extends Component {
       fullscreenMode = 'chat--video-visible-full';
     }
     return (
-      <div
-        data-testid="chat"
-        className={`chat chat--expanded
-         chat--${
-           state.videoPath ? 'video-visible' : 'video-not-visible'
-         } chat--${
-          state.activeContent[state.activeChannelId]
-            ? 'content-visible'
-            : 'content-not-visible'
-        } ${fullscreenMode}`}
-        data-no-instant
-        aria-expanded={state.expanded}
+      <ConnectStateProvider
+        initialState={state}
+        // reducer={connectReducer}
       >
-        {this.renderChatChannels()}
-        <div data-testid="active-chat" className="chat__activechat">
-          <ActiveChatChannel
-            state={state}
-            channelHeader={channelHeader}
-            addUserName={this.addUserName}
-            handleMessageScroll={this.handleMessageScroll}
-            triggerDeleteMessage={this.triggerDeleteMessage}
-            jumpBacktoBottom={this.jumpBacktoBottom}
-            onTriggerVideoContent={this.onTriggerVideoContent}
-            handleSubmitOnClick={this.handleSubmitOnClick}
-            handleKeyDown={this.handleKeyDown}
-            handleSubmitOnClickEdit={this.handleSubmitOnClickEdit}
-            handleMention={this.handleMention}
-            handleKeyUp={this.handleKeyUp}
-            handleKeyDownEdit={this.handleKeyDownEdit}
-            handleEditMessageClose={this.handleEditMessageClose}
-            triggerEditMessage={this.triggerEditMessage}
-            handleCloseDeleteModal={this.handleCloseDeleteModal}
-            handleMessageDelete={this.handleMessageDelete}
-          />
+        <div
+          data-testid="chat"
+          className={`chat chat--expanded
+          chat--${
+            state.videoPath ? 'video-visible' : 'video-not-visible'
+          } chat--${
+            state.activeContent[state.activeChannelId]
+              ? 'content-visible'
+              : 'content-not-visible'
+          } ${fullscreenMode}`}
+          data-no-instant
+          aria-expanded={state.expanded}
+        >
+          {this.renderChatChannels()}
+          <div data-testid="active-chat" className="chat__activechat">
+            <ActiveChatChannel
+              channelHeader={channelHeader}
+              addUserName={this.addUserName}
+              handleMessageScroll={this.handleMessageScroll}
+              triggerDeleteMessage={this.triggerDeleteMessage}
+              jumpBacktoBottom={this.jumpBacktoBottom}
+              onTriggerVideoContent={this.onTriggerVideoContent}
+              handleSubmitOnClick={this.handleSubmitOnClick}
+              handleKeyDown={this.handleKeyDown}
+              handleSubmitOnClickEdit={this.handleSubmitOnClickEdit}
+              handleMention={this.handleMention}
+              handleKeyUp={this.handleKeyUp}
+              handleKeyDownEdit={this.handleKeyDownEdit}
+              handleEditMessageClose={this.handleEditMessageClose}
+              triggerEditMessage={this.triggerEditMessage}
+              // handleCloseDeleteModal={this.handleCloseDeleteModal}
+              handleMessageDelete={this.handleMessageDelete}
+            />
+          </div>
         </div>
-      </div>
+      </ConnectStateProvider>
     );
   }
 }
