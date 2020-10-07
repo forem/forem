@@ -160,12 +160,10 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     context "with tags param" do
-      it "returns articles that contain all requested tags" do
+      it "returns articles with any of the specified tags" do
         create(:article, published: true)
-        get api_articles_path(tags: "javascript, css")
-        expect(response.parsed_body.size).to eq(1)
         get api_articles_path(tags: "javascript, css, not-existing-tag")
-        expect(response.parsed_body.size).to eq(0)
+        expect(response.parsed_body.size).to eq(1)
       end
     end
 
@@ -190,7 +188,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     context "when tags and tags_exclude contain the same tag" do
-      it "returns nothing" do
+      it "returns empty set" do
         create(:article, published: true, tags: "java")
         get api_articles_path(tags: "java", tags_exclude: "java")
         expect(response.parsed_body.size).to eq(0)

@@ -1661,7 +1661,7 @@ paths:
         - name: tags
           in: query
           description: |
-            Using this parameter will retrieve articles that contain _all_ comma separated tags.
+            Using this parameter will retrieve articles with any of the comma-separated tags.
 
             Articles will be ordered by descending popularity.
           schema:
@@ -1670,7 +1670,7 @@ paths:
         - name: tags_exclude
           in: query
           description: |
-            Using this parameter will retrieve articles that do _not_ contain _any_ of comma separated tags.
+            Using this parameter will retrieve articles that do _not_ contain _any_ of comma-separated tags.
 
             Articles will be ordered by descending popularity.
           schema:
