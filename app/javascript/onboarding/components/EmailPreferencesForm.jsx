@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import Focustrap from '../../shared/components/focustrap';
+import Focustrap from '../../shared/components/focusTrap';
 import { getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
 
