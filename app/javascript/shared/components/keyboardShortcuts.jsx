@@ -5,29 +5,24 @@ import { useEffect } from 'preact/hooks';
 const KeyboardShortcuts = ({ shortcuts, ...props }) => {
   useEffect(() => {
     const checkShortcut = (e, keys) => {
-      if (keys.length <= 0) return;
-      let shortcut = shortcuts;
-      for (let key of keys) {
-        if (!shortcut[key]) return;
-        shortcut = shortcut[key];
-      }
-      if (shortcut[e.code]) shortcut[e.code](e);
+      if (!keys) return;
+      const shortcut = shortcuts[`${keys}${e.code}`];
+      if (shortcut) shortcut(e);
     };
 
     const keyEvent = (e) => {
-      const modifierKeys = [];
-      if (e.ctrlKey || e.metaKey) modifierKeys.push('ctrl');
-      if (e.altKey) modifierKeys.push('alt');
-      if (e.shiftKey) modifierKeys.push('shift');
-      checkShortcut(e, modifierKeys);
-    }
+      checkShortcut(
+        e,
+        `${(e.ctrlKey || e.metaKey) ? 'ctrl+' : ''}${e.altKey ? 'alt+' : ''}${e.shiftKey ? 'shift+' : ''}`
+      );
+    };
 
     window.addEventListener('keydown', keyEvent);
 
     return () => {
       window.removeEventListener('keydown', keyEvent);
     }
-  }, [shortcuts])
+  }, [shortcuts]);
 
   return null;
 }
