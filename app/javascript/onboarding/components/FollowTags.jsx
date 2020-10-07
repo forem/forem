@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
+import Focustrap from '../../shared/components/focustrap';
 import { getContentOfToken } from '../utilities';
 import Navigation from './Navigation';
 
@@ -100,95 +101,97 @@ class FollowTags extends Component {
     const canSkip = selectedTags.length === 0;
 
     return (
-      <div
-        data-testid="onboarding-follow-tags"
-        className="onboarding-main crayons-modal"
-      >
+      <Focustrap>
         <div
-          className="crayons-modal__box overflow-auto"
-          role="dialog"
-          aria-labelledby="title"
-          aria-describedby="subtitle"
+          data-testid="onboarding-follow-tags"
+          className="onboarding-main crayons-modal"
         >
-          <Navigation
-            prev={prev}
-            next={this.handleComplete}
-            canSkip={canSkip}
-            slidesCount={slidesCount}
-            currentSlideIndex={currentSlideIndex}
-          />
-          <div className="onboarding-content toggle-bottom">
-            <header className="onboarding-content-header">
-              <h1 id="title" className="title">
-                What are you interested in?
-              </h1>
-              <h2 id="subtitle" className="subtitle">
-                Follow tags to customize your feed
-              </h2>
-            </header>
-            <div className="onboarding-modal-scroll-container">
-              <ul data-testid="onboarding-tags" className="onboarding-tags">
-                {allTags.map((tag) => (
-                  <li
-                    className={`onboarding-tags__item ${
-                      selectedTags.includes(tag) &&
-                      'onboarding-tags__item--selected'
-                    }`}
-                    style={{
-                      boxShadow: selectedTags.includes(tag)
-                        ? `inset 0 0 0 100px ${tag.bg_color_hex}`
-                        : `inset 0 0 0 2px ${tag.bg_color_hex}`,
-                      color: selectedTags.includes(tag)
-                        ? tag.text_color_hex
-                        : '',
-                    }}
-                  >
-                    <div className="onboarding-tags__item__inner">
-                      #{tag.name}
-                      <button
-                        type="button"
-                        aria-pressed={selectedTags.includes(tag)}
-                        onClick={() => this.handleClick(tag)}
-                        className={`onboarding-tags__button ${
-                          selectedTags.includes(tag) &&
-                          'onboarding-tags__button--selected'
-                        }`}
-                        style={{
-                          backgroundColor: selectedTags.includes(tag)
-                            ? tag.text_color_hex
-                            : tag.bg_color_hex,
-                          color: selectedTags.includes(tag)
-                            ? tag.bg_color_hex
-                            : tag.text_color_hex,
-                        }}
-                        aria-label={tag.name}
-                      >
-                        {selectedTags.includes(tag) ? (
-                          <span>
-                            <span className="onboarding-tags__button-default">
-                              ✓ Following
+          <div
+            className="crayons-modal__box overflow-auto"
+            role="dialog"
+            aria-labelledby="title"
+            aria-describedby="subtitle"
+          >
+            <Navigation
+              prev={prev}
+              next={this.handleComplete}
+              canSkip={canSkip}
+              slidesCount={slidesCount}
+              currentSlideIndex={currentSlideIndex}
+            />
+            <div className="onboarding-content toggle-bottom">
+              <header className="onboarding-content-header">
+                <h1 id="title" className="title">
+                  What are you interested in?
+                </h1>
+                <h2 id="subtitle" className="subtitle">
+                  Follow tags to customize your feed
+                </h2>
+              </header>
+              <div className="onboarding-modal-scroll-container">
+                <ul data-testid="onboarding-tags" className="onboarding-tags">
+                  {allTags.map((tag) => (
+                    <li
+                      className={`onboarding-tags__item ${
+                        selectedTags.includes(tag) &&
+                        'onboarding-tags__item--selected'
+                      }`}
+                      style={{
+                        boxShadow: selectedTags.includes(tag)
+                          ? `inset 0 0 0 100px ${tag.bg_color_hex}`
+                          : `inset 0 0 0 2px ${tag.bg_color_hex}`,
+                        color: selectedTags.includes(tag)
+                          ? tag.text_color_hex
+                          : '',
+                      }}
+                    >
+                      <div className="onboarding-tags__item__inner">
+                        #{tag.name}
+                        <button
+                          type="button"
+                          aria-pressed={selectedTags.includes(tag)}
+                          onClick={() => this.handleClick(tag)}
+                          className={`onboarding-tags__button ${
+                            selectedTags.includes(tag) &&
+                            'onboarding-tags__button--selected'
+                          }`}
+                          style={{
+                            backgroundColor: selectedTags.includes(tag)
+                              ? tag.text_color_hex
+                              : tag.bg_color_hex,
+                            color: selectedTags.includes(tag)
+                              ? tag.bg_color_hex
+                              : tag.text_color_hex,
+                          }}
+                          aria-label={tag.name}
+                        >
+                          {selectedTags.includes(tag) ? (
+                            <span>
+                              <span className="onboarding-tags__button-default">
+                                ✓ Following
+                              </span>
+                              <span className="onboarding-tags__button-alt">
+                                Unfollow
+                              </span>
                             </span>
-                            <span className="onboarding-tags__button-alt">
-                              Unfollow
-                            </span>
-                          </span>
-                        ) : (
-                          'Follow'
-                        )}
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="onboarding-selection-status">
-              <div className="selection-status-content">
-                {this.renderFollowCount()}
+                          ) : (
+                            'Follow'
+                          )}
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="onboarding-selection-status">
+                <div className="selection-status-content">
+                  {this.renderFollowCount()}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </Focustrap>
     );
   }
 }

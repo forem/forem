@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
+import Focustrap from '../../shared/components/focustrap';
 import { getContentOfToken, userData, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
 
@@ -102,105 +103,107 @@ class IntroSlide extends Component {
     }
 
     return (
-      <div
-        data-testid="onboarding-intro-slide"
-        className="onboarding-main introduction crayons-modal crayons-modal--m"
-      >
+      <Focustrap>
         <div
-          className="crayons-modal__box overflow-auto"
-          role="dialog"
-          aria-labelledby="title"
-          aria-describedby="subtitle"
+          data-testid="onboarding-intro-slide"
+          className="onboarding-main introduction crayons-modal crayons-modal--m"
         >
-          <div className="onboarding-content">
-            <figure>
-              <img
-                src={communityConfig.communityLogo}
-                className="sticker-logo"
-                alt={communityConfig.communityName}
+          <div
+            className="crayons-modal__box overflow-auto"
+            role="dialog"
+            aria-labelledby="title"
+            aria-describedby="subtitle"
+          >
+            <div className="onboarding-content">
+              <figure>
+                <img
+                  src={communityConfig.communityLogo}
+                  className="sticker-logo"
+                  alt={communityConfig.communityName}
+                />
+              </figure>
+              <h1
+                data-testid="onboarding-introduction-title"
+                id="title"
+                className="introduction-title"
+              >
+                {this.user.name}
+                &mdash; welcome to {communityConfig.communityName}!
+              </h1>
+              <h2 id="subtitle" className="introduction-subtitle">
+                {communityConfig.communityDescription}
+              </h2>
+            </div>
+
+            <div className="checkbox-form-wrapper">
+              <form className="checkbox-form">
+                <fieldset>
+                  <ul>
+                    <li className="checkbox-item">
+                      <label
+                        data-testid="checked-code-of-conduct"
+                        htmlFor="checked_code_of_conduct"
+                      >
+                        <input
+                          type="checkbox"
+                          id="checked_code_of_conduct"
+                          name="checked_code_of_conduct"
+                          checked={checked_code_of_conduct}
+                          onChange={this.handleChange}
+                        />
+                        You agree to uphold our{' '}
+                        <a
+                          href="/code-of-conduct"
+                          data-no-instant
+                          className="m-0 mx-1"
+                          onClick={(e) => this.handleShowText(e, 'coc')}
+                        >
+                          Code of Conduct
+                        </a>
+                        .
+                      </label>
+                    </li>
+
+                    <li className="checkbox-item">
+                      <label
+                        data-testid="checked-terms-and-conditions"
+                        htmlFor="checked_terms_and_conditions"
+                      >
+                        <input
+                          type="checkbox"
+                          id="checked_terms_and_conditions"
+                          name="checked_terms_and_conditions"
+                          checked={checked_terms_and_conditions}
+                          onChange={this.handleChange}
+                        />
+                        You agree to our{' '}
+                        <a
+                          href="/terms"
+                          data-no-instant
+                          className="m-0 mx-1"
+                          onClick={(e) => this.handleShowText(e, 'terms')}
+                        >
+                          Terms and Conditions
+                        </a>
+                        .
+                      </label>
+                    </li>
+                  </ul>
+                </fieldset>
+              </form>
+              <Navigation
+                disabled={this.isButtonDisabled()}
+                className="intro-slide"
+                prev={prev}
+                slidesCount={slidesCount}
+                currentSlideIndex={currentSlideIndex}
+                next={this.onSubmit}
+                hidePrev
               />
-            </figure>
-            <h1
-              data-testid="onboarding-introduction-title"
-              id="title"
-              className="introduction-title"
-            >
-              {this.user.name}
-              &mdash; welcome to {communityConfig.communityName}!
-            </h1>
-            <h2 id="subtitle" className="introduction-subtitle">
-              {communityConfig.communityDescription}
-            </h2>
-          </div>
-
-          <div className="checkbox-form-wrapper">
-            <form className="checkbox-form">
-              <fieldset>
-                <ul>
-                  <li className="checkbox-item">
-                    <label
-                      data-testid="checked-code-of-conduct"
-                      htmlFor="checked_code_of_conduct"
-                    >
-                      <input
-                        type="checkbox"
-                        id="checked_code_of_conduct"
-                        name="checked_code_of_conduct"
-                        checked={checked_code_of_conduct}
-                        onChange={this.handleChange}
-                      />
-                      You agree to uphold our{' '}
-                      <a
-                        href="/code-of-conduct"
-                        data-no-instant
-                        className="m-0 mx-1"
-                        onClick={(e) => this.handleShowText(e, 'coc')}
-                      >
-                        Code of Conduct
-                      </a>
-                      .
-                    </label>
-                  </li>
-
-                  <li className="checkbox-item">
-                    <label
-                      data-testid="checked-terms-and-conditions"
-                      htmlFor="checked_terms_and_conditions"
-                    >
-                      <input
-                        type="checkbox"
-                        id="checked_terms_and_conditions"
-                        name="checked_terms_and_conditions"
-                        checked={checked_terms_and_conditions}
-                        onChange={this.handleChange}
-                      />
-                      You agree to our{' '}
-                      <a
-                        href="/terms"
-                        data-no-instant
-                        className="m-0 mx-1"
-                        onClick={(e) => this.handleShowText(e, 'terms')}
-                      >
-                        Terms and Conditions
-                      </a>
-                      .
-                    </label>
-                  </li>
-                </ul>
-              </fieldset>
-            </form>
-            <Navigation
-              disabled={this.isButtonDisabled()}
-              className="intro-slide"
-              prev={prev}
-              slidesCount={slidesCount}
-              currentSlideIndex={currentSlideIndex}
-              next={this.onSubmit}
-              hidePrev
-            />
+            </div>
           </div>
         </div>
-      </div>
+      </Focustrap>
     );
   }
 }

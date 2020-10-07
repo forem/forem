@@ -8092,6 +8092,13 @@ focus-lock@^0.7.0:
   resolved "https://registry.yarnpkg.com/focus-lock/-/focus-lock-0.7.0.tgz#b2bfb0ca7beacc8710a1ff74275fe0dc60a1d88a"
   integrity sha512-LI7v2mH02R55SekHYdv9pRHR9RajVNyIJ2N5IEkWbg7FT5ZmJ9Hw4mWxHeEUcd+dJo0QmzztHvDvWcc7prVFsw==
 
+focus-trap@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.1.2.tgz#32b828f826b5600017ef3f8a9fdd610c83170f89"
+  integrity sha512-AcdhVlgM7oIfNgrK+/DSa2J9Lh6N8+ulWiT57TgcbF7xYXnwYfHolvjzjEbFGNrGvDV/rwohfwP1q13Ce8OBbQ==
+  dependencies:
+    tabbable "^5.1.1"
+
 focus-visible@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/focus-visible/-/focus-visible-5.1.0.tgz#4b9d40143b865f53eafbd93ca66672b3bf9e7b6a"
@@ -16357,6 +16364,11 @@ symbol.prototype.description@^1.0.0:
   dependencies:
     es-abstract "^1.17.0-next.1"
     has-symbols "^1.0.1"
+
+tabbable@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.1.1.tgz#33d6950a615bc78c6eb6828f3953e66544817dc4"
+  integrity sha512-qjkrV7I29Lkg///jPQnq26+26q9wQOKTEcckrwPejTsxxl2zdK60x0XmiEELCEParLhgbVQRflyKkpr+K/SmCQ==
 
 table@^5.2.3:
   version "5.4.6"
