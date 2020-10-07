@@ -7,6 +7,7 @@ RSpec.describe MarkdownFixer, type: :labor do
     <<~HEREDOC
       ---
       title: #{title}
+      published: false
       description: #{description}
       ---
     HEREDOC
@@ -95,6 +96,16 @@ RSpec.describe MarkdownFixer, type: :labor do
       expected_title = "\"hmm\"\n"
       result = described_class.convert_new_lines(front_matter(title: title))
       expect(result).to eq(front_matter(title: expected_title))
+    end
+  end
+
+  describe "::lowercase_published" do
+    it "lowercases the published frontmatter attribute" do
+      cases = %w[Published pubLished PUBLISHED]
+      cases.each do |_word|
+        result = described_class.lowercase_published(front_matter)
+        expect(result.match(/^published: false/).size).to eq 1
+      end
     end
   end
 

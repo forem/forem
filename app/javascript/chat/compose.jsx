@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import Textarea from 'preact-textarea-autosize';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -13,7 +14,16 @@ export default class Chat extends Component {
     markdownEdited: PropTypes.bool.isRequired,
     editMessageMarkdown: PropTypes.string.isRequired,
     handleEditMessageClose: PropTypes.func.isRequired,
+    handleFilePaste: PropTypes.func.isRequired,
   };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      value: null,
+    };
+  }
 
   componentDidUpdate() {
     const { editMessageMarkdown, markdownEdited, startEditing } = this.props;
@@ -30,17 +40,19 @@ export default class Chat extends Component {
       handleEditMessageClose,
       handleMention,
       handleKeyUp,
+      handleFilePaste,
     } = this.props;
 
     return (
       <div className="composer-container__edit">
-        <textarea
-          className="crayons-textfield composer-textarea composer-textarea__edit"
+        <Textarea
+          className="crayons-textfield composer-textarea__edit"
           id="messageform"
           placeholder="Let's connect"
           onKeyDown={handleKeyDownEdit}
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
+          onPaste={handleFilePaste}
           maxLength="1000"
           aria-label="Let's connect"
         />
@@ -74,26 +86,47 @@ export default class Chat extends Component {
       handleKeyDown,
       handleMention,
       handleKeyUp,
+      handleFilePaste,
     } = this.props;
+
+    const handleInput = (e) => {
+      this.setState({
+        value: e.target.value,
+      });
+    };
+
+    const handleOnSubmitAction = (e) => {
+      handleSubmitOnClick(e);
+
+      this.setState({
+        value: '',
+      });
+    };
+
     return (
       <div className="messagecomposer">
-        <textarea
+        <Textarea
           className="crayons-textfield composer-textarea"
           id="messageform"
           placeholder="Write message..."
           onKeyDown={handleKeyDown}
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
+          onPaste={handleFilePaste}
           maxLength="1000"
+          value={this.state.value}
+          onInput={handleInput}
           aria-label="Compose a message"
         />
-        <button
-          type="button"
-          className="crayons-btn composer-submit"
-          onClick={handleSubmitOnClick}
-        >
-          Send
-        </button>
+        <div>
+          <button
+            type="button"
+            className="crayons-btn composer-submit"
+            onClick={handleOnSubmitAction}
+          >
+            Send
+          </button>
+        </div>
       </div>
     );
   };

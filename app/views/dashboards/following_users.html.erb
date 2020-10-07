@@ -4,7 +4,7 @@
     data-params="<%= params.to_json(only: %i[action per_page]) %>"
     data-which="following">
   <header class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0">Dashboard &raquo; Following users</h1>
+    <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Following users</h1>
     <%= render "actions_mobile" %>
   </header>
 
@@ -22,7 +22,7 @@
             <% if user %>
               <div class="crayons-card p-4 m:p-6 flex s:grid single-article break-word content-center" id="follows-<%= follow.id %>">
                 <a href="<%= user.path %>" class="crayons-avatar crayons-avatar--2xl s:mb-2 s:mx-auto">
-                  <img alt="<%= user.username %> profile image" class="crayons-avatar__image" src="<%= ProfileImage.new(user).get(width: 60) %>" />
+                  <img alt="<%= user.username %> profile image" class="crayons-avatar__image" src="<%= Images::Profile.call(user.profile_image_url, length: 60) %>" />
                 </a>
 
                 <div class="pl-4 s:pl-0 self-center">

@@ -29,7 +29,7 @@ describe('<BodyMarkdown />', () => {
     const textArea = getByLabelText('Body Markdown');
 
     expect(textArea.getAttribute('placeholder')).toEqual(
-      '400 characters max, 12 line break max, no images allowed, *markdown is encouraged*',
+      '...',
     );
     expect(textArea.getAttribute('maxLength')).toEqual('400');
     expect(textArea.value).toEqual(defaultValue);

@@ -385,6 +385,11 @@ RSpec.describe "StoriesIndex", type: :request do
         get "/t/#{tag.name}"
         expect(response.body).not_to include('<span class="olderposts-pagenumber">')
       end
+
+      it "sets remember_user_token" do
+        get "/t/#{tag.name}"
+        expect(response.cookies["remember_user_token"]).not_to be nil
+      end
     end
 
     context "without user signed in" do
@@ -446,6 +451,11 @@ RSpec.describe "StoriesIndex", type: :request do
 
         expected_tag = "<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />"
         expect(response.body).to include(expected_tag)
+      end
+
+      it "sets does not set remember_user_token" do
+        get "/t/#{tag.name}"
+        expect(response.cookies["remember_user_token"]).to be nil
       end
     end
   end

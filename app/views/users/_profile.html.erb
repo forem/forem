@@ -2,7 +2,7 @@
 
 <%= render "users/additional_authentication" %>
 
-<% if ApplicationConfig["APP_DOMAIN"] == "dev.to" %>
+<% if SiteConfig.app_domain == "dev.to" %>
   <%# @forem/oss Temporary disabling of overly DEV-specialized link. %>
   <%# We should create a generalized version of the badge page, including a permanent proxied path for the badge image for hotlinking. %>
   <div class="crayons-card mb-6 p-6 grid gap-6">
@@ -42,7 +42,7 @@
 
       <div class="flex items-center">
         <% if @user.profile_image_url.present? %>
-          <span class="crayons-avatar crayons-avatar--xl mr-2"><img alt="<%= @user.username %> profile image" src="<%= ProfileImage.new(@user).get(width: 50) %>" class="crayons-avatar__image" /></span>
+          <span class="crayons-avatar crayons-avatar--xl mr-2"><img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" /></span>
           <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
         <% end %>
       </div>

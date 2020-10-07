@@ -47,6 +47,13 @@ RSpec.describe "/admin/config", type: :request do
         sign_in(admin_plus_config)
       end
 
+      it "deletes release-tied fragment caches" do
+        allow(Rails.cache).to receive(:delete_matched).and_call_original
+        post "/admin/config", params: { site_config: { health_check_token: "token" },
+                                        confirmation: confirmation_message }
+        expect(Rails.cache).to have_received(:delete_matched).with("*-#{ApplicationConfig['RELEASE_FOOTPRINT']}")
+      end
+
       describe "API tokens" do
         it "updates the health_check_token" do
           token = rand(20).to_s
@@ -94,13 +101,6 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { community_member_label: name },
                                           confirmation: confirmation_message }
           expect(SiteConfig.community_member_label).to eq(name)
-        end
-
-        it "updates the community_action" do
-          action = "reading"
-          post "/admin/config", params: { site_config: { community_member_label: action },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.community_member_label).to eq(action)
         end
 
         it "updates the community_copyright_start_year" do
@@ -364,6 +364,12 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Newsletter" do
+        it "updates mailchimp_api_key" do
+          post "/admin/config", params: { site_config: { mailchimp_api_key: "abc" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.mailchimp_api_key).to eq("abc")
+        end
+
         it "updates mailchimp_newsletter_id" do
           post "/admin/config", params: { site_config: { mailchimp_newsletter_id: "abc" },
                                           confirmation: confirmation_message }
@@ -440,7 +446,7 @@ RSpec.describe "/admin/config", type: :request do
         end
       end
 
-      describe "Rate Limits" do
+      describe "Rate Limits and spam" do
         it "updates rate_limit_follow_count_daily" do
           expect do
             post "/admin/config", params: { site_config: { rate_limit_follow_count_daily: 3 },
@@ -460,6 +466,13 @@ RSpec.describe "/admin/config", type: :request do
             post "/admin/config", params: { site_config: { rate_limit_published_article_creation: 3 },
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
+        end
+
+        it "updates rate_limit_published_article_antispam_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_published_article_antispam_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_published_article_antispam_creation).from(1).to(3)
         end
 
         it "updates rate_limit_organization_creation" do
@@ -531,6 +544,13 @@ RSpec.describe "/admin/config", type: :request do
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(2).to(3)
         end
+
+        it "updates spam_trigger_terms" do
+          spam_trigger_terms = "hey, pokemon go hack"
+          post "/admin/config", params: { site_config: { spam_trigger_terms: spam_trigger_terms },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.spam_trigger_terms).to eq(["hey", "pokemon go hack"])
+        end
       end
 
       describe "Social Media" do
@@ -584,9 +604,16 @@ RSpec.describe "/admin/config", type: :request do
       describe "User Experience" do
         it "updates the feed_style" do
           feed_style = "basic"
-          post "/admin/config", params: { site_config: { mascot_user_id: feed_style },
+          post "/admin/config", params: { site_config: { feed_style: feed_style },
                                           confirmation: confirmation_message }
           expect(SiteConfig.feed_style).to eq(feed_style)
+        end
+
+        it "updates the feed_strategy" do
+          feed_strategy = "optimized"
+          post "/admin/config", params: { site_config: { feed_strategy: feed_strategy },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.feed_strategy).to eq(feed_strategy)
         end
 
         it "updates the brand color if proper hex" do

@@ -5,6 +5,7 @@ RSpec.describe Profile, type: :model do
     subject { create(:profile) }
 
     it { is_expected.to validate_uniqueness_of(:user_id) }
+    it { is_expected.to validate_presence_of(:data) }
   end
 
   context "when accessing profile fields" do

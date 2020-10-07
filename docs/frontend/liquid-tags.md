@@ -40,6 +40,7 @@ Here is a bunch of liquid tags supported on Forem:
 {% github forem/forem %}
 {% youtube dQw4w9WgXcQ %}
 {% vimeo 193110695 %}
+{% twitch ClumsyPrettiestOilLitFam %}
 {% slideshare rdOzN9kr1yK5eE %}
 {% codepen https://codepen.io/twhite96/pen/XKqrJX %}
 {% stackblitz ball-demo %}

@@ -70,7 +70,7 @@ RSpec.describe "ArticlesShow", type: :request do
           "@id" => URL.organization(organization)
         },
         "url" => URL.organization(organization),
-        "image" => ProfileImage.new(organization).get(width: 320),
+        "image" => Images::Profile.call(organization.profile_image_url, length: 320),
         "name" => organization.name,
         "description" => organization.summary
       },

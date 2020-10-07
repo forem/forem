@@ -99,6 +99,7 @@ class UnopenedChannelNotice extends Component {
 
   receiveNewMessage = (e) => {
     if (
+      e.user_id === window.currentUser.id ||
       (window.location.pathname.startsWith('/connect') &&
         e.user_id === window.currentUser.id &&
         e.channel_type !== 'direct') ||
@@ -174,8 +175,7 @@ class UnopenedChannelNotice extends Component {
           <div>
             {channel.request_type === 'mentioned'
               ? 'You got mentioned in'
-              : 'New Message from'}
-            {' '}
+              : 'New Message from'}{' '}
             <a
               href={`/connect/${channel.adjusted_slug}`}
               style={{

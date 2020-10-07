@@ -46,7 +46,7 @@ RSpec.describe "Api::V0::Users", type: :request do
       end
 
       expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
-      expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(width: 320))
+      expect(response_user["profile_image"]).to eq(Images::Profile.call(user.profile_image_url, length: 320))
     end
   end
 
@@ -74,7 +74,7 @@ RSpec.describe "Api::V0::Users", type: :request do
         end
 
         expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
-        expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(width: 320))
+        expect(response_user["profile_image"]).to eq(Images::Profile.call(user.profile_image_url, length: 320))
       end
 
       it "returns 200 if no authentication and site config is set to private but user is authenticated" do
@@ -92,7 +92,7 @@ RSpec.describe "Api::V0::Users", type: :request do
         end
 
         expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
-        expect(response_user["profile_image"]).to eq(ProfileImage.new(user).get(width: 320))
+        expect(response_user["profile_image"]).to eq(Images::Profile.call(user.profile_image_url, length: 320))
       end
     end
   end

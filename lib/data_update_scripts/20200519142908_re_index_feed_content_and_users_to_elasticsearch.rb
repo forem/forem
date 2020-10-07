@@ -17,11 +17,12 @@ module DataUpdateScripts
         )
       end
 
-      User.select(:id).in_batches(of: 200) do |batch|
-        Search::BulkIndexWorker.set(queue: :default).perform_async(
-          "User", batch.ids
-        )
-      end
+      # See: https://github.com/forem/forem/pull/10313#discussion_r487646864
+      # User.select(:id).in_batches(of: 200) do |batch|
+      #  Search::BulkIndexWorker.set(queue: :default).perform_async(
+      #    "User", batch.ids
+      #  )
+      # end
     end
   end
 end

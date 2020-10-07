@@ -3,36 +3,6 @@
 @import 'variables';
 @import '_mixins';
 
-// Profile card
-.sidebar-profile {
-  @include sidebar-link;
-  margin: 0;
-  margin-bottom: var(--su-2);
-  padding: var(--su-2);
-  display: flex;
-  align-items: center;
-
-  .sidebar-profile--avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-  }
-
-  .sidebar-profile--details {
-    flex: 1 auto;
-    padding-left: 8px;
-  }
-
-  .sidebar-profile--name {
-    margin: 0;
-    @include themeable(color, theme-color, rgba($black, 0.9));
-  }
-
-  .sidebar-profile--username {
-    color: var(--card-color-tertiary);
-  }
-}
-
 // Sidebar Widgets
 .widget {
   position: relative;
@@ -63,10 +33,6 @@
   &:hover {
     opacity: 1;
   }
-  h4 {
-    margin: 0;
-  }
-
   &.showing {
     display: block;
   }
@@ -267,51 +233,6 @@
     }
   }
 
-  // Filtering / todo: replace with tabs?
-  .query-filter-button {
-    font-size: 15px;
-    font-weight: bold;
-    background: transparent;
-    border: 0px;
-    display: block;
-    padding: 6px 8px;
-    width: calc(100% - 16px);
-    text-align: left;
-    border-radius: 0px;
-    color: var(--body-color);
-    cursor: pointer;
-    &:hover {
-      @include themeable(
-        background,
-        theme-container-background-hover,
-        lighten($bold-blue, 38%)
-      );
-    }
-    &.selected {
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        lighten($bold-blue, 10%)
-      );
-      color: var(--card-color);
-    }
-    &.query-type-filter-button {
-      &:hover {
-        @include themeable(
-          background,
-          theme-container-background-hover,
-          $light-green
-        );
-      }
-      &.selected {
-        @include themeable(
-          background,
-          theme-container-accent-background,
-          darken($light-green, 10%)
-        );
-      }
-    }
-  }
   p {
     margin: 8px 0;
   }
@@ -360,46 +281,6 @@
     }
   }
 }
-.widget-link-list__item {
-  @include sidebar-link;
-  position: relative;
-  padding-left: 32px;
-
-  &:before {
-    content: '• ';
-    color: $green;
-    font-size: 2em;
-    vertical-align: -6px;
-    position: absolute;
-    left: 16px;
-  }
-
-  .discuss-list-comment-count {
-    font-size: 0.8em;
-    color: var(--card-color-tertiary);
-    img {
-      width: 20px;
-      vertical-align: -3px;
-      border: 0px;
-    }
-    &.discuss-list-comment-count-brand-new {
-      background: $yellow;
-      color: $black;
-      padding: 2px 4px;
-      display: inline-block;
-      font-size: 0.9em;
-      text-transform: uppercase;
-    }
-  }
-}
-
-.query-filter-button {
-  box-sizing: border-box;
-  display: inline-block;
-  padding: var(--su-2) 0;
-  width: 100%;
-}
-
 // Sidebar sponsors
 .sidebar-sponsor {
   color: var(--card-color-tertiary);
@@ -466,15 +347,6 @@
   font-family: $helvetica-condensed;
   font-stretch: condensed;
   background: var(--card-secondary-bg);
-}
-
-// "Extra" links in sidebar: about, contact, ...
-.side-footer {
-  a {
-    @include sidebar-link;
-    font-size: 0.9em;
-    color: var(--link-color-secondary);
-  }
 }
 
 .crayons-sponsorship-widget {

@@ -10,7 +10,7 @@ class GithubTag
     end
 
     def render
-      content = Github::Client.repository(repository_path)
+      content = Github::OauthClient.new.repository(repository_path)
 
       if show_readme?
         readme_html = fetch_readme(repository_path)
@@ -59,8 +59,8 @@ class GithubTag
     end
 
     def fetch_readme(repository_path)
-      readme_html = Github::Client.readme(repository_path, accept: "application/vnd.github.html")
-      readme = Github::Client.readme(repository_path)
+      readme_html = Github::OauthClient.new.readme(repository_path, accept: "application/vnd.github.html")
+      readme = Github::OauthClient.new.readme(repository_path)
       clean_relative_path!(readme_html, readme.download_url)
     rescue Github::Errors::NotFound
       nil
@@ -78,12 +78,17 @@ class GithubTag
 
     def clean_relative_path!(readme_html, url)
       readme = Nokogiri::HTML(readme_html)
+
       readme.css("img, a").each do |element|
         attribute = element.name == "img" ? "src" : "href"
+
         element["href"] = "" if attribute == "href" && element.attributes[attribute].blank?
+        element["src"] = "" if attribute == "src" && element.attributes[attribute].blank?
+
         path = element.attributes[attribute].value
         element.attributes[attribute].value = "#{url.gsub(%r{/README.md}, '')}/#{path}" if path[0, 4] != "http"
       end
+
       readme.to_html
     end
   end
