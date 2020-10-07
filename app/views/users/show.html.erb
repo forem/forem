@@ -187,7 +187,7 @@
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="0">
   <%= render "users/sidebar" %>
-  <div class="articles-list" id="articles-list">
+  <main class="articles-list" id="articles-list">
     <div class="on-page-nav-controls user-nav-controls" id="on-page-nav-controls">
       <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
         <div class="crayons-icon nav-icon">
@@ -208,7 +208,7 @@
     <div class="loading-articles" id="loading-articles">
       loading...
     </div>
-  </div>
+  </main>
   <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
     <%= render partial: "users/sidebar_additional", locals: { repositories: @github_repositories } %>
   <% end %>

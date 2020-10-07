@@ -38,7 +38,7 @@ describe('initializeHeight()', () => {
     document.body.innerHTML = `
     <body>
       <div id="page-content">
-        <div id="page-content-inner">
+        <div class="page-content-inner">
         </div>
       </div>
     </body>

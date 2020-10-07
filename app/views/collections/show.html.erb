@@ -10,7 +10,7 @@
     <%= link_to "Back to #{@user.name}'s Series", user_series_path(@user.username) %>
   </header>
 
-  <div class="articles-list" id="articles-list">
+  <main class="articles-list" id="articles-list">
     <div class="substories" id="substories">
       <% if @articles.present? %>
         <% @articles.each do |article| %>
@@ -20,5 +20,5 @@
         <p>This series doesn't have any articles</p>
       <% end %>
     </div>
-  </div>
+  </main>
 </div>

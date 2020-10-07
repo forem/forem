@@ -44,10 +44,10 @@
     <div class="side-bar">
       <%= render "notifications/nav_menu" %>
     </div>
-    <div class="articles-list" id="articles-list">
+    <main class="articles-list" id="articles-list">
       <%= render "notifications/nav_menu_filter" %>
       <%= render "notifications_list", params: params %>
-    </div>
+    </main>
 
     <%# new or less active users that don't have a page worth of notifications
         won't be shown the "load more" button %>

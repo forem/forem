@@ -9,7 +9,7 @@
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
   <%= render "organizations/sidebar" %>
-  <div class="articles-list" id="articles-list">
+  <main class="articles-list" id="articles-list">
     <div class="substories" id="substories">
       <%# organizations/main_feed will iterate on stories with .each_with_index,
           thus by using .present? here we preload the items %>
@@ -20,7 +20,7 @@
     <div class="loading-articles" id="loading-articles">
       loading...
     </div>
-  </div>
+  </main>
   <%= render "organizations/sidebar_additional" %>
 </div>
 
