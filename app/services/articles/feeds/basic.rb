@@ -24,7 +24,7 @@ module Articles
           user_score = user_following_users_ids.include?(article.user_id) ? 1 : 0
           org_score = user_following_org_ids.include?(article.organization_id) ? 1 : 0
           tag_score + org_score + user_score - index
-        end
+        end.reverse!
       end
 
       private
