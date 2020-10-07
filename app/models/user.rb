@@ -5,6 +5,42 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  # @citizen428 Preparing to drop profile columns from the users table
+  PROFILE_COLUMNS = %w[
+    available_for
+    behance_url
+    bg_color_hex
+    contact_consent
+    currently_hacking_on
+    currently_learning
+    currently_streaming_on
+    dribbble_url
+    education
+    employer_name
+    employer_url
+    employment_title
+    facebook_url
+    gitlab_url
+    instagram_url
+    linkedin_url
+    location
+    looking_for_work
+    looking_for_work_publicly
+    mastodon_url
+    medium_url
+    mostly_work_with
+    name
+    stackoverflow_url
+    summary
+    text_color_hex
+    twitch_url
+    twitch_username
+    website_url
+    youtube_url
+  ].freeze
+
+  self.ignored_columns = PROFILE_COLUMNS
+
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
   concerning :ProfileMigration do
@@ -15,24 +51,19 @@ class User < ApplicationRecord
       # instead. See `spec/factories/profiles.rb` for an example.
       attr_accessor :_skip_creating_profile
 
-      # NOTE: used for not sync-ing back data to profiles when the profile got
-      # updated first. This will eventually be removed:
-      attr_accessor :_skip_profile_sync
-
       # All new users should automatically have a profile
-      after_create_commit -> { Profile.create(user: self, data: Profiles::ExtractData.call(self)) },
-                          unless: :_skip_creating_profile
+      after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
 
-      # Keep saving changes locally for the time being, but propagate them to profiles.
-      after_update_commit :sync_profile
-
-      def sync_profile
-        return if _skip_profile_sync
-        return unless previous_changes.keys.any? { |attribute| attribute.in?(Profile.mapped_attributes) }
-
-        profile.update(data: Profiles::ExtractData.call(self))
+      (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
+        delegate column, "#{column}=", to: :profile
       end
-      private :sync_profile
+
+      Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
+        define_method(user_attribute) { profile.public_send(profile_attribute) }
+        define_method("#{user_attribute}=") do |value|
+          profile.public_send("#{profile_attribute}=", value)
+        end
+      end
     end
   end
 
