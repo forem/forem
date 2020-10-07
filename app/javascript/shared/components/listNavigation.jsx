@@ -10,37 +10,15 @@ const DIRECTIONS = {
   DOWN: 'down',
 };
 
-export function ListNavigation({
-  itemContainerSelector,
-  focusableSelector,
-  waterfallItemContainerSelector,
-}) {
-  useGlobalListNavigation(
-    itemContainerSelector,
-    focusableSelector,
-    waterfallItemContainerSelector,
-  );
-
-  return null;
-}
-
-ListNavigation.propTypes = {
-  itemContainerSelector: PropTypes.string.isRequired,
-  focusableSelector: PropTypes.string.isRequired,
-  waterfallItemContainerSelector: PropTypes.string,
-};
-
 /**
- * Hook that registers global key event listeners for 'j' and 'k' to navigate up and down in a list of items
+ * Calls a hook that registers global key event listeners for 'j' and 'k' to navigate up and down in a list of items
  *
  * @example
- * import { useGlobalListNavigation } from '../utilities/hooks/useGlobalListNavigation';
- *
- * useGlobalListNavigation(
- *   'article[id=featured-story-marker],article[id^=article-]', // the container
- *   'a[id^=article-link-]', // what should be focused on
- *   'div.paged-stories', // waterfall container
- * );
+ * <ListNavigation
+ *   itemContainerSelector=".crayons-story"
+ *   focusableSelector="a[id^=article-link-]"
+ *   waterfallItemContainerSelector="div.paged-stories,div.substories"
+ * />
  *
  * Note:
  * To avoid conflicts, only one of these should be called per page.
@@ -60,16 +38,12 @@ ListNavigation.propTypes = {
  *     <article />
  *   </div>
  * </div>
- *
- * @param {string} itemContainerSelector - The selector for the highest level container of an item
- * @param {string} focusableSelector - The selector for the element that should be focused on inside an item
- * @param {string} [waterfallItemContainerSelector = undefined] - The selector for the waterfall item container if the list uses a waterfall structure at any point
  */
-export function useGlobalListNavigation(
+export function ListNavigation({
   itemContainerSelector,
   focusableSelector,
-  waterfallItemContainerSelector = undefined,
-) {
+  waterfallItemContainerSelector,
+}) {
   useGlobalKeyEventListener([NAVIGATION_UP_KEY, NAVIGATION_DOWN_KEY], function (
     event,
   ) {
@@ -80,7 +54,15 @@ export function useGlobalListNavigation(
       waterfallItemContainerSelector,
     );
   });
+
+  return null;
 }
+
+ListNavigation.propTypes = {
+  itemContainerSelector: PropTypes.string.isRequired,
+  focusableSelector: PropTypes.string.isRequired,
+  waterfallItemContainerSelector: PropTypes.string,
+};
 
 /**
  * Focuses on the next/previous element depending on the navigation direction
