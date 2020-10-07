@@ -39,6 +39,17 @@ module Moderator
 
     def remove_profile_info
       user.profile.clear!
+
+      # TODO: @forem/oss Remove this block once we drop the columns from users.
+      user._skip_profile_sync = true
+      user.update_columns(
+        email_public: false, facebook_url: nil, youtube_url: nil, dribbble_url: nil,
+        medium_url: nil, stackoverflow_url: nil,
+        behance_url: nil, linkedin_url: nil, gitlab_url: nil, instagram_url: nil, mastodon_url: nil,
+        twitch_url: nil, feed_url: nil
+      )
+      user._skip_profile_sync = false
+
       user.update_columns(profile_image: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")
     end
 
