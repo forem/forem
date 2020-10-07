@@ -121,6 +121,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_listing_creation, type: :integer, default: 1
   field :rate_limit_published_article_creation, type: :integer, default: 9
+  field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
   field :rate_limit_organization_creation, type: :integer, default: 1
   field :rate_limit_reaction_creation, type: :integer, default: 10
   field :rate_limit_image_upload, type: :integer, default: 9
