@@ -2642,6 +2642,13 @@
   dependencies:
     "@testing-library/dom" "^7.16.2"
 
+"@testing-library/user-event@^12.1.7":
+  version "12.1.7"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.1.7.tgz#67a81ee04e81b4abca8931804655d364fbb93c10"
+  integrity sha512-wuJiPqSQTVIHsYuumv1PAOBjblSrYA5vyN1nkUDF5HgfuWGz44jQsO22u7PQNkuACGYJE4eU0sybX8CzsySv+Q==
+  dependencies:
+    "@babel/runtime" "^7.10.2"
+
 "@timberio/ui@^2.0.1":
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/@timberio/ui/-/ui-2.7.0.tgz#48f89704b336419fca17ec37c7d3b5d153e5c25c"

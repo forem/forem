@@ -144,6 +144,7 @@
     "@github/clipboard-copy-element": "^1.1.2",
     "@honeybadger-io/webpack": "^1.2.0",
     "@rails/webpacker": "5.2.1",
+    "@testing-library/user-event": "^12.1.7",
     "ahoy.js": "^0.3.7",
     "autoprefixer": "^9.8.6",
     "babel-preset-preact": "^2.0.0",
