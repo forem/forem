@@ -216,10 +216,10 @@ module ApplicationHelper
     SiteConfig.community_member_label.pluralize
   end
 
-  def meta_keywords_tag(tag)
+  def meta_keywords_tag(tag_name)
     return if SiteConfig.meta_keywords[:tag].blank?
 
-    tag(:meta, name: "keywords", content: "#{SiteConfig.meta_keywords[:tag]}, #{tag}")
+    tag.meta name: "keywords", content: "#{SiteConfig.meta_keywords[:tag]}, #{tag_name}"
   end
 
   def app_url(uri = nil)
