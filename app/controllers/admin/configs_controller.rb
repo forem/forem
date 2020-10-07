@@ -165,6 +165,7 @@ module Admin
         rate_limit_follow_count_daily
         rate_limit_image_upload
         rate_limit_published_article_creation
+        rate_limit_published_article_antispam_creation
         rate_limit_organization_creation
         rate_limit_user_subscription_creation
         rate_limit_article_update
