@@ -472,7 +472,7 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { rate_limit_published_article_antispam_creation: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_published_article_antispam_creation).from(1).to(2)
+          end.to change(SiteConfig, :rate_limit_published_article_antispam_creation).from(1).to(3)
         end
 
         it "updates rate_limit_organization_creation" do
