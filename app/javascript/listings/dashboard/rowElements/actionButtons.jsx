@@ -4,24 +4,23 @@ import { h } from 'preact';
 const ActionButtons = ({ isDraft, editUrl, deleteConfirmUrl }) => {
   return (
     <div className="listing-row-actions">
-      {/* <a className="dashboard-listing-bump-button cta pill black">BUMP</a> */}
       {isDraft && (
         <a
           href={editUrl}
-          className="dashboard-listing-edit-button cta pill yellow"
+          className="dashboard-listing-edit-button crayons-btn"
         >
           DRAFT
         </a>
       )}
       <a
         href={editUrl}
-        className="dashboard-listing-edit-button cta pill green"
+        className="dashboard-listing-edit-button crayons-btn"
       >
         EDIT
       </a>
       <a
         href={deleteConfirmUrl}
-        className="dashboard-listing-delete-button cta pill black"
+        className="dashboard-listing-delete-button crayons-btn"
         data-no-instant
       >
         DELETE

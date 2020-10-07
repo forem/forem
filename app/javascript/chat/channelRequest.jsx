@@ -25,7 +25,7 @@ const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
       {data.channel.status !== 'joining_request' ? (
         <button
           type="button"
-          className="cta"
+          className="crayons-btn"
           onClick={handleJoiningRequest}
           data-channel-id={data.channel.id}
         >

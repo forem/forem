@@ -68,7 +68,7 @@ export class SingleRepo extends Component {
       <div className={this.githubRepoClassName()}>
         <div className="github-repo-row-name">
           <button
-            className="cta"
+            className="crayons-btn"
             type="button"
             id={`github-repo-button-${githubIdCode}`}
             onClick={this.submitRepo}
