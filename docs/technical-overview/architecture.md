@@ -112,6 +112,13 @@ Article has many comments and taggings through the acts-as-taggable gem, belongs
 to a single user (and possibly an organization), and is the core unit of
 content.
 
+## Collections (or series)
+
+Collections are called Series on the frontend of the website. 
+Collections group articles so that groups of articles can be read as a series of posts.
+Collections have not been fully developed as there is not the option to edit or 
+delete series/collections yet.
+
 ## Comments
 
 Comments belong to articles or other content (they are generally polymorphic).
