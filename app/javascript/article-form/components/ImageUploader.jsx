@@ -135,7 +135,6 @@ export const ImageUploader = () => {
           variant="ghost"
           contentType="icon-left"
           icon={ImageIcon}
-          tabIndex="-1"
         >
           Upload image
           <input
