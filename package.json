@@ -105,6 +105,7 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.3.0",
     "babel-loader": "^8.1.0",
+    "canvas": "^2.6.1",
     "css-loader": "^4.3.0",
     "cssom": "^0.4.4",
     "eslint": "^7.10.0",
