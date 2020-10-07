@@ -1,4 +1,4 @@
-<aside class="crayons-layout__sidebar-left crayons-page-header grid gap-1 m:block m:gap-">
+<aside class="crayons-layout__sidebar-left crayons-page-header grid gap-1 m:block">
   <h1 class="crayons-title mb-0 pl-0 m:pl-2 m:mb-6">
     Mod Center
   </h1>
@@ -11,13 +11,13 @@
     <div id="mod-center-inbox" class="mod-center--nav--medium hidden m:block">
       <a
         href="<%= "#{URL.url}/mod" %>"
-        class="crayons-link crayons-link--block <%= " crayons-link--current" if @tag.blank? %>"
+        class="crayons-link crayons-link--block <%= "crayons-link--current" if @tag.blank? %>"
         data-tag-name="All topics">
         All topics
       </a>
       <% if @current_user_tags.any? %>
         <% @current_user_tags.each do |tag| %>
-          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block <%= " crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
+          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block <%= "crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
             #<%= tag %>
             <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
           </a>
@@ -25,18 +25,18 @@
       <% end %>
     </div>
 
-    <div id="mod-center-inbox" class="mod-center--nav--default crayons-tabs crayons-tabs--scrollable flex m:hidden"">
+    <div id="mod-center-inbox" class="mod-center--nav--default crayons-tabs crayons-tabs--scrollable flex m:hidden">
       <a
         href="<%= "#{URL.url}/mod" %>"
-        class=" crayons-tabs__item <%= " crayons-tabs__item--current" if @tag.blank? %> "
-        data-tag-name=" All topics ">
+        class="crayons-tabs__item <%= "crayons-tabs__item--current" if @tag.blank? %>"
+        data-tag-name="All topics">
         All topics
       </a>
       <% if @current_user_tags.any? %>
         <% @current_user_tags.each do |tag| %>
-          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class=" crayons-tabs__item <%= " crayons-tabs__item--current" if tag == @tag&.name %> " data-tag-name="<%= tag %>">
+          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
             #<%= tag %>
-            <span id="<%= tag %> -indicator " class=" crayons-indicator "></span>
+            <span id="<%= tag %>-indicator" class="crayons-indicator "></span>
           </a>
         <% end %>
       <% end %>

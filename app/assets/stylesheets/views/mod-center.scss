@@ -1,6 +1,4 @@
-@import 'variables';
-@import 'mixins';
-@import 'config/import';
+@import '../config/import';
 
 .mod-center-heading {
   margin-top: var(--su-6);
