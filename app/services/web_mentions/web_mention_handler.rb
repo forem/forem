@@ -11,11 +11,8 @@ module WebMentions
     end
 
     def call
-      accepts_webmention? ? send_webmention : Rails.logger.info("#{@canonical_url} doesn't support Webmentions")
-    end
-
-    def accepts_webmention?
-      webmention_url.blank? ? false : true
+      return if webmention_url.blank?
+      send_webmention
     end
 
     def webmention_url
