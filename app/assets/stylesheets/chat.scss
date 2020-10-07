@@ -834,11 +834,6 @@
   @include themeable(color, theme-color, $dark-gray);
 }
 
-.CodeMirror {
-  padding: 12px;
-  font-size: 0.9em;
-}
-
 .cursorelement {
   border-left: 3px solid $red;
   animation: blinker 1s linear infinite;

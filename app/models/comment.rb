@@ -25,6 +25,7 @@ class Comment < ApplicationRecord
 
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
+  before_save :create_conditional_autovomits
   before_create :adjust_comment_parent_based_on_depth
   after_create :after_create_checks
   after_create :notify_slack_channel_about_warned_users
@@ -242,6 +243,31 @@ class Comment < ApplicationRecord
 
   def send_email_notification
     Comments::SendEmailNotificationWorker.perform_async(id)
+  end
+
+  def create_conditional_autovomits
+    return unless
+      SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) } &&
+        user.registered_at > 5.days.ago
+
+    self.score = -1
+    Reaction.create(
+      user_id: SiteConfig.mascot_user_id,
+      reactable_id: id,
+      reactable_type: "Comment",
+      category: "vomit",
+    )
+
+    return unless Reaction.comment_vomits.where(reactable_id: user.comments.pluck(:id)).size > 2
+
+    user.add_role(:banned)
+    Note.create(
+      author_id: SiteConfig.mascot_user_id,
+      noteable_id: user_id,
+      noteable_type: "User",
+      reason: "automatic_ban",
+      content: "User banned for too many spammy articles, triggered by autovomit.",
+    )
   end
 
   def should_send_email_notification?
