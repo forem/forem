@@ -1,5 +1,5 @@
 // Serviceworkers file. This code gets installed in users browsers and runs code before the request is made.
-<% unless Rails.env.test? %>
+<% unless Rails.env.test? || ENV["SKIP_SERVICEWORKERS"] == "true" %>
   const staticCacheName = 'static-1.2';
   const expectedCaches = [
     staticCacheName
