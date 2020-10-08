@@ -642,7 +642,7 @@
                 <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
                   <% SiteConfig.meta_keywords.each do |area, keywords| %>
                     <div>
-                      <%= meta_keywords_field.label "#{area}*" %>
+                      <%= meta_keywords_field.label area.to_s %>
                       <%= meta_keywords_field.text_field area,
                                                          class: "form-control",
                                                          value: SiteConfig.meta_keywords[area],
@@ -814,12 +814,12 @@
           </div>
           <div class="card mt-3">
             <%= render partial: "card_header",
-                      locals: {
-                        header: "Rate limits and anti-spam",
-                        state: "collapse",
-                        target: "rateLimitsBodyContainer",
-                        expanded: "false"
-                      } %>
+                       locals: {
+                         header: "Rate limits and anti-spam",
+                         state: "collapse",
+                         target: "rateLimitsBodyContainer",
+                         expanded: "false"
+                       } %>
             <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
               <% configurable_rate_limits.each do |key, field_hash| %>
                 <div class="form-group">
@@ -835,28 +835,28 @@
               <div class="form-group">
                 <%= admin_config_label :spam_trigger_terms %>
                 <%= f.text_field :spam_trigger_terms,
-                                class: "form-control",
-                                value: SiteConfig.spam_trigger_terms.join(","),
-                                placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
+                                 class: "form-control",
+                                 value: SiteConfig.spam_trigger_terms.join(","),
+                                 placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %></div>
               </div>
             </div>
           </div>
           <div class="card mt-3">
             <%= render partial: "card_header",
-                      locals: {
-                        header: "Social Media",
-                        state: "collapse",
-                        target: "socialMediaBodyContainer",
-                        expanded: "false"
-                      } %>
+                       locals: {
+                         header: "Social Media",
+                         state: "collapse",
+                         target: "socialMediaBodyContainer",
+                         expanded: "false"
+                       } %>
             <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
               <div class="form-group">
                 <%= admin_config_label :twitter_hashtag %>
                 <%= f.text_field :twitter_hashtag,
-                                class: "form-control",
-                                value: SiteConfig.twitter_hashtag.to_s,
-                                placeholder: Constants::SiteConfig::DETAILS[:twitter_hashtag][:placeholder] %>
+                                 class: "form-control",
+                                 value: SiteConfig.twitter_hashtag.to_s,
+                                 placeholder: Constants::SiteConfig::DETAILS[:twitter_hashtag][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:twitter_hashtag][:description] %></div>
               </div>
               <div class="form-group">
@@ -878,38 +878,38 @@
 
           <div class="card mt-3">
             <%= render partial: "card_header",
-                      locals: {
-                        header: "Sponsors",
-                        state: "collapse",
-                        target: "sponsorsContainer",
-                        expanded: "false"
-                      } %>
+                       locals: {
+                         header: "Sponsors",
+                         state: "collapse",
+                         target: "sponsorsContainer",
+                         expanded: "false"
+                       } %>
             <div id="sponsorsContainer" class="card-body collapse hide" aria-labelledby="sponsorsContainer">
               <div class="form-group">
                 <%= f.label :sponsor_headline %>
                 <%= f.text_field :sponsor_headline,
-                                class: "form-control",
-                                value: SiteConfig.sponsor_headline,
-                                placeholder: Constants::SiteConfig::DETAILS[:sponsor_headline][:placeholder] %>
+                                 class: "form-control",
+                                 value: SiteConfig.sponsor_headline,
+                                 placeholder: Constants::SiteConfig::DETAILS[:sponsor_headline][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sponsor_headline][:description] %></div>
               </div>
             </div>
           </div>
           <div class="card mt-3">
             <%= render partial: "card_header",
-                      locals: {
-                        header: "Tags",
-                        state: "collapse",
-                        target: "tagsBodyContainer",
-                        expanded: "false"
-                      } %>
+                       locals: {
+                         header: "Tags",
+                         state: "collapse",
+                         target: "tagsBodyContainer",
+                         expanded: "false"
+                       } %>
             <div id="tagsBodyContainer" class="card-body collapse hide" aria-labelledby="tagsBodyContainer">
               <div class="form-group">
                 <%= admin_config_label :sidebar_tags %>
                 <%= f.text_field :sidebar_tags,
-                                class: "form-control",
-                                value: SiteConfig.sidebar_tags.join(","),
-                                placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder] %>
+                                 class: "form-control",
+                                 value: SiteConfig.sidebar_tags.join(","),
+                                 placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %></div>
               </div>
             </div>
@@ -917,47 +917,47 @@
 
           <div class="card mt-3">
             <%= render partial: "card_header",
-                      locals: {
-                        header: "User Experience and Brand",
-                        state: "collapse",
-                        target: "uxBodyContainer",
-                        expanded: "false"
-                      } %>
+                       locals: {
+                         header: "User Experience and Brand",
+                         state: "collapse",
+                         target: "uxBodyContainer",
+                         expanded: "false"
+                       } %>
             <div id="uxBodyContainer" class="card-body collapse hide" aria-labelledby="uxBodyContainer">
               <div class="form-group">
                 <%= f.label :feed_style %>
                 <%= f.text_field :feed_style,
-                                class: "form-control",
-                                value: SiteConfig.feed_style,
-                                placeholder: Constants::SiteConfig::DETAILS[:feed_style][:placeholder] %>
+                                 class: "form-control",
+                                 value: SiteConfig.feed_style,
+                                 placeholder: Constants::SiteConfig::DETAILS[:feed_style][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:feed_style][:description] %></div>
               </div>
               <div class="form-group">
                 <%= f.label :feed_strategy %>
                 <%= f.text_field :feed_strategy,
-                                class: "form-control",
-                                value: SiteConfig.feed_strategy,
-                                placeholder: Constants::SiteConfig::DETAILS[:feed_strategy][:placeholder] %>
+                                 class: "form-control",
+                                 value: SiteConfig.feed_strategy,
+                                 placeholder: Constants::SiteConfig::DETAILS[:feed_strategy][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:feed_strategy][:description] %></div>
               </div>
               <div class="form-group">
                 <%= f.label :default_font %>
                 <%= select_tag "site_config[default_font]",
-                              options_for_select(
-                                [%w[sans-serif sans_serif], %w[serif serif], %w[open-dyslexic open_dyslexic]],
-                                SiteConfig.default_font,
-                              ),
-                              multiple: false,
-                              class: "form-control selectpicker" %>
+                               options_for_select(
+                                 [%w[sans-serif sans_serif], %w[serif serif], %w[open-dyslexic open_dyslexic]],
+                                 SiteConfig.default_font,
+                               ),
+                               multiple: false,
+                               class: "form-control selectpicker" %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:default_font][:description] %></div>
               </div>
               <div class="form-group">
                 <%= f.label :primary_brand_color_hex %>
                 <%= f.text_field :primary_brand_color_hex,
-                                class: "form-control",
-                                value: SiteConfig.primary_brand_color_hex,
-                                pattern: "^#+([a-fA-F0-9]{6})$",
-                                placeholder: Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:placeholder] %>
+                                 class: "form-control",
+                                 value: SiteConfig.primary_brand_color_hex,
+                                 pattern: "^#+([a-fA-F0-9]{6})$",
+                                 placeholder: Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:description] %></div>
               </div>
               <div class="form-group">
