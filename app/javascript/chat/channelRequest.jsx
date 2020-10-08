@@ -33,7 +33,7 @@ const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
           Join {data.channel.name}{' '}
         </button>
       ) : (
-        <button type="button" className="cta">
+        <button type="button" className="crayons-btn crayons-btn--secondary">
           {' '}
           Requested Already{' '}
         </button>
