@@ -68,7 +68,8 @@
   &[href]:focus,
   &:hover:enabled,
   &:active:enabled,
-  &:focus:enabled {
+  &:focus:enabled,
+  &:focus-within {
     background-color: var(--bg-hover);
     border-color: var(--border-hover);
     box-shadow: var(--shadow-hover);
