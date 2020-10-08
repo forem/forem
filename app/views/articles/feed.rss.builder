@@ -8,6 +8,13 @@ xml.rss version: "2.0" do
     xml.description user ? user.summary : SiteConfig.community_description
     xml.link user ? app_url(user.path) : app_url
     xml.language "en"
+    if user
+      xml.image do
+        xml.url user.profile_image
+        xml.title user.name
+        xml.link app_url(user.path)
+      end
+    end
 
     articles.each do |article|
       xml.item do
