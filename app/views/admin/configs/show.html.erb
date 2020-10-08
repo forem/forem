@@ -119,6 +119,7 @@
 
                 <div class="config-authentication__row">
                   <div class="config-authentication__row--select">
+                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
                     <div>
                       <p class="config-authentication__row--title crayons-fields__label">
                         Email address and password
@@ -135,6 +136,7 @@
 
                 <div class="config-authentication-row">
                   <div class="config-authentication__row--select">
+                    <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
                     <div>
                       <p class="config-authentication__row--title crayons-fields__label">
                         Twitter
@@ -146,7 +148,7 @@
                       Enable
                     </button>
                   </div>
-                  <form class="config-authentication-form--twitter">
+                  <fieldset class="config-authentication-form">
                     <div class="crayons-field">
                       <%= admin_config_label :twitter_key %>
                       <p class="crayons-field__description">
@@ -168,11 +170,12 @@
                                        value: SiteConfig.twitter_secret,
                                        placeholder: Constants::SiteConfig::DETAILS[:twitter_secret][:placeholder] %>
                     </div>
-                  </form>
+                  </fieldset>
                 </div>
 
                 <div class="config-authentication-row">
                   <div class="config-authentication__row--select">
+                    <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
                     <div>
                       <p class="config-authentication__row--title crayons-fields__label">
                         Github
@@ -184,7 +187,7 @@
                       Enable
                     </button>
                   </div>
-                  <form class="config-authentication-form--github">
+                  <fieldset class="config-authentication-form">
                     <div class="crayons-field">
                       <%= admin_config_label :github_key %>
                       <p class="crayons-field__description">
@@ -206,11 +209,12 @@
                                        value: SiteConfig.github_secret,
                                        placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
                     </div>
-                  </form>
+                  </fieldset>
                 </div>
 
                 <div class="config-authentication-row">
                   <div class="config-authentication__row--select">
+                    <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
                     <div>
                       <p class="config-authentication__row--title crayons-fields__label">
                         Facebook
@@ -222,7 +226,7 @@
                       Enable
                     </button>
                   </div>
-                  <form class="config-authentication-form--facebook">
+                  <fieldset class="config-authentication-form">
                     <div class="crayons-field">
                       <%= admin_config_label :facebook_key %>
                       <p class="crayons-field__description">

@@ -99,8 +99,9 @@
 
 .config-authentication__row {
   &--select {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-gap: var(--su-3);
     padding: var(--su-4);
     align-items: center;
   }
@@ -113,4 +114,11 @@
     font-size: var(--fs-s);
     color: var(--base-60);
   }
+}
+
+.config-authentication-form {
+  display: flex;
+  flex-direction: column;
+  grid-gap: var(--su-4);
+  padding: var(--su-2) var(--su-8) var(--su-4);
 }
