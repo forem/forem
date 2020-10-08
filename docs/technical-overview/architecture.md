@@ -114,10 +114,7 @@ content.
 
 ## Collections (or series)
 
-Collections are called Series on the frontend of the website. 
-Collections group articles so that groups of articles can be read as a series of posts.
-Collections have not been fully developed as there is not the option to edit or 
-delete series/collections yet.
+Although the source code refers to them as "collections" groups of articles are referred to, throughout the user interface, as "series". They represent a collection of articles relating to the same topic, indeed, a series.
 
 ## Comments
 
