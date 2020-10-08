@@ -2,6 +2,20 @@ import PropTypes from 'prop-types';
 import { h } from 'preact';
 import { useEffect } from 'preact/hooks';
 
+/**
+ * Component that can be added to the dom to listen 
+ * for keyboard presses
+ * 
+ * @example
+ * const shortcuts = {
+ *   "ctrl+alt+KeyG": (e)=>{
+ *     e.preventDefault(); 
+ *     alert("Control Alt G has been pressed")
+ *   }
+ * }
+ * <KeyboardShortcuts shortcuts={shortcut} />
+ * 
+ */
 const KeyboardShortcuts = ({ shortcuts, ...props }) => {
   useEffect(() => {
     // Return true if element is a form element
@@ -45,6 +59,7 @@ KeyboardShortcuts.defaultProps = {
 };
 
 KeyboardShortcuts.propTypes = {
+  /* shortcuts Object - object containing all shortcut functions */
   shortcuts: PropTypes.object,
 };
 
