@@ -220,7 +220,7 @@ module Constants
         placeholder: "..."
       },
       recaptcha_secret_key: {
-        description: "Secret key for Google ReCAPTCHA, used for reporting abuse.",
+        description: "Secret key for Google reCAPTCHA, used for reporting abuse.",
         placeholder: "..."
       },
       right_navbar_svg_icon: {
