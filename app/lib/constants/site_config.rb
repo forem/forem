@@ -216,7 +216,7 @@ module Constants
         placeholder: 2
       },
       recaptcha_site_key: {
-        description: "Site key for Google ReCAPTCHA, used for reporting abuse.",
+        description: "Site key for Google reCAPTCHA, used for reporting abuse.",
         placeholder: "..."
       },
       recaptcha_secret_key: {
