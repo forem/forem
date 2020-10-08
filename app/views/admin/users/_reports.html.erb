@@ -1,9 +1,9 @@
 <div class="crayons-card p-6">
   <div>
     <h2 class="d-inline">Recent Reports</h2>
-    <button type="button" data-toggle="collapse" data-target="#reactions-row" class="btn btn-secondary float-right">Toggle</button>
+    <button type="button" data-toggle="collapse" data-target="#reports-row" class="btn btn-secondary float-right">Toggle</button>
   </div>
-  <div class="pt-6 collapse" id="reactions-row">
+  <div class="pt-6 collapse" id="reports-row">
     <% unless @related_reports.empty? %>
       <% @related_reports.each do |report| %>
         <a href="<%= admin_report_path(report.id) %>" class="list-group-item list-group-item-action action px-5 d-flex justify-content-between">

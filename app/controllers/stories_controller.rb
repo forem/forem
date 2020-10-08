@@ -51,13 +51,6 @@ class StoriesController < ApplicationController
     end
   end
 
-  def warm_comments
-    @article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate || not_found
-    @warm_only = true
-    assign_article_show_variables
-    render partial: "articles/full_comment_area"
-  end
-
   private
 
   def assign_hero_html
@@ -143,7 +136,8 @@ class StoriesController < ApplicationController
                                 cached_tagged_count
                               end
     @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
-    @stories = Articles::Feed.new(number_of_articles: @number_of_articles, tag: @tag, page: @page)
+    @stories = Articles::Feeds::LargeForemExperimental
+      .new(number_of_articles: @number_of_articles, tag: @tag, page: @page)
       .published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
@@ -188,7 +182,7 @@ class StoriesController < ApplicationController
   end
 
   def featured_story
-    @featured_story ||= Articles::Feed.find_featured_story(@stories)
+    @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories)
   end
 
   def handle_podcast_index
@@ -262,7 +256,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_feed_stories
-    feed = Articles::Feed.new(page: @page, tag: params[:tag])
+    feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
     if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
@@ -481,7 +475,6 @@ class StoriesController < ApplicationController
       @user.medium_url,
       @user.gitlab_url,
       @user.instagram_url,
-      @user.twitch_username,
       @user.website_url,
     ].reject(&:blank?)
   end

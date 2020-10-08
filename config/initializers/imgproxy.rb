@@ -3,7 +3,7 @@ Imgproxy.configure do |config|
   #
   # Full URL to where your imgproxy lives.
   #
-  config.endpoint = if Rails.env.production?
+  config.endpoint = if Rails.env.production? && ApplicationConfig["APP_DOMAIN"] && ApplicationConfig["APP_PROTOCOL"]
                       # Use /images with the same domain on Production as
                       # our default configuration
                       URL.url("images") # ie. https://forem.dev/images

@@ -189,7 +189,7 @@ RSpec.describe MarkdownParser, type: :labor do
     it "does not raise error if no XSS attempt detected" do
       expect do
         generate_and_parse_markdown("```const data = 'data:text/html';```")
-      end.not_to raise_error(ArgumentError)
+      end.not_to raise_error
     end
   end
 

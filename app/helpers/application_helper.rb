@@ -76,8 +76,10 @@ module ApplicationHelper
     "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
-  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto")
-    image_url = url.presence || asset_path("#{rand(1..40)}.png")
+  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto", random_fallback: true)
+    fallback_image = asset_path("#{rand(1..40)}.png") if random_fallback
+
+    return unless (image_url = url.presence || fallback_image)
 
     Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: fetch_format)
   end

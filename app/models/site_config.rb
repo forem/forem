@@ -42,7 +42,6 @@ class SiteConfig < RailsSettings::Base
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
-  field :community_action, type: :string
   field :tagline, type: :string
   field :community_copyright_start_year, type: :integer,
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
@@ -117,11 +116,12 @@ class SiteConfig < RailsSettings::Base
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
 
-  # Rate limits
+  # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_listing_creation, type: :integer, default: 1
   field :rate_limit_published_article_creation, type: :integer, default: 9
+  field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
   field :rate_limit_organization_creation, type: :integer, default: 1
   field :rate_limit_reaction_creation, type: :integer, default: 10
   field :rate_limit_image_upload, type: :integer, default: 9
@@ -131,6 +131,8 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
   field :rate_limit_user_update, type: :integer, default: 5
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
+
+  field :spam_trigger_terms, type: :array, default: []
 
   # Social Media
   field :social_media_handles, type: :hash, default: {
@@ -158,6 +160,7 @@ class SiteConfig < RailsSettings::Base
   # The default font for all users that have not chosen a custom font yet
   field :default_font, type: :string, default: "sans_serif"
   field :primary_brand_color_hex, type: :string, default: "#3b49df"
+  field :feed_strategy, type: :string, default: "basic"
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date

@@ -29,8 +29,12 @@
               <%= form.text_field :icon, class: "form-control" %>
             </div>
             <div class="form-group">
-              <%= form.check_box :display_when_signed_in %>
-              <%= form.label :display_when_signed_in %>
+              <%= form.label :position %>
+              <%= form.number_field :position, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= form.check_box :display_only_when_signed_in %>
+              <%= form.label :display_only_when_signed_in %>
             </div>
             <%= form.submit class: "btn btn-primary" %>
           <% end %>
