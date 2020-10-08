@@ -3,7 +3,7 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/p/markdown_basics") %>" />
   <meta name="description" content="dev.to | markdown basics">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
 <% end %>
 
 <div class="crayons-layout crayons-layout--limited">
@@ -58,6 +58,7 @@
     <p>All you need is the <code>id</code> from the URL.</p>
     <code>{% youtube 9z-Pdfxxdyo %}</code><br />
     <code>{% vimeo 193110695 %}</code><br />
+    <code>{% twitch ClumsyPrettiestOilLitFam %}</code><br />
 
     <h3><strong>Instagram Embed</strong></h3>
     <p>All you need is the Instagram post <code>id</code> from the URL.</p>

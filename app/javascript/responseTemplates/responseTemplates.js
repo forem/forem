@@ -30,10 +30,14 @@ function buildHTML(response, typeOf) {
     return response
       .map((obj) => {
         return `
-          <div class="mod-response-wrapper">
-            <span>${obj.title}</span>
-            <p>${obj.content}</p>
-            <button class="insert-template-button" type="button" data-content="${obj.content}">INSERT</button>
+          <div class="mod-response-wrapper flex mb-4">
+            <div class="flex-1">
+              <h4>${obj.title}</h4>
+              <p>${obj.content}</p>
+            </div>
+            <div class="pl-2">
+              <button class="crayons-btn crayons-btn--secondary crayons-btn--s insert-template-button" type="button" data-content="${obj.content}">Insert</button>
+            </div>
           </div>
         `;
       })
@@ -43,11 +47,15 @@ function buildHTML(response, typeOf) {
     return response
       .map((obj) => {
         return `
-            <div class="mod-response-wrapper">
-              <span>${obj.title}</span>
-              <p>${obj.content}</p>
-              <button class="insert-template-button" type="button" data-content="${obj.content}">INSERT</button>
-              <button class="moderator-submit-button" type="submit" data-response-template-id="${obj.id}">SEND AS MOD</button>
+            <div class="mod-response-wrapper mb-4 flex">
+              <div class="flex-1">
+                <h4>${obj.title}</h4>
+                <p>${obj.content}</p>
+              </div>
+              <div class="flex flex-nowrap pl-2">
+                <button class="crayons-btn crayons-btn--s crayons-btn--secondary moderator-submit-button" type="submit" data-response-template-id="${obj.id}">Send as Mod</button>
+                <button class="crayons-btn crayons-btn--s crayons-btn--outlined insert-template-button" type="button" data-content="${obj.content}">Insert</button>
+              </div>
             </div>
           `;
       })
@@ -107,9 +115,7 @@ function addClickListeners(form) {
     '.response-templates-container',
   );
   const parentCommentId =
-    form.id !== 'new_comment'
-      ? form.querySelector('input#comment_parent_id').value
-      : null;
+    form.id !== 'new_comment' && !form.id.includes('edit_comment');
   const insertButtons = Array.from(
     responsesContainer.getElementsByClassName('insert-template-button'),
   );
@@ -128,6 +134,7 @@ function addClickListeners(form) {
 
       if (textAreaReplaceable) {
         textArea.value = content;
+        textArea.focus();
         responsesContainer.classList.toggle('hidden');
       }
     });
@@ -229,7 +236,7 @@ function openButtonCallback(form) {
     copyData(responsesContainer);
     addClickListeners(form);
   } else if (!dataFetched && !containerHidden) {
-    loadData(form)
+    loadData(form);
   }
   /* eslint-disable-next-line no-undef */
   if (userData().moderator_for_tags.length > 0) {
@@ -249,23 +256,27 @@ function prepareOpenButton(form) {
     openButtonCallback(form);
   });
 
-  button.dataset.hasListener = "true";
+  button.dataset.hasListener = 'true';
 }
 
 function observeForReplyClick() {
   const config = { childList: true, subtree: true };
 
   const callback = (mutations) => {
-    const form = mutations[0].addedNodes[0];
-    if (form.nodeName === 'FORM') {
-      prepareOpenButton(form);
+    const form = Array.from(mutations[0].addedNodes).filter(
+      (node) => node.nodeName === 'FORM',
+    );
+    if (form.length > 0) {
+      prepareOpenButton(form[0]);
     }
   };
 
   const observer = new MutationObserver(callback);
 
   const commentTree = document.getElementById('comment-trees-container');
-  observer.observe(commentTree, config);
+  if (commentTree) {
+    observer.observe(commentTree, config);
+  }
 
   window.addEventListener('beforeunload', () => {
     observer.disconnect();
@@ -278,15 +289,17 @@ function observeForReplyClick() {
 
 function handleLoggedOut() {
   // global method from app/assets/javascripts/utilities/showModal.js
-  /* eslint-disable-next-line no-undef */
-  document.querySelector('.response-templates-button')?.addEventListener('click', showModal);
+  document
+    .querySelector('.response-templates-button')
+    ?.addEventListener('click', showModal); /* eslint-disable-line no-undef */
 }
 /* eslint-enable no-alert */
 /* eslint-enable no-restricted-globals */
 
 export function loadResponseTemplates() {
   const { userStatus } = document.body.dataset;
-  const form = document.getElementById('new_comment');
+
+  const form = document.querySelector('.comment-form');
 
   if (document.getElementById('response-templates-data')) {
     if (userStatus === 'logged-out') {
@@ -294,7 +307,8 @@ export function loadResponseTemplates() {
     }
     if (
       form &&
-      form.querySelector('.response-templates-button').dataset.hasListener === 'false'
+      form.querySelector('.response-templates-button').dataset.hasListener ===
+        'false'
     ) {
       prepareOpenButton(form);
     }

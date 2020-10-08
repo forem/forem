@@ -64,7 +64,7 @@
       Message
       <p class="crayons-field__description m-0">Please provide any additional information or context that will help us understand and handle the situation.</p>
     </label>
-    <%= f.text_area :message, class: "crayons-textfield", placeholder: "...", value: @previous_message %>
+    <%= f.text_area :message, class: "crayons-textfield", placeholder: "...", value: @previous_message, required: true %>
   </div>
 
   <div>
