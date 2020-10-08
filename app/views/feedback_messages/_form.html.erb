@@ -68,7 +68,7 @@
   </div>
 
   <div>
-    <%= recaptcha_tags site_key: ApplicationConfig["RECAPTCHA_SITE"] %>
+    <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>
   </div>
 
   <div><button type="submit" name="commit" class="crayons-btn">Send Feedback</button></div>

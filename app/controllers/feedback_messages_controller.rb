@@ -31,7 +31,7 @@ class FeedbackMessagesController < ApplicationController
   private
 
   def recaptcha_verified?
-    recaptcha_params = { secret_key: ApplicationConfig["RECAPTCHA_SECRET"] }
+    recaptcha_params = { secret_key: SiteConfig.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
   end
 
