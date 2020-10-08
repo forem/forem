@@ -18,19 +18,14 @@ RSpec.describe "/admin/articles", type: :request do
       get request
 
       expect do
-        article.update_columns(second_user_id: second_user.id)
-      end.to change(article, :second_user_id).from(nil).to(second_user.id)
+        article.update_columns(co_author_ids: [1])
+      end.to change(article, :co_author_ids).from([]).to([1])
     end
 
-    it "allows an Admin to add multiple co-authors to an individual article" do
-      article.update_columns(second_user_id: second_user.id, third_user_id: third_user.id)
-
+    it "allows an Admin to add co-authors to an individual article" do
+      article.update_columns(co_author_ids: [2, 3])
       get request
-
-      article.reload
-
-      expect(article.second_user_id).to eq(second_user.id)
-      expect(article.third_user_id).to eq(third_user.id)
+      expect(article.co_author_ids).to eq([2, 3])
     end
   end
 end

@@ -16,6 +16,8 @@ class ProfileField < ApplicationRecord
 
   belongs_to :profile_field_group, optional: true
 
+  validates :display_area, presence: true
+  validates :input_type, presence: true
   validates :show_in_onboarding, inclusion: { in: [true, false] }
 
   def type

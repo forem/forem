@@ -806,7 +806,7 @@
   height: inherit;
   align-items: stretch;
   position: relative;
-  height: 40px;
+  height: auto;
   padding: var(--su-4);
 
   textarea {
@@ -832,11 +832,6 @@
   left: 35px;
   font-family: var(--ff-monospace);
   @include themeable(color, theme-color, $dark-gray);
-}
-
-.CodeMirror {
-  padding: 12px;
-  font-size: 0.9em;
 }
 
 .cursorelement {
@@ -1028,7 +1023,16 @@
 
 .composer-textarea__edit {
   height: 80px;
+  max-height: 8rem;
   margin-bottom: var(--su-4);
+}
+
+.composer-textarea {
+  height: auto;
+  margin-bottom: var(--su-4);
+  min-height: 2.5rem;
+  resize: vertical;
+  max-height: 8rem;
 }
 
 .composer-btn-group {
@@ -1196,6 +1200,52 @@
 
   .admin-emoji-button {
     width: 10%;
+  }
+}
+
+.connect-draw {
+  margin-top: 30px;
+  .draw-title {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .connect-draw__colors {
+    z-index: 2;
+    margin: 5px 20px;
+    text-align: center;
+    pointer-events: all;
+  }
+
+  .connect-draw__color {
+    height: 30px;
+    width: 30px;
+    margin-right: 10px;
+    border-radius: 50%;
+    border: none;
+  }
+  .color:hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+
+  .color:focus {
+    outline: 0;
+  }
+  .connect-draw__draw-area {
+    display: grid;
+
+    .connect-draw__draw {
+      border: 1px solid black;
+      background-color: white;
+      justify-self: center;
+    }
+    .connect-draw__actions {
+      margin: 20px 0px;
+      display: flex;
+      button {
+        margin-left: 10px;
+      }
+    }
   }
 }
 

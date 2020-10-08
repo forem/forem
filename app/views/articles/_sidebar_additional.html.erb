@@ -44,7 +44,7 @@
       <% if params[:timeframe].blank? && @listings.any? %>
         <section class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
-            <h3 class="crayons-card__header__headline">Listings</h3>
+            <h3 class="crayons-subtitle-2">Listings</h3>
             <div class="crayons-card__actions">
               <a href="/listings" class="crayons-link--branded fw-medium fs-s">See all</a>
             </div>
@@ -65,7 +65,7 @@
       <% SiteConfig.sidebar_tags.each do |tag| %>
         <section class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
-            <h3 class="crayons-card__header__headline"><a href="/t/<%= tag %>">#<%= tag %></a></h3>
+            <h3 class="crayons-subtitle-2"><a href="/t/<%= tag %>" class="crayons-link">#<%= tag %></a></h3>
           </header>
 
           <div>

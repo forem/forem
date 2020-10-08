@@ -9,6 +9,7 @@ RSpec.describe "Admin::Users", type: :request do
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
   let(:organization) { create(:organization) }
+  let(:rewarder) { create(:user) }
 
   before do
     sign_in super_admin
@@ -187,7 +188,7 @@ RSpec.describe "Admin::Users", type: :request do
     before do
       create_mutual_follows
       create_mention
-      create(:badge_achievement, rewarder_id: 1, rewarding_context_message: "yay", user_id: user.id)
+      create(:badge_achievement, rewarder: rewarder, rewarding_context_message: "yay", user: user)
     end
 
     it "raises a 'record not found' error after deletion" do

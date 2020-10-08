@@ -33,10 +33,6 @@ module Constants
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
       },
-      community_action: {
-        description: "Used to determine the action of community e.g coding, reading, training etc.",
-        placeholder: "coding"
-      },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
@@ -96,6 +92,11 @@ module Constants
       favicon_url: {
         description: "Used as the site favicon",
         placeholder: "https://image.url"
+      },
+      feed_strategy: {
+        description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
+        (which should only be used for 10k+ member communities)",
+        placeholder: "basic"
       },
       feed_style: {
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
@@ -221,6 +222,10 @@ module Constants
       secondary_logo_url: {
         description: "Used as the secondary logo",
         placeholder: "https://image.url"
+      },
+      spam_trigger_terms: {
+        description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
+        placeholder: "used cares near you, pokemon go hack"
       },
       shop_url: {
         description: "Used as the shop url of the community",

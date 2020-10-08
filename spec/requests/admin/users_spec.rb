@@ -40,6 +40,38 @@ RSpec.describe "admin/users", type: :request do
       sign_out(admin)
       expect { get "/admin/users/#{user.id}/edit" }.to raise_error(Pundit::NotAuthorizedError)
     end
+
+    it "displays the 'Recent Reactions' section" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Recent Reactions")
+    end
+
+    it "displays a message when there are no related vomit reactions for a user" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Nothing negative to see here! 👀")
+    end
+
+    it "displays a list of recent related vomit reactions for a user if any exist" do
+      vomit = build(:reaction, category: "vomit", user_id: user.id, reactable_type: "Article", status: "valid")
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include(vomit.reactable_type)
+    end
+
+    it "displays the 'Recent Reports' section" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Recent Reports")
+    end
+
+    it "displays a message when there are no related reports for a user" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Nothing to report here! 👀")
+    end
+
+    it "displays a list of recent reports for a user if any exist" do
+      report = build(:feedback_message, category: "spam", affected_id: user.id, feedback_type: "spam", status: "Open")
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include(report.feedback_type)
+    end
   end
 
   describe "POST /admin/users/:id/banish" do
@@ -85,24 +117,6 @@ RSpec.describe "admin/users", type: :request do
       identity = user.identities.first
       delete "/admin/users/#{user.id}/remove_identity", params: { user: { identity_id: identity.id } }
       expect(user.reload.github_username).to eq nil
-    end
-  end
-
-  describe "POST admin/users/:id/recover_identity" do
-    it "recovers a deleted identity" do
-      identity = user.identities.first
-      backup = BackupData.backup!(identity)
-      identity.delete
-      post "/admin/users/#{user.id}/recover_identity", params: { user: { backup_data_id: backup.id } }
-      expect(identity).to eq Identity.first
-    end
-
-    it "deletes the backup data" do
-      identity = user.identities.first
-      backup = BackupData.backup!(identity)
-      identity.delete
-      post "/admin/users/#{user.id}/recover_identity", params: { user: { backup_data_id: backup.id } }
-      expect { backup.reload }.to raise_error ActiveRecord::RecordNotFound
     end
   end
 

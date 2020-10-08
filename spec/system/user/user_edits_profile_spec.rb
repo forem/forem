@@ -17,13 +17,13 @@ RSpec.describe "User edits their profile", type: :system do
     end
 
     it "makes the 'Save Button' footer sticky once a field is filled in", js: true do
-      expect(page).not_to have_css(".sticky-save-footer")
+      expect(page).not_to have_css(".sticky")
 
       fill_in "user[username]", with: "sloan"
 
       find_field(id: "user[username]").native.send_keys :tab # this un-focuses the filled-in field
 
-      expect(page).to have_css(".sticky-save-footer")
+      expect(page).to have_css(".sticky")
     end
   end
 end

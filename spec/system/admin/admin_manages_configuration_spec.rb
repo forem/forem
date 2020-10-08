@@ -31,8 +31,10 @@ RSpec.describe "Admin manages configuration", type: :system do
 
     it "includes information about missing fields on the config pages" do
       allow(SiteConfig).to receive(:tagline).and_return(nil)
+      allow(SiteConfig).to receive(:suggested_users).and_return(nil)
+      allow(SiteConfig).to receive(:suggested_tags).and_return(nil)
       visit root_path
-      expect(page.body).to match(/Setup not completed yet, missing(.*)tagline/)
+      expect(page.body).to match(/Setup not completed yet, missing(.*)main social image(.*), and others/)
     end
   end
 end

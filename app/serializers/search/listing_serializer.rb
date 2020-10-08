@@ -6,6 +6,7 @@ module Search
                :category,
                :contact_via_connect,
                :expires_at,
+               :originally_published_at,
                :location,
                :processed_html,
                :published,

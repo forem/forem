@@ -45,8 +45,8 @@ function initializeCommentsPage() {
                   var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
                   if (userActionsEl && buttEl) {
                     userActionsEl.className = 'current-user-actions';
-                    userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
-                                                <a href="' + userActionsEl.parentNode.dataset.path + '/edit">EDIT</a>'
+                    userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">Delete</a>\
+                                                <a href="' + userActionsEl.parentNode.dataset.path + '/edit">Edit</a>'
                     userActionsEl.style.display = 'inline-block';
                     document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
                   }
@@ -119,18 +119,19 @@ function initializeCommentsPage() {
           }
           var actionNode = event.target.parentNode;
           var parentId = actionNode.dataset.commentId;
-          document.getElementById("button-for-comment-" + actionNode.dataset.commentId).style.zIndex = "5";
           var waitingOnCSRF = setInterval(function () {
             var metaTag = document.querySelector("meta[name='csrf-token']");
             if (metaTag) {
               clearInterval(waitingOnCSRF);
-              actionNode.innerHTML = buildCommentFormHTML(commentableId, commentableType, parentId);
+              commentWrapper = event.target.closest('.inner-comment');
+              commentWrapper.classList.add("replying");
+              commentWrapper.innerHTML += buildCommentFormHTML(commentableId, commentableType, parentId);
+              
               setTimeout(function () {
-                actionNode.getElementsByTagName('textarea')[0].focus();
+                commentWrapper.getElementsByTagName('textarea')[0].focus();
               }, 30);
             }
           }, 1);
-          // document.getElementById('textarea-for-'+parentId).focus();
         };
         return false;
       }
@@ -167,17 +168,10 @@ function replaceActionButts(el) {
   var loggedInActionButts = "";
   var wrapper = el.getElementsByClassName("actions")[0]
   if (el.dataset.currentUserComment == "true") {
-    loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
-                            <a href="' + el.parentNode.parentNode.dataset.path + '/edit">EDIT</a>'
+    loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">Delete</a>\
+                            <a href="' + el.parentNode.parentNode.dataset.path + '/edit">Edit</a>'
   }
-  wrapper.innerHTML = '<span class="current-user-actions">' + loggedInActionButts + '</span><a href="#" class="toggle-reply-form">REPLY</a>';
-}
-
-function warmNewCommentsArea() {
-  // Ignore when comment is created on /notifications.
-  if (window.location.pathname === "/notifications") { return }
-  var path = '/stories/warm_comments'+ window.location.pathname
-  window.fetch(path)
+  wrapper.innerHTML = '<span class="current-user-actions">' + loggedInActionButts + '</span><a href="#" class="toggle-reply-form">Reply</a>';
 }
 
 function handleCommentSubmit(event) {
@@ -216,7 +210,7 @@ function handleCommentSubmit(event) {
 
           var mainCommentsForm = document.getElementById("new_comment");
           if (parentComment) {
-            replaceActionButts(parentComment);
+            handleFormClose(event);
             if (newComment.depth > 2) {
               parentComment.getElementsByClassName("toggle-reply-form")[0].innerHTML = ""
             }
@@ -228,7 +222,8 @@ function handleCommentSubmit(event) {
             var mainCommentsForm = document.getElementById("new_comment");
             mainCommentsForm.classList.remove("submitting");
             const textArea = document.getElementById("text-area");
-            textArea.classList = "";
+            textArea.classList.remove('embiggened-max', 'embiggened-more', 'embiggened');
+            textArea.closest('.comment-form').classList.remove('comment-form--initiated');
             textArea.value = newComment.comment_template || "";
             var preview = document.getElementById("preview-div");
             preview.classList.add("preview-toggle");
@@ -244,7 +239,6 @@ function handleCommentSubmit(event) {
           else {
             window.location.replace(newComment.url)
           }
-          warmNewCommentsArea();
           initializeCommentsPage();
           initializeCommentDate();
           initializeCommentDropdown();
@@ -263,6 +257,7 @@ function handleCommentSubmit(event) {
 }
 
 function handleFocus(event) {
+  handleButtonsActivation(event);
   var userStatus = document.body.getAttribute('data-user-status');
   var area = event.target;
   if (userStatus == 'logged-out') {
@@ -274,6 +269,8 @@ function handleFocus(event) {
       showModal('reply-to-comment');
     }, 100);
   } else {
+    var form = event.target.closest(".comment-form");
+    form.classList.add("comment-form--initiated");
     handleSizeChange(event);
   }
 }
@@ -282,13 +279,14 @@ function handleBlur(event) {
   setTimeout(function () {
     var el = document.getElementById('text-area');
     if (el.value.length == 0) {
-      el.className = '';
+      el.classList.remove('embiggened-max', 'embiggened-more', 'embiggened');
     }
   }, 100);
 }
 
 function handleKeyUp(event) {
   handleSizeChange(event);
+  handleButtonsActivation(event);
 }
 
 // Handler for when Ctrl+Enter OR Command+Enter is pressed
@@ -303,7 +301,7 @@ function handleSubmit(event) {
   if (codeOfConduct && event.target.value.trim() !== '') {
     // get a reference to the submit button for the text area (first level comment vs. reply comment)
     var parentFormId = event.target.parentElement.parentElement.id || event.target.parentElement.id;
-    var submitButton = document.querySelector('#' + parentFormId + ' input[type="submit"].comment-action-button');
+    var submitButton = document.querySelector('#' + parentFormId + ' button[type="submit"].comment-action-button');
     submitButton.click();
   }
 }
@@ -398,16 +396,38 @@ function handleKeyDown(event) {
   }
 }
 
+function handleFormClose(event) {
+  event.target.closest('.inner-comment').classList.remove("replying");
+  event.target.closest('.comment-form').remove();
+  initializeCommentsPage();
+}
+
 function handleSizeChange(event) {
   var lines = event.target.value.split(/\r*\n/);
+  var textarea = event.target;
   var lineCount = lines.length;
-  if (lineCount > 11) {
-    document.getElementById('text-area').className = 'embiggened-max';
-  } else if (lineCount > 6) {
-    document.getElementById('text-area').className = 'embiggened-more';
+  if (lineCount > 10) {
+    textarea.classList.add('embiggened-max');
+    textarea.classList.remove('embiggened-more', 'embiggened');
+  } else if (lineCount > 3) {
+    textarea.classList.add('embiggened-more');
+    textarea.classList.remove('embiggened-max', 'embiggened');
   } else {
-    document.getElementById('text-area').className = 'embiggened';
+    textarea.classList.add('embiggened');
+    textarea.classList.remove('embiggened-more', 'embiggened-max');
   }
+}
+
+function handleButtonsActivation(event) {
+  var textarea = event.target;
+  var buttons = textarea.closest('.comment-form').querySelectorAll('.js-btn-enable');
+  buttons.forEach(function(button) {
+    if( textarea.value.length > 0) {
+      button.disabled = false;
+    } else {
+      button.disabled = true;
+    }
+  });
 }
 
 function validateField(event) {
@@ -417,6 +437,10 @@ function validateField(event) {
       event.preventDefault();
     }
   }
+}
+
+function handleChange(event) {
+  handleButtonsActivation(event);
 }
 
 function generateUploadFormdata(image) {
@@ -459,7 +483,7 @@ function handleImageUpload(event, randomIdNumber) {
                 // button.style.display = "none";
                 messageContainer.style.display = "none";
                 address.value = json.links[0];
-                address.classList.add("showing");
+                address.classList.remove("hidden");;
                 address.select();
 
                 var uploadedMessage = 'Uploaded! Paste into editor';
