@@ -14,8 +14,6 @@ module VerifySetupCompleted
     mascot_user_id
     mascot_image_url
 
-    meta_keywords
-
     suggested_tags
     suggested_users
   ].freeze
