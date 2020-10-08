@@ -475,7 +475,6 @@ class StoriesController < ApplicationController
       @user.medium_url,
       @user.gitlab_url,
       @user.instagram_url,
-      @user.twitch_username,
       @user.website_url,
     ].reject(&:blank?)
   end
