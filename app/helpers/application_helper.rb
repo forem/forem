@@ -216,6 +216,30 @@ module ApplicationHelper
     SiteConfig.community_member_label.pluralize
   end
 
+  def meta_keywords_default
+    return if SiteConfig.meta_keywords[:default].blank?
+
+    tag.meta name: "keywords", content: SiteConfig.meta_keywords[:default]
+  end
+
+  def meta_keywords_article(article_tags = nil)
+    return if SiteConfig.meta_keywords[:article].blank?
+
+    content = if article_tags.present?
+                "#{article_tags}, #{SiteConfig.meta_keywords[:article]}"
+              else
+                SiteConfig.meta_keywords[:article]
+              end
+
+    tag.meta name: "keywords", content: content
+  end
+
+  def meta_keywords_tag(tag_name)
+    return if SiteConfig.meta_keywords[:tag].blank?
+
+    tag.meta name: "keywords", content: "#{SiteConfig.meta_keywords[:tag]}, #{tag_name}"
+  end
+
   def app_url(uri = nil)
     URL.url(uri)
   end
