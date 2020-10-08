@@ -8,12 +8,12 @@ import { useEffect } from 'preact/hooks';
  * 
  * @example
  * const shortcuts = {
- *   "ctrl+alt+KeyG": (e)=>{
+ *   "ctrl+alt+KeyG": (e) => {
  *     e.preventDefault(); 
  *     alert("Control Alt G has been pressed")
  *   }
  * }
- * <KeyboardShortcuts shortcuts={shortcut} />
+ * <KeyboardShortcuts shortcuts={shortcuts} />
  * 
  */
 const KeyboardShortcuts = ({ shortcuts, ...props }) => {
