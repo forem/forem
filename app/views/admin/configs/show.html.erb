@@ -467,6 +467,32 @@
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
+                         header: "Google reCAPTCHA Keys",
+                         state: "collapse",
+                         target: "recaptchaContainer",
+                         expanded: "false"
+                       } %>
+            <div id="recaptchaContainer" class="card-body collapse hide" aria-labelledby="recaptchaContainer">
+              <div class="form-group">
+                <%= admin_config_label :recaptcha_site_key, "reCAPTCHA Site Key" %>
+                <%= f.text_field :recaptcha_site_key,
+                                 class: "form-control",
+                                 value: SiteConfig.recaptcha_site_key %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %></div>
+              </div>
+              <div class="form-group">
+                <%= admin_config_label :recaptcha_secret_key, "reCAPTCHA Secret Key" %>
+                <%= f.text_field :recaptcha_secret_key,
+                                 class: "form-control",
+                                 value: SiteConfig.recaptcha_secret_key %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-3">
+            <%= render partial: "card_header",
+                       locals: {
                          header: "Images",
                          state: "collapse",
                          target: "imagesBodyContainer",
