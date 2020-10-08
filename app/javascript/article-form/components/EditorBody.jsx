@@ -52,12 +52,12 @@ export const EditorBody = ({
     onDragExit,
   });
 
-  const {setPasteElement} = usePasteImage({
+  const setPasteElement = usePasteImage({
     onPaste: handleImagePasted(
       handleImageSuccess(textAreaRef),
       handleImageFailure,
     )
-  });
+  }).setElement;
 
   useEffect(() => {
     if (textAreaRef.current) {
