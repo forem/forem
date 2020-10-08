@@ -5,6 +5,8 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  self.ignored_columns = %w[currently_streaming_on twitch_username]
+
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
   concerning :ProfileMigration do
@@ -40,7 +42,6 @@ class User < ApplicationRecord
   FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
   INBOXES = %w[open private].freeze
   NAVBARS = %w[default static].freeze
-  STREAMING_PLATFORMS = %w[twitch].freeze
   THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
@@ -157,7 +158,6 @@ class User < ApplicationRecord
   validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
   validates :config_theme, presence: true
   validates :credits_count, presence: true
-  validates :currently_streaming_on, inclusion: { in: STREAMING_PLATFORMS }, allow_nil: true
   validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
@@ -216,7 +216,7 @@ class User < ApplicationRecord
   before_validation :downcase_email
   before_validation :set_config_input
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_email, :verify_twitch_username
+  before_validation :verify_email
   before_validation :set_username
   before_create :set_default_language
   before_destroy :unsubscribe_from_newsletters, prepend: true
@@ -483,14 +483,6 @@ class User < ApplicationRecord
     roles.where(name: "tag_moderator").any?
   end
 
-  def currently_streaming?
-    currently_streaming_on.present?
-  end
-
-  def currently_streaming_on_twitch?
-    currently_streaming_on == "twitch"
-  end
-
   def enough_credits?(num_credits_needed)
     credits.unspent.size >= num_credits_needed
   end
@@ -541,10 +533,6 @@ class User < ApplicationRecord
 
   def verify_email
     self.email = nil if email == ""
-  end
-
-  def verify_twitch_username
-    self.twitch_username = nil if twitch_username == ""
   end
 
   def set_username

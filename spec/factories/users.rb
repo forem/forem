@@ -157,7 +157,6 @@ FactoryBot.define do
       medium_url { "www.medium.com/example" }
       gitlab_url { "www.gitlab.com/example" }
       instagram_url { "www.instagram.com/example" }
-      twitch_username { "Example007" }
     end
 
     trait :without_profile do
