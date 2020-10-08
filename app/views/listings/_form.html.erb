@@ -59,7 +59,7 @@
         <% if @organizations.present? && @organizations.size > 0 %>
           <div class="crayons-field">
             <%= form.label "organization_id", "Post under an organization", class: "crayons-field__label" %>
-            <%= form.select :organization_id, { "None" => "None"}, {}, {class: "crayons-select m:max-w-50"} %>
+            <%= form.select :organization_id, { "None" => "None" }, {}, { class: "crayons-select m:max-w-50" } %>
             <p class="crayons-field__description">Posting on behalf of an organization spends the organization's credits.</p>
           </div>
         <% end %>
