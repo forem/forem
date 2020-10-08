@@ -96,3 +96,21 @@
 .admin-navigation-links {
   width: 240px;
 }
+
+.config-authentication__row {
+  &--select {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--su-4);
+    align-items: center;
+  }
+
+  &--title {
+    font-weight: var(--fw-medium);
+  }
+
+  &--subtitle {
+    font-size: var(--fs-s);
+    color: var(--base-60);
+  }
+}
