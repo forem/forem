@@ -50,7 +50,11 @@
       <% group.profile_fields.each do |field| %>
         <div class="crayons-field <%= "crayons-field--check_box" if field.input_type == "check_box" %>">
           <div><%= field.label %></div>
-          <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name]) %>
+          <% if field["input_type"] == "check_box" %>
+            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", checked: @user.profile.data[field.attribute_name]) %>
+          <% else %>
+            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name]) %>
+          <% end %>
         </div>
       <% end %>
     </div>
