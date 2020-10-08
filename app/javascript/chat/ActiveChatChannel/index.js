@@ -1,40 +1,32 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { useContext } from 'preact/hooks';
+import { useContext, useEffect } from 'preact/hooks';
 import { processImageUpload } from '../../article-form/actions';
-import Message from '../message';
 import { VideoContent } from '../videoContent';
 import Compose from '../compose';
 import Content from '../content';
 import Alert from '../alert';
 import { addSnackbarItem } from '../../Snackbar';
 import { store } from '../components/ConnectStateProvider';
+import {getAllMessages, conductModeration, sendMessage, editMessage, deleteMessage} from '../actions/actions';
+import {scrollToBottom} from '../util';
 import ChatMessages from './ChatMessages';
 import DeleteModal from './Modal/DeleteModal';
 import ActiveChannelMembershipList from './ActiveChannelMemberList';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 
+const WIDE_WIDTH_LIMIT = 1600;
+const NARROW_WIDTH_LIMIT = 767;
+
 const ActiveChatChannel = ({
   channelHeader,
-  addUserName,
-  handleMessageScroll,
   triggerActiveContent,
-  triggerEditMessage,
-  triggerDeleteMessage,
-  jumpBacktoBottom,
-  onTriggerVideoContent,
-  handleEditMessageClose,
-  handleSubmitOnClick,
-  handleKeyDown,
-  handleSubmitOnClickEdit,
-  handleMention,
-  handleKeyUp,
-  handleKeyDownEdit,
-  // handleCloseDeleteModal,
-  handleMessageDelete,
+  setActiveContent,
+  setActiveContentState,
+  handleFailure
 }) => {
-  const { state } = useContext(store);
-  console.log(state);
+
+  const { state, dispatch } = useContext(store);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -52,6 +44,152 @@ const ActiveChatChannel = ({
 
     event.currentTarget.classList.remove('opacity-25');
     processImageUpload(files, handleImageSuccess, handleImageFailure);
+  };
+
+  const triggerEditMessage = (messageId) => {
+    const { messages, activeChannelId } = state;
+    const activeEditMessage = messages[activeChannelId].filter(
+      (message) => message.id === messageId,
+    )[0]
+
+    updateState('triggerEditMessage', {
+      startEditing: true,
+      activeEditMessage,
+    })
+  };
+
+  const jumpBacktoBottom = () => {
+    scrollToBottom();
+    document
+      .getElementById('jumpback_button')
+      .classList.remove('chatchanneljumpback__hide');
+  };
+
+  const onTriggerVideoContent = (e) => {
+    if (e.target.dataset.content === 'exit') {
+      updateState('exitVieoContent', {
+        videoPath: null,
+        fullscreenContent: null,
+        expanded: window.innerWidth > 600,
+      })
+    } else if (state.fullscreenContent === 'video') {
+      updateState('updateFullScreenContent', {})
+    } else {
+      updateState('handleScreen', {
+        fullscreenContent: 'video',
+        expanded: window.innerWidth > WIDE_WIDTH_LIMIT,
+      });
+    }
+  };
+
+  const handleKeyDownEdit = (e) => {
+    const enterPressed = e.keyCode === 13;
+    const targetValue = e.target.value;
+    const messageIsEmpty = targetValue.length === 0;
+    const shiftPressed = e.shiftKey;
+
+    if (enterPressed) {
+      if (messageIsEmpty) {
+        e.preventDefault();
+      } else if (!messageIsEmpty && !shiftPressed) {
+        e.preventDefault();
+        handleMessageSubmitEdit(e.target.value);
+        e.target.value = '';
+      }
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    const {
+      showMemberlist,
+      activeContent,
+      activeChannelId,
+      messages,
+      currentUserId,
+    } = state;
+    const enterPressed = e.keyCode === 13;
+    const leftPressed = e.keyCode === 37;
+    const rightPressed = e.keyCode === 39;
+    const escPressed = e.keyCode === 27;
+    const targetValue = e.target.value;
+    const messageIsEmpty = targetValue.length === 0;
+    const shiftPressed = e.shiftKey;
+    const upArrowPressed = e.keyCode === 38;
+    const deletePressed = e.keyCode === 46;
+
+    if (enterPressed) {
+      if (showMemberlist) {
+        e.preventDefault();
+        const selectedUser = document.querySelector('.active__message__list');
+        addUserName({ target: selectedUser });
+      } else if (messageIsEmpty) {
+        e.preventDefault();
+      } else if (!messageIsEmpty && !shiftPressed) {
+        e.preventDefault();
+        handleMessageSubmit(e.target.value);
+        e.target.value = '';
+      }
+    }
+    if (e.target.value.includes('@')) {
+      if (e.keyCode === 40 || e.keyCode === 38) {
+        e.preventDefault();
+      }
+    }
+    if (
+      leftPressed &&
+      activeContent[activeChannelId] &&
+      e.target.value === '' &&
+      document.getElementById('activecontent-iframe')
+    ) {
+      e.preventDefault();
+      try {
+        e.target.value = document.getElementById(
+          'activecontent-iframe',
+        ).contentWindow.location.href;
+      } catch (err) {
+        e.target.value = activeContent[activeChannelId].path;
+      }
+    }
+    if (
+      rightPressed &&
+      !activeContent[activeChannelId] &&
+      e.target.value === ''
+    ) {
+      e.preventDefault();
+      const richLinks = document.querySelectorAll('.chatchannels__richlink');
+      if (richLinks.length === 0) {
+        return;
+      }
+      setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      setActiveContent({
+        path: richLinks[richLinks.length - 1].href,
+        type_of: 'article',
+      });
+    }
+    if (escPressed && activeContent[activeChannelId]) {
+      setActiveContentState(activeChannelId, null);
+      updateState('handleScreen', {
+        fullscreenContent: null,
+        expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
+      });
+    }
+    if (messageIsEmpty) {
+      const messagesByCurrentUser = messages[activeChannelId].filter(
+        (message) => message.user_id === currentUserId,
+      );
+      const lastMessage =
+        messagesByCurrentUser[messagesByCurrentUser.length - 1];
+
+      if (lastMessage) {
+        if (upArrowPressed) {
+          triggerEditMessage(lastMessage.id);
+        } else if (deletePressed) {
+          triggerDeleteMessage(lastMessage.id);
+        }
+      }
+    }
   };
 
   const handleImageSuccess = (res) => {
@@ -74,20 +212,339 @@ const ActiveChatChannel = ({
     addSnackbarItem({ message: e.message, addCloseButton: true });
   };
 
-  const handleCloseDeleteModal = () => {
-    // dispatch({
-    //   type: 'closeDeleteModal',
-    //   payload: {
-    //     showDeleteModal: false
-    //   }
-    // });
-    // this.setState({ showDeleteModal: false, messageDeleteId: null });
+  const handleMessageScroll = () => {
+    const {
+      allMessagesLoaded,
+      messages,
+      activeChannelId,
+      messageOffset,
+    } = state;
+
+    if (!messages[activeChannelId]) {
+      return;
+    }
+
+    const jumpbackButton = document.getElementById('jumpback_button');
+
+    if (this.scroller) {
+      const scrolledRatio =
+        (this.scroller.scrollTop + this.scroller.clientHeight) /
+        this.scroller.scrollHeight;
+
+      if (scrolledRatio < 0.5) {
+        jumpbackButton.classList.remove('chatchanneljumpback__hide');
+      } else if (scrolledRatio > 0.6) {
+        jumpbackButton.classList.add('chatchanneljumpback__hide');
+      }
+
+      if (this.scroller.scrollTop === 0 && !allMessagesLoaded) {
+        getAllMessages(
+          activeChannelId,
+          messageOffset + messages[activeChannelId].length,
+        ).then((res) => {
+          addMoreMessages(res)
+        })
+        const curretPosition = this.scroller.scrollHeight;
+        updateState('currentMessageLocation', {currentMessageLocation: curretPosition})
+      }
+    }
   };
-  // dispatch({
-  //   type: "add_message",
-  // })
-  // this.setState({ showDeleteModal: false, messageDeleteId: null });
-  // }
+
+  const addMoreMessages = (res) => {
+    const { chatChannelId, messages } = res;
+
+    if (messages.length > 0) {
+      updateState('addMessage', {
+        chatChannelId,
+        messages
+      })
+    } else {
+      updateState('allMessagesLoaded', {
+        allMessagesLoaded: true
+      })
+    }
+  };
+
+
+  const triggerDeleteMessage = (messageId) => {
+    console.log('Iam clicled')
+    updateState('triggerMessageDeleted', {
+      messageDeleteId: messageId,
+      showDeleteModal: true,
+    });
+  };
+
+  const handleCloseDeleteModal = () => {
+    updateState('closeDeleteModal', {
+      showDeleteModal: false,
+      messageDeleteId: null,
+    })
+  };
+
+
+  const addUserName = (e) => {
+    const name =
+      e.target.dataset.content || e.target.parentElement.dataset.content;
+    const el = document.getElementById('messageform');
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const text = el.value;
+    let before = text.substring(0, start);
+    before = text.substring(0, before.lastIndexOf('@') + 1);
+    const after = text.substring(end, text.length);
+    el.value = `${before + name} ${after}`;
+    el.selectionStart = start + name.length + 1;
+    el.selectionEnd = start + name.length + 1;
+    el.focus();
+    updateState('showMemberList', {showMemberlist: false})
+  };
+
+  const handleSubmitOnClick = (e) => {
+    e.preventDefault();
+    const message = document.getElementById('messageform').value;
+    if (message.length > 0) {
+      handleMessageSubmit(message);
+      document.getElementById('messageform').value = '';
+    }
+  };
+
+  const handleSubmitOnClickEdit = (e) => {
+    e.preventDefault();
+    const message = document.getElementById('messageform').value;
+    if (message.length > 0) {
+      handleMessageSubmitEdit(message);
+      document.getElementById('messageform').value = '';
+    }
+  };
+
+  const handleMessageSubmitEdit = (message) => {
+    const { activeChannelId, activeEditMessage } = state;
+    const editedMessage = {
+      activeChannelId,
+      id: activeEditMessage.id,
+      message,
+    };
+    editMessage(editedMessage, handleSuccess, handleFailure);
+    handleEditMessageClose();
+  };
+
+
+  const handleEditMessageClose = () => {
+    const textarea = document.getElementById('messageform');
+    updateState('editMessageClose', {
+      startEditing: false,
+      markdownEdited: false,
+      activeEditMessage: { message: '', markdown: '' },
+    });
+    textarea.value = '';
+  };
+
+  const getMentionedUsers = (message) => {
+    const { channelUsers, activeChannelId, activeChannel } = state;
+    if (channelUsers[activeChannelId]) {
+      if (message.includes('@all') && activeChannel.channel_type !== 'open') {
+        return Array.from(
+          Object.values(channelUsers[activeChannelId]).filter(
+            (user) => user.id,
+          ),
+          (user) => user.id,
+        );
+      }
+      return Array.from(
+        Object.values(channelUsers[activeChannelId]).filter((user) =>
+          message.includes(user.username),
+        ),
+        (user) => user.id,
+      );
+    }
+    return null;
+  };
+
+  const handleMessageSubmit = (message) => {
+    const { activeChannelId } = state;
+    scrollToBottom();
+    // should check if user has the privilege
+    if (message.startsWith('/code')) {
+      setActiveContentState(activeChannelId, { type_of: 'code_editor' });
+    } else if (message.startsWith('/call')) {
+      const messageObject = {
+        activeChannelId,
+        message: '/call',
+        mentionedUsersId: getMentionedUsers(message),
+      };
+      updateState('setVideoPath', {
+        videoPath: `/video_chats/${activeChannelId}`
+      });
+      sendMessage(messageObject, handleSuccess, handleFailure);
+    } else if (message.startsWith('/play ')) {
+      const messageObject = {
+        activeChannelId,
+        message,
+        mentionedUsersId: getMentionedUsers(message),
+      };
+      sendMessage(messageObject, handleSuccess, handleFailure);
+    } else if (message.startsWith('/new')) {
+      setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      setActiveContent({
+        path: '/new',
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/search')) {
+      setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      setActiveContent({
+        path: `/search?q=${message.replace('/search ', '')}`,
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/s ')) {
+      setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      setActiveContent({
+        path: `/search?q=${message.replace('/s ', '')}`,
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/ban ') || message.startsWith('/unban ')) {
+      conductModeration(
+        activeChannelId,
+        message,
+        handleSuccess,
+        handleFailure,
+      );
+    } else if (message.startsWith('/')) {
+      setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      setActiveContent({
+        path: message,
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/github')) {
+      const args = message.split('/github ')[1].trim();
+      setActiveContentState(activeChannelId, { type_of: 'github', args });
+    } else {
+      const messageObject = {
+        activeChannelId,
+        message,
+        mentionedUsersId: getMentionedUsers(message),
+      };
+      updateState('handleAlert', {
+        scrolled: false, showAlert: false
+      })
+      sendMessage(messageObject, handleSuccess, handleFailure);
+    }
+  };
+
+  const handleSuccess = (response) => {
+    const { activeChannelId } = state;
+    scrollToBottom();
+    if (response.status === 'success') {
+      if (response.message.temp_id) {
+        const newMessages = state.messages;
+        const foundIndex = state.messages[activeChannelId].findIndex(
+          (message) => message.temp_id === response.message.temp_id,
+        );
+        if (foundIndex > 0) {
+          newMessages[activeChannelId][foundIndex].id = response.message.id;
+        }
+        updateState('updateMessageOnSuccess', {
+          messages: newMessages
+        });
+      }
+    } else if (response.status === 'moderation-success') {
+      addSnackbarItem({ message: response.message, addCloseButton: true });
+    } else if (response.status === 'error') {
+      addSnackbarItem({ message: response.message, addCloseButton: true });
+    }
+  };
+
+  const handleMention = (e) => {
+    const { activeChannel } = state;
+    const mention = e.keyCode === 64;
+    if (mention && activeChannel.channel_type !== 'direct') {
+      updateState('showMemberList', {showMemberlist: true})
+    }
+  };
+
+  const handleKeyUp = (e) => {
+    const { startEditing, activeChannel, showMemberlist } = state;
+    const enterPressed = e.keyCode === 13;
+    if (enterPressed && showMemberlist)
+    updateState('showMemberList', {showMemberlist: false})
+    if (activeChannel.channel_type !== 'direct') {
+      if (startEditing) {
+        updateState('markdownEdited', {markdownEdited: true})
+      }
+      if (!e.target.value.includes('@') && showMemberlist) {
+        updateState('showMemberList', {showMemberlist: false})
+      } else {
+        setQuery(e.target);
+        listHighlightManager(e.keyCode);
+      }
+    }
+  };
+
+  const setQuery = (e) => {
+    const { showMemberlist } = state;
+    if (showMemberlist) {
+      const before = e.value.substring(0, e.selectionStart);
+      const query = before.substring(
+        before.lastIndexOf('@') + 1,
+        e.selectionStart,
+      );
+
+      if (query.includes(' ') || before.lastIndexOf('@') < 0)
+      updateState('showMemberList', {showMemberlist: false})  
+      else {
+        updateState('showMemberList', {showMemberlist: true})
+        updateState('memberFilterQuery', {
+          memberFilterQuery: query
+        });
+      }
+    }
+  };
+
+  const listHighlightManager = (keyCode) => {
+    const mentionList = document.getElementById('mentionList');
+    const activeElement = document.querySelector('.active__message__list');
+    if (mentionList.children.length > 0) {
+      if (keyCode === 40 && activeElement) {
+        if (activeElement.nextElementSibling) {
+          activeElement.classList.remove('active__message__list');
+          activeElement.nextElementSibling.classList.add(
+            'active__message__list',
+          );
+        }
+      } else if (keyCode === 38 && activeElement) {
+        if (activeElement.previousElementSibling) {
+          activeElement.classList.remove('active__message__list');
+          activeElement.previousElementSibling.classList.add(
+            'active__message__list',
+          );
+        }
+      } else {
+        mentionList.children[0].classList.add('active__message__list');
+      }
+    }
+  };
+
+  const handleMessageDelete = () => {
+    const { messageDeleteId } = state;
+    deleteMessage(messageDeleteId);
+    updateState('updateDeleteModalState', {
+      showDeleteModal: false
+    });
+  };
+
+  const updateState = (type, data) => {
+    dispatch({
+      type,
+      payload: data
+    });
+  };
 
   return (
     <div className="activechatchannel">
@@ -181,23 +638,12 @@ const ActiveChatChannel = ({
   );
 };
 
-Message.propTypes = {
-  channelHeader: PropTypes.element,
-  addUserName: PropTypes.func,
-  handleMessageScroll: PropTypes.func,
-  triggerDeleteMessage: PropTypes.func,
-  jumpBacktoBottom: PropTypes.func,
-  onTriggerVideoContent: PropTypes.func,
-  handleSubmitOnClick: PropTypes.func,
-  handleKeyDown: PropTypes.func,
-  handleSubmitOnClickEdit: PropTypes.func,
-  handleMention: PropTypes.func,
-  handleKeyUp: PropTypes.func,
-  handleKeyDownEdit: PropTypes.func,
-  handleEditMessageClose: PropTypes.func,
-  triggerEditMessage: PropTypes.func,
-  handleMessageDelete: PropTypes.func,
-  // handleCloseDeleteModal: PropTypes.func,
+ActiveChatChannel.propTypes = {
+  channelHeader: PropTypes.element.isRequired,
+  setActiveContentState: PropTypes.func.isRequired,
+  setActiveContent: PropTypes.func.isRequired,
+  handleFailure: PropTypes.func.isRequired,
+  triggerActiveContent: PropTypes.func.isRequired,
 };
 
 export default ActiveChatChannel;

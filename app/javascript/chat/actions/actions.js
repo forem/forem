@@ -1,15 +1,16 @@
 import { createDataHash } from '../util';
+import { request } from '../../utilities/http';
 
-export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
-  fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    credentials: 'same-origin',
-  })
-    .then((response) => response.json())
-    .then(successCb)
-    .catch(failureCb);
-}
+// export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
+//   fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
+//     Accept: 'application/json',
+//     'Content-Type': 'application/json',
+//     credentials: 'same-origin',
+//   })
+//     .then((response) => response.json())
+//     .then(successCb)
+//     .catch(failureCb);
+// }
 
 export function sendMessage(messageObject, successCb, failureCb) {
   fetch('/messages', {
@@ -56,20 +57,30 @@ export function editMessage(editedMessage, successCb, failureCb) {
     .catch(failureCb);
 }
 
-export function sendOpen(activeChannelId, successCb, failureCb) {
-  fetch(`/chat_channels/${activeChannelId}/open`, {
+// export function sendOpen(activeChannelId, successCb, failureCb) {
+//   fetch(`/chat_channels/${activeChannelId}/open`, {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'X-CSRF-Token': window.csrfToken,
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({}),
+//     credentials: 'same-origin',
+//   })
+//     .then((response) => response.json())
+//     .then(successCb)
+//     .catch(failureCb);
+// }
+
+export async function sendOpen(activeChannelId) {
+  const response = await request(`/chat_channels/${activeChannelId}/open`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({}),
     credentials: 'same-origin',
-  })
-    .then((response) => response.json())
-    .then(successCb)
-    .catch(failureCb);
+    body: JSON.stringify({}),
+  });
+
+  return response.json();
 }
 
 export function conductModeration(
@@ -129,25 +140,39 @@ export function getChannels(
   });
 }
 
-export function getUnopenedChannelIds(successCb) {
-  fetch('/chat_channels?state=unopened_ids', {
+export async function getUnopenedChannelIds() {
+  const response = await request('/chat_channels?state=unopened_ids', {
     credentials: 'same-origin',
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      successCb(json.unopened_ids);
-    });
+  });
+
+  return response.json()
+  // fetch('/chat_channels?state=unopened_ids', {
+  //   credentials: 'same-origin',
+  // })
+  //   .then((response) => response.json())
+  //   .then((json) => {
+  //     successCb(json.unopened_ids);
+  //   });
 }
 
-export function getContent(url, successCb, failureCb) {
-  fetch(url, {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
+// export function getContent(url, successCb, failureCb) {
+//   fetch(url, {
+//     Accept: 'application/json',
+//     'Content-Type': 'application/json',
+//     credentials: 'same-origin',
+//   })
+//     .then((response) => response.json())
+//     .then(successCb)
+//     .catch(failureCb);
+// }
+
+export async function getContent(url) {
+  const response = await request(url, {
+    method: 'GET',
     credentials: 'same-origin',
   })
-    .then((response) => response.json())
-    .then(successCb)
-    .catch(failureCb);
+
+  return response.json();
 }
 
 export function getJSONContents(url, successCb, failureCb) {
@@ -179,4 +204,22 @@ export function deleteMessage(messageId, successCb, failureCb) {
     .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
+}
+
+
+export async function getAllMessages(channelId, messageOffset) {
+  const response = await request(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
+    method: 'GET',
+    credentials: 'same-origin',
+  })
+  
+  return response.json();
+  // fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
+  //   Accept: 'application/json',
+  //   'Content-Type': 'application/json',
+  //   credentials: 'same-origin',
+  // })
+  //   .then((response) => response.json())
+  //   .then(successCb)
+  //   .catch(failureCb);
 }

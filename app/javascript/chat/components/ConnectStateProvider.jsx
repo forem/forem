@@ -1,5 +1,5 @@
 import { h, createContext } from 'preact';
-// import { useReducer } from "preact/hooks";
+import { useReducer } from "preact/hooks";
 
 const store = createContext({});
 const { Provider } = store;
@@ -13,10 +13,10 @@ const { Provider } = store;
  * @param {Function} props.reducer Given the current state and an action, returns the new state
  */
 
-const ConnectStateProvider = ({ children, initialState }) => {
-  // const [state, dispatch] = useReducer(reducer, initialState);
-  const state = initialState;
-  console.log(state, 'IamState');
-  return <Provider value={{ state }}>{children}</Provider>;
+const ConnectStateProvider = ({ children, initialState, reducer }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  // const state = initialState;
+  // console.log(state, 'IamState');
+  return <Provider value={{ state, dispatch }}>{children}</Provider>;
 };
 export { store, ConnectStateProvider };

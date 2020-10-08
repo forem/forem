@@ -6,7 +6,7 @@ const ActiveChannel = ({ _activeChannel }) => {
 };
 
 ActiveChannel.propTypes = {
-  activeChannel: PropTypes.object(),
+  activeChannel: PropTypes.object,
 };
 
 export default ActiveChannel;
