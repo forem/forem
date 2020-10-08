@@ -5,6 +5,10 @@ module Constants
         description: "Can users sign up with only email and password?",
         placeholder: ""
       },
+      allow_email_password_login: {
+        description: "Can users login with only email and password?",
+        placeholder: ""
+      },
       authentication_providers: {
         description: "How can users sign in?",
         placeholder: ""

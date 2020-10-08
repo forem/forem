@@ -56,6 +56,7 @@ module Admin
         facebook_key
         facebook_secret
         allow_email_password_registration
+        allow_email_password_login
         primary_brand_color_hex
         spam_trigger_terms
       ]
