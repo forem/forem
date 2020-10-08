@@ -21,9 +21,9 @@ module VerifySetupCompleted
   ].freeze
 
   included do
-    # rubocop:disable Rails/LexicallyScopedActionFilter
-    before_action :verify_setup_completed, only: %i[index new edit show]
-    # rubocop:enable Rails/LexicallyScopedActionFilter
+    before_action :verify_setup_completed,
+                  only: %i[index new edit show],
+                  if: -> { current_user&.has_role?(:single_resource_admin) }
   end
 
   def setup_completed?
