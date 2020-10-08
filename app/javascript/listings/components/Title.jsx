@@ -5,7 +5,9 @@ const domId = 1;
 
 const Title = ({ onChange, defaultValue }) => (
   <div className="crayons-field">
-    <label className="crayons-field__label" htmlFor={domId}>Title</label>
+    <label className="crayons-field__label" htmlFor={domId}>
+      Title
+    </label>
     <input
       type="text"
       className="crayons-textfield"
