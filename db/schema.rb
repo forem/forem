@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_07_091041) do
+ActiveRecord::Schema.define(version: 2020_10_09_040438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1207,7 +1207,6 @@ ActiveRecord::Schema.define(version: 2020_10_07_091041) do
     t.inet "current_sign_in_ip"
     t.string "currently_hacking_on"
     t.string "currently_learning"
-    t.string "currently_streaming_on"
     t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
@@ -1311,7 +1310,6 @@ ActiveRecord::Schema.define(version: 2020_10_07_091041) do
     t.text "summary"
     t.string "text_color_hex"
     t.string "twitch_url"
-    t.string "twitch_username"
     t.datetime "twitter_created_at"
     t.integer "twitter_followers_count"
     t.integer "twitter_following_count"
