@@ -8,9 +8,7 @@ RSpec.describe "Admin manages configuration", type: :system do
     visit admin_config_path
   end
 
-  # Note: The :meta_keywords are handled slightly differently in the view, so we
-  # can't check them the same way as the rest.
-  (VerifySetupCompleted::MANDATORY_CONFIGS - [:meta_keywords]).each do |option|
+  VerifySetupCompleted::MANDATORY_CONFIGS.each do |option|
     it "marks #{option} as required" do
       selector = "label[for='site_config_#{option}']"
       expect(first(selector).text).to include("Required")

@@ -119,10 +119,18 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.headers["X-Accel-Expires"]).to eq("600")
     end
 
-    it "shows default meta keywords" do
+    it "shows default meta keywords if set" do
       SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
       get "/"
       expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
+    end
+
+    it "does not show default meta keywords if not set" do
+      SiteConfig.meta_keywords = { default: "" }
+      get "/"
+      expect(response.body).not_to include(
+        "<meta name=\"keywords\" content=\"cool developers, civil engineers\">",
+      )
     end
 
     it "shows only one cover if basic feed style" do
@@ -348,10 +356,18 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(sponsorship.blurb_html)
     end
 
-    it "shows meta keywords" do
+    it "shows meta keywords if set" do
       SiteConfig.meta_keywords = { tag: "software engineering, ruby" }
       get "/t/#{tag.name}"
       expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
+    end
+
+    it "does not show meta keywords if not set" do
+      SiteConfig.meta_keywords = { tag: "" }
+      get "/t/#{tag.name}"
+      expect(response.body).not_to include(
+        "<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">",
+      )
     end
 
     context "with user signed in" do

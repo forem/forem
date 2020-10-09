@@ -44,6 +44,24 @@ RSpec.describe "feedback_messages", type: :request do
       end
     end
 
+    context "with no recaptcha keys set" do
+      before do
+        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("")
+        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("")
+      end
+
+      it "does not show the recaptcha tag" do
+        get "/report-abuse"
+        expect(response.body).not_to include("recaptcha-tag-container")
+      end
+
+      it "creates a feedback message" do
+        expect do
+          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        end.to change(FeedbackMessage, :count).by(1)
+      end
+    end
+
     context "with invalid recaptcha" do
       it "rerenders page" do
         post "/feedback_messages", params: valid_abuse_report_params, headers: headers

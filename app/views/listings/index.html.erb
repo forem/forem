@@ -3,7 +3,8 @@
 
   <link rel="canonical" href="<%= app_url(request.path) %>" />
   <meta name="description" content="<%= SiteConfig.community_description %>">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>y">
+  <%= meta_keywords_default %>
+
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= app_url(request.path) %>" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
