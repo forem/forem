@@ -1440,7 +1440,6 @@ export default class Chat extends Component {
   handleImageDrop = (event) => {
     event.preventDefault();
     const { files } = event.dataTransfer;
-
     event.currentTarget.classList.remove('opacity-25');
     processImageUpload(files, this.handleImageSuccess, this.handleImageFailure);
   };
@@ -1533,6 +1532,7 @@ export default class Chat extends Component {
               markdownEdited={state.markdownEdited}
               editMessageMarkdown={state.activeEditMessage.markdown}
               handleEditMessageClose={this.handleEditMessageClose}
+              handleFilePaste={this.handleFilePaste}
             />
           </div>
         </div>
@@ -1549,6 +1549,28 @@ export default class Chat extends Component {
         />
       </div>
     );
+  };
+
+  handleFilePaste = (e) => {
+    e.preventDefault();
+    if (!e.clipboardData || !e.clipboardData.items) {
+      return;
+    }
+    const items = [];
+    for (let i = 0; i < e.clipboardData.items.length; i++) {
+      const item = e.clipboardData.items[i];
+      if (item.kind !== 'file') {
+        continue;
+      }
+      items.push(item);
+    }
+    if (items && items.length > 0) {
+      processImageUpload(
+        [items[0].getAsFile()],
+        this.handleImageSuccess,
+        this.handleImageFailure,
+      );
+    }
   };
 
   onTriggerVideoContent = (e) => {

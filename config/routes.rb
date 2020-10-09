@@ -62,6 +62,9 @@ Rails.application.routes.draw do
       resources :broadcasts
       resources :buffer_updates, only: %i[create update]
       resources :listings, only: %i[index edit update destroy]
+      resources :listing_categories, only: %i[index edit update new create
+                                              destroy], path: "listings/categories"
+
       resources :comments, only: [:index]
       resources :events, only: %i[index create update]
       resources :feedback_messages, only: %i[index show]
@@ -69,6 +72,7 @@ Rails.application.routes.draw do
       resources :pages, only: %i[index new create edit update destroy]
       resources :mods, only: %i[index update]
       resources :moderator_actions, only: %i[index]
+      resources :navigation_links, only: %i[index update create destroy]
       resources :privileged_reactions, only: %i[index]
       resources :permissions, only: %i[index]
       resources :podcasts, only: %i[index edit update destroy] do
@@ -126,6 +130,7 @@ Rails.application.routes.draw do
       resource :config
       resources :badges, only: %i[index edit update new create]
       resources :display_ads, only: %i[index edit update new create destroy]
+
       resources :html_variants, only: %i[index edit update new create show destroy]
       # These redirects serve as a safegaurd to prevent 404s for any Admins
       # who have the old badge_achievement URLs bookmarked.
@@ -394,7 +399,6 @@ Rails.application.routes.draw do
     get "/search" => "stories#search"
     post "articles/preview" => "articles#preview"
     post "comments/preview" => "comments#preview"
-    get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
     get "/about" => "pages#about"
