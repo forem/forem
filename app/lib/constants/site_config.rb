@@ -122,6 +122,10 @@ module Constants
         description: "Used to authenticate with your health check endpoints.",
         placeholder: "a secure token"
       },
+      invite_only_mode: {
+        description: "Only users invited by email can join this community.",
+        placeholder: ""
+      },
       jobs_url: {
         description: "URL of the website where open positions are posted",
         placeholder: "Jobs URL"
