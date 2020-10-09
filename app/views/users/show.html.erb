@@ -133,11 +133,7 @@
                   <%= inline_svg_tag("instagram.svg", class: "crayons-icon", aria: true, title: "Instagram logo") %>
                 </a>
               <% end %>
-              <% if @user.twitch_username? %>
-                <a href="<%= twitch_live_stream_path(username: @user.username) %>" class="px-1 align-middle inline-block <% if @user.currently_streaming_on_twitch? %>color-accent-success<% end %>">
-                  <%= inline_svg_tag("twitch.svg", class: "crayons-icon", id: "icon-twitch", aria: true, title: "Twitch logo") %>
-                </a>
-              <% elsif @user.twitch_url? %>
+              <% if @user.twitch_url? %>
                 <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
                   <%= inline_svg_tag("twitch.svg", class: "crayons-icon", aria: true, title: "Twitch logo") %>
                 </a>

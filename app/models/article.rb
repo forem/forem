@@ -93,6 +93,7 @@ class Article < ApplicationRecord
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
+  after_save :create_conditional_autovomits
   after_save :bust_cache, :detect_human_language
   after_save :notify_slack_channel_about_publication
 
@@ -675,6 +676,28 @@ class Article < ApplicationRecord
   def calculate_base_scores
     self.hotness_score = 1000 if hotness_score.blank?
     self.spaminess_rating = 0 if new_record?
+  end
+
+  def create_conditional_autovomits
+    return unless SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
+
+    Reaction.create(
+      user_id: SiteConfig.mascot_user_id,
+      reactable_id: id,
+      reactable_type: "Article",
+      category: "vomit",
+    )
+
+    return unless Reaction.article_vomits.where(reactable_id: user.articles.pluck(:id)).size > 2
+
+    user.add_role(:banned)
+    Note.create(
+      author_id: SiteConfig.mascot_user_id,
+      noteable_id: user_id,
+      noteable_type: "User",
+      reason: "automatic_ban",
+      content: "User banned for too many spammy articles, triggered by autovomit.",
+    )
   end
 
   def async_bust
