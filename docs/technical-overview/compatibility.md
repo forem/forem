@@ -7,7 +7,7 @@ Compatability means:
 - Staying updated. We need to maintain overall compatability by keeping the ecosystem close to the latest version as proactively as we can.
 - Maintaining all programmatic interfaces, whether they be the [API](https://api.forem.com) or Forem meta tags which can be consumed for Forem validation.
 - Maintaining human interfaces which allow users to find where they need to go and conduct all necessary customizations.
-- Maintain great performance such that the web-based forem ecosystem can provide a great experience in all network conditions and in comparison to more closed ecosystems.
+- Maintaining great performance such that the web-based Forem ecosystem can provide a great experience in all network conditions and in comparison to more closed ecosystems.
 
 ## Meta tags
 
