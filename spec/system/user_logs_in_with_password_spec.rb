@@ -11,6 +11,7 @@ RSpec.describe "Authenticating with a password" do
   let!(:user) { create(:user, password: password, password_confirmation: password) }
 
   before do
+    SiteConfig.allow_email_password_login = true
     visit sign_up_path
   end
 
