@@ -11,8 +11,6 @@ disk_storage = proc do |config|
   config.enable_processing = !Rails.env.test?
   config.asset_host = if Rails.env.production?
                         "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
-                      else
-                        "http://#{ApplicationConfig['APP_DOMAIN']}"
                       end
 end
 
