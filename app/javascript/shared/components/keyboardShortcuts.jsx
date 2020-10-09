@@ -14,7 +14,7 @@ import { h } from 'preact';
  *   }
  * }
  *
- * const setEventTarget = useKeyboardShortcuts(shortcuts, someElementOrWindowObject);
+ * useKeyboardShortcuts(shortcuts, someElementOrWindowObject);
  *
  * @param {object} shortcuts List of keyboard shortcuts/event
  * @param {EventTarget} [eventTarget=window] An event target.
@@ -35,8 +35,7 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
       return (
         name === "select" ||
         name === "textarea" ||
-        (name === "input" &&
-          ["submit", "reset", "checkbox", "radio"].indexOf(type) < 0) ||
+        (name === "input" && ["submit", "reset", "checkbox", "radio"].indexOf(type) < 0) ||
         element.isContentEditable
       );
     };
