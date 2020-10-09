@@ -3,18 +3,6 @@
 @import 'variables';
 @import 'mixins';
 
-body {
-  background: var(--body-bg);
-  color: var(--body-color);
-  font-family: var(--ff-sans-serif);
-  padding: 0;
-  margin: 0;
-  overflow-y: scroll;
-  padding-top: var(--header-height);
-  display: flex;
-  flex-direction: column;
-}
-
 #audiocontent {
   display: none;
 }
@@ -36,44 +24,6 @@ body {
   height: 90vh;
 }
 
-.zen-mode {
-  .top-bar,
-  .crayons-article-sticky,
-  .crayons-article-actions {
-    display: none;
-  }
-}
-
-@media print {
-  .top-bar,
-  .crayons-article-sticky {
-    display: none;
-  }
-}
-
-.config_minimize_newest_listings {
-  #sidebar-listings-widget {
-    .widget-body {
-      display: none !important;
-    }
-  }
-}
-
-.universal-page-content-wrapper {
-  flex: 1 auto;
-  visibility: visible;
-  font-size: 18px;
-}
-
-/* Hide headers for screen readers */
-.visually-hidden-header {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-
 a {
   color: var(--link-brand-color);
   text-decoration: none;
@@ -90,33 +40,6 @@ div {
   display: none;
 }
 
-.cta {
-  color: $black;
-  background: $green;
-  font-family: $helvetica-condensed;
-  -webkit-appearance: none;
-  font-stretch: condensed;
-  font-weight: bold;
-  &.cta-danger {
-    background: $red;
-  }
-}
-
-button {
-  cursor: pointer;
-}
-
-input[type='submit'] {
-  cursor: pointer;
-}
-
-input[type='text'],
-textarea,
-input[type='url'],
-input[type='email'] {
-  outline: 0;
-}
-
 .partner-image-dark-mode {
   display: none !important;
 }
@@ -130,9 +53,7 @@ body.ten-x-hacker-theme {
   .icon-image,
   .dev-badge,
   .chatchannels__config img,
-  .message__actions img,
-  .external-link-img,
-  .group-img {
+  .message__actions img {
     -webkit-filter: invert(95%);
     filter: invert(95%);
   }
@@ -146,10 +67,6 @@ body.ten-x-hacker-theme {
   .partner-image-light-mode {
     display: none !important;
   }
-
-  .not-dark-theme-text-compatible {
-    @include themeable-important(color, theme-secondary-color, white);
-  }
 }
 
 .broadcast-wrapper {
@@ -160,6 +77,10 @@ body.ten-x-hacker-theme {
   text-align: center;
   width: 100%;
   z-index: 101; // Must be higher than the z-index of the sticky-nav.
+
+  .static-header & {
+    position: relative;
+  }
 }
 
 .broadcast-visible {
@@ -171,73 +92,12 @@ body.ten-x-hacker-theme {
   align-self: center;
 }
 
-body.static-navbar-config {
-  padding-top: 0;
-  .top-bar {
-    position: relative !important;
-  }
-
-  .broadcast-wrapper {
-    position: relative; // Unset fixed position for static navbar config.
-  }
-}
-
 .trusted-visible-block {
   display: none !important;
 }
 
 body.trusted-status-true .trusted-visible-block {
   display: flex !important;
-}
-
-body.hidden-shell {
-  .top-bar,
-  footer {
-    display: none;
-  }
-  .container {
-    margin-top: 0px;
-  }
-  .universal-page-content-wrapper {
-    margin-top: calc(var(--header-height) * -1) !important;
-    margin-bottom: 30px;
-  }
-}
-
-// Remove post confirmation
-.delete-confirm.container {
-  padding: 150px 10px;
-  min-height: 300px;
-  text-align: center;
-  h4 {
-    background: $black;
-    padding: 5px 8px;
-    color: $white;
-    display: inline-block;
-    margin-bottom: 0px;
-    border-radius: 3px;
-  }
-  h2 {
-    font-size: 22px;
-    margin-bottom: 40px;
-  }
-  a.delete-link {
-    background: $red;
-    color: white;
-    padding: 10px 15px;
-    &:hover {
-      color: white;
-      opacity: 0.9;
-    }
-  }
-  form button {
-    background: $red;
-    color: white;
-    font-size: 1.5em;
-    border: 0px;
-    border-radius: 3px;
-    padding: 6px 12px;
-  }
 }
 
 .app-shell-loader {

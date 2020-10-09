@@ -1,7 +1,7 @@
 <% if articles %>
-<div class="crayons-card crayons-card--secondary text-padding mb-4">
-  <h2 class="fs-2xl m:fs-3xl fw-bold">Read next</h2>
 
+<section class="crayons-card crayons-card--secondary text-padding mb-4 print-hidden">
+  <h2 class="crayons-title">Read next</h2>
   <% articles.each do |article| %>
     <a href="<%= article.path %>" data-preload-image="<%= cloud_cover_url(article.main_image) %>" class="crayons-link mt-6 block">
       <div class="flex items-center">
@@ -19,5 +19,5 @@
       </div>
     </a>
   <% end %>
-</div>
+</section>
 <% end %>

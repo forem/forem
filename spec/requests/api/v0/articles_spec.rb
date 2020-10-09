@@ -159,6 +159,42 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
     end
 
+    context "with tags param" do
+      it "returns articles with any of the specified tags" do
+        create(:article, published: true)
+        get api_articles_path(tags: "javascript, css, not-existing-tag")
+        expect(response.parsed_body.size).to eq(1)
+      end
+    end
+
+    context "with tags_exclude param" do
+      it "returns articles that do not contain any of excluded tag" do
+        create(:article, published: true)
+        get api_articles_path(tags_exclude: "node, java")
+        expect(response.parsed_body.size).to eq(2)
+
+        create(:article, published: true, tags: "node")
+        get api_articles_path(tags_exclude: "node, java")
+        expect(response.parsed_body.size).to eq(2)
+      end
+    end
+
+    context "with tags and tags_exclude params" do
+      it "returns proper scope" do
+        create(:article, published: true)
+        get api_articles_path(tags: "javascript, css", tags_exclude: "node, java")
+        expect(response.parsed_body.size).to eq(1)
+      end
+    end
+
+    context "when tags and tags_exclude contain the same tag" do
+      it "returns empty set" do
+        create(:article, published: true, tags: "java")
+        get api_articles_path(tags: "java", tags_exclude: "java")
+        expect(response.parsed_body.size).to eq(0)
+      end
+    end
+
     context "with top param" do
       it "only returns fresh top articles if top param is present" do
         # TODO: slight duplication, test should be removed

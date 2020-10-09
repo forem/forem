@@ -1,5 +1,5 @@
 <div>
-  <h2 class="fs-2xl s:fs-3xl mb-4">Abuse reports</h2>
+  <h2 class="crayons-title mb-4">Abuse reports</h2>
   <ul class="nav nav-pills mb-4">
     <li class="nav-item">
       <a href="<%= admin_reports_path(state: @feedback_type, status: "Open") %>" class="nav-link <%= "active" if @status == "Open" %>">Open/Unresolved</a>
@@ -26,6 +26,9 @@
             <div class="d-flex justify-content-between" data-controller="reaction" data-reaction-id="<%= reaction.id %>">
               <span>
                 🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
+                <% if reaction.user_id == SiteConfig.mascot_user_id %>
+                  <strong>(auto-generated)</strong>
+                <% end %>
               </span>
               <span>
                 <strong><%= reaction.reactable_type %>:</strong>

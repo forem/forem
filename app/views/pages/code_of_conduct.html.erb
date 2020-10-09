@@ -3,7 +3,8 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(code_of_conduct_path) %>" />
   <meta name="description" content="<%= community_qualified_name %> Code of Conduct">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
+
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url(code_of_conduct_path) %>" />
   <meta property="og:title" content="<%= community_qualified_name %> Code of Conduct" />

@@ -14,6 +14,7 @@ module ArticlesHelper
 
     article.processed_html.include?("youtube.com/embed/") ||
       article.processed_html.include?("player.vimeo.com") ||
+      article.processed_html.include?("clips.twitch.tv/embed") ||
       article.comments_blob.include?("youtube")
   end
 

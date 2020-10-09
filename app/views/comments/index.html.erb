@@ -6,7 +6,7 @@
 
 <%= content_for :page_meta do %>
   <meta name="description" content="<%= @commentable.description || "An article from the community" %>">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:article] %>">
+  <%= meta_keywords_article %>
 
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Discussion of <%= @commentable.title %>" />
