@@ -1,6 +1,6 @@
 # Compatibility
 
-To go along with effective administration and putting user security and wellbeing first, for a Forem to be most useful, it maximizes its technical compatibility.
+To go along with effective administration and putting user security and well-being first, for a Forem to be most useful, it maximizes its technical compatibility.
 
 Compatability means:
 
