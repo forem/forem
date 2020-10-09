@@ -25,9 +25,6 @@
     "channel_status": {
       "type": "keyword"
     },
-    "channel_status": {
-      "type": "keyword"
-    },
     "channel_type": {
       "type": "keyword"
     },
