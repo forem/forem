@@ -7,7 +7,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
   let(:svg_image) { file_fixture("svg_image.txt").read }
 
   before do
-    SiteConfig.main_social_image = "https://i.ibb.co/NYsy5Fm/JTL-Logo.jpg"
+    SiteConfig.main_social_image = "https://dummyimage.com/800x600.jpg"
     SiteConfig.logo_png = "https://i.ibb.co/5nJvG1X/JTL-Logo.png"
     SiteConfig.mascot_image_url = "https://i.ibb.co/NYsy5Fm/JTL-Logo.jpg"
     SiteConfig.suggested_tags = "coding, beginners"
