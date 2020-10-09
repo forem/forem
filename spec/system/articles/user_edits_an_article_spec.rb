@@ -8,8 +8,8 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
 
   before do
     SiteConfig.main_social_image = "https://dummyimage.com/800x600.jpg"
-    SiteConfig.logo_png = "https://i.ibb.co/5nJvG1X/JTL-Logo.png"
-    SiteConfig.mascot_image_url = "https://i.ibb.co/NYsy5Fm/JTL-Logo.jpg"
+    SiteConfig.logo_png = "https://dummyimage.com/800x600.png"
+    SiteConfig.mascot_image_url = "https://dummyimage.com/800x600.jpg"
     SiteConfig.suggested_tags = "coding, beginners"
     SiteConfig.suggested_users = "romagueramica"
     SiteConfig.logo_svg = svg_image
