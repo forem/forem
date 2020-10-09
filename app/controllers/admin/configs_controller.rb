@@ -59,6 +59,8 @@ module Admin
         allow_email_password_login
         primary_brand_color_hex
         spam_trigger_terms
+        recaptcha_site_key
+        recaptcha_secret_key
       ]
 
       allowed_params = allowed_params |
