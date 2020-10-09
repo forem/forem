@@ -52,13 +52,37 @@
     width: 100%;
   }
 
-  &--limited {
+  &--limited-l {
     --site-width: #{$breakpoint-l};
   }
 
-  &--limited-inner {
+  &--limited-m {
+    --site-width: #{$breakpoint-m};
+  }
+
+  &--limited-s {
+    --site-width: #{$breakpoint-s};
+  }
+
+  &--limited-xs {
+    --site-width: 480px;
+  }
+
+  &--limited-inner-l {
     .crayons-layout__content__inner {
       max-width: $breakpoint-l;
+    }
+  }
+
+  &--limited-inner-m {
+    .crayons-layout__content__inner {
+      max-width: $breakpoint-m;
+    }
+  }
+
+  &--limited-inner-s {
+    .crayons-layout__content__inner {
+      max-width: $breakpoint-s;
     }
   }
 }

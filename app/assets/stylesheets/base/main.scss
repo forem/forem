@@ -31,3 +31,8 @@ body {
   visibility: visible;
   font-size: 18px;
 }
+
+a {
+  color: var(--link-brand-color);
+  text-decoration: none;
+}
