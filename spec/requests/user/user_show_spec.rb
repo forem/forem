@@ -35,7 +35,6 @@ RSpec.describe "UserShow", type: :request do
           user.medium_url,
           user.gitlab_url,
           user.instagram_url,
-          user.twitch_username,
           user.website_url,
         ],
         "image" => Images::Profile.call(user.profile_image_url, length: 320),

@@ -53,7 +53,7 @@ be used to log into the application with the Email login option:
 
 ```
 email: admin@forem.local
-password: admin
+password: password
 ```
 
 ### Other seed modes
