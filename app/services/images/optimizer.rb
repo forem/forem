@@ -35,12 +35,26 @@ module Images
 
     def self.imgproxy(img_src, **kwargs)
       options = DEFAULT_IMGPROXY_OPTIONS.merge(kwargs).reject { |_, v| v.blank? }
-
+      Imgproxy.config.endpoint ||= get_imgproxy_endpoint
       Imgproxy.url_for(img_src, options)
     end
 
     def self.imgproxy_enabled?
       Imgproxy.config.key.present? && Imgproxy.config.salt.present?
+    end
+
+    def self.get_imgproxy_endpoint
+      if Rails.env.production?
+        # Use /images with the same domain on Production as
+        # our default configuration
+        URL.url("images")
+        # ie. https://forem.dev/images
+      else
+        # On other environments, rely on ApplicationConfig for a
+        # more flexible configuration
+        # ie. default imgproxy endpoint is localhost:8080
+        ApplicationConfig["IMGPROXY_ENDPOINT"]
+      end
     end
   end
 end
