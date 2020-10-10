@@ -1,4 +1,8 @@
 class Article < ApplicationRecord
+  self.ignored_columns = %w[
+    support_webmentions
+  ]
+
   include CloudinaryHelper
   include ActionView::Helpers
   include Storext.model

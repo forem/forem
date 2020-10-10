@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_09_040438) do
-
+ActiveRecord::Schema.define(version: 2020_10_10_084621) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -141,7 +140,6 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
     t.text "slug"
     t.string "social_image"
     t.integer "spaminess_rating", default: 0
-    t.boolean "support_webmentions", default: false
     t.integer "third_user_id"
     t.string "title"
     t.datetime "updated_at", null: false
