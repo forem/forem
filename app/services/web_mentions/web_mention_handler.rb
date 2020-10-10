@@ -12,6 +12,7 @@ module WebMentions
 
     def call
       return if webmention_url.blank?
+
       send_webmention
     end
 
