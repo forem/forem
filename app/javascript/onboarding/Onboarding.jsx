@@ -2,6 +2,7 @@ import 'preact/devtools';
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
+import Focustrap from '../shared/components/focusTrap';
 import IntroSlide from './components/IntroSlide';
 import EmailPreferencesForm from './components/EmailPreferencesForm';
 import FollowTags from './components/FollowTags';
@@ -69,7 +70,20 @@ export default class Onboarding extends Component {
   render() {
     const { currentSlide } = this.state;
     const { communityConfig } = this.props;
-    return <main className="onboarding-body" style={communityConfig.communityBackground && {backgroundImage: `url(${communityConfig.communityBackground})`}}>{this.slides[currentSlide]}</main>;
+    return (
+      <Focustrap>
+        <main
+          className="onboarding-body"
+          style={
+            communityConfig.communityBackground && {
+              backgroundImage: `url(${communityConfig.communityBackground})`,
+            }
+          }
+        >
+          {this.slides[currentSlide]}
+        </main>
+      </Focustrap>
+    );
   }
 }
 
@@ -78,6 +92,6 @@ Onboarding.propTypes = {
     communityName: PropTypes.string.isRequired,
     communityBackground: PropTypes.string.isRequired,
     communityLogo: PropTypes.string.isRequired,
-    communityDescription: PropTypes.string.isRequired
-  }).isRequired
+    communityDescription: PropTypes.string.isRequired,
+  }).isRequired,
 };

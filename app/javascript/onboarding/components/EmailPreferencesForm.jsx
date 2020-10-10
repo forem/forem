@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import Focustrap from '../../shared/components/focusTrap';
 import { getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
 
@@ -54,69 +53,67 @@ class EmailPreferencesForm extends Component {
     const { email_newsletter, email_digest_periodic } = this.state;
     const { prev, slidesCount, currentSlideIndex } = this.props;
     return (
-      <Focustrap>
+      <div
+        data-testid="onboarding-email-preferences-form"
+        className="onboarding-main crayons-modal"
+      >
         <div
-          data-testid="onboarding-email-preferences-form"
-          className="onboarding-main crayons-modal"
+          className="crayons-modal__box"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
         >
-          <div
-            className="crayons-modal__box"
-            role="dialog"
-            aria-labelledby="title"
-            aria-describedby="subtitle"
-          >
-            <Navigation
-              prev={prev}
-              next={this.onSubmit}
-              slidesCount={slidesCount}
-              currentSlideIndex={currentSlideIndex}
-            />
-            <div className="onboarding-content terms-and-conditions-wrapper">
-              <header className="onboarding-content-header">
-                <h1 id="title" className="title">
-                  Almost there!
-                </h1>
-                <h2 id="subtitle" className="subtitle">
-                  Review your email preferences before we continue.
-                </h2>
-              </header>
+          <Navigation
+            prev={prev}
+            next={this.onSubmit}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+          />
+          <div className="onboarding-content terms-and-conditions-wrapper">
+            <header className="onboarding-content-header">
+              <h1 id="title" className="title">
+                Almost there!
+              </h1>
+              <h2 id="subtitle" className="subtitle">
+                Review your email preferences before we continue.
+              </h2>
+            </header>
 
-              <form>
-                <fieldset>
-                  <legend>Email preferences</legend>
-                  <ul>
-                    <li className="checkbox-item">
-                      <label htmlFor="email_newsletter">
-                        <input
-                          type="checkbox"
-                          id="email_newsletter"
-                          name="email_newsletter"
-                          checked={email_newsletter}
-                          onChange={this.handleChange}
-                        />
-                        I want to receive weekly newsletter emails.
-                      </label>
-                    </li>
-                    <li className="checkbox-item">
-                      <label htmlFor="email_digest_periodic">
-                        <input
-                          type="checkbox"
-                          id="email_digest_periodic"
-                          name="email_digest_periodic"
-                          checked={email_digest_periodic}
-                          onChange={this.handleChange}
-                        />
-                        I want to receive a periodic digest of top posts from my
-                        tags.
-                      </label>
-                    </li>
-                  </ul>
-                </fieldset>
-              </form>
-            </div>
+            <form>
+              <fieldset>
+                <legend>Email preferences</legend>
+                <ul>
+                  <li className="checkbox-item">
+                    <label htmlFor="email_newsletter">
+                      <input
+                        type="checkbox"
+                        id="email_newsletter"
+                        name="email_newsletter"
+                        checked={email_newsletter}
+                        onChange={this.handleChange}
+                      />
+                      I want to receive weekly newsletter emails.
+                    </label>
+                  </li>
+                  <li className="checkbox-item">
+                    <label htmlFor="email_digest_periodic">
+                      <input
+                        type="checkbox"
+                        id="email_digest_periodic"
+                        name="email_digest_periodic"
+                        checked={email_digest_periodic}
+                        onChange={this.handleChange}
+                      />
+                      I want to receive a periodic digest of top posts from my
+                      tags.
+                    </label>
+                  </li>
+                </ul>
+              </fieldset>
+            </form>
           </div>
         </div>
-      </Focustrap>
+      </div>
     );
   }
 }
