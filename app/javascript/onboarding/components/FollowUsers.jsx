@@ -179,7 +179,6 @@ class FollowUsers extends Component {
                       data-testid="onboarding-user-button"
                       type="button"
                       onClick={() => this.handleClick(user)}
-                      onKeyDown={() => this.handleKeyDown(user)}
                       className={
                         selectedUsers.includes(user)
                           ? 'user content-row selected'
