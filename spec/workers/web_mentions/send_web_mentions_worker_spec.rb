@@ -21,13 +21,13 @@ RSpec.describe WebMentions::SendWebMention, type: :worker do
   describe "send webmention" do
     context "when there's a new comment" do
       it "sends webmention" do
-        article_url = URL.url(article.path)
-        article.update(canonical_url: canonical_url, support_webmentions: true)
+        article_url = article_url(article)
+        article.update(canonical_url: canonical_url)
 
-        allow(RestClient).to receive(:post)
+        allow(HTTParty).to receive(:post)
         webmention
         worker.perform(comment.id)
-        expect(RestClient).to have_received(:post).
+        expect(HTTParty).to have_received(:post).
           with(webmention_url, { "source": article_url, "target": canonical_url })
       end
     end
