@@ -48,6 +48,7 @@
         <div class="sidebar-data">
           <div>
             <%= pluralize @user.articles.published.size, "Post" %> Published
+            <%= link_to "RSS", app_url("/feed/#{@user.username}") %>
           </div>
           <div>
             <%= pluralize @user.comments.where(deleted: false).size, "Comment" %> Written
