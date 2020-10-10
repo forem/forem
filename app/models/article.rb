@@ -103,7 +103,6 @@ class Article < ApplicationRecord
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
-  after_commit :check_webmentions_support, on: %i[create update]
 
   serialize :cached_user
   serialize :cached_organization
@@ -711,11 +710,5 @@ class Article < ApplicationRecord
 
   def notify_slack_channel_about_publication
     Slack::Messengers::ArticlePublished.call(article: self)
-  end
-
-  def check_webmentions_support
-    return unless canonical_url.present? && canonical_url_changed?
-
-    WebMentions::CheckWebMentionSupport.perform_async(id)
   end
 end
