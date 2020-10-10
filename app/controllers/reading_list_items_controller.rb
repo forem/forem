@@ -10,6 +10,8 @@ class ReadingListItemsController < ApplicationController
 
     @reaction.status = params[:current_status] == "archived" ? "valid" : "archived"
     @reaction.save
+    @reaction.user.touch(:last_changed_archive_at)
+
     head :ok
   end
 
