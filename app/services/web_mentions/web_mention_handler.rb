@@ -1,6 +1,6 @@
 module WebMentions
   class WebMentionHandler
-    def initialize(canonical_url, article_url = nil, webmention_url = nil)
+    def initialize(canonical_url:, article_url: nil, webmention_url: nil)
       @canonical_url = canonical_url
       @article_url = article_url
       @webmention_url = webmention_url

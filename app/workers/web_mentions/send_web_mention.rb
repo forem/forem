@@ -11,7 +11,7 @@ module WebMentions
 
       canonical_url = commentable.canonical_url
       article_url = URL.url(commentable.path)
-      WebMentions::WebMentionHandler.call(canonical_url, article_url)
+      WebMentions::WebMentionHandler.call(canonical_url: canonical_url, article_url: article_url)
     end
   end
 end
