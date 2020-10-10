@@ -7,7 +7,7 @@ module WebMentions
       commentable = Comment.find_by(id: comment_id)&.commentable
       return unless commentable
 
-      return unless commentable.support_webmentions
+      return unless commentable.canonical_url
 
       canonical_url = commentable.canonical_url
       article_url = URL.url(commentable.path)
