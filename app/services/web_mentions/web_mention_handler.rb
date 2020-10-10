@@ -35,7 +35,7 @@ module WebMentions
 
     def send_webmention
       HTTParty.post(@webmention_url, "source": @article_url, "target": @canonical_url)
-    rescue HTTParty::ExceptionWithResponse => e
+    rescue HTTParty::Error => e
       Rails.logger.error("SendWebmentionException: #{e.response}")
     end
   end
