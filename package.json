@@ -108,7 +108,7 @@
     "canvas": "^2.6.1",
     "css-loader": "^4.3.0",
     "cssom": "^0.4.4",
-    "eslint": "^7.10.0",
+    "eslint": "^7.11.0",
     "eslint-config-preact": "^1.1.1",
     "eslint-config-prettier": "^6.12.0",
     "eslint-import-resolver-webpack": "^0.12.2",
