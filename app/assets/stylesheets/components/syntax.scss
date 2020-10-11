@@ -12,7 +12,8 @@
 }
 
 pre:not(.highlight),
-div.highlight {
+div.highlight,
+li pre.highlight {
   background: var(--syntax-background-color);
   color: var(--syntax-text-color);
   font-size: 80%;
