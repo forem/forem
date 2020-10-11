@@ -34,6 +34,9 @@ class MarkdownParser
     html = remove_nested_linebreak_in_list(html)
     html = prefix_all_images(html)
     html = wrap_all_images_in_links(html)
+    html = add_control_class_to_codeblock(html)
+    html = add_control_panel_to_codeblock(html)
+    html = add_fullscreen_button_to_panel(html)
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
     html = escape_colon_emojis_in_codeblock(html)
@@ -276,6 +279,40 @@ class MarkdownParser
   def remove_empty_paragraphs(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.css("p").select { |paragraph| all_children_are_blank?(paragraph) }.each(&:remove)
+    doc.to_html
+  end
+
+  def add_control_class_to_codeblock(html)
+    doc = Nokogiri::HTML.fragment(html)
+    doc.search("div.highlight").each do |codeblock|
+      codeblock.add_class("js-code-highlight")
+    end
+    doc.to_html
+  end
+
+  def add_control_panel_to_codeblock(html)
+    doc = Nokogiri::HTML.fragment(html)
+    doc.search("div.highlight").each do |codeblock|
+      codeblock.add_child('<div class="highlight__panel js-actions-panel"></div>')
+    end
+    doc.to_html
+  end
+
+  def add_fullscreen_button_to_panel(html)
+    doc = Nokogiri::HTML.fragment(html)
+    doc.search("div.highlight__panel").each do |codeblock|
+      fullscreen_action = <<~HTML
+        <div class="highlight__panel-action">
+          <div class="highlight-action js-fullscreen-code-action">
+            <div class="highlight-action__icon">
+              <div class="highlight-action-icon highlight-action-icon--fullscreen"></div>
+            </div>
+          </div>
+        </div>
+      HTML
+
+      codeblock.add_child(fullscreen_action)
+    end
     doc.to_html
   end
 
