@@ -1,5 +1,6 @@
 class MarkdownParser
   include ApplicationHelper
+  include CodeBlockParser
 
   BAD_XSS_REGEX = [
     /src=["'](data|&)/i,
@@ -31,18 +32,18 @@ class MarkdownParser
     rescue Liquid::SyntaxError => e
       html = e.message
     end
-    html = CodeBlockParser.remove_nested_linebreak_in_list(html)
-    html = CodeBlockParser.prefix_all_images(html)
-    html = CodeBlockParser.wrap_all_images_in_links(html)
-    html = CodeBlockParser.add_control_class_to_codeblock(html)
-    html = CodeBlockParser.add_control_panel_to_codeblock(html)
-    html = CodeBlockParser.add_fullscreen_button_to_panel(html)
-    html = CodeBlockParser.wrap_all_tables(html)
-    html = CodeBlockParser.remove_empty_paragraphs(html)
-    html = CodeBlockParser.escape_colon_emojis_in_codeblock(html)
-    html = CodeBlockParser.unescape_raw_tag_in_codeblocks(html)
-    html = CodeBlockParser.wrap_all_figures_with_tags(html)
-    CodeBlockParser.wrap_mentions_with_links!(html)
+    html = remove_nested_linebreak_in_list(html)
+    html = prefix_all_images(html)
+    html = wrap_all_images_in_links(html)
+    html = add_control_class_to_codeblock(html)
+    html = add_control_panel_to_codeblock(html)
+    html = add_fullscreen_button_to_panel(html)
+    html = wrap_all_tables(html)
+    html = remove_empty_paragraphs(html)
+    html = escape_colon_emojis_in_codeblock(html)
+    html = unescape_raw_tag_in_codeblocks(html)
+    html = wrap_all_figures_with_tags(html)
+    wrap_mentions_with_links!(html)
   end
 
   def calculate_reading_time

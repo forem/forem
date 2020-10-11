@@ -1,4 +1,4 @@
-class CodeBlockParser
+module CodeBlockParser
   include ApplicationHelper
 
   def remove_nested_linebreak_in_list(html)
