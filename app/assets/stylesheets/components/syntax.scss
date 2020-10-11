@@ -1,4 +1,5 @@
 @import '../config/import';
+@import '../functions';
 
 :root {
   --syntax-background-color: #08090a;
@@ -92,10 +93,10 @@ div.highlight {
 }
 
 .highlight-action-icon--fullscreen {
-  background-image: url(/assets/fullscreen-on.svg);
+  background-image: url(image-src('fullscreen-on.svg'));
 
   .highlight.is-fullscreen & {
-    background-image: url(/assets/fullscreen-off.svg);
+    background-image: url(image-src('fullscreen-off.svg'));
   }
 }
 
