@@ -42,6 +42,7 @@ import ActionMessage from './actionMessage';
 import Content from './content';
 import { VideoContent } from './videoContent';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
+import { dragAndUpload } from '@utilities/dragAndUpload';
 
 const NARROW_WIDTH_LIMIT = 767;
 const WIDE_WIDTH_LIMIT = 1600;
@@ -601,7 +602,6 @@ export default class Chat extends Component {
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
         this.handleMessageSubmit(e.target.value);
-        e.target.value = '';
       }
     }
     if (e.target.value.includes('@')) {
@@ -678,7 +678,6 @@ export default class Chat extends Component {
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
         this.handleMessageSubmitEdit(e.target.value);
-        e.target.value = '';
       }
     }
   };
@@ -746,6 +745,11 @@ export default class Chat extends Component {
         this.handleSuccess,
         this.handleFailure,
       );
+    } else if (message.startsWith('/draw')) {
+      this.setActiveContent({
+        sendCanvasImage: this.sendCanvasImage,
+        type_of: 'draw',
+      });
     } else if (message.startsWith('/')) {
       this.setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
@@ -839,7 +843,6 @@ export default class Chat extends Component {
     const message = document.getElementById('messageform').value;
     if (message.length > 0) {
       this.handleMessageSubmit(message);
-      document.getElementById('messageform').value = '';
     }
   };
 
@@ -848,7 +851,6 @@ export default class Chat extends Component {
     const message = document.getElementById('messageform').value;
     if (message.length > 0) {
       this.handleMessageSubmitEdit(message);
-      document.getElementById('messageform').value = '';
     }
   };
 
@@ -1432,6 +1434,9 @@ export default class Chat extends Component {
     event.currentTarget.classList.remove('opacity-25');
     processImageUpload(files, this.handleImageSuccess, this.handleImageFailure);
   };
+  sendCanvasImage = (files) => {
+    dragAndUpload([files], this.handleImageSuccess, this.handleImageFailure);
+  };
   handleImageSuccess = (res) => {
     const { links, image } = res;
     const mLink = `![${image[0].name}](${links[0]})`;
@@ -1738,13 +1743,11 @@ export default class Chat extends Component {
   };
 
   handleEditMessageClose = () => {
-    const textarea = document.getElementById('messageform');
     this.setState({
       startEditing: false,
       markdownEdited: false,
       activeEditMessage: { message: '', markdown: '' },
     });
-    textarea.value = '';
   };
 
   renderDeleteModal = () => {

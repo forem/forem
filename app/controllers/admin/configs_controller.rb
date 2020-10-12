@@ -55,9 +55,12 @@ module Admin
         github_secret
         facebook_key
         facebook_secret
+        invite_only_mode
         allow_email_password_registration
         primary_brand_color_hex
         spam_trigger_terms
+        recaptcha_site_key
+        recaptcha_secret_key
       ]
 
       allowed_params = allowed_params |
@@ -165,6 +168,7 @@ module Admin
         rate_limit_follow_count_daily
         rate_limit_image_upload
         rate_limit_published_article_creation
+        rate_limit_published_article_antispam_creation
         rate_limit_organization_creation
         rate_limit_user_subscription_creation
         rate_limit_article_update

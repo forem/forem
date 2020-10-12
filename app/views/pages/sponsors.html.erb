@@ -3,10 +3,10 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/sponsors") %>" />
   <meta name="description" content="<%= community_name %> | Sponsors">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
 <% end %>
 
-<div class="crayons-layout crayons-layout--limited">
+<div class="crayons-layout crayons-layout--limited-l">
   <div class="crayons-card text-styles text-padding">
     <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-0 mt-0">Thank you! ♥️</h1>
     <h2 class="fs-2xl s:fs-3xl l:fs-4xl fw-medium s:fw-bold lh-tight mb-4 mt-0">for supporting our community</h2>

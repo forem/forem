@@ -9,11 +9,10 @@ module VerifySetupCompleted
 
     main_social_image
     logo_png
+    logo_svg
 
     mascot_user_id
     mascot_image_url
-
-    meta_keywords
 
     suggested_tags
     suggested_users

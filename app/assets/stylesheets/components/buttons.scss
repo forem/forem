@@ -16,6 +16,10 @@
   --brand-facebook-bg: #4267b2;
   --brand-facebook-color: #fff;
   --brand-facebook-bg-hover: #476fbf;
+
+  --brand-email-bg: #24292e;
+  --brand-email-color: #fff;
+  --brand-email-bg-hover: #000;
 }
 
 // Basic styling
@@ -68,7 +72,8 @@
   &[href]:focus,
   &:hover:enabled,
   &:active:enabled,
-  &:focus:enabled {
+  &:focus:enabled,
+  &:focus-within {
     background-color: var(--bg-hover);
     border-color: var(--border-hover);
     box-shadow: var(--shadow-hover);
@@ -274,6 +279,17 @@
   --bg-inverted-hover: var(--brand-facebook-bg-hover);
   --color-inverted: var(--brand-facebook-color);
   --color-inverted-hover: var(--brand-facebook-color);
+}
+
+.crayons-btn--brand-email {
+  --bg: var(--brand-email-bg);
+  --bg-hover: var(--brand-email-bg-hover);
+  --color: var(--brand-email-color);
+  --color-hover: var(--brand-email-color);
+  --bg-inverted: var(--brand-email-bg);
+  --bg-inverted-hover: var(--brand-email-bg-hover);
+  --color-inverted: var(--brand-email-color);
+  --color-inverted-hover: var(--brand-email-color);
 }
 
 // Icon alone

@@ -23,6 +23,7 @@ class SiteConfig < RailsSettings::Base
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
+  field :invite_only_mode, type: :boolean, default: false
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
   field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
@@ -66,6 +67,10 @@ class SiteConfig < RailsSettings::Base
 
   # Google Analytics Tracking ID, e.g. UA-71991000-1
   field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
+
+  # Google ReCATPCHA keys
+  field :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
+  field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
   # Images
   field :main_social_image, type: :string
@@ -121,6 +126,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_listing_creation, type: :integer, default: 1
   field :rate_limit_published_article_creation, type: :integer, default: 9
+  field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
   field :rate_limit_organization_creation, type: :integer, default: 1
   field :rate_limit_reaction_creation, type: :integer, default: 10
   field :rate_limit_image_upload, type: :integer, default: 9
@@ -175,5 +181,11 @@ class SiteConfig < RailsSettings::Base
   # Returns true if we are operating on a local installation, false otherwise
   def self.local?
     app_domain.include?("localhost")
+  end
+
+  # Used where we need to keep old DEV features around but don't want to/cannot
+  # expose them to other communities.
+  def self.dev_to?
+    app_domain == "dev.to"
   end
 end

@@ -16,6 +16,7 @@ module Admin
       @user = User.find(params[:id])
       @notes = @user.notes.order(created_at: :desc).limit(10).load
       set_feedback_messages
+      set_related_reactions
     end
 
     def show
@@ -133,6 +134,17 @@ module Admin
       @related_reports = FeedbackMessage.where(id: @user.reporter_feedback_messages.ids)
         .or(FeedbackMessage.where(id: @user.affected_feedback_messages.ids))
         .or(FeedbackMessage.where(id: @user.offender_feedback_messages.ids))
+        .order(created_at: :desc).limit(15)
+    end
+
+    def set_related_reactions
+      user_article_ids = @user.articles.ids
+      user_comment_ids = @user.comments.ids
+      @related_vomit_reactions = Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids,
+                                                category: "vomit")
+        .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
+        .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
+        .includes(:reactable)
         .order(created_at: :desc).limit(15)
     end
 

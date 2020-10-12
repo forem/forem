@@ -78,6 +78,25 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
+
+        context "when authentication providers are present" do
+          before do
+            SiteConfig.authentication_providers = Authentication::Providers.available.map(&:to_s)
+          end
+
+          it "allows authentication providers to be unset" do
+            new_provider = Array.wrap(SiteConfig.authentication_providers.pop.to_s)
+            post "/admin/config", params: { site_config: { authentication_providers: new_provider },
+                                            confirmation: confirmation_message }
+            expect(SiteConfig.authentication_providers).to eq(new_provider)
+          end
+
+          it "allows all authentication providers to be unset" do
+            post "/admin/config", params: { site_config: { authentication_providers: [] },
+                                            confirmation: confirmation_message }
+            expect(SiteConfig.authentication_providers).to be_empty
+          end
+        end
       end
 
       describe "Community Content" do
@@ -468,6 +487,13 @@ RSpec.describe "/admin/config", type: :request do
           end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
         end
 
+        it "updates rate_limit_published_article_antispam_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_published_article_antispam_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_published_article_antispam_creation).from(1).to(3)
+        end
+
         it "updates rate_limit_organization_creation" do
           expect do
             post "/admin/config", params: { site_config: { rate_limit_organization_creation: 3 },
@@ -543,6 +569,17 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { spam_trigger_terms: spam_trigger_terms },
                                           confirmation: confirmation_message }
           expect(SiteConfig.spam_trigger_terms).to eq(["hey", "pokemon go hack"])
+        end
+
+        it "updates recaptcha_site_key and recaptcha_secret_key" do
+          site_key = "hi-ho"
+          secret_key = "lets-go"
+          post "/admin/config", params: {
+            site_config: { recaptcha_site_key: site_key, recaptcha_secret_key: secret_key },
+            confirmation: confirmation_message
+          }
+          expect(SiteConfig.recaptcha_site_key).to eq site_key
+          expect(SiteConfig.recaptcha_secret_key).to eq secret_key
         end
       end
 

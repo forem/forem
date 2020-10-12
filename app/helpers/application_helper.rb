@@ -76,8 +76,10 @@ module ApplicationHelper
     "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
-  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto")
-    image_url = url.presence || asset_path("#{rand(1..40)}.png")
+  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto", random_fallback: true)
+    fallback_image = asset_path("#{rand(1..40)}.png") if random_fallback
+
+    return unless (image_url = url.presence || fallback_image)
 
     Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: fetch_format)
   end
@@ -104,7 +106,11 @@ module ApplicationHelper
     end
   end
 
-  def any_selfserve_auth?
+  def invite_only_mode?
+    SiteConfig.invite_only_mode?
+  end
+
+  def any_enabled_auth_providers?
     authentication_enabled_providers.any?
   end
 
@@ -212,6 +218,30 @@ module ApplicationHelper
 
   def community_members_label
     SiteConfig.community_member_label.pluralize
+  end
+
+  def meta_keywords_default
+    return if SiteConfig.meta_keywords[:default].blank?
+
+    tag.meta name: "keywords", content: SiteConfig.meta_keywords[:default]
+  end
+
+  def meta_keywords_article(article_tags = nil)
+    return if SiteConfig.meta_keywords[:article].blank?
+
+    content = if article_tags.present?
+                "#{article_tags}, #{SiteConfig.meta_keywords[:article]}"
+              else
+                SiteConfig.meta_keywords[:article]
+              end
+
+    tag.meta name: "keywords", content: content
+  end
+
+  def meta_keywords_tag(tag_name)
+    return if SiteConfig.meta_keywords[:tag].blank?
+
+    tag.meta name: "keywords", content: "#{SiteConfig.meta_keywords[:tag]}, #{tag_name}"
   end
 
   def app_url(uri = nil)
