@@ -25,7 +25,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
 
   it "user unpublishes their post" do
     visit "/#{user.username}/#{article.slug}/edit"
-    fill_in "article_body_markdown", with: template.gsub("true", "false")
+    fill_in("article_body_markdown", with: template.gsub("true", "false"), fill_options: { clear: :backspace })
     click_button("Save changes")
     expect(page).to have_text("Unpublished Post.")
   end
