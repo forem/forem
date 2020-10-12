@@ -1,4 +1,4 @@
-<nav class="mb-6 sidebar-nav" id="sidebar-nav" aria-label="Primary sidebar nav">
+<nav class="mb-6" id="sidebar-nav" aria-label="Primary sidebar nav">
   <% if user_signed_in? %>
     <a class="crayons-link crayons-link--block mb-2 flex break-word items-start" id="sidebar-profile" href="#">
       <span class="crayons-avatar crayons-avatar--xl shrink-0 mr-2">
@@ -24,18 +24,20 @@
     </a>
   <% end %>
 
-  <% NavigationLink.ordered[0..4].each do |link| %>
-    <%= render "articles/sidebar_nav_link", link: link %>
-  <% end %>
+  <div class="sidebar-navigation-links">
+    <% NavigationLink.ordered[0..4].each do |link| %>
+      <%= render "articles/sidebar_nav_link", link: link %>
+    <% end %>
 
-  <% if NavigationLink.all.length > 5 %>
-    <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
+    <% if NavigationLink.all.length > 5 %>
+      <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
 
-    <div class="hidden" id="main-nav-more">
-      <% NavigationLink.ordered[5..].each do |link| %>
-        <%= render "articles/sidebar_nav_link", link: link %>
-      <% end %>
-    </div>
+      <div class="hidden" id="main-nav-more">
+        <% NavigationLink.ordered[5..].each do |link| %>
+          <%= render "articles/sidebar_nav_link", link: link %>
+        <% end %>
+      </div>
+  </div>
   <% end %>
 </nav>
 
