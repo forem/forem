@@ -1,4 +1,5 @@
 @import '../config/import';
+@import '../functions';
 
 :root {
   --syntax-background-color: #08090a;
@@ -31,6 +32,100 @@ div.highlight {
 
   @media (min-width: $breakpoint-m) {
     padding: var(--su-6);
+  }
+}
+
+div.highlight {
+  position: relative;
+
+  // this a way to separate scroll of long code & icons in panel
+  .highlight {
+    overflow: auto;
+  }
+}
+
+.highlight__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  visibility: hidden;
+}
+
+.highlight:hover .highlight__panel {
+  visibility: visible;
+}
+
+.highlight__panel-action {
+  display: flex;
+  overflow: hidden;
+  border-bottom-left-radius: var(--radius);
+
+  & + & {
+    margin-left: 1px;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.highlight-action {
+  display: flex;
+  background: #4f575f;
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+}
+
+.highlight-action__icon {
+  display: flex;
+}
+
+.highlight-action-icon {
+  --icon-size: calc(var(--su-7) - var(--su-2) * 2);
+  display: block;
+  width: var(--su-7);
+  height: var(--su-7);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: var(--icon-size) var(--icon-size);
+}
+
+.highlight-action-icon--fullscreen {
+  background-image: url(image-src('fullscreen-on.svg'));
+
+  .highlight.is-fullscreen & {
+    background-image: url(image-src('fullscreen-off.svg'));
+  }
+}
+
+.fullscreen-code {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100vh;
+  background: var(--syntax-background-color);
+  color: var(--syntax-text-color);
+  overflow: auto;
+  visibility: hidden;
+  transform: scale(0.01);
+  transition: transform 0.4s ease-in-out, visibility 0.4s ease-in-out;
+
+  div.highlight {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .highlight__panel {
+    position: fixed;
+  }
+
+  &.is-open {
+    visibility: visible;
+    transform: scale(1);
   }
 }
 
