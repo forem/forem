@@ -21,6 +21,9 @@
   <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
+<% end %>
+
+<%= content_for :internal_navigation_page_meta do %>
   <%= auto_discovery_link_tag(:rss, app_url("feed"), title: "#{community_name} RSS Feed") %>
 <% end %>
 

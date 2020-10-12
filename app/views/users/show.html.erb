@@ -6,8 +6,8 @@
   <%= render "users/meta" %>
 <% end %>
 
-<%= content_for :internal_page_meta do %>
-  <% if @stories.any? %>
+<% if @stories.any? %>
+  <%= content_for :internal_navigation_page_meta do %>
     <%= render "users/rss_autodiscovery", user: @user %>
   <% end %>
 <% end %>
