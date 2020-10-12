@@ -45,7 +45,18 @@ class Profile < ApplicationRecord
     attributes!.map { |attribute| MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s }
   end
 
+  # NOTE: @citizen428 We want to have a current list of profile attributes the
+  # moment the application loads. However, doing this unconditionally fails if
+  # the profiles table doesn't exist yet (e.g. when running bin/setup in a new
+  # clone). I wish Rails had a hook for code to run after the app started, but
+  # for now this is the best I can come up with.
+  refresh_attributes! if ApplicationRecord.connection.table_exists?("profiles")
+
   def custom_profile_attributes
     custom_profile_fields.pluck(:attribute_name)
+  end
+
+  def clear!
+    update(data: {})
   end
 end
