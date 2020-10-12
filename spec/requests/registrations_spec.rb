@@ -15,27 +15,36 @@ RSpec.describe "Registrations", type: :request do
         end
       end
 
-      it "shows the sign in text for password based authentication" do
-        get sign_up_path
-
-        expect(response.body).to include("Have a password? Continue with your email address")
-      end
-
-      it "does not show the password based authentication hint if there are no single sign in options enabled" do
+      it "only shows the single sign on options if they are present" do
         allow(Authentication::Providers).to receive(:enabled).and_return([])
 
         get sign_up_path
 
         expect(response.body).not_to include("Have a password? Continue with your email address")
       end
+    end
 
-      it "only shows the single sign on options if they are present" do
-        allow(Authentication::Providers).to receive(:enabled).and_return([])
+    context "when email login is enabled in /admin/config" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(true)
+      end
 
+      it "shows the sign in text for password based authentication" do
         get sign_up_path
 
-        expect(response.body).to include("Password")
-        expect(response.body).not_to include("Continue with")
+        expect(response.body).to include("Have a password? Continue with your email address")
+      end
+    end
+
+    context "when email login is disabled in /admin/config" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
+      end
+
+      it "does not show the sign in text for password based authentication" do
+        get sign_up_path
+
+        expect(response.body).not_to include("Have a password? Continue with your email address")
       end
     end
 
