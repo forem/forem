@@ -1,8 +1,16 @@
 class Profile < ApplicationRecord
+  SUMMARY_ATTRIBUTE = "summary".freeze
+  MAX_SUMMARY_LENGTH = 200
+
   belongs_to :user
 
   validates :data, presence: true
   validates :user_id, uniqueness: true
+
+  # NOTE: @citizen428 The summary is a base profile field, which we add to all
+  # new Forem instances, so it should be save to validate. The method itself
+  # also guards against the field's absence.
+  validate :conditionally_validate_summary
 
   has_many :custom_profile_fields, dependent: :destroy
 
@@ -58,5 +66,15 @@ class Profile < ApplicationRecord
 
   def clear!
     update(data: {})
+  end
+
+  private
+
+  def conditionally_validate_summary
+    return unless summary.present? && ProfileField.exists?(attribute_name: SUMMARY_ATTRIBUTE)
+    # Grandfather in people who had a too long summary before.
+    return if data_was[SUMMARY_ATTRIBUTE] && data_was[SUMMARY_ATTRIBUTE].size > MAX_SUMMARY_LENGTH
+
+    errors.add(:summary, "is too long.") if summary.size > MAX_SUMMARY_LENGTH
   end
 end

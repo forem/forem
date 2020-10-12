@@ -394,18 +394,6 @@ RSpec.describe User, type: :model do
         expect(user.old_username).to eq(new_username)
         expect(user.old_old_username).to eq(old_username)
       end
-
-      it "enforces summary length validation if previous summary was valid" do
-        user.summary = "0" * 999
-        user.save(validate: false)
-        user.summary = "0" * 999
-        expect(user).to be_valid
-      end
-
-      it "does not enforce summary validation if previous summary was invalid" do
-        user = build(:user, summary: "0" * 999)
-        expect(user).not_to be_valid
-      end
     end
   end
 
