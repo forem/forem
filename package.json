@@ -103,7 +103,7 @@
     "@testing-library/preact-hooks": "^1.1.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
-    "babel-jest": "^26.3.0",
+    "babel-jest": "^26.5.2",
     "babel-loader": "^8.1.0",
     "canvas": "^2.6.1",
     "css-loader": "^4.3.0",
