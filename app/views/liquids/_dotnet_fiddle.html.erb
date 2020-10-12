@@ -1,0 +1,13 @@
+<%# Weird hack due to the fact that embedded links have Widget in between.
+Starting from https:// we end at 24 characters at dotnetfiddle.net %>
+
+<iframe
+  src="<%= link.insert(24, "/Widget").to_s %>"
+  width="100%"
+  height="<%= height %>"
+  scrolling="no"
+  frameborder="no"
+  allowfullscreen
+  allowtransparency="true"
+  loading="lazy">
+</iframe>
