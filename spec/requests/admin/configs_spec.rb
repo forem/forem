@@ -78,6 +78,25 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
+
+        context "when authentication providers are present" do
+          before do
+            SiteConfig.authentication_providers = Authentication::Providers.available.map(&:to_s)
+          end
+
+          it "allows authentication providers to be unset" do
+            new_provider = Array.wrap(SiteConfig.authentication_providers.pop.to_s)
+            post "/admin/config", params: { site_config: { authentication_providers: new_provider },
+                                            confirmation: confirmation_message }
+            expect(SiteConfig.authentication_providers).to eq(new_provider)
+          end
+
+          it "allows all authentication providers to be unset" do
+            post "/admin/config", params: { site_config: { authentication_providers: [] },
+                                            confirmation: confirmation_message }
+            expect(SiteConfig.authentication_providers).to be_empty
+          end
+        end
       end
 
       describe "Community Content" do
