@@ -3,6 +3,7 @@
 @import 'config/generator';
 
 @import 'base/reset';
+@import 'base/main';
 @import 'base/helpers';
 @import 'base/icons';
 @import 'base/layout';
@@ -15,6 +16,7 @@
 @import 'components/comments';
 @import 'components/dropdowns';
 @import 'components/forms';
+@import 'components/header';
 @import 'components/headers';
 @import 'components/indicators';
 @import 'components/loaders';
@@ -29,13 +31,3 @@
 @import 'components/tables';
 @import 'components/tabs';
 @import 'components/tags';
-
-@import 'views/article';
-@import 'views/article-form';
-@import 'views/footer';
-@import 'views/listings';
-@import 'views/dashboard';
-@import 'views/profile';
-@import 'views/signin';
-@import 'views/sponsors';
-@import 'views/top-bar';

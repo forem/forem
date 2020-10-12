@@ -21,6 +21,16 @@ class Seeder
       puts "  #{@counter}. #{plural} already exist. Skipping."
     end
   end
+
+  def create_if_doesnt_exist(klass, attribute_name, attribute_value)
+    record = klass.find_by("#{attribute_name}": attribute_value)
+    if record.nil?
+      puts "  #{klass} with #{attribute_name} = #{attribute_value} not found, proceeding..."
+      yield
+    else
+      puts "  #{klass} with #{attribute_name} = #{attribute_value} found, skipping."
+    end
+  end
 end
 
 # we use this to be able to increase the size of the seeded DB at will
@@ -134,6 +144,25 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
   end
 
   User.order(Arel.sql("RANDOM()"))
+end
+
+seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
+  user = User.create!(
+    name: "Admin McAdmin",
+    email: "admin@forem.local",
+    username: "Admin_McAdmin",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+
+  user.add_role(:admin)
+  user.add_role(:single_resource_admin)
 end
 
 ##############################################################################

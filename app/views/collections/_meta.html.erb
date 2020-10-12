@@ -1,7 +1,7 @@
 <% title title_string %>
 <link rel="canonical" href="<%= app_url("/about") %>" />
 <meta name="description" content="<%= title_string %> on <%= community_name %>">
-<meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+<%= meta_keywords_default %>
 
 <meta property="og:type" content="article" />
 <meta property="og:url" content="<%= app_url("/about") %>" />

@@ -3,7 +3,7 @@ import { Search } from '../Search';
 import 'focus-visible';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('top-bar--search');
+  const root = document.getElementById('header-search');
 
   render(<Search />, root);
 });
