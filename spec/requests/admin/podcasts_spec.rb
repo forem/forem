@@ -69,7 +69,7 @@ RSpec.describe "/admin/podcasts", type: :request do
                                                             android_url: "https://android.example.com",
                                                             soundcloud_url: "https://soundcloud.example.com",
                                                             website_url: "https://example.com",
-                                                            twitter_username: "@ThePracticalDev"
+                                                            twitter_username: "@ThePracticalDev",
                                                             pattern_image: "https://dummyimage.com/400x400.jpg",
                                                             main_color_hex: "#ffffff",
                                                             slug: "postcast-test-url",
@@ -104,7 +104,7 @@ RSpec.describe "/admin/podcasts", type: :request do
                                                             android_url: "https://android.example.com",
                                                             soundcloud_url: "https://soundcloud.example.com",
                                                             website_url: "https://example.com",
-                                                            twitter_username: "@ThePracticalDev"
+                                                            twitter_username: "@ThePracticalDev",
                                                             pattern_image: "https://dummyimage.com/400x400.jpg",
                                                             main_color_hex: "#ffffff",
                                                             slug: "/test",
