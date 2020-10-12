@@ -17,6 +17,8 @@ module CachingHeaders
     stale_while_revalidate: nil,
     stale_if_error: 26_400
   )
+    return unless SiteConfig.public # Only public forems should be edge-cached (until some kind of edge auth is in place).
+
     request.session_options[:skip] = true # no cookies
 
     response.headers["Cache-Control"] = "public, no-cache" # Used only by Fastly.
