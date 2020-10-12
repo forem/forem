@@ -1,4 +1,28 @@
 <nav class="mb-6 sidebar-nav" id="sidebar-nav" aria-label="Primary sidebar nav">
+  <% if user_signed_in? %>
+    <a class="crayons-link crayons-link--block mb-2 flex break-word items-start" id="sidebar-profile" href="#">
+      <span class="crayons-avatar crayons-avatar--xl shrink-0 mr-2">
+        <img src="" class="crayons-avatar__image" id="sidebar-profile--avatar" alt="" width="48" height="48">
+      </span>
+
+      <div class="flex-1">
+        <h4 class="fs-base fw-bold" id="sidebar-profile--name"></h4>
+        <small class="fs-s opacity-75" id="sidebar-profile--username"></small>
+      </div>
+    </a>
+  <% end %>
+  <% unless user_signed_in? %>
+    <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
+      <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
+      Sign In/Up
+    </a>
+  <% end %>
+  <% if false # Let's bring it when ready %>
+    <a href="/" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
+      Home
+    </a>
+  <% end %>
 
   <% NavigationLink.ordered[0..4].each do |link| %>
     <%= render "articles/sidebar_nav_link", link: link %>
