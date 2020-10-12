@@ -104,6 +104,15 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
 
+    it "does not set surrogate headers if private" do
+      allow(SiteConfig).to receive(:public).and_return(false)
+      get "/"
+      expect(response.status).to eq(200)
+
+      expected_surrogate_key_headers = %w[main_app_home_page]
+      expect(response.headers["Surrogate-Key"].split(", ")).not_to match_array(expected_surrogate_key_headers)
+    end
+
     it "sets Fastly Surrogate-Key headers" do
       get "/"
       expect(response.status).to eq(200)
