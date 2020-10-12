@@ -167,6 +167,9 @@ function initPagination() {
               if (markup) {
                 const container = document.getElementById('articles-list');
 
+                const scrollTop =
+                  window.pageYOffset || document.documentElement.scrollTop;
+
                 const newNotifications = document.createElement('div');
                 newNotifications.innerHTML = markup;
 
@@ -174,6 +177,9 @@ function initPagination() {
                 container.append(newNotifications);
 
                 initReactions();
+
+                // Restoring scroll position
+                document.documentElement.scrollTop = scrollTop;
               } else {
                 // no more notifications to load, we hide the load more wrapper
                 const button = document.getElementById('load-more-button');
