@@ -946,7 +946,8 @@
                 <%= f.text_field :sidebar_tags,
                                  class: "form-control",
                                  value: SiteConfig.sidebar_tags.join(","),
-                                 placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder] %>
+                                 placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder],
+                                 pattern: "[a-z0-9,]+" %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %></div>
               </div>
             </div>
