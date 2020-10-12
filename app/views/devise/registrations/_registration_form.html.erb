@@ -2,7 +2,11 @@
   <div class="registration crayons-card">
     <div class="registration__content">
       <h1 class="registration__title">
-        Welcome to <%= community_name %>
+        <% if params[:state] == "new-user" && invite_only_mode? %>
+          <%= community_name %> is invite only.
+        <% else %>
+          Welcome to <%= community_name %>
+        <% end %>
       </h1>
       <p class="registration__description">
         <a href="/"><%= community_name %></a> is a community of
