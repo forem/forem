@@ -26,7 +26,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email login is enabled in /admin/config" do
       before do
-        SiteConfig.allow_email_password_login = true
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(true)
       end
 
       it "shows the sign in text for password based authentication" do
@@ -38,7 +38,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email login is disabled in /admin/config" do
       before do
-        SiteConfig.allow_email_password_login = false
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
       end
 
       it "does not show the sign in text for password based authentication" do
