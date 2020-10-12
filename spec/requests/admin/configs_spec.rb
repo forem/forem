@@ -61,6 +61,12 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.health_check_token).to eq token
         end
+
+        it "sets video_encoder_key" do
+          post "/admin/config", params: { site_config: { video_encoder_key: "123abc" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.video_encoder_key).to eq("123abc")
+        end
       end
 
       describe "Authentication" do
