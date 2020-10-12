@@ -1,4 +1,4 @@
-<div class="grid gap-6">
+<div class="grid gap-6" data-controller="config">
   <div class="crayons-notice crayons-notice--info" role="alert">
     <p class="mb-1">
       Only admins with explicit <strong>single resource admin</strong> role may make changes to site config. Even super admins require this permission.
@@ -117,6 +117,11 @@
                        } %>
             <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
               <div class="form-group">
+                <%= admin_config_label :invite_only_mode %>
+                <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" } %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %></div>
+              </div>
+              <div class="form-group">
                 <%= admin_config_label :allow_email_password_registration %>
                 <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %></div>
@@ -131,7 +136,8 @@
                                  authentication_enabled_providers.map(&:provider_name),
                                ),
                                multiple: true,
-                               class: "form-control selectpicker" %>
+                               class: "form-control selectpicker",
+                               data: { target: "config.authenticationProviders" } %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %></div>
               </div>
               <div class="crayons-notice crayons-notice--info mb-4">
