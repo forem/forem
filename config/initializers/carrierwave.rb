@@ -11,6 +11,9 @@ CarrierWave.configure do |config|
   if Rails.env.test? || Rails.env.development?
     config.storage = :file
     config.enable_processing = Rails.env.development?
+    config.asset_host = if Images::Optimizer.imgproxy_enabled?
+                          "http://#{ApplicationConfig['APP_DOMAIN']}"
+                        end
   elsif ENV["FILE_STORAGE_LOCATION"] == "file" # @forem/systems production version of file store
     config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
     config.storage = :file
