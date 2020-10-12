@@ -14,7 +14,8 @@ module Admin
 
       config_params.each do |key, value|
         if value.is_a?(Array)
-          SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
+          SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless
+            value.empty? && allowed_empty_enumerables.exclude?(key.to_sym)
         elsif value.respond_to?(:to_h)
           SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
         else
@@ -81,7 +82,7 @@ module Admin
         email_addresses: SiteConfig.email_addresses.keys,
         meta_keywords: SiteConfig.meta_keywords.keys,
         credit_prices_in_cents: SiteConfig.credit_prices_in_cents.keys,
-      )
+      ).with_defaults(authentication_providers: [])
     end
 
     def raise_confirmation_mismatch_error
@@ -216,6 +217,12 @@ module Admin
       %i[
         jobs_url
         display_jobs_banner
+      ]
+    end
+
+    def allowed_empty_enumerables
+      %i[
+        authentication_providers
       ]
     end
   end
