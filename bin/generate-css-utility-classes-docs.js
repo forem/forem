@@ -144,12 +144,14 @@ async function generateUtilityClassesDocumentation(
   styleSheet,
   fileWriter = file.writeFile,
 ) {
+  // eslint-disable-next-line no-console
   console.log('Grouping stylesheet rules by CSS property');
   const rulesForStorybook = groupCssRulesByCssProperty(styleSheet.cssRules);
 
   for (const [cssProperty, cssRules] of Object.entries(rulesForStorybook)) {
     const storybookContent = generateUtilityClassStories(cssProperty, cssRules);
 
+    // eslint-disable-next-line no-console
     console.log(
       `Persisting Storybook stories for CSS utility classes related to the ${cssProperty} property.`,
     );
@@ -164,9 +166,11 @@ async function generateUtilityClassesDocumentation(
 }
 
 async function generateDocumentation() {
+  // eslint-disable-next-line no-console
   console.log('Ensuring the auto-generated Storybook folder exists.');
 
   if (!(await folderExists(GENERATED_STORIES_FOLDER))) {
+    // eslint-disable-next-line no-console
     console.log(
       'The auto-generated Storybook folder does not exist. Creating it.',
     );
@@ -178,6 +182,7 @@ async function generateDocumentation() {
     'config/_generator.scss',
   );
 
+  // eslint-disable-next-line no-console
   console.log(`Generating the style sheet for ${utilityClassesFilename}`);
 
   try {
