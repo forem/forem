@@ -151,7 +151,7 @@
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^3.0.1",
     "core-js": "3",
-    "file-loader": "^6.0.0",
+    "file-loader": "^6.1.1",
     "focus-visible": "^5.1.0",
     "he": "^1.2.0",
     "honeybadger-js": "2.3.0",
