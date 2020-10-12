@@ -191,14 +191,14 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "shows the count when the url /readinglist is added" do
         within(".sidebar-navigation-link:nth-child(1)") do
-          expect(sidebar_navigation_link1).to have_selector("#reading-list-count")
+          expect(page).to have_selector("#reading-list-count")
         end
       end
     end
 
     context "when rendering > 5 navigation links" do
       before do
-        create_list(:navigation_link, 4)
+        create_list(:navigation_link, 7)
       end
 
       it "shows some in the 'More' section" do
