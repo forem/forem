@@ -74,16 +74,16 @@ module Admin
         onboarding_params |
         job_params
 
-      has_emails = params[:site_config][:email_addresses].present?
+      has_emails = params.dig(:site_config, :email_addresses).present?
       params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if has_emails
-      params.require(:site_config).permit(
+      params&.require(:site_config)&.permit(
         allowed_params,
         authentication_providers: [],
         social_media_handles: SiteConfig.social_media_handles.keys,
         email_addresses: SiteConfig.email_addresses.keys,
         meta_keywords: SiteConfig.meta_keywords.keys,
         credit_prices_in_cents: SiteConfig.credit_prices_in_cents.keys,
-      ).with_defaults(authentication_providers: [])
+      )&.with_defaults(authentication_providers: [])
     end
 
     def raise_confirmation_mismatch_error
@@ -104,8 +104,10 @@ module Admin
 
     def clean_up_params
       config = params[:site_config]
+      return unless config
+
       %i[sidebar_tags suggested_tags suggested_users].each do |param|
-        config[param] = config[param].downcase.delete(" ") if config[param]
+        config[param] = config[param]&.downcase&.delete(" ") if config[param]
       end
       config[:credit_prices_in_cents]&.transform_values!(&:to_i)
     end
@@ -121,12 +123,12 @@ module Admin
 
     # Validations
     def brand_contrast_too_low
-      hex = params[:site_config][:primary_brand_color_hex]
+      hex = params.dig(:site_config, :primary_brand_color_hex)
       hex.present? && Color::Accessibility.new(hex).low_contrast?
     end
 
     def brand_color_not_hex
-      hex = params[:site_config][:primary_brand_color_hex]
+      hex = params.dig(:site_config, :primary_brand_color_hex)
       hex.present? && !hex.match?(/\A#(\h{6}|\h{3})\z/)
     end
 

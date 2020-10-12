@@ -82,7 +82,7 @@ RSpec.describe "/admin/config", type: :request do
         it "allows all providers to be disabled" do
           # We have to send _something_ for an update, so we'll simulate the borwser omitting the auth
           # providers array when no options are selected
-          post "/admin/config", params: { site_config: { community_description: "test" },
+          post "/admin/config", params: { site_config: {ga_tracking_id: "123" },
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to be_empty
         end
