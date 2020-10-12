@@ -121,7 +121,7 @@
     "gitdocs": "^2.0.0",
     "husky": "^4.3.0",
     "ibm-openapi-validator": "0.30.0",
-    "jest": "26.4.2",
+    "jest": "26.5.3",
     "jest-axe": "^4.0.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-watch-typeahead": "^0.6.1",
