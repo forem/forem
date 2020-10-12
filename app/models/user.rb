@@ -5,8 +5,6 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
-  self.ignored_columns = %w[currently_streaming_on twitch_username]
-
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
   concerning :ProfileMigration do

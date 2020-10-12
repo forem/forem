@@ -5,6 +5,10 @@ module Constants
         description: "Can users sign up with only email and password?",
         placeholder: ""
       },
+      allow_email_password_login: {
+        description: "Can users login with only email and password?",
+        placeholder: ""
+      },
       authentication_providers: {
         description: "How can users sign in?",
         placeholder: ""
@@ -121,6 +125,10 @@ module Constants
       health_check_token: {
         description: "Used to authenticate with your health check endpoints.",
         placeholder: "a secure token"
+      },
+      invite_only_mode: {
+        description: "Only users invited by email can join this community.",
+        placeholder: ""
       },
       jobs_url: {
         description: "URL of the website where open positions are posted",
