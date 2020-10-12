@@ -20,7 +20,6 @@ elsif ENV["FOREM_CONTEXT"] == "forem_cloud" # @forem/systems jdoss's special sau
   CarrierWave.configure do |config|
     config.storage = :fog
     config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/remoteimages"
-    config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
     config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
     config.fog_provider = "fog/aws"
     config.fog_public = false
