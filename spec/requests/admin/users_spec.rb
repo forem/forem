@@ -28,7 +28,7 @@ RSpec.describe "admin/users", type: :request do
       it "renders a message stating that the user isn't registered" do
         user.update_columns(registered: false)
         get "/admin/users/#{user.id}"
-        expect(response.body).to include("@#{user.username} is not registered.")
+        expect(response.body).to include("@#{user.username} has not accepted their invitation yet.")
       end
 
       it "only displays limited information about the user" do
