@@ -128,7 +128,7 @@
       '/users/auth',           // Don't run on authentication.
       '/welcome',              // Don't run on welcome reroutes.
       '/workshops',            // redirects
-    ].some(path => url.href.includes(path))
+    ].some(path => url.pathname.includes(path))
   }
 
   self.addEventListener('fetch', event => {
