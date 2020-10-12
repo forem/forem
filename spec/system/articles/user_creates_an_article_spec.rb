@@ -44,9 +44,9 @@ RSpec.describe "Creating an article with the editor", type: :system do
       expect_runkit_tag_to_be_active
     end
 
-    # TODO: [@forem/sre] figure out why this fails intermittently :-|
-    xit "previews article with a Runkit tag and creates it" do
+    it "previews article with a Runkit tag and creates it", js: true do
       visit new_path
+      fill_in "article_body_markdown", with: ""
       fill_in "article_body_markdown", with: template_with_runkit_tag
       click_button "Preview"
 
