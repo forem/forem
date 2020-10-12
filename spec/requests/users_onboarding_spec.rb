@@ -8,7 +8,6 @@ RSpec.describe "UsersOnboarding", type: :request do
       before { sign_in user }
 
       it "updates saw_onboarding boolean" do
-        sign_in user
         patch "/onboarding_update.json", params: {}
         expect(user.saw_onboarding).to eq(true)
       end
