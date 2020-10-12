@@ -45,7 +45,7 @@ class KotlinTag < LiquidTagBase
   end
 
   def self.valid_param?(value)
-    !value&.match(PARAM_REGEXP).nil?
+    !value&.match(PARAM_REGEXP)&.nil?
   end
 
   def raise_error
