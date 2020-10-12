@@ -1,3 +1,1 @@
-<% if @stories.any? %>
-  <%= auto_discovery_link_tag(:rss, app_url("/feed/#{user.username}"), title: "#{community_qualified_name} RSS Feed") %>
-<% end %>
+<%= auto_discovery_link_tag(:rss, app_url("/feed/#{user.username}"), title: "#{community_qualified_name} RSS Feed") %>

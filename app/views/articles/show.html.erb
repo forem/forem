@@ -13,6 +13,10 @@
   <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", defer: true %>
 <% end %>
 
+<%= content_for :internal_page_meta do %>
+  <%= render "users/rss_autodiscovery", user: @user %>
+<% end %>
+
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js"

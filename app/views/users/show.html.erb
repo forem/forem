@@ -7,7 +7,9 @@
 <% end %>
 
 <%= content_for :internal_page_meta do %>
-  <%= render "users/rss_autodiscovery", user: @user %>
+  <% if @stories.any? %>
+    <%= render "users/rss_autodiscovery", user: @user %>
+  <% end %>
 <% end %>
 
 <% unless internal_navigation? || user_signed_in? %>
