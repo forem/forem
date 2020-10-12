@@ -15,9 +15,6 @@
 <meta name="twitter:title" content="<%= @user.name %> — <%= community_name %> Profile">
 <meta name="twitter:description" content="<%= @user.summary %>">
 <meta name="twitter:image:src" content="<%= user_social_image_url(@user) %>">
-<% if @stories.any? %>
-  <%= auto_discovery_link_tag(:rss, app_url("/feed/#{@user.username}"), title: "#{community_qualified_name} RSS Feed") %>
-<% end %>
 
 <% if @user.banned %>
   <meta name="googlebot" content="noindex">

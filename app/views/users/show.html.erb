@@ -6,6 +6,10 @@
   <%= render "users/meta" %>
 <% end %>
 
+<%= content_for :internal_page_meta do %>
+  <%= render "users/rss_autodiscovery", user: @user %>
+<% end %>
+
 <% unless internal_navigation? || user_signed_in? %>
   <script type="application/ld+json">
     <%= @user_json_ld.to_json.html_safe %>

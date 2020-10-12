@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <% title = yield(:title) %>
     <title><%= title || community_qualified_name.to_s %></title>
-    <% unless internal_navigation? %>
+    <% if internal_navigation? %>
+      <%= yield(:internal_page_meta) %>
+    <% else %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
       <% if SiteConfig.payment_pointer.present? %>
