@@ -574,7 +574,7 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(ProfileField) do
+seeder.create_if_none(NavigationLink) do
   Rake::Task["navigation_links:update"].invoke
 end
 
