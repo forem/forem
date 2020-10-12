@@ -28,7 +28,7 @@ RSpec.describe SiteConfig, type: :model do
       expect(described_class.dev_to?).to be(true)
     end
 
-    it "returns false if the .app_domain is dev.to" do
+    it "returns false if the .app_domain is not dev.to" do
       allow(described_class).to receive(:app_domain).and_return("forem.dev")
 
       expect(described_class.dev_to?).to be(false)
