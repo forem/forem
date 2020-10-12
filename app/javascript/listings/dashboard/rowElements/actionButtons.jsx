@@ -1,30 +1,25 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
+import { Button } from '@crayons';
 
 const ActionButtons = ({ isDraft, editUrl, deleteConfirmUrl }) => {
   return (
     <div className="listing-row-actions">
       {isDraft && (
-        <a
-          href={editUrl}
-          className="dashboard-listing-edit-button crayons-btn"
-        >
-          DRAFT
-        </a>
+        <Button href={editUrl} className="dashboard-listing-edit-button">
+          View draft
+        </Button>
       )}
-      <a
-        href={editUrl}
-        className="dashboard-listing-edit-button crayons-btn"
-      >
-        EDIT
-      </a>
-      <a
+      <Button href={editUrl} className="dashboard-listing-edit-button">
+        Edit
+      </Button>
+      <Button
+        variant="danger"
         href={deleteConfirmUrl}
-        className="dashboard-listing-delete-button crayons-btn"
-        data-no-instant
+        className="dashboard-listing-delete-button"
       >
-        DELETE
-      </a>
+        Delete
+      </Button>
     </div>
   );
 };
