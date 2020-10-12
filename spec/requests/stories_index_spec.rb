@@ -109,8 +109,7 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.status).to eq(200)
 
-      expected_surrogate_key_headers = %w[main_app_home_page]
-      expect(response.headers["Surrogate-Key"].split(", ")).not_to match_array(expected_surrogate_key_headers)
+      expect(response.headers["Surrogate-Key"]).to eq(nil)
     end
 
     it "sets Fastly Surrogate-Key headers" do
