@@ -1,6 +1,6 @@
 <nav class="mb-6 sidebar-nav" id="sidebar-nav" aria-label="Primary sidebar nav">
 
-  <% NavigationLink.order(order: :asc)[0..4].each do |link| %>
+  <% NavigationLink.order(position: :asc)[0..4].each do |link| %>
     <%= render "articles/sidebar_nav_link", link: link %>
   <% end %>
 
@@ -8,7 +8,7 @@
     <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
 
     <div class="hidden" id="main-nav-more">
-      <% NavigationLink.order(order: :asc)[5..].each do |link| %>
+      <% NavigationLink.order(position: :asc)[5..].each do |link| %>
         <%= render "articles/sidebar_nav_link", link: link %>
       <% end %>
     </div>
