@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.8.0"
+  version: "0.8.1"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -1658,6 +1658,24 @@ paths:
           schema:
             type: string
           example: discuss
+        - name: tags
+          in: query
+          description: |
+            Using this parameter will retrieve articles with any of the comma-separated tags.
+
+            Articles will be ordered by descending popularity.
+          schema:
+            type: string
+          example: "javascript, css"
+        - name: tags_exclude
+          in: query
+          description: |
+            Using this parameter will retrieve articles that do _not_ contain _any_ of comma-separated tags.
+
+            Articles will be ordered by descending popularity.
+          schema:
+            type: string
+          example: "node, java"
         - name: username
           in: query
           description: |

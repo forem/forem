@@ -78,6 +78,12 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
+
+        it "allows all authentication providers to be unset" do
+          post "/admin/config", params: { site_config: { authentication_providers: [] },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to be_empty
+        end
       end
 
       describe "Community Content" do

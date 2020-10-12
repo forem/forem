@@ -3,6 +3,11 @@
 @import 'variables';
 @import 'scaffolds';
 
+// overriding Bootstrap styles
+label {
+  margin-bottom: 0 !important;
+}
+
 .pagination {
   justify-content: right;
 
@@ -97,28 +102,21 @@
   width: 240px;
 }
 
-.config-authentication__row {
-  &--select {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    grid-gap: var(--su-3);
-    padding: var(--su-4);
-    align-items: center;
-  }
+.config-authentication__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: var(--su-4);
+  margin-bottom: var(--su-6);
 
-  &--title {
-    font-weight: var(--fw-medium);
-  }
-
-  &--subtitle {
-    font-size: var(--fs-s);
-    color: var(--base-60);
+  &--icon,
+  &--label {
+    padding-top: var(--su-4);
+    padding-bottom: var(--su-4);
   }
 }
 
 .config-authentication-form {
   display: flex;
   flex-direction: column;
-  grid-gap: var(--su-4);
-  padding: var(--su-2) var(--su-6) var(--su-4) var(--su-8);
+  gap: var(--su-4);
 }

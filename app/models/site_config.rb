@@ -22,7 +22,9 @@ class SiteConfig < RailsSettings::Base
 
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
+  field :allow_email_password_login, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
+  field :invite_only_mode, type: :boolean, default: false
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
   field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
@@ -180,5 +182,11 @@ class SiteConfig < RailsSettings::Base
   # Returns true if we are operating on a local installation, false otherwise
   def self.local?
     app_domain.include?("localhost")
+  end
+
+  # Used where we need to keep old DEV features around but don't want to/cannot
+  # expose them to other communities.
+  def self.dev_to?
+    app_domain == "dev.to"
   end
 end
