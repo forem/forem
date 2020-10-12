@@ -215,6 +215,14 @@ module Constants
         description: "Determines the mininum for the periodic email digest",
         placeholder: 2
       },
+      recaptcha_site_key: {
+        description: "Site key for Google reCAPTCHA, used for reporting abuse.",
+        placeholder: "..."
+      },
+      recaptcha_secret_key: {
+        description: "Secret key for Google reCAPTCHA, used for reporting abuse.",
+        placeholder: "..."
+      },
       right_navbar_svg_icon: {
         description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
         placeholder: "<svg ...></svg>"

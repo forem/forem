@@ -67,6 +67,10 @@ class SiteConfig < RailsSettings::Base
   # Google Analytics Tracking ID, e.g. UA-71991000-1
   field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
 
+  # Google ReCATPCHA keys
+  field :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
+  field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
+
   # Images
   field :main_social_image, type: :string
   field :favicon_url, type: :string, default: "favicon.ico"
