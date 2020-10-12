@@ -58,8 +58,15 @@ div.highlight {
 
 .highlight__panel-action {
   display: flex;
+  padding: var(--su-2);
   overflow: hidden;
+  background: var(--base-60);
   border-bottom-left-radius: var(--radius);
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
 
   & + & {
     margin-left: 1px;
@@ -68,36 +75,14 @@ div.highlight {
 }
 
 .highlight-action {
-  display: flex;
-  background: #4f575f;
-  opacity: 0.9;
-
-  &:hover {
-    opacity: 1;
-    cursor: pointer;
-  }
+  display: none;
+  width: var(--su-4);
+  height: var(--su-4);
+  cursor: pointer;
 }
 
-.highlight-action__icon {
-  display: flex;
-}
-
-.highlight-action-icon {
-  --icon-size: calc(var(--su-7) - var(--su-2) * 2);
+.highlight-action--fullscreen-on {
   display: block;
-  width: var(--su-7);
-  height: var(--su-7);
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: var(--icon-size) var(--icon-size);
-}
-
-.highlight-action-icon--fullscreen {
-  background-image: url(image-src('fullscreen-on.svg'));
-
-  .highlight.is-fullscreen & {
-    background-image: url(image-src('fullscreen-off.svg'));
-  }
 }
 
 .fullscreen-code {
@@ -112,7 +97,8 @@ div.highlight {
   overflow: auto;
   visibility: hidden;
   transform: scale(0.01);
-  transition: transform 0.4s ease-in-out, visibility 0.4s ease-in-out;
+  transition: transform var(--transition-props),
+    visibility var(--transition-props);
 
   div.highlight {
     height: 100%;
@@ -121,6 +107,14 @@ div.highlight {
 
   .highlight__panel {
     position: fixed;
+  }
+
+  .highlight-action--fullscreen-on {
+    display: none;
+  }
+
+  .highlight-action--fullscreen-off {
+    display: block;
   }
 
   &.is-open {

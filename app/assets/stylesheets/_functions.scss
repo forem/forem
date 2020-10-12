@@ -10,6 +10,6 @@
   @if variable-exists(environment) and $environment == 'storybook' {
     @return '../images/' + $image;
   } @else {
-    @return image_path($image);
+    @return image_path('loading-ellipsis.svg');
   }
 }
