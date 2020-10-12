@@ -43,7 +43,7 @@ class CodesharerTag < LiquidTagBase
   end
 
   def self.valid_param?(value)
-    !value&.match(PARAM_REGEXP)&.nil?
+    value&.match?(PARAM_REGEXP)
   end
 
   def raise_error
