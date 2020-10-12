@@ -181,4 +181,10 @@ class SiteConfig < RailsSettings::Base
   def self.local?
     app_domain.include?("localhost")
   end
+
+  # Used where we need to keep old DEV features around but don't want to/cannot
+  # expose them to other communities.
+  def self.dev_to?
+    app_domain == "dev.to"
+  end
 end
