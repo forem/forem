@@ -4,7 +4,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
   let(:template) { file_fixture("article_published.txt").read }
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user, body_markdown: template) }
-  let(:svg_image) { file_fixture("svg_image.txt").read }
+  let(:svg_image) { file_fixture("300x100.svg").read }
 
   before do
     allow(SiteConfig).to receive(:main_social_image).and_return("https://dummyimage.com/800x600.jpg")

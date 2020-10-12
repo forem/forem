@@ -20,7 +20,7 @@ RSpec.describe "Registrations", type: :request do
 
         get sign_up_path
 
-        expect(response.body).not_to include("Continue with")
+        expect(response.body).not_to include("Have a password? Continue with your email address")
       end
     end
 
