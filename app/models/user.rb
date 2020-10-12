@@ -29,7 +29,6 @@ class User < ApplicationRecord
     mastodon_url
     medium_url
     mostly_work_with
-    name
     stackoverflow_url
     summary
     text_color_hex
@@ -224,11 +223,9 @@ class User < ApplicationRecord
     validates username_field, uniqueness: { allow_nil: true }, if: :"#{username_field}_changed?"
   end
 
-  validate :conditionally_validate_summary
   validate :non_banished_username, :username_changed?
   validate :unique_including_orgs_and_podcasts, if: :username_changed?
   validate :validate_feed_url, if: :feed_url_changed?
-  validate :validate_mastodon_url
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -633,29 +630,11 @@ class User < ApplicationRecord
       Authentication::Providers.username_fields.any? { |f| public_send("saved_change_to_#{f}?") }
   end
 
-  def conditionally_validate_summary
-    # Grandfather people who had a too long summary before.
-    return if summary_was && summary_was.size > 200
-
-    errors.add(:summary, "is too long.") if summary.present? && summary.size > 200
-  end
-
   def validate_feed_url
     return if feed_url.blank?
     return if RssReader.new.valid_feed_url?(feed_url)
 
     errors.add(:feed_url, "is not a valid RSS/Atom feed")
-  end
-
-  def validate_mastodon_url
-    return if mastodon_url.blank?
-
-    uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::Mastodon::ALLOWED_INSTANCES)
-
-    errors.add(:mastodon_url, "is not an allowed Mastodon instance")
-  rescue URI::InvalidURIError
-    errors.add(:mastodon_url, "is not a valid URL")
   end
 
   def tag_keywords_for_search
