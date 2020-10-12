@@ -119,7 +119,7 @@ RSpec.describe "Dashboards", type: :request do
         sign_in pro_user
         get dashboard_path
 
-        expect(response.body).to include("Pro Analytics for #{organization.name}")
+        expect(response.body).to include("Pro Analytics for #{CGI.escapeHTML(organization.name)}")
       end
     end
 

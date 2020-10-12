@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "Views an article", type: :system do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:moderator) { create(:user, :trusted) }
-  let_it_be(:article, reload: true) { create(:article, :with_notification_subscription, user: user) }
+  let(:user) { create(:user) }
+  let(:moderator) { create(:user, :trusted) }
+  let(:article) { create(:article, :with_notification_subscription, user: user) }
   let(:timestamp) { "2019-03-04T10:00:00Z" }
 
   before do

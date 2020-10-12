@@ -30,7 +30,8 @@ data_sources:
       # user_id: "/admin/users/{value}"
 
     smart_columns:
-      # user_id: "SELECT id, name FROM users WHERE id IN {value}"
+      status: {0: "enqueued", 1: "working", 2: "succeeded", 3: "failed"}
+      input_types: {0: "text_field", 1: "text_area", 2: "check_box", 3: "color_field"}
 
 # create audits
 audit: true

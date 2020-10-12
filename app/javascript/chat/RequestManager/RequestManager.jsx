@@ -48,7 +48,12 @@ export default class RequestManager extends Component {
   }
 
   handleIUpdateMembership = async (e) => {
-    const { membershipId, userAction } = e.target.dataset;
+    const {
+      membershipId,
+      userAction,
+      channelSlug,
+      channelId,
+    } = e.target.dataset;
     const response = await updateMembership(membershipId, userAction);
     const { success, membership, message } = response;
     const { updateRequestCount } = this.state;
@@ -63,6 +68,9 @@ export default class RequestManager extends Component {
           userInvitations: filteredUserInvitations,
         };
       });
+      if (userAction === 'accept') {
+        updateRequestCount(true, { channelSlug, channelId });
+      }
       updateRequestCount();
       addSnackbarItem({ message });
     } else {

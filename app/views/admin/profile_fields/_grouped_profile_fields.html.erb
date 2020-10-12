@@ -1,0 +1,51 @@
+<% @grouped_profile_fields.each do |group| %>
+  <% group_name = group.name.gsub(/\s+/, "_") %>
+  <article class="row my-3">
+    <div class="card w-100">
+      <div class="card-header">
+        <div class="card-header__information">
+          <div class="fw-bold fs-l"><%= group_name %></div>
+          <div class="fw-bold fs-s">&nbsp;(<%= group.profile_fields.length %>)</div>
+          <% if group.description %>
+            <div class="fs-s group__description"><%= group.description %></div>
+          <% end %>
+        </div>
+
+        <div class="card-header__actions">
+          <%= render partial: "add_profile_field_modal", locals: { group: group, group_name: group_name } %>
+          <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
+          <div><%= link_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %></div>
+          <div id="<%= group_name %>Header" data-toggle="collapse" class="color-base-70"
+            data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer">Toggle</div>
+        </div>
+      </div>
+
+      <div id="<%= group_name %>BodyContainer" class="collapse hide p-3" aria-labelledby="<%= group_name %>Header">
+        <% if group.profile_fields.empty? %>
+          <div> There are no profile fields configured for this group. </div>
+        <% else %>
+          <% group.profile_fields.each do |field| %>
+            <div class="card mt-3">
+              <%= render partial: "admin/configs/card_header",
+                         locals: {
+                           header: field.label,
+                           state: "collapse",
+                           target: "#{field.attribute_name}_container",
+                           expanded: "false"
+                         } %>
+              <div id="<%= field.attribute_name %>_container" class="card-body collapse hide" aria-labelledby="<%= field.attribute_name %>_container">
+                <div class="form-group grid p-6 mb-6 gap-1">
+                  <%= form_for [:admin, field] do |form| %>
+                    <%= render "profile_field_form", form: form, group: group %>
+                    <%= form.submit class: "btn btn-primary" %>
+                  <% end %>
+                  <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </article>
+<% end %>

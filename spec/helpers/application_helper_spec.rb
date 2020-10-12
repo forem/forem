@@ -1,16 +1,18 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper, type: :helper do
+  include CloudinaryHelper
+
   describe "#community_name" do
     it "equals to the community name" do
-      allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("SLOAN")
+      SiteConfig.community_name = "SLOAN"
       expect(helper.community_name).to eq("SLOAN")
     end
   end
 
   describe "#community_qualified_name" do
     it "equals to the full qualified community name" do
-      expected_name = "#{ApplicationConfig['COMMUNITY_NAME']} Community"
+      expected_name = "#{SiteConfig.community_name} Community"
       expect(helper.community_qualified_name).to eq(expected_name)
     end
   end
@@ -33,15 +35,21 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
-  describe "#cache_key_heroku_slug" do
-    it "does nothing when HEROKU_SLUG_COMMIT is not set" do
-      allow(ApplicationConfig).to receive(:[]).with("HEROKU_SLUG_COMMIT").and_return(nil)
-      expect(helper.cache_key_heroku_slug("cache-me")).to eq("cache-me")
+  describe "#release_adjusted_cache_key" do
+    it "does nothing when RELEASE_FOOTPRINT is not set" do
+      allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return(nil)
+      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me")
     end
 
-    it "appends the HEROKU_SLUG_COMMIT if it is set" do
-      allow(ApplicationConfig).to receive(:[]).with("HEROKU_SLUG_COMMIT").and_return("abc123")
-      expect(helper.cache_key_heroku_slug("cache-me")).to eq("cache-me-abc123")
+    it "appends the RELEASE_FOOTPRINT if it is set" do
+      allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
+      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me--abc123")
+    end
+
+    it "includes locale param if it is set" do
+      allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
+      params[:locale] = "fr-ca"
+      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me-fr-ca-abc123")
     end
   end
 
@@ -50,21 +58,21 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when the start year and current year is the same" do
       it "returns the current year only" do
-        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(current_year)
+        SiteConfig.community_copyright_start_year = current_year
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
 
     context "when the start year and current year is different" do
       it "returns the start and current year" do
-        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return("2014")
+        SiteConfig.community_copyright_start_year = "2014"
         expect(helper.copyright_notice).to eq("2014 - #{current_year}")
       end
     end
 
     context "when the start year is blank" do
       it "returns the current year" do
-        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(" ")
+        SiteConfig.community_copyright_start_year = " "
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
@@ -74,6 +82,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     before do
       allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
       allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("dev.to")
+      allow(SiteConfig).to receive(:app_domain).and_return("dev.to")
     end
 
     it "creates the correct base app URL" do
@@ -81,16 +90,16 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "creates a URL with a path" do
-      expect(app_url("internal")).to eq("https://dev.to/internal")
+      expect(app_url("admin")).to eq("https://dev.to/admin")
     end
 
     it "creates the correct URL even if the path starts with a slash" do
-      expect(app_url("/internal")).to eq("https://dev.to/internal")
+      expect(app_url("/admin")).to eq("https://dev.to/admin")
     end
 
     it "works when called with an URI object" do
-      uri = URI::Generic.build(path: "internal", fragment: "test")
-      expect(app_url(uri)).to eq("https://dev.to/internal#test")
+      uri = URI::Generic.build(path: "resource_admin", fragment: "test")
+      expect(app_url(uri)).to eq("https://dev.to/resource_admin#test")
     end
   end
 
@@ -105,6 +114,23 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     it "returns nil if the referer is empty" do
       expect(sanitized_referer("")).to be nil
+    end
+  end
+
+  describe "#collection_link" do
+    let(:collection) { create(:collection, :with_articles) }
+
+    it "returns an 'a' tag" do
+      expect(helper.collection_link(collection)).to have_selector("a")
+    end
+
+    it "sets the correct href" do
+      expect(helper.collection_link(collection)).to have_link(href: collection.path)
+    end
+
+    it "has the correct text in the a tag" do
+      expect(helper.collection_link(collection))
+        .to have_text("#{collection.slug} (#{collection.articles.published.size} Part Series)")
     end
   end
 
@@ -169,7 +195,39 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#cloudinary" do
     it "returns cloudinary-manipulated link" do
-      expect(helper.cloudinary(Faker::Placeholdit.image)).to start_with("https://res.cloudinary.com")
+      image = helper.optimized_image_url(Faker::Placeholdit.image)
+      expect(image).to start_with("https://res.cloudinary.com")
+        .and include("image/fetch/", "/c_limit,f_auto,fl_progressive,q_80,w_500/")
+    end
+
+    it "returns an ASCII domain for Unicode input" do
+      expect(helper.optimized_image_url("https://www.火.dev/image.png")).to include("https://www.xn--vnx.dev")
+    end
+
+    it "keeps an ASCII domain as ASCII" do
+      expect(helper.optimized_image_url("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
+    end
+
+    it "returns random fallback images as expected" do
+      expect(helper.optimized_image_url("")).not_to be_nil
+      expect(helper.optimized_image_url("", random_fallback: false)).to be_nil
+    end
+  end
+
+  describe "#optimized_image_tag" do
+    it "works just like cl_image_tag" do
+      image_url = "https://i.imgur.com/fKYKgo4.png"
+      cloudinary_image_tag = cl_image_tag(image_url,
+                                          type: "fetch", crop: "imagga_scale",
+                                          quality: "auto", flags: "progressive",
+                                          fetch_format: "auto", sign_url: true,
+                                          loading: "lazy", alt: "profile image",
+                                          width: 100, height: 100)
+      optimized_helper = helper.optimized_image_tag(image_url,
+                                                    optimizer_options: { crop: "imagga_scale", width: 100,
+                                                                         height: 100 },
+                                                    image_options: { loading: "lazy", alt: "profile image" })
+      expect(optimized_helper).to eq(cloudinary_image_tag)
     end
   end
 end

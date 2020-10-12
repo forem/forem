@@ -1,46 +1,69 @@
 module Admin
   class ListingCategoriesController < Admin::ApplicationController
-    # Overwrite any of the RESTful controller actions to implement custom behavior
-    # For example, you may want to send an email after a foo is updated.
-    #
-    # def update
-    #   super
-    #   send_foo_updated_email(requested_resource)
-    # end
+    include ListingsToolkit
+    layout "admin"
 
-    # Override this method to specify custom lookup behavior.
-    # This will be used to set the resource for the `show`, `edit`, and `update`
-    # actions.
-    #
-    # def find_resource(param)
-    #   Foo.find_by!(slug: param)
-    # end
+    def index
+      @listing_categories = ListingCategory.order(id: :desc)
+        .page(params[:page]).per(50)
 
-    # The result of this lookup will be available as `requested_resource`
+      return if params[:search].blank?
 
-    # Override this if you have certain roles that require a subset
-    # this will be used to set the records shown on the `index` action.
-    #
-    # def scoped_resource
-    #   if current_user.super_admin?
-    #     resource_class
-    #   else
-    #     resource_class.with_less_stuff
-    #   end
-    # end
+      @listing_categories = @listing_categories.where("name ILIKE :search", search: "%#{params[:search]}%")
+    end
 
-    # Override `resource_params` if you want to transform the submitted
-    # data before it's persisted. For example, the following would turn all
-    # empty values into nil values. It uses other APIs such as `resource_class`
-    # and `dashboard`:
-    #
-    # def resource_params
-    #   params.require(resource_class.model_name.param_key).
-    #     permit(dashboard.permitted_attributes).
-    #     transform_values { |value| value == "" ? nil : value }
-    # end
+    def new
+      @listing_category = ListingCategory.new
+    end
 
-    # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
-    # for more information
+    def edit
+      @listing_category = ListingCategory.find(params[:id])
+    end
+
+    def create
+      @listing_category = ListingCategory.new(listing_category_params)
+
+      if @listing_category.save
+        flash[:success] = "Listing Category has been created!"
+        redirect_to admin_listing_categories_path
+      else
+        flash[:danger] = @listing_category.errors_as_sentence
+        render new_admin_listing_category_path
+      end
+    end
+
+    def update
+      @listing_category = ListingCategory.find(params[:id])
+
+      if @listing_category.update(listing_category_params)
+        flash[:success] = "Listing Category has been updated!"
+        redirect_to admin_listing_categories_path
+      else
+        flash[:danger] = @listing_category.errors_as_sentence
+        render :edit
+      end
+    end
+
+    def destroy
+      @listing_category = ListingCategory.find(params[:id])
+
+      if @listing_category.destroy
+        flash[:success] = "Listing Category has been deleted!"
+        redirect_to admin_listing_categories_path
+      else
+        flash[:danger] = @listing_category.errors.full_messages.to_sentence
+        render :edit
+      end
+    end
+
+    private
+
+    def listing_category_params
+      params.permit(:name, :cost, :rules, :slug, :social_preview_color, :social_preview_description)
+    end
+
+    def authorize_admin
+      authorize ListingCategory, :access?, policy_class: InternalPolicy
+    end
   end
 end

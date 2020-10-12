@@ -3,6 +3,9 @@ require "rails_helper"
 RSpec.describe BadgeRewarder, type: :labor do
   describe "::award_yearly_club_badges" do
     before do
+      stub_const("#{described_class}::YEARS", BadgeRewarder::YEARS.slice(1, 2, 3))
+      allow(ApplicationConfig).to receive(:[])
+      SiteConfig.community_copyright_start_year = 3.years.ago.year
       create(:badge, title: "one-year-club")
       create(:badge, title: "two-year-club")
       create(:badge, title: "three-year-club")
@@ -81,6 +84,30 @@ RSpec.describe BadgeRewarder, type: :labor do
     expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
   end
 
+  describe "::award_four_week_streak_badge" do
+    it "calls award_streak_badge with argument 4" do
+      allow(described_class).to receive(:award_streak_badge)
+      described_class.award_four_week_streak_badge
+      expect(described_class).to have_received(:award_streak_badge).with(4)
+    end
+  end
+
+  describe "::award_eight_week_streak_badge" do
+    it "calls award_streak_badge with argument 8" do
+      allow(described_class).to receive(:award_streak_badge)
+      described_class.award_eight_week_streak_badge
+      expect(described_class).to have_received(:award_streak_badge).with(8)
+    end
+  end
+
+  describe "::award_sixteen_week_streak_badge" do
+    it "calls award_streak_badge with argument 16" do
+      allow(described_class).to receive(:award_streak_badge)
+      described_class.award_sixteen_week_streak_badge
+      expect(described_class).to have_received(:award_streak_badge).with(16)
+    end
+  end
+
   describe "::award_streak_badge" do
     it "rewards badge to users with four straight weeks of articles" do
       create(:badge, title: "4 Week Streak", slug: "4-week-streak")
@@ -106,10 +133,10 @@ RSpec.describe BadgeRewarder, type: :labor do
 
   describe "::award_contributor_badges_from_github", vcr: true do
     let(:user) { create(:user, :with_identity, identities: ["github"]) }
-
-    let_it_be_readonly(:badge) { create(:badge, title: "DEV Contributor") }
+    let(:badge) { create(:badge, title: "DEV Contributor") }
 
     before do
+      badge
       omniauth_mock_github_payload
 
       stub_const("BadgeRewarder::REPOSITORIES", ["rust-lang/rust"])

@@ -141,7 +141,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
     end
   end
 
-  # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation
+  # TODO: [@forem/delightful]: re-enable this once email confirmation
   # is re-enabled and confirm it isn't flaky.
   xcontext "when a user has an Apple private relay email address", type: :system, js: true do
     it "prompts the user to update their email address" do

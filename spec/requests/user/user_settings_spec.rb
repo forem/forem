@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserSettings", type: :request do
-  let(:user) { create(:user, twitch_username: nil) }
+  let(:user) { create(:user) }
 
   describe "GET /settings/:tab" do
     context "when not signed-in" do
@@ -38,7 +38,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "displays content on RSS tab properly" do
         get "/settings/publishing-from-rss"
-        title = "Publishing to #{ApplicationConfig['COMMUNITY_NAME']} from RSS"
+        title = "Publishing to #{SiteConfig.community_name} from RSS"
         expect(response.body).to include(title)
       end
 
@@ -46,14 +46,6 @@ RSpec.describe "UserSettings", type: :request do
         get "/settings?state=previous-registration"
         error_message = "There is an existing account authorized with that social account"
         expect(response.body).to include error_message
-      end
-
-      it "renders the proper organization page" do
-        first_org, second_org = create_list(:organization, 2)
-        create(:organization_membership, user: user, organization: first_org)
-        create(:organization_membership, user: user, organization: second_org, type_of_user: "admin")
-        get user_settings_path(tab: "organization", org_id: second_org.id) # /settings/organization/:org_id
-        expect(response.body).to include "Grow the team"
       end
 
       it "renders the proper response template" do
@@ -64,7 +56,6 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     describe ":account" do
-      let(:ghost_account_message) { "If you would like to keep your content under the" }
       let(:remove_oauth_section) { "Remove OAuth Associations" }
       let(:user) { create(:user, :with_identity) }
 
@@ -76,20 +67,6 @@ RSpec.describe "UserSettings", type: :request do
       it "allows users to visit the account page" do
         get user_settings_path(tab: "account")
         expect(response).to have_http_status(:ok)
-      end
-
-      it "does not render the ghost account email option if the user has no content" do
-        get user_settings_path(tab: "account")
-        expect(response.body).not_to include(ghost_account_message)
-      end
-
-      it "does render the ghost account email option if the user has content" do
-        create(:article, user: user)
-        user.update(articles_count: 1)
-
-        get user_settings_path(tab: "account")
-
-        expect(response.body).to include(ghost_account_message)
       end
 
       it "shows the 'Remove OAuth' section if a user has multiple enabled identities" do
@@ -188,6 +165,11 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.reload.profile_updated_at).to be > 2.minutes.ago
     end
 
+    it "disables reaction notifications" do
+      put "/users/#{user.id}", params: { user: { tab: "notifications", reaction_notifications: 0 } }
+      expect(user.reload.reaction_notifications).to be(false)
+    end
+
     it "enables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 1 } }
       expect(user.reload.mod_roundrobin_notifications).to be(true)
@@ -245,10 +227,16 @@ RSpec.describe "UserSettings", type: :request do
       expect(flash[:error]).to include("Password is too short")
     end
 
+    it "returns an error message if the passwords do not match" do
+      put "/users/#{user.id}", params: { user: { password: "asdfghjk", password_confirmation: "qwertyui" } }
+
+      expect(flash[:error]).to include("Password doesn't match password confirmation")
+    end
+
     context "when requesting an export of the articles" do
-      def send_request(flag = true)
+      def send_request(export_requested: true)
         put "/users/#{user.id}", params: {
-          user: { tab: "misc", export_requested: flag }
+          user: { tab: "misc", export_requested: export_requested }
         }
       end
 
@@ -284,49 +272,8 @@ RSpec.describe "UserSettings", type: :request do
 
       it "does not send an email if there was no request" do
         sidekiq_perform_enqueued_jobs do
-          expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
+          expect { send_request(export_requested: false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
-      end
-    end
-  end
-
-  describe "POST /users/update_twitch_username" do
-    before { sign_in user }
-
-    it "updates twitch username" do
-      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      user.reload
-      expect(user.twitch_username).to eq("anna_lightalloy")
-    end
-
-    it "redirects after updating" do
-      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      expect(response).to redirect_to "/settings/integrations"
-    end
-
-    it "schedules the job while updating" do
-      sidekiq_assert_enqueued_with(job: Streams::TwitchWebhookRegistrationWorker, args: [user.id]) do
-        post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      end
-    end
-
-    it "removes twitch_username" do
-      user.update_column(:twitch_username, "robot")
-      post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
-      user.reload
-      expect(user.twitch_username).to be_nil
-    end
-
-    it "doesn't schedule the job when removing" do
-      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
-        post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
-      end
-    end
-
-    it "doesn't schedule the job when saving the same twitch username" do
-      user.update_column(:twitch_username, "robot")
-      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
-        post "/users/update_twitch_username", params: { user: { twitch_username: "robot" } }
       end
     end
   end

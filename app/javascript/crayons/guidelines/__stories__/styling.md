@@ -71,5 +71,8 @@ You can access all of the SCSS files in `app/assets/stylesheets` folder.
   - `crayons.scss` - this is one importing everything Crayons-related like
     variables, components styling, utility classes etc.
 
+  - `views.scss` - this one contains views-specific styling. It is separated
+    from Crayons to make Crayons library DEV agnostic.
+
   - `minimal.scss` - this one is actually one of the main stylesheets from
     pre-Crayons era. It imports everything basically :).

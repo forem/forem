@@ -44,6 +44,28 @@ RSpec.describe UserSubscription, type: :model do
       error = "Can't subscribe with an Apple private relay. Please update email."
       expect(user_subscription.errors[:subscriber_email]).to include(error)
     end
+
+    describe "#user_subscription_sourceable" do
+      it "is required on creation" do
+        subscription = described_class.new(
+          user_subscription_sourceable: nil, subscriber: subscriber, subscriber_email: subscriber.email,
+          author: source.user
+        )
+        subscription.save
+
+        expect(subscription).not_to be_valid
+        expect(subscription.errors.messages.keys).to include(
+          :user_subscription_sourceable_id, :user_subscription_sourceable_type
+        )
+      end
+
+      it "can be nulled on update" do
+        subscription = described_class.make(source: source, subscriber: subscriber)
+        subscription.update(user_subscription_sourceable: nil)
+
+        expect(subscription).to be_valid
+      end
+    end
   end
 
   describe "#build" do

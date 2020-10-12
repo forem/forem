@@ -14,15 +14,8 @@ module ArticlesHelper
 
     article.processed_html.include?("youtube.com/embed/") ||
       article.processed_html.include?("player.vimeo.com") ||
+      article.processed_html.include?("clips.twitch.tv/embed") ||
       article.comments_blob.include?("youtube")
-  end
-
-  def collection_link_class(current_article, linked_article)
-    if current_article.id == linked_article.id
-      "current-article"
-    elsif !linked_article.published
-      "coming-soon"
-    end
   end
 
   def image_tag_or_inline_svg_tag(service_name, width: nil, height: nil)

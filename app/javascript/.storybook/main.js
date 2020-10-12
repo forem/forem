@@ -8,7 +8,7 @@ module.exports = {
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-links',
-    '@storybook/addon-a11y/register',
+    '@storybook/addon-a11y',
     '@storybook/addon-notes/register-panel',
   ],
   webpackFinal: async (config, { configType }) => {

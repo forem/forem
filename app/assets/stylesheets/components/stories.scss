@@ -54,17 +54,14 @@
   // Cover section for promoted (first) card.
   &__cover {
     display: block;
+    width: 100%;
+    height: auto;
+    padding-bottom: 42%;
+    background-size: cover;
+    background-position: center center;
 
-    &__image {
-      width: 100%;
-      height: auto;
-      padding-bottom: 42%;
-      background-size: cover;
-      background-position: center center;
-
-      @media (min-width: $breakpoint-m) {
-        border-radius: var(--radius) var(--radius) 0 0;
-      }
+    @media (min-width: $breakpoint-m) {
+      border-radius: var(--radius) var(--radius) 0 0;
     }
   }
 
@@ -138,16 +135,14 @@
 
   &__flare-tag {
     font-weight: normal;
-    font-family: var(--ff-accent);
     font-size: 0.6em;
-    padding: 0.35em 0.3em 0.3em 0.3em;
+    padding: 0.3em;
     vertical-align: middle;
     position: relative;
     top: -2px;
     line-height: 1em;
     display: inline-block;
     border-radius: var(--radius);
-    letter-spacing: -0.025em;
     background: var(--base-60);
     margin-right: var(--su-1);
     color: var(--base-inverted);
@@ -169,10 +164,18 @@
   &__comments {
     cursor: default;
     background: var(--story-comments-bg);
-    padding: var(--story-padding);
-    padding-top: var(--su-4);
-    border-radius: 0 0 var(--radius) var(--radius);
-    margin-top: calc(var(--su-1) * -1);
+    border-radius: var(--radius);
+    position: relative;
+    bottom: var(--su-2);
+    margin: var(--su-2);
+    margin-bottom: 0;
+    padding: var(--su-2) 0;
+
+    @media (min-width: $breakpoint-s) {
+      bottom: var(--su-3);
+      margin: var(--su-3);
+      margin-bottom: 0;
+    }
 
     &__headline {
       font-weight: var(--fw-bold);
@@ -186,6 +189,7 @@
       padding-left: calc(var(--su-6) + var(--su-4));
       z-index: 6;
       position: relative;
+      margin-top: var(--su-1);
     }
   }
 
@@ -204,7 +208,7 @@
   }
 
   &__headline {
-    font-family: var(--ff-accent);
+    font-family: var(--ff-monospace);
     font-size: var(--fs-s);
     color: var(--card-color-tertiary);
     margin-bottom: var(--su-4);
@@ -244,7 +248,7 @@
       border-radius: var(--radius);
       padding: var(--su-1);
       font-size: var(--fs-s);
-      font-family: var(--ff-accent);
+      font-family: var(--ff-monospace);
     }
   }
 }

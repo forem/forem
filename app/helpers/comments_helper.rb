@@ -1,5 +1,5 @@
 module CommentsHelper
-  def comment_class(comment, is_view_root = false)
+  def comment_class(comment, is_view_root: false)
     if comment.root? || is_view_root
       "root"
     else
@@ -15,8 +15,7 @@ module CommentsHelper
     commentable &&
       [
         commentable.user_id,
-        commentable.second_user_id,
-        commentable.third_user_id,
+        commentable.co_author_ids,
       ].any? { |id| id == comment.user_id }
   end
 

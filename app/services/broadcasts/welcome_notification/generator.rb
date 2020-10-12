@@ -92,7 +92,7 @@ module Broadcasts
       end
 
       def authenticated_with_all_providers?
-        identities.count == SiteConfig.authentication_providers.count
+        identities.count == Authentication::Providers.enabled.size
       end
 
       def user_is_following_tags?
@@ -124,13 +124,14 @@ module Broadcasts
       end
 
       def identities
-        @identities ||= user.identities.where(provider: SiteConfig.authentication_providers)
+        @identities ||= user.identities.enabled
       end
 
       def find_auth_broadcast
-        missing_identities = SiteConfig.authentication_providers.filter_map do |provider|
+        missing_identities = Authentication::Providers.enabled.map do |provider|
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
-        end
+        end.compact
+
         Broadcast.active.find_by!(title: "Welcome Notification: #{missing_identities.first}")
       end
 

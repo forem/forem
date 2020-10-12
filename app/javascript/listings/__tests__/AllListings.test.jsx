@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import AllListings from '../components/AllListings';
+import '../../../assets/javascripts/utilities/localDateTime';
 
 const firstListing = {
   id: 20,
@@ -14,10 +15,13 @@ const firstListing = {
   tags: ['go', 'git'],
   user_id: 1,
   author: {
-    name: 'Mrs. Yoko Christiansen',
-    username: 'mrschristiansenyoko',
+    name: 'Evil Corp Org',
+    username: 'evil_corp_org',
     profile_image_90:
       '/uploads/user/profile_image/7/4b1c980a-beb0-4a5f-b3f2-acc91adc503c.png',
+  },
+  user: {
+    username: 'mrschristiansenyoko',
   },
 };
 
@@ -37,6 +41,9 @@ const secondListing = {
     profile_image_90:
       '/uploads/user/profile_image/7/4b1c980a-beb0-4a5f-b3f2-acc91adc503c.png',
   },
+  user: {
+    username: 'fred',
+  },
 };
 
 const thirdListing = {
@@ -54,6 +61,9 @@ const thirdListing = {
     username: 'mrsjohnmack',
     profile_image_90:
       '/uploads/user/profile_image/7/4b1c980a-beb0-4a5f-b3f2-acc91adc503c.png',
+  },
+  user: {
+    username: 'mrsjohnmack',
   },
 };
 
@@ -76,7 +86,15 @@ const getProps = () => ({
 
 const renderAllListings = () => render(<AllListings {...getProps()} />);
 
+/* eslint-disable no-unused-vars */
+/* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
+
 describe('<AllListings />', () => {
+  afterAll(() => {
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = renderAllListings();
     const results = await axe(container);
@@ -89,7 +107,7 @@ describe('<AllListings />', () => {
 
     // Ensure each listing is present
     const titleOptions = {
-      selector: 'h3 > a',
+      selector: 'h2 > a',
     };
 
     // 1st listings
@@ -121,11 +139,11 @@ describe('<AllListings />', () => {
     expect(gitTag.getAttribute('href')).toEqual('/listings?t=git');
 
     // listing author
-    const listing1Author = getByText('Mrs. Yoko Christiansen', {
+    const listing1Author = getByText('Evil Corp Org', {
       selector: '[data-testid="single-listing-20"] a',
     });
 
-    expect(listing1Author.getAttribute('href')).toEqual('/mrschristiansenyoko');
+    expect(listing1Author.getAttribute('href')).toEqual('/evil_corp_org');
 
     // 2nd listing
     getByTestId('single-listing-21');

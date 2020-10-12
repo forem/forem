@@ -145,11 +145,15 @@
   --button-ghost-bg-hover: rgba(0, 0, 0, 0.035);
   --button-ghost-color: var(--base-80);
   --button-ghost-color-hover: var(--base-100);
+  --button-ghost-dimmed-color: var(--base-60);
+  --button-ghost-dimmed-color-hover: var(--base-100);
   //-- Inverted
   --button-ghost-inverted-bg: transparent;
   --button-ghost-inverted-bg-hover: rgba(255, 255, 255, 0.15);
   --button-ghost-inverted-color: var(--base-30);
   --button-ghost-inverted-color-hover: var(--base-10);
+  --button-ghost-dimmed-inverted-color: var(--base-50);
+  --button-ghost-dimmed-inverted-color-hover: var(--base-100);
 
   // Forms
   --form-bg: #f4f5f7;

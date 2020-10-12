@@ -1,15 +1,18 @@
 <nav class="mb-6" id="sidebar-nav" aria-label="Primary sidebar nav">
   <% if user_signed_in? %>
-    <a class="sidebar-profile" id="sidebar-profile" href="#">
-      <img src="" class="sidebar-profile--avatar" id="sidebar-profile--avatar" alt="" width="48" height="48">
-      <div class="sidebar-profile--details">
-        <h4 class="sidebar-profile--name" id="sidebar-profile--name"></h4>
-        <small class="sidebar-profile--username" id="sidebar-profile--username"></small>
+    <a class="crayons-link crayons-link--block mb-2 flex break-word items-start" id="sidebar-profile" href="#">
+      <span class="crayons-avatar crayons-avatar--xl shrink-0 mr-2">
+        <img src="" class="crayons-avatar__image" id="sidebar-profile--avatar" alt="" width="48" height="48">
+      </span>
+
+      <div class="flex-1">
+        <h4 class="fs-base fw-bold" id="sidebar-profile--name"></h4>
+        <small class="fs-s opacity-75" id="sidebar-profile--username"></small>
       </div>
     </a>
   <% end %>
   <% unless user_signed_in? %>
-    <a href="/enter" class="crayons-link crayons-link--block fw-bold">
+    <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
       <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
       Sign In/Up
     </a>
@@ -20,6 +23,7 @@
       Home
     </a>
   <% end %>
+
   <% if user_signed_in? %>
     <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
       <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
@@ -88,11 +92,11 @@
 
 <nav class="sidebar-tags-browser mb-6 overflow-y-auto scrolling-touch" aria-label="Secondary sidebar nav">
   <% if user_signed_in? %>
-    <header class="fs-xs color-base-50 ff-accent fw-bold p-2">MY TAGS</header>
+    <header class="fs-xs color-base-50 ff-monospace fw-bold p-2">MY TAGS</header>
     <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
   <% end %>
   <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
-    <header id="tag-separator" class="fs-xs color-base-50 ff-accent fw-bold p-2">
+    <header id="tag-separator" class="fs-xs color-base-50 ff-monospace fw-bold p-2">
       <% if user_signed_in? %>
         OTHER POPULAR TAGS
       <% else %>

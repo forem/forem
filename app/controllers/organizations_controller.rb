@@ -49,6 +49,25 @@ class OrganizationsController < ApplicationController
     end
   end
 
+  def destroy
+    organization = Organization.find_by(id: params[:id])
+    authorize organization
+    if organization.destroy
+      current_user.touch(:organization_info_updated_at)
+      CacheBuster.bust_user(current_user)
+      flash[:settings_notice] = "Your organization: \"#{organization.name}\" was successfully deleted."
+      redirect_to user_settings_path(:organization)
+    else
+      flash[:settings_notice] = "#{organization.errors.full_messages.to_sentence}.
+        Please email #{SiteConfig.email_addresses['default']} for assistance."
+      redirect_to user_settings_path(:organization, id: organization.id)
+    end
+  rescue Pundit::NotAuthorizedError
+    flash[:error] = "Your organization was not deleted; you must be an admin, the only member in the organization,
+      and have no articles connected to the organization."
+    redirect_to user_settings_path(:organization, id: organization.id)
+  end
+
   def generate_new_secret
     set_organization
     @organization.secret = @organization.generated_random_secret

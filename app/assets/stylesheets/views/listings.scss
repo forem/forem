@@ -1,0 +1,93 @@
+@import '../variables';
+@import '../config/import';
+
+.listings-columns {
+  margin-bottom: var(--su-6);
+
+  @media (min-width: $breakpoint-m) {
+    display: grid;
+    grid-gap: var(--su-4);
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  }
+}
+
+.single-listing {
+  $el: &;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  overflow: hidden;
+
+  &__dropdown {
+    display: none;
+
+    #{$el}:hover & {
+      display: block;
+    }
+  }
+
+  &__tags {
+    min-height: var(--su-4);
+  }
+
+  &__date {
+    font-size: 0.85em;
+    min-height: var(--su-4);
+    color: var(--card-color-tertiary);
+  }
+}
+
+// New/Edit Listing form
+// Tags dropdown
+// TODO: componetize styling..
+
+.listingform {
+  &__tagsoptions {
+    @include generate-box(
+      $level: 2,
+      $bg: var(--card-bg),
+      $border: var(--card-color),
+      $color: var(--card-color)
+    );
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100%);
+    z-index: 100;
+    padding: var(--su-1);
+    left: calc(var(--su-1) * -1);
+    right: calc(var(--su-1) * -1);
+  }
+
+  &__tagname {
+    color: var(--base-90);
+    font-weight: var(--fw-medium);
+  }
+
+  &__tagoptionrow {
+    cursor: pointer;
+    color: var(--link-color);
+    padding: var(--su-3);
+
+    &:hover {
+      background: var(--link-bg-hover);
+      .crayons-tag {
+        color: var(--link-color-hover);
+      }
+    }
+
+    &--active {
+      background: var(--link-bg-hover);
+      .crayons-article-form__tagname {
+        color: var(--link-color-hover);
+      }
+    }
+  }
+
+  &__tagrules,
+  &__tagsoptionrulesbutton,
+  &__tagsoptionsbottomrow,
+  &__tagrules--inactive {
+    display: none;
+  }
+}

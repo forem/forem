@@ -12,7 +12,7 @@
   max-width: 880px;
   .article-form-video-image-url {
     padding-top: 15px;
-    font-family: var(--ff-accent);
+    font-family: var(--ff-monospace);
     input {
       padding: 3px;
       font-size: 1em;
@@ -152,7 +152,7 @@
   color: var(--body-color);
   resize: none;
   background: transparent;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   @media screen and (min-width: 600px) {
     font-size: 29px;
     height: 50px;
@@ -218,7 +218,7 @@
   resize: none;
   border: 0;
   font-size: 16px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   font-weight: bold;
   background: var(--form-bg);
   color: var(--body-color);
@@ -236,7 +236,7 @@
   }
   background: var(--card-bg);
   border: 1px solid var(--body-color);
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   z-index: 20;
 }
 .articleform__tagoptionrow {
@@ -367,7 +367,7 @@
   font-size: 15px;
   resize: none;
   padding: 20px 6px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   background: var(--card-bg);
   color: var(--card-color);
   overflow-y: auto;

@@ -1,15 +1,18 @@
-<div class="flex flex-col m:flex-row justify-center">
+<div class="registration__actions-providers">
   <% authentication_enabled_providers.each do |provider| %>
     <a
       href="<%= provider.sign_in_path(state: "navbar_basic") %>"
-      class="crayons-btn crayons-btn--xl crayons-btn--brand-<%= provider.provider_name %> crayons-btn--icon-left m-1 whitespace-nowrap"
+      class="crayons-btn crayons-btn--l crayons-btn--brand-<%= provider.provider_name %> crayons-btn--icon-left whitespace-nowrap"
       data-no-instant>
       <%= inline_svg_tag("#{provider.provider_name}.svg", aria: true, class: "crayons-icon", title: provider.provider_name) %>
-      Sign In with <%= provider.official_name %>
+      <%= params[:state] == "new-user" ? "Sign up" : "Continue" %> with <%= provider.official_name %>
     </a>
   <% end %>
+  <% if params[:state] == "new-user" && SiteConfig.allow_email_password_registration %>
+    <%= link_to inline_svg_tag("email.svg", aria: true, class: "crayons-icon", title: "email") + "Sign up with Email", 
+      request.params.merge(state: "email_signup"),
+      class: "crayons-btn crayons-btn--l crayons-btn--brand-email crayons-btn--icon-left whitespace-nowrap",
+      data: {no_instant: ""}
+    %>
+  <% end %>
 </div>
-
-<% if authentication_enabled_providers.any? %>
-  <p class="pt-6 pb-8"><em>We require social registration to prevent abuse.</em></p>
-<% end %>

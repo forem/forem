@@ -20,7 +20,7 @@ module Users
     def self.call
       # This pulls from emojipedia source for the liberally open source twemoji lib.
       # TODO: Make this much more interesting than just emojis.
-      "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/248/" + EMOJI_IMAGES.sample
+      "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/twitter/248/#{EMOJI_IMAGES.sample}"
     end
   end
 end

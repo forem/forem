@@ -1,5 +1,5 @@
 module Authentication
-  # TODO: [thepracticaldev/oss] use strategy pattern for the three cases
+  # TODO: [@forem/oss] use strategy pattern for the three cases
   #   described below.
   #   Make the decision early which one of the 3 cases we're dealing with
   #   and then call either NewUserStrategy, UpdateUserStrategy or
@@ -35,6 +35,7 @@ module Authentication
 
       ActiveRecord::Base.transaction do
         user = proper_user(identity)
+
         user = if user.nil?
                  find_or_create_user!
                else
@@ -113,8 +114,10 @@ module Authentication
     end
 
     def default_user_fields
+      password = Devise.friendly_token(20)
       {
-        password: Devise.friendly_token(20),
+        password: password,
+        password_confirmation: password,
         signup_cta_variant: cta_variant,
         registered: true,
         registered_at: Time.current,
@@ -125,6 +128,7 @@ module Authentication
 
     def update_user(user)
       user.tap do |model|
+        user.unlock_access! if user.access_locked?
         user.assign_attributes(provider.existing_user_data)
 
         update_profile_updated_at(model)
@@ -140,12 +144,24 @@ module Authentication
 
     def account_less_than_a_week_old?(user, logged_in_identity)
       provider_created_at = user.public_send(provider.user_created_at_field)
-      user_identity_age = provider_created_at ||
-        Time.zone.parse(logged_in_identity.auth_data_dump.extra.raw_info.created_at)
+      user_identity_age = provider_created_at
+      user_identity_age ||= extract_created_at_from_payload(logged_in_identity)
 
       # last one is a fallback in case both are nil
       range = 1.week.ago.beginning_of_day..Time.current
       range.cover?(user_identity_age)
+    end
+
+    def extract_created_at_from_payload(logged_in_identity)
+      raw_info = logged_in_identity.auth_data_dump.extra.raw_info
+
+      if raw_info.created_at.present?
+        Time.zone.parse(raw_info.created_at)
+      elsif raw_info.auth_time.present?
+        Time.zone.at(raw_info.auth_time)
+      else
+        Time.current
+      end
     end
 
     def flag_spam_user(user)

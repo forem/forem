@@ -14,10 +14,6 @@
   border-radius: var(--radius) var(--radius) 0 0;
   border-bottom: 2px solid var(--base-10);
   padding: var(--su-6) var(--su-4);
-
-  .tag-view {
-    color: var(--base-90);
-  }
 }
 
 .mod-index-list-header {
@@ -163,13 +159,12 @@
 }
 
 .mod-actions-menu-btn {
-  transition: 0.3s all ease;
   position: fixed;
   bottom: var(--su-7);
+  margin-bottom: env(safe-area-inset-bottom);
   right: var(--su-7);
   z-index: 201;
   cursor: pointer;
-  transition: 0.3s all ease;
   border-radius: 50px;
 
   @media (max-width: $breakpoint-m) {
@@ -178,44 +173,6 @@
     padding: 0;
   }
 }
-
-.flag-user-modal {
-  .flag-user-modal-header {
-    padding-left: var(--su-4);
-
-    h2 {
-      font-weight: var(--fw-bold);
-      font-size: var(--fs-l);
-      line-height: var(--lh-tight);
-    }
-
-    .modal-header-close-icon {
-      border-radius: 100%;
-      background: var(--base-10);
-    }
-  }
-
-  .flag-user-modal-body {
-    span {
-      font-size: var(--fs-base);
-      line-height: var(--lh-base);
-      color: var(--base-90);
-    }
-
-    .crayons-fields {
-      margin-top: var(--su-4);
-
-      .abuse-report-link {
-        margin: var(--su-4) 0 0 var(--su-7);
-      }
-    }
-
-    .buttons-container {
-      margin-top: var(--su-8);
-    }
-  }
-}
-
 
 .mod-container {
   display: flex;
@@ -458,6 +415,16 @@
     border-top: 1px solid var(--base-20);
     overflow-y: auto;
 
+    div.unpublish-article {
+      background: inherit;
+      border: none;
+      padding: var(--su-3) var(--su-4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: auto;
+    }
+
     button.other-things-btn {
       background: inherit;
       border: none;
@@ -558,7 +525,7 @@
         font-size: var(--fs-base);
         text-align: left;
         color: var(--base-80);
-        font-family: var(--ff-accent);
+        font-family: var(--ff-monospace);
         .num-sign {
           color: var(--base-40);
           padding-left: 2px;

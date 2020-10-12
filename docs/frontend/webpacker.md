@@ -39,3 +39,6 @@ loading split chunks multiple times.
 
 For more information in regards to `javascript_packs_with_chunks_tag`, see
 https://github.com/rails/webpacker/blob/master/lib/webpacker/helper.rb
+
+Aside from the Webpacker repository, see also Ross Kaffenberger's
+[visual guide to Webpacker](https://rossta.net/blog/visual-guide-to-webpacker.html).

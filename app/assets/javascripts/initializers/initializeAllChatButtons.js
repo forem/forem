@@ -12,20 +12,16 @@ function hideChatModal(modal) {
 }
 
 function toggleModal() {
-  var modal = document.querySelector('.modal');
-  var currentState = modal.style.display;
-
-  if (currentState === 'none') {
-    showChatModal(modal);
-  } else {
-    hideChatModal(modal);
-  }
+  var modal = document.querySelector('.crayons-modal');
+  modal.classList.toggle('hidden');
 }
 
 function initModal() {
-  var modal = document.querySelector('.modal');
+  var modal = document.querySelector('.crayons-modal');
   modal.querySelector('.close-modal').addEventListener('click', toggleModal);
-  modal.querySelector('.overlay').addEventListener('click', toggleModal);
+  modal
+    .querySelector('.crayons-modal__overlay')
+    .addEventListener('click', toggleModal);
 }
 
 function handleChatButtonPress(form) {
@@ -56,8 +52,8 @@ function addButtonClickHandle(response, button, modalInfo) {
     linkWrap.removeAttribute('href'); // remove link
     button.addEventListener('click', toggleModal);
     // eslint-disable-next-line no-param-reassign
-    button.style.display = 'initial'; // show button
-    linkWrap.style.display = 'initial'; // show button
+    button.classList.remove('hidden'); // show button
+    linkWrap.classList.remove('hidden'); // show button
     form.onsubmit = () => {
       handleChatButtonPress(form);
       return false;
@@ -65,8 +61,8 @@ function addButtonClickHandle(response, button, modalInfo) {
   } else if (response === 'mutual') {
     button.removeEventListener('click', toggleModal);
     // eslint-disable-next-line no-param-reassign
-    button.style.display = 'initial'; // show button
-    linkWrap.style.display = 'initial'; // show button
+    button.classList.remove('hidden'); // show button
+    linkWrap.classList.remove('hidden'); // show button
   }
 }
 

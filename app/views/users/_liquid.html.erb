@@ -9,12 +9,12 @@
   <% if user_path.present? %>
     <a href="<%= user_path %>" class="ltag__user__link profile-image-link">
       <div class="ltag__user__pic">
-        <img src="<%= ProfileImage.new(user).get(width: 150) %>" alt="<%= "#{user.username} image" %>" />
+        <img src="<%= Images::Profile.call(user.profile_image_url, length: 150) %>" alt="<%= "#{user.username} image" %>" />
       </div>
     </a>
   <% else %>
     <div class="ltag__user__pic">
-      <img src="<%= ProfileImage.new(user).get(width: 150) %>" alt="<%= "#{user.username} image" %>" />
+      <img src="<%= Images::Profile.call(user.profile_image_url, length: 150) %>" alt="<%= "#{user.username} image" %>" />
     </div>
   <% end %>
   <div class="ltag__user__content">

@@ -1,13 +1,21 @@
 module Notifications
   module NewFollower
-    module Types
-      include Dry.Types
-    end
+    class FollowData
+      class DataError < RuntimeError; end
 
-    class FollowData < Dry::Struct
-      attribute :followable_id, Types::Strict::Integer
-      attribute :followable_type, Types::Strict::String.enum("User", "Organization")
-      attribute :follower_id, Types::Strict::Integer
+      include ActiveModel::Model
+      include ActiveModel::Validations
+
+      attr_accessor :followable_id, :followable_type, :follower_id
+
+      validates :followable_id, numericality: { only_integer: true }
+      validates :followable_type, inclusion: { in: %w[User Organization] }
+      validates :follower_id, numericality: { only_integer: true }
+
+      def initialize(*args, **kwargs)
+        super
+        raise DataError unless valid?
+      end
     end
   end
 end

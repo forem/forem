@@ -39,10 +39,10 @@ class ModerationsController < ApplicationController
 
   def actions_panel
     load_article
-    tag_mod_tag_ids = @tag_moderator_tags.pluck(:id)
+    tag_mod_tag_ids = @tag_moderator_tags.ids
     has_room_for_tags = @moderatable.tag_list.size < 4
     has_no_relevant_adjustments = @adjustments.pluck(:tag_id).intersection(tag_mod_tag_ids).size.zero?
-    can_be_adjusted = @moderatable.tags.pluck(:id).intersection(tag_mod_tag_ids).size.positive?
+    can_be_adjusted = @moderatable.tags.ids.intersection(tag_mod_tag_ids).size.positive?
 
     @should_show_adjust_tags = tag_mod_tag_ids.size.positive? &&
       ((has_room_for_tags && has_no_relevant_adjustments) ||

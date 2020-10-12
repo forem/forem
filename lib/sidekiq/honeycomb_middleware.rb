@@ -10,6 +10,8 @@ module Sidekiq
         span.add_field("sidekiq.queue", queue)
         span.add_field("sidekiq.jid", job["jid"])
         span.add_field("sidekiq.args", job["args"])
+        span.add_field("sidekiq.retry", job["retry"])
+        span.add_field("sidekiq.retry_count", job["retry_count"])
         begin
           yield
           span.add_field("sidekiq.result", "success")

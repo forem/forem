@@ -1,0 +1,13 @@
+<div class="row">
+  <div class="col-12">
+    <%= form_for(User.new, url: admin_invitations_path) do |f| %>
+      <div class="field">
+        <%= f.label "Email:" %>
+        <%= f.text_field :email, required: true, class: "form-control", placeholder: "Email of invitee" %>
+        <%= f.label "Name:" %>
+        <%= f.text_field :name, required: true, class: "form-control", placeholder: "Name of invitee" %>
+      </div>
+        <%= f.submit class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>

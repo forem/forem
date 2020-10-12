@@ -18,8 +18,8 @@ RSpec.describe "Pages", type: :request do
     end
 
     context "when json template" do
-      let_it_be(:json_text) { "{\"foo\": \"bar\"}" }
-      let_it_be(:page) do
+      let(:json_text) { "{\"foo\": \"bar\"}" }
+      let(:page) do
         create(:page, title: "sample_data", template: "json", body_json: json_text, body_html: nil, body_markdown: nil)
       end
 
@@ -55,7 +55,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /about-listings" do
     it "has proper headline" do
       get "/about-listings"
-      expect(response.body).to include("About #{ApplicationConfig['COMMUNITY_NAME']} Listings")
+      expect(response.body).to include("About #{SiteConfig.community_name} Listings")
     end
   end
 
@@ -76,14 +76,14 @@ RSpec.describe "Pages", type: :request do
   describe "GET /page/post-a-job" do
     it "has proper headline" do
       get "/page/post-a-job"
-      expect(response.body).to include("Posting a Job on #{ApplicationConfig['COMMUNITY_NAME']} Listings")
+      expect(response.body).to include("Posting a Job on #{SiteConfig.community_name} Listings")
     end
   end
 
   describe "GET /api" do
     it "redirects to the API docs" do
       get "/api"
-      expect(response.body).to redirect_to("https://docs.dev.to/api")
+      expect(response.body).to redirect_to("https://docs.forem.com/api")
     end
   end
 
@@ -93,7 +93,7 @@ RSpec.describe "Pages", type: :request do
       get "/privacy"
       expect(response.body).to include("Privacy Policy")
       expect(response.body).to include(SiteConfig.shop_url)
-      expect(response.body).to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+      expect(response.body).to include("#{SiteConfig.community_name} Shop")
     end
   end
 
@@ -119,8 +119,9 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /welcome" do
+    let(:user) { create(:user, id: 1) }
+
     it "redirects to the latest welcome thread" do
-      user = create(:user, id: 1)
       earlier_welcome_thread = create(:article, user: user, tags: "welcome")
       earlier_welcome_thread.update(published_at: Time.current - 1.week)
       latest_welcome_thread = create(:article, user: user, tags: "welcome")
@@ -128,11 +129,31 @@ RSpec.describe "Pages", type: :request do
 
       expect(response.body).to redirect_to(latest_welcome_thread.path)
     end
+
+    context "when no welcome thread exists" do
+      it "redirects to the notifications page" do
+        get "/welcome"
+
+        expect(response.body).to redirect_to(notifications_path)
+      end
+    end
+
+    context "when the welcome thread has an absolute URL stored as its path" do
+      it "redirects to a page on the same domain as the app" do
+        vulnerable_welcome_thread = create(:article, user: user, tags: "welcome")
+        vulnerable_welcome_thread.update_column(:path, "https://attacker.com/hijacked/welcome")
+
+        get "/welcome"
+
+        expect(response.body).to redirect_to("/hijacked/welcome")
+      end
+    end
   end
 
   describe "GET /challenge" do
+    let(:user) { create(:user, id: 1) }
+
     it "redirects to the latest challenge thread" do
-      user = create(:user, id: 1)
       earlier_challenge_thread = create(:article, user: user, tags: "challenge")
       earlier_challenge_thread.update(published_at: Time.current - 1.week)
       latest_challenge_thread = create(:article, user: user, tags: "challenge")
@@ -140,10 +161,29 @@ RSpec.describe "Pages", type: :request do
 
       expect(response.body).to redirect_to(latest_challenge_thread.path)
     end
+
+    context "when no challenge thread exists" do
+      it "redirects to the notifications page" do
+        get "/challenge"
+
+        expect(response.body).to redirect_to(notifications_path)
+      end
+    end
+
+    context "when the challenge thread has an absolute URL stored as its path" do
+      it "redirects to a page on the same domain as the app" do
+        vulnerable_challenge_thread = create(:article, user: user, tags: "challenge")
+        vulnerable_challenge_thread.update_column(:path, "https://attacker.com/hijacked/challenge")
+
+        get "/challenge"
+
+        expect(response.body).to redirect_to("/hijacked/challenge")
+      end
+    end
   end
 
   describe "GET /checkin" do
-    let_it_be(:user) { create(:user, username: "codenewbiestaff") }
+    let(:user) { create(:user, username: "codenewbiestaff") }
 
     it "redirects to the latest CodeNewbie staff thread" do
       earlier_staff_thread = create(:article, user: user, tags: "staff")
@@ -154,10 +194,23 @@ RSpec.describe "Pages", type: :request do
       expect(response.body).to redirect_to(latest_staff_thread.path)
     end
 
-    it "redirects to /notifications if there is no staff user post" do
-      get "/checkin"
+    context "when there is no staff user post" do
+      it "redirects to the notifications page" do
+        get "/checkin"
 
-      expect(response.body).to redirect_to("/notifications")
+        expect(response.body).to redirect_to(notifications_path)
+      end
+    end
+
+    context "when the staff thread has an absolute URL stored as its path" do
+      it "redirects to a page on the same domain as the app" do
+        vulnerable_staff_thread = create(:article, user: user, tags: "staff")
+        vulnerable_staff_thread.update_column(:path, "https://attacker.com/hijacked/staff")
+
+        get "/checkin"
+
+        expect(response.body).to redirect_to("/hijacked/staff")
+      end
     end
   end
 

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Authenticating with GitHub" do
-  let(:sign_in_link) { "Sign In with GitHub" }
+  let(:sign_in_link) { "Continue with GitHub" }
 
   before { omniauth_mock_github_payload }
 
@@ -9,13 +9,13 @@ RSpec.describe "Authenticating with GitHub" do
     context "when using valid credentials" do
       it "creates a new user" do
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
       end
 
       it "logs in and redirects to the onboarding" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
@@ -23,7 +23,7 @@ RSpec.describe "Authenticating with GitHub" do
       end
 
       it "remembers the user" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         user = User.last
@@ -39,7 +39,7 @@ RSpec.describe "Authenticating with GitHub" do
         user = create(:user, username: username.delete("."))
 
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
 
@@ -65,18 +65,18 @@ RSpec.describe "Authenticating with GitHub" do
 
       it "does not create a new user" do
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "does not log in" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_link(sign_in_link)
-        expect(page).to have_link("All about #{ApplicationConfig['COMMUNITY_NAME']}")
+        expect(page).to have_link("About #{SiteConfig.community_name}")
       end
 
       it "notifies Datadog about a callback error" do
@@ -84,9 +84,9 @@ RSpec.describe "Authenticating with GitHub" do
           "Callback error", "Error reason", "https://example.com/error"
         )
 
-        omniauth_setup_authentication_error(error)
+        omniauth_setup_authentication_error(error, params)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "github", params)
@@ -100,9 +100,9 @@ RSpec.describe "Authenticating with GitHub" do
         allow(request).to receive(:code).and_return(401)
         allow(request).to receive(:message).and_return("unauthorized")
         error = OAuth::Unauthorized.new(request)
-        omniauth_setup_authentication_error(error)
+        omniauth_setup_authentication_error(error, params)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "github", params)
@@ -113,9 +113,9 @@ RSpec.describe "Authenticating with GitHub" do
 
       it "notifies Datadog even with no OmniAuth error present" do
         error = nil
-        omniauth_setup_authentication_error(error)
+        omniauth_setup_authentication_error(error, params)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "github", params)
@@ -133,13 +133,13 @@ RSpec.describe "Authenticating with GitHub" do
 
       it "does not create a new user" do
         expect do
-          visit root_path
+          visit sign_up_path
           click_link(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "redirects to the registration page" do
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_up")
@@ -148,7 +148,7 @@ RSpec.describe "Authenticating with GitHub" do
       it "reports errors" do
         allow(Honeybadger).to receive(:notify)
 
-        visit root_path
+        visit sign_up_path
         click_link(sign_in_link, match: :first)
 
         expect(Honeybadger).to have_received(:notify)
@@ -162,14 +162,27 @@ RSpec.describe "Authenticating with GitHub" do
 
     before do
       auth_payload.info.email = user.email
-      sign_in user
+    end
+
+    after do
+      sign_out user
     end
 
     context "when using valid credentials" do
-      it "logs in and redirects to the dashboard" do
-        visit "/users/auth/github"
+      it "logs in" do
+        visit sign_up_path
+        click_link(sign_in_link, match: :first)
 
-        expect(page).to have_current_path("/dashboard?signin=true")
+        expect(page).to have_current_path("/?signin=true")
+      end
+    end
+
+    context "when already signed in" do
+      it "redirects to the feed" do
+        sign_in user
+        visit user_github_omniauth_authorize_path
+
+        expect(page).to have_current_path("/?signin=true")
       end
     end
   end

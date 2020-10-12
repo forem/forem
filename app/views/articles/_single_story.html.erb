@@ -3,8 +3,9 @@
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
   <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
-    <a href="<%= story.path %>" class="crayons-story__cover" aria-label="article">
-      <div style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image"></div>
+    <a href="<%= story.path %>" title="<%= story.title %>" class="crayons-story__cover" aria-label="article"
+      style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image">
+      <span class="hidden"><%= story.title %></span>
     </a>
   <% end %>
 
@@ -27,7 +28,7 @@
           <% end %>
 
           <a href="/<%= story.cached_user.username %>" class="crayons-avatar <% if story.cached_organization && !@organization_article_index %> crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted <% else %> crayons-avatar--l <% end %> ">
-            <img src="<%= ProfileImage.new(story.cached_user).get(width: 90) %>" alt="<%= story.cached_user.username %> profile" class="crayons-avatar__image" />
+            <img src="<%= Images::Profile.call(story.cached_user.profile_image_url, length: 90) %>" alt="<%= story.cached_user.username %> profile" class="crayons-avatar__image" />
           </a>
         </div>
         <div>

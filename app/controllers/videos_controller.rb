@@ -18,7 +18,7 @@ class VideosController < ApplicationController
   def create
     @article = ArticleWithVideoCreationService.new(article_params, current_user).create!
 
-    redirect_to @article.path + "/edit"
+    redirect_to "#{@article.path}/edit"
   end
 
   private

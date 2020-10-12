@@ -3,7 +3,7 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/#{@podcast.slug}/#{@episode.slug}") %>" />
   <meta name="description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/#{@podcast.slug}/#{@episode.slug}") %>" />
@@ -30,16 +30,11 @@
 
 <div class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
   <div class="hero">
-    <% image_url = cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
-                                 type: "fetch",
-                                 quality: "auto",
-                                 sign_url: true,
-                                 flags: "progressive",
-                                 fetch_format: "jpg") %>
+    <% image_url = Images::Optimizer.call(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", fetch_format: "jpg", crop: nil) %>
     <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= image_url %>)">
       <h2>
         <a href="/<%= @podcast.slug %>">
-          <img alt="<%= @podcast.title %>" src="<%= cloudinary(@podcast.image_url, 60, 80) %>" /><%= @podcast.title %>
+          <img alt="<%= @podcast.title %>" src="<%= optimized_image_url(@podcast.image_url, width: 60, quality: 80) %>" /><%= @podcast.title %>
         </a>
         <button id="user-follow-butt" class="cta follow-action-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
       </h2>
@@ -56,17 +51,9 @@
     </div>
     <div id="record-<%= @episode.slug %>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>">
       <div class="record" id="record">
-        <%= cl_image_tag(@podcast.image_url,
-                         type: "fetch",
-                         crop: "fill",
-                         width: 420,
-                         height: 420,
-                         quality: "auto",
-                         sign_url: true,
-                         flags: "progressive",
-                         fetch_format: "auto",
-                         class: "main-image",
-                         alt: @podcast.title) %>
+        <%= optimized_image_tag(@podcast.image_url,
+                                optimizer_options: { width: 420, height: 420, crop: "fill" },
+                                image_options: { class: "main-image", alt: @podcast.title }) %>
         <img alt="Play Button" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
         <img alt="Pause Button" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
         <div class="status-message" id="status-message-<%= @episode.slug %>">
@@ -99,22 +86,20 @@
         <a href="<%= @episode.website_url %>">Episode source</a>
       </p>
     </div>
-    <div class="comments-container-container">
-      <div
-        class="comments-container"
-        id="comments-container"
-        data-commentable-id="<%= @episode.id %>"
-        data-commentable-type="PodcastEpisode">
-        <%= render "/comments/form",
-                   commentable: @episode,
-                   commentable_type: "PodcastEpisode" %>
-        <div class="comment-trees" id="comment-trees-container">
-          <% Comment.tree_for(@episode, 12).each do |comment, sub_comments| %>
-            <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-              <%= tree_for(comment, sub_comments, @episode) %>
-            <% end %>
+    <div
+      class="comments-container"
+      id="comments-container"
+      data-commentable-id="<%= @episode.id %>"
+      data-commentable-type="PodcastEpisode">
+      <%= render "/comments/form",
+                 commentable: @episode,
+                 commentable_type: "PodcastEpisode" %>
+      <div class="comment-trees" id="comment-trees-container">
+        <% Comment.tree_for(@episode, 12).each do |comment, sub_comments| %>
+          <% cache ["comment_root_#{user_signed_in?}", comment] do %>
+            <%= tree_for(comment, sub_comments, @episode) %>
           <% end %>
-        </div>
+        <% end %>
       </div>
     </div>
   </div>

@@ -24,7 +24,7 @@
     <% end %>
   </div>
 
-  <div class="fs-s color-base-70">
+  <div class="fs-s color-base-60">
     <% if !article.published? %>
       <a href="<%= article.path %>/edit" class="crayons-indicator crayons-indicator--accent">Draft</a>
     <% else %>
@@ -59,7 +59,7 @@
         </span>
 
         <% if article.user_subscriptions_count > 0 %>
-          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="flex items-center crayons-btn crayons-btn--ghost crayons-btn--s fw-normal color-base-70" title="Subscriptions">
+          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="flex items-center crayons-btn crayons-btn--ghost-dimmed crayons-btn--s" title="Subscriptions">
             <%= inline_svg_tag("small-data.svg", aria: true, class: "crayons-icon mr-1", title: "Data") %>
             <%= article.user_subscriptions_count %>
           </a>

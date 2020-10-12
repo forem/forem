@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "StoriesShow", type: :request do
-  let_it_be(:user)                  { create(:user) }
-  let_it_be(:org, reload: true)     { create(:organization) }
-  let_it_be(:article, reload: true) { create(:article, user: user) }
+  let(:user) { create(:user) }
+  let(:org)     { create(:organization) }
+  let(:article) { create(:article, user: user) }
 
   describe "GET /:username/:slug (articles)" do
     it "renders proper title" do
@@ -75,6 +75,19 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).not_to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
     end
 
+    ###
+
+    it "renders date-no-year if article published this year" do
+      get article.path
+      expect(response.body).to include "date-no-year"
+    end
+
+    it "renders date with year if article published last year" do
+      article.update_column(:published_at, 1.year.ago)
+      get article.path
+      expect(response.body).not_to include "date-no-year"
+    end
+
     it "renders user payment pointer if set" do
       article.user.update_column(:payment_pointer, "this-is-a-pointer")
       get article.path
@@ -90,7 +103,7 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders second and third users if present" do
       # 3rd user doesn't seem to get rendered for some reason
       user2 = create(:user)
-      article.update(second_user_id: user2.id)
+      article.update(co_author_ids: [user2.id])
       get article.path
       expect(response.body).to include "<em>with <b><a href=\"#{user2.path}\">"
     end

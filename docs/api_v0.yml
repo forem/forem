@@ -7,22 +7,26 @@ openapi: "3.0.3"
 info:
   title: DEV API (beta)
   description: |
-    Access DEV articles, users and other resources via API.
+
+    Access Forem articles, users and other resources via API.
+
+    For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
 
     All endpoints that don't require authentication are CORS enabled.
 
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
-  version: "0.7.0"
+
+  version: "0.8.1"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
     url: https://dev.to/contact
     email: yo@dev.to
   x-logo:
-    url: https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-128-1a9016906487b8ba17f2d3d3c28f9d1cb3ae9b45d685cc2711e20f6b3c6730df.png
-    backgroundColor: "#000"
-    altText: "DEV logo"
+    url: https://res.cloudinary.com/practicaldev/image/fetch/s--EYllUmBG--/c_limit,f_auto,fl_progressive,q_80,w_190/https://res.cloudinary.com/practicaldev/image/fetch/s--m5i3pkpk--/c_limit%252cf_auto%252cfl_progressive%252cq_auto%252cw_880/https://dev-to-uploads.s3.amazonaws.com/i/sf6uve8ehm4ogwka0mez.png
+    backgroundColor: ""
+    altText: "Forem logo"
 
 servers:
   - url: https://dev.to/api
@@ -210,11 +214,11 @@ components:
         edited_at:
           type: string
           format: date-time
-          nullable: true          
+          nullable: true
         crossposted_at:
           type: string
           format: date-time
-          nullable: true          
+          nullable: true
         published_at:
           type: string
           format: date-time
@@ -311,7 +315,7 @@ components:
         crossposted_at:
           type: string
           format: date-time
-          nullable: true          
+          nullable: true
         published_at:
           type: string
           format: date-time
@@ -338,8 +342,6 @@ components:
       properties:
         article:
           type: object
-          required:
-            - title
           properties:
             title:
               type: string
@@ -603,6 +605,7 @@ components:
       required:
         - type_of
         - id_code
+        - created_at
         - body_html
         - user
         - children
@@ -611,6 +614,9 @@ components:
           type: string
         id_code:
           type: string
+        created_at:
+          type: string
+          format: date-time
         body_html:
           description: HTML formatted comment
           type: string
@@ -620,6 +626,23 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Comment"
+
+    FollowedTag:
+      type: object
+      required:
+        - id
+        - name
+        - points
+      properties:
+        id:
+          description: Tag id
+          type: integer
+          format: int64
+        name:
+          type: string
+        points:
+          type: number
+          format: float
 
     Follower:
       type: object
@@ -849,14 +872,14 @@ components:
           type: string
         twitter_username:
           type: string
-          nullable: true          
+          nullable: true
         github_username:
           type: string
           nullable: true
         website_url:
           type: string
           format: url
-          nullable: true          
+          nullable: true
         profile_image:
           description: Profile image (640x640)
           type: string
@@ -939,7 +962,7 @@ components:
         website_url:
           type: string
           format: url
-          nullable: true          
+          nullable: true
         location:
           type: string
           nullable: true
@@ -1200,6 +1223,7 @@ components:
       value:
         - type_of: comment
           id_code: m3m0
+          created_at: 2020-07-01T17:59:43Z
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1217,6 +1241,7 @@ components:
           children: []
         - type_of: comment
           id_code: m357
+          created_at: 2020-07-02T17:19:40Z
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1236,6 +1261,7 @@ components:
           children:
           - type_of: comment
             id_code: m35m
+            created_at: 2020-08-01T11:59:40Z
             body_html: |
               <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
               <html><body>
@@ -1306,6 +1332,7 @@ components:
       value:
         type_of: comment
         id_code: m357
+        created_at: 2020-08-02T17:19:40Z
         body_html: |
           <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
           <html><body>
@@ -1325,6 +1352,7 @@ components:
         children:
         - type_of: comment
           id_code: m35m
+          created_at: 2020-07-02T17:19:40Z
           body_html: |
             <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
             <html><body>
@@ -1527,6 +1555,14 @@ components:
           name: webdev
           bg_color_hex: "#562765"
           text_color_hex: "#ffffff"
+    TagsFollowed:
+      value:
+        - id: 13
+          name: discuss
+          points: 3
+        - id: 12
+          name: webdev
+          points: 1
 
     User:
       value:
@@ -1572,6 +1608,8 @@ tags:
     description: Articles are all the posts users create on DEV
   - name: comments
     description: Users can leave comments to articles and podcasts episodes
+  - name: follows
+    description: Resources are user can follow
   - name: followers
     description: Users can follow other users on the website
   - name: listings
@@ -1620,6 +1658,24 @@ paths:
           schema:
             type: string
           example: discuss
+        - name: tags
+          in: query
+          description: |
+            Using this parameter will retrieve articles with any of the comma-separated tags.
+
+            Articles will be ordered by descending popularity.
+          schema:
+            type: string
+          example: "javascript, css"
+        - name: tags_exclude
+          in: query
+          description: |
+            Using this parameter will retrieve articles that do _not_ contain _any_ of comma-separated tags.
+
+            Articles will be ordered by descending popularity.
+          schema:
+            type: string
+          example: "node, java"
         - name: username
           in: query
           description: |
@@ -1865,7 +1921,7 @@ paths:
 
         ### Rate limiting
 
-        There is a limit of 150 requests per 30 seconds.
+        There is a limit of 30 requests per 30 seconds.
 
         ### Additional resources
 
@@ -2217,7 +2273,7 @@ paths:
       summary: Comments
       description: |
         This endpoint allows the client to retrieve all comments belonging to an
-        article as threaded conversations.
+        article or podcast episode as threaded conversations.
 
         It will return the all top level comments with their nested comments as
         threads. See the format specification for further details.
@@ -2232,6 +2288,14 @@ paths:
             format: int32
             minimum: 1
           example: 270180
+        - name: p_id
+          in: query
+          description: Podcast Episode identifier.
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          example: 124
       responses:
         "200":
           description: A list of threads of comments
@@ -2262,6 +2326,10 @@ paths:
           label: curl (all comments of an article)
           source: |
             curl https://dev.to/api/comments?a_id=270180
+        - lang: Shell
+          label: curl (all comments of a podcast episode)
+          source: |
+            curl https://dev.to/api/comments?p_id=124
 
   /comments/{id}:
     get:
@@ -2359,6 +2427,46 @@ paths:
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/followers/users
+
+  /follows/tags:
+    get:
+      operationId: getFollowedTags
+      summary: Followed tags
+      description: |
+        This endpoint allows the client to retrieve a list of the tags
+        they follow.
+      tags:
+        - follows
+        - tags
+      responses:
+        "200":
+          description: A list of followed tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FollowedTag"
+              examples:
+                followers-success:
+                  $ref: "#/components/examples/TagsFollowed"
+
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+      security:
+        - api_key: []
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/follows/tags
 
   /listings:
     get:

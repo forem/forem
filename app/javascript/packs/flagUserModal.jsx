@@ -106,7 +106,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
     >
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header flag-user-modal-header">
-          <h2>Flag User</h2>
+          <h2 class="crayons-modal__box__header__title">Flag User</h2>
           <button
             type="button"
             class="crayons-btn crayons-btn--icon crayons-btn--ghost modal-header-close-icon"
@@ -123,12 +123,12 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
             </svg>
           </button>
         </header>
-        <div class="crayons-modal__box__body flag-user-modal-body">
-          <span>
-            Thanks for keeping DEV safe. Here is what you can do to flag this
-            user:
-          </span>
-          <div class="crayons-fields">
+        <div class="crayons-modal__box__body">
+          <div class="grid gap-4">
+            <p>
+              Thanks for keeping DEV safe. Here is what you can do to flag this
+              user:
+            </p>
             <div class="crayons-field crayons-field--radio">
               <input
                 type="radio"
@@ -154,40 +154,42 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
                 </p>
               </label>
             </div>
-            <a
-              href={`/report-abuse?url=${
-                modCenterArticleUrl
-                  ? `${document.location.origin}${modCenterArticleUrl}`
-                  : document.location
-              }`}
-              class="fs-base abuse-report-link"
-            >
-              Report other inappropriate conduct
-            </a>
-          </div>
-          <div class="buttons-container">
-            <Button
-              class="crayons-btn crayons-btn--danger mr-2"
-              id="confirm-flag-user-action"
-              onClick={(_event) => {
-                const {
-                  current: { dataset: adminVomitReaction },
-                } = vomitAllRef;
+            <p>
+              <a
+                href={`/report-abuse?url=${
+                  modCenterArticleUrl
+                    ? `${document.location.origin}${modCenterArticleUrl}`
+                    : document.location
+                }`}
+                className="crayons-link crayons-link--brand"
+              >
+                Report other inappropriate conduct
+              </a>
+            </p>
+            <div>
+              <Button
+                class="crayons-btn crayons-btn--danger mr-2"
+                id="confirm-flag-user-action"
+                onClick={(_event) => {
+                  const {
+                    current: { dataset: adminVomitReaction },
+                  } = vomitAllRef;
 
-                confirmFlagUser(adminVomitReaction);
-                enableConfirmButton(false);
-              }}
-              disabled={!isConfirmButtonEnabled}
-            >
-              Confirm action
-            </Button>
-            <Button
-              class="crayons-btn crayons-btn--secondary"
-              id="cancel-flag-user-action"
-              onClick={toggleFlagUserModal}
-            >
-              Cancel
-            </Button>
+                  confirmFlagUser(adminVomitReaction);
+                  enableConfirmButton(false);
+                }}
+                disabled={!isConfirmButtonEnabled}
+              >
+                Confirm action
+              </Button>
+              <Button
+                class="crayons-btn crayons-btn--secondary"
+                id="cancel-flag-user-action"
+                onClick={toggleFlagUserModal}
+              >
+                Cancel
+              </Button>
+            </div>
           </div>
         </div>
       </div>

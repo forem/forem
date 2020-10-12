@@ -12,33 +12,15 @@
 /* eslint no-use-before-define: 0 */
 /* eslint no-param-reassign: 0 */
 /* eslint no-useless-escape: 0 */
-/* global jwplayer */
+/* global jwplayer, ahoy, Runtime */
 
 function initializeVideoPlayback() {
-  var nativeBridgeMessage;
   var currentTime = '0';
+  var deviceType = 'web';
+  var lastEvent = '';
 
   function getById(name) {
     return document.getElementById(name);
-  }
-
-  function isNativeIOS() {
-    return (
-      navigator.userAgent === 'DEV-Native-ios' &&
-      window &&
-      window.webkit &&
-      window.webkit.messageHandlers &&
-      window.webkit.messageHandlers.video
-    );
-  }
-
-  function isNativeAndroid() {
-    return (
-      navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== 'undefined' &&
-      AndroidBridge !== null &&
-      AndroidBridge.videoMessage !== undefined
-    );
   }
 
   function getParameterByName(name, url) {
@@ -64,6 +46,24 @@ function initializeVideoPlayback() {
     }
   }
 
+  function videoPlayerEvent(isPlaying) {
+    // jwtplayer tends to send multiple 'play' actions. This check makes sure
+    // we're not tracking repeated 'play' events for a single interaction.
+    var eventName = isPlaying ? 'play' : 'pause';
+    if (lastEvent === eventName) {
+      return;
+    }
+    lastEvent = eventName;
+
+    var metadata = videoMetadata(getById('video-player-source'));
+    var properties = {
+      article: metadata.id,
+      deviceType: deviceType,
+      action: eventName,
+    };
+    ahoy.track('Video Player Streaming', properties);
+  }
+
   function initWebPlayer(seconds, metadata) {
     var waitingOnJWP = setInterval(function () {
       if (typeof jwplayer !== 'undefined') {
@@ -72,7 +72,6 @@ function initializeVideoPlayback() {
         playerInstance.setup({
           file: metadata.video_source_url,
           mediaid: metadata.video_code,
-          autostart: true,
           image: metadata.video_thumbnail_url,
           playbackRateControls: true,
           tracks: [
@@ -85,11 +84,14 @@ function initializeVideoPlayback() {
           ],
         });
         if (seconds) {
-          jwplayer().on('ready', function (event) {
-            jwplayer().play();
-          });
           jwplayer().on('firstFrame', function () {
             jwplayer().seek(seconds);
+          });
+          jwplayer().on('play', function () {
+            videoPlayerEvent(true);
+          });
+          jwplayer().on('pause', function () {
+            videoPlayerEvent(false);
           });
         }
       }
@@ -111,11 +113,13 @@ function initializeVideoPlayback() {
     getById('pause-butt').classList.add('active');
     getById('play-butt').classList.remove('active');
 
-    nativeBridgeMessage({
+    Runtime.videoMessage({
       action: 'play',
       url: metadata.video_source_url,
       seconds: currentTime,
     });
+
+    videoPlayerEvent(true);
   }
 
   function handleVideoMessages(mutation) {
@@ -135,6 +139,7 @@ function initializeVideoPlayback() {
     if (message.action == 'pause') {
       getById('pause-butt').classList.remove('active');
       getById('play-butt').classList.add('active');
+      videoPlayerEvent(false);
     } else if (message.action == 'tick') {
       currentTime = message.currentTime;
     }
@@ -144,16 +149,18 @@ function initializeVideoPlayback() {
     var seconds = timeToSeconds(getParameterByName('t') || '0');
     var metadata = videoMetadata(videoSource);
 
-    if (isNativeIOS()) {
-      nativeBridgeMessage = function (message) {
+    if (Runtime.isNativeIOS('video')) {
+      deviceType = 'iOS';
+      Runtime.videoMessage = function (message) {
         try {
           window.webkit.messageHandlers.video.postMessage(message);
         } catch (err) {
           console.log(err.message); // eslint-disable-line no-console
         }
       };
-    } else if (isNativeAndroid()) {
-      nativeBridgeMessage = function (message) {
+    } else if (Runtime.isNativeAndroid('videoMessage')) {
+      deviceType = 'Android';
+      Runtime.videoMessage = function (message) {
         try {
           AndroidBridge.videoMessage(JSON.stringify(message));
         } catch (err) {
@@ -170,7 +177,7 @@ function initializeVideoPlayback() {
     playerElement.addEventListener('click', requestFocus);
 
     playerElement.classList.add('native');
-    getById('pause-butt').classList.add('active');
+    getById('play-butt').classList.add('active');
 
     var mutationObserver = new MutationObserver(function (mutations) {
       mutations.forEach(function (mutation) {
@@ -180,11 +187,6 @@ function initializeVideoPlayback() {
     mutationObserver.observe(videoSource, { attributes: true });
 
     currentTime = `${seconds}`;
-    nativeBridgeMessage({
-      action: 'play',
-      url: metadata.video_source_url,
-      seconds: currentTime,
-    });
   }
 
   // If an video player element is found initialize it

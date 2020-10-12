@@ -1,6 +1,4 @@
-<% image_url = cl_image_path(podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
-                             type: "fetch", quality: "auto", sign_url: true,
-                             flags: "progressive", fetch_format: "jpg") %>
+<% image_url = Images::Optimizer.call(podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png", crop: nil, fetch_format: "jpg") %>
 
 <div class="podcastliquidtag" style="background: #<%= podcast.main_color_hex %> url(<%= image_url %>)" data-meta="<%= episode.decorate.mobile_player_metadata.to_json %>">
   <div class="podcastliquidtag__info">
@@ -17,16 +15,9 @@
   <div id="record-<%= episode.slug %>" data-podcast="<%= podcast.slug %>" data-episode="<%= episode.slug %>" class="podcastliquidtag__record">
     <img class="button play-butt" id="play-butt-<%= episode.slug %>" src="/assets/playbutt.png" alt="play">
     <img class="button pause-butt" id="pause-butt-<%= episode.slug %>" src="/assets/pausebutt.png" alt="pause">
-    <%= cl_image_tag(podcast.image_url,
-                     type: "fetch",
-                     crop: "fill",
-                     quality: "auto",
-                     sign_url: true,
-                     flags: "progressive",
-                     fetch_format: "auto",
-                     class: "podcastliquidtag__podcastimage",
-                     id: "podcastimage-#{episode.slug}",
-                     alt: podcast.title) %>
+    <%= optimized_image_tag(podcast.image_url,
+                            optimizer_options: { crop: "fill" },
+                            image_options: { class: "podcastliquidtag__podcastimage", id: "podcastimage-#{episode.slug}", alt: podcast.title }) %>
   </div>
   <div class="hidden-audio" id="hidden-audio-<%= episode.slug %>" style="display:none" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
     <audio id="audio" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
@@ -35,17 +26,9 @@
     </audio>
     <div id="progressBar" class="audio-player-display">
       <a href="/<%= podcast.slug + "/" + episode.slug %>">
-        <%= cl_image_tag(episode.image_url || podcast.image_url,
-                         type: "fetch",
-                         crop: "fill",
-                         width: 420,
-                         height: 420,
-                         quality: "auto",
-                         sign_url: true,
-                         flags: "progressive",
-                         fetch_format: "auto",
-                         id: "episode-profile-image",
-                         alt: episode.title) %>
+        <%= optimized_image_tag(episode.image_url || podcast.image_url,
+                                optimizer_options: { crop: "fill", width: 420, height: 420 },
+                                image_options: { id: "episode-profile-image", alt: episode.title }) %>
         <img id="animated-bars" src="/assets/animated-bars.gif" alt="animated volume bars">
       </a>
       <span id="barPlayPause">

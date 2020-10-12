@@ -1,25 +1,25 @@
 require "rails_helper"
 
 RSpec.describe "User index", type: :system, stub_elasticsearch: true do
-  let!(:user) { create(:user, username: "user3000") }
+  let!(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
-  let!(:other_article) { create(:article, title: rand(10_000_000).to_s) }
+  let!(:other_article) { create(:article) }
   let!(:comment) { create(:comment, user: user, commentable: other_article) }
   let(:organization) { create(:organization) }
 
   context "when user is unauthorized" do
     context "when 1 article" do
-      before { visit "/user3000" }
+      before { visit "/#{user.username}" }
 
       it "shows the header", js: true do
         within("h1") { expect(page).to have_content(user.name) }
-        within(".profile-details") do
+        within(".profile-header__actions") do
           expect(page).to have_button("Follow")
         end
       end
 
       it "shows proper title tag" do
-        expect(page).to have_title("#{user.name} - #{ApplicationConfig['COMMUNITY_NAME']}")
+        expect(page).to have_title("#{user.name} - #{SiteConfig.community_name}")
       end
 
       it "shows user's articles" do
@@ -63,7 +63,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
   context "when user has an organization membership" do
     before do
       user.organization_memberships.create(organization: organization, type_of_user: "member")
-      visit "/user3000"
+      visit "/#{user.username}"
     end
 
     it "shows organizations", js: true do
@@ -75,12 +75,12 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
   context "when visiting own profile" do
     before do
       sign_in user
-      visit "/user3000"
+      visit "/#{user.username}"
     end
 
     it "shows the header", js: true do
       within("h1") { expect(page).to have_content(user.name) }
-      within(".profile-details") do
+      within(".profile-header__actions") do
         expect(page).to have_button("Edit profile")
       end
     end

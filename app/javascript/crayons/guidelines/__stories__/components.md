@@ -2,8 +2,8 @@
 
 Forem is a Rails application. Most of what we build for views uses ERB templates
 (\*.html.erb files). We also build out parts of or sometimes complete views
-using [Preact](https://docs.dev.to/frontend/preact), typically for the logged on
-user experience. For example, the main page feed.
+using [Preact](https://docs.forem.com/frontend/preact), typically for the logged
+on user experience. For example, the main page feed.
 
 Because of that, we components that are written in pure HTML & CSS as well as
 Preact.

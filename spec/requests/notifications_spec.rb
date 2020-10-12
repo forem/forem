@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
-  let_it_be_readonly(:dev_account) { create(:user) }
-  let_it_be_readonly(:mascot_account) { create(:user) }
-  let_it_be_changeable(:user) { create(:user) }
-  let_it_be_changeable(:organization) { create(:organization) }
+  let(:dev_account) { create(:user) }
+  let(:mascot_account) { create(:user) }
+  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)
@@ -25,17 +25,19 @@ RSpec.describe "NotificationsIndex", type: :request do
     end
 
     context "when signed out" do
-      it "renders the signup cue" do
+      it "renders the signup page" do
         get "/notifications"
-        expect(response.body).to include "Great to have you"
+
+        expect(response.body).to include("Continue with")
       end
     end
 
     context "when signed in" do
       it "does not render the signup cue" do
         sign_in user
+
         get "/notifications"
-        expect(response.body).not_to include "Create your account"
+        expect(response.body).not_to include("Continue with")
       end
     end
 

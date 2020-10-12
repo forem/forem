@@ -10,7 +10,7 @@ module Search
       private
 
       def prepare_doc(hit)
-        source = hit.dig("_source")
+        source = hit["_source"]
         {
           "user" => {
             "username" => source["username"],
@@ -25,7 +25,6 @@ module Search
           "comments_count" => source["comments_count"],
           "badge_achievements_count" => source["badge_achievements_count"],
           "last_comment_at" => source["last_comment_at"],
-          "roles" => source["roles"],
           "user_id" => source["id"]
         }
       end
@@ -41,6 +40,14 @@ module Search
             number_of_shards: 1,
             number_of_replicas: 0
           }
+        end
+      end
+
+      def dynamic_index_settings
+        if Rails.env.production?
+          { refresh_interval: "10s" }
+        else
+          { refresh_interval: "1s" }
         end
       end
     end

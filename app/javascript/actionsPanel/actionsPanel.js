@@ -17,9 +17,9 @@ export function addCloseListener() {
 }
 
 export function initializeHeight() {
-
   document.documentElement.style.height = '100%';
-  document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0; overflow-y: hidden';
+  document.body.style.cssText =
+    'height: 100%; margin: 0; padding-top: 0; overflow-y: hidden';
   document.getElementById('page-content').style.cssText =
     'margin-top: 0 !important; margin-bottom: 0;';
 }
@@ -33,7 +33,6 @@ function toggleDropdown(type) {
     document.querySelector('.adjust-tags-options').classList.toggle('hidden');
   }
 }
-
 
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
@@ -142,6 +141,33 @@ async function updateExperienceLevel(currentUserId, articleId, rating, group) {
     alert(error);
   }
 }
+
+const adminUnpublishArticle = async (id, username, slug) => {
+  try {
+    const response = await request(`/articles/${id}/admin_unpublish`, {
+      method: 'PATCH',
+      body: JSON.stringify({ id, username, slug }),
+      credentials: 'same-origin',
+    });
+
+    const outcome = await response.json();
+
+    /* eslint-disable no-restricted-globals */
+    if (outcome.message == 'success') {
+      window.top.location.assign(`${window.location.origin}${outcome.path}`);
+    } else {
+      top.addSnackbarItem({
+        message: `Error: ${outcome.message}`,
+        addCloseButton: true,
+      });
+    }
+  } catch (error) {
+    top.addSnackbarItem({
+      message: `Error: ${error}`,
+      addCloseButton: true,
+    });
+  }
+};
 
 function toggleSubmitContainer() {
   document
@@ -362,6 +388,21 @@ export function addBottomActionsListeners() {
       );
     });
   });
+
+  const unpublishArticleBtn = document.querySelector('#unpublish-article-btn');
+  if (unpublishArticleBtn) {
+    unpublishArticleBtn.addEventListener('click', () => {
+      const {
+        articleId: id,
+        articleAuthor: username,
+        articleSlug: slug,
+      } = unpublishArticleBtn.dataset;
+
+      if (confirm('You are unpublishing this article; are you sure?')) {
+        adminUnpublishArticle(id, username, slug);
+      }
+    });
+  }
 }
 
 export function initializeActionsPanel() {

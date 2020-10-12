@@ -3,11 +3,11 @@ require "rails_helper"
 RSpec.describe "Editor", type: :request do
   describe "GET /new" do
     context "when not logged-in" do
-      it "asks the stray-user to 'Sign In or Create Your Account'" do
-        get "/new"
+      it "asks the non logged in user to sign in" do
+        get new_path
+
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Sign in below to compose your post and share")
-        # should actually be looking for textarea tag
+        expect(response.body).to include("Password")
       end
     end
   end

@@ -24,10 +24,6 @@ env:
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
     - APP_DOMAIN=localhost:3000
-    - TIMBER=dummy
-    - SEND_LOGS_TO_TIMBER=false
-    - SENDGRID_USERNAME_ACCEL=dummy
-    - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
     - GITHUB_KEY=dummy
@@ -43,9 +39,11 @@ env:
 branches:
   only:
     - master
+install: true
 script:
   - date --rfc-3339=seconds
   - nvm install
+  - cp .env_sample .env
   - pkill -9 -f elasticsearch || true
   - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
   - sudo dpkg -i --force-confnew elasticsearch-7.5.2-amd64.deb
@@ -57,7 +55,7 @@ script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
-  - bundle install --local --jobs=2
+  - bin/ci-bundle
   - yarn install --frozen-lockfile
   - bundle exec rails db:create
   - bundle exec rails webpacker:compile

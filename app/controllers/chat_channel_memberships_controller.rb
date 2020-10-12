@@ -178,7 +178,7 @@ class ChatChannelMembershipsController < ApplicationController
     invite_cache_key = "chat-channel-invite-#{@chat_channel.id}"
     invitation_slug = Rails.cache.read(invite_cache_key)
     existing_membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: @chat_channel.id)
-    redirect_to connect_path(@chat_channel.slug) if existing_membership && existing_membership.status == "active"
+    redirect_to "/connect/#{@chat_channel.slug}" if existing_membership && existing_membership.status == "active"
     @link_expired = true if invitation_slug != params[:invitation_slug]
   end
 
@@ -188,8 +188,7 @@ class ChatChannelMembershipsController < ApplicationController
     if params[:user_action] == "accept"
       membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
       if !membership
-        membership = ChatChannelMembership.new(user_id: current_user.id, chat_channel_id: chat_channel.id)
-        membership.save
+        membership = ChatChannelMembership.create(user_id: current_user.id, chat_channel_id: chat_channel.id)
         unless membership&.errors&.any?
           send_chat_action_message("@#{membership.user.username} join the channel", current_user, chat_channel.id,
                                    "joined")
@@ -277,7 +276,7 @@ class ChatChannelMembershipsController < ApplicationController
     temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
     message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
                              "chat_action" => action)
-    pusher_message_created(false, message, temp_message_id)
+    pusher_message_created(false, message, temp_message_id) unless message.left_channel?
   end
 
   def user_not_authorized

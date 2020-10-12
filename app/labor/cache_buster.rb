@@ -7,26 +7,7 @@ module CacheBuster
   ].freeze
 
   def self.bust(path)
-    # TODO: (Alex Smith) - It would be "nice to have" the ability to use the
-    # Fastly gem here instead of custom API calls. We'd want to keep thread
-    # safety in mind. We'll also want to consider making this modular for those
-    # who don't want to use Fastly at all.
-    #
-    # Instead of HTTP calls, we could do:
-    # fastly  = Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
-    # service = Fastly::Service.new({ id: ApplicationConfig["FASTLY_SERVICE_ID"] }, fastly)
-    # fastly.purge(path)
-    #
-    # https://github.com/fastly/fastly-ruby#efficient-purging
-    return unless Rails.env.production?
-
-    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}",
-                  headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}?i=i",
-                  headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-  rescue URI::InvalidURIError => e
-    Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
-    DatadogStatsClient.increment("cache_buster.invalid_uri", tags: ["path:#{path}"])
+    EdgeCache::Bust.call(path)
   end
 
   def self.bust_comment(commentable)
@@ -77,7 +58,7 @@ module CacheBuster
     end
     TIMEFRAMES.each do |timestamp, interval|
       next unless Article.published.where("published_at > ?", timestamp)
-        .order(public_reactions_count: :desc).limit(3).pluck(:id).include?(article.id)
+        .order(public_reactions_count: :desc).limit(3).ids.include?(article.id)
 
       bust("/top/#{interval}")
       bust("/top/#{interval}?i=i")
@@ -87,7 +68,7 @@ module CacheBuster
       bust("/latest")
       bust("/latest?i=i")
     end
-    bust("/") if Article.published.order(hotness_score: :desc).limit(4).pluck(:id).include?(article.id)
+    bust("/") if Article.published.order(hotness_score: :desc).limit(4).ids.include?(article.id)
   end
 
   def self.bust_tag_pages(article)
@@ -100,7 +81,7 @@ module CacheBuster
       end
       TIMEFRAMES.each do |timestamp, interval|
         next unless Article.published.where("published_at > ?", timestamp).tagged_with(tag)
-          .order(public_reactions_count: :desc).limit(3).pluck(:id).include?(article.id)
+          .order(public_reactions_count: :desc).limit(3).ids.include?(article.id)
 
         bust("/top/#{interval}")
         bust("/top/#{interval}?i=i")
@@ -112,7 +93,7 @@ module CacheBuster
 
       next unless rand(2) == 1 &&
         Article.published.tagged_with(tag)
-          .order(hotness_score: :desc).limit(2).pluck(:id).include?(article.id)
+          .order(hotness_score: :desc).limit(2).ids.include?(article.id)
 
       bust("/t/#{tag}")
       bust("/t/#{tag}?i=i")
@@ -142,7 +123,7 @@ module CacheBuster
   end
 
   def self.bust_podcast(path)
-    bust("/" + path)
+    bust("/#{path}")
   end
 
   def self.bust_organization(organization, slug)
@@ -161,7 +142,7 @@ module CacheBuster
     podcast_episode.purge_all
     begin
       bust(path)
-      bust("/" + podcast_slug)
+      bust("/#{podcast_slug}")
       bust("/pod")
       bust(path)
     rescue StandardError => e
@@ -196,7 +177,7 @@ module CacheBuster
 
   # bust commentable if it's an article
   def self.bust_article_comment(commentable)
-    bust("/") if Article.published.order(hotness_score: :desc).limit(3).pluck(:id).include?(commentable.id)
+    bust("/") if Article.published.order(hotness_score: :desc).limit(3).ids.include?(commentable.id)
     if commentable.decorate.cached_tag_list_array.include?("discuss") &&
         commentable.featured_number.to_i > 35.hours.ago.to_i
       bust("/")

@@ -3,7 +3,7 @@ module RateLimitCheckerHelper
     rate_limit_article_update: {
       min: 1,
       placeholder: 30,
-      description: "The number of article updates a user can make in 30 seconds"
+      description: "The number of article updates a user can make in 30 seconds. Please update API docs when changed."
     },
     rate_limit_user_update: {
       min: 1,
@@ -33,7 +33,12 @@ module RateLimitCheckerHelper
     rate_limit_published_article_creation: {
       min: 0,
       placeholder: 9,
-      description: "The number of articles a user can create within 30 seconds"
+      description: "The number of articles that a user can create within 30 seconds"
+    },
+    rate_limit_published_article_antispam_creation: {
+      min: 0,
+      placeholder: 1,
+      description: "The number of articles that a 3-day-old user can create within 5 minutes"
     },
     rate_limit_image_upload: {
       min: 0,

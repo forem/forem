@@ -17,6 +17,7 @@ AllCops:
     - vendor/**/*
   DisplayStyleGuide: true
   ExtraDetails: true
+  NewCops: enable # opt-in to new cops by default
   TargetRubyVersion: 2.7
 
 #################### Bundler ###########################
@@ -134,6 +135,10 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - "spec/**/*"
 
+Lint/BinaryOperatorWithIdenticalOperands:
+  Description: 'This cop checks for places where binary operator has identical operands.'
+  Enabled: true
+
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
@@ -146,11 +151,30 @@ Lint/DuplicateElsifCondition:
   Description: 'Do not repeat conditions used in if `elsif`.'
   Enabled: true
 
+Lint/DuplicateRescueException:
+  Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
+  Enabled: true
+
+Lint/EmptyConditionalBody:
+  Description: 'This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.'
+  Enabled: true
+
+Lint/FloatComparison:
+  Description: 'Checks for the presence of precise comparison of floating point numbers.'
+  StyleGuide: '#float-comparison'
+  Enabled: true
+
 # Lint/HeredocMethodCallPosition:
 #   Description: >-
 #                  Checks for the ordering of a method call where
 #                  the receiver of the call is a HEREDOC.
 #   Enabled: false
+
+Lint/MissingSuper:
+  Description: >-
+                  This cop checks for the presence of constructors and lifecycle callbacks
+                  without calls to `super`'.
+  Enabled: true
 
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
@@ -160,13 +184,29 @@ Lint/MixedRegexpCaptureTypes:
 #   Description: 'Checks unsafe usage of number conversion methods.'
 #   Enabled: false
 
+Lint/OutOfRangeRegexpRef:
+  Description: 'Checks for out of range reference for Regexp because it always returns nil.'
+  Enabled: true
+
 Lint/RaiseException:
   Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
   StyleGuide: '#raise-exception'
   Enabled: true
 
+Lint/SelfAssignment:
+  Description: 'Checks for self-assignments.'
+  Enabled: true
+
 Lint/StructNewOverride:
   Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
+  Enabled: true
+
+Lint/TopLevelReturnWithArgument:
+  Description: 'This cop detects top level return statements with argument.'
+  Enabled: true
+
+Lint/UnreachableLoop:
+  Description: 'This cop checks for loops that will have at most one iteration.'
   Enabled: true
 
 #################### Metrics ###############################
@@ -292,6 +332,13 @@ Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   Enabled: false
 
+Style/ExplicitBlockArgument:
+  Description: >-
+                  Consider using explicit block argument to avoid writing block literal
+                  that just passes its arguments to another block.
+  StyleGuide: '#block-argument'
+  Enabled: true
+
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
   StyleGuide: '#exponential-notation'
@@ -304,6 +351,11 @@ Style/FrozenStringLiteralComment:
                  to help transition to frozen string literals by default.
   Enabled: true
   EnforcedStyle: never
+
+Style/GlobalStdStream:
+  Description: 'Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.'
+  StyleGuide: '#global-stdout'
+  Enabled: true
 
 Style/HashAsLastArrayItem:
   Description: >-
@@ -379,9 +431,19 @@ Style/ClassAndModuleChildren:
   Enabled: true
   SafeAutoCorrect: true
 
-# Style/OptionHash:
-#   Description: "Don't use option hashes when you can use keyword arguments."
-#   Enabled: false
+Style/FormatStringToken:
+  Description: 'Use a consistent style for format string tokens.'
+  Exclude:
+    - 'config/routes.rb'
+
+Style/OptionalBooleanParameter:
+  Description: 'Use keyword arguments when defining method with boolean argument.'
+  StyleGuide: '#boolean-keyword-arguments'
+  Enabled: true
+
+Style/OptionHash:
+  Description: "Don't use option hashes when you can use keyword arguments."
+  Enabled: true
 
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
@@ -423,12 +485,21 @@ Style/Send:
   StyleGuide: '#prefer-public-send'
   Enabled: true
 
+Style/SingleArgumentDig:
+  Description: 'Avoid using single argument dig method.'
+  Enabled: true
+
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
   Enabled: true
 
 Style/SlicingWithRange:
   Description: 'Checks array slicing is done with endless ranges when suitable.'
+  Enabled: true
+
+Style/StringConcatenation:
+  Description: 'Checks for places where string concatenation can be replaced with string interpolation.'
+  StyleGuide: '#string-interpolation'
   Enabled: true
 
 Style/StringLiterals:
@@ -482,7 +553,6 @@ Performance/IoReadlines:
   Description: 'Use `IO.each_line` (`IO#each_line`) instead of `IO.readlines` (`IO#readlines`).'
   Reference: 'https://docs.gitlab.com/ee/development/performance.html#reading-from-files-and-other-data-sources'
   Enabled: true
-  VersionAdded: '1.7'
 
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
@@ -516,18 +586,75 @@ Performance/StringInclude:
 # Rails cops from rubocop-rails
 # https://github.com/rubocop-hq/rubocop-rails/blob/master/config/default.yml
 # TODO: [@thepracticaldev/oss] enable these Rails cops
+
+Rails/ActiveRecordCallbacksOrder:
+  Description: 'Order callback declarations in the order in which they will be executed.'
+  StyleGuide: 'https://rails.rubystyle.guide/#callbacks-order'
+  Enabled: true
+
+Rails/DefaultScope:
+  Description: 'Avoid use of `default_scope`.'
+  StyleGuide: 'https://rails.rubystyle.guide#avoid-default-scope'
+  Enabled: true
+
 Rails/FilePath:
   EnforcedStyle: slashes
 
-Rails/HasManyOrHasOneDependent:
-  Description: 'Define the dependent option to the has_many and has_one associations.'
-  StyleGuide: 'https://rails.rubystyle.guide#has_many-has_one-dependent-option'
-  Enabled: false
+Rails/FindById:
+  Description: >-
+                Favor the use of `find` over `where.take!`, `find_by!`, and `find_by_id!` when you
+                need to retrieve a single record by primary key when you expect it to be found.
+  StyleGuide: 'https://rails.rubystyle.guide/#find'
+  Enabled: true
 
-Rails/SaveBang:
-  Description: 'Identifies possible cases where Active Record save! or related should be used.'
-  StyleGuide: 'https://rails.rubystyle.guide#save-bang'
-  Enabled: false
+Rails/Inquiry:
+  Description: "Prefer Ruby's comparison operators over Active Support's `Array#inquiry` and `String#inquiry`."
+  StyleGuide: 'https://rails.rubystyle.guide/#inquiry'
+  Enabled: true
+
+Rails/MailerName:
+  Description: 'Mailer should end with `Mailer` suffix.'
+  StyleGuide: 'https://rails.rubystyle.guide/#mailer-name'
+  Enabled: true
+
+Rails/MatchRoute:
+  Description: >-
+                  Don't use `match` to define any routes unless there is a need to map multiple request types
+                  among [:get, :post, :patch, :put, :delete] to a single action using the `:via` option.
+  StyleGuide: 'https://rails.rubystyle.guide/#no-match-routes'
+  Enabled: true
+
+Rails/NegateInclude:
+  Description: 'Prefer `collection.exclude?(obj)` over `!collection.include?(obj)`.'
+  Enabled: true
+
+Rails/Pluck:
+  Description: 'Prefer `pluck` over `map { ... }`.'
+  Enabled: true
+
+Rails/PluckId:
+  Description: 'Use `ids` instead of `pluck(:id)` or `pluck(primary_key)`.'
+  StyleGuide: 'https://rails.rubystyle.guide/#ids'
+  Enabled: true
+
+Rails/PluckInWhere:
+  Description: 'Use `select` instead of `pluck` in `where` query methods.'
+  Enabled: true
+
+Rails/RenderInline:
+  Description: 'Prefer using a template over inline rendering.'
+  StyleGuide: 'https://rails.rubystyle.guide/#inline-rendering'
+  Enabled: true
+
+Rails/RenderPlainText:
+  Description: 'Prefer `render plain:` over `render text:`.'
+  StyleGuide: 'https://rails.rubystyle.guide/#plain-text-rendering'
+  Enabled: true
+
+Rails/ShortI18n:
+  Description: 'Use the short form of the I18n methods: `t` instead of `translate` and `l` instead of `localize`.'
+  StyleGuide: 'https://rails.rubystyle.guide/#short-i18n'
+  Enabled: true
 
 Rails/SkipsModelValidations:
   Description: >-
@@ -535,6 +662,10 @@ Rails/SkipsModelValidations:
                  See reference for more information.
   Reference: 'https://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: false
+
+Rails/WhereExists:
+  Description: 'Prefer `exists?(...)` over `where(...).exists?`.'
+  Enabled: true
 
 # RSpec cops from rubocop-rspec
 # https://github.com/rubocop-hq/rubocop-rspec/blob/master/config/default.yml
@@ -552,6 +683,11 @@ RSpec/ExampleLength:
   Enabled: true
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+
+RSpec/MultipleMemoizedHelpers:
+  Description: Checks if example groups contain too many `let` and `subject` calls.
+  Enabled: false
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleMemoizedHelpers
 
 RSpec/MultipleExpectations:
   Description: Checks if examples contain too many `expect` calls.

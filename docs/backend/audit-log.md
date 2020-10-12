@@ -30,7 +30,7 @@ reaction on the article with an id of `16`. If that's not obvious to you from
 this object, don't worry, just take our word on it.
 
 You can find an example of `Audit::Logger` in action in
-`app/controllers/internal/reactions_controller.rb`:
+`app/controllers/admin/reactions_controller.rb`:
 
 ```ruby
   after_action only: [:update] do
@@ -39,7 +39,7 @@ You can find an example of `Audit::Logger` in action in
 ```
 
 This code creates a record to indicate that a someone modified a reaction from
-the internal controller.
+the admin controller.
 
 It's a good idea to add a similar `after_action` to any controller action that
 might benefit from increased transparency.

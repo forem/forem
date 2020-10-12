@@ -16,7 +16,7 @@ module UserSubscriptions
       @source_id = user_subscription_params[:source_id]
       @response = Response.new(success: false)
 
-      # TODO: [@thepracticaldev/delightful]: uncomment this once email confirmation is re-enabled
+      # TODO: [@forem/delightful]: uncomment this once email confirmation is re-enabled
       # @subscriber_email = user_subscription_params[:subscriber_email]
     end
 
@@ -26,7 +26,7 @@ module UserSubscriptions
       source = source_type.constantize.find_by(id: source_id)
       return response if invalid_source?(source)
 
-      # TODO: [@thepracticaldev/delightful]: uncomment this once email confirmation is re-enabled
+      # TODO: [@forem/delightful]: uncomment this once email confirmation is re-enabled
       # return response if subscriber_email_mismatch?
 
       user_subscription = source.build_user_subscription(user)

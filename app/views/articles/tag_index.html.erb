@@ -14,7 +14,7 @@
     <div class="tag-or-query-header-container">
       <h1>
         <% if @tag_model.badge_id && @tag_model.badge %>
-            <img src="<%= cloudinary @tag_model.badge.badge_image_url, 180 %>" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg" />
+            <img src="<%= optimized_image_url(@tag_model.badge.badge_image_url, width: 180) %>" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg);" />
         <% end %>
         <% if @tag_model && @tag_model.pretty_name.present? %>
           <%= @tag_model.pretty_name %>
@@ -45,7 +45,7 @@
         </button>
         <% if user_signed_in? %>
           <div class="flex-1 flex items-center justify-between">
-            <h2 class="fs-l fw-heavy">Posts</h2>
+            <h2 class="crayons-subtitle-2">Posts</h2>
             <nav class="crayons-tabs hidden s:flex">
               <a href="<%= list_path %>/" class="crayons-tabs__item <%= "crayons-tabs__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>">Feed</a>
 
@@ -68,7 +68,7 @@
           </div>
         <% else %>
           <div class="flex-1 flex items-center justify-between">
-            <div class="crayons-notice w-100">👋 <a href="/enter">Sign in</a> for the ability sort posts by <strong>top</strong> and  <strong>latest</strong>.</div>
+            <div class="crayons-notice w-100">👋 <a href="<%= sign_up_path %>">Sign in</a> for the ability sort posts by <strong>top</strong> and  <strong>latest</strong>.</div>
           </div>
         <% end %>
 
@@ -93,6 +93,5 @@
     <%= render "articles/tags/sidebar_additional" %>
   </div>
 
-  <%= render "stories/narrow_nav_menu" %>
   <%= render "stories/stories_list_script" %>
 <% end %>

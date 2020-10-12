@@ -1,21 +1,47 @@
 module Admin
   class BadgesController < Admin::ApplicationController
-    # To customize the behavior of this controller,
-    # you can overwrite any of the RESTful actions. For example:
-    #
-    # def index
-    #   super
-    #   @resources = Badge.
-    #     page(params[:page]).
-    #     per(10)
-    # end
+    layout "admin"
 
-    # Define a custom finder by overriding the `find_resource` method:
-    # def find_resource(param)
-    #   Badge.find_by!(slug: param)
-    # end
+    def index
+      @badges = Badge.all
+    end
 
-    # See https://administrate-prototype.herokuapp.com/customizing_controller_actions
-    # for more information
+    def new
+      @badge = Badge.new
+    end
+
+    def edit
+      @badge = Badge.find(params[:id])
+    end
+
+    def create
+      @badge = Badge.new(badge_params)
+
+      if @badge.save
+        flash[:success] = "Badge has been created!"
+        redirect_to admin_badges_path
+      else
+        flash[:danger] = @badge.errors_as_sentence
+        render new_admin_badge_path
+      end
+    end
+
+    def update
+      @badge = Badge.find(params[:id])
+
+      if @badge.update(badge_params)
+        flash[:success] = "Badge has been updated!"
+        redirect_to admin_badges_path
+      else
+        flash[:danger] = @badge.errors_as_sentence
+        render :edit
+      end
+    end
+
+    private
+
+    def badge_params
+      params.require(:badge).permit(:title, :slug, :description, :badge_image)
+    end
   end
 end

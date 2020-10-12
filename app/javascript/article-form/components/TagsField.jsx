@@ -18,7 +18,7 @@ export const TagsField = ({
         onInput={onInput}
         onFocus={switchHelpContext}
         classPrefix="crayons-article-form"
-        fieldClassName="crayons-textfield crayons-textfield--ghost ff-accent"
+        fieldClassName="crayons-textfield crayons-textfield--ghost ff-monospace"
         pattern={tagFormat}
       />
     </div>

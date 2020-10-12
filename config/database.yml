@@ -23,14 +23,14 @@ default: &default
   connect_timeout: 2
   checkout_timeout: 2
   variables:
-      statement_timeout: <%= ENV['STATEMENT_TIMEOUT'] || 2500 %>
+      statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 2500).to_i %>
 
 development:
   <<: *default
   url: <%= ENV.fetch('DATABASE_URL', '') %>
   database: PracticalDeveloper_development
   variables:
-      statement_timeout: <%= ENV['STATEMENT_TIMEOUT'] || 10_000 %>
+      statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 10_000).to_i %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -67,7 +67,7 @@ test:
   url: <%= ENV['DATABASE_URL_TEST'] || ENV['DATABASE_URL'] || ''%>
   database: PracticalDeveloper_test<%= ENV['TEST_ENV_NUMBER'] %>
   variables:
-      statement_timeout: <%= ENV['STATEMENT_TIMEOUT'] || 10_000 %>
+      statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 10_000).to_i %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

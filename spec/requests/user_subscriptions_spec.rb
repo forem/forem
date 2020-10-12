@@ -130,7 +130,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       expect(response.parsed_body["error"]).to include("Subscriber has already been taken")
     end
 
-    # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation is re-enabled
+    # TODO: [@forem/delightful]: re-enable this once email confirmation is re-enabled
     xit "returns an error for an email mismatch" do
       article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
       invalid_source_attributes = { source_type: article.class_name, source_id: article.id,

@@ -3,14 +3,14 @@ require "rails_helper"
 RSpec.describe ChatChannel, type: :model do
   let(:chat_channel) { create(:chat_channel) }
 
-  let_it_be(:users) { create_list(:user, 2) }
+  let(:users) { create_list(:user, 2) }
 
   describe "validations" do
     describe "builtin validations" do
       subject { chat_channel }
 
-      it { is_expected.to have_many(:messages).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:messages).dependent(:destroy) }
       it { is_expected.to have_many(:users).through(:chat_channel_memberships) }
 
       it { is_expected.to validate_inclusion_of(:channel_type).in_array(%w[open invite_only direct]) }
@@ -19,6 +19,17 @@ RSpec.describe ChatChannel, type: :model do
       it { is_expected.to validate_presence_of(:channel_type) }
       it { is_expected.to validate_presence_of(:status) }
       it { is_expected.to validate_uniqueness_of(:slug) }
+
+      # rubocop:disable RSpec/NamedSubject
+      it do
+        expect(subject).to have_one(:mod_tag)
+          .class_name("Tag")
+          .inverse_of(:mod_chat_channel)
+          .with_foreign_key(:mod_chat_channel_id)
+          .dependent(:nullify)
+          .optional
+      end
+      # rubocop:enable RSpec/NamedSubject
     end
   end
 
@@ -31,44 +42,6 @@ RSpec.describe ChatChannel, type: :model do
       expect(chat_channel.messages.size).to be_positive
       chat_channel.clear_channel
       expect(chat_channel.messages.size).to eq(0)
-    end
-  end
-
-  describe "#create_with_users" do
-    it "creates channel with users" do
-      chat_channel = described_class.create_with_users(users: users)
-      expect(chat_channel.users.size).to eq(users.size)
-      expect(chat_channel.has_member?(users.first)).to be(true)
-      expect(chat_channel.has_member?(users.last)).to be(true)
-    end
-
-    it "lists active memberships" do
-      chat_channel = described_class.create_with_users(users: users)
-      expect(chat_channel.active_users.size).to eq(users.size)
-      expect(chat_channel.channel_users.size).to eq(users.size)
-    end
-
-    context "when direct channel is invalid" do
-      it "raises an error if users are the same" do
-        user = users.first
-        expect { described_class.create_with_users(users: [user, user]) }.to raise_error("Invalid direct channel")
-      end
-
-      it "raises an error if more than 2 users" do
-        more_users = users + [create(:user)]
-        expect { described_class.create_with_users(users: more_users) }.to raise_error("Invalid direct channel")
-      end
-    end
-  end
-
-  describe "#active_users" do
-    it "decreases active users if one leaves" do
-      chat_channel = described_class.create_with_users(users: users)
-      expect(chat_channel.active_users.size).to eq(users.size)
-      expect(chat_channel.channel_users.size).to eq(users.size)
-      ChatChannelMembership.last.update(status: "left_channel")
-      expect(chat_channel.active_users.size).to eq(users.size - 1)
-      expect(chat_channel.channel_users.size).to eq(users.size - 1)
     end
   end
 

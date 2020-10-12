@@ -15,10 +15,11 @@ class Sponsorship < ApplicationRecord
   belongs_to :organization, inverse_of: :sponsorships
   belongs_to :sponsorable, polymorphic: true, optional: true
 
-  validates :user, :organization, :featured_number, presence: true
-  validates :level, inclusion: { in: LEVELS }
-  validates :status, inclusion: { in: STATUSES }
+  validates :level, presence: true, inclusion: { in: LEVELS }
+  validates :status, presence: true, inclusion: { in: STATUSES }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[http https] }
+  validates :user, :organization, :featured_number, presence: true
+
   validate :validate_tag_uniqueness, if: proc { level.to_s == "tag" }
   validate :validate_level_uniqueness, if: proc { METAL_LEVELS.include?(level) }
 
@@ -35,14 +36,14 @@ class Sponsorship < ApplicationRecord
 
   def validate_tag_uniqueness
     return unless self.class.where(sponsorable: sponsorable, level: :tag)
-      .where("expires_at > ? AND id != ?", Time.current, id.to_i).exists?
+      .exists?(["expires_at > ? AND id != ?", Time.current, id.to_i])
 
     errors.add(:level, "The tag is already sponsored")
   end
 
   def validate_level_uniqueness
     return unless self.class.where(organization: organization)
-      .where("level IN (?) AND expires_at > ? AND id != ?", METAL_LEVELS, Time.current, id.to_i).exists?
+      .exists?(["level IN (?) AND expires_at > ? AND id != ?", METAL_LEVELS, Time.current, id.to_i])
 
     errors.add(:level, "You can have only one sponsorship of #{METAL_LEVELS.join(', ')}")
   end
