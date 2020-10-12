@@ -11,6 +11,11 @@ Rails.application.configure do
   end
   # Settings specified here will take precedence over those in config/application.rb.
 
+  unless ENV["SKIP_REDIS_NAMESPACE"] == "true"
+    # We default to using APP_NAME for REDIS_NAMESPACE,
+    # but can skip namespacing with SKIP_REDIS_NAMESPACE
+    ENV["REDIS_NAMESPACE"] = ENV["APP_NAME"]
+  end
   # Code is not reloaded between requests.
   config.cache_classes = true
 
@@ -75,7 +80,7 @@ Rails.application.configure do
   redis_url = ENV["REDISCLOUD_URL"]
   redis_url ||= ENV["REDIS_URL"]
   default_expiration = 24.hours.to_i
-  config.cache_store = :redis_cache_store, { namespace: ENV["APP_NAME"], url: redis_url, expires_in: default_expiration }
+  config.cache_store = :redis_cache_store, { namespace: ENV["REDIS_NAMESPACE"], url: redis_url, expires_in: default_expiration }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque

@@ -21,4 +21,4 @@ Rails.application.config.session_store :redis_store,
                                        secure: ApplicationConfig["FORCE_SSL_IN_RAILS"] == "true",
                                        same_site: :lax,
                                        httponly: true,
-                                       namespace: ApplicationConfig["APP_NAME"]
+                                       namespace: ENV["REDIS_NAMESPACE"]
