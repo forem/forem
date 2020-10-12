@@ -16,6 +16,7 @@ module Admin
       @user = User.find(params[:id])
       @notes = @user.notes.order(created_at: :desc).limit(10).load
       set_feedback_messages
+      set_related_reactions
     end
 
     def show
@@ -33,7 +34,7 @@ module Admin
 
     def update
       @user = User.find(params[:id])
-      manage_credits
+      Credits::Manage.call(@user, user_params)
       add_note if user_params[:new_note]
       redirect_to "/admin/users/#{params[:id]}"
     end
@@ -119,13 +120,6 @@ module Admin
 
     private
 
-    def manage_credits
-      add_credits if user_params[:add_credits]
-      add_org_credits if user_params[:add_org_credits]
-      remove_org_credits if user_params[:remove_org_credits]
-      remove_credits if user_params[:remove_credits]
-    end
-
     def add_note
       Note.create(
         author_id: current_user.id,
@@ -136,32 +130,21 @@ module Admin
       )
     end
 
-    def add_credits
-      amount = user_params[:add_credits].to_i
-      Credit.add_to(@user, amount)
-    end
-
-    def remove_credits
-      amount = user_params[:remove_credits].to_i
-      Credit.remove_from(@user, amount)
-    end
-
-    def add_org_credits
-      org = Organization.find(user_params[:organization_id])
-      amount = user_params[:add_org_credits].to_i
-      Credit.add_to(org, amount)
-    end
-
-    def remove_org_credits
-      org = Organization.find(user_params[:organization_id])
-      amount = user_params[:remove_org_credits].to_i
-      Credit.remove_from(org, amount)
-    end
-
     def set_feedback_messages
       @related_reports = FeedbackMessage.where(id: @user.reporter_feedback_messages.ids)
         .or(FeedbackMessage.where(id: @user.affected_feedback_messages.ids))
         .or(FeedbackMessage.where(id: @user.offender_feedback_messages.ids))
+        .order(created_at: :desc).limit(15)
+    end
+
+    def set_related_reactions
+      user_article_ids = @user.articles.ids
+      user_comment_ids = @user.comments.ids
+      @related_vomit_reactions = Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids,
+                                                category: "vomit")
+        .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
+        .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
+        .includes(:reactable)
         .order(created_at: :desc).limit(15)
     end
 

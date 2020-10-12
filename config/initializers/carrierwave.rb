@@ -8,14 +8,11 @@ end
 
 # rubocop:disable Metrics/BlockLength
 CarrierWave.configure do |config|
-  if Rails.env.test?
+  if Rails.env.test? || Rails.env.development?
     config.storage = :file
-    config.enable_processing = false
-  elsif Rails.env.development?
-    # config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}"
-    config.storage = :file
+    config.enable_processing = Rails.env.development?
   elsif ENV["FILE_STORAGE_LOCATION"] == "file" # @forem/systems production version of file store
-    config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
+    config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
     config.storage = :file
   else
     config.fog_provider = "fog/aws"
@@ -25,7 +22,7 @@ CarrierWave.configure do |config|
         use_iam_profile: true,
         region: "us-east-2"
       }
-      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
+      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/remoteimages"
       config.fog_public = false
     elsif ApplicationConfig["AWS_ID"].present?
       region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
@@ -38,7 +35,7 @@ CarrierWave.configure do |config|
       config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
     else
       # Fallback on file storage if AWS creds are not present
-      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/images"
+      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
       config.storage = :file
     end
     config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]

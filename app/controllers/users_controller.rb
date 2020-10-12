@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
   before_action :set_user, only: %i[
-    update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_identity
+    update update_language_settings confirm_destroy request_destroy full_delete remove_identity
   ]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
@@ -70,19 +70,6 @@ class UsersController < ApplicationController
         redirect_to "/settings"
       end
     end
-  end
-
-  def update_twitch_username
-    set_tabs("integrations")
-    new_twitch_username = params[:user][:twitch_username]
-    if @user.twitch_username != new_twitch_username
-      if @user.update(twitch_username: new_twitch_username)
-        @user.touch(:profile_updated_at)
-        Streams::TwitchWebhookRegistrationWorker.perform_async(@user.id) if @user.twitch_username?
-      end
-      flash[:settings_notice] = "Your Twitch username was successfully updated."
-    end
-    redirect_to "/settings/#{@tab}"
   end
 
   def update_language_settings

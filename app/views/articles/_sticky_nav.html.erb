@@ -1,5 +1,5 @@
 <% @actor = @article.organization || @article.user %>
-<div class="crayons-article-sticky grid gap-4 break-word" id="article-show-primary-sticky-nav">
+<div class="crayons-article-sticky grid gap-4 break-word print-hidden" id="article-show-primary-sticky-nav">
   <div class="crayons-card crayons-card--secondary branded-7 p-4 pt-0 hidden l:grid gap-4" style="border-top-color: <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %>;">
     <div class="-mt-4">
       <a href="<%= @actor.path %>" class="flex">
