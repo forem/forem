@@ -106,7 +106,11 @@ module ApplicationHelper
     end
   end
 
-  def any_selfserve_auth?
+  def invite_only_mode?
+    SiteConfig.invite_only_mode?
+  end
+
+  def any_enabled_auth_providers?
     authentication_enabled_providers.any?
   end
 

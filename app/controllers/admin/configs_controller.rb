@@ -55,6 +55,7 @@ module Admin
         github_secret
         facebook_key
         facebook_secret
+        invite_only_mode
         allow_email_password_registration
         primary_brand_color_hex
         spam_trigger_terms
