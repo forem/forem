@@ -104,6 +104,16 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
 
+    it "does not set cache-related headers if private" do
+      allow(SiteConfig).to receive(:public).and_return(false)
+      get "/"
+      expect(response.status).to eq(200)
+
+      expect(response.headers["X-Accel-Expires"]).to eq(nil)
+      expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      expect(response.headers["Surrogate-Key"]).to eq(nil)
+    end
+
     it "sets Fastly Surrogate-Key headers" do
       get "/"
       expect(response.status).to eq(200)
