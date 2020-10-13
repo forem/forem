@@ -46,6 +46,21 @@ It's currently used only for `articles` and `users`.
 
 It can also be used for `rails db:seed` and `rails db:reset`.
 
+## Additional Seed Data Options
+
+When you need more specific data, you can generate it with the following
+commands:
+
+### Notification Data
+
+```shell
+rails db:seed:notifications USERNAME="your_username"
+# where "your_username" is your development user's username, otherwise will fallback to the last user
+```
+
+Need more custom data? Feel free to contribute to this by creating a file in
+`db/custom_seeds/` and writing a script.
+
 ## Default Admin User
 
 Seed data creates a handful of regular users, and a single admin user that can
