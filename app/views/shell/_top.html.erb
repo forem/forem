@@ -50,6 +50,7 @@
       <meta property="forem:name" content="<%= community_name %>" />
       <meta property="forem:logo" content="<%= optimized_image_url(SiteConfig.logo_png, width: 512, fetch_format: "png") %>" />
       <meta property="forem:domain" content="<%= SiteConfig.app_domain %>" />
+      <meta property="forem:releasedate" content="<%= ENV["RELEASE_FOOTPRINT"] %>" />
     <% end %>
   </head>
   <% unless internal_navigation? %>
