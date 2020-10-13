@@ -56,10 +56,10 @@ module CodeBlockParser
   def add_fullscreen_button_to_panel(html)
     on_title = "Enter fullscreen mode"
     on_cls = "highlight-action highlight-action--fullscreen-on"
-    icon_fullscreen_on = inline_svg_tag("fullscreen-on.svg", aria: true, class: on_cls, title: on_title)
+    icon_fullscreen_on = inline_svg_tag("fullscreen-on.svg", class: on_cls, title: on_title)
     off_title = "Exit fullscreen mode"
     off_cls = "highlight-action highlight-action--fullscreen-off"
-    icon_fullscreen_off = inline_svg_tag("fullscreen-off.svg", aria: true, class: off_cls, title: off_title)
+    icon_fullscreen_off = inline_svg_tag("fullscreen-off.svg", class: off_cls, title: off_title)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("div.highlight__panel").each do |codeblock|
       fullscreen_action = <<~HTML
