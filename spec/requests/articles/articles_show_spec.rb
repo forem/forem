@@ -132,6 +132,10 @@ RSpec.describe "ArticlesShow", type: :request do
       it "does not render json ld" do
         expect(response.body).not_to include "application/ld+json"
       end
+
+      it "does contain RSS meta" do
+        expect(response.body).to include('type="application/rss+xml"')
+      end
     end
   end
 end
