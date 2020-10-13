@@ -46,6 +46,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
     before do
       sign_in subscriber
       visit article_with_user_subscription_tag.path
+      wait_for_javascript
     end
 
     it "shows the signed in UX" do
