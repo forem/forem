@@ -1,6 +1,6 @@
 module LiquidTags
   module Errors
-    class Error < StandardError
+    class Error
     end
 
     # ParseContexts are options passed to initialize on a LiquidTag.

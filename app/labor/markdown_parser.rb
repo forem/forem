@@ -24,12 +24,11 @@ class MarkdownParser
     escaped_content = escape_liquid_tags_in_codeblock(@content)
     html = markdown.render(escaped_content)
     sanitized_content = sanitize_rendered_markdown(html)
-    begin
-      liquid_tag_options = { source: @source, user: @user }
-      parsed_liquid = Liquid::Template.parse(sanitized_content, liquid_tag_options)
-      html = markdown.render(parsed_liquid.render)
-    rescue Liquid::SyntaxError => e
-      html = e.message
+    liquid_tag_options = { source: @source, user: @user }
+    parsed_liquid = Liquid::Template.parse(sanitized_content, liquid_tag_options)
+    html = markdown.render(parsed_liquid.render)
+    if parsed_liquid.errors.any?
+      html = parsed_liquid.errors
     end
     html = remove_nested_linebreak_in_list(html)
     html = prefix_all_images(html)
