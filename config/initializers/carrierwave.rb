@@ -6,40 +6,34 @@ MiniMagick.configure do |config|
   config.timeout = 10
 end
 
-# rubocop:disable Metrics/BlockLength
-CarrierWave.configure do |config|
-  if Rails.env.test? || Rails.env.development?
-    config.storage = :file
-    config.enable_processing = Rails.env.development?
-  elsif ENV["FILE_STORAGE_LOCATION"] == "file" # @forem/systems production version of file store
-    config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
-    config.storage = :file
-  else
+if Rails.env.production? && ApplicationConfig["AWS_BUCKET_NAME"] && ENV["FILE_STORAGE_LOCATION"] != "file"
+  CarrierWave.configure do |config|
+    config.storage = :fog
+    config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
     config.fog_provider = "fog/aws"
     if ENV["FOREM_CONTEXT"] == "forem_cloud" # @forem/systems jdoss's special sauce.
+      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/remoteimages"
+      config.fog_public = false
       config.fog_credentials = {
         provider: "AWS",
         use_iam_profile: true,
         region: "us-east-2"
       }
-      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/remoteimages"
-      config.fog_public = false
-    elsif ApplicationConfig["AWS_ID"].present?
-      region = ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
+    else
+      config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
       config.fog_credentials = {
         provider: "AWS",
         aws_access_key_id: ApplicationConfig["AWS_ID"],
         aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
-        region: region
+        region: ApplicationConfig["AWS_UPLOAD_REGION"].presence || ApplicationConfig["AWS_DEFAULT_REGION"]
       }
-      config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
-    else
-      # Fallback on file storage if AWS creds are not present
-      config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
-      config.storage = :file
     end
-    config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
-    config.storage = :fog
+  end
+else
+  CarrierWave.configure do |config|
+    config.storage = :file
+    config.enable_processing = !Rails.env.test?
+    asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/localimages" if Rails.env.production?
+    config.asset_host = asset_host
   end
 end
-# rubocop:enable Metrics/BlockLength
