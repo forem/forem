@@ -7,21 +7,6 @@ module Api
       INDEX_REACTIONS_ATTRIBUTES_FOR_SERIALIZATION = %i[id reactable_id created_at status].freeze
       private_constant :INDEX_REACTIONS_ATTRIBUTES_FOR_SERIALIZATION
 
-      INDEX_ARTICLES_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id user_id organization_id collection_id
-        title description main_image published_at crossposted_at social_image
-        cached_tag_list slug path canonical_url comments_count
-        public_reactions_count created_at edited_at last_comment_at published
-        updated_at video_thumbnail_url
-      ].freeze
-      private_constant :INDEX_ARTICLES_ATTRIBUTES_FOR_SERIALIZATION
-
-      INDEX_USERS_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id username name summary twitter_username github_username website_url
-        location created_at profile_image registered
-      ].freeze
-      private_constant :INDEX_USERS_ATTRIBUTES_FOR_SERIALIZATION
-
       PER_PAGE_MAX = 100
       private_constant :PER_PAGE_MAX
 
@@ -40,12 +25,12 @@ module Api
 
         articles = Article
           .includes(:organization)
-          .select(INDEX_ARTICLES_ATTRIBUTES_FOR_SERIALIZATION)
+          .select(ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION)
           .where(id: @readinglist.map(&:reactable_id))
           .decorate
 
         @users_by_id = User
-          .select(INDEX_USERS_ATTRIBUTES_FOR_SERIALIZATION)
+          .select(UsersController::SHOW_ATTRIBUTES_FOR_SERIALIZATION)
           .find(articles.map(&:user_id))
           .index_by(&:id)
 
