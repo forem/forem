@@ -19,6 +19,7 @@ class SiteConfig < RailsSettings::Base
 
   # API Tokens
   field :health_check_token, type: :string
+  field :video_encoder_key, type: :string
 
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
