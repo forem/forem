@@ -114,7 +114,9 @@ content.
 
 ## Collections (or series)
 
-Although the source code refers to them as "collections" groups of articles are referred to, throughout the user interface, as "series". They represent a collection of articles relating to the same topic, indeed, a series.
+Although the source code refers to them as "collections" groups of articles are
+referred to, throughout the user interface, as "series". They represent a
+collection of articles relating to the same topic, indeed, a series.
 
 ## Comments
 
