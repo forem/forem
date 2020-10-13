@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   include CachingHeaders
   include ImageUploads
   include VerifySetupCompleted
+  include DevelopmentDependencyChecks if Rails.env.development?
   include Devise::Controllers::Rememberable
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
