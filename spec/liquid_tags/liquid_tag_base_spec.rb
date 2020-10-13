@@ -12,8 +12,8 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       source = create(:comment)
       expect do
         liquid_tag_options = { source: source, user: source.user }
-        Liquid::Template.parse("{% liquid_tag_base %}", liquid_tag_options)
-      end.to raise_error(LiquidTags::Errors::InvalidParseContext)
+        Liquid::Template.parse("{% liquid_tag_base %}", liquid_tag_options).errors
+      end.to raise_error(TypeError)
     end
 
     it "doesn't raise an error for valid contexts" do
