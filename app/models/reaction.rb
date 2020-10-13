@@ -23,6 +23,8 @@ class Reaction < ApplicationRecord
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
+  scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
+  scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -173,7 +175,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return if user&.any_admin?
+    return if user&.any_admin? || user&.id == SiteConfig.mascot_user_id
 
     negative? && !user.trusted
   end

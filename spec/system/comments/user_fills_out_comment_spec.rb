@@ -20,7 +20,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     wait_for_javascript
 
     fill_in "text-area", with: raw_comment
-    click_button("SUBMIT")
+    click_button("Submit")
     expect(page).to have_text(raw_comment)
   end
 
@@ -33,26 +33,26 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     it "Users fills out comment box with a Runkit tag" do
       fill_in "text-area", with: runkit_comment
-      click_button("SUBMIT")
+      click_button("Submit")
 
       expect_runkit_tag_to_be_active
     end
 
     it "Users fills out comment box 2 Runkit tags" do
       fill_in "text-area", with: runkit_comment
-      click_button("SUBMIT")
+      click_button("Submit")
 
       expect_runkit_tag_to_be_active
 
       fill_in "text-area", with: runkit_comment2
-      click_button("SUBMIT")
+      click_button("Submit")
 
       expect_runkit_tag_to_be_active(count: 2)
     end
 
     it "User fill out comment box with a Runkit tag, then clicks preview" do
       fill_in "text-area", with: runkit_comment
-      click_button("PREVIEW")
+      click_button("Preview")
 
       expect_runkit_tag_to_be_active
     end
@@ -63,12 +63,12 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     wait_for_javascript
 
     fill_in "text-area", with: raw_comment
-    click_button("PREVIEW")
+    click_button("Preview")
     expect(page).to have_text(raw_comment)
-    expect(page).to have_text("MARKDOWN")
-    click_button("MARKDOWN")
-    expect(page).to have_text("PREVIEW")
-    click_button("SUBMIT")
+    expect(page).to have_text("Continue editing")
+    click_button("Continue editing")
+    expect(page).to have_text("Preview")
+    click_button("Submit")
     expect(page).to have_text(raw_comment)
   end
 
@@ -79,8 +79,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     wait_for_javascript
 
     find(".toggle-reply-form").click
-    find(:xpath, "//div[@class='actions']/form[@class='new_comment']/textarea").set(raw_comment)
-    find(:xpath, "//div[contains(@class, 'reply-actions')]/input[@name='commit']").click
+    find(:xpath, "//textarea[contains(@id, \"textarea-for\")]").set(raw_comment)
+    click_button("Submit")
     expect(page).to have_text(raw_comment)
   end
 
@@ -112,10 +112,10 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       visible: :hidden,
     )
 
-    expect(page).to have_css("div.file-upload-error")
     expect(page).to have_css(
       "div.file-upload-error",
       text: "File size too large (0.07 MB). The limit is 0 MB.",
+      visible: :hidden,
     )
   end
 
@@ -132,10 +132,10 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       visible: :hidden,
     )
 
-    expect(page).to have_css("div.file-upload-error")
     expect(page).to have_css(
       "div.file-upload-error",
       text: "Invalid file format (image). Only video files are permitted.",
+      visible: :hidden,
     )
   end
 
@@ -152,10 +152,10 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       visible: :hidden,
     )
 
-    expect(page).to have_css("div.file-upload-error")
     expect(page).to have_css(
       "div.file-upload-error",
       text: "File name is too long. It can't be longer than 5 characters.",
+      visible: :hidden,
     )
   end
 end

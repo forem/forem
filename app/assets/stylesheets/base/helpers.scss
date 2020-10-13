@@ -12,27 +12,42 @@
   -webkit-box-orient: vertical;
 }
 
+.branded-2 {
+  border-top: var(--su-2) solid var(--accent-brand);
+}
 
-  .branded-2 {
-    border-top: var(--su-2) solid var(--accent-brand);
-  }
+.branded-3 {
+  border-top: var(--su-3) solid var(--accent-brand);
+}
 
-  .branded-3 {
-    border-top: var(--su-3) solid var(--accent-brand);
-  }
+.branded-4 {
+  border-top: var(--su-4) solid var(--accent-brand);
+}
 
-  .branded-4 {
-    border-top: var(--su-4) solid var(--accent-brand);
-  }
+.branded-5 {
+  border-top: var(--su-5) solid var(--accent-brand);
+}
 
-  .branded-5 {
-    border-top: var(--su-5) solid var(--accent-brand);
-  }
+.branded-6 {
+  border-top: var(--su-6) solid var(--accent-brand);
+}
 
-  .branded-6 {
-    border-top: var(--su-6) solid var(--accent-brand);
-  }
+.branded-7 {
+  border-top: var(--su-7) solid var(--accent-brand);
+}
 
-  .branded-7 {
-    border-top: var(--su-7) solid var(--accent-brand);
+@media print {
+  .print-hidden {
+    display: none;
   }
+}
+
+/* Hide headers for screen readers */
+// TODO: remove when #10424 and #10508 are merged.
+.visually-hidden-header {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
