@@ -81,8 +81,4 @@ function fullScreenModeControl(event) {
   }
 }
 
-const fullscreenActionElements = document.querySelectorAll(
-  '.js-fullscreen-code-action',
-);
-
-addFullScreenModeControl(fullscreenActionElements);
+export default addFullScreenModeControl;
