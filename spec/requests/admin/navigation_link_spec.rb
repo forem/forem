@@ -30,7 +30,7 @@ RSpec.describe "NavigationLinks", type: :request do
       expect(response).to redirect_to admin_navigation_links_path
     end
 
-    it "creates a profile_field_group" do
+    it "creates a navigation link" do
       expect do
         post admin_navigation_links_path, params: { navigation_link: new_navigation_link }
       end.to change { NavigationLink.all.count }.by(1)

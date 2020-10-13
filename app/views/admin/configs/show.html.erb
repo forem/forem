@@ -1,4 +1,4 @@
-<div class="grid gap-6">
+<div class="grid gap-6" data-controller="config">
   <div class="crayons-notice crayons-notice--info" role="alert">
     <p class="mb-1">
       Only admins with explicit <strong>single resource admin</strong> role may make changes to site config. Even super admins require this permission.
@@ -104,6 +104,14 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:health_check_token][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:health_check_token][:description] %></div>
               </div>
+              <div class="form-group">
+                <%= admin_config_label :video_encoder_key %>
+                <%= f.text_field :video_encoder_key,
+                                 class: "form-control",
+                                 value: SiteConfig.video_encoder_key,
+                                 placeholder: Constants::SiteConfig::DETAILS[:video_encoder_key][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:video_encoder_key][:description] %></div>
+              </div>
             </div>
           </div>
 
@@ -117,9 +125,19 @@
                        } %>
             <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
               <div class="form-group">
+                <%= admin_config_label :invite_only_mode %>
+                <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" } %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %></div>
+              </div>
+              <div class="form-group">
                 <%= admin_config_label :allow_email_password_registration %>
                 <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %></div>
+              </div>
+              <div class="form-group">
+                <%= admin_config_label :allow_email_password_login %>
+                <%= f.check_box :allow_email_password_login, checked: SiteConfig.allow_email_password_login %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:allow_email_password_login][:description] %></div>
               </div>
               <div class="form-group">
                 <%= admin_config_label :authentication_providers %>
@@ -131,7 +149,8 @@
                                  authentication_enabled_providers.map(&:provider_name),
                                ),
                                multiple: true,
-                               class: "form-control selectpicker" %>
+                               class: "form-control selectpicker",
+                               data: { target: "config.authenticationProviders" } %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %></div>
               </div>
               <div class="crayons-notice crayons-notice--info mb-4">
@@ -541,7 +560,9 @@
                                   placeholder: Constants::SiteConfig::DETAILS[:logo_svg][:placeholder] %>
                   <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:logo_svg][:description] %></div>
                   <% if SiteConfig.logo_svg.present? %>
-                    <%= SiteConfig.logo_svg.html_safe %>
+                    <div class="site-logo">
+                      <%= SiteConfig.logo_svg.html_safe %>
+                    </div>
                   <% end %>
                 </div>
 
@@ -935,7 +956,8 @@
                 <%= f.text_field :sidebar_tags,
                                  class: "form-control",
                                  value: SiteConfig.sidebar_tags.join(","),
-                                 placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder] %>
+                                 placeholder: Constants::SiteConfig::DETAILS[:sidebar_tags][:placeholder],
+                                 pattern: "[a-z0-9,]+" %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %></div>
               </div>
             </div>
