@@ -1,5 +1,7 @@
 module Profiles
   class Update
+    include ImageUploads
+
     def self.call(user, updated_attributes = {})
       new(user, updated_attributes).call
     end
@@ -15,7 +17,7 @@ module Profiles
     end
 
     def call
-      unless update_profile && sync_to_user
+      unless verify_profile_image && update_profile && sync_to_user
         Honeycomb.add_field("error", @error_message)
         Honeycomb.add_field("errored", true)
       end
@@ -27,6 +29,28 @@ module Profiles
     end
 
     private
+
+    def verify_profile_image
+      image = @updated_user_attributes["profile_image"]
+      return true unless image
+      return true if valid_image_file?(image) && valid_filename?(image)
+
+      false
+    end
+
+    def valid_image_file?(image)
+      return true if file?(image)
+
+      @error_message = IS_NOT_FILE_MESSAGE
+      false
+    end
+
+    def valid_filename?(image)
+      return true unless long_filename?(image)
+
+      @error_message = FILENAME_TOO_LONG_MESSAGE
+      false
+    end
 
     def update_profile
       # Ensure we have up to date attributes
