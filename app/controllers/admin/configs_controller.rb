@@ -62,6 +62,7 @@ module Admin
         spam_trigger_terms
         recaptcha_site_key
         recaptcha_secret_key
+        video_encoder_key
       ]
 
       allowed_params = allowed_params |

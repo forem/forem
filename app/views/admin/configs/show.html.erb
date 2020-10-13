@@ -104,6 +104,14 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:health_check_token][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:health_check_token][:description] %></div>
               </div>
+              <div class="form-group">
+                <%= admin_config_label :video_encoder_key %>
+                <%= f.text_field :video_encoder_key,
+                                 class: "form-control",
+                                 value: SiteConfig.video_encoder_key,
+                                 placeholder: Constants::SiteConfig::DETAILS[:video_encoder_key][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:video_encoder_key][:description] %></div>
+              </div>
             </div>
           </div>
 
