@@ -140,6 +140,11 @@
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:allow_email_password_login][:description] %></div>
               </div>
               <div class="form-group">
+                <%= admin_config_label :require_captcha_for_email_password_registration %>
+                <%= f.check_box :require_captcha_for_email_password_registration, checked: SiteConfig.require_captcha_for_email_password_registration %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %></div>
+              </div>
+              <div class="form-group">
                 <%= admin_config_label :authentication_providers %>
                 <%= select_tag "site_config[authentication_providers]",
                                options_from_collection_for_select(

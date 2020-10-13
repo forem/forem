@@ -9,6 +9,10 @@ module Constants
         description: "Can users login with only email and password?",
         placeholder: ""
       },
+      require_captcha_for_email_password_registration: {
+        description: "Should users complete captcha during email/password sign up?",
+        placeholder: ""
+      },
       authentication_providers: {
         description: "How can users sign in?",
         placeholder: ""
