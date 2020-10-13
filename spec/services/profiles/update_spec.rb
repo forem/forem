@@ -52,4 +52,29 @@ RSpec.describe Profiles::Update, type: :service do
       described_class.call(user, profile: { name: 123, looking_for_work: "false" })
     end.to change { user.reload.profile_updated_at }
   end
+
+  it "returns an error if Profile image is too large" do
+    profile_image = fixture_file_upload("files/large_profile_img.jpg", "image/jpeg")
+    service = described_class.call(user, profile: {}, user: { profile_image: profile_image })
+
+    expect(service.success?).to be false
+    expect(service.error_message).to eq "Profile image File size should be less than 2 MB"
+  end
+
+  it "returns an error if Profile image is not a file" do
+    profile_image = "A String"
+    service = described_class.call(user, profile: {}, user: { profile_image: profile_image })
+
+    expect(service.success?).to be false
+    expect(service.error_message).to eq "invalid file type. Please upload a valid image."
+  end
+
+  it "returns an error if Profile image file name is too long" do
+    profile_image = fixture_file_upload("files/800x600.png", "image/png")
+    allow(profile_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
+    service = described_class.call(user, profile: {}, user: { profile_image: profile_image })
+
+    expect(service.success?).to be false
+    expect(service.error_message).to eq "filename too long - the max is 250 characters."
+  end
 end

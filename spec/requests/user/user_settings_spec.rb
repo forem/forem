@@ -199,28 +199,6 @@ RSpec.describe "UserSettings", type: :request do
       expect(response.body).to include("Username is too short")
     end
 
-    it "returns error if Profile image is too large" do
-      profile_image = fixture_file_upload("files/large_profile_img.jpg", "image/jpeg")
-      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
-      expect(response.body).to include("Profile image File size should be less than 2 MB")
-    end
-
-    it "returns error if Profile image file name is too long" do
-      profile_image = fixture_file_upload("files/800x600.png", "image/png")
-      allow(profile_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
-
-      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
-
-      expect(response).to have_http_status(:bad_request)
-    end
-
-    it "returns error if Profile image is not a file" do
-      profile_image = "A String"
-      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
-
-      expect(response).to have_http_status(:bad_request)
-    end
-
     it "returns error message if user can't be saved" do
       put "/users/#{user.id}", params: { user: { password: "1", password_confirmation: "1" } }
 

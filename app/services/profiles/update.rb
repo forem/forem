@@ -12,7 +12,7 @@ module Profiles
       @user = user
       @profile = user.profile
       @updated_profile_attributes = updated_attributes[:profile] || {}
-      @updated_user_attributes = updated_attributes[:user] || {}
+      @updated_user_attributes = updated_attributes[:user].to_h || {}
       @success = false
     end
 
@@ -31,7 +31,7 @@ module Profiles
     private
 
     def verify_profile_image
-      image = @updated_user_attributes["profile_image"]
+      image = @updated_user_attributes[:profile_image]
       return true unless image
       return true if valid_image_file?(image) && valid_filename?(image)
 
@@ -92,7 +92,7 @@ module Profiles
     end
 
     def update_user_attributes
-      if @user.update(@updated_user_attributes.to_h)
+      if @user.update(@updated_user_attributes)
         @success = true
       else
         @error_message = @user.errors_as_sentence
