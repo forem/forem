@@ -8,7 +8,7 @@
 
 <% if @stories.any? %>
   <%= content_for :internal_navigation_page_meta do %>
-    <%= render "users/rss_autodiscovery", user: @user %>
+      <%= render "users/rss_autodiscovery", user: @user %>
   <% end %>
 <% end %>
 

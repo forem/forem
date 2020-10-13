@@ -62,18 +62,6 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).not_to include("<meta name=\"googlebot\" content=\"noindex\">")
     end
 
-    it "renders rss feed link if any stories" do
-      create(:article, user_id: user.id)
-
-      get "/#{user.username}"
-      expect(response.body).to include("/feed/#{user.username}")
-    end
-
-    it "does not render feed link if no stories" do
-      get "/#{user.username}"
-      expect(response.body).not_to include("/feed/#{user.username}")
-    end
-
     it "renders user payment pointer if set" do
       user.update_column(:payment_pointer, "test-payment-pointer")
       get "/#{user.username}"
@@ -84,6 +72,21 @@ RSpec.describe "UserProfiles", type: :request do
     it "does not render payment pointer if not set" do
       get "/#{user.username}"
       expect(response.body).not_to include "author-payment-pointer"
+    end
+
+    context "with internal navigation" do
+      subject(:get_user) { get "/#{user.username}", params: { i: :i } }
+
+      it "renders rss feed link if any stories" do
+        create(:article, user_id: user.id)
+        get_user
+        expect(response.body).to include('type="application/rss+xml"')
+      end
+
+      it "does not render feed link if no stories" do
+        get_user
+        expect(response.body).not_to include('type="application/rss+xml"')
+      end
     end
 
     context "when organization" do
@@ -132,16 +135,20 @@ RSpec.describe "UserProfiles", type: :request do
         get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.location))
       end
+    end
+
+    context "when organization with internal navigation" do
+      subject(:get_organization) { get organization.path, params: { i: :i } }
 
       it "renders rss feed link if any stories" do
         create(:article, organization_id: organization.id)
-        get organization.path
-        expect(response.body).to include("/feed/#{organization.slug}")
+        get_organization
+        expect(response.body).to include('type="application/rss+xml"')
       end
 
       it "does not render feed link if no stories" do
-        get organization.path
-        expect(response.body).not_to include("/feed/#{organization.slug}")
+        get_organization
+        expect(response.body).not_to include('type="application/rss+xml"')
       end
     end
 

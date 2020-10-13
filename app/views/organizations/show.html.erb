@@ -4,6 +4,12 @@
   <%= render "users/meta" %>
 <% end %>
 
+<% if @stories.any? %>
+  <%= content_for :internal_navigation_page_meta do %>
+      <%= render "users/rss_autodiscovery", user: @user %>
+  <% end %>
+<% end %>
+
 <%= render "users/profile_header" %>
 <div class="home sub-home" id="index-container"
      data-params="<%= params.merge(sort_by: "published_at", sort_direction: "desc", organization_id: @organization.id).to_json(only: %i[tag organization_id username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
