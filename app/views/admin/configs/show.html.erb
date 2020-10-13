@@ -552,7 +552,9 @@
                                   placeholder: Constants::SiteConfig::DETAILS[:logo_svg][:placeholder] %>
                   <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:logo_svg][:description] %></div>
                   <% if SiteConfig.logo_svg.present? %>
-                    <%= SiteConfig.logo_svg.html_safe %>
+                    <div class="site-logo">
+                      <%= SiteConfig.logo_svg.html_safe %>
+                    </div>
                   <% end %>
                 </div>
 
