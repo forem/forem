@@ -18,10 +18,9 @@ blockquote pre.highlight {
   background: var(--syntax-background-color);
   color: var(--syntax-text-color);
   font-size: 80%;
-  padding: var(--su-2);
+  padding: var(--su-2) 0;
   border-radius: var(--radius);
   margin: 0;
-  white-space: pre;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   overflow-wrap: initial;
@@ -32,7 +31,7 @@ blockquote pre.highlight {
   }
 
   @media (min-width: $breakpoint-m) {
-    padding: var(--su-6);
+    padding: var(--su-6) 0;
   }
 }
 
@@ -42,6 +41,12 @@ div.highlight {
   // this a way to separate scroll of long code & icons in panel
   .highlight {
     overflow: auto;
+
+    padding: 0 var(--su-2);
+
+    @media (min-width: $breakpoint-m) {
+      padding: 0 var(--su-6);
+    }
   }
 }
 
