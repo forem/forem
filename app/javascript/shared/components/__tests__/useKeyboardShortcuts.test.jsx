@@ -16,7 +16,7 @@ describe('Keyboard shortcuts for components', () => {
     });
     
     it('should fire a function when keydown is detected', () => {
-      const keyPress = jest.fn()'
+      const keyPress = jest.fn();
       const event = new KeyboardEvent('keydown', { code: "KeyK" });
       
       Window.prototype.addEventListener = jest.fn();
@@ -59,15 +59,15 @@ describe('Keyboard shortcuts for components', () => {
     });
     
     it('should fire a function when keydown is detected', () => {
-      const keyPress = jest.fn()'
+      const keyPress = jest.fn();
       const event = new KeyboardEvent('keydown', { code: "KeyK" });
       
       Window.prototype.addEventListener = jest.fn();
       
       const { result } = renderHook(() =>
-        <KeyboardShortcuts shortcuts=({
+        <KeyboardShortcuts shortcuts={{
           KeyK: keyPress
-        }) />,
+        }} />,
       );
       window.dispatchEvent(event);
       
@@ -80,9 +80,9 @@ describe('Keyboard shortcuts for components', () => {
       Window.prototype.removeEventListener = jest.fn();
       
       const { unmount, result } = renderHook(() =>
-        <KeyboardShortcuts shortcuts=({
+        <KeyboardShortcuts shortcuts={{
           KeyK: () => { }
-        }) />,
+        }} />,
       );
                                                
       unmount();
