@@ -194,6 +194,8 @@ Rails.application.routes.draw do
             get :cache
           end
         end
+
+        resources :profile_images, only: %i[show], param: :username
       end
     end
 
