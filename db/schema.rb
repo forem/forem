@@ -140,7 +140,6 @@ ActiveRecord::Schema.define(version: 2020_10_10_084621) do
     t.text "slug"
     t.string "social_image"
     t.integer "spaminess_rating", default: 0
-    t.integer "third_user_id"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
