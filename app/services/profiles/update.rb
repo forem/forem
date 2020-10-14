@@ -17,7 +17,10 @@ module Profiles
     end
 
     def call
-      unless verify_profile_image && update_profile && sync_to_user
+      if verify_profile_image && update_profile && sync_to_user
+        @user.touch(:profile_updated_at)
+        follow_hiring_tag
+      else
         Honeycomb.add_field("error", @error_message)
         Honeycomb.add_field("errored", true)
       end
@@ -85,7 +88,6 @@ module Profiles
         @error_message = @user.errors_as_sentence
       end
 
-      @user.touch(:profile_updated_at)
       @success
     ensure
       @profile.user._skip_profile_sync = false
@@ -97,6 +99,15 @@ module Profiles
       else
         @error_message = @user.errors_as_sentence
       end
+    end
+
+    def follow_hiring_tag
+      return unless SiteConfig.dev_to? && @user.looking_for_work?
+
+      hiring_tag = Tag.find_by(name: "hiring")
+      return unless hiring_tag && @user.following?(hiring_tag)
+
+      Users::FollowWorker.perform_async(@user.id, hiring_tag.id, "Tag")
     end
   end
 end

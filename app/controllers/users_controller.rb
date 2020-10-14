@@ -50,7 +50,6 @@ class UsersController < ApplicationController
         ExportContentWorker.perform_async(@user.id)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
-      follow_hiring_tag(@user) if SiteConfig.dev_to?
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
@@ -228,15 +227,6 @@ class UsersController < ApplicationController
   end
 
   def signout_confirm; end
-
-  def follow_hiring_tag(user)
-    return unless user.looking_for_work?
-
-    hiring_tag = Tag.find_by(name: "hiring")
-    return if !hiring_tag || user.following?(hiring_tag)
-
-    Users::FollowWorker.perform_async(user.id, hiring_tag.id, "Tag")
-  end
 
   def handle_settings_tab
     return @tab = "profile" if @tab.blank?
