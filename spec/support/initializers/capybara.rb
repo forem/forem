@@ -44,6 +44,6 @@ def wait_for_javascript
 end
 
 def click_loaded_button(button_id, button_text)
-  expect(page).to have_css(button_id, visible: :visible)
+  expect(page).to have_css("##{button_id}", visible: :visible)
   click_button(button_text, id: button_id)
 end

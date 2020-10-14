@@ -63,7 +63,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
 
     it "asks the user to confirm their subscription" do
       expect(page).to have_css("#user-subscription-confirmation-modal", visible: :hidden)
-      click_loaded_button("#subscribe-btn", "Subscribe")
+      click_loaded_button("subscribe-btn", "Subscribe")
       expect(page).to have_css("#user-subscription-confirmation-modal", visible: :visible)
     end
 
@@ -71,8 +71,8 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
       has_basic_subscription_components
       expect(page).to have_css("#subscription-signed-in", visible: :visible)
 
-      click_loaded_button("#subscribe-btn", "Subscribe")
-      click_loaded_button("#confirmation-btn", "Confirm subscription")
+      click_loaded_button("subscribe-btn", "Subscribe")
+      click_loaded_button("confirmation-btn", "Confirm subscription")
 
       expect(page).to have_css("#subscription-signed-in", visible: :hidden)
       expect(page).to have_css("#response-message.crayons-notice--success", visible: :visible)
@@ -94,8 +94,8 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
       has_basic_subscription_components
       expect(page).to have_css("#subscription-signed-in", visible: :visible)
 
-      click_loaded_button("#subscribe-btn", "Subscribe")
-      click_loaded_button("#confirmation-btn", "Confirm subscription")
+      click_loaded_button("subscribe-btn", "Subscribe")
+      click_loaded_button("confirmation-btn", "Confirm subscription")
 
       expect(page).to have_css("#subscription-signed-in", visible: :hidden)
       expect(page).to have_css("#response-message.crayons-notice--danger", visible: :visible)
