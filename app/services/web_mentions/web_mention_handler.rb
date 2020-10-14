@@ -27,8 +27,7 @@ module WebMentions
                           end
       end
     rescue StandardError => e
-      Rails.logger.error("WebmentionsException: #{e}")
-      nil
+      raise e, "Couldn't find the webmention URL of: #{@canonical_url}"
     end
 
     private
@@ -36,7 +35,7 @@ module WebMentions
     def send_webmention
       HTTParty.post(@webmention_url, "source": @article_url, "target": @canonical_url)
     rescue HTTParty::Error => e
-      Rails.logger.error("SendWebmentionException: #{e.response}")
+      raise e, "Couldn't send webmentions to: #{@webmention_url}"
     end
   end
 end
