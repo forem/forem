@@ -54,9 +54,12 @@ commands:
 ### Notification Data
 
 ```shell
-rails db:seed:notifications USERNAME="your_username"
-# where "your_username" is your development user's username, otherwise will fallback to the last user
+rails db:seed:notifications USERNAME="your_username" CLEAN_SETUP="y"
 ```
+
+- where "your_username" is your development user's username
+- the `CLEAN_SETUP` variable is optional, and will delete all of your existing
+  notifications, followers, articles, and comments before seeding.
 
 Need more custom data? Feel free to contribute to this by creating a file in
 `db/custom_seeds/` and writing a script.

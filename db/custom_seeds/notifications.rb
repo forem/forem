@@ -1,7 +1,9 @@
 # Notification seed file, to mock notifications for a specific user (ideally yourself).
 # To run the command, run:
 # rails db:seed:notifications USERNAME='your_username'
-# if no username is given, the script will use the last user
+# you can also add CLEAN_SETUP="y" if you want to start with fresh notifications.
+
+require "#{Rails.root}/db/seeder"
 
 NUM_TOTAL_STEPS = 11
 
@@ -12,7 +14,7 @@ if user.blank?
 end
 
 if ENV["CLEAN_SETUP"].present?
-  puts "starting with none of your notifications, followers, articles, and comments..."
+  puts "starting with none of your existing notifications, followers, articles, and comments..."
   user.notifications.delete_all
   Follow.where(followable: user).destroy_all
   Follow.where(follower: user).destroy_all
