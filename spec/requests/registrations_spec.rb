@@ -17,6 +17,7 @@ RSpec.describe "Registrations", type: :request do
 
       it "only shows the single sign on options if they are present" do
         allow(Authentication::Providers).to receive(:enabled).and_return([])
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
 
         get sign_up_path
 
