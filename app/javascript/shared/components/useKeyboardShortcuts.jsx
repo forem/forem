@@ -9,7 +9,7 @@ import { h } from 'preact';
  *
  * @returns {boolean} isFormField
  */
-function isFormField(element) => {
+function isFormField(element) {
   if ((element instanceof HTMLElement) === false) return false;
 
   const name = element.nodeName.toLowerCase();
