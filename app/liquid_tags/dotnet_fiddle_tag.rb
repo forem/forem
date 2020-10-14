@@ -1,6 +1,8 @@
+require "uri"
+
 class DotnetFiddleTag < LiquidTagBase
   PARTIAL = "liquids/dotnetfiddle".freeze
-  LINK_REGEXP = %r{\A(http|https)://(dotnetfiddle\.net)/[a-zA-Z0-9\-/]*\z}.freeze
+  LINK_REGEXP = %r{\A(https)://(dotnetfiddle\.net)/(Widget)/[a-zA-Z0-9\-/]*\z}.freeze
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -22,9 +24,21 @@ class DotnetFiddleTag < LiquidTagBase
   def parse_link(link)
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split(" ").first
-    raise StandardError, "Invalid DotnetFiddle URL" unless valid_link?(the_link)
+    widget_link = insert_widget(the_link)
+    raise StandardError, "Invalid DotnetFiddle URL" unless valid_link?(widget_link)
 
-    the_link
+    widget_link
+  end
+
+  def insert_widget(link)
+    uri = URI(link)
+    if "Widget".in? uri.path
+      link
+    else
+      # URI.path gives us strings like "/abcde", use substring to get rid of forward slash
+      # otherwise join won't work
+      URI.join("https://dotnetfiddle.net", "/Widget/", uri.path[1..]).to_s
+    end
   end
 
   def valid_link?(link)

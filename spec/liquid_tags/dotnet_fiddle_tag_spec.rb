@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe DotnetFiddleTag, type: :liquid_tag do
   describe "#link" do
-    let(:dotnetfiddle_link) { "https://dotnetfiddle.net/Widget/v2kx9jcd" }
+    let(:dotnetfiddle_link) { "https://dotnetfiddle.net/v2kx9jcd" }
 
     xss_links = %w(
       //evil.com/?dotnetfiddle.net
@@ -22,7 +22,7 @@ RSpec.describe DotnetFiddleTag, type: :liquid_tag do
     end
 
     it "accepts dotnet link with a / at the end" do
-      dotnetfiddle_link = "http://dotnetfiddle.net/ShubhankarKG/v2kx9jcd/"
+      dotnetfiddle_link = "https://dotnetfiddle.net/Widget/v2kx9jcd/"
       expect do
         generate_new_liquid(dotnetfiddle_link)
       end.not_to raise_error
@@ -33,12 +33,6 @@ RSpec.describe DotnetFiddleTag, type: :liquid_tag do
         generate_new_liquid("invalid_dotnet_link")
       end.to raise_error(StandardError)
     end
-
-    # it "accepts dotnet link with a custom-tab parameter" do
-    #   expect do
-    #     generate_new_liquid(dotnet_link_with_custom_tabs)
-    #   end.not_to raise_error
-    # end
 
     it "rejects XSS attempts" do
       xss_links.each do |link|
