@@ -11,6 +11,15 @@ if user.blank?
   raise StandardError
 end
 
+if ENV["CLEAN_SETUP"].present?
+  puts "starting with none of your notifications, followers, articles, and comments..."
+  user.notifications.delete_all
+  Follow.where(followable: user).destroy_all
+  Follow.where(follower: user).destroy_all
+  user.articles.destroy_all
+  user.comments.destroy_all
+end
+
 seeder = Seeder.new
 
 puts "0/#{NUM_TOTAL_STEPS} checking requirements..."
