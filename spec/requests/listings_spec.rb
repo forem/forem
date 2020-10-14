@@ -80,6 +80,16 @@ RSpec.describe "/listings", type: :request do
     end
   end
 
+  describe "GET /listings/dashboard" do
+    before { sign_in user }
+
+    it "returns a category for draft listings" do
+      post "/listings", params: draft_params
+      get "/listings/dashboard"
+      expect(response.body).to include(CGI.escapeHTML("\"category\":\"#{edu_category.slug}\""))
+    end
+  end
+
   describe "GET /listings/new" do
     before { sign_in user }
 

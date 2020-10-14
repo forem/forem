@@ -8,7 +8,7 @@ RSpec.describe "/admin/invitations", type: :request do
     sign_in(admin)
   end
 
-  describe "GETS /admin/invitations" do
+  describe "GET /admin/invitations" do
     it "renders to appropriate page" do
       user.update_column(:registered, false)
       get "/admin/invitations"
@@ -16,7 +16,7 @@ RSpec.describe "/admin/invitations", type: :request do
     end
   end
 
-  describe "GETS /admin/invitations/new" do
+  describe "GET /admin/invitations/new" do
     it "renders to appropriate page" do
       get "/admin/invitations/new"
       expect(response.body).to include("Email:")

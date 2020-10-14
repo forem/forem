@@ -154,6 +154,7 @@ A more complete overview of our stack is available in
 - [@fdoxyz](https://dev.to/fdoxyz)
 - [@msarit](https://dev.to/msarit)
 - [@jdoss](https://dev.to/jdoss)
+- [@cmgorton](https://dev.to/coffeecraftcode)
 
 ## Vulnerability disclosure
 

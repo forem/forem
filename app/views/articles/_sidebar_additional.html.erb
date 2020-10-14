@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
-    <% unless user_signed_in? || !any_selfserve_auth? %>
+    <% unless user_signed_in? || !any_enabled_auth_providers? %>
       <section class="crayons-card crayons-card--secondary signin-cta-widget">
         <div class="authentication-widget__container">
           <figure class="authentication-widget__image-container">
