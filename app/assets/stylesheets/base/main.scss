@@ -36,3 +36,48 @@ a {
   color: var(--link-brand-color);
   text-decoration: none;
 }
+
+// Logo
+.site-logo {
+  max-width: var(--max-width, 125px);
+  font-size: var(--font-size, var(--fs-base));
+  font-weight: var(--font-weight, var(--fw-medium));
+
+  display: inline-flex;
+  align-self: stretch;
+  align-items: center;
+  vertical-align: middle;
+  color: var(--base-100);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  line-height: var(--lh-tight);
+  overflow-wrap: anywhere;
+
+  @media (min-width: $breakpoint-s) {
+    --max-width: 150px;
+  }
+
+  @media (min-width: $breakpoint-m) {
+    --max-width: 175px;
+    --font-size: var(--fs-l);
+    --font-weight: var(--fw-bold);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --max-width: 200px;
+    --font-size: var(--fs-xl);
+  }
+
+  &:hover {
+    color: var(--base-80);
+    text-decoration: none;
+  }
+
+  svg {
+    max-width: 100%;
+    width: auto;
+    height: calc(var(--header-height) - var(--su-2) * 2);
+    vertical-align: middle;
+    display: inline-block;
+  }
+}
