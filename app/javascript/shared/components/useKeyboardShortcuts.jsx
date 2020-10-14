@@ -3,6 +3,26 @@ import PropTypes from 'prop-types';
 import { h } from 'preact';
 
 /**
+ * Checker that return true if element is a form element
+ *
+ * @param {node} element to be checked
+ *
+ * @returns {boolean} isFormField
+ */
+function isFormField(element) => {
+  if ((element instanceof HTMLElement) === false) return false;
+
+  const name = element.nodeName.toLowerCase();
+  const type = (element.getAttribute("type") || "").toLowerCase();
+  return (
+    name === "select" ||
+    name === "textarea" ||
+    (name === "input" && ["submit", "reset", "checkbox", "radio"].indexOf(type) < 0) ||
+    element.isContentEditable
+  );
+};
+
+/**
  * hook that can be added to a component to listen
  * for keyboard presses
  *
@@ -23,22 +43,6 @@ import { h } from 'preact';
 export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
   useEffect(() => {
     if (!shortcuts) return;
-
-    // Return true if element is a form element
-    const isFormField = (element) => {
-      if (!(element instanceof HTMLElement)) {
-        return false;
-      }
-
-      const name = element.nodeName.toLowerCase();
-      const type = (element.getAttribute("type") || "").toLowerCase();
-      return (
-        name === "select" ||
-        name === "textarea" ||
-        (name === "input" && ["submit", "reset", "checkbox", "radio"].indexOf(type) < 0) ||
-        element.isContentEditable
-      );
-    };
 
     const keyEvent = (e) => {
       if (e.defaultPrevented) return;
