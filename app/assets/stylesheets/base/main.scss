@@ -51,6 +51,7 @@ a {
   text-decoration: none;
   letter-spacing: -0.01em;
   line-height: var(--lh-tight);
+  overflow-wrap: anywhere;
 
   @media (min-width: $breakpoint-s) {
     --max-width: 150px;

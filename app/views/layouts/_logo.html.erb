@@ -1,5 +1,5 @@
 <a href="/" class="site-logo" aria-label="<%= community_name %> Home">
-  <% if SiteConfig.logo_svg.present? %>
+  <% unless SiteConfig.logo_svg.present? %>
     <%= logo_svg %>
   <% else %>
     <span class="truncate-at-2">
