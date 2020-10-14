@@ -2,15 +2,15 @@ module Constants
   module SiteConfig
     DETAILS = {
       allow_email_password_registration: {
-        description: "Can users sign up with only email and password?",
+        description: "Can users sign up using their email and password?",
         placeholder: ""
       },
       allow_email_password_login: {
-        description: "Can users login with only email and password?",
+        description: "Can users login using their email and password?",
         placeholder: ""
       },
       require_captcha_for_email_password_registration: {
-        description: "Should users complete captcha during email/password sign up?",
+        description: "Should users complete captcha during email-password signup?",
         placeholder: ""
       },
       authentication_providers: {

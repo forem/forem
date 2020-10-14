@@ -33,7 +33,7 @@ class RegistrationsController < Devise::RegistrationsController
       end
     else
       redirect_to new_user_registration_path(state: "email_signup")
-      flash[:notice] = "You must complete the Recaptcha"
+      flash[:notice] = "You must complete the recaptcha ✅"
     end
   end
 
@@ -48,7 +48,8 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def recaptcha_disabled?
-    SiteConfig.recaptcha_site_key.blank? && SiteConfig.recaptcha_secret_key.blank?
+    (SiteConfig.recaptcha_site_key.blank? && SiteConfig.recaptcha_secret_key.blank?) ||
+      !SiteConfig.require_captcha_for_email_password_registration
   end
 
   def recaptcha_verified?
