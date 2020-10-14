@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe DotnetFiddleTag, type: :liquid_tag do
   describe "#link" do
-    let(:dotnetfiddle_link) { "https://dotnetfiddle.net/v2kx9jcd" }
+    let(:dotnetfiddle_link) { "https://dotnetfiddle.net/Widget/v2kx9jcd" }
 
     xss_links = %w(
       //evil.com/?dotnetfiddle.net
