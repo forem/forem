@@ -71,8 +71,8 @@ to "pay" for listing. Here's how:
 2. Enter the following commands:
 
    ```ruby
-   user = User.find_by(username: "your_username");
-   Credit.add_to(user, 1000);
+   user = User.find_by(username: "your_username")
+   Credit.add_to(user, 1000)
    ```
 
 ^ This will add 1000 credits to your account. But you know, you can't really buy
