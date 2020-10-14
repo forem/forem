@@ -16,8 +16,6 @@ describe('Keyboard shortcuts for components', () => {
     });
 
     it('should add event listener to window', () => {
-      const event = new KeyboardEvent('keydown', { code: "KeyK" });
-
       Window.prototype.addEventListener = jest.fn();
 
       const { result } = renderHook(() =>
@@ -25,7 +23,6 @@ describe('Keyboard shortcuts for components', () => {
           KeyK: () => { }
         }),
       );
-      window.dispatchEvent(event);
 
       expect(Window.prototype.addEventListener).toHaveBeenCalledTimes(1);
     });
@@ -41,10 +38,10 @@ describe('Keyboard shortcuts for components', () => {
       );
       window.dispatchEvent(event);
 
-      expect(keyPress).not.toHaveBeenCalledTime(1);
+      expect(keyPress).toHaveBeenCalledTime(1);
     });
 
-    it('should not fire a function when keydown is detected', () => {
+    it('should not fire a function when keydown is detected in elemement', () => {
       const keyPress = jest.fn();
       const event = new KeyboardEvent('keydown', { code: "KeyK" });
       const eventTarget = document.createElement('textarea') // eventTarget set since the default is window
