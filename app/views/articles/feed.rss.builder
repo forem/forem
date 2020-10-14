@@ -10,12 +10,11 @@ xml.rss version: "2.0" do
     xml.language "en"
     if user
       xml.image do
-        xml.url user.profile_image
+        xml.url user.profile_image_90
         xml.title user.name
         xml.link app_url(user.path)
       end
     end
-
     articles.each do |article|
       xml.item do
         xml.title article.title
