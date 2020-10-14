@@ -42,3 +42,8 @@ def wait_for_javascript
 
   raise "wait_for_javascript timeout" unless finished
 end
+
+def click_loaded_button(button_id, button_text)
+  expect(page).to have_css(button_id, visible: :visible)
+  click_button(button_text, id: button_id)
+end

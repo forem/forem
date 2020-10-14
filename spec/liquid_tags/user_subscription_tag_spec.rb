@@ -46,13 +46,16 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
     before do
       sign_in subscriber
       visit article_with_user_subscription_tag.path
-      wait_for_javascript
     end
 
-    it "shows the signed in UX" do
+    def has_basic_subscription_components
       expect(page).to have_css("#subscription-signed-out", visible: :hidden)
       expect(page).to have_css("#subscriber-apple-auth", visible: :hidden)
       expect(page).to have_css("#response-message", visible: :hidden)
+    end
+
+    it "shows the signed in UX" do
+      has_basic_subscription_components
       expect(page).to have_css("#subscription-signed-in", visible: :visible)
       css_class = "img.ltag__user-subscription-tag__subscriber-profile-image[src='#{subscriber.profile_image_90}']"
       expect(page).to have_css(css_class)
@@ -60,17 +63,17 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
 
     it "asks the user to confirm their subscription" do
       expect(page).to have_css("#user-subscription-confirmation-modal", visible: :hidden)
-      click_button("Subscribe", id: "subscribe-btn")
+      click_loaded_button("#subscribe-btn", "Subscribe")
       expect(page).to have_css("#user-subscription-confirmation-modal", visible: :visible)
     end
 
     it "displays a sucess mesage when a subscription is created" do
-      expect(page).to have_css("#subscription-signed-out", visible: :hidden)
-      expect(page).to have_css("#subscriber-apple-auth", visible: :hidden)
-      expect(page).to have_css("#response-message", visible: :hidden)
+      has_basic_subscription_components
       expect(page).to have_css("#subscription-signed-in", visible: :visible)
-      click_button("Subscribe", id: "subscribe-btn")
-      click_button("Confirm subscription", id: "confirmation-btn")
+
+      click_loaded_button("#subscribe-btn", "Subscribe")
+      click_loaded_button("#confirmation-btn", "Confirm subscription")
+
       expect(page).to have_css("#subscription-signed-in", visible: :hidden)
       expect(page).to have_css("#response-message.crayons-notice--success", visible: :visible)
 
@@ -79,7 +82,6 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
       end
     end
 
-    # rubocop:disable RSpec/ExampleLength
     it "displays errors when there's an error creating a subscription" do
       # Create a subscription so it causes an error by already being subscribed
       create(
@@ -89,12 +91,12 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
         user_subscription_sourceable: article_with_user_subscription_tag
       )
 
-      expect(page).to have_css("#subscription-signed-out", visible: :hidden)
-      expect(page).to have_css("#subscriber-apple-auth", visible: :hidden)
-      expect(page).to have_css("#response-message", visible: :hidden)
+      has_basic_subscription_components
       expect(page).to have_css("#subscription-signed-in", visible: :visible)
-      click_button("Subscribe", id: "subscribe-btn")
-      click_button("Confirm subscription", id: "confirmation-btn")
+
+      click_loaded_button("#subscribe-btn", "Subscribe")
+      click_loaded_button("#confirmation-btn", "Confirm subscription")
+
       expect(page).to have_css("#subscription-signed-in", visible: :hidden)
       expect(page).to have_css("#response-message.crayons-notice--danger", visible: :visible)
 
@@ -102,7 +104,6 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
         expect(page).to have_text("Subscriber has already been taken")
       end
     end
-    # rubocop:enable RSpec/ExampleLength
 
     it "tells the user they're already subscribed by default if they're already subscribed" do
       create(
