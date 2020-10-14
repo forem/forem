@@ -19,9 +19,11 @@ class SiteConfig < RailsSettings::Base
 
   # API Tokens
   field :health_check_token, type: :string
+  field :video_encoder_key, type: :string
 
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
+  field :allow_email_password_login, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :invite_only_mode, type: :boolean, default: false
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]

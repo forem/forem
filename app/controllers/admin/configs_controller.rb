@@ -57,10 +57,12 @@ module Admin
         facebook_secret
         invite_only_mode
         allow_email_password_registration
+        allow_email_password_login
         primary_brand_color_hex
         spam_trigger_terms
         recaptcha_site_key
         recaptcha_secret_key
+        video_encoder_key
       ]
 
       allowed_params = allowed_params |

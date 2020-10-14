@@ -9,10 +9,9 @@
     </a>
   <% end %>
   <% if params[:state] == "new-user" && SiteConfig.allow_email_password_registration %>
-    <%= link_to inline_svg_tag("email.svg", aria: true, class: "crayons-icon", title: "email") + "Sign up with Email", 
-      request.params.merge(state: "email_signup"),
-      class: "crayons-btn crayons-btn--l crayons-btn--brand-email crayons-btn--icon-left whitespace-nowrap",
-      data: {no_instant: ""}
-    %>
+    <%= link_to "#{inline_svg_tag('email.svg', aria: true, class: 'crayons-icon', title: 'email')}Sign up with Email",
+                request.params.merge(state: "email_signup"),
+                class: "crayons-btn crayons-btn--l crayons-btn--brand-email crayons-btn--icon-left whitespace-nowrap",
+                data: { no_instant: "" } %>
   <% end %>
 </div>
