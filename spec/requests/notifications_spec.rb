@@ -660,8 +660,8 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include CGI.escapeHTML(Badge.first.description)
       end
 
-      it "renders the CHECK YOUR PROFILE button" do
-        expect(response.body).to include "CHECK YOUR PROFILE"
+      it "renders the VISIT YOUR PROFILE button" do
+        expect(response.body).to include "Visit your profile"
       end
     end
 
