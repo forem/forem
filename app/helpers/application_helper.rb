@@ -285,7 +285,7 @@ module ApplicationHelper
   def admin_config_label(method, content = nil)
     content ||= raw("<span>#{method.to_s.humanize}</span>")
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-      content = safe_join([content, raw("<span class='crayons-indicator'>Required</span>")])
+      content = safe_join([content, raw("<span class='crayons-indicator crayons-indicator--critical'>Required</span>")])
     end
 
     tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
