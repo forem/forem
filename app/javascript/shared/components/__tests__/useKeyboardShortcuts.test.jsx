@@ -79,12 +79,13 @@ describe('Keyboard shortcuts for components', () => {
       Window.prototype.addEventListener = jest.fn();
       Window.prototype.removeEventListener = jest.fn();
       
-      const { result } = renderHook(() =>
+      const { unmount, result } = renderHook(() =>
         <KeyboardShortcuts shortcuts=({
           KeyK: () => { }
         }) />,
       );
-      
+                                               
+      unmount();
       expect(Window.prototype.addEventListener).toHaveBeenCalledTimes(1);
       expect(Window.prototype.removeEventListener).toHaveBeenCalledTimes(1);
     });
