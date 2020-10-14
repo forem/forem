@@ -105,7 +105,7 @@ seeder.create_if_none(Broadcast) do
 end
 
 Broadcast.all.each do |broadcast|
-  Notifications::WelcomeNotification::Send.call(user.id, broadcast.id)
+  Notifications::WelcomeNotification::Send.call(user.id, broadcast)
 end
 
 puts "2/#{NUM_TOTAL_STEPS} seeding follower notifications..."
