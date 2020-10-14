@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.0"
+  version: "0.9.1"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
