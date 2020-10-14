@@ -42,7 +42,7 @@ function isFormField(element) => {
  */
 export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
   useEffect(() => {
-    if (!shortcuts) return;
+    if (!shortcuts || Object.keys(shortcuts).length === 0) return;
 
     const keyEvent = (e) => {
       if (e.defaultPrevented) return;
