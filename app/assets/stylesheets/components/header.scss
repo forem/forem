@@ -41,6 +41,7 @@
 // Logo
 .site-logo {
   display: flex;
+  max-width: 20%;
 
   .logo {
     width: 50px;
@@ -49,6 +50,12 @@
     background: var(--logo-bg);
     fill: var(--logo-color);
     border-radius: 3px;
+  }
+
+  svg {
+    height: calc(var(--header-height));
+    width: auto;
+    padding: 0.5em;
   }
 }
 

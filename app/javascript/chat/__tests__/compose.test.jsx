@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, fireEvent } from '@testing-library/preact';
+import { render, fireEvent, createEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import Compose from '../compose';
 
@@ -30,7 +30,7 @@ const handleKeyDownFake = (e) => {
   }
 };
 
-const getCompose = (tf) => {
+const getCompose = (tf, props = {}) => {
   // true -> not empty, false -> empty
   if (tf) {
     return (
@@ -38,6 +38,7 @@ const getCompose = (tf) => {
         handleSubmitOnClick={handleSubmitFake}
         handleKeyDown={handleKeyDownFake}
         activeChannelId={12345}
+        {...props}
       />
     );
   }
@@ -46,6 +47,7 @@ const getCompose = (tf) => {
       handleSubmitOnClick={handleSubmitEmpty}
       handleKeyDown={handleKeyDownFake}
       activeChannelId={12345}
+      {...props}
     />
   );
 };
@@ -68,7 +70,7 @@ describe('<Compose />', () => {
     it('should click submit', () => {
       const { getByText } = render(getCompose(false));
       const button = getByText(/Send/i);
-      
+
       button.click();
       expect(submitNoMessage).toEqual(true);
       expect(submitWithMessage).toEqual(false);
@@ -134,5 +136,86 @@ describe('<Compose />', () => {
       expect(submitWithMessage).toEqual(true);
       expect(textfieldIsEmpty).toEqual(true);
     });
+  });
+
+  // Check for the actual input value after pressing enter
+  it('should press enter and check for empty input', () => {
+    const compose = getCompose(true);
+    const { getByTestId, rerender } = render(compose);
+
+    const input = getByTestId('messageform');
+
+    fireEvent(input, createEvent('input', input, { target: { value: 'T' } }));
+
+    expect(input.value).toBe('T');
+
+    fireEvent.keyDown(input, { keyCode: 13 });
+
+    rerender(compose);
+
+    expect(input.value).toBe('');
+  });
+
+  // Check for the actual input value after clicking send
+  it('should click send and check for empty input', () => {
+    const compose = getCompose(true);
+    const { getByTestId, getByText, rerender } = render(compose);
+
+    const input = getByTestId('messageform');
+    const sendButton = getByText(/send/i);
+
+    fireEvent(input, createEvent('input', input, { target: { value: 'T' } }));
+
+    expect(input.value).toBe('T');
+
+    sendButton.click();
+
+    rerender(compose);
+
+    expect(input.value).toBe('');
+  });
+
+  // Check for the actual input value after saving an edit
+  it('should click send edit and check for empty input', () => {
+    const compose = getCompose(true, {
+      markdownEdited: false,
+      startEditing: true,
+      editMessageMarkdown: 'Test',
+      handleSubmitOnClickEdit: () => null,
+    });
+    const { getByTestId, getByText, rerender } = render(compose);
+
+    const input = getByTestId('messageform');
+    const saveButton = getByText(/save/i);
+
+    expect(input.value).toBe('Test');
+
+    saveButton.click();
+
+    rerender(compose);
+
+    expect(input.value).toBe('');
+  });
+
+  // Check for the actual input value after canceling an edit
+  it('should click close edit and check for empty input', () => {
+    const compose = getCompose(true, {
+      markdownEdited: false,
+      startEditing: true,
+      editMessageMarkdown: 'Test',
+      handleEditMessageClose: () => null,
+    });
+    const { getByTestId, getByText, rerender } = render(compose);
+
+    const input = getByTestId('messageform');
+    const closeButton = getByText(/close/i);
+
+    expect(input.value).toBe('Test');
+
+    closeButton.click();
+
+    rerender(compose);
+
+    expect(input.value).toBe('');
   });
 });

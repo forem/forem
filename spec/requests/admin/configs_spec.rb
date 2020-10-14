@@ -61,6 +61,12 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.health_check_token).to eq token
         end
+
+        it "sets video_encoder_key" do
+          post "/admin/config", params: { site_config: { video_encoder_key: "123abc" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.video_encoder_key).to eq("123abc")
+        end
       end
 
       describe "Authentication" do
@@ -77,6 +83,12 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { authentication_providers: enabled },
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
+        end
+
+        it "allows all authentication providers to be unset" do
+          post "/admin/config", params: { site_config: { authentication_providers: [] },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to be_empty
         end
       end
 
@@ -101,13 +113,6 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { community_member_label: name },
                                           confirmation: confirmation_message }
           expect(SiteConfig.community_member_label).to eq(name)
-        end
-
-        it "updates the community_action" do
-          action = "reading"
-          post "/admin/config", params: { site_config: { community_member_label: action },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.community_member_label).to eq(action)
         end
 
         it "updates the community_copyright_start_year" do
@@ -453,7 +458,7 @@ RSpec.describe "/admin/config", type: :request do
         end
       end
 
-      describe "Rate Limits" do
+      describe "Rate Limits and spam" do
         it "updates rate_limit_follow_count_daily" do
           expect do
             post "/admin/config", params: { site_config: { rate_limit_follow_count_daily: 3 },
@@ -473,6 +478,13 @@ RSpec.describe "/admin/config", type: :request do
             post "/admin/config", params: { site_config: { rate_limit_published_article_creation: 3 },
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
+        end
+
+        it "updates rate_limit_published_article_antispam_creation" do
+          expect do
+            post "/admin/config", params: { site_config: { rate_limit_published_article_antispam_creation: 3 },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_published_article_antispam_creation).from(1).to(3)
         end
 
         it "updates rate_limit_organization_creation" do
@@ -544,6 +556,24 @@ RSpec.describe "/admin/config", type: :request do
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_send_email_confirmation).from(2).to(3)
         end
+
+        it "updates spam_trigger_terms" do
+          spam_trigger_terms = "hey, pokemon go hack"
+          post "/admin/config", params: { site_config: { spam_trigger_terms: spam_trigger_terms },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.spam_trigger_terms).to eq(["hey", "pokemon go hack"])
+        end
+
+        it "updates recaptcha_site_key and recaptcha_secret_key" do
+          site_key = "hi-ho"
+          secret_key = "lets-go"
+          post "/admin/config", params: {
+            site_config: { recaptcha_site_key: site_key, recaptcha_secret_key: secret_key },
+            confirmation: confirmation_message
+          }
+          expect(SiteConfig.recaptcha_site_key).to eq site_key
+          expect(SiteConfig.recaptcha_secret_key).to eq secret_key
+        end
       end
 
       describe "Social Media" do
@@ -597,9 +627,16 @@ RSpec.describe "/admin/config", type: :request do
       describe "User Experience" do
         it "updates the feed_style" do
           feed_style = "basic"
-          post "/admin/config", params: { site_config: { mascot_user_id: feed_style },
+          post "/admin/config", params: { site_config: { feed_style: feed_style },
                                           confirmation: confirmation_message }
           expect(SiteConfig.feed_style).to eq(feed_style)
+        end
+
+        it "updates the feed_strategy" do
+          feed_strategy = "optimized"
+          post "/admin/config", params: { site_config: { feed_strategy: feed_strategy },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.feed_strategy).to eq(feed_strategy)
         end
 
         it "updates the brand color if proper hex" do

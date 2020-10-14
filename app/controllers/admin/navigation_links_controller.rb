@@ -1,12 +1,12 @@
 module Admin
   class NavigationLinksController < Admin::ApplicationController
     ALLOWED_PARAMS = %i[
-      name url icon display_when_signed_in
+      name url icon display_only_when_signed_in position
     ].freeze
     layout "admin"
 
     def index
-      @navigation_links = NavigationLink.order(:name)
+      @navigation_links = NavigationLink.ordered
     end
 
     def create

@@ -5,6 +5,10 @@ module Constants
         description: "Can users sign up with only email and password?",
         placeholder: ""
       },
+      allow_email_password_login: {
+        description: "Can users login with only email and password?",
+        placeholder: ""
+      },
       authentication_providers: {
         description: "How can users sign in?",
         placeholder: ""
@@ -32,10 +36,6 @@ module Constants
       campaign_url: {
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
-      },
-      community_action: {
-        description: "Used to determine the action of community e.g coding, reading, training etc.",
-        placeholder: "coding"
       },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
@@ -97,6 +97,11 @@ module Constants
         description: "Used as the site favicon",
         placeholder: "https://image.url"
       },
+      feed_strategy: {
+        description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
+        (which should only be used for 10k+ member communities)",
+        placeholder: "basic"
+      },
       feed_style: {
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
         placeholder: "basic, rich, or compact"
@@ -120,6 +125,10 @@ module Constants
       health_check_token: {
         description: "Used to authenticate with your health check endpoints.",
         placeholder: "a secure token"
+      },
+      invite_only_mode: {
+        description: "Only users invited by email can join this community.",
+        placeholder: ""
       },
       jobs_url: {
         description: "URL of the website where open positions are posted",
@@ -214,6 +223,14 @@ module Constants
         description: "Determines the mininum for the periodic email digest",
         placeholder: 2
       },
+      recaptcha_site_key: {
+        description: "Site key for Google reCAPTCHA, used for reporting abuse.",
+        placeholder: "..."
+      },
+      recaptcha_secret_key: {
+        description: "Secret key for Google reCAPTCHA, used for reporting abuse.",
+        placeholder: "..."
+      },
       right_navbar_svg_icon: {
         description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
         placeholder: "<svg ...></svg>"
@@ -221,6 +238,10 @@ module Constants
       secondary_logo_url: {
         description: "Used as the secondary logo",
         placeholder: "https://image.url"
+      },
+      spam_trigger_terms: {
+        description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
+        placeholder: "used cares near you, pokemon go hack"
       },
       shop_url: {
         description: "Used as the shop url of the community",
@@ -273,6 +294,10 @@ module Constants
       },
       twitter_secret: {
         description: "The \"API secret key\" portion of consumer keys in the Twitter developer portal.",
+        placeholder: ""
+      },
+      video_encoder_key: {
+        description: "Secret key used to allow AWS video encoding through the VideoStatesController",
         placeholder: ""
       }
       # Dynamic values ommitted: configurable_rate_limits and social_media_handles

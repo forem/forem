@@ -125,11 +125,13 @@ var instantClick
     if (newUrl) {
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 
-      var hashIndex = newUrl.indexOf('#')
-        , hashElem = hashIndex > -1
-                     && document.getElementById(newUrl.substr(hashIndex + 1))
-        , offset = 0,
-        samePage = newUrl.indexOf("samepage=true") > -1
+      var hashIndex = newUrl.indexOf('#'),
+          hashElem = hashIndex > -1 && (
+            document.getElementById(newUrl.substr(hashIndex + 1)) ||
+            document.querySelector(`[name=${newUrl.substr(hashIndex + 1)}].anchor`)
+          ),
+          offset = 0,
+          samePage = newUrl.indexOf("samepage=true") > -1;
 
       if (hashElem) {
         while (hashElem.offsetParent) {

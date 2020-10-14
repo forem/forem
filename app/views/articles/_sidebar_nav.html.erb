@@ -24,70 +24,21 @@
     </a>
   <% end %>
 
-  <% if user_signed_in? %>
-    <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
-      Reading list <span id="reading-list-count" class="crayons-indicator"></span>
-    </a>
-  <% end %>
-  <a href="<%= listings_path %>" class="crayons-link crayons-link--block">
-    <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
-    Listings
-  </a>
-  <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
-    <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
-    Podcasts
-  </a>
-  <a href="<%= videos_path %>" class="crayons-link crayons-link--block">
-    <%= inline_svg_tag("twemoji/camera.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Videos") %>
-    Videos
-  </a>
-  <a href="<%= tags_path %>" class="crayons-link crayons-link--block">
-    <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
-    Tags
-  </a>
-
-  <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
-
-  <div class="hidden" id="main-nav-more">
-    <a href="/code-of-conduct" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Code of Conduct") %>
-      Code of Conduct
-    </a>
-    <a href="/faq" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/bulb.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
-      FAQ
-    </a>
-    <% if SiteConfig.shop_url.present? %>
-    <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/shopping.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Shop") %>
-      <%= community_name %> Shop
-    </a>
+  <div class="sidebar-navigation-links">
+    <% NavigationLink.ordered[0..4].each do |link| %>
+      <%= render "articles/sidebar_nav_link", link: link %>
     <% end %>
-    <a href="/sponsors" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sponsors") %>
-      Sponsors
-    </a>
-    <a href="/about" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("rainbowdev.svg", aria: true, width: 24, height: 24, class: "crayons-icon crayons-icon--default p-1", title: "About") %>
-      About
-    </a>
-    <a href="/privacy" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/smart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Privacy policy") %>
-      Privacy policy
-    </a>
-    <a href="/terms" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/look.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Terms of use") %>
-      Terms of use
-    </a>
-    <a href="/contact" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/contact.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Contact") %>
-      Contact
-    </a>
-    <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
-      <%= render partial: "layouts/social_media" %>
-    </div>
+
+    <% if NavigationLink.all.length > 5 %>
+      <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
+
+      <div class="hidden" id="main-nav-more">
+        <% NavigationLink.ordered[5..].each do |link| %>
+          <%= render "articles/sidebar_nav_link", link: link %>
+        <% end %>
+      </div>
   </div>
+  <% end %>
 </nav>
 
 <nav class="sidebar-tags-browser mb-6 overflow-y-auto scrolling-touch" aria-label="Secondary sidebar nav">
