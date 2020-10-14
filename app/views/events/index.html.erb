@@ -28,9 +28,9 @@
     <% end %>
 
     <% if @events.none? %>
-      <h3 class="mt-0 color-base-70">
+      <div class="crayons-notice">
         There are no upcoming events currently scheduled
-      </h3>
+      </div>
     <% end %>
 
     <% if @past_events.any? %>
