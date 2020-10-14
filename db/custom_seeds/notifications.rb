@@ -379,10 +379,11 @@ markdown = <<~MARKDOWN
   #{Faker::Hipster.paragraph(sentence_count: 2)}
 MARKDOWN
 followed_org_article = Article.create!(
-    body_markdown: markdown,
+  body_markdown: markdown,
   featured: true,
   show_comments: true,
   user: org.users.first,
+  organization: org,
 )
 Notifications::NotifiableAction::Send.call(followed_org_article, "Published")
 
