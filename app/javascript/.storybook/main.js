@@ -10,6 +10,16 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-a11y',
     '@storybook/addon-notes/register-panel',
+    {
+      name: '@storybook/addon-storysource',
+      loaderOptions: {
+        prettierConfig: {
+          singleQuote: true,
+          trailingComma: 'all',
+          printWidth: 80,
+        },
+      },
+    },
   ],
   webpackFinal: async (config, { configType }) => {
     config.module.rules.push({
