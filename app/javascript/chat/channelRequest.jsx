@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
-  <div className="activesendrequest">
+  <div>
     <div className="joining-message">
       <h2>Hey {data.user.name} !</h2>
       <h3>You are not a member of this group yet. Send a request to join.</h3>

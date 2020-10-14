@@ -130,7 +130,7 @@ export default class RequestManager extends Component {
     const { channelJoiningRequests, userInvitations } = this.state;
 
     return (
-      <div className="activesendrequest">
+      <div>
         <div className="p-4">
           <HeaderSection />
           {channelJoiningRequests.length <= 0 && userInvitations.length <= 0 ? (
