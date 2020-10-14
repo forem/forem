@@ -53,10 +53,12 @@ class User < ApplicationRecord
       # All new users should automatically have a profile
       after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
 
+      # Getters and setters for unmapped profile attributes
       (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
         delegate column, "#{column}=", to: :profile
       end
 
+      # Getters and setters for mapped profile attributes
       Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
         define_method(user_attribute) { profile.public_send(profile_attribute) }
         define_method("#{user_attribute}=") do |value|
