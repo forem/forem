@@ -134,15 +134,15 @@ Notification.create!(
 )
 
 # one follower notification
-follow = users[6].follow(user)
+follow = users[-1].follow(user)
 Notification.create!(
   notifiable: follow,
   action: "Follow",
   user: user,
   json_data: {
-    user: Notifications.user_data(users[6]),
+    user: Notifications.user_data(users[-1]),
     aggregated_siblings: [
-      Notifications.user_data(users[6])
+      Notifications.user_data(users[-1])
     ]
   }
 )
@@ -388,9 +388,9 @@ Notifications::NotifiableAction::Send.call(followed_org_article, "Published")
 
 puts "#{NUM_TOTAL_STEPS}/#{NUM_TOTAL_STEPS} seeding milestone notifications..."
 # View and reaction milestone notifications
-your_article = user.articles.last
+your_article = Article.find_by(user: user)
 your_article.update(page_views_count: 1025, public_reactions_count: 65)
 Notifications::Milestone::Send.call("View", your_article)
 Notifications::Milestone::Send.call("Reaction", your_article)
 
-puts "Notification seed complete"
+puts "\n\nNotification seed complete"
