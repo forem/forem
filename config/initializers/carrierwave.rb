@@ -33,7 +33,10 @@ else
   CarrierWave.configure do |config|
     config.storage = :file
     config.enable_processing = !Rails.env.test?
-    asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/localimages" if Rails.env.production?
-    config.asset_host = asset_host
+    config.asset_host = if Rails.env.production?
+                          "https://#{ApplicationConfig['APP_DOMAIN']}/localimages"
+                        elsif Images::Optimizer.imgproxy_enabled?
+                          "http://#{ApplicationConfig['APP_DOMAIN']}"
+                        end
   end
 end
