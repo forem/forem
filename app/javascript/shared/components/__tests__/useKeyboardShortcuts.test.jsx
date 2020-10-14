@@ -41,7 +41,7 @@ describe('Keyboard shortcuts for components', () => {
       );
       window.dispatchEvent(event);
 
-      exprect(keyPress).not.toHaveBeenCalledTime(1);
+      expect(keyPress).not.toHaveBeenCalledTime(1);
     });
 
     it('should not fire a function when keydown is detected', () => {
@@ -57,7 +57,7 @@ describe('Keyboard shortcuts for components', () => {
       );
       eventTarget.dispatchEvent(event);
 
-      exprect(keyPress).not.toHaveBeenCalled();
+      expect(keyPress).not.toHaveBeenCalled();
     });
 
     it('should remove event listener when the hook is unmounted', () => {
