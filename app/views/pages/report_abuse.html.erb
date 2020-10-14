@@ -13,7 +13,7 @@
 <% end %>
 
 <div class="crayons-layout crayons-layout--limited">
-  <div class="crayons-card text-styles text-padding">
+  <main class="crayons-card text-styles text-padding" id="articles-list">
     <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Report Abuse</h1>
 
     <p>
@@ -24,5 +24,5 @@
     <div class="crayons-card crayons-card--secondary p-4 m:p-6">
       <%= render "feedback_messages/form", feedback_message: @feedback_message %>
     </div>
-  </div>
+  </main>
 </div>

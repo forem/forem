@@ -21,11 +21,11 @@
 <% if @page.template == "contained" %>
 
   <div class="crayons-layout crayons-layout--limited">
-    <div class="crayons-card text-styles text-padding">
+    <main class="crayons-card text-styles text-padding" id="articles-list">
       <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= @page.title %></h1>
 
       <%= @page.processed_html.html_safe %>
-    </div>
+    </main>
   </div>
 <% else %>
   <%= @page.processed_html.html_safe %>
