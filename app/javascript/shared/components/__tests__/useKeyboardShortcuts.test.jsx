@@ -36,9 +36,9 @@ describe('Keyboard shortcuts for components', () => {
           KeyK: keyPress
         }, document),
       );
-      window.dispatchEvent(event);
+      document.dispatchEvent(event);
 
-      expect(keyPress).toHaveBeenCalledTime(1);
+      expect(keyPress).toHaveBeenCalledTimes(1);
     });
 
     it('should not fire a function when keydown is detected in elemement', () => {
@@ -61,11 +61,13 @@ describe('Keyboard shortcuts for components', () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
       HTMLDocument.prototype.removeEventListener = jest.fn();
 
-      const { result } = renderHook(() =>
+      const { unmount, result } = renderHook(() =>
         useKeyboardShortcuts({
           KeyK: () => { }
         }, document),
       );
+      
+      unmount();
 
       expect(HTMLDocument.prototype.addEventListener).toHaveBeenCalledTimes(1);
       expect(HTMLDocument.prototype.removeEventListener).toHaveBeenCalledTimes(1);
@@ -84,8 +86,6 @@ describe('Keyboard shortcuts for components', () => {
     });
 
     it('should add event listener to window', () => {
-      const event = new KeyboardEvent('keydown', { code: "KeyK" });
-
       HTMLDocument.prototype.addEventListener = jest.fn();
 
       const { result } = renderHook(() =>
@@ -93,7 +93,6 @@ describe('Keyboard shortcuts for components', () => {
           KeyK: () => { }
         }} />,
       );
-      window.dispatchEvent(event);
 
       expect(HTMLDocument.prototype.addEventListener).toHaveBeenCalledTimes(1);
     });
@@ -103,7 +102,7 @@ describe('Keyboard shortcuts for components', () => {
       HTMLDocument.prototype.removeEventListener = jest.fn();
 
       const { unmount, result } = renderHook(() =>
-        <KeyboardShortcuts shortcuts={{
+        <KeyboardShortcuts eventTarget={document} shortcuts={{
           KeyK: () => { }
         }} />,
       );
