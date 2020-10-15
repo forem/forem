@@ -5,6 +5,19 @@ import { KeyboardShortcuts, useKeyboardShortcuts } from '../useKeyboardShortcuts
 
 describe('Keyboard shortcuts for components', () => {
   describe('useKeyboardShortcuts', () => {
+    it('should fire a function when keydown is detected', () => {
+      const shortcut = {
+        KeyK: jest.fn()
+      };
+
+      renderHook(() =>
+        useKeyboardShortcuts(shortcut, document),
+      );
+      fireEvent.keyDown(document, { code: "KeyK" });
+
+      expect(shortcut.KeyK).toHaveBeenCalledTimes(1);
+    });
+    
     it('should not add event listener if shortcut object is empty', () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
 
@@ -25,19 +38,6 @@ describe('Keyboard shortcuts for components', () => {
       );
 
       expect(HTMLDocument.prototype.addEventListener).toHaveBeenCalledTimes(1);
-    });
-
-    it('should fire a function when keydown is detected', () => {
-      const shortcut = {
-        KeyK: jest.fn()
-      };
-
-      renderHook(() =>
-        useKeyboardShortcuts(shortcut, document),
-      );
-      fireEvent.keyDown(document, { code: "KeyK" });
-
-      expect(shortcut.KeyK).toHaveBeenCalledTimes(1);
     });
 
     it('should not fire a function when keydown is detected in element', () => {
