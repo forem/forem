@@ -86,7 +86,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       visit "/#{user.username}"
     end
 
-    it "shows all proper eleiments", :aggregate_failures, js: true do
+    it "shows all proper elements", :aggregate_failures, js: true do
       shows_header
       shows_articles
       shows_comments
