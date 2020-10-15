@@ -71,7 +71,7 @@ describe('Keyboard shortcuts for components', () => {
   });
 
   describe('<KeyboardShortcuts />', () => {
-    it('should not add event listener if shortcut object is empty', () => {
+    it('should not add event listener if shortcut object is empty', async () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
 
       render(() =>
@@ -81,7 +81,7 @@ describe('Keyboard shortcuts for components', () => {
       expect(HTMLDocument.prototype.addEventListener).not.toHaveBeenCalled();
     });
 
-    it('should add event listener to window', () => {
+    it('should add event listener to window', async () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
 
       render(() =>
@@ -91,7 +91,7 @@ describe('Keyboard shortcuts for components', () => {
       expect(HTMLDocument.prototype.addEventListener).toHaveBeenCalledTimes(1);
     });
 
-    it('should remove event listener when the hook is unmounted', () => {
+    it('should remove event listener when the hook is unmounted', async () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
       HTMLDocument.prototype.removeEventListener = jest.fn();
 
