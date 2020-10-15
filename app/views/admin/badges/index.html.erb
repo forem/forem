@@ -1,10 +1,13 @@
-<div class="col">
-    <div class="row justify-content-end">
-      <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>
-      <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, style: "margin-left: 20px;", class: "btn btn-primary" %>
-    </div>
+<header class="flex mb-6">
+  <h2 class="crayons-title">Badges</h2>
+
+  <div class="ml-auto">
+    <%= link_to "Create Badge", new_admin_badge_path, class: "btn btn-primary" %>
+    <%= link_to "Award Badge", admin_badge_achievements_award_badges_path, style: "margin-left: 20px;", class: "btn btn-primary" %>
   </div>
-<table class="table">
+</header>
+
+<table class="crayons-table" width="100%">
   <thead>
     <tr>
       <th scope="col">Title</th>
@@ -12,16 +15,14 @@
       <th scope="col">Badge Image</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="crayons-card">
     <% @badges.each do |badge| %>
       <tr>
         <td><%= link_to badge.title, edit_admin_badge_path(badge.id) %></td>
-        <h5>
-          <td class="justify-content-center"><%= badge.slug %></td>
-          <td class="justify-content-center">
-            <img class="mx-auto mt-3" width="40" height="40" src="<%= badge.badge_image %>" alt="badge image">
-          </td>
-        </h5>
+        <td class="justify-content-center"><%= badge.slug %></td>
+        <td class="justify-content-center">
+          <img class="mx-auto mt-3" width="40" height="40" src="<%= badge.badge_image %>" alt="badge image">
+        </td>
       </tr>
     <% end %>
   </tbody>

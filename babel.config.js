@@ -1,4 +1,4 @@
-/* global module */
+/* eslint-env node */
 
 module.exports = function (api) {
   var validEnv = ['development', 'test', 'production'];
@@ -54,7 +54,6 @@ module.exports = function (api) {
         '@babel/plugin-transform-react-jsx',
         {
           pragma: 'h',
-          pragmaFrag: '"Fragment"',
         },
       ],
     ].filter(Boolean),

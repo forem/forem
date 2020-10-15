@@ -41,6 +41,10 @@ export default class ReactionController extends Controller {
     this.updateReaction(this.reactionId, this.invalidStatus);
   }
 
+  updateReactionConfirmed() {
+    this.updateReaction(this.reactionId, this.confirmedStatus);
+  }
+
   reactableUserCheck() {
     if (this.reactableType === 'user') {
       // eslint-disable-next-line no-restricted-globals

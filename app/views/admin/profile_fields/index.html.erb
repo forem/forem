@@ -1,22 +1,5 @@
-<div class="crayons-card grid p-6 mb-6 gap-1">
-  <%= form_for [:admin, ProfileField.new], html: { class: "inline-form" } do |form| %>
-    <div class="form-group">
-      <%= render "form", form: form %>
-      <%= form.submit class: "btn btn-primary" %>
-    </div>
-  <% end %>
+<main id="profileFields">
+  <%= render "add_group_modal" %>
+  <%= render "grouped_profile_fields" %>
+  <%= render "ungrouped_profile_fields" %>
 </div>
-
-<% @profile_fields.each do |group, fields| %>
-  <h3>Group: <%= group %></h3>
-
-  <% fields.each do |field| %>
-    <div class="crayons-card grid p-6 mb-6 gap-1">
-      <%= form_for [:admin, field] do |form| %>
-        <%= render "form", form: form %>
-        <%= form.submit class: "btn btn-primary" %>
-      <% end %>
-      <%= button_to "Delete", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
-    </div>
-  <% end %>
-<% end %>

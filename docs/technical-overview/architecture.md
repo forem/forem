@@ -4,7 +4,7 @@
 
 Ruby on Rails is a web framework heavy on conventions over configuration. All
 else equal, we should try to follow Rails convention. We are currently on
-version 5.2.3, due for an upgrade to 6.x.x.
+version 6.x.x.
 
 ## We cache many content pages on the edge
 
@@ -34,7 +34,7 @@ rule, you should avoid relying on JavaScript for layout when working on Forem.
 
 We use [PreactJS](/frontend/preact), a lightweight alternative to ReactJS, and
 we try to reduce our bundle size with
-[dynamic imports](frontend/dynamic-imports).
+[dynamic imports](/frontend/dynamic-imports).
 
 ## Service workers and shell architecture
 
@@ -111,6 +111,12 @@ Articles are the primary form of user generated content in the application. An
 Article has many comments and taggings through the acts-as-taggable gem, belongs
 to a single user (and possibly an organization), and is the core unit of
 content.
+
+## Collections (or series)
+
+Although the source code refers to them as "collections" groups of articles are
+referred to, throughout the user interface, as "series". They represent a
+collection of articles relating to the same topic, indeed, a series.
 
 ## Comments
 

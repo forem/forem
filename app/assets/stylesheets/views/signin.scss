@@ -1,0 +1,221 @@
+@import '../variables';
+@import '../config/import';
+
+// Authentication Card in Feed
+.authentication-feed {
+  &__card {
+    display: grid;
+    grid-gap: var(--su-6);
+    padding: var(--su-6);
+    margin: var(--su-3);
+
+    @include generate-box(
+      $level: 1,
+      $bg: #f5f6fe,
+      $border: var(--accent-brand),
+      $color: var(--card-color)
+    );
+
+    @media (min-width: $breakpoint-s) {
+      padding: var(--su-7);
+      margin: 0 0 var(--su-3) 0;
+    }
+  }
+
+  &__container {
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      grid-gap: var(--su-7);
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  &__image-container {
+    width: var(--su-8);
+    height: var(--su-8);
+    margin-bottom: var(--su-2);
+
+    @media (min-width: $breakpoint-s) {
+      height: 80px;
+      width: 80px;
+    }
+  }
+
+  &__image {
+    border-radius: var(--radius);
+    transform: rotate(-10deg);
+    height: auto;
+    width: 100%;
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-2xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+  }
+
+  &__actions {
+    display: grid;
+    grid-gap: var(--su-1);
+
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      flex-direction: column;
+      width: max-content;
+      justify-self: center;
+    }
+  }
+}
+
+.authentication-widget {
+  &__container {
+    padding: var(--su-4);
+  }
+
+  &__image-container {
+    width: var(--su-8);
+    height: var(--su-8);
+    margin-bottom: var(--su-2);
+  }
+
+  &__image {
+    border-radius: var(--radius);
+    transform: rotate(-10deg);
+    height: auto;
+    width: 100%;
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-2xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+    margin-bottom: var(--su-4);
+  }
+
+  &__actions {
+    display: grid;
+    grid-gap: var(--su-1);
+    width: 100%;
+
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      flex-direction: column;
+      justify-self: center;
+    }
+  }
+}
+
+// Registration View
+.registration {
+  border-radius: unset;
+  padding: var(--su-6);
+
+  @media (min-width: $breakpoint-s) {
+    border-radius: var(--radius);
+    padding: var(--su-8);
+    margin: 0 auto;
+    width: $breakpoint-s;
+  }
+
+  &__content {
+    margin-bottom: var(--su-6);
+    text-align: center;
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-2xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-3xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+    font-size: var(--fs-base);
+  }
+
+  &__hr {
+    margin-bottom: var(--su-4);
+    position: relative;
+    text-align: center;
+
+    &:after {
+      border: 1px solid var(--base-20);
+      content: '';
+      display: block;
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      z-index: 0;
+      border-radius: var(--radius);
+    }
+  }
+
+  &__hr-label {
+    position: relative;
+    font-size: var(--fs-s);
+    color: var(--card-color-secondary);
+    background: var(--card-bg);
+    padding: 0 var(--su-2);
+    z-index: 1;
+    display: inline-block;
+    max-width: 75%;
+  }
+
+  &__actions-providers {
+    margin-bottom: var(--su-4);
+    display: grid;
+    grid-gap: var(--su-2);
+    width: 100%;
+  }
+
+  &__footer {
+    font-size: var(--fs-s);
+    font-family: var(--ff-monospace);
+    padding-top: var(--su-4);
+    padding-bottom: var(--su-4);
+    text-align: center;
+    color: var(--base-60);
+  }
+
+  &__footer-content {
+    display: flex;
+    justify-content: center;
+
+    svg {
+      margin-left: var(--su-2);
+    }
+  }
+
+  &__error-notice {
+    color: var(--accent-danger-darker);
+    font-size: var(--fs-base);
+    padding: var(--su-2);
+    margin: var(--su-2);
+
+    @media (min-width: $breakpoint-s) {
+      margin: var(--su-4) auto 0;
+      width: $breakpoint-s;
+    }
+  }
+}

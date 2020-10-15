@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
   <div className="activechatchannel__activeArticle activesendrequest">
@@ -23,20 +24,16 @@ const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
     </div>
     <div className="send-request">
       {data.channel.status !== 'joining_request' ? (
-        <button
-          type="button"
-          className="cta"
+        <Button
+          variant="primary"
           onClick={handleJoiningRequest}
           data-channel-id={data.channel.id}
         >
           {' '}
           Join {data.channel.name}{' '}
-        </button>
+        </Button>
       ) : (
-        <button type="button" className="cta">
-          {' '}
-          Requested Already{' '}
-        </button>
+        <Button variant="secondary"> Requested Already </Button>
       )}
     </div>
   </div>

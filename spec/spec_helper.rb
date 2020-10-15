@@ -1,3 +1,4 @@
+require "dotenv/load"
 require "simplecov"
 require "zonebie/rspec"
 

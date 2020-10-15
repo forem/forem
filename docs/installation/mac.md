@@ -218,14 +218,14 @@ your local Elasticsearch installation, for example:
    - For any key that you wish to enter/replace, follow the steps below.
 
      1. Create `.env` by copying from the provided template (i.e. with bash:
-        `cp config/.env_sample .env`). This is a personal file that is ignored
-        in git.
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      2. Obtain the development variable and apply the key you wish to
         enter/replace. i.e.:
 
      ```shell
-     export GITHUB_KEY="SOME_REAL_SECURE_KEY_HERE"
-     export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
    - If you are missing `ENV` variables on bootup, the

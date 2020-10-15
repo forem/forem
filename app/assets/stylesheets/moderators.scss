@@ -14,10 +14,6 @@
   border-radius: var(--radius) var(--radius) 0 0;
   border-bottom: 2px solid var(--base-10);
   padding: var(--su-6) var(--su-4);
-
-  .tag-view {
-    color: var(--base-90);
-  }
 }
 
 .mod-index-list-header {
@@ -163,13 +159,12 @@
 }
 
 .mod-actions-menu-btn {
-  transition: 0.3s all ease;
   position: fixed;
   bottom: var(--su-7);
+  margin-bottom: env(safe-area-inset-bottom);
   right: var(--su-7);
   z-index: 201;
   cursor: pointer;
-  transition: 0.3s all ease;
   border-radius: 50px;
 
   @media (max-width: $breakpoint-m) {
@@ -420,6 +415,16 @@
     border-top: 1px solid var(--base-20);
     overflow-y: auto;
 
+    div.unpublish-article {
+      background: inherit;
+      border: none;
+      padding: var(--su-3) var(--su-4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: auto;
+    }
+
     button.other-things-btn {
       background: inherit;
       border: none;
@@ -520,7 +525,7 @@
         font-size: var(--fs-base);
         text-align: left;
         color: var(--base-80);
-        font-family: var(--ff-accent);
+        font-family: var(--ff-monospace);
         .num-sign {
           color: var(--base-40);
           padding-left: 2px;

@@ -11,7 +11,7 @@ module Admin
         body_markdown: welcome_thread_content,
         user: User.dev_account,
       )
-      redirect_to URI.parse(welcome_thread.path).path + "/edit"
+      redirect_to "#{URI.parse(welcome_thread.path).path}/edit"
     end
 
     private
@@ -25,7 +25,7 @@ module Admin
         tags: welcome
         ---
 
-        Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
+        Hey there! Welcome to #{SiteConfig.community_name}!
 
         ![WELCOME TO THE INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 

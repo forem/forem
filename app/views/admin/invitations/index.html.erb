@@ -1,17 +1,15 @@
-<div class="row my-3">
-  <div class="col">
-    <ul class="nav nav-pills">
-      <li class="nav-item">
-        <%= link_to "Registered Users", admin_users_path, class: "nav-link" %>
-      </li>
-      <li class="nav-item">
-        <%= link_to "New", new_admin_invitation_path, class: "nav-link" %>
-      </li>
-    </ul>
-  </div>
+<div class="mb-6">
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <%= link_to "Registered Users", admin_users_path, class: "nav-link" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "New", new_admin_invitation_path, class: "nav-link" %>
+    </li>
+  </ul>
 </div>
 
-<table class="table table-hover">
+<table class="crayons-table" width="100%">
   <thead>
     <tr>
       <th scope="col">User</th>
@@ -20,7 +18,7 @@
       <th scope="col">Email</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="crayons-card">
     <% @invitations.each do |user| %>
     <tr>
       <td><%= link_to user.username, admin_user_path(user) %></td>

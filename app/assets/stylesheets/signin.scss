@@ -17,6 +17,7 @@
 
     @media (min-width: $breakpoint-s) {
       padding: var(--su-7);
+      margin: 0 0 var(--su-3) 0;
     }
   }
 
@@ -29,18 +30,22 @@
     }
   }
 
-  &__logo {
-    border-radius: var(--radius);
+  &__image-container {
+    width: var(--su-8);
     height: var(--su-8);
     margin-bottom: var(--su-2);
-    transform: rotate(-10deg);
-    width: var(--su-8);
 
     @media (min-width: $breakpoint-s) {
-      margin: 0 auto;
       height: 80px;
       width: 80px;
     }
+  }
+
+  &__image {
+    border-radius: var(--radius);
+    transform: rotate(-10deg);
+    height: auto;
+    width: 100%;
   }
 
   &__title {
@@ -70,6 +75,51 @@
   }
 }
 
+.authentication-widget {
+  &__container {
+    padding: var(--su-4);
+  }
+
+  &__image-container {
+    width: var(--su-8);
+    height: var(--su-8);
+    margin-bottom: var(--su-2);
+  }
+
+  &__image {
+    border-radius: var(--radius);
+    transform: rotate(-10deg);
+    height: auto;
+    width: 100%;
+  }
+
+  &__title {
+    color: var(--card-color);
+    font-size: var(--fs-xl);
+    line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-2xl);
+    }
+  }
+
+  &__description {
+    color: var(--card-color-secondary);
+    margin-bottom: var(--su-4);
+  }
+
+  &__actions {
+    display: grid;
+    grid-gap: var(--su-1);
+    width: 100%;
+
+    @media (min-width: $breakpoint-s) {
+      display: flex;
+      flex-direction: column;
+      justify-self: center;
+    }
+  }
+}
 #page-content.registrations {
   .devise-container {
     min-height: 480px;
@@ -77,7 +127,7 @@
     h1 {
       font-weight: 300;
       text-align: center;
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       font-size: 30px;
       @media screen and (min-width: 520px) {
         font-size: 50px;
@@ -91,7 +141,7 @@
       text-align: center;
       padding: 20px 0px;
       border: 1px solid rgb(245, 245, 245);
-      font-family: var(--ff-default);
+      font-family: var(--ff-sans-serif);
       color: rgb(86, 98, 103);
       border-radius: 3px;
       font-size: 22px;

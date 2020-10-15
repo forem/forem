@@ -18,7 +18,6 @@ module Api
         public_reactions_count created_at edited_at last_comment_at published
         updated_at video_thumbnail_url
       ].freeze
-      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
         *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html
@@ -128,7 +127,7 @@ module Api
       end
 
       def validate_article_param_is_hash
-        return if params.to_unsafe_h.dig(:article).is_a?(Hash)
+        return if params.to_unsafe_h[:article].is_a?(Hash)
 
         message = "article param must be a JSON object. You provided article as a #{params[:article].class.name}"
         render json: { error: message, status: 422 }, status: :unprocessable_entity

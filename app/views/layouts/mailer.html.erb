@@ -9,11 +9,9 @@
   <% if @user %>
     <tr>
       <td style="padding:3% 12% 2% 4%;font-size:18px;line-height:22px;color:#7d7d7d">
-        <% if @user.twitter_username.blank? %>
-          Reminder: You used <b>GitHub</b> to authenticate your account, so use that to sign in if prompted.
-        <% else %>
-          Reminder: You used <b>Twitter</b> to authenticate your account, so use that to sign in if prompted.
-        <% end %>
+        <% providers = authentication_enabled_providers_for_user(@user).map(&:official_name) %>
+        Reminder: You used <b><%= providers.to_sentence %></b> to authenticate your account, so use <%= providers.size == 1 ? "that" : "any of those" %> to sign in if prompted.
+
         <br /><br />
         <div style="font-size:0.78em">
           <% if @unsubscribe %>

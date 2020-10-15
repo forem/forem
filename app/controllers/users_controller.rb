@@ -2,11 +2,12 @@ class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
   before_action :set_user, only: %i[
-    update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_identity
+    update update_language_settings confirm_destroy request_destroy full_delete remove_identity
   ]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
+  before_action :initialize_stripe, only: %i[edit]
 
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
@@ -69,19 +70,6 @@ class UsersController < ApplicationController
         redirect_to "/settings"
       end
     end
-  end
-
-  def update_twitch_username
-    set_tabs("integrations")
-    new_twitch_username = params[:user][:twitch_username]
-    if @user.twitch_username != new_twitch_username
-      if @user.update(twitch_username: new_twitch_username)
-        @user.touch(:profile_updated_at)
-        Streams::TwitchWebhookRegistrationWorker.perform_async(@user.id) if @user.twitch_username?
-      end
-      flash[:settings_notice] = "Your Twitch username was successfully updated."
-    end
-    redirect_to "/settings/#{@tab}"
   end
 
   def update_language_settings
@@ -265,8 +253,6 @@ class UsersController < ApplicationController
       handle_integrations_tab
     when "billing"
       handle_billing_tab
-    when "account"
-      handle_account_tab
     when "response-templates"
       handle_response_templates_tab
     else
@@ -332,17 +318,6 @@ class UsersController < ApplicationController
     return if stripe_code == "special"
 
     @customer = Payments::Customer.get(stripe_code) if stripe_code.present?
-  end
-
-  def handle_account_tab
-    community_name = ApplicationConfig["COMMUNITY_NAME"]
-    @email_body = <<~HEREDOC
-      Hello #{community_name} Team,\n
-      I would like to delete my account.\n
-      You can keep any comments and discussion posts under the Ghost account.\n
-      Regards,
-      YOUR-#{community_name}-USERNAME-HERE
-    HEREDOC
   end
 
   def handle_response_templates_tab

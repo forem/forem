@@ -15,7 +15,6 @@ class LanguageDetector
   end
 
   def text
-    @article.title + ". " +
-      FrontMatterParser::Parser.new(:md).call(@article.body_markdown).content.split("`")[0]
+    "#{@article.title}. #{FrontMatterParser::Parser.new(:md).call(@article.body_markdown).content.split('`')[0]}"
   end
 end

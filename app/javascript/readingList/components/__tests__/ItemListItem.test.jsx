@@ -9,7 +9,7 @@ function getItem() {
     reactable: {
       path: '/article',
       title: 'Title',
-      published_date_string: 'Jun 29',
+      readable_publish_date_string: 'Jun 29',
       reading_time: 1,
       user: {
         username: 'bob',
@@ -52,7 +52,7 @@ describe('<ItemListItem />', () => {
   it('renders a profile_image', () => {
     const { getByAltText } = render(<ItemListItem item={getItem()} />);
 
-    expect(getByAltText(/Profile Pic/i).getAttribute('src')).toBe(
+    expect(getByAltText(/Bob/i).getAttribute('src')).toBe(
       'https://dummyimage.com/90x90',
     );
   });

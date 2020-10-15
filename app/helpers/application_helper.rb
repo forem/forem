@@ -76,10 +76,20 @@ module ApplicationHelper
     "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
-  def cloudinary(url, width = "500", quality = 80, format = "auto")
-    image_url = url.presence || asset_path("#{rand(1..40)}.png")
+  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto", random_fallback: true)
+    fallback_image = asset_path("#{rand(1..40)}.png") if random_fallback
 
-    Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: format)
+    return unless (image_url = url.presence || fallback_image)
+
+    Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: fetch_format)
+  end
+
+  def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
+    image_options[:width] ||= optimizer_options[:width]
+    image_options[:height] ||= optimizer_options[:height]
+    updated_image_url = Images::Optimizer.call(image_url, optimizer_options)
+
+    image_tag(updated_image_url, image_options)
   end
 
   def cloud_cover_url(url)
@@ -96,7 +106,11 @@ module ApplicationHelper
     end
   end
 
-  def any_selfserve_auth?
+  def invite_only_mode?
+    SiteConfig.invite_only_mode?
+  end
+
+  def any_enabled_auth_providers?
     authentication_enabled_providers.any?
   end
 
@@ -124,7 +138,7 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     tag :button, # Yikes
-        class: "crayons-btn follow-action-button " + classes,
+        class: "crayons-btn follow-action-button #{classes}",
         data: {
           :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
@@ -165,25 +179,25 @@ module ApplicationHelper
   end
 
   def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"] # rubocop:disable Rails/HelperInstanceVariable
+    @community_name ||= SiteConfig.community_name
   end
 
   def community_qualified_name
     "#{community_name} Community"
   end
 
-  def cache_key_heroku_slug(path)
-    heroku_slug_commit = ApplicationConfig["HEROKU_SLUG_COMMIT"]
-    return path if heroku_slug_commit.blank?
+  def release_adjusted_cache_key(path)
+    release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
+    return path if release_footprint.blank?
 
-    "#{path}-#{heroku_slug_commit}"
+    "#{path}-#{params[:locale]}-#{release_footprint}"
   end
 
   def copyright_notice
-    start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
+    start_year = SiteConfig.community_copyright_start_year.to_s
     current_year = Time.current.year.to_s
     return start_year if current_year == start_year
-    return current_year if start_year.strip.length.zero?
+    return current_year if start_year.strip.length < 4 # 978 is not a valid year!
 
     "#{start_year} - #{current_year}"
   end
@@ -204,6 +218,30 @@ module ApplicationHelper
 
   def community_members_label
     SiteConfig.community_member_label.pluralize
+  end
+
+  def meta_keywords_default
+    return if SiteConfig.meta_keywords[:default].blank?
+
+    tag.meta name: "keywords", content: SiteConfig.meta_keywords[:default]
+  end
+
+  def meta_keywords_article(article_tags = nil)
+    return if SiteConfig.meta_keywords[:article].blank?
+
+    content = if article_tags.present?
+                "#{article_tags}, #{SiteConfig.meta_keywords[:article]}"
+              else
+                SiteConfig.meta_keywords[:article]
+              end
+
+    tag.meta name: "keywords", content: content
+  end
+
+  def meta_keywords_tag(tag_name)
+    return if SiteConfig.meta_keywords[:tag].blank?
+
+    tag.meta name: "keywords", content: "#{SiteConfig.meta_keywords[:tag]}, #{tag_name}"
   end
 
   def app_url(uri = nil)
@@ -247,10 +285,10 @@ module ApplicationHelper
   def admin_config_label(method, content = nil)
     content ||= raw("<span>#{method.to_s.humanize}</span>")
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-      content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+      content = safe_join([content, raw("<span class='crayons-indicator crayons-indicator--critical'>Required</span>")])
     end
 
-    tag.label(content, class: "site-config__label", for: "site_config_#{method}")
+    tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
   end
   # rubocop:enable Rails/OutputSafety
 end

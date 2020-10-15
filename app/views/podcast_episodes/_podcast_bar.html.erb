@@ -5,17 +5,9 @@
   </audio>
   <div id="progressBar" class="audio-player-display">
     <a href="/<%= @podcast.slug %>/<%= @episode.slug %>">
-      <%= cl_image_tag(@episode.image_url || @podcast.image_url,
-                       type: "fetch",
-                       crop: "fill",
-                       width: 420,
-                       height: 420,
-                       quality: "auto",
-                       sign_url: true,
-                       flags: "progressive",
-                       fetch_format: "auto",
-                       id: "episode-profile-image",
-                       alt: @episode.title) %>
+      <%= optimized_image_tag(@episode.image_url || @podcast.image_url,
+                              optimizer_options: { crop: "fill", width: 420, height: 420 },
+                              image_options: { id: "episode-profile-image", alt: @episode.title }) %>
       <img id="animated-bars" src="<%= asset_path("animated-bars.gif") %>" alt="animated volume bars">
     </a>
     <span id="barPlayPause">

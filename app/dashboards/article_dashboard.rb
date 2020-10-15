@@ -10,8 +10,7 @@ class ArticleDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     user: Field::BelongsTo,
     user_id: UserIdField,
-    second_user_id: Field::Number,
-    third_user_id: Field::Number,
+    co_author_ids: Field::Select.with_options(collection: []),
     organization: Field::BelongsTo,
     id: Field::Number,
     title: Field::String,
@@ -65,8 +64,6 @@ class ArticleDashboard < Administrate::BaseDashboard
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
     user_id
-    second_user_id
-    third_user_id
     organization
     title
     search_optimized_title_preamble
