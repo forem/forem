@@ -398,7 +398,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "has mod-action-button" do
         get "/t/#{tag.name}"
-        expect(response.body).to include('<a class="cta mod-action-button"')
+        expect(response.body).to include('<a class="crayons-btn mod-action-button"')
       end
 
       it "does not render pagination" do
