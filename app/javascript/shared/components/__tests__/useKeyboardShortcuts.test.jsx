@@ -35,7 +35,7 @@ describe('Keyboard shortcuts for components', () => {
           KeyK: keyPress
         }, document),
       );
-      fireEvent.keydown(document, { code: "KeyK" });
+      fireEvent.keyDown(document, { code: "KeyK" });
 
       expect(keyPress).toHaveBeenCalledTimes(1);
     });
