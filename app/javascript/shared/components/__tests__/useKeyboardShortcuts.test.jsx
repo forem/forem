@@ -84,7 +84,11 @@ describe('Keyboard shortcuts for components', () => {
     it('should add event listener to window', async () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
 
-      render(() =>
+      const { rerender } = render(() =>
+        <KeyboardShortcuts eventTarget={document} shortcuts={{ KeyK: null }} />,
+      );
+      
+      rerender(() =>
         <KeyboardShortcuts eventTarget={document} shortcuts={{ KeyK: null }} />,
       );
 
@@ -95,7 +99,11 @@ describe('Keyboard shortcuts for components', () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
       HTMLDocument.prototype.removeEventListener = jest.fn();
 
-      const { unmount } = render(() =>
+      const { rerender, unmount } = render(() =>
+        <KeyboardShortcuts eventTarget={document} shortcuts={{ KeyK: null }} />,
+      );
+      
+      rerender(() =>
         <KeyboardShortcuts eventTarget={document} shortcuts={{ KeyK: null }} />,
       );
 
