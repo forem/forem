@@ -34,10 +34,6 @@ class ImageUploadsController < ApplicationController
       return
     end
 
-    cloudinary_link(uploaders)
-  end
-
-  def cloudinary_link(uploaders)
     links = uploaders.map(&:url)
     respond_to do |format|
       format.json { render json: { links: links }, status: :ok }
