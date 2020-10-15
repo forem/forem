@@ -468,8 +468,8 @@ export default class Chat extends Component {
       scrollToBottom();
     }
 
-    // If I'm not sender
-    if (message.user_id !== currentUserId) {
+    // If I'm not sender and tab is not active
+    if (message.user_id !== currentUserId && document.hidden) {
       notifyUser();
     }
 
@@ -492,7 +492,7 @@ export default class Chat extends Component {
       }
     }
 
-    //Show alert if message received and you have scrolled up
+    // Show alert if message received and you have scrolled up
     const newShowAlert =
       activeChannelId === receivedChatChannelId
         ? { showAlert: !nearBottom }
