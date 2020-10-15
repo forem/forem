@@ -5,7 +5,7 @@
   border-radius: 3px;
   font-weight: bold;
   margin-bottom: 32px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   padding: 16px;
   @include themeable(color, theme-secondary-color, $dark-medium-gray);
   color: var(--card-color-tertiary);

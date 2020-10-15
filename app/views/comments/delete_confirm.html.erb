@@ -6,7 +6,7 @@
     <a data-no-instant href="<%= @comment.path %>/edit">EDIT</a> instead?</h2>
 
   <%= form_tag "/comments/#{@comment.id}", method: :delete do %>
-    <button class="cta">DELETE</button>
+    <button class="crayons-btn crayons-btn--danger">Delete</button>
   <% end %>
 
 </div>

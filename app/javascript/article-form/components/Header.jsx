@@ -10,16 +10,14 @@ export const Header = ({
   organizations,
   organizationId,
   onToggle,
-  logoSvg,
+  siteLogo,
 }) => {
   return (
     <div className="crayons-article-form__header">
-      <a
-        href="/"
+      <span
         className="crayons-article-form__logo"
-        aria-label="Home"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: logoSvg }}
+        dangerouslySetInnerHTML={{ __html: siteLogo }}
       />
       <PageTitle
         organizations={organizations}
@@ -38,7 +36,7 @@ Header.propTypes = {
   organizations: PropTypes.string.isRequired,
   organizationId: PropTypes.string.isRequired,
   onToggle: PropTypes.string.isRequired,
-  logoSvg: PropTypes.string.isRequired,
+  siteLogo: PropTypes.string.isRequired,
 };
 
 Header.displayName = 'Header';

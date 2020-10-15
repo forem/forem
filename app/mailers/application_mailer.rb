@@ -5,6 +5,7 @@ class ApplicationMailer < ActionMailer::Base
   # an example is the user_url
   helper Rails.application.routes.url_helpers
   helper ApplicationHelper
+  helper AuthenticationHelper
 
   default(
     from: -> { email_from("Community") },
@@ -12,7 +13,7 @@ class ApplicationMailer < ActionMailer::Base
   )
 
   def email_from(topic)
-    "#{ApplicationConfig['COMMUNITY_NAME']} #{topic} <#{SiteConfig.email_addresses[:default]}>"
+    "#{SiteConfig.community_name} #{topic} <#{SiteConfig.email_addresses[:default]}>"
   end
 
   def generate_unsubscribe_token(id, email_type)

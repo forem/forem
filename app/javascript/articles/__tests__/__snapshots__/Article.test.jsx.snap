@@ -17,12 +17,14 @@ Object {
           <a
             class="crayons-story__cover"
             href="/some-post/path"
+            style="background-image: url(/images/10.png);"
             title="Unbranded Home Loan Account"
           >
-            <div
-              class="crayons-story__cover__image"
-              style="background-image: url(/images/10.png);"
-            />
+            <span
+              class="hidden"
+            >
+              Unbranded Home Loan Account
+            </span>
           </a>
           <div
             class="crayons-story__body"
@@ -225,12 +227,14 @@ Object {
         <a
           class="crayons-story__cover"
           href="/some-post/path"
+          style="background-image: url(/images/10.png);"
           title="Unbranded Home Loan Account"
         >
-          <div
-            class="crayons-story__cover__image"
-            style="background-image: url(/images/10.png);"
-          />
+          <span
+            class="hidden"
+          >
+            Unbranded Home Loan Account
+          </span>
         </a>
         <div
           class="crayons-story__body"

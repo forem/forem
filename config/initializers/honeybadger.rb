@@ -16,7 +16,7 @@ COMPONENT_FINGERPRINTS = {
 Honeybadger.configure do |config|
   config.env = "#{ApplicationConfig['APP_DOMAIN']}-#{Rails.env}"
   config.api_key = ApplicationConfig["HONEYBADGER_API_KEY"]
-  config.revision = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+  config.revision = ApplicationConfig["RELEASE_FOOTPRINT"]
 
   # Prevent Ruby from exiting until all queued notices have been delivered to Honeybadger.
   # When set to true(default), it can lead to a large number of errors causing a process to get stuck.

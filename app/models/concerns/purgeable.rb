@@ -1,19 +1,20 @@
 # Copied from the deprecated fastly-rails gem
 # https://github.com/fastly/fastly-rails/blob/master/lib/fastly-rails/active_record/surrogate_key.rb
 #
-# This concern handles purge and purge_all calls to purge the edge cache (Fastly)
+# This concern handles purge and purge_all calls to purge Fastly's edge cache.
+# If Fastly has not been configured, these methods will short circuit and not be invoked.
 module Purgeable
   extend ActiveSupport::Concern
 
   module ClassMethods
     def purge_all
-      return if Rails.env.development?
+      return unless fastly
 
       service.purge_by_key(table_key)
     end
 
     def soft_purge_all
-      return if Rails.env.development?
+      return unless fastly
 
       service.purge_by_key(table_key, true)
     end
@@ -23,13 +24,14 @@ module Purgeable
     end
 
     def fastly
-      return if Rails.env.development?
+      return false if Rails.env.development?
+      return false if ApplicationConfig["FASTLY_API_KEY"].blank? || ApplicationConfig["FASTLY_SERVICE_ID"].blank?
 
       Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
     end
 
     def service
-      return if Rails.env.development?
+      return unless fastly
 
       Fastly::Service.new({ id: ApplicationConfig["FASTLY_SERVICE_ID"] }, fastly)
     end
@@ -45,13 +47,13 @@ module Purgeable
   end
 
   def purge
-    return if Rails.env.development?
+    return unless fastly
 
     service.purge_by_key(record_key)
   end
 
   def soft_purge
-    return if Rails.env.development?
+    return unless fastly
 
     service.purge_by_key(record_key, true)
   end

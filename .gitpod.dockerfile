@@ -6,7 +6,7 @@ RUN rm /home/gitpod/.rvmrc && touch /home/gitpod/.rvmrc && echo "rvm_gems_path=/
 RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
 
 # Install Node and Yarn
-ENV NODE_VERSION=12.16.3
+ENV NODE_VERSION=12.18.2
 RUN bash -c ". .nvm/nvm.sh && \
         nvm install ${NODE_VERSION} && \
         nvm alias default ${NODE_VERSION} && \

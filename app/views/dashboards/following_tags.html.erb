@@ -4,7 +4,7 @@
     data-params="<%= params.to_json(only: %i[action per_page]) %>"
     data-which="following">
   <header class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0">Dashboard &raquo; Following tags</h1>
+    <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Following tags</h1>
     <%= render "actions_mobile" %>
   </header>
 
@@ -26,7 +26,7 @@
             <% tag = follow.followable %>
             <% if tag %>
               <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-              <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article <% if follow.points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
+              <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
                 <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
                   <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
                     <span class="crayons-tag__prefix">#</span><%= tag.name %>
@@ -36,7 +36,9 @@
                   <% end %>
                 </h3>
 
-                <p class="grid-cell__summary truncate-at-3 mb-4 fs-s"><%= tag.short_summary %></p>
+                <p class="grid-cell__summary truncate-at-3 mb-4 fs-s">
+                  <%= strip_tags(tag.short_summary) %>
+                </p>
 
                 <%= form_for(follow, html: { class: "flex items-center flex-nowrap" }) do |f| %>
                   <%= f.label(:points, "Follow weight:", class: "fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap") %>

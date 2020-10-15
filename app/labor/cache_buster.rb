@@ -7,26 +7,7 @@ module CacheBuster
   ].freeze
 
   def self.bust(path)
-    # TODO: (Alex Smith) - It would be "nice to have" the ability to use the
-    # Fastly gem here instead of custom API calls. We'd want to keep thread
-    # safety in mind. We'll also want to consider making this modular for those
-    # who don't want to use Fastly at all.
-    #
-    # Instead of HTTP calls, we could do:
-    # fastly  = Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
-    # service = Fastly::Service.new({ id: ApplicationConfig["FASTLY_SERVICE_ID"] }, fastly)
-    # fastly.purge(path)
-    #
-    # https://github.com/fastly/fastly-ruby#efficient-purging
-    return unless Rails.env.production?
-
-    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}",
-                  headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}?i=i",
-                  headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-  rescue URI::InvalidURIError => e
-    Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
-    DatadogStatsClient.increment("cache_buster.invalid_uri", tags: ["path:#{path}"])
+    EdgeCache::Bust.call(path)
   end
 
   def self.bust_comment(commentable)
@@ -142,7 +123,7 @@ module CacheBuster
   end
 
   def self.bust_podcast(path)
-    bust("/" + path)
+    bust("/#{path}")
   end
 
   def self.bust_organization(organization, slug)
@@ -161,7 +142,7 @@ module CacheBuster
     podcast_episode.purge_all
     begin
       bust(path)
-      bust("/" + podcast_slug)
+      bust("/#{podcast_slug}")
       bust("/pod")
       bust(path)
     rescue StandardError => e

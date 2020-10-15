@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, object, text } from '@storybook/addon-knobs/react';
+import { withKnobs, object, text } from '@storybook/addon-knobs';
 import { Article } from '..';
 import {
   assetPath,

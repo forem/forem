@@ -4,19 +4,21 @@ RSpec.describe "Authenticating with a password" do
   def submit_login_form(email, password)
     fill_in "Email", with: email
     fill_in "Password", with: password
-    click_button "Log in"
+    click_button "Continue"
   end
 
   let(:password) { "p4assw0rd" }
   let!(:user) { create(:user, password: password, password_confirmation: password) }
 
   before do
+    allow(SiteConfig).to receive(:allow_email_password_login).and_return(true)
     visit sign_up_path
   end
 
   context "when logging in with incorrect credentials" do
     it "displays an error when the email address is wrong" do
       submit_login_form("wrong@example.com", password)
+
       expect(page).to have_text("Invalid Email or password.")
     end
 
@@ -56,8 +58,8 @@ RSpec.describe "Authenticating with a password" do
       auth_payload.info.email = user.email
       user.lock_access!
 
-      visit root_path
-      click_link("Sign In with GitHub", match: :first)
+      visit sign_up_path
+      click_link("Continue with GitHub", match: :first)
 
       expect(page).to have_current_path("/?signin=true")
       expect(page).not_to have_text("Your account is locked.")
@@ -67,7 +69,7 @@ RSpec.describe "Authenticating with a password" do
   context "when logging in with the correct credentials" do
     it "allows the user to sign in with the correct password" do
       submit_login_form(user.email, password)
-      expect(page).to have_current_path("/dashboard?signin=true")
+      expect(page).to have_current_path("/?signin=true")
     end
   end
 end

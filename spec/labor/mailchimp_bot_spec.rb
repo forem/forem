@@ -1,6 +1,8 @@
 require "rails_helper"
 
+# [@forem/oss]: this should be probably refactored using a class_double but for now we silence Rubocop's complaint
 class FakeGibbonRequest < Gibbon::Request
+  # rubocop:disable Lint/UselessMethodDefinition
   def lists(*args)
     super
   end
@@ -16,6 +18,7 @@ class FakeGibbonRequest < Gibbon::Request
   def community_mods(*args)
     super
   end
+  # rubocop:enable Lint/UselessMethodDefinition
 end
 
 RSpec.describe MailchimpBot, type: :labor do

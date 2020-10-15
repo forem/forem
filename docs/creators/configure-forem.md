@@ -37,7 +37,7 @@ disappear.
 The following permissions are required to be able to view and/or edit the config
 page:
 
-#### Role: super_admin
+#### `Role: super_admin`
 
 When providing this role to a user they will be able to access the config page.
 However, this page will be a read only view for them. They will see the
@@ -45,7 +45,7 @@ following:
 
 ![Super Admin Permissions Role Provided](https://dev-to-uploads.s3.amazonaws.com/i/xpc8g9x46vzgi49ohc0d.png)
 
-#### Role: single_resource_admin
+#### `Role: single_resource_admin`
 
 When providing this role to a user they will be able to access the config page,
 and they will be able to edit the config variables.

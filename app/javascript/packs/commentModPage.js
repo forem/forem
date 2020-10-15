@@ -33,12 +33,17 @@ async function updateMainReactions(reactableType, category, reactableId) {
 
     if (outcome.result === 'create') {
       clickedBtn.classList.add('reacted');
-    } else {
+    } else if (outcome.result === 'destroy') {
       clickedBtn.classList.remove('reacted');
+    } else {
+      // eslint-disable-next-line no-alert
+      alert(`Error: ${outcome.error}`);
+      // eslint-disable-next-line no-console
+      console.error(`Error: ${outcome.error}`);
     }
   } catch (error) {
     // eslint-disable-next-line no-alert
-    alert(error);
+    alert(`Error: ${error}`);
   }
 }
 
@@ -97,19 +102,21 @@ document.querySelectorAll('.level-rating-button').forEach((btn) => {
   });
 });
 
-document.querySelectorAll('.reaction-button, .reaction-vomit-button').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    applyReactedClass(btn.dataset.category);
-    updateMainReactions(
-      btn.dataset.reactableType,
-      btn.dataset.category,
-      btn.reactableId,
-    );
+document
+  .querySelectorAll('.reaction-button, .reaction-vomit-button')
+  .forEach((btn) => {
+    btn.addEventListener('click', () => {
+      applyReactedClass(btn.dataset.category);
+      updateMainReactions(
+        btn.dataset.reactableType,
+        btn.dataset.category,
+        btn.dataset.reactableId,
+      );
+    });
   });
-});
 
 const form = document.getElementsByClassName('button_to')[0];
-form.addEventListener('submit', e => {
+form.addEventListener('submit', (e) => {
   e.preventDefault();
   if (confirm('Are you SURE you want to delete this comment?')) {
     form.submit();

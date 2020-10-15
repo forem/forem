@@ -42,6 +42,6 @@ RSpec.describe Bufferizer, type: :labor do
     post = "test facebook post"
     described_class.new("article", article, post).facebook_post!
     expect(BufferUpdate.last.body_text).to include(" #programming")
-    expect(BufferUpdate.last.body_text).to include(" #" + article.tag_list.first)
+    expect(BufferUpdate.last.body_text).to include(" ##{article.tag_list.first}")
   end
 end

@@ -8,6 +8,10 @@ RSpec.describe MarkdownParser, type: :labor do
     described_class.new(raw_markdown).finalize
   end
 
+  it "has the correct raw tag delimiters" do
+    expect(described_class::RAW_TAG_DELIMITERS).to match_array(["{", "}", "raw", "endraw", "----"])
+  end
+
   it "renders plain text as-is" do
     expect(basic_parsed_markdown.finalize).to include(random_word)
   end
@@ -66,20 +70,20 @@ RSpec.describe MarkdownParser, type: :labor do
 
   it "wraps figcaptions with figures" do
     code_span = "<p>Statement</p>\n<figcaption>A fig</figcaption>"
-    test = generate_and_parse_markdown("<p>case: </p>" + code_span)
-    expect(test).to eq("<p>case: </p>\n<figure>" + code_span + "</figure>\n\n\n\n")
+    test = generate_and_parse_markdown("<p>case: </p>#{code_span}")
+    expect(test).to eq("<p>case: </p>\n<figure>#{code_span}</figure>\n\n\n\n")
   end
 
   it "does not wrap figcaptions already in figures" do
     code_span = "<figure><p>Statement</p>\n<figcaption>A fig</figcaption></figure>"
     test = generate_and_parse_markdown(code_span)
-    expect(test).to eq(code_span + "\n\n\n\n")
+    expect(test).to eq("#{code_span}\n\n\n\n")
   end
 
   it "does not wrap figcaptions without predecessors" do
     code_span = "<figcaption>A fig</figcaption>"
     test = generate_and_parse_markdown(code_span)
-    expect(test).to eq(code_span + "\n\n")
+    expect(test).to eq("#{code_span}\n\n")
   end
 
   context "when rendering links markdown" do
@@ -185,7 +189,7 @@ RSpec.describe MarkdownParser, type: :labor do
     it "does not raise error if no XSS attempt detected" do
       expect do
         generate_and_parse_markdown("```const data = 'data:text/html';```")
-      end.not_to raise_error(ArgumentError)
+      end.not_to raise_error
     end
   end
 

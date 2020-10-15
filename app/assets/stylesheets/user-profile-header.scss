@@ -3,7 +3,7 @@
 
 .user-profile-header {
   padding: calc(1.4vw + 8px) 0px;
-  font-family: var(--ff-default);
+  font-family: var(--ff-sans-serif);
   position: relative;
   overflow: hidden;
   width: 1216px;
@@ -228,13 +228,13 @@
       margin-left: 5%;
       @media screen and (min-width: 430px) {
         font-size: 1.15em;
-        padding: 15px 0px;
+        padding: 15px 15px 15px 0
       }
       @media screen and (min-width: 1100px) {
         position: absolute;
         top: 45%;
         transform: translateY(-45%);
-        padding: 15px 0px;
+        padding: 15px 15px 15px 0
       }
       .row {
         padding: calc(5px + 0.2vw) 0px;

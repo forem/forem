@@ -1,15 +1,19 @@
 class HtmlVariant < ApplicationRecord
+  resourcify
+
   GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign].freeze
 
+  belongs_to :user, optional: true
+
+  has_many :html_variant_successes, dependent: :destroy
+  has_many :html_variant_trials, dependent: :destroy
+
+  validates :group, inclusion: { in: GROUP_NAMES }
   validates :html, presence: true
   validates :name, uniqueness: true
-  validates :group, inclusion: { in: GROUP_NAMES }
   validates :success_rate, presence: true
-  validate  :no_edits
 
-  belongs_to :user, optional: true
-  has_many :html_variant_trials
-  has_many :html_variant_successes
+  validate  :no_edits
 
   before_save :prefix_all_images
 
@@ -54,7 +58,7 @@ class HtmlVariant < ApplicationRecord
   end
 
   def prefix_all_images
-    # wrap with Cloudinary or allow if from giphy or githubusercontent.com
+    # Optimize image if not from giphy or githubusercontent.com
     doc = Nokogiri::HTML.fragment(html)
     doc.css("img").each do |img|
       src = img.attr("src")

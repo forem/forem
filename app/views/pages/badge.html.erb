@@ -115,7 +115,7 @@
     m.parentNode.insertBefore(a, m)
   })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-  ga('create', '<%= ApplicationConfig["GA_TRACKING_ID"] %>', 'auto');
+  ga('create', '<%= SiteConfig.ga_tracking_id %>', 'auto');
   ga('set', 'anonymizeIp', true);
   ga('send', 'pageview');
   ga('send', 'event', 'view', '/badge version impression', '<%= @html_variant.name %>', null);

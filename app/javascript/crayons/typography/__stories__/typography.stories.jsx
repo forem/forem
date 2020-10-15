@@ -68,7 +68,7 @@ SampleTexts.story = {
 
 export const DefaultLineHeight = () => (
   <div className="sample-texts">
-    <span className="ff-accent">Line height: 1.5 – .lh-base (default)</span>
+    <span className="ff-monospace">Line height: 1.5 – .lh-base (default)</span>
     <h3 className="fs-2xl fw-bold">
       This is a bit longer text title to present line-height difference.
     </h3>
@@ -85,7 +85,7 @@ DefaultLineHeight.story = { name: 'default line height' };
 
 export const TightLineHeight = () => (
   <div className="sample-texts">
-    <span className="ff-accent">Line height: 1.25 – .lh-tight</span>
+    <span className="ff-monospace">Line height: 1.25 – .lh-tight</span>
 
     <h3 className="fs-2xl fw-bold lh-tight">
       This is a bit longer text title to present line-height difference.
