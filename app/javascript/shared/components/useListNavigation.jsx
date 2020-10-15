@@ -11,7 +11,7 @@ const DIRECTIONS = {
 };
 
 /**
- * Calls a hook that registers a global key shortcut for 'j' and 'k' to navigate up and down in a list of items
+ * Hook that registers a global key shortcut for 'j' and 'k' to navigate up and down in a list of items
  *
  * @example
  * useListNavigation(
@@ -123,7 +123,7 @@ ListNavigation.propTypes = {
  * @param {string} itemContainerSelector - The selector for the highest level container of an item
  * @param {string} focusableSelector - The selector for the element that should be focused on
  * @param {string} waterfallItemContainerSelector - The selector for the waterfall item container if the list uses a waterfall structure at any point
- * @param {string} direction - ...
+ * @param {string} direction - The navigation direction (up or down)
  */
 function keyEventListener(
   itemContainerSelector,
