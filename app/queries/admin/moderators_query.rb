@@ -10,8 +10,10 @@ module Admin
 
       relation = if state.to_s == "potential"
                    relation.where(
-                     "id NOT IN (SELECT user_id FROM users_roles WHERE role_id = ?)",
+                     "id NOT IN (SELECT user_id FROM users_roles WHERE role_id = ?)
+                     AND id NOT IN (SELECT user_id FROM users_roles WHERE role_id = ?)",
                      role_id_for(:trusted),
+                     role_id_for(:banned),
                    ).order("users.comments_count" => :desc)
                  else
                    relation.joins(:roles)
