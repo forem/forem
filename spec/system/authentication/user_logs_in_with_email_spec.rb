@@ -6,7 +6,7 @@ RSpec.describe "Authenticating with Email" do
 
   before do
     allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
-    SiteConfig.allow_email_password_login = true
+    allow(SiteConfig).to receive(:allow_email_password_login).and_return(true)
   end
 
   context "when a user is new" do
