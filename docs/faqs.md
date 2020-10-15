@@ -34,8 +34,13 @@ comments locally, you will need to update the score of your local comments
 manually. Here's how:
 
 1. Open the terminal.
-2. Run `psql PracticalDeveloper_development` to open `psql`, the PostgreSQL
+2. Run `rails dbconsole` to open the PostgreSQL terminal. Alternatively, run
+   `psql PracticalDeveloper_development` to open `psql`, the PostgreSQL
    terminal.
+
+> Note: dbconsole reads database information from config/database.yml which is
+> always better since database configs might change in the future.
+
 3. Enter `update comments set score = 30;`.
 4. Type `exit` to leave the PostgreSQL terminal.
 
