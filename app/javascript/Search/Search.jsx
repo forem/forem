@@ -7,11 +7,11 @@ import {
   preloadSearchResults,
   displaySearchResults,
 } from '../utilities/search';
-import { KeyEventListener } from '../shared/components/keyEventListener';
+import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { SearchForm } from './SearchForm';
 
-const GLOBAL_MINIMIZE_KEY = '0';
-const GLOBAL_SEARCH_KEY = '/';
+const GLOBAL_MINIMIZE_KEY = 'Digit0';
+const GLOBAL_SEARCH_KEY = 'Slash';
 const ENTER_KEY = 'Enter';
 
 export class Search extends Component {
@@ -85,30 +85,29 @@ export class Search extends Component {
     InstantClick.off('change', this.enableSearchPageListener);
   }
 
-  onKeyPress = (event) => {
-    if (event.key === GLOBAL_SEARCH_KEY) {
-      event.preventDefault();
-      document.body.classList.remove('zen-mode');
+  minimizeHeader = (event) => {
+    event.preventDefault();
+    document.body.classList.toggle('zen-mode');
+  };
 
-      const { searchBoxId } = this.props;
-      const searchBox = document.getElementById(searchBoxId);
-      searchBox.focus();
-      searchBox.select();
-    } else if (
-      event.key === GLOBAL_MINIMIZE_KEY &&
-      !this.hasKeyModifiers(event)
-    ) {
-      event.preventDefault();
-      document.body.classList.toggle('zen-mode');
-    }
+  focusOnSearchBox = (event) => {
+    event.preventDefault();
+    document.body.classList.remove('zen-mode');
+
+    const { searchBoxId } = this.props;
+    const searchBox = document.getElementById(searchBoxId);
+    searchBox.focus();
+    searchBox.select();
   };
 
   render({ searchBoxId }, { searchTerm = '' }) {
     return (
       <Fragment>
-        <KeyEventListener
-          keys={[GLOBAL_SEARCH_KEY, GLOBAL_MINIMIZE_KEY]}
-          onPress={this.onKeyPress}
+        <KeyboardShortcuts
+          shortcuts={{
+            [GLOBAL_SEARCH_KEY]: this.focusOnSearchBox,
+            [GLOBAL_MINIMIZE_KEY]: this.minimizeHeader,
+          }}
         />
         <SearchForm
           searchTerm={searchTerm}

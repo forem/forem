@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import { ListNavigation } from '../shared/components/listNavigation.jsx';
+import { useListNavigation } from '../shared/components/useListNavigation';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
@@ -131,15 +131,16 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     }
   }
 
+  useListNavigation(
+    'article[id=featured-story-marker],article[id^=article-]',
+    'a[id^=article-link-]',
+    'div.paged-stories',
+  );
+
   return (
     <div id="rendered-article-feed">
-      <ListNavigation
-        itemContainerSelector="article[id=featured-story-marker],article[id^=article-]"
-        focusableSelector="a[id^=article-link-]"
-        waterfallItemContainerSelector="div.paged-stories"
-      />
       {onError ? (
-        <div className="crayons-notice crayons-notice--danger">
+        <div class="crayons-notice crayons-notice--danger">
           There was a problem fetching your feed.
         </div>
       ) : (

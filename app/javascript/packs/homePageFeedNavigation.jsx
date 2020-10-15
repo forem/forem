@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { ListNavigation } from '../shared/components/listNavigation';
+import { ListNavigation } from '../shared/components/useListNavigation';
 
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.querySelector('#articles-list');
