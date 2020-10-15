@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { renderHook } from '@testing-library/preact-hooks';
-import { fireEvent } from '@testing-library/preact';
+import { fireEvent, render } from '@testing-library/preact';
 import { KeyboardShortcuts, useKeyboardShortcuts } from '../useKeyboardShortcuts.jsx';
 
 describe('Keyboard shortcuts for components', () => {
@@ -74,7 +74,7 @@ describe('Keyboard shortcuts for components', () => {
     it('should not add event listener if shortcut object is empty', () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
 
-      renderHook(() =>
+      render(() =>
         <KeyboardShortcuts eventTarget={document} />,
       );
 
@@ -84,7 +84,7 @@ describe('Keyboard shortcuts for components', () => {
     it('should add event listener to window', () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
 
-      renderHook(() =>
+      render(() =>
         <KeyboardShortcuts eventTarget={document} shortcuts={{ KeyK: null }} />,
       );
 
@@ -95,7 +95,7 @@ describe('Keyboard shortcuts for components', () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
       HTMLDocument.prototype.removeEventListener = jest.fn();
 
-      const { unmount } = renderHook(() =>
+      const { unmount } = render(() =>
         <KeyboardShortcuts eventTarget={document} shortcuts={{ KeyK: null }} />,
       );
 
