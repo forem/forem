@@ -5,7 +5,7 @@ RSpec.describe "Authenticating with Email" do
   let(:sign_up_link) { "Sign up with Email" }
 
   before do
-    SiteConfig.allow_email_password_registration = true
+    allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
     SiteConfig.allow_email_password_login = true
   end
 
