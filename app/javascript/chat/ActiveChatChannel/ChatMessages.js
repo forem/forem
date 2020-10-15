@@ -2,8 +2,8 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import ActionMessage from '../actionMessage';
 import Message from '../message';
-import DirectChatInfoMessage from './IntroductionMessages/DireactIntoMessage';
-import OpenChatInfoMessagge from './IntroductionMessages/OpenIntroMessage';
+import DirectChatInfoMessage from './IntroductionMessages/DireactIntroMessages';
+import OpenChatInfoMessagge from './IntroductionMessages/OpenItnroMessage';
 
 const ChatMessages = ({
   activeChannelId,
@@ -16,7 +16,7 @@ const ChatMessages = ({
   triggerDeleteMessage,
 }) => {
   if (!messages[activeChannelId]) {
-    return '';
+    return null;
   }
 
   if (messages[activeChannelId].length === 0 && activeChannel) {

@@ -1,17 +1,6 @@
 import { createDataHash } from '../util';
 import { request } from '../../utilities/http';
 
-// export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
-//   fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
-//     Accept: 'application/json',
-//     'Content-Type': 'application/json',
-//     credentials: 'same-origin',
-//   })
-//     .then((response) => response.json())
-//     .then(successCb)
-//     .catch(failureCb);
-// }
-
 export function sendMessage(messageObject, successCb, failureCb) {
   fetch('/messages', {
     method: 'POST',
@@ -28,7 +17,6 @@ export function sendMessage(messageObject, successCb, failureCb) {
         mentioned_users_id: messageObject.mentionedUsersId,
       },
     }),
-    credentials: 'same-origin',
   })
     .then((response) => response.json())
     .then(successCb)
@@ -50,34 +38,16 @@ export function editMessage(editedMessage, successCb, failureCb) {
         chat_channel_id: editedMessage.activeChannelId,
       },
     }),
-    credentials: 'same-origin',
   })
     .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
 
-// export function sendOpen(activeChannelId, successCb, failureCb) {
-//   fetch(`/chat_channels/${activeChannelId}/open`, {
-//     method: 'POST',
-//     headers: {
-//       Accept: 'application/json',
-//       'X-CSRF-Token': window.csrfToken,
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({}),
-//     credentials: 'same-origin',
-//   })
-//     .then((response) => response.json())
-//     .then(successCb)
-//     .catch(failureCb);
-// }
-
 export async function sendOpen(activeChannelId) {
   const response = await request(`/chat_channels/${activeChannelId}/open`, {
     method: 'POST',
-    credentials: 'same-origin',
-    body: JSON.stringify({}),
+    body: {},
   });
 
   return response.json();
@@ -101,7 +71,6 @@ export function conductModeration(
         command: message,
       },
     }),
-    credentials: 'same-origin',
   })
     .then((response) => response.json())
     .then(successCb)
@@ -128,7 +97,6 @@ export function getChannels(
         {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          credentials: 'same-origin',
         },
       )
         .then((individualResponse) => individualResponse.json())
@@ -141,36 +109,13 @@ export function getChannels(
 }
 
 export async function getUnopenedChannelIds() {
-  const response = await request('/chat_channels?state=unopened_ids', {
-    credentials: 'same-origin',
-  });
+  const response = await request('/chat_channels?state=unopened_ids', {});
 
-  return response.json()
-  // fetch('/chat_channels?state=unopened_ids', {
-  //   credentials: 'same-origin',
-  // })
-  //   .then((response) => response.json())
-  //   .then((json) => {
-  //     successCb(json.unopened_ids);
-  //   });
+  return response.json();
 }
 
-// export function getContent(url, successCb, failureCb) {
-//   fetch(url, {
-//     Accept: 'application/json',
-//     'Content-Type': 'application/json',
-//     credentials: 'same-origin',
-//   })
-//     .then((response) => response.json())
-//     .then(successCb)
-//     .catch(failureCb);
-// }
-
 export async function getContent(url) {
-  const response = await request(url, {
-    method: 'GET',
-    credentials: 'same-origin',
-  })
+  const response = await request(url, {});
 
   return response.json();
 }
@@ -179,7 +124,6 @@ export function getJSONContents(url, successCb, failureCb) {
   fetch(url, {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    credentials: 'same-origin',
   })
     .then((response) => response.json())
     .then(successCb)
@@ -199,27 +143,17 @@ export function deleteMessage(messageId, successCb, failureCb) {
         user_id: window.currentUser.id,
       },
     }),
-    credentials: 'same-origin',
   })
     .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
 
-
 export async function getAllMessages(channelId, messageOffset) {
-  const response = await request(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
-    method: 'GET',
-    credentials: 'same-origin',
-  })
-  
+  const response = await request(
+    `/chat_channels/${channelId}?message_offset=${messageOffset}`,
+    {},
+  );
+
   return response.json();
-  // fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
-  //   Accept: 'application/json',
-  //   'Content-Type': 'application/json',
-  //   credentials: 'same-origin',
-  // })
-  //   .then((response) => response.json())
-  //   .then(successCb)
-  //   .catch(failureCb);
 }

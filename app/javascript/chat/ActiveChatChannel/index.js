@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { useContext, useEffect } from 'preact/hooks';
+import { useContext } from 'preact/hooks';
 import { processImageUpload } from '../../article-form/actions';
 import { VideoContent } from '../videoContent';
 import Compose from '../compose';
@@ -8,8 +8,15 @@ import Content from '../content';
 import Alert from '../alert';
 import { addSnackbarItem } from '../../Snackbar';
 import { store } from '../components/ConnectStateProvider';
-import {getAllMessages, conductModeration, sendMessage, editMessage, deleteMessage} from '../actions/actions';
-import {scrollToBottom} from '../util';
+import {
+  getAllMessages,
+  conductModeration,
+  sendMessage,
+  editMessage,
+  deleteMessage,
+} from '../actions/actions';
+import { scrollToBottom } from '../util';
+import * as Type from '../components/ChatTypes';
 import ChatMessages from './ChatMessages';
 import DeleteModal from './Modal/DeleteModal';
 import ActiveChannelMembershipList from './ActiveChannelMemberList';
@@ -23,9 +30,8 @@ const ActiveChatChannel = ({
   triggerActiveContent,
   setActiveContent,
   setActiveContentState,
-  handleFailure
+  handleFailure,
 }) => {
-
   const { state, dispatch } = useContext(store);
 
   const handleDragOver = (event) => {
@@ -50,12 +56,12 @@ const ActiveChatChannel = ({
     const { messages, activeChannelId } = state;
     const activeEditMessage = messages[activeChannelId].filter(
       (message) => message.id === messageId,
-    )[0]
+    )[0];
 
-    updateState('triggerEditMessage', {
+    updateState(Type.TRIGGER_EDIT_MESSAGE, {
       startEditing: true,
       activeEditMessage,
-    })
+    });
   };
 
   const jumpBacktoBottom = () => {
@@ -67,15 +73,15 @@ const ActiveChatChannel = ({
 
   const onTriggerVideoContent = (e) => {
     if (e.target.dataset.content === 'exit') {
-      updateState('exitVieoContent', {
+      updateState(Type.EXIT_VIDEO_CONTENT, {
         videoPath: null,
         fullscreenContent: null,
         expanded: window.innerWidth > 600,
-      })
+      });
     } else if (state.fullscreenContent === 'video') {
-      updateState('updateFullScreenContent', {})
+      updateState(Type.UPDATE_FULL_SCREEN_CONSTENT, {});
     } else {
-      updateState('handleScreen', {
+      updateState(Type.HANDLE_SCREEN, {
         fullscreenContent: 'video',
         expanded: window.innerWidth > WIDE_WIDTH_LIMIT,
       });
@@ -97,7 +103,7 @@ const ActiveChatChannel = ({
         e.target.value = '';
       }
     }
-  }
+  };
 
   const handleKeyDown = (e) => {
     const {
@@ -170,7 +176,7 @@ const ActiveChatChannel = ({
     }
     if (escPressed && activeContent[activeChannelId]) {
       setActiveContentState(activeChannelId, null);
-      updateState('handleScreen', {
+      updateState(Type.HANDLE_SCREEN, {
         fullscreenContent: null,
         expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
       });
@@ -242,10 +248,12 @@ const ActiveChatChannel = ({
           activeChannelId,
           messageOffset + messages[activeChannelId].length,
         ).then((res) => {
-          addMoreMessages(res)
-        })
+          addMoreMessages(res);
+        });
         const curretPosition = this.scroller.scrollHeight;
-        updateState('currentMessageLocation', {currentMessageLocation: curretPosition})
+        updateState(Type.CURRENT_MESSAGE_LOCATION, {
+          currentMessageLocation: curretPosition,
+        });
       }
     }
   };
@@ -254,33 +262,30 @@ const ActiveChatChannel = ({
     const { chatChannelId, messages } = res;
 
     if (messages.length > 0) {
-      updateState('addMessage', {
+      updateState(Type.ADD_MESSAGE, {
         chatChannelId,
-        messages
-      })
+        messages,
+      });
     } else {
-      updateState('allMessagesLoaded', {
-        allMessagesLoaded: true
-      })
+      updateState(Type.ALL_MESSAGE_LOADED, {
+        allMessagesLoaded: true,
+      });
     }
   };
 
-
   const triggerDeleteMessage = (messageId) => {
-    console.log('Iam clicled')
-    updateState('triggerMessageDeleted', {
+    updateState(Type.TRIGGER_DELETE_MESSAGE, {
       messageDeleteId: messageId,
       showDeleteModal: true,
     });
   };
 
   const handleCloseDeleteModal = () => {
-    updateState('closeDeleteModal', {
+    updateState(Type.CLOSE_DELETE_MODAL, {
       showDeleteModal: false,
       messageDeleteId: null,
-    })
+    });
   };
-
 
   const addUserName = (e) => {
     const name =
@@ -296,7 +301,7 @@ const ActiveChatChannel = ({
     el.selectionStart = start + name.length + 1;
     el.selectionEnd = start + name.length + 1;
     el.focus();
-    updateState('showMemberList', {showMemberlist: false})
+    updateState(Type.SHOW_MEMBER_LIST, { showMemberlist: false });
   };
 
   const handleSubmitOnClick = (e) => {
@@ -328,10 +333,9 @@ const ActiveChatChannel = ({
     handleEditMessageClose();
   };
 
-
   const handleEditMessageClose = () => {
     const textarea = document.getElementById('messageform');
-    updateState('editMessageClose', {
+    updateState(Type.EDIT_MESSAGE_CLOSE, {
       startEditing: false,
       markdownEdited: false,
       activeEditMessage: { message: '', markdown: '' },
@@ -372,8 +376,8 @@ const ActiveChatChannel = ({
         message: '/call',
         mentionedUsersId: getMentionedUsers(message),
       };
-      updateState('setVideoPath', {
-        videoPath: `/video_chats/${activeChannelId}`
+      updateState(Type.SET_VIDEO_PATH, {
+        videoPath: `/video_chats/${activeChannelId}`,
       });
       sendMessage(messageObject, handleSuccess, handleFailure);
     } else if (message.startsWith('/play ')) {
@@ -408,12 +412,7 @@ const ActiveChatChannel = ({
         type_of: 'article',
       });
     } else if (message.startsWith('/ban ') || message.startsWith('/unban ')) {
-      conductModeration(
-        activeChannelId,
-        message,
-        handleSuccess,
-        handleFailure,
-      );
+      conductModeration(activeChannelId, message, handleSuccess, handleFailure);
     } else if (message.startsWith('/')) {
       setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
@@ -431,9 +430,10 @@ const ActiveChatChannel = ({
         message,
         mentionedUsersId: getMentionedUsers(message),
       };
-      updateState('handleAlert', {
-        scrolled: false, showAlert: false
-      })
+      updateState(Type.HANDLE_ALERT, {
+        scrolled: false,
+        showAlert: false,
+      });
       sendMessage(messageObject, handleSuccess, handleFailure);
     }
   };
@@ -450,8 +450,8 @@ const ActiveChatChannel = ({
         if (foundIndex > 0) {
           newMessages[activeChannelId][foundIndex].id = response.message.id;
         }
-        updateState('updateMessageOnSuccess', {
-          messages: newMessages
+        updateState(Type.UPDATE_MESSAGE_ON_SUCCESS, {
+          messages: newMessages,
         });
       }
     } else if (response.status === 'moderation-success') {
@@ -465,7 +465,7 @@ const ActiveChatChannel = ({
     const { activeChannel } = state;
     const mention = e.keyCode === 64;
     if (mention && activeChannel.channel_type !== 'direct') {
-      updateState('showMemberList', {showMemberlist: true})
+      updateState(Type.SHOW_MEMBER_LIST, { showMemberlist: true });
     }
   };
 
@@ -473,13 +473,13 @@ const ActiveChatChannel = ({
     const { startEditing, activeChannel, showMemberlist } = state;
     const enterPressed = e.keyCode === 13;
     if (enterPressed && showMemberlist)
-    updateState('showMemberList', {showMemberlist: false})
+      updateState(Type.SHOW_MEMBER_LIST, { showMemberlist: false });
     if (activeChannel.channel_type !== 'direct') {
       if (startEditing) {
-        updateState('markdownEdited', {markdownEdited: true})
+        updateState(Type.MARK_DOWN_EDITED, { markdownEdited: true });
       }
       if (!e.target.value.includes('@') && showMemberlist) {
-        updateState('showMemberList', {showMemberlist: false})
+        updateState(Type.SHOW_MEMBER_LIST, { showMemberlist: false });
       } else {
         setQuery(e.target);
         listHighlightManager(e.keyCode);
@@ -497,11 +497,11 @@ const ActiveChatChannel = ({
       );
 
       if (query.includes(' ') || before.lastIndexOf('@') < 0)
-      updateState('showMemberList', {showMemberlist: false})  
+        updateState(Type.SHOW_MEMBER_LIST, { showMemberlist: false });
       else {
-        updateState('showMemberList', {showMemberlist: true})
-        updateState('memberFilterQuery', {
-          memberFilterQuery: query
+        updateState(Type.SHOW_MEMBER_LIST, { showMemberlist: true });
+        updateState(Type.MEMBER_FILTER_QUERY, {
+          memberFilterQuery: query,
         });
       }
     }
@@ -534,15 +534,15 @@ const ActiveChatChannel = ({
   const handleMessageDelete = () => {
     const { messageDeleteId } = state;
     deleteMessage(messageDeleteId);
-    updateState('updateDeleteModalState', {
-      showDeleteModal: false
+    updateState(Type.UPDATE_DELETE_MODAL_STATE, {
+      showDeleteModal: false,
     });
   };
 
   const updateState = (type, data) => {
     dispatch({
       type,
-      payload: data
+      payload: data,
     });
   };
 

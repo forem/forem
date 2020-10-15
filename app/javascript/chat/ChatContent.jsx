@@ -4,25 +4,17 @@
   react/no-access-state-in-setstate, react/button-has-type
 */
 
-import { h, Component } from 'preact';
-import PropTypes from 'prop-types';
+import { h } from 'preact';
 import { useContext, useEffect } from 'preact/hooks';
 import { setupPusher } from '../utilities/connect';
-import debounceAction from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
-import { processImageUpload } from '../article-form/actions';
-import { ConnectStateProvider , store } from './components/ConnectStateProvider';
-import { connectReducer } from './connectReducer';
+import { store } from './components/ConnectStateProvider';
 import {
-  conductModeration,
   getAllMessages,
-  sendMessage,
   sendOpen,
   getChannels,
   getUnopenedChannelIds,
   getContent,
-  deleteMessage,
-  editMessage,
 } from './actions/actions';
 import {
   sendChannelRequest,
@@ -37,10 +29,8 @@ import {
   getCurrentUser,
 } from './util';
 import Channels from './channels';
-import Message from './message';
-import ActionMessage from './actionMessage';
 import ActiveChatChannel from './ActiveChatChannel';
-
+import * as Type from './components/ChatTypes';
 
 const NARROW_WIDTH_LIMIT = 767;
 const WIDE_WIDTH_LIMIT = 1600;
@@ -72,23 +62,22 @@ const ChatContent = ({}) => {
 
     if (state.showChannelsList) {
       const filters =
-      state.channelTypeFilter === 'all'
-        ? {}
-        : { filters: `channel_type:${state.channelTypeFilter}` };
-    const searchParams = {
-      query: '',
-      retrievalID: state.activeChannelId,
-      searchType: '',
-      paginationNumber: state.channelPaginationNum,
-    };
-    if (state.activeChannelId !== null) {
-      searchParams.searchType = 'discoverable';
-    }
-    getChannels(searchParams, filters, loadChannels);
-    updateUnopenedChannelIds();
+        state.channelTypeFilter === 'all'
+          ? {}
+          : { filters: `channel_type:${state.channelTypeFilter}` };
+      const searchParams = {
+        query: '',
+        retrievalID: state.activeChannelId,
+        searchType: '',
+        paginationNumber: state.channelPaginationNum,
+      };
+      if (state.activeChannelId !== null) {
+        searchParams.searchType = 'discoverable';
+      }
+      getChannels(searchParams, filters, loadChannels);
+      updateUnopenedChannelIds();
     }
 
-    console.log(document.getElementById('messageform'));
     if (!state.isMobileDevice) {
       document.getElementById('messageform').focus();
     }
@@ -105,18 +94,19 @@ const ChatContent = ({}) => {
   const observerCallback = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && state.scrolled === true) {
-        updateState('observerCallbaclScrolled', {})
+        updateState(Type.OBSERVER_CALLBACK_SCROLLED, {});
       } else if (state.scrolled === false) {
-        updateState('observerCallbackNotScrolled', {})
+        updateState(Type.OBSER_CALLBACK_NOT_SCROLLED, {});
       }
     });
   };
 
   const updateUnopenedChannelIds = () => {
-    getUnopenedChannelIds()
-      .then(response => {
-        updateState('updateUnopenedChannelIds', {unopened_ids: response.unopened_ids})
+    getUnopenedChannelIds().then((response) => {
+      updateState(Type.UPDATE_UNOPENED_CHANNEL_IDS, {
+        unopened_ids: response.unopened_ids,
       });
+    });
   };
 
   const setupChannels = (channels) => {
@@ -150,27 +140,26 @@ const ChatContent = ({}) => {
   };
 
   const setOpenChannelUsers = (channelId) => {
-    getContent(`/chat_channels/${channelId}/channel_info`)
-    .then(response => {
+    getContent(`/chat_channels/${channelId}/channel_info`).then((response) => {
       const { activeChannelId, activeChannel } = state;
       Object.filter = (obj, predicate) =>
-      Object.fromEntries(Object.entries(obj).filter(predicate));
+        Object.fromEntries(Object.entries(obj).filter(predicate));
       const leftUser = Object.filter(
         response.channel_users,
         ([username]) => username !== window.currentUser.username,
       );
       if (activeChannel && activeChannel.channel_type === 'open') {
-        updateState('setOpenChannelLeftUser', {
+        updateState(Type.SET_OPEN_CHANNEL_LEFT_USER, {
           activeChannelId,
-          leftUser
-        })
+          leftUser,
+        });
       } else {
-        updateState('setAllOpenChannelUser', {
+        updateState(Type.SET_ALL_OPEN_CHANNEL_USER, {
           activeChannelId,
-          leftUser
-        })
+          leftUser,
+        });
       }
-    })
+    });
   };
 
   const handleRequestCount = () => {
@@ -179,7 +168,9 @@ const ChatContent = ({}) => {
       const { user_joining_requests, channel_joining_memberships } = result;
       let totalRequest =
         user_joining_requests?.length + channel_joining_memberships?.length;
-      updateState('udpateRequestCount', {userRequestCount: totalRequest})
+      updateState(Type.UPDATE_REQUEST_COUNT, {
+        userRequestCount: totalRequest,
+      });
     });
   };
 
@@ -209,7 +200,7 @@ const ChatContent = ({}) => {
       });
       const subscriptions = subscribedPusherChannels;
       subscriptions.push(channelName);
-      updateState('subscribePusherChannel', {subscriptions})
+      updateState(Type.SUBSCRIBE_PUSHER_CHANNEL, { subscriptions });
     }
   };
 
@@ -283,58 +274,61 @@ const ChatContent = ({}) => {
         newUnopenedChannels.push(receivedChatChannelId);
       }
 
-      updateState('unopenedChannelIds', {unopenedChannelIds})
+      updateState(Type.UNOPENED_CHANNEL_IDS, { unopenedChannelIds });
     }
 
     // Updating the messages
-    updateState('updateNewMessage', {newShowAlert, newChannelsObj, receivedChatChannelId, newMessages})
+    updateState(Type.UPDATE_NEW_MESSAGE, {
+      newShowAlert,
+      newChannelsObj,
+      receivedChatChannelId,
+      newMessages,
+    });
   };
 
   const handleOpenMessages = (receivedChatChannelId) => {
-    sendOpen(receivedChatChannelId)
-      .then(response => {
-        const newChannelsObj = state.chatChannels.map((channel) => {
-          if (parseInt(response.channel, 10) === channel.chat_channel_id) {
-            return { ...channel, last_opened_at: new Date() };
-          }
-          return channel
-        });
-        updateState('updateChannelList', {newChannelsObj})
-      })
-
+    sendOpen(receivedChatChannelId).then((response) => {
+      const newChannelsObj = state.chatChannels.map((channel) => {
+        if (parseInt(response.channel, 10) === channel.chat_channel_id) {
+          return { ...channel, last_opened_at: new Date() };
+        }
+        return channel;
+      });
+      updateState(Type.UPDATE_CHANNEL_LIST, { newChannelsObj });
+    });
   };
 
   const removeMessage = (message) => {
     const { activeChannelId } = state;
-    updateState('removeMessage', {activeChannelId, message})
+    updateState(Type.REMOVE_MESSAGE, { activeChannelId, message });
   };
 
   const updateMessage = (message) => {
     const { activeChannelId, messages } = state;
     if (message.chat_channel_id === activeChannelId) {
-        const newMessages = messages;
-        const foundIndex = messages[activeChannelId].findIndex(
-          (oldMessage) => oldMessage.id === message.id,
-        );
-        newMessages[activeChannelId][foundIndex] = message;
-        updateState('updateMessage', {
-          newMessages,
-        });
+      const newMessages = messages;
+      const foundIndex = messages[activeChannelId].findIndex(
+        (oldMessage) => oldMessage.id === message.id,
+      );
+      newMessages[activeChannelId][foundIndex] = message;
+      updateState(Type.UPDATE_MESSAFGE, {
+        newMessages,
+      });
     }
   };
 
   const redactUserMessages = (res) => {
     const { messages } = state;
     const newMessages = hideMessages(messages, res.userId);
-    updateState('reactUserMessage', {newMessages})
+    updateState(Type.REACT_USER_MESSAGE, { newMessages });
   };
 
   const clearChannel = (res) => {
-    updateState('clearChannel', {chatChannelId: res.chat_channel_id})
+    updateState(Type.CLEAR_CHANNEL, { chatChannelId: res.chat_channel_id });
   };
 
   const channelError = (_error) => {
-    updateState('channelError', {})
+    updateState(Type.CHANNEL_ERROR, {});
   };
 
   const mentioned = () => {};
@@ -342,7 +336,6 @@ const ChatContent = ({}) => {
   const messageOpened = () => {};
 
   const loadChannels = (channels, query) => {
-    console.log(channels, query)
     const { activeChannelId, appName } = state;
     const activeChannel =
       state.activeChannel ||
@@ -350,27 +343,29 @@ const ChatContent = ({}) => {
         (channel) => channel.chat_channel_id === activeChannelId,
       )[0];
     if (activeChannelId && query.length === 0) {
-      updateState('loadUpdatedChannel', {
+      updateState(Type.LOAD_UPDATE_CHANNEL, {
         chatChannels: channels,
         scrolled: false,
         channelsLoaded: true,
         channelPaginationNum: 0,
         filterQuery: '',
-        activeChannel: activeChannel || filterForActiveChannel(channels, activeChannelId),
-      })
+        activeChannel:
+          activeChannel || filterForActiveChannel(channels, activeChannelId),
+      });
       setupChannel(activeChannelId, activeChannel);
     } else if (activeChannelId) {
-      updateState('loadUpdatedChannel', {
+      updateState(Type.LOAD_UPDATE_CHANNEL, {
         chatChannels: channels,
         scrolled: false,
         channelsLoaded: true,
         channelPaginationNum: 0,
         filterQuery: query,
-        activeChannel: activeChannel || filterForActiveChannel(channels, activeChannelId),
+        activeChannel:
+          activeChannel || filterForActiveChannel(channels, activeChannelId),
       });
       setupChannel(activeChannelId, activeChannel);
     } else if (channels.length > 0) {
-      updateState('loadUpdatedChannel', {
+      updateState(Type.LOAD_UPDATE_CHANNEL, {
         chatChannels: channels,
         scrolled: false,
         channelsLoaded: true,
@@ -386,7 +381,7 @@ const ChatContent = ({}) => {
       );
       setupChannels(channels);
     } else {
-      updateState('channelLoadStatus', {channelsLoaded: true})
+      updateState(Type.CHANNEL_LOAD_STATUS, { channelsLoaded: true });
     }
     subscribeChannelsToPusher(
       channels.filter(channelTypeFilterFn('open')),
@@ -420,7 +415,7 @@ const ChatContent = ({}) => {
     }
     const { target } = e;
     if (target.scrollTop + target.offsetHeight + 1800 > target.scrollHeight) {
-      updateState('fetchingPaginatedChannels', {})
+      updateState(Type.FETCHING_PAGINATED_CHANNEL, {});
       const filters =
         channelTypeFilter === 'all'
           ? {}
@@ -450,11 +445,11 @@ const ChatContent = ({}) => {
     ) {
       return;
     }
-    updateState('loadPaginatedChannels', {
+    updateState(Type.LOAD_PAGINATED_CHANNELS, {
       chatChannels: newChannels,
       fetchingPaginatedChannels: false,
       channelPaginationNum: state.channelPaginationNum + 1,
-    })
+    });
   };
 
   const triggerSwitchChannel = (id, slug, channels) => {
@@ -478,7 +473,7 @@ const ChatContent = ({}) => {
       currentUserId,
     );
 
-    updateState('switchActiveChannel', {
+    updateState(Type.SWITCH_ACTIVE_CHANNEL, {
       activeChannel: updatedActiveChannel,
       activeChannelId: parseInt(id, 10),
       scrolled: false,
@@ -487,7 +482,7 @@ const ChatContent = ({}) => {
       showMemberlist: false,
       unopenedChannelIds: unopenedChannelIds.filter(
         (unopenedId) => unopenedId !== id,
-      )
+      ),
     });
 
     setupChannel(id, updatedActiveChannel);
@@ -520,14 +515,14 @@ const ChatContent = ({}) => {
   const handleRequestRejection = (e) => {
     rejectJoiningRequest(
       e.target.dataset.channelId,
-      e.target.dataset.membershipId
+      e.target.dataset.membershipId,
     );
   };
 
   const handleRequestApproval = (e) => {
     acceptJoiningRequest(
       e.target.dataset.channelId,
-      e.target.dataset.membershipId
+      e.target.dataset.membershipId,
     );
   };
 
@@ -561,7 +556,7 @@ const ChatContent = ({}) => {
   const handleJoiningRequestSuccess = () => {
     const { activeChannelId } = state;
     setActiveContentState(activeChannelId, null);
-    updateState('updateFullScreenContent', {})
+    updateState(Type.UPDATE_FULL_SCREEN_CONSTENT, {});
     toggleSearchShowing();
   };
 
@@ -581,7 +576,9 @@ const ChatContent = ({}) => {
       );
     }
 
-    updateState('UpdateChatChannelRequestCount', {userRequestCount: state.userRequestCount - 1})
+    updateState(Type.UPDATE_CHAT_CHANNEL_REQUEST_COUNT, {
+      userRequestCount: state.userRequestCount - 1,
+    });
   };
 
   const toggleSearchShowing = () => {
@@ -597,13 +594,12 @@ const ChatContent = ({}) => {
         paginationNumber: 0,
       };
       getChannels(searchParams, 'all', loadChannels);
-      updateState('updateFilterQuery', {query: null})
+      updateState(Type.UPDATE_FILTER_QUERY, { query: null });
     }
-    updateState('showSearch', {searchShowing: !state.searchShowing})
+    updateState(Type.SHOW_SEARCH, { searchShowing: !state.searchShowing });
   };
 
   const triggerActiveContent = (e) => {
-    console.log(e, 'Iamtriggered');
     if (
       // Trying to open in new tab
       e.ctrlKey ||
@@ -616,7 +612,6 @@ const ChatContent = ({}) => {
     const { target } = e;
     const content =
       target.dataset.content || target.parentElement.dataset.content;
-      console.log(target.dataset.content);
     if (content) {
       e.preventDefault();
       e.stopPropagation();
@@ -628,11 +623,9 @@ const ChatContent = ({}) => {
         setActiveContentState(activeChannelId, {
           type_of: 'loading-user',
         });
-        getContent(`/${content}/channel_info`)
-          .then(response => {
-            setActiveContent(response)
-          });
-        
+        getContent(`/${content}/channel_info`).then((response) => {
+          setActiveContent(response);
+        });
       } else if (content === 'sidecar-channel-request') {
         setActiveContent({
           data: {
@@ -668,10 +661,13 @@ const ChatContent = ({}) => {
           path: target.href || target.parentElement.href,
           type_of: 'article',
         });
-        updateState('setVideoPath', {videoPath: `/video_chats/${activeChannelId}`})
-
+        updateState(Type.SET_VIDEO_PATH, {
+          videoPath: `/video_chats/${activeChannelId}`,
+        });
       } else if (content.startsWith('sidecar-video')) {
-        updateState('setVideoPath', {videoPath:  target.href || target.parentElement.href})
+        updateState(Type.SET_VIDEO_PATH, {
+          videoPath: target.href || target.parentElement.href,
+        });
       } else if (
         content.startsWith('sidecar') ||
         content.startsWith('article')
@@ -686,18 +682,16 @@ const ChatContent = ({}) => {
         });
       } else if (target.dataset.content === 'exit') {
         setActiveContentState(activeChannelId, null);
-        updateState('handleScreen', {
+        updateState(Type.HANDLE_SCREEN, {
           fullscreenContent: null,
           expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
         });
-
       } else if (target.dataset.content === 'fullscreen') {
-        const mode =
-          state.fullscreenContent === 'sidecar' ? null : 'sidecar';
-          updateState('handleScreen', {
-            fullscreenContent: mode,
-            expanded: mode === null || window.innerWidth > WIDE_WIDTH_LIMIT,
-          });
+        const mode = state.fullscreenContent === 'sidecar' ? null : 'sidecar';
+        updateState(Type.HANDLE_SCREEN, {
+          fullscreenContent: mode,
+          expanded: mode === null || window.innerWidth > WIDE_WIDTH_LIMIT,
+        });
       } else if (target.dataset.content === 'chat_channel_setting') {
         setActiveContent({
           data: {},
@@ -717,21 +711,20 @@ const ChatContent = ({}) => {
       chatChannels[1].channel_modified_slug,
       chatChannels,
     );
-    updateState('leftChannel', {leftChannelId})
+    updateState(Type.LEFT_CHANNEL, { leftChannelId });
     setActiveContentState(chatChannels[1].chat_channel_id, null);
   };
 
   const filterForActiveChannel = (channels, id, currentUserId) =>
-  channels.filter(
-    (channel) =>
-      channel.chat_channel_id === parseInt(id, 10) &&
-      channel.viewable_by === parseInt(currentUserId, 10),
-  )[0];
+    channels.filter(
+      (channel) =>
+        channel.chat_channel_id === parseInt(id, 10) &&
+        channel.viewable_by === parseInt(currentUserId, 10),
+    )[0];
 
   const setActiveContentState = (channelId, result) => {
-    updateState('setActicveContentState', {channelId, result})
+    updateState(Type.SET_ACTIVE_CONTENT_STATE, { channelId, result });
   };
-
 
   const setActiveContent = (response) => {
     const { activeChannelId } = state;
@@ -749,28 +742,30 @@ const ChatContent = ({}) => {
   const updateState = (type, data) => {
     dispatch({
       type,
-      payload: data
+      payload: data,
     });
   };
 
   const receiveAllMessages = (chatChannelId, offset) => {
-    getAllMessages(chatChannelId, offset)
-    .then((res) => {
-      updateState('loadActiveChannelMessages', {
+    getAllMessages(chatChannelId, offset).then((res) => {
+      updateState(Type.LOAD_ACTIVE_CHANNEL_MESSAGES, {
         chatChannelId: res.chatChannelId,
-        messages: res.messages
-      })
-    })
+        messages: res.messages,
+      });
+    });
   };
 
   const toggleExpand = () => {
-    updateState('toggleScreen', { expanded: !state.expanded})
+    updateState(Type.TOGGEL_SCREEN, { expanded: !state.expanded });
   };
 
   const triggerChannelTypeFilter = (e) => {
     const { filterQuery } = state;
     const type = e.target.dataset.channelType;
-    updateState('updateChannelFilter', {channelTypeFilter: type, fetchingPaginatedChannels: false})
+    updateState(Type.UPDATE_CHANNEL_FILTER, {
+      channelTypeFilter: type,
+      fetchingPaginatedChannels: false,
+    });
     const filters = type === 'all' ? {} : { filters: `channel_type:${type}` };
     const searchParams = {
       query: filterQuery,
@@ -872,11 +867,7 @@ const ChatContent = ({}) => {
                 <path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
               </svg>
             </button>
-            {renderChannelFilterButton(
-              'all',
-              'all',
-              state.channelTypeFilter,
-            )}
+            {renderChannelFilterButton('all', 'all', state.channelTypeFilter)}
             {renderChannelFilterButton(
               'direct',
               'direct',
@@ -936,7 +927,6 @@ const ChatContent = ({}) => {
 
   const navigateToChannelsList = () => {
     const chatContainer = document.querySelector('.chat__activechat');
-    console.log(chatContainer);
     chatContainer.classList.add('chat__activechat--hidden');
   };
 
@@ -1061,19 +1051,17 @@ const ChatContent = ({}) => {
 
   return (
     <div
-    data-testid="chat"
-    className={`chat chat--expanded
-    chat--${
-      state.videoPath ? 'video-visible' : 'video-not-visible'
-    } chat--${
-      state.activeContent[state.activeChannelId]
-        ? 'content-visible'
-        : 'content-not-visible'
-    } ${fullscreenMode}`}
-    data-no-instant
-    aria-expanded={state.expanded}
-  >
-    {renderChatChannels()}
+      data-testid="chat"
+      className={`chat chat--expanded
+    chat--${state.videoPath ? 'video-visible' : 'video-not-visible'} chat--${
+        state.activeContent[state.activeChannelId]
+          ? 'content-visible'
+          : 'content-not-visible'
+      } ${fullscreenMode}`}
+      data-no-instant
+      aria-expanded={state.expanded}
+    >
+      {renderChatChannels()}
       <div data-testid="active-chat" className="chat__activechat">
         <ActiveChatChannel
           channelHeader={channelHeader}
@@ -1085,6 +1073,6 @@ const ChatContent = ({}) => {
       </div>
     </div>
   );
-}
+};
 
 export default ChatContent;

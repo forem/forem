@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const OpenInroMessage = ({ activeChannel }) => {
+const OpenItnroMessage = ({ activeChannel }) => {
   return (
     <div className="chatmessage" style={{ color: 'grey' }}>
       <div className="chatmessage__body">
-        You have joined {activeChannel.channel_name}! All interactions{' '}
+        {` You have joined ${activeChannel.channel_name}! All interactions `}
         <em>
           <b>must</b>
         </em>{' '}
@@ -15,8 +15,8 @@ const OpenInroMessage = ({ activeChannel }) => {
   );
 };
 
-OpenInroMessage.propTypes = {
+OpenItnroMessage.propTypes = {
   activeChannel: PropTypes.object,
 };
 
-export default OpenInroMessage;
+export default OpenItnroMessage;
