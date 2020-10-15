@@ -150,6 +150,8 @@ module Admin
         community_copyright_start_year
         staff_user_id
         tagline
+        experience_low
+        experience_high
       ]
     end
 

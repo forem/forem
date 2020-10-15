@@ -83,6 +83,14 @@ module Constants
         description: "Email address",
         placeholder: ""
       },
+      experience_low: {
+        description: "The label for the bottom of the experience level range of a post",
+        placeholder: "Total Newbies"
+      },
+      experience_high: {
+        description: "The label for the top of the experience level range of a post",
+        placeholder: "Senior Devs"
+      },
       facebook_key: {
         description:
           "The \"App ID\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
