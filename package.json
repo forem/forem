@@ -73,11 +73,6 @@
       "svgo --disable=removeViewBox --pretty"
     ]
   },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "all",
-    "printWidth": 80
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thepracticaldev/dev.to.git"
