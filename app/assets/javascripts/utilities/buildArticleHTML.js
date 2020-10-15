@@ -25,8 +25,43 @@ function buildArticleHTML(article) {
 
   if (article) {
     var container = document.getElementById('index-container');
+
+    var flareTag = '';
+    var currentTag = '';
+    if (container) {
+      currentTag = JSON.parse(container.dataset.params).tag;
+    }
+    if (article.flare_tag && currentTag !== article.flare_tag.name) {
+      flareTag =
+        "<a href='/t/" +
+        article.flare_tag.name +
+        "' class='crayons-tag' style='background:" +
+        article.flare_tag.bg_color_hex +
+        ';color:' +
+        article.flare_tag.text_color_hex +
+        "'><span className='crayons-tag__prefix'>#</span>" +
+        article.flare_tag.name +
+        '</a>';
+    }
+    if (article.class_name === 'PodcastEpisode') {
+      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>";
+    }
+    if (article.class_name === 'Comment') {
+      flareTag = "<span class='crayons-story__flare-tag'>comment</span>";
+    }
+    if (article.class_name === 'User') {
+      flareTag =
+        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>";
+    }
+
     var tagString = '';
-    var tagList = article.tag_list || article.cached_tag_list_array;
+    var tagList = article.tag_list || article.cached_tag_list_array || [];
+    if (flareTag) {
+      tagList = tagList.filter(function (tag) {
+        return tag !== article.flare_tag.name;
+      });
+      tagString += flareTag;
+    }
     if (tagList) {
       tagList.forEach(function buildTagString(t) {
         tagString =
@@ -51,32 +86,6 @@ function buildArticleHTML(article) {
         '#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left "><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>' +
         commentsCount +
         '<span class="hidden s:inline">&nbsp;comments</span></a>';
-    }
-
-    var flareTag = '';
-    var currentTag = '';
-    if (container) {
-      currentTag = JSON.parse(container.dataset.params).tag;
-    }
-    if (article.flare_tag && currentTag !== article.flare_tag.name) {
-      flareTag =
-        "<span class='crayons-story__flare-tag' style='background:" +
-        article.flare_tag.bg_color_hex +
-        ';color:' +
-        article.flare_tag.text_color_hex +
-        "'>#" +
-        article.flare_tag.name +
-        '</span>';
-    }
-    if (article.class_name === 'PodcastEpisode') {
-      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>";
-    }
-    if (article.class_name === 'Comment') {
-      flareTag = "<span class='crayons-story__flare-tag'>comment</span>";
-    }
-    if (article.class_name === 'User') {
-      flareTag =
-        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>";
     }
 
     var rc = article.public_reactions_count;
@@ -278,7 +287,6 @@ function buildArticleHTML(article) {
       '" id="article-link-' +
       article.id +
       '">' +
-      flareTag +
       filterXSS(article.title) +
       '</a></h2>\
             <div class="crayons-story__tags">' +
