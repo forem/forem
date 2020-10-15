@@ -82,28 +82,9 @@ RSpec.describe "/admin/config", type: :request do
         it "allows all providers to be disabled" do
           # We have to send _something_ for an update, so we'll simulate the borwser omitting the auth
           # providers array when no options are selected
-          post "/admin/config", params: { site_config: {ga_tracking_id: "123" },
+          post "/admin/config", params: { site_config: { ga_tracking_id: "123" },
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to be_empty
-        end
-
-        context "when authentication providers are present" do
-          before do
-            SiteConfig.authentication_providers = Authentication::Providers.available.map(&:to_s)
-          end
-
-          it "allows authentication providers to be unset" do
-            new_provider = Array.wrap(SiteConfig.authentication_providers.pop.to_s)
-            post "/admin/config", params: { site_config: { authentication_providers: new_provider },
-                                            confirmation: confirmation_message }
-            expect(SiteConfig.authentication_providers).to eq(new_provider)
-          end
-
-          it "allows all authentication providers to be unset" do
-            post "/admin/config", params: { site_config: { authentication_providers: [] },
-                                            confirmation: confirmation_message }
-            expect(SiteConfig.authentication_providers).to be_empty
-          end
         end
       end
 
