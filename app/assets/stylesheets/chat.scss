@@ -12,7 +12,14 @@
 }
 
 .live-chat {
-  height: calc(100 * var(--vh) - var(--header-height));
+  /* height: calc(100vh - 56px); */
+
+  &.live-chat--iossafari {
+    height: calc(100vh - 56px);
+  }
+
+  overflow-y: hidden;
+  /* height: calc(100 * var(--vh) - var(--header-height)); */
 }
 
 .live-chat {
@@ -26,6 +33,10 @@
   position: relative;
   overflow-x: hidden;
   overflow-y: hidden;
+
+  &.chat--iossafari {
+    height: 100%;
+  }
 }
 
 .chat__channels {
