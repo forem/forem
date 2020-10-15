@@ -36,7 +36,6 @@ RSpec.describe "Authenticating with Email" do
 
     context "when trying to register with an already existing email" do
       it "shows an error" do
-        # username = OmniAuth.config.mock_auth[:github].extra.raw_info.username
         email = "user@test.com"
         user = create(:user, email: email)
 
