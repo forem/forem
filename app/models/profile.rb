@@ -82,7 +82,7 @@ class Profile < ApplicationRecord
   private
 
   def conditionally_validate_summary
-    return unless summary.present? && ProfileField.exists?(attribute_name: SUMMARY_ATTRIBUTE)
+    return unless ProfileField.exists?(attribute_name: SUMMARY_ATTRIBUTE) && summary.present?
     # Grandfather in people who had a too long summary before.
     return if data_was[SUMMARY_ATTRIBUTE] && data_was[SUMMARY_ATTRIBUTE].size > MAX_SUMMARY_LENGTH
 
