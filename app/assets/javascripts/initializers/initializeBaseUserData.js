@@ -22,25 +22,6 @@ function initializeProfileImage(user) {
 function initializeUserSidebar(user) {
   if (!document.getElementById('sidebar-nav')) return;
   initializeUserProfileContent(user);
-
-  let followedTags = JSON.parse(user.followed_tags);
-  const tagSeparatorLabel =
-    followedTags.length === 0
-      ? 'FOLLOW TAGS TO IMPROVE YOUR FEED'
-      : 'OTHER POPULAR TAGS';
-
-  followedTags.forEach((tag) => {
-    const element = document.getElementById(
-      'default-sidebar-element-' + tag.name,
-    );
-
-    if (element) {
-      element.remove();
-    }
-  });
-
-  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
-  document.getElementById('sidebar-nav-default-tags').classList.add('showing');
 }
 
 function addRelevantButtonsToArticle(user) {
