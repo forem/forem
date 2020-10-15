@@ -42,7 +42,7 @@ class DotnetFiddleTag < LiquidTagBase
 
   def valid_link?(link)
     link_no_space = link.delete(" ")
-    (link_no_space =~ LINK_REGEXP).zero?
+    link_no_space.match?(LINK_REGEXP)
   end
 end
 
