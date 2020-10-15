@@ -133,7 +133,7 @@ module Admin
 
       config_params.each do |key, value|
         if value.is_a?(Array)
-          update_siteconfig_with_array(key, vaule)
+          update_siteconfig_with_array(key, value)
         elsif value.respond_to?(:to_h)
           SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
         else
