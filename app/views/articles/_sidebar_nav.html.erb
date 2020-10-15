@@ -59,17 +59,18 @@
       </h3>
     </header>
     <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="height: 42vh">
-    <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
-      <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-        <a class="crayons-link crayons-link--contentful" href="<%= tag_path(tag_array.second) %>">
-          #<%= tag_array.second %>
-        </a>
-        <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s crayons-btn--secondary_"
-          href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
-          data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
-          Follow
-        </a>
-      </div>
-    <% end %>
+      <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
+        <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
+          <a class="crayons-link crayons-link--contentful" href="<%= tag_path(tag_array.second) %>">
+            #<%= tag_array.second %>
+          </a>
+          <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s crayons-btn--secondary_"
+            href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
+            data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
+            Follow
+          </a>
+        </div>
+      <% end %>
+    </div>
   <% end %>
 </nav>
