@@ -9,7 +9,12 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
 
   context "when user is unauthorized" do
     context "when 1 article" do
-      before { visit "/#{user.username}" }
+      before do
+        Timecop.freeze
+        visit "/#{user.username}"
+      end
+
+      after { Timecop.return }
 
       it "shows all proper elements", :aggregate_failures, js: true do
         shows_header
@@ -48,7 +53,6 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
         end
 
         within("#substories .index-comments .single-comment") do
-          # %e blank pads days from 1 to 9, the double space isn't in the HTML
           comment_date = comment.readable_publish_date.gsub("  ", " ")
           expect(page).to have_selector(".comment-date", text: comment_date)
         end
