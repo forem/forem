@@ -41,22 +41,27 @@
   <% end %>
 </nav>
 
-<nav class="sidebar-tags-browser mb-6 overflow-y-auto scrolling-touch" aria-label="Secondary sidebar nav">
+<nav class="crayons-card crayons-card--secondary" aria-label="Secondary sidebar nav">
   <% if user_signed_in? %>
-    <header class="fs-xs color-base-50 ff-monospace fw-bold p-2">MY TAGS</header>
-    <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
-  <% end %>
-  <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
-    <header id="tag-separator" class="fs-xs color-base-50 ff-monospace fw-bold p-2">
-      <% if user_signed_in? %>
-        OTHER POPULAR TAGS
-      <% else %>
-        DESIGN YOUR EXPERIENCE
-      <% end %>
+    <header class="crayons-card__header pr-2">
+      <h3 class="crayons-subtitle-2 flex items-right w-100">
+        <span class="grow-1 inline-block mt-1">My Tags</span>
+        <a href="/dashboard/following_tags" class="crayons-btn crayons-btn--ghost-dimmed px-2" aria-label="Customize tag priority" title="Customize tag priority">
+          <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon") %>
+        </a>
+      </h3>
     </header>
+    <div id="sidebar-nav-followed-tags" class="overflow-y-auto" style="height: 42vh"></div>
+  <% else %>
+    <header class="crayons-card__header pr-3">
+      <h3 class="crayons-subtitle-2 flex items-right w-100">
+        <span class="grow-1 inline-block mt-1">Popular Tags</span>
+      </h3>
+    </header>
+    <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="height: 42vh">
     <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
       <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-        <a class="crayons-link crayons-link--block" href="<%= tag_path(tag_array.second) %>">
+        <a class="crayons-link crayons-link--contentful" href="<%= tag_path(tag_array.second) %>">
           #<%= tag_array.second %>
         </a>
         <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s crayons-btn--secondary_"
@@ -66,4 +71,5 @@
         </a>
       </div>
     <% end %>
+  <% end %>
 </nav>
