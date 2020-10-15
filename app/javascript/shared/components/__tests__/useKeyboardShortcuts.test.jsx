@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { renderHook } from '@testing-library/preact-hooks';
-import { fireEvent } from '@testing-library/user-event';
+import { fireEvent } from '@testing-library/preact';
 import { KeyboardShortcuts, useKeyboardShortcuts } from '../useKeyboardShortcuts.jsx';
 
 describe('Keyboard shortcuts for components', () => {
