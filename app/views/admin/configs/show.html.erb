@@ -112,9 +112,12 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:video_encoder_key][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:video_encoder_key][:description] %></div>
               </div>
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -313,9 +316,13 @@
               <div class="crayons-notice crayons-notice--info mb-4">
                 Changing authentication keys will not take affect until this forem instance is restarted.
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -379,9 +386,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:campaign_featured_tags][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:campaign_featured_tags][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -462,9 +473,12 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:experience_high][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:experience_high][:description] %></div>
               </div>
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -503,9 +517,13 @@
                   <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:xlarge][:description] %></div>
                 </div>
               <% end %>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -534,9 +552,13 @@
                 <% end %>
               <% end %>
             </div>
+
+            <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -563,9 +585,13 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -588,9 +614,13 @@
                 <%= f.check_box :display_jobs_banner, checked: SiteConfig.display_jobs_banner %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:display_jobs_banner][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -607,9 +637,13 @@
                                  value: SiteConfig.ga_tracking_id %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:ga_tracking_id][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -633,9 +667,13 @@
                                  value: SiteConfig.recaptcha_secret_key %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -727,9 +765,13 @@
                   <%= SiteConfig.right_navbar_svg_icon.html_safe %>
                 </div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -800,9 +842,13 @@
                                  value: SiteConfig.mascot_image_description %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_image_description][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -826,9 +872,13 @@
                   <% end %>
                 <% end %>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -873,9 +923,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:payment_pointer][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:payment_pointer][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -916,9 +970,13 @@
                                  value: SiteConfig.mailchimp_community_moderators_id %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mailchimp_community_moderators_id][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -984,8 +1042,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:suggested_users][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:suggested_users][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
+
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -1014,8 +1077,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
+
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -1047,9 +1115,13 @@
                   <% end %>
                 <% end %>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -1067,8 +1139,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:sponsor_headline][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sponsor_headline][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
+
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -1087,9 +1164,13 @@
                                  pattern: "[a-z0-9,]+" %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -1140,21 +1221,10 @@
                 <%= f.check_box :public, checked: SiteConfig.public %>
                 <div class="alert alert-info">Are most of the site pages (posts, profiles, etc. public?) — BE VERY CAUTIOUS IN CHANGING THIS</div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
-          <% if current_user.has_role?(:single_resource_admin, Config) %>
-            <div class="card mt-3">
-              <div class="card-header">Confirm and Submit</div>
-              <div class="card-body">
-                <div class="form-group">
-                  <%= label_tag :confirmation %>
-                  <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
-                  <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
-                  <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
-                </div>
-              </div>
-            </div>
-          <% end %>
         <% end %>
       </div>
     </div>
