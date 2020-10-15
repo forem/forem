@@ -968,6 +968,7 @@
               </div>
             </div>
           </div>
+
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -977,27 +978,34 @@
                          expanded: "false"
                        } %>
             <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
-              <% configurable_rate_limits.each do |key, field_hash| %>
-                <div class="form-group">
-                  <%= admin_config_label key %>
-                  <%= f.number_field key,
-                                     class: "form-control",
-                                     value: SiteConfig.public_send(key),
-                                     min: field_hash[:min],
-                                     placeholder: field_hash[:placeholder] %>
-                  <div class="alert alert-info"><%= field_hash[:description] %></div>
+              <fieldset class="flex flex-column gap-4">
+                <% configurable_rate_limits.each do |key, field_hash| %>
+                  <div class="crayons-field">
+                    <%= admin_config_label field_hash[:title] %>
+                    <p class="crayons-field__description">
+                      <%= field_hash[:description] %>
+                    </p>
+                    <%= f.number_field key,
+                                       class: "crayons-textfield",
+                                       value: SiteConfig.public_send(key),
+                                       min: field_hash[:min],
+                                       placeholder: field_hash[:placeholder] %>
+                  </div>
+                <% end %>
+                <div class="crayons-field">
+                  <%= admin_config_label :spam_trigger_terms %>
+                  <p class="crayons-field__description">
+                    <%= Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %>
+                  </p>
+                  <%= f.text_area :spam_trigger_terms,
+                                  class: "crayons-textfield",
+                                  value: SiteConfig.spam_trigger_terms.join(","),
+                                  placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
                 </div>
-              <% end %>
-              <div class="form-group">
-                <%= admin_config_label :spam_trigger_terms %>
-                <%= f.text_field :spam_trigger_terms,
-                                 class: "form-control",
-                                 value: SiteConfig.spam_trigger_terms.join(","),
-                                 placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %></div>
-              </div>
+              </fieldset>
             </div>
           </div>
+
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
