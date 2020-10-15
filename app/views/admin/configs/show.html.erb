@@ -96,23 +96,29 @@
                          expanded: "false"
                        } %>
             <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
-              <div class="form-group">
-                <%= admin_config_label :health_check_token %>
-                <%= f.text_field :health_check_token,
-                                 class: "form-control",
-                                 value: SiteConfig.health_check_token,
-                                 placeholder: Constants::SiteConfig::DETAILS[:health_check_token][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:health_check_token][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :video_encoder_key %>
-                <%= f.text_field :video_encoder_key,
-                                 class: "form-control",
-                                 value: SiteConfig.video_encoder_key,
-                                 placeholder: Constants::SiteConfig::DETAILS[:video_encoder_key][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:video_encoder_key][:description] %></div>
-              </div>
-              <%= render "form_submission", f: f %>
+              <fieldset class="flex flex-column gap-4">
+                <div class="crayons-field">
+                  <%= admin_config_label :health_check_token %>
+                  <p class="crayons-field__description">
+                    <%= Constants::SiteConfig::DETAILS[:health_check_token][:description] %>
+                  </p>
+                  <%= f.text_field :health_check_token,
+                                   class: "form-control",
+                                   value: SiteConfig.health_check_token,
+                                   placeholder: Constants::SiteConfig::DETAILS[:health_check_token][:placeholder] %>
+                </div>
+                <div class="crayons-field">
+                  <%= admin_config_label :video_encoder_key %>
+                  <p class="crayons-field__description">
+                    <%= Constants::SiteConfig::DETAILS[:video_encoder_key][:description] %>
+                  </p>
+                  <%= f.text_field :video_encoder_key,
+                                   class: "form-control",
+                                   value: SiteConfig.video_encoder_key,
+                                   placeholder: Constants::SiteConfig::DETAILS[:video_encoder_key][:placeholder] %>
+                </div>
+                <%= render "form_submission", f: f %>
+              </fieldset>
             </div>
           </div>
         <% end %>
