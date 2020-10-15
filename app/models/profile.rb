@@ -31,6 +31,8 @@ class Profile < ApplicationRecord
 
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
+    return unless db_ready?
+
     ProfileField.find_each do |field|
       store_attribute :data, field.attribute_name.to_sym, field.type
     end
@@ -58,7 +60,16 @@ class Profile < ApplicationRecord
   # the profiles table doesn't exist yet (e.g. when running bin/setup in a new
   # clone). I wish Rails had a hook for code to run after the app started, but
   # for now this is the best I can come up with.
-  refresh_attributes! if ApplicationRecord.connection.table_exists?("profiles")
+  def self.db_ready?
+    ActiveRecord::Base.connection
+  rescue ActiveRecord::NoDatabaseError
+    false
+  else
+    ActiveRecord::Base.connection.table_exists?("profiles")
+  end
+  private_class_method :db_ready?
+
+  refresh_attributes!
 
   def custom_profile_attributes
     custom_profile_fields.pluck(:attribute_name)
