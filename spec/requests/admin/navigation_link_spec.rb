@@ -30,6 +30,12 @@ RSpec.describe "NavigationLinks", type: :request do
       expect(response).to redirect_to admin_navigation_links_path
     end
 
+    it "deletes release-tied fragment caches" do
+      allow(Rails.cache).to receive(:delete_matched).and_call_original
+      post admin_navigation_links_path, params: { navigation_link: new_navigation_link }
+      expect(Rails.cache).to have_received(:delete_matched).with("*-#{ApplicationConfig['RELEASE_FOOTPRINT']}")
+    end
+
     it "creates a navigation link" do
       expect do
         post admin_navigation_links_path, params: { navigation_link: new_navigation_link }
