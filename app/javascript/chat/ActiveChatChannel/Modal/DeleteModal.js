@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const DeleteModal = ({
+function DeleteModal({
   showDeleteModal,
   handleMessageDelete,
   handleCloseDeleteModal,
-}) => {
+}) {
   return (
     <div
       id="message"
@@ -51,7 +51,7 @@ const DeleteModal = ({
       <div className="crayons-modal__overlay" />
     </div>
   );
-};
+}
 
 DeleteModal.propTypes = {
   showDeleteModal: PropTypes.bool,

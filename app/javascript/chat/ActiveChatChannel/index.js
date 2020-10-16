@@ -25,13 +25,13 @@ import { DragAndDropZone } from '@utilities/dragAndDrop';
 const WIDE_WIDTH_LIMIT = 1600;
 const NARROW_WIDTH_LIMIT = 767;
 
-const ActiveChatChannel = ({
+function ActiveChatChannel({
   channelHeader,
   triggerActiveContent,
   setActiveContent,
   setActiveContentState,
   handleFailure,
-}) => {
+}) {
   const { state, dispatch } = useContext(store);
 
   const handleDragOver = (event) => {
@@ -539,7 +539,6 @@ const ActiveChatChannel = ({
       payload: data,
     });
   };
-
   return (
     <div className="activechatchannel">
       <div className="activechatchannel__conversation">
@@ -630,7 +629,7 @@ const ActiveChatChannel = ({
       />
     </div>
   );
-};
+}
 
 ActiveChatChannel.propTypes = {
   channelHeader: PropTypes.element.isRequired,

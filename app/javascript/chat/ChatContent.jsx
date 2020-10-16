@@ -35,7 +35,7 @@ import * as Type from './components/ChatTypes';
 const NARROW_WIDTH_LIMIT = 767;
 const WIDE_WIDTH_LIMIT = 1600;
 
-const ChatContent = ({}) => {
+function ChatContent() {
   const { state, dispatch } = useContext(store);
 
   useEffect(() => {
@@ -834,7 +834,6 @@ const ChatContent = ({}) => {
           </div>
         );
       }
-
       return (
         <div className="chat__channels">
           {notificationsButton}
@@ -1073,6 +1072,6 @@ const ChatContent = ({}) => {
       </div>
     </div>
   );
-};
+}
 
 export default ChatContent;

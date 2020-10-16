@@ -5,7 +5,7 @@ import Message from '../message';
 import DirectChatInfoMessage from './IntroductionMessages/DireactIntroMessages';
 import OpenChatInfoMessagge from './IntroductionMessages/OpenItnroMessage';
 
-const ChatMessages = ({
+function ChatMessages({
   activeChannelId,
   messages,
   showTimestamp,
@@ -14,7 +14,7 @@ const ChatMessages = ({
   triggerActiveContent,
   triggerEditMessage,
   triggerDeleteMessage,
-}) => {
+}) {
   if (!messages[activeChannelId]) {
     return null;
   }
@@ -57,7 +57,7 @@ const ChatMessages = ({
       />
     ),
   );
-};
+}
 
 Message.propTypes = {
   activeChannelId: PropTypes.number,

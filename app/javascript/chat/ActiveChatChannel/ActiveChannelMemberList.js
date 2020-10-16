@@ -1,13 +1,13 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ActiveChannelMemberList = ({
+function ActiveChannelMemberList({
   showMemberlist,
   activeChannelId,
   channelUsers,
   memberFilterQuery,
   addUserName,
-}) => {
+}) {
   const filterRegx = new RegExp(memberFilterQuery, 'gi');
 
   return (
@@ -53,7 +53,7 @@ const ActiveChannelMemberList = ({
         : ' '}
     </div>
   );
-};
+}
 
 ActiveChannelMemberList.propTypes = {
   showMemberlist: PropTypes.bool,

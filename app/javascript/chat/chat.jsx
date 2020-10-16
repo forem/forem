@@ -5,7 +5,7 @@ import ChatContent from './ChatContent';
 
 const NARROW_WIDTH_LIMIT = 767;
 
-const Chat = (props) => {
+function Chat(props) {
   const chatChannels = JSON.parse(props.chatChannels);
   const chatOptions = JSON.parse(props.chatOptions);
 
@@ -49,12 +49,10 @@ const Chat = (props) => {
     userRequestCount: 0,
     pusherKey: props.pusherKey,
     githubToken: props.githubToken,
-  }
+  };
+
   return (
-    <ConnectStateProvider
-      initialState={initialState}
-      reducer={connectReducer}
-    >
+    <ConnectStateProvider initialState={initialState} reducer={connectReducer}>
       <ChatContent />
     </ConnectStateProvider>
   );
