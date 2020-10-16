@@ -18,6 +18,9 @@
     <li class="nav-item">
       <%= link_to "Invitations", admin_invitations_path, class: "nav-link" %>
     </li>
+    <li class="nav-item">
+      <%= link_to "Gdpr-dels", admin_users_gdpr_delete_requests_path, class: "nav-link" %>
+    </li>
   </ul>
   <%= form_with url: admin_users_path, method: :get, local: true, class: "form-inline ml-auto" do |f| %>
     <div class="form-group">
