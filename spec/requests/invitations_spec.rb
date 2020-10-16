@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "/users/invitation", type: :request do
-  # let(:user) { create(:user, registered: false, invitation_token: "#{rand(1000)}") }
   let(:user) { create(:user, registered: false) }
 
   describe "PUT /users/invitation" do
