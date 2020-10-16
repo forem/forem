@@ -65,11 +65,15 @@
           <% end %>
 
           <% if current_user.has_role?(:single_resource_admin, Config) %>
-            <div class="form-group">
-              <%= label_tag "Please type out the sentence below to submit:" %>
-              <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
-              <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
-              <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
+            <div class="crayons-notice p-4 mt-4">
+              <div class="crayons-field">
+                <%= label_tag :confirmation_update, "Confirmation update", class: "crayons-field__label" %>
+                <p class="crayons-field__description">Type the sentence: <strong><%= @confirmation_text %></strong></p>
+                <div class="flex">
+                  <%= text_field_tag :confirmation, nil, class: "crayons-textfield flex-1 mr-2", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+                  <%= f.submit "Update Site Configuration", class: "crayons-btn align-self-start" %>
+                </div>
+              </div>
             </div>
           <% end %>
           </fieldset>
@@ -1230,10 +1234,10 @@
                   <%= admin_config_label :primary_brand_color_hex %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:description] %>
                   <%= f.color_field :primary_brand_color_hex,
-                                   class: "crayons-color-selector",
-                                   value: SiteConfig.primary_brand_color_hex,
-                                   pattern: "^#+([a-fA-F0-9]{6})$",
-                                   placeholder: Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:placeholder] %>
+                                    class: "crayons-color-selector",
+                                    value: SiteConfig.primary_brand_color_hex,
+                                    pattern: "^#+([a-fA-F0-9]{6})$",
+                                    placeholder: Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:placeholder] %>
                 </div>
                 <div class="crayons-field crayons-field--checkbox">
                   <%= f.check_box :public, checked: SiteConfig.public, class: "crayons-checkbox" %>
