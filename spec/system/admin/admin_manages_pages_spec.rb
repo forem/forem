@@ -22,22 +22,22 @@ RSpec.describe "Admin manages pages", type: :system do
 
     it "shows the code of conduct link in the overrides section" do
       within(".pages__override_defaults") do
-        expect(page).to have_link("Code of Conduct", href: new_admin_page_path(slug: "code-of-conduct"))
-        expect(page).to have_link("View", href: code_of_conduct_path)
+        expect(page).to have_link("Code of Conduct", href: code_of_conduct_path)
+        expect(page).to have_link("Override", href: new_admin_page_path(slug: "code-of-conduct"))
       end
     end
 
     it "shows the privacy policy link in the overrides section" do
       within(".pages__override_defaults") do
-        expect(page).to have_link("Privacy Policy", href: new_admin_page_path(slug: "privacy"))
-        expect(page).to have_link("View", href: privacy_path)
+        expect(page).to have_link("Privacy Policy", href: privacy_path)
+        expect(page).to have_link("Override", href: new_admin_page_path(slug: "privacy"))
       end
     end
 
     it "shows the terms of use link in the overrides section" do
       within(".pages__override_defaults") do
-        expect(page).to have_link("Terms of Use", href: new_admin_page_path(slug: "terms"))
-        expect(page).to have_link("View", href: terms_path)
+        expect(page).to have_link("Terms of Use", href: terms_path)
+        expect(page).to have_link("Override", href: new_admin_page_path(slug: "terms"))
       end
     end
 
