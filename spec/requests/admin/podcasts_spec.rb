@@ -60,23 +60,28 @@ RSpec.describe "/admin/podcasts", type: :request do
   end
 
   describe "Updating" do
+    let(:update_params) do
+      {
+        title: "hello",
+        feed_url: "https://pod.example.com/rss.rss",
+        description: "Description",
+        itunes_url: "https://itunes.example.com",
+        overcast_url: "https://overcast.example.com",
+        android_url: "https://android.example.com",
+        soundcloud_url: "https://soundcloud.example.com",
+        website_url: "https://example.com",
+        twitter_username: "@ThePracticalDev",
+        pattern_image: "https://dummyimage.com/400x400.jpg",
+        main_color_hex: "ffffff",
+        slug: "postcast-test-url",
+        image: "https://dummyimage.com/400x400.jpg",
+        reachable: true,
+        published: true
+      }
+    end
+
     it "updates" do
-      put admin_podcast_path(podcast), params: { podcast: { title: "hello",
-                                                            feed_url: "https://pod.example.com/rss.rss",
-                                                            description: "Description",
-                                                            itunes_url: "https://itunes.example.com",
-                                                            overcast_url: "https://overcast.example.com",
-                                                            android_url: "https://android.example.com",
-                                                            soundcloud_url: "https://soundcloud.example.com",
-                                                            website_url: "https://example.com",
-                                                            twitter_username: "@ThePracticalDev",
-                                                            pattern_image: "https://dummyimage.com/400x400.jpg",
-                                                            main_color_hex: "#ffffff",
-                                                            slug: "postcast-test-url",
-                                                            image: "https://dummyimage.com/400x400.jpg",
-                                                            reachable: true,
-                                                            published: true
-                                                          } }
+      put admin_podcast_path(podcast), params: { podcast: update_params }
       podcast.reload
       expect(podcast.title).to eq("hello")
       expect(podcast.feed_url).to eq("https://pod.example.com/rss.rss")
@@ -87,31 +92,14 @@ RSpec.describe "/admin/podcasts", type: :request do
       expect(podcast.soundcloud_url).to eq("https://soundcloud.example.com")
       expect(podcast.website_url).to eq("https://example.com")
       expect(podcast.twitter_username).to eq("@ThePracticalDev")
-      expect(podcast.pattern_image).to eq("https://dummyimage.com/400x400.jpg")
-      expect(podcast.main_color_hex).to eq("#ffffff")
+      expect(podcast.main_color_hex).to eq("ffffff")
       expect(podcast.slug).to eq("postcast-test-url")
-      expect(podcast.image).to eq("https://dummyimage.com/400x400.jpg")
       expect(podcast.reachable).to eq(true)
       expect(podcast.published).to eq(true)
     end
 
     it "redirects after update" do
-      put admin_podcast_path(podcast), params: { podcast: { title: "hello",
-                                                            feed_url: "https://pod.example.com/rss.rss",
-                                                            description: "Description",
-                                                            itunes_url: "https://itunes.example.com",
-                                                            overcast_url: "https://overcast.example.com",
-                                                            android_url: "https://android.example.com",
-                                                            soundcloud_url: "https://soundcloud.example.com",
-                                                            website_url: "https://example.com",
-                                                            twitter_username: "@ThePracticalDev",
-                                                            pattern_image: "https://dummyimage.com/400x400.jpg",
-                                                            main_color_hex: "#ffffff",
-                                                            slug: "/test",
-                                                            image: "https://dummyimage.com/400x400.jpg",
-                                                            reachable: true,
-                                                            published: true
-                                                          } }
+      put admin_podcast_path(podcast), params: { podcast: update_params }
       expect(response).to redirect_to(admin_podcasts_path)
     end
   end
