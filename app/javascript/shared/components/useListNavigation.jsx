@@ -47,21 +47,18 @@ export function useListNavigation(
   focusableSelector,
   waterfallItemContainerSelector,
 ) {
+  function navigateToNextElement(direction) {
+    navigate(
+      itemContainerSelector,
+      focusableSelector,
+      waterfallItemContainerSelector,
+      direction,
+    );
+  }
+
   useKeyboardShortcuts({
-    [NAVIGATION_UP_KEY]: () =>
-      keyEventListener(
-        itemContainerSelector,
-        focusableSelector,
-        waterfallItemContainerSelector,
-        DIRECTIONS.UP,
-      ),
-    [NAVIGATION_DOWN_KEY]: () =>
-      keyEventListener(
-        itemContainerSelector,
-        focusableSelector,
-        waterfallItemContainerSelector,
-        DIRECTIONS.DOWN,
-      ),
+    [NAVIGATION_UP_KEY]: () => navigateToNextElement(DIRECTIONS.UP),
+    [NAVIGATION_DOWN_KEY]: () => navigateToNextElement(DIRECTIONS.DOWN),
   });
 }
 
@@ -125,7 +122,7 @@ ListNavigation.propTypes = {
  * @param {string} waterfallItemContainerSelector - The selector for the waterfall item container if the list uses a waterfall structure at any point
  * @param {string} direction - The navigation direction (up or down)
  */
-function keyEventListener(
+function navigate(
   itemContainerSelector,
   focusableSelector,
   waterfallItemContainerSelector,
@@ -140,18 +137,14 @@ function keyEventListener(
     nextContainer = getFirstVisibleElement(itemContainerSelector);
   }
   if (!nextContainer) {
-    nextContainer =
-      direction === DIRECTIONS.UP
-        ? getPreviousElement(
-            closestContainer,
-            itemContainerSelector,
-            waterfallItemContainerSelector,
-          )
-        : getNextElement(
-            closestContainer,
-            itemContainerSelector,
-            waterfallItemContainerSelector,
-          );
+    const getElementCallback =
+      direction === DIRECTIONS.UP ? getPreviousElement : getNextElement;
+
+    nextContainer = getElementCallback(
+      closestContainer,
+      itemContainerSelector,
+      waterfallItemContainerSelector,
+    );
   }
 
   const nextFocusable = nextContainer?.querySelector(focusableSelector);
