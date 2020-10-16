@@ -46,7 +46,7 @@ export function editMessage(editedMessage, successCb, failureCb) {
     .catch(failureCb);
 }
 
-export async function sendOpen(activeChannelId) {
+export async function activeChannelConnection(activeChannelId) {
   const response = await request(`/chat_channels/${activeChannelId}/open`, {
     method: 'POST',
     body: {},

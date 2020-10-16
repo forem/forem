@@ -8,8 +8,8 @@ if ApplicationConfig["PUSHER_APP_ID"].present?
   Pusher.logger = Rails.logger
   Pusher.encrypted = true
 
-  # Pusher::PushNotifications.configure do |config|
-  #   config.instance_id = ApplicationConfig["PUSHER_BEAMS_ID"]
-  #   config.secret_key = ApplicationConfig["PUSHER_BEAMS_KEY"]
-  # end
+  Pusher::PushNotifications.configure do |config|
+    config.instance_id = ApplicationConfig["PUSHER_BEAMS_ID"]
+    config.secret_key = ApplicationConfig["PUSHER_BEAMS_KEY"]
+  end
 end

@@ -11,7 +11,7 @@ import { addSnackbarItem } from '../Snackbar';
 import { store } from './components/ConnectStateProvider';
 import {
   getAllMessages,
-  sendOpen,
+  activeChannelConnection,
   getChannels,
   getUnopenedChannelIds,
   getContent,
@@ -287,7 +287,7 @@ function ChatContent() {
   };
 
   const handleOpenMessages = (receivedChatChannelId) => {
-    sendOpen(receivedChatChannelId).then((response) => {
+    activeChannelConnection(receivedChatChannelId).then((response) => {
       const newChannelsObj = state.chatChannels.map((channel) => {
         if (parseInt(response.channel, 10) === channel.chat_channel_id) {
           return { ...channel, last_opened_at: new Date() };
