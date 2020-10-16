@@ -2,14 +2,51 @@
 
 <header class="flex items-center mb-6">
   <h2 class="crayons-title">Pages</h2>
-  <%= link_to "New page", new_admin_page_path, class: "btn btn-primary ml-auto" %>
+  <%= link_to "New page", new_admin_page_path, class: "ml-auto crayons-btn crayons-btn--s" %>
 </header>
 
-<div class="crayons-card p-6">
+<div class="crayons-card p-6 pages__table">
   <% @pages.each do |page| %>
     <div class="flex py-2 items-center">
-      <%= link_to page.title, edit_admin_page_path(page.id) %>
-      <%= link_to "View", page.path, class: "ml-auto btn btn-secondary" %>
+      <%= link_to page.title, page.path %>
+      <%= link_to "Edit", edit_admin_page_path(page.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
     </div>
   <% end %>
+</div>
+
+<div class="mt-8 pages__override_defaults">
+  <div class="my-6">
+    <% if !@code_of_conduct || !@privacy || !@terms%>
+      <h2 class="mb-4 crayons-title">Override defaults</h2>
+      <div class="crayons-notice mb-4 crayons-notice--warning">
+        <strong>Note: Proceed with caution. When you edit any of the following pages, it will diverge from the original Forem version and you will no longer receive updates. You will see your updated version in the section above.</strong>
+      </div>
+      <div class="crayons-card p-6">
+        <% if !@code_of_conduct %>
+          <div class="flex py-2 items-center">
+              <%= link_to "Code of Conduct", code_of_conduct_path %>
+              <%= link_to "Override", new_admin_page_path(slug: "code-of-conduct"), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--danger" %>
+          </div>
+        <% end %>
+        <% if !@privacy %>
+          <div class="flex py-2 items-center">
+              <%= link_to "Privacy Policy", privacy_path %>
+              <%= link_to "Override", new_admin_page_path(slug: "privacy"), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--danger"  %>
+          </div>
+        <% end %>
+        <% if !@terms %>
+          <div class="flex py-2 items-center">
+              <%= link_to "Terms of Use", terms_path %>
+              <%= link_to "Override", new_admin_page_path(slug: "terms"), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--danger" %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="crayons-notice crayons-notice--info">
+        <strong>Note: You have overridden the code of conduct, privacy policy and terms of use. You will no longer receive updates on these pages from the Forem team.</strong>
+      </div>
+    <% end %>
+  </div>
+
+
 </div>

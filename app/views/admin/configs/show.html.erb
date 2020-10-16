@@ -1229,8 +1229,8 @@
                 <div class="crayons-field">
                   <%= admin_config_label :primary_brand_color_hex %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:description] %>
-                  <%= f.text_field :primary_brand_color_hex,
-                                   class: "crayons-textfield",
+                  <%= f.color_field :primary_brand_color_hex,
+                                   class: "crayons-color-selector",
                                    value: SiteConfig.primary_brand_color_hex,
                                    pattern: "^#+([a-fA-F0-9]{6})$",
                                    placeholder: Constants::SiteConfig::DETAILS[:primary_brand_color_hex][:placeholder] %>

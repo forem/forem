@@ -6,7 +6,6 @@ class OrganizationsController < ApplicationController
 
     @tab = "organization"
     @user = current_user
-    @tab_list = @user.settings_tab_list
 
     unless valid_image?
       render template: "users/edit"
@@ -29,7 +28,6 @@ class OrganizationsController < ApplicationController
   def update
     @user = current_user
     @tab = "organization"
-    @tab_list = @user.settings_tab_list
     set_organization
 
     unless valid_image?
