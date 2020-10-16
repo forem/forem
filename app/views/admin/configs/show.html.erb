@@ -456,6 +456,23 @@
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:staff_user_id][:description] %></div>
               </div>
 
+              <div class="form-group">
+                <%= admin_config_label :experience_low %>
+                <%= f.text_field :experience_low,
+                                 class: "form-control",
+                                 value: SiteConfig.experience_low,
+                                 placeholder: Constants::SiteConfig::DETAILS[:experience_low][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:experience_low][:description] %></div>
+              </div>
+
+              <div class="form-group">
+                <%= admin_config_label :experience_high %>
+                <%= f.text_field :experience_high,
+                                 class: "form-control",
+                                 value: SiteConfig.experience_high,
+                                 placeholder: Constants::SiteConfig::DETAILS[:experience_high][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:experience_high][:description] %></div>
+              </div>
               <%= render "form_submission", f: f %>
             </div>
           </div>
