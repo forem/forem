@@ -1,15 +1,14 @@
 import '@testing-library/jest-dom';
-import { renderHook } from '@testing-library/preact-hooks';
 import { fireEvent } from '@testing-library/preact';
+import { renderHook } from '@testing-library/preact-hooks';
 import { useListNavigation } from '../useListNavigation';
 
 const NAVIGATION_UP_KEY = 'KeyK';
 const NAVIGATION_DOWN_KEY = 'KeyJ';
 
-describe('List navigation', () => {
-  describe('useListNavigation', () => {
-    it('should focus on first element when nothing is focused', () => {
-      document.body.innerHTML = `
+describe('List navigation hook', () => {
+  it('should focus on first element when nothing is focused', () => {
+    document.body.innerHTML = `
       <div>
         <article class="container">
           <a href="/" class="focusable" id="focusable-1">link</a>
@@ -20,17 +19,17 @@ describe('List navigation', () => {
       </div>
     `;
 
-      renderHook(() => useListNavigation('article.container', 'a.focusable'));
+    renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-      const firstFocusable = document.querySelector('#focusable-1');
+    const firstFocusable = document.querySelector('#focusable-1');
 
-      fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
+    fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
 
-      expect(firstFocusable).toHaveFocus();
-    });
+    expect(firstFocusable).toHaveFocus();
+  });
 
-    it('should focus on immediate previous focusable on up key', () => {
-      document.body.innerHTML = `
+  it('should focus on immediate previous focusable on up key', () => {
+    document.body.innerHTML = `
       <div>
         <article class="container">
           <a href="/" class="focusable" id="focusable-1">link</a>
@@ -41,20 +40,20 @@ describe('List navigation', () => {
       </div>
     `;
 
-      renderHook(() => useListNavigation('article.container', 'a.focusable'));
+    renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-      const firstFocusable = document.querySelector('#focusable-1');
-      const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.querySelector('#focusable-1');
+    const secondFocusable = document.querySelector('#focusable-2');
 
-      secondFocusable.focus();
+    secondFocusable.focus();
 
-      fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
+    fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
 
-      expect(firstFocusable).toHaveFocus();
-    });
+    expect(firstFocusable).toHaveFocus();
+  });
 
-    it('should focus on immediate next focusable on down key', () => {
-      document.body.innerHTML = `
+  it('should focus on immediate next focusable on down key', () => {
+    document.body.innerHTML = `
       <div>
         <article class="container">
           <a href="/" class="focusable" id="focusable-1">link</a>
@@ -65,20 +64,20 @@ describe('List navigation', () => {
       </div>
     `;
 
-      renderHook(() => useListNavigation('article.container', 'a.focusable'));
+    renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-      const firstFocusable = document.querySelector('#focusable-1');
-      const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.querySelector('#focusable-1');
+    const secondFocusable = document.querySelector('#focusable-2');
 
-      firstFocusable.focus();
+    firstFocusable.focus();
 
-      fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
+    fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
 
-      expect(secondFocusable).toHaveFocus();
-    });
+    expect(secondFocusable).toHaveFocus();
+  });
 
-    it('should keep focus on up key when the start of the list is reached', () => {
-      document.body.innerHTML = `
+  it('should keep focus on up key when the start of the list is reached', () => {
+    document.body.innerHTML = `
       <div>
         <article class="container">
           <a href="/" class="focusable" id="focusable-1">link</a>
@@ -89,23 +88,23 @@ describe('List navigation', () => {
       </div>
     `;
 
-      renderHook(() => useListNavigation('article.container', 'a.focusable'));
+    renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-      const firstFocusable = document.querySelector('#focusable-1');
-      const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.querySelector('#focusable-1');
+    const secondFocusable = document.querySelector('#focusable-2');
 
-      secondFocusable.focus();
+    secondFocusable.focus();
 
-      fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
-      expect(firstFocusable).toHaveFocus();
+    fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
+    expect(firstFocusable).toHaveFocus();
 
-      // focus is already at the start of the list
-      fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
-      expect(firstFocusable).toHaveFocus();
-    });
+    // focus is already at the start of the list
+    fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
+    expect(firstFocusable).toHaveFocus();
+  });
 
-    it('should keep focus on down key when the bottom of the list is reached', () => {
-      document.body.innerHTML = `
+  it('should keep focus on down key when the bottom of the list is reached', () => {
+    document.body.innerHTML = `
       <div>
         <article class="container">
           <a href="/" class="focusable" id="focusable-1">link</a>
@@ -116,23 +115,23 @@ describe('List navigation', () => {
       </div>
     `;
 
-      renderHook(() => useListNavigation('article.container', 'a.focusable'));
+    renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-      const firstFocusable = document.querySelector('#focusable-1');
-      const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.querySelector('#focusable-1');
+    const secondFocusable = document.querySelector('#focusable-2');
 
-      firstFocusable.focus();
+    firstFocusable.focus();
 
-      fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
-      expect(secondFocusable).toHaveFocus();
+    fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
+    expect(secondFocusable).toHaveFocus();
 
-      // focus is already at the bottom of the list
-      fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
-      expect(secondFocusable).toHaveFocus();
-    });
+    // focus is already at the bottom of the list
+    fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
+    expect(secondFocusable).toHaveFocus();
+  });
 
-    it('should focus on previous element before waterfall container on up key', () => {
-      document.body.innerHTML = `
+  it('should focus on previous element before waterfall container on up key', () => {
+    document.body.innerHTML = `
       <div>
         <article class="container">
           <a href="/" class="focusable" id="focusable-1">link</a>
@@ -145,22 +144,22 @@ describe('List navigation', () => {
       </div>
     `;
 
-      renderHook(() =>
-        useListNavigation('article.container', 'a.focusable', 'div.waterfall'),
-      );
+    renderHook(() =>
+      useListNavigation('article.container', 'a.focusable', 'div.waterfall'),
+    );
 
-      const firstFocusable = document.querySelector('#focusable-1');
-      const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.querySelector('#focusable-1');
+    const secondFocusable = document.querySelector('#focusable-2');
 
-      secondFocusable.focus();
+    secondFocusable.focus();
 
-      fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
+    fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
 
-      expect(firstFocusable).toHaveFocus();
-    });
+    expect(firstFocusable).toHaveFocus();
+  });
 
-    it('should focus on next element inside waterfall container on down key', () => {
-      document.body.innerHTML = `
+  it('should focus on next element inside waterfall container on down key', () => {
+    document.body.innerHTML = `
       <div>
         <article class="container">
           <a href="/" class="focusable" id="focusable-1">link</a>
@@ -173,22 +172,22 @@ describe('List navigation', () => {
       </div>
     `;
 
-      renderHook(() =>
-        useListNavigation('article.container', 'a.focusable', 'div.waterfall'),
-      );
+    renderHook(() =>
+      useListNavigation('article.container', 'a.focusable', 'div.waterfall'),
+    );
 
-      const firstFocusable = document.querySelector('#focusable-1');
-      const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.querySelector('#focusable-1');
+    const secondFocusable = document.querySelector('#focusable-2');
 
-      firstFocusable.focus();
+    firstFocusable.focus();
 
-      fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
+    fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
 
-      expect(secondFocusable).toHaveFocus();
-    });
+    expect(secondFocusable).toHaveFocus();
+  });
 
-    it('should focus on previous element on up key when an unrelated element is between 2 relevant elements', async () => {
-      document.body.innerHTML = `
+  it('should focus on previous element on up key when an unrelated element is between 2 relevant elements', async () => {
+    document.body.innerHTML = `
       <div>
         <article class="container">
           <a href="/" class="focusable" id="focusable-1">link</a>
@@ -202,22 +201,20 @@ describe('List navigation', () => {
       </div>
     `;
 
-      renderHook(() =>
-        useListNavigation('article.container', 'a.focusable', undefined, true),
-      );
+    renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-      const firstFocusable = document.querySelector('#focusable-1');
-      const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.querySelector('#focusable-1');
+    const secondFocusable = document.querySelector('#focusable-2');
 
-      secondFocusable.focus();
+    secondFocusable.focus();
 
-      fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
+    fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
 
-      expect(firstFocusable).toHaveFocus();
-    });
+    expect(firstFocusable).toHaveFocus();
+  });
 
-    it('should focus on next element on down key when an unrelated element is between 2 relevant elements', () => {
-      document.body.innerHTML = `
+  it('should focus on next element on down key when an unrelated element is between 2 relevant elements', () => {
+    document.body.innerHTML = `
       <div>
         <article class="container">
           <a href="/" class="focusable" id="focusable-1">link</a>
@@ -231,74 +228,71 @@ describe('List navigation', () => {
       </div>
     `;
 
-      renderHook(() => useListNavigation('article.container', 'a.focusable'));
+    renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-      const firstFocusable = document.querySelector('#focusable-1');
-      const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.querySelector('#focusable-1');
+    const secondFocusable = document.querySelector('#focusable-2');
 
-      firstFocusable.focus();
+    firstFocusable.focus();
 
-      fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
+    fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
 
-      expect(secondFocusable).toHaveFocus();
-    });
-
-    it('should focus on previous element on up key when inner secondary element is focused', () => {
-      document.body.innerHTML = `
-      <div>
-        <article class="container">
-          <a href="/" class="focusable" id="focusable-1">link</a>
-          <a href="/" id="inner-secondary-1">link</a>
-        </article>
-        <article class="container">
-          <a href="/" class="focusable" id="focusable-2">link</a>
-          <a href="/" id="inner-secondary-2">link</a>
-        </article>
-      </div>
-    `;
-
-      renderHook(() => useListNavigation('article.container', 'a.focusable'));
-
-      const firstFocusable = document.querySelector('#focusable-1');
-      const secondInnerSecondaryFocusable = document.querySelector(
-        '#inner-secondary-2',
-      );
-
-      secondInnerSecondaryFocusable.focus();
-
-      fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
-
-      expect(firstFocusable).toHaveFocus();
-    });
-
-    it('should focus on next element on down key when inner secondary element is focused', () => {
-      document.body.innerHTML = `
-      <div>
-        <article class="container">
-          <a href="/" class="focusable" id="focusable-1">link</a>
-          <a href="/" id="inner-secondary-1">link</a>
-        </article>
-        <article class="container">
-          <a href="/" class="focusable" id="focusable-2">link</a>
-          <a href="/" id="inner-secondary-2">link</a>
-        </article>
-      </div>
-    `;
-
-      renderHook(() => useListNavigation('article.container', 'a.focusable'));
-
-      const firstInnerSecondaryFocusable = document.querySelector(
-        '#inner-secondary-1',
-      );
-      const secondFocusable = document.querySelector('#focusable-2');
-
-      firstInnerSecondaryFocusable.focus();
-
-      fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
-
-      expect(secondFocusable).toHaveFocus();
-    });
+    expect(secondFocusable).toHaveFocus();
   });
 
-  describe('<ListNavigation />', () => {});
+  it('should focus on previous element on up key when inner secondary element is focused', () => {
+    document.body.innerHTML = `
+      <div>
+        <article class="container">
+          <a href="/" class="focusable" id="focusable-1">link</a>
+          <a href="/" id="inner-secondary-1">link</a>
+        </article>
+        <article class="container">
+          <a href="/" class="focusable" id="focusable-2">link</a>
+          <a href="/" id="inner-secondary-2">link</a>
+        </article>
+      </div>
+    `;
+
+    renderHook(() => useListNavigation('article.container', 'a.focusable'));
+
+    const firstFocusable = document.querySelector('#focusable-1');
+    const secondInnerSecondaryFocusable = document.querySelector(
+      '#inner-secondary-2',
+    );
+
+    secondInnerSecondaryFocusable.focus();
+
+    fireEvent.keyDown(document, { code: NAVIGATION_UP_KEY });
+
+    expect(firstFocusable).toHaveFocus();
+  });
+
+  it('should focus on next element on down key when inner secondary element is focused', () => {
+    document.body.innerHTML = `
+      <div>
+        <article class="container">
+          <a href="/" class="focusable" id="focusable-1">link</a>
+          <a href="/" id="inner-secondary-1">link</a>
+        </article>
+        <article class="container">
+          <a href="/" class="focusable" id="focusable-2">link</a>
+          <a href="/" id="inner-secondary-2">link</a>
+        </article>
+      </div>
+    `;
+
+    renderHook(() => useListNavigation('article.container', 'a.focusable'));
+
+    const firstInnerSecondaryFocusable = document.querySelector(
+      '#inner-secondary-1',
+    );
+    const secondFocusable = document.querySelector('#focusable-2');
+
+    firstInnerSecondaryFocusable.focus();
+
+    fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
+
+    expect(secondFocusable).toHaveFocus();
+  });
 });
