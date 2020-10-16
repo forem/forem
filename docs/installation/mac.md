@@ -209,7 +209,7 @@ your local Elasticsearch installation, for example:
 3. Install bundler with `gem install bundler`
 4. Set up your environment variables/secrets
 
-   - Take a look at `Envfile` to see all the `ENV` variables we use and the fake
+   - Take a look at `.env_sample` to see all the `ENV` variables we use and the fake
      default provided for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
