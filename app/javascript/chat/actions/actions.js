@@ -17,6 +17,7 @@ export function sendMessage(messageObject, successCb, failureCb) {
         mentioned_users_id: messageObject.mentionedUsersId,
       },
     }),
+    credentials: 'same-origin',
   })
     .then((response) => response.json())
     .then(successCb)
@@ -38,6 +39,7 @@ export function editMessage(editedMessage, successCb, failureCb) {
         chat_channel_id: editedMessage.activeChannelId,
       },
     }),
+    credentials: 'same-origin',
   })
     .then((response) => response.json())
     .then(successCb)

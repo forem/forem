@@ -100,7 +100,6 @@ const ActiveChatChannel = ({
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
         handleMessageSubmitEdit(e.target.value);
-        e.target.value = '';
       }
     }
   };
@@ -133,7 +132,6 @@ const ActiveChatChannel = ({
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
         handleMessageSubmit(e.target.value);
-        e.target.value = '';
       }
     }
     if (e.target.value.includes('@')) {
@@ -309,7 +307,6 @@ const ActiveChatChannel = ({
     const message = document.getElementById('messageform').value;
     if (message.length > 0) {
       handleMessageSubmit(message);
-      document.getElementById('messageform').value = '';
     }
   };
 
@@ -318,7 +315,6 @@ const ActiveChatChannel = ({
     const message = document.getElementById('messageform').value;
     if (message.length > 0) {
       handleMessageSubmitEdit(message);
-      document.getElementById('messageform').value = '';
     }
   };
 
@@ -334,13 +330,11 @@ const ActiveChatChannel = ({
   };
 
   const handleEditMessageClose = () => {
-    const textarea = document.getElementById('messageform');
     updateState(Type.EDIT_MESSAGE_CLOSE, {
       startEditing: false,
       markdownEdited: false,
       activeEditMessage: { message: '', markdown: '' },
     });
-    textarea.value = '';
   };
 
   const getMentionedUsers = (message) => {
