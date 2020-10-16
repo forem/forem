@@ -1,14 +1,12 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
 
-  # Called upon successful redirect from Twitter
-  def twitter
-    callback_for(:twitter)
-  end
-
-  # Called upon successful redirect from GitHub
-  def github
-    callback_for(:github)
+  # Each available authentication method needs a related action that will be called
+  # as a callback on successful redirect from the upstream OAuth provider
+  Authentication::Providers.available.each do |provider_name|
+    define_method(provider_name) do
+      callback_for(provider_name)
+    end
   end
 
   # Callback for third party failures (shared by all providers)

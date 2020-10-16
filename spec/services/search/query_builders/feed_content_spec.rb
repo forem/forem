@@ -114,13 +114,13 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
     it "allows default params to be overriden" do
       params = { sort_by: "published_at", sort_direction: "asc", size: 20 }
       filter = described_class.new(params: params).as_hash
-      expect(filter.dig("sort")).to eq("published_at" => "asc")
-      expect(filter.dig("size")).to eq(20)
+      expect(filter["sort"]).to eq("published_at" => "asc")
+      expect(filter["size"]).to eq(20)
     end
 
     it "correctly sets default sort" do
       filter = described_class.new(params: {}).as_hash
-      expect(filter.dig("sort")).to eq(described_class::DEFAULT_PARAMS[:sort])
+      expect(filter["sort"]).to eq(described_class::DEFAULT_PARAMS[:sort])
     end
   end
 

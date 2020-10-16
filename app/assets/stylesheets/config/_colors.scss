@@ -166,7 +166,7 @@
 
   // Forms
   --form-bg: var(--base-0);
-  --form-bg-focus: var(--base-0);
+  --form-bg-focus: var(--base-inverted);
   --form-border: var(--base-30);
   --form-border-hover: var(--base-40);
   --form-border-focus: var(--accent-brand);
@@ -207,7 +207,7 @@
   --tab-pill-color-current: var(--base-inverted);
 
   // Tags
-  --tag-color: var(--base-70);
+  --tag-color: var(--base-60);
   --tag-color-hover: var(--base-100);
 
   // Story

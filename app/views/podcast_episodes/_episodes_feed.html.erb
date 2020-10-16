@@ -2,16 +2,9 @@
   <a href="<%= episode.path %>" class="small-pic-link-wrapper" id="article-link-<%= episode.id %>">
     <div class="single-article single-article-small-pic single-article-single-podcast">
       <div class="small-pic">
-        <%= cl_image_tag(episode.image_url || episode.podcast.image_url,
-                         type: "fetch",
-                         crop: "imagga_scale",
-                         width: 240,
-                         height: 240,
-                         quality: "auto",
-                         flags: "progressive",
-                         fetch_format: "auto",
-                         sign_url: true,
-                         alt: episode.title) %>
+        <%= optimized_image_tag(episode.image_url || episode.podcast.image_url,
+                                optimizer_options: { crop: "imagga_scale", width: 240, height: 240 },
+                                image_options: { alt: episode.title }) %>
       </div>
       <div class="content">
         <h3><span class="tag-identifier">podcast</span><%= episode.title %></h3>

@@ -17,12 +17,14 @@ Object {
           <a
             class="crayons-story__cover"
             href="/some-post/path"
+            style="background-image: url(/images/10.png);"
             title="Unbranded Home Loan Account"
           >
-            <div
-              class="crayons-story__cover__image"
-              style="background-image: url(/images/10.png);"
-            />
+            <span
+              class="hidden"
+            >
+              Unbranded Home Loan Account
+            </span>
           </a>
           <div
             class="crayons-story__body"
@@ -81,12 +83,6 @@ Object {
                   href="/some-post/path"
                   id="article-link-62407"
                 >
-                  <span
-                    class="crayons-story__flare-tag"
-                    style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                  >
-                    #javascript
-                  </span>
                   <span>
                     Unbranded Home Loan Account
                   </span>
@@ -98,6 +94,7 @@ Object {
                 <a
                   class="crayons-tag"
                   href="/t/javascript"
+                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                 >
                   <span
                     class="crayons-tag__prefix"
@@ -225,12 +222,14 @@ Object {
         <a
           class="crayons-story__cover"
           href="/some-post/path"
+          style="background-image: url(/images/10.png);"
           title="Unbranded Home Loan Account"
         >
-          <div
-            class="crayons-story__cover__image"
-            style="background-image: url(/images/10.png);"
-          />
+          <span
+            class="hidden"
+          >
+            Unbranded Home Loan Account
+          </span>
         </a>
         <div
           class="crayons-story__body"
@@ -289,12 +288,6 @@ Object {
                 href="/some-post/path"
                 id="article-link-62407"
               >
-                <span
-                  class="crayons-story__flare-tag"
-                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                >
-                  #javascript
-                </span>
                 <span>
                   Unbranded Home Loan Account
                 </span>
@@ -306,6 +299,7 @@ Object {
               <a
                 class="crayons-tag"
                 href="/t/javascript"
+                style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
               >
                 <span
                   class="crayons-tag__prefix"

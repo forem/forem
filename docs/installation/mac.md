@@ -209,7 +209,7 @@ your local Elasticsearch installation, for example:
 3. Install bundler with `gem install bundler`
 4. Set up your environment variables/secrets
 
-   - Take a look at `Envfile` to see all the `ENV` variables we use and the fake
+   - Take a look at `.env_sample` to see all the `ENV` variables we use and the fake
      default provided for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
@@ -218,14 +218,14 @@ your local Elasticsearch installation, for example:
    - For any key that you wish to enter/replace, follow the steps below.
 
      1. Create `.env` by copying from the provided template (i.e. with bash:
-        `cp config/.env_sample .env`). This is a personal file that is ignored
-        in git.
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      2. Obtain the development variable and apply the key you wish to
         enter/replace. i.e.:
 
      ```shell
-     export GITHUB_KEY="SOME_REAL_SECURE_KEY_HERE"
-     export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
    - If you are missing `ENV` variables on bootup, the

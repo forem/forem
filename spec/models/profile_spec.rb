@@ -1,14 +1,18 @@
 require "rails_helper"
 
 RSpec.describe Profile, type: :model do
-  it { is_expected.to validate_presence_of(:data) }
+  describe "validations" do
+    subject { create(:profile) }
+
+    it { is_expected.to validate_uniqueness_of(:user_id) }
+    it { is_expected.to validate_presence_of(:data) }
+  end
 
   context "when accessing profile fields" do
     before do
       create(:profile_field, label: "Test 1")
       create(:profile_field, label: "Test 2", input_type: :check_box)
-      create(:profile_field, label: "Test 3", active: false)
-      described_class.define_store_accessors!
+      described_class.refresh_attributes!
     end
 
     let(:profile) { described_class.new }
@@ -16,7 +20,6 @@ RSpec.describe Profile, type: :model do
     it "defines accessors for active profile fields", :aggregate_failures do
       expect(profile).to respond_to(:test1)
       expect(profile).to respond_to(:test2)
-      expect(profile).not_to respond_to(:test3)
     end
 
     it "performs ActiveRecord typecasting for profile fields", :aggregate_failures do

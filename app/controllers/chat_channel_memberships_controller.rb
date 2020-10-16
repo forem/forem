@@ -188,8 +188,7 @@ class ChatChannelMembershipsController < ApplicationController
     if params[:user_action] == "accept"
       membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
       if !membership
-        membership = ChatChannelMembership.new(user_id: current_user.id, chat_channel_id: chat_channel.id)
-        membership.save
+        membership = ChatChannelMembership.create(user_id: current_user.id, chat_channel_id: chat_channel.id)
         unless membership&.errors&.any?
           send_chat_action_message("@#{membership.user.username} join the channel", current_user, chat_channel.id,
                                    "joined")
@@ -277,7 +276,7 @@ class ChatChannelMembershipsController < ApplicationController
     temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
     message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
                              "chat_action" => action)
-    pusher_message_created(false, message, temp_message_id)
+    pusher_message_created(false, message, temp_message_id) unless message.left_channel?
   end
 
   def user_not_authorized

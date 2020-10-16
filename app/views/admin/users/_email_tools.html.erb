@@ -1,13 +1,15 @@
-<div class="row mb-3">
-  <div class="col-12">
-    <h2>Email Tools</h2>
+<div class="crayons-card p-6 grid gap-6">
+  <h2>Email Tools</h2>
+
+  <div>
     <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true do |f| %>
       Email last verified at: <%= @last_email_verification_date %>
       <%= f.hidden_field(:user_id, value: @user.id) %>
       <%= f.submit "Verify Email Ownership", class: "btn btn-primary float-right" %>
     <% end %>
   </div>
-  <div class="col-12">
+
+  <div>
     <h3>Email <%= @user.name %></h3>
     <%= form_with url: send_email_admin_user_path(@user), local: true do |f| %>
       <%= f.hidden_field(:user_id, value: @user.id) %>
@@ -18,10 +20,8 @@
       <%= f.submit "Send Email", class: "btn btn-primary float-right" %>
     <% end %>
   </div>
-</div>
 
-<div class="row mb-3">
-  <div class="col-12">
+  <div>
     <h3>Recent Emails</h3>
     <div class="list-group-flush">
       <% @user.email_messages.order(sent_at: :desc).limit(50).each do |email| %>

@@ -1,0 +1,29 @@
+Display email on profile,check_box,,,Basic
+Name,text_field,John Doe,,Basic
+Website URL,text_field,https://yoursite.com,,Basic
+Summary,text_area,A short bio...,,Basic
+Location,text_field,"Halifax, Nova Scotia",,Basic
+Facebook URL,text_field,https://facebook.com/...,,Links
+Youtube URL,text_field,https://www.youtube.com/channel/...,,Links
+StackOverflow URL,text_field,https://stackoverflow.com/users/...,,Links
+LinkedIn URL,text_field,https://www.linkedin.com/in/...,,Links
+Behance URL,text_field,https://www.behance.net/...,,Links
+Dribble URL,text_field,https://dribble.com/...,,Links
+Medium URL,text_field,https://medium.com/@...,,Links
+GitLab URL,text_field,https://gitlab.com/...,,Links
+Instagram URL,text_field,https://www.instagram.com/...,,Links
+Mastodon URL,text_field,https://...,,Links
+Twitch URL,text_field,https://www.twitch.tv/...,,Links
+Education,text_field,,,Work
+Employer name,text_field,Acme Inc.,,Work
+Employer URL,text_field,https://dev.com,,Work
+Employment title,text_field,Junior Frontend Engineer,,Work
+Looking for work,check_box,,,Work
+"Display ""looking for work"" on profile",check_box,,,Work
+Recruiters can contact me about job opportunities,check_box,,,Work
+Skills/Languages,text_area,,What tools and languages are you most experienced with? Are you specialized or more of a generalist?,Coding
+Currently learning,text_area,,"What are you learning right now? What are the new tools and languages you're picking up right now?",Coding
+Currently hacking on,text_area,,What projects are currently occupying most of your time?,Coding
+Available for,text_area,,"What kinds of collaborations or discussions are you available for? What's a good reason to say Hey! to you these days?",Coding
+Brand color 1,color_field,#000000,"Used for backgrounds, borders etc.",Branding
+Brand color 2,color_field,#000000,Used for texts (usually put on Brand color 1).,Branding

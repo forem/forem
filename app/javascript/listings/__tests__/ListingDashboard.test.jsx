@@ -2,6 +2,9 @@ import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
+
+import '../../../assets/javascripts/utilities/localDateTime';
+
 import { ListingDashboard } from '../listingDashboard';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -180,7 +183,15 @@ const listings = {
   selectedListings: 'user',
 };
 
+/* eslint-disable no-unused-vars */
+/* global globalThis timestampToLocalDateTimeLong timestampToLocalDateTimeShort */
+
 describe('<ListingDashboard />', () => {
+  afterAll(() => {
+    delete globalThis.timestampToLocalDateTimeLong;
+    delete globalThis.timestampToLocalDateTimeShort;
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(<ListingDashboard />);
     const results = await axe(container);
@@ -227,7 +238,7 @@ describe('<ListingDashboard />', () => {
     };
 
     getByText('asdfasdf (expired)', listing1GetByTextOptions);
-    getByText('Jun 11', listing1GetByTextOptions);
+    getByText('Jun 11, 2019', listing1GetByTextOptions);
 
     // listing category
     const listing1CfpCategory = getByText('cfp', listing1GetByTextOptions);
@@ -249,11 +260,11 @@ describe('<ListingDashboard />', () => {
     expect(careerTag.getAttribute('href')).toEqual('/listings?t=career');
 
     // edit and delete buttons
-    const editButton = getByText('EDIT', listing1GetByTextOptions);
+    const editButton = getByText('Edit', listing1GetByTextOptions);
 
     expect(editButton.getAttribute('href')).toEqual('/listings/23/edit');
 
-    const deleteButton = getByText('DELETE', listing1GetByTextOptions);
+    const deleteButton = getByText('Delete', listing1GetByTextOptions);
 
     expect(deleteButton.getAttribute('href')).toEqual(
       '/listings/cfp/asdfasdf-2ea8/delete_confirm',
@@ -265,7 +276,7 @@ describe('<ListingDashboard />', () => {
     };
 
     getByText('YOYOYOYOYOOOOOOOO (expired)', listing2GetByTextOptions);
-    getByText('May 11', listing2GetByTextOptions);
+    getByText('May 11, 2019', listing2GetByTextOptions);
 
     // listing category
     const listing2EventsCategory = getByText(
@@ -300,13 +311,13 @@ describe('<ListingDashboard />', () => {
     );
 
     // edit and delete buttons
-    const listing2EditButton = getByText('EDIT', listing2GetByTextOptions);
+    const listing2EditButton = getByText('Edit', listing2GetByTextOptions);
 
     expect(listing2EditButton.getAttribute('href')).toEqual(
       '/listings/24/edit',
     );
 
-    const listing2DeleteButton = getByText('DELETE', listing2GetByTextOptions);
+    const listing2DeleteButton = getByText('Delete', listing2GetByTextOptions);
 
     expect(listing2DeleteButton.getAttribute('href')).toEqual(
       '/listings/events/yoyoyoyoyoooooooo-4jcb/delete_confirm',
@@ -318,7 +329,7 @@ describe('<ListingDashboard />', () => {
     };
 
     getByText('hehhehe (expired)', listing3GetByTextOptions);
-    getByText('Apr 11', listing3GetByTextOptions);
+    getByText('Apr 11, 2019', listing3GetByTextOptions);
 
     // listing category
     const listing3CfpCategory = getByText('cfp', listing3GetByTextOptions);
@@ -328,13 +339,13 @@ describe('<ListingDashboard />', () => {
     // has no tags
 
     //     // edit and delete buttons
-    const listing3EditButton = getByText('EDIT', listing3GetByTextOptions);
+    const listing3EditButton = getByText('Edit', listing3GetByTextOptions);
 
     expect(listing3EditButton.getAttribute('href')).toEqual(
       '/listings/25/edit',
     );
 
-    const listing3DeleteButton = getByText('DELETE', listing3GetByTextOptions);
+    const listing3DeleteButton = getByText('Delete', listing3GetByTextOptions);
 
     expect(listing3DeleteButton.getAttribute('href')).toEqual(
       '/listings/cfp/hehhehe-5hld/delete_confirm',

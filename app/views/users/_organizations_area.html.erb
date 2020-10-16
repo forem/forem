@@ -8,7 +8,7 @@
         <% @user.organizations.each do |organization| %>
           <div class="widget-user-pic">
             <a href="/<%= organization.slug %>">
-              <img src="<%= ProfileImage.new(organization).get(width: 90) %>" alt="<%= organization.name %> profile image">
+              <img src="<%= Images::Profile.call(organization.profile_image_url, length: 90) %>" alt="<%= organization.name %> profile image">
             </a>
           </div>
         <% end %>

@@ -14,14 +14,11 @@ module Users
       user.blocked_blocks.delete_all
       user.webhook_endpoints.delete_all
       user.authored_notes.delete_all
-      user.backup_data.delete_all
       user.display_ad_events.delete_all
       user.email_messages.delete_all
       user.html_variants.delete_all
-      user.page_views.delete_all
       user.poll_skips.delete_all
       user.poll_votes.delete_all
-      user.rating_votes.delete_all
       user.response_templates.delete_all
       user.listings.destroy_all
       delete_feedback_messages(user)
@@ -35,13 +32,12 @@ module Users
     end
 
     def delete_social_media(user)
-      user.tweets.delete_all
       user.github_repos.delete_all
     end
 
     def delete_profile_info(user)
       user.notifications.delete_all
-      remove_reactions(user)
+      user.reactions.delete_all
       user.follows.delete_all
       Follow.followable_user(user.id).delete_all
       user.messages.delete_all
@@ -52,14 +48,6 @@ module Users
       user.credits.delete_all
       user.organization_memberships.delete_all
       user.profile_pins.delete_all
-    end
-
-    def remove_reactions(user)
-      readinglist_ids = user.reactions.readinglist.ids
-      user.reactions.delete_all
-      readinglist_ids.each do |id|
-        Search::RemoveFromIndexWorker.perform_async("Search::Reaction", id)
-      end
     end
   end
 end

@@ -1,0 +1,19 @@
+<div class="crayons-card p-6">
+  <div>
+    <h2 class="d-inline">Recent Reactions</h2>
+    <button type="button" data-toggle="collapse" data-target="#reactions-row" class="btn btn-secondary float-right">Toggle</button>
+  </div>
+  <div class="pt-6 collapse" id="reactions-row">
+    <% unless @related_vomit_reactions.empty? %>
+      <% @related_vomit_reactions.each do |reaction| %>
+        <a href="<%= reaction.reactable.path %>" class="list-group-item list-group-item-action px-5 d-flex justify-content-between">
+        <span>🤢 <%= reaction.category.capitalize %></span>
+        <span><strong><%= reaction.reactable_type %></strong><%= reaction.reactable_type == "User" ? "" : ": #{reaction.reactable.title}" %></span>
+        <em><%= reaction.created_at&.strftime("%b %e '%y") %></em>
+        </a>
+      <% end %>
+      <% else %>
+      <p><em>Nothing negative to see here! 👀</em></p>
+    <% end %>
+  </div>
+</div>

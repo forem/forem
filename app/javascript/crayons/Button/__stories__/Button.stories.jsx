@@ -5,7 +5,7 @@ import {
   text,
   boolean,
   select,
-} from '@storybook/addon-knobs/react';
+} from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import notes from './buttons.md';
 import { Button } from '@crayons';

@@ -1,3 +1,5 @@
+@import 'variables';
+
 #error_explanation {
   width: 100%;
   border: 2px solid #d94949;
@@ -20,5 +22,41 @@
     font-size: 16px;
     list-style: square;
     border-radius: 5px;
+  }
+}
+
+// Remove post confirmation
+.delete-confirm.container {
+  padding: 150px 10px;
+  min-height: 300px;
+  text-align: center;
+  h4 {
+    background: $black;
+    padding: 5px 8px;
+    color: $white;
+    display: inline-block;
+    margin-bottom: 0px;
+    border-radius: 3px;
+  }
+  h2 {
+    font-size: 22px;
+    margin-bottom: 40px;
+  }
+  a.delete-link {
+    background: $red;
+    color: white;
+    padding: 10px 15px;
+    &:hover {
+      color: white;
+      opacity: 0.9;
+    }
+  }
+  form button {
+    background: $red;
+    color: white;
+    font-size: 1.5em;
+    border: 0px;
+    border-radius: 3px;
+    padding: 6px 12px;
   }
 }

@@ -1,6 +1,5 @@
 class ListingsController < ApplicationController
   include ListingsToolkit
-  before_action :check_limit, only: [:create]
 
   INDEX_JSON_OPTIONS = {
     only: %i[
@@ -14,23 +13,28 @@ class ListingsController < ApplicationController
 
   DASHBOARD_JSON_OPTIONS = {
     only: %i[
-      title tag_list created_at expires_at bumped_at updated_at category id
+      title tag_list created_at expires_at bumped_at updated_at id
       user_id slug organization_id location published
     ],
+    methods: %i[category],
     include: {
       author: { only: %i[username name], methods: %i[username profile_image_90] }
     }
   }.freeze
 
+  # actions `create` and `update` are defined in the module `ListingsToolkit`,
+  # we thus silence Rubocop lexical scope filter cop: https://rails.rubystyle.guide/#lexically-scoped-action-filter
+  # rubocop:disable Rails/LexicallyScopedActionFilter
+  before_action :check_limit, only: [:create]
   before_action :set_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
   before_action :raise_suspended, only: %i[new create update]
   before_action :authenticate_user!, only: %i[edit update new dashboard]
   after_action :verify_authorized, only: %i[edit update]
+  # rubocop:enable Rails/LexicallyScopedActionFilter
 
   def index
-    published_listings = Listing.where(published: true)
-    @displayed_listing = published_listings.find_by(slug: params[:slug]) if params[:slug]
+    @displayed_listing = Listing.where(published: true).find_by(slug: params[:slug]) if params[:slug]
 
     if params[:view] == "moderate"
       not_found unless @displayed_listing
@@ -39,10 +43,7 @@ class ListingsController < ApplicationController
 
     @listings =
       if params[:category].blank?
-        published_listings
-          .order(bumped_at: :desc)
-          .includes(:user, :organization, :taggings)
-          .limit(12)
+        listings_for_index_view
       else
         Listing.none
       end
@@ -60,14 +61,6 @@ class ListingsController < ApplicationController
     @credits = current_user.credits.unspent
   end
 
-  def create
-    super
-  end
-
-  def update
-    super
-  end
-
   def edit
     authorize @listing
     @organizations = current_user.organizations
@@ -76,7 +69,7 @@ class ListingsController < ApplicationController
 
   def dashboard
     listings = current_user.listings
-      .includes(:organization, :taggings)
+      .includes(:organization, :taggings, :listing_category)
     @listings_json = listings.to_json(DASHBOARD_JSON_OPTIONS)
 
     organizations_ids = current_user.organization_memberships
@@ -128,7 +121,19 @@ class ListingsController < ApplicationController
   end
 
   def process_after_update
-    redirect_to "/listings"
+    # The following sets variables used in the index view. We render the
+    # index view directly to avoid having to redirect.
+    #
+    # Redirects lead to a race condition where we redirect to a cached view
+    # after updating data and we don't bust the cache fast enough before
+    # hitting the view, therefore stale content ends up being served from
+    # cache.
+    #
+    # https://github.com/forem/forem/issues/10338#issuecomment-693401481
+    @listings = listings_for_index_view
+    @listings_json = @listings.to_json(INDEX_JSON_OPTIONS)
+
+    render :index
   end
 
   def process_after_unpublish
@@ -137,5 +142,14 @@ class ListingsController < ApplicationController
 
   def check_limit
     rate_limit!(:listing_creation)
+  end
+
+  # This is a convenience method to query listings for use in the index view in
+  # the index action and process_after_update method
+  def listings_for_index_view
+    Listing.where(published: true)
+      .order(bumped_at: :desc)
+      .includes(:user, :organization, :taggings)
+      .limit(12)
   end
 end
