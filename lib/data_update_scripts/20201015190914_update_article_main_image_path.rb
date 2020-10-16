@@ -3,12 +3,12 @@ module DataUpdateScripts
     def run
       return unless ENV["FOREM_CONTEXT"] == "forem_cloud"
 
-      Article.find_each do |article|
+      Article.where.not(main_image: [nil, ""]).each do |article|
         next unless article.main_image&.starts_with? "https://res.cloudinary.com/"
 
         index = article.main_image.index(URL.url)
-        article.main_image = article.main_image[index..].gsub("/images/", "/remoteimages/")
-        article.save
+        raw_image_path = article.main_image[index..].gsub("/images/", "/remoteimages/")
+        article.update_column(:main_image, raw_image_path)
       end
     end
   end
