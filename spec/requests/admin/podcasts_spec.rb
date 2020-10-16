@@ -93,7 +93,7 @@ RSpec.describe "/admin/podcasts", type: :request do
         twitter_username: "@ThePracticalDev",
         pattern_image: fixture_file_upload("files/800x600.png", "image/png"),
         main_color_hex: "ffffff",
-        image: fixture_file_upload("files/podcast.png", "image/png")
+        image: fixture_file_upload("files/podcast.png", "image/png"),
         slug: "postcast-test-url",
         reachable: true,
         published: true,
