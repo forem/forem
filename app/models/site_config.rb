@@ -50,6 +50,8 @@ class SiteConfig < RailsSettings::Base
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
                                            Time.zone.today.year
   field :staff_user_id, type: :integer, default: 1
+  field :experience_low, type: :string, default: "Total Newbies"
+  field :experience_high, type: :string, default: "Experienced Users"
 
   # Emails
   field :email_addresses, type: :hash, default: {
