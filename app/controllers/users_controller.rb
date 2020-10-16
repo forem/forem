@@ -31,13 +31,13 @@ class UsersController < ApplicationController
       return redirect_to sign_up_path
     end
     set_user
-    set_tabs(params["tab"] || "profile")
+    set_current_tab(params["tab"] || "profile")
     handle_settings_tab
   end
 
   # PATCH/PUT /users/:id.:format
   def update
-    set_tabs(params["user"]["tab"])
+    set_current_tab(params["user"]["tab"])
 
     unless valid_image?
       render :edit, status: :bad_request
@@ -73,7 +73,7 @@ class UsersController < ApplicationController
   end
 
   def update_language_settings
-    set_tabs("misc")
+    set_current_tab("misc")
     @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
     if @user.save
       flash[:settings_notice] = "Your language settings were successfully updated."
@@ -85,7 +85,7 @@ class UsersController < ApplicationController
   end
 
   def request_destroy
-    set_tabs("account")
+    set_current_tab("account")
 
     if destroy_request_in_progress?
       notice = "You have already requested account deletion. Please, check your email for further instructions."
@@ -106,11 +106,11 @@ class UsersController < ApplicationController
     destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
     raise ActionController::RoutingError, "Not Found" unless destroy_token.present? && destroy_token == params[:token]
 
-    set_tabs("account")
+    set_current_tab("account")
   end
 
   def full_delete
-    set_tabs("account")
+    set_current_tab("account")
     if @user.email?
       Users::DeleteWorker.perform_async(@user.id)
       sign_out @user
@@ -123,7 +123,7 @@ class UsersController < ApplicationController
   end
 
   def remove_identity
-    set_tabs("account")
+    set_current_tab("account")
 
     error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
     unless Authentication::Providers.enabled?(params[:provider])
@@ -256,7 +256,7 @@ class UsersController < ApplicationController
     when "response-templates"
       handle_response_templates_tab
     else
-      not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
+      not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
     end
   end
 
@@ -331,8 +331,7 @@ class UsersController < ApplicationController
     authorize @user
   end
 
-  def set_tabs(current_tab = "profile")
-    @tab_list = @user.settings_tab_list
+  def set_current_tab(current_tab = "profile")
     @tab = current_tab
   end
 

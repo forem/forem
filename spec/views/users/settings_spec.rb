@@ -8,7 +8,6 @@ RSpec.describe "users/edit", type: :view do
     before do
       sign_in user
       assign(:user, user)
-      assign(:tab_list, user.settings_tab_list)
       assign(:tab, "organization")
     end
 
