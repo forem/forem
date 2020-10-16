@@ -30,23 +30,11 @@ module Profiles
       return unless @profile.save
 
       # Propagate changes back to the `users` table
-      sync_to_user
       self
     end
 
     def success?
       @success
-    end
-
-    private
-
-    def sync_to_user
-      user_attributes = @profile.data.transform_keys do |key|
-        Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
-      end
-      @profile.user._skip_profile_sync = true
-      @success = true if @profile.user.update(user_attributes.except("custom_attributes"))
-      @profile.user._skip_profile_sync = false
     end
   end
 end

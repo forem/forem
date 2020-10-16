@@ -90,6 +90,13 @@ RSpec.configure do |config|
   config.before do
     # Worker jobs shouldn't linger around between tests
     Sidekiq::Worker.clear_all
+
+    # NOTE: @citizen428 needed while we delegate from User to Profile to keep
+    # spec changes limited for the time being.
+    ProfileField.destroy_all
+    csv = Rails.root.join("lib/data/dev_profile_fields.csv")
+    ProfileFields::ImportFromCsv.call(csv)
+    Profile.refresh_attributes!
   end
 
   config.before(:each, stub_elasticsearch: true) do |_example|
@@ -120,6 +127,9 @@ RSpec.configure do |config|
 
   config.after do
     SiteConfig.clear_cache
+    # NOTE: @citizen428 needed while we delegate from User to Profile to keep
+    # spec changes limited for the time being.
+    ProfileField.destroy_all
   end
 
   # Only turn on VCR if :vcr is included metadata keys

@@ -1000,12 +1000,6 @@ RSpec.describe User, type: :model do
   end
 
   describe "profiles" do
-    before do
-      create(:profile_field, label: "Available for")
-      create(:profile_field, label: "Brand Color 1")
-      Profile.refresh_attributes!
-    end
-
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)
       expect(user.profile).to be_present
