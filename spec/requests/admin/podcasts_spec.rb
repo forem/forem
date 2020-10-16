@@ -76,7 +76,7 @@ RSpec.describe "/admin/podcasts", type: :request do
         slug: "postcast-test-url",
         image: "https://dummyimage.com/400x400.jpg",
         reachable: true,
-        published: true
+        published: true,
       }
     end
 
