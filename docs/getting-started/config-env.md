@@ -4,7 +4,7 @@ title: Configuring Environment Variables
 
 # Configuring environment variables and secret keys
 
-Take a look at `Envfile`. This file lists all the `ENV` variables we use and
+Take a look at `.env_sample`. This file lists all the `ENV` variables we use and
 provides a fake default for any missing keys.
 
 The [backend guide][backend_guide] will show you how to get free API keys for

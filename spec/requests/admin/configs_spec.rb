@@ -85,6 +85,15 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
 
+        it "allows all providers to be disabled" do
+          # We have to send _something_ for an update, so we'll simulate the borwser omitting the auth
+          # providers array when no options are selected
+          expect do
+            post "/admin/config", params: { site_config: { ga_tracking_id: "123" },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :authentication_providers).to([])
+        end
+
         it "allows all authentication providers to be unset" do
           post "/admin/config", params: { site_config: { authentication_providers: [] },
                                           confirmation: confirmation_message }
