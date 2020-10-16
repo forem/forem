@@ -7,8 +7,8 @@ module DataUpdateScripts
         next unless article.main_image&.starts_with? "https://res.cloudinary.com/"
 
         index = article.main_image.index(URL.url)
-        raw_image_path = article.main_image[index..].gsub("/images/", "/remoteimages/")
-        article.update_column(:main_image, raw_image_path)
+        article.main_image = article.main_image[index..].gsub("/images/", "/remoteimages/")
+        article.save
       end
     end
   end
