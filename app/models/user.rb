@@ -448,21 +448,6 @@ class User < ApplicationRecord
     end
   end
 
-  def settings_tab_list
-    %w[
-      Profile
-      UX
-      Integrations
-      Notifications
-      Publishing\ from\ RSS
-      Organization
-      Response\ Templates
-      Billing
-      Account
-      Misc
-    ]
-  end
-
   def profile_image_90
     Images::Profile.call(profile_image_url, length: 90)
   end

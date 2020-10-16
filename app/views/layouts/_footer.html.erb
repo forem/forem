@@ -1,7 +1,7 @@
 <footer class="crayons-footer print-hidden">
   <div id="footer-container" class="crayons-layout crayons-footer__container">
     <div class="crayons-footer__info">
-      <div><a href="/" class="crayons-footer__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a></div>
+      <div><%= render "layouts/logo" %></div>
       <p><%= SiteConfig.community_description %></p>
       <div><%= render partial: "layouts/social_media" %></div>
       <%# The following copy is necessary for compatability with the Forem AGPL licence which requires instances to link back to the source. %>

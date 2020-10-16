@@ -6,7 +6,7 @@ module Constants
         placeholder: ""
       },
       allow_email_password_login: {
-        description: "Can users login with only email and password?",
+        description: "Can users login using email and password?",
         placeholder: ""
       },
       authentication_providers: {
@@ -294,6 +294,10 @@ module Constants
       },
       twitter_secret: {
         description: "The \"API secret key\" portion of consumer keys in the Twitter developer portal.",
+        placeholder: ""
+      },
+      video_encoder_key: {
+        description: "Secret key used to allow AWS video encoding through the VideoStatesController",
         placeholder: ""
       }
       # Dynamic values ommitted: configurable_rate_limits and social_media_handles

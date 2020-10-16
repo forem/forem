@@ -30,7 +30,8 @@
   data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
   <header class="crayons-header" role="banner">
     <div class="crayons-header__container">
-      <a href="/" class="site-logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+      <%= render "layouts/logo" %>
+
       <h1 class="pl-4 fs-l">
         Admin
         <span class="color-base-40">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>

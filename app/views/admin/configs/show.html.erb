@@ -104,9 +104,20 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:health_check_token][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:health_check_token][:description] %></div>
               </div>
+              <div class="form-group">
+                <%= admin_config_label :video_encoder_key %>
+                <%= f.text_field :video_encoder_key,
+                                 class: "form-control",
+                                 value: SiteConfig.video_encoder_key,
+                                 placeholder: Constants::SiteConfig::DETAILS[:video_encoder_key][:placeholder] %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:video_encoder_key][:description] %></div>
+              </div>
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -116,89 +127,202 @@
                          expanded: "false"
                        } %>
             <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
-              <div class="form-group">
-                <%= admin_config_label :invite_only_mode %>
-                <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" } %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :allow_email_password_registration %>
-                <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :allow_email_password_login %>
-                <%= f.check_box :allow_email_password_login, checked: SiteConfig.allow_email_password_login %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:allow_email_password_login][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :authentication_providers %>
-                <%= select_tag "site_config[authentication_providers]",
-                               options_from_collection_for_select(
-                                 authentication_available_providers,
-                                 :provider_name,
-                                 :official_name,
-                                 authentication_enabled_providers.map(&:provider_name),
-                               ),
-                               multiple: true,
-                               class: "form-control selectpicker",
-                               data: { target: "config.authenticationProviders" } %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %></div>
-              </div>
+              <section class="mb-6">
+                <h3 class="crayons-subtitle-3 mb-3">
+                  General
+                </h3>
+                <div class="form-group">
+                  <div class="crayons-field--checkbox">
+                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" }, class: "crayons-checkbox" %>
+                    <div>
+                      <%= admin_config_label :invite_only_mode %>
+                      <p class="crayons-field__description">
+                        <%= Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section>
+                <h3 class="crayons-subtitle-3 mb-3">
+                  Authentication methods
+                </h3>
+                <div class="form-group">
+                  <%= admin_config_label :authentication_providers %>
+                  <p class="crayons-field__description">
+                    <%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %>
+                  </p>
+                  <%= select_tag "site_config[authentication_providers]",
+                                 options_from_collection_for_select(
+                                   authentication_available_providers,
+                                   :provider_name,
+                                   :official_name,
+                                   authentication_enabled_providers.map(&:provider_name),
+                                 ),
+                                 multiple: true,
+                                 class: "form-control selectpicker",
+                                 data: { target: "config.authenticationProviders" } %>
+                </div>
+
+                <section class="config-authentication__item">
+                  <figure class="config-authentication__item--icon">
+                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                  </figure>
+                  <div class="config-authentication__item--container">
+                    <div class="config-authentication__item--label">
+                      <p class="fw-medium">
+                        Email address and password
+                      </p>
+                    </div>
+                    <div class="config-authentication__item--body">
+                      <fieldset class="config-authentication-form">
+                        <div class="crayons-field--checkbox">
+                          <%= f.check_box :allow_email_password_login, checked: SiteConfig.allow_email_password_login, class: "crayons-checkbox" %>
+                          <div>
+                            <%= admin_config_label :allow_email_password_login %>
+                            <p class="crayons-field__description">
+                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_login][:description] %>
+                            </p>
+                          </div>
+                        </div>
+                        <div class="crayons-field--checkbox">
+                          <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration, class: "crayons-checkbox" %>
+                          <div>
+                            <%= admin_config_label :allow_email_password_registration %>
+                            <p class="crayons-field__description">
+                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %>
+                            </p>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="config-authentication__item">
+                  <figure class="config-authentication__item--icon">
+                    <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                  </figure>
+                  <div class="config-authentication__item--container">
+                    <div class="config-authentication__item--label">
+                      <p class="fw-medium">
+                        Twitter
+                      </p>
+                    </div>
+                    <div class="config-authentication__item--body">
+                      <fieldset class="config-authentication-form">
+                        <div class="crayons-field">
+                          <%= admin_config_label :twitter_key %>
+                          <p class="crayons-field__description">
+                            <%= Constants::SiteConfig::DETAILS[:twitter_key][:description] %>
+                          </p>
+                          <%= f.text_field :twitter_key,
+                                           class: "crayons-textfield",
+                                           value: SiteConfig.twitter_key,
+                                           placeholder: Constants::SiteConfig::DETAILS[:twitter_key][:placeholder] %>
+                        </div>
+
+                        <div class="crayons-field">
+                          <%= admin_config_label :twitter_secret %>
+                          <p class="crayons-field__description">
+                            <%= Constants::SiteConfig::DETAILS[:twitter_secret][:description] %>
+                          <p>
+                          <%= f.text_field :twitter_secret,
+                                           class: "crayons-textfield",
+                                           value: SiteConfig.twitter_secret,
+                                           placeholder: Constants::SiteConfig::DETAILS[:twitter_secret][:placeholder] %>
+                        </div>
+                      </fieldset>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="config-authentication__item">
+                  <figure class="config-authentication__item--icon">
+                    <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                  </figure>
+                  <div class="config-authentication__item--container">
+                    <div class="config-authentication__item--label">
+                      <p class="fw-medium">
+                        Github
+                      </p>
+                    </div>
+                    <div class="config-authentication__item--body">
+                      <fieldset class="config-authentication-form">
+                        <div class="crayons-field">
+                          <%= admin_config_label :github_key %>
+                          <p class="crayons-field__description">
+                            <%= Constants::SiteConfig::DETAILS[:github_key][:description] %>
+                          </p>
+                          <%= f.text_field :github_key,
+                                           class: "crayons-textfield",
+                                           value: SiteConfig.github_key,
+                                           placeholder: Constants::SiteConfig::DETAILS[:github_key][:placeholder] %>
+
+                        </div>
+                        <div class="crayons-field">
+                          <%= admin_config_label :github_secret %>
+                          <p class="config-authentication__row--subtitle">
+                            <%= Constants::SiteConfig::DETAILS[:github_secret][:description] %>
+                          </p>
+                          <%= f.text_field :github_secret,
+                                           class: "crayons-textfield",
+                                           value: SiteConfig.github_secret,
+                                           placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
+                        </div>
+                      </fieldset>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="config-authentication__item">
+                  <figure class="config-authentication__item--icon">
+                    <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                  </figure>
+                  <div class="config-authentication__item--container">
+                    <div class="config-authentication__item--label">
+                      <p class="fw-medium">
+                        Facebook
+                      </p>
+                    </div>
+                    <div class="config-authentication__item--body">
+                      <fieldset class="config-authentication-form">
+                        <div class="crayons-field">
+                          <%= admin_config_label :facebook_key %>
+                          <p class="crayons-field__description">
+                            <%= Constants::SiteConfig::DETAILS[:facebook_key][:description] %>
+                          </p>
+                          <%= f.text_field :facebook_key,
+                                           class: "crayons-textfield",
+                                           value: SiteConfig.facebook_key,
+                                           placeholder: Constants::SiteConfig::DETAILS[:facebook_key][:placeholder] %>
+                        </div>
+
+                        <div class="crayons-field">
+                          <%= admin_config_label :facebook_secret %>
+                            <p class="crayons-field__description">
+                            <%= Constants::SiteConfig::DETAILS[:facebook_secret][:description] %>
+                            </p>
+                          <%= f.text_field :facebook_secret,
+                                           class: "crayons-textfield",
+                                           value: SiteConfig.facebook_secret,
+                                           placeholder: Constants::SiteConfig::DETAILS[:facebook_secret][:placeholder] %>
+                        </div>
+                      </fieldset>
+                    </div>
+                  </div>
+                </section>
+              </section>
               <div class="crayons-notice crayons-notice--info mb-4">
-                Notice: Changing authentication keys will not take affect until devops restarts the app (about once per day). This will soon be instant.
+                Changing authentication keys will not take affect until this forem instance is restarted.
               </div>
-              <div class="form-group">
-                <%= admin_config_label :twitter_key %>
-                <%= f.text_field :twitter_key,
-                                 class: "form-control",
-                                 value: SiteConfig.twitter_key,
-                                 placeholder: Constants::SiteConfig::DETAILS[:twitter_key][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:twitter_key][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :twitter_secret %>
-                <%= f.text_field :twitter_secret,
-                                 class: "form-control",
-                                 value: SiteConfig.twitter_secret,
-                                 placeholder: Constants::SiteConfig::DETAILS[:twitter_secret][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:twitter_secret][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :github_key %>
-                <%= f.text_field :github_key,
-                                 class: "form-control",
-                                 value: SiteConfig.github_key,
-                                 placeholder: Constants::SiteConfig::DETAILS[:github_key][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:github_key][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :github_secret %>
-                <%= f.text_field :github_secret,
-                                 class: "form-control",
-                                 value: SiteConfig.github_secret,
-                                 placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:github_secret][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :facebook_key %>
-                <%= f.text_field :facebook_key,
-                                 class: "form-control",
-                                 value: SiteConfig.facebook_key,
-                                 placeholder: Constants::SiteConfig::DETAILS[:facebook_key][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:facebook_key][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :facebook_secret %>
-                <%= f.text_field :facebook_secret,
-                                 class: "form-control",
-                                 value: SiteConfig.facebook_secret,
-                                 placeholder: Constants::SiteConfig::DETAILS[:facebook_secret][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:facebook_secret][:description] %></div>
-              </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -262,9 +386,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:campaign_featured_tags][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:campaign_featured_tags][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -327,9 +455,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:staff_user_id][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:staff_user_id][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -368,9 +500,13 @@
                   <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:credit_prices_in_cents][:xlarge][:description] %></div>
                 </div>
               <% end %>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -399,9 +535,13 @@
                 <% end %>
               <% end %>
             </div>
+
+            <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -428,9 +568,13 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:periodic_email_digest_max][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -453,9 +597,13 @@
                 <%= f.check_box :display_jobs_banner, checked: SiteConfig.display_jobs_banner %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:display_jobs_banner][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -472,9 +620,13 @@
                                  value: SiteConfig.ga_tracking_id %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:ga_tracking_id][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -498,9 +650,13 @@
                                  value: SiteConfig.recaptcha_secret_key %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -592,9 +748,13 @@
                   <%= SiteConfig.right_navbar_svg_icon.html_safe %>
                 </div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -665,9 +825,13 @@
                                  value: SiteConfig.mascot_image_description %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_image_description][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -691,9 +855,13 @@
                   <% end %>
                 <% end %>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -738,9 +906,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:payment_pointer][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:payment_pointer][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -781,9 +953,13 @@
                                  value: SiteConfig.mailchimp_community_moderators_id %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mailchimp_community_moderators_id][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -849,8 +1025,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:suggested_users][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:suggested_users][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
+
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -879,8 +1060,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
+
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -912,9 +1098,13 @@
                   <% end %>
                 <% end %>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -932,8 +1122,13 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:sponsor_headline][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sponsor_headline][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
+
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -952,9 +1147,13 @@
                                  pattern: "[a-z0-9,]+" %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:sidebar_tags][:description] %></div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
+        <% end %>
 
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
             <%= render partial: "card_header",
                        locals: {
@@ -1005,21 +1204,10 @@
                 <%= f.check_box :public, checked: SiteConfig.public %>
                 <div class="alert alert-info">Are most of the site pages (posts, profiles, etc. public?) — BE VERY CAUTIOUS IN CHANGING THIS</div>
               </div>
+
+              <%= render "form_submission", f: f %>
             </div>
           </div>
-          <% if current_user.has_role?(:single_resource_admin, Config) %>
-            <div class="card mt-3">
-              <div class="card-header">Confirm and Submit</div>
-              <div class="card-body">
-                <div class="form-group">
-                  <%= label_tag :confirmation %>
-                  <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
-                  <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
-                  <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
-                </div>
-              </div>
-            </div>
-          <% end %>
         <% end %>
       </div>
     </div>

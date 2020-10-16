@@ -32,9 +32,9 @@ describe('<SingleRepo />', () => {
     );
 
     getByText('dev.to');
-    getByText('SELECT');
+    getByText('Select');
 
-    const removeButton = queryByText('REMOVE');
+    const removeButton = queryByText('Remove');
 
     expect(removeButton).toBeNull();
   });
@@ -45,9 +45,9 @@ describe('<SingleRepo />', () => {
     );
 
     getByText('dev.to');
-    getByText('REMOVE');
+    getByText('Remove');
 
-    const selectButton = queryByText('SELECT');
+    const selectButton = queryByText('Select');
 
     expect(selectButton).toBeNull();
   });
@@ -58,10 +58,10 @@ describe('<SingleRepo />', () => {
     );
 
     getByText('dev.to');
-    getByText('SELECT');
+    getByText('Select');
     getByText('fork');
 
-    const removeButton = queryByText('REMOVE');
+    const removeButton = queryByText('Remove');
 
     expect(removeButton).toBeNull();
   });

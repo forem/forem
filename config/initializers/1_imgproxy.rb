@@ -1,3 +1,5 @@
+# This file has to run before Carrierwave
+
 Imgproxy.configure do |config|
   # imgproxy endpoint
   #
