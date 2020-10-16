@@ -923,6 +923,13 @@
                        } %>
             <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
               <div class="form-group">
+                <%= admin_config_label :mailchimp_api_key, "Mailchimp API Key" %>
+                <%= f.text_field :mailchimp_api_key,
+                                 class: "form-control",
+                                 value: SiteConfig.mailchimp_api_key %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mailchimp_api_key][:description] %></div>
+              </div>
+              <div class="form-group">
                 <%= admin_config_label :mailchimp_newsletter_id, "Main Newsletter" %>
                 <%= f.text_field :mailchimp_newsletter_id,
                                  class: "form-control",
