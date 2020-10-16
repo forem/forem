@@ -54,7 +54,7 @@ module Admin
       CacheBuster.bust("/shell_bottom") # Cached at edge, sent to service worker.
       CacheBuster.bust("/onboarding") # Page is cached at edge.
       CacheBuster.bust("/") # Page is cached at edge.
-      Rails.cache.delete_matched("*-#{ApplicationConfig['RELEASE_FOOTPRINT']}") # Delete all caches tied to this key.
+      SiteConfig.admin_action_taken_at = Time.current # Used as cache key
     end
   end
 end
