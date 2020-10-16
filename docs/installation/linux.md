@@ -89,7 +89,7 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use
+   - Take a look at `.env_sample`. This file lists all the `ENV` variables we use
      and provides a fake default for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
