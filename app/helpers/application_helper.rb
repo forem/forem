@@ -293,6 +293,6 @@ module ApplicationHelper
   # rubocop:enable Rails/OutputSafety
 
   def admin_config_description(content)
-    tag.p(content, class: "crayons-field__description")
+    tag.p(content, class: "crayons-field__description") unless content.empty?
   end
 end
