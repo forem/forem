@@ -14,7 +14,7 @@ export const TagsFollowed = ({ tags = [] }) => {
         >
           <a
             title={`${tag.name} tag`}
-            className="crayons-link crayons-link--contentful py-2"
+            className="crayons-link crayons-link--contentful py-2 px-2"
             href={`/t/${tag.name}`}
           >
             {`#${tag.name}`}
