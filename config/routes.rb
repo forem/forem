@@ -59,7 +59,7 @@ Rails.application.routes.draw do
       end
 
       namespace :users do
-        resources :gdpr_delete_requests
+        resources :gdpr_delete_requests, only: %i[index destroy]
       end
 
       resources :articles, only: %i[index show update]
