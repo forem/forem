@@ -52,8 +52,6 @@ RSpec.describe "Admin manages pages", type: :system do
 
   describe "when the defaults are overridden" do
     before do
-      sign_in admin
-      visit admin_pages_path
       create(:page,
              slug: "code-of-conduct",
              body_html: "<div>Code of Conduct</div>",
@@ -73,6 +71,8 @@ RSpec.describe "Admin manages pages", type: :system do
              description: "A page that describes the terms of use for the application",
              is_top_level_path: true
             )
+      sign_in admin
+      visit admin_pages_path
     end
 
     it "shows the notice that the defaults have been overriden" do
