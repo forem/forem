@@ -30,7 +30,10 @@ function isFormField(element) {
  * const shortcuts = {
  *   "ctrl+alt+KeyG": (e) => {
  *     e.preventDefault();
- *     alert("Control Alt G has been pressed")
+ *     alert("Control Alt G has been pressed");
+ *   },
+ *   "?": (e) => {
+ *     setIsHelpVisible(true);
  *   }
  * }
  *
@@ -53,7 +56,7 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
       // If no special keys are pressed and focus is inside a field return
       if (e.target instanceof Node && isFormField(e.target) && !keys) return;
       
-      const shortcut = shortcuts[`${keys}${e.code}`];
+      const shortcut = shortcuts[`${keys}${e.code}`] || shortcuts[`${keys}${e.key.toLowerCase()}`];
       if (shortcut) shortcut(e);
     };
 
