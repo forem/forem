@@ -168,6 +168,10 @@
     font-size: var(--fs-s);
     font-weight: var(--fw-normal); // for when it's inside --label
     margin: 0; //todo remove
+
+    &:empty {
+      display: none;
+    }
   }
 
   > * + * {
