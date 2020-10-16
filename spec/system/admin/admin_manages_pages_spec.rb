@@ -76,7 +76,7 @@ RSpec.describe "Admin manages pages", type: :system do
     end
 
     it "shows the notice that the defaults have been overriden" do
-      expect(page).to have_content("You will no longer receive updates on these pages from Forem")
+      expect(page).to have_content("You will no longer receive updates on these pages from the Forem team")
     end
 
     it "shows the overriden pages in the pages table" do
