@@ -18,22 +18,21 @@ matter of flexibility and experimentation.
 Each Forem can have a feed style set by the admin of that community (originally
 implemented [in a PR from mid-2020](https://github.com/forem/forem/pull/8721)).
 
-Currently, we have two styles: `rich` and `basic`. Where `rich` always displays the
-cover image in the feed, `basic` hides it from the feed view.
+Currently, we have two styles: `rich` and `basic`. Where `rich` always displays
+the cover image in the feed, `basic` hides it from the feed view.
 
-Over time, we'll continue to expand on what a `rich` feed and more minimal feed
-means and looks like.
+Over time, we'll improve and expand our feed style options.
 
 ### Feed strategy
 
 Each Forem can have a feed strategy set by the admin of that community
-(originally implemented [in a late-2020 PR](https://github.com/forem/forem/pull/10245)).
-Currently, we have two strategies: `basic` and `large_forem_experimental`. The
-"experimental" component dictates that there is some split testing, but
-generally these are just cues for an underlying algorithm which can change
-liberally.
+(originally implemented
+[in a late-2020 PR](https://github.com/forem/forem/pull/10245)). Currently, we
+have two strategies: `basic` and `large_forem_experimental`. The "experimental"
+component dictates that there is some split testing, but generally these are
+just cues for an underlying algorithm which can change liberally.
 
 The feed endpoint is driven by the `feeds_controller` and the content is found
-in objects such as `Articles::Feeds::Basic`. We should lean toward
-adaptability and versatility in the long run here, even if we are just at the
-beginning of this transparent journey.
+in objects such as `Articles::Feeds::Basic`. We should lean toward adaptability
+and versatility in the long run here, even if we are just at the beginning of
+this transparent journey.
