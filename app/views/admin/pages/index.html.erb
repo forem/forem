@@ -2,14 +2,14 @@
 
 <header class="flex items-center mb-6">
   <h2 class="crayons-title">Pages</h2>
-  <%= link_to "New page", new_admin_page_path, class: "btn btn-primary ml-auto" %>
+  <%= link_to "New page", new_admin_page_path, class: "ml-auto crayons-btn crayons-btn--s" %>
 </header>
 
 <div class="crayons-card p-6 pages__table">
   <% @pages.each do |page| %>
     <div class="flex py-2 items-center">
-      <%= link_to page.title, edit_admin_page_path(page.id) %>
-      <%= link_to "View", page.path, class: "ml-auto btn btn-secondary" %>
+      <%= link_to page.title, page.path %>
+      <%= link_to "Edit", edit_admin_page_path(page.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
     </div>
   <% end %>
 </div>
@@ -31,21 +31,21 @@
   <div class="crayons-card p-6">
     <% if !@code_of_conduct %>
       <div class="flex py-2 items-center">
-          <%= link_to "Code of Conduct", new_admin_page_path(slug: "code-of-conduct") %>
-          <%= link_to "View", code_of_conduct_path, class: "ml-auto btn btn-secondary" %>
+          <%= link_to "Code of Conduct", code_of_conduct_path %>
+          <%= link_to "Override", new_admin_page_path(slug: "code-of-conduct"), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--danger" %>
       </div>
     <% end %>
     <% if !@privacy %>
-    <div class="flex py-2 items-center">
-        <%= link_to "Privacy Policy", new_admin_page_path(slug: "privacy") %>
-        <%= link_to "View", privacy_path , class: "ml-auto btn btn-secondary" %>
-    </div>
+      <div class="flex py-2 items-center">
+          <%= link_to "Privacy Policy", privacy_path %>
+          <%= link_to "Override", new_admin_page_path(slug: "privacy"), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--danger"  %>
+      </div>
     <% end %>
     <% if !@terms %>
-    <div class="flex py-2 items-center">
-        <%= link_to "Terms of Use", new_admin_page_path(slug: "terms") %>
-        <%= link_to "View", terms_path, class: "ml-auto btn btn-secondary" %>
-    </div>
+      <div class="flex py-2 items-center">
+          <%= link_to "Terms of Use", terms_path %>
+          <%= link_to "Override", new_admin_page_path(slug: "terms"), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--danger" %>
+      </div>
     <% end %>
   </div>
 </div>
