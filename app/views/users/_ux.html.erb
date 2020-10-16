@@ -47,7 +47,7 @@
   <div class="crayons-card grid gap-6 p-6">
     <h2>Content Customization</h2>
     <div class="crayons-field">
-      <%= f.label :experience_level, "What is your approximate coding experience level (1-5)?", class: "crayons-field__label" %>
+      <%= f.label :experience_level, "What is your approximate experience level (1-5)?", class: "crayons-field__label" %>
       <div class="theme-selector-field grid grid-cols-5">
         <% user_experience_levels.each_with_index do |exp, i| %>
           <%= render partial: "experience_selector", locals: { f: f, exp: exp, i: i, label: user_experience_labels } %>
