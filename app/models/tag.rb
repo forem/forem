@@ -9,20 +9,23 @@ class Tag < ActsAsTaggableOn::Tag
   # This model doesn't inherit from ApplicationRecord so this has to be included
   include Purgeable
   include Searchable
+
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
+  HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
 
   belongs_to :badge, optional: true
   belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
+
+  has_many :buffer_updates, dependent: :nullify
+
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
-  validates :text_color_hex,
-            format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
-  validates :bg_color_hex,
-            format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
-  validates :category, inclusion: { in: ALLOWED_CATEGORIES }
+  validates :text_color_hex, format: HEX_COLOR_REGEXP, allow_nil: true
+  validates :bg_color_hex, format: HEX_COLOR_REGEXP, allow_nil: true
+  validates :category, presence: true, inclusion: { in: ALLOWED_CATEGORIES }
 
   validate :validate_alias_for, if: :alias_for?
   validate :validate_name, if: :name?

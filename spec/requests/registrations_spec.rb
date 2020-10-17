@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Registrations", type: :request do
   let(:user) { create(:user) }
 
-  describe "Sign up" do
+  describe "Log In" do
     context "when not logged in" do
       it "shows the sign in page with single sign on options" do
         get sign_up_path
@@ -15,31 +15,80 @@ RSpec.describe "Registrations", type: :request do
         end
       end
 
-      it "shows the sign in text for password based authentication" do
-        get sign_up_path
-
-        expect(response.body).to include("Have a password? Continue with your email address")
-      end
-
-      it "does not show the password based authentication hint if there are no single sign in options enabled" do
+      it "only shows the single sign on options if they are present" do
         allow(Authentication::Providers).to receive(:enabled).and_return([])
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
 
         get sign_up_path
 
         expect(response.body).not_to include("Have a password? Continue with your email address")
       end
+    end
 
-      it "only shows the single sign on options if they are present" do
-        allow(Authentication::Providers).to receive(:enabled).and_return([])
+    context "when email login is enabled in /admin/config" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(true)
+      end
 
+      it "shows the sign in text for password based authentication" do
         get sign_up_path
 
-        expect(response.body).to include("Password")
-        expect(response.body).not_to include("Continue with")
+        expect(response.body).to include("Have a password? Continue with your email address")
+      end
+    end
+
+    context "when email login is disabled in /admin/config" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
+      end
+
+      it "does not show the sign in text for password based authentication" do
+        get sign_up_path
+
+        expect(response.body).not_to include("Have a password? Continue with your email address")
       end
     end
 
     context "when logged in" do
+      it "redirects to main feed" do
+        sign_in user
+
+        get sign_up_path
+        expect(response).to redirect_to("/?signin=true")
+      end
+    end
+  end
+
+  describe "Create Account" do
+    context "when email registration allowed" do
+      before { SiteConfig.allow_email_password_registration = true }
+
+      it "shows the sign in page with email option" do
+        get sign_up_path, params: { state: "new-user" }
+
+        expect(response.body).to include("Sign up with Email")
+      end
+
+      it "shows the sign in text for password based authentication" do
+        get sign_up_path, params: { state: "new-user" }
+
+        expect(response.body).to include("View more sign in options")
+      end
+    end
+
+    context "when email registration not allowed" do
+      before { SiteConfig.allow_email_password_registration = false }
+
+      it "does not show email sign up option" do
+        SiteConfig.allow_email_password_registration = false
+
+        get sign_up_path, params: { state: "new-user" }
+
+        expect(response.body).not_to include("Sign up with Email")
+      end
+    end
+
+    context "when user logged in" do
       it "redirects to main feed" do
         sign_in user
 

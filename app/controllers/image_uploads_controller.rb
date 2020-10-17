@@ -34,15 +34,7 @@ class ImageUploadsController < ApplicationController
       return
     end
 
-    cloudinary_link(uploaders)
-  end
-
-  def cloudinary_link(uploaders)
-    links = if params[:wrap_cloudinary]
-              [ApplicationController.helpers.cloud_cover_url(uploaders[0].url)]
-            else
-              uploaders.map(&:url)
-            end
+    links = uploaders.map(&:url)
     respond_to do |format|
       format.json { render json: { links: links }, status: :ok }
     end

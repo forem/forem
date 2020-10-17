@@ -54,6 +54,14 @@
   }
 }
 
+.crayons-link--header {
+  color: var(--link-color);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  padding-left: var(--su-2);
+  margin-bottom: var(--su-2);
+}
+
 .crayons-link--block {
   display: flex;
   align-items: center;

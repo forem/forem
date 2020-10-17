@@ -7,8 +7,18 @@ title: Windows
 ## Installing prerequisites
 
 These prerequisites assume you're working on a `64-bit Windows 10` operating
-system machine updated to _version 2004, Build 19041_ or _higher_. To check your
-Windows version, press `Win Logo key` + `R`, type `winver`, then click OK.
+system machine
+
+- updated to _version 1903, Build 18362_ or _higher_ for **x64 system**
+- updated to _version 2004, Build 19041_ or _higher_ for **ARM64 system**
+
+For further information regarding system requirements, head over to the
+[Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/install-win10#requirements)
+or
+[Microsoft's blog on extending WSL 2 Support](https://devblogs.microsoft.com/commandline/wsl-2-support-is-coming-to-windows-10-versions-1903-and-1909/).
+
+To check your Windows version, press `Win Logo key` + `R`, type `winver`, then
+click OK.
 
 There are other ways to get Forem running on lower versions, but we recommend a
 complete WSL 2 installation.
@@ -246,8 +256,8 @@ To install Elasticsearch perform the following steps:
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys.
+   - Take a look at `.env_sample`. This file lists all the `ENV` variables we
+     use and provides a fake default for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
    - The [backend guide](/backend) will show you how to get free API keys for

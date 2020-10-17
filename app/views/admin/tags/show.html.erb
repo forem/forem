@@ -1,6 +1,6 @@
 <header class="flex mb-6 items-center">
   <div>
-    <h2 class="fs-2xl s:fs-3xl"><span class="crayons-tag crayons-tag--2xl" style="background:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">#<%= @tag.name %></span></h2>
+    <h2 class="crayons-title"><span class="crayons-tag crayons-tag--2xl" style="background:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">#<%= @tag.name %></span></h2>
     <p>Tagged <%= @tag.taggings_count %> times</p>
   </div>
 
@@ -82,11 +82,11 @@
       </div>
       <div class="form-group">
         <%= f.label :bg_color_hex %>
-        <%= f.text_field :bg_color_hex, class: "color-picker form-control", required: true %>
+        <%= f.color_field :bg_color_hex, class: "color-picker form-control", required: true %>
       </div>
       <div class="form-group">
         <%= f.label :text_color_hex %>
-        <%= f.text_field :text_color_hex, class: "color-picker form-control", required: true %>
+        <%= f.color_field :text_color_hex, class: "color-picker form-control", required: true %>
       </div>
       <%= f.submit class: "btn btn-primary float-right" %>
     <% end %>

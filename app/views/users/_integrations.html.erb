@@ -14,21 +14,3 @@
     <% end %>
   </div>
 </div>
-
-<% if false # removed since isn't fully working right now %>
-  <%= form_tag users_update_twitch_username_path, class: "crayons-card grid gap-6 p-6 mb-6" do |f| %>
-    <header class="grid gap-2">
-      <h3>Live Streaming <span class="crayons-indicator crayons-indicator--accent">beta</span></h3>
-      <p>Add your Twitch username, and then checkout <a href="/live/<%= @user.username %>">dev.to/live/<%= @user.username %></a>.</p>
-    </header>
-
-    <div class="crayons-notice crayons-notice--warning">It's a new thing we're trying out. Soon we'll be able to indicate when any community member is currently streaming.</div>
-
-    <div class="crayons-field">
-      <%= label_tag "user[twitch_username]", "Twitch Username", class: "crayons-field__label" %>
-      <%= text_field_tag "user[twitch_username]", @user.twitch_username, class: "crayons-textfield" %>
-    </div>
-
-    <div><button class="crayons-btn" type="submit">Submit</button></div>
-  <% end %>
-<% end %>

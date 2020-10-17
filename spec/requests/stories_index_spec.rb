@@ -104,6 +104,16 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
 
+    it "does not set cache-related headers if private" do
+      allow(SiteConfig).to receive(:public).and_return(false)
+      get "/"
+      expect(response.status).to eq(200)
+
+      expect(response.headers["X-Accel-Expires"]).to eq(nil)
+      expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      expect(response.headers["Surrogate-Key"]).to eq(nil)
+    end
+
     it "sets Fastly Surrogate-Key headers" do
       get "/"
       expect(response.status).to eq(200)
@@ -119,10 +129,18 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.headers["X-Accel-Expires"]).to eq("600")
     end
 
-    it "shows default meta keywords" do
+    it "shows default meta keywords if set" do
       SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
       get "/"
       expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
+    end
+
+    it "does not show default meta keywords if not set" do
+      SiteConfig.meta_keywords = { default: "" }
+      get "/"
+      expect(response.body).not_to include(
+        "<meta name=\"keywords\" content=\"cool developers, civil engineers\">",
+      )
     end
 
     it "shows only one cover if basic feed style" do
@@ -348,10 +366,18 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(sponsorship.blurb_html)
     end
 
-    it "shows meta keywords" do
+    it "shows meta keywords if set" do
       SiteConfig.meta_keywords = { tag: "software engineering, ruby" }
       get "/t/#{tag.name}"
       expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
+    end
+
+    it "does not show meta keywords if not set" do
+      SiteConfig.meta_keywords = { tag: "" }
+      get "/t/#{tag.name}"
+      expect(response.body).not_to include(
+        "<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">",
+      )
     end
 
     context "with user signed in" do
@@ -372,7 +398,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "has mod-action-button" do
         get "/t/#{tag.name}"
-        expect(response.body).to include('<a class="cta mod-action-button"')
+        expect(response.body).to include('<a class="crayons-btn mod-action-button"')
       end
 
       it "does not render pagination" do

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserSettings", type: :request do
-  let(:user) { create(:user, twitch_username: nil) }
+  let(:user) { create(:user) }
 
   describe "GET /settings/:tab" do
     context "when not signed-in" do
@@ -274,47 +274,6 @@ RSpec.describe "UserSettings", type: :request do
         sidekiq_perform_enqueued_jobs do
           expect { send_request(export_requested: false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
-      end
-    end
-  end
-
-  describe "POST /users/update_twitch_username" do
-    before { sign_in user }
-
-    it "updates twitch username" do
-      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      user.reload
-      expect(user.twitch_username).to eq("anna_lightalloy")
-    end
-
-    it "redirects after updating" do
-      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      expect(response).to redirect_to "/settings/integrations"
-    end
-
-    it "schedules the job while updating" do
-      sidekiq_assert_enqueued_with(job: Streams::TwitchWebhookRegistrationWorker, args: [user.id]) do
-        post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      end
-    end
-
-    it "removes twitch_username" do
-      user.update_column(:twitch_username, "robot")
-      post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
-      user.reload
-      expect(user.twitch_username).to be_nil
-    end
-
-    it "doesn't schedule the job when removing" do
-      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
-        post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
-      end
-    end
-
-    it "doesn't schedule the job when saving the same twitch username" do
-      user.update_column(:twitch_username, "robot")
-      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
-        post "/users/update_twitch_username", params: { user: { twitch_username: "robot" } }
       end
     end
   end

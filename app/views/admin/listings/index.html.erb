@@ -1,5 +1,11 @@
-<header class="mb-6">
-  <h2 class="fs-2xl s:fs-3xl mb-4">Listings</h2>
+
+<header class="flex items-center mb-6">
+  <h2 class="crayons-title mb-4">Listings</h2>
+  <a href="/admin/listings/categories"
+  aria-label="Listing Categories"
+  class="ml-auto crayons-btn">
+    Listing Categories
+  </a>
 </header>
 
 <%= form_tag(admin_listings_path, method: "get", role: "search", class: "crayons-card crayons-card--secondary p-4 flex items-center") do %>

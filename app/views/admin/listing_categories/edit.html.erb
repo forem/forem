@@ -1,0 +1,7 @@
+<h2 class="fs-2xl s:fs-3xl mb-6">Edit Listing Category:</h2>
+<div class="crayons-card p-6">
+  <%= form_for([:admin, @listing_category], method: :patch) do %>
+    <%= render "form" %>
+    <%= submit_tag "Update Listing Category", class: "btn btn-primary" %>
+  <% end %>
+</div>

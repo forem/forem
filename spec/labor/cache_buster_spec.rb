@@ -27,6 +27,7 @@ RSpec.describe CacheBuster, type: :labor do
       expect(edge_cache_bust_service.path).to eq(path)
       expect(edge_cache_bust_service.provider).to eq("fastly")
       expect(edge_cache_bust_service.class).to eq(EdgeCache::Bust)
+      expect(edge_cache_bust_service.response).not_to be(nil)
     end
   end
 

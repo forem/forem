@@ -1,4 +1,5 @@
-/* global require module process */
+/* eslint-env node */
+
 const path = require('path');
 const { environment } = require('@rails/webpacker');
 const HoneybadgerSourceMapPlugin = require('@honeybadger-io/webpack');
@@ -19,10 +20,7 @@ environment.splitChunks((config) => {
       ...config.resolve,
       alias: {
         ...(config.resolve ? config.resolve.alias : {}),
-        '@crayons': path.resolve(
-          __dirname,
-          '../../app/javascript/crayons',
-        ) /* global __dirname */,
+        '@crayons': path.resolve(__dirname, '../../app/javascript/crayons'),
         '@utilities': path.resolve(__dirname, '../../app/javascript/utilities'),
       },
     },
@@ -61,7 +59,10 @@ if (process.env.HONEYBADGER_API_KEY && process.env.ASSETS_URL) {
       assetsUrl: process.env.ASSETS_URL,
       silent: false,
       ignoreErrors: false,
-      revision: process.env.RELEASE_FOOTPRINT || process.env.HEROKU_SLUG_COMMIT || 'master',
+      revision:
+        process.env.RELEASE_FOOTPRINT ||
+        process.env.HEROKU_SLUG_COMMIT ||
+        'master',
     }),
   );
 }
