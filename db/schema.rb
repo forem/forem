@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_09_160628) do
+ActiveRecord::Schema.define(version: 2020_10_17_160628) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1261,12 +1261,12 @@ ActiveRecord::Schema.define(version: 2020_10_09_160628) do
     t.string "invited_by_type"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
-    t.datetime "last_changed_archive_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
+    t.datetime "last_reacted_at", default: "2017-01-01 05:00:00"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
