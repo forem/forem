@@ -4,7 +4,7 @@
       <div class="ltag__stackexchange--title">
       <% logo_to_use = site == "stackoverflow" ? "stackoverflow-logo.svg" : "stackexchange-logo.svg" %>
         <h1>
-          <img src="<%= ActionController::Base.helpers.asset_path(logo_to_use) %>" alt="">
+          <img src="<%= ActionController::Base.helpers.asset_path(logo_to_use) %>" loading="lazy" />
             <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
               <%= post_type == "question" ? "" : "<span class='title-flare'>answer</span> re: ".html_safe %> <%= CGI.unescapeHTML title %>
             </a>
@@ -18,11 +18,11 @@
         </div>
       </div>
       <a class="ltag__stackexchange--score-container" href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
-        <img src="<%= ActionController::Base.helpers.asset_path("stackexchange-arrow-up.svg") %>" alt="">
+        <img src="<%= ActionController::Base.helpers.asset_path("stackexchange-arrow-up.svg") %>" loading="lazy" />
         <div class="ltag__stackexchange--score-number">
           <%= score %>
         </div>
-        <img src="<%= ActionController::Base.helpers.asset_path("stackexchange-arrow-down.svg") %>" alt="">
+        <img src="<%= ActionController::Base.helpers.asset_path("stackexchange-arrow-down.svg") %>" loading="lazy" />
       </a>
     </header>
   </div>

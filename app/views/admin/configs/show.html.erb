@@ -358,7 +358,7 @@
                 <% if SiteConfig.campaign_sidebar_image.present? %>
                   <div class="row mt-2">
                     <div class="col-12">
-                      <img alt="Campaign sidebar image" class="img-fluid" src="<%= SiteConfig.campaign_sidebar_image %>" />
+                      <img alt="Campaign sidebar image" class="img-fluid" src="<%= SiteConfig.campaign_sidebar_image %>" loading="lazy" />
                     </div>
                   </div>
                 <% end %>
@@ -691,7 +691,7 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:main_social_image][:placeholder] %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:main_social_image][:description] %></div>
                 <% if SiteConfig.main_social_image.present? %>
-                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" loading="lazy" />
                 <% end %>
 
                 <div class="form-group">
@@ -701,7 +701,7 @@
                                    value: SiteConfig.favicon_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
                   <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:favicon_url][:description] %></div>
-                  <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
+                  <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" loading="lazy" />
                 </div>
 
                 <div class="form-group">
@@ -712,7 +712,7 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
                   <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:logo_png][:description] %></div>
                   <% if SiteConfig.logo_png.present? %>
-                    <img class="preview" src="<%= SiteConfig.logo_png %>" />
+                    <img class="preview" src="<%= SiteConfig.logo_png %>" loading="lazy" />
                   <% end %>
                 </div>
 
@@ -739,7 +739,7 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:secondary_logo_url][:placeholder] %>
                   <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:secondary_logo_url][:description] %></div>
                   <% if SiteConfig.secondary_logo_url.present? %>
-                    <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
+                    <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" loading="lazy" />
                   <% end %>
                 </div>
 
@@ -799,7 +799,7 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:mascot_image_url][:placeholder] %>
 
                 <div class="col-12">
-                  <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
+                  <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" loading="lazy" />
                 </div>
 
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_image_url][:description] %></div>
@@ -813,7 +813,7 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:placeholder] %>
 
                 <div class="col-12">
-                  <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_footer_image_url %>" />
+                  <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_footer_image_url %>" loading="lazy" />
                 </div>
 
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:mascot_footer_image_url][:description] %></div>
@@ -994,7 +994,7 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:onboarding_logo_image][:placeholder] %>
                 <div class="row mt-2">
                   <div class="col-12">
-                    <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" />
+                    <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" loading="lazy" />
                   </div>
                   <div class="col-12">
                     <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:onboarding_logo_image][:description] %></div>
@@ -1010,7 +1010,7 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:onboarding_background_image][:placeholder] %>
                 <div class="row mt-2">
                   <div class="col-12">
-                    <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
+                    <img alt="onboarding background image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" loading="lazy" />
                   </div>
                   <div class="col-12">
                     <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:onboarding_background_image][:description] %></div>
@@ -1026,7 +1026,7 @@
                                  placeholder: Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:placeholder] %>
                 <div class="row mt-2">
                   <div class="col-12">
-                    <img alt="onboarding taskcard image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
+                    <img alt="onboarding taskcard image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" loading="lazy" />
                   </div>
                   <div class="col-12">
                     <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:onboarding_taskcard_image][:description] %></div>

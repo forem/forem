@@ -38,7 +38,7 @@ function buildCommentHTML(comment) {
           <div class="inner-comment '+customClass+'">\
             <div class="details">\
               <a href="/'+comment.user.username+'">\
-                <img class="profile-pic" src="'+comment.user.profile_pic+'" alt="'+comment.user.username+'">\
+                <img class="profile-pic" src="'+comment.user.profile_pic+'" alt="'+comment.user.username+'" loading="lazy" />\
                 <span class="comment-username"><span class="comment-username-inner">'+comment.user.name+'</span></span>\
               </a>\
                 '+twitterIcon+'\
@@ -96,8 +96,8 @@ function actions(comment) {
 function reactions(comment) {
   if (comment.newly_created) {
     return '<button class="reaction-button reacted" id="button-for-comment-'+comment.id+'" data-comment-id="'+comment.id+'">\
-              <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="Favorite heart outline button">\
-              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button">\
+              <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="Favorite heart outline button" loading="lazy" />\
+              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" loading="lazy" />\
               <span class="reactions-count" id="reactions-count-'+comment.id+'">1</span></button>';
   } else {
     if (comment.heart_ids.indexOf(userData().id) > -1) {
@@ -106,8 +106,8 @@ function reactions(comment) {
       var reactedClass = ""
     }
     return '<button style="background:white" class="reaction-button '+ reactedClass +'" id="button-for-comment-'+comment.id+'" data-comment-id="'+comment.id+'">\
-              <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="Favorite heart outline button">\
-              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button">\
+              <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="Favorite heart outline button" loading="lazy" />\
+              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" loading="lazy" />\
               <span class="reactions-count" id="reactions-count-'+comment.id+'">'+comment.public_reactions_count+'</span></button>';
   }
 }

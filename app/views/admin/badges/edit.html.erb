@@ -26,7 +26,7 @@
     <div class="form-group">
       <%= form.label :badge_image, "Badge Image:" %>
       <% if @badge.badge_image %>
-        <img class="mx-auto mt-3" width="60" height="60" src="<%= @badge.badge_image %>" alt="badge image">
+        <img class="mx-auto mt-3" width="60" height="60" src="<%= @badge.badge_image %>" alt="badge image" loading="lazy" />
       <% end %>
       <%= form.file_field :badge_image, class: "form-control" %>
     </div>

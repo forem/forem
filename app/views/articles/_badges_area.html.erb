@@ -49,7 +49,8 @@
             class="badge-achievement-image mx-auto"
             style="transform: rotate(<%= -25 + (achievement.id.digits.first * 5) %>deg);
               margin-left: <%= achievement.id.digits.first * 3 %>px;
-              margin-right: <%= achievement.id.digits.first * 1 %>px;" />
+              margin-right: <%= achievement.id.digits.first * 1 %>px;"
+            loading="lazy" />
         </a>
       <% end %>
     </div>

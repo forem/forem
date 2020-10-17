@@ -117,7 +117,7 @@
       <% font_size *= 0.9 %>
       <div class="preview-info-header">
         <% if @article.comments_count > 0 %>
-          #discuss <img src="<%= asset_path "comments-bubble.png" %>" /><%= @article.comments_count %>
+          #discuss <img src="<%= asset_path "comments-bubble.png" %>" loading="lazy" /><%= @article.comments_count %>
         <% else %>
           New Discussion!
         <% end %>
@@ -127,16 +127,16 @@
       <h1 style="font-size:<%= font_size %>vw;"><%= @article.title %></h1>
     </div>
     <div class="preview-user">
-      <img src="<%= Images::Profile.call(@article.user.profile_image_url, length: 90) %>" />
+      <img src="<%= Images::Profile.call(@article.user.profile_image_url, length: 90) %>" loading="lazy" />
       <%= truncate @article.user.name, length: 28 %>・<%= @article.readable_publish_date %>
     </div>
     <div class="badge-images">
       <% @tag_badges.each do |badge| %>
         <%# Use a seed in Random so we don't break cache on every render %>
         <% not_so_rand = Random.new(badge.id + @article.id) %>
-        <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" />
+        <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" loading="lazy" />
       <% end %>
-      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
+      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" loading="lazy" />
     </div>
   </div>
 </div>

@@ -3,8 +3,8 @@
     <% if tweet.extended_entities_serialized[:media].first[:type] == "animated_gif" || tweet.extended_entities_serialized[:media].first[:type] == "video" %>
       <div class='ltag__twitter-tweet__media ltag__twitter-tweet__media__video-wrapper'>
         <div class='ltag__twitter-tweet__media--video-preview'>
-          <img src="<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>" alt="unknown tweet media content">
-          <img src="/assets/play-butt.svg" class="ltag__twitter-tweet__play-butt" alt="Play butt">
+          <img src="<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>" alt="unknown tweet media content" loading="lazy" />
+          <img src="/assets/play-butt.svg" class="ltag__twitter-tweet__play-butt" alt="Play" loading="lazy" />
         </div>
         <div class='ltag__twitter-tweet__video'>
           <video loop controls>
@@ -15,12 +15,12 @@
       </div>
     <% else %>
       <div class='ltag__twitter-tweet__media'>
-        <img src="<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>" alt="unknown tweet media content">
+        <img src="<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>" alt="unknown tweet media content" loading="lazy" />
       </div>
     <% end %>
   <% elsif tweet.extended_entities_serialized.present? && tweet.extended_entities_serialized[:media] && tweet.extended_entities_serialized[:media].size > 1 %>
     <div class='ltag__twitter-tweet__media ltag__twitter-tweet__media__two-pics'>
-      <img src="<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>" alt="unknown tweet media content">
+      <img src="<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>" alt="unknown tweet media content" loading="lazy" />
     </div>
   <% end %>
 
@@ -28,7 +28,8 @@
     <div class="ltag__twitter-tweet__header">
       <img class="ltag__twitter-tweet__profile-image"
         src="<%= tweet.full_fetched_object_serialized[:user][:profile_image_url_https] %>"
-        alt="<%= tweet.twitter_name %> profile image">
+        alt="<%= tweet.twitter_name %> profile image"
+        loading="lazy" />
       <div class="ltag__twitter-tweet__full-name">
         <%= tweet.twitter_name %>
       </div>
@@ -36,7 +37,7 @@
         @<%= tweet.twitter_username %>
       </div>
       <div class="ltag__twitter-tweet__twitter-logo">
-        <img src="<%= twitter_logo %>" alt="twitter logo">
+        <img src="<%= twitter_logo %>" alt="twitter logo" loading="lazy" />
       </div>
     </div>
     <div class="ltag__twitter-tweet__body">
@@ -60,14 +61,14 @@
 
     <div class="ltag__twitter-tweet__actions">
       <a href="https://twitter.com/intent/tweet?in_reply_to=<%= id %>" class="ltag__twitter-tweet__actions__button">
-        <img src="/assets/twitter-reply-action.svg" alt="Twitter reply action">
+        <img src="/assets/twitter-reply-action.svg" alt="Twitter reply action" loading="lazy" />
       </a>
       <a href="https://twitter.com/intent/retweet?tweet_id=<%= id %>" class="ltag__twitter-tweet__actions__button">
-        <img src="/assets/twitter-retweet-action.svg" alt="Twitter retweet action">
+        <img src="/assets/twitter-retweet-action.svg" alt="Twitter retweet action" loading="lazy" />
       </a>
       <%= tweet.retweet_count.to_s %>
       <a href="https://twitter.com/intent/like?tweet_id=<%= id %>" class="ltag__twitter-tweet__actions__button">
-        <img src="/assets/twitter-like-action.svg" alt="Twitter like action">
+        <img src="/assets/twitter-like-action.svg" alt="Twitter like action" loading="lazy" />
       </a>
       <%= tweet.favorite_count.to_s %>
     </div>

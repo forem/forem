@@ -3,7 +3,7 @@
     <header>
       <div class="ltag__reddit--title">
         <h1>
-          <img src="<%= asset_path("reddit-icon.svg") %>" alt="Reddit Logo" />
+          <img src="<%= asset_path("reddit-icon.svg") %>" alt="Reddit Logo" loading="lazy" />
           <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
             <%= title %>
           </a>
@@ -18,7 +18,7 @@
   <div class="ltag__reddit--body">
     <p>
       <% if post_hint == 'image' %>
-        <img src="<%= thumbnail %>" alt="<%= title %>">
+        <img src="<%= thumbnail %>" alt="<%= title %>" loading="lazy" />
       <% else %>
         <%= markdown_text %>
       <% end %>

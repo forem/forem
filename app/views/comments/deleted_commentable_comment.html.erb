@@ -23,7 +23,7 @@
 
         <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
           <a href="/<%= @user.username %>">
-            <img class="profile-pic" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" />
+            <img class="profile-pic" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" loading="lazy" />
             <span class="comment-username">
               <span class="comment-username-inner">
                 <%= @user.name %>
@@ -44,7 +44,7 @@
         <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %>">
           <%= sanitize @root_comment.processed_html %>
           <button class="reaction-button reacted" disabled>
-            <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
+            <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" loading="lazy" />
             <span class="reactions-count"><%= @root_comment.reactions_count %></span>
           </button>
         </div>

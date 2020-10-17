@@ -9,7 +9,7 @@
 <div class="partnerships-container">
   <%= render "flashes" %>
 
-  <h1>Partner With <img src="<%= asset_path "rainbowdev.svg" %>" /> </h1>
+  <h1>Partner With <img src="<%= asset_path "rainbowdev.svg" %>" loading="lazy" /> </h1>
   <h3>🚀 Reach</h3>
   <p>
     <%= community_name %> serves millions of unique visitors per month.  This highly-targeted  <%= SiteConfig.community_member_label %> audience is comprised of registered members (<%= number_with_delimiter(User.estimated_count) %>) and visitors from the open web

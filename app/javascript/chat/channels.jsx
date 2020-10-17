@@ -83,7 +83,7 @@ const Channels = ({
     // TODO: The <div /> below should be converted into a real menu or <nav />
     configFooter = (
       <div className="chatchannels__config">
-        <img alt="configration" src={ConfigImage} style={{ height: '18px' }} />
+        <img alt="configration" src={ConfigImage} style={{ height: '18px' }} loading="lazy" />
         <div className="chatchannels__configmenu" role="menu">
           <a href="/settings" role="menuitem">
             Settings

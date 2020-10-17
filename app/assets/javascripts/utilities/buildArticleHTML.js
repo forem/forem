@@ -7,7 +7,7 @@ function buildArticleHTML(article) {
     return `<article class="crayons-story crayons-podcast-episode mb-2">
         <div class="crayons-story__body flex flex-start">
           <a href="${article.podcast.slug}" class="crayons-podcast-episode__cover">
-            <img src="${article.podcast.image_url}" alt="${article.podcast.title}" />
+            <img src="${article.podcast.image_url}" alt="${article.podcast.title}" loading="lazy" />
           </a>
           <div class="pt-2 flex-1">
             <p class="crayons-podcast-episode__author">

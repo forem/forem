@@ -3,13 +3,13 @@
   <% if article.video && article.cloudinary_video_url %>
     <a href='<%= article.path %>' class="video-image" style="background-image: url(<%= article.cloudinary_video_url %>)">
       <span class="video-timestamp">
-        <img src="<%= asset_path("video-camera.svg") %>" alt="video camera">
+        <img src="<%= asset_path("video-camera.svg") %>" alt="video camera" loading="lazy" />
         <%= article.video_duration_in_minutes %></span>
     </a>
   <% end %>
   <a href='<%= article.user.path %>' class='ltag__link__link'>
     <div class='ltag__link__pic'>
-      <img src='<%= Images::Profile.call(article.user.profile_image_url, length: 150) %>' alt='<%= "#{article.user.username} image" %>'>
+      <img src='<%= Images::Profile.call(article.user.profile_image_url, length: 150) %>' alt='<%= "#{article.user.username} image" %>' loading="lazy" />
     </div>
   </a>
   <a href='<%= article.path %>' class='ltag__link__link'>

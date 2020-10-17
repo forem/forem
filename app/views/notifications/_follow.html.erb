@@ -2,7 +2,7 @@
 <% cache "activity-profile-pic-#{first_notification['id']}-#{first_notification['profile_image_90']}" do %>
   <a href="<%= first_notification["path"] %>" class="small-pic-link-wrapper">
     <div class="small-pic">
-      <img src="<%= first_notification["profile_image_90"] %>" alt="link to <%= first_notification["username"] %>'s profile">
+      <img src="<%= first_notification["profile_image_90"] %>" alt="link to <%= first_notification["username"] %>'s profile" loading="lazy" />
     </div>
   </a>
 <% end %>
@@ -18,7 +18,7 @@
     <div class="follower-pic-row">
       <div class="tiny-pic">
         <a href="<%= json_data_array.last["path"] %>">
-          <img src="<%= json_data_array.last["profile_image_90"] %>" alt="link to <%= json_data_array.last["name"] %>'s profile" class="round">
+          <img src="<%= json_data_array.last["profile_image_90"] %>" alt="link to <%= json_data_array.last["name"] %>'s profile" class="round" loading="lazy" />
         </a>
       </div>
     </div>
@@ -32,7 +32,7 @@
       <% notification.json_data["aggregated_siblings"][1..10].each do |sibling| %>
         <div class="tiny-pic">
           <a href="<%= sibling["path"] %>">
-            <img src="<%= sibling["profile_image_90"] %>" alt="link to <%= sibling["name"] %>'s profile" class="round">
+            <img src="<%= sibling["profile_image_90"] %>" alt="link to <%= sibling["name"] %>'s profile" class="round" loading="lazy" />
           </a>
         </div>
       <% end %>

@@ -33,6 +33,7 @@ class ChannelButton extends Component {
               ? 'chatchanneltabindicatordirectimage'
               : 'chatchanneltabindicatordirectimage invert-channel-image'
           }
+          loading="lazy"
         />
       </span>
     );

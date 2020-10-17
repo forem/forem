@@ -3,8 +3,8 @@
   <div id="video-player-source" data-meta="<%= article.decorate.video_metadata.to_json %>" data-message=""></div>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
   <div id="video-player-<%= article.id %>" class="crayons-article__video__player" style="background-image: url('<%= article.cloudinary_video_url %>');">
-    <img alt="Play Button" id="play-butt" src="<%= image_path("playbutt.png") %>" />
-    <img alt="Pause Button" id="pause-butt" src="<%= image_path("pausebutt.png") %>" />
+    <img alt="Play Button" id="play-butt" src="<%= image_path("playbutt.png") %>" loading="lazy" />
+    <img alt="Pause Button" id="pause-butt" src="<%= image_path("pausebutt.png") %>" loading="lazy" />
   </div>
   <% unless internal_navigation? || user_signed_in? %>
     <script type="application/ld+json">

@@ -33,7 +33,7 @@
     <% if user_signed_in? %>
       <p>
         <a href="<%= user_url(current_user) %>">
-          <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30" class="dev-badge">
+          <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30" class="dev-badge" loading="lazy" />
         </a>
       </p>
       <p>
@@ -46,7 +46,7 @@
       <pre class="embed-code">
 
 &lt;a href="<%= user_url(current_user) %>"&gt;
-  &lt;img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30"&gt;
+  &lt;img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30" loading="lazy" /&gt;
 &lt;/a&gt;
         </pre>
       <p>
@@ -70,7 +70,7 @@
       </p>
     <% else %>
       <p>
-        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="30" width="30" alt="<%= community_name %> badge" class="dev-badge">
+        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="30" width="30" alt="<%= community_name %> badge" class="dev-badge" loading="lazy" />
       </p>
       <h2 style="text-align:center;">
         <a href="<%= sign_up_path %>">Log in to view your custom embed code</a>

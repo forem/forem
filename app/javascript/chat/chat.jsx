@@ -1724,6 +1724,7 @@ export default class Chat extends Component {
                     src={user.profile_image}
                     alt={user.name}
                     style={!user.profile_image ? { display: 'none' } : ' '}
+                    loading="lazy"
                   />
                   <span
                     style={{

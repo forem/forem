@@ -1,7 +1,7 @@
 <div class="ltag_github-liquid-tag">
   <h1>
     <a href="<%= html_url %>">
-      <img class="github-logo" alt="GitHub logo" src="<%= ActionController::Base.helpers.asset_path("github-logo.svg") %>">
+      <img class="github-logo" alt="GitHub logo" src="<%= ActionController::Base.helpers.asset_path("github-logo.svg") %>" loading="lazy" />
       <span class="issue-title">
         <%= title %>
       </span>
@@ -11,7 +11,7 @@
   <div class="github-thread">
     <div class="timeline-comment-header">
       <a href="<%= user_html_url %>">
-        <img class="github-liquid-tag-img" src="<%= user_avatar_url %>" alt="<%= username %> avatar">
+        <img class="github-liquid-tag-img" src="<%= user_avatar_url %>" alt="<%= username %> avatar" loading="lazy" />
       </a>
       <div class="timeline-comment-header-text">
         <strong>

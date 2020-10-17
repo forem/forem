@@ -1,6 +1,6 @@
 <% if @pinned_stories.present? %>
   <div class="pinned-articles">
-    <h5><img src="<%= asset_path("pushpin.svg") %>" width="20" height="20" alt="pin" /> Pinned</h5>
+    <h5><img src="<%= asset_path("pushpin.svg") %>" width="20" height="20" alt="pin" loading="lazy" /> Pinned</h5>
     <% @pinned_stories.each do |story| %>
       <%= render "articles/single_story", story: story, featured: false %>
     <% end %>

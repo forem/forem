@@ -33,6 +33,7 @@ export const CommentListItem = ({ comment }) => (
             src={comment.profile_image_90}
             className="crayons-avatar__image"
             alt={`{comment.username} avatar`}
+            loading="lazy"
           />
         </span>
         {comment.name}

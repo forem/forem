@@ -14,11 +14,13 @@ const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
           className="chatmessagebody__profileimage"
           src={data.user.profile_image_90}
           alt={`${data.user.username} profile`}
+          loading="lazy"
         />
         <img
           className="chatmessagebody__profileimage"
           src="/assets/organization.svg"
           alt={`${data.channel.name} profile`}
+          loading="lazy"
         />
       </div>
     </div>

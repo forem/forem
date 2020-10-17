@@ -45,6 +45,7 @@ function titleArea(previewResponse, articleState, errors) {
             width="1000"
             height="420"
             alt="Post preview cover"
+            loading="lazy"
           />
         </div>
       )}

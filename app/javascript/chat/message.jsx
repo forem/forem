@@ -44,7 +44,7 @@ const Message = ({
   const dropdown = (
     <div className="message__actions">
       <span className="ellipsis__menubutton">
-        <img src={ThreeDotsIcon} alt="dropdown menu icon" />
+        <img src={ThreeDotsIcon} alt="dropdown menu icon" loading="lazy" />
       </span>
 
       <div className="messagebody__dropdownmenu">
@@ -77,6 +77,7 @@ const Message = ({
             src={profileImageUrl}
             alt={`${user} profile`}
             data-content="sidecar-user"
+            loading="lazy"
           />
         </a>
       </div>

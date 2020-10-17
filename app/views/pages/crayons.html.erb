@@ -994,15 +994,15 @@
     <p>Remember to use descriptive alt="" values!</p>
   </div>
   <div>
-    <span class="crayons-avatar"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" /></span>
-    <span class="crayons-avatar crayons-avatar--l"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" /></span>
-    <span class="crayons-avatar crayons-avatar--xl"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" /></span>
-    <span class="crayons-avatar crayons-avatar--2xl"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" /></span>
-    <span class="crayons-avatar crayons-avatar--3xl"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" /></span>
+    <span class="crayons-avatar"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" loading="lazy" /></span>
+    <span class="crayons-avatar crayons-avatar--l"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" loading="lazy" /></span>
+    <span class="crayons-avatar crayons-avatar--xl"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" loading="lazy" /></span>
+    <span class="crayons-avatar crayons-avatar--2xl"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" loading="lazy" /></span>
+    <span class="crayons-avatar crayons-avatar--3xl"><img src="<%= SiteConfig.mascot_image_url %>" class="crayons-avatar__image" alt="Ben" loading="lazy" /></span>
   </div>
 
   <pre><%= '
-  <span class="crayons-avatar"><img src="..." class="crayons-avatar__image" alt="..." /></span>
+  <span class="crayons-avatar"><img src="..." class="crayons-avatar__image" alt="..." loading="lazy" /></span>
 
   <!-- sizes: l, xl, 2xl, 3xl -->
   <span class="... crayons-avatar--l">...</span>
@@ -1012,15 +1012,15 @@
   '.rstrip %></pre>
 
   <div>
-    <span class="crayons-logo"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--l"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--2xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--3xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." loading="lazy" /></span>
+    <span class="crayons-logo crayons-logo--l"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." loading="lazy" /></span>
+    <span class="crayons-logo crayons-logo--xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." loading="lazy" /></span>
+    <span class="crayons-logo crayons-logo--2xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." loading="lazy" /></span>
+    <span class="crayons-logo crayons-logo--3xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." loading="lazy" /></span>
   </div>
 
   <pre><%= '
-  <span class="crayons-logo"><img src="..." class="crayons-logo__image" alt="..." /></span>
+  <span class="crayons-logo"><img src="..." class="crayons-logo__image" alt="..." loading="lazy" /></span>
 
   <!-- sizes: l, xl, 2xl, 3xl -->
   <span class="... crayons-logo--l">...</span>

@@ -25,6 +25,7 @@ export const ItemListItem = ({ item, children }) => {
           src={adaptedItem.user.profile_image_90}
           alt={adaptedItem.user.name}
           className="crayons-avatar__image"
+          loading="lazy"
         />
       </a>
 

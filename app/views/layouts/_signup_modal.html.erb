@@ -9,7 +9,7 @@
       <div class="authentication-modal__container">
         <figure class="authentication-modal__image-container">
           <img class="authentication-modal__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
-              alt="Secondary <%= community_name %> logo" />
+              alt="Secondary <%= community_name %> logo" loading="lazy" />
         </figure>
         <div class="authentication-modal__content">
           <h1 class="authentication-modal__title">

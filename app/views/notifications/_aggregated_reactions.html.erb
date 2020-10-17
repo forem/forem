@@ -3,7 +3,7 @@
 <% reactable_data = notification.json_data["reaction"]["reactable"] %>
 <a href="<%= actors.first["path"] %>" class="small-pic-link-wrapper">
   <div class="small-pic">
-    <img src="<%= actors.first["profile_image_90"] %>" alt="link to <%= actors.first["username"] %>'s profile">
+    <img src="<%= actors.first["profile_image_90"] %>" alt="link to <%= actors.first["username"] %>'s profile" loading="lazy" />
   </div>
 </a>
 

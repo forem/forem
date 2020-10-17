@@ -34,7 +34,7 @@
     <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= image_url %>)">
       <h2>
         <a href="/<%= @podcast.slug %>">
-          <img alt="<%= @podcast.title %>" src="<%= optimized_image_url(@podcast.image_url, width: 60, quality: 80) %>" /><%= @podcast.title %>
+          <img alt="<%= @podcast.title %>" src="<%= optimized_image_url(@podcast.image_url, width: 60, quality: 80) %>" loading="lazy" /><%= @podcast.title %>
         </a>
         <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
       </h2>
@@ -54,8 +54,8 @@
         <%= optimized_image_tag(@podcast.image_url,
                                 optimizer_options: { width: 420, height: 420, crop: "fill" },
                                 image_options: { class: "main-image", alt: @podcast.title }) %>
-        <img alt="Play Button" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
-        <img alt="Pause Button" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
+        <img alt="Play Button" class="butt play-butt" src="<%= image_path("playbutt.png") %>" loading="lazy" />
+        <img alt="Pause Button" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" loading="lazy" />
         <div class="status-message" id="status-message-<%= @episode.slug %>">
           play
         </div>

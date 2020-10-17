@@ -24,6 +24,7 @@ const Membership = ({
             className="crayons-avatar__image align-middle"
             src={membership.image}
             alt={`${membership.name} profile`}
+            loading="lazy"
           />
         </span>
         <span className="mr-2 user_name">{membership.name}</span>

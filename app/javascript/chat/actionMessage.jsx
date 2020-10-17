@@ -37,6 +37,7 @@ const ActionMessage = ({
             alt={`${user} profile`}
             data-content="sidecar-user"
             onClick={onContentTrigger}
+            loading="lazy"
           />
         </a>
       </div>

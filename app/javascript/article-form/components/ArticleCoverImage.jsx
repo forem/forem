@@ -90,6 +90,7 @@ export class ArticleCoverImage extends Component {
               width="250"
               height="105"
               alt="Post cover"
+              loading="lazy"
             />
           )}
           <div className="flex items-center">

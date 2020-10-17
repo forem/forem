@@ -6,7 +6,7 @@
         <div class="authentication-widget__container">
           <figure class="authentication-widget__image-container">
             <img class="authentication-widget__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
-                  alt="Secondary <%= community_name %> logo" />
+                  alt="Secondary <%= community_name %> logo" loading="lazy" />
           </figure>
           <div class="authentication-widget__content">
             <h3 class="authentication-widget__title">

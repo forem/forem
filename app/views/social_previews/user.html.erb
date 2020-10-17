@@ -110,7 +110,7 @@
           <% font_size = 4.6 %>
         <% end %>
       <h1 style="font-size:<%= font_size %>vw;">
-        <img src="<%= Images::Profile.call(@user.profile_image_url, length: 640) %>" alt="<%= @user.name %> profile image">
+        <img src="<%= Images::Profile.call(@user.profile_image_url, length: 640) %>" alt="<%= @user.name %> profile image" loading="lazy" />
         <%= truncate @user.name, length: 32 %>
         <br />
         <span style="font-size: 0.4em;display: inline-block; margin-left: 5.4em; margin-top: -1.7em">@<%= @user.username %></span>
@@ -120,9 +120,9 @@
       <% @tag_badges.each do |badge| %>
         <%# Use a seed in Random so we don't break cache on every render %>
         <% not_so_rand = Random.new(badge.id + @user.id) %>
-        <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" />
+        <img src="<%= badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" loading="lazy" />
       <% end %>
-      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
+      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" loading="lazy" />
     </div>
   </div>
 </div>

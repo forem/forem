@@ -22,6 +22,7 @@ class SidebarUser extends Component {
             src={user.profile_image_url}
             alt={user.name}
             className="widget-list-item__profile-pic"
+            loading="lazy"
           />
         </a>
         <div data-testid="widget-content" className="widget-list-item__content">

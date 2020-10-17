@@ -113,6 +113,7 @@ class IntroSlide extends Component {
                 src={communityConfig.communityLogo}
                 className="sticker-logo"
                 alt={communityConfig.communityName}
+                loading="lazy"
               />
             </figure>
             <h1

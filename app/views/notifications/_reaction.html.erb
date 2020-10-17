@@ -4,7 +4,7 @@
   <% cache "activity-profile-pic-#{notification.json_data['user']['id']}-#{notification.json_data['user']['profile_image_90']}" do %>
     <a href="<%= notification.json_data["user"]["path"] %>" class="small-pic-link-wrapper">
       <div class="small-pic">
-        <img src="<%= notification.json_data["user"]["profile_image_90"] %>" alt="link to <%= notification.json_data["user"]["username"] %> profile">
+        <img src="<%= notification.json_data["user"]["profile_image_90"] %>" alt="link to <%= notification.json_data["user"]["username"] %> profile" loading="lazy" />
       </div>
     </a>
   <% end %>

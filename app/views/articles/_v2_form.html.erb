@@ -50,7 +50,7 @@
         <div class="text-padding">
           <div class="crayons-article-form__cover" role="presentation">
             <% if article.main_image.present? %>
-              <img src="<%= article.main_image %>" width="250" height="105" alt="Post cover" class="crayons-article-form__cover__image">
+              <img src="<%= article.main_image %>" width="250" height="105" alt="Post cover" class="crayons-article-form__cover__image" loading="lazy" />
             <% end %>
             <button class="crayons-btn crayons-btn--outlined mr-2">
               <label for="cover-image-input">

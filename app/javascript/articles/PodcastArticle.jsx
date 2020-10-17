@@ -6,7 +6,7 @@ export const PodcastArticle = ({ article }) => {
     <div className="single-article single-article-small-pic single-article-single-podcast">
       <div className="small-pic">
         <a href={`/${article.podcast.slug}`} className="small-pic-link-wrapper">
-          <img src={article.podcast.image_url} alt={article.podcast.title} />
+          <img src={article.podcast.image_url} alt={article.podcast.title} loading="lazy" />
         </a>
       </div>
       <a

@@ -26,7 +26,7 @@
 
       <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
         <a href="/<%= comment.user.username %>">
-          <img class="profile-pic" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" />
+          <img class="profile-pic" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" loading="lazy" />
           <span class="comment-username">
             <span class="comment-username-inner">
               <%= comment.user.name %>
@@ -69,7 +69,7 @@
         <%= comment.safe_processed_html %>
         <button class="reaction-button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>" title="heart">
           <%= image_tag("favorite-heart-outline-button.svg", alt: "Favorite heart outline button") %>
-          <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
+          <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" loading="lazy" />
         </button>
       </div>
       <div class="actions" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">

@@ -7,14 +7,14 @@
   <% if json_data["organization"] %>
     <div class="article-organization-headline">
       <a class="org-headline-filler" href="<%= json_data["organization"]["path"] %>">
-        <img alt="<%= json_data["organization"]["name"] %> logo" src="<%= json_data["organization"]["profile_image_90"] %>">
+        <img alt="<%= json_data["organization"]["name"] %> logo" src="<%= json_data["organization"]["profile_image_90"] %>" loading="lazy" />
         <%= json_data["organization"]["name"] %>
       </a>
    </div>
   <% end %>
   <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
     <div class="small-pic">
-      <img src="<%= json_data["user"]["profile_image_90"] %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
+      <img src="<%= json_data["user"]["profile_image_90"] %>" alt="link to <%= json_data["user"]["username"] %>'s profile" loading="lazy" />
     </div>
   </a>
   <div class="content notification-content article-content">
@@ -47,11 +47,11 @@
       <div class="comment-actions">
         <button class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "like") ? "reacted" : "" %>" data-reactable-id="<%= json_data["article"]["id"] %>" data-category="like" data-reactable-type="Article">
           <%= image_tag("favorite-heart-outline-button.svg", alt: "Favorite heart outline button") %>
-          <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
+          <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" loading="lazy" />
         </button>
         <button class="reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "readinglist") ? "reacted" : "" %>" data-reactable-id="<%= json_data["article"]["id"] %>" data-category="readinglist" data-reactable-type="Article">
           <span class="reaction-button-text">SAVE</span>
-          <img class="reacted-emoji reaction-button-reacted-emoji" src="<%= asset_path("readinglist-button.png") %>" alt="Save button" />
+          <img class="reacted-emoji reaction-button-reacted-emoji" src="<%= asset_path("readinglist-button.png") %>" alt="Save button" loading="lazy" />
         </button>
       </div>
     <% end %>

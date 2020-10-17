@@ -84,9 +84,9 @@
         <%# Use a seed in Random so we don't break cache on every render %>
         <% @badge = Badge.find(@tag.badge_id) %>
         <% not_so_rand = Random.new(@badge.id) %>
-        <img src="<%= @badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" />
+        <img src="<%= @badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" loading="lazy" />
       <% end %>
-      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
+      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" loading="lazy" />
     </div>
   </div>
   </div>

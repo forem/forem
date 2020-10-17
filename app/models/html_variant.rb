@@ -65,6 +65,7 @@ class HtmlVariant < ApplicationRecord
       next unless src
       next if allowed_image_host?(src)
 
+      img["loading"] = "lazy"
       img["src"] = if Giphy::Image.valid_url?(src)
                      src.gsub("https://media.", "https://i.")
                    else

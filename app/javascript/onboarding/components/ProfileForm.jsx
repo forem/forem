@@ -104,6 +104,7 @@ class ProfileForm extends Component {
                   className="current-user-avatar"
                   alt="profile"
                   src={profile_image_90}
+                  loading="lazy"
                 />
               </figure>
               <h3>{name}</h3>

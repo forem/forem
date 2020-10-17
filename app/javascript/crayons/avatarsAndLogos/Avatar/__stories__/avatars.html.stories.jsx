@@ -15,6 +15,7 @@ export const Default = () => (
       src="/images/apple-icon.png"
       className="crayons-avatar__image"
       alt="Ben"
+      loading="lazy"
     />
   </span>
 );
@@ -27,6 +28,7 @@ export const Large = () => (
       src="/images/apple-icon.png"
       className="crayons-avatar__image"
       alt="Ben"
+      loading="lazy"
     />
   </span>
 );
@@ -39,6 +41,7 @@ export const ExtraLarge = () => (
       src="/images/apple-icon.png"
       className="crayons-avatar__image"
       alt="Ben"
+      loading="lazy"
     />
   </span>
 );
@@ -51,6 +54,7 @@ export const DoubleXL = () => (
       src="/images/apple-icon.png"
       className="crayons-avatar__image"
       alt="Ben"
+      loading="lazy"
     />
   </span>
 );
@@ -63,6 +67,7 @@ export const TripleXL = () => (
       src="/images/apple-icon.png"
       className="crayons-avatar__image"
       alt="Ben"
+      loading="lazy"
     />
   </span>
 );

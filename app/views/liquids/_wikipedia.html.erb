@@ -1,6 +1,6 @@
 <div class="ltag__wikipedia--container">
   <div class="ltag__wikipedia--header">
-    <img src="<%= ActionController::Base.helpers.asset_path("wikipedia-logo.svg") %>" class="ltag__wikipedia--logo" alt="Wikipedia Logo" aria-label="Wikipedia Logo">
+    <img src="<%= ActionController::Base.helpers.asset_path("wikipedia-logo.svg") %>" class="ltag__wikipedia--logo" alt="Wikipedia Logo" aria-label="Wikipedia Logo" loading="lazy" />
     <a href="<%= url %>" target="_blank" rel="noopener noreferrer"><%= title %></a>
   </div>
   <div class="ltag__wikipedia--extract"><%= (HTML_Truncator.truncate extract, 150).html_safe %></div>

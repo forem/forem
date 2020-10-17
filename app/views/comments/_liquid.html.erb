@@ -2,19 +2,19 @@
   <% if comment %>
     <div class="details">
       <a href="/<%= comment.user.username %>">
-        <img class="profile-pic" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" />
+        <img class="profile-pic" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" loading="lazy" />
       </a>
       <a href="/<%= comment.user.username %>">
         <span class="comment-username"><%= comment.user.name %></span>
       </a>
       <% if comment.user.twitter_username.present? %>
         <a href="https://twitter.com/<%= comment.user.twitter_username %>">
-          <img src="/assets/twitter-logo.svg" class="icon-img" alt="twitter" />
+          <img src="/assets/twitter-logo.svg" class="icon-img" alt="twitter" loading="lazy" />
         </a>
       <% end %>
       <% if comment.user.github_username.present? %>
         <a href="https://github.com/<%= comment.user.github_username %>">
-          <img src="/assets/github-logo.svg" class="icon-img" alt="github" />
+          <img src="/assets/github-logo.svg" class="icon-img" alt="github" loading="lazy" />
         </a>
       <% end %>
       <%= render "comments/comment_date", decorated_comment: comment.decorate %>

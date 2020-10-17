@@ -116,7 +116,7 @@
             <%= render "articles/video_player", meta_tags: true, article: @article %>
           <% elsif @article.main_image.present? %>
             <div class="crayons-article__cover">
-              <img src="<%= cloud_cover_url(@article.main_image) %>" width="1000" height="420" style="background-color:<%= @article.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= sanitize_and_decode @article.title %>">
+              <img src="<%= cloud_cover_url(@article.main_image) %>" width="1000" height="420" style="background-color:<%= @article.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= sanitize_and_decode @article.title %>" loading="lazy" />
             </div>
           <% end %>
 
@@ -124,7 +124,7 @@
             <% if @organization %>
               <a href="<%= @organization.path %>" class="flex items-center mb-4 fs-l fw-medium crayons-link">
                 <span class="crayons-logo crayons-logo--l mr-3">
-                  <img src="<%= Images::Profile.call(@organization.profile_image_url, length: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image">
+                  <img src="<%= Images::Profile.call(@organization.profile_image_url, length: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image" loading="lazy" />
                 </span>
                 <%= @organization.name %>
               </a>
@@ -147,7 +147,7 @@
 
             <div class="crayons-article__subheader">
               <a href="/<%= @user.username %>" class="flex items-center mr-4 mb-4 s:mb-0 fw-medium crayons-link">
-                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" /></span>
+                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" alt="<%= @user.username %> profile image" loading="lazy" /></span>
                 <%= @user.name %>
               </a>
 

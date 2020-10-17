@@ -11,7 +11,7 @@
             <a href="/<%= podcast.slug %>">
               <div class="podcast-pic" id="podcast-pic-<%= podcast.slug %>">
                 <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
-                     alt="<%= podcast.title %>" />
+                     alt="<%= podcast.title %>" loading="lazy" />
                 <div class="podcast-name">
                   <div class="podcast-name-inner">
                     <%= podcast.title %>

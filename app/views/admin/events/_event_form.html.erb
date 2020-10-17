@@ -5,7 +5,7 @@
 <div class="form-group">
   <%= f.label :profile_image %> (for live notification):
   <%= f.file_field :profile_image, class: "form-control" %>
-  <img src="<%= event.profile_image_url %>" style="width: 25%;" alt="event profile image">
+  <img src="<%= event.profile_image_url %>" style="width: 25%;" alt="event profile image" loading="lazy" />
 </div>
 <div class="form-group">
   <%= f.label :title %>

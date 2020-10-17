@@ -31,7 +31,7 @@
     </div>
     <div class="form-group">
       <% if @page.social_image_url %>
-        <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" />
+        <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" loading="lazy" />
       <% end %>
       <%= form.label :social_image %>
       <%= form.file_field :social_image, class: "form-control" %>

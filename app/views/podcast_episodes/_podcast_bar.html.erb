@@ -8,11 +8,11 @@
       <%= optimized_image_tag(@episode.image_url || @podcast.image_url,
                               optimizer_options: { crop: "fill", width: 420, height: 420 },
                               image_options: { id: "episode-profile-image", alt: @episode.title }) %>
-      <img id="animated-bars" src="<%= asset_path("animated-bars.gif") %>" alt="animated volume bars">
+      <img id="animated-bars" src="<%= asset_path("animated-bars.gif") %>" alt="animated volume bars" loading="lazy" />
     </a>
     <span id="barPlayPause">
-      <img class="butt play-butt" alt="play" src="<%= asset_path("playbutt.png") %>">
-      <img class="butt pause-butt" alt="pause" src="<%= asset_path("pausebutt.png") %>">
+      <img class="butt play-butt" alt="play" src="<%= asset_path("playbutt.png") %>" loading="lazy" />
+      <img class="butt pause-butt" alt="pause" src="<%= asset_path("pausebutt.png") %>" loading="lazy" />
     </span>
     <span id="volume">
       <span id="volumeindicator" class="volume-icon-wrapper showing">

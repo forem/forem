@@ -22,7 +22,7 @@
       <header class="profile-header crayons-card mt-2">
         <div class="relative profile-header__top">
           <span class="crayons-avatar crayons-avatar--3xl">
-            <img src="<%= Images::Profile.call(@user.profile_image_url, length: 320) %>" width="128" height="128" alt="<%= @user.name %> profile picture" class="crayons-avatar__image">
+            <img src="<%= Images::Profile.call(@user.profile_image_url, length: 320) %>" width="128" height="128" alt="<%= @user.name %> profile picture" class="crayons-avatar__image" loading="lazy" />
           </span>
 
           <div class="profile-header__actions">
@@ -191,7 +191,7 @@
         </div>
       </button>
       <button class="on-page-nav-butt on-page-nav-butt-right" style="margin-top:-1px;" id="on-page-nav-butt-right" aria-label="nav-button-right">
-        <img style="height:28px;width:28px;" src="<%= asset_path "ribbon.svg" %>" alt="right-sidebar-nav">
+        <img style="height:28px;width:28px;" src="<%= asset_path "ribbon.svg" %>" alt="right-sidebar-nav" width="28" height="28" loading="lazy" />
       </button>
     </div>
     <div class="substories" id="substories">

@@ -8,7 +8,7 @@ export const PodcastEpisode = ({ episode }) => {
         href={`/${episode.podcast.slug}/${episode.slug}`}
         className="crayons-podcast-episode__cover"
       >
-        <img src={episode.podcast.image_90} alt={episode.title} />
+        <img src={episode.podcast.image_90} alt={episode.title} loading="lazy" />
       </a>
 
       <div>

@@ -73,7 +73,7 @@ function buildFollowsHTML(follows) {
     follows.username +
     ' profile image" class="crayons-avatar__image" src="' +
     follows.profile_image +
-    '" />' +
+    '" loading="lazy" />' +
     '</a>' +
     '<div class="pl-4 s:pl-0 self-center">' +
     '<h3 class="s:mb-1 p-0">' +
