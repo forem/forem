@@ -1,34 +1,18 @@
-import { h, Component } from 'preact';
+import { h, Fragment } from 'preact';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import sendFollowUser from '../utilities/sendFollowUser';
 import SidebarUser from './sidebarUser';
 
-class SidebarWidget extends Component {
-  constructor(props) {
-    super(props);
-    this.getSuggestedUsers = this.getSuggestedUsers.bind(this);
-    this.getTagInfo = this.getTagInfo.bind(this);
-    this.followUser = this.followUser.bind(this);
-    this.state = {
-      tagInfo: {},
-      suggestedUsers: [],
-    };
-  }
+const SidebarWidget = () => {
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
 
-  componentDidMount() {
-    this.getTagInfo();
-    this.getSuggestedUsers();
-  }
-
-  getTagInfo() {
-    this.setState({
-      tagInfo: JSON.parse(
+  useEffect(() => {
+    const tagInfo =
+      JSON.parse(
         document.getElementById('sidebarWidget__pack').dataset.tagInfo,
-      ),
-    });
-  }
+      ) || {};
 
-  getSuggestedUsers() {
-    const { tagInfo } = this.state;
+    // Fetching suggested users
     fetch(`/users?state=sidebar_suggestions&tag=${tagInfo.name}`, {
       headers: {
         Accept: 'application/json',
@@ -38,58 +22,57 @@ class SidebarWidget extends Component {
     })
       .then((response) => response.json())
       .then((json) => {
-        this.setState({ suggestedUsers: json });
+        setSuggestedUsers(json);
       })
       .catch((error) => {
-        this.setState({ suggestedUsers: [] });
+        setSuggestedUsers([]);
         Honeybadger.notify(error);
       });
-  }
+  }, []);
 
-  followUser(user) {
-    const { suggestedUsers } = this.state;
-    const updatedUser = user;
-    const updatedSuggestedUsers = suggestedUsers;
-    const userIndex = suggestedUsers.indexOf(user);
+  const followUser = useCallback(
+    (user) => {
+      const updatedUser = user;
+      const updatedSuggestedUsers = suggestedUsers;
+      const userIndex = suggestedUsers.indexOf(user);
 
-    const followBtn = document.getElementById(
-      `widget-list-item__follow-button-${updatedUser.username}`,
-    );
-    followBtn.innerText = updatedUser.following ? 'Follow' : 'Following';
+      const followBtn = document.getElementById(
+        `widget-list-item__follow-button-${updatedUser.username}`,
+      );
+      followBtn.innerText = updatedUser.following ? 'Follow' : 'Following';
 
-    const toggleFollowState = (newFollowState) => {
-      updatedUser.following = newFollowState === 'followed';
-      updatedSuggestedUsers[userIndex] = updatedUser;
-      this.setState({ suggestedUsers: updatedSuggestedUsers });
-    };
-    sendFollowUser(user, toggleFollowState);
-  }
+      const toggleFollowState = (newFollowState) => {
+        updatedUser.following = newFollowState === 'followed';
+        updatedSuggestedUsers[userIndex] = updatedUser;
+        setSuggestedUsers(updatedSuggestedUsers);
+      };
+      sendFollowUser(user, toggleFollowState);
+    },
+    [suggestedUsers, setSuggestedUsers],
+  );
 
-  render() {
-    const { suggestedUsers } = this.state;
-    const users = suggestedUsers.map((user, index) => (
-      <SidebarUser
-        key={user.id}
-        user={user}
-        followUser={this.followUser}
-        index={index}
-      />
-    ));
-
-    if (suggestedUsers.length > 0) {
-      return (
-        <div className="widget" id="widget-00001">
-          <div className="widget-suggested-follows-container">
-            <header>
-              <h4>who to follow</h4>
-            </header>
-            <div className="widget-body">{users}</div>
+  if (suggestedUsers.length > 0) {
+    return (
+      <div className="widget" id="widget-00001">
+        <div className="widget-suggested-follows-container">
+          <header>
+            <h4>who to follow</h4>
+          </header>
+          <div className="widget-body">
+            {suggestedUsers.map((user, index) => (
+              <SidebarUser
+                key={user.id}
+                user={user}
+                followUser={followUser}
+                index={index}
+              />
+            ))}
           </div>
         </div>
-      );
-    }
-    return <div />;
+      </div>
+    );
   }
-}
+  return <Fragment />;
+};
 
 export default SidebarWidget;
