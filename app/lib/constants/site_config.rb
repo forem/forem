@@ -288,6 +288,10 @@ module Constants
         "recently-active commenters or producers can be suggested",
         placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
       },
+      prefer_manual_suggested_users: {
+        description: "Always show the users determined above as suggested people to follow even when " \
+        "auto-suggestion is available"
+      },
       tagline: {
         description: "Used in signup modal.",
         placeholder: "We're a place where coders share, stay up-to-date and grow their careers."

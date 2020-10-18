@@ -1043,6 +1043,12 @@
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:suggested_users][:description] %></div>
               </div>
 
+              <div class="form-group">
+                <%= admin_config_label :prefer_manual_suggested_users %>
+                <%= f.check_box :prefer_manual_suggested_users, checked: SiteConfig.prefer_manual_suggested_users %>
+                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:prefer_manual_suggested_users][:description] %></div>
+              </div>
+
               <%= render "form_submission", f: f %>
             </div>
           </div>

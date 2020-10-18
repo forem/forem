@@ -280,7 +280,11 @@ class UsersController < ApplicationController
       attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
     ).suggest
 
-    recent_suggestions.presence || default_suggested_users
+    if SiteConfig.prefer_manual_suggested_users?
+      default_suggested_users
+    else
+      recent_suggestions.presence || default_suggested_users
+    end
   end
 
   def render_update_response
