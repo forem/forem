@@ -465,6 +465,23 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:staff_user_id][:placeholder] %>
                 </div>
 
+                <div class="crayons-field">
+                  <%= admin_config_label :experience_low %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:experience_low][:description] %>
+                  <%= f.text_field :experience_low,
+                                   class: "crayons-texfield",
+                                   value: SiteConfig.experience_low,
+                                   placeholder: Constants::SiteConfig::DETAILS[:experience_low][:placeholder] %>
+                </div>
+
+                <div class="crayons-field">
+                  <%= admin_config_label :experience_high %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:experience_high][:description] %>
+                  <%= f.text_field :experience_high,
+                                   class: "crayons-texfield",
+                                   value: SiteConfig.experience_high,
+                                   placeholder: Constants::SiteConfig::DETAILS[:experience_high][:placeholder] %>
+                </div>
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>
