@@ -84,7 +84,6 @@ export class Help extends Component {
               show={helpFor === 'article_body_markdown' || version === 'v1'}
               toggleModal={this.toggleModal}
             />
-            }
           </div>
         )}
 
