@@ -69,6 +69,7 @@ class UserDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[
     name
     username
+    email
     twitter_username
     github_username
     profile_image
