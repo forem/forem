@@ -2,9 +2,11 @@ module ResourceAdmin
   class UsersController < ResourceAdmin::ApplicationController
     def update
       user = User.find(params[:id])
+      # Email normally needs confirmation. We skip it here when acting as admin
+      user.update_column(:email, user_params[:email]) if user_params[:email].present?
       if user.errors.messages.blank? && user.update(user_params)
         flash[:notice] = "User successfully updated"
-        redirect_to "/ResourceAdmin/users/#{params[:id]}"
+        redirect_to "/resource_admin/users/#{params[:id]}"
       else
         render :new, locals: { page: Administrate::Page::Form.new(dashboard, user) }
       end
