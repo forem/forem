@@ -39,6 +39,7 @@ const BasicEditor = ({ show, toggleModal }) => {
 
 BasicEditor.propTypes = {
   show: PropTypes.bool.isRequired,
+  toggleModal: PropTypes.func.isRequired,
 };
 
 export default BasicEditor;

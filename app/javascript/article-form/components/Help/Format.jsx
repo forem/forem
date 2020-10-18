@@ -129,6 +129,7 @@ const Format = ({ show, toggleModal }) => {
 
 Format.propTypes = {
   show: PropTypes.bool.isRequired,
+  toggleModal: PropTypes.func.isRequired,
 };
 
 export default Format;
