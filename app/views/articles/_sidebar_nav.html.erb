@@ -43,21 +43,15 @@
 
 <nav class="mb-6" aria-label="Secondary sidebar nav">
   <% if user_signed_in? %>
-    <header class="crayons-card__header px-2 pb-0">
-      <h3 class="crayons-subtitle-3 flex items-right w-100">
-        <span class="grow-1 inline-block mt-1">My Tags</span>
-        <a href="/dashboard/following_tags" class="crayons-btn crayons-btn--ghost-dimmed px-2" aria-label="Customize tag priority" title="Customize tag priority">
-          <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon") %>
-        </a>
-      </h3>
+    <header class="p-2 pr-0 flex items-center justify-between">
+      <h3 class="crayons-subtitle-3">My Tags</h3>
+      <a href="/dashboard/following_tags" class="crayons-btn crayons-btn--icon crayons-btn--ghost-dimmed" aria-label="Customize tag priority" title="Customize tag priority">
+        <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon") %>
+      </a>
     </header>
     <div id="sidebar-nav-followed-tags" class="overflow-y-auto" style="height: 42vh"></div>
   <% else %>
-    <header class="crayons-card__header px-2 pb-0">
-      <h3 class="crayons-subtitle-3 flex items-right w-100">
-        <span class="grow-1 inline-block mt-1">Popular Tags</span>
-      </h3>
-    </header>
+    <h3 class="crayons-subtitle-3 p-2">Popular Tags</h3>
     <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="height: 42vh">
       <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
         <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
