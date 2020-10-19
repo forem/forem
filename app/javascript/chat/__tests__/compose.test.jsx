@@ -21,10 +21,13 @@ const handleSubmitFake = () => {
 
 const handleKeyDownFake = (e) => {
   const enterPressed = e.keyCode === 13;
+  const shiftPressed = e.shiftKey;
   if (!enterPressed) {
     textfieldIsEmpty = false;
-  } else if (textfieldIsEmpty) {
+  } else if (textfieldIsEmpty && !shiftPressed) {
     handleSubmitEmpty();
+  } else if (textfieldIsEmpty && shiftPressed) {
+    textfieldIsEmpty = false;
   } else {
     handleSubmitFake();
   }
@@ -86,6 +89,16 @@ describe('<Compose />', () => {
       expect(submitNoMessage).toEqual(true);
       expect(submitWithMessage).toEqual(false);
       expect(textfieldIsEmpty).toEqual(true);
+    });
+
+    it('should pressed enter and shift', () => {
+      const { getByLabelText } = render(getCompose(false));
+      const input = getByLabelText('Compose a message');
+
+      fireEvent.keyDown(input, { keyCode: 13 });
+      fireEvent.keyDown(input, { keyCode: 16 });
+
+      expect(textfieldIsEmpty).toEqual(false);
     });
   });
 
