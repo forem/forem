@@ -195,7 +195,15 @@ Rails.application.routes.draw do
           end
         end
 
+<<<<<<< HEAD
         resources :profile_images, only: %i[show], param: :username
+=======
+        resources :organizations, only: [] do
+          collection do
+            get "/:org_username", to: "organizations#show"
+          end
+        end
+>>>>>>> add organizations api show route
       end
     end
 
