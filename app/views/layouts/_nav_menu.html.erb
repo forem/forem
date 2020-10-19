@@ -10,6 +10,9 @@
     </div>
 
     <div class="border-0 border-b-1 border-solid border-base-20 p-1">
+      <% if current_user.any_admin? %>
+        <a href="<%= admin_path %>" class="crayons-link crayons-link--block">Admin</a>
+      <% end %>
       <a href="<%= dashboard_path %>" class="crayons-link crayons-link--block">Dashboard</a>
       <a href="<%= new_path %>" class="crayons-link crayons-link--block">Write a Post</a>
       <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a>
