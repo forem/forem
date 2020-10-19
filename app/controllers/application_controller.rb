@@ -27,6 +27,7 @@ class ApplicationController < ActionController::Base
                           omniauth_callbacks
                           registrations
                           confirmations
+                          invitations
                           passwords
                           health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
