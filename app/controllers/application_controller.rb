@@ -103,6 +103,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def after_accept_path_for(_resource)
+    onboarding_path
+  end
+
   def raise_suspended
     raise "SUSPENDED" if current_user&.banned
   end
