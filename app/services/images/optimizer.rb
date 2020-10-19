@@ -1,6 +1,8 @@
 module Images
   module Optimizer
     def self.call(img_src, **kwargs)
+      return img_src if img_src.starts_with?("/")
+
       if imgproxy_enabled?
         imgproxy(img_src, kwargs)
       else
