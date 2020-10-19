@@ -39,7 +39,7 @@ describe('EmailPreferencesForm', () => {
     document.body.setAttribute('data-user', getUserData());
   });
 
-  it('should have no a11y violatiogs', async () => {
+  it('should have no a11y violations', async () => {
     const { container } = render(renderEmailPreferencesForm());
     const results = await axe(container);
 
