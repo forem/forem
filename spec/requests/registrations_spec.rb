@@ -111,6 +111,31 @@ RSpec.describe "Registrations", type: :request do
     end
   end
 
+  describe "GET /users/signup" do
+    context "when site is in waiting_on_first_user state" do
+      before do
+        SiteConfig.waiting_on_first_user = true
+        ENV["FOREM_OWNER_SECRET"] = "test"
+      end
+
+      after do
+        SiteConfig.waiting_on_first_user = false
+        ENV["FOREM_OWNER_SECRET"] = nil
+      end
+
+      it "auto-populates forem_owner_secret if included in querystring params" do
+        get new_user_registration_path(forem_owner_secret: ENV["FOREM_OWNER_SECRET"])
+        expect(response.body).not_to include("New Forem Secret")
+        expect(response.body).to include(ENV["FOREM_OWNER_SECRET"])
+      end
+
+      it "shows forem_owner_secret field if it's not included in querystring params" do
+        get new_user_registration_path
+        expect(response.body).to include("New Forem Secret")
+      end
+    end
+  end
+
   describe "POST /users" do
     def mock_recaptcha_verification
       # rubocop:disable RSpec/AnyInstance
