@@ -16,7 +16,7 @@ function initializeUserProfileContent(user) {
 function initializeProfileImage(user) {
   if (!document.getElementById('comment-primary-user-profile--avatar')) return;
   document.getElementById('comment-primary-user-profile--avatar').src =
-  user.profile_image_90;
+    user.profile_image_90;
 }
 
 function initializeUserSidebar(user) {
@@ -115,11 +115,15 @@ function setCurrentUserToNavBar(user) {
   userNavLink.querySelector('span').textContent = user.name;
   userNavLink.querySelector('small').textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
+  if (user.admin) {
+    document
+      .querySelector('.js-header-menu-admin-link')
+      .classList.remove('hidden');
+  }
 }
 
 function initializeBaseUserData() {
   const user = userData();
-
   setCurrentUserToNavBar(user);
   initializeUserSidebar(user);
   initializeProfileImage(user);
