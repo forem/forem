@@ -177,6 +177,15 @@
                     <div class="config-authentication__item--body">
                       <fieldset class="config-authentication-form">
                         <div class="crayons-field--checkbox">
+                          <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration, class: "crayons-checkbox" %>
+                          <div>
+                            <%= admin_config_label :allow_email_password_registration %>
+                            <p class="crayons-field__description">
+                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %>
+                            </p>
+                          </div>
+                        </div>
+                        <div class="crayons-field--checkbox">
                           <%= f.check_box :allow_email_password_login, checked: SiteConfig.allow_email_password_login, class: "crayons-checkbox" %>
                           <div>
                             <%= admin_config_label :allow_email_password_login %>
@@ -186,12 +195,37 @@
                           </div>
                         </div>
                         <div class="crayons-field--checkbox">
-                          <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration, class: "crayons-checkbox" %>
+                          <%= f.check_box :require_captcha_for_email_password_registration,
+                                          checked: SiteConfig.require_captcha_for_email_password_registration,
+                                          data: { action: "config#toggleGoogleRecaptchaFields", target: "config.requireCaptchaForEmailPasswordRegistration" },
+                                          class: "crayons-checkbox" %>
                           <div>
-                            <%= admin_config_label :allow_email_password_registration %>
+                            <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration" %>
                             <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %>
+                              <%= Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %>
                             </p>
+                          </div>
+                        </div>
+                        <div id="recaptchaContainer" class="<%= SiteConfig.require_captcha_for_email_password_registration ? "" : "collapse" %> ml-7" aria-labelledby="recaptchaContainer">
+                          <div class="form-group">
+                            <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
+                            <p class="crayons-field__description mb-1">
+                              <%= Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
+                            </p>
+                            <%= f.text_field :recaptcha_site_key,
+                                             class: "form-control",
+                                             value: SiteConfig.recaptcha_site_key,
+                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_site_key][:placeholder] %>
+                          </div>
+                          <div class="form-group">
+                            <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key" %>
+                            <p class="crayons-field__description mb-1">
+                              <%= Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %>
+                            </p>
+                            <%= f.text_field :recaptcha_secret_key,
+                                             class: "form-control",
+                                             value: SiteConfig.recaptcha_secret_key,
+                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
                           </div>
                         </div>
                       </fieldset>
@@ -636,36 +670,6 @@
                                  class: "form-control",
                                  value: SiteConfig.ga_tracking_id %>
                 <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:ga_tracking_id][:description] %></div>
-              </div>
-
-              <%= render "form_submission", f: f %>
-            </div>
-          </div>
-        <% end %>
-
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
-          <div class="card mt-3">
-            <%= render partial: "card_header",
-                       locals: {
-                         header: "Google reCAPTCHA Keys",
-                         state: "collapse",
-                         target: "recaptchaContainer",
-                         expanded: "false"
-                       } %>
-            <div id="recaptchaContainer" class="card-body collapse hide" aria-labelledby="recaptchaContainer">
-              <div class="form-group">
-                <%= admin_config_label :recaptcha_site_key, "reCAPTCHA Site Key" %>
-                <%= f.text_field :recaptcha_site_key,
-                                 class: "form-control",
-                                 value: SiteConfig.recaptcha_site_key %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %></div>
-              </div>
-              <div class="form-group">
-                <%= admin_config_label :recaptcha_secret_key, "reCAPTCHA Secret Key" %>
-                <%= f.text_field :recaptcha_secret_key,
-                                 class: "form-control",
-                                 value: SiteConfig.recaptcha_secret_key %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %></div>
               </div>
 
               <%= render "form_submission", f: f %>
