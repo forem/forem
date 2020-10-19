@@ -79,6 +79,8 @@ module ResourceAdmin
         reputation_modifier
         saw_onboarding
         scholar_email
+        registered
+        registered_at
       ]
     end
   end

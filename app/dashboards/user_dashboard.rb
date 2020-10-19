@@ -19,6 +19,8 @@ class UserDashboard < Administrate::BaseDashboard
     website_url: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
+    registered: Field::Boolean,
+    registered_at: Field::DateTime,
     articles: Field::HasMany,
     comments: Field::HasMany,
     reputation_modifier: Field::Number,
@@ -70,6 +72,8 @@ class UserDashboard < Administrate::BaseDashboard
     name
     username
     email
+    registered
+    registered_at
     twitter_username
     github_username
     profile_image
