@@ -200,6 +200,10 @@ RSpec.describe "Registrations", type: :request do
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.all.size).to be 0
+        expect(response).to redirect_to("/users/sign_up?state=email_signup")
+
+        follow_redirect!
+        expect(response.body).to include("You must complete the recaptcha")
       end
     end
 
