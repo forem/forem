@@ -49,13 +49,13 @@
         <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon") %>
       </a>
     </header>
-    <div id="sidebar-nav-followed-tags" class="overflow-y-auto" style="height: 42vh"></div>
+    <div id="sidebar-nav-followed-tags" class="overflow-y-auto" style="max-height: 42vh"></div>
   <% else %>
     <h3 class="crayons-subtitle-3 p-2">Popular Tags</h3>
-    <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="height: 42vh">
+    <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="max-height: 42vh">
       <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
         <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-          <a class="crayons-link crayons-link--contentful py-2 px-2" href="<%= tag_path(tag_array.second) %>">
+          <a class="crayons-link crayons-link--block py-2 px-2" href="<%= tag_path(tag_array.second) %>">
             #<%= tag_array.second %>
           </a>
           <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s"
