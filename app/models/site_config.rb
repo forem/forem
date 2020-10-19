@@ -27,6 +27,7 @@ class SiteConfig < RailsSettings::Base
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
   field :allow_email_password_login, type: :boolean, default: true
+  field :require_captcha_for_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :invite_only_mode, type: :boolean, default: false
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
@@ -53,6 +54,8 @@ class SiteConfig < RailsSettings::Base
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
                                            Time.zone.today.year
   field :staff_user_id, type: :integer, default: 1
+  field :experience_low, type: :string, default: "Total Newbies"
+  field :experience_high, type: :string, default: "Experienced Users"
 
   # Emails
   field :email_addresses, type: :hash, default: {

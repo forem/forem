@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
 const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
-  <div className="activechatchannel__activeArticle activesendrequest">
+  <div>
     <div className="joining-message">
       <h2>Hey {data.user.name} !</h2>
       <h3>You are not a member of this group yet. Send a request to join.</h3>

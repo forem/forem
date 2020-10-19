@@ -27,6 +27,7 @@ class ApplicationController < ActionController::Base
                           omniauth_callbacks
                           registrations
                           confirmations
+                          invitations
                           passwords
                           health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
@@ -100,6 +101,10 @@ class ApplicationController < ActionController::Base
       referrer = request.env["omniauth.origin"] || "none"
       onboarding_path(referrer: referrer)
     end
+  end
+
+  def after_accept_path_for(_resource)
+    onboarding_path
   end
 
   def raise_suspended

@@ -20,6 +20,11 @@ RSpec.describe Images::Optimizer, type: :service do
       allow(described_class).to receive(:imgproxy)
     end
 
+    it "does nothing when given a relative url" do
+      relative_asset_path = "/assets/something.jpg"
+      expect(described_class.call(relative_asset_path)).to eq relative_asset_path
+    end
+
     it "calls cloudinary if imgproxy is not enabled" do
       allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
       described_class.call(image_url)

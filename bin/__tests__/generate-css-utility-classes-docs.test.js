@@ -23,6 +23,7 @@ function getStorybookFilePath(cssProperty) {
 
 describe('generateUtilityClassesDocumentation', () => {
   beforeEach(() => {
+    // eslint-disable-next-line no-console
     console.log = jest.fn();
   });
 
