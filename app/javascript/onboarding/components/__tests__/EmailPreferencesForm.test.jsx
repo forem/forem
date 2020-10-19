@@ -39,7 +39,7 @@ describe('EmailPreferencesForm', () => {
     document.body.setAttribute('data-user', getUserData());
   });
 
-  it('should have no a11y violations', async () => {
+  it('should have no a11y violatiogs', async () => {
     const { container } = render(renderEmailPreferencesForm());
     const results = await axe(container);
 
@@ -56,11 +56,11 @@ describe('EmailPreferencesForm', () => {
     expect(queryByText('Email preferences')).toBeDefined();
   });
 
-  it('should show the two checkboxes', () => {
+  it('should show the two checkboxes unchecked', () => {
     const { queryByLabelText } = renderEmailPreferencesForm();
 
-    expect(queryByLabelText(/receive weekly newsletter/i)).toBeDefined();
-    expect(queryByLabelText(/receive a periodic digest/i)).toBeDefined();
+    expect(queryByLabelText(/receive weekly newsletter/i).checked).toBe(false);
+    expect(queryByLabelText(/receive a periodic digest/i).checked).toBe(false);
   });
 
   it('should render a stepper', () => {
