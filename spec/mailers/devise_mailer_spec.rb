@@ -1,0 +1,18 @@
+require "rails_helper"
+
+RSpec.describe DeviseMailer, type: :mailer do
+  let(:user) { create(:user) }
+
+  describe "#reset_password_instructions" do
+    let(:email) { described_class.reset_password_instructions(user, "test") }
+
+    it "renders sender" do
+      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expect(email["from"].value).to eq(expected_from)
+    end
+
+    it "renders proper URL" do
+      expect(email.html_part.body).to include(SiteConfig.app_domain)
+    end
+  end
+end
