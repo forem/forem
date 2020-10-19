@@ -30,7 +30,6 @@
 
   &__nav {
     display: grid;
-    gap: var(--su-4);
     flex: 1 auto;
     grid-template-columns: repeat(2, 1fr);
 
