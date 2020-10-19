@@ -25,10 +25,12 @@ const Compose = ({
   }, [markdownEdited, startEditing, editMessageMarkdown]);
 
   const onKeyDown = (event) => {
+    const shiftPressed = event.shiftKey;
     if (startEditing) handleKeyDownEdit(event);
     else handleKeyDown(event);
 
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 && !shiftPressed) {
+      event.preventDefault();
       setValue('');
     }
   };

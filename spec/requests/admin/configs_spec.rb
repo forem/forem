@@ -84,12 +84,6 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
-
-        it "allows all authentication providers to be unset" do
-          post "/admin/config", params: { site_config: { authentication_providers: [] },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to be_empty
-        end
       end
 
       describe "Community Content" do
@@ -131,6 +125,20 @@ RSpec.describe "/admin/config", type: :request do
         it "updates the staff_user_id" do
           post "/admin/config", params: { site_config: { staff_user_id: 22 }, confirmation: confirmation_message }
           expect(SiteConfig.staff_user_id).to eq(22)
+        end
+
+        it "updates the experience_low" do
+          experience_low = "Noobs"
+          post "/admin/config", params: { site_config: { experience_low: experience_low },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.experience_low).to eq(experience_low)
+        end
+
+        it "updates the experience_high" do
+          experience_high = "Advanced Peeps"
+          post "/admin/config", params: { site_config: { experience_high: experience_high },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.experience_high).to eq(experience_high)
         end
       end
 

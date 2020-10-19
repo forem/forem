@@ -73,9 +73,6 @@ function generateUploadFormdata(payload) {
     formData.append('image[]', value),
   );
 
-  if (payload.wrap_cloudinary) {
-    formData.append('wrap_cloudinary', 'true');
-  }
   return formData;
 }
 

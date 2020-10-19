@@ -7,7 +7,7 @@
   <div class="mt-8 mb-6 crayons-card p-7 align-left mx-auto">
     <h2 class="pb-4">Didn't get the email?</h2>
     <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-      <%= devise_error_messages! %>
+      <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="crayons-field mt-2">
         <%= f.email_field :email, class: "crayons-textfield", autofocus: false, value: proper_email %>

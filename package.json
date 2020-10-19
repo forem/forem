@@ -73,11 +73,6 @@
       "svgo --disable=removeViewBox --pretty"
     ]
   },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "all",
-    "printWidth": 80
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thepracticaldev/dev.to.git"
@@ -106,13 +101,12 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.5.2",
     "babel-loader": "^8.1.0",
-    "canvas": "^2.6.1",
-    "css-loader": "^4.3.0",
+    "css-loader": "^5.0.0",
     "cssom": "^0.4.4",
     "eslint": "^7.11.0",
     "eslint-config-preact": "^1.1.1",
     "eslint-config-prettier": "^6.12.0",
-    "eslint-import-resolver-webpack": "^0.12.2",
+    "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.22.1",
@@ -149,6 +143,7 @@
     "ahoy.js": "^0.3.7",
     "autoprefixer": "^9.8.6",
     "babel-preset-preact": "^2.0.0",
+    "canvas": "^2.6.1",
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^3.0.1",
     "core-js": "3",
@@ -163,7 +158,7 @@
     "postcss-cssnext": "^3.1.0",
     "postcss-smart-import": "^0.7.6",
     "postscribe": "^2.0.8",
-    "preact": "^10.5.4",
+    "preact": "^10.5.5",
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.7.2",
     "pusher-js": "^7.0.0",

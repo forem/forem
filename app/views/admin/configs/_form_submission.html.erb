@@ -1,0 +1,8 @@
+<% if current_user.has_role?(:single_resource_admin, Config) %>
+  <div class="form-group">
+    <%= label_tag :confirmation_update %>
+    <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off", required: true, pattern: @confirmation_text %>
+    <div class="alert alert-info">Type the sentence: <%= @confirmation_text %></div>
+    <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
+  </div>
+<% end %>

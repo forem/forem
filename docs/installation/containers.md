@@ -61,8 +61,8 @@ with Podman. You can install it by following these
    `git clone https://github.com/<your-username>/forem.git`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys.
+   - Take a look at `.env_sample`. This file lists all the `ENV` variables we
+     use and provides a fake default for any missing keys.
    - The [backend guide](/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
