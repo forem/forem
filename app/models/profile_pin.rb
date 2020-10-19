@@ -20,7 +20,7 @@ class ProfilePin < ApplicationRecord
     article.profile_pins.where("profile_id == ? AND profile_type == 'Article' AND pinnable_type == 'Comment'", params[:article.profile_id]) 
 
     #sort by decreasing score
-    article.profile_pins.order(score: :desc)k
+    article.profile_pins.order(score: :desc)
 
   end
 
