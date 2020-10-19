@@ -1,4 +1,8 @@
 class DeviseMailer < Devise::Mailer
+  helper Rails.application.routes.url_helpers
+  helper ApplicationHelper
+  helper AuthenticationHelper
+
   before_action :use_custom_host
 
   default(
