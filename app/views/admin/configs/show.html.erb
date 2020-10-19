@@ -196,9 +196,9 @@
                         </div>
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :require_captcha_for_email_password_registration,
-                              checked: SiteConfig.require_captcha_for_email_password_registration,
-                              data: { action: "config#toggleGoogleRecaptchaFields", target: "config.requireCaptchaForEmailPasswordRegistration" },
-                              class: "crayons-checkbox" %>
+                                          checked: SiteConfig.require_captcha_for_email_password_registration,
+                                          data: { action: "config#toggleGoogleRecaptchaFields", target: "config.requireCaptchaForEmailPasswordRegistration" },
+                                          class: "crayons-checkbox" %>
                           <div>
                             <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration" %>
                             <p class="crayons-field__description">
@@ -213,10 +213,9 @@
                               <%= Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
                             </p>
                             <%= f.text_field :recaptcha_site_key,
-                                            class: "form-control",
-                                            value: SiteConfig.recaptcha_site_key,
-                                            required: true,
-                                            placeholder: Constants::SiteConfig::DETAILS[:recaptcha_site_key][:placeholder] %>
+                                             class: "form-control",
+                                             value: SiteConfig.recaptcha_site_key,
+                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_site_key][:placeholder] %>
                           </div>
                           <div class="form-group">
                             <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key" %>
@@ -224,10 +223,9 @@
                               <%= Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %>
                             </p>
                             <%= f.text_field :recaptcha_secret_key,
-                                            class: "form-control",
-                                            value: SiteConfig.recaptcha_secret_key,
-                                            required: true,
-                                            placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
+                                             class: "form-control",
+                                             value: SiteConfig.recaptcha_secret_key,
+                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
                           </div>
                         </div>
                       </fieldset>
