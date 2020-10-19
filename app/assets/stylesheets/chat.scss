@@ -244,7 +244,9 @@
   font-size: var(--fs-base);
   flex-grow: 1;
   height: 300px;
-  overflow-y: hidden;
+  // Setting it to scroll so there is no jump when it's auto. Also, since it's chat,
+  // it will almost always need scrolling right away.
+  overflow-y: scroll;
   overflow-x: hidden;
   text-align: left;
   overscroll-behavior-y: contain;
