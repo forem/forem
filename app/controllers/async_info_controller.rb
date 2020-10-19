@@ -66,7 +66,8 @@ class AsyncInfoController < ApplicationController
         config_body_class: @user.config_body_class,
         pro: @user.pro?,
         feed_style: feed_style_preference,
-        created_at: @user.created_at
+        created_at: @user.created_at,
+        admin: @user.any_admin?
       }
     end.to_json
   end
