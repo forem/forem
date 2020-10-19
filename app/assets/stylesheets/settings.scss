@@ -19,60 +19,35 @@
   }
   .github-repo-row {
     background: var(--card-bg);
-    padding: 12px;
-    margin: 5px 0px;
-    transition: all 0.6s ease;
+    padding: var(--su-3);
+
     &:hover {
-      color: #0f0f0f;
-      background: $light-green;
-      button {
-        background: #a8f1e9;
-      }
+      background: var(--base-10);
     }
+
     &.github-repo-row-featured {
       background: $light-green;
-      color: #0f0f0f;
     }
     .github-repo-row-name {
-      font-weight: bold;
-      form {
-        display: block;
-        float: right;
-      }
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      font-weight: var(--fw-medium);
+
       .crayons-indicator {
         margin-left: 5px;
       }
-      button,
-      a[role='button'] {
-        transition: all 0.4s ease;
-        cursor: pointer;
-        font-size: 1.2em;
-        font-weight: bold;
-        width: 130px;
-        background: white;
-        border: 0px solid;
-        border-radius: 3px;
-        padding: 3px 0px;
-        margin-top: -5px;
-        float: right;
-        min-height: 28.5px;
-        &:hover,
-        &:focus {
-          background: $green;
-          &.danger-button {
-            background: $red;
-          }
-        }
+      button {
         &:disabled {
-          cursor: wait;
-          background: white url(image-src('loading-ellipsis.svg')) no-repeat
-            center center;
-          background-size: 75px;
-        }
-        a {
-          color: $black;
+          padding: var(--su-2);
+          background: var(--accent-brand) url(image-src('loading-ellipsis.svg'))
+            no-repeat center center;
+          background-size: contain;
+          height: 40px;
+          width: 80px;
         }
       }
+      button,
       &.response-template-row-name {
         button,
         a[role='button'] {
@@ -89,13 +64,6 @@
 .signout_confirm-wrapper {
   padding: calc(15% + 50px) 2% 30%;
   text-align: center;
-  form button {
-    font-size: 1.5em;
-    padding: 8px 15px;
-    border: 0px;
-    border-radius: 3px;
-    margin-top: 15px;
-  }
 }
 
 .membership-status {

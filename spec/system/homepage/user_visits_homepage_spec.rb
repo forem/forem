@@ -32,6 +32,28 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).to have_selector(selector, visible: :hidden)
       end
     end
+
+    describe "navigation_links" do
+      before do
+        create(:navigation_link,
+               name: "Listings",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: true,
+               position: 1)
+        create(:navigation_link,
+               name: "Podcasts",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: false,
+               position: nil)
+      end
+
+      it "shows the correct count of links" do
+        visit "/"
+        within(".sidebar-navigation-links") do
+          expect(page).to have_selector(".sidebar-navigation-link", count: 1)
+        end
+      end
+    end
   end
 
   context "when logged in user" do
@@ -106,24 +128,83 @@ RSpec.describe "User visits a homepage", type: :system do
       end
     end
 
-    describe "shop url" do
-      it "shows the link to the shop if present" do
-        SiteConfig.shop_url = "https://example.com"
+    context "when rendering < 5 navigation links" do
+      let!(:navigation_link_1) do
+        create(:navigation_link,
+               name: "Reading List",
+               url: app_url("readinglist").to_s,
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: false,
+               position: 1)
+      end
+      let!(:navigation_link_2) do
+        create(:navigation_link,
+               name: "Podcasts",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: false,
+               position: nil)
+      end
+      let!(:navigation_link_3) do
+        create(:navigation_link,
+               name: "Beauty",
+               icon: "<svg xmlns='http://www.w3.org/2000/svg'/></svg>",
+               display_only_when_signed_in: true,
+               position: nil)
+      end
 
+      before do
         visit "/"
+      end
 
-        within("#main-nav-more") do
-          expect(page).to have_link(href: SiteConfig.shop_url)
+      it "shows the correct count of links" do
+        within(".sidebar-navigation-links") do
+          expect(page).to have_selector(".sidebar-navigation-link", count: 3)
         end
       end
 
-      it "does not show the shop if not present" do
-        SiteConfig.shop_url = ""
+      it "shows the correct navigation_links" do
+        within(".sidebar-navigation-links") do
+          expect(page).to have_text(navigation_link_1.name)
+          expect(page).to have_text(navigation_link_2.name)
+          expect(page).to have_text(navigation_link_3.name)
+        end
+      end
 
+      it "shows the correct urls" do
+        within(".sidebar-navigation-links") do
+          expect(page).to have_link(href: navigation_link_1.url)
+          expect(page).to have_link(href: navigation_link_2.url)
+          expect(page).to have_link(href: navigation_link_3.url)
+        end
+      end
+
+      it "shows the correct order of the links" do
+        sidebar_navigation_link1 = page.find(".sidebar-navigation-link:nth-child(1)")
+        expect(sidebar_navigation_link1).to have_text(navigation_link_1.name)
+
+        sidebar_navigation_link2 = page.find(".sidebar-navigation-link:nth-child(2)")
+        expect(sidebar_navigation_link2).to have_text(navigation_link_3.name)
+
+        sidebar_navigation_link3 = page.find(".sidebar-navigation-link:nth-child(3)")
+        expect(sidebar_navigation_link3).to have_text(navigation_link_2.name)
+      end
+
+      it "shows the count when the url /readinglist is added" do
+        within(".sidebar-navigation-link:nth-child(1)") do
+          expect(page).to have_selector("#reading-list-count")
+        end
+      end
+    end
+
+    context "when rendering > 5 navigation links" do
+      before do
+        create_list(:navigation_link, 7)
+      end
+
+      it "shows some in the 'More' section" do
         visit "/"
-
         within("#main-nav-more") do
-          expect(page).not_to have_text("Shop")
+          expect(page).to have_selector(".sidebar-navigation-link", count: 2)
         end
       end
     end

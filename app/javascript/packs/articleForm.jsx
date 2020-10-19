@@ -24,14 +24,14 @@ function loadForm() {
     window.csrfToken = csrfToken;
 
     const root = document.getElementById('js-article-form');
-    const { article, organizations, version, logoSvg } = root.dataset;
+    const { article, organizations, version, siteLogo } = root.dataset;
 
     render(
       <ArticleForm
         article={article}
         organizations={organizations}
         version={version}
-        logoSvg={logoSvg}
+        siteLogo={siteLogo}
       />,
       root,
       root.firstElementChild,

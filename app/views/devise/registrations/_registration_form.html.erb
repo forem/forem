@@ -2,7 +2,11 @@
   <div class="registration crayons-card">
     <div class="registration__content">
       <h1 class="registration__title">
-        Welcome to <%= community_name %>
+        <% if params[:state] == "new-user" && invite_only_mode? %>
+          <%= community_name %> is invite only.
+        <% else %>
+          Welcome to <%= community_name %>
+        <% end %>
       </h1>
       <p class="registration__description">
         <a href="/"><%= community_name %></a> is a community of
@@ -22,40 +26,14 @@
         </div>
       <% else %>
         <div class="registration__actions-email" id="sign-in-password-form">
-          <%# if there are no SSO auths enabled, we don't ask the user if they have a password %>
-          <% if authentication_enabled_providers.any? %>
+          <% if SiteConfig.allow_email_password_login %>
             <div class="registration__hr">
               <span class="registration__hr-label">
                 Have a password? Continue with your email address
               </span>
             </div>
+            <%= render partial: "shared/authentication/email_login_form" %>
           <% end %>
-
-          <%= form_for(User.new, as: :user, url: session_path(:user)) do |f| %>
-            <div class="crayons-field mb-3">
-              <%= f.label :email, class: "crayons-field__label" %>
-              <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
-            </div>
-
-            <div class="crayons-field mb-3">
-              <%= f.label :password, class: "crayons-field__label" %>
-              <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
-            </div>
-
-            <div class="crayons-field crayons-field--checkbox inline-flex flex-row items-center">
-              <%= f.check_box :remember_me, class: "crayons-checkbox" %>
-              <%= f.label :remember_me, class: "crayons-field__label fw-normal" %>
-            </div>
-
-            <div class="actions pt-3">
-              <%= f.submit "Continue", class: "crayons-btn crayons-btn--l w-100" %>
-            </div>
-          <% end %>
-          <p class="pt-6 fs-s align-center">
-            <a href="<%= new_password_path(:user) %>">
-              I forgot my password
-            </a>
-          </p>
         </div>
       <% end %>
     </div>
