@@ -1,4 +1,9 @@
 <div id="sign-in-password-form" class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:580px;">
+  <% if flash[:notice] %>
+    <div class="crayons-notice crayons-notice--danger mb-6">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
   <%= form_for(User.new, as: :user, url: registration_path(:user)) do |f| %>
     <% if defined?(resource) && resource&.errors&.any? %>
       <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger">
@@ -52,6 +57,12 @@
       <div class="crayons-field mt-2">
         <%= f.label :forem_owner_secret, "Few Forem Secret", class: "crayons-field__label" %>
         <%= f.password_field :forem_owner_secret, autocomplete: "current-password", class: "crayons-textfield", required: true, placeholder: "As provided by your Forem host" %>
+      </div>
+    <% end %>
+
+    <% if recaptcha_configured_and_enabled? %>
+      <div class="recaptcha-tag-container mt-2">
+        <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>
       </div>
     <% end %>
     <div class="actions pt-3">

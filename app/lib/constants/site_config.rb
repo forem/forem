@@ -2,11 +2,15 @@ module Constants
   module SiteConfig
     DETAILS = {
       allow_email_password_registration: {
-        description: "Can users sign up with only email and password?",
+        description: "People can sign up using their email and password",
         placeholder: ""
       },
       allow_email_password_login: {
-        description: "Can users login using email and password?",
+        description: "People can login using their email and password",
+        placeholder: ""
+      },
+      require_captcha_for_email_password_registration: {
+        description: "People will be required to fill out a captcha when they're creating a new account in your community",
         placeholder: ""
       },
       authentication_providers: {
@@ -232,12 +236,12 @@ module Constants
         placeholder: 2
       },
       recaptcha_site_key: {
-        description: "Site key for Google reCAPTCHA, used for reporting abuse.",
-        placeholder: "..."
+        description: "Add the site key for Google reCAPTCHA, which is used for reporting abuse",
+        placeholder: "What is the Google reCAPTCHA site key?"
       },
       recaptcha_secret_key: {
-        description: "Secret key for Google reCAPTCHA, used for reporting abuse.",
-        placeholder: "..."
+        description: "Add the secret key for Google reCAPTCHA, which is used for reporting abuse",
+        placeholder: "What is the Google reCAPTCHA secret key?"
       },
       right_navbar_svg_icon: {
         description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",

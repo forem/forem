@@ -88,6 +88,19 @@ RSpec.describe "Registrations", type: :request do
       end
     end
 
+    context "when email registration allowed and captcha required" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
+        allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
+      end
+
+      it "displays the captcha box on email signup page" do
+        get sign_up_path, params: { state: "email_signup" }
+
+        expect(response.body).to include("recaptcha-tag-container")
+      end
+    end
+
     context "when user logged in" do
       it "redirects to main feed" do
         sign_in user
@@ -99,6 +112,14 @@ RSpec.describe "Registrations", type: :request do
   end
 
   describe "POST /users" do
+    def mock_recaptcha_verification
+      # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(RegistrationsController).to(
+        receive(:recaptcha_verified?).and_return(true),
+      )
+      # rubocop:enable RSpec/AnyInstance
+    end
+
     context "when site is not configured to accept email registration" do
       before do
         SiteConfig.allow_email_password_registration = false
@@ -151,6 +172,38 @@ RSpec.describe "Registrations", type: :request do
                   password: "PaSSw0rd_yo000",
                   password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.all.size).to be 0
+      end
+    end
+
+    context "when site configured to accept email registration AND require captcha" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
+        allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
+      end
+
+      it "creates user when valid params passed and recaptcha completed" do
+        mock_recaptcha_verification
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+
+      it "does not create user when valid params passed BUT recaptcha incomplete" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 0
+        expect(response).to redirect_to("/users/sign_up?state=email_signup")
+
+        follow_redirect!
+        expect(response.body).to include("You must complete the recaptcha")
       end
     end
 
