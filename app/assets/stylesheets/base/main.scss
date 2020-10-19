@@ -44,6 +44,7 @@ a {
   font-weight: var(--font-weight, var(--fw-medium));
 
   display: inline-flex;
+  flex-shrink: 0;
   align-self: stretch;
   align-items: center;
   vertical-align: middle;
