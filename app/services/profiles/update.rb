@@ -26,7 +26,6 @@ module Profiles
 
       return unless @profile.save
 
-      # Propagate changes back to the `users` table
       self
     end
 
