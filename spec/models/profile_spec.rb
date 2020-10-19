@@ -7,11 +7,6 @@ RSpec.describe Profile, type: :model do
   describe "validations" do
     subject { profile }
 
-    before do
-      ProfileField.create(label: "Summary")
-      described_class.refresh_attributes!
-    end
-
     it { is_expected.to validate_uniqueness_of(:user_id) }
     it { is_expected.to validate_presence_of(:data) }
 

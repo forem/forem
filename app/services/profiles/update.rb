@@ -13,9 +13,6 @@ module Profiles
     end
 
     def call
-      # Ensure we have up to date attributes
-      Profile.refresh_attributes!
-
       # Handle user specific custom profile fields
       custom_attributes = @updated_attributes.extract!(*@profile.custom_profile_attributes)
       @updated_attributes[:custom_attributes] = custom_attributes
