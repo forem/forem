@@ -4,10 +4,9 @@ RSpec.describe "Viewing a comment", type: :system, js: true do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id, show_comments: true) }
   let(:comment) { create(:comment, commentable: article, user: user) }
-  let!(:timestamp) { "2019-03-04T10:00:00Z" }
 
   before do
-    Timecop.freeze(timestamp)
+    Timecop.freeze
     sign_in user
     visit comment.path
   end
@@ -18,10 +17,12 @@ RSpec.describe "Viewing a comment", type: :system, js: true do
 
   context "when showing the date" do
     it "shows the readable publish date" do
-      expect(page).to have_selector(".comment-date time", text: "Mar 4")
+      comment_date = comment.readable_publish_date.gsub("  ", " ")
+      expect(page).to have_selector(".comment-date time", text: comment_date)
     end
 
     it "embeds the published timestamp" do
+      timestamp = comment.decorate.published_timestamp
       selector = ".comment-date time[datetime='#{timestamp}']"
       expect(page).to have_selector(selector)
     end
