@@ -20,6 +20,22 @@ body {
     }
   }
 
+  &.user-tags-followed-0, &.user-tags-followed-1, &.user-tags-followed-2{
+    #sidebar-nav-followed-tags {
+      height: 90px;
+    }
+  }
+  &.user-tags-followed-3, &.user-tags-followed-4, &.user-tags-followed-5{
+    #sidebar-nav-followed-tags {
+      height: 205px;
+    }
+  }
+  &.user-tags-followed-max {
+    #sidebar-nav-followed-tags {
+      height: 42vh;
+    }
+  }
+
   &.default-header {
     padding-top: var(--header-height);
     min-height: calc(100vh - var(--header-height));

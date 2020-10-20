@@ -41,29 +41,30 @@
   </div>
 </nav>
 
-<nav class="sidebar-tags-browser mb-6 overflow-y-auto scrolling-touch" aria-label="Secondary sidebar nav">
+<nav class="mb-6" aria-label="Secondary sidebar nav">
   <% if user_signed_in? %>
-    <header class="fs-xs color-base-50 ff-monospace fw-bold p-2">MY TAGS</header>
-    <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
-  <% end %>
-  <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
-    <header id="tag-separator" class="fs-xs color-base-50 ff-monospace fw-bold p-2">
-      <% if user_signed_in? %>
-        OTHER POPULAR TAGS
-      <% else %>
-        DESIGN YOUR EXPERIENCE
-      <% end %>
+    <header class="p-2 pr-0 flex items-center justify-between">
+      <h3 class="crayons-subtitle-3">My Tags</h3>
+      <a href="/dashboard/following_tags" class="crayons-btn crayons-btn--icon crayons-btn--ghost-dimmed" aria-label="Customize tag priority" title="Customize tag priority">
+        <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon") %>
+      </a>
     </header>
-    <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
-      <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-        <a class="crayons-link crayons-link--block" href="<%= tag_path(tag_array.second) %>">
-          #<%= tag_array.second %>
-        </a>
-        <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s crayons-btn--secondary_"
-          href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
-          data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
-          Follow
-        </a>
-      </div>
-    <% end %>
+    <div id="sidebar-nav-followed-tags" class="overflow-y-auto mb-2" style="max-height: 42vh;"></div>
+  <% else %>
+    <h3 class="crayons-subtitle-3 p-2">Popular Tags</h3>
+    <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="max-height: 42vh">
+      <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
+        <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
+          <a class="crayons-link crayons-link--block py-2 px-2" href="<%= tag_path(tag_array.second) %>">
+            #<%= tag_array.second %>
+          </a>
+          <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s"
+            href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
+            data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
+            Follow
+          </a>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 </nav>
