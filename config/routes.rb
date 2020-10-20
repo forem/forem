@@ -47,7 +47,7 @@ Rails.application.routes.draw do
     end
 
     namespace :admin do
-      get "/", to: redirect("/admin/articles")
+      get "/" => "admin_portals#index"
 
       authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
         mount Blazer::Engine, at: "blazer"
