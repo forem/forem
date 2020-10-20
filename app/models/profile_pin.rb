@@ -1,4 +1,4 @@
-class ProfilePin < ApplicationRecord 
+class ProfilePin < ApplicationRecord
   belongs_to :pinnable, polymorphic: true
   belongs_to :profile, polymorphic: true
   belongs_to :article
@@ -15,13 +15,8 @@ class ProfilePin < ApplicationRecord
   private
 
   def get_profile_pins
-
-    #get all profile pins where an article has pinned comments
-    article.profile_pins.where("profile_id == ? AND profile_type == 'Article' AND pinnable_type == 'Comment'", params[:article.profile_id]) 
-
-    #sort by decreasing score
-    article.profile_pins.order(score: :desc)k
-
+    article.profile_pins.where(profile_id: params[:article.profile_id], profile_type: Article, pinnable_type: Comment)
+    article.profile_pins.order(score: :desc)
   end
 
   def only_five_pins_per_profile
@@ -32,9 +27,10 @@ class ProfilePin < ApplicationRecord
     errors.add(:pinnable_id, "must have proper permissions for pin") if pinnable.user_id != profile_id
   end
 
-  # If profile_type && pinnable_type = Article
   def article_to_article
-    errors.add(:parent_type, "cannot pin articles to each other") 
-    if pinnable_type == profile_type
+    def article_to_article
+      return unless pinnable_type == profile_type
+      errors.add(:parent_type, "cannot pin articles to each other") 
+    end
   end
 end
