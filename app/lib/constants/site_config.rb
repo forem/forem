@@ -138,6 +138,10 @@ module Constants
         description: "Used to authenticate with your health check endpoints.",
         placeholder: "a secure token"
       },
+      home_feed_minimum_score: {
+        description: "Minimum score needed for a post to show up on the unauthenticated home page.",
+        placeholder: "0"
+      },
       invite_only_mode: {
         description: "Only users invited by email can join this community.",
         placeholder: ""
@@ -291,6 +295,10 @@ module Constants
         "separated, letters only). Please note that these users will be shown as a fallback if no" \
         "recently-active commenters or producers can be suggested",
         placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
+      },
+      tag_feed_minimum_score: {
+        description: "Minimum score needed for a post to show up on default tag page.",
+        placeholder: "0"
       },
       tagline: {
         description: "Used in signup modal.",
