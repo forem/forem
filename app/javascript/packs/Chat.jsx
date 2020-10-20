@@ -8,7 +8,7 @@ function loadElement() {
 
   if (root) {
     render(<Snackbar lifespan="3" />, document.getElementById('snack-zone'));
-    render(<Chat {...root.dataset} modFaqEmail="<%= SiteConfig.email_addresses[:default] %>" />, root);
+    render(<Chat {...root.dataset} />, root);
 
     const placeholder = document.getElementById('chat_placeholder');
 
