@@ -206,6 +206,8 @@ class User < ApplicationRecord
 
   alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
+  alias_attribute :subscribed_to_mod_roundrobin_notifications?, :mod_roundrobin_notifications
+  alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
@@ -471,8 +473,7 @@ class User < ApplicationRecord
   end
 
   def receives_follower_email_notifications?
-    email.present? &&
-      email_follower_notifications
+    email.present? && subscribed_to_email_follower_notifications?
   end
 
   def hotness_score
