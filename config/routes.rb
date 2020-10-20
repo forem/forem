@@ -68,7 +68,7 @@ Rails.application.routes.draw do
       resources :comments, only: [:index]
       resources :events, only: %i[index create update]
       resources :feedback_messages, only: %i[index show]
-      resources :invitations, only: %i[index new create]
+      resources :invitations, only: %i[index new create destroy]
       resources :pages, only: %i[index new create edit update destroy]
       resources :mods, only: %i[index update]
       resources :moderator_actions, only: %i[index]
