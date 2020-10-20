@@ -60,6 +60,7 @@ class SiteConfig < RailsSettings::Base
   field :email_addresses, type: :hash, default: {
     default: ApplicationConfig["DEFAULT_EMAIL"],
     business: ApplicationConfig["DEFAULT_EMAIL"],
+    support: ApplicationConfig["DEFAULT_EMAIL"],
     privacy: ApplicationConfig["DEFAULT_EMAIL"],
     members: ApplicationConfig["DEFAULT_EMAIL"]
   }
