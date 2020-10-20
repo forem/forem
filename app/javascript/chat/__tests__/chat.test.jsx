@@ -169,7 +169,7 @@ describe('<Chat />', () => {
   it('should have no a11y violations', async () => {
     fetch.mockResponse(getMockResponse());
     const { container } = render(
-      <Chat {...getRootData()} modFaqEmail="jane@doe.com" />,
+      <Chat {...getRootData()} />,
     );
     const results = await axe(container);
 
@@ -179,7 +179,7 @@ describe('<Chat />', () => {
   it('should render expanded', () => {
     fetch.mockResponse(getMockResponse());
     const { getByTestId, getByText, getByLabelText, getByRole } = render(
-      <Chat {...getRootData()} modFaqEmail="jane@doe.com" />,
+      <Chat {...getRootData()} />,
     );
     const chat = getByTestId('chat');
 
@@ -212,7 +212,7 @@ describe('<Chat />', () => {
   it('should collapse and expand chat channels properly', async () => {
     fetch.mockResponse(getMockResponse());
     const { queryByText } = render(
-      <Chat {...getRootData()} modFaqEmail="jane@doe.com" />,
+      <Chat {...getRootData()} />,
     );
 
     // // chat channels
