@@ -8,7 +8,7 @@ module ProfileFields
       field "StackOverflow URL", :text_field, placeholder: "https://stackoverflow.com/users/..."
       field "LinkedIn URL", :text_field, placeholder: "https://www.linkedin.com/in/..."
       field "Behance URL", :text_field, placeholder: "https://www.behance.net/..."
-      field "Dribble URL", :text_field, placeholder: "https://dribble.com/..."
+      field "Dribbble URL", :text_field, placeholder: "https://dribbble.com/..."
       field "Medium URL", :text_field, placeholder: "https://medium.com/@..."
       field "GitLab URL", :text_field, placeholder: "https://gitlab.com/..."
       field "Instagram URL", :text_field, placeholder: "https://www.instagram.com/..."
