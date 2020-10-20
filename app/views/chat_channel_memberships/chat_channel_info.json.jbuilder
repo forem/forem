@@ -8,6 +8,7 @@ json.result do
     json.slug @channel.slug
     json.status @channel.status
     json.id @channel.id
+    json.support_email @support_email
   end
 
   json.memberships do

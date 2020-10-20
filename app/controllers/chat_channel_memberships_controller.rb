@@ -33,6 +33,7 @@ class ChatChannelMembershipsController < ApplicationController
       "invitation-link-#{SecureRandom.hex(3)}"
     end
     @invitation_link = "/join_channel_invitation/#{@channel.slug}?invitation_slug=#{invitation_slug}"
+    @support_email = SiteConfig.email_addresses[:default]
   end
 
   def create_membership_request
