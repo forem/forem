@@ -15,26 +15,18 @@
   </div>
 <% end %>
 
-<%= form_for @user, html: { class: "sticky-footer-form" } do |f| %>
+<%= form_with(url: profile_path(@user.profile_id), method: "put", html: { class: "sticky-footer-form" }) do |f| %>
+
   <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
+    <h2>User</h2>
     <div class="crayons-field">
       <%= f.label :email, class: "crayons-field__label" %>
-      <%= f.text_field :email, class: "crayons-textfield", placeholder: "john.doe@example.com" %>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :email_public, class: "crayons-checkbox" %>
-      <%= f.label :email_public, "Display email on profile", class: "crayons-field__label" %>
+      <%= f.text_field "user[email]", class: "crayons-textfield", placeholder: "john.doe@example.com", value: @user.email %>
     </div>
 
     <div class="crayons-field">
       <%= f.label :username, class: "crayons-field__label" %>
-      <%= f.text_field :username, maxlength: 30, class: "crayons-textfield", placeholder: "johndoe" %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :name, class: "crayons-field__label" %>
-      <%= f.text_field :name, maxlength: 100, class: "crayons-textfield", placeholder: "John Doe" %>
+      <%= f.text_field "user[username]", maxlength: 30, class: "crayons-textfield", placeholder: "johndoe", value: @user.username %>
     </div>
 
     <div class="crayons-field">
@@ -43,158 +35,32 @@
       <div class="flex items-center">
         <% if @user.profile_image_url.present? %>
           <span class="crayons-avatar crayons-avatar--xl mr-2"><img alt="<%= @user.username %> profile image" src="<%= Images::Profile.call(@user.profile_image_url, length: 50) %>" class="crayons-avatar__image" /></span>
-          <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
+          <%= f.file_field "user[profile_image]", accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
         <% end %>
       </div>
     </div>
-
-    <div class="crayons-field">
-      <%= f.label :website_url, class: "crayons-field__label" %>
-      <%= f.text_field :website_url, maxlength: 100, class: "crayons-textfield", placeholder: "https://yoursite.com" %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :summary, class: "crayons-field__label" %>
-      <%= f.text_area :summary, maxlength: 200, class: "crayons-textfield", placeholder: "A short bio...", rows: 3 %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :location, class: "crayons-field__label" %>
-      <%= f.text_field :location, maxlength: 100, class: "crayons-textfield", placeholder: "Halifax, Nova Scotia" %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :education, class: "crayons-field__label" %>
-      <%= f.text_field :education, maxlength: 100, class: "crayons-textfield" %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :employer_name, class: "crayons-field__label" %>
-      <%= f.text_field :employer_name, maxlength: 100, class: "crayons-textfield", placeholder: "Acme Inc." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :employer_url, class: "crayons-field__label" %>
-      <%= f.text_field :employer_url, maxlength: 100, class: "crayons-textfield", placeholder: "https://dev.com" %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :employment_title, class: "crayons-field__label" %>
-      <%= f.text_field :employment_title, maxlength: 100, class: "crayons-textfield", placeholder: "Junior Frontend Engineer" %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :mostly_work_with, "Skills/Languages", class: "crayons-field__label" %>
-      <%= f.text_area :mostly_work_with, maxlength: 500, class: "crayons-textfield", rows: 5 %>
-      <p class="crayons-field__description">What tools and languages are you most experienced with? Are you specialized or more of a generalist?</p>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :currently_learning, "I'm getting into", class: "crayons-field__label" %>
-      <%= f.text_area :currently_learning, maxlength: 500, class: "crayons-textfield", rows: 5 %>
-      <p class="crayons-field__description">What are you learning right now? What are the new tools and languages you're picking up in <%= Time.zone.now.year %>?</p>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :currently_hacking_on, "My projects and hacks", class: "crayons-field__label" %>
-      <%= f.text_area :currently_hacking_on, maxlength: 500, class: "crayons-textfield", rows: 5 %>
-      <p class="crayons-field__description">What projects are currently occupying most of your time?</p>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :available_for, class: "crayons-field__label" %>
-      <%= f.text_area :available_for, maxlength: 500, class: "crayons-textfield", rows: 5 %>
-      <p class="crayons-field__description">What kinds of collaborations or discussions are you available for? What's a good reason to say <em>Hey!</em> to you these days?</p>
-    </div>
   </div>
 
-  <div class="crayons-card mb-6 grid gap-4 p-6">
-    <h2>Branding</h2>
-    <%= render partial: "shared/logo_design", locals: { f: f, account: @user } %>
+  <% ProfileFieldGroup.non_empty_groups.each do |group| %>
+    <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
+      <h2><%= group.name %></h2>
+      <% if group.description.present? %>
+        <div class="color-base-40"><%= group.description %></div>
+      <% end %>
+      <% group.profile_fields.each do |field| %>
+        <div class="crayons-field <%= "crayons-field--check_box" if field.input_type == "check_box" %>">
+          <div><%= field.label %></div>
+          <% if field["input_type"] == "check_box" %>
+            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", checked: @user.profile.data[field.attribute_name]) %>
+          <% else %>
+            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name]) %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="save-footer crayons-card mb-6 grid p-6">
+    <button type="submit" class="crayons-btn">Save Profile Information</button>
   </div>
-
-  <div class="crayons-card mb-6 grid gap-4 p-6">
-    <h2>Work opportunities settings</h2>
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :looking_for_work, class: "crayons-checkbox" %>
-      <%= f.label :looking_for_work, class: "crayons-field__label" %>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :looking_for_work_publicly, class: "crayons-checkbox" %>
-      <%= f.label :looking_for_work_publicly, "Display \"looking for work\" on profile", class: "crayons-field__label" %>
-    </div>
-
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :contact_consent, class: "crayons-checkbox" %>
-      <%= f.label :contact_consent, "Recruiters can contact me about job opportunities", class: "crayons-field__label" %>
-    </div>
-  </div>
-
-  <div class="crayons-card mb-6 grid gap-6 p-6">
-    <h2>Links</h2>
-
-    <div class="crayons-field">
-      <%= f.label :facebook_url, "Facebook profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :facebook_url, class: "crayons-textfield", placeholder: "https://facebook.com/..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :youtube_url, "Youtube URL", class: "crayons-field__label" %>
-      <%= f.url_field :youtube_url, class: "crayons-textfield", placeholder: "https://www.youtube.com/channel/..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :stackoverflow_url, "Stack Overflow profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :stackoverflow_url, class: "crayons-textfield", placeholder: "https://stackoverflow.com/users/..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :linkedin_url, "LinkedIn profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :linkedin_url, class: "crayons-textfield", placeholder: "https://..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :behance_url, "Behance profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :behance_url, class: "crayons-textfield", placeholder: "https://..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :dribbble_url, "Dribbble profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :dribbble_url, class: "crayons-textfield", placeholder: "https://dribbble.com/..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :medium_url, "Medium profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :medium_url, class: "crayons-textfield", placeholder: "https://..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :gitlab_url, "GitLab profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :gitlab_url, class: "crayons-textfield", placeholder: "https://..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :instagram_url, "Instagram profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :instagram_url, class: "crayons-textfield", placeholder: "https://..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :mastodon_url, "Mastodon profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :mastodon_url, class: "crayons-textfield", placeholder: "https://..." %>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :twitch_url, "Twitch profile URL", class: "crayons-field__label" %>
-      <%= f.url_field :twitch_url, class: "crayons-textfield", placeholder: "https://..." %>
-    </div>
-  </div>
-
-  <div class="save-footer crayons-card mb-6 grid gap-6 p-6">
-    <%= f.hidden_field :tab, value: @tab %>
-    <div>
-      <button type="submit" class="crayons-btn">Save</button>
-    </div>
-  </div>
-
 <% end %>
