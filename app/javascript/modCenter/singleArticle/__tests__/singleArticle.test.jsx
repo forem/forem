@@ -48,13 +48,13 @@ describe('<SingleArticle />', () => {
 
   it('renders the new clickable article title', () => {
     const { container } = render(
-      <>
+      <Fragment>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
         <div
           data-testid="flag-user-modal"
           class="flag-user-modal-container hidden"
         />
-      </>,
+      </Fragment>,
     );
     const text = getNodeText(container.querySelector('.article-title-link'));
     expect(text).toContain(getTestArticle().title);
