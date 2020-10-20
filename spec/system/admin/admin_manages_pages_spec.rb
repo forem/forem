@@ -1,10 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "Admin manages pages", type: :system do
-
   let(:admin) { create(:user, :super_admin) }
 
   before do
+    create(:page,
+           slug: "test-page",
+           body_html: "<div>hello there</div>",
+           title: "Test Page",
+           description: "A test page",
+           is_top_level_path: true)
     sign_in admin
     visit admin_pages_path
   end
@@ -43,10 +48,19 @@ RSpec.describe "Admin manages pages", type: :system do
 
     it "does not show any of the links in the pages table" do
       within(".pages__table") do
-        expect(page).to_not have_content("Terms of Use")
-        expect(page).to_not have_content("Code of Conduct")
-        expect(page).to_not have_content("Privacy Policy")
+        expect(page).not_to have_content("Terms of Use")
+        expect(page).not_to have_content("Code of Conduct")
+        expect(page).not_to have_content("Privacy Policy")
       end
+    end
+
+    it "allows a page to be deleted" do
+      expect(page).to have_content("Test Page")
+      click_on("Edit")
+      expect(page).to have_selector("input[type=submit][value='Delete Page']")
+      click_on("Delete Page")
+      expect(page).to have_current_path(admin_pages_path)
+      expect(page).not_to have_content("Test Page")
     end
   end
 
@@ -62,15 +76,13 @@ RSpec.describe "Admin manages pages", type: :system do
              slug: "privacy",
              body_html: "<div>Privacy Policy</div>",
              title: "Privacy Policy",
-             description: "A page that describes the privacy policy", is_top_level_path: true
-            )
+             description: "A page that describes the privacy policy", is_top_level_path: true)
       create(:page,
              slug: "terms",
              body_html: "<div>Terms of Use</div>",
              title: "Terms of Use",
              description: "A page that describes the terms of use for the application",
-             is_top_level_path: true
-            )
+             is_top_level_path: true)
       sign_in admin
       visit admin_pages_path
     end
