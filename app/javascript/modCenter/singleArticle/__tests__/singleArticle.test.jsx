@@ -46,6 +46,20 @@ describe('<SingleArticle />', () => {
     expect(queryByText(getTestArticle().title)).toBeDefined();
   });
 
+  it('renders the new clickable article title', () => {
+    const { container } = render(
+      <>
+        <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
+        <div
+          data-testid="flag-user-modal"
+          class="flag-user-modal-container hidden"
+        />
+      </>,
+    );
+    const text = getNodeText(container.querySelector('.article-title-link'));
+    expect(text).toContain(getTestArticle().title);
+  });
+
   it('renders the tags', () => {
     const { queryByText } = render(
       <Fragment>
