@@ -55,14 +55,14 @@ class User < ApplicationRecord
 
       # Getters and setters for unmapped profile attributes
       (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
-        delegate column, "#{column}=", to: :profile
+        delegate column, "#{column}=", to: :profile, allow_nil: true
       end
 
       # Getters and setters for mapped profile attributes
       Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
-        define_method(user_attribute) { profile.public_send(profile_attribute) }
+        define_method(user_attribute) { profile&.public_send(profile_attribute) }
         define_method("#{user_attribute}=") do |value|
-          profile.public_send("#{profile_attribute}=", value)
+          profile&.public_send("#{profile_attribute}=", value)
         end
       end
     end

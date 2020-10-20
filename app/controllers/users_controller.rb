@@ -235,7 +235,7 @@ class UsersController < ApplicationController
   def signout_confirm; end
 
   def follow_hiring_tag(user)
-    return unless user.looking_for_work?
+    return unless SiteConfig.dev_to? && user.profile.looking_for_work?
 
     hiring_tag = Tag.find_by(name: "hiring")
     return if !hiring_tag || user.following?(hiring_tag)

@@ -1,5 +1,8 @@
 module Moderator
   class BanishUser < ManageActivityAndRoles
+    DEFAULT_PROFILE_IMAGE =
+      "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png".freeze
+
     attr_reader :user, :admin
 
     def self.call(admin:, user:)
@@ -39,7 +42,7 @@ module Moderator
 
     def remove_profile_info
       user.profile.clear!
-      user.update_columns(profile_image: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")
+      user.update_columns(profile_image: DEFAULT_PROFILE_IMAGE)
     end
 
     def delete_vomit_reactions
