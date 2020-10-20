@@ -291,4 +291,8 @@ module ApplicationHelper
     tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
   end
   # rubocop:enable Rails/OutputSafety
+
+  def admin_config_description(content)
+    tag.p(content, class: "crayons-field__description") unless content.empty?
+  end
 end
