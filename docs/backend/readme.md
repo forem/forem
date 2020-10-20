@@ -10,12 +10,12 @@ items:
   - configuration.md
   - data-update-scripts.md
   - elasticsearch.md
+  - emails.md
   - fastly.md
   - internationalization.md
   - roles.md
   - pusher.md
   - resource-admin.md
-  - previewing-emails.md
   - notification.md
   - scheduled-jobs.md
   - metrics.md
