@@ -21,5 +21,18 @@ module Admin
                    registered: false)
       redirect_to admin_invitations_path
     end
+
+    def destroy
+      # User.where(registered: false).each do |invitation|
+      # @invitations.each do |invitation|
+      invitation = User.where(registered: false)
+      if invitation.destroy
+        flash[:success] = "Invitation has been deleted!"
+      else
+        flash[:danger] = invitation.errors_as_sentence
+        redirect_to admin_invitations_path
+        # end
+      end
+    end
   end
 end

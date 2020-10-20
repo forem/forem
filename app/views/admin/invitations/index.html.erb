@@ -25,6 +25,9 @@
       <td><%= user.id %></td>
       <td><%= user.name %></td>
       <td><%= user.email %></td>
+       <h5>
+        <td><%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %></td>
+      </h5>
     </tr>
     <% end %>
   </tbody>
