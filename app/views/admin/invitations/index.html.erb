@@ -26,7 +26,7 @@
       <td><%= user.name %></td>
       <td><%= user.email %></td>
        <h5>
-        <td><%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %></td>
+        <td><%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure you want to delete this pending invite?" }, class: "btn btn-danger" %></td>
       </h5>
     </tr>
     <% end %>
