@@ -161,7 +161,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     password_confirmation: "password",
   )
 
-  user.add_role(:admin)
+  user.add_role(:super_admin)
   user.add_role(:single_resource_admin)
 end
 
