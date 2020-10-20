@@ -51,7 +51,7 @@
     <% end %>
   <% end %>
 
-  <% if policy(:video).new? %>
+  <% if policy(:video).new? && SiteConfig.enable_video_upload %>
     <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant> Upload a video
     </a>
   <% end %>
