@@ -53,6 +53,8 @@ class SiteConfig < RailsSettings::Base
   field :staff_user_id, type: :integer, default: 1
   field :experience_low, type: :string, default: "Total Newbies"
   field :experience_high, type: :string, default: "Experienced Users"
+  field :tag_feed_minimum_score, type: :integer, default: 0
+  field :home_feed_minimum_score, type: :integer, default: 0
 
   # Emails
   field :email_addresses, type: :hash, default: {
