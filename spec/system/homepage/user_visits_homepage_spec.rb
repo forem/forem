@@ -107,7 +107,7 @@ RSpec.describe "User visits a homepage", type: :system do
         find("body")["data-user"]
 
         within("#sidebar-nav-followed-tags") do
-          expect(all(".crayons-link--contentful").map(&:text)).to eq(%w[#javascript #go #ruby])
+          expect(all(".crayons-link--block").map(&:text)).to eq(%w[#javascript #go #ruby])
         end
       end
     end
