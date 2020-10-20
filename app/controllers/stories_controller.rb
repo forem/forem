@@ -337,7 +337,7 @@ class StoriesController < ApplicationController
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order(published_at: :desc)
     else
-      @stories.order(hotness_score: :desc).where("score > 2") # Andy: need to discuss this
+      @stories.order(hotness_score: :desc).where("score > #{SiteConfig.home_feed_minimum_score}")
     end
   end
 
