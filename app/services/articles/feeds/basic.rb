@@ -27,6 +27,26 @@ module Articles
         end.reverse!
       end
 
+      def published_articles_by_tag
+        articles = Article.published.limited_column_select
+          .includes(top_comments: :user)
+          .page(@page).per(@number_of_articles)
+        articles = articles.cached_tagged_with(@tag) if @tag.present? # More efficient than tagged_with
+        articles
+      end
+
+      # Timeframe values from Timeframer::DATETIMES
+      def top_articles_by_timeframe(timeframe:)
+        published_articles_by_tag.where("published_at > ?", Timeframer.new(timeframe).datetime)
+          .order(score: :desc).page(@page).per(@number_of_articles)
+      end
+
+      def latest_feed
+        published_articles_by_tag.order(published_at: :desc)
+          .where("score > ?", MINIMUM_SCORE_LATEST_FEED)
+          .page(@page).per(@number_of_articles)
+      end
+
       private
 
       def user_followed_tags
