@@ -7,3 +7,4 @@
 *.rake diff=ruby
 *.css  diff=css
 *.html diff=html
+*.erb  diff=html
