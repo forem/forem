@@ -14,7 +14,7 @@ const ModFaqSection = ({ email, currentMembershipRole }) => {
           href={`mailto:${email}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-2 url-link"
+          className="mx-1 url-link"
         >
           {email}
         </a>
