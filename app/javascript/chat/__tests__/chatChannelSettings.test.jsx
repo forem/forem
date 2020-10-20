@@ -11,7 +11,7 @@ describe('<ChatChannelSettings />', () => {
     const { container } = render(
       <ChatChannelSettings
         activeMembershipId={12}
-        modFaqEmail="jane@doe.com"
+        supportEmail="jane@doe.com"
       />,
     );
     const results = await axe(container);
@@ -23,7 +23,7 @@ describe('<ChatChannelSettings />', () => {
     const { container } = render(
       <ChatChannelSettings
         activeMembershipId={12}
-        modFaqEmail="jane@doe.com"
+        supportEmail="jane@doe.com"
       />,
     );
 

@@ -27,7 +27,7 @@ const ChatChannelSettingsSection = ({
   activeMemberships,
   pendingMemberships,
   requestedMemberships,
-  modFaqEmail,
+  supportEmail,
   invitationUsernames,
   showGlobalBadgeNotification,
 }) => (
@@ -75,7 +75,7 @@ const ChatChannelSettingsSection = ({
     />
     <ModFaqSection
       currentMembershipRole={currentMembership.role}
-      email={modFaqEmail}
+      email={supportEmail}
       className="channel-mod-faq"
     />
   </div>
@@ -87,7 +87,7 @@ ChatChannelSettingsSection.propTypes = {
   activeMemberships: PropTypes.isRequired,
   pendingMemberships: PropTypes.isRequired,
   requestedMemberships: PropTypes.isRequired,
-  modFaqEmail: PropTypes.string.isRequired,
+  supportEmail: PropTypes.string.isRequired,
   invitationUsernames: PropTypes.string.isRequired,
   channelDescription: PropTypes.string.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,

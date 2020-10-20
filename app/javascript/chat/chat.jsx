@@ -49,7 +49,7 @@ const WIDE_WIDTH_LIMIT = 1600;
 
 export default class Chat extends Component {
   static propTypes = {
-    modFaqEmail: PropTypes.string.isRequired,
+    supportEmail: PropTypes.string.isRequired,
     pusherKey: PropTypes.number.isRequired,
     chatChannels: PropTypes.string.isRequired,
     chatOptions: PropTypes.string.isRequired,
@@ -1468,7 +1468,7 @@ export default class Chat extends Component {
   }
   renderActiveChatChannel = (channelHeader) => {
     const { state, props } = this;
-    const { modFaqEmail } = props;
+    const { supportEmail } = props;
 
     return (
       <div className="activechatchannel">
@@ -1533,7 +1533,7 @@ export default class Chat extends Component {
           </div>
         </div>
         <Content
-          modFaqEmail={modFaqEmail}
+          supportEmail={supportEmail}
           onTriggerContent={this.triggerActiveContent}
           resource={state.activeContent[state.activeChannelId]}
           activeChannel={state.activeChannel}

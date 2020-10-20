@@ -18,7 +18,7 @@ import ChatChannelSettingsSection from './ChatChannelSettingsSection';
 
 export default class ChatChannelSettings extends Component {
   static propTypes = {
-    modFaqEmail: PropTypes.string.isRequired,
+    supportEmail: PropTypes.string.isRequired,
     handleLeavingChannel: PropTypes.func.isRequired,
     activeMembershipId: PropTypes.number.isRequired,
   };
@@ -382,7 +382,7 @@ export default class ChatChannelSettings extends Component {
       invitationLink,
     } = this.state;
 
-    const { modFaqEmail } = this.props;
+    const { supportEmail } = this.props;
 
     if (!chatChannel) {
       return null;
@@ -393,7 +393,7 @@ export default class ChatChannelSettings extends Component {
         <div className="p-4">
           {displaySettings ? (
             <ChatChannelSettingsSection
-              modFaqEmail={modFaqEmail}
+              supportEmail={supportEmail}
               channelDiscoverable={channelDiscoverable}
               updateCurrentMembershipNotificationSettings={
                 this.updateCurrentMembershipNotificationSettings
