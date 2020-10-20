@@ -1,3 +1,4 @@
+
 import { h, render } from 'preact';
 import Chat from '../chat/chat';
 import { Snackbar } from '../Snackbar/Snackbar';
@@ -7,7 +8,7 @@ function loadElement() {
 
   if (root) {
     render(<Snackbar lifespan="3" />, document.getElementById('snack-zone'));
-    render(<Chat {...root.dataset} />, root);
+    render(<Chat {...root.dataset} modFaqEmail="<%= SiteConfig.email_addresses[:default] %>" />, root);
 
     const placeholder = document.getElementById('chat_placeholder');
 

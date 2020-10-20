@@ -30,13 +30,14 @@ export default class Content extends Component {
       activeMembershipId: PropTypes.func,
       sendCanvasImage: PropTypes.func,
     }).isRequired,
+    modFaqEmail: PropTypes.string.isRequired,
     fullscreen: PropTypes.bool.isRequired,
     onTriggerContent: PropTypes.func.isRequired,
     updateRequestCount: PropTypes.func.isRequired,
   };
 
   render() {
-    const { onTriggerContent, fullscreen, resource } = this.props;
+    const { onTriggerContent, fullscreen, resource, modFaqEmail } = this.props;
     if (!resource) {
       return '';
     }
@@ -80,13 +81,13 @@ export default class Content extends Component {
                 'M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z',
               )}
         </button>
-        <Display resource={resource} />
+        <Display resource={resource} modFaqEmail={modFaqEmail} />
       </div>
     );
   }
 }
 
-const Display = ({ resource }) => {
+const Display = ({ modFaqEmail, resource }) => {
   switch (resource.type_of) {
     case 'loading-user':
       return <div className="loading-user" title="Loading user" />;
@@ -111,6 +112,7 @@ const Display = ({ resource }) => {
     case 'chat-channel-setting':
       return (
         <ChatChannelSettings
+          modFaqEmail={modFaqEmail}
           resource={resource.data}
           activeMembershipId={resource.activeMembershipId}
           handleLeavingChannel={resource.handleLeavingChannel}
