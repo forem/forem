@@ -86,6 +86,7 @@ class SiteConfig < RailsSettings::Base
 
   field :left_navbar_svg_icon, type: :string, default: STACK_ICON
   field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
+  field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
