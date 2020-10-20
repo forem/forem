@@ -134,7 +134,7 @@ class StoriesController < ApplicationController
                                 Article.published.cached_tagged_by_approval_with(@tag).size
                               elsif SiteConfig.feed_strategy == "basic"
                                 Article.published.cached_tagged_with(@tag)
-                                  .where("score > #{SiteConfig.tag_feed_minimum_score}").size
+                                  .where("score > ?", SiteConfig.tag_feed_minimum_score).size
                               else
                                 cached_tagged_count
                               end
