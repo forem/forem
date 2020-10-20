@@ -139,7 +139,7 @@ class StoriesController < ApplicationController
                                 cached_tagged_count
                               end
     @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
-    @stories = Articles::Feeds.const_get(SiteConfig.feed_strategy.classify)
+    @stories = Articles::Feeds::LargeForemExperimental
       .new(number_of_articles: @number_of_articles, tag: @tag, page: @page)
       .published_articles_by_tag
 
@@ -185,7 +185,7 @@ class StoriesController < ApplicationController
   end
 
   def featured_story
-    @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories) # TODO: maybe change this
+    @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories)
   end
 
   def handle_podcast_index
@@ -259,7 +259,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_feed_stories
-    feed = Articles::Feeds.const_get(SiteConfig.feed_strategy.classify).new(page: @page, tag: params[:tag])
+    feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
     if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
