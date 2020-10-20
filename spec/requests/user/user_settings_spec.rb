@@ -172,7 +172,7 @@ RSpec.describe "UserSettings", type: :request do
 
     it "enables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 1 } }
-      expect(user.reload.mod_roundrobin_notifications).to be(true)
+      expect(user.reload.subscribed_to_mod_roundrobin_notifications?).to be(true)
     end
 
     it "updates the users announcement display preferences" do
@@ -183,7 +183,7 @@ RSpec.describe "UserSettings", type: :request do
 
     it "disables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 0 } }
-      expect(user.reload.mod_roundrobin_notifications).to be(false)
+      expect(user.reload.subscribed_to_mod_roundrobin_notifications?).to be(false)
     end
 
     it "can toggle welcome notifications" do
