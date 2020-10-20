@@ -39,7 +39,6 @@ describe('<Content />', () => {
       const { container } = render(
         <Content
           resource={channelRequestResource}
-          modFaqEmail="jane@doe.com"
         />,
       );
       const results = await axe(container);
@@ -52,7 +51,6 @@ describe('<Content />', () => {
       const { queryByText, queryByTitle } = render(
         <Content
           resource={channelRequestResource}
-          modFaqEmail="jane@doe.com"
         />,
       );
 
