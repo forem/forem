@@ -198,6 +198,7 @@ RSpec.describe "StoriesIndex", type: :request do
     context "with campaign_sidebar" do
       before do
         SiteConfig.campaign_featured_tags = "shecoded,theycoded"
+        SiteConfig.home_feed_minimum_score = 7
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
         create(:article, approved: true, body_markdown: a_body, score: 1)
