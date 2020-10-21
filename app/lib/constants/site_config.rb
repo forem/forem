@@ -1,6 +1,7 @@
 module Constants
   module SiteConfig
     IMAGE_PLACEHOLDER = "https://url/image.png".freeze
+    SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
     DETAILS = {
       allow_email_password_registration: {
@@ -154,7 +155,7 @@ module Constants
       },
       left_navbar_svg_icon: {
         description: "The SVG icon used to expand the left navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: "<svg ...></svg>"
+        placeholder: SVG_PLACEHOLDER
       },
       logo_png: {
         description: "Minimum 1024px, used for PWA etc.",
@@ -162,7 +163,7 @@ module Constants
       },
       logo_svg: {
         description: "Used as the SVG logo of the community",
-        placeholder: "<svg ...></svg>"
+        placeholder: SVG_PLACEHOLDER
       },
       main_social_image: {
         description: "Used as the main image in social networks and OpenGraph",
@@ -251,7 +252,7 @@ module Constants
       },
       right_navbar_svg_icon: {
         description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: "<svg ...></svg>"
+        placeholder: SVG_PLACEHOLDER
       },
       secondary_logo_url: {
         description: "Used as the secondary logo",
