@@ -48,7 +48,7 @@
           <% if params[:state] == "potential" %>
             <td>
               <%= form_with model: [:admin, mod], url: admin_mod_path(mod.id), method: :patch, local: true do |f| %>
-                <%= f.submit "Make Trusted Mod", class: "btn btn-light js-add-to-mod-channel" %>
+                <%= f.submit "Make Trusted", class: "btn btn-light js-add-to-mod-channel" %>
               <% end %>
             </td>
           <% end %>

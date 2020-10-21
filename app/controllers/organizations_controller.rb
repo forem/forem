@@ -6,7 +6,6 @@ class OrganizationsController < ApplicationController
 
     @tab = "organization"
     @user = current_user
-    @tab_list = @user.settings_tab_list
 
     unless valid_image?
       render template: "users/edit"
@@ -29,7 +28,6 @@ class OrganizationsController < ApplicationController
   def update
     @user = current_user
     @tab = "organization"
-    @tab_list = @user.settings_tab_list
     set_organization
 
     unless valid_image?
@@ -108,7 +106,7 @@ class OrganizationsController < ApplicationController
   def organization_params
     params.require(:organization).permit(permitted_params)
       .transform_values do |value|
-        if value.class.name == "String"
+        if value.instance_of?(String)
           ActionController::Base.helpers.strip_tags(value)
         else
           value
