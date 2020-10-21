@@ -2,6 +2,8 @@ module Profiles
   class Update
     include ImageUploads
 
+    USER_COLUMNS = Set.new(User.column_names).freeze
+
     def self.call(user, updated_attributes = {})
       new(user, updated_attributes).call
     end
@@ -77,12 +79,8 @@ module Profiles
 
     # Propagate changes back to the `users` table
     def sync_to_user
-      # These are the profile attributes that still exist as columns on User.
-      profile_attributes = @profile.data.transform_keys do |key|
-        Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
-      end
       @profile.user._skip_profile_sync = true
-      if @profile.user.update(profile_attributes.except("custom_attributes"))
+      if @profile.user.update(user_profile_attributes)
         update_user_attributes
       else
         @error_message = @user.errors_as_sentence
@@ -91,6 +89,14 @@ module Profiles
       @success
     ensure
       @profile.user._skip_profile_sync = false
+    end
+
+    # These are the profile attributes that still exist as columns on User.
+    def user_profile_attributes
+      profile_attributes = @profile.data.transform_keys do |key|
+        Profile::MAPPED_ATTRIBUTES.fetch(key, key).to_s
+      end
+      profile_attributes.except("custom_attributes").select { |key, _| key.in?(USER_COLUMNS) }
     end
 
     def update_user_attributes
