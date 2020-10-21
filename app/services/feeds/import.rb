@@ -1,62 +1,75 @@
 module Feeds
   class Import
-    def self.call
+    def self.call(silence: true)
+      # TODO: remove this eventually
+      if Rails.env.development? && silence
+        ActiveRecord::Base.logger = nil
+        Rails.logger.level = :info
+        Rails.configuration.log_level = :info
+      end
+
       new.call
     end
 
     # TODO: add `users` param
     def initialize
       @users = User.where.not(feed_url: [nil, ""])
-      @num_workers = 4
+
+      # NOTE: should these be configurable? Currently they are the result of empiric
+      # tests trying to find a balance between memory occupation and speed
+      @users_batch_size = 50
+      @num_fetchers = 8
+      @num_parsers = 4
     end
 
-    # 1. concurrently fetch feeds from the internet in batches
-    # 2. per each batch build articles
-    # 3. update `feed_fetched_at` for each user in the batch
     def call
-      users.find_in_batches(batch_size: 100) do |batch_of_users|
+      users.in_batches(of: users_batch_size) do |batch_of_users|
         feeds_per_user_id = fetch_feeds(batch_of_users)
-        puts "feeds_per_user_id.length: #{feeds_per_user_id.length}"
+        Rails.logger.info("feeds_per_user_id.length: #{feeds_per_user_id.length}")
 
         feedjira_objects = parse_feeds(feeds_per_user_id)
-        puts "feedjira_objects.length: #{feedjira_objects.length}"
+        Rails.logger.info("feedjira_objects.length: #{feedjira_objects.length}")
 
         # NOTE: doing this sequentially to avoid locking problems with the DB
         # and unnecessary conflicts
         articles = feedjira_objects.map do |user_id, feed|
           # TODO: replace `feed` with `feed.url` as `RssReader::Assembler`
           # only actually needs feed.url
-          user = batch_of_users.detect { |user| user.id == user_id }
+          user = batch_of_users.detect { |u| u.id == user_id }
           create_articles_from_user_feed(user, feed)
-        end
-        puts "articles.length: #{articles.flatten.length}"
+        end.flatten
+        Rails.logger.info("articles.length: #{articles.length}")
+
+        articles.each { |article| Slack::Messengers::ArticleFetchedFeed.call(article: article) }
       end
     end
 
     private
 
-    attr_reader :users, :num_workers
+    attr_reader :users, :users_batch_size, :num_fetchers, :num_parsers
 
     # TODO: put this in separate service object
     def fetch_feeds(batch_of_users)
       data = batch_of_users.pluck(:id, :feed_url)
 
-      result = Parallel.map(data, in_threads: num_workers) do |user_id, url|
+      result = Parallel.map(data, in_threads: num_fetchers) do |user_id, url|
         response = HTTParty.get(url.strip, timeout: 10)
 
         [user_id, response.body]
-      rescue Exception
+      rescue StandardError
         # TODO: add exception handling
         # For example, we should stop pulling feeds that return 404 and disable them?
         nil
       end
+
+      batch_of_users.update_all(feed_fetched_at: Time.current)
 
       Hash[result.compact]
     end
 
     # TODO: put this in separate service object
     def parse_feeds(feeds_per_user_id)
-      result = Parallel.map(feeds_per_user_id, in_threads: num_workers) do |user_id, feed_xml|
+      result = Parallel.map(feeds_per_user_id, in_threads: num_parsers) do |user_id, feed_xml|
         parsed_feed = Feedjira.parse(feed_xml)
 
         [user_id, parsed_feed]
@@ -71,6 +84,10 @@ module Feeds
     # TODO: currently this is exactly as in RSSReader, but we might find
     # avenues for optimization, like:
     # 1. why are we sending N exists query to the DB, one per each item, can we fetch them all?
+    # 2. should we queue a batch of workers to create articles, but then, following issues ensue:
+    # => synchronization on write (table/row locking)
+    # => what happens if 2 jobs are in the queue for the same article?
+    # => what happens if they stay in the queue for long and the next iteration of the feeds importer starts?
     def create_articles_from_user_feed(user, feed)
       articles = []
 
@@ -86,10 +103,9 @@ module Feeds
           body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),
           organization_id: nil,
         )
-        # Slack::Messengers::ArticleFetchedFeed.call(article: article)
 
         articles.append(article)
-      rescue Exception
+      rescue StandardError
         # TODO: add exception handling
 
         next
