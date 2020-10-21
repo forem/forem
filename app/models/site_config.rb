@@ -19,10 +19,14 @@ class SiteConfig < RailsSettings::Base
 
   # API Tokens
   field :health_check_token, type: :string
+  field :video_encoder_key, type: :string
 
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
+  field :allow_email_password_login, type: :boolean, default: true
+  field :require_captcha_for_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
+  field :invite_only_mode, type: :boolean, default: false
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
   field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
@@ -42,12 +46,15 @@ class SiteConfig < RailsSettings::Base
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
-  field :community_action, type: :string
   field :tagline, type: :string
   field :community_copyright_start_year, type: :integer,
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
                                            Time.zone.today.year
   field :staff_user_id, type: :integer, default: 1
+  field :experience_low, type: :string, default: "Total Newbies"
+  field :experience_high, type: :string, default: "Experienced Users"
+  field :tag_feed_minimum_score, type: :integer, default: 0
+  field :home_feed_minimum_score, type: :integer, default: 0
 
   # Emails
   field :email_addresses, type: :hash, default: {
@@ -68,6 +75,10 @@ class SiteConfig < RailsSettings::Base
   # Google Analytics Tracking ID, e.g. UA-71991000-1
   field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
 
+  # Google ReCATPCHA keys
+  field :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
+  field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
+
   # Images
   field :main_social_image, type: :string
   field :favicon_url, type: :string, default: "favicon.ico"
@@ -77,6 +88,7 @@ class SiteConfig < RailsSettings::Base
 
   field :left_navbar_svg_icon, type: :string, default: STACK_ICON
   field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
+  field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
@@ -117,11 +129,12 @@ class SiteConfig < RailsSettings::Base
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
 
-  # Rate limits
+  # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_listing_creation, type: :integer, default: 1
   field :rate_limit_published_article_creation, type: :integer, default: 9
+  field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
   field :rate_limit_organization_creation, type: :integer, default: 1
   field :rate_limit_reaction_creation, type: :integer, default: 10
   field :rate_limit_image_upload, type: :integer, default: 9
@@ -131,6 +144,8 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
   field :rate_limit_user_update, type: :integer, default: 5
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
+
+  field :spam_trigger_terms, type: :array, default: []
 
   # Social Media
   field :social_media_handles, type: :hash, default: {
@@ -158,6 +173,7 @@ class SiteConfig < RailsSettings::Base
   # The default font for all users that have not chosen a custom font yet
   field :default_font, type: :string, default: "sans_serif"
   field :primary_brand_color_hex, type: :string, default: "#3b49df"
+  field :feed_strategy, type: :string, default: "basic"
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
@@ -173,5 +189,11 @@ class SiteConfig < RailsSettings::Base
   # Returns true if we are operating on a local installation, false otherwise
   def self.local?
     app_domain.include?("localhost")
+  end
+
+  # Used where we need to keep old DEV features around but don't want to/cannot
+  # expose them to other communities.
+  def self.dev_to?
+    app_domain == "dev.to"
   end
 end

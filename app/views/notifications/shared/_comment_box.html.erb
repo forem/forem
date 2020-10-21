@@ -58,7 +58,7 @@
             <%= f.text_area :body_markdown, id: "comment-textarea-for-#{json_data['comment']['id']}" %>
           </div>
           <div class="actions" id="submit-wrapper">
-            <%= f.submit "SUBMIT", id: "submit-button", class: "comment-action-button", onclick: "validateField(event)" %>
+            <%= f.submit "Submit", id: "submit-button", class: "comment-action-button", onclick: "validateField(event)" %>
           </div>
         <% end %>
       <% end %>

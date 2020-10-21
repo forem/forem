@@ -2,7 +2,15 @@ module Constants
   module SiteConfig
     DETAILS = {
       allow_email_password_registration: {
-        description: "Can users sign up with only email and password?",
+        description: "People can sign up using their email and password",
+        placeholder: ""
+      },
+      allow_email_password_login: {
+        description: "People can login using their email and password",
+        placeholder: ""
+      },
+      require_captcha_for_email_password_registration: {
+        description: "People will be required to fill out a captcha when they're creating a new account in your community",
         placeholder: ""
       },
       authentication_providers: {
@@ -32,10 +40,6 @@ module Constants
       campaign_url: {
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
-      },
-      community_action: {
-        description: "Used to determine the action of community e.g coding, reading, training etc.",
-        placeholder: "coding"
       },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
@@ -83,6 +87,14 @@ module Constants
         description: "Email address",
         placeholder: ""
       },
+      experience_low: {
+        description: "The label for the bottom of the experience level range of a post",
+        placeholder: "Total Newbies"
+      },
+      experience_high: {
+        description: "The label for the top of the experience level range of a post",
+        placeholder: "Senior Devs"
+      },
       facebook_key: {
         description:
           "The \"App ID\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
@@ -96,6 +108,11 @@ module Constants
       favicon_url: {
         description: "Used as the site favicon",
         placeholder: "https://image.url"
+      },
+      feed_strategy: {
+        description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
+        (which should only be used for 10k+ member communities)",
+        placeholder: "basic"
       },
       feed_style: {
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
@@ -120,6 +137,10 @@ module Constants
       health_check_token: {
         description: "Used to authenticate with your health check endpoints.",
         placeholder: "a secure token"
+      },
+      invite_only_mode: {
+        description: "Only users invited by email can join this community.",
+        placeholder: ""
       },
       jobs_url: {
         description: "URL of the website where open positions are posted",
@@ -214,6 +235,14 @@ module Constants
         description: "Determines the mininum for the periodic email digest",
         placeholder: 2
       },
+      recaptcha_site_key: {
+        description: "Add the site key for Google reCAPTCHA, which is used for reporting abuse",
+        placeholder: "What is the Google reCAPTCHA site key?"
+      },
+      recaptcha_secret_key: {
+        description: "Add the secret key for Google reCAPTCHA, which is used for reporting abuse",
+        placeholder: "What is the Google reCAPTCHA secret key?"
+      },
       right_navbar_svg_icon: {
         description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
         placeholder: "<svg ...></svg>"
@@ -221,6 +250,10 @@ module Constants
       secondary_logo_url: {
         description: "Used as the secondary logo",
         placeholder: "https://image.url"
+      },
+      spam_trigger_terms: {
+        description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
+        placeholder: "used cares near you, pokemon go hack"
       },
       shop_url: {
         description: "Used as the shop url of the community",
@@ -273,6 +306,10 @@ module Constants
       },
       twitter_secret: {
         description: "The \"API secret key\" portion of consumer keys in the Twitter developer portal.",
+        placeholder: ""
+      },
+      video_encoder_key: {
+        description: "Secret key used to allow AWS video encoding through the VideoStatesController",
         placeholder: ""
       }
       # Dynamic values ommitted: configurable_rate_limits and social_media_handles

@@ -1,26 +1,27 @@
 /* global filterXSS */
 
+function initializeUserProfileContent(user) {
+  document.getElementById('sidebar-profile--avatar').src =
+    user.profile_image_90;
+  document.getElementById('sidebar-profile--avatar').alt = user.username;
+
+  document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
+    user.name,
+  );
+  document.getElementById('sidebar-profile--username').innerHTML =
+    '@' + user.username;
+  document.getElementById('sidebar-profile').href = '/' + user.username;
+}
+
+function initializeProfileImage(user) {
+  if (!document.getElementById('comment-primary-user-profile--avatar')) return;
+  document.getElementById('comment-primary-user-profile--avatar').src =
+    user.profile_image_90;
+}
+
 function initializeUserSidebar(user) {
   if (!document.getElementById('sidebar-nav')) return;
-
-  let followedTags = JSON.parse(user.followed_tags);
-  const tagSeparatorLabel =
-    followedTags.length === 0
-      ? 'FOLLOW TAGS TO IMPROVE YOUR FEED'
-      : 'OTHER POPULAR TAGS';
-
-  followedTags.forEach((tag) => {
-    const element = document.getElementById(
-      'default-sidebar-element-' + tag.name,
-    );
-
-    if (element) {
-      element.remove();
-    }
-  });
-
-  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
-  document.getElementById('sidebar-nav-default-tags').classList.add('showing');
+  initializeUserProfileContent(user);
 }
 
 function addRelevantButtonsToArticle(user) {
@@ -95,13 +96,18 @@ function setCurrentUserToNavBar(user) {
   userNavLink.querySelector('span').textContent = user.name;
   userNavLink.querySelector('small').textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
+  if (user.admin) {
+    document
+      .querySelector('.js-header-menu-admin-link')
+      .classList.remove('hidden');
+  }
 }
 
 function initializeBaseUserData() {
   const user = userData();
-
   setCurrentUserToNavBar(user);
   initializeUserSidebar(user);
+  initializeProfileImage(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);
 }

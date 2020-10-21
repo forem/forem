@@ -82,11 +82,11 @@
       </div>
       <div class="form-group">
         <%= f.label :bg_color_hex %>
-        <%= f.text_field :bg_color_hex, class: "color-picker form-control", required: true %>
+        <%= f.color_field :bg_color_hex, class: "color-picker form-control", required: true %>
       </div>
       <div class="form-group">
         <%= f.label :text_color_hex %>
-        <%= f.text_field :text_color_hex, class: "color-picker form-control", required: true %>
+        <%= f.color_field :text_color_hex, class: "color-picker form-control", required: true %>
       </div>
       <%= f.submit class: "btn btn-primary float-right" %>
     <% end %>

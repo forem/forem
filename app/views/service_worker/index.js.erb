@@ -1,5 +1,5 @@
 // Serviceworkers file. This code gets installed in users browsers and runs code before the request is made.
-<% unless Rails.env.test? %>
+<% unless Rails.env.test? || ENV["SKIP_SERVICEWORKERS"] == "true" %>
   const staticCacheName = 'static-1.2';
   const expectedCaches = [
     staticCacheName
@@ -102,6 +102,7 @@
       '/forem',                // redirects
       '/future',               // Skip for /future.
       '/i/',                   // Ignore locally stored image path
+      '/images/',              // Ignore nginx proxy path
       '/internal',             // redirects
       '/locale/',              // Don't run on explicit locale endpoints.
       '/new',
@@ -128,7 +129,7 @@
       '/users/auth',           // Don't run on authentication.
       '/welcome',              // Don't run on welcome reroutes.
       '/workshops',            // redirects
-    ].some(path => url.href.includes(path))
+    ].some(path => url.pathname.includes(path))
   }
 
   self.addEventListener('fetch', event => {

@@ -9,7 +9,7 @@ class FeedbackMessagesController < ApplicationController
     params = feedback_message_params.merge(reporter_id: current_user&.id)
     @feedback_message = FeedbackMessage.new(params)
 
-    if recaptcha_verified? && @feedback_message.save
+    if (recaptcha_disabled? || recaptcha_verified?) && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
         type: feedback_message_params[:feedback_type],
@@ -30,8 +30,12 @@ class FeedbackMessagesController < ApplicationController
 
   private
 
+  def recaptcha_disabled?
+    SiteConfig.recaptcha_site_key.blank? && SiteConfig.recaptcha_secret_key.blank?
+  end
+
   def recaptcha_verified?
-    recaptcha_params = { secret_key: ApplicationConfig["RECAPTCHA_SECRET"] }
+    recaptcha_params = { secret_key: SiteConfig.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
   end
 

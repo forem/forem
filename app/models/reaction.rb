@@ -23,6 +23,8 @@ class Reaction < ApplicationRecord
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
+  scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
+  scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -51,7 +53,7 @@ class Reaction < ApplicationRecord
     end
 
     def cached_any_reactions_for?(reactable, user, category)
-      class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
+      class_name = reactable.instance_of?(ArticleDecorator) ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
         "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
@@ -173,7 +175,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return if user&.any_admin?
+    return if user&.any_admin? || user&.id == SiteConfig.mascot_user_id
 
     negative? && !user.trusted
   end

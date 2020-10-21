@@ -1,5 +1,14 @@
 import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
+import addFullScreenModeControl from '../utilities/codeFullscreenModeSwitcher';
+
+const fullscreenActionElements = document.querySelectorAll(
+  '.js-fullscreen-code-action',
+);
+
+if (fullscreenActionElements) {
+  addFullScreenModeControl(fullscreenActionElements);
+}
 
 // The Snackbar for the article page
 const snackZone = document.getElementById('snack-zone');

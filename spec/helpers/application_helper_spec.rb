@@ -207,6 +207,11 @@ RSpec.describe ApplicationHelper, type: :helper do
     it "keeps an ASCII domain as ASCII" do
       expect(helper.optimized_image_url("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
     end
+
+    it "returns random fallback images as expected" do
+      expect(helper.optimized_image_url("")).not_to be_nil
+      expect(helper.optimized_image_url("", random_fallback: false)).to be_nil
+    end
   end
 
   describe "#optimized_image_tag" do

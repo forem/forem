@@ -1,0 +1,105 @@
+@import '../config/import';
+
+.comment-form {
+  display: flex;
+
+  &__field {
+    display: flex;
+    flex: 1 auto;
+    flex-direction: column;
+    margin-bottom: var(--su-3);
+    background-color: var(--form-bg);
+    border: 1px solid var(--form-border);
+    color: var(--body-color);
+    border-radius: var(--radius);
+    transition: all var(--transition-props);
+
+    &:focus-within {
+      background-color: var(--form-bg-focus);
+      border-color: var(--form-border-focus);
+      box-shadow: 1px 1px 0 var(--form-border-focus);
+    }
+  }
+
+  &__inner {
+    display: flex;
+    flex-flow: column;
+    flex: 1 auto;
+  }
+
+  .comment-textarea {
+    resize: vertical;
+    padding: 0.5em;
+
+    &.embiggened {
+      height: 96px;
+    }
+    &.embiggened-more {
+      height: 256px;
+    }
+    &.embiggened-max {
+      height: 384px;
+    }
+  }
+
+  &__toolbar,
+  &__buttons {
+    display: none;
+  }
+
+  &--initiated {
+    .comment-textarea {
+      height: 96px;
+    }
+  }
+
+  &--initiated &__toolbar,
+  &--initiated &__buttons {
+    display: flex;
+  }
+
+  &__toolbar {
+    padding: var(--su-1);
+    border-top: 1px solid var(--base-20);
+    background: var(--form-bg);
+    border-radius: 0 0 var(--radius) var(--radius);
+    font-size: var(--fs-s);
+  }
+
+  &__preview {
+    border-radius: var(--radius);
+    padding: var(--su-4);
+    border: 1px solid var(--base-20);
+    margin-bottom: var(--su-3);
+    background: var(--card-bg);
+  }
+}
+
+// temporary until we have new design for comments
+.inner-comment {
+  &.replying {
+    .actions,
+    .reaction-button {
+      display: none;
+    }
+  }
+
+  .comment-form {
+    margin: var(--su-6) var(--su-4) 0 var(--su-4);
+  }
+}
+
+.comment-form {
+  .comment-form__preview {
+    display: none;
+  }
+
+  &.preview-open {
+    .comment-form__preview {
+      display: block;
+    }
+    .comment-form__field {
+      display: none;
+    }
+  }
+}
