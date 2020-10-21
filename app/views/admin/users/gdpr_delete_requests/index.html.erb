@@ -1,11 +1,4 @@
-<div class="mb-6">
-  <ul class="nav nav-pills">
-    <li class="nav-item">
-      <%= link_to "Users", admin_users_path, class: "nav-link" %>
-      <%= link_to "Gdpr deletes", admin_users_path, class: "nav-link active" %>
-    </li>
-  </ul>
-</div>
+<%= render "admin/users/menu" %>
 <div class="crayons-notice crayons-notice--info">
   <strong>These users' accounts were deleted. Please, destroy GDPR data from external services (GA, Maichimp) for them.</strong>
 </div>
