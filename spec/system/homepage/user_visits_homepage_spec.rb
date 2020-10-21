@@ -22,7 +22,7 @@ RSpec.describe "User visits a homepage", type: :system do
         end
       end
 
-      expect(page).to have_text("DESIGN YOUR EXPERIENCE")
+      expect(page).to have_text("Popular Tags")
     end
 
     describe "link tags" do
@@ -63,14 +63,6 @@ RSpec.describe "User visits a homepage", type: :system do
       sign_in(user)
     end
 
-    it "offers to follow tags", js: true do
-      visit "/"
-
-      within("#sidebar-nav-default-tags") do
-        expect(page).to have_text("FOLLOW TAGS TO IMPROVE YOUR FEED")
-      end
-    end
-
     context "when rendering broadcasts" do
       let!(:broadcast) { create(:announcement_broadcast) }
 
@@ -100,7 +92,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the followed tags", js: true do
-        expect(page).to have_text("MY TAGS")
+        expect(page).to have_text("My Tags")
 
         # Need to ensure the user data is loaded before doing any checks
         find("body")["data-user"]
@@ -115,15 +107,7 @@ RSpec.describe "User visits a homepage", type: :system do
         find("body")["data-user"]
 
         within("#sidebar-nav-followed-tags") do
-          expect(all(".spec__tag-link").map(&:text)).to eq(%w[#javascript #go #ruby])
-        end
-      end
-
-      it "shows other tags", js: true do
-        expect(page).to have_text("OTHER POPULAR TAGS")
-        within("#sidebar-nav-default-tags") do
-          expect(page).to have_link("#webdev", href: "/t/webdev")
-          expect(page).not_to have_link("#ruby", href: "/t/ruby")
+          expect(all(".crayons-link--block").map(&:text)).to eq(%w[#javascript #go #ruby])
         end
       end
     end

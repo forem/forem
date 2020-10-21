@@ -106,7 +106,7 @@ class OrganizationsController < ApplicationController
   def organization_params
     params.require(:organization).permit(permitted_params)
       .transform_values do |value|
-        if value.class.name == "String"
+        if value.instance_of?(String)
           ActionController::Base.helpers.strip_tags(value)
         else
           value

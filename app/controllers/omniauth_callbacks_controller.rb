@@ -74,7 +74,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
                             username: @user.username,
                             user_id: @user.id,
                             auth_data: request.env["omniauth.auth"],
-                            auth_error: request.env["omniauth.error"]&.inspect,
+                            auth_error: request.env["omniauth.error"].inspect,
                             user_errors: user_errors
                           })
       Honeybadger.notify("Omniauth log in error")
