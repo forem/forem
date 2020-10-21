@@ -980,6 +980,14 @@
             <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
               <fieldset class="flex flex-column gap-4">
                 <div class="crayons-field">
+                  <%= admin_config_label :mailchimp_api_key, "Mailchimp API Key" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_api_key][:description] %>
+                  <%= f.text_field :mailchimp_api_key,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.mailchimp_api_key %>
+                </div>
+
+                <div class="crayons-field">
                   <%= admin_config_label :mailchimp_newsletter_id, "Main Newsletter" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_newsletter_id][:description] %>
                   <%= f.text_field :mailchimp_newsletter_id,
