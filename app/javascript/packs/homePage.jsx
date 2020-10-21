@@ -1,5 +1,6 @@
 import { h, render } from 'preact';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
+import mainNavigation from '../utilities/mainNavigation';
 
 /* global userData */
 // This logic is similar to that in initScrolling.js.erb
@@ -12,14 +13,7 @@ const frontPageFeedPathNames = new Map([
   ['/latest', 'latest'],
 ]);
 
-const mainNavMoreTrigger = document.getElementById('main-nav-more-trigger');
-function toggleMainNavMore() {
-  document.getElementById('main-nav-more').classList.remove('hidden');
-  mainNavMoreTrigger.classList.add('hidden');
-}
-if (mainNavMoreTrigger) {
-  mainNavMoreTrigger.addEventListener('click', toggleMainNavMore);
-}
+mainNavigation();
 
 /**
  * Renders tags followed in the left side bar of the homepage.

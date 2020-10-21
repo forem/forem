@@ -11,59 +11,95 @@
     <div class="p-2">
       <%= render partial: "shared/auth_widget" unless user_signed_in? %>
 
-      <nav class="mb-6" aria-label="Primary nav">
-        <% unless user_signed_in? %>
-          <a href="/about" class="crayons-link crayons-link--block">
-            <%= inline_svg_tag("rainbowdev.svg", aria: true, width: 24, height: 24, class: "crayons-icon crayons-icon--default p-1", title: "About") %>
-            About
+# Below is the current implementation of _dynamic navigation_.
+        # Since the _updated navigation_ (one being introduced in this PR) was in progress
+        # while _dynamic navgation_ rolled out, I decided to put my effort on hold for now
+        # by placing it inside that IF statement below.
+      %>
+      <% if true %>
+        <nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" id="sidebar-nav" aria-label="Primary sidebar nav">
+          <a href="/" class="crayons-link crayons-link--block">
+            <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
+            Home
           </a>
-        <% end %>
-        <a href="/" class="crayons-link crayons-link--block">
-          <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
-          Home
-        </a>
-        <% if user_signed_in? %>
-          <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
-            <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
-            Reading list <span id="reading-list-count" class="crayons-indicator"></span>
-          </a>
-        <% end %>
-        <a href="<%= listings_path %>" class="crayons-link crayons-link--block">
-          <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
-          Listings
-        </a>
-        <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
-          <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
-          Podcasts
-        </a>
-        <a href="<%= videos_path %>" class="crayons-link crayons-link--block">
-          <%= inline_svg_tag("twemoji/camera.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Videos") %>
-          Videos
-        </a>
-        <a href="<%= tags_path %>" class="crayons-link crayons-link--block">
-          <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
-          Tags
-        </a>
-
-        <div class="fs-xs p-3">
-          <a href="/code-of-conduct" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Code of Conduct</a>
-          <a href="/faq" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">FAQ</a>
-          <% if SiteConfig.shop_url.present? %>
-            <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block"><%= community_name %> Shop</a>
+          <% unless user_signed_in? %>
+            <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
+              <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
+              Sign In/Up
+            </a>
           <% end %>
-          <a href="/sponsors" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Sponsors</a>
+          <div class="sidebar-navigation-links">
+            <% NavigationLink.ordered[0..4].each do |link| %>
+              <%= render "articles/sidebar_nav_link", link: link %>
+            <% end %>
+
+            <% if NavigationLink.all.length > 5 %>
+              <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s js-nav-more-trigger">More...</a>
+
+              <div class="hidden js-nav-more">
+                <% NavigationLink.ordered[5..].each do |link| %>
+                  <%= render "articles/sidebar_nav_link", link: link %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </nav>
+      <% else %>
+        <nav class="mb-6" aria-label="Primary nav">
+          <% unless user_signed_in? %>
+            <a href="/about" class="crayons-link crayons-link--block">
+              <%= inline_svg_tag("rainbowdev.svg", aria: true, width: 24, height: 24, class: "crayons-icon crayons-icon--default p-1", title: "About") %>
+              About
+            </a>
+          <% end %>
+          <a href="/" class="crayons-link crayons-link--block">
+            <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
+            Home
+          </a>
           <% if user_signed_in? %>
-            <a href="/about" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">About</a>
+            <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
+              <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
+              Reading list <span id="reading-list-count" class="crayons-indicator"></span>
+            </a>
           <% end %>
-          <a href="/privacy" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Privacy policy</a>
-          <a href="/terms" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Terms of use</a>
-          <a href="/contact" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Contact</a>
-        </div>
+          <a href="<%= listings_path %>" class="crayons-link crayons-link--block">
+            <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
+            Listings
+          </a>
+          <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
+            <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
+            Podcasts
+          </a>
+          <a href="<%= videos_path %>" class="crayons-link crayons-link--block">
+            <%= inline_svg_tag("twemoji/camera.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Videos") %>
+            Videos
+          </a>
+          <a href="<%= tags_path %>" class="crayons-link crayons-link--block">
+            <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
+            Tags
+          </a>
 
-        <div class="flex pt-2 pl-2">
-          <%= render partial: "layouts/social_media" %>
-        </div>
-      </nav>
+          <div class="fs-xs p-3">
+            <a href="/code-of-conduct" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Code of Conduct</a>
+            <a href="/faq" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">FAQ</a>
+            <% if SiteConfig.shop_url.present? %>
+              <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block"><%= community_name %> Shop</a>
+            <% end %>
+            <a href="/sponsors" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Sponsors</a>
+            <% if user_signed_in? %>
+              <a href="/about" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">About</a>
+            <% end %>
+            <a href="/privacy" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Privacy policy</a>
+            <a href="/terms" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Terms of use</a>
+            <a href="/contact" class="crayons-link crayons-link--secondary py-1 pr-2 inline-block">Contact</a>
+          </div>
+
+          <div class="flex pt-2 pl-2">
+            <%= render partial: "layouts/social_media" %>
+          </div>
+        </nav>
+      <% end %>
+
     </div>
   </div>
   <div class="hamburger__overlay js-hamburger-trigger"></div>

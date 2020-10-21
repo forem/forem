@@ -15,9 +15,9 @@
     <% end %>
 
     <% if NavigationLink.all.length > 5 %>
-      <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
+      <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s js-nav-more-trigger">More...</a>
 
-      <div class="hidden" id="main-nav-more">
+      <div class="hidden js-nav-more">
         <% NavigationLink.ordered[5..].each do |link| %>
           <%= render "articles/sidebar_nav_link", link: link %>
         <% end %>
