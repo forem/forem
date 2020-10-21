@@ -15,7 +15,7 @@ const ENTER_KEY = 'Enter';
 
 export class Search extends Component {
   static defaultProps = {
-    searchBoxSelector: 'js-search-input',
+    searchBoxSelector: '.js-search-input',
   };
 
   constructor(props) {
