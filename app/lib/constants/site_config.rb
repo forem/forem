@@ -34,7 +34,7 @@ module Constants
         placeholder: "Campaign sidebar enabled or not"
       },
       campaign_sidebar_image: {
-        description: "https://image.url/image.png",
+        description: "https://url/image.png",
         placeholder: "Used at the top of the campaign sidebar"
       },
       campaign_url: {
@@ -107,7 +107,7 @@ module Constants
       },
       favicon_url: {
         description: "Used as the site favicon",
-        placeholder: "https://image.url/image.png"
+        placeholder: "https://url/image.png"
       },
       feed_strategy: {
         description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
@@ -156,7 +156,7 @@ module Constants
       },
       logo_png: {
         description: "Minimum 1024px, used for PWA etc.",
-        placeholder: "https://image.url/image.png"
+        placeholder: "https://url/image.png"
       },
       logo_svg: {
         description: "Used as the SVG logo of the community",
@@ -164,7 +164,7 @@ module Constants
       },
       main_social_image: {
         description: "Used as the main image in social networks and OpenGraph",
-        placeholder: "https://image.url/image.png"
+        placeholder: "https://url/image.png"
       },
       mailchimp_api_key: {
         description: "API key used to connect Mailchimp account. Found in Mailchimp backend",
@@ -188,7 +188,7 @@ module Constants
       },
       mascot_footer_image_url: {
         description: "Special cute mascot image used in the footer.",
-        placeholder: "https://image.url/image.png"
+        placeholder: "https://url/image.png"
       },
       mascot_footer_image_width: {
         description: "The footer mascot width will resized to this value, defaults to 52",
@@ -204,7 +204,7 @@ module Constants
       },
       mascot_image_url: {
         description: "Used as the mascot image.",
-        placeholder: "https://image.url/image.png"
+        placeholder: "https://url/image.png"
       },
       mascot_user_id: {
         description: "User ID of the Mascot account",
@@ -216,15 +216,15 @@ module Constants
       },
       onboarding_background_image: {
         description: "Background for onboarding splash page",
-        placeholder: "https://image.url/image.png"
+        placeholder: "https://url/image.png"
       },
       onboarding_logo_image: {
         description: "Main onboarding display logo image",
-        placeholder: "https://image.url/image.png"
+        placeholder: "https://url/image.png"
       },
       onboarding_taskcard_image: {
         description: "Used as the onboarding task-card image",
-        placeholder: "https://image.url/image.png"
+        placeholder: "https://url/image.png"
       },
       payment_pointer: {
         description: "Used for site-wide web monetization. " \
@@ -253,7 +253,7 @@ module Constants
       },
       secondary_logo_url: {
         description: "Used as the secondary logo",
-        placeholder: "https://image.url/image.png"
+        placeholder: "https://url/image.png"
       },
       spam_trigger_terms: {
         description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
