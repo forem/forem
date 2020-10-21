@@ -101,10 +101,15 @@
   .crayons-logo {
     width: var(--su-9);
     height: var(--su-9);
-    border: var(--su-1) solid var(--profile-brand-color);
+    background-color: var(--profile-brand-color);
+    padding: var(--su-1);
+
+    &::after {
+      content: none;
+    }
 
     @media (min-width: $breakpoint-m) {
-      border-width: var(--su-2);
+      padding: var(--su-2);
       width: var(--su-10);
       height: var(--su-10);
     }
