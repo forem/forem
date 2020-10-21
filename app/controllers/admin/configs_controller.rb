@@ -122,6 +122,8 @@ module Admin
         recaptcha_site_key
         recaptcha_secret_key
         video_encoder_key
+        tag_feed_minimum_score
+        home_feed_minimum_score
       ].freeze
 
     layout "admin"

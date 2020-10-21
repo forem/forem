@@ -53,8 +53,6 @@ class SiteConfig < RailsSettings::Base
   field :staff_user_id, type: :integer, default: 1
   field :experience_low, type: :string, default: "Total Newbies"
   field :experience_high, type: :string, default: "Experienced Users"
-  field :tag_feed_minimum_score, type: :integer, default: 0
-  field :home_feed_minimum_score, type: :integer, default: 0
 
   # Emails
   field :email_addresses, type: :hash, default: {
@@ -174,6 +172,8 @@ class SiteConfig < RailsSettings::Base
   field :default_font, type: :string, default: "sans_serif"
   field :primary_brand_color_hex, type: :string, default: "#3b49df"
   field :feed_strategy, type: :string, default: "basic"
+  field :tag_feed_minimum_score, type: :integer, default: 0
+  field :home_feed_minimum_score, type: :integer, default: 0
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
