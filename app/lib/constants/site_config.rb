@@ -12,7 +12,8 @@ module Constants
         placeholder: ""
       },
       require_captcha_for_email_password_registration: {
-        description: "People will be required to fill out a captcha when they're creating a new account in your community",
+        description: "People will be required to fill out a captcha when
+          they're creating a new account in your community",
         placeholder: ""
       },
       authentication_providers: {
@@ -173,7 +174,7 @@ module Constants
         placeholder: ""
       },
       mailchimp_newsletter_id: {
-        description: "Main Newsletter ID",
+        description: "Main Newsletter ID, also known as Audience ID",
         placeholder: ""
       },
       mailchimp_sustaining_members_id: {
