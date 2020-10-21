@@ -1,3 +1,6 @@
+# TODO: [rhymes]
+# => add Feeds::ImportUser to fetch a single user
+# => add Feeds::ValidateFeedUrl to validate a single feed URL
 module Feeds
   class Import
     def self.call(silence: true)
@@ -23,6 +26,8 @@ module Feeds
     end
 
     def call
+      total_articles_count = 0
+
       users.in_batches(of: users_batch_size) do |batch_of_users|
         feeds_per_user_id = fetch_feeds(batch_of_users)
         Rails.logger.info("feeds_per_user_id.length: #{feeds_per_user_id.length}")
@@ -40,8 +45,12 @@ module Feeds
         end.flatten
         Rails.logger.info("articles.length: #{articles.length}")
 
+        total_articles_count += articles.length
+
         articles.each { |article| Slack::Messengers::ArticleFetchedFeed.call(article: article) }
       end
+
+      total_articles_count
     end
 
     private
