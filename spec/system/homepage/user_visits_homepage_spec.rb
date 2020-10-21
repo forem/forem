@@ -92,6 +92,8 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the followed tags", js: true do
+        # byebug
+        user.update!(following_tags_count: 3)
         expect(page).to have_text("My Tags")
 
         # Need to ensure the user data is loaded before doing any checks
@@ -110,6 +112,40 @@ RSpec.describe "User visits a homepage", type: :system do
           expect(all(".crayons-link--block").map(&:text)).to eq(%w[#javascript #go #ruby])
         end
       end
+    end
+
+    context "when user does not follow tags" do
+      before do
+        visit "/"
+      end
+
+      it "shows 'Explore Tags' and links to /tags", js: true do
+        user.following_tags_count = 0
+        expect(page).to have_text("Explore Tags")
+
+        within("#sidebar-nav-explore-tags") do
+          expect(page).to have_link("cog.svg", href: "/tags")
+        end
+      end
+
+      # it "shows recommended tags ordered by weight and name", js: true, elasticsearch: "FeedContent" do
+      #   # Need to ensure the user data is loaded before doing any checks
+      #   find("body")["data-user"]
+
+      #   within("#sidebar-nav-followed-tags") do
+      #     expect(all(".crayons-link--block").map(&:text)).to eq(%w[#javascript #go #ruby])
+      #   end
+      # end
+      # it "shows the tags block" do
+      #   # visit "/"
+      #   within("#sidebar-nav-explore-tags") do
+      #     Tag.where(supported: true).limit(5).each do |tag|
+      #       expect(page).to have_link("##{tag.name}", href: "/t/#{tag.name}")
+      #     end
+      #   end
+
+      #   expect(page).to have_text("Explore Tags")
+      # end
     end
 
     context "when rendering < 5 navigation links" do
