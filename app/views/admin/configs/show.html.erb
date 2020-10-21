@@ -1241,6 +1241,22 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:feed_strategy][:placeholder] %>
                 </div>
                 <div class="crayons-field">
+                  <%= admin_config_label :tag_feed_minimum_score %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:tag_feed_minimum_score][:description] %>
+                  <%= f.number_field :tag_feed_minimum_score,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.tag_feed_minimum_score,
+                                     placeholder: Constants::SiteConfig::DETAILS[:tag_feed_minimum_score][:placeholder] %>
+                </div>
+                <div class="crayons-field">
+                  <%= admin_config_label :home_feed_minimum_score %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:home_feed_minimum_score][:description] %>
+                  <%= f.number_field :home_feed_minimum_score,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.home_feed_minimum_score,
+                                     placeholder: Constants::SiteConfig::DETAILS[:home_feed_minimum_score][:placeholder] %>
+                </div>
+                <div class="crayons-field">
                   <%= admin_config_label :default_font %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:default_font][:description] %>
                   <%= select_tag "site_config[default_font]",
