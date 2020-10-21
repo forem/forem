@@ -35,6 +35,7 @@ class SiteConfig < RailsSettings::Base
   field :facebook_secret, type: :string
 
   # Campaign
+  field :campaign_call_to_action, type: :string, default: "Share your project"
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
