@@ -36,6 +36,9 @@
         <% NavigationLink.ordered[5..].each do |link| %>
           <%= render "articles/sidebar_nav_link", link: link %>
         <% end %>
+        <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
+          <%= render partial: "layouts/social_media" %>
+        </div>
       </div>
     <% end %>
   </div>
