@@ -175,7 +175,6 @@ class SiteConfig < RailsSettings::Base
   field :tag_feed_minimum_score, type: :integer, default: 0
   field :home_feed_minimum_score, type: :integer, default: 0
 
-
   # Broadcast
   field :welcome_notifications_live_at, type: :date
 
