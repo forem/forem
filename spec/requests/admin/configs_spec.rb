@@ -647,6 +647,21 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.feed_strategy).to eq(feed_strategy)
         end
 
+        it "updates the tag_feed_minimum_score" do
+          tag_feed_minimum_score = 3
+          post "/admin/config", params: { site_config: { tag_feed_minimum_score: tag_feed_minimum_score },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.tag_feed_minimum_score).to eq(tag_feed_minimum_score)
+        end
+
+        it "updates the home_feed_minimum_score" do
+          home_feed_minimum_score = 5
+          post "/admin/config", params: { site_config: { home_feed_minimum_score: home_feed_minimum_score },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.home_feed_minimum_score).to eq(home_feed_minimum_score)
+        end
+
+
         it "updates the brand color if proper hex" do
           hex = "#0a0a0a" # dark enough
           post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
