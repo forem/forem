@@ -70,7 +70,7 @@ export function getInitialSearchTerm(querystring) {
     matches !== null && matches.length === 2
       ? decodeURIComponent(matches[1].replace(/\+/g, '%20'))
       : '';
-  const query = filterXSS(rawSearchTerm);
+  const query = filterXSS(rawSearchTerm) || '';
   const divForDecode = document.createElement('div');
   divForDecode.innerHTML = query;
 
@@ -82,15 +82,16 @@ export function getInitialSearchTerm(querystring) {
 export function preloadSearchResults({
   searchTerm,
   location = window.location,
+  context = window,
 }) {
   const encodedQuery = fixedEncodeURIComponent(
     searchTerm.replace(/^[ ]+|[ ]+$/g, ''),
   );
-  InstantClick.preload(
-    `${location.origin}/search?q=${encodedQuery}${getFilterParameters(
-      location.href,
-    )}`,
-  );
+  const searchUrl = `${
+    location.origin
+  }/search?q=${encodedQuery}${getFilterParameters(location.href)}`;
+  InstantClick.preload(searchUrl);
+  context.history.pushState({}, '', searchUrl);
 }
 
 export function createSearchUrl(dataHash) {
