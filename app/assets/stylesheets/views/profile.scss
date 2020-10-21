@@ -104,6 +104,10 @@
     background-color: var(--profile-brand-color);
     padding: var(--su-1);
 
+    &::after {
+      content: none;
+    }
+
     @media (min-width: $breakpoint-m) {
       padding: var(--su-2);
       width: var(--su-10);
