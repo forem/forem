@@ -48,10 +48,13 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       it "updates site config admin action taken" do
-        allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
-        post "/admin/config", params: { site_config: { health_check_token: "token" },
-                                        confirmation: confirmation_message }
-        expect(SiteConfig.admin_action_taken_at).to be > 15.seconds.ago
+        Timecop.freeze do
+          expect(SiteConfig.admin_action_taken_at).not_to eq(5.minutes.ago)
+          allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
+          post "/admin/config", params: { site_config: { health_check_token: "token" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.admin_action_taken_at).to eq(5.minutes.ago)
+        end
       end
 
       describe "API tokens" do
