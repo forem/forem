@@ -46,7 +46,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "renders page with proper sidebar" do
       navigation_link = create(:navigation_link)
       get "/"
-      expect(response.body).to include(navigation_link.name)
+      expect(response.body).to include(CGI.escapeHTML(navigation_link.name))
     end
 
     it "renders left display_ads when published and approved" do
