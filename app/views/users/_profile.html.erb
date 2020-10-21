@@ -45,15 +45,21 @@
     <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
       <h2><%= group.name %></h2>
       <% if group.description.present? %>
-        <div class="color-base-40"><%= group.description %></div>
+        <div class="color-base-60"><%= group.description %></div>
       <% end %>
+
       <% group.profile_fields.each do |field| %>
-        <div class="crayons-field <%= "crayons-field--check_box" if field.input_type == "check_box" %>">
-          <div><%= field.label %></div>
+        <div class="crayons-field <%= "crayons-field--checkbox" if field.input_type == "check_box" %>">
           <% if field["input_type"] == "check_box" %>
-            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", checked: @user.profile.data[field.attribute_name]) %>
+            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", checked: @user.profile.data[field.attribute_name], class: "crayons-checkbox") %>
+            <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
+              <%= field.label %>
+            </label>
           <% else %>
-            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name]) %>
+            <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
+              <%= field.label %>
+            </label>
+            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], class: "crayons-textfield") %>
           <% end %>
         </div>
       <% end %>
