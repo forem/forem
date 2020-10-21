@@ -51,6 +51,25 @@ export class Search extends Component {
   componentDidMount() {
     this.registerGlobalKeysListener();
     InstantClick.on('change', this.enableSearchPageListener);
+
+    window.onpopstate = () => {
+      // TODO: Consolidate search functionality.
+      // Note that push states for search occur in _search.html.erb
+      // in initializeSortingTabs(query)
+      const { searchBoxId } = this.props;
+      const searchTerm = getInitialSearchTerm(window.location.search);
+
+      // We set the value outside of React state so that there is no flickering of placeholder
+      // to search term.
+      const searchBox = document.getElementById(searchBoxId);
+      searchBox.value = searchTerm;
+
+      // Even though we set the search term directly via the DOM, it still needs to reside
+      // in component state.
+      this.setState({
+        searchTerm,
+      });
+    };
   }
 
   enableSearchPageListener = () => {

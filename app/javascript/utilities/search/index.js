@@ -82,7 +82,6 @@ export function getInitialSearchTerm(querystring) {
 export function preloadSearchResults({
   searchTerm,
   location = window.location,
-  context = window,
 }) {
   const encodedQuery = fixedEncodeURIComponent(
     searchTerm.replace(/^[ ]+|[ ]+$/g, ''),
@@ -91,7 +90,6 @@ export function preloadSearchResults({
     location.origin
   }/search?q=${encodedQuery}${getFilterParameters(location.href)}`;
   InstantClick.preload(searchUrl);
-  context.history.pushState({}, '', searchUrl);
 }
 
 export function createSearchUrl(dataHash) {

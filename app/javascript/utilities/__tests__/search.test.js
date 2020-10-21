@@ -135,40 +135,6 @@ describe('Search utilities', () => {
 
         expect(InstantClick.preload).toHaveBeenCalledTimes(1);
       });
-
-      it('should update the browser URL when the search term changes', () => {
-        const location = {
-          origin: 'http://localhost',
-          href: 'http://localhost',
-        };
-        const searchTerm = 'ruby';
-        const mockWindow = { history: { pushState: jest.fn() } };
-        preloadSearchResults({ searchTerm, location, context: mockWindow });
-
-        expect(mockWindow.history.pushState).toHaveBeenCalledTimes(1);
-        expect(mockWindow.history.pushState).toHaveBeenCalledWith(
-          {},
-          '',
-          'http://localhost/search?q=ruby',
-        );
-      });
-
-      it('should update the browser URL when the search term is empty', () => {
-        const location = {
-          origin: 'http://localhost',
-          href: 'http://localhost',
-        };
-        const searchTerm = '';
-        const mockWindow = { history: { pushState: jest.fn() } };
-        preloadSearchResults({ searchTerm, location, context: mockWindow });
-
-        expect(mockWindow.history.pushState).toHaveBeenCalledTimes(1);
-        expect(mockWindow.history.pushState).toHaveBeenCalledWith(
-          {},
-          '',
-          'http://localhost/search?q=',
-        );
-      });
     });
   });
 
