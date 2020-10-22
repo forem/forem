@@ -262,7 +262,7 @@ RSpec.describe "StoriesIndex", type: :request do
   describe "GET query page" do
     it "renders page with proper header" do
       get "/search?q=hello"
-      expect(response.body).to include("query-header-text")
+      expect(response.body).to include("=> Search Results")
     end
   end
 
