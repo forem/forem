@@ -6,6 +6,8 @@ import { submitArticle, previewArticle } from './actions';
 
 /* global activateRunkitTags */
 
+import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+
 import {
   EditorActions,
   Form,
@@ -13,8 +15,6 @@ import {
   Help,
   Preview,
 } from './components';
-
-import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
 /*
   Although the state fields: id, description, canonicalUrl, series, allSeries and
