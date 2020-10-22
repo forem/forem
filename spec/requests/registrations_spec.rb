@@ -179,6 +179,17 @@ RSpec.describe "Registrations", type: :request do
         expect(User.all.size).to be 1
       end
 
+      it "marks as registerd" do
+        post "/users", params:
+        { user: { name: "test #{rand(10)}",
+                  username: "haha_#{rand(10)}",
+                  email: "yoooo#{rand(100)}@yo.co",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.last.registered).to be true
+        expect(User.last.registered_at).not_to be nil
+      end
+
       it "does not create user with password confirmation mismatch" do
         post "/users", params:
         { user: { name: "test #{rand(100)}",
