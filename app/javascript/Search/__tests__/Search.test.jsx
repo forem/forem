@@ -78,4 +78,14 @@ describe('<Search />', () => {
     expect(searchInput.value).toEqual('hello');
     expect(Search.prototype.search).toHaveBeenCalledWith('Enter', 'hello');
   });
+
+  it('should be listening for history state changes', () => {
+    // This is an implementation detail, but I want to make sure that this
+    // listener is registered as it affects the UI.
+    window.onpopstate = null;
+
+    render(<Search />);
+
+    expect(typeof window.onpopstate).toEqual('function');
+  });
 });
