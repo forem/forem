@@ -131,6 +131,7 @@ module Admin
 
     before_action :extra_authorization_and_confirmation, only: [:create]
     before_action :validate_inputs, only: [:create]
+    after_action :bust_content_change_caches, only: [:create]
 
     def show
       @confirmation_text = confirmation_text
@@ -149,7 +150,6 @@ module Admin
         end
       end
 
-      bust_relevant_caches
       redirect_to admin_config_path, notice: "Site configuration was successfully updated."
     end
 
@@ -206,15 +206,6 @@ module Admin
         config[param] = config[param]&.downcase&.delete(" ") if config[param]
       end
       config[:credit_prices_in_cents]&.transform_values!(&:to_i)
-    end
-
-    def bust_relevant_caches
-      CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited.
-      CacheBuster.bust("/shell_top") # Cached at edge, sent to service worker.
-      CacheBuster.bust("/shell_bottom") # Cached at edge, sent to service worker.
-      CacheBuster.bust("/onboarding") # Page is cached at edge.
-      CacheBuster.bust("/") # Page is cached at edge.
-      Rails.cache.delete_matched("*-#{ApplicationConfig['RELEASE_FOOTPRINT']}") # Delete all caches tied to this key.
     end
 
     # Validations
