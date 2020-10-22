@@ -47,7 +47,7 @@ export default class ArticleForm extends Component {
     version: PropTypes.string.isRequired,
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
-    logoSvg: PropTypes.string.isRequired,
+    siteLogo: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -56,7 +56,7 @@ export default class ArticleForm extends Component {
 
   constructor(props) {
     super(props);
-    const { article, version, logoSvg } = this.props;
+    const { article, version, siteLogo } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
@@ -101,7 +101,7 @@ export default class ArticleForm extends Component {
       edited: false,
       updatedAt: this.article.updated_at,
       version,
-      logoSvg,
+      siteLogo,
       helpFor: null,
       helpPosition: null,
       ...previousContentState,
@@ -300,7 +300,7 @@ export default class ArticleForm extends Component {
       version,
       helpFor,
       helpPosition,
-      logoSvg,
+      siteLogo,
     } = this.state;
 
     return (
@@ -316,7 +316,7 @@ export default class ArticleForm extends Component {
           organizations={organizations}
           organizationId={organizationId}
           onToggle={this.handleOrgIdChange}
-          logoSvg={logoSvg}
+          siteLogo={siteLogo}
         />
 
         {previewShowing ? (
