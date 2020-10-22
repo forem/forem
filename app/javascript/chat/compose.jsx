@@ -15,6 +15,7 @@ const Compose = ({
   editMessageMarkdown,
   handleEditMessageClose,
   handleFilePaste,
+  activeChannelName,
 }) => {
   const [value, setValue] = useState('');
 
@@ -36,8 +37,9 @@ const Compose = ({
   };
 
   const placeholder = useMemo(
-    () => (startEditing ? "Let's connect" : 'Write message...'),
-    [startEditing],
+    () =>
+      startEditing ? "Let's connect" : `Write message to ${activeChannelName}`,
+    [startEditing, activeChannelName],
   );
   const label = useMemo(
     () => (startEditing ? "Let's connect" : 'Compose a message'),
@@ -119,6 +121,7 @@ Compose.propTypes = {
   editMessageMarkdown: PropTypes.string.isRequired,
   handleEditMessageClose: PropTypes.func.isRequired,
   handleFilePaste: PropTypes.func.isRequired,
+  activeChannelName: PropTypes.string.isRequired,
 };
 
 export default Compose;
