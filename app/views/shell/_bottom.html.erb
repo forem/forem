@@ -4,6 +4,10 @@
     <%= render "layouts/footer" %>
     <%= render "layouts/signup_modal" unless user_signed_in? %>
   <% end %>
+  <% if user_signed_in?%>
+    <div id="rate-limit-modal"></div>
+    <%= javascript_packs_with_chunks_tag "rateLimitModal", defer: true %>
+  <% end %>
   <div id="live-article-indicator" class="live-article-indicator"></div>
   <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none", alt: "twitter logo") %>
   <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none", alt: "github logo") %>

@@ -12,3 +12,10 @@ function showModal(context) {
   document.body.classList.add('modal-open');
   initSignupModal();
 }
+
+function showRateLimitModal() {
+    if(document.getElementsByClassName('crayons-modal')[0]) {
+      document.getElementsByClassName('crayons-modal')[0].classList.remove('hidden');
+    } 
+}
+
