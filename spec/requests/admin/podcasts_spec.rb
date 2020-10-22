@@ -64,9 +64,10 @@ RSpec.describe "/admin/podcasts", type: :request do
       put admin_podcast_path(podcast), params: { podcast: { title: "hello",
                                                             feed_url: "https://pod.example.com/rss.rss",
                                                             published: true } }
-      expect(podcast.reload.title).to eq("hello")
-      expect(podcast.reload.feed_url).to eq("https://pod.example.com/rss.rss")
-      expect(podcast.reload.published).to eq(true)
+      podcast.reload
+      expect(podcast.title).to eq("hello")
+      expect(podcast.feed_url).to eq("https://pod.example.com/rss.rss")
+      expect(podcast.published).to eq(true)
     end
 
     it "redirects after update" do
