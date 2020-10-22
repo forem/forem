@@ -247,7 +247,7 @@ function handleCommentSubmit(event) {
       } else {
         response.json().then(function parseError(errorReponse) {
           form.classList.remove('submitting');
-           showRateLimitModal();
+          showRateLimitModal();
           return false;
         });
       }
