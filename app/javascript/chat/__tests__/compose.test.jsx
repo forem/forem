@@ -117,7 +117,7 @@ describe('<Compose />', () => {
 
       expect(input.textContent).toEqual('');
       expect(input.getAttribute('maxLength')).toEqual('1000');
-      expect(input.getAttribute('placeholder')).toEqual('Write message...');
+      expect(input.getAttribute('placeholder')).toContain('Write message to');
 
       // Ensure send button is pressent
       getByText(/send/i);
