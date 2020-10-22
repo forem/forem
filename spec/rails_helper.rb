@@ -132,9 +132,6 @@ RSpec.configure do |config|
 
   config.after do
     SiteConfig.clear_cache
-    # NOTE: @citizen428 needed while we delegate from User to Profile to keep
-    # spec changes limited for the time being.
-    ProfileField.destroy_all
   end
 
   # Only turn on VCR if :vcr is included metadata keys

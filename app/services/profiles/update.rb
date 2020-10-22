@@ -17,13 +17,15 @@ module Profiles
     end
 
     def call
-      if verify_profile_image && update_profile
+      if update_successful?
         @user.touch(:profile_updated_at)
-        follow_hiring_tag
+        follow_hiring_tag if SiteConfig.dev_to?
       else
         Honeycomb.add_field("error", @error_message)
         Honeycomb.add_field("errored", true)
       end
+      self
+    rescue ActiveRecord::RecordInvalid
       self
     end
 
@@ -32,6 +34,17 @@ module Profiles
     end
 
     private
+
+    def update_successful?
+      return false unless verify_profile_image
+
+      ActiveRecord::Base.transaction do
+        raise ActiveRecord::Rollback unless update_profile && update_user_attributes
+      end
+      true
+    rescue ActiveRecord::Rollback
+      false
+    end
 
     def verify_profile_image
       image = @updated_user_attributes[:profile_image]
@@ -70,6 +83,24 @@ module Profiles
       @profile.data.slice!(*Profile.attributes)
 
       @profile.save
+    end
+
+    def update_user_attributes
+      if (update = @user.update(@updated_user_attributes))
+        @success = true
+      else
+        @error_message = @user.errors_as_sentence
+      end
+      update
+    end
+
+    def dev_to_follow_hiring_tag
+      return unless @user.looking_for_work
+
+      hiring_tag = Tag.find_by(name: "hiring")
+      return unless hiring_tag && @user.following?(hiring_tag)
+
+      Users::FollowWorker.perform_async(@user.id, hiring_tag.id, "Tag")
     end
   end
 end

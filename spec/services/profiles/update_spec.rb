@@ -6,20 +6,6 @@ RSpec.describe Profiles::Update, type: :service do
   end
   let(:user) { profile.user }
 
-  before do
-    create(:profile_field, label: "Name", input_type: :text_field)
-    create(:profile_field, label: "Looking for work", input_type: :check_box)
-    Profile.refresh_attributes!
-  end
-
-  it "only tries to sync changes to User if the profile update succeeds" do
-    service = described_class.new(user, profile: {}, user: {})
-    allow(service).to receive(:update_profile).and_return(false)
-
-    expect(service).not_to receive(:sync_to_user) # rubocop:disable RSpec/MessageSpies
-    service.call
-  end
-
   it "correctly typecasts new attributes", :aggregate_failures do
     described_class.call(user, profile: { name: 123, looking_for_work: "false" })
     expect(profile.name).to eq "123"
@@ -76,14 +62,5 @@ RSpec.describe Profiles::Update, type: :service do
 
     expect(service.success?).to be false
     expect(service.error_message).to eq "filename too long - the max is 250 characters."
-  end
-
-  it "works correctly if a profile field does not exist for the User model" do
-    profile_field = create(:profile_field, label: "No User Test")
-    Profile.refresh_attributes!
-
-    expect do
-      described_class.call(user, profile: { profile_field.attribute_name => "Test" }, user: {})
-    end.to change { profile.reload.public_send(profile_field.attribute_name) }
   end
 end
