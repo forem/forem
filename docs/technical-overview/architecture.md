@@ -22,13 +22,15 @@ We also use server-side caching: [Rails caching][rails_caching]. If you see
 `Rails.cache` or `<%= cache ... %>`, this is code affected in production by
 caching.
 
-## We use inline CSS and deferred scripts for usage performance improvements
+## We Mostly defer scripts for usage performance improvements
 
-To avoid blocking the initial render, we frequently write critical CSS inline,
-and we use the `defer` attribute to accelerate page loads. This practice results
-in a faster page load, and doesn't leave users waiting on heavy assets. However,
+To avoid blocking the initial render, we use the `defer` attribute to
+accelerate page renders. This practice results in a faster page load,
+and doesn't leave users waiting on heavy assets. However,
 this practice limits our ability to manipulate layout with JavaScript. As a
 rule, you should avoid relying on JavaScript for layout when working on Forem.
+
+We have also experimented with different techniques involving inline CSS
 
 ## We attempt to reduce our bundle size
 
