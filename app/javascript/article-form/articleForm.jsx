@@ -12,8 +12,9 @@ import {
   Header,
   Help,
   Preview,
-  KeyboardShortcutsHandler,
 } from './components';
+
+import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
 /*
   Although the state fields: id, description, canonicalUrl, series, allSeries and
@@ -361,7 +362,9 @@ export default class ArticleForm extends Component {
           submitting={submitting}
         />
 
-        <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />
+        <KeyboardShortcuts shortcuts={{
+          "ctrl+shift+KeyP": e => this.fetchPreview(e)
+        }} />
       </form>
     );
   }
