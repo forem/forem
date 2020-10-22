@@ -2,6 +2,7 @@ module Admin
   class ConfigsController < Admin::ApplicationController
     CAMPAIGN_PARAMS =
       %i[
+        campaign_call_to_action
         campaign_featured_tags
         campaign_hero_html_variant_name
         campaign_sidebar_enabled
