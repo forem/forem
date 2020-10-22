@@ -22,7 +22,7 @@ We also use server-side caching: [Rails caching][rails_caching]. If you see
 `Rails.cache` or `<%= cache ... %>`, this is code affected in production by
 caching.
 
-## We Mostle defer scripts for usage performance improvements
+## We Mostly defer scripts for usage performance improvements
 
 To avoid blocking the initial render, we use the `defer` attribute to
 accelerate page renders. This practice results in a faster page load,
