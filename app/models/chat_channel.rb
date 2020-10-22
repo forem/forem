@@ -112,6 +112,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def pusher_channels
+    # TODO: use something more unique here (uuid?) rather than just id.
     if invite_only?
       "private-channel--#{ApplicationConfig['APP_DOMAIN']}-#{id}"
     elsif open?
