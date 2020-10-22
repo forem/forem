@@ -362,7 +362,7 @@ export default class ArticleForm extends Component {
         />
 
         <KeyboardShortcuts shortcuts={{
-          "ctrl+shift+KeyP": e => this.fetchPreview(e),
+          "ctrl+shift+KeyP": this.fetchPreview,
         }} />
       </form>
     );
