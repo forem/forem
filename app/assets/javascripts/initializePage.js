@@ -1,5 +1,5 @@
 /*
-  global initializeLocalStorageRender, initializeStylesheetAppend, initializeBodyData,
+  global initializeLocalStorageRender, initializeBodyData,
   initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
   initializeBaseTracking, initializeTouchDevice, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
