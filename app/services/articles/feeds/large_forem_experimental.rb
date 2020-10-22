@@ -60,13 +60,6 @@ module Articles
         stories
       end
 
-      # Test variation: More random
-      def default_home_feed_with_more_randomness_experiment
-        @randomness = 7
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
-      end
-
       # Test variation: tags make bigger impact
       def more_tag_weight_experiment
         @tag_weight = 2
@@ -79,15 +72,6 @@ module Articles
         @randomness = 7
         _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
         stories
-      end
-
-      # Test variation: Base half the time, more random other half. Varies on impressions.
-      def mix_default_and_more_random_experiment
-        if rand(2) == 1
-          default_home_feed(user_signed_in: true)
-        else
-          default_home_feed_with_more_randomness_experiment
-        end
       end
 
       # Test variation: the more comments a post has, the higher it's rated!
@@ -118,30 +102,26 @@ module Articles
       end
 
       def mix_of_everything_experiment
-        case rand(12)
+        case rand(10)
         when 0
           default_home_feed(user_signed_in: true)
         when 1
-          default_home_feed_with_more_randomness_experiment
-        when 2
-          mix_default_and_more_random_experiment
-        when 3
           more_tag_weight_experiment
-        when 4
+        when 2
           more_tag_weight_more_random_experiment
-        when 5
+        when 3
           more_comments_experiment
-        when 6
+        when 4
           more_experience_level_weight_experiment
-        when 7
+        when 5
           more_tag_weight_randomized_at_end_experiment
-        when 8
+        when 6
           more_experience_level_weight_randomized_at_end_experiment
-        when 9
+        when 7
           more_comments_randomized_at_end_experiment
-        when 10
+        when 8
           more_comments_medium_weight_randomized_at_end_experiment
-        when 11
+        when 9
           more_comments_minimal_weight_randomized_at_end_experiment
         else
           default_home_feed(user_signed_in: true)
