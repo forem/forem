@@ -9,14 +9,14 @@ const ModFaqSection = ({ email, currentMembershipRole }) => {
   return (
     <div className="crayons-card grid gap-2 p-4 faq-section">
       <p className="contact-details">
-        Questions about Connect Channel moderation? Contact
+        Questions about Connect moderation?
         <a
-          href={`mailto:${email}`}
+          href={`/contact`}
           target="_blank"
           rel="noopener noreferrer"
           className="mx-2 url-link"
         >
-          {email}
+          Contact site admins
         </a>
       </p>
     </div>

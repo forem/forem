@@ -63,12 +63,12 @@ class RssReader
       find_and_replace_possible_links!(html_doc) if @user.feed_referential_link
       find_and_replace_picture_tags_with_img!(html_doc)
 
-      if feed_url.include?("medium.com")
+      if feed_url&.include?("medium.com")
         parse_and_translate_gist_iframe!(html_doc)
         parse_and_translate_youtube_iframe!(html_doc)
         parse_and_translate_tweet!(html_doc)
         parse_liquid_variable!(html_doc)
-      else
+      elsif feed_url
         clean_relative_path!(html_doc, feed_url)
       end
 

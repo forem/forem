@@ -190,7 +190,7 @@ module ApplicationHelper
     release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"
   end
 
   def copyright_notice
@@ -291,4 +291,8 @@ module ApplicationHelper
     tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
   end
   # rubocop:enable Rails/OutputSafety
+
+  def admin_config_description(content)
+    tag.p(content, class: "crayons-field__description") unless content.empty?
+  end
 end

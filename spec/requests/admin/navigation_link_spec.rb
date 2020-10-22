@@ -30,6 +30,15 @@ RSpec.describe "NavigationLinks", type: :request do
       expect(response).to redirect_to admin_navigation_links_path
     end
 
+    it "deletes release-tied fragment caches" do
+      Timecop.freeze do
+        expect(SiteConfig.admin_action_taken_at).not_to eq(5.minutes.ago)
+        allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
+        post admin_navigation_links_path, params: { navigation_link: new_navigation_link }
+        expect(SiteConfig.admin_action_taken_at).to eq(5.minutes.ago)
+      end
+    end
+
     it "creates a navigation link" do
       expect do
         post admin_navigation_links_path, params: { navigation_link: new_navigation_link }

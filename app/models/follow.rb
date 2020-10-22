@@ -57,7 +57,7 @@ class Follow < ApplicationRecord
   end
 
   def send_email_notification
-    return unless followable.class.name == "User" && followable.email?
+    return unless followable.instance_of?(User) && followable.email?
 
     Follows::SendEmailNotificationWorker.perform_async(id)
   end

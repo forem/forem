@@ -132,6 +132,9 @@ class StoriesController < ApplicationController
 
     @num_published_articles = if @tag_model.requires_approval?
                                 Article.published.cached_tagged_by_approval_with(@tag).size
+                              elsif SiteConfig.feed_strategy == "basic"
+                                Article.published.cached_tagged_with(@tag)
+                                  .where("score >= ?", SiteConfig.tag_feed_minimum_score).size
                               else
                                 cached_tagged_count
                               end
@@ -334,7 +337,7 @@ class StoriesController < ApplicationController
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order(published_at: :desc)
     else
-      @stories.order(hotness_score: :desc).where("score > 2")
+      @stories.order(hotness_score: :desc).where("score >= ?", SiteConfig.home_feed_minimum_score)
     end
   end
 
@@ -487,7 +490,7 @@ class StoriesController < ApplicationController
 
   def cached_tagged_count
     Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
-      Article.published.cached_tagged_with(@tag).where("score > 2").size
+      Article.published.cached_tagged_with(@tag).where("score >= ?", SiteConfig.tag_feed_minimum_score).size
     end
   end
 end
