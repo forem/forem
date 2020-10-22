@@ -2,11 +2,10 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
+import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { submitArticle, previewArticle } from './actions';
 
 /* global activateRunkitTags */
-
-import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
 import {
   EditorActions,
