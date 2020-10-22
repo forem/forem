@@ -25,6 +25,10 @@ module Constants
         description: "",
         placeholder: "Campaign stories show up on sidebar with approval?"
       },
+      campaign_call_to_action: {
+        description: "This text populates the call to action button on the campaign sidebar",
+        placeholder: "Share your project"
+      },
       campaign_featured_tags: {
         description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
         placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded"
