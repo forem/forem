@@ -119,7 +119,6 @@ describe('<Channels />', () => {
       const { getByText, getByRole } = render(getChannels(true, []));
 
       // should show "Welcome to Connect message....."
-      getByRole('alert');
 
       getByRole('menu');
       const settings = getByText('Settings');

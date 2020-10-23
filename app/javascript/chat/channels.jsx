@@ -57,6 +57,7 @@ const Channels = ({
   let topNotice = '';
   if (
     expanded &&
+    filterQuery &&
     filterQuery.length === 0 &&
     channelsLoaded &&
     (channels.length === 0 || channels[0].messages_count === 0)
