@@ -7,8 +7,8 @@ const emailSigninAndLoginCheckbox = document.querySelector(
 const emailAuthSettingsSection = document.querySelector(
   '#email-auth-settings-section',
 );
+const modalAnchor = document.querySelector('.admin-config-modal-anchor');
 
-// eslint-disable-next-line no-unused-vars
 const adminConfigModal = (
   title,
   body,
@@ -20,8 +20,8 @@ const adminConfigModal = (
   <div class="crayons-modal crayons-modal--s absolute">
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
-        <h2>${title}</h2>
-        <button type="button" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
+        <p class="fw-bold fs-l">${title}</p>
+        <button type="button" class="crayons-btn crayons-btn--icon crayons-btn--ghost" data-action="click->config#closeAdminConfigModal">
           <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -29,7 +29,7 @@ const adminConfigModal = (
       </header>
       <div class="crayons-modal__box__body">
         ${body}
-        <div>
+        <div class="mt-6">
           <button
             class="crayons-btn crayons-btn--danger"
             data-action="click->config#${confirmBtnAction}">
@@ -90,5 +90,34 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     this.emailAuthSettingsBtnTarget.classList.remove('hidden');
     emailAuthSettingsSection.classList.add('hidden');
+  }
+
+  activateEmailAuthModal() {
+    event.preventDefault();
+    modalAnchor.innerHTML = adminConfigModal(
+      'Disable email address registration',
+      '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><br /><p>However, people who have already created an account using their email address can continue to login.</p>',
+      'Confirm',
+      'disableEmailAuth',
+      'Cancel',
+      'closeAdminConfigModal',
+    );
+    if (document.querySelector('.crayons-modal')) {
+      window.scrollTo(0, 0);
+      document.body.style.height = '100vh';
+      document.body.style.overflowY = 'hidden';
+    }
+  }
+
+  closeAdminConfigModal() {
+    modalAnchor.innerHTML = '';
+    document.body.style.height = 'inherit';
+    document.body.style.overflowY = 'inherit';
+  }
+
+  disableEmailAuth() {
+    event.preventDefault();
+    emailSigninAndLoginCheckbox.checked = false;
+    this.closeAdminConfigModal();
   }
 }
