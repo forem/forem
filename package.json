@@ -129,6 +129,7 @@
     "sass-loader": "^10.0.3",
     "style-loader": "^2.0.0",
     "svgo": "1.3.2",
+    "timemachine": "^0.3.2",
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
@@ -164,7 +165,6 @@
     "pusher-js": "^7.0.0",
     "rails-erb-loader": "^5.5.2",
     "stimulus": "^1.1.1",
-    "timemachine": "^0.3.2",
     "twilio-video": "^2.7.2",
     "web-share-wrapper": "^0.2.1"
   },
