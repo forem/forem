@@ -11,6 +11,8 @@ module ApplicationHelper
   )
   # rubocop:enable Performance/OpenStruct
 
+  LARGE_USERBASE_THRESHOLD = 1000
+
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
@@ -279,6 +281,14 @@ module ApplicationHelper
   def sanitize_and_decode(str)
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
+  end
+
+  def estimated_user_count
+    User.registered.estimated_count
+  end
+
+  def display_estimated_user_count?
+    estimated_user_count > LARGE_USERBASE_THRESHOLD
   end
 
   # rubocop:disable Rails/OutputSafety
