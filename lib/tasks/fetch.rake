@@ -13,8 +13,6 @@ task fetch_rss_reader: :environment do
 end
 
 task fetch_feeds_import: :environment do
-  Rails.application.eager_load!
-
   Feeds::Import.call
 end
 
