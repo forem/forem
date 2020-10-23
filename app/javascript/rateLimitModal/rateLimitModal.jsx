@@ -3,12 +3,6 @@ import PropTypes from 'prop-types';
 import { Modal } from '../crayons/Modal'
 
 export class RateLimitModal extends Component {
-
-  constructor() {
-    super();
-    this.state = { };
-  }
-
   closeRateLimitModal = () => {
     if(document.getElementsByClassName('crayons-modal')[0]) {
       document.getElementsByClassName('crayons-modal')[0].classList.add('hidden');
@@ -22,9 +16,13 @@ export class RateLimitModal extends Component {
         className='hidden'
         onClose={this.closeRateLimitModal}
       >
-        This is the rate limit modal body content
+        {this.props.text}
       </Modal>
     )
   }
 
 }
+
+RateLimitModal.propTypes = {
+  text: PropTypes.arrayOf(PropTypes.string).isRequired,
+};

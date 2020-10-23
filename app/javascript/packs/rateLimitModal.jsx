@@ -7,10 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   render(
     <RateLimitModal 
       title="This is a modal title"
+      text="This is the modal body content from a prop"
       className='hidden'
-    >
-      This is the modal body content
-    </RateLimitModal>
+    />
   , root);
 });
 
