@@ -265,10 +265,16 @@ function buildArticleHTML(article) {
         '</div></a>';
     }
 
-    return (
-      '<article class="crayons-story" data-article-path="' +
+    var articleElement =
+      '<article class="crayons-story" ' +
+      'role="link" ' +
+      'tabindex="0" ' +
+      'aria-labelledby="article-link-' +
+      article.id +
+      '" aria-labelledby="article-link-' +
+      'data-article-path="' +
       article.path +
-      '" id="article-' +
+      'id="article-' +
       article.id +
       '" data-content-user-id="' +
       article.user_id +
@@ -314,8 +320,9 @@ function buildArticleHTML(article) {
           </div>\
         </div>\
       </div>\
-    </article>'
-    );
+    </article>';
+
+    return articleElement;
   }
 
   return '';

@@ -50,6 +50,18 @@ export const Article = ({
       id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
       data-content-user-id={article.user_id}
       data-testid={isFeatured ? 'featured-article' : `article-${article.id}`}
+      role="link"
+      tabIndex="0"
+      aria-aria-labelledby={`article-link-${article.id}`}
+      onKeyDown={(event) => {
+        if (event.code === 'Enter') {
+          if (event.metaKey || event.ctrlKey) {
+            window.open(article.path, '_blank');
+          } else {
+            window.location.href = article.path;
+          }
+        }
+      }}
     >
       <div
         role="presentation"

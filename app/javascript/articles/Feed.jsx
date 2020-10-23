@@ -131,11 +131,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     }
   }
 
-  useListNavigation(
-    'article[id=featured-story-marker],article[id^=article-]',
-    'a[id^=article-link-]',
-    'div.paged-stories',
-  );
+  useListNavigation('article.crayons-story', 'div.paged-stories');
 
   return (
     <div id="rendered-article-feed">

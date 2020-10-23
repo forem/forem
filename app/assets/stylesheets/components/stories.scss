@@ -13,6 +13,13 @@
   background: var(--card-bg);
   font-size: var(--fs-base); // Todo: remove when ready.
   box-shadow: 0 0 0 1px var(--card-border);
+  position: relative;
+
+  &:focus {
+    outline: none;
+    --card-border: var(--accent-brand);
+    box-shadow: 0 0 0 2px var(--card-border);
+  }
 
   @media (min-width: $breakpoint-m) {
     border-radius: var(--radius);

@@ -11,7 +11,7 @@ const DIRECTIONS = {
 };
 
 /**
- * Hook that registers a global key shortcut for 'j' and 'k' to navigate up and down in a list of items
+ * Hook that registers a global key shortcut for 'j' and 'k' to navigate up and down in a list of elements
  *
  * @example
  * useListNavigation(
@@ -38,38 +38,30 @@ const DIRECTIONS = {
  *   </div>
  * </div>
  *
- * @param {string} itemContainerSelector - The selector for the highest level container of an item
- * @param {string} focusableSelector - The selector for the element that should be focused on
- * @param {string} waterfallItemContainerSelector - The selector for the waterfall item container if the list uses a waterfall structure at any point
+ * @param {string} elementSelector - The selector for the highest level container of an element
+ * @param {string} waterfallElementContainerSelector - The selector for the waterfall element container if the list uses a waterfall structure at any point
  */
 export function useListNavigation(
-  itemContainerSelector,
-  focusableSelector,
-  waterfallItemContainerSelector,
+  elementSelector,
+  waterfallElementContainerSelector,
 ) {
-  function navigateToNextElement(direction) {
-    navigate(
-      itemContainerSelector,
-      focusableSelector,
-      waterfallItemContainerSelector,
-      direction,
-    );
+  function navigateInDirection(direction) {
+    navigate(elementSelector, waterfallElementContainerSelector, direction);
   }
 
   useKeyboardShortcuts({
-    [NAVIGATION_UP_KEY]: () => navigateToNextElement(DIRECTIONS.UP),
-    [NAVIGATION_DOWN_KEY]: () => navigateToNextElement(DIRECTIONS.DOWN),
+    [NAVIGATION_UP_KEY]: () => navigateInDirection(DIRECTIONS.UP),
+    [NAVIGATION_DOWN_KEY]: () => navigateInDirection(DIRECTIONS.DOWN),
   });
 }
 
 /**
- * Calls a hook that registers global key event listeners for 'j' and 'k' to navigate up and down in a list of items
+ * Calls a hook that registers global key event listeners for 'j' and 'k' to navigate up and down in a list of elements
  *
  * @example
  * <ListNavigation
- *   itemContainerSelector=".crayons-story"
- *   focusableSelector="a[id^=article-link-]"
- *   waterfallItemContainerSelector="div.paged-stories,div.substories"
+ *   elementSelector=".crayons-story"
+ *   waterfallElementContainerSelector="div.paged-stories,div.substories"
  * />
  *
  * Note:
@@ -90,66 +82,60 @@ export function useListNavigation(
  *   </div>
  * </div>
  *
- * @param {string} itemContainerSelector - The selector for the highest level container of an item
- * @param {string} focusableSelector - The selector for the element that should be focused on
- * @param {string} waterfallItemContainerSelector - The selector for the waterfall item container if the list uses a waterfall structure at any point
+ * @param {string} elementSelector - The selector for the highest level container of an element
+ * @param {string} waterfallElementContainerSelector - The selector for the waterfall element container if the list uses a waterfall structure at any point
  */
 export function ListNavigation({
-  itemContainerSelector,
-  focusableSelector,
-  waterfallItemContainerSelector,
+  elementSelector,
+  waterfallElementContainerSelector,
 }) {
-  useListNavigation(
-    itemContainerSelector,
-    focusableSelector,
-    waterfallItemContainerSelector,
-  );
+  useListNavigation(elementSelector, waterfallElementContainerSelector);
 
   return null;
 }
 
 ListNavigation.propTypes = {
-  itemContainerSelector: PropTypes.string.isRequired,
-  focusableSelector: PropTypes.string.isRequired,
-  waterfallItemContainerSelector: PropTypes.string,
+  elementSelector: PropTypes.string.isRequired,
+  waterfallElementContainerSelector: PropTypes.string,
 };
 
 /**
  * Focuses on the next/previous element depending on the navigation direction
  *
- * @param {string} itemContainerSelector - The selector for the highest level container of an item
- * @param {string} focusableSelector - The selector for the element that should be focused on
- * @param {string} waterfallItemContainerSelector - The selector for the waterfall item container if the list uses a waterfall structure at any point
+ * @param {string} elementSelector - The selector for the highest level container of an element
+ * @param {string} waterfallElementContainerSelector - The selector for the waterfall element container if the list uses a waterfall structure at any point
  * @param {string} direction - The navigation direction (up or down)
  */
 function navigate(
-  itemContainerSelector,
-  focusableSelector,
-  waterfallItemContainerSelector,
+  elementSelector,
+  waterfallElementContainerSelector,
   direction,
 ) {
-  const closestContainer = document.activeElement?.closest(
-    itemContainerSelector,
-  );
+  const closestElement = document.activeElement?.closest(elementSelector);
 
-  let nextContainer;
-  if (!closestContainer) {
-    nextContainer = getFirstVisibleElement(itemContainerSelector);
+  let nextElement;
+  if (!closestElement) {
+    nextElement = getFirstVisibleElement(elementSelector);
   }
-  if (!nextContainer) {
+  if (!nextElement) {
     const getElementCallback =
       direction === DIRECTIONS.UP ? getPreviousElement : getNextElement;
 
-    nextContainer = getElementCallback(
-      closestContainer,
-      itemContainerSelector,
-      waterfallItemContainerSelector,
+    nextElement = getElementCallback(
+      closestElement,
+      elementSelector,
+      waterfallElementContainerSelector,
     );
   }
 
-  const nextFocusable = nextContainer?.querySelector(focusableSelector);
-  if (nextFocusable) {
-    nextFocusable.focus();
+  if (nextElement) {
+    if (!isInViewport(nextElement))
+      nextElement.scrollIntoView({
+        behavior: 'auto',
+        block: 'center',
+        inline: 'center',
+      });
+    nextElement.focus();
   }
 }
 
@@ -157,23 +143,31 @@ function navigate(
  * Gets the next element of a list that matches a selector
  *
  * @param {object} element - The current element
- * @param {string} itemContainerSelector - The selector for the highest level container of an item
- * @param {string} waterfallItemContainerSelector - The selector for the waterfall item container if the list uses a waterfall structure at any point
+ * @param {string} elementSelector - The selector for the highest level container of an element
+ * @param {string} waterfallElementContainerSelector - The selector for the waterfall element container if the list uses a waterfall structure at any point
  */
 function getNextElement(
   element,
-  itemContainerSelector,
-  waterfallItemContainerSelector,
+  elementSelector,
+  waterfallElementContainerSelector,
 ) {
-  const sibling = element?.nextElementSibling;
+  if (!element) {
+    return null;
+  }
+
+  let sibling = element.nextElementSibling;
+
   if (
     sibling &&
-    !sibling.matches(
-      `${itemContainerSelector},${waterfallItemContainerSelector}`,
-    )
+    !sibling.matches(`${elementSelector},${waterfallElementContainerSelector}`)
   ) {
-    return sibling.nextElementSibling;
+    sibling = sibling.nextElementSibling;
   }
+
+  if (sibling && !sibling.matches(elementSelector)) {
+    return sibling.querySelector(elementSelector);
+  }
+
   return sibling;
 }
 
@@ -181,26 +175,26 @@ function getNextElement(
  * Gets the previous element of a list that matches a selector
  *
  * @param {object} element - The current element
- * @param {string} itemContainerSelector - The selector for the highest level container of an item
- * @param {string} waterfallItemContainerSelector - The selector for the waterfall item container if the list uses a waterfall structure at any point
+ * @param {string} elementSelector - The selector for the highest level container of an element
+ * @param {string} waterfallElementContainerSelector - The selector for the waterfall element container if the list uses a waterfall structure at any point
  */
 function getPreviousElement(
   element,
-  itemContainerSelector,
-  waterfallItemContainerSelector,
+  elementSelector,
+  waterfallElementContainerSelector,
 ) {
   if (!element) {
     return null;
   }
 
   let sibling = element.previousElementSibling;
-  if (!sibling && waterfallItemContainerSelector) {
+  if (!sibling && waterfallElementContainerSelector) {
     // reached the top of a waterfall level
-    sibling = element.closest(waterfallItemContainerSelector)
+    sibling = element.closest(waterfallElementContainerSelector)
       ?.previousElementSibling;
   }
 
-  if (sibling && !sibling.matches(itemContainerSelector)) {
+  if (sibling && !sibling.matches(elementSelector)) {
     return sibling.previousElementSibling;
   }
 
