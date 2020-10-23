@@ -1139,8 +1139,9 @@ components:
           type: string
           nullable: true
         joined_at:
-          description: Date of joining (formatted with strftime `"%b %e, %Y"`)
+          description: Date of joining
           type: string
+          format: date-time
         profile_image:
           type: string
           description: Profile image (640x640)
@@ -1719,7 +1720,7 @@ components:
         github_username: ecorp
         url: https://ecorp.internet
         location: New York
-        joined_at: Jan 1, 2018
+        joined_at: '2019-10-24T13:41:29Z'
         tech_stack: Ruby
         tag_line: 
         story:
