@@ -49,7 +49,7 @@ Rails.application.routes.draw do
     namespace :admin do
       get "/" => "admin_portals#index"
 
-      authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
+      authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
 
         flipper_ui = Flipper::UI.app(Flipper,

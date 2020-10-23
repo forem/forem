@@ -70,7 +70,7 @@ export function getInitialSearchTerm(querystring) {
     matches !== null && matches.length === 2
       ? decodeURIComponent(matches[1].replace(/\+/g, '%20'))
       : '';
-  const query = filterXSS(rawSearchTerm);
+  const query = filterXSS(rawSearchTerm) || '';
   const divForDecode = document.createElement('div');
   divForDecode.innerHTML = query;
 
@@ -91,7 +91,6 @@ export function preloadSearchResults({
     location.origin
   }/search?q=${encodedQuery}${getFilterParameters(location.href)}`;
   InstantClick.preload(searchUrl);
-  context.history.pushState({}, '', searchUrl);
 }
 
 export function createSearchUrl(dataHash) {

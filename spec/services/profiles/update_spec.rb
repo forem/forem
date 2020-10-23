@@ -40,7 +40,7 @@ RSpec.describe Profiles::Update, type: :service do
   end
 
   it "sets custom attributes for the user" do
-    custom_profile_field = create(:custom_profile_field, profile: profile)
+    custom_profile_field = create(:custom_profile_field, label: "Custom test", profile: profile)
     custom_attribute = custom_profile_field.attribute_name
 
     described_class.call(user, profile: { custom_attribute => "Test" }, user: {})
@@ -76,5 +76,14 @@ RSpec.describe Profiles::Update, type: :service do
 
     expect(service.success?).to be false
     expect(service.error_message).to eq "filename too long - the max is 250 characters."
+  end
+
+  it "works correctly if a profile field does not exist for the User model" do
+    profile_field = create(:profile_field, label: "No User Test")
+    Profile.refresh_attributes!
+
+    expect do
+      described_class.call(user, profile: { profile_field.attribute_name => "Test" }, user: {})
+    end.to change { profile.reload.public_send(profile_field.attribute_name) }
   end
 end

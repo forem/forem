@@ -22,6 +22,8 @@ class RegistrationsController < Devise::RegistrationsController
     if recaptcha_disabled? || recaptcha_verified?
       build_resource(sign_up_params)
       resource.saw_onboarding = false
+      resource.registered = true
+      resource.registered_at = Time.current
       resource.editor_version = "v2"
       resource.save if resource.email.present?
       yield resource if block_given?

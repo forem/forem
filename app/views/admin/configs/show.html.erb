@@ -428,6 +428,15 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:campaign_featured_tags][:placeholder] %>
                 </div>
 
+                <div class="crayons-field">
+                  <%= admin_config_label :campaign_call_to_action, "Campaign Call to Action" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_call_to_action][:description] %>
+                  <%= f.text_field :campaign_call_to_action,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.campaign_call_to_action,
+                                   placeholder: Constants::SiteConfig::DETAILS[:campaign_call_to_action][:placeholder] %>
+                </div>
+
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>
@@ -980,6 +989,14 @@
             <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
               <fieldset class="flex flex-column gap-4">
                 <div class="crayons-field">
+                  <%= admin_config_label :mailchimp_api_key, "Mailchimp API Key" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_api_key][:description] %>
+                  <%= f.text_field :mailchimp_api_key,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.mailchimp_api_key %>
+                </div>
+
+                <div class="crayons-field">
                   <%= admin_config_label :mailchimp_newsletter_id, "Main Newsletter" %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:mailchimp_newsletter_id][:description] %>
                   <%= f.text_field :mailchimp_newsletter_id,
@@ -1095,27 +1112,31 @@
                          expanded: "false"
                        } %>
             <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
-              <% configurable_rate_limits.each do |key, field_hash| %>
-                <div class="form-group">
-                  <%= admin_config_label key %>
-                  <%= f.number_field key,
-                                     class: "form-control",
-                                     value: SiteConfig.public_send(key),
-                                     min: field_hash[:min],
-                                     placeholder: field_hash[:placeholder] %>
-                  <%= field_hash[:description] %>
-                </div>
-              <% end %>
-              <div class="form-group">
-                <%= admin_config_label :spam_trigger_terms %>
-                <%= f.text_field :spam_trigger_terms,
-                                 class: "form-control",
-                                 value: SiteConfig.spam_trigger_terms.join(","),
-                                 placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
-                <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %></div>
-              </div>
+              <fieldset class="flex flex-column gap-4">
+                <% configurable_rate_limits.each do |key, field_hash| %>
+                  <div class="crayons-field">
+                    <%= admin_config_label field_hash[:title] %>
+                    <p class="crayons-field__description">
+                      <%= field_hash[:description] %>
+                    </p>
+                    <%= f.number_field key,
+                                       class: "crayons-textfield",
+                                       value: SiteConfig.public_send(key),
+                                       min: field_hash[:min],
+                                       placeholder: field_hash[:placeholder] %>
+                  </div>
+                <% end %>
 
-              <%= render "form_submission", f: f %>
+                <div class="crayons-field">
+                  <%= admin_config_label :spam_trigger_terms %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:spam_trigger_terms][:description] %>
+                  <%= f.text_area :spam_trigger_terms,
+                                  class: "crayons-textfield",
+                                  value: SiteConfig.spam_trigger_terms.join(","),
+                                  placeholder: Constants::SiteConfig::DETAILS[:spam_trigger_terms][:placeholder] %>
+                </div>
+                <%= render "form_submission", f: f %>
+              </fieldset>
             </div>
           </div>
         <% end %>
@@ -1239,6 +1260,22 @@
                                    class: "crayons-textfield",
                                    value: SiteConfig.feed_strategy,
                                    placeholder: Constants::SiteConfig::DETAILS[:feed_strategy][:placeholder] %>
+                </div>
+                <div class="crayons-field">
+                  <%= admin_config_label :tag_feed_minimum_score %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:tag_feed_minimum_score][:description] %>
+                  <%= f.number_field :tag_feed_minimum_score,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.tag_feed_minimum_score,
+                                     placeholder: Constants::SiteConfig::DETAILS[:tag_feed_minimum_score][:placeholder] %>
+                </div>
+                <div class="crayons-field">
+                  <%= admin_config_label :home_feed_minimum_score %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:home_feed_minimum_score][:description] %>
+                  <%= f.number_field :home_feed_minimum_score,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.home_feed_minimum_score,
+                                     placeholder: Constants::SiteConfig::DETAILS[:home_feed_minimum_score][:placeholder] %>
                 </div>
                 <div class="crayons-field">
                   <%= admin_config_label :default_font %>

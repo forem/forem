@@ -10,7 +10,7 @@
     <% end %>
   </div>
   <div class="grid gap-2 p-4">
-    <%= link_to "Share your project", "/new/#{campaign.main_tag}", class: "crayons-btn" %>
+    <%= link_to Campaign.current.call_to_action, "/new/#{campaign.main_tag}", class: "crayons-btn" %>
     <%= link_to "See all posts", "/t/#{campaign.main_tag}", class: "crayons-btn crayons-btn--secondary" %>
   </div>
 </section>

@@ -1,5 +1,5 @@
 /*
-  global initializeLocalStorageRender, initializeStylesheetAppend, initializeBodyData,
+  global initializeLocalStorageRender, initializeBodyData,
   initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
   initializeBaseTracking, initializeTouchDevice, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
@@ -46,7 +46,6 @@ function callInitializers() {
   initializeArticleDate();
   initializeArticleReactions();
   initNotifications();
-  initializeStylesheetAppend();
   initializeCommentDate();
   initializeCommentDropdown();
   initializeSettings();
@@ -83,6 +82,5 @@ function callInitializers() {
 
 function initializePage() {
   initializeLocalStorageRender();
-  initializeStylesheetAppend();
   callInitializers();
 }

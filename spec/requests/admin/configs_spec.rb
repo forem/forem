@@ -47,11 +47,14 @@ RSpec.describe "/admin/config", type: :request do
         sign_in(admin_plus_config)
       end
 
-      it "deletes release-tied fragment caches" do
-        allow(Rails.cache).to receive(:delete_matched).and_call_original
-        post "/admin/config", params: { site_config: { health_check_token: "token" },
-                                        confirmation: confirmation_message }
-        expect(Rails.cache).to have_received(:delete_matched).with("*-#{ApplicationConfig['RELEASE_FOOTPRINT']}")
+      it "updates site config admin action taken" do
+        Timecop.freeze do
+          expect(SiteConfig.admin_action_taken_at).not_to eq(5.minutes.ago)
+          allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
+          post "/admin/config", params: { site_config: { health_check_token: "token" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.admin_action_taken_at).to eq(5.minutes.ago)
+        end
       end
 
       describe "API tokens" do
@@ -646,6 +649,21 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.feed_strategy).to eq(feed_strategy)
         end
+
+        it "updates the tag_feed_minimum_score" do
+          tag_feed_minimum_score = 3
+          post "/admin/config", params: { site_config: { tag_feed_minimum_score: tag_feed_minimum_score },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.tag_feed_minimum_score).to eq(tag_feed_minimum_score)
+        end
+
+        it "updates the home_feed_minimum_score" do
+          home_feed_minimum_score = 5
+          post "/admin/config", params: { site_config: { home_feed_minimum_score: home_feed_minimum_score },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.home_feed_minimum_score).to eq(home_feed_minimum_score)
+        end
+
 
         it "updates the brand color if proper hex" do
           hex = "#0a0a0a" # dark enough
