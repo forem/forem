@@ -32,4 +32,10 @@ class Role < ApplicationRecord
             inclusion: { in: ROLES }
 
   scopify
+
+  def resource_name
+    return resource_type unless resource_id
+
+    Tag.find(resource_id).name
+  end
 end
