@@ -154,6 +154,7 @@ A more complete overview of our stack is available in
 - [@fdoxyz](https://dev.to/fdoxyz)
 - [@msarit](https://dev.to/msarit)
 - [@jdoss](https://dev.to/jdoss)
+- [@cmgorton](https://dev.to/coffeecraftcode)
 
 ## Vulnerability disclosure
 
@@ -161,6 +162,10 @@ Forem is the open source software which powers [DEV](https://dev.to).
 
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
+
+## Acknowledgments
+
+Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the usage of their emojis.
 
 ## License
 

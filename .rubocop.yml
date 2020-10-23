@@ -82,6 +82,7 @@ Layout/LineLength:
   Exclude:
     - docs/Gemfile
     - Gemfile
+    - app/lib/constants/site_config.rb
 
 # Layout/MultilineArrayLineBreaks:
 #   Description: >-

@@ -94,6 +94,8 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       # Emails limited to 50 characters
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
+      registered_at: Time.current,
+      registered: true,
       password: "password",
       password_confirmation: "password",
     )
@@ -161,7 +163,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     password_confirmation: "password",
   )
 
-  user.add_role(:admin)
+  user.add_role(:super_admin)
   user.add_role(:single_resource_admin)
 end
 
@@ -570,6 +572,12 @@ seeder.create_if_none(Sponsorship) do
       blurb_html: Faker::Hacker.say_something_smart,
     )
   end
+end
+
+##############################################################################
+
+seeder.create_if_none(NavigationLink) do
+  Rake::Task["navigation_links:update"].invoke
 end
 
 ##############################################################################
