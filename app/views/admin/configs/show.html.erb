@@ -175,15 +175,15 @@
                     <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
                   </figure>
                   <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label" style="display:flex; justify-content: space-between;">
+                    <div class="config-authentication__item--label" style="display:flex; justify-content: space-between; align-items: center;">
                       <p class="fw-medium">
                         Email address
                       </p>
-                      <button class="crayons-btn crayons-btn--secondary" data-target="config.emailSignupLoginBtn" data-action="click->config#enableEmailSignupAndLogin">
+                      <button class="crayons-btn crayons-btn--secondary" data-target="config.emailAuthSettingsBtn" data-action="click->config#enableOrEditEmailAuthSettings">
                         <%= SiteConfig.allow_both_email_signup_and_login ? "Edit" : "Enable" %>
                       </button>
                     </div>
-                    <div class="config-authentication__item--body">
+                    <div id="email-auth-settings-section" class="config-authentication__item--body hidden">
                       <fieldset class="config-authentication-form">
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :allow_both_email_signup_and_login,
@@ -226,6 +226,14 @@
                           </div>
                         </div>
                       </fieldset>
+                      <div class="mt-6">
+                        <button class="crayons-btn crayons-btn--danger">Disable</button>
+                        <button
+                          class="crayons-btn crayons-btn--secondary"
+                          data-action="click->config#hideEmailAuthSettings">
+                          Close
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </section>

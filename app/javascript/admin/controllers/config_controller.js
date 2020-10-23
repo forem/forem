@@ -4,13 +4,16 @@ const recaptchaFields = document.querySelector('#recaptchaContainer');
 const emailSigninAndLoginCheckbox = document.querySelector(
   '#email-signup-and-login-checkbox',
 );
+const emailAuthSettingsSection = document.querySelector(
+  '#email-auth-settings-section',
+);
 
 export default class ConfigController extends Controller {
   static targets = [
     'inviteOnlyMode',
     'authenticationProviders',
     'requireCaptchaForEmailPasswordRegistration',
-    'emailSignupLoginBtn',
+    'emailAuthSettingsBtn',
   ];
 
   disableAuthenticationOptions() {
@@ -35,8 +38,16 @@ export default class ConfigController extends Controller {
     }
   }
 
-  enableEmailSignupAndLogin() {
-    emailSigninAndLoginCheckbox.click();
-    this.emailSignupLoginBtnTarget.classList.add('hidden');
+  enableOrEditEmailAuthSettings() {
+    event.preventDefault();
+    emailSigninAndLoginCheckbox.checked = true;
+    this.emailAuthSettingsBtnTarget.classList.add('hidden');
+    emailAuthSettingsSection.classList.remove('hidden');
+  }
+
+  hideEmailAuthSettings() {
+    event.preventDefault();
+    this.emailAuthSettingsBtnTarget.classList.remove('hidden');
+    emailAuthSettingsSection.classList.add('hidden');
   }
 }
