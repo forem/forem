@@ -9,6 +9,7 @@ module Articles
 
     def perform
       return unless SiteConfig.community_name == "DEV"
+      return if Rails.cache.read("cancel_rss_job").present?
 
       # we force fetch to have realistic data
       RssReader.get_all_articles(force: true)

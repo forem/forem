@@ -15,8 +15,20 @@ RSpec.describe Articles::DevRssReaderWorker, type: :worker do
       expect(RssReader).not_to have_received(:get_all_articles)
     end
 
+    it "does not call the RssReader if the cache instructs it to cancel" do
+      allow(SiteConfig).to receive(:community_name).and_return("DEV")
+      allow(Rails.cache).to receive(:read).with("cancel_rss_job").and_return("true")
+
+      allow(RssReader).to receive(:get_all_articles)
+
+      worker.perform
+
+      expect(RssReader).not_to have_received(:get_all_articles)
+    end
+
     it "calls the RssReader to get all articles" do
       allow(SiteConfig).to receive(:community_name).and_return("DEV")
+      allow(Rails.cache).to receive(:read).with("cancel_rss_job").and_return(nil)
       allow(RssReader).to receive(:get_all_articles)
 
       worker.perform
