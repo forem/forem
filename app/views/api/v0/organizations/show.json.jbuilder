@@ -14,5 +14,5 @@ json.extract!(
   :story,
 )
 
-json.joined_at @organization.created_at.strftime("%b %e, %Y")
+json.joined_at utc_iso_timestamp(@organization.created_at)
 json.profile_image Images::Profile.call(@organization.profile_image_url, length: 640)

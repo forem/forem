@@ -22,7 +22,7 @@ RSpec.describe "Api::V0::Organizations", type: :request do
         expect(response_organization[attr]).to eq(organization.public_send(attr))
       end
 
-      expect(response_organization["joined_at"]).to eq(organization.created_at.strftime("%b %e, %Y"))
+      expect(response_organization["joined_at"]).to eq(organization.created_at.utc.iso8601)
     end
   end
 end
