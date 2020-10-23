@@ -119,7 +119,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows 'Explore Tags' and links to /tags", js: true do
-        expect(page).to have_text("Explore Tags")
+        expect(page).to have_text("Explore")
         expect(page).to have_selector(:css, 'a[href="/tags"]')
       end
     end

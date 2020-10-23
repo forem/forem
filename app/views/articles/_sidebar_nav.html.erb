@@ -46,7 +46,7 @@
 
 <nav class="mb-6" aria-label="Secondary sidebar nav">
 <nav class="mb-6" aria-label="Secondary sidebar nav">
-  <% if user_signed_in? && current_user.following_tags_count >= 1 %>
+  <% if user_signed_in? && current_user.following_tags_count.positive? %>
     <header class="p-2 pr-0 flex items-center justify-between">
       <h3 class="crayons-subtitle-3">My Tags</h3>
       <a href="/dashboard/following_tags" class="crayons-btn crayons-btn--icon crayons-btn--ghost-dimmed" aria-label="Customize tag priority" title="Customize tag priority">
@@ -55,9 +55,10 @@
     </header>
     <div id="sidebar-nav-followed-tags" class="overflow-y-auto mb-2" style="max-height: 42vh;"></div>
     <% elsif user_signed_in? %>
-      <header class="p-2 pr-0 flex items-center justify-between">
-        <a href="/tags" class="crayons-btn crayons-btn--icon crayons-btn--ghost-dimmed" aria-label="Tags Overview" title="Tags Overview">
-          <h3 class="crayons-subtitle-3">Explore Tags</h3>
+     <header class="p-2 pr-0 flex items-center justify-between">
+       <h3 class="crayons-subtitle-3">Explore</h3>
+       <a href="<%= tags_path %>" class="fs-s crayons-link crayons-link--brand pr-2" title="Browse all tags">
+        All tags
         </a>
       </header>
       <div id="sidebar-nav-explore-tags" class="overflow-y-auto" style="max-height: 42vh">
