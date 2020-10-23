@@ -755,7 +755,7 @@
                                    value: SiteConfig.logo_png,
                                    placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
                   <% if SiteConfig.logo_png.present? %>
-                    <img class="preview" src="<%= SiteConfig.logo_png %>" />
+                    <img src="<%= SiteConfig.logo_png %>" width="128" height="128" />
                   <% end %>
                 </div>
 
