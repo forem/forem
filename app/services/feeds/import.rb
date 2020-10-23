@@ -3,9 +3,9 @@
 # => add Feeds::ValidateFeedUrl to validate a single feed URL
 module Feeds
   class Import
-    def self.call(silence: true)
+    def self.call(silent: true)
       # TODO: remove this eventually
-      if Rails.env.development? && silence
+      if silent && Rails.env.development?
         ActiveRecord::Base.logger = nil
         Rails.logger.level = :info
         Rails.configuration.log_level = :info
