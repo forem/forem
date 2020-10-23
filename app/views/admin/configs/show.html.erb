@@ -175,30 +175,21 @@
                     <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
                   </figure>
                   <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
+                    <div class="config-authentication__item--label" style="display:flex; justify-content: space-between;">
                       <p class="fw-medium">
-                        Email address and password
+                        Email address
                       </p>
+                      <button class="crayons-btn crayons-btn--secondary" data-target="config.emailSignupLoginBtn" data-action="click->config#enableEmailSignupAndLogin">
+                        <%= SiteConfig.allow_both_email_signup_and_login ? "Edit" : "Enable" %>
+                      </button>
                     </div>
                     <div class="config-authentication__item--body">
                       <fieldset class="config-authentication-form">
                         <div class="crayons-field--checkbox">
-                          <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration, class: "crayons-checkbox" %>
-                          <div>
-                            <%= admin_config_label :allow_email_password_registration %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %>
-                            </p>
-                          </div>
-                        </div>
-                        <div class="crayons-field--checkbox">
-                          <%= f.check_box :allow_email_password_login, checked: SiteConfig.allow_email_password_login, class: "crayons-checkbox" %>
-                          <div>
-                            <%= admin_config_label :allow_email_password_login %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_login][:description] %>
-                            </p>
-                          </div>
+                          <%= f.check_box :allow_both_email_signup_and_login,
+                                          checked: SiteConfig.allow_both_email_signup_and_login,
+                                          id: "email-signup-and-login-checkbox",
+                                          class: "crayons-checkbox" %>
                         </div>
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :require_captcha_for_email_password_registration,

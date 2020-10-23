@@ -1,9 +1,17 @@
 import { Controller } from 'stimulus';
 
 const recaptchaFields = document.querySelector('#recaptchaContainer');
+const emailSigninAndLoginCheckbox = document.querySelector(
+  '#email-signup-and-login-checkbox',
+);
 
 export default class ConfigController extends Controller {
-  static targets = ['inviteOnlyMode', 'authenticationProviders', 'requireCaptchaForEmailPasswordRegistration'];
+  static targets = [
+    'inviteOnlyMode',
+    'authenticationProviders',
+    'requireCaptchaForEmailPasswordRegistration',
+    'emailSignupLoginBtn',
+  ];
 
   disableAuthenticationOptions() {
     if (this.inviteOnlyModeTarget.checked) {
@@ -25,5 +33,10 @@ export default class ConfigController extends Controller {
     } else {
       recaptchaFields.classList.add('collapse');
     }
+  }
+
+  enableEmailSignupAndLogin() {
+    emailSigninAndLoginCheckbox.click();
+    this.emailSignupLoginBtnTarget.classList.add('hidden');
   }
 }
