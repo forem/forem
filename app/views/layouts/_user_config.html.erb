@@ -39,10 +39,10 @@
       } else {
         document.body.classList.add("user-tags-followed-max");
       }
-      sidebarTags.style.height = "100vh"
-      sidebarTags.style.backgroundColor = "green"
     }
   } catch(e) {
+    setTimeout(function(){
       Honeybadger.notify(e);
+    },1000)
   }
 </script>
