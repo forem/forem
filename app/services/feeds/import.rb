@@ -37,12 +37,12 @@ module Feeds
 
         # NOTE: doing this sequentially to avoid locking problems with the DB
         # and unnecessary conflicts
-        articles = feedjira_objects.map do |user_id, feed|
+        articles = feedjira_objects.flat_map do |user_id, feed|
           # TODO: replace `feed` with `feed.url` as `RssReader::Assembler`
           # only actually needs feed.url
           user = batch_of_users.detect { |u| u.id == user_id }
           create_articles_from_user_feed(user, feed)
-        end.flatten
+        end
         Rails.logger.info("articles.length: #{articles.length}")
 
         total_articles_count += articles.length
@@ -73,7 +73,7 @@ module Feeds
 
       batch_of_users.update_all(feed_fetched_at: Time.current)
 
-      Hash[result.compact]
+      result.compact.to_h
     end
 
     # TODO: put this in separate service object
@@ -87,7 +87,7 @@ module Feeds
         nil
       end
 
-      Hash[result.compact]
+      result.compact.to_h
     end
 
     # TODO: currently this is exactly as in RSSReader, but we might find
