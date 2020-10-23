@@ -178,8 +178,13 @@
                     <div class="config-authentication__item--label" style="display:flex; justify-content: space-between; align-items: center;">
                       <p class="fw-medium">
                         Email address
+                        State of Double Allow: <%= SiteConfig.allow_both_email_signup_and_login %>
                       </p>
-                      <button class="crayons-btn crayons-btn--secondary" data-target="config.emailAuthSettingsBtn" data-action="click->config#enableOrEditEmailAuthSettings">
+                      <button
+                        class="crayons-btn crayons-btn--secondary"
+                        data-button-text="<%= SiteConfig.allow_both_email_signup_and_login ? "edit" : "enable" %>"
+                        data-target="config.emailAuthSettingsBtn"
+                        data-action="click->config#enableOrEditEmailAuthSettings">
                         <%= SiteConfig.allow_both_email_signup_and_login ? "Edit" : "Enable" %>
                       </button>
                     </div>
@@ -203,7 +208,7 @@
                             </p>
                           </div>
                         </div>
-                        <div id="recaptchaContainer" class="<%= SiteConfig.require_captcha_for_email_password_registration ? "" : "collapse" %> ml-7" aria-labelledby="recaptchaContainer">
+                        <div id="recaptchaContainer" class="<%= SiteConfig.require_captcha_for_email_password_registration ? "" : "hidden" %> ml-7" aria-labelledby="recaptchaContainer">
                           <div class="form-group">
                             <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
                             <p class="crayons-field__description mb-1">

@@ -32,15 +32,17 @@ export default class ConfigController extends Controller {
 
   toggleGoogleRecaptchaFields() {
     if (this.requireCaptchaForEmailPasswordRegistrationTarget.checked) {
-      recaptchaFields.classList.remove('collapse');
+      recaptchaFields.classList.remove('hidden');
     } else {
-      recaptchaFields.classList.add('collapse');
+      recaptchaFields.classList.add('hidden');
     }
   }
 
   enableOrEditEmailAuthSettings() {
     event.preventDefault();
-    emailSigninAndLoginCheckbox.checked = true;
+    if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
+      emailSigninAndLoginCheckbox.checked = true;
+    }
     this.emailAuthSettingsBtnTarget.classList.add('hidden');
     emailAuthSettingsSection.classList.remove('hidden');
   }
