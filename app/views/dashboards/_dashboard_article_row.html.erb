@@ -13,7 +13,8 @@
     </h3>
     <% if article.published %>
       <p class="fs-s color-base-60 js-dashboard-story-details">
-        <strong class="fw-medium">Published:</strong> <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
+        <strong class="fw-medium">Published:</strong>
+        <%= local_date(article.published_timestamp, show_year: article.displayable_published_at.year != Time.current.year) %>
         <% if article.edited? %>
           <strong class="fw-medium pl-2">Edited:</strong> <time datetime="<%= article.edited_at.utc.iso8601 %>"><%= article.readable_edit_date %></time>
         <% end %>
