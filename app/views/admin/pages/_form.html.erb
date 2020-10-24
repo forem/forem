@@ -60,6 +60,12 @@
     </div>
     <%= form.submit class: "btn btn-primary" %>
   <% end %>
+
+  <% if @page.persisted? %>
+    <%= form_with model: [:admin, @page], local: true, method: :delete, class: "mt-3" do |f| %>
+      <%= f.submit "Delete Page", class: "btn btn-danger", data: { confirm: "Are you sure?" } %>
+    <% end %>
+  <% end %>
 </div>
 
 <script>

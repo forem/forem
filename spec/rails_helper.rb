@@ -48,6 +48,7 @@ allowed_sites = [
   "selenium-release.storage.googleapis.com",
   "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
   "api.knapsackpro.com",
+  "elasticsearch",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
@@ -84,6 +85,10 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
+    # Set the TZ ENV variable with the current random timezone from zonebie
+    # which we can then use to properly set the browser time for Capybara specs
+    ENV["TZ"] = Time.zone.tzinfo.name
+
     Search::Cluster.recreate_indexes
   end
 

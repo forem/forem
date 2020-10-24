@@ -1,8 +1,6 @@
 require "rails_helper"
 
 NON_DEFAULT_EXPERIMENTS = %i[
-  default_home_feed_with_more_randomness_experiment
-  mix_default_and_more_random_experiment
   more_tag_weight_experiment
   more_tag_weight_more_random_experiment
   more_comments_experiment

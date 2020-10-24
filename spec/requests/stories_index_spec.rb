@@ -44,8 +44,9 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders page with proper sidebar" do
+      navigation_link = create(:navigation_link)
       get "/"
-      expect(response.body).to include("Podcasts")
+      expect(response.body).to include(CGI.escapeHTML(navigation_link.name))
     end
 
     it "renders left display_ads when published and approved" do
@@ -197,6 +198,7 @@ RSpec.describe "StoriesIndex", type: :request do
     context "with campaign_sidebar" do
       before do
         SiteConfig.campaign_featured_tags = "shecoded,theycoded"
+        SiteConfig.home_feed_minimum_score = 7
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
         create(:article, approved: true, body_markdown: a_body, score: 1)
@@ -260,7 +262,7 @@ RSpec.describe "StoriesIndex", type: :request do
   describe "GET query page" do
     it "renders page with proper header" do
       get "/search?q=hello"
-      expect(response.body).to include("query-header-text")
+      expect(response.body).to include("=> Search Results")
     end
   end
 
