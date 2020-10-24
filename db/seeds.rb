@@ -372,6 +372,13 @@ seeder.create_if_none(ChatChannel) do
     )
   end
 
+  # This channel is hard-coded in a few places
+  ChatChannel.create!(
+    channel_name: "Tag Moderators",
+    channel_type: "open",
+    slug: "tag-moderators",
+  )
+
   direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
   Message.create!(
     chat_channel: direct_channel,
