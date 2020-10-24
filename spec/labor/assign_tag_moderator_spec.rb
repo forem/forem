@@ -7,9 +7,10 @@ RSpec.describe AssignTagModerator, type: :labor do
   let(:tag_one) { create(:tag) }
   let(:tag_two) { create(:tag) }
   let!(:channel) do
-    ChatChannel.create(slug: "tag-moderators",
-                       channel_name: "Tag Moderators",
-                       channel_type: "invite_only")
+    create(:chat_channel,
+           slug: "tag-moderators",
+           channel_name: "Tag Moderators",
+           channel_type: "invite_only")
   end
 
   def add_tag_moderators

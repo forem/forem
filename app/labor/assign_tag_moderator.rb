@@ -30,10 +30,9 @@ module AssignTagModerator
     ChatChannel.find_by(slug: "tag-moderators")&.add_users(user) unless
       user_channels.exists?(slug: "tag-moderators")
 
-    if tag.mod_chat_channel_id
-      ChatChannel.find(tag.mod_chat_channel_id).add_users(user) unless
-        user_channels.exists?(id: tag.mod_chat_channel_id)
-    else
+    if tag.mod_chat_channel_id && !user_channels.exists?(id: tag.mod_chat_channel_id)
+      ChatChannel.find(tag.mod_chat_channel_id).add_users(user)
+    elsif tag.mod_chat_channel_id.blank?
       channel = ChatChannels::CreateWithUsers.call(
         users: ([user] + User.with_role(:mod_relations_admin)).flatten.uniq,
         channel_type: "invite_only",
