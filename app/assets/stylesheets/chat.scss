@@ -12,7 +12,14 @@
 }
 
 .live-chat {
-  height: calc(100 * var(--vh) - var(--header-height));
+  /* height: calc(100vh - 56px); */
+
+  &.live-chat--iossafari {
+    height: calc(100vh - 56px);
+  }
+
+  overflow-y: hidden;
+  /* height: calc(100 * var(--vh) - var(--header-height)); */
 }
 
 .live-chat {
@@ -26,6 +33,10 @@
   position: relative;
   overflow-x: hidden;
   overflow-y: hidden;
+
+  &.chat--iossafari {
+    height: 100%;
+  }
 }
 
 .chat__channels {
@@ -233,7 +244,9 @@
   font-size: var(--fs-base);
   flex-grow: 1;
   height: 300px;
-  overflow-y: auto;
+  // Setting it to scroll so there is no jump when it's auto. Also, since it's chat,
+  // it will almost always need scrolling right away.
+  overflow-y: scroll;
   overflow-x: hidden;
   text-align: left;
   overscroll-behavior-y: contain;
@@ -1033,6 +1046,7 @@
   min-height: 2.5rem;
   resize: vertical;
   max-height: 8rem;
+  overflow: hidden;
 }
 
 .composer-btn-group {

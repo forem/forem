@@ -47,9 +47,9 @@ Rails.application.routes.draw do
     end
 
     namespace :admin do
-      get "/", to: redirect("/admin/articles")
+      get "/" => "admin_portals#index"
 
-      authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
+      authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
 
         flipper_ui = Flipper::UI.app(Flipper,
@@ -68,7 +68,7 @@ Rails.application.routes.draw do
       resources :comments, only: [:index]
       resources :events, only: %i[index create update]
       resources :feedback_messages, only: %i[index show]
-      resources :invitations, only: %i[index new create]
+      resources :invitations, only: %i[index new create destroy]
       resources :pages, only: %i[index new create edit update destroy]
       resources :mods, only: %i[index update]
       resources :moderator_actions, only: %i[index]
@@ -176,6 +176,7 @@ Rails.application.routes.draw do
           get :users
           get :organizations
         end
+        resources :readinglist, only: [:index]
         resources :webhooks, only: %i[index create show destroy]
 
         resources :listings, only: %i[index show create update]
@@ -193,6 +194,8 @@ Rails.application.routes.draw do
             get :cache
           end
         end
+
+        resources :profile_images, only: %i[show], param: :username
       end
     end
 

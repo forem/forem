@@ -47,7 +47,7 @@
         <% end %>
         <%= render "comments/comment_date", decorated_comment: decorated_comment %>
         <button class="dropbtn" aria-label="Toggle dropdown menu">
-          <%= image_tag("overflow-horizontal.svg", class: "dropdown-icon", alt: "Dropdown menu") %>
+          <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "dropdown-icon", title: "Dropdown menu") %>
         </button>
         <div class="dropdown">
           <div class="crayons-dropdown p-1 z-30 right-1 left-1 s:right-0 s:left-auto fs-base">

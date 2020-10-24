@@ -38,20 +38,6 @@
   }
 }
 
-// Logo
-.site-logo {
-  display: flex;
-
-  .logo {
-    width: 50px;
-    height: 40px;
-    padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
-    background: var(--logo-bg);
-    fill: var(--logo-color);
-    border-radius: 3px;
-  }
-}
-
 // Search bar
 .crayons-header--search {
   max-width: 420px;

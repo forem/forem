@@ -23,6 +23,27 @@ RSpec.describe "admin/users", type: :request do
       get "/admin/users/#{user.id}"
       expect(response.body).to include(user.username)
     end
+
+    context "when a user is unregistered" do
+      it "renders a message stating that the user isn't registered" do
+        user.update_columns(registered: false)
+        get "/admin/users/#{user.id}"
+        expect(response.body).to include("@#{user.username} has not accepted their invitation yet.")
+      end
+
+      it "only displays limited information about the user" do
+        user.update_columns(registered: false)
+        get "/admin/users/#{user.id}"
+        expect(response.body).not_to include("Current Roles")
+      end
+    end
+
+    context "when a user is registered" do
+      it "renders the Admin User profile as expected" do
+        get "/admin/users/#{user.id}"
+        expect(response.body).to include("Current Roles")
+      end
+    end
   end
 
   describe "GET /admin/users/:id/edit" do

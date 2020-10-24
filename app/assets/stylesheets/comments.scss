@@ -522,6 +522,10 @@ a.header-link {
       &.commentable-hidden {
         top: calc(0.3vw + 8px);
       }
+      svg {
+        transform: translateY(3px);
+        fill: var(--card-color-tertiary);
+      }
     }
 
     .dropdown {
@@ -807,4 +811,15 @@ a.header-link {
 
 #response-templates-data {
   display: none;
+}
+
+.comments-settings__row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  grid-gap: var(--su-2);
+
+  &--subtitle {
+    color: var(--base-60);
+  }
 }
