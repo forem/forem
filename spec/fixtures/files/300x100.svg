@@ -1,0 +1,6 @@
+<svg width="300" height="100" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#dedede" stroke="#555" stroke-width="2" d="M2 2h296v96H2z"/>
+    <text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="#555">
+        300×100
+    </text>
+</svg>

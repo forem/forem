@@ -77,7 +77,7 @@
       </header>
 
       <% if user_signed_in? %>
-        <div id="homepage-feed"></div>
+        <div id="homepage-feed" style="min-height: 90vh"></div>
       <% else %>
         <%= render "stories/main_stories_feed" %>
       <% end %>

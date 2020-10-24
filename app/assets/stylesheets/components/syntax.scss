@@ -12,14 +12,14 @@
 }
 
 pre:not(.highlight),
-div.highlight {
+div.highlight,
+li pre.highlight,
+blockquote pre.highlight {
   background: var(--syntax-background-color);
   color: var(--syntax-text-color);
   font-size: 80%;
-  padding: var(--su-2);
   border-radius: var(--radius);
   margin: 0;
-  white-space: pre;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   overflow-wrap: initial;
@@ -28,9 +28,99 @@ div.highlight {
     font-size: 100%;
     padding: 0;
   }
+}
 
-  @media (min-width: $breakpoint-m) {
-    padding: var(--su-6);
+div.highlight {
+  position: relative;
+
+  // this a way to separate scroll of long code & icons in panel
+  .highlight {
+    overflow: auto;
+
+    padding: var(--su-2);
+
+    @media (min-width: $breakpoint-m) {
+      padding: var(--su-6);
+    }
+  }
+}
+
+.highlight__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  visibility: hidden;
+}
+
+.highlight:hover .highlight__panel {
+  visibility: visible;
+}
+
+.highlight__panel-action {
+  display: flex;
+  padding: var(--su-2);
+  overflow: hidden;
+  background: var(--base-60);
+  border-bottom-left-radius: var(--radius);
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  & + & {
+    margin-left: 1px;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.highlight-action {
+  display: none;
+  width: var(--su-4);
+  height: var(--su-4);
+  cursor: pointer;
+}
+
+.highlight-action--fullscreen-on {
+  display: block;
+}
+
+.fullscreen-code {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100vh;
+  background: var(--syntax-background-color);
+  color: var(--syntax-text-color);
+  overflow: auto;
+  visibility: hidden;
+  transform: scale(0.01);
+  transition: transform var(--transition-props),
+    visibility var(--transition-props);
+
+  div.highlight {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .highlight__panel {
+    position: fixed;
+  }
+
+  .highlight-action--fullscreen-on {
+    display: none;
+  }
+
+  .highlight-action--fullscreen-off {
+    display: block;
+  }
+
+  &.is-open {
+    visibility: visible;
+    transform: scale(1);
   }
 }
 

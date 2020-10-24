@@ -64,6 +64,13 @@
         <%= f.label :feed_url, for: "podcast_feed_url" %>
         <%= f.text_field :feed_url, class: "form-control" %>
       </div>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box "published", class: "crayons-checkbox" %>
+        <label class="crayons-field__label" for="published">
+          Published
+        </label>
+      </div>
+      <br>
       <%= f.submit class: "btn btn-primary" %>
     <% end %>
   </div>

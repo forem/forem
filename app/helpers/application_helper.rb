@@ -11,6 +11,8 @@ module ApplicationHelper
   )
   # rubocop:enable Performance/OpenStruct
 
+  LARGE_USERBASE_THRESHOLD = 1000
+
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
@@ -106,7 +108,11 @@ module ApplicationHelper
     end
   end
 
-  def any_selfserve_auth?
+  def invite_only_mode?
+    SiteConfig.invite_only_mode?
+  end
+
+  def any_enabled_auth_providers?
     authentication_enabled_providers.any?
   end
 
@@ -186,7 +192,7 @@ module ApplicationHelper
     release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"
   end
 
   def copyright_notice
@@ -277,14 +283,26 @@ module ApplicationHelper
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
 
+  def estimated_user_count
+    User.registered.estimated_count
+  end
+
+  def display_estimated_user_count?
+    estimated_user_count > LARGE_USERBASE_THRESHOLD
+  end
+
   # rubocop:disable Rails/OutputSafety
   def admin_config_label(method, content = nil)
     content ||= raw("<span>#{method.to_s.humanize}</span>")
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-      content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+      content = safe_join([content, raw("<span class='crayons-indicator crayons-indicator--critical'>Required</span>")])
     end
 
-    tag.label(content, class: "site-config__label", for: "site_config_#{method}")
+    tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
   end
   # rubocop:enable Rails/OutputSafety
+
+  def admin_config_description(content)
+    tag.p(content, class: "crayons-field__description") unless content.empty?
+  end
 end

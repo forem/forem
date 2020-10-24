@@ -24,95 +24,72 @@
     </a>
   <% end %>
 
-  <% if user_signed_in? %>
-    <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
-      Reading list <span id="reading-list-count" class="crayons-indicator"></span>
-    </a>
-  <% end %>
-  <a href="<%= listings_path %>" class="crayons-link crayons-link--block">
-    <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
-    Listings
-  </a>
-  <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
-    <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
-    Podcasts
-  </a>
-  <a href="<%= videos_path %>" class="crayons-link crayons-link--block">
-    <%= inline_svg_tag("twemoji/camera.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Videos") %>
-    Videos
-  </a>
-  <a href="<%= tags_path %>" class="crayons-link crayons-link--block">
-    <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
-    Tags
-  </a>
-
-  <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
-
-  <div class="hidden" id="main-nav-more">
-    <a href="/code-of-conduct" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Code of Conduct") %>
-      Code of Conduct
-    </a>
-    <a href="/faq" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/bulb.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
-      FAQ
-    </a>
-    <% if SiteConfig.shop_url.present? %>
-    <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/shopping.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Shop") %>
-      <%= community_name %> Shop
-    </a>
+  <div class="sidebar-navigation-links">
+    <% NavigationLink.ordered[0..4].each do |link| %>
+      <%= render "articles/sidebar_nav_link", link: link %>
     <% end %>
-    <a href="/sponsors" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sponsors") %>
-      Sponsors
-    </a>
-    <a href="/about" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("rainbowdev.svg", aria: true, width: 24, height: 24, class: "crayons-icon crayons-icon--default p-1", title: "About") %>
-      About
-    </a>
-    <a href="/privacy" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/smart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Privacy policy") %>
-      Privacy policy
-    </a>
-    <a href="/terms" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/look.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Terms of use") %>
-      Terms of use
-    </a>
-    <a href="/contact" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/contact.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Contact") %>
-      Contact
-    </a>
-    <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
-      <%= render partial: "layouts/social_media" %>
-    </div>
+
+    <% if NavigationLink.all.length > 5 %>
+      <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
+
+      <div class="hidden" id="main-nav-more">
+        <% NavigationLink.ordered[5..].each do |link| %>
+          <%= render "articles/sidebar_nav_link", link: link %>
+        <% end %>
+        <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
+          <%= render partial: "layouts/social_media" %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </nav>
 
-<nav class="sidebar-tags-browser mb-6 overflow-y-auto scrolling-touch" aria-label="Secondary sidebar nav">
-  <% if user_signed_in? %>
-    <header class="fs-xs color-base-50 ff-monospace fw-bold p-2">MY TAGS</header>
-    <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
-  <% end %>
-  <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
-    <header id="tag-separator" class="fs-xs color-base-50 ff-monospace fw-bold p-2">
-      <% if user_signed_in? %>
-        OTHER POPULAR TAGS
-      <% else %>
-        DESIGN YOUR EXPERIENCE
-      <% end %>
+<nav class="mb-6" aria-label="Secondary sidebar nav">
+<nav class="mb-6" aria-label="Secondary sidebar nav">
+  <% if user_signed_in? && current_user.following_tags_count.positive? %>
+    <header class="p-2 pr-0 flex items-center justify-between">
+      <h3 class="crayons-subtitle-3">My Tags</h3>
+      <a href="/dashboard/following_tags" class="crayons-btn crayons-btn--icon crayons-btn--ghost-dimmed" aria-label="Customize tag priority" title="Customize tag priority">
+        <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon") %>
+      </a>
     </header>
-    <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
-      <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-        <a class="crayons-link crayons-link--block" href="<%= tag_path(tag_array.second) %>">
-          #<%= tag_array.second %>
+    <div id="sidebar-nav-followed-tags" class="overflow-y-auto mb-2" style="max-height: 42vh;"></div>
+    <% elsif user_signed_in? %>
+     <header class="p-2 pr-0 flex items-center justify-between">
+       <h3 class="crayons-subtitle-3">Explore</h3>
+       <a href="<%= tags_path %>" class="fs-s crayons-link crayons-link--brand pr-2" title="Browse all tags">
+        All tags
         </a>
-        <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s crayons-btn--secondary_"
-          href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
-          data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
-          Follow
-        </a>
-      </div>
-    <% end %>
+      </header>
+      <div id="sidebar-nav-explore-tags" class="overflow-y-auto" style="max-height: 42vh">
+        <% Tag.where(supported: true).order(hotness_score: :desc).limit(5).pluck(:id, :name).each do |tag_array| %>
+          <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
+            <a class="crayons-link crayons-link--block py-2 px-2" href="<%= tag_path(tag_array.second) %>">
+              #<%= tag_array.second %>
+            </a>
+            <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s"
+              href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
+              data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
+              Follow
+            </a>
+        </div>
+      <% end %>
+    </div>
+    <% else %>
+      <h3 class="crayons-subtitle-3 p-2">Popular Tags</h3>
+      <div id="sidebar-nav-default-tags" class="overflow-y-auto" style="max-height: 42vh">
+        <% Tag.where(supported: true).order(hotness_score: :desc).limit(30).pluck(:id, :name).each do |tag_array| %>
+          <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
+            <a class="crayons-link crayons-link--block py-2 px-2" href="<%= tag_path(tag_array.second) %>">
+              #<%= tag_array.second %>
+            </a>
+            <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s"
+              href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
+              data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
+              Follow
+            </a>
+          </div>
+      <% end %>
+    </div>
+  <% end %>
 </nav>
