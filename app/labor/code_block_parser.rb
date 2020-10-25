@@ -37,6 +37,14 @@ module CodeBlockParser
     doc.to_html
   end
 
+  def add_tabindex_to_codeblock(html)
+    doc = Nokogiri::HTML.fragment(html)
+    doc.search("pre").each do |codeblock|
+      codeblock["tabindex"] = "0"
+    end
+    doc.to_html
+  end
+
   def add_control_class_to_codeblock(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("div.highlight").each do |codeblock|

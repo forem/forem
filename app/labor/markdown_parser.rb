@@ -37,6 +37,7 @@ class MarkdownParser
     html = wrap_all_images_in_links(html)
     html = add_control_class_to_codeblock(html)
     html = add_control_panel_to_codeblock(html)
+    html = add_tabindex_to_codeblock(html)
     html = add_fullscreen_button_to_panel(html)
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
