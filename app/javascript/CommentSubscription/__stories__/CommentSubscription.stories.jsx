@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, select } from '@storybook/addon-knobs/react';
+import { withKnobs, select } from '@storybook/addon-knobs';
 import {
   CommentSubscription,
   COMMENT_SUBSCRIPTION_TYPE,

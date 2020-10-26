@@ -1,8 +1,0 @@
-<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 360">
-    <circle cx="180" cy="180" r="156.28" stroke-width="6" stroke="#232323" stroke-miterlimit="10" fill="none"/>
-    <path stroke-width="9" fill="#d1d5ec" stroke="#232323" stroke-miterlimit="10" d="M180 106.54L91.63 229.46"/>
-    <path stroke-width="9" stroke="#232323" stroke-miterlimit="10" fill="none" d="M180 106.54l88.37 122.92"/>
-    <circle cx="180" cy="106.54" r="33.04" stroke-width="9.8" fill="#fbf395" stroke="#232323" stroke-miterlimit="10"/>
-    <path d="M301.39 229.46c1-18.33-14.73-33-33-33a33 33 0 100 66.09c18.21-.05 31.98-14.87 33-33.09z" fill="#78ccc8" stroke-width="9.8" stroke="#232323" stroke-miterlimit="10"/>
-    <path d="M124.65 229.46c1-18.33-14.73-33-33-33a33 33 0 100 66.09c18.2-.05 31.97-14.87 33-33.09z" fill="#4356a6" stroke-width="9.8" stroke="#232323" stroke-miterlimit="10"/>
-</svg>

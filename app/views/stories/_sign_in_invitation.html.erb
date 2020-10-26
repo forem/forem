@@ -1,24 +1,20 @@
-<div class="single-article single-article-small-pic feed-cta" id="in-feed-cta">
-  <div class="cta-container" id="cta-content">
-    <img class="secondary-logo" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
-         alt="Secondary <%= community_name %> logo" />
-
-    <h2>
-      <a href="/"><%= community_name %></a> is a community of <br />
-      <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
-    </h2>
-
-    <h3>
-      Create your profile to customize your experience and get involved.
-    </h3>
-
-    <div class="button-container">
-      <a href="/enter" class="cta cta-button" aria-label="Sign up.">
-        Join Now
-      </a>
-      <div class="feed-cta-sub">
-        <em>We require social login to prevent abuse.</em>
-      </div>
+<div class="authentication-feed__card" id="in-feed-cta">
+  <div class="authentication-feed__container">
+    <figure class="authentication-feed__image-container">
+      <img class="authentication-feed__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
+            alt="Secondary <%= community_name %> logo" />
+    </figure>
+    <div class="authentication-feed__content">
+      <h2 class="authentication-feed__title">
+        <%= render "shared/authentication_title" %>
+      </h2>
+      <p class="authentication-feed__description">
+        <%= render "shared/authentication_description" %>
+      </p>
     </div>
+  </div>
+
+  <div class="authentication-feed__actions">
+    <%= render "shared/authentication_actions" %>
   </div>
 </div>

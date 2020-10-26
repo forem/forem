@@ -3,32 +3,358 @@ require "rails_helper"
 RSpec.describe "Registrations", type: :request do
   let(:user) { create(:user) }
 
-  describe "GET /enter" do
+  describe "Log In" do
     context "when not logged in" do
-      it "shows the sign in page (with self-serve auth)" do
-        get "/enter"
-        expect(response.body).to include "Great to have you"
+      it "shows the sign in page with single sign on options" do
+        get sign_up_path
+
+        Authentication::Providers.enabled.each do |provider_name|
+          provider = Authentication::Providers.get!(provider_name)
+
+          expect(response.body).to include("Continue with #{provider.official_name}")
+        end
       end
 
-      it "shows the sign in text" do
-        get "/enter"
-        expect(response.body).to include "If you have a password"
+      it "only shows the single sign on options if they are present" do
+        allow(Authentication::Providers).to receive(:enabled).and_return([])
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
+
+        get sign_up_path
+
+        expect(response.body).not_to include("Have a password? Continue with your email address")
+      end
+    end
+
+    context "when email login is enabled in /admin/config" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(true)
       end
 
-      it "shows invite-only text if no self-serve" do
-        SiteConfig.authentication_providers = []
-        get "/enter"
-        expect(response.body).to include "If you have a password"
-        expect(response.body).not_to include "Sign in by social auth"
+      it "shows the sign in text for password based authentication" do
+        get sign_up_path
+
+        expect(response.body).to include("Have a password? Continue with your email address")
+      end
+    end
+
+    context "when email login is disabled in /admin/config" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
+      end
+
+      it "does not show the sign in text for password based authentication" do
+        get sign_up_path
+
+        expect(response.body).not_to include("Have a password? Continue with your email address")
       end
     end
 
     context "when logged in" do
-      it "redirects to /dashboard" do
+      it "redirects to main feed" do
         sign_in user
 
-        get "/enter"
-        expect(response).to redirect_to("/dashboard")
+        get sign_up_path
+        expect(response).to redirect_to("/?signin=true")
+      end
+    end
+  end
+
+  describe "Create Account" do
+    context "when email registration allowed" do
+      before { SiteConfig.allow_email_password_registration = true }
+
+      it "shows the sign in page with email option" do
+        get sign_up_path, params: { state: "new-user" }
+
+        expect(response.body).to include("Sign up with Email")
+      end
+
+      it "shows the sign in text for password based authentication" do
+        get sign_up_path, params: { state: "new-user" }
+
+        expect(response.body).to include("View more sign in options")
+      end
+    end
+
+    context "when email registration not allowed" do
+      before { SiteConfig.allow_email_password_registration = false }
+
+      it "does not show email sign up option" do
+        SiteConfig.allow_email_password_registration = false
+
+        get sign_up_path, params: { state: "new-user" }
+
+        expect(response.body).not_to include("Sign up with Email")
+      end
+    end
+
+    context "when email registration allowed and captcha required" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
+        allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
+      end
+
+      it "displays the captcha box on email signup page" do
+        get sign_up_path, params: { state: "email_signup" }
+
+        expect(response.body).to include("recaptcha-tag-container")
+      end
+    end
+
+    context "when user logged in" do
+      it "redirects to main feed" do
+        sign_in user
+
+        get sign_up_path
+        expect(response).to redirect_to("/?signin=true")
+      end
+    end
+
+    context "with the creator_onboarding feature flag" do
+      before do
+        Flipper.enable(:creator_onboarding)
+        SiteConfig.waiting_on_first_user = true
+      end
+
+      after do
+        Flipper.disable(:creator_onboarding)
+        SiteConfig.waiting_on_first_user = false
+      end
+
+      it "renders the creator onboarding form" do
+        get new_user_registration_path
+        expect(response.body).to include("Let's create an admin account for your community.")
+        expect(response.body).to include("Create admin account")
+      end
+    end
+  end
+
+  describe "GET /users/signup" do
+    context "when site is in waiting_on_first_user state" do
+      before do
+        SiteConfig.waiting_on_first_user = true
+        ENV["FOREM_OWNER_SECRET"] = "test"
+      end
+
+      after do
+        SiteConfig.waiting_on_first_user = false
+        ENV["FOREM_OWNER_SECRET"] = nil
+      end
+
+      it "auto-populates forem_owner_secret if included in querystring params" do
+        get new_user_registration_path(forem_owner_secret: ENV["FOREM_OWNER_SECRET"])
+        expect(response.body).not_to include("New Forem Secret")
+        expect(response.body).to include(ENV["FOREM_OWNER_SECRET"])
+      end
+
+      it "shows forem_owner_secret field if it's not included in querystring params" do
+        get new_user_registration_path
+        expect(response.body).to include("New Forem Secret")
+      end
+    end
+  end
+
+  describe "POST /users" do
+    def mock_recaptcha_verification
+      # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(RegistrationsController).to(
+        receive(:recaptcha_verified?).and_return(true),
+      )
+      # rubocop:enable RSpec/AnyInstance
+    end
+
+    context "when site is not configured to accept email registration" do
+      before do
+        SiteConfig.allow_email_password_registration = false
+      end
+
+      it "disallows communities where email registration is not allowed" do
+        expect { post "/users" }.to raise_error Pundit::NotAuthorizedError
+      end
+    end
+
+    context "when site is configured to accept email registration" do
+      before do
+        SiteConfig.allow_email_password_registration = true
+      end
+
+      it "does not raise disallowed if community is set to allow email" do
+        expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
+      end
+
+      it "does not create user with invalid params" do
+        post "/users"
+        expect(User.all.size).to be 0
+      end
+
+      it "creates user with valid params passed" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+
+      it "marks as registerd" do
+        post "/users", params:
+        { user: { name: "test #{rand(10)}",
+                  username: "haha_#{rand(10)}",
+                  email: "yoooo#{rand(100)}@yo.co",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.last.registered).to be true
+        expect(User.last.registered_at).not_to be nil
+      end
+
+      it "does not create user with password confirmation mismatch" do
+        post "/users", params:
+        { user: { name: "test #{rand(100)}",
+                  username: "haha_#{rand(100)}",
+                  email: "yoooo#{rand(100)}@yo.co",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000ooooooo" } }
+        expect(User.all.size).to be 0
+      end
+
+      it "does not create user with no email address" do
+        post "/users", params:
+        { user: { name: "test #{rand(10)}",
+                  username: "haha_#{rand(10)}",
+                  email: "",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 0
+      end
+    end
+
+    context "when site configured to accept email registration AND require captcha" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
+        allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
+      end
+
+      it "creates user when valid params passed and recaptcha completed" do
+        mock_recaptcha_verification
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+
+      it "does not create user when valid params passed BUT recaptcha incomplete" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 0
+        expect(response).to redirect_to("/users/sign_up?state=email_signup")
+
+        follow_redirect!
+        expect(response.body).to include("You must complete the recaptcha")
+      end
+    end
+
+    context "when site is in waiting_on_first_user state" do
+      before do
+        SiteConfig.waiting_on_first_user = true
+        ENV["FOREM_OWNER_SECRET"] = nil
+      end
+
+      after do
+        SiteConfig.waiting_on_first_user = false
+        ENV["FOREM_OWNER_SECRET"] = nil
+      end
+
+      it "does not raise disallowed" do
+        expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
+      end
+
+      it "creates user with valid params passed" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+
+      it "makes user super admin and config admin" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
+      end
+
+      it "creates super admin with valid params in FOREM_OWNER_SECRET scenario" do
+        ENV["FOREM_OWNER_SECRET"] = "test"
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    forem_owner_secret: "test",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
+      end
+
+      it "does not authorize request in FOREM_OWNER_SECRET scenario if not passed correct value" do
+        ENV["FOREM_OWNER_SECRET"] = "test"
+        expect do
+          post "/users", params:
+            { user: { name: "test #{rand(10)}",
+                      username: "haha_#{rand(10)}",
+                      email: "yoooo#{rand(100)}@yo.co",
+                      password: "PaSSw0rd_yo000",
+                      forem_owner_secret: "not_test",
+                      password_confirmation: "PaSSw0rd_yo000" } }
+          expect(User.first).to be nil
+        end.to raise_error Pundit::NotAuthorizedError
+      end
+    end
+
+    context "with the creator_onboarding feature flag" do
+      before do
+        Flipper.enable(:creator_onboarding)
+        SiteConfig.waiting_on_first_user = true
+      end
+
+      after do
+        Flipper.disable(:creator_onboarding)
+        SiteConfig.waiting_on_first_user = false
+      end
+
+      it "creates user with valid params passed" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+
+      it "makes user super admin and config admin" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
       end
     end
   end

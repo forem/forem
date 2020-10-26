@@ -21,7 +21,7 @@ tasks:
       redis-server &
       /home/gitpod/elasticsearch-7.5.2/bin/elasticsearch &
     init: >
-      cp config/sample_application.yml config/application.yml &&
+      cp .env_sample .env &&
       gem install solargraph &&
       bin/setup
     command: >

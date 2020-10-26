@@ -143,29 +143,35 @@
     }
   }
 
+  &__top {
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
   &__body {
     flex: 1 0 auto;
     position: relative;
     outline: none;
     display: flex;
     flex-direction: column;
+    border-radius: 0 0 var(--radius) var(--radius);
 
     &__field {
       flex: 1 auto;
       font-size: var(--fs-l);
-      font-family: var(--ff-accent);
+      font-family: var(--ff-monospace);
       overflow: hidden;
     }
   }
 
   &__toolbar {
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     background: var(--base-0);
-    padding: var(--su-2) var(--article-padding-x);
-    margin: calc(var(--article-padding-y) * -1)
-      calc(var(--article-padding-x) * -1) var(--su-6)
-      calc(var(--article-padding-x) * -1);
+    padding: var(--su-2) var(--content-padding-x);
+    margin: calc(var(--content-padding-y) * -1)
+      calc(var(--content-padding-x) * -1) var(--su-6)
+      calc(var(--content-padding-x) * -1);
 
     > :first-child {
       margin-left: calc(var(--su-2) * -1);
@@ -255,10 +261,8 @@
   }
 
   &__tagname {
-    font-family: var(--ff-accent);
     color: var(--base-90);
-    letter-spacing: -0.05em;
-    font-weight: bold;
+    font-weight: var(--fw-medium);
   }
 
   &__tagoptionrow {
@@ -292,5 +296,19 @@
 
   &__tagsoptionsbottomrow {
     display: none;
+  }
+}
+
+// Styling for drag'n'drop functionality...
+
+.drop-area {
+  &--active {
+    background: var(--accent-brand-a10);
+    box-shadow: inset 0 0 0 1px var(--accent-brand);
+
+    // ideally this one shouldn't be there, but I'm not sure how else we could handle that right now...
+    .crayons-article-form__toolbar {
+      opacity: 0;
+    }
   }
 }

@@ -18,6 +18,7 @@ import ChatChannelSettingsSection from './ChatChannelSettingsSection';
 
 export default class ChatChannelSettings extends Component {
   static propTypes = {
+    handleLeavingChannel: PropTypes.func.isRequired,
     activeMembershipId: PropTypes.number.isRequired,
   };
 
@@ -308,7 +309,7 @@ export default class ChatChannelSettings extends Component {
     if (actionStatus) {
       const response = await leaveChatChannelMembership(currentMembership.id);
       if (response.success) {
-        this.updateChannelDetails();
+        this.props.handleLeavingChannel(currentMembership.id);
       } else {
         this.setState({
           successMessages: null,

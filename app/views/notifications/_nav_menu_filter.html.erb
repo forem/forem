@@ -1,0 +1,38 @@
+<section class="notifications-filter__dropdown s:flex-col">
+  <% if @organizations.present? %>
+    <div class="p-2 s:inline-flex">
+      <select id="notifications-filter__select" class="crayons-select">
+        <option value="/notifications"><%= @user.name %></option>
+        <% @organizations.each do |org| %>
+          <option value="/notifications/org/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %></option>
+        <% end %>
+      </select>
+    </div>
+  <% end %>
+
+  <div class="s:inline-flex">
+    <nav class="crayons-tabs notifications-filter__tabs <%= "hidden" if params[:org_id].present? %>">
+      <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].blank? %>" href="/notifications">
+        All
+      </a>
+      <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
+        Comments
+      </a>
+      <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
+        Posts
+      </a>
+    </nav>
+    <% if @organizations.present? %>
+      <% @organizations.each do |org| %>
+        <nav class="crayons-tabs notifications-filter__tabs <%= "hidden" unless params[:org_id].to_i == org.id %>">
+          <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
+            All
+          </a>
+          <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
+            Comments
+          </a>
+        </nav>
+      <% end %>
+    <% end %>
+  </div>
+</section>

@@ -29,7 +29,7 @@ rails console
 1. load the user object of for _bob_ (or whatever the username is)
 
 ```ruby
-Loading development environment (Rails 5.2.3)
+Loading development environment (Rails 6.0.3)
 [1] pry(main)> user = User.find_by(username: "bob")
 [2] pry(main)> user.add_role(:super_admin)
 [3] pry(main)> user.save!

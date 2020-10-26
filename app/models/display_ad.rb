@@ -1,6 +1,8 @@
 class DisplayAd < ApplicationRecord
+  resourcify
+
   belongs_to :organization
-  has_many :display_ad_events
+  has_many :display_ad_events, dependent: :destroy
 
   validates :organization_id, presence: true
   validates :placement_area, presence: true,

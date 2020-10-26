@@ -19,6 +19,17 @@ module Admin
                    saw_onboarding: false,
                    editor_version: :v2,
                    registered: false)
+      flash[:success] = "The invite has been sent to the user's email."
+      redirect_to admin_invitations_path
+    end
+
+    def destroy
+      @invitation = User.where(registered: false).find(params[:id])
+      if @invitation.destroy
+        flash[:success] = "The invitation has been deleted."
+      else
+        flash[:danger] = @invitation.errors_as_sentence
+      end
       redirect_to admin_invitations_path
     end
   end

@@ -59,6 +59,28 @@
     },
     "username": {
       "type": "keyword"
+    },
+    "profile_fields": {
+      "type": "nested",
+      "properties": {
+        "name": {
+          "type": "keyword"
+        },
+        "value": {
+          "type": "keyword"
+        }
+      }
+    },
+    "custom_profile_fields": {
+      "type": "nested",
+      "properties": {
+        "name": {
+          "type": "keyword"
+        },
+        "value": {
+          "type": "keyword"
+        }
+      }
     }
   }
 }

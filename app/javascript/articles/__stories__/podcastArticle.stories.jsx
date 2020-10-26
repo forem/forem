@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
+import { withKnobs, object, text, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import { Article } from '..';
 import {

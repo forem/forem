@@ -13,15 +13,7 @@
 
       <% if decorated_comment.low_quality %>
         <div class="low-quality-comment-marker">
-          <%= image_tag(cl_image_path(SiteConfig.mascot_image_url,
-                                      type: "fetch",
-                                      width: 50,
-                                      height: 50,
-                                      crop: "imagga_scale",
-                                      quality: "auto",
-                                      flags: "progressive",
-                                      fetch_format: "auto",
-                                      sign_url: true), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
+          <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_image_url, width: 50, height: 50, crop: "imagga_scale"), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
           Comment marked as low quality/non-constructive by the community
           <a href="/code-of-conduct">View code of conduct</a>
         </div>
@@ -34,7 +26,7 @@
 
       <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
         <a href="/<%= comment.user.username %>">
-          <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(width: 50) %>" alt="<%= comment.user.username %> profile image" />
+          <img class="profile-pic" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" />
           <span class="comment-username">
             <span class="comment-username-inner">
               <%= comment.user.name %>
@@ -55,7 +47,7 @@
         <% end %>
         <%= render "comments/comment_date", decorated_comment: decorated_comment %>
         <button class="dropbtn" aria-label="Toggle dropdown menu">
-          <%= image_tag("overflow-horizontal.svg", class: "dropdown-icon", alt: "Dropdown menu") %>
+          <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "dropdown-icon", title: "Dropdown menu") %>
         </button>
         <div class="dropdown">
           <div class="crayons-dropdown p-1 z-30 right-1 left-1 s:right-0 s:left-auto fs-base">
@@ -84,9 +76,9 @@
         <span class="current-user-actions hidden" style="display:none">
         </span>
         <% if comment.depth < 2 || is_childless %>
-          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form" rel="nofollow">REPLY</a>
+          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form" rel="nofollow">Reply</a>
         <% else %>
-          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication" rel="nofollow">THREAD</a>
+          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication" rel="nofollow">Thread</a>
         <% end %>
       </div>
     </div>

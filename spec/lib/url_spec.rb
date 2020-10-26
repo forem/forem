@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe URL, type: :lib do
   before do
     allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
-    allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("dev.to")
+    allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("test.forem.cloud")
+    SiteConfig.app_domain = "dev.to"
   end
 
   describe ".protocol" do
@@ -13,8 +14,8 @@ RSpec.describe URL, type: :lib do
   end
 
   describe ".domain" do
-    it "returns the value of APP_DOMAIN env variable" do
-      expect(described_class.domain).to eq(ApplicationConfig["APP_DOMAIN"])
+    it "returns the value of SiteConfig" do
+      expect(described_class.domain).to eq(SiteConfig.app_domain)
     end
   end
 

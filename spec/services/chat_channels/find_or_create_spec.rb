@@ -5,7 +5,7 @@ RSpec.describe ChatChannels::FindOrCreate, type: :service do
   let(:usernames) { users.map(&:username).sort }
   let(:direct_slug) { usernames.join("/") }
   let(:other_slug) { "New Channel-#{rand(100_000).to_s(26)}" }
-  let(:contrived_name) { "Direct chat between " + usernames.join(" and ") }
+  let(:contrived_name) { "Direct chat between #{usernames.join(' and ')}" }
   let(:open_slug) { "Test channel-#{rand(100_000).to_s(26)}" }
   let(:chat_channel) do
     ChatChannel.create(

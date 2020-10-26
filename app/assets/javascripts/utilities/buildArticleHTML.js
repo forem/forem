@@ -4,43 +4,64 @@
 
 function buildArticleHTML(article) {
   if (article && article.class_name === 'PodcastEpisode') {
-    return (
-      '<div class="single-article single-article-small-pic single-article-single-podcast">\
-      <div class="small-pic">\
-       <a href="/' +
-      article.podcast.slug +
-      '" class="small-pic-link-wrapper">\
-         <img src="' +
-      article.podcast.image_url +
-      '" alt="' +
-      article.podcast.title +
-      ' image">\
-       </a>\
-       </div>\
-       <a href="' +
-      article.path +
-      '" class="small-pic-link-wrapper index-article-link" id="article-link-' +
-      article.id +
-      '">\
-        <div class="content">\
-         <h3><span class="tag-identifier">podcast</span>' +
-      article.title +
-      '</h3>\
-        </div>\
-       </a>\
-       <h4><a href="/' +
-      article.podcast.slug +
-      '">' +
-      article.podcast.title +
-      '</a></h4>\
-       </div>'
-    );
+    return `<article class="crayons-story crayons-podcast-episode mb-2">
+        <div class="crayons-story__body flex flex-start">
+          <a href="${article.podcast.slug}" class="crayons-podcast-episode__cover">
+            <img src="${article.podcast.image_url}" alt="${article.podcast.title}" />
+          </a>
+          <div class="pt-2 flex-1">
+            <p class="crayons-podcast-episode__author">
+              ${article.podcast.title}
+            </p>
+            <h2 class="crayons-podcast-episode__title crayons-story__title mb-0">
+              <a href="${article.path}" id="article-link-${article.id}">
+                ${article.podcast.title}
+              </a>
+            </h2>
+          </div>
+        </div>
+      </article>`;
   }
 
   if (article) {
     var container = document.getElementById('index-container');
+
+    var flareTag = '';
+    var currentTag = '';
+    if (container) {
+      currentTag = JSON.parse(container.dataset.params).tag;
+    }
+    if (article.flare_tag && currentTag !== article.flare_tag.name) {
+      flareTag =
+        "<a href='/t/" +
+        article.flare_tag.name +
+        "' class='crayons-tag' style='background:" +
+        article.flare_tag.bg_color_hex +
+        ';color:' +
+        article.flare_tag.text_color_hex +
+        "'><span className='crayons-tag__prefix'>#</span>" +
+        article.flare_tag.name +
+        '</a>';
+    }
+    if (article.class_name === 'PodcastEpisode') {
+      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>";
+    }
+    if (article.class_name === 'Comment') {
+      flareTag = "<span class='crayons-story__flare-tag'>comment</span>";
+    }
+    if (article.class_name === 'User') {
+      flareTag =
+        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>";
+    }
+
     var tagString = '';
-    var tagList = article.tag_list || article.cached_tag_list_array;
+    var tagList = article.tag_list || article.cached_tag_list_array || [];
+    if (flareTag) {
+      tagList = tagList.filter(function (tag) {
+        return tag !== article.flare_tag.name;
+      });
+      tagString += flareTag;
+    }
     if (tagList) {
       tagList.forEach(function buildTagString(t) {
         tagString =
@@ -62,35 +83,9 @@ function buildArticleHTML(article) {
       commentsDisplay =
         '<a href="' +
         article.path +
-        '#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost-dimmed crayons-btn--icon-left "><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>' +
+        '#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left "><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>' +
         commentsCount +
         '<span class="hidden s:inline">&nbsp;comments</span></a>';
-    }
-
-    var flareTag = '';
-    var currentTag = '';
-    if (container) {
-      currentTag = JSON.parse(container.dataset.params).tag;
-    }
-    if (article.flare_tag && currentTag !== article.flare_tag.name) {
-      flareTag =
-        "<span class='crayons-story__flare-tag' style='background:" +
-        article.flare_tag.bg_color_hex +
-        ';color:' +
-        article.flare_tag.text_color_hex +
-        "'>#" +
-        article.flare_tag.name +
-        '</span>';
-    }
-    if (article.class_name === 'PodcastEpisode') {
-      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>";
-    }
-    if (article.class_name === 'Comment') {
-      flareTag = "<span class='crayons-story__flare-tag'>comment</span>";
-    }
-    if (article.class_name === 'User') {
-      flareTag =
-        "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>";
     }
 
     var rc = article.public_reactions_count;
@@ -101,7 +96,7 @@ function buildArticleHTML(article) {
       reactionsDisplay =
         '<a href="' +
         article.path +
-        '" class="crayons-btn crayons-btn--s crayons-btn--ghost-dimmed crayons-btn--icon-left"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"/></svg>' +
+        '" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"/></svg>' +
         reactionsCount +
         '<span class="hidden s:inline">&nbsp;reactions</span></a>';
     }
@@ -292,7 +287,6 @@ function buildArticleHTML(article) {
       '" id="article-link-' +
       article.id +
       '">' +
-      flareTag +
       filterXSS(article.title) +
       '</a></h2>\
             <div class="crayons-story__tags">' +

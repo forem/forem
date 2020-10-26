@@ -1,4 +1,6 @@
 class ProfileField < ApplicationRecord
+  include ActsAsProfileField
+
   # Key names follow the Rails form helpers
   enum input_type: {
     text_field: 0,
@@ -7,14 +9,16 @@ class ProfileField < ApplicationRecord
     color_field: 3
   }
 
-  validates :label, presence: true, uniqueness: { case_sensitive: false }
-  validates :active, inclusion: { in: [true, false] }
+  enum display_area: {
+    header: 0,
+    left_sidebar: 1
+  }
 
-  scope :active, -> { where(active: true) }
+  belongs_to :profile_field_group, optional: true
 
-  def attribute_name
-    label.titleize.delete(" ").underscore
-  end
+  validates :display_area, presence: true
+  validates :input_type, presence: true
+  validates :show_in_onboarding, inclusion: { in: [true, false] }
 
   def type
     return :boolean if check_box?

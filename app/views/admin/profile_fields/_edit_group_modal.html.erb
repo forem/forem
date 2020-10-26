@@ -1,0 +1,50 @@
+<div onclick="showEditGroupModal('<%= group_name %>')" class="color-accent-warning-darker">
+  Edit group
+</div>
+
+<div id="edit-group-<%= group_name %>-modal" class="hidden">
+  <div class="crayons-modal crayons-modal--s">
+    <div class="crayons-modal__box">
+      <header class="crayons-modal__box__header">
+        <h2>Edit Group <%= group_name %></h2>
+        <button type="button" onclick="hideEditGroupModal('<%= group_name %>')" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
+          <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
+          </svg>
+        </button>
+      </header>
+      <div class="crayons-modal__box__body">
+        <div class="form-group grid p-6 mb-6 gap-1">
+          <%= form_for [:admin, group] do |form| %>
+            <div class="form-group">
+              <%= form.label :name %>
+              <%= form.text_field :name, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= form.label :description %>
+              <%= form.text_field :description, class: "form-control" %>
+            </div>
+            <%= form.submit class: "btn btn-primary" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="crayons-modal__overlay"></div>
+  </div>
+</div>
+
+<script>
+  function showEditGroupModal(group_name) {
+    const confirmationModal = document.getElementById(`edit-group-${group_name}-modal`);
+    if (confirmationModal) {
+      confirmationModal.classList.remove("hidden");
+    }
+  }
+
+  function hideEditGroupModal(group_name) {
+    const confirmationModal = document.getElementById(`edit-group-${group_name}-modal`);
+    if (confirmationModal) {
+      confirmationModal.classList.add("hidden");
+    }
+  }
+</script>

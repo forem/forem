@@ -1,5 +1,6 @@
+
 import PropTypes from 'prop-types';
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import { createPortal } from 'preact/compat';
 import { toggleFlagUserModal, FlagUserModal } from '../../packs/flagUserModal';
 import { formatDate } from './util';
@@ -10,6 +11,17 @@ export default class SingleArticle extends Component {
     const { id, path, toggleArticle } = this.props;
 
     toggleArticle(id, path);
+  };
+
+  tagsFormat = (tag, key) => {
+    if (tag) {
+      return (
+        <span className="crayons-tag" key={key}>
+          <span className="crayons-tag__prefix">#</span>
+          {tag}
+        </span>
+      );
+    }
   };
 
   render() {
@@ -24,14 +36,7 @@ export default class SingleArticle extends Component {
       path,
     } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
-      if (tag) {
-        return (
-          <span className="crayons-tag" key={key}>
-            <span className="crayons-tag__prefix">#</span>
-            {tag}
-          </span>
-        );
-      }
+      this.tagsFormat(tag, key);
     });
 
     const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
@@ -49,7 +54,7 @@ export default class SingleArticle extends Component {
     }
 
     return (
-      <>
+      <Fragment>
         {modContainer &&
           createPortal(
             <FlagUserModal moderationUrl={path} authorId={user.id} />,
@@ -63,7 +68,11 @@ export default class SingleArticle extends Component {
         >
           <span className="article-title">
             <header>
-              <h3 className="fs-base fw-bold lh-tight">{title}</h3>
+              <h3 className="fs-base fw-bold lh-tight">
+                <a className="article-title-link" href={path}>
+                  {title}
+                </a>
+              </h3>
             </header>
             {tags}
           </span>
@@ -81,7 +90,7 @@ export default class SingleArticle extends Component {
             id={`article-iframe-${id}`}
           />
         </button>
-      </>
+      </Fragment>
     );
   }
 }

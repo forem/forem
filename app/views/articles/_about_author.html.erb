@@ -1,11 +1,11 @@
 <div>
   <p class="mb-4 color-base-60 fs-s">
-    Posted on <time datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time> by:
+    Posted on <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) if @article.published_timestamp.present? %> by:
   </p>
 
   <div class="flex">
     <a href="<%= URL.user(@user) %>" class="crayons-avatar crayons-avatar--2xl shrink-0 mr-4">
-      <img class="crayons-avatar__image" src="<%= ProfileImage.new(@user).get(width: 180) %>" alt="<%= @user.username %> profile" />
+      <img class="crayons-avatar__image" src="<%= Images::Profile.call(@user.profile_image_url, length: 180) %>" alt="<%= @user.username %> profile" />
     </a>
     <div>
       <h3 class="fs-l s:fs-xl m:fs-2xl l:fs-3xl fw-medium"><a href="<%= URL.user(@user) %>" class="crayons-link"><%= @user.name %></a></h3>

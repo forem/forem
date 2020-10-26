@@ -1,13 +1,9 @@
 class Reaction < ApplicationRecord
-  include Searchable
   BASE_POINTS = {
     "vomit" => -50.0,
     "thumbsup" => 5.0,
     "thumbsdown" => -10.0
   }.freeze
-
-  SEARCH_SERIALIZER = Search::ReactionSerializer
-  SEARCH_CLASS = Search::Reaction
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsup thumbsdown vomit].freeze
   PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
@@ -27,6 +23,8 @@ class Reaction < ApplicationRecord
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
+  scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
+  scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -41,8 +39,6 @@ class Reaction < ApplicationRecord
   after_create_commit :record_field_test_event
   after_commit :async_bust
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
-  after_commit :index_to_elasticsearch, if: :indexable?, on: %i[create update]
-  after_commit :remove_from_elasticsearch, if: :indexable?, on: [:destroy]
 
   class << self
     def count_for_article(id)
@@ -57,7 +53,7 @@ class Reaction < ApplicationRecord
     end
 
     def cached_any_reactions_for?(reactable, user, category)
-      class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
+      class_name = reactable.instance_of?(ArticleDecorator) ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
         "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
@@ -179,7 +175,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return if user&.any_admin?
+    return if user&.any_admin? || user&.id == SiteConfig.mascot_user_id
 
     negative? && !user.trusted
   end

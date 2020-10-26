@@ -12,13 +12,14 @@
 }
 
 .live-chat {
-  height: calc(100vh - 56px);
+  /* height: calc(100vh - 56px); */
 
   &.live-chat--iossafari {
-    height: calc(100vh - 190px);
+    height: calc(100vh - 56px);
   }
 
   overflow-y: hidden;
+  /* height: calc(100 * var(--vh) - var(--header-height)); */
 }
 
 .live-chat {
@@ -28,13 +29,13 @@
 
 .chat {
   display: flex;
-  height: calc(100vh - var(--header-height));
+  height: calc(100 * var(--vh) - var(--header-height));
   position: relative;
   overflow-x: hidden;
   overflow-y: hidden;
 
   &.chat--iossafari {
-    height: calc(100vh - 201px);
+    height: 100%;
   }
 }
 
@@ -243,7 +244,9 @@
   font-size: var(--fs-base);
   flex-grow: 1;
   height: 300px;
-  overflow-y: auto;
+  // Setting it to scroll so there is no jump when it's auto. Also, since it's chat,
+  // it will almost always need scrolling right away.
+  overflow-y: scroll;
   overflow-x: hidden;
   text-align: left;
   overscroll-behavior-y: contain;
@@ -297,7 +300,7 @@
   @media screen and (max-width: 426px) {
     padding: 10px;
     min-width: 50%;
-    width: calc(100% - 16px);
+    width: calc(100%);
     position: fixed;
     height: 100%;
     margin-left: 0;
@@ -445,7 +448,7 @@
 
 .activechatchannel__activecontentuserdetails {
   margin-top: 20px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   font-size: 0.9em;
 
   .key {
@@ -748,7 +751,7 @@
     vertical-align: 0.05em;
     max-width: 100%;
     line-height: 1.4em;
-    font-family: var(--ff-accent);
+    font-family: var(--ff-monospace);
   }
 }
 
@@ -816,7 +819,7 @@
   height: inherit;
   align-items: stretch;
   position: relative;
-  height: 40px;
+  height: auto;
   padding: var(--su-4);
 
   textarea {
@@ -840,13 +843,8 @@
   position: absolute;
   top: -27px;
   left: 35px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   @include themeable(color, theme-color, $dark-gray);
-}
-
-.CodeMirror {
-  padding: 12px;
-  font-size: 0.9em;
 }
 
 .cursorelement {
@@ -1038,7 +1036,17 @@
 
 .composer-textarea__edit {
   height: 80px;
+  max-height: 8rem;
   margin-bottom: var(--su-4);
+}
+
+.composer-textarea {
+  height: auto;
+  margin-bottom: var(--su-4);
+  min-height: 2.5rem;
+  resize: vertical;
+  max-height: 8rem;
+  overflow: hidden;
 }
 
 .composer-btn-group {
@@ -1206,6 +1214,52 @@
 
   .admin-emoji-button {
     width: 10%;
+  }
+}
+
+.connect-draw {
+  margin-top: 30px;
+  .draw-title {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .connect-draw__colors {
+    z-index: 2;
+    margin: 5px 20px;
+    text-align: center;
+    pointer-events: all;
+  }
+
+  .connect-draw__color {
+    height: 30px;
+    width: 30px;
+    margin-right: 10px;
+    border-radius: 50%;
+    border: none;
+  }
+  .color:hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+
+  .color:focus {
+    outline: 0;
+  }
+  .connect-draw__draw-area {
+    display: grid;
+
+    .connect-draw__draw {
+      border: 1px solid black;
+      background-color: white;
+      justify-self: center;
+    }
+    .connect-draw__actions {
+      margin: 20px 0px;
+      display: flex;
+      button {
+        margin-left: 10px;
+      }
+    }
   }
 }
 

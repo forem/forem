@@ -8,8 +8,8 @@ RSpec.describe "Admin::Users", type: :request do
   let(:article) { create(:article, user: user) }
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
-  let(:ghost) { create(:user, username: "ghost", github_username: "Ghost") }
   let(:organization) { create(:organization) }
+  let(:rewarder) { create(:user) }
 
   before do
     sign_in super_admin
@@ -60,11 +60,6 @@ RSpec.describe "Admin::Users", type: :request do
       url: Faker::Internet.url
     }
     GithubRepo.create(params)
-  end
-
-  def call_ghost
-    ghost
-    post "/admin/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
   end
 
   context "when merging users" do
@@ -137,6 +132,28 @@ RSpec.describe "Admin::Users", type: :request do
       expect(user.roles.last.name).to eq("comment_banned")
     end
 
+    it "selects super admin role when user was banned" do
+      user.add_role :banned
+      user.reload
+
+      params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
+      patch "/admin/users/#{user.id}/user_status", params: params
+
+      expect(user.roles.count).to eq(1)
+      expect(user.roles.last.name).to eq("super_admin")
+    end
+
+    it "does not allow non-super-admin to doll out admin" do
+      super_admin.remove_role(:super_admin)
+      super_admin.add_role(:super_admin)
+      super_admin.reload
+
+      params = { user: { user_status: "Super Admin", note_for_current_role: "they deserve it for some reason" } }
+      patch "/admin/users/#{user.id}/user_status", params: params
+
+      expect(user.has_role?(:super_admin)).not_to be false
+    end
+
     it "creates a general note on the user" do
       put "/admin/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
       expect(Note.last.content).to eq("general note about whatever")
@@ -146,24 +163,6 @@ RSpec.describe "Admin::Users", type: :request do
       create_list(:credit, 5, user: user)
       put "/admin/users/#{user.id}", params: { user: { remove_credits: "3" } }
       expect(user.credits.size).to eq(2)
-    end
-  end
-
-  context "when deleting user and converting content to ghost" do
-    it "raises a 'record not found' error after deletion" do
-      call_ghost
-      expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
-    end
-
-    it "reassigns comment and article content to ghost account" do
-      create(:article, user: user)
-      call_ghost
-      articles = ghost.articles
-      expect(articles.count).to eq(2)
-      expect(ghost.comments.count).to eq(1)
-      expect(ghost.comments.last.path).to include("ghost")
-      expect(articles.last.path).to include("ghost")
-      expect(articles.last.elasticsearch_doc.dig("_source", "path")).to include("ghost")
     end
   end
 
@@ -189,18 +188,18 @@ RSpec.describe "Admin::Users", type: :request do
     before do
       create_mutual_follows
       create_mention
-      create(:badge_achievement, rewarder_id: 1, rewarding_context_message: "yay", user_id: user.id)
+      create(:badge_achievement, rewarder: rewarder, rewarding_context_message: "yay", user: user)
     end
 
     it "raises a 'record not found' error after deletion" do
       sidekiq_perform_enqueued_jobs do
-        post "/admin/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+        post "/admin/users/#{user.id}/full_delete"
       end
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "expect flash message" do
-      post "/admin/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
+      post "/admin/users/#{user.id}/full_delete"
       expect(request.flash["success"]).to include("fully deleted")
     end
   end

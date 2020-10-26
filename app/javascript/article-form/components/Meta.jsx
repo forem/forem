@@ -14,7 +14,7 @@ export const Meta = ({
   switchHelpContext,
 }) => {
   return (
-    <div className="text-padding">
+    <div className="crayons-article-form__top text-padding drop-area">
       <ArticleCoverImage
         mainImage={mainImage}
         onMainImageUrlChange={onMainImageUrlChange}

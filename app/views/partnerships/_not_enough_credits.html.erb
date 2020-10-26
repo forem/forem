@@ -1,5 +1,5 @@
 <h4>What next?</h4>
-<h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" /> Purchase Credits for @<%= org.slug %></h3>
+<h3><img src="<%= Images::Profile.call(org.profile_image_url, length: 90) %>" /> Purchase Credits for @<%= org.slug %></h3>
 <% if org.credits.unspent.size > 0 %>
   <div style="font-size: 0.88em;">
     <em>This organization account has <%= org.credits.unspent.size %> credits available</em>

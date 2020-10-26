@@ -1,19 +1,7 @@
+/* global Runtime */
+
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
-
-  function isClipboardSupported() {
-    return (
-      typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-    );
-  }
-
-  function isNativeAndroidDevice() {
-    return (
-      navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== 'undefined' &&
-      AndroidBridge !== null
-    );
-  }
 
   function removeClass(className) {
     return (element) => element.classList.remove(className);
@@ -40,28 +28,11 @@ function initializeCommentDropdown() {
     }
   }
 
-  function execCopyText() {
-    showAnnouncer();
-    document.execCommand('copy');
-  }
-
   function copyText() {
     const inputValue = document.getElementById('article-copy-link-input').value;
-    if (isNativeAndroidDevice()) {
-      AndroidBridge.copyToClipboard(inputValue);
+    Runtime.copyToClipboard(inputValue).then(() => {
       showAnnouncer();
-    } else if (isClipboardSupported()) {
-      navigator.clipboard
-        .writeText(inputValue)
-        .then(() => {
-          showAnnouncer();
-        })
-        .catch((err) => {
-          execCopyText();
-        });
-    } else {
-      execCopyText();
-    }
+    });
   }
 
   function shouldCloseDropdown(event) {
@@ -69,8 +40,7 @@ function initializeCommentDropdown() {
       event.target.matches('.dropdown-icon') ||
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
-      event.target.matches('clipboard-copy input') ||
-      event.target.matches('clipboard-copy svg') ||
+      document.getElementById('article-copy-icon').contains(event.target) ||
       event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }
@@ -113,6 +83,13 @@ function initializeCommentDropdown() {
       return;
     }
 
+    // Android native apps have enhanced sharing capabilities for Articles
+    const articleShowMoreClicked = button.id === 'article-show-more-button';
+    if (articleShowMoreClicked && Runtime.isNativeAndroid('shareText')) {
+      AndroidBridge.shareText(location.href);
+      return;
+    }
+
     finalizeAbuseReportLink(
       dropdownContent.querySelector('.report-abuse-link-wrapper'),
     );
@@ -146,7 +123,10 @@ function initializeCommentDropdown() {
   }
 
   function addDropdownListener(dropdown) {
-    dropdown.addEventListener('click', dropdownFunction);
+    if (!dropdown.getAttribute('has-dropdown-listener')) {
+      dropdown.addEventListener('click', dropdownFunction);
+      dropdown.setAttribute('has-dropdown-listener', 'true');
+    }
   }
 
   setTimeout(function addListeners() {

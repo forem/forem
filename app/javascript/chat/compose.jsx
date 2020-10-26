@@ -1,109 +1,127 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
+import { useState, useEffect, useMemo } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import Textarea from 'preact-textarea-autosize';
 
-export default class Chat extends Component {
-  static propTypes = {
-    handleKeyDown: PropTypes.func.isRequired,
-    handleKeyDownEdit: PropTypes.func.isRequired,
-    handleSubmitOnClick: PropTypes.func.isRequired,
-    handleSubmitOnClickEdit: PropTypes.func.isRequired,
-    handleMention: PropTypes.func.isRequired,
-    handleKeyUp: PropTypes.func.isRequired,
-    startEditing: PropTypes.bool.isRequired,
-    markdownEdited: PropTypes.bool.isRequired,
-    editMessageMarkdown: PropTypes.string.isRequired,
-    handleEditMessageClose: PropTypes.func.isRequired,
+const Compose = ({
+  handleKeyDown,
+  handleKeyDownEdit,
+  handleSubmitOnClick,
+  handleSubmitOnClickEdit,
+  handleMention,
+  handleKeyUp,
+  startEditing,
+  markdownEdited,
+  editMessageMarkdown,
+  handleEditMessageClose,
+  handleFilePaste,
+  activeChannelName,
+}) => {
+  const [value, setValue] = useState('');
+
+  useEffect(() => {
+    if (!markdownEdited && startEditing) {
+      setValue(editMessageMarkdown);
+    }
+  }, [markdownEdited, startEditing, editMessageMarkdown]);
+
+  const onKeyDown = (event) => {
+    const shiftPressed = event.shiftKey;
+    if (startEditing) handleKeyDownEdit(event);
+    else handleKeyDown(event);
+
+    if (event.keyCode === 13 && !shiftPressed) {
+      event.preventDefault();
+      setValue('');
+    }
   };
 
-  componentDidUpdate() {
-    const { editMessageMarkdown, markdownEdited, startEditing } = this.props;
-    const textarea = document.getElementById('messageform');
-    if (!markdownEdited && startEditing) {
-      textarea.value = editMessageMarkdown;
-    }
-  }
+  const placeholder = useMemo(
+    () =>
+      startEditing ? "Let's connect" : `Write message to ${activeChannelName}`,
+    [startEditing, activeChannelName],
+  );
+  const label = useMemo(
+    () => (startEditing ? "Let's connect" : 'Compose a message'),
+    [startEditing],
+  );
+  const saveButtonText = useMemo(() => (startEditing ? 'Save' : 'Send'), [
+    startEditing,
+  ]);
 
-  messageCompose = () => {
-    const {
-      handleSubmitOnClickEdit,
-      handleKeyDownEdit,
-      handleEditMessageClose,
-      handleMention,
-      handleKeyUp,
-    } = this.props;
-
-    return (
-      <div className="composer-container__edit">
-        <textarea
-          className="crayons-textfield composer-textarea composer-textarea__edit"
+  return (
+    <div className="compose__outer__container">
+      <div
+        className={
+          startEditing ? 'composer-container__edit' : 'messagecomposer'
+        }
+      >
+        <Textarea
+          className={
+            startEditing
+              ? 'crayons-textfield composer-textarea__edit'
+              : 'crayons-textfield composer-textarea'
+          }
           id="messageform"
-          placeholder="Let's connect"
-          onKeyDown={handleKeyDownEdit}
+          data-testid="messageform"
+          placeholder={placeholder}
+          onKeyDown={onKeyDown}
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
+          onPaste={handleFilePaste}
           maxLength="1000"
-          aria-label="Let's connect"
+          value={value}
+          onInput={(event) => setValue(event.target.value)}
+          aria-label={label}
         />
         <div className="composer-btn-group">
           <button
             type="button"
-            className="composer-submit composer-submit__edit crayons-btn"
-            onClick={handleSubmitOnClickEdit}
-          >
-            Save
-          </button>
-          <div
-            role="button"
-            className="composer-close__edit crayons-btn crayons-btn--secondary"
-            onClick={handleEditMessageClose}
-            tabIndex="0"
-            onKeyUp={(e) => {
-              if (e.keyCode === 13) handleEditMessageClose();
+            className={
+              startEditing
+                ? 'composer-submit composer-submit__edit crayons-btn'
+                : 'crayons-btn composer-submit'
+            }
+            onClick={(event) => {
+              if (startEditing) handleSubmitOnClickEdit(event);
+              else handleSubmitOnClick(event);
+
+              setValue('');
             }}
           >
-            Close
-          </div>
+            {saveButtonText}
+          </button>
+          {startEditing && (
+            <button
+              type="button"
+              className="composer-close__edit crayons-btn crayons-btn--secondary"
+              onClick={(event) => {
+                handleEditMessageClose(event);
+                setValue('');
+              }}
+            >
+              Close
+            </button>
+          )}
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-  textAreaSection = () => {
-    const {
-      handleSubmitOnClick,
-      handleKeyDown,
-      handleMention,
-      handleKeyUp,
-    } = this.props;
-    return (
-      <div className="messagecomposer">
-        <textarea
-          className="crayons-textfield composer-textarea"
-          id="messageform"
-          placeholder="Write message..."
-          onKeyDown={handleKeyDown}
-          onKeyPress={handleMention}
-          onKeyUp={handleKeyUp}
-          maxLength="1000"
-          aria-label="Compose a message"
-        />
-        <button
-          type="button"
-          className="crayons-btn composer-submit"
-          onClick={handleSubmitOnClick}
-        >
-          Send
-        </button>
-      </div>
-    );
-  };
+Compose.propTypes = {
+  handleKeyDown: PropTypes.func.isRequired,
+  handleKeyDownEdit: PropTypes.func.isRequired,
+  handleSubmitOnClick: PropTypes.func.isRequired,
+  handleSubmitOnClickEdit: PropTypes.func.isRequired,
+  handleMention: PropTypes.func.isRequired,
+  handleKeyUp: PropTypes.func.isRequired,
+  startEditing: PropTypes.bool.isRequired,
+  markdownEdited: PropTypes.bool.isRequired,
+  editMessageMarkdown: PropTypes.string.isRequired,
+  handleEditMessageClose: PropTypes.func.isRequired,
+  handleFilePaste: PropTypes.func.isRequired,
+  activeChannelName: PropTypes.string.isRequired,
+};
 
-  render() {
-    const { startEditing } = this.props;
-    return (
-      <div className="compose__outer__container">
-        {!startEditing ? this.textAreaSection() : this.messageCompose()}
-      </div>
-    );
-  }
-}
+export default Compose;

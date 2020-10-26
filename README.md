@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Ruby-v2.7.1-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
-    <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
+    <img src="https://img.shields.io/badge/Rails-v6.0.3-brightgreen.svg" alt="rails version">
   </a>
   <a href="https://travis-ci.com/thepracticaldev/dev.to">
     <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to">
@@ -26,7 +26,7 @@
   <a href="https://www.codetriage.com/thepracticaldev/dev.to">
     <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge">
   </a>
-  <img src="https://badgen.net/dependabot/thepracticaldev/dev.to?icon=dependabot" alt="Dependabot Badge">
+  <img src="https://badgen.net/dependabot/forem/forem?icon=dependabot" alt="Dependabot Badge">
   <a href="https://gitpod.io/from-referrer/">
     <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
   </a>
@@ -154,6 +154,7 @@ A more complete overview of our stack is available in
 - [@fdoxyz](https://dev.to/fdoxyz)
 - [@msarit](https://dev.to/msarit)
 - [@jdoss](https://dev.to/jdoss)
+- [@cmgorton](https://dev.to/coffeecraftcode)
 
 ## Vulnerability disclosure
 
@@ -161,6 +162,10 @@ Forem is the open source software which powers [DEV](https://dev.to).
 
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
+
+## Acknowledgments
+
+Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the usage of their emojis.
 
 ## License
 

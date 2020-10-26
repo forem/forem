@@ -1,0 +1,22 @@
+<% @ungrouped_profile_fields.each do |field| %>
+  <div class="row my-3">
+    <div class="card w-100">
+      <%= render partial: "admin/configs/card_header",
+                 locals: {
+                   header: field.label,
+                   state: "collapse",
+                   target: "#{field.attribute_name}_container",
+                   expanded: "false"
+                 } %>
+      <div id="<%= field.attribute_name %>_container" class="card-body collapse hide" aria-labelledby="<%= field.attribute_name %>_container">
+        <div class="form-group grid p-6 mb-6 gap-1">
+          <%= form_for [:admin, field] do |form| %>
+            <%= render "profile_field_form", form: form, group: nil %>
+            <%= form.submit class: "btn btn-primary" %>
+          <% end %>
+          <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

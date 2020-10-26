@@ -128,6 +128,20 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         expect(response.status).to eq(401)
       end
     end
+
+    it "does not send pusher notifications" do
+      allow(Pusher).to receive(:trigger)
+
+      user.add_role(:super_admin)
+      membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
+
+      post "/chat_channel_memberships/remove_membership", params: {
+        chat_channel_id: chat_channel.id,
+        membership_id: membership.id
+      }
+
+      expect(Pusher).not_to have_received(:trigger)
+    end
   end
 
   describe "PUT /chat_channel_memberships/:id" do
@@ -211,7 +225,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
   end
 
-  describe "POST/ /leave_membership/:id" do
+  describe "PATCH /leave_membership/:id" do
     context "when user is logged in" do
       it "leaves chat channel" do
         allow(Pusher).to receive(:trigger).and_return(true)
@@ -224,6 +238,18 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
         expect(response.status).to eq(200)
         expect(membership.reload.status).to eq("left_channel")
+      end
+
+      it "does not send Pusher notifications" do
+        allow(Pusher).to receive(:trigger)
+        chat_channel.add_users([second_user])
+        membership = ChatChannelMembership.last
+
+        sign_in second_user
+
+        patch "/chat_channel_memberships/leave_membership/#{membership.id}"
+
+        expect(Pusher).not_to have_received(:trigger)
       end
     end
 

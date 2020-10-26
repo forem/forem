@@ -7,8 +7,18 @@ title: Windows
 ## Installing prerequisites
 
 These prerequisites assume you're working on a `64-bit Windows 10` operating
-system machine updated to _version 2004, Build 19041_ or _higher_. To check your
-Windows version, press `Win Logo key` + `R`, type `winver`, then click OK.
+system machine
+
+- updated to _version 1903, Build 18362_ or _higher_ for **x64 system**
+- updated to _version 2004, Build 19041_ or _higher_ for **ARM64 system**
+
+For further information regarding system requirements, head over to the
+[Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/install-win10#requirements)
+or
+[Microsoft's blog on extending WSL 2 Support](https://devblogs.microsoft.com/commandline/wsl-2-support-is-coming-to-windows-10-versions-1903-and-1909/).
+
+To check your Windows version, press `Win Logo key` + `R`, type `winver`, then
+click OK.
 
 There are other ways to get Forem running on lower versions, but we recommend a
 complete WSL 2 installation.
@@ -191,7 +201,7 @@ To install Elasticsearch perform the following steps:
    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
    shasum -a 512 -c elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
-   tar -xzf elasticsearch-7.5.2-linux-x86_64.tar.gz
+   tar -xzf elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
    ```
 
 2. Next, switch to the correct directory with:
@@ -246,24 +256,22 @@ To install Elasticsearch perform the following steps:
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys.
+   - Take a look at `.env_sample`. This file lists all the `ENV` variables we
+     use and provides a fake default for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
    - The [backend guide](/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
-     1. Create `config/application.yml` by copying from the provided template
-        (ie. with bash:
-        `cp config/sample_application.yml config/application.yml`). This is a
-        personal file that is ignored in git.
+     1. Create `.env` by copying from the provided template (ie. with bash:
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      1. Obtain the development variable and apply the key you wish to
         enter/replace. ie:
 
      ```shell
-     GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
-     GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
+     export GITHUB_KEY="SOME_REAL_SECURE_KEY_HERE"
+     export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
    - If you are missing `ENV` variables on bootup, the
@@ -273,7 +281,8 @@ To install Elasticsearch perform the following steps:
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. Run `bin/setup`.
+1. After ensuring that Elasticsearch, the PostgreSQL server, and the Redis
+   server are running, run `bin/setup`.
 
    > The `bin/setup` script is responsible for installing a varienty of
    > dependencies. One can find it inside the `bin` folder by the name of
@@ -329,8 +338,7 @@ There are currently two work-arounds.
 
    1. `docker run -d --name selenium-hub -p 4444:4444 selenium/hub:3.141.59-20200409`
    2. `CH=$(docker run --rm --name=ch --link selenium-hub:hub -v /dev/shm:/dev/shm selenium/node-chrome:3.141.59-20200409)`
-   3. Add `SELENIUM_URL: "http://localhost:4444/wd/hub"` to your
-      `application.yml`
+   3. Add `export SELENIUM_URL="http://localhost:4444/wd/hub"` to your `.env`
    4. Run your System test!
 
 2. Port forward with `socats` (more info needed).

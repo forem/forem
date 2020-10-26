@@ -44,10 +44,10 @@ export const Article = ({
 
   return (
     <article
-      className={`crayons-story cursor-pointer ${
-        isFeatured && 'crayons-story--featured'
+      className={`crayons-story cursor-pointer${
+        isFeatured ? ' crayons-story--featured' : ''
       }`}
-      id={isFeatured && 'featured-story-marker'}
+      id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
       data-content-user-id={article.user_id}
       data-testid={isFeatured ? 'featured-article' : `article-${article.id}`}
     >
@@ -77,7 +77,7 @@ export const Article = ({
 
           <div className="crayons-story__indention">
             <ContentTitle article={article} />
-            <TagList tags={article.tag_list} />
+            <TagList tags={article.tag_list} flare_tag={article.flare_tag} />
 
             {article.class_name === 'Article' && (
               // eslint-disable-next-line no-underscore-dangle

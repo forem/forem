@@ -2,7 +2,7 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(@page.path) %>" />
   <meta name="description" content="<%= @page.title %> — <%= community_qualified_name %>">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url(@page.path) %>" />
@@ -20,7 +20,7 @@
 
 <% if @page.template == "contained" %>
 
-  <div class="crayons-layout crayons-layout--limited">
+  <div class="crayons-layout crayons-layout--limited-l">
     <div class="crayons-card text-styles text-padding">
       <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= @page.title %></h1>
 

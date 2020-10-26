@@ -65,7 +65,7 @@ module Admin
 
     def podcast_params
       allowed_params = %i[
-        title feed_url
+        title feed_url published
       ]
       params.require(:podcast).permit(allowed_params)
     end

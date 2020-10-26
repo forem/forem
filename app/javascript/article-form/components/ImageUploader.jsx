@@ -1,23 +1,11 @@
+/* global Runtime */
+
 import { h } from 'preact';
 import { useReducer } from 'preact/hooks';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { ClipboardButton } from './ClipboardButton';
 import { Button, Spinner } from '@crayons';
-
-function isNativeAndroid() {
-  return (
-    navigator.userAgent === 'DEV-Native-android' &&
-    typeof AndroidBridge !== 'undefined' &&
-    AndroidBridge !== null
-  );
-}
-
-function isClipboardSupported() {
-  return (
-    typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-  );
-}
 
 const ImageIcon = () => (
   <svg
@@ -108,25 +96,11 @@ export const ImageUploader = () => {
       'image-markdown-copy-link-input',
     );
 
-    if (isNativeAndroid()) {
-      AndroidBridge.copyToClipboard(imageMarkdownInput.value);
+    Runtime.copyToClipboard(imageMarkdownInput.value).then(() => {
       dispatch({
         type: 'show_copied_image_message',
       });
-    } else if (isClipboardSupported()) {
-      navigator.clipboard
-        .writeText(imageMarkdownInput.value)
-        .then(() => {
-          dispatch({
-            type: 'show_copied_image_message',
-          });
-        })
-        .catch((_err) => {
-          execCopyText();
-        });
-    } else {
-      execCopyText();
-    }
+    });
   }
 
   function handleInsertionImageUpload(e) {
@@ -146,14 +120,6 @@ export const ImageUploader = () => {
     dispatch({
       type: 'upload_image_success',
       payload: { insertionImageUrls: response.links },
-    });
-  }
-
-  function execCopyText() {
-    imageMarkdownInput.setSelectionRange(0, imageMarkdownInput.value.length);
-    document.execCommand('copy');
-    dispatch({
-      type: 'show_copied_image_message',
     });
   }
 
@@ -180,7 +146,6 @@ export const ImageUploader = () => {
             multiple
             accept="image/*"
             data-max-file-size-mb="25"
-            tabIndex="-1"
             aria-label="Upload an image"
           />
         </Button>
