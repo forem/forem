@@ -147,9 +147,11 @@ module Admin
         else
           SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
         end
-      end
 
-      toggle_email_password_authentication
+        if key == "allow_both_email_signup_and_login"
+          toggle_email_password_authentication
+        end
+      end
 
       redirect_to admin_config_path, notice: "Site configuration was successfully updated."
     end

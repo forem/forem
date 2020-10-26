@@ -141,9 +141,9 @@
                 </h3>
                 <div class="form-group">
                   <div class="crayons-field--checkbox">
-                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" }, class: "crayons-checkbox" %>
+                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, disabled: !SiteConfig.allow_both_email_signup_and_login, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" }, class: "crayons-checkbox" %>
                     <div class="mt-0">
-                      <%= admin_config_label :invite_only_mode %>
+                      <%= admin_config_label :"invite_only_mode #{!SiteConfig.allow_both_email_signup_and_login ? "<em>(disabled)</em>" : ""}" %>
                       <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
                     </div>
                   </div>
