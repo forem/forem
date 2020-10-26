@@ -4,12 +4,15 @@ module Admin
     include ApplicationHelper
 
     def index
-      @event = Event.new(
-        location_name: "#{URL.domain}/live",
-        location_url: app_url,
-        description_markdown: "*Description* *Pre-requisites:* *Bio*",
-      )
-      @events = Event.order(starts_at: :desc)
+      @events = Event.all.order(starts_at: :desc)
+    end
+
+    def new
+      @event = Event.new
+    end
+
+    def edit
+      @event = Event.find(params[:id])
     end
 
     def create
@@ -17,22 +20,21 @@ module Admin
       @events = Event.order(starts_at: :desc)
       if @event.save
         flash[:success] = "Successfully created event: #{@event.title}"
-        redirect_to(action: :index)
+        redirect_to admin_events_path
       else
         flash[:danger] = @event.errors.full_messages
-        render "index.html.erb"
+        render new_admin_event_path
       end
     end
 
     def update
       @event = Event.find(params[:id])
-      @events = Event.order(starts_at: :desc)
       if @event.update(event_params)
         flash[:success] = "#{@event.title} was successfully updated"
-        redirect_to "/admin/events"
+        redirect_to admin_event_path
       else
         flash[:danger] = @event.errors.full_messages
-        render "index.html.erb"
+        render :edit
       end
     end
 
