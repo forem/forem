@@ -141,9 +141,9 @@
                 </h3>
                 <div class="form-group">
                   <div class="crayons-field--checkbox">
-                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, disabled: !SiteConfig.allow_both_email_signup_and_login, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" }, class: "crayons-checkbox" %>
+                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, disabled: !SiteConfig.allow_both_email_signup_and_login, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" }, class: "crayons-checkbox #{!SiteConfig.allow_both_email_signup_and_login ? 'cursor-disabled' : ''}" %>
                     <div class="mt-0">
-                      <%= admin_config_label :"invite_only_mode #{!SiteConfig.allow_both_email_signup_and_login ? "<em>(disabled)</em>" : ""}" %>
+                      <%= admin_config_label :invite_only_mode %>
                       <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
                     </div>
                   </div>
@@ -178,11 +178,17 @@
                     <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
                   </figure>
                   <div class="config-authentication__item--container">
-                    <div style="display: flex; align-content: center; justify-content: space-between; align-items: center;">
-                      <div style="display: flex; align-content: center; justify-content: space-between; align-items: center;">
-                        <p class="config-authentication__item--label fw-medium">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                      <div>
+                        <p class="config-authentication__item--label fw-medium <%= SiteConfig.allow_both_email_signup_and_login ? 'pb-0' : '' %>">
                           Email address
                         </p>
+                        <% if SiteConfig.allow_both_email_signup_and_login %>
+                          <div class="mb-5">
+                            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                            <small class="crayons-field__description">Enabled</small>
+                          </div>
+                        <% end %>
                       </div>
                       <button
                         class="crayons-btn crayons-btn--secondary"
@@ -235,11 +241,13 @@
                           </div>
                         </div>
                         <div class="mt-6">
-                          <button
-                            class="crayons-btn crayons-btn--danger"
-                            data-action="click->config#activateEmailAuthModal">
-                            Disable
-                          </button>
+                          <% if SiteConfig.allow_both_email_signup_and_login %>
+                            <button
+                              class="crayons-btn crayons-btn--danger"
+                              data-action="click->config#activateEmailAuthModal">
+                              Undo
+                            </button>
+                          <% end %>
                           <button
                             class="crayons-btn crayons-btn--secondary"
                             data-action="click->config#hideEmailAuthSettings">

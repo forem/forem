@@ -125,3 +125,21 @@ label {
   flex-direction: column;
   gap: var(--su-4);
 }
+
+.admin-config-checkmark {
+  opacity: 100;
+  width: var(--su-5);
+  height: var(--su-5);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-success);
+  border-radius: 100%;
+  border: 2px solid var(--base-inverted);
+  padding: 2px;
+  color: var(--base-inverted);
+}
+
+.cursor-disabled {
+  cursor: not-allowed;
+}

@@ -143,7 +143,7 @@ module Constants
         placeholder: "0"
       },
       invite_only_mode: {
-        description: "Only users invited by email can join this community.",
+        description: "Only users invited by email can join this community. To use this, you must enable email address registration.",
         placeholder: ""
       },
       jobs_url: {
