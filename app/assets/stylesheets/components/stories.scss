@@ -41,9 +41,9 @@
   }
 
   &__hidden-navigation-link {
-    position: absolute;
+    pointer-events: none;
     opacity: 0;
-    z-index: -1;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
