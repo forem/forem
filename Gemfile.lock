@@ -754,7 +754,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     staccato (0.5.3)
-    stackprof (0.2.15)
+    stackprof (0.2.16)
     store_attribute (0.8.0)
       activerecord (>= 5.0)
     storext (3.1.0)
