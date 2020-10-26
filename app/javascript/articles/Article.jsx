@@ -52,7 +52,7 @@ export const Article = ({
       data-testid={isFeatured ? 'featured-article' : `article-${article.id}`}
       role="link"
       tabIndex="0"
-      aria-aria-labelledby={`article-link-${article.id}`}
+      aria-labelledby={`article-link-${article.id}`}
       onKeyDown={(event) => {
         if (event.code === 'Enter') {
           if (event.metaKey || event.ctrlKey) {
