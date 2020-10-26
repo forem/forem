@@ -357,7 +357,6 @@ Rails.application.routes.draw do
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     get "/future", to: redirect("devteam/the-future-of-dev-160n")
-    get "/forem", to: redirect("devteam/for-empowering-community-2k6h")
 
     # Settings
     post "users/update_language_settings" => "users#update_language_settings"
