@@ -533,7 +533,7 @@ GEM
       activesupport (>= 3.0.0)
     pundit-matchers (1.6.0)
       rspec-rails (>= 3.0.0)
-    pusher (1.4.1)
+    pusher (1.4.2)
       httpclient (~> 2.8)
       multi_json (~> 1.15)
       pusher-signature (~> 0.1.8)
