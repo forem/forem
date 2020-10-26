@@ -185,7 +185,9 @@ module ApplicationHelper
   end
 
   def community_qualified_name
-    "#{community_name} Community"
+    return "#{community_name} #{SiteConfig.collective_noun}" unless SiteConfig.collective_noun_disabled
+
+    community_name
   end
 
   def release_adjusted_cache_key(path)
