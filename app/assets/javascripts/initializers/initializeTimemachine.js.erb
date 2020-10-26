@@ -1,6 +1,6 @@
-//= require timemachine.js
-
 <% if Rails.env.test? %>
+  //= require timemachine.js
+
   // Ensure that locale time in JavaScript matches the Timezone on
   // our server during testing
   timemachine.config({
