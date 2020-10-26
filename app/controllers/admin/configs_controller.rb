@@ -115,8 +115,6 @@ module Admin
         facebook_key
         facebook_secret
         invite_only_mode
-        allow_email_password_registration
-        allow_email_password_login
         allow_both_email_signup_and_login
         require_captcha_for_email_password_registration
         primary_brand_color_hex
@@ -218,6 +216,7 @@ module Admin
       else
         SiteConfig.allow_email_password_registration = false
         SiteConfig.allow_email_password_login = false
+        SiteConfig.invite_only_mode = false
       end
     end
 

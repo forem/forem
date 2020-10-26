@@ -8,6 +8,11 @@ const emailAuthSettingsSection = document.querySelector(
   '#email-auth-settings-section',
 );
 const modalAnchor = document.querySelector('.admin-config-modal-anchor');
+const emailAuthModalTitle = 'Disable email address registration';
+const emailAuthModalBody =
+  '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><br /><p>However, people who have already created an account using their email address can continue to login.</p>';
+const emailAuthModalBodyInviteOnly =
+  '<p>If you disable email address as a registration option, people cannot create an account with their email address. This will also disable <strong>invite-only mode</strong>.</p><br /><p>However, people who have already created an account using their email address can continue to login.</p>';
 
 const adminConfigModal = (
   title,
@@ -95,8 +100,10 @@ export default class ConfigController extends Controller {
   activateEmailAuthModal() {
     event.preventDefault();
     modalAnchor.innerHTML = adminConfigModal(
-      'Disable email address registration',
-      '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><br /><p>However, people who have already created an account using their email address can continue to login.</p>',
+      emailAuthModalTitle,
+      this.inviteOnlyModeTarget.checked
+        ? emailAuthModalBodyInviteOnly
+        : emailAuthModalBody,
       'Confirm',
       'disableEmailAuth',
       'Cancel',
