@@ -109,6 +109,24 @@ RSpec.describe "Registrations", type: :request do
         expect(response).to redirect_to("/?signin=true")
       end
     end
+
+    context "with the creator_onboarding feature flag" do
+      before do
+        Flipper.enable(:creator_onboarding)
+        SiteConfig.waiting_on_first_user = true
+      end
+
+      after do
+        Flipper.disable(:creator_onboarding)
+        SiteConfig.waiting_on_first_user = false
+      end
+
+      it "renders the creator onboarding form" do
+        get new_user_registration_path
+        expect(response.body).to include("Let's create an admin account for your community.")
+        expect(response.body).to include("Create admin account")
+      end
+    end
   end
 
   describe "GET /users/signup" do
@@ -304,6 +322,39 @@ RSpec.describe "Registrations", type: :request do
                       password_confirmation: "PaSSw0rd_yo000" } }
           expect(User.first).to be nil
         end.to raise_error Pundit::NotAuthorizedError
+      end
+    end
+
+    context "with the creator_onboarding feature flag" do
+      before do
+        Flipper.enable(:creator_onboarding)
+        SiteConfig.waiting_on_first_user = true
+      end
+
+      after do
+        Flipper.disable(:creator_onboarding)
+        SiteConfig.waiting_on_first_user = false
+      end
+
+      it "creates user with valid params passed" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+
+      it "makes user super admin and config admin" do
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.first.has_role?(:super_admin)).to be true
+        expect(User.first.has_role?(:single_resource_admin, Config)).to be true
       end
     end
   end

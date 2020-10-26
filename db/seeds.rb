@@ -164,7 +164,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   )
 
   user.add_role(:super_admin)
-  user.add_role(:single_resource_admin)
+  user.add_role(:single_resource_admin, Config)
 end
 
 ##############################################################################
@@ -371,6 +371,13 @@ seeder.create_if_none(ChatChannel) do
       slug: chan,
     )
   end
+
+  # This channel is hard-coded in a few places
+  ChatChannel.create!(
+    channel_name: "Tag Moderators",
+    channel_type: "open",
+    slug: "tag-moderators",
+  )
 
   direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
   Message.create!(

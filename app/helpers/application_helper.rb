@@ -11,6 +11,16 @@ module ApplicationHelper
   )
   # rubocop:enable Performance/OpenStruct
 
+  LARGE_USERBASE_THRESHOLD = 1000
+
+  SUBTITLES = {
+    "week" => "Top posts this week",
+    "month" => "Top posts this month",
+    "year" => "Top posts this year",
+    "infinity" => "All posts",
+    "latest" => "Latest posts"
+  }.freeze
+
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
@@ -44,19 +54,11 @@ module ApplicationHelper
   end
 
   def title_with_timeframe(page_title:, timeframe:, content_for: false)
-    sub_titles = {
-      "week" => "Top posts this week",
-      "month" => "Top posts this month",
-      "year" => "Top posts this year",
-      "infinity" => "All posts",
-      "latest" => "Latest posts"
-    }
-
-    if timeframe.blank? || sub_titles[timeframe].blank?
+    if timeframe.blank? || SUBTITLES[timeframe].blank?
       return content_for ? title(page_title) : page_title
     end
 
-    title_text = "#{page_title} - #{sub_titles.fetch(timeframe)}"
+    title_text = "#{page_title} - #{SUBTITLES.fetch(timeframe)}"
     content_for ? title(title_text) : title_text
   end
 
@@ -279,6 +281,14 @@ module ApplicationHelper
   def sanitize_and_decode(str)
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
+  end
+
+  def estimated_user_count
+    User.registered.estimated_count
+  end
+
+  def display_estimated_user_count?
+    estimated_user_count > LARGE_USERBASE_THRESHOLD
   end
 
   # rubocop:disable Rails/OutputSafety
