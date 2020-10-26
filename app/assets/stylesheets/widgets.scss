@@ -291,6 +291,13 @@
 .sidebar-nav-element {
   display: block;
   position: relative;
+
+  a {
+    display: block;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+  }
+
   @media screen and (min-width: $breakpoint-m) {
     .sidebar-nav-link-follow {
       display: none;
