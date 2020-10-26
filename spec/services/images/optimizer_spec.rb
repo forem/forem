@@ -31,7 +31,8 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class).to have_received(:cloudinary)
     end
 
-    it "calls cloudinary if imgproxy's key and salt is missing" do
+    it "calls cloudinary if imgproxy's environment variables aren't provided" do
+      allow(ApplicationConfig).to receive(:[]).with("IMGPROXY_ENDPOINT").and_return(nil)
       allow(Imgproxy).to receive(:config).and_return(Imgproxy::Config.new)
       described_class.call(image_url, service: :imgproxy)
       expect(described_class).to have_received(:cloudinary)
