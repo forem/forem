@@ -13,6 +13,11 @@
     box-shadow: 0 0 0 1px var(--card-secondary-border);
   }
 
+  &--elevated {
+    box-shadow: 0 0 0 1px var(--card-secondary-border), 0 1px 3px var(--base-a5),
+      0 3px 9px var(--base-a5);
+  }
+
   &__header {
     padding: var(--su-3) var(--su-4);
     border-bottom: 1px solid var(--body-bg);

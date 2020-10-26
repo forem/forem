@@ -35,7 +35,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
 
     visit "/notifications"
 
-    expect(page).to have_css("div.single-notification")
+    expect(page).to have_css("div.spec-notification")
     click_button("heart")
 
     expect(page).to have_css("img.reacted-emoji")
@@ -49,7 +49,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
     follow = leslie.follow(alex)
     Notification.send_new_follower_notification_without_delay(follow, is_read: true)
     visit "/notifications"
-    expect(page).to have_css("div.single-notification")
+    expect(page).to have_css("div.spec-notification")
     click_button("Follow back")
     expect(page).to have_text("Following")
   end
@@ -77,7 +77,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
       sidekiq_perform_enqueued_jobs
 
       visit "/notifications"
-      expect(page).to have_css("div.single-notification")
+      expect(page).to have_css("div.spec-notification")
 
       interact_with_each_emojis
       click_link("Reply")
