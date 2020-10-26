@@ -241,7 +241,8 @@
                           </div>
                         </div>
                         <div class="mt-6">
-                          <% if SiteConfig.allow_both_email_signup_and_login %>
+                          <% if SiteConfig.allow_both_email_signup_and_login &&
+                                !SiteConfig.invite_only_mode %>
                             <button
                               class="crayons-btn crayons-btn--danger"
                               data-action="click->config#activateEmailAuthModal">
