@@ -33,15 +33,16 @@ as any relevant images for UI changes._
 
 ## Added tests?
 
-- [ ] yes
-- [ ] no, because they aren't needed
-- [ ] no, because I need help
+- [ ] Yes
+- [ ] No, and this is why: _please replace this line with details on why tests
+      have not been included_
+- [ ] I need help with writing tests
 
 ## Added to documentation?
 
-- [ ] docs.forem.com
-- [ ] readme
-- [ ] no documentation needed
+- [ ] Docs.forem.com
+- [ ] README
+- [ ] No documentation needed
 
 ## [optional] Are there any post deployment tasks we need to perform?
 
