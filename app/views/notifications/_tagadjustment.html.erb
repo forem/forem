@@ -15,9 +15,9 @@
         <%= removal ? "Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community." : "Mods felt this tag represented your article." %>
       </p>
       <div class="crayons-card crayons-card--secondary p-4 mb-4">
-        <p>
+        <p class="color-base-70">
           <strong>Reason for action:</strong>
-          <%= data["reason_for_adjustment"] %>
+          <em><%= data["reason_for_adjustment"] %></em>
         </p>
       </div>
       <% if removal %>

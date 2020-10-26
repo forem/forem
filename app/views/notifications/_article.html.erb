@@ -32,7 +32,7 @@
         </a>
 
         <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{json_data['article']['updated_at']}-#{json_data['article']['id']}" do %>
-          <footer class="pt-1 comment-actions flex border-0 border-t-1 border-base-10 border-solid">
+          <footer class="comment-actions notification__actions">
             <button
               class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s reaction-like reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "like") ? "reacted" : "" %>"
               data-reactable-id="<%= json_data["article"]["id"] %>"
