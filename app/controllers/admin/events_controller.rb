@@ -4,7 +4,7 @@ module Admin
     include ApplicationHelper
 
     def index
-      @events = Event.all.order(starts_at: :desc).page(params[:page]).per(20)
+      @events = Event.order(starts_at: :desc).page(params[:page]).per(20)
     end
 
     def new
