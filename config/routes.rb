@@ -103,6 +103,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[index show edit update] do
         member do
           post "banish"
+          post "export_data"
           post "full_delete"
           patch "user_status"
           post "merge"
