@@ -88,12 +88,12 @@
     "@storybook/addon-a11y": "^6.0.22",
     "@storybook/addon-actions": "^6.0.26",
     "@storybook/addon-knobs": "^6.0.26",
-    "@storybook/addon-links": "^6.0.26",
+    "@storybook/addon-links": "^6.0.27",
     "@storybook/addon-notes": "^5.3.21",
     "@storybook/addon-storyshots": "^6.0.26",
     "@storybook/addon-storysource": "^6.0.26",
     "@storybook/addons": "^6.0.26",
-    "@storybook/preact": "^6.0.26",
+    "@storybook/preact": "^6.0.27",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/preact": "^2.0.0",
     "@testing-library/preact-hooks": "^1.1.0",
@@ -132,7 +132,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "@babel/core": "^7.11.4",
+    "@babel/core": "^7.12.3",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "^7.10.4",

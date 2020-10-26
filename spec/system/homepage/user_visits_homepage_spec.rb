@@ -87,6 +87,7 @@ RSpec.describe "User visits a homepage", type: :system do
         user.follows.create!(followable: ruby_tag)
         user.follows.create!(followable: create(:tag, name: "go", hotness_score: 99))
         user.follows.create!(followable: create(:tag, name: "javascript"), points: 3)
+        user.update!(following_tags_count: 3)
 
         visit "/"
       end
@@ -109,6 +110,17 @@ RSpec.describe "User visits a homepage", type: :system do
         within("#sidebar-nav-followed-tags") do
           expect(all(".crayons-link--block").map(&:text)).to eq(%w[#javascript #go #ruby])
         end
+      end
+    end
+
+    context "when user does not follow tags" do
+      before do
+        visit "/"
+      end
+
+      it "shows 'Explore Tags' and links to /tags", js: true do
+        expect(page).to have_text("Explore")
+        expect(page).to have_selector(:css, 'a[href="/tags"]')
       end
     end
 
