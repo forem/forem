@@ -1012,11 +1012,11 @@
   '.rstrip %></pre>
 
   <div>
-    <span class="crayons-logo"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--l"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--2xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--3xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--l"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--xl"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--2xl"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--3xl"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
   </div>
 
   <pre><%= '
