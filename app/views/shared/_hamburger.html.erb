@@ -11,10 +11,11 @@
     <div class="p-2">
       <%= render partial: "shared/auth_widget" unless user_signed_in? %>
 
-      <%# Below is the current implementation of _dynamic navigation_.
-# Since the _updated navigation_ (one being introduced in this PR) was in progress
-# while _dynamic navgation_ rolled out, I decided to put my effort on hold for now
-# by placing it inside that IF statement below. %>
+# Below is the current implementation of _dynamic navigation_.
+        # Since the _updated navigation_ (one being introduced in this PR) was in progress
+        # while _dynamic navgation_ rolled out, I decided to put my effort on hold for now
+        # by placing it inside that IF statement below.
+      %>
       <% if true %>
         <nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" id="sidebar-nav" aria-label="Primary sidebar nav">
           <a href="/" class="crayons-link crayons-link--block">
