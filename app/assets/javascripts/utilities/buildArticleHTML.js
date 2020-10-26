@@ -265,21 +265,27 @@ function buildArticleHTML(article) {
         '</div></a>';
     }
 
+    var navigationLink = `
+      <a
+        href="${article.path}"
+        aria-labelledby="article-link-${article.id}"
+        class="crayons-story__hidden-navigation-link"
+      >
+        ${article.title}
+      </a>
+    `;
+
     var articleElement =
       '<article class="crayons-story" ' +
-      'role="link" ' +
-      'tabindex="0" ' +
-      'aria-labelledby="article-link-' +
-      article.id +
-      '" aria-labelledby="article-link-' +
       'data-article-path="' +
       article.path +
       'id="article-' +
       article.id +
       '" data-content-user-id="' +
       article.user_id +
-      '">\
-      <div role="presentation">\
+      '">' +
+      navigationLink +
+      '<div role="presentation">\
         ' +
       videoHTML +
       '\

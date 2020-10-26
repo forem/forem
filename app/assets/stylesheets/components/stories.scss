@@ -15,7 +15,7 @@
   box-shadow: 0 0 0 1px var(--card-border);
   position: relative;
 
-  &:focus {
+  &:focus-within {
     outline: none;
     --card-border: var(--accent-brand);
     box-shadow: 0 0 0 2px var(--card-border);
@@ -38,6 +38,16 @@
     &--featured {
       --title-font-size: var(--fs-3xl);
     }
+  }
+
+  &__hidden-navigation-link {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
 
   // Defining additional colors.
