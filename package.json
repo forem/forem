@@ -129,7 +129,6 @@
     "sass-loader": "^10.0.3",
     "style-loader": "^2.0.0",
     "svgo": "1.3.2",
-    "timemachine": "^0.3.2",
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
