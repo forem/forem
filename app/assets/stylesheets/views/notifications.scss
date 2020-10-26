@@ -26,7 +26,11 @@
     text-align: center;
     flex-direction: column;
     align-items: center;
-    padding: var(--su-9);
+    padding: var(--su-6);
+
+    @media (min-width: $breakpoint-m) {
+      padding: var(--su-8);
+    }
   }
 
   &__content {
