@@ -27,7 +27,11 @@ RSpec.describe "Views an article", type: :system do
   end
 
   describe "when showing the date" do
-    it "shows the readable publish date", js: true do
+    # TODO: @sre ideally this spec should have js:true enabled since we use
+    # js helpers to ensure the datetime is locale. However, testing locale
+    # datetimes has proven to be very flaky which is why the js is not included
+    # here
+    it "shows the readable publish date" do
       visit article.path
       expect(page).to have_selector("article time", text: article.readable_publish_date)
     end
@@ -51,7 +55,11 @@ RSpec.describe "Views an article", type: :system do
         end
       end
 
-      it "shows the identical readable publish dates in each page", js: true do
+      # TODO: @sre ideally this spec should have js:true enabled since we use
+      # js helpers to ensure the datetime is locale. However, testing locale
+      # datetimes has proven to be very flaky which is why the js is not included
+      # here
+      it "shows the identical readable publish dates in each page" do
         visit first_article.path
         expect(page).to have_selector("article time", text: first_article.readable_publish_date)
         expect(page).to have_selector(".crayons-card--secondary time", text: first_article.readable_publish_date)
