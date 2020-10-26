@@ -38,7 +38,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
     expect(page).to have_css("div.spec-notification")
     click_button("heart")
 
-    expect(page).to have_css("img.reacted-emoji")
+    expect(page).to have_css(".reacted")
 
     click_link("Reply")
 
@@ -64,9 +64,9 @@ RSpec.describe "Notifications page", type: :system, js: true do
     def interact_with_each_emojis
       %w[heart thumbsdown vomit].each do |emoji|
         click_button(emoji)
-        expect(page).to have_css("img.reacted-emoji")
+        expect(page).to have_css(".reacted")
         click_button(emoji)
-        expect(page).not_to have_css("img.reacted-emoji")
+        expect(page).not_to have_css(".reacted")
       end
     end
 
