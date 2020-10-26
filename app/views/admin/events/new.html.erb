@@ -1,7 +1,4 @@
 <div class="crayons-card p-6 mb-6">
   <h2 class="crayons-title mb-6">Create New Event</h2>
-
-  <%= form_for @event, url: { controller: "events", action: "create" } do |f| %>
-    <%= render "event_form", f: f, event: @event %>
-  <% end %>
+    <%= render "event_form" %>
 </div>
