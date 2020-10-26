@@ -29,10 +29,6 @@ RSpec.describe "Views an article", type: :system do
   describe "when showing the date" do
     it "shows the readable publish date", js: true do
       visit article.path
-      # TODO: Molly investigating spec failures if this fails retry your build
-      puts "Readable Compare date #{article.displayable_published_at}"
-      puts find("article time")[:datetime]
-      puts find("article time")[:title]
       expect(page).to have_selector("article time", text: article.readable_publish_date)
     end
 
@@ -55,8 +51,7 @@ RSpec.describe "Views an article", type: :system do
         end
       end
 
-      # TODO: Molly is investigating
-      xit "shows the identical readable publish dates in each page", js: true do
+      it "shows the identical readable publish dates in each page", js: true do
         visit first_article.path
         expect(page).to have_selector("article time", text: first_article.readable_publish_date)
         expect(page).to have_selector(".crayons-card--secondary time", text: first_article.readable_publish_date)
