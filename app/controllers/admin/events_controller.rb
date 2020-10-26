@@ -8,7 +8,11 @@ module Admin
     end
 
     def new
-      @event = Event.new
+      @event = Event.new(
+        location_name: "#{URL.domain}/live",
+        location_url: app_url,
+        description_markdown: "*Description* *Pre-requisites:* *Bio*",
+      )
     end
 
     def edit
@@ -17,7 +21,6 @@ module Admin
 
     def create
       @event = Event.new(event_params)
-      @events = Event.order(starts_at: :desc)
       if @event.save
         flash[:success] = "Successfully created event: #{@event.title}"
         redirect_to admin_events_path
@@ -31,7 +34,7 @@ module Admin
       @event = Event.find(params[:id])
       if @event.update(event_params)
         flash[:success] = "#{@event.title} was successfully updated"
-        redirect_to admin_event_path
+        redirect_to admin_events_path
       else
         flash[:danger] = @event.errors.full_messages
         render :edit
