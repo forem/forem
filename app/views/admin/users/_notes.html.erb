@@ -1,6 +1,6 @@
 <div class="crayons-card p-6">
   <h2 class="mb-6">Recent Notes (last 10)</h2>
-  
+
   <% unless @notes.load.empty? %>
     <% @notes.each do |note| %>
       <p>
@@ -21,6 +21,6 @@
       <%= f.label "Add new note: ", class: "d-block" %>
       <%= f.text_area :new_note, class: "form-control" %>
     </div>
-    <%= f.submit "Submit Note", class: "btn btn-primary float-right" %>
+    <%= f.submit "Submit Note", class: "crayons-btn float-right" %>
   <% end %>
 </div>
