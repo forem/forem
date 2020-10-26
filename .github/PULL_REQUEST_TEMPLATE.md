@@ -34,7 +34,8 @@ as any relevant images for UI changes._
 ## Added tests?
 
 - [ ] yes
-- [ ] no, because they aren't needed
+- [ ] no, and this is why: _please replace this line with details on why tests
+      have not been included_
 - [ ] no, because I need help
 
 ## Added to documentation?
