@@ -1,0 +1,6 @@
+var selected_theme = "<%= @user.decorate.config_body_class %>";
+localStorage.setItem(
+  'config_body_class',
+  selected_theme
+);
+window.location.reload();

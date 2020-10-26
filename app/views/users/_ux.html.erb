@@ -1,6 +1,5 @@
 <%= javascript_packs_with_chunks_tag "stickySaveFooter", defer: true %>
-
-<%= form_for @user, html: { id: "ux-customization-form", class: "sticky-footer-form grid gap-6" } do |f| %>
+<%= form_for(@user, remote: true, authenticity_token: true, html: { id: "ux-customization-form", class: "sticky-footer-form grid gap-6" }) do |f| %>
   <div class="crayons-card grid gap-6 p-6">
     <h2>Style Customization</h2>
 

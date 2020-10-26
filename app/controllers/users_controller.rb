@@ -47,9 +47,6 @@ class UsersController < ApplicationController
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
-      if config_changed?
-        notice = "Your config has been updated. Refresh to see all changes."
-      end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
         ExportContentWorker.perform_async(@user.id)
@@ -58,7 +55,10 @@ class UsersController < ApplicationController
       follow_hiring_tag(@user)
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}"
+      respond_to do |format|
+        format.html { redirect_to "/settings/#{@tab}" }
+        format.js
+      end
     else
       Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
       Honeycomb.add_field("errored", true)
@@ -334,10 +334,6 @@ class UsersController < ApplicationController
   def set_tabs(current_tab = "profile")
     @tab_list = @user.settings_tab_list
     @tab = current_tab
-  end
-
-  def config_changed?
-    params[:user].include?(:config_theme)
   end
 
   def less_than_one_day_old?(user)
