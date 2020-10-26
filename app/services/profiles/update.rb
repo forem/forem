@@ -94,7 +94,7 @@ module Profiles
       update
     end
 
-    def dev_to_follow_hiring_tag
+    def follow_hiring_tag
       return unless @user.looking_for_work
 
       hiring_tag = Tag.find_by(name: "hiring")
