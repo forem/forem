@@ -47,9 +47,9 @@ Rails.application.routes.draw do
     end
 
     namespace :admin do
-      get "/", to: redirect("/admin/articles")
+      get "/" => "admin_portals#index"
 
-      authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
+      authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
 
         flipper_ui = Flipper::UI.app(Flipper,
@@ -62,13 +62,17 @@ Rails.application.routes.draw do
       resources :broadcasts
       resources :buffer_updates, only: %i[create update]
       resources :listings, only: %i[index edit update destroy]
+      resources :listing_categories, only: %i[index edit update new create
+                                              destroy], path: "listings/categories"
+
       resources :comments, only: [:index]
       resources :events, only: %i[index create update]
       resources :feedback_messages, only: %i[index show]
-      resources :invitations, only: %i[index new create]
+      resources :invitations, only: %i[index new create destroy]
       resources :pages, only: %i[index new create edit update destroy]
       resources :mods, only: %i[index update]
       resources :moderator_actions, only: %i[index]
+      resources :navigation_links, only: %i[index update create destroy]
       resources :privileged_reactions, only: %i[index]
       resources :permissions, only: %i[index]
       resources :podcasts, only: %i[index edit update destroy] do
@@ -104,7 +108,6 @@ Rails.application.routes.draw do
           patch "user_status"
           post "merge"
           delete "remove_identity"
-          post "recover_identity"
           post "send_email"
           post "verify_email_ownership"
           patch "unlock_access"
@@ -128,6 +131,8 @@ Rails.application.routes.draw do
       resource :config
       resources :badges, only: %i[index edit update new create]
       resources :display_ads, only: %i[index edit update new create destroy]
+
+      resources :html_variants, only: %i[index edit update new create show destroy]
       # These redirects serve as a safegaurd to prevent 404s for any Admins
       # who have the old badge_achievement URLs bookmarked.
       get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
@@ -163,11 +168,16 @@ Rails.application.routes.draw do
           end
         end
         resources :tags, only: [:index]
-        resources :follows, only: [:create]
+        resources :follows, only: [:create] do
+          collection do
+            get :tags
+          end
+        end
         namespace :followers do
           get :users
           get :organizations
         end
+        resources :readinglist, only: [:index]
         resources :webhooks, only: %i[index create show destroy]
 
         resources :listings, only: %i[index show create update]
@@ -185,6 +195,8 @@ Rails.application.routes.draw do
             get :cache
           end
         end
+
+        resources :profile_images, only: %i[show], param: :username
       end
     end
 
@@ -215,10 +227,7 @@ Rails.application.routes.draw do
     end
     resources :comment_mutes, only: %i[update]
     resources :users, only: %i[index], defaults: { format: :json } # internal API
-    resources :users, only: %i[update] do
-      resource :twitch_stream_updates, only: %i[show create]
-    end
-    resources :twitch_live_streams, only: :show, param: :username
+    resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
@@ -247,7 +256,6 @@ Rails.application.routes.draw do
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
-    resources :html_variants, only: %i[index new create show edit update]
     resources :html_variant_trials, only: [:create]
     resources :html_variant_successes, only: [:create]
     resources :tag_adjustments, only: %i[create destroy]
@@ -321,7 +329,6 @@ Rails.application.routes.draw do
     post "/join_chat_channel" => "chat_channel_memberships#join_channel"
     delete "/messages/:id" => "messages#destroy"
     patch "/messages/:id" => "messages#update"
-    get "/live/:username" => "twitch_live_streams#show"
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
 
@@ -351,11 +358,9 @@ Rails.application.routes.draw do
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     get "/future", to: redirect("devteam/the-future-of-dev-160n")
-    get "/forem", to: redirect("devteam/for-empowering-community-2k6h")
 
     # Settings
     post "users/update_language_settings" => "users#update_language_settings"
-    post "users/update_twitch_username" => "users#update_twitch_username"
     post "users/join_org" => "users#join_org"
     post "users/leave_org/:organization_id" => "users#leave_org", :as => :users_leave_org
     post "users/add_org_admin" => "users#add_org_admin"
@@ -392,7 +397,6 @@ Rails.application.routes.draw do
     get "/search" => "stories#search"
     post "articles/preview" => "articles#preview"
     post "comments/preview" => "comments#preview"
-    get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
     get "/about" => "pages#about"
@@ -453,6 +457,10 @@ Rails.application.routes.draw do
     # serviceworkers
     get "/serviceworker" => "service_worker#index"
     get "/manifest" => "service_worker#manifest"
+
+    # open search
+    get "/open-search" => "open_search#show",
+        :constraints => { format: /xml/ }
 
     get "/shell_top" => "shell#top"
     get "/shell_bottom" => "shell#bottom"

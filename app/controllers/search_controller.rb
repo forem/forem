@@ -103,8 +103,8 @@ class SearchController < ApplicationController
   end
 
   def reactions
-    result = Search::Reaction.search_documents(
-      params: reaction_params.merge(user_id: current_user.id).to_h,
+    result = Search::ReadingList.search_documents(
+      params: reaction_params.to_h, user: current_user,
     )
 
     render json: { result: result["reactions"], total: result["total"] }

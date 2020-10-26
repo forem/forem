@@ -44,8 +44,9 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders page with proper sidebar" do
+      navigation_link = create(:navigation_link)
       get "/"
-      expect(response.body).to include("Podcasts")
+      expect(response.body).to include(CGI.escapeHTML(navigation_link.name))
     end
 
     it "renders left display_ads when published and approved" do
@@ -104,6 +105,16 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
 
+    it "does not set cache-related headers if private" do
+      allow(SiteConfig).to receive(:public).and_return(false)
+      get "/"
+      expect(response.status).to eq(200)
+
+      expect(response.headers["X-Accel-Expires"]).to eq(nil)
+      expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      expect(response.headers["Surrogate-Key"]).to eq(nil)
+    end
+
     it "sets Fastly Surrogate-Key headers" do
       get "/"
       expect(response.status).to eq(200)
@@ -119,10 +130,18 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.headers["X-Accel-Expires"]).to eq("600")
     end
 
-    it "shows default meta keywords" do
+    it "shows default meta keywords if set" do
       SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
       get "/"
       expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
+    end
+
+    it "does not show default meta keywords if not set" do
+      SiteConfig.meta_keywords = { default: "" }
+      get "/"
+      expect(response.body).not_to include(
+        "<meta name=\"keywords\" content=\"cool developers, civil engineers\">",
+      )
     end
 
     it "shows only one cover if basic feed style" do
@@ -179,6 +198,7 @@ RSpec.describe "StoriesIndex", type: :request do
     context "with campaign_sidebar" do
       before do
         SiteConfig.campaign_featured_tags = "shecoded,theycoded"
+        SiteConfig.home_feed_minimum_score = 7
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
         create(:article, approved: true, body_markdown: a_body, score: 1)
@@ -242,7 +262,7 @@ RSpec.describe "StoriesIndex", type: :request do
   describe "GET query page" do
     it "renders page with proper header" do
       get "/search?q=hello"
-      expect(response.body).to include("query-header-text")
+      expect(response.body).to include("=> Search Results")
     end
   end
 
@@ -348,10 +368,18 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(sponsorship.blurb_html)
     end
 
-    it "shows meta keywords" do
+    it "shows meta keywords if set" do
       SiteConfig.meta_keywords = { tag: "software engineering, ruby" }
       get "/t/#{tag.name}"
       expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
+    end
+
+    it "does not show meta keywords if not set" do
+      SiteConfig.meta_keywords = { tag: "" }
+      get "/t/#{tag.name}"
+      expect(response.body).not_to include(
+        "<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">",
+      )
     end
 
     context "with user signed in" do
@@ -372,7 +400,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "has mod-action-button" do
         get "/t/#{tag.name}"
-        expect(response.body).to include('<a class="cta mod-action-button"')
+        expect(response.body).to include('<a class="crayons-btn mod-action-button"')
       end
 
       it "does not render pagination" do

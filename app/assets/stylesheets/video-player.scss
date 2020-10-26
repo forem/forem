@@ -2,6 +2,9 @@
 @import '_mixins';
 
 .crayons-article__video {
+  overflow-wrap: normal;
+  word-break: normal;
+
   .crayons-article__video__player {
     background-position: center;
     background-size: cover;

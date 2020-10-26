@@ -24,10 +24,10 @@
       <%= hidden_field_tag(:id, @moderatable.id) %>
       <% if @moderatable.approved %>
         <%= hidden_field_tag(:approved, false) %>
-        <button class="cta approval-button approval-removal">Remove approval</button>
+        <button class="crayons-btn crayons-btn--secondary approval-button approval-removal">Remove approval</button>
       <% else %>
         <%= hidden_field_tag(:approved, true) %>
-        <button class="cta approval-button">Mark as approved</button>
+        <button class="crayons-btn approval-button">Mark as approved</button>
       <% end %>
     <% end %>
     <hr />

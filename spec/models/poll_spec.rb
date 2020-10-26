@@ -12,6 +12,14 @@ RSpec.describe Poll, type: :model do
       it { is_expected.to have_many(:poll_options).dependent(:destroy) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
       it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+
+      it { is_expected.to validate_length_of(:poll_options_input_array).is_at_least(2).is_at_most(15) }
+
+      it { is_expected.to validate_presence_of(:poll_options_count) }
+      it { is_expected.to validate_presence_of(:poll_options_input_array) }
+      it { is_expected.to validate_presence_of(:poll_skips_count) }
+      it { is_expected.to validate_presence_of(:poll_votes_count) }
+      it { is_expected.to validate_presence_of(:prompt_markdown) }
     end
 
     describe "#prompt_markdown" do

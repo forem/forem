@@ -159,6 +159,42 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
     end
 
+    context "with tags param" do
+      it "returns articles with any of the specified tags" do
+        create(:article, published: true)
+        get api_articles_path(tags: "javascript, css, not-existing-tag")
+        expect(response.parsed_body.size).to eq(1)
+      end
+    end
+
+    context "with tags_exclude param" do
+      it "returns articles that do not contain any of excluded tag" do
+        create(:article, published: true)
+        get api_articles_path(tags_exclude: "node, java")
+        expect(response.parsed_body.size).to eq(2)
+
+        create(:article, published: true, tags: "node")
+        get api_articles_path(tags_exclude: "node, java")
+        expect(response.parsed_body.size).to eq(2)
+      end
+    end
+
+    context "with tags and tags_exclude params" do
+      it "returns proper scope" do
+        create(:article, published: true)
+        get api_articles_path(tags: "javascript, css", tags_exclude: "node, java")
+        expect(response.parsed_body.size).to eq(1)
+      end
+    end
+
+    context "when tags and tags_exclude contain the same tag" do
+      it "returns empty set" do
+        create(:article, published: true, tags: "java")
+        get api_articles_path(tags: "java", tags_exclude: "java")
+        expect(response.parsed_body.size).to eq(0)
+      end
+    end
+
     context "with top param" do
       it "only returns fresh top articles if top param is present" do
         # TODO: slight duplication, test should be removed
@@ -445,7 +481,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns success when requesting publiched articles with public token" do
+      it "returns success when requesting published articles with public token" do
         public_token = create(:doorkeeper_access_token, resource_owner: user, scopes: "public")
         get me_api_articles_path(status: :published), params: { access_token: public_token.token }
         expect(response.media_type).to eq("application/json")

@@ -4,7 +4,9 @@ class DataUpdateScript < ApplicationRecord
   STATUSES = { enqueued: 0, working: 1, succeeded: 2, failed: 3 }.freeze
 
   enum status: STATUSES
-  validates :file_name, uniqueness: true
+
+  validates :file_name, presence: true, uniqueness: true
+  validates :status, presence: true
 
   class << self
     def scripts_to_run

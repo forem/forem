@@ -9,21 +9,23 @@ RSpec.describe "/admin/articles", type: :request do
   context "when updating an Article via /admin/articles" do
     let(:super_admin) { create(:user, :super_admin) }
     let(:article) { create(:article) }
+    let(:second_user) { create(:user) }
+    let(:third_user) { create(:user) }
 
     before { sign_in super_admin }
 
     it "allows an Admin to add a co-author to an individual article" do
       get request
+
       expect do
-        article.update_columns(second_user_id: 1)
-      end.to change(article, :second_user_id).from(nil).to(1)
+        article.update_columns(co_author_ids: [1])
+      end.to change(article, :co_author_ids).from([]).to([1])
     end
 
-    it "allows an Admin to add co-authora to an individual article" do
-      article.update_columns(second_user_id: 2, third_user_id: 3)
+    it "allows an Admin to add co-authors to an individual article" do
+      article.update_columns(co_author_ids: [2, 3])
       get request
-      expect(article.second_user_id).to eq(2)
-      expect(article.third_user_id).to eq(3)
+      expect(article.co_author_ids).to eq([2, 3])
     end
   end
 end

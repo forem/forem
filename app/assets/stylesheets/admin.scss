@@ -2,7 +2,11 @@
 @import 'crayons';
 @import 'variables';
 @import 'scaffolds';
-@import 'top-bar';
+
+// overriding Bootstrap styles
+label {
+  margin-bottom: 0 !important;
+}
 
 .pagination {
   justify-content: right;
@@ -92,4 +96,32 @@
     margin: 0 16px;
     cursor: pointer;
   }
+}
+
+.admin-navigation-links {
+  width: 240px;
+}
+
+.admin-navigation-links .crayons-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.config-authentication__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: var(--su-4);
+  margin-bottom: var(--su-6);
+
+  &--icon,
+  &--label {
+    padding-top: var(--su-4);
+    padding-bottom: var(--su-4);
+  }
+}
+
+.config-authentication-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--su-4);
 }

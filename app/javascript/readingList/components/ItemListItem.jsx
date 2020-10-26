@@ -7,7 +7,7 @@ export const ItemListItem = ({ item, children }) => {
     path: item.reactable.path,
     title: item.reactable.title,
     user: item.reactable.user,
-    publishedDate: item.reactable.published_date_string,
+    publishedDate: item.reactable.readable_publish_date_string,
     readingTime: item.reactable.reading_time,
     tags: item.reactable.tags,
   };
@@ -15,30 +15,45 @@ export const ItemListItem = ({ item, children }) => {
   // update readingTime to 1 min if the reading time is less than 1 min
   adaptedItem.readingTime = Math.max(1, adaptedItem.readingTime || null);
   return (
-    <div className="item-wrapper">
-      <a className="item" href={adaptedItem.path}>
-        <div
-          className="item-title"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: filterXSS(adaptedItem.title) }}
+    <article className="flex px-6 py-4">
+      <a
+        href={`/${adaptedItem.user.username}`}
+        datatestid="item-user"
+        className="crayons-avatar crayons-avatar--l shrink-0"
+      >
+        <img
+          src={adaptedItem.user.profile_image_90}
+          alt={adaptedItem.user.name}
+          className="crayons-avatar__image"
         />
+      </a>
 
-        <div className="item-details">
+      <div className="flex-1 pl-4">
+        <a href={adaptedItem.path} class="flex crayons-link">
+          <h2
+            className="fs-l fw-bold m-0 break-word"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: filterXSS(adaptedItem.title) }}
+          />
+        </a>
+        <p className="fs-s">
           <a
-            datatestid="item-user"
-            className="item-user"
             href={`/${adaptedItem.user.username}`}
+            className="crayons-link fw-medium"
           >
-            <img src={adaptedItem.user.profile_image_90} alt="Profile Pic" />
-            {`${adaptedItem.user.name}・`}
-            {`${adaptedItem.publishedDate}・`}
-            {`${adaptedItem.readingTime} min read・`}
+            {adaptedItem.user.name}
           </a>
-
+          <span class="color-base-30"> • </span>
+          <span className="color-base-60">
+            {adaptedItem.publishedDate}
+            <span class="color-base-30"> • </span>
+            {`${adaptedItem.readingTime} min read`}
+          </span>
           {adaptedItem.tags.length > 0 ? (
-            <span datatestid="item-tags" className="item-tags">
+            <span datatestid="item-tags">
+              <span class="color-base-30"> • </span>
               {adaptedItem.tags.map((tag) => (
-                <a className="item-tag" href={`/t/${tag.name}`}>
+                <a className="crayons-tag" href={`/t/${tag.name}`}>
                   {`#${tag.name}`}
                 </a>
               ))}
@@ -46,11 +61,11 @@ export const ItemListItem = ({ item, children }) => {
           ) : (
             ''
           )}
+        </p>
+      </div>
 
-          {children}
-        </div>
-      </a>
-    </div>
+      <div className="self-center">{children}</div>
+    </article>
   );
 };
 
@@ -59,7 +74,7 @@ const readingListItemPropTypes = PropTypes.shape({
     path: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     reading_time: PropTypes.number.isRequired,
-    published_date_string: PropTypes.string.isRequired,
+    readable_publish_date_string: PropTypes.string.isRequired,
     user: PropTypes.shape({
       username: PropTypes.string.isRequired,
       profile_image_90: PropTypes.string.isRequired,

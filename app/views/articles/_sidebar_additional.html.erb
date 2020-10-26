@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
-    <% unless user_signed_in? || !any_selfserve_auth? %>
+    <% unless user_signed_in? || !any_enabled_auth_providers? %>
       <section class="crayons-card crayons-card--secondary signin-cta-widget">
         <div class="authentication-widget__container">
           <figure class="authentication-widget__image-container">
@@ -10,22 +10,13 @@
           </figure>
           <div class="authentication-widget__content">
             <h3 class="authentication-widget__title">
-      <a href="/"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
+              <%= render "shared/authentication_title" %>
             </h3>
             <p class="authentication-widget__description">
-              <% if SiteConfig.tagline.present? %>
-                <%= SiteConfig.tagline %>
-              <% else %>
-                Log in to customize your experience and get involved.
-              <% end %>
+              <%= render "shared/authentication_description" %>
             </p>
             <div class="authentication-widget__actions">
-              <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn" aria-label="Create new account">
-                Create new account
-              </a>
-              <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand" aria-label="Log in">
-                Log in
-              </a>
+              <%= render "shared/authentication_actions" %>
             </div>
           </div>
         </div>
@@ -44,7 +35,7 @@
       <% if params[:timeframe].blank? && @listings.any? %>
         <section class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
-            <h3 class="crayons-card__header__headline">Listings</h3>
+            <h3 class="crayons-subtitle-2">Listings</h3>
             <div class="crayons-card__actions">
               <a href="/listings" class="crayons-link--branded fw-medium fs-s">See all</a>
             </div>
@@ -65,7 +56,7 @@
       <% SiteConfig.sidebar_tags.each do |tag| %>
         <section class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
-            <h3 class="crayons-card__header__headline"><a href="/t/<%= tag %>">#<%= tag %></a></h3>
+            <h3 class="crayons-subtitle-2"><a href="/t/<%= tag %>" class="crayons-link">#<%= tag %></a></h3>
           </header>
 
           <div>

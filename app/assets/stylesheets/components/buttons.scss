@@ -1,6 +1,6 @@
 @import '../config/import';
 
-:root {
+.crayons-btn {
   --brand-apple-bg: #000;
   --brand-apple-color: #fff;
   --brand-apple-bg-hover: #1b1b1b;
@@ -13,9 +13,13 @@
   --brand-github-color: #fff;
   --brand-github-bg-hover: #000;
 
-  --brand-facebook-bg: #4267B2;
+  --brand-facebook-bg: #4267b2;
   --brand-facebook-color: #fff;
   --brand-facebook-bg-hover: #476fbf;
+
+  --brand-email-bg: #24292e;
+  --brand-email-color: #fff;
+  --brand-email-bg-hover: #000;
 }
 
 // Basic styling
@@ -68,7 +72,8 @@
   &[href]:focus,
   &:hover:enabled,
   &:active:enabled,
-  &:focus:enabled {
+  &:focus:enabled,
+  &:focus-within {
     background-color: var(--bg-hover);
     border-color: var(--border-hover);
     box-shadow: var(--shadow-hover);
@@ -276,6 +281,16 @@
   --color-inverted-hover: var(--brand-facebook-color);
 }
 
+.crayons-btn--brand-email {
+  --bg: var(--brand-email-bg);
+  --bg-hover: var(--brand-email-bg-hover);
+  --color: var(--brand-email-color);
+  --color-hover: var(--brand-email-color);
+  --bg-inverted: var(--brand-email-bg);
+  --bg-inverted-hover: var(--brand-email-bg-hover);
+  --color-inverted: var(--brand-email-color);
+  --color-inverted-hover: var(--brand-email-color);
+}
 
 // Icon alone
 .crayons-btn--icon,

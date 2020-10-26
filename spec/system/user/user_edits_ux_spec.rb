@@ -10,11 +10,11 @@ RSpec.describe "User edits their UX settings", type: :system do
 
   describe "visiting /settings/ux" do
     it "makes the 'Save Button' footer sticky once a theme is selected", js: true do
-      expect(page).not_to have_css(".sticky-save-footer")
+      expect(page).not_to have_css(".sticky")
 
       choose "Ten X Hacker Theme"
 
-      expect(page).to have_css(".sticky-save-footer")
+      expect(page).to have_css(".sticky")
     end
   end
 end

@@ -21,6 +21,16 @@ class Seeder
       puts "  #{@counter}. #{plural} already exist. Skipping."
     end
   end
+
+  def create_if_doesnt_exist(klass, attribute_name, attribute_value)
+    record = klass.find_by("#{attribute_name}": attribute_value)
+    if record.nil?
+      puts "  #{klass} with #{attribute_name} = #{attribute_value} not found, proceeding..."
+      yield
+    else
+      puts "  #{klass} with #{attribute_name} = #{attribute_value} found, skipping."
+    end
+  end
 end
 
 # we use this to be able to increase the size of the seeded DB at will
@@ -84,6 +94,8 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       # Emails limited to 50 characters
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
+      registered_at: Time.current,
+      registered: true,
       password: "password",
       password_confirmation: "password",
     )
@@ -134,6 +146,25 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
   end
 
   User.order(Arel.sql("RANDOM()"))
+end
+
+seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
+  user = User.create!(
+    name: "Admin McAdmin",
+    email: "admin@forem.local",
+    username: "Admin_McAdmin",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+
+  user.add_role(:super_admin)
+  user.add_role(:single_resource_admin, Config)
 end
 
 ##############################################################################
@@ -218,7 +249,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "2faa4a",
       overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
       android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
     {
@@ -231,7 +262,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "111111",
       overcast_url: "https://overcast.fm/itunes769189585/coding-blocks",
       android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
     {
@@ -244,7 +275,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "181a1c",
       overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me",
       android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
     {
@@ -258,7 +289,7 @@ seeder.create_if_none(Podcast) do
       main_color_hex: "343d46",
       overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
       android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
-      image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+      image: Pathname.new(image_file).open,
       published: true
     },
   ]
@@ -340,6 +371,13 @@ seeder.create_if_none(ChatChannel) do
       slug: chan,
     )
   end
+
+  # This channel is hard-coded in a few places
+  ChatChannel.create!(
+    channel_name: "Tag Moderators",
+    channel_type: "open",
+    slug: "tag-moderators",
+  )
 
   direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
   Message.create!(
@@ -487,6 +525,7 @@ seeder.create_if_none(Listing) do
         listing_category_id: category_id,
         contact_via_connect: true,
         published: true,
+        originally_published_at: Time.current,
         bumped_at: Time.current,
         tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
       )
@@ -540,6 +579,12 @@ seeder.create_if_none(Sponsorship) do
       blurb_html: Faker::Hacker.say_something_smart,
     )
   end
+end
+
+##############################################################################
+
+seeder.create_if_none(NavigationLink) do
+  Rake::Task["navigation_links:update"].invoke
 end
 
 ##############################################################################

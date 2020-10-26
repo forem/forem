@@ -1,9 +1,13 @@
 module Images
   module Optimizer
-    def self.call(img_src, service: :cloudinary, **kwargs)
-      return cloudinary(img_src, kwargs) unless imgproxy_enabled?
+    def self.call(img_src, **kwargs)
+      return img_src if img_src.starts_with?("/")
 
-      public_send(service, img_src, kwargs)
+      if imgproxy_enabled?
+        imgproxy(img_src, kwargs)
+      else
+        cloudinary(img_src, kwargs)
+      end
     end
 
     DEFAULT_CL_OPTIONS = {
@@ -35,12 +39,26 @@ module Images
 
     def self.imgproxy(img_src, **kwargs)
       options = DEFAULT_IMGPROXY_OPTIONS.merge(kwargs).reject { |_, v| v.blank? }
-
+      Imgproxy.config.endpoint ||= get_imgproxy_endpoint
       Imgproxy.url_for(img_src, options)
     end
 
     def self.imgproxy_enabled?
-      Imgproxy.config.key.present? && Imgproxy.config.endpoint.present?
+      Imgproxy.config.key.present? && Imgproxy.config.salt.present?
+    end
+
+    def self.get_imgproxy_endpoint
+      if Rails.env.production?
+        # Use /images with the same domain on Production as
+        # our default configuration
+        URL.url("images")
+        # ie. https://forem.dev/images
+      else
+        # On other environments, rely on ApplicationConfig for a
+        # more flexible configuration
+        # ie. default imgproxy endpoint is localhost:8080
+        ApplicationConfig["IMGPROXY_ENDPOINT"]
+      end
     end
   end
 end

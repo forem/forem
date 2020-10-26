@@ -49,7 +49,7 @@
         </div>
 
         <div class="profile-header__details">
-          <h1 class="fs-2xl m:fs-3xl fw-heavy mb-2"><%= @user.name %></h1>
+          <h1 class="crayons-title fw-heavy mb-2"><%= @user.name %></h1>
           <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.summary.presence || ["404 bio not found"].sample %></p>
 
           <div class="profile-header__meta">
@@ -133,11 +133,7 @@
                   <%= inline_svg_tag("instagram.svg", class: "crayons-icon", aria: true, title: "Instagram logo") %>
                 </a>
               <% end %>
-              <% if @user.twitch_username? %>
-                <a href="<%= twitch_live_stream_path(username: @user.username) %>" class="px-1 align-middle inline-block <% if @user.currently_streaming_on_twitch? %>color-accent-success<% end %>">
-                  <%= inline_svg_tag("twitch.svg", class: "crayons-icon", id: "icon-twitch", aria: true, title: "Twitch logo") %>
-                </a>
-              <% elsif @user.twitch_url? %>
+              <% if @user.twitch_url? %>
                 <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
                   <%= inline_svg_tag("twitch.svg", class: "crayons-icon", aria: true, title: "Twitch logo") %>
                 </a>
@@ -214,5 +210,4 @@
   <% end %>
 </div>
 
-<%= render "stories/narrow_nav_menu" %>
 <%= render "stories/stories_list_script" %>

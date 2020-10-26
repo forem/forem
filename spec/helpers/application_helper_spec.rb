@@ -38,18 +38,25 @@ RSpec.describe ApplicationHelper, type: :helper do
   describe "#release_adjusted_cache_key" do
     it "does nothing when RELEASE_FOOTPRINT is not set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return(nil)
-      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me")
+      expect(helper.release_adjusted_cache_key("cache-me")).to include("cache-me")
     end
 
     it "appends the RELEASE_FOOTPRINT if it is set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
-      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me--abc123")
+      expect(helper.release_adjusted_cache_key("cache-me")).to include("cache-me--abc123")
     end
 
     it "includes locale param if it is set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
       params[:locale] = "fr-ca"
-      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me-fr-ca-abc123")
+      expect(helper.release_adjusted_cache_key("cache-me")).to include("cache-me-fr-ca-abc123")
+    end
+
+    it "includes SiteConfig.admin_action_taken_at" do
+      Timecop.freeze do
+        allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
+        expect(helper.release_adjusted_cache_key("cache-me")).to include(SiteConfig.admin_action_taken_at.rfc3339)
+      end
     end
   end
 
@@ -206,6 +213,11 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     it "keeps an ASCII domain as ASCII" do
       expect(helper.optimized_image_url("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
+    end
+
+    it "returns random fallback images as expected" do
+      expect(helper.optimized_image_url("")).not_to be_nil
+      expect(helper.optimized_image_url("", random_fallback: false)).to be_nil
     end
   end
 

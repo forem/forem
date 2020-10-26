@@ -1,8 +1,20 @@
 module Constants
   module SiteConfig
+    IMAGE_PLACEHOLDER = "https://url/image.png".freeze
+    SVG_PLACEHOLDER = "<svg ...></svg>".freeze
+
     DETAILS = {
       allow_email_password_registration: {
-        description: "Can users sign up with only email and password?",
+        description: "People can sign up using their email and password",
+        placeholder: ""
+      },
+      allow_email_password_login: {
+        description: "People can login using their email and password",
+        placeholder: ""
+      },
+      require_captcha_for_email_password_registration: {
+        description: "People will be required to fill out a captcha when
+          they're creating a new account in your community",
         placeholder: ""
       },
       authentication_providers: {
@@ -12,6 +24,10 @@ module Constants
       campaign_articles_require_approval: {
         description: "",
         placeholder: "Campaign stories show up on sidebar with approval?"
+      },
+      campaign_call_to_action: {
+        description: "This text populates the call to action button on the campaign sidebar",
+        placeholder: "Share your project"
       },
       campaign_featured_tags: {
         description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
@@ -26,16 +42,12 @@ module Constants
         placeholder: "Campaign sidebar enabled or not"
       },
       campaign_sidebar_image: {
-        description: "https://image.url",
+        description: IMAGE_PLACEHOLDER,
         placeholder: "Used at the top of the campaign sidebar"
       },
       campaign_url: {
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
-      },
-      community_action: {
-        description: "Used to determine the action of community e.g coding, reading, training etc.",
-        placeholder: "coding"
       },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
@@ -83,6 +95,14 @@ module Constants
         description: "Email address",
         placeholder: ""
       },
+      experience_low: {
+        description: "The label for the bottom of the experience level range of a post",
+        placeholder: "Total Newbies"
+      },
+      experience_high: {
+        description: "The label for the top of the experience level range of a post",
+        placeholder: "Senior Devs"
+      },
       facebook_key: {
         description:
           "The \"App ID\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
@@ -95,7 +115,12 @@ module Constants
       },
       favicon_url: {
         description: "Used as the site favicon",
-        placeholder: "https://image.url"
+        placeholder: IMAGE_PLACEHOLDER
+      },
+      feed_strategy: {
+        description: "Determines the main feed algorithm approach the app takes: basic or large_forem_experimental
+        (which should only be used for 10k+ member communities)",
+        placeholder: "basic"
       },
       feed_style: {
         description: "Determines which default feed the users sees (rich content, more minimal, etc.)",
@@ -121,32 +146,40 @@ module Constants
         description: "Used to authenticate with your health check endpoints.",
         placeholder: "a secure token"
       },
+      home_feed_minimum_score: {
+        description: "Minimum score needed for a post to show up on the unauthenticated home page.",
+        placeholder: "0"
+      },
+      invite_only_mode: {
+        description: "Only users invited by email can join this community.",
+        placeholder: ""
+      },
       jobs_url: {
         description: "URL of the website where open positions are posted",
         placeholder: "Jobs URL"
       },
       left_navbar_svg_icon: {
         description: "The SVG icon used to expand the left navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: "<svg ...></svg>"
+        placeholder: SVG_PLACEHOLDER
       },
       logo_png: {
         description: "Minimum 1024px, used for PWA etc.",
-        placeholder: "https://image.url/image.png"
+        placeholder: IMAGE_PLACEHOLDER
       },
       logo_svg: {
         description: "Used as the SVG logo of the community",
-        placeholder: "<svg ...></svg>"
+        placeholder: SVG_PLACEHOLDER
       },
       main_social_image: {
         description: "Used as the main image in social networks and OpenGraph",
-        placeholder: "https://image.url"
+        placeholder: IMAGE_PLACEHOLDER
       },
       mailchimp_api_key: {
         description: "API key used to connect Mailchimp account. Found in Mailchimp backend",
         placeholder: ""
       },
       mailchimp_newsletter_id: {
-        description: "Main Newsletter ID",
+        description: "Main Newsletter ID, also known as Audience ID",
         placeholder: ""
       },
       mailchimp_sustaining_members_id: {
@@ -163,7 +196,7 @@ module Constants
       },
       mascot_footer_image_url: {
         description: "Special cute mascot image used in the footer.",
-        placeholder: "https://image.url"
+        placeholder: IMAGE_PLACEHOLDER
       },
       mascot_footer_image_width: {
         description: "The footer mascot width will resized to this value, defaults to 52",
@@ -179,7 +212,7 @@ module Constants
       },
       mascot_image_url: {
         description: "Used as the mascot image.",
-        placeholder: "https://image.url"
+        placeholder: IMAGE_PLACEHOLDER
       },
       mascot_user_id: {
         description: "User ID of the Mascot account",
@@ -191,15 +224,15 @@ module Constants
       },
       onboarding_background_image: {
         description: "Background for onboarding splash page",
-        placeholder: "https://image.url"
+        placeholder: IMAGE_PLACEHOLDER
       },
       onboarding_logo_image: {
         description: "Main onboarding display logo image",
-        placeholder: "https://image.url"
+        placeholder: IMAGE_PLACEHOLDER
       },
       onboarding_taskcard_image: {
         description: "Used as the onboarding task-card image",
-        placeholder: "https://image.url"
+        placeholder: IMAGE_PLACEHOLDER
       },
       payment_pointer: {
         description: "Used for site-wide web monetization. " \
@@ -214,13 +247,25 @@ module Constants
         description: "Determines the mininum for the periodic email digest",
         placeholder: 2
       },
+      recaptcha_site_key: {
+        description: "Add the site key for Google reCAPTCHA, which is used for reporting abuse",
+        placeholder: "What is the Google reCAPTCHA site key?"
+      },
+      recaptcha_secret_key: {
+        description: "Add the secret key for Google reCAPTCHA, which is used for reporting abuse",
+        placeholder: "What is the Google reCAPTCHA secret key?"
+      },
       right_navbar_svg_icon: {
         description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: "<svg ...></svg>"
+        placeholder: SVG_PLACEHOLDER
       },
       secondary_logo_url: {
         description: "Used as the secondary logo",
-        placeholder: "https://image.url"
+        placeholder: IMAGE_PLACEHOLDER
+      },
+      spam_trigger_terms: {
+        description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
+        placeholder: "used cares near you, pokemon go hack"
       },
       shop_url: {
         description: "Used as the shop url of the community",
@@ -259,6 +304,10 @@ module Constants
         "recently-active commenters or producers can be suggested",
         placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
       },
+      tag_feed_minimum_score: {
+        description: "Minimum score needed for a post to show up on default tag page.",
+        placeholder: "0"
+      },
       tagline: {
         description: "Used in signup modal.",
         placeholder: "We're a place where coders share, stay up-to-date and grow their careers."
@@ -273,6 +322,10 @@ module Constants
       },
       twitter_secret: {
         description: "The \"API secret key\" portion of consumer keys in the Twitter developer portal.",
+        placeholder: ""
+      },
+      video_encoder_key: {
+        description: "Secret key used to allow AWS video encoding through the VideoStatesController",
         placeholder: ""
       }
       # Dynamic values ommitted: configurable_rate_limits and social_media_handles

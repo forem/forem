@@ -1,4 +1,20 @@
 @import '../mixins';
+@import '../config/import';
+
+:root {
+  --content-rythm: var(--su-2);
+  --content-font-size: var(--fs-l);
+  --content-secondary-font-size: var(--fs-base);
+
+  @media (min-width: $breakpoint-s) {
+    --content-secondary-font-size: var(--fs-l);
+  }
+
+  @media (min-width: $breakpoint-m) {
+    --content-rythm: var(--su-4);
+    --content-font-size: var(--fs-xl);
+  }
+}
 
 @font-face {
   font-family: OpenDyslexic;
@@ -45,5 +61,227 @@ body {
 
   &.open-dyslexic-article-body {
     --content-font-family: var(--ff-dyslexic);
+  }
+}
+
+.text-styles {
+  font-size: var(--content-font-size);
+  font-family: var(--content-font-family);
+
+  &--secondary {
+    font-size: var(--content-secondary-font-size);
+  }
+
+  a {
+    &.anchor {
+      padding-top: 0;
+      margin-top: 0;
+      top: -50px;
+      display: block;
+      visibility: hidden;
+      position: relative;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--ff-sans-serif);
+    margin: var(--content-rythm) 0;
+    margin-top: calc(var(--content-rythm) * 2);
+    padding: 0;
+  }
+
+  h1 {
+    font-size: 1.85em;
+    line-height: 1.25em;
+    font-weight: 400;
+  }
+
+  h2 {
+    font-size: 1.7em;
+    font-weight: 400;
+    line-height: 1.25em;
+    margin-bottom: 0.5em;
+  }
+
+  h3 {
+    font-size: 1.32em;
+    font-weight: 400;
+  }
+
+  hr {
+    width: 25%;
+    opacity: 0.1;
+    border: 1px solid var(--body-color);
+    margin: 1.3em auto 1.5em;
+  }
+
+  p {
+    margin: var(--content-rythm) 0;
+  }
+
+  ul,
+  ol {
+    padding-left: var(--su-6);
+    margin: var(--content-rythm) 0;
+    br {
+      line-height: 0;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  ul {
+    list-style-type: disc;
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    ul {
+      margin: 0 0.7em 0 1.9em;
+      list-style-type: square;
+
+      ul {
+        list-style-type: circle;
+      }
+    }
+  }
+
+  li {
+    margin: var(--su-2) 0;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  figcaption {
+    font-style: italic;
+    text-align: center;
+    font-size: 0.8em;
+    line-height: 1.4em;
+    color: var(--body-color);
+    opacity: 0.75;
+    display: block;
+  }
+
+  p + figcaption {
+    margin-top: -0.8em;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--base-50);
+    padding: 0 var(--su-4);
+    margin: var(--content-rythm) 0;
+
+    p:first-child {
+      margin: var(--su-2) 0;
+    }
+
+    &.twitter-tweet {
+      font-family: var(--ff-sans-serif);
+      background: var(--body-color-inverted);
+      max-width: 456px;
+      border: 1px solid #e9eef2;
+      font-size: 0.75em;
+      line-height: 1.35em;
+      border-radius: 5px;
+      margin: 1.6em auto;
+      padding: 60px 10px 18px;
+      color: white;
+      min-height: 60px;
+      padding: 33px 15px 8px;
+
+      a {
+        color: white;
+      }
+
+      @media screen and (min-width: $breakpoint-s) {
+        padding: 60px 22px 18px;
+        min-height: 105px;
+      }
+    }
+  }
+
+  kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 11px;
+    line-height: 10px;
+    color: #444d56;
+    vertical-align: middle;
+    background-color: #fafbfc;
+    border: solid 1px #c6cbd1;
+    border-bottom-color: #959da5;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #959da5;
+  }
+
+  pre:not(.highlight),
+  div.highlight {
+    margin: var(--content-rythm) 0;
+  }
+
+  img {
+    height: auto;
+    position: relative;
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    max-height: calc(50vh + 180px);
+    border-radius: var(--radius);
+  }
+
+  a.article-body-image-wrapper {
+    cursor: zoom-in;
+  }
+
+  iframe {
+    width: 100%;
+    border: 0;
+    margin: var(--content-rythm) 0;
+  }
+
+  .fluidvids {
+    margin: var(--content-rythm) 0;
+
+    iframe {
+      margin: 0;
+    }
+  }
+
+  .table-wrapper-paragraph {
+    width: 100%;
+    margin-left: 0%;
+    overflow-x: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    font-size: 0.78em;
+    margin: 0.8em auto 1.2em;
+    table-layout: fixed;
+
+    th {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 5px 1vw;
+      background: var(--body-bg);
+      text-align: left;
+    }
+
+    td {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 5px 1vw;
+    }
+  }
+
+  .twitter-tweet {
+    margin: auto;
   }
 }

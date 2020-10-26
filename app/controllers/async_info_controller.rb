@@ -66,7 +66,8 @@ class AsyncInfoController < ApplicationController
         config_body_class: @user.config_body_class,
         pro: @user.pro?,
         feed_style: feed_style_preference,
-        created_at: @user.created_at
+        created_at: @user.created_at,
+        admin: @user.any_admin?
       }
     end.to_json
   end
@@ -74,7 +75,9 @@ class AsyncInfoController < ApplicationController
   def user_cache_key
     "user-info-#{current_user&.id}__
     #{current_user&.last_sign_in_at}__
+    #{current_user&.following_tags_count}__
     #{current_user&.last_followed_at}__
+    #{current_user&.last_reacted_at}__
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
     #{current_user&.articles_count}__

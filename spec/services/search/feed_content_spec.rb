@@ -116,6 +116,24 @@ RSpec.describe Search::FeedContent, type: :service do
         expect(doc_ids).to include(article1.id)
       end
 
+      it "filters by multiple tag names when tag_boolean_mode is set to all" do
+        tag_one = create(:tag)
+        tag_two = create(:tag)
+        article1.tags << tag_one
+        article2.tags << tag_two
+        article2.tags << tag_one
+        index_documents([article1, article2])
+        query_params = {
+          tag_names: [tag_one.name, tag_two.name],
+          tag_boolean_mode: "all"
+        }
+
+        feed_docs = described_class.search_documents(params: query_params)
+        expect(feed_docs.count).to eq(1)
+        doc_ids = feed_docs.map { |t| t["id"] }
+        expect(doc_ids).to include(article2.id)
+      end
+
       it "filters by user_id" do
         index_documents([article1, article2])
         query_params = { size: 5, user_id: article1.user_id }

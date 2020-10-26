@@ -138,8 +138,14 @@ module Search
         TERM_KEYS.filter_map do |term_key, search_key|
           next unless @params.key? term_key
 
-          { terms: { search_key => Array.wrap(@params[term_key]) } }
-        end
+          values = Array.wrap(@params[term_key])
+
+          if params[:tag_boolean_mode] == "all" && term_key == :tag_names
+            values.map { |val| { term: { search_key => val } } }
+          else
+            { terms: { search_key => values } }
+          end
+        end.compact
       end
 
       def range_keys

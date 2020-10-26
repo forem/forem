@@ -196,14 +196,14 @@ RSpec.describe NotifyMailer, type: :mailer do
       it "includes the listings URL" do
         expect(email.html_part.body).to include(
           CGI.escape(
-            Rails.application.routes.url_helpers.listings_url,
+            Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
           ),
         )
       end
 
       it "includes the about listings URL" do
         expect(email.html_part.body).to include(
-          CGI.escape(Rails.application.routes.url_helpers.about_listings_url),
+          CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain)),
         )
       end
 
@@ -234,12 +234,14 @@ RSpec.describe NotifyMailer, type: :mailer do
 
       it "includes the listings URL" do
         expect(email.text_part.body).to include(
-          Rails.application.routes.url_helpers.listings_url,
+          Rails.application.routes.url_helpers.listings_url(host: SiteConfig.app_domain),
         )
       end
 
       it "includes the about listings URL" do
-        expect(email.text_part.body).to include(Rails.application.routes.url_helpers.about_listings_url)
+        expect(email.text_part.body).to include(
+          Rails.application.routes.url_helpers.about_listings_url(host: SiteConfig.app_domain),
+        )
       end
 
       it "includes the rewarding_context_message in the email" do

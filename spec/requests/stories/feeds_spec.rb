@@ -30,6 +30,34 @@ RSpec.describe "Stories::Feeds", type: :request do
       )
     end
 
+    it "returns feed when feed_strategy is basic" do
+      SiteConfig.feed_strategy = "basic"
+      get "/stories/feed"
+      expect(response_article).to include(
+        "id" => article.id,
+        "title" => title,
+        "user_id" => user.id,
+        "user" => hash_including("name" => user.name),
+        "organization_id" => organization.id,
+        "organization" => hash_including("name" => organization.name),
+        "tag_list" => article.decorate.cached_tag_list_array,
+      )
+    end
+
+    it "returns feed when feed_strategy is optimized" do
+      SiteConfig.feed_strategy = "optimized"
+      get "/stories/feed"
+      expect(response_article).to include(
+        "id" => article.id,
+        "title" => title,
+        "user_id" => user.id,
+        "user" => hash_including("name" => user.name),
+        "organization_id" => organization.id,
+        "organization" => hash_including("name" => organization.name),
+        "tag_list" => article.decorate.cached_tag_list_array,
+      )
+    end
+
     context "when rendering an article with an image" do
       let(:cloud_cover) { CloudCoverUrl.new(article.main_image) }
 
@@ -77,17 +105,17 @@ RSpec.describe "Stories::Feeds", type: :request do
     end
 
     context "when timeframe parameter is present" do
-      let(:feed_service) { Articles::Feed.new(number_of_articles: 1, page: 1, tag: []) }
+      let(:feed_service) { Articles::Feeds::LargeForemExperimental.new(number_of_articles: 1, page: 1, tag: []) }
 
       it "calls the feed service for a timeframe" do
-        allow(Articles::Feed).to receive(:new).and_return(feed_service)
+        allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(feed_service)
         allow(feed_service).to receive(:top_articles_by_timeframe).with(timeframe: "week").and_call_original
         get "/stories/feed/week", headers: headers
         expect(feed_service).to have_received(:top_articles_by_timeframe).with(timeframe: "week")
       end
 
       it "calls the feed service for latest" do
-        allow(Articles::Feed).to receive(:new).and_return(feed_service)
+        allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(feed_service)
         allow(feed_service).to receive(:latest_feed).and_call_original
         get "/stories/feed/latest", headers: headers
         expect(feed_service).to have_received(:latest_feed)
@@ -99,7 +127,8 @@ RSpec.describe "Stories::Feeds", type: :request do
         sign_in user
       end
 
-      it "sets a field test" do
+      it "sets a field test when feed_strategy is optimized" do
+        SiteConfig.feed_strategy = "optimized"
         expect do
           get "/stories/feed"
         end.to change(user.field_test_memberships, :count).by(1)
@@ -107,10 +136,45 @@ RSpec.describe "Stories::Feeds", type: :request do
         ftm = user.field_test_memberships.last
         expect(ftm.experiment).to eq("user_home_feed")
       end
+
+      it "does not set a field test when feed_strategy is basic" do
+        SiteConfig.feed_strategy = "basic"
+        expect do
+          get "/stories/feed"
+        end.not_to change(user.field_test_memberships, :count)
+      end
+
+      it "returns feed when feed_strategy is basic" do
+        SiteConfig.feed_strategy = "basic"
+        get "/stories/feed"
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+        )
+      end
+
+      it "returns feed when feed_strategy is optimized" do
+        SiteConfig.feed_strategy = "optimized"
+        get "/stories/feed"
+        expect(response_article).to include(
+          "id" => article.id,
+          "title" => title,
+          "user_id" => user.id,
+          "user" => hash_including("name" => user.name),
+          "organization_id" => organization.id,
+          "organization" => hash_including("name" => organization.name),
+          "tag_list" => article.decorate.cached_tag_list_array,
+        )
+      end
     end
 
     context "when there are no params passed (base feed) and user is not signed in" do
-      it "sets a field test" do
+      it "does not set a field test" do
         expect do
           get "/stories/feed"
         end.not_to change(FieldTest::Membership, :count)
@@ -134,7 +198,7 @@ RSpec.describe "Stories::Feeds", type: :request do
         sign_in user
       end
 
-      it "does not sets a field test" do
+      it "does not set a field test" do
         allow_any_instance_of(Stories::FeedsController).to receive(:field_test) # rubocop:disable RSpec/AnyInstance
 
         expect do

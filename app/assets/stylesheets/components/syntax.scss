@@ -1,0 +1,346 @@
+@import '../config/import';
+
+:root {
+  --syntax-background-color: #08090a;
+  --syntax-text-color: #f8f8f2;
+  --syntax-comment-color: #808080;
+  --syntax-declaration-color: #f39c12;
+  --syntax-literal-color: #dda0dd;
+  --syntax-error-color: #f9690e;
+  --syntax-name-color: #7ed07e;
+  --syntax-string-color: #f2ca27;
+}
+
+pre:not(.highlight),
+div.highlight,
+li pre.highlight,
+blockquote pre.highlight {
+  background: var(--syntax-background-color);
+  color: var(--syntax-text-color);
+  font-size: 80%;
+  border-radius: var(--radius);
+  margin: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overflow-wrap: initial;
+
+  code {
+    font-size: 100%;
+    padding: 0;
+  }
+}
+
+div.highlight {
+  position: relative;
+
+  // this a way to separate scroll of long code & icons in panel
+  .highlight {
+    overflow: auto;
+
+    padding: var(--su-2);
+
+    @media (min-width: $breakpoint-m) {
+      padding: var(--su-6);
+    }
+  }
+}
+
+.highlight__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  visibility: hidden;
+}
+
+.highlight:hover .highlight__panel {
+  visibility: visible;
+}
+
+.highlight__panel-action {
+  display: flex;
+  padding: var(--su-2);
+  overflow: hidden;
+  background: var(--base-60);
+  border-bottom-left-radius: var(--radius);
+  opacity: 0.9;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  & + & {
+    margin-left: 1px;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.highlight-action {
+  display: none;
+  width: var(--su-4);
+  height: var(--su-4);
+  cursor: pointer;
+}
+
+.highlight-action--fullscreen-on {
+  display: block;
+}
+
+.fullscreen-code {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100vh;
+  background: var(--syntax-background-color);
+  color: var(--syntax-text-color);
+  overflow: auto;
+  visibility: hidden;
+  transform: scale(0.01);
+  transition: transform var(--transition-props),
+    visibility var(--transition-props);
+
+  div.highlight {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .highlight__panel {
+    position: fixed;
+  }
+
+  .highlight-action--fullscreen-on {
+    display: none;
+  }
+
+  .highlight-action--fullscreen-off {
+    display: block;
+  }
+
+  &.is-open {
+    visibility: visible;
+    transform: scale(1);
+  }
+}
+
+code {
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--color-body-color);
+  border-radius: var(--radius);
+  max-width: 100%;
+  font-size: 80%;
+  padding: 0.1em 0.25em;
+}
+
+.highlight .hll {
+  background-color: #49483e;
+}
+.highlight {
+  background: var(--syntax-background-color);
+  color: var(--syntax-text-color);
+}
+.highlight .c {
+  color: var(--syntax-comment-color);
+} /* Comment */
+.highlight .err {
+  text-shadow: 0 0 7px var(--syntax-error-color);
+} /* Error */
+.highlight .k {
+  color: var(--syntax-declaration-color);
+} /* Keyword */
+.highlight .l {
+  color: var(--syntax-literal-color);
+} /* Literal */
+.highlight .n {
+  color: var(--syntax-text-color);
+} /* Name */
+.highlight .o {
+  color: var(--syntax-error-color);
+} /* Operator */
+.highlight .p {
+  color: var(--syntax-text-color);
+} /* Punctuation */
+.highlight .ch {
+  color: var(--syntax-comment-color);
+} /* Comment.Hashbang */
+.highlight .cm {
+  color: var(--syntax-comment-color);
+} /* Comment.Multiline */
+.highlight .cp {
+  color: var(--syntax-comment-color);
+} /* Comment.Preproc */
+.highlight .cpf {
+  color: var(--syntax-comment-color);
+} /* Comment.PreprocFile */
+.highlight .c1 {
+  color: var(--syntax-comment-color);
+} /* Comment.Single */
+.highlight .cs {
+  color: var(--syntax-comment-color);
+} /* Comment.Special */
+.highlight .gd {
+  color: var(--syntax-error-color);
+} /* Generic.Deleted */
+.highlight .ge {
+  font-style: italic;
+} /* Generic.Emph */
+.highlight .gi {
+  color: var(--syntax-name-color);
+} /* Generic.Inserted */
+.highlight .gs {
+  font-weight: var(--fw-bold);
+} /* Generic.Strong */
+.highlight .gu {
+  color: var(--syntax-comment-color);
+} /* Generic.Subheading */
+.highlight .kc {
+  color: var(--syntax-declaration-color);
+} /* Keyword.Constant */
+.highlight .kd {
+  color: var(--syntax-declaration-color);
+} /* Keyword.Declaration */
+.highlight .kn {
+  color: var(--syntax-error-color);
+} /* Keyword.Namespace */
+.highlight .kp {
+  color: var(--syntax-declaration-color);
+} /* Keyword.Pseudo */
+.highlight .kr {
+  color: var(--syntax-declaration-color);
+} /* Keyword.Reserved */
+.highlight .kt {
+  color: var(--syntax-declaration-color);
+} /* Keyword.Type */
+.highlight .ld {
+  color: var(--syntax-string-color);
+} /* Literal.Date */
+.highlight .m {
+  color: var(--syntax-literal-color);
+} /* Literal.Number */
+.highlight .s {
+  color: var(--syntax-string-color);
+} /* Literal.String */
+.highlight .na {
+  color: var(--syntax-name-color);
+} /* Name.Attribute */
+.highlight .nb {
+  color: var(--syntax-text-color);
+} /* Name.Builtin */
+.highlight .nc {
+  color: var(--syntax-name-color);
+} /* Name.Class */
+.highlight .no {
+  color: var(--syntax-declaration-color);
+} /* Name.Constant */
+.highlight .nd {
+  color: var(--syntax-name-color);
+} /* Name.Decorator */
+.highlight .ni {
+  color: var(--syntax-text-color);
+} /* Name.Entity */
+.highlight .ne {
+  color: var(--syntax-name-color);
+} /* Name.Exception */
+.highlight .nf {
+  color: var(--syntax-name-color);
+} /* Name.Function */
+.highlight .nl {
+  color: var(--syntax-text-color);
+} /* Name.Label */
+.highlight .nn {
+  color: var(--syntax-text-color);
+} /* Name.Namespace */
+.highlight .nx {
+  color: var(--syntax-name-color);
+} /* Name.Other */
+.highlight .py {
+  color: var(--syntax-text-color);
+} /* Name.Property */
+.highlight .nt {
+  color: var(--syntax-error-color);
+} /* Name.Tag */
+.highlight .nv {
+  color: var(--syntax-text-color);
+} /* Name.Variable */
+.highlight .ow {
+  color: var(--syntax-error-color);
+} /* Operator.Word */
+.highlight .w {
+  color: var(--syntax-text-color);
+} /* Text.Whitespace */
+.highlight .mb {
+  color: var(--syntax-literal-color);
+} /* Literal.Number.Bin */
+.highlight .mf {
+  color: var(--syntax-literal-color);
+} /* Literal.Number.Float */
+.highlight .mh {
+  color: var(--syntax-literal-color);
+} /* Literal.Number.Hex */
+.highlight .mi {
+  color: var(--syntax-literal-color);
+} /* Literal.Number.Integer */
+.highlight .mo {
+  color: var(--syntax-literal-color);
+} /* Literal.Number.Oct */
+.highlight .sa {
+  color: var(--syntax-string-color);
+} /* Literal.String.Affix */
+.highlight .sb {
+  color: var(--syntax-string-color);
+} /* Literal.String.Backtick */
+.highlight .sc {
+  color: var(--syntax-string-color);
+} /* Literal.String.Char */
+.highlight .dl {
+  color: var(--syntax-string-color);
+} /* Literal.String.Delimiter */
+.highlight .sd {
+  color: var(--syntax-string-color);
+} /* Literal.String.Doc */
+.highlight .s2 {
+  color: var(--syntax-string-color);
+} /* Literal.String.Double */
+.highlight .se {
+  color: var(--syntax-literal-color);
+} /* Literal.String.Escape */
+.highlight .sh {
+  color: var(--syntax-string-color);
+} /* Literal.String.Heredoc */
+.highlight .si {
+  color: var(--syntax-string-color);
+} /* Literal.String.Interpol */
+.highlight .sx {
+  color: var(--syntax-string-color);
+} /* Literal.String.Other */
+.highlight .sr {
+  color: var(--syntax-string-color);
+} /* Literal.String.Regex */
+.highlight .s1 {
+  color: var(--syntax-string-color);
+} /* Literal.String.Single */
+.highlight .ss {
+  color: var(--syntax-string-color);
+} /* Literal.String.Symbol */
+.highlight .bp {
+  color: var(--syntax-text-color);
+} /* Name.Builtin.Pseudo */
+.highlight .fm {
+  color: var(--syntax-name-color);
+} /* Name.Function.Magic */
+.highlight .vc {
+  color: var(--syntax-text-color);
+} /* Name.Variable.Class */
+.highlight .vg {
+  color: var(--syntax-text-color);
+} /* Name.Variable.Global */
+.highlight .vi {
+  color: var(--syntax-text-color);
+} /* Name.Variable.Instance */
+.highlight .vm {
+  color: var(--syntax-text-color);
+} /* Name.Variable.Magic */
+.highlight .il {
+  color: var(--syntax-literal-color);
+} /* Literal.Number.Integer.Long */
