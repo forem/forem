@@ -149,10 +149,7 @@ function navigate(
   if (nextFocusable) {
     nextFocusable.focus();
     if (!isInViewport(nextContainer, 64)) {
-      nextFocusable.scrollIntoView({
-        block: 'center',
-        inline: 'center',
-      });
+      window.scrollTo({ top: nextContainer.offsetTop - 64 });
     }
   }
 }
@@ -163,6 +160,8 @@ function navigate(
  * @param {object} element - The current element
  * @param {string} itemSelector - The selector for the highest level container of an item
  * @param {string} waterfallItemContainerSelector - The selector for the waterfall item container if the list uses a waterfall structure at any point
+ *
+ * @returns {object} The next element to focus on
  */
 function getNextElement(element, itemSelector, waterfallItemContainerSelector) {
   const sibling = element?.nextElementSibling;
@@ -181,6 +180,8 @@ function getNextElement(element, itemSelector, waterfallItemContainerSelector) {
  * @param {object} element - The current element
  * @param {string} itemSelector - The selector for the highest level container of an item
  * @param {string} waterfallItemContainerSelector - The selector for the waterfall item container if the list uses a waterfall structure at any point
+ *
+ * @returns {object} The previous element to focus on
  */
 function getPreviousElement(
   element,
@@ -209,6 +210,8 @@ function getPreviousElement(
  * Gets the first visible element that matches a selector
  *
  * @param {string} selector - The CSS selector
+ *
+ * @returns {object} The first visible element
  */
 function getFirstVisibleElement(selector) {
   const elements = document.querySelectorAll(selector);

@@ -8,7 +8,7 @@ const NAVIGATION_DOWN_KEY = 'KeyJ';
 
 describe('List navigation hook', () => {
   beforeAll(() => {
-    window.HTMLElement.prototype.scrollIntoView = function () {};
+    window.scrollTo = function () {};
   });
 
   it('should focus on first element when nothing is focused', () => {
