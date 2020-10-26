@@ -8,7 +8,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
 
   def validate_reply(id)
     fill_in "comment-textarea-for-#{id}", with: "thanks i guess"
-    click_button("SUBMIT")
+    click_button("Submit")
     expect(page).to have_css("div.reply-sent-notice")
 
     click_link("Check it out")

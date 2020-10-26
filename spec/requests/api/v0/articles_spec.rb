@@ -481,7 +481,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns success when requesting publiched articles with public token" do
+      it "returns success when requesting published articles with public token" do
         public_token = create(:doorkeeper_access_token, resource_owner: user, scopes: "public")
         get me_api_articles_path(status: :published), params: { access_token: public_token.token }
         expect(response.media_type).to eq("application/json")

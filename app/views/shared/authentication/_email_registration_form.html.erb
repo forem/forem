@@ -1,4 +1,9 @@
 <div id="sign-in-password-form" class="mt-8 mb-6 crayons-card p-7 align-left mx-auto" style="max-width:580px;">
+  <% if flash[:notice] %>
+    <div class="crayons-notice crayons-notice--danger mb-6">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
   <%= form_for(User.new, as: :user, url: registration_path(:user)) do |f| %>
     <% if defined?(resource) && resource&.errors&.any? %>
       <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger">
@@ -14,6 +19,12 @@
             <% end %>
           </ul>
         </div>
+      </div>
+    <% elsif forem_creator_flow_enabled? %>
+      <%# TODO: Vaidehi Joshi - Extract this into its own form %>
+      <div class="align-center">
+        <p class="pb-4 fw-bold">Almost there!</p>
+        <p class="registration__description">Let's create an admin account for your community.</p>
       </div>
     <% else %>
       <p class="pb-4 fw-bold">Create your account</p>
@@ -49,13 +60,31 @@
     </div>
 
     <% if ENV["FOREM_OWNER_SECRET"].present? && SiteConfig.waiting_on_first_user %>
-      <div class="crayons-field mt-2">
-        <%= f.label :forem_owner_secret, "Few Forem Secret", class: "crayons-field__label" %>
-        <%= f.password_field :forem_owner_secret, autocomplete: "current-password", class: "crayons-textfield", required: true, placeholder: "As provided by your Forem host" %>
+      <% if params[:forem_owner_secret].present? %>
+        <%= f.hidden_field :forem_owner_secret, value: params[:forem_owner_secret] %>
+      <% else %>
+        <div class="crayons-field mt-2">
+          <%= f.label :forem_owner_secret, "New Forem Secret", class: "crayons-field__label" %>
+          <%= f.password_field :forem_owner_secret, class: "crayons-textfield", required: true, placeholder: "As provided by your Forem host" %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% if recaptcha_configured_and_enabled? %>
+      <div class="recaptcha-tag-container mt-2">
+        <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>
       </div>
     <% end %>
-    <div class="actions pt-3">
-      <%= f.submit "Sign up", class: "crayons-btn" %>
-    </div>
+
+    <% if forem_creator_flow_enabled? %>
+      <%# TODO: Vaidehi Joshi - Extract this into its own form %>
+      <div class="flex flex-col pt-3">
+        <%= f.submit "Create admin account", class: "crayons-btn" %>
+      </div>
+    <% else %>
+      <div class="actions pt-3">
+        <%= f.submit "Sign up", class: "crayons-btn" %>
+      </div>
+    <% end %>
   <% end %>
 </div>

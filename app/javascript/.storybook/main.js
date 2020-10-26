@@ -2,6 +2,8 @@ const path = require('path');
 const marked = require('marked');
 const renderer = new marked.Renderer();
 
+const prettierConfig = require('../../../.prettierrc.json');
+
 module.exports = {
   stories: ['../**/__stories__/*.stories.jsx'],
   addons: [
@@ -10,6 +12,12 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-a11y',
     '@storybook/addon-notes/register-panel',
+    {
+      name: '@storybook/addon-storysource',
+      loaderOptions: {
+        prettierConfig,
+      },
+    },
   ],
   webpackFinal: async (config, { configType }) => {
     config.module.rules.push({

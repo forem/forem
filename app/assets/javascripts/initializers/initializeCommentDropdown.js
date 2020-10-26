@@ -123,7 +123,10 @@ function initializeCommentDropdown() {
   }
 
   function addDropdownListener(dropdown) {
-    dropdown.addEventListener('click', dropdownFunction);
+    if (!dropdown.getAttribute('has-dropdown-listener')) {
+      dropdown.addEventListener('click', dropdownFunction);
+      dropdown.setAttribute('has-dropdown-listener', 'true');
+    }
   }
 
   setTimeout(function addListeners() {

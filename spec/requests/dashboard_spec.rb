@@ -80,8 +80,16 @@ RSpec.describe "Dashboards", type: :request do
         expect(response.body).not_to include("Pro Analytics for #{organization.name}")
       end
 
-      it "does not render a link to upload a video" do
+      it "does not render a link to upload a video when enable_video_upload is false" do
         get dashboard_path
+        allow(SiteConfig).to receive(:enable_video_upload).and_return(false)
+
+        expect(response.body).not_to include("Upload a video")
+      end
+
+      it "does not render a link to upload a video for a recent user" do
+        get dashboard_path
+        allow(SiteConfig).to receive(:enable_video_upload).and_return(true)
 
         expect(response.body).not_to include("Upload a video")
       end
@@ -123,10 +131,11 @@ RSpec.describe "Dashboards", type: :request do
       end
     end
 
-    context "when logged in as a non recent user" do
+    context "when logged in as a non recent user with enable_video_upload set to true on the Forem" do
       it "renders a link to upload a video" do
         Timecop.freeze(Time.current) do
           user.update!(created_at: 3.weeks.ago)
+          SiteConfig.enable_video_upload = true
 
           sign_in user
           get dashboard_path

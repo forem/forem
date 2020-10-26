@@ -159,13 +159,6 @@
       color: var(--card-color-tertiary);
     }
 
-    a {
-      color: var(--card-color);
-      &.block-link {
-        display: block;
-      }
-    }
-
     h2 {
       font-weight: 500;
       margin-bottom: 10px;
@@ -280,54 +273,6 @@
         margin: 0;
         padding: 0;
         display: inline;
-
-        input[type='submit'],
-        button {
-          height: 30.4px;
-          border: 2px solid transparent;
-        }
-      }
-    }
-
-    .pill {
-      background: $bold-blue;
-      padding: 4px 20px;
-      border-radius: 100px;
-      color: white;
-      margin-right: 5px;
-      font-size: 14px;
-      border: 2px solid transparent;
-      margin-top: 6px;
-      display: inline-block;
-
-      &.yellow {
-        background: $yellow;
-        color: $black;
-        border: 2px solid $black;
-      }
-
-      &.green {
-        background: $green;
-        color: $black;
-      }
-
-      &.red {
-        background: $red;
-      }
-
-      &.black {
-        background: $dark-gray;
-      }
-
-      &.mute {
-        background-color: $medium-gray;
-        color: $white;
-      }
-
-      &.unmute {
-        // inverted background color
-        background-color: $blue;
-        color: $white;
       }
     }
 

@@ -20,7 +20,13 @@ RSpec.describe Images::Optimizer, type: :service do
       allow(described_class).to receive(:imgproxy)
     end
 
-    it "calls cloudinary on default" do
+    it "does nothing when given a relative url" do
+      relative_asset_path = "/assets/something.jpg"
+      expect(described_class.call(relative_asset_path)).to eq relative_asset_path
+    end
+
+    it "calls cloudinary if imgproxy is not enabled" do
+      allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
       described_class.call(image_url)
       expect(described_class).to have_received(:cloudinary)
     end
@@ -40,6 +46,7 @@ RSpec.describe Images::Optimizer, type: :service do
 
   describe "#cloudinary" do
     it "performs exactly like cl_image_path" do
+      allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
                                      width: 50, height: 50,
@@ -52,6 +59,7 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "generates correct url by relying on DEFAULT_CL_OPTIONS" do
+      allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
                                      quality: "auto",
@@ -67,6 +75,13 @@ RSpec.describe Images::Optimizer, type: :service do
       stub_imgproxy
       imgproxy_url = described_class.imgproxy(image_url, service: :imgproxy, width: 500, height: 500)
       expect(imgproxy_url).to match(%r{/s:500:500/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+    end
+  end
+
+  describe "#translate_cloudinary_options" do
+    it "Set resizing_type to fill if crop: fill is provided" do
+      options = { width: 100, height: 100, crop: "fill" }
+      expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fill")
     end
   end
 end
