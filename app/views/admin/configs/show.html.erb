@@ -141,7 +141,7 @@
                 </h3>
                 <div class="form-group">
                   <div class="crayons-field--checkbox">
-                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" }, class: "crayons-checkbox" %>
+                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableTargetField", disable_target: "authenticationProviders" }, class: "crayons-checkbox" %>
                     <div class="mt-0">
                       <%= admin_config_label :invite_only_mode %>
                       <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
@@ -461,6 +461,19 @@
                                    class: "crayons-textfield",
                                    value: SiteConfig.community_name,
                                    placeholder: Constants::SiteConfig::DETAILS[:community_name][:placeholder] %>
+                </div>
+
+                <div class="crayons-field">
+                  <%= admin_config_label :collective_noun %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:collective_noun][:description] %>
+                  <%= f.text_field :collective_noun,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.collective_noun,
+                                   placeholder: Constants::SiteConfig::DETAILS[:collective_noun][:placeholder],
+                                   disabled: SiteConfig.collective_noun_disabled,
+                                   data: { target: "config.collectiveNoun" } %>
+                  <%= admin_config_label :collective_noun_disabled %>
+                  <%= f.check_box :collective_noun_disabled, checked: SiteConfig.collective_noun_disabled, data: { action: "config#disableTargetField", disable_target: "collectiveNoun" }, class: "crayons-checkbox" %>
                 </div>
 
                 <div class="crayons-field">
