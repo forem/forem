@@ -230,7 +230,7 @@
                               class="crayons-btn crayons-btn--danger"
                               data-action="click->config#activateEmailAuthModal"
                               <%= SiteConfig.invite_only_mode ? 'disabled' : ''%>>
-                              <% if SiteConfig.invite_only_mode %>
+                              <% if SiteConfig.invite_only_mode || authentication_enabled_providers.none? %>
                                 <span
                                   class="crayons"
                                   data-tooltip="<%= Constants::SiteConfig::DETAILS[:invite_only_mode][:cannot_disable_email] %>">
