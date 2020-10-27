@@ -197,6 +197,7 @@ Object {
                     class="crayons-btn crayons-btn--s crayons-btn--secondary"
                     data-initial-feed="true"
                     data-reactable-id="62407"
+                    id="article-save-button-62407"
                     type="button"
                   >
                     Save
@@ -402,6 +403,7 @@ Object {
                   class="crayons-btn crayons-btn--s crayons-btn--secondary"
                   data-initial-feed="true"
                   data-reactable-id="62407"
+                  id="article-save-button-62407"
                   type="button"
                 >
                   Save
