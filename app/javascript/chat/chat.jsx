@@ -1654,6 +1654,7 @@ export default class Chat extends Component {
     el.value = `${before + name} ${after}`;
     el.selectionStart = start + name.length + 1;
     el.selectionEnd = start + name.length + 1;
+    el.dispatchEvent(new Event('input'));
     el.focus();
     this.setState({ showMemberlist: false });
   };
