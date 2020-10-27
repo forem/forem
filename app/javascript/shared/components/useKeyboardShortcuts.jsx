@@ -53,7 +53,7 @@ const defaultOptions = {
  * @param {object} [options = {}] An object for extra options
  *
  */
-export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = { timeout: 500 }) {
+export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = {}) {
   const [keyChain, setKeyChain] = useState([]);
   const [keyChainQueue, setKeyChainQueue] = useState(null);
   const [mergedOptions, setMergedOptions] = useState({...defaultOptions, ...options});
