@@ -22,15 +22,17 @@ describe('Keyboard shortcuts for components', () => {
       const shortcut = {
         "KeyA~KeyB": jest.fn()
       };
+      
+      const timeout = 505;
 
       renderHook(() =>
-        useKeyboardShortcuts(shortcut, document, { timeout: 1500 }),
+        useKeyboardShortcuts(shortcut, document, { timeout }),
       );
       fireEvent.keyDown(document, { code: "KeyA" });
       await new Promise(resolve => setTimeout(() => {
         fireEvent.keyDown(document, { code: "KeyB" });
         resolve();
-      },600));
+      }, timeout - 5));
 
       expect(shortcut["KeyA~KeyB"]).toHaveBeenCalledTimes(1);
     });
@@ -53,16 +55,17 @@ describe('Keyboard shortcuts for components', () => {
       const shortcut = {
         "KeyA~KeyB": jest.fn()
       };
+      
+      const timeout = 0;
 
       renderHook(() =>
-		const timeout = 0;
         useKeyboardShortcuts(shortcut, document, { timeout }),
       );
       fireEvent.keyDown(document, { code: "KeyA" });
       await new Promise(resolve => setTimeout(() => {
         fireEvent.keyDown(document, { code: "KeyB" });
         resolve();
-      },timeout + 25));
+      },timeout + 5));
 
       expect(shortcut["KeyA~KeyB"]).not.toHaveBeenCalled();
     });
