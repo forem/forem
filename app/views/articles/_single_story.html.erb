@@ -86,7 +86,7 @@
           <small class="crayons-story__tertiary fs-xs mr-2">
             <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
           </small>
-          <button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s bookmark-button" data-reactable-id="<%= story.id %>" aria-label="Save to reading list" title="Save to reading list">
+          <button type="button" id="article-save-button-<%= story.id %>" class="crayons-btn crayons-btn--secondary crayons-btn--s bookmark-button" data-reactable-id="<%= story.id %>" aria-label="Save to reading list" title="Save to reading list">
             <span class="bm-initial">Save</span>
             <span class="bm-success">Saved</span>
           </button>
