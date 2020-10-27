@@ -18,6 +18,40 @@ describe('Keyboard shortcuts for components', () => {
       expect(shortcut.KeyK).toHaveBeenCalledTimes(1);
     });
     
+    it('should fire a function when chained keydown is detected', async () => {
+      const shortcut = {
+        "KeyA~KeyB": jest.fn()
+      };
+
+      renderHook(() =>
+        useKeyboardShortcuts(shortcut, document),
+      );
+      fireEvent.keyDown(document, { code: "KeyA" });
+      await new Promise(resolve => setTimout(() => {
+        fireEvent.keyDown(document, { code: "KeyB" });
+        resolve();
+      },200));
+
+      expect(shortcut["KeyA~KeyB"]).toHaveBeenCalledTimes(1);
+    });
+    
+    it('should not fire a function when chained keydown is missed', async () => {
+      const shortcut = {
+        "KeyA~KeyB": jest.fn()
+      };
+
+      renderHook(() =>
+        useKeyboardShortcuts(shortcut, document),
+      );
+      fireEvent.keyDown(document, { code: "KeyA" });
+      await new Promise(resolve => setTimout(() => {
+        fireEvent.keyDown(document, { code: "KeyB" });
+        resolve();
+      },600));
+
+      expect(shortcut["KeyA~KeyB"]).not.toHaveBeenCalled();
+    });
+    
     it('should not add event listener if shortcut object is empty', () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
 
