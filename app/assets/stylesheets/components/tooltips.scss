@@ -1,0 +1,31 @@
+.crayons-tooltip[data-tooltip] {
+  position: relative;
+
+  &:after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: var(--base-a90);
+    color: var(--base-inverted);
+    font-size: var(--fs-s);
+    padding: var(--su-2) var(--su-3);
+    max-width: 256px;
+    width: max-content;
+    border-radius: var(--radius);
+    font-family: var(--ff-sans-serif);
+    font-weight: var(--fw-normal);
+    line-height: var(--lh-tight);
+    transform: translateY(var(--su-1));
+    opacity: 0;
+    transition: all var(--transition-props);
+    z-index: 1000;
+  }
+
+  &:hover {
+    &:after {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
