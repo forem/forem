@@ -45,7 +45,7 @@ function isFormField(element) {
  */
 export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
   const [keyChain, setKeyChain] = useState([]);
-  const [keyChainQueue, setKeyChainQueue] = useState([]);
+  const [keyChainQueue, setKeyChainQueue] = useState(null);
 
   // Work out the correct shortcut for the key press
   const callShortcut = useCallback((e, keys) => {
