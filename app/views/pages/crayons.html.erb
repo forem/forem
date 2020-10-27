@@ -58,9 +58,19 @@
 <div class="container">
   <div class="body">
     <h2>Tooltips</h2>
+    <p>Tooltips should be short, simple and without any styling - just pure text. Its purpose is to provide some additional context or explanation.</p>
+    <p>Keep in mind they should be only ADDITIONAL information since tooltips are accessible on :hover which means you may not really see the tooltip content while on mobile.</p>
     <p>Hover over the label below to see a tooltip.</p>
-    <p>You can <strong class="crayons-tooltip" data-tooltip="* - required">hover here</strong> to see the tooltip.</p>
+    <p>All you have to do to set up this kind of a tooltip is add <code>crayons-tooltip</code> class name to an element as well as <code>data-tooltip</code> attribute which will contain the tooltip content.</p>
   </div>
+
+  <div>
+    <p>You can <strong class="crayons-tooltip" data-tooltip="* - required">hover here</strong> to see the tooltip</p>
+  </div>
+
+  <pre><%= '
+  <p>You can <strong class="crayons-tooltip" data-tooltip="* - required">hover here</strong> to ...</p>
+  '.rstrip %></pre>
 </div>
 
 <div class="container">
