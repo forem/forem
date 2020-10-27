@@ -3,45 +3,18 @@
   <div class="side-bar">
     <div class="user-sidebar">
       <% cache "user-profile-sidebar-profile-details-#{@user.id}-#{@user.profile_updated_at}", expires_in: 10.days do %>
-        <% if @user.mostly_work_with.present? %>
-          <div class="widget">
-            <header>
-              <h4>skills/languages</h4>
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.mostly_work_with %>
+        <% ProfileField.where(display_area: :left_sidebar).each do |pf| %>
+          <% value = @user.profile.public_send(pf.attribute_name) %>
+          <% if value.present? %>
+            <div class="widget">
+              <header>
+                <h4><%= pf.label %></h4>
+              </header>
+              <div class="widget-body">
+                <%= sanitized_sidebar value %>
+              </div>
             </div>
-          </div>
-        <% end %>
-        <% if @user.currently_learning.present? %>
-          <div class="widget">
-            <header>
-              <h4>learning/trying</h4>
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.currently_learning %>
-            </div>
-          </div>
-        <% end %>
-        <% if @user.currently_hacking_on.present? %>
-          <div class="widget">
-            <header>
-              <h4>projects and hacks</h4>
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.currently_hacking_on %>
-            </div>
-          </div>
-        <% end %>
-        <% if @user.available_for.present? %>
-          <div class="widget">
-            <header>
-              <h4>available for</h4>
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.available_for %>
-            </div>
-          </div>
+          <% end %>
         <% end %>
       <% end %>
       <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}", expires_in: 10.days do %>
@@ -60,3 +33,4 @@
     </div>
   </div>
 </div>
+
