@@ -232,7 +232,7 @@
 .zen-mode {
   --site-width: 1024px;
   --header-height: 0;
-  .crayons-layout {
+  .crayons-layout--3-cols {
     --layout: var(--layout-sidebar-left-width) 1fr;
     @media (min-width: $breakpoint-m) {
       --layout: var(--layout-sidebar-left-width) 1fr;
