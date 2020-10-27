@@ -59,20 +59,6 @@ export default class ConfigController extends Controller {
     'requireCaptchaForEmailPasswordRegistration',
   ];
 
-  disableAuthenticationOptions() {
-    if (this.inviteOnlyModeTarget.checked) {
-      this.authenticationProvidersTarget.disabled = true;
-      document.querySelector(
-        'button[data-id=site_config_authentication_providers]',
-      ).disabled = true;
-    } else {
-      this.authenticationProvidersTarget.disabled = false;
-      document.querySelector(
-        'button[data-id=site_config_authentication_providers]',
-      ).disabled = false;
-    }
-  }
-
   disableTargetField(event) {
     const targetElementName = event.target.dataset.disableTarget;
     const targetElement = this[`${targetElementName}Target`];
