@@ -12,7 +12,7 @@ class SiteConfig < RailsSettings::Base
 
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
-  MAIN_SOCIAL_IMAGE = File.read(Rails.root.join("app/assets/images/social-media-cover.png")).freeze
+  MAIN_SOCIAL_IMAGE = ActionController::Base.helpers.image_url("social-media-cover.png").freeze
 
   # Meta
   field :admin_action_taken_at, type: :datetime, default: Time.current
