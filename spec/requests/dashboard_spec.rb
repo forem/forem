@@ -135,7 +135,7 @@ RSpec.describe "Dashboards", type: :request do
       it "renders a link to upload a video" do
         Timecop.freeze(Time.current) do
           user.update!(created_at: 3.weeks.ago)
-          SiteConfig.enable_video_upload = true
+          allow(SiteConfig).to receive(:enable_video_upload).and_return(true)
 
           sign_in user
           get dashboard_path

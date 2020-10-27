@@ -664,7 +664,6 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.home_feed_minimum_score).to eq(home_feed_minimum_score)
         end
 
-
         it "updates the brand color if proper hex" do
           hex = "#0a0a0a" # dark enough
           post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
@@ -694,6 +693,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates public to false" do
+          allow(SiteConfig).to receive(:public).and_return(false)
           is_public = false
           post "/admin/config", params: { site_config: { public: is_public },
                                           confirmation: confirmation_message }
