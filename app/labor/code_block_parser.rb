@@ -37,6 +37,21 @@ module CodeBlockParser
     doc.to_html
   end
 
+  def wrap_list_codeblock_pretag_with_div(html)
+    doc = Nokogiri::HTML.fragment(html)
+    doc.search("li>pre.highlight").each do |codeblock|
+      codeblock.wrap("<div class='highlight'></div>")
+    end
+    doc.search("blockquote>pre.highlight").each do |codeblock|
+      codeblock.wrap("<div class='highlight'></div>")
+    end
+    doc.search("pre:not(.highlight)").each do |codeblock|
+      codeblock.wrap("<div class='highlight'></div>")
+      codeblock.add_class("highlight")
+    end
+    doc.to_html
+  end
+
   def add_control_class_to_codeblock(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("div.highlight").each do |codeblock|

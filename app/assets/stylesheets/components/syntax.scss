@@ -12,9 +12,7 @@
 }
 
 pre:not(.highlight),
-div.highlight,
-li pre.highlight,
-blockquote pre.highlight {
+div.highlight {
   background: var(--syntax-background-color);
   color: var(--syntax-text-color);
   font-size: 80%;
