@@ -12,7 +12,13 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#community_qualified_name" do
     it "equals to the full qualified community name" do
-      expected_name = "#{SiteConfig.community_name} Community"
+      allow(SiteConfig).to receive(:collective_noun_disabled).and_return(true)
+      expected_name = SiteConfig.community_name.to_s
+      expect(helper.community_qualified_name).to eq(expected_name)
+
+      allow(SiteConfig).to receive(:collective_noun).and_return("Flock")
+      allow(SiteConfig).to receive(:collective_noun_disabled).and_return(false)
+      expected_name = "#{SiteConfig.community_name} #{SiteConfig.collective_noun}"
       expect(helper.community_qualified_name).to eq(expected_name)
     end
   end

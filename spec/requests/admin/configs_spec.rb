@@ -105,6 +105,13 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.community_name).to eq(name_magoo)
         end
 
+        it "updates the collective_noun" do
+          collective_noun = "Rhumba"
+          post "/admin/config", params: { site_config: { collective_noun: collective_noun },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.collective_noun).to eq(collective_noun)
+        end
+
         it "updates the community_member_label" do
           name = "developer"
           post "/admin/config", params: { site_config: { community_member_label: name },
@@ -663,7 +670,6 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.home_feed_minimum_score).to eq(home_feed_minimum_score)
         end
-
 
         it "updates the brand color if proper hex" do
           hex = "#0a0a0a" # dark enough

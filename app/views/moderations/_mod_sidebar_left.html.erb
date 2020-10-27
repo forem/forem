@@ -1,35 +1,55 @@
-<aside class="crayons-layout__sidebar-left">
-  <h1 class="crayons-title mb-6 pl-2">
+<aside class="crayons-layout__sidebar-left crayons-page-header grid gap-1 m:block">
+  <h1 class="crayons-title mb-0 pl-0 m:pl-2 m:mb-6">
     Mod Center
   </h1>
+
   <nav class="mod-center--nav" aria-label="Mod center inbox navigation">
-    <h3 class="crayons-subtitle-3 mb-4 pl-2">
+    <h3 class="crayons-subtitle-3 mb-2 pl-2 hidden m:block">
       Inbox
     </h3>
-    <div id="mod-center-inbox" class="mod-center-inbox">
+
+    <div id="mod-center-inbox" class="mod-center--nav--medium hidden m:block">
+      <a
+        href="<%= "#{URL.url}/mod" %>"
+        class="crayons-link crayons-link--block <%= "crayons-link--current" if @tag.blank? %>"
+        data-tag-name="All topics">
+        All topics
+      </a>
       <% if @current_user_tags.any? %>
         <% @current_user_tags.each do |tag| %>
-          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block inbox-tags<%= " crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
+          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block <%= "crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
             #<%= tag %>
             <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
           </a>
         <% end %>
       <% end %>
+    </div>
+
+    <div id="mod-center-inbox" class="mod-center--nav--default crayons-tabs crayons-tabs--scrollable flex m:hidden">
       <a
         href="<%= "#{URL.url}/mod" %>"
-        class="crayons-link crayons-link--block inbox-tags<%= " crayons-link--current" if @tag.blank? %>"
+        class="crayons-tabs__item <%= "crayons-tabs__item--current" if @tag.blank? %>"
         data-tag-name="All topics">
         All topics
       </a>
+      <% if @current_user_tags.any? %>
+        <% @current_user_tags.each do |tag| %>
+          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-tabs__item <%= "crayons-tabs__item--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
+            #<%= tag %>
+            <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
+          </a>
+        <% end %>
+      <% end %>
     </div>
   </nav>
-  <nav class="mod-center--nav" aria-label="Mod center resources navigation">
-    <h3 class="crayons-subtitle-3 mb-4 pl-2">
+
+  <nav class="mod-center--nav hidden m:block" aria-label="Mod center resources navigation">
+    <h3 class="crayons-subtitle-3 mb-2 pl-2">
       Resources
     </h3>
     <div id="mod-center-other-options">
       <% if @community_mod_channel %>
-        <a href="/connect/<%= @community_mod_channel.slug %>" target="_blank" rel="noopener noreferrer nofollow" class="crayons-link crayons-link--block mod-center--nav__item">
+        <a href="/connect/<%= @community_mod_channel.slug %> " target=" _blank " rel="noopener noreferrer nofollow" class="crayons-link crayons-link--block mod-center--nav__item">
           Connect Channel
           <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
         </a>
@@ -46,8 +66,12 @@
   </nav>
   <% if @community_mod_channel %>
     <div class="fs-s mod-feedback">
-      <span class="fw-medium">Have feedback to improve your Mod experience?</span>
-      <span>Please share in your Connect Channel!</span>
+      <span class="fw-medium">
+        Have feedback to improve your Mod experience?
+      </span>
+      <span>
+        Please share in your Connect Channel!
+      </span>
     </div>
   <% end %>
 </aside>

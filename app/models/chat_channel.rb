@@ -112,10 +112,11 @@ class ChatChannel < ApplicationRecord
   end
 
   def pusher_channels
+    # TODO: use something more unique here (uuid?) rather than just id.
     if invite_only?
-      "private-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
+      "private-channel--#{ApplicationConfig['APP_DOMAIN']}-#{id}"
     elsif open?
-      "open-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
+      "open-channel--#{ApplicationConfig['APP_DOMAIN']}-#{id}"
     else
       chat_channel_memberships.pluck(:user_id).map { |id| ChatChannel.pm_notifications_channel(id) }
     end
@@ -165,7 +166,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def self.pm_notifications_channel(user_id)
-    "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{user_id}"
+    "private-message-notifications--#{ApplicationConfig['APP_DOMAIN']}-#{user_id}"
   end
 
   private
