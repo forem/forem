@@ -106,7 +106,7 @@ export default class ConfigController extends Controller {
       emailAuthModalTitle,
       emailAuthModalBody,
       'Confirm',
-      'disableEmailAuth',
+      'disableEmailAuthFromModal',
       'Cancel',
       'closeAdminConfigModal',
     );
@@ -123,9 +123,15 @@ export default class ConfigController extends Controller {
     document.body.style.overflowY = 'inherit';
   }
 
-  disableEmailAuth() {
+  disableEmailAuthFromModal() {
     event.preventDefault();
     emailSigninAndLoginCheckbox.checked = false;
     this.closeAdminConfigModal();
+  }
+
+  disableEmailAuth() {
+    event.preventDefault();
+    emailSigninAndLoginCheckbox.checked = false;
+    this.hideEmailAuthSettings();
   }
 }

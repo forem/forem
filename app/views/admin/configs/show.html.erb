@@ -231,7 +231,9 @@
                               data-action="click->config#activateEmailAuthModal"
                               <%= SiteConfig.invite_only_mode ? 'disabled' : ''%>>
                               <% if SiteConfig.invite_only_mode %>
-                                <span class="crayons" data-tooltip="I'll be in the tooltip">
+                                <span
+                                  class="crayons"
+                                  data-tooltip="<%= Constants::SiteConfig::DETAILS[:invite_only_mode][:cannot_disable_email] %>">
                                   Disable
                                 <span>
                               <% else %>
@@ -239,11 +241,19 @@
                               <% end %>
                             </button>
                           <% end %>
-                          <button
-                            class="crayons-btn crayons-btn--secondary"
-                            data-action="click->config#hideEmailAuthSettings">
-                            Close
-                          </button>
+                          <% if SiteConfig.allow_both_email_signup_and_login %>
+                            <button
+                              class="crayons-btn crayons-btn--secondary"
+                              data-action="click->config#hideEmailAuthSettings">
+                              Close
+                            </button>
+                          <% else %>
+                            <button
+                              class="crayons-btn crayons-btn--secondary"
+                              data-action="click->config#disableEmailAuth">
+                              Undo
+                            </button>
+                          <% end %>
                         </div>
                       </fieldset>
                     </div>
