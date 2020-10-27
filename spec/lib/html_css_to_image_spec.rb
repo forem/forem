@@ -17,12 +17,13 @@ RSpec.describe HtmlCssToImage, type: :lib do
                    body: '{ "error": "Plan limit exceeded" }',
                    headers: { "Content-Type" => "application/json" })
 
-      expect(described_class.url(html: "test")).to eq described_class::FALLBACK_IMAGE
+      expect(described_class.url(html: "test")).to eq described_class.fallback_image
     end
   end
 
   describe ".fetch_url" do
     before do
+      allow(SiteConfig).to receive(:main_social_image).and_return("https://testimage.com/image.png")
       allow(Rails.cache).to receive(:write)
       allow(Rails.cache).to receive(:read)
     end
@@ -57,7 +58,7 @@ RSpec.describe HtmlCssToImage, type: :lib do
                    body: '{ "error": "Plan limit exceeded" }',
                    headers: { "Content-Type" => "application/json" })
 
-      expect(described_class.fetch_url(html: "test")).to eq described_class::FALLBACK_IMAGE
+      expect(described_class.fetch_url(html: "test")).to eq described_class.fallback_image
       expect(Rails.cache).not_to have_received(:write)
     end
   end
