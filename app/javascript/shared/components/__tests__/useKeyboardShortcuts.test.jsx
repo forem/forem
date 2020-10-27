@@ -35,7 +35,7 @@ describe('Keyboard shortcuts for components', () => {
       expect(shortcut["KeyA~KeyB"]).toHaveBeenCalledTimes(1);
     });
     
-    it('should fire a function when chained keydown is detected', async () => {
+    it('should fire a function when chained keydown is detected', () => {
       const shortcut = {
         "KeyA~KeyB": jest.fn()
       };
@@ -44,7 +44,7 @@ describe('Keyboard shortcuts for components', () => {
         useKeyboardShortcuts(shortcut, document),
       );
       fireEvent.keyDown(document, { code: "KeyA" });
-      await fireEvent.keyDown(document, { code: "KeyB" });
+      fireEvent.keyDown(document, { code: "KeyB" });
 
       expect(shortcut["KeyA~KeyB"]).toHaveBeenCalledTimes(1);
     });
