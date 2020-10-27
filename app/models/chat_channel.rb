@@ -170,8 +170,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def self.pusher_valid_app_domain
-    # as of 10/27/2020 this is /[^A-Za-z0-9_\-=@,.;]/
-    ApplicationConfig["APP_DOMAIN"].gsub(Pusher::Channel::INVALID_CHANNEL_REGEX, "")
+    Base64.strict_encoding64(ApplicationConfig["APP_DOMAIN"])
   end
 
   private
