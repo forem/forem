@@ -1,7 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "User index", type: :system, stub_elasticsearch: true do
-  let!(:user) { create(:user) }
+  let!(:profile) { create(:profile, data: { currently_hacking_on: "profiles" }) }
+  let!(:user) { profile.user }
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article) }
   let!(:comment) { create(:comment, user: user, commentable: other_article) }
@@ -10,6 +11,8 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
   context "when user is unauthorized" do
     context "when 1 article" do
       before do
+        ProfileField.create(label: "Currently hacking on", display_area: :left_sidebar)
+        Profile.refresh_attributes!
         Timecop.freeze
         visit "/#{user.username}"
       end
@@ -18,6 +21,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
 
       it "shows all proper elements", :aggregate_failures, js: true do
         shows_header
+        show_profile_sidebar
         shows_title
         shows_articles
         shows_comments
@@ -28,6 +32,13 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
         within("h1") { expect(page).to have_content(user.name) }
         within(".profile-header__actions") do
           expect(page).to have_button("Follow")
+        end
+      end
+
+      def show_profile_sidebar
+        within(".side-bar") do
+          expect(page).to have_content("Currently hacking on")
+          expect(page).to have_content("profiles")
         end
       end
 
