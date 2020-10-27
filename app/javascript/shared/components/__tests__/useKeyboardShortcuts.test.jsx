@@ -27,7 +27,7 @@ describe('Keyboard shortcuts for components', () => {
         useKeyboardShortcuts(shortcut, document),
       );
       fireEvent.keyDown(document, { code: "KeyA" });
-      await new Promise(resolve => setTimout(() => {
+      await new Promise(resolve => setTimeout(() => {
         fireEvent.keyDown(document, { code: "KeyB" });
         resolve();
       },200));
@@ -44,7 +44,7 @@ describe('Keyboard shortcuts for components', () => {
         useKeyboardShortcuts(shortcut, document),
       );
       fireEvent.keyDown(document, { code: "KeyA" });
-      await new Promise(resolve => setTimout(() => {
+      await new Promise(resolve => setTimeout(() => {
         fireEvent.keyDown(document, { code: "KeyB" });
         resolve();
       },600));
