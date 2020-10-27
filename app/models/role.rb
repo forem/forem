@@ -33,6 +33,9 @@ class Role < ApplicationRecord
 
   scopify
 
+  # Returns a somewhat friendly name for the resource related to a given role.
+  # In the case of Tag Moderators, a resource_type is not present, so we use the
+  # resource_id to grab the specific Tag related to that moderator's role.
   def resource_name
     return resource_type unless resource_id
 
