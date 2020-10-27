@@ -42,9 +42,6 @@ class UsersController < ApplicationController
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
-      if config_changed?
-        notice = "Your config has been updated. Refresh to see all changes."
-      end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
         ExportContentWorker.perform_async(@user.id, @user.email)
@@ -52,7 +49,10 @@ class UsersController < ApplicationController
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}"
+      respond_to do |format|
+        format.html { redirect_to "/settings/#{@tab}" }
+        format.js
+      end
     else
       Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
       Honeycomb.add_field("errored", true)
@@ -318,8 +318,20 @@ class UsersController < ApplicationController
     @tab = current_tab
   end
 
-  def config_changed?
-    params[:user].include?(:config_theme)
+  def less_than_one_day_old?(user)
+    # we check all the `_created_at` fields for all available providers
+    # we use `.available` and not `.enabled` to avoid a situation in which
+    # an admin disables an authentication method after users have already
+    # registered, risking that they would be flagged as new
+    # the last one is a fallback in case all created_at fields are nil
+    user_identity_age = Authentication::Providers.available.map do |provider|
+      user.public_send("#{provider}_created_at")
+    end.detect(&:present?)
+
+    user_identity_age = user_identity_age.presence || 8.days.ago
+
+    range = 1.day.ago.beginning_of_day..Time.current
+    range.cover?(user_identity_age)
   end
 
   def destroy_request_in_progress?
