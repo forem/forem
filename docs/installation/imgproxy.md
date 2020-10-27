@@ -3,13 +3,19 @@ title: Imgproxy
 ---
 
 Imgproxy is a standalone server for resizing images. It is optional and you do
-not need it to start Forem. We are currently only it using Forem-cloud's
-application.
+not need it to start Forem locally. We are currently only it using Forem Cloud.
 
 ## Installation
 
-On macOS, use homebrew with `brew install imgproxy`. For others, please see the
-[official documentation](https://docs.imgproxy.net/#/installation)
+- MacOS: use homebrew with `brew install imgproxy`.
+- Window: please install
+  [via docker](https://docs.imgproxy.net/#/installation?id=docker).
+- Linux: you can either use
+  [docker installation](https://docs.imgproxy.net/#/installation?id=docker) or
+  [build from source](https://docs.imgproxy.net/#/installation?id=from-the-source).
+
+For more options not covered here, please take a look at the
+[official installation documentation](https://docs.imgproxy.net/#/installation).
 
 ## Usage
 
@@ -29,7 +35,7 @@ load.
 ## Sidenote.
 
 - Because Imgproxy is a standalone server of its own, all images URL given to it
-  needs to be an absolute URL.
+  need to be an absolute URLs.
 - When working with docker/podman on Linux, provide the host network option, ie
-  `docker run -p 8080:8080 --network="host" -it darthsim/imgproxy` so Imgproxy
-  can properly access the localhost.
+  `{docker|podman} run -p 8080:8080 --network="host" -it darthsim/imgproxy` so
+  Imgproxy can properly access the localhost.
