@@ -46,17 +46,21 @@ module AssignTagModerator
     user.update(email_tag_mod_newsletter: true) if user.email_tag_mod_newsletter == false
     user.add_role(:tag_moderator, tag)
     Rails.cache.delete("user-#{user.id}/tag_moderators_list")
-    MailchimpBot.new(user).manage_tag_moderator_list
+    MailchimpBot.new(user).manage_tag_moderator_list if tag_mod_newsletter_enabled?
   end
 
   def self.remove_tag_moderator(user, tag)
     user.remove_role(:tag_moderator, tag)
     user.update(email_tag_mod_newsletter: false) if user.email_tag_mod_newsletter == true
     Rails.cache.delete("user-#{user.id}/tag_moderators_list")
-    MailchimpBot.new(user).manage_tag_moderator_list
+    MailchimpBot.new(user).manage_tag_moderator_list if tag_mod_newsletter_enabled?
   end
 
   def self.chat_channel_slug(tag)
     tag.mod_chat_channel&.slug
+  end
+
+  def self.tag_mod_newsletter_enabled?
+    SiteConfig.mailchimp_api_key.present? && SiteConfig.mailchimp_tag_moderators_id.present?
   end
 end
