@@ -55,7 +55,8 @@ describe('Keyboard shortcuts for components', () => {
       };
 
       renderHook(() =>
-        useKeyboardShortcuts(shortcut, document),
+		const timeout = 0;
+        useKeyboardShortcuts(shortcut, document, { timeout }),
       );
       fireEvent.keyDown(document, { code: "KeyA" });
       await new Promise(resolve => setTimeout(() => {
