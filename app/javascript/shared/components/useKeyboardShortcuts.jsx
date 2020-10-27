@@ -22,6 +22,11 @@ function isFormField(element) {
   );
 };
 
+// Default options to be used if null
+const defaultOptions = {
+  timeout: 500
+};
+
 /**
  * hook that can be added to a component to listen
  * for keyboard presses
@@ -48,9 +53,10 @@ function isFormField(element) {
  * @param {object} [options = {}] An object for extra options
  *
  */
-export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = {}) {
+export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = { timeout: 500 }) {
   const [keyChain, setKeyChain] = useState([]);
   const [keyChainQueue, setKeyChainQueue] = useState(null);
+  const [mergedOptions, setMergedOptions] = useState({...defaultOptions, ...options});
 
   // Work out the correct shortcut for the key press
   const callShortcut = useCallback((e, keys) => {
@@ -67,6 +73,11 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = 
       setKeyChain([]);
     }
   }, [shortcuts, keyChain]);
+  
+  // update mergedOptions if options prop changes
+  useEffect(() => {
+    setMergedOptions({...defaultOptions, ...options})
+  },[options])
 
   // Set up key chains
   useEffect(() => {
@@ -76,7 +87,7 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = 
     timeout = window.setTimeout(() => {
       clearTimeout(timeout);
       setKeyChain([]);
-    }, options.timeout || 500);
+    }, mergedOptions.timeout);
 
     if (keyChainQueue) {
       setKeyChain([...keyChain, keyChainQueue]);
@@ -84,7 +95,7 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = 
     }
 
     return () => clearTimeout(timeout);
-  }, [keyChain, keyChainQueue, options]);
+  }, [keyChain, keyChainQueue, mergedOptions]);
 
   // set up event listeners
   useEffect(() => {
