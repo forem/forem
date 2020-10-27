@@ -118,6 +118,12 @@ label {
     padding-top: var(--su-4);
     padding-bottom: var(--su-4);
   }
+
+  &--align {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
 }
 
 .config-authentication-form {
