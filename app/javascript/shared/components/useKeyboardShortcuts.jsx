@@ -32,18 +32,23 @@ function isFormField(element) {
  *     e.preventDefault();
  *     alert("Control Alt G has been pressed");
  *   },
+  *   "KeyG~KeyH": (e) => {
+ *     e.preventDefault();
+ *     alert("G has been pressed quickly followed by H");
+ *   },
  *   "?": (e) => {
  *     setIsHelpVisible(true);
  *   }
  * }
  *
- * useKeyboardShortcuts(shortcuts, someElementOrWindowObject);
+ * useKeyboardShortcuts(shortcuts, someElementOrWindowObject, {timeout: 1500});
  *
  * @param {object} shortcuts List of keyboard shortcuts/event
  * @param {EventTarget} [eventTarget=window] An event target.
+ * @param {object} [options = {}] An object for extra options
  *
  */
-export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
+export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = {}) {
   const [keyChain, setKeyChain] = useState([]);
   const [keyChainQueue, setKeyChainQueue] = useState(null);
 
@@ -71,7 +76,7 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
     timeout = window.setTimeout(() => {
       clearTimeout(timeout);
       setKeyChain([]);
-    }, 500);
+    }, options.timeout || 500);
 
     if (keyChainQueue) {
       setKeyChain([...keyChain, keyChainQueue]);
@@ -79,7 +84,7 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
     }
 
     return () => clearTimeout(timeout);
-  }, [keyChain, keyChainQueue]);
+  }, [keyChain, keyChainQueue, options]);
 
   // set up event listeners
   useEffect(() => {
@@ -127,20 +132,23 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
  *
  * @param {object} shortcuts List of keyboard shortcuts/event
  * @param {EventTarget} [eventTarget=window] An event target.
+ * @param {object} [options = {}] An object for extra options
  *
  */
-export function KeyboardShortcuts({ shortcuts, eventTarget }) {
-  useKeyboardShortcuts(shortcuts, eventTarget);
+export function KeyboardShortcuts({ shortcuts, eventTarget, options }) {
+  useKeyboardShortcuts(shortcuts, eventTarget, options);
 
   return null;
 }
 
 KeyboardShortcuts.propTypes = {
   shortcuts: PropTypes.object.isRequired,
+  options: PropTypes.object,
   eventTarget: PropTypes.instanceOf(Element)
 }
 
 KeyboardShortcuts.defaultProps = {
   shortcuts: {},
+  options: {},
   eventTarget: window
 }
