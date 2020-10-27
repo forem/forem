@@ -26,11 +26,17 @@ For more options not covered here, please take a look at the
 1. Startup the Forem app.
 1. That's it :)
 
-You should verify it's working by checking a user's profile image. It should
-have a structure similar to
-`http://localhost:8080/unsafe/rs:fill:320:320/aHR0cDovL2xvY2Fs/aG9zdD.......`.
-You should also see activities from Imgproxy terminal and all the images should
-load.
+You should verify it's working by starting the forem app locally and see that
+each image are loaded properly, or run the following command:
+
+```
+> curl -I http://localhost:8080/unsafe/aHR0cDovL2xvY2Fs/aG9zdDozMDAwL2Fz/c2V0cy8xLnBuZw
+
+HTTP/1.1 200 OK
+Server: imgproxy
+X-Request-Id: GYvCGXb98JUwL3ujwpjzh
+Date: Tue, 27 Oct 2020 16:11:37 GMT
+```
 
 ## Sidenote.
 
