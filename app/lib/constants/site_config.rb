@@ -49,6 +49,10 @@ module Constants
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
       },
+      collective_noun: {
+        description: "Used to describe your collective identity.",
+        placeholder: "Herd"
+      },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s

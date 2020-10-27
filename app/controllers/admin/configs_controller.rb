@@ -14,6 +14,8 @@ module Admin
     COMMUNITY_PARAMS =
       %i[
         community_name
+        collective_noun
+        collective_noun_disabled
         community_description
         community_member_label
         community_copyright_start_year
