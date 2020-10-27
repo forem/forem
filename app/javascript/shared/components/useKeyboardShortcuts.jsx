@@ -101,7 +101,7 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
         setKeyChainQueue(e.code);
       }
 
-      callShortcut(e, keys);
+      callShortcut(e, (keys === "shift+" ? '' : keys));
     };
 
     eventTarget.addEventListener("keydown", keyEvent);
