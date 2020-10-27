@@ -341,7 +341,7 @@ function replaceSelectedText(textArea, text) {
 
     // IE 8-10
     else if(document.selection) {
-      t ieRange = document.selection.createRange();
+      const ieRange = document.selection.createRange();
       ieRange.text = text;
 
       // Move cursor after the inserted text
