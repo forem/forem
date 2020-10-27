@@ -1,3 +1,4 @@
+<% nav_links = NavigationLink.all %>
 <div class="hamburger">
   <div class="hamburger__content">
     <header class="hamburger__content__header">
@@ -26,15 +27,15 @@
             </a>
           <% end %>
           <div class="sidebar-navigation-links">
-            <% NavigationLink.ordered[0..4].each do |link| %>
+            <% nav_links.ordered[0..4].each do |link| %>
               <%= render "articles/sidebar_nav_link", link: link %>
             <% end %>
 
-            <% if NavigationLink.all.length > 5 %>
+            <% if nav_links.all.length > 5 %>
               <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s js-nav-more-trigger">More...</a>
 
               <div class="hidden js-nav-more">
-                <% NavigationLink.ordered[5..].each do |link| %>
+                <% nav_links.ordered[5..].each do |link| %>
                   <%= render "articles/sidebar_nav_link", link: link %>
                 <% end %>
               </div>
