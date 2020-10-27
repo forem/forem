@@ -53,8 +53,8 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
       // Get special keys
       const keys = `${e.ctrlKey || e.metaKey ? "ctrl+" : ""}${e.altKey ? "alt+" : ""}${e.shiftKey ? "shift+" : ""}`;
       
-      // If no special keys are pressed and focus is inside a field return
-      if (e.target instanceof Node && isFormField(e.target) && !keys) return;
+      // If no special keys, except shift, are pressed and focus is inside a field return
+      if (e.target instanceof Node && isFormField(e.target) && (!keys || keys === "shift+")) return;
       
       const shortcut = shortcuts[`${keys}${e.code}`] || shortcuts[`${keys}${e.key.toLowerCase()}`];
       if (shortcut) shortcut(e);
