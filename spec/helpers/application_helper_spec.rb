@@ -5,7 +5,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#community_name" do
     it "equals to the community name" do
-      SiteConfig.community_name = "SLOAN"
+      allow(SiteConfig).to receive(:community_name).and_return("SLOAN")
       expect(helper.community_name).to eq("SLOAN")
     end
   end
@@ -71,21 +71,21 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when the start year and current year is the same" do
       it "returns the current year only" do
-        SiteConfig.community_copyright_start_year = current_year
+        allow(SiteConfig).to receive(:community_copyright_start_year).and_return(current_year)
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
 
     context "when the start year and current year is different" do
       it "returns the start and current year" do
-        SiteConfig.community_copyright_start_year = "2014"
+        allow(SiteConfig).to receive(:community_copyright_start_year).and_return("2014")
         expect(helper.copyright_notice).to eq("2014 - #{current_year}")
       end
     end
 
     context "when the start year is blank" do
       it "returns the current year" do
-        SiteConfig.community_copyright_start_year = " "
+        allow(SiteConfig).to receive(:community_copyright_start_year).and_return(" ")
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
