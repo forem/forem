@@ -10,4 +10,12 @@ describe('<ChannelDescriptionSection />', () => {
 
     expect(results).toHaveNoViolations();
   });
+
+  it('should render', () => {
+    const { queryByText } = render(<ModFaqSection />);
+
+    expect(
+      queryByText(/^Questions about Connect Channel moderation\? Contact/),
+    ).toBeDefined();
+  });
 });
