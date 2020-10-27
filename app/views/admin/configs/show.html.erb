@@ -156,26 +156,10 @@
                 <p class="crayons-field__description mb-6">
                   How can people create an account on your community?
                 </p>
-                <div class="form-group">
-                  <%= admin_config_label :authentication_providers %>
-                  <p class="crayons-field__description">
-                    <%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %>
-                  </p>
-                  <%= select_tag "site_config[authentication_providers]",
-                                 options_from_collection_for_select(
-                                   authentication_available_providers,
-                                   :provider_name,
-                                   :official_name,
-                                   authentication_enabled_providers.map(&:provider_name),
-                                 ),
-                                 multiple: true,
-                                 class: "form-control selectpicker",
-                                 data: { target: "config.authenticationProviders" } %>
-                </div>
 
                 <section class="config-authentication__item">
                   <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Email icon") %>
                   </figure>
                   <div class="config-authentication__item--container">
                     <div style="display: flex; justify-content: space-between; align-items: baseline;">
@@ -241,12 +225,18 @@
                           </div>
                         </div>
                         <div class="mt-6">
-                          <% if SiteConfig.allow_both_email_signup_and_login &&
-                                !SiteConfig.invite_only_mode %>
+                          <% if SiteConfig.allow_both_email_signup_and_login %>
                             <button
                               class="crayons-btn crayons-btn--danger"
-                              data-action="click->config#activateEmailAuthModal">
-                              Undo
+                              data-action="click->config#activateEmailAuthModal"
+                              <%= SiteConfig.invite_only_mode ? 'disabled' : ''%>>
+                              <% if SiteConfig.invite_only_mode %>
+                                <span class="crayons" data-tooltip="I'll be in the tooltip">
+                                  Disable
+                                <span>
+                              <% else %>
+                                Disable
+                              <% end %>
                             </button>
                           <% end %>
                           <button
@@ -259,6 +249,23 @@
                     </div>
                   </div>
                 </section>
+
+                <div class="form-group">
+                  <%= admin_config_label :authentication_providers %>
+                  <p class="crayons-field__description">
+                    <%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %>
+                  </p>
+                  <%= select_tag "site_config[authentication_providers]",
+                                 options_from_collection_for_select(
+                                   authentication_available_providers,
+                                   :provider_name,
+                                   :official_name,
+                                   authentication_enabled_providers.map(&:provider_name),
+                                 ),
+                                 multiple: true,
+                                 class: "form-control selectpicker",
+                                 data: { target: "config.authenticationProviders" } %>
+                </div>
 
                 <section class="config-authentication__item">
                   <figure class="config-authentication__item--icon">
