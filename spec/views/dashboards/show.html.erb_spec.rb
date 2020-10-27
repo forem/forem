@@ -6,14 +6,11 @@ RSpec.describe "dashboards/show.html.erb", type: :view do
     stub_template "dashboards/_analytics.html.erb" => "stubbed content"
     stub_template "dashboards/_actions.html.erb" => "stubbed content"
 
-    Imgproxy.config.key = "secret"
-    Imgproxy.config.salt = "secret"
+    allow(ApplicationConfig).to receive(:[]).with("IMGPROXY_ENDPOINT").and_return("http://localhost:8080")
     SiteConfig.mascot_image_url = "https://i.imgur.com/fKYKgo4.png"
   end
 
   after do
-    Imgproxy.config.key = nil
-    Imgproxy.config.endpoint = nil
     SiteConfig.mascot_image_url = nil
   end
 

@@ -59,7 +59,7 @@ module Images
         Imgproxy.config.key.present? && Imgproxy.config.salt.present?
       else
         # In development/test, the endpoint is the only requirement.
-        ApplicationConfig["IMGPROXY_ENDPOINT"]
+        ApplicationConfig["IMGPROXY_ENDPOINT"].present?
       end
     end
 
