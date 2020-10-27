@@ -28,6 +28,10 @@ module Authentication
         }
       end
 
+      def get_email
+        info.email.to_s
+      end
+
       def self.settings_url
         SETTINGS_URL
       end

@@ -130,6 +130,9 @@ module Authentication
       user.tap do |model|
         user.unlock_access! if user.access_locked?
         user.assign_attributes(provider.existing_user_data)
+        if user.email.blank? && provider.name == "twitter"
+          user.update_column(:email, provider.get_email)
+        end
 
         update_profile_updated_at(model)
 
