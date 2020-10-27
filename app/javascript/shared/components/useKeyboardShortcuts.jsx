@@ -1,4 +1,4 @@
-import { useEffect } from "preact/hooks";
+import { useState, useEffect, useCallback } from "preact/hooks";
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 
@@ -44,6 +44,44 @@ function isFormField(element) {
  *
  */
 export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
+  const [keyChain, setKeyChain] = useState([]);
+  const [keyChainQueue, setKeyChainQueue] = useState([]);
+
+  // Work out the correct shortcut for the key press
+  const callShortcut = useCallback((e, keys) => {
+    let shortcut;
+    if (keyChain.length > 0) {
+      shortcut = shortcuts[`${keyChain.join("~")}~${e.code}`];
+    } else {
+      shortcut = shortcuts[`${keys}${e.code}`] || shortcuts[`${keys}${e.key.toLowerCase()}`];
+    }
+
+    // if a valid shortcut is found call it and reset the chain
+    if (shortcut) {
+      shortcut(e);
+      setKeyChain([]);
+    }
+  }, [shortcuts, keyChain]);
+
+  // Set up key chains
+  useEffect(() => {
+    if (!keyChainQueue && keyChain.length === 0) return;
+    let timeout;
+
+    timeout = window.setTimeout(() => {
+      clearTimeout(timeout);
+      setKeyChain([]);
+    }, 500);
+
+    if (keyChainQueue) {
+      setKeyChain([...keyChain, keyChainQueue]);
+      setKeyChainQueue(null);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [keyChain, keyChainQueue]);
+
+  // set up event listeners
   useEffect(() => {
     if (!shortcuts || Object.keys(shortcuts).length === 0) return;
 
@@ -52,24 +90,28 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window) {
 
       // Get special keys
       const keys = `${e.ctrlKey || e.metaKey ? "ctrl+" : ""}${e.altKey ? "alt+" : ""}${e.shiftKey ? "shift+" : ""}`;
-      
+
       // If no special keys, except shift, are pressed and focus is inside a field return
       if (e.target instanceof Node && isFormField(e.target) && (!keys || keys === "shift+")) return;
       
-      const shortcut = shortcuts[`${keys}${e.code}`] || shortcuts[`${keys}${e.key.toLowerCase()}`];
-      if (shortcut) shortcut(e);
+      // If a special key is pressed reset the key chain else add to the chain
+      if (keys) {
+        setKeyChain([]);
+      } else {
+        setKeyChainQueue(e.code);
+      }
+
+      callShortcut(e, keys);
     };
 
     eventTarget.addEventListener("keydown", keyEvent);
 
-    return () => {
-      eventTarget.removeEventListener("keydown", keyEvent);
-    };
-  }, [shortcuts, eventTarget]);
+    return () => eventTarget.removeEventListener("keydown", keyEvent);
+  }, [shortcuts, eventTarget, callShortcut]);
 }
 
 /**
- * compoent that can be added to a component to listen
+ * component that can be added to a component to listen
  * for keyboard presses using the useKeyboardShortcuts hook
  *
  * @example
