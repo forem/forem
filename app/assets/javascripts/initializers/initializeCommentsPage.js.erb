@@ -126,6 +126,7 @@ function initializeCommentsPage() {
               commentWrapper = event.target.closest('.inner-comment');
               commentWrapper.classList.add("replying");
               commentWrapper.innerHTML += buildCommentFormHTML(commentableId, commentableType, parentId);
+              initializeCommentsPage();
               
               setTimeout(function () {
                 commentWrapper.getElementsByTagName('textarea')[0].focus();
@@ -221,8 +222,7 @@ function handleCommentSubmit(event) {
           else if (mainCommentsForm) {
             var mainCommentsForm = document.getElementById("new_comment");
             mainCommentsForm.classList.remove("submitting");
-            const textArea = document.getElementById("text-area");
-            textArea.classList.remove('embiggened-max', 'embiggened-more', 'embiggened');
+            const textArea = form.querySelector(".comment-textarea");
             textArea.closest('.comment-form').classList.remove('comment-form--initiated');
             textArea.value = newComment.comment_template || "";
             var preview = document.getElementById("preview-div");
@@ -275,15 +275,6 @@ function handleFocus(event) {
   }
 }
 
-function handleBlur(event) {
-  setTimeout(function () {
-    var el = document.getElementById('text-area');
-    if (el.value.length == 0) {
-      el.classList.remove('embiggened-max', 'embiggened-more', 'embiggened');
-    }
-  }, 100);
-}
-
 function handleKeyUp(event) {
   handleSizeChange(event);
   handleButtonsActivation(event);
@@ -299,10 +290,7 @@ function handleSubmit(event) {
 
   var codeOfConduct = user.checked_code_of_conduct;
   if (codeOfConduct && event.target.value.trim() !== '') {
-    // get a reference to the submit button for the text area (first level comment vs. reply comment)
-    var parentFormId = event.target.parentElement.parentElement.id || event.target.parentElement.id;
-    var submitButton = document.querySelector('#' + parentFormId + ' button[type="submit"].comment-action-button');
-    submitButton.click();
+    event.target.closest('form').querySelector('button[type="submit"]').click();
   }
 }
 
@@ -353,7 +341,7 @@ function replaceSelectedText(textArea, text) {
 
     // IE 8-10
     else if(document.selection) {
-      const ieRange = document.selection.createRange();
+      t ieRange = document.selection.createRange();
       ieRange.text = text;
 
       // Move cursor after the inserted text
@@ -403,19 +391,8 @@ function handleFormClose(event) {
 }
 
 function handleSizeChange(event) {
-  var lines = event.target.value.split(/\r*\n/);
   var textarea = event.target;
-  var lineCount = lines.length;
-  if (lineCount > 10) {
-    textarea.classList.add('embiggened-max');
-    textarea.classList.remove('embiggened-more', 'embiggened');
-  } else if (lineCount > 3) {
-    textarea.classList.add('embiggened-more');
-    textarea.classList.remove('embiggened-max', 'embiggened');
-  } else {
-    textarea.classList.add('embiggened');
-    textarea.classList.remove('embiggened-more', 'embiggened-max');
-  }
+  textarea.style.height = textarea.scrollHeight + "px";
 }
 
 function handleButtonsActivation(event) {
@@ -431,8 +408,9 @@ function handleButtonsActivation(event) {
 }
 
 function validateField(event) {
-  if (document.getElementById('text-area')) {
-    var commentField = document.getElementById('text-area').value;
+  var textarea = event.target.closest('.comment-form').querySelector('.comment-textarea');
+  if (textarea) {
+    var commentField = textarea.value;
     if (commentField == '') {
       event.preventDefault();
     }
