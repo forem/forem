@@ -153,22 +153,124 @@
                 <h3 class="crayons-subtitle-3 mb-3">
                   Authentication methods
                 </h3>
-                <div class="form-group">
-                  <%= admin_config_label :authentication_providers %>
-                  <p class="crayons-field__description">
-                    <%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %>
-                  </p>
-                  <%= select_tag "site_config[authentication_providers]",
-                                 options_from_collection_for_select(
-                                   authentication_available_providers,
-                                   :provider_name,
-                                   :official_name,
-                                   authentication_enabled_providers.map(&:provider_name),
-                                 ),
-                                 multiple: true,
-                                 class: "form-control selectpicker",
-                                 data: { target: "config.authenticationProviders" } %>
-                </div>
+
+                <section>
+                  <div class="form-group">
+                    <div class="config-authentication__item">
+                      <figure class="config-authentication__item--icon">
+                        <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                      </figure>
+                      <div class="config-authentication__item--container">
+                        <div class="config-authentication__item--label">
+                          <p class="fw-medium">
+                            Twitter
+                          </p>
+                        </div>
+                        <div class="config-authentication__item--body">
+                          <fieldset class="config-authentication-form">
+                            <div class="crayons-field">
+                              <%= admin_config_label :twitter_key %>
+                              <p class="crayons-field__description">
+                                <%= Constants::SiteConfig::DETAILS[:twitter_key][:description] %>
+                              </p>
+                              <%= f.text_field :twitter_key,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.twitter_key,
+                                               placeholder: Constants::SiteConfig::DETAILS[:twitter_key][:placeholder] %>
+                            </div>
+
+                            <div class="crayons-field">
+                              <%= admin_config_label :twitter_secret %>
+                              <p class="crayons-field__description">
+                                <%= Constants::SiteConfig::DETAILS[:twitter_secret][:description] %>
+                              <p>
+                              <%= f.text_field :twitter_secret,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.twitter_secret,
+                                               placeholder: Constants::SiteConfig::DETAILS[:twitter_secret][:placeholder] %>
+                            </div>
+                          </fieldset>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="config-authentication__item">
+                      <figure class="config-authentication__item--icon">
+                        <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                      </figure>
+                      <div class="config-authentication__item--container">
+                        <div class="config-authentication__item--label">
+                          <p class="fw-medium">
+                            Github
+                          </p>
+                        </div>
+                        <div class="config-authentication__item--body">
+                          <fieldset class="config-authentication-form">
+                            <div class="crayons-field">
+                              <%= admin_config_label :github_key %>
+                              <p class="crayons-field__description">
+                                <%= Constants::SiteConfig::DETAILS[:github_key][:description] %>
+                              </p>
+                              <%= f.text_field :github_key,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.github_key,
+                                               placeholder: Constants::SiteConfig::DETAILS[:github_key][:placeholder] %>
+
+                            </div>
+                            <div class="crayons-field">
+                              <%= admin_config_label :github_secret %>
+                              <p class="config-authentication__row--subtitle">
+                                <%= Constants::SiteConfig::DETAILS[:github_secret][:description] %>
+                              </p>
+                              <%= f.text_field :github_secret,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.github_secret,
+                                               placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
+                            </div>
+                          </fieldset>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="config-authentication__item">
+                      <figure class="config-authentication__item--icon">
+                        <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                      </figure>
+                      <div class="config-authentication__item--container">
+                        <div class="config-authentication__item--label">
+                          <p class="fw-medium">
+                            Facebook
+                          </p>
+                        </div>
+                        <div class="config-authentication__item--body">
+                          <fieldset class="config-authentication-form">
+                            <div class="crayons-field">
+                              <%= admin_config_label :facebook_key %>
+                              <p class="crayons-field__description">
+                                <%= Constants::SiteConfig::DETAILS[:facebook_key][:description] %>
+                              </p>
+                              <%= f.text_field :facebook_key,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.facebook_key,
+                                               placeholder: Constants::SiteConfig::DETAILS[:facebook_key][:placeholder] %>
+                            </div>
+
+                            <div class="crayons-field">
+                              <%= admin_config_label :facebook_secret %>
+                                <p class="crayons-field__description">
+                                <%= Constants::SiteConfig::DETAILS[:facebook_secret][:description] %>
+                                </p>
+                              <%= f.text_field :facebook_secret,
+                                               class: "crayons-textfield",
+                                               value: SiteConfig.facebook_secret,
+                                               placeholder: Constants::SiteConfig::DETAILS[:facebook_secret][:placeholder] %>
+                            </div>
+                          </fieldset>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
 
                 <section class="config-authentication__item">
                   <figure class="config-authentication__item--icon">
@@ -233,120 +335,6 @@
                                              value: SiteConfig.recaptcha_secret_key,
                                              placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
                           </div>
-                        </div>
-                      </fieldset>
-                    </div>
-                  </div>
-                </section>
-
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Twitter
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field">
-                          <%= admin_config_label :twitter_key %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:twitter_key][:description] %>
-                          </p>
-                          <%= f.text_field :twitter_key,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.twitter_key,
-                                           placeholder: Constants::SiteConfig::DETAILS[:twitter_key][:placeholder] %>
-                        </div>
-
-                        <div class="crayons-field">
-                          <%= admin_config_label :twitter_secret %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:twitter_secret][:description] %>
-                          <p>
-                          <%= f.text_field :twitter_secret,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.twitter_secret,
-                                           placeholder: Constants::SiteConfig::DETAILS[:twitter_secret][:placeholder] %>
-                        </div>
-                      </fieldset>
-                    </div>
-                  </div>
-                </section>
-
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Github
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field">
-                          <%= admin_config_label :github_key %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:github_key][:description] %>
-                          </p>
-                          <%= f.text_field :github_key,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.github_key,
-                                           placeholder: Constants::SiteConfig::DETAILS[:github_key][:placeholder] %>
-
-                        </div>
-                        <div class="crayons-field">
-                          <%= admin_config_label :github_secret %>
-                          <p class="config-authentication__row--subtitle">
-                            <%= Constants::SiteConfig::DETAILS[:github_secret][:description] %>
-                          </p>
-                          <%= f.text_field :github_secret,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.github_secret,
-                                           placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
-                        </div>
-                      </fieldset>
-                    </div>
-                  </div>
-                </section>
-
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Facebook
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field">
-                          <%= admin_config_label :facebook_key %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:facebook_key][:description] %>
-                          </p>
-                          <%= f.text_field :facebook_key,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.facebook_key,
-                                           placeholder: Constants::SiteConfig::DETAILS[:facebook_key][:placeholder] %>
-                        </div>
-
-                        <div class="crayons-field">
-                          <%= admin_config_label :facebook_secret %>
-                            <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:facebook_secret][:description] %>
-                            </p>
-                          <%= f.text_field :facebook_secret,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.facebook_secret,
-                                           placeholder: Constants::SiteConfig::DETAILS[:facebook_secret][:placeholder] %>
                         </div>
                       </fieldset>
                     </div>
