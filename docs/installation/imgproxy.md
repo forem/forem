@@ -27,7 +27,8 @@ For more options not covered here, please take a look at the
 1. That's it :)
 
 You should verify it's working by starting the forem app locally and see that
-each image are loaded properly, or run the following command:
+each image are loaded properly, or run the following command while the forem app
+is running:
 
 ```
 > curl -I http://localhost:8080/unsafe/aHR0cDovL2xvY2Fs/aG9zdDozMDAwL2Fz/c2V0cy8xLnBuZw
