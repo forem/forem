@@ -20,6 +20,7 @@ module Admin
 
     def show
       @tag = Tag.find(params[:id])
+      @badges_for_options = Badge.pluck(:title, :id)
     end
 
     def update

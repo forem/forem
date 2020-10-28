@@ -37,58 +37,5 @@
       </div>
     <% end %>
   </div>
-
-  <div class="crayons-card p-6">
-    <h4 class="mb-4">Edit details</h4>
-    <%= form_for [:admin, @tag] do |f| %>
-      <div class="form-group">
-        <%= f.label :supported %>
-        <%= f.check_box :supported %>
-      </div>
-      <div class="form-group">
-        <%= f.label :badge_id %>
-        <% badges_array = Badge.pluck(:title, :id) %>
-        <%= f.select(:badge_id, options_for_select([["None", nil]] + badges_array, @tag.badge_id)) %>
-      </div>
-      <div class="form-group">
-        <%= f.label :category %>
-        <%= f.select(:category, options_for_select(Tag.valid_categories, @tag.category)) %>
-      </div>
-      <div class="form-group">
-        <%= f.label :social_preview_template %>
-        <%= f.select(:social_preview_template, Tag.social_preview_templates) %>
-      </div>
-      <div class="form-group">
-        <%= f.label :alias_for %>
-        <%= f.text_field :alias_for, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :pretty_name %>
-        <%= f.text_field :pretty_name, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :short_summary %>
-        <%= f.text_field :short_summary, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :rules_markdown %>
-        <br>
-        <%= f.text_area :rules_markdown, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :wiki_body_markdown %>
-        <br>
-        <%= f.text_area :wiki_body_markdown, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= f.label :bg_color_hex %>
-        <%= f.color_field :bg_color_hex, class: "color-picker form-control", required: true %>
-      </div>
-      <div class="form-group">
-        <%= f.label :text_color_hex %>
-        <%= f.color_field :text_color_hex, class: "color-picker form-control", required: true %>
-      </div>
-      <%= f.submit class: "btn btn-primary float-right" %>
-    <% end %>
-  </div>
+  <%= render "form", tag: @tag, badges_for_options: @badges_for_options %>
 </div>
