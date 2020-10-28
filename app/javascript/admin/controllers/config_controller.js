@@ -9,6 +9,8 @@ const emailAuthSettingsSection = document.querySelector(
 );
 const modalAnchor = document.querySelector('.admin-config-modal-anchor');
 const emailAuthModalTitle = 'Disable email address registration';
+// TODO: Remove the sentence "You must update site config to save this action!"
+// once we build more robust flow for Admin/Config
 const emailAuthModalBody =
   '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><br /><p>However, people who have already created an account using their email address can continue to login.</p><br /><p><strong>You must update site config to save this action!</strong></p>';
 
