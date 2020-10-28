@@ -134,7 +134,7 @@ class ChatChannelMembershipsController < ApplicationController
     user_chat_channels = ChatChannel.includes(:chat_channel_memberships).where(
       chat_channel_memberships: { user_id: current_user.id, role: "mod", status: "active" },
     )
-    @memberships = user_chat_channels.map(&:requested_memberships)&.flatten
+    @memberships = user_chat_channels.flat_map(&:requested_memberships)
     @user_invitations = ChatChannelMembership.where(
       user_id: current_user.id,
       status: %w[pending],
