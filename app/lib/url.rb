@@ -60,7 +60,7 @@ module URL
   #
   # @param image_name [String] the image file name
   def self.local_image(image_name)
-    host = ActionController::Base.asset_host ||= "#{protocol}#{ENV['APP_DOMAIN']}"
+    host = ActionController::Base.asset_host ||= "#{protocol}#{ApplicationConfig['APP_DOMAIN']}"
     ActionController::Base.helpers.image_url(image_name, host: host)
   end
 
