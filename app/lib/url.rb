@@ -7,7 +7,7 @@ module URL
   end
 
   def self.domain
-    Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+    SiteConfig.respond_to?(:app_domain) ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
   end
 
   def self.url(uri = nil)
@@ -60,7 +60,8 @@ module URL
   #
   # @param image_name [String] the image file name
   def self.local_image(image_name)
-    ActionController::Base.helpers.image_url(image_name)
+    host = ActionController::Base.asset_host ||= url(nil)
+    ActionController::Base.helpers.image_url(image_name, host: host)
   end
 
   def self.organization(organization)
