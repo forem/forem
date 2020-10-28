@@ -5,7 +5,6 @@ RSpec.describe "Views an article", type: :system do
   let(:article) do
     create(:article, :with_notification_subscription, user: user)
   end
-  let(:timestamp) { "2019-03-04T10:00:00Z" }
 
   before do
     sign_in user
@@ -28,24 +27,25 @@ RSpec.describe "Views an article", type: :system do
   end
 
   describe "when showing the date" do
-    before do
-      article.update_columns(published_at: Time.zone.parse(timestamp))
-    end
-
-    it "shows the readable publish date", js: true do
+    # TODO: @sre ideally this spec should have js:true enabled since we use
+    # js helpers to ensure the datetime is locale. However, testing locale
+    # datetimes has proven to be very flaky which is why the js is not included
+    # here
+    it "shows the readable publish date" do
       visit article.path
-      expect(page).to have_selector("article time", text: "Mar 4")
+      expect(page).to have_selector("article time", text: article.readable_publish_date)
     end
 
     it "embeds the published timestamp" do
       visit article.path
-      selector = "article time[datetime='#{timestamp}']"
+
+      selector = "article time[datetime='#{article.decorate.published_timestamp}']"
       expect(page).to have_selector(selector)
     end
 
     context "when articles have long markdowns and different published dates" do
-      let(:first_article) { build(:article, published_at: "2019-03-04T10:00:00Z") }
-      let(:second_article) { build(:article, published_at: "2019-03-05T10:00:00Z") }
+      let(:first_article) { build(:article) }
+      let(:second_article) { build(:article) }
 
       before do
         [first_article, second_article].each do |article|
@@ -55,13 +55,17 @@ RSpec.describe "Views an article", type: :system do
         end
       end
 
-      it "shows the identical readable publish dates in each page", js: true do
+      # TODO: @sre ideally this spec should have js:true enabled since we use
+      # js helpers to ensure the datetime is locale. However, testing locale
+      # datetimes has proven to be very flaky which is why the js is not included
+      # here
+      it "shows the identical readable publish dates in each page" do
         visit first_article.path
-        expect(page).to have_selector("article time", text: "Mar 4")
-        expect(page).to have_selector(".crayons-card--secondary time", text: "Mar 4")
+        expect(page).to have_selector("article time", text: first_article.readable_publish_date)
+        expect(page).to have_selector(".crayons-card--secondary time", text: first_article.readable_publish_date)
         visit second_article.path
-        expect(page).to have_selector("article time", text: "Mar 5")
-        expect(page).to have_selector(".crayons-card--secondary time", text: "Mar 5")
+        expect(page).to have_selector("article time", text: second_article.readable_publish_date)
+        expect(page).to have_selector(".crayons-card--secondary time", text: second_article.readable_publish_date)
       end
     end
   end

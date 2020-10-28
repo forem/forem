@@ -11,7 +11,7 @@ RSpec.describe "admin/users", type: :request do
     sign_in(admin)
   end
 
-  describe "GETS /admin/users" do
+  describe "GET /admin/users" do
     it "renders to appropriate page" do
       get "/admin/users"
       expect(response.body).to include(user.username)
@@ -22,6 +22,27 @@ RSpec.describe "admin/users", type: :request do
     it "renders to appropriate page" do
       get "/admin/users/#{user.id}"
       expect(response.body).to include(user.username)
+    end
+
+    context "when a user is unregistered" do
+      it "renders a message stating that the user isn't registered" do
+        user.update_columns(registered: false)
+        get "/admin/users/#{user.id}"
+        expect(response.body).to include("@#{user.username} has not accepted their invitation yet.")
+      end
+
+      it "only displays limited information about the user" do
+        user.update_columns(registered: false)
+        get "/admin/users/#{user.id}"
+        expect(response.body).not_to include("Current Roles")
+      end
+    end
+
+    context "when a user is registered" do
+      it "renders the Admin User profile as expected" do
+        get "/admin/users/#{user.id}"
+        expect(response.body).to include("Current Roles")
+      end
     end
   end
 
@@ -126,6 +147,14 @@ RSpec.describe "admin/users", type: :request do
       expect do
         patch unlock_access_admin_user_path(user)
       end.to change { user.reload.access_locked? }.from(true).to(false)
+    end
+  end
+
+  describe "POST admin/users/:id/export_data" do
+    it "redirects properly to the user edit page" do
+      sign_in admin
+      post export_data_admin_user_path(user), params: { send_to_admin: "true" }
+      expect(response).to redirect_to edit_admin_user_path(user)
     end
   end
 end
