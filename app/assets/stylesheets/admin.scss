@@ -125,3 +125,15 @@ label {
   flex-direction: column;
   gap: var(--su-4);
 }
+
+.admin-config-checkmark {
+  width: var(--su-4);
+  height: var(--su-4);
+  background-color: var(--accent-success);
+  border-radius: 100%;
+  color: var(--base-inverted);
+}
+
+.cursor-disabled {
+  cursor: not-allowed;
+}

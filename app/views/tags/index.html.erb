@@ -1,12 +1,12 @@
 <% title "Tags on #{community_name}" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= app_url("/about") %>" />
+  <link rel="canonical" href="<%= app_url("/tags") %>" />
   <meta name="description" content="Tags to follow on <%= community_name %>">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="<%= app_url("/about") %>" />
+  <meta property="og:url" content="<%= app_url("/tags") %>" />
   <meta property="og:title" content="Tags to follow on <%= community_name %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <meta property="og:description" content="<%= community_qualified_name %> is great!" />

@@ -32,4 +32,24 @@ module AuthenticationHelper
   def waiting_on_first_user?
     SiteConfig.waiting_on_first_user
   end
+
+  def disable_email_tooltip_class
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "crayons-tooltip" : ""
+  end
+
+  def disable_email_tooltip_content
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? disable_email_auth_tooltip_text : ""
+  end
+
+  def disable_button_class
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "disabled" : ""
+  end
+
+  def disable_email_auth_tooltip_text
+    if SiteConfig.invite_only_mode
+      "You cannot do this until you disable Invite Only Mode"
+    elsif authentication_enabled_providers.none?
+      "You cannot do this until you enable at least one other registration option"
+    end
+  end
 end
