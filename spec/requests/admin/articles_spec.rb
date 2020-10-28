@@ -8,15 +8,16 @@ RSpec.describe "/admin/articles", type: :request do
 
   context "when updating an Article via /admin/articles" do
     let(:super_admin) { create(:user, :super_admin) }
-    let(:article) { create(:article) }
+    let!(:article) { create(:article) }
     let(:second_user) { create(:user) }
     let(:third_user) { create(:user) }
 
-    before { sign_in super_admin }
+    before do
+      sign_in super_admin
+      get request
+    end
 
     it "allows an Admin to add a co-author to an individual article" do
-      get request
-
       expect do
         article.update_columns(co_author_ids: [1])
       end.to change(article, :co_author_ids).from([]).to([1])
@@ -24,8 +25,19 @@ RSpec.describe "/admin/articles", type: :request do
 
     it "allows an Admin to add co-authors to an individual article" do
       article.update_columns(co_author_ids: [2, 3])
-      get request
       expect(article.co_author_ids).to eq([2, 3])
+    end
+
+    it "allows an Admin to mark an article as approved" do
+      expect do
+        article.update_columns(approved: true)
+      end.to change(article, :approved).from(false).to(true)
+    end
+
+    it "allows an Admin to mark an article as featured" do
+      expect do
+        article.update_columns(featured: true)
+      end.to change(article, :featured).from(false).to(true)
     end
   end
 end

@@ -45,7 +45,8 @@ module Admin
       article.boosted_additional_articles = article_params[:boosted_additional_articles].to_s == "true"
       article.boosted_dev_digest_email = article_params[:boosted_dev_digest_email].to_s == "true"
       article.user_id = article_params[:user_id].to_i
-      article.co_author_ids = article_params[:co_author_ids].split(",").map(&:strip)
+      article.update(article_params)
+      article.co_author_ids = article_params[:co_author_ids]&.split(",")&.map(&:strip)
       if article.save
         flash[:success] = "Article saved!"
       else
