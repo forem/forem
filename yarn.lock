@@ -12185,6 +12185,11 @@ no-case@^3.0.3:
     lower-case "^2.0.1"
     tslib "^1.10.0"
 
+no-mouse-days@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/no-mouse-days/-/no-mouse-days-0.0.3.tgz#d2a157b10378c9c4a57e3a639052ed327f052d75"
+  integrity sha512-YbWCipuFgKyMYQzECwcbvnOw9FSsYvDUeCBfzQa6IWMOGfFJFxwfG3Bif5/jEhjEctX7GXlGGO1EqMiNRTfq9Q==
+
 node-fetch-h2@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/node-fetch-h2/-/node-fetch-h2-2.3.0.tgz#c6188325f9bd3d834020bf0f2d6dc17ced2241ac"

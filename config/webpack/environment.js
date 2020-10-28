@@ -67,4 +67,16 @@ if (process.env.HONEYBADGER_API_KEY && process.env.ASSETS_URL) {
   );
 }
 
+if (process.env.NODE_ENV === 'development') {
+  // This disables mouse usage in the application in development mode only
+  // to ensure the application is accessible via keyboard navigation.
+  // See https://github.com/forem/forem/issues/10260
+  const noMouseDaysScript = './app/javascript/noMouseDays.js';
+
+  Object.keys(environment.entry).forEach((key) => {
+    const updatedValue = [noMouseDaysScript, environment.entry[key]];
+    environment.entry[key] = updatedValue;
+  });
+}
+
 module.exports = environment;
