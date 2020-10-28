@@ -28,7 +28,7 @@ module Admin
         @page.update!(page_params)
         redirect_to admin_pages_path
       else
-        flash.now[:error] = @page.errors.full_messages.join(", ")
+        flash.now[:error] = @page.errors_as_sentence
         render :edit
       end
     end
@@ -39,7 +39,7 @@ module Admin
         @page.save!
         redirect_to admin_pages_path
       else
-        flash.now[:error] = @page.errors.full_messages.join(", ")
+        flash.now[:error] = @page.errors_as_sentence
         render :new
       end
     end
