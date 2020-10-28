@@ -2,6 +2,8 @@
 title: Imgproxy
 ---
 
+# Imgproxy
+
 Imgproxy is a standalone server for resizing images. It is optional and you do
 not need it to start Forem locally. We are currently only it using Forem Cloud.
 
@@ -19,11 +21,36 @@ For more options not covered here, please take a look at the
 
 ## Usage
 
-1. To enable Imgproxy in development, first add
-   `export IMGPROXY_ENDPOINT="http://localhost:8080"` to your `.env`
-1. Startup Imgproxy in a terminal. If you installed via homebrew, it's
-   `imgproxy`.
-1. Startup the Forem app.
+1. Generate a key/salt pair by running the following in your terminal twice.
+   Copy those values to your .env in the next step
+
+   ```
+   echo $(xxd -g 2 -l 64 -p /dev/random | tr -d '\n')
+   ```
+
+1. In your `.env`, add the followings.
+
+   ```
+   export IMGPROXY_ENDPOINT='http://localhost:8080'
+   export IMGPROXY_KEY='1b1c9aae804e070b0864f2547fba7ce8ff31bf7..........'
+   export IMGPROXY_SALT='8c6d449d4fc2cada5bab538826cae709d2ade9f.........'
+   ```
+
+1. Start the Forem app server normally.
+
+1. Start Imgproxy in a terminal with the key and salt.
+
+   ```
+   # If you installed via homebrew or using the binary.
+   > IMGPROXY_KEY='your key' IMGPROXY_SALT='your salt' imgproxy
+
+   # If you are using Docker or Podman. The commands are identical for both
+   > docker run -p 8080:8080 \
+      -e IMGPROXY_KEY="your key" \
+      -e IMGPROXY_SALT="your salt" \
+      -it darthsim/imgproxy
+   ```
+
 1. That's it :)
 
 You should verify it's working by starting the forem app locally and see that
@@ -39,10 +66,9 @@ X-Request-Id: GYvCGXb98JUwL3ujwpjzh
 Date: Tue, 27 Oct 2020 16:11:37 GMT
 ```
 
-## Sidenote.
+## Sidenote
 
-- Because Imgproxy is a standalone server of its own, all images URL given to it
-  need to be an absolute URLs.
-- When working with docker/podman on Linux, provide the host network option, ie
-  `{docker|podman} run -p 8080:8080 --network="host" -it darthsim/imgproxy` so
-  Imgproxy can properly access the localhost.
+- Because Imgproxy is a standalone server of its own, all image URLs given to it
+  need to be absolute URLs.
+- When working with Docker or Podman on Linux, provide the host network option
+  (`--network="host"`) so Imgproxy can properly access the localhost.
