@@ -60,11 +60,12 @@ module URL
     nil
   end
 
-  # Creatres an Image URL - a shortcut for the .image_url helper
+  # Creates an Image URL - a shortcut for the .image_url helper
   #
   # @param image_name [String] the image file name
-  def self.local_image(image_name)
-    host = ActionController::Base.asset_host ||= url(nil)
+  # @param host [String] (optional) the host for the image URL you'd like to use
+  def self.local_image(image_name, host: nil)
+    host ||= ActionController::Base.asset_host || url(nil)
     ActionController::Base.helpers.image_url(image_name, host: host)
   end
 
