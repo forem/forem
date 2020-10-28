@@ -31,7 +31,6 @@ default: &default
     - .ttf
     - .woff
     - .woff2
-    - .mp3
 
   extensions:
     - .mjs
@@ -49,7 +48,6 @@ default: &default
     - .gif
     - .jpeg
     - .jpg
-    - .mp3
 
 development:
   <<: *default
