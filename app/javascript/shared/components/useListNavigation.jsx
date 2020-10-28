@@ -148,7 +148,7 @@ function navigate(
   const nextFocusable = nextContainer?.querySelector(focusableSelector);
   if (nextFocusable) {
     nextFocusable.focus();
-    if (!isInViewport(nextContainer, 64)) {
+    if (!isInViewport(nextFocusable, 64)) {
       window.scrollTo({ top: nextContainer.offsetTop - 64 });
     }
   }
