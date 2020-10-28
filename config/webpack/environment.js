@@ -71,7 +71,7 @@ if (process.env.NODE_ENV === 'development') {
   // This disables mouse usage in the application in development mode only
   // to ensure the application is accessible via keyboard navigation.
   // See https://github.com/forem/forem/issues/10260
-  const noMouseDaysScript = './app/javascript/noMouseDays.js';
+  const noMouseDaysScript = './app/javascript/noMouseDays.jsx';
 
   Object.keys(environment.entry).forEach((key) => {
     const updatedValue = [noMouseDaysScript, environment.entry[key]];
