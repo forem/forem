@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useState, useCallback } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { Options } from './Options';
 import { Button } from '@crayons';
@@ -35,13 +35,10 @@ export const EditorActions = ({
   const v1 = version === 'v1';
   const v2 = version === 'v2';
 
-  const toggleMoreConfig = useCallback(
-    (e) => {
-      e.preventDefault();
-      setMoreConfig(!moreConfigShowing);
-    },
-    [moreConfigShowing, setMoreConfig],
-  );
+  const toggleMoreConfig = (e) => {
+    e.preventDefault();
+    setMoreConfig(!moreConfigShowing);
+  };
 
   if (submitting) {
     return (
