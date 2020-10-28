@@ -37,14 +37,6 @@ module CodeBlockParser
     doc.to_html
   end
 
-  def add_tabindex_to_codeblock(html)
-    doc = Nokogiri::HTML.fragment(html)
-    doc.search("pre").each do |codeblock|
-      codeblock["tabindex"] = "0"
-    end
-    doc.to_html
-  end
-
   def add_control_class_to_codeblock(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("div.highlight").each do |codeblock|
@@ -71,10 +63,10 @@ module CodeBlockParser
     doc = Nokogiri::HTML.fragment(html)
     doc.search("div.highlight__panel").each do |codeblock|
       fullscreen_action = <<~HTML
-        <div class="highlight__panel-action js-fullscreen-code-action">
+        <button class="highlight__panel-action js-fullscreen-code-action">
             #{icon_fullscreen_on}
             #{icon_fullscreen_off}
-        </div>
+        </button>
       HTML
 
       codeblock.add_child(fullscreen_action)
