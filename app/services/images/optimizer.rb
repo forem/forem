@@ -53,14 +53,7 @@ module Images
     end
 
     def self.imgproxy_enabled?
-      if Rails.env.production?
-        # In production, the endpoint is already predetermined. Key and Salt are
-        # not optional
-        Imgproxy.config.key.present? && Imgproxy.config.salt.present?
-      else
-        # In development/test, the endpoint is the only requirement.
-        ApplicationConfig["IMGPROXY_ENDPOINT"].present?
-      end
+      Imgproxy.config.key.present? && Imgproxy.config.salt.present?
     end
 
     def self.get_imgproxy_endpoint

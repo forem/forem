@@ -64,36 +64,20 @@ RSpec.describe Images::Optimizer, type: :service do
   end
 
   describe "#imgproxy_enabled?" do
-    context "when in production environment" do
-      before { allow(Rails.env).to receive(:production?).and_return(true) }
-
-      it "returns false if key and salt are missing" do
-        allow(Imgproxy).to receive(:config).and_return(Imgproxy::Config.new)
-        expect(described_class.imgproxy_enabled?).to eq(false)
-      end
-
-      it "returns true if key and salt are provided" do
-        imgproxy_config_stub = Imgproxy::Config.new.tap do |config|
-          config.key = "secret"
-          config.salt = "secret"
-          config.base64_encode_urls = true
-        end
-        allow(Imgproxy).to receive(:config).and_return(imgproxy_config_stub)
-
-        expect(described_class.imgproxy_enabled?).to eq(true)
-      end
+    it "returns false if key and salt are missing" do
+      allow(Imgproxy).to receive(:config).and_return(Imgproxy::Config.new)
+      expect(described_class.imgproxy_enabled?).to eq(false)
     end
 
-    context "when in non-production environment" do
-      it "returns false if environment variables aren't provided" do
-        allow(ApplicationConfig).to receive(:[]).with("IMGPROXY_ENDPOINT").and_return(nil)
-        expect(described_class.imgproxy_enabled?).to eq(false)
+    it "returns true if key and salt are provided" do
+      imgproxy_config_stub = Imgproxy::Config.new.tap do |config|
+        config.key = "secret"
+        config.salt = "secret"
+        config.base64_encode_urls = true
       end
+      allow(Imgproxy).to receive(:config).and_return(imgproxy_config_stub)
 
-      it "returns true if endpoint is provided" do
-        allow(ApplicationConfig).to receive(:[]).with("IMGPROXY_ENDPOINT").and_return("http://localhost:8080")
-        expect(described_class.imgproxy_enabled?).to eq(true)
-      end
+      expect(described_class.imgproxy_enabled?).to eq(true)
     end
   end
 
