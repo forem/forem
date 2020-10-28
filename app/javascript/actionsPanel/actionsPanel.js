@@ -18,8 +18,7 @@ export function addCloseListener() {
 
 export function initializeHeight() {
   document.documentElement.style.height = '100%';
-  document.body.style.cssText =
-    'height: 100%; margin: 0; padding-top: 0; overflow-y: hidden';
+  document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0;';
   document.getElementById('page-content').style.cssText =
     'margin-top: 0 !important; margin-bottom: 0;';
 }
