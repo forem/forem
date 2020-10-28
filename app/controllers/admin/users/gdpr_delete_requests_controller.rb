@@ -10,6 +10,17 @@ module Admin
       def destroy
         @gdpr_delete_request = ::Users::GdprDeleteRequest.find(params[:id])
         @gdpr_delete_request.destroy
+
+        AuditLog.create(
+          user: current_user,
+          category: "admin.gdpr_delete.confirm".freeze,
+          roles: current_user.roles_name,
+          slug: "gdpr_delete_confirm",
+          data: {
+            user_id: @gdpr_delete_request.user_id
+          },
+        )
+
         redirect_to admin_users_gdpr_delete_requests_path
       end
     end
