@@ -6,7 +6,7 @@
   <div class="notification__content">
     <% data = notification.json_data %>
     <% removal = data["adjustment_type"] == "removal" %>
-      <h3 class="mb-2">Hey there 👋</h3>
+      <h3 class="mb-2 color-base-90">Hey there 👋</h3>
       <p class="mb-4">
         Moderators <%= removal ? "removed" : "added" %> the
         <strong><a href="/t/<%= data["tag_name"] %>">#<%= data["tag_name"] %></a></strong> tag

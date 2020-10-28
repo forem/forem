@@ -1,9 +1,9 @@
 <% cache "comment-box-#{@last_user_reaction}-#{@last_user_comment}-#{json_data['comment']['updated_at']}-#{json_data['comment']['id']}" do %>
   <% if json_data["comment"]["commentable"] %>
     <% if json_data["comment"]["depth"] && json_data["comment"]["depth"] > 0 %>
-      <h3 class="fs-l mb-2">
-        <span class="fw-normal color-base-60">Re: </span>
-        <a href="<%= json_data["comment"]["ancestors"].last["path"] %>" class="crayons-link">
+      <h3>
+        <a href="<%= json_data["comment"]["ancestors"].last["path"] %>" class="crayons-link notification__reply-title">
+          <span class="fw-normal opacity-50">Re: </span>
           <%= json_data["comment"]["ancestors"].last["title"] %>
         </a>
       </h3>
@@ -44,20 +44,22 @@
             data-category="like"
             data-reactable-type="Comment"
             title="heart">
-            <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like", title: "Favorite heart outline button") %>
+            <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Favorite heart outline button") %>
+            <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: "Favorite heart outline button") %>
             <span class="hidden m:inline-block">Like</span>
           </button>
 
           <% cache "comment-box-comment-reply-#{@last_user_comment}-#{json_data['comment']['updated_at']}-#{json_data['comment']['id']}" do %>
             <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: json_data["comment"]["id"])&.children&.find_by(user_id: current_user.id) %>
             <% if reply %>
-              <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 already-replied-link inline-flex" href="<%= reply.path %>">
-                <%= inline_svg_tag("small-comment-filled.svg", aria: true, class: "crayons-icon reaction-icon--comment", title: "Comment button") %>
-                <span class="hidden m:inline-block">Reply</span>
+              <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex reaction-comment reacted" href="<%= reply.path %>">
+                <%= inline_svg_tag("small-comment-filled.svg", aria: true, class: "crayons-icon reaction-icon--comment reaction-icon reacted", title: "Comment button") %>
+                <span class="hidden m:inline-block">Replied</span>
               </a>
             <% else %>
               <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex" data-reactable-id="<%= json_data["comment"]["id"] %>" href="#<%= json_data["comment"]["path"] %>">
-                <%= inline_svg_tag("small-comment-filled.svg", aria: true, class: "crayons-icon reaction-icon--comment", title: "Comment button") %>
+                <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Comment button") %>
+                <%= inline_svg_tag("small-comment-filled.svg", aria: true, class: "crayons-icon reaction-icon--comment reaction-icon reacted", title: "Comment button") %>
                 <span class="hidden m:inline-block">Reply</span>
               </a>
             <% end %>
