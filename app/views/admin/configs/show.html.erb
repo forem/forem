@@ -1109,6 +1109,16 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:suggested_users][:placeholder] %>
                 </div>
 
+                <div class="crayons-field crayons-field--checkbox">
+                  <%= f.check_box :prefer_manual_suggested_users, checked: SiteConfig.prefer_manual_suggested_users, class: "crayons-checkbox" %>
+                  <div class="mt-0">
+                    <%= admin_config_label :prefer_manual_suggested_users %>
+                    <p class="crayons-field__description">
+                      <%= Constants::SiteConfig::DETAILS[:prefer_manual_suggested_users][:description] %>
+                    </p>
+                  </div>
+                </div>
+
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>
