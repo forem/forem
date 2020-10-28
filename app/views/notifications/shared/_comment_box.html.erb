@@ -52,7 +52,7 @@
           <% cache "comment-box-comment-reply-#{@last_user_comment}-#{json_data['comment']['updated_at']}-#{json_data['comment']['id']}" do %>
             <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: json_data["comment"]["id"])&.children&.find_by(user_id: current_user.id) %>
             <% if reply %>
-              <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex reaction-comment reacted" href="<%= reply.path %>">
+              <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left mr-1 inline-flex reaction-comment reacted" href="<%= reply.path %>">
                 <%= inline_svg_tag("small-comment-filled.svg", aria: true, class: "crayons-icon reaction-icon--comment reaction-icon reacted", title: "Comment button") %>
                 <span class="hidden m:inline-block">Replied</span>
               </a>
