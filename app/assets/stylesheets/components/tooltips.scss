@@ -2,7 +2,6 @@
   position: relative;
 
   &:after {
-    all: unset;
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
@@ -21,11 +20,9 @@
     opacity: 0;
     transition: all var(--transition-props);
     z-index: 1000;
-    text-align: left;
   }
 
   &:hover {
-    z-index: 1000;
     &:after {
       opacity: 1;
       transform: translateY(0);
