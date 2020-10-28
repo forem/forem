@@ -179,6 +179,11 @@ function handleCommentSubmit(event) {
   event.preventDefault();
   var form = event.target;
   form.classList.add('submitting');
+  var textarea = form.getElementsByClassName('comment-textarea')[0];
+  if (textarea) {
+    textarea.style.height = null;
+    textarea.blur();
+  }
   var parentComment = document.getElementById("comment-node-" + event.target.dataset.commentId);
 
   var body = JSON.stringify({
@@ -392,7 +397,8 @@ function handleFormClose(event) {
 
 function handleSizeChange(event) {
   var textarea = event.target;
-  textarea.style.height = textarea.scrollHeight + "px";
+  var oldHeight = parseInt(textarea.style.height.replace('px',''));
+  textarea.style.height = textarea.scrollHeight + (textarea.scrollHeight > oldHeight ? 15 : 0) + "px";
 }
 
 function handleButtonsActivation(event) {
