@@ -1,5 +1,5 @@
 import { Controller } from 'stimulus';
-import genericAdminModal from '../genericAdminModal';
+import adminModal from '../adminModal';
 
 const recaptchaFields = document.querySelector('#recaptchaContainer');
 const emailSigninAndLoginCheckbox = document.querySelector(
@@ -67,7 +67,7 @@ export default class ConfigController extends Controller {
 
   activateEmailAuthModal() {
     event.preventDefault();
-    modalAnchor.innerHTML = genericAdminModal(
+    modalAnchor.innerHTML = adminModal(
       emailAuthModalTitle,
       emailAuthModalBody,
       'Confirm',

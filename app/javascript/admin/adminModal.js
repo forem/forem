@@ -1,4 +1,15 @@
-const genericAdminModal = (
+/**
+ * A function to generate the HTML for a Crayons modal within the /admin/ space.
+ *
+ * @function adminModal
+ * @param {string} title The title of the modal.
+ * @param {string} body The modal's content. May use HTML tags for styling.
+ * @param {string} confirmBtnText The text for the modal's "Confirm" button.
+ * @param {string} confirmBtnAction The function that fires when "Confirm" button is clicked.
+ * @param {string} cancelBtnText The text for the modal's "Cancel" button.
+ * @param {string} cancelBtnAction The function that fires when "Cancel" button is clicked.
+ */
+const adminModal = (
   title,
   body,
   confirmBtnText,
@@ -36,4 +47,4 @@ const genericAdminModal = (
   </div>
 `;
 
-export default genericAdminModal;
+export default adminModal;
