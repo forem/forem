@@ -275,16 +275,14 @@ class UsersController < ApplicationController
   end
 
   def determine_follow_suggestions(current_user)
+    return default_suggested_users if SiteConfig.prefer_manual_suggested_users? && default_suggested_users
+
     recent_suggestions = Suggester::Users::Recent.new(
       current_user,
       attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
     ).suggest
 
-    if SiteConfig.prefer_manual_suggested_users?
-      default_suggested_users
-    else
-      recent_suggestions.presence || default_suggested_users
-    end
+    recent_suggestions.presence || default_suggested_users
   end
 
   def render_update_response
