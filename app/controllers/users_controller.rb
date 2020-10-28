@@ -82,11 +82,13 @@ class UsersController < ApplicationController
     set_current_tab("account")
 
     if destroy_request_in_progress?
-      flash[:settings_notice] = "You have already requested account deletion. Please, check your email for further instructions."
+      notice = "You have already requested account deletion. Please, check your email for further instructions."
+      flash[:settings_notice] = notice
       redirect_to user_settings_path(@tab)
     elsif @user.email?
       Users::RequestDestroy.call(@user)
-      flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
+      notice = "You have requested account deletion. Please, check your email for further instructions."
+      flash[:settings_notice] = notice
       redirect_to user_settings_path(@tab)
     else
       flash[:settings_notice] = "Please, provide an email to delete your account."
