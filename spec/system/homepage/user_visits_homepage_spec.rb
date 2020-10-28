@@ -22,7 +22,7 @@ RSpec.describe "User visits a homepage", type: :system do
         end
       end
 
-      expect(page).to have_text("DESIGN YOUR EXPERIENCE")
+      expect(page).to have_text("Popular Tags")
     end
 
     describe "link tags" do
@@ -63,14 +63,6 @@ RSpec.describe "User visits a homepage", type: :system do
       sign_in(user)
     end
 
-    it "offers to follow tags", js: true do
-      visit "/"
-
-      within("#sidebar-nav-default-tags") do
-        expect(page).to have_text("FOLLOW TAGS TO IMPROVE YOUR FEED")
-      end
-    end
-
     context "when rendering broadcasts" do
       let!(:broadcast) { create(:announcement_broadcast) }
 
@@ -95,12 +87,13 @@ RSpec.describe "User visits a homepage", type: :system do
         user.follows.create!(followable: ruby_tag)
         user.follows.create!(followable: create(:tag, name: "go", hotness_score: 99))
         user.follows.create!(followable: create(:tag, name: "javascript"), points: 3)
+        user.update!(following_tags_count: 3)
 
         visit "/"
       end
 
       it "shows the followed tags", js: true do
-        expect(page).to have_text("MY TAGS")
+        expect(page).to have_text("My Tags")
 
         # Need to ensure the user data is loaded before doing any checks
         find("body")["data-user"]
@@ -115,16 +108,19 @@ RSpec.describe "User visits a homepage", type: :system do
         find("body")["data-user"]
 
         within("#sidebar-nav-followed-tags") do
-          expect(all(".spec__tag-link").map(&:text)).to eq(%w[#javascript #go #ruby])
+          expect(all(".crayons-link--block").map(&:text)).to eq(%w[#javascript #go #ruby])
         end
       end
+    end
 
-      it "shows other tags", js: true do
-        expect(page).to have_text("OTHER POPULAR TAGS")
-        within("#sidebar-nav-default-tags") do
-          expect(page).to have_link("#webdev", href: "/t/webdev")
-          expect(page).not_to have_link("#ruby", href: "/t/ruby")
-        end
+    context "when user does not follow tags" do
+      before do
+        visit "/"
+      end
+
+      it "shows 'Explore Tags' and links to /tags", js: true do
+        expect(page).to have_text("Explore")
+        expect(page).to have_selector(:css, 'a[href="/tags"]')
       end
     end
 

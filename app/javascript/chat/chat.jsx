@@ -1467,7 +1467,9 @@ export default class Chat extends Component {
   }
   renderActiveChatChannel = (channelHeader) => {
     const { state, props } = this;
-
+    const channelName = state.activeChannel
+      ? state.activeChannel.channel_name
+      : ' ';
     return (
       <div className="activechatchannel">
         <div className="activechatchannel__conversation">
@@ -1522,6 +1524,7 @@ export default class Chat extends Component {
               handleKeyUp={this.handleKeyUp}
               handleKeyDownEdit={this.handleKeyDownEdit}
               activeChannelId={state.activeChannelId}
+              activeChannelName={channelName}
               startEditing={state.startEditing}
               markdownEdited={state.markdownEdited}
               editMessageMarkdown={state.activeEditMessage.markdown}

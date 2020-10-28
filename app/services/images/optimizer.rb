@@ -1,6 +1,8 @@
 module Images
   module Optimizer
     def self.call(img_src, **kwargs)
+      return img_src if img_src.starts_with?("/")
+
       if imgproxy_enabled?
         imgproxy(img_src, kwargs)
       else
@@ -36,9 +38,18 @@ module Images
     }.freeze
 
     def self.imgproxy(img_src, **kwargs)
-      options = DEFAULT_IMGPROXY_OPTIONS.merge(kwargs).reject { |_, v| v.blank? }
+      translated_options = translate_cloudinary_options(kwargs)
+      options = DEFAULT_IMGPROXY_OPTIONS.merge(translated_options).reject { |_, v| v.blank? }
       Imgproxy.config.endpoint ||= get_imgproxy_endpoint
       Imgproxy.url_for(img_src, options)
+    end
+
+    def self.translate_cloudinary_options(options)
+      if options[:crop] == "fill"
+        options[:resizing_type] = "fill"
+      end
+
+      options
     end
 
     def self.imgproxy_enabled?

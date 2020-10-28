@@ -11,15 +11,14 @@
     </div>
 
     <nav class="crayons-footer__nav">
-      <div>
         <a href="/" class="crayons-link crayons-link--block">Home</a>
-        <% if user_signed_in? %>
-          <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a>
+        <% NavigationLink.ordered.each do |link| %>
+          <% if !link.display_only_when_signed_in || (link.display_only_when_signed_in && user_signed_in?) %>
+            <a href="<%= link.url %>" class="crayons-link crayons-link--block">
+              <%= link.name %>
+            </a>
+          <% end %>
         <% end %>
-        <a href="<%= listings_path %>" class="crayons-link crayons-link--block">Listings</a>
-        <a href="<%= pod_path %>" class="crayons-link crayons-link--block">Podcasts</a>
-        <a href="<%= videos_path %>" class="crayons-link crayons-link--block">Videos</a>
-        <a href="<%= tags_path %>" class="crayons-link crayons-link--block">Tags</a>
         <% unless user_signed_in? %>
           <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
             Sign In/Up
@@ -27,23 +26,6 @@
         <% else %>
           <a href="/new" class="crayons-link crayons-link--block fw-bold">Write a post</a>
         <% end %>
-      </div>
-
-      <div>
-        <a href="/code-of-conduct" class="crayons-link crayons-link--block">Code of Conduct</a>
-        <a href="/faq" class="crayons-link crayons-link--block">FAQ</a>
-        <a href="/about" class="crayons-link crayons-link--block">About</a>
-        <a href="/privacy" class="crayons-link crayons-link--block">Privacy policy</a>
-        <a href="/terms" class="crayons-link crayons-link--block">Terms of use</a>
-        <a href="/contact" class="crayons-link crayons-link--block">Contact</a>
-      </div>
-
-      <div>
-        <a href="/sponsors" class="crayons-link crayons-link--block">Sponsors</a>
-        <% if SiteConfig.shop_url.present? %>
-          <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--block"><%= community_name %> Shop</a>
-        <% end %>
-      </div>
     </nav>
 
     <% if SiteConfig.mascot_footer_image_url.present? %>

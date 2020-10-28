@@ -121,7 +121,6 @@ class ReservedWords
     live
     live_articles
     loop
-    mac
     machinelearning
     mag
     magazine
