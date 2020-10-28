@@ -25,8 +25,9 @@ class SiteConfig < RailsSettings::Base
   field :video_encoder_key, type: :string
 
   # Authentication
-  field :allow_email_password_registration, type: :boolean, default: false
+  field :allow_email_password_registration, type: :boolean, default: true
   field :allow_email_password_login, type: :boolean, default: true
+  field :allow_both_email_signup_and_login, type: :boolean, default: true
   field :require_captcha_for_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :invite_only_mode, type: :boolean, default: false

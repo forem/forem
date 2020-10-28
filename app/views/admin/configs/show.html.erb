@@ -141,7 +141,11 @@
                 </h3>
                 <div class="form-group">
                   <div class="crayons-field--checkbox">
-                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableTargetField", disable_target: "authenticationProviders" }, class: "crayons-checkbox" %>
+                    <%= f.check_box :invite_only_mode,
+                                    checked: SiteConfig.invite_only_mode,
+                                    disabled: !SiteConfig.allow_both_email_signup_and_login,
+                                    data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" },
+                                    class: "crayons-checkbox #{!SiteConfig.allow_both_email_signup_and_login ? 'cursor-disabled' : ''}" %>
                     <div class="mt-0">
                       <%= admin_config_label :invite_only_mode %>
                       <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
@@ -150,55 +154,45 @@
                 </div>
               </section>
               <section>
-                <h3 class="crayons-subtitle-3 mb-3">
-                  Authentication methods
+                <h3 class="crayons-subtitle-3 mb-1">
+                  Registration options
                 </h3>
-                <div class="form-group">
-                  <%= admin_config_label :authentication_providers %>
-                  <p class="crayons-field__description">
-                    <%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %>
-                  </p>
-                  <%= select_tag "site_config[authentication_providers]",
-                                 options_from_collection_for_select(
-                                   authentication_available_providers,
-                                   :provider_name,
-                                   :official_name,
-                                   authentication_enabled_providers.map(&:provider_name),
-                                 ),
-                                 multiple: true,
-                                 class: "form-control selectpicker",
-                                 data: { target: "config.authenticationProviders" } %>
-                </div>
+                <p class="crayons-field__description mb-6">
+                  How can people create an account on your community?
+                </p>
 
                 <section class="config-authentication__item">
                   <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
+                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Email icon") %>
                   </figure>
                   <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Email address and password
-                      </p>
+                    <div class="config-authentication__item flex items-baseline justify-between">
+                      <div>
+                        <p class="config-authentication__item--label fw-medium <%= SiteConfig.allow_both_email_signup_and_login ? "pb-0" : "" %>">
+                          Email address
+                        </p>
+                        <% if SiteConfig.allow_both_email_signup_and_login %>
+                          <div class="mb-5 flex items-center">
+                            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                            <small class="crayons-field__description ml-1">Enabled</small>
+                          </div>
+                        <% end %>
+                      </div>
+                      <button
+                        class="crayons-btn crayons-btn--secondary"
+                        data-button-text="<%= SiteConfig.allow_both_email_signup_and_login ? "edit" : "enable" %>"
+                        data-target="config.emailAuthSettingsBtn"
+                        data-action="click->config#enableOrEditEmailAuthSettings">
+                        <%= SiteConfig.allow_both_email_signup_and_login ? "Edit" : "Enable" %>
+                      </button>
                     </div>
-                    <div class="config-authentication__item--body">
+                    <div id="email-auth-settings-section" class="config-authentication__item--body hidden">
                       <fieldset class="config-authentication-form">
-                        <div class="crayons-field--checkbox">
-                          <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration, class: "crayons-checkbox" %>
-                          <div>
-                            <%= admin_config_label :allow_email_password_registration %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %>
-                            </p>
-                          </div>
-                        </div>
-                        <div class="crayons-field--checkbox">
-                          <%= f.check_box :allow_email_password_login, checked: SiteConfig.allow_email_password_login, class: "crayons-checkbox" %>
-                          <div>
-                            <%= admin_config_label :allow_email_password_login %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_login][:description] %>
-                            </p>
-                          </div>
+                        <div class="crayons-field--checkbox hidden">
+                          <%= f.check_box :allow_both_email_signup_and_login,
+                                          checked: SiteConfig.allow_both_email_signup_and_login,
+                                          id: "email-signup-and-login-checkbox",
+                                          class: "crayons-checkbox" %>
                         </div>
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :require_captcha_for_email_password_registration,
@@ -212,7 +206,7 @@
                             </p>
                           </div>
                         </div>
-                        <div id="recaptchaContainer" class="<%= SiteConfig.require_captcha_for_email_password_registration ? "" : "collapse" %> ml-7" aria-labelledby="recaptchaContainer">
+                        <div id="recaptchaContainer" class="<%= SiteConfig.require_captcha_for_email_password_registration ? "" : "hidden" %> ml-7" aria-labelledby="recaptchaContainer">
                           <div class="form-group">
                             <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
                             <p class="crayons-field__description mb-1">
@@ -234,10 +228,51 @@
                                              placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
                           </div>
                         </div>
+                        <div class="mt-6">
+                          <% if SiteConfig.allow_both_email_signup_and_login %>
+                            <button
+                              class="crayons-btn crayons-btn--danger <%= disable_email_tooltip_class %>"
+                              data-action="click->config#activateEmailAuthModal"
+                              data-tooltip="<%= disable_email_tooltip_content %>"
+                              <%= disable_button_class %>>
+                              Disable
+                            </button>
+                          <% end %>
+                          <% if SiteConfig.allow_both_email_signup_and_login %>
+                            <button
+                              class="crayons-btn crayons-btn--secondary"
+                              data-action="click->config#hideEmailAuthSettings">
+                              Close
+                            </button>
+                          <% else %>
+                            <button
+                              class="crayons-btn crayons-btn--secondary"
+                              data-action="click->config#disableEmailAuth">
+                              Undo
+                            </button>
+                          <% end %>
+                        </div>
                       </fieldset>
                     </div>
                   </div>
                 </section>
+
+                <div class="form-group">
+                  <%= admin_config_label :authentication_providers %>
+                  <p class="crayons-field__description">
+                    <%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %>
+                  </p>
+                  <%= select_tag "site_config[authentication_providers]",
+                                 options_from_collection_for_select(
+                                   authentication_available_providers,
+                                   :provider_name,
+                                   :official_name,
+                                   authentication_enabled_providers.map(&:provider_name),
+                                 ),
+                                 multiple: true,
+                                 class: "form-control selectpicker",
+                                 data: { target: "config.authenticationProviders" } %>
+                </div>
 
                 <section class="config-authentication__item">
                   <figure class="config-authentication__item--icon">
@@ -1338,4 +1373,5 @@
       </div>
     </div>
   </div>
+  <div class="admin-config-modal-anchor"></div>
 </div>

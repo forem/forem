@@ -87,6 +87,21 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
+
+        it "enables email authentication" do
+          post "/admin/config", params: { site_config: { allow_both_email_signup_and_login: true },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.allow_email_password_registration).to be(true)
+          expect(SiteConfig.allow_email_password_login).to be(true)
+        end
+
+        it "disables email authentication and invite-only mode" do
+          post "/admin/config", params: { site_config: { allow_both_email_signup_and_login: false },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.allow_email_password_registration).to be(false)
+          expect(SiteConfig.allow_email_password_login).to be(false)
+          expect(SiteConfig.invite_only_mode).to be(false)
+        end
       end
 
       describe "Community Content" do

@@ -4,14 +4,6 @@ module Constants
     SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
     DETAILS = {
-      allow_email_password_registration: {
-        description: "People can sign up using their email and password",
-        placeholder: ""
-      },
-      allow_email_password_login: {
-        description: "People can login using their email and password",
-        placeholder: ""
-      },
       require_captcha_for_email_password_registration: {
         description: "People will be required to fill out a captcha when
           they're creating a new account in your community",
@@ -155,7 +147,7 @@ module Constants
         placeholder: "0"
       },
       invite_only_mode: {
-        description: "Only users invited by email can join this community.",
+        description: "Only users invited by email can join this community. To use this, you must enable email address registration.",
         placeholder: ""
       },
       jobs_url: {
