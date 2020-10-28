@@ -289,7 +289,7 @@ module Constants
         placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
       },
       prefer_manual_suggested_users: {
-        description: "Always show the users determined above as suggested people to follow even when " \
+        description: "Always show suggested users as suggested people to follow even when " \
         "auto-suggestion is available"
       },
       tagline: {
