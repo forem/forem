@@ -49,7 +49,7 @@
   </div>
     <%= f.label :text_color_hex, class: "crayons-field__label" %>
   <div class="flex items-center w-100 m:w-50">
-    <%= f.text_field :text_color_hex, class: "crayons-textfield js-color-field", value: tag.text_color_hex, placeholder: "#000000" %>
+    <%= f.text_field :text_color_hex, class: "crayons-textfield js-color-field", value: tag.text_color_hex, placeholder: "#ffffff" %>
     <%= f.color_field :text_color_hex, class: "crayons-color-selector js-color-field ml-2", required: true %>
   </div>
   <%= f.submit class: "btn btn-primary float-right" %>
