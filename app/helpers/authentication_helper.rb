@@ -33,8 +33,16 @@ module AuthenticationHelper
     SiteConfig.waiting_on_first_user
   end
 
-  def cannot_disable_email_auth
-    SiteConfig.invite_only_mode || authentication_enabled_providers.none?
+  def disable_email_tooltip_class
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "crayons-tooltip" : ""
+  end
+
+  def disable_email_tooltip_content
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? disable_email_auth_tooltip_text : ""
+  end
+
+  def disable_button_class
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "disabled" : ""
   end
 
   def disable_email_auth_tooltip_text

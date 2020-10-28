@@ -231,10 +231,10 @@
                         <div class="mt-6">
                           <% if SiteConfig.allow_both_email_signup_and_login %>
                             <button
-                              class="crayons-btn crayons-btn--danger <%= cannot_disable_email_auth ? "crayons-tooltip" : "" %>"
+                              class="crayons-btn crayons-btn--danger <%= disable_email_tooltip_class %>"
                               data-action="click->config#activateEmailAuthModal"
-                              data-tooltip="<%= cannot_disable_email_auth ? disable_email_auth_tooltip_text : "" %>"
-                              <%= cannot_disable_email_auth ? "disabled" : "" %>>
+                              data-tooltip="<%= disable_email_tooltip_content %>"
+                              <%= disable_button_class %>>
                               Disable
                             </button>
                           <% end %>
