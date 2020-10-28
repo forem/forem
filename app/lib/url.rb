@@ -56,6 +56,13 @@ module URL
     nil
   end
 
+  # Creatres an Image URL - a shortcut for the .image_url helper
+  #
+  # @param image_name [String] the image file name
+  def self.local_image(image_name)
+    ActionController::Base.helpers.image_url(image_name)
+  end
+
   def self.organization(organization)
     url(organization.slug)
   end
