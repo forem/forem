@@ -8,13 +8,12 @@ RSpec.describe "dashboards/show.html.erb", type: :view do
 
     Imgproxy.config.key = "secret"
     Imgproxy.config.salt = "secret"
-    SiteConfig.mascot_image_url = "https://i.imgur.com/fKYKgo4.png"
+    allow(SiteConfig).to receive(:mascot_image_url).and_return("https://i.imgur.com/fKYKgo4.png")
   end
 
   after do
     Imgproxy.config.key = nil
     Imgproxy.config.endpoint = nil
-    SiteConfig.mascot_image_url = nil
   end
 
   context "when using Imgproxy" do

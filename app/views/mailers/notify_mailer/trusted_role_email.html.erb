@@ -2,17 +2,16 @@
   Hey <%= @user.name %>!
 </p>
 <p>
-  This is an email to let you know that we've upgraded your account to have <b>basic moderation privileges</b>.
-  This means you can apply "negative reactions" to posts as well as certain other actions which help us maintain a constructive community and uphold our <a href="<%= app_url(code_of_conduct_path) %>">code of conduct</a>.
+  We are happy to let you know that your <%= community_name %> account has just been upgraded to "trusted" status.
 </p>
 <p>
-  There are no specific responsibilities with this new privilege except that you use it respectfully and empathetically. If for any reason you'd like to forego these new features, let us know.
+  This gives you the power to privately downvote content which is low quality or spam and harassment, alongside a bit of additional functionality to help ensure the success of the community. Anywhere you now see a shield on the site indicates a place you can go to join our community's crowd-sourced moderation initiative.
 </p>
 <p>
-  You'll occasionally get on-site notifications asking you to take an action. You are never required to take any actions and feel free to unsubscribe in <a href="<%= app_url(user_settings_path(:notifications)) %>">your notification settings</a> at any point without giving up the rest of the features.
+  You may occasionally receive notifications about optional moderation actions, but you can  <a href="<%= app_url(user_settings_path(:notifications)) %>">unsubscribe</a> if you do not want to receive these notices.
 </p>
 <p>
-  <b><a href="<%= app_url("/community-moderation") %>">Click here for full details about basic mod privileges.</b></a>
+  <b><a href="<%= app_url("/community-moderation") %>">Click here for full details about what you can do with the trusted role.</b></a>
 </p>
 <p>
   - <%= community_name %> Team

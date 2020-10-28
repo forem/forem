@@ -4,7 +4,7 @@ RSpec.describe URL, type: :lib do
   before do
     allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
     allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("test.forem.cloud")
-    SiteConfig.app_domain = "dev.to"
+    allow(SiteConfig).to receive(:app_domain).and_return("dev.to")
   end
 
   describe ".protocol" do

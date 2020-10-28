@@ -84,17 +84,6 @@
       display: block;
     }
 
-    .sidebar-nav {
-      .sidebar-nav-block {
-        .sidebar-nav-default-tags {
-          display: none;
-          &.showing {
-            display: block;
-          }
-        }
-      }
-    }
-
     .search-partner-mention {
       display: none;
       text-align: center;
@@ -113,6 +102,11 @@
 
 .sidebar-tags-browser {
   max-height: 420px;
+}
+
+.sidebar-navigation-links .crayons-icon svg {
+  height: 24px;
+  weight: 24px;
 }
 
 @keyframes fade-in {

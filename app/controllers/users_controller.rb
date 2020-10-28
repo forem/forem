@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
   before_action :set_user, only: %i[
-    update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_identity
+    update update_language_settings confirm_destroy request_destroy full_delete remove_identity
   ]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
@@ -31,18 +31,13 @@ class UsersController < ApplicationController
       return redirect_to sign_up_path
     end
     set_user
-    set_tabs(params["tab"] || "profile")
+    set_current_tab(params["tab"] || "profile")
     handle_settings_tab
   end
 
   # PATCH/PUT /users/:id.:format
   def update
-    set_tabs(params["user"]["tab"])
-
-    unless valid_image?
-      render :edit, status: :bad_request
-      return
-    end
+    set_current_tab(params["user"]["tab"])
 
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
@@ -52,10 +47,9 @@ class UsersController < ApplicationController
       end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
-        ExportContentWorker.perform_async(@user.id)
+        ExportContentWorker.perform_async(@user.id, @user.email)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
-      follow_hiring_tag(@user)
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
@@ -72,21 +66,8 @@ class UsersController < ApplicationController
     end
   end
 
-  def update_twitch_username
-    set_tabs("integrations")
-    new_twitch_username = params[:user][:twitch_username]
-    if @user.twitch_username != new_twitch_username
-      if @user.update(twitch_username: new_twitch_username)
-        @user.touch(:profile_updated_at)
-        Streams::TwitchWebhookRegistrationWorker.perform_async(@user.id) if @user.twitch_username?
-      end
-      flash[:settings_notice] = "Your Twitch username was successfully updated."
-    end
-    redirect_to "/settings/#{@tab}"
-  end
-
   def update_language_settings
-    set_tabs("misc")
+    set_current_tab("misc")
     @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
     if @user.save
       flash[:settings_notice] = "Your language settings were successfully updated."
@@ -98,7 +79,7 @@ class UsersController < ApplicationController
   end
 
   def request_destroy
-    set_tabs("account")
+    set_current_tab("account")
 
     if destroy_request_in_progress?
       notice = "You have already requested account deletion. Please, check your email for further instructions."
@@ -119,11 +100,11 @@ class UsersController < ApplicationController
     destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
     raise ActionController::RoutingError, "Not Found" unless destroy_token.present? && destroy_token == params[:token]
 
-    set_tabs("account")
+    set_current_tab("account")
   end
 
   def full_delete
-    set_tabs("account")
+    set_current_tab("account")
     if @user.email?
       Users::DeleteWorker.perform_async(@user.id)
       sign_out @user
@@ -136,7 +117,7 @@ class UsersController < ApplicationController
   end
 
   def remove_identity
-    set_tabs("account")
+    set_current_tab("account")
 
     error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
     unless Authentication::Providers.enabled?(params[:provider])
@@ -247,15 +228,6 @@ class UsersController < ApplicationController
 
   def signout_confirm; end
 
-  def follow_hiring_tag(user)
-    return unless user.looking_for_work?
-
-    hiring_tag = Tag.find_by(name: "hiring")
-    return if !hiring_tag || user.following?(hiring_tag)
-
-    Users::FollowWorker.perform_async(user.id, hiring_tag.id, "Tag")
-  end
-
   def handle_settings_tab
     return @tab = "profile" if @tab.blank?
 
@@ -269,7 +241,7 @@ class UsersController < ApplicationController
     when "response-templates"
       handle_response_templates_tab
     else
-      not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
+      not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
     end
   end
 
@@ -288,6 +260,8 @@ class UsersController < ApplicationController
   end
 
   def determine_follow_suggestions(current_user)
+    return default_suggested_users if SiteConfig.prefer_manual_suggested_users? && default_suggested_users
+
     recent_suggestions = Suggester::Users::Recent.new(
       current_user,
       attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
@@ -297,14 +271,10 @@ class UsersController < ApplicationController
   end
 
   def render_update_response
-    if current_user.save
-      respond_to do |format|
-        format.json { render json: { outcome: "updated successfully" } }
-      end
-    else
-      respond_to do |format|
-        format.json { render json: { outcome: "update failed" } }
-      end
+    outcome = current_user.save ? "updated successfully" : "update failed"
+
+    respond_to do |format|
+      format.json { render json: { outcome: outcome } }
     end
   end
 
@@ -344,55 +314,12 @@ class UsersController < ApplicationController
     authorize @user
   end
 
-  def set_tabs(current_tab = "profile")
-    @tab_list = @user.settings_tab_list
+  def set_current_tab(current_tab = "profile")
     @tab = current_tab
   end
 
   def config_changed?
     params[:user].include?(:config_theme)
-  end
-
-  def less_than_one_day_old?(user)
-    # we check all the `_created_at` fields for all available providers
-    # we use `.available` and not `.enabled` to avoid a situation in which
-    # an admin disables an authentication method after users have already
-    # registered, risking that they would be flagged as new
-    # the last one is a fallback in case all created_at fields are nil
-    user_identity_age = Authentication::Providers.available.map do |provider|
-      user.public_send("#{provider}_created_at")
-    end.detect(&:present?)
-
-    user_identity_age = user_identity_age.presence || 8.days.ago
-
-    range = 1.day.ago.beginning_of_day..Time.current
-    range.cover?(user_identity_age)
-  end
-
-  def valid_image?
-    image = params.dig("user", "profile_image")
-    return true unless image
-
-    return true if valid_image_file?(image) && valid_filename?(image)
-
-    Honeycomb.add_field("error", @user.errors.messages)
-    Honeycomb.add_field("errored", true)
-
-    false
-  end
-
-  def valid_image_file?(image)
-    return true if file?(image)
-
-    @user.errors.add(:profile_image, IS_NOT_FILE_MESSAGE)
-    false
-  end
-
-  def valid_filename?(image)
-    return true unless long_filename?(image)
-
-    @user.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
-    false
   end
 
   def destroy_request_in_progress?

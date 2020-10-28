@@ -47,9 +47,9 @@ Rails.application.routes.draw do
     end
 
     namespace :admin do
-      get "/", to: redirect("/admin/articles")
+      get "/" => "admin_portals#index"
 
-      authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
+      authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
 
         flipper_ui = Flipper::UI.app(Flipper,
@@ -68,7 +68,7 @@ Rails.application.routes.draw do
       resources :comments, only: [:index]
       resources :events, only: %i[index create update]
       resources :feedback_messages, only: %i[index show]
-      resources :invitations, only: %i[index new create]
+      resources :invitations, only: %i[index new create destroy]
       resources :pages, only: %i[index new create edit update destroy]
       resources :mods, only: %i[index update]
       resources :moderator_actions, only: %i[index]
@@ -103,6 +103,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[index show edit update] do
         member do
           post "banish"
+          post "export_data"
           post "full_delete"
           patch "user_status"
           post "merge"
@@ -176,6 +177,7 @@ Rails.application.routes.draw do
           get :users
           get :organizations
         end
+        resources :readinglist, only: [:index]
         resources :webhooks, only: %i[index create show destroy]
 
         resources :listings, only: %i[index show create update]
@@ -193,6 +195,8 @@ Rails.application.routes.draw do
             get :cache
           end
         end
+
+        resources :profile_images, only: %i[show], param: :username
       end
     end
 
@@ -223,10 +227,7 @@ Rails.application.routes.draw do
     end
     resources :comment_mutes, only: %i[update]
     resources :users, only: %i[index], defaults: { format: :json } # internal API
-    resources :users, only: %i[update] do
-      resource :twitch_stream_updates, only: %i[show create]
-    end
-    resources :twitch_live_streams, only: :show, param: :username
+    resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
@@ -328,7 +329,6 @@ Rails.application.routes.draw do
     post "/join_chat_channel" => "chat_channel_memberships#join_channel"
     delete "/messages/:id" => "messages#destroy"
     patch "/messages/:id" => "messages#update"
-    get "/live/:username" => "twitch_live_streams#show"
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
 
@@ -358,11 +358,9 @@ Rails.application.routes.draw do
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     get "/future", to: redirect("devteam/the-future-of-dev-160n")
-    get "/forem", to: redirect("devteam/for-empowering-community-2k6h")
 
     # Settings
     post "users/update_language_settings" => "users#update_language_settings"
-    post "users/update_twitch_username" => "users#update_twitch_username"
     post "users/join_org" => "users#join_org"
     post "users/leave_org/:organization_id" => "users#leave_org", :as => :users_leave_org
     post "users/add_org_admin" => "users#add_org_admin"
