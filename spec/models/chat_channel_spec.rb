@@ -80,4 +80,13 @@ RSpec.describe ChatChannel, type: :model do
       expect(chat_channel.private_org_channel?).to be(false)
     end
   end
+
+  describe "::urlsafe_encoded_app_domain" do
+    it "uses urlsafe base64 encoding" do
+      domain_name = "community.snyk.io"
+      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return(domain_name)
+      encoded_domain_name = described_class.urlsafe_encoded_app_domain
+      expect(Base64.urlsafe_decode64(encoded_domain_name)).to eq(domain_name)
+    end
+  end
 end
