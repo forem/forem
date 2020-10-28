@@ -5,9 +5,11 @@ module Admin
     ].freeze
     layout "admin"
 
+    # TODO: Remove this flash warning once the Profile Fields UI is completed
     def index
       @grouped_profile_fields = ProfileFieldGroup.includes(:profile_fields).order(:name)
       @ungrouped_profile_fields = ProfileField.where(profile_field_group_id: nil).order(:label)
+      flash.now[:warning] = "<b>This feature is an alpha state and will not work as expected!</b>".html_safe
     end
 
     def update
