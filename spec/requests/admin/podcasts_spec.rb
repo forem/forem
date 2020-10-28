@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "/admin/podcasts", type: :request do
   let(:admin) { create(:user, :super_admin) }
-  let(:podcast) { create(:podcast) }
+  let(:podcast) { create(:podcast, published: false) }
   let(:user) { create(:user) }
 
   before do
@@ -60,12 +60,14 @@ RSpec.describe "/admin/podcasts", type: :request do
   end
 
   describe "Updating" do
-    it "updates" do
+    it "updates the podcast" do
       put admin_podcast_path(podcast), params: { podcast: { title: "hello",
-                                                            feed_url: "https://pod.example.com/rss.rss" } }
+                                                            feed_url: "https://pod.example.com/rss.rss",
+                                                            published: true } }
       podcast.reload
       expect(podcast.title).to eq("hello")
       expect(podcast.feed_url).to eq("https://pod.example.com/rss.rss")
+      expect(podcast.published).to eq(true)
     end
 
     it "redirects after update" do

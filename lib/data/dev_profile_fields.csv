@@ -8,7 +8,7 @@ Youtube URL,text_field,https://www.youtube.com/channel/...,,Links
 StackOverflow URL,text_field,https://stackoverflow.com/users/...,,Links
 LinkedIn URL,text_field,https://www.linkedin.com/in/...,,Links
 Behance URL,text_field,https://www.behance.net/...,,Links
-Dribble URL,text_field,https://dribble.com/...,,Links
+Dribbble URL,text_field,https://dribbble.com/...,,Links
 Medium URL,text_field,https://medium.com/@...,,Links
 GitLab URL,text_field,https://gitlab.com/...,,Links
 Instagram URL,text_field,https://www.instagram.com/...,,Links

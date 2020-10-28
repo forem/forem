@@ -1,6 +1,7 @@
 module Admin
   class UsersController < Admin::ApplicationController
     layout "admin"
+    using StringToBoolean
 
     after_action only: %i[update user_status banish full_delete merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
@@ -48,6 +49,21 @@ module Admin
         flash[:danger] = e.message
       end
       redirect_to "/admin/users/#{@user.id}/edit"
+    end
+
+    def export_data
+      user = User.find(params[:id])
+      send_to_admin = params[:send_to_admin].to_boolean
+      if send_to_admin
+        email = SiteConfig.email_addresses[:default]
+        receiver = "admin"
+      else
+        email = user.email
+        receiver = "user"
+      end
+      ExportContentWorker.perform_async(user.id, email)
+      flash[:success] = "Data exported to the #{receiver}. The job will complete momentarily."
+      redirect_to edit_admin_user_path(user.id)
     end
 
     def banish

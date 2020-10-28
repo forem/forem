@@ -33,7 +33,7 @@ class TagAdjustmentsController < ApplicationController
       @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
       @adjustments = TagAdjustment.where(article_id: article.id)
       @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
-      @allowed_to_adjust = @moderatable.class.name == "Article" && (current_user.any_admin? || @tag_moderator_tags.any?)
+      @allowed_to_adjust = @moderatable.instance_of?(Article) && (current_user.any_admin? || @tag_moderator_tags.any?)
       respond_to do |format|
         format.json { render json: { error: "Failure: #{tag_adjustment.errors.full_messages.to_sentence}" } }
         format.html { render template: "moderations/mod" }
