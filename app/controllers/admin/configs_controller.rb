@@ -80,6 +80,7 @@ module Admin
         onboarding_taskcard_image
         suggested_tags
         suggested_users
+        prefer_manual_suggested_users
       ].freeze
 
     JOB_PARAMS =

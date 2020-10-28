@@ -474,6 +474,20 @@ RSpec.describe "/admin/config", type: :request do
           }
           expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
         end
+
+        it "updates prefer_manual_suggested_users to true" do
+          prefer_manual = true
+          post "/admin/config", params: { site_config: { prefer_manual_suggested_users: prefer_manual },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.prefer_manual_suggested_users).to eq(prefer_manual)
+        end
+
+        it "updates prefer_manual_suggested_users to false" do
+          prefer_manual = false
+          post "/admin/config", params: { site_config: { prefer_manual_suggested_users: prefer_manual },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.prefer_manual_suggested_users).to eq(prefer_manual)
+        end
       end
 
       describe "Rate Limits and spam" do

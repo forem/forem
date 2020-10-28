@@ -132,6 +132,7 @@ class SiteConfig < RailsSettings::Base
   field :onboarding_taskcard_image, type: :string
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
+  field :prefer_manual_suggested_users, type: :boolean, default: false
 
   # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
