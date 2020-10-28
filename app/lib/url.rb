@@ -56,7 +56,7 @@ module URL
     nil
   end
 
-  # Creatres an Image URL - a shortcut for the .image_url helper
+  # Creates an Image URL - a shortcut for the .image_url helper
   #
   # @param image_name [String] the image file name
   def self.local_image(image_name)
