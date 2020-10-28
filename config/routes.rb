@@ -99,7 +99,12 @@ Rails.application.routes.draw do
           post "save_status"
         end
       end
-      resources :tags, only: %i[index update show]
+      resources :tags, only: %i[index update show] do
+        member do
+          patch "add_tag_moderator"
+          delete "remove_tag_moderator"
+        end
+      end
       resources :users, only: %i[index show edit update] do
         member do
           post "banish"

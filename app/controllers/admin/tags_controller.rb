@@ -24,32 +24,45 @@ module Admin
 
     def update
       @tag = Tag.find(params[:id])
-      @add_user_id = params[:tag][:tag_moderator_id]
-      @remove_user_id = params[:tag][:remove_moderator_id]
-      add_moderator if @add_user_id
-      remove_moderator if @remove_user_id
-      @tag.update!(tag_params)
+      if @tag.update(tag_params)
+        flash[:success] = "#{@tag.name} tag successfully updated!"
+      else
+        flash[:error] = "The tag update failed: #{@tag.errors_as_sentence}"
+      end
+      redirect_to admin_tag_path(@tag.id)
+    end
 
-      redirect_to "/admin/tags/#{params[:id]}"
+    def add_tag_moderator
+      user = User.find_by(id: tag_params[:user_id])
+      if user&.update(email_tag_mod_newsletter: true)
+        AssignTagModerator.add_tag_moderators([user.id], [params[:id]])
+        flash[:success] = "#{user.username} was added as a tag moderator!"
+      else
+        flash[:error] = "Error: User ID ##{tag_params[:user_id]} was not found,
+          or their account has errors: #{user&.errors_as_sentence}"
+      end
+      redirect_to admin_tag_path(params[:id])
+    end
+
+    def remove_tag_moderator
+      user = User.find_by(id: tag_params[:user_id])
+      tag = Tag.find_by(id: params[:id])
+      if user&.update(email_tag_mod_newsletter: false)
+        AssignTagModerator.remove_tag_moderator(user, tag)
+        flash[:success] = "#{user.username} - ID ##{user.id} was removed as a tag moderator."
+      else
+        flash[:error] = "Error: User ID ##{tag_params[:user_id]} was not found,
+          or their account has errors: #{user&.errors_as_sentence}"
+      end
+      redirect_to admin_tag_path(tag.id)
     end
 
     private
 
-    def remove_moderator
-      user = User.find(@remove_user_id)
-      user.update(email_tag_mod_newsletter: false)
-      AssignTagModerator.remove_tag_moderator(user, @tag)
-    end
-
-    def add_moderator
-      User.find(@add_user_id).update(email_tag_mod_newsletter: true)
-      AssignTagModerator.add_tag_moderators([@add_user_id], [@tag.id])
-    end
-
     def tag_params
       allowed_params = %i[
-        supported rules_markdown short_summary pretty_name bg_color_hex
-        text_color_hex tag_moderator_id remove_moderator_id alias_for badge_id
+        id supported rules_markdown short_summary pretty_name bg_color_hex
+        text_color_hex user_id alias_for badge_id
         category social_preview_template
       ]
       params.require(:tag).permit(allowed_params)
