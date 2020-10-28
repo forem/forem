@@ -3,8 +3,8 @@ function showUserAlertModal(title, text, confirm_text, link, link_text) {
   toggleUserAlertModal();
 }
 
-function showRateLimitModal(action_text, wait_time_text, next_action_text) {
-  let rateLimitText = buildRateLimitText(action_text, wait_time_text, next_action_text);
+function showRateLimitModal(action_text, next_action_text) {
+  let rateLimitText = buildRateLimitText(action_text, next_action_text);
   let rateLimitLink = "/faq";
   showUserAlertModal('Wait a Moment...', rateLimitText, 'Got it', rateLimitLink, "Why do I have to wait?")
 }
@@ -30,15 +30,15 @@ const modalHTML = (title, text, confirm_text, link, link_text) => `<div id="${mo
         <p>${text}</p>
         </br>
         <button class="crayons-btn crayons-btn--icon" type="button" onClick="toggleUserAlertModal();">${confirm_text}</button>
-        <a href="${link}">${link_text}</button>
+        <a href="${link}" onClick="toggleUserAlertModal();">${link_text}</button>
       </div>
     </div>
     <div data-testid="modal-overlay" class="crayons-modal__overlay"></div>
   </div>
 `;
 
-function buildRateLimitText(action_text, wait_time_text, next_action_text) {
-  return `Since you recently ${action_text}, you’ll need to wait ${wait_time_text} before ${next_action_text}.`
+function buildRateLimitText(action_text, next_action_text) {
+  return `Since you recently ${action_text}, you’ll need to wait a moment before ${next_action_text}.`
 }
 
 function toggleUserAlertModal() {
