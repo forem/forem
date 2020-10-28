@@ -16,6 +16,7 @@ class Campaign
     sidebar_image
     url
     articles_require_approval?
+    call_to_action
   ].freeze
 
   # Define delegate methods for SiteConfig

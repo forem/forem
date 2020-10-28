@@ -30,4 +30,19 @@ RSpec.describe "/admin/invitations", type: :request do
       expect(User.last.registered).to be false
     end
   end
+
+  describe "DELETE /admin/invitations" do
+    let!(:invitation) { create(:user, registered: false) }
+
+    before do
+      sign_in admin
+    end
+
+    it "deletes the invitation" do
+      expect do
+        delete "/admin/invitations/#{invitation.id}"
+      end.to change { User.all.count }.by(-1)
+      expect(response.body).to redirect_to "/admin/invitations"
+    end
+  end
 end

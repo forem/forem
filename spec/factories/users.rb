@@ -169,5 +169,10 @@ FactoryBot.define do
     trait :without_profile do
       _skip_creating_profile { true }
     end
+
+    trait :with_newsletters do
+      email_newsletter { true }
+      email_digest_periodic { true }
+    end
   end
 end
