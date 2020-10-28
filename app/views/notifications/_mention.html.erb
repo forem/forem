@@ -6,7 +6,7 @@
 
   <div class="notification__content">
     <h2 class="fs-base fw-normal mb-4">
-      <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold"><%= json_data["user"]["name"] %></a> mentioned you in a comment:
+      <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold"><%= json_data["user"]["name"] %></a> mentioned you in a comment
     </h2>
     <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
   </div>

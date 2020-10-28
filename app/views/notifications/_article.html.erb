@@ -13,9 +13,9 @@
           <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold">
             <%= json_data["user"]["name"] %>
           </a>
-          made a new post<%= ":" unless json_data["organization"] %>
+          made a new post
           <% if json_data["organization"] %>
-            under <a href="<%= json_data["organization"]["path"] %>" class="crayons-link fw-bold"><%= json_data["organization"]["name"] %></a>:
+            under <a href="<%= json_data["organization"]["path"] %>" class="crayons-link fw-bold"><%= json_data["organization"]["name"] %></a>
           <% end %>
         </h2>
         <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small></p>
