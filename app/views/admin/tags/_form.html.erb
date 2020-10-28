@@ -1,9 +1,9 @@
 <div class="crayons-card p-6">
   <h4 class="mb-4">Edit details</h4>
-  <%= form_for [:admin, tag] do |f| %>
+  <%= form_with model: [:admin, tag] do |f| %>
   <div class="crayons-field crayons-field--checkbox">
     <%= f.check_box :supported, class: "crayons-checkbox" %>
-    <label class="crayons-field__label" for="supported">
+    <label class="crayons-field__label" for="tag_supported">
       Supported
       <p class="crayons-field__description">Allows the tag to be a searchable result when writing a post or a listing</p>
     </label>
