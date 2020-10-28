@@ -6,7 +6,7 @@
 <% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}-#{user_signed_in?}", expires_in: expiry_minutes.minutes) do %>
   <div class="crayons-layout">
     <header class="tag-header crayons-card branded-4 relative" style="border-top-color: <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>">
-      <div class="tag-header__title flex justify-between items-center mb-2 s:mb-4">
+      <div class="flex justify-between items-center">
         <div class="inline-flex items-center">
           <h1 class="crayons-title">
             <% if @tag_model && @tag_model.pretty_name.present? %>
@@ -21,11 +21,11 @@
           <% end %>
         </div>
         <% if @tag_model %>
-          <button id="user-follow-butt" class="crayons-btn crayons-btn--secondary follow-action-button" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>&nbsp;</button>
+          <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>Follow</button>
         <% end %>
       </div>
       <% if @tag_model && @tag_model.short_summary.present? %>
-        <p>
+        <p class="pt-2 s:pt-4">
           <%= sanitize @tag_model.short_summary %>
         </p>
       <% end %>
