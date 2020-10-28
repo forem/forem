@@ -36,10 +36,8 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       end
 
       def show_profile_sidebar
-        within(".side-bar") do
-          expect(page).to have_content("Currently hacking on")
-          expect(page).to have_content("profiles")
-        end
+        expect(page).to have_text("Currently hacking on")
+        expect(page).to have_text("profiles")
       end
 
       def shows_title
