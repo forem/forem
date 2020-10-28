@@ -54,7 +54,7 @@ For more options not covered here, please take a look at the
 1. That's it :)
 
 You should verify it's working by starting the Forem app locally and see that
-each image is loaded properly, or run the following command while the forem app
+each image is loaded properly, or run the following command while the Forem app
 is running:
 
 ```
