@@ -5,11 +5,11 @@ title: Imgproxy
 # Imgproxy
 
 Imgproxy is a standalone server for resizing images. It is optional and you do
-not need it to start Forem locally. We are currently only it using Forem Cloud.
+not need it to start Forem locally. We are currently only using it in Forem Cloud.
 
 ## Installation
 
-- MacOS: use homebrew with `brew install imgproxy`.
+- MacOS: install via homebrew with `brew install imgproxy`.
 - Window: please install
   [via docker](https://docs.imgproxy.net/#/installation?id=docker).
 - Linux: you can either use
@@ -22,13 +22,13 @@ For more options not covered here, please take a look at the
 ## Usage
 
 1. Generate a key/salt pair by running the following in your terminal twice.
-   Copy those values to your .env in the next step
+   Copy those values to your `.env` in the next step
 
    ```
    echo $(xxd -g 2 -l 64 -p /dev/random | tr -d '\n')
    ```
 
-1. In your `.env`, add the followings.
+1. In your `.env`, add the following.
 
    ```
    export IMGPROXY_ENDPOINT='http://localhost:8080'
@@ -53,8 +53,8 @@ For more options not covered here, please take a look at the
 
 1. That's it :)
 
-You should verify it's working by starting the forem app locally and see that
-each image are loaded properly, or run the following command while the forem app
+You should verify it's working by starting the Forem app locally and see that
+each image is loaded properly, or run the following command while the forem app
 is running:
 
 ```
