@@ -7,7 +7,11 @@ module URL
   end
 
   def self.domain
-    SiteConfig.respond_to?(:app_domain) ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+    if Rails.application&.initialized? && SiteConfig.respond_to?(:app_domain)
+      SiteConfig.app_domain
+    else
+      ApplicationConfig["APP_DOMAIN"]
+    end
   end
 
   def self.url(uri = nil)
