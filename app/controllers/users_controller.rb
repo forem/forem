@@ -82,13 +82,11 @@ class UsersController < ApplicationController
     set_current_tab("account")
 
     if destroy_request_in_progress?
-      notice = "You have already requested account deletion. Please, check your email for further instructions."
-      flash[:settings_notice] = notice
+      flash[:settings_notice] = "You have already requested account deletion. Please, check your email for further instructions."
       redirect_to user_settings_path(@tab)
     elsif @user.email?
       Users::RequestDestroy.call(@user)
-      notice = "You have requested account deletion. Please, check your email for further instructions."
-      flash[:settings_notice] = notice
+      flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
       redirect_to user_settings_path(@tab)
     else
       flash[:settings_notice] = "Please, provide an email to delete your account."
@@ -269,14 +267,10 @@ class UsersController < ApplicationController
   end
 
   def render_update_response
-    if current_user.save
-      respond_to do |format|
-        format.json { render json: { outcome: "updated successfully" } }
-      end
-    else
-      respond_to do |format|
-        format.json { render json: { outcome: "update failed" } }
-      end
+    outcome = current_user.save ? "updated successfully" : "update failed"
+
+    respond_to do |format|
+      format.json { render json: { outcome: outcome } }
     end
   end
 
@@ -322,22 +316,6 @@ class UsersController < ApplicationController
 
   def config_changed?
     params[:user].include?(:config_theme)
-  end
-
-  def less_than_one_day_old?(user)
-    # we check all the `_created_at` fields for all available providers
-    # we use `.available` and not `.enabled` to avoid a situation in which
-    # an admin disables an authentication method after users have already
-    # registered, risking that they would be flagged as new
-    # the last one is a fallback in case all created_at fields are nil
-    user_identity_age = Authentication::Providers.available.map do |provider|
-      user.public_send("#{provider}_created_at")
-    end.detect(&:present?)
-
-    user_identity_age = user_identity_age.presence || 8.days.ago
-
-    range = 1.day.ago.beginning_of_day..Time.current
-    range.cover?(user_identity_age)
   end
 
   def destroy_request_in_progress?
