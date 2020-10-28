@@ -22,13 +22,15 @@
     transition: all var(--transition-props);
     z-index: 1000;
     text-align: left;
+    transition-delay: 250ms;
   }
 
   &:hover {
     z-index: 1000;
     &:after {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(calc(-1 * var(--su-1)));
+      transition-delay: 0s;
     }
   }
 }
