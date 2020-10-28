@@ -32,8 +32,8 @@ export const EditorActions = ({
 }) => {
   const [moreConfigShowing, setMoreConfig] = useState(false);
 
-  const v1 = version === 'v1';
-  const v2 = version === 'v2';
+  const isVersion1 = version === 'v1';
+  const isVersion2 = version === 'v2';
 
   const toggleMoreConfig = (e) => {
     e.preventDefault();
@@ -44,7 +44,9 @@ export const EditorActions = ({
     return (
       <div className="crayons-article-form__footer">
         <Button className="mr-2 whitespace-nowrap" onClick={onPublish} disabled>
-          {published && v2 ? 'Publishing...' : `Saving ${v2 ? 'draft' : ''}...`}
+          {published && isVersion2
+            ? 'Publishing...'
+            : `Saving ${isVersion2 ? 'draft' : ''}...`}
         </Button>
       </div>
     );
@@ -53,10 +55,10 @@ export const EditorActions = ({
   return (
     <div className="crayons-article-form__footer">
       <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
-        {published || v1 ? 'Save changes' : 'Publish'}
+        {published || isVersion1 ? 'Save changes' : 'Publish'}
       </Button>
 
-      {!(published || v1) && (
+      {!(published || isVersion1) && (
         <Button
           variant="secondary"
           className="mr-2 whitespace-nowrap"
@@ -66,7 +68,7 @@ export const EditorActions = ({
         </Button>
       )}
 
-      {v2 && (
+      {isVersion2 && (
         <div className="s:relative">
           <Button
             variant="ghost"
