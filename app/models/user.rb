@@ -16,6 +16,7 @@ class User < ApplicationRecord
     currently_streaming_on
     dribbble_url
     education
+    email_public
     employer_name
     employer_url
     employment_title

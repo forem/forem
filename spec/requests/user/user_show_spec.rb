@@ -1,7 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "UserShow", type: :request do
-  let(:user) { create(:user, email_public: true) }
+  let!(:profile) do
+    create(
+      :profile,
+      :with_DEV_info,
+      user: create(:user, :without_profile),
+      display_email_on_profile: true,
+    )
+  end
+  let(:user) { profile.user }
 
   describe "GET /:slug (user)" do
     it "returns a 200 status when navigating to the user's page" do
@@ -25,7 +33,7 @@ RSpec.describe "UserShow", type: :request do
         "sameAs" => [
           "https://twitter.com/#{user.twitter_username}",
           "https://github.com/#{user.github_username}",
-          user.website_url,
+          "http://example.com",
         ],
         "image" => Images::Profile.call(user.profile_image_url, length: 320),
         "name" => user.name,
