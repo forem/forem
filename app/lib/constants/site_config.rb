@@ -148,8 +148,7 @@ module Constants
       },
       invite_only_mode: {
         description: "Only users invited by email can join this community. To use this, you must enable email address registration.",
-        placeholder: "",
-        cannot_disable_email: "You cannot do this until you enable at least one other registration option"
+        placeholder: ""
       },
       jobs_url: {
         description: "URL of the website where open positions are posted",

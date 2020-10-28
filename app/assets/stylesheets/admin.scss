@@ -118,12 +118,6 @@ label {
     padding-top: var(--su-4);
     padding-bottom: var(--su-4);
   }
-
-  &--align {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
 }
 
 .config-authentication-form {
@@ -133,16 +127,10 @@ label {
 }
 
 .admin-config-checkmark {
-  opacity: 100;
-  width: var(--su-5);
-  height: var(--su-5);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  width: var(--su-4);
+  height: var(--su-4);
   background-color: var(--accent-success);
   border-radius: 100%;
-  border: 2px solid var(--base-inverted);
-  padding: 2px;
   color: var(--base-inverted);
 }
 

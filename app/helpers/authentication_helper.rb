@@ -32,4 +32,16 @@ module AuthenticationHelper
   def waiting_on_first_user?
     SiteConfig.waiting_on_first_user
   end
+
+  def cannot_disable_email_auth
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none?
+  end
+
+  def disable_email_auth_tooltip_text
+    if SiteConfig.invite_only_mode
+      "You cannot do this until you disable Invite Only Mode"
+    elsif authentication_enabled_providers.none?
+      "You cannot do this until you enable at least one other registration option"
+    end
+  end
 end
