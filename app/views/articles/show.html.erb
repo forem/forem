@@ -50,12 +50,12 @@
 <% if internal_navigation? %>
   <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
   <meta name="description" content="<%= @article.description_and_tags %>">
-  <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
+  <%= meta_keywords_article(@article.cached_tag_list) %>
 <% else %>
   <%= content_for :page_meta do %>
     <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
-    <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
+    <%= meta_keywords_article(@article.cached_tag_list) %>
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= article_url(@article) %>" />
@@ -242,6 +242,8 @@
 <div class="mod-actions-menu"></div>
 <div id="mod-actions-menu-btn-area"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
+
+<div class="fullscreen-code js-fullscreen-code"></div>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>

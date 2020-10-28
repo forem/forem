@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.8.0"
+  version: "0.9.1"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -76,6 +76,17 @@ components:
         format: int32
         minimum: 1
         maximum: 1000
+        default: 30
+    perPageParam30to100:
+      in: query
+      name: per_page
+      required: false
+      description: Page size (the number of items to return per page).
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
         default: 30
     perPageParam80to1000:
       in: query
@@ -829,6 +840,34 @@ components:
               type: string
               enum: [bump, publish, unpublish]
 
+    ReadingList:
+      type: object
+      required:
+        - type_of
+        - id
+        - status
+        - created_at
+        - article
+      properties:
+        type_of:
+          type: string
+        id:
+          description: Follow id
+          type: integer
+          format: int32
+        status:
+          type: string
+          enum:
+            - valid
+            - invalid
+            - confirmed
+            - archived
+        created_at:
+          type: string
+          format: date-time
+        article:
+          $ref: "#/components/schemas/ArticleIndex"
+
     PodcastEpisode:
       type: object
       required:
@@ -1047,6 +1086,24 @@ components:
         user:
           $ref: "#/components/schemas/SharedUser"
 
+    ProfileImage:
+      description: Profile image
+      type: object
+      properties:
+        type_of:
+          type: string
+          enum: [profile_image]
+        image_of:
+          description: "Discriminates what is the type of the profile image owner (user or organization)"
+          type: string
+          enum: [user, organization]
+        profile_image:
+          type: string
+          description: Profile image (640x640)
+        profile_image_90:
+          type: string
+          description: Profile image (90x90)
+
   examples:
     ErrorBadRequest:
       value:
@@ -1088,10 +1145,10 @@ components:
           readable_publish_date: Oct 24
           social_image: https://res.cloudinary.com/practicaldev/image/fetch/s--SeMxdKIa--/c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/https://res.cloudinary.com/practicaldev/image/fetch/s--xU8cbIK4--/c_imagga_scale%2Cf_auto%2Cfl_progressive%2Ch_420%2Cq_auto%2Cw_1000/https://thepracticaldev.s3.amazonaws.com/i/8a39dzf3oovzc2snl7iv.png
           tag_list:
-          - meta
-          - changelog
-          - css
-          - ux
+            - meta
+            - changelog
+            - css
+            - ux
           tags: meta, changelog, css, ux
           slug: there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
           path: "/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk"
@@ -1259,25 +1316,25 @@ components:
             profile_image: https://res.cloudinary.com/...png
             profile_image_90: https://res.cloudinary.com/...png
           children:
-          - type_of: comment
-            id_code: m35m
-            created_at: 2020-08-01T11:59:40Z
-            body_html: |
-              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-              <html><body>
+            - type_of: comment
+              id_code: m35m
+              created_at: 2020-08-01T11:59:40Z
+              body_html: |
+                <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+                <html><body>
 
-              <p>...</p>
+                <p>...</p>
 
-              </body></html>
-            user:
-              name: rhymes
-              username: rhymes
-              twitter_username:
-              github_username:
-              website_url:
-              profile_image: https://res.cloudinary.com/...jpeg
-              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
-            children: []
+                </body></html>
+              user:
+                name: rhymes
+                username: rhymes
+                twitter_username:
+                github_username:
+                website_url:
+                profile_image: https://res.cloudinary.com/...jpeg
+                profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+              children: []
     CommentsDeleted:
       value:
         - type_of: comment
@@ -1285,24 +1342,24 @@ components:
           body_html: <p>[deleted]</p>
           user: {}
           children:
-          - type_of: comment
-            id_code: m35m
-            body_html: |
-              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-              <html><body>
+            - type_of: comment
+              id_code: m35m
+              body_html: |
+                <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+                <html><body>
 
-              <p>...</p>
+                <p>...</p>
 
-              </body></html>
-            user:
-              name: rhymes
-              username: rhymes
-              twitter_username:
-              github_username:
-              website_url:
-              profile_image: https://res.cloudinary.com/...jpeg
-              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
-            children: []
+                </body></html>
+              user:
+                name: rhymes
+                username: rhymes
+                twitter_username:
+                github_username:
+                website_url:
+                profile_image: https://res.cloudinary.com/...jpeg
+                profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+              children: []
     CommentsHidden:
       value:
         - type_of: comment
@@ -1310,24 +1367,24 @@ components:
           body_html: <p>[hidden by post author]</p>
           user: {}
           children:
-          - type_of: comment
-            id_code: m35m
-            body_html: |
-              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-              <html><body>
+            - type_of: comment
+              id_code: m35m
+              body_html: |
+                <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+                <html><body>
 
-              <p>...</p>
+                <p>...</p>
 
-              </body></html>
-            user:
-              name: rhymes
-              username: rhymes
-              twitter_username:
-              github_username:
-              website_url:
-              profile_image: https://res.cloudinary.com/...jpeg
-              profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
-            children: []
+                </body></html>
+              user:
+                name: rhymes
+                username: rhymes
+                twitter_username:
+                github_username:
+                website_url:
+                profile_image: https://res.cloudinary.com/...jpeg
+                profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--SC90PuMi--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg
+              children: []
     Comment:
       value:
         type_of: comment
@@ -1350,25 +1407,25 @@ components:
           profile_image: https://res.cloudinary.com/...png
           profile_image_90: https://res.cloudinary.com/...png
         children:
-        - type_of: comment
-          id_code: m35m
-          created_at: 2020-07-02T17:19:40Z
-          body_html: |
-            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-            <html><body>
+          - type_of: comment
+            id_code: m35m
+            created_at: 2020-07-02T17:19:40Z
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
 
-            <p>...</p>
+              <p>...</p>
 
-            </body></html>
-          user:
-            name: rhymes
-            username: rhymes
-            twitter_username:
-            github_username:
-            website_url:
-            profile_image: https://res.cloudinary.com/...jpeg
-            profile_image_90: https://res.cloudinary.com/....jpeg
-          children: []
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/....jpeg
+            children: []
     CommentDeleted:
       value:
         type_of: comment
@@ -1376,24 +1433,24 @@ components:
         body_html: <p>[deleted]</p>
         user: {}
         children:
-        - type_of: comment
-          id_code: m35m
-          body_html: |
-            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-            <html><body>
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
 
-            <p>...</p>
+              <p>...</p>
 
-            </body></html>
-          user:
-            name: rhymes
-            username: rhymes
-            twitter_username:
-            github_username:
-            website_url:
-            profile_image: https://res.cloudinary.com/...jpeg
-            profile_image_90: https://res.cloudinary.com/...jpeg
-          children: []
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/...jpeg
+            children: []
     CommentHidden:
       value:
         type_of: comment
@@ -1401,24 +1458,24 @@ components:
         body_html: <p>[hidden by post author]</p>
         user: {}
         children:
-        - type_of: comment
-          id_code: m35m
-          body_html: |
-            <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-            <html><body>
+          - type_of: comment
+            id_code: m35m
+            body_html: |
+              <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+              <html><body>
 
-            <p>...</p>
+              <p>...</p>
 
-            </body></html>
-          user:
-            name: rhymes
-            username: rhymes
-            twitter_username:
-            github_username:
-            website_url:
-            profile_image: https://res.cloudinary.com/...jpeg
-            profile_image_90: https://res.cloudinary.com/...jpeg
-          children: []
+              </body></html>
+            user:
+              name: rhymes
+              username: rhymes
+              twitter_username:
+              github_username:
+              website_url:
+              profile_image: https://res.cloudinary.com/...jpeg
+              profile_image_90: https://res.cloudinary.com/...jpeg
+            children: []
 
     Followers:
       value:
@@ -1447,7 +1504,7 @@ components:
             us for our very first trip to Detroit MI! \n\nhttps://bit.ly/TBDetroit"
           tag_list: events
           tags:
-          - events
+            - events
           category: cfp
           processed_html: |
             <p>Do you want to learn about automation? Maybe you're interested in AI-driven testing? Security testing? We have a selection of talks, workshops and training courses to help you in a wide variety of areas in software testing. Join us for our very first trip to Detroit MI! </p>
@@ -1474,7 +1531,7 @@ components:
           us for our very first trip to Detroit MI! \n\nhttps://bit.ly/TBDetroit"
         tag_list: events
         tags:
-        - events
+          - events
         category: cfp
         processed_html: |
           <p>Do you want to learn about automation? Maybe you're interested in AI-driven testing? Security testing? We have a selection of talks, workshops and training courses to help you in a wide variety of areas in software testing. Join us for our very first trip to Detroit MI! </p>
@@ -1496,7 +1553,7 @@ components:
           body_markdown: Awesome conference
           category: cfp
           tags:
-          - events
+            - events
     ListingCreateOrganization:
       value:
         listing:
@@ -1504,7 +1561,7 @@ components:
           body_markdown: Awesome conference
           category: cfp
           tags:
-          - events
+            - events
           organization_id: 1
     ListingUpdate:
       value:
@@ -1603,6 +1660,13 @@ components:
           profile_image: "..."
           profile_image_90: "..."
 
+    ProfileImage:
+      value:
+        type_of: profile_image
+        image_of: user
+        profile_image: https://res.cloudinary.com/...jpeg
+        profile_image_90: https://res.cloudinary.com/...jpeg
+
 tags:
   - name: articles
     description: Articles are all the posts users create on DEV
@@ -1616,6 +1680,8 @@ tags:
     description: Listings are classified ads
   - name: podcast-episodes
     description: Podcast episodes
+  - name: readinglist
+    description: User's reading list
   - name: tags
     description: Tags for articles
   - name: users
@@ -1624,6 +1690,8 @@ tags:
     description: Video articles
   - name: webhooks
     description: Webhooks are HTTP endpoints registered to receive events
+  - name: profile images
+    description: User or organization profile images
 
 paths:
   /articles:
@@ -1658,6 +1726,24 @@ paths:
           schema:
             type: string
           example: discuss
+        - name: tags
+          in: query
+          description: |
+            Using this parameter will retrieve articles with any of the comma-separated tags.
+
+            Articles will be ordered by descending popularity.
+          schema:
+            type: string
+          example: "javascript, css"
+        - name: tags_exclude
+          in: query
+          description: |
+            Using this parameter will retrieve articles that do _not_ contain _any_ of comma-separated tags.
+
+            Articles will be ordered by descending popularity.
+          schema:
+            type: string
+          example: "node, java"
         - name: username
           in: query
           description: |
@@ -2790,6 +2876,50 @@ paths:
               -d '{"listing":{"title":"Title"}' \
               https://dev.to/api/listings/{id}
 
+  /readinglist:
+    get:
+      operationId: getReadinglist
+      summary: User's reading list
+      description: |
+        This endpoint allows the client to retrieve a list of readinglist reactions along with the related article for the authenticated user.
+
+        Reading list will be in reverse chronological order base
+        on the creation of the reaction.
+
+        It will return paginated reading list items along with the articles
+        they refer to. By default a page will contain `30` items
+      tags:
+        - readinglist
+      parameters:
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to100'
+      responses:
+        "200":
+          description: The reading list with a overwiew of the article
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReadingList"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/readinglist
+
   /podcast_episodes:
     get:
       operationId: getPodcastEpisodes
@@ -2976,6 +3106,48 @@ paths:
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/users/me
+
+  /profile_images/{username}:
+    get:
+      operationId: getProfileImage
+      summary: User or organization profile picture
+      description: |
+        This endpoint allows the client to retrieve a user or organization
+        profile image information by its corresponding username
+      tags:
+        - profile images
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: Username of the user or organization
+          schema:
+            type: string
+          example: "diogoosorio"
+      responses:
+        "200":
+          description: The profile image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileImage"
+              examples:
+                profile-image-success:
+                  $ref: "#/components/examples/ProfileImage"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                profile-image-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/profile_images/diogoosorio
 
   /videos:
     get:

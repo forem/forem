@@ -174,13 +174,6 @@ function replaceActionButts(el) {
   wrapper.innerHTML = '<span class="current-user-actions">' + loggedInActionButts + '</span><a href="#" class="toggle-reply-form">Reply</a>';
 }
 
-function warmNewCommentsArea() {
-  // Ignore when comment is created on /notifications.
-  if (window.location.pathname === "/notifications") { return }
-  var path = '/stories/warm_comments'+ window.location.pathname
-  window.fetch(path)
-}
-
 function handleCommentSubmit(event) {
   event.preventDefault();
   var form = event.target;
@@ -246,7 +239,6 @@ function handleCommentSubmit(event) {
           else {
             window.location.replace(newComment.url)
           }
-          warmNewCommentsArea();
           initializeCommentsPage();
           initializeCommentDate();
           initializeCommentDropdown();

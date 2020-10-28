@@ -3,7 +3,7 @@
 </div>
 
 <div id="edit-navigation-link-<%= link[:id] %>-modal" class="hidden">
-  <div class="crayons-modal crayons-modal--s">
+  <div class="crayons-modal crayons-modal--l">
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
         <h2>Edit Link</h2>
@@ -16,22 +16,7 @@
       <div class="crayons-modal__box__body">
         <div class="form-group grid p-6 mb-6 gap-1">
           <%= form_for [:admin, link] do |form| %>
-            <div class="form-group">
-              <%= form.label :name %>
-              <%= form.text_field :name, class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= form.label :url %>
-              <%= form.text_field :url, class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= form.label :icon %>
-              <%= form.text_field :icon, class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= form.check_box :display_when_signed_in %>
-              <%= form.label :display_when_signed_in %>
-            </div>
+            <%= render "form", form: form %>
             <%= form.submit class: "btn btn-primary" %>
           <% end %>
         </div>

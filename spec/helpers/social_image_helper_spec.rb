@@ -36,7 +36,7 @@ describe SocialImageHelper do
 
   describe ".article_social_image_url" do
     it "returns social preview path for newer articles" do
-      SiteConfig.app_domain = "hello.com"
+      allow(SiteConfig).to receive(:app_domain).and_return("hello.com")
       url = helper.article_social_image_url(article)
 
       expect(url).to eq article_social_preview_url(article, format: :png, host: "hello.com")
@@ -60,7 +60,7 @@ describe SocialImageHelper do
     end
 
     it "returns social preview path for newer decorated articles" do
-      SiteConfig.app_domain = "hello.com"
+      allow(SiteConfig).to receive(:app_domain).and_return("hello.com")
       url = helper.article_social_image_url(article.decorate)
 
       expect(url).to eq article_social_preview_url(article, format: :png, host: "hello.com")

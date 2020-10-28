@@ -15,7 +15,7 @@ class SpotifyTag < LiquidTagBase
   def initialize(_tag_name, uri, _parse_context)
     super
     @parsed_uri = parse_uri(uri)
-    @embed_link = generate_embed_link(@parsed_uri)
+    @embed_link = generate_embed_link(@parsed_uri[0])
     @type = @parsed_uri[1] || @parsed_uri[2]
     @height = TYPE_HEIGHT[@type.to_sym]
   end
@@ -37,7 +37,7 @@ class SpotifyTag < LiquidTagBase
   end
 
   def generate_embed_link(parsed_uri)
-    parsed_uri.string.split(":")[1..].unshift("https://open.spotify.com/embed").join("/")
+    parsed_uri.split(":")[1..].unshift("https://open.spotify.com/embed").join("/")
   end
 
   def raise_error

@@ -59,7 +59,6 @@ class UserPolicy < ApplicationPolicy
     summary
     text_color_hex
     twitch_url
-    twitch_username
     username
     website_url
   ].freeze
@@ -77,10 +76,6 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    current_user?
-  end
-
-  def update_twitch_username?
     current_user?
   end
 

@@ -5,6 +5,7 @@
   background: var(--card-bg);
   color: var(--card-color);
   box-shadow: 0 0 0 1px var(--card-border);
+  overflow-wrap: anywhere;
 
   &--secondary {
     background: var(--card-secondary-bg);

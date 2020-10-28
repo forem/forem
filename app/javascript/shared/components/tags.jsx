@@ -431,7 +431,11 @@ class Tags extends Component {
 
     return (
       <div className={`${classPrefix}__tagswrapper crayons-field`}>
-        {listing && <label htmlFor="Tags" class="crayons-field__label">Tags</label>}
+        {listing && (
+          <label htmlFor="Tags" class="crayons-field__label">
+            Tags
+          </label>
+        )}
         <input
           data-testid="tag-input"
           aria-label="Post Tags"
