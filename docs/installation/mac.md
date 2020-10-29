@@ -20,7 +20,7 @@ Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
 
-Forem requires PostgreSQL version 11 or higher to be running.
+Forem requires PostgreSQL version 11 or higher to run.
 
 The easiest way to get started is to use
 [Postgres.app](https://postgresapp.com/). Alternatively, check out the official
@@ -38,7 +38,7 @@ You can install ImageMagick with `brew install imagemagick`.
 
 ### Redis
 
-Forem requires Redis version 4.0 or higher to be running.
+Forem requires Redis version 4.0 or higher to run.
 
 We recommend using [Homebrew](https://brew.sh):
 
@@ -61,7 +61,7 @@ redis-cli ping
 
 ### Elasticsearch
 
-Forem requires a version of Elasticsearch 7.5 or higher to be running. We recommend version 7.5.2.
+Forem requires Elasticsearch 7.x to run. We recommend version 7.5.2.
 
 You have the option of installing Elasticsearch with Homebrew or through an archive. We **recommend** installing from archive on Mac.
 
