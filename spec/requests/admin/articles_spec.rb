@@ -14,30 +14,31 @@ RSpec.describe "/admin/articles", type: :request do
 
     before do
       sign_in super_admin
-      get request
     end
 
     it "allows an Admin to add a co-author to an individual article" do
+      get request
       expect do
         article.update_columns(co_author_ids: [1])
       end.to change(article, :co_author_ids).from([]).to([1])
     end
 
     it "allows an Admin to add co-authors to an individual article" do
+      get request
       article.update_columns(co_author_ids: [2, 3])
       expect(article.co_author_ids).to eq([2, 3])
     end
 
     it "allows an Admin to mark an article as approved" do
       expect do
-        article.update_columns(approved: true)
-      end.to change(article, :approved).from(false).to(true)
+        patch "/admin/articles/#{article.id}", params: { article: { approved: true } }
+      end.to change { article.reload.approved }.to(true)
     end
 
     it "allows an Admin to mark an article as featured" do
       expect do
-        article.update_columns(featured: true)
-      end.to change(article, :featured).from(false).to(true)
+        patch "/admin/articles/#{article.id}", params: { article: { featured: true } }
+      end.to change { article.reload.featured }.to(true)
     end
   end
 end
