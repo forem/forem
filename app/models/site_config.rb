@@ -13,7 +13,7 @@ class SiteConfig < RailsSettings::Base
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
   LOGO_PNG = URL.local_image("icon.png").freeze
   MAIN_SOCIAL_IMAGE = URL.local_image("social-media-cover.png").freeze
-  MASCOT_IMAGE_URL = URL.local_image("mascot.png")
+  MASCOT_IMAGE_URL = URL.local_image("mascot.png").freeze
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
 
   # Meta
