@@ -102,9 +102,8 @@
   --z-negative: -1; // to hide something behind everything else
   --z-elevate: 1; // to elevate something, just a little, in relation to its sibling
   --z-sticky: 100; // header, mobile actions bar
-  --z-backdrop: 200; // backdrop for modals, nav drawers, etc..
-  --z-drawer: 300; // sidebar sliding nav drawers
-  --z-modal: 400; // modals ¯\_(ツ)_/¯
-  --z-dropdown: 500; // all kinds of dropdowns
-  --z-popover: 1000; // tooltips, snackbars, etc.
+  --z-drawer: 200; // sidebar sliding nav drawers
+  --z-modal: 300; // modals ¯\_(ツ)_/¯
+  --z-dropdown: 400; // all kinds of dropdowns
+  --z-popover: 500; // tooltips, snackbars, etc.
 }
