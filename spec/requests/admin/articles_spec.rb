@@ -8,7 +8,7 @@ RSpec.describe "/admin/articles", type: :request do
 
   context "when updating an Article via /admin/articles" do
     let(:super_admin) { create(:user, :super_admin) }
-    let!(:article) { create(:article) }
+    let(:article) { create(:article) }
     let(:second_user) { create(:user) }
     let(:third_user) { create(:user) }
 
