@@ -64,7 +64,7 @@ export default class Chat extends Component {
     );
 
     this.state = {
-      appName: document.body.dataset.appName,
+      appDomain: document.body.dataset.appDomain,
       messages: [],
       scrolled: false,
       showAlert: false,
@@ -116,7 +116,7 @@ export default class Chat extends Component {
       isMobileDevice,
       channelPaginationNum,
       currentUserId,
-      appName,
+      appDomain,
       messageOffset,
     } = this.state;
 
@@ -127,13 +127,13 @@ export default class Chat extends Component {
     );
     this.subscribeChannelsToPusher(
       channelsForPusherSub,
-      (channel) => `open-channel--${appName}-${channel.chat_channel_id}`,
+      (channel) => `open-channel--${appDomain}-${channel.chat_channel_id}`,
     );
 
     setupObserver(this.observerCallback);
 
     this.subscribePusher(
-      `private-message-notifications--${appName}-${currentUserId}`,
+      `private-message-notifications--${appDomain}-${currentUserId}`,
     );
 
     if (activeChannelId) {
@@ -236,7 +236,7 @@ export default class Chat extends Component {
   messageOpened = () => {};
 
   loadChannels = (channels, query) => {
-    const { activeChannelId, appName } = this.state;
+    const { activeChannelId, appDomain } = this.state;
     const activeChannel =
       this.state.activeChannel ||
       channels.filter(
@@ -285,11 +285,11 @@ export default class Chat extends Component {
     }
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('open')),
-      (channel) => `open-channel--${appName}-${channel.chat_channel_id}`,
+      (channel) => `open-channel--${appDomain}-${channel.chat_channel_id}`,
     );
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('invite_only')),
-      (channel) => `private-channel--${appName}-${channel.chat_channel_id}`,
+      (channel) => `private-channel--${appDomain}-${channel.chat_channel_id}`,
     );
     const chatChannelsList = document.getElementById(
       'chatchannels__channelslist',
@@ -346,7 +346,7 @@ export default class Chat extends Component {
   };
 
   setupChannel = (channelId) => {
-    const { messages, messageOffset, activeChannel, appName } = this.state;
+    const { messages, messageOffset, activeChannel, appDomain } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
@@ -361,9 +361,9 @@ export default class Chat extends Component {
         null,
       );
       if (activeChannel.channel_type === 'open')
-        this.subscribePusher(`open-channel--${appName}-${channelId}`);
+        this.subscribePusher(`open-channel--${appDomain}-${channelId}`);
     }
-    this.subscribePusher(`private-channel--${appName}-${channelId}`);
+    this.subscribePusher(`private-channel--${appDomain}-${channelId}`);
   };
 
   setOpenChannelUsers = (res) => {
