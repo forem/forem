@@ -77,6 +77,8 @@ module Feeds
             error: "Feeds::Import::FetchFeedError"
           },
         )
+
+        next
       end
 
       batch_of_users.update_all(feed_fetched_at: Time.current)
@@ -99,6 +101,8 @@ module Feeds
             error: "Feeds::Import::ParseFeedError"
           },
         )
+
+        next
       end
 
       result.compact.to_h
@@ -139,6 +143,8 @@ module Feeds
             error: "Feeds::Import::CreateArticleError:#{item.url}"
           },
         )
+
+        next
       end
 
       articles
