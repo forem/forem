@@ -25,9 +25,9 @@
         <% end %>
       </div>
       <% if @tag_model && @tag_model.short_summary.present? %>
-        <div class="max-w-100 m:max-w-75 pt-2 s:pt-4">
+        <p class="max-w-100 m:max-w-75 pt-2 s:pt-4">
           <%= strip_tags(@tag_model.short_summary) %>
-        </div>
+        </p>
       <% end %>
     </header>
   </div>
