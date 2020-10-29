@@ -1,44 +1,36 @@
-<% first_notification = notification.json_data["aggregated_siblings"].first %>
-<% cache "activity-profile-pic-#{first_notification['id']}-#{first_notification['profile_image_90']}" do %>
-  <a href="<%= first_notification["path"] %>" class="small-pic-link-wrapper">
-    <div class="small-pic">
-      <img src="<%= first_notification["profile_image_90"] %>" alt="link to <%= first_notification["username"] %>'s profile">
-    </div>
-  </a>
-<% end %>
-
-<div class="content notification-content reaction-content">
+<div class="crayons-card notification <% if notification.json_data["aggregated_siblings"].length == 1 %> notification--middle <% else %> flex-col items-center <% end %>">
   <% if notification.json_data["aggregated_siblings"].length == 1 %>
-    <% cache "activity-follow-button-#{first_notification['path']}-#{first_notification['name']}" do %>
-      <a href="<%= first_notification["path"] %>"><%= first_notification["name"] %></a> followed you!
-      <%= follow_button(notification.decorate.mocked_object("user"), "follow-back") %>
+    <% first_notification = notification.json_data["aggregated_siblings"].first %>
+    <% cache "activity-profile-pic-#{first_notification['id']}-#{first_notification['profile_image_90']}" do %>
+      <a href="<%= first_notification["path"] %>" class="crayons-avatar <% if notification.json_data["aggregated_siblings"].length == 1 %>crayons-avatar--xl<% else %>crayons-avatar--l<% end %> shrink-0">
+        <img src="<%= first_notification["profile_image_90"] %>" class="crayons-avatar__image" alt="link to <%= first_notification["username"] %>'s profile" width="48" height="48">
+      </a>
     <% end %>
-  <% elsif notification.json_data["aggregated_siblings"].length == 2 %>
-    <% json_data_array = notification["json_data"]["aggregated_siblings"] %>
-    <div class="follower-pic-row">
-      <div class="tiny-pic">
-        <a href="<%= json_data_array.last["path"] %>">
-          <img src="<%= json_data_array.last["profile_image_90"] %>" alt="link to <%= json_data_array.last["name"] %>'s profile" class="round">
-        </a>
-      </div>
-    </div>
-    <br>
-    <div class="notification-message">
-      <a href="<%= json_data_array.first["path"] %>"><%= json_data_array.first["name"] %></a> and
-      <a href="<%= json_data_array.second["path"] %>"><%= json_data_array.second["name"] %></a> followed you!
-    </div>
-  <% else %>
-    <div class="follower-pic-row">
-      <% notification.json_data["aggregated_siblings"][1..10].each do |sibling| %>
-        <div class="tiny-pic">
-          <a href="<%= sibling["path"] %>">
-            <img src="<%= sibling["profile_image_90"] %>" alt="link to <%= sibling["name"] %>'s profile" class="round">
-          </a>
+    <div class="notification__content">
+      <% cache "activity-follow-button-#{first_notification['path']}-#{first_notification['name']}" do %>
+        <div class="flex justify-between items-center">
+          <p><a href="<%= first_notification["path"] %>" class="crayons-link fw-bold"><%= first_notification["name"] %></a> followed you!</p>
+          <%= follow_button(notification.decorate.mocked_object("user"), "follow-back") %>
         </div>
       <% end %>
     </div>
-    <br>
-    <a href="<%= first_notification["path"] %>"><%= first_notification["name"] %></a>
-    and <%= notification.json_data["aggregated_siblings"].size - 1 %> others followed you!
+  <% else %>
+    <% json_data_array = notification["json_data"]["aggregated_siblings"] %>
+    <div class="flex mb-3">
+      <% notification.json_data["aggregated_siblings"][0..10].each do |sibling| %>
+        <a href="<%= sibling["path"] %>" class="crayons-avatar crayons-avatar--l shrink-0 mx-1">
+          <img src="<%= sibling["profile_image_90"] %>" class="crayons-avatar__image" alt="link to <%= sibling["name"] %>'s profile" width="32" height="32">
+        </a>
+      <% end %>
+    </div>
+    <p>
+      <% if notification.json_data["aggregated_siblings"].length == 2 %>
+        <a href="<%= json_data_array.first["path"] %>" class="crayons-link fw-bold"><%= json_data_array.first["name"] %></a> and
+        <a href="<%= json_data_array.second["path"] %>" class="crayons-link fw-bold"><%= json_data_array.second["name"] %></a> followed you!
+      <% else %>
+        <a href="<%= json_data_array.first["path"] %>" class="crayons-link fw-bold"><%= json_data_array.first["name"] %></a>
+        and <%= notification.json_data["aggregated_siblings"].size - 1 %> others followed you!
+      <% end %>
+    </p>
   <% end %>
 </div>
