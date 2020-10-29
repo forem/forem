@@ -117,6 +117,7 @@ module Admin
         github_secret
         facebook_key
         facebook_secret
+        auth_providers_to_enable
         invite_only_mode
         allow_both_email_signup_and_login
         require_captcha_for_email_password_registration

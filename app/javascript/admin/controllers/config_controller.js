@@ -65,6 +65,14 @@ export default class ConfigController extends Controller {
     emailAuthSettingsSection.classList.add('hidden');
   }
 
+  positionModalOnPage() {
+    if (document.querySelector('.crayons-modal')) {
+      window.scrollTo(0, 0);
+      document.body.style.height = '100vh';
+      document.body.style.overflowY = 'hidden';
+    }
+  }
+
   activateEmailAuthModal(event) {
     event.preventDefault();
     this.configModalAnchorTarget.innerHTML = adminModal(
@@ -75,11 +83,7 @@ export default class ConfigController extends Controller {
       'Cancel',
       'closeAdminConfigModal',
     );
-    if (document.querySelector('.crayons-modal')) {
-      window.scrollTo(0, 0);
-      document.body.style.height = '100vh';
-      document.body.style.overflowY = 'hidden';
-    }
+    this.positionModalOnPage();
   }
 
   closeAdminConfigModal() {
@@ -104,6 +108,7 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     if (event.target.dataset.buttonText === 'enable') {
       event.target.setAttribute('data-enable-auth', 'true');
+      this.listAuthToBeEnabled();
     }
     const provider = event.target.dataset.authProviderEnable;
     document
@@ -118,7 +123,43 @@ export default class ConfigController extends Controller {
       `[data-auth-provider-enable="${event.target.dataset.authProvider}"]`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
+    this.listAuthToBeEnabled();
     this.hideAuthProviderSettings();
+  }
+
+  authProviderModalTitle(provider) {
+    return `Disable ${provider} registration`;
+  }
+
+  authProviderModalBody(provider) {
+    return `<p>If you disable ${provider} as a registration option, people cannot create an account with ${provider}.</p><br /><p>However, people who have already created an account with ${provider} can continue to login.</p><br /><p><strong>You must update site config to save this action!</strong></p>`;
+  }
+
+  activateAuthProviderModal(event) {
+    event.preventDefault();
+    const provider = event.target.dataset.authProvider;
+    const official_provider = event.target.dataset.authProviderOfficial;
+    this.configModalAnchorTarget.innerHTML = adminModal(
+      this.authProviderModalTitle(official_provider),
+      this.authProviderModalBody(official_provider),
+      'Confirm',
+      'disableAuthProviderFromModal',
+      'auth-provider',
+      provider,
+      'Cancel',
+      'closeAdminConfigModal',
+    );
+    this.positionModalOnPage();
+  }
+
+  disableAuthProviderFromModal() {
+    event.preventDefault();
+    const authEnableButton = document.querySelector(
+      `[data-auth-provider-enable="${event.target.dataset.authProvider}"]`,
+    );
+    authEnableButton.setAttribute('data-enable-auth', 'false');
+    this.listAuthToBeEnabled();
+    this.closeAdminConfigModal();
   }
 
   hideAuthProviderSettings() {
@@ -128,5 +169,17 @@ export default class ConfigController extends Controller {
       .querySelector(`#${provider}-auth-settings`)
       .classList.add('hidden');
     document.querySelector(`#${provider}-auth-btn`).classList.remove('hidden');
+  }
+
+  listAuthToBeEnabled() {
+    const enabledProviderArray = [];
+    document
+      .querySelectorAll('[data-enable-auth="true"]')
+      .forEach((provider) => {
+        enabledProviderArray.push(provider.dataset.authProviderEnable);
+      });
+    document.querySelector(
+      '#auth_providers_to_enable',
+    ).value = enabledProviderArray;
   }
 }

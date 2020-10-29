@@ -14,6 +14,8 @@ const adminModal = (
   body,
   confirmBtnText,
   confirmBtnAction,
+  customAttr = null,
+  customAttrValue = null,
   cancelBtnText,
   cancelBtnAction,
 ) => `
@@ -32,7 +34,8 @@ const adminModal = (
         <div class="mt-6">
           <button
             class="crayons-btn crayons-btn--danger"
-            data-action="click->config#${confirmBtnAction}">
+            data-action="click->config#${confirmBtnAction}"
+            data-${customAttr}="${customAttrValue}">
             ${confirmBtnText}
           </button>
           <button
