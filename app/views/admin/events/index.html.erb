@@ -1,31 +1,38 @@
-<div class="crayons-card p-6 mb-6">
-  <h2 class="crayons-title mb-6">Create New Event</h2>
+<header class="flex items-center mb-6">
+  <h2 class="crayons-title">Events</h2>
+  <%= link_to "New Event", new_admin_event_path, class: "ml-auto crayons-btn crayons-btn--s" %>
+</header>
+<br>
 
-  <%= form_for @event, url: { controller: "events", action: "create" } do |f| %>
-    <%= render "event_form", f: f, event: @event %>
-  <% end %>
-</div>
-
-<div class="crayons-card p-6 mb-6">
-  <h2 class="crayons-title mb-6">Upcoming Events</h2>
+<div class="crayons-card p-6 pages__table">
+  <h3>Upcoming Events</h3>
   <% @events.each do |event| %>
     <% if event.starts_at.future? %>
-      <img src="<%= event.cover_image_url %>" alt="event cover image">
-      <%= form_for [:admin, event] do |f| %>
-        <%= render "event_form", f: f, event: event %>
-      <% end %>
+      <div class="flex py-2 items-center">
+        <%= event.title %>
+        <% if event.cover_image_url.present? %>
+          <img class="mx-auto mt-3" width="40" height="40" src="<%= event.cover_image_url %>" alt="event cover image">
+        <% end %>
+        <%= link_to "Edit", edit_admin_event_path(event.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
+      </div>
+      <hr>
     <% end %>
   <% end %>
 </div>
+<br>
 
-<div class="crayons-card p-6 mb-6">
-  <h2 class="crayons-title mb-6">Past Events</h2>
+<div class="crayons-card p-6 pages__table">
+<h3>Past Events</h3>
   <% @events.each do |event| %>
     <% if !event.starts_at.future? %>
-      <img src="<%= event.cover_image_url %>" alt="event cover image">
-      <%= form_for [:admin, event] do |f| %>
-        <%= render "event_form", f: f, event: event %>
-      <% end %>
+      <div class="flex py-2 items-center">
+        <%= event.title %>
+        <% if event.cover_image_url.present? %>
+          <img class="mx-auto mt-3 justify-content-center" width="40" height="40" src="<%= event.cover_image_url %>" alt="event cover image">
+        <% end %>
+        <%= link_to "Edit", edit_admin_event_path(event.id), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--secondary" %>
+      </div>
+      <hr>
     <% end %>
   <% end %>
 </div>
