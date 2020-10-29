@@ -1,4 +1,5 @@
 import { Controller } from 'stimulus';
+import adminModal from '../adminModal';
 
 const recaptchaFields = document.querySelector('#recaptchaContainer');
 const emailSigninAndLoginCheckbox = document.querySelector(
@@ -7,55 +8,17 @@ const emailSigninAndLoginCheckbox = document.querySelector(
 const emailAuthSettingsSection = document.querySelector(
   '#email-auth-settings-section',
 );
-const modalAnchor = document.querySelector('.admin-config-modal-anchor');
 const emailAuthModalTitle = 'Disable email address registration';
 // TODO: Remove the sentence "You must update site config to save this action!"
 // once we build more robust flow for Admin/Config
 const emailAuthModalBody =
   '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><br /><p>However, people who have already created an account using their email address can continue to login.</p><br /><p><strong>You must update site config to save this action!</strong></p>';
 
-const adminConfigModal = (
-  title,
-  body,
-  confirmBtnText,
-  confirmBtnAction,
-  cancelBtnText,
-  cancelBtnAction,
-) => `
-  <div class="crayons-modal crayons-modal--s absolute">
-    <div class="crayons-modal__box">
-      <header class="crayons-modal__box__header">
-        <p class="fw-bold fs-l">${title}</p>
-        <button type="button" class="crayons-btn crayons-btn--icon crayons-btn--ghost" data-action="click->config#closeAdminConfigModal">
-          <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-          </svg>
-        </button>
-      </header>
-      <div class="crayons-modal__box__body">
-        ${body}
-        <div class="mt-6">
-          <button
-            class="crayons-btn crayons-btn--danger"
-            data-action="click->config#${confirmBtnAction}">
-            ${confirmBtnText}
-          </button>
-          <button
-            class="crayons-btn crayons-btn--secondary"
-            data-action="click->config#${cancelBtnAction}">
-            ${cancelBtnText}
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="crayons-modal__overlay"></div>
-  </div>
-`;
-
 export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
     'collectiveNoun',
+    'configModalAnchor',
     'emailAuthSettingsBtn',
     'inviteOnlyMode',
     'requireCaptchaForEmailPasswordRegistration',
@@ -102,9 +65,9 @@ export default class ConfigController extends Controller {
     emailAuthSettingsSection.classList.add('hidden');
   }
 
-  activateEmailAuthModal() {
+  activateEmailAuthModal(event) {
     event.preventDefault();
-    modalAnchor.innerHTML = adminConfigModal(
+    this.configModalAnchorTarget.innerHTML = adminModal(
       emailAuthModalTitle,
       emailAuthModalBody,
       'Confirm',
@@ -120,7 +83,7 @@ export default class ConfigController extends Controller {
   }
 
   closeAdminConfigModal() {
-    modalAnchor.innerHTML = '';
+    this.configModalAnchorTarget.innerHTML = '';
     document.body.style.height = 'inherit';
     document.body.style.overflowY = 'inherit';
   }
