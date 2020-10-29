@@ -108,15 +108,17 @@ label {
 }
 
 .config-authentication__item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-column-gap: var(--su-4);
-  margin-bottom: var(--su-6);
+  display: flex;
+  gap: var(--su-3);
+  padding-top: var(--su-3);
+  padding-bottom: var(--su-3);
 
-  &--icon,
-  &--label {
-    padding-top: var(--su-4);
-    padding-bottom: var(--su-4);
+  &--container {
+    width: 100%;
+  }
+
+  &--icon {
+    color: var(--base-80);
   }
 }
 
@@ -124,6 +126,8 @@ label {
   display: flex;
   flex-direction: column;
   gap: var(--su-4);
+  padding-top: var(--su-4);
+  padding-bottom: var(--su-4);
 }
 
 .admin-config-checkmark {
