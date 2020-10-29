@@ -63,16 +63,14 @@ export class Help extends Component {
             className="sticky"
             style={{ top: version === 'v1' ? '56px' : helpPosition }}
           >
-            <ArticleFormTitle show={helpFor === 'article-form-title'} />
-            <TagInput show={helpFor === 'tag-input'} />
-            <BasicEditor
-              show={version === 'v1'}
-              toggleModal={this.toggleModal}
-            />
-            <Format
-              show={helpFor === 'article_body_markdown' || version === 'v1'}
-              toggleModal={this.toggleModal}
-            />
+            {helpFor === 'article-form-title' && <ArticleFormTitle />}
+            {helpFor === 'tag-input' && <TagInput />}
+
+            {version === 'v1' && <BasicEditor toggleModal={this.toggleModal} />}
+
+            {(helpFor === 'article_body_markdown' || version === 'v1') && (
+              <Format toggleModal={this.toggleModal} />
+            )}
           </div>
         )}
 
