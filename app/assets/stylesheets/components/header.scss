@@ -13,7 +13,7 @@
     top: 0px;
     left: 0px;
     right: 0px;
-    z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
+    z-index: var(--z-sticky);
   }
 
   &__container {
@@ -94,7 +94,6 @@
   height: 100%;
   display: flex;
   align-items: center;
-  z-index: 20;
   &__trigger {
     all: unset;
     padding: var(--su-1);
@@ -128,7 +127,7 @@
   transform: translate(-50%, -100px);
   background: var(--body-color);
   color: var(--body-color-inverted);
-  z-index: 9999;
+  z-index: var(--z-popover);
   padding: var(--su-4);
   pointer-events: none;
   opacity: 0;
@@ -214,7 +213,7 @@
   position: fixed;
   top: 0;
   background: var(--accent-brand);
-  z-index: 103;
+  z-index: var(--popover);
   height: var(--su-1);
   width: 0;
   &.showing {

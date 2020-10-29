@@ -224,13 +224,13 @@
       margin-left: 5%;
       @media screen and (min-width: 430px) {
         font-size: 1.15em;
-        padding: 15px 15px 15px 0
+        padding: 15px 15px 15px 0;
       }
       @media screen and (min-width: 1100px) {
         position: absolute;
         top: 45%;
         transform: translateY(-45%);
-        padding: 15px 15px 15px 0
+        padding: 15px 15px 15px 0;
       }
       .row {
         padding: calc(5px + 0.2vw) 0px;
@@ -348,162 +348,6 @@
       vertical-align: 12px;
       border-radius: 5px;
       min-width: 80px;
-    }
-  }
-
-  // new message modal for open inbox
-  .modal {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 990;
-  }
-
-  .modal .overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 995;
-    background: rgba(0, 0, 0, 0.85);
-  }
-
-  .modal-content {
-    z-index: 999;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-height: 80%;
-    overflow: auto;
-    background: #fff;
-    box-sizing: border-box;
-    padding: 20px;
-    border: 1px solid #d6d6d6;
-    box-shadow: 3px 3px 0px #bababa;
-    border-radius: 3px;
-    max-width: 95%;
-    width: 600px;
-
-    .message-form {
-      display: flex;
-      flex-direction: column;
-      flex-wrap: nowrap;
-      justify-content: space-around;
-      align-items: center;
-      align-content: stretch;
-      @media screen and (min-width: 500px) {
-        flex-direction: row;
-      }
-      textarea {
-        border-radius: 3px;
-        border: 1px solid #d6d6d6;
-        font-size: 14px;
-        margin: 10px;
-        padding: 5px;
-        width: calc(100% - 50px);
-        order: 1;
-        flex-grow: 1;
-        height: 80px;
-        resize: vertical;
-        max-height: 50vh;
-        @media screen and (min-width: 500px) {
-          width: calc(100% - 100px);
-        }
-      }
-
-      .submit-message {
-        margin: 0px auto;
-        border-radius: 3px;
-        background: $dark-purple;
-        font-weight: 600px;
-        font-family: $helvetica-condensed;
-        width: 220px;
-        color: white;
-        font-size: 17px;
-        height: 40px;
-        order: 10;
-        flex-grow: 1;
-        border: 0px;
-        @media screen and (min-width: 500px) {
-          margin: 10px 10px 10px 0;
-          width: 82px;
-          height: 80px;
-        }
-      }
-    }
-    p {
-      color: $dark-gray;
-      font-size: 0.8em;
-      margin: 5px auto;
-      width: 96%;
-    }
-    .close-modal {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      cursor: pointer;
-      font-size: 18px;
-      opacity: 0.5;
-      background: none;
-      border: none;
-      padding: 0 0 0 10px;
-      transition: opacity 0.2s ease;
-      &:hover {
-        opacity: 0.9;
-      }
-    }
-  }
-  .profile-dropdown {
-    position: absolute;
-    top: 0px;
-    right: 6px;
-    button {
-      border: 0px;
-      background: transparent;
-      padding: 8px;
-    }
-    img {
-      height: 22px;
-      width: 22px;
-    }
-    .profile-dropdownmenu {
-      display: none;
-      position: absolute;
-      top: 30px;
-      right: 3px;
-      border: 1px solid $light-medium-gray;
-      border-radius: 3px;
-      background: var(--card-bg);
-      z-index: 20;
-      width: 200px;
-      box-shadow: $shadow;
-      a {
-        font-size: 0.75em;
-        color: var(--body-color);
-        display: block;
-        padding: 9px 10px;
-        font-weight: bold;
-      }
-      &.showing {
-        display: block;
-      }
-      button {
-        font-size: 0.75em;
-        color: var(--body-color);
-        font-weight: bold;
-        width: 100%;
-        text-align: left;
-        padding-left: 10px;
-        display: block;
-        border: none;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        background: transparent;
-      }
     }
   }
 }
