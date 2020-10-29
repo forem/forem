@@ -485,6 +485,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
+    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -1265,7 +1266,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
-    t.datetime "last_reacted_at", default: "2017-01-01 05:00:00"
+    t.datetime "last_reacted_at"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
