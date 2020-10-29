@@ -11,7 +11,7 @@
       Sign In/Up
     </a>
   <% end %>
-  <div class="spec-sidebar-navigation-links">
+  <div class="sidebar-navigation-links spec-sidebar-navigation-links">
     <% NavigationLink.all.ordered[0..4].each do |link| %>
       <%= render "articles/sidebar_nav_link", link: link %>
     <% end %>
