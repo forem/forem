@@ -139,11 +139,23 @@ export default class ConfigController extends Controller {
 
   enableOrEditAuthProvider() {
     event.preventDefault();
-    const provider = event.target.dataset.authProvider;
+    if (event.target.dataset.buttonText === 'enable') {
+      event.target.setAttribute('data-enable-auth', 'true');
+    }
+    const provider = event.target.dataset.authProviderEnable;
     document
       .querySelector(`#${provider}-auth-settings`)
       .classList.remove('hidden');
-    document.querySelector(`#${provider}-auth-btn`).classList.add('hidden');
+    event.target.classList.add('hidden');
+  }
+
+  disableAuthProvider() {
+    event.preventDefault();
+    const authEnableButton = document.querySelector(
+      `[data-auth-provider-enable="${event.target.dataset.authProvider}"]`,
+    );
+    authEnableButton.setAttribute('data-enable-auth', 'false');
+    this.hideAuthProviderSettings();
   }
 
   hideAuthProviderSettings() {

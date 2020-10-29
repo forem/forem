@@ -185,7 +185,8 @@
                             id="<%= provider.provider_name %>-auth-btn"
                             data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
                             data-action="click->config#enableOrEditAuthProvider"
-                            data-auth-provider="<%= provider.provider_name %>">
+                            data-auth-provider-enable="<%= provider.provider_name %>"
+                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>">
                             <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>

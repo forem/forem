@@ -28,7 +28,7 @@
               class="crayons-btn crayons-btn--danger <%= disable_email_tooltip_class %>"
               data-action="click->config#activateEmailAuthModal"
               data-tooltip="<%= disable_email_tooltip_content %>"
-              data-auth-provider="<%= provider.provider_name %>"
+              data-auth-provider-disable="<%= provider.provider_name %>"
               <%= disable_button_class %>>
               Disable
             </button>
@@ -42,7 +42,7 @@
             <button
               class="crayons-btn crayons-btn--secondary"
               data-auth-provider="<%= provider.provider_name %>"
-              data-action="click->config#disableEmailAuth">
+              data-action="click->config#disableAuthProvider">
               Undo
             </button>
           <% end %>
