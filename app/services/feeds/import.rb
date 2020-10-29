@@ -3,14 +3,7 @@
 # => add Feeds::ValidateFeedUrl to validate a single feed URL
 module Feeds
   class Import
-    def self.call(silent: true)
-      # TODO: remove this eventually
-      if silent && Rails.env.development?
-        ActiveRecord::Base.logger = nil
-        Rails.logger.level = :info
-        Rails.configuration.log_level = :info
-      end
-
+    def self.call
       new.call
     end
 
@@ -30,10 +23,8 @@ module Feeds
 
       users.in_batches(of: users_batch_size) do |batch_of_users|
         feeds_per_user_id = fetch_feeds(batch_of_users)
-        Rails.logger.info("feeds_per_user_id.length: #{feeds_per_user_id.length}")
 
         feedjira_objects = parse_feeds(feeds_per_user_id)
-        Rails.logger.info("feedjira_objects.length: #{feedjira_objects.length}")
 
         # NOTE: doing this sequentially to avoid locking problems with the DB
         # and unnecessary conflicts
@@ -43,7 +34,6 @@ module Feeds
           user = batch_of_users.detect { |u| u.id == user_id }
           create_articles_from_user_feed(user, feed)
         end
-        Rails.logger.info("articles.length: #{articles.length}")
 
         total_articles_count += articles.length
 
