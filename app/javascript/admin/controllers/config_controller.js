@@ -136,4 +136,22 @@ export default class ConfigController extends Controller {
     emailSigninAndLoginCheckbox.checked = false;
     this.hideEmailAuthSettings();
   }
+
+  enableOrEditAuthProvider() {
+    event.preventDefault();
+    const provider = event.target.dataset.authProvider;
+    document
+      .querySelector(`#${provider}-auth-settings`)
+      .classList.remove('hidden');
+    document.querySelector(`#${provider}-auth-btn`).classList.add('hidden');
+  }
+
+  hideAuthProviderSettings() {
+    event.preventDefault();
+    const provider = event.target.dataset.authProvider;
+    document
+      .querySelector(`#${provider}-auth-settings`)
+      .classList.add('hidden');
+    document.querySelector(`#${provider}-auth-btn`).classList.remove('hidden');
+  }
 }
