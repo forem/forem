@@ -10,13 +10,13 @@
         <% if @tag_model.badge_id && @tag_model.badge %>
             <img src="<%= optimized_image_url(@tag_model.badge.badge_image_url, width: 64) %>" class="" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg); width: 64px; height: 64px;" />
         <% end %>
-        <div class="flex flex-col w-100">
+        <div class="flex flex-col w-100 justify-center">
           <div class="flex justify-between items-center">
             <h1 class="crayons-title">
               <% if @tag_model && @tag_model.pretty_name.present? %>
                 <%= @tag_model.pretty_name %>
               <% else %>
-                <span class="crayons-tag__prefix">#</span>
+                <span class="opacity-50">#</span>
                 <%= @tag %>
               <% end %>
             </h1>
@@ -25,12 +25,14 @@
             <% end %>
           </div>
           <% if @tag_model && @tag_model.short_summary.present? %>
-            <div class="max-w-100 m:max-w-75 pt-2 s:pt-4">
+            <p class="max-w-100 m:max-w-75 pt-2 s:pt-4">
               <%= strip_tags(@tag_model.short_summary) %>
-            </div>
+            </p>
           <% end %>
         </div>
       </div>
+      <% if @tag_model && @tag_model.short_summary.present? %>
+      <% end %>
     </header>
   </div>
 
