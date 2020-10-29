@@ -61,7 +61,7 @@ RSpec.describe "Registrations", type: :request do
 
   describe "Create Account" do
     context "when email registration allowed" do
-      before { SiteConfig.allow_email_password_registration = true }
+      before { allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true) }
 
       it "shows the sign in page with email option" do
         get sign_up_path, params: { state: "new-user" }
@@ -77,11 +77,10 @@ RSpec.describe "Registrations", type: :request do
     end
 
     context "when email registration not allowed" do
-      before { SiteConfig.allow_email_password_registration = false }
+      before { allow(SiteConfig).to receive(:allow_email_password_registration).and_return(false) }
 
       it "does not show email sign up option" do
-        SiteConfig.allow_email_password_registration = false
-
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(false)
         get sign_up_path, params: { state: "new-user" }
 
         expect(response.body).not_to include("Sign up with Email")
@@ -113,12 +112,11 @@ RSpec.describe "Registrations", type: :request do
     context "with the creator_onboarding feature flag" do
       before do
         Flipper.enable(:creator_onboarding)
-        SiteConfig.waiting_on_first_user = true
+        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
       end
 
       after do
         Flipper.disable(:creator_onboarding)
-        SiteConfig.waiting_on_first_user = false
       end
 
       it "renders the creator onboarding form" do
@@ -132,12 +130,11 @@ RSpec.describe "Registrations", type: :request do
   describe "GET /users/signup" do
     context "when site is in waiting_on_first_user state" do
       before do
-        SiteConfig.waiting_on_first_user = true
+        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
         ENV["FOREM_OWNER_SECRET"] = "test"
       end
 
       after do
-        SiteConfig.waiting_on_first_user = false
         ENV["FOREM_OWNER_SECRET"] = nil
       end
 
@@ -165,7 +162,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site is not configured to accept email registration" do
       before do
-        SiteConfig.allow_email_password_registration = false
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(false)
       end
 
       it "disallows communities where email registration is not allowed" do
@@ -175,7 +172,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site is configured to accept email registration" do
       before do
-        SiteConfig.allow_email_password_registration = true
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
       end
 
       it "does not raise disallowed if community is set to allow email" do
@@ -263,12 +260,11 @@ RSpec.describe "Registrations", type: :request do
 
     context "when site is in waiting_on_first_user state" do
       before do
-        SiteConfig.waiting_on_first_user = true
+        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
         ENV["FOREM_OWNER_SECRET"] = nil
       end
 
       after do
-        SiteConfig.waiting_on_first_user = false
         ENV["FOREM_OWNER_SECRET"] = nil
       end
 
@@ -328,12 +324,11 @@ RSpec.describe "Registrations", type: :request do
     context "with the creator_onboarding feature flag" do
       before do
         Flipper.enable(:creator_onboarding)
-        SiteConfig.waiting_on_first_user = true
+        allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
       end
 
       after do
         Flipper.disable(:creator_onboarding)
-        SiteConfig.waiting_on_first_user = false
       end
 
       it "creates user with valid params passed" do

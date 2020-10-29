@@ -66,7 +66,7 @@ Rails.application.routes.draw do
                                               destroy], path: "listings/categories"
 
       resources :comments, only: [:index]
-      resources :events, only: %i[index create update]
+      resources :events, only: %i[index create update new edit]
       resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
       resources :pages, only: %i[index new create edit update destroy]

@@ -12,6 +12,7 @@ class SiteConfig < RailsSettings::Base
 
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
+  MAIN_SOCIAL_IMAGE = URL.local_image("social-media-cover.png").freeze
 
   # Meta
   field :admin_action_taken_at, type: :datetime, default: Time.current
@@ -25,8 +26,9 @@ class SiteConfig < RailsSettings::Base
   field :video_encoder_key, type: :string
 
   # Authentication
-  field :allow_email_password_registration, type: :boolean, default: false
+  field :allow_email_password_registration, type: :boolean, default: true
   field :allow_email_password_login, type: :boolean, default: true
+  field :allow_both_email_signup_and_login, type: :boolean, default: true
   field :require_captcha_for_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :invite_only_mode, type: :boolean, default: false
@@ -48,6 +50,8 @@ class SiteConfig < RailsSettings::Base
 
   # Community Content
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
+  field :collective_noun, type: :string, default: "Community"
+  field :collective_noun_disabled, type: :boolean, default: false
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
   field :tagline, type: :string
@@ -82,7 +86,7 @@ class SiteConfig < RailsSettings::Base
   field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
   # Images
-  field :main_social_image, type: :string
+  field :main_social_image, type: :string, default: MAIN_SOCIAL_IMAGE
   field :favicon_url, type: :string, default: "favicon.ico"
   field :logo_png, type: :string
   field :logo_svg, type: :string
@@ -130,6 +134,7 @@ class SiteConfig < RailsSettings::Base
   field :onboarding_taskcard_image, type: :string
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
+  field :prefer_manual_suggested_users, type: :boolean, default: false
 
   # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ModFaqSection = ({ email, currentMembershipRole }) => {
+const ModFaqSection = ({ currentMembershipRole }) => {
   if (currentMembershipRole === 'member') {
     return null;
   }
@@ -24,7 +24,6 @@ const ModFaqSection = ({ email, currentMembershipRole }) => {
 };
 
 ModFaqSection.propTypes = {
-  email: PropTypes.string.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
 };
 

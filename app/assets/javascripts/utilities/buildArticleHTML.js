@@ -237,7 +237,9 @@ function buildArticleHTML(article) {
     var saveButton = '';
     if (article.class_name === 'Article') {
       saveButton =
-        '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s bookmark-button" data-reactable-id="' +
+        '<button type="button" id="article-save-button-' +
+        article.id +
+        '" class="crayons-btn crayons-btn--secondary crayons-btn--s bookmark-button" data-reactable-id="' +
         article.id +
         '">\
                       <span class="bm-initial">Save</span>\
