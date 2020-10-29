@@ -12,7 +12,7 @@
             <% if @tag_model && @tag_model.pretty_name.present? %>
               <%= @tag_model.pretty_name %>
             <% else %>
-              <span class="crayons-tag__prefix">#</span>
+              <span class="opacity-50">#</span>
               <%= @tag %>
             <% end %>
           </h1>
