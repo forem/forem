@@ -4,7 +4,7 @@ RSpec.describe "HealthCheck", type: :request do
   let(:token) { "secret" }
   let(:headers) { { "health-check-token" => token } }
 
-  before { SiteConfig.health_check_token = token }
+  before { allow(SiteConfig).to receive(:health_check_token).and_return(token) }
 
   context "without a token" do
     it "returns an unauthorized request" do

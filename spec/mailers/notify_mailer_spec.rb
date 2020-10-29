@@ -403,7 +403,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   end
 
   describe "#export_email" do
-    let(:email) { described_class.with(user: user, attachment: "attachment").export_email }
+    let(:email) { described_class.with(email: user.email, attachment: "attachment").export_email }
 
     it "renders proper subject" do
       expect(email.subject).to include("export of your content is ready")
@@ -430,12 +430,6 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "includes the tracking pixel" do
       expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=export_email"))
     end
   end
 

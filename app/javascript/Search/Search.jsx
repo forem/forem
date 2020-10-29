@@ -21,6 +21,7 @@ export class Search extends Component {
   constructor(props) {
     super(props);
     this.enableSearchPageChecker = true;
+    this.syncSearchUrlWithInput = this.syncSearchUrlWithInput.bind(this);
   }
 
   componentWillMount() {
@@ -48,9 +49,33 @@ export class Search extends Component {
     searchPageChecker();
   }
 
+  /**
+   * Synchronizes the search input value with the search term defined in the URL.
+   */
+  syncSearchUrlWithInput() {
+    // TODO: Consolidate search functionality.
+    // Note that push states for search occur in _search.html.erb
+    // in initializeSortingTabs(query)
+    const { searchBoxId } = this.props;
+    const searchTerm = getInitialSearchTerm(window.location.search);
+
+    // We set the value outside of React state so that there is no flickering of placeholder
+    // to search term.
+    const searchBox = document.getElementById(searchBoxId);
+    searchBox.value = searchTerm;
+
+    // Even though we set the search term directly via the DOM, it still needs to reside
+    // in component state.
+    this.setState({
+      searchTerm,
+    });
+  }
+
   componentDidMount() {
     this.registerGlobalKeysListener();
     InstantClick.on('change', this.enableSearchPageListener);
+
+    window.addEventListener('popstate', this.syncSearchUrlWithInput);
   }
 
   enableSearchPageListener = () => {
@@ -81,8 +106,9 @@ export class Search extends Component {
     }
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     document.removeEventListener('keydown', this.globalKeysListener);
+    window.removeEventListener('popstate', this.syncSearchUrlWithInput);
     InstantClick.off('change', this.enableSearchPageListener);
   }
 
