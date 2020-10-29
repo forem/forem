@@ -12,6 +12,7 @@ class SiteConfig < RailsSettings::Base
 
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
+  MAIN_SOCIAL_IMAGE = URL.local_image("social-media-cover.png").freeze
 
   # Meta
   field :admin_action_taken_at, type: :datetime, default: Time.current
@@ -85,7 +86,7 @@ class SiteConfig < RailsSettings::Base
   field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
   # Images
-  field :main_social_image, type: :string
+  field :main_social_image, type: :string, default: MAIN_SOCIAL_IMAGE
   field :favicon_url, type: :string, default: "favicon.ico"
   field :logo_png, type: :string
   field :logo_svg, type: :string
