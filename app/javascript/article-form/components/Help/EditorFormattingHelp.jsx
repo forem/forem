@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const Format = ({ toggleModal }) => (
+const EditorFormattingHelp = ({ toggleModal }) => (
   <div
     data-testid="format-help"
     className="crayons-article-form__help crayons-article-form__help--body"
@@ -122,8 +122,8 @@ const Format = ({ toggleModal }) => (
   </div>
 );
 
-Format.propTypes = {
+EditorFormattingHelp.propTypes = {
   toggleModal: PropTypes.func.isRequired,
 };
 
-export default Format;
+export default EditorFormattingHelp;

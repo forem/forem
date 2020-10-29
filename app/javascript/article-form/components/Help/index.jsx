@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ArticleFormTitle from './ArticleFormTitle';
 import TagInput from './TagInput';
 import BasicEditor from './BasicEditor';
-import Format from './Format';
+import EditorFormattingHelp from './EditorFormattingHelp';
 import { Modal } from '@crayons';
 
 export class Help extends Component {
@@ -69,7 +69,7 @@ export class Help extends Component {
             {version === 'v1' && <BasicEditor toggleModal={this.toggleModal} />}
 
             {(helpFor === 'article_body_markdown' || version === 'v1') && (
-              <Format toggleModal={this.toggleModal} />
+              <EditorFormattingHelp toggleModal={this.toggleModal} />
             )}
           </div>
         )}
