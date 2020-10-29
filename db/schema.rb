@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_19_012200) do
-
+ActiveRecord::Schema.define(version: 20_201_019_012_200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -23,7 +22,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "time"
     t.bigint "user_id"
     t.bigint "visit_id"
-    t.index ["name", "time"], name: "index_ahoy_events_on_name_and_time"
+    t.index %w[name time], name: "index_ahoy_events_on_name_and_time"
     t.index ["properties"], name: "index_ahoy_events_on_properties", opclass: :jsonb_path_ops, using: :gin
     t.index ["user_id"], name: "index_ahoy_events_on_user_id"
     t.index ["visit_id"], name: "index_ahoy_events_on_visit_id"
@@ -48,8 +47,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "utm_term"
     t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
-    t.index ["user_id", "mailer"], name: "index_ahoy_messages_on_user_id_and_mailer"
-    t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
+    t.index %w[user_id mailer], name: "index_ahoy_messages_on_user_id_and_mailer"
+    t.index %w[user_id user_type], name: "index_ahoy_messages_on_user_id_and_user_type"
   end
 
   create_table "ahoy_visits", force: :cascade do |t|
@@ -163,7 +162,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
-    t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
+    t.index %w[slug user_id], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
@@ -187,8 +186,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["badge_id", "user_id"], name: "index_badge_achievements_on_badge_id_and_user_id", unique: true
-    t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
+    t.index %w[badge_id user_id], name: "index_badge_achievements_on_badge_id_and_user_id", unique: true
+    t.index %w[user_id badge_id], name: "index_badge_achievements_on_user_id_and_badge_id"
   end
 
   create_table "badges", force: :cascade do |t|
@@ -278,8 +277,9 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "title"
     t.string "type_of"
     t.datetime "updated_at"
-    t.index ["broadcastable_type", "broadcastable_id"], name: "index_broadcasts_on_broadcastable_type_and_broadcastable_id", unique: true
-    t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
+    t.index %w[broadcastable_type
+               broadcastable_id], name: "index_broadcasts_on_broadcastable_type_and_broadcastable_id", unique: true
+    t.index %w[title type_of], name: "index_broadcasts_on_title_and_type_of", unique: true
   end
 
   create_table "buffer_updates", force: :cascade do |t|
@@ -307,8 +307,9 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["chat_channel_id", "user_id"], name: "index_chat_channel_memberships_on_chat_channel_id_and_user_id", unique: true
-    t.index ["user_id", "chat_channel_id"], name: "index_chat_channel_memberships_on_user_id_and_chat_channel_id"
+    t.index %w[chat_channel_id
+               user_id], name: "index_chat_channel_memberships_on_chat_channel_id_and_user_id", unique: true
+    t.index %w[user_id chat_channel_id], name: "index_chat_channel_memberships_on_user_id_and_chat_channel_id"
   end
 
   create_table "chat_channels", force: :cascade do |t|
@@ -383,7 +384,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
-    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true
+    t.index %w[slug user_id], name: "index_collections_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
@@ -411,7 +412,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.bigint "user_id"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
     t.index ["ancestry"], name: "index_comments_on_ancestry"
-    t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
+    t.index %w[commentable_id commentable_type], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["score"], name: "index_comments_on_score"
     t.index ["user_id"], name: "index_comments_on_user_id"
@@ -427,7 +428,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "spent_at"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["purchase_id", "purchase_type"], name: "index_credits_on_purchase_id_and_purchase_type"
+    t.index %w[purchase_id purchase_type], name: "index_credits_on_purchase_id_and_purchase_type"
     t.index ["spent"], name: "index_credits_on_spent"
   end
 
@@ -438,7 +439,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.citext "label", null: false
     t.bigint "profile_id", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["label", "profile_id"], name: "index_custom_profile_fields_on_label_and_profile_id", unique: true
+    t.index %w[label profile_id], name: "index_custom_profile_fields_on_label_and_profile_id", unique: true
     t.index ["profile_id"], name: "index_custom_profile_fields_on_profile_id"
   end
 
@@ -485,6 +486,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
+    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -536,8 +538,9 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "participant_id"
     t.string "participant_type"
     t.string "variant"
-    t.index ["experiment", "created_at"], name: "index_field_test_memberships_on_experiment_and_created_at"
-    t.index ["participant_type", "participant_id", "experiment"], name: "index_field_test_memberships_on_participant", unique: true
+    t.index %w[experiment created_at], name: "index_field_test_memberships_on_experiment_and_created_at"
+    t.index %w[participant_type participant_id
+               experiment], name: "index_field_test_memberships_on_participant", unique: true
   end
 
   create_table "flipper_features", force: :cascade do |t|
@@ -553,7 +556,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "key", null: false
     t.datetime "updated_at", null: false
     t.string "value"
-    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+    t.index %w[feature_key key value], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
   end
 
   create_table "follows", force: :cascade do |t|
@@ -567,9 +570,10 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "subscription_status", default: "all_articles", null: false
     t.datetime "updated_at"
     t.index ["created_at"], name: "index_follows_on_created_at"
-    t.index ["followable_id", "followable_type", "follower_id", "follower_type"], name: "index_follows_on_followable_and_follower", unique: true
-    t.index ["followable_id", "followable_type"], name: "fk_followables"
-    t.index ["follower_id", "follower_type"], name: "fk_follows"
+    t.index %w[followable_id followable_type follower_id
+               follower_type], name: "index_follows_on_followable_and_follower", unique: true
+    t.index %w[followable_id followable_type], name: "fk_followables"
+    t.index %w[follower_id follower_type], name: "fk_follows"
   end
 
   create_table "github_issues", force: :cascade do |t|
@@ -608,7 +612,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "created_at", null: false
     t.bigint "html_variant_id"
     t.datetime "updated_at", null: false
-    t.index ["html_variant_id", "article_id"], name: "index_html_variant_successes_on_html_variant_id_and_article_id"
+    t.index %w[html_variant_id article_id], name: "index_html_variant_successes_on_html_variant_id_and_article_id"
   end
 
   create_table "html_variant_trials", force: :cascade do |t|
@@ -616,7 +620,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "created_at", null: false
     t.bigint "html_variant_id"
     t.datetime "updated_at", null: false
-    t.index ["html_variant_id", "article_id"], name: "index_html_variant_trials_on_html_variant_id_and_article_id"
+    t.index %w[html_variant_id article_id], name: "index_html_variant_trials_on_html_variant_id_and_article_id"
   end
 
   create_table "html_variants", force: :cascade do |t|
@@ -642,8 +646,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "uid"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
-    t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
+    t.index %w[provider uid], name: "index_identities_on_provider_and_uid", unique: true
+    t.index %w[provider user_id], name: "index_identities_on_provider_and_user_id", unique: true
   end
 
   create_table "mentions", force: :cascade do |t|
@@ -652,7 +656,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "mentionable_type"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["user_id", "mentionable_id", "mentionable_type"], name: "index_mentions_on_user_id_and_mentionable_id_mentionable_type", unique: true
+    t.index %w[user_id mentionable_id
+               mentionable_type], name: "index_mentions_on_user_id_and_mentionable_id_mentionable_type", unique: true
   end
 
   create_table "messages", force: :cascade do |t|
@@ -676,7 +681,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.integer "position"
     t.datetime "updated_at", precision: 6, null: false
     t.string "url", null: false
-    t.index ["url", "name"], name: "index_navigation_links_on_url_and_name", unique: true
+    t.index %w[url name], name: "index_navigation_links_on_url_and_name", unique: true
   end
 
   create_table "notes", force: :cascade do |t|
@@ -696,8 +701,10 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "notifiable_type", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["notifiable_id", "notifiable_type", "config"], name: "index_notification_subscriptions_on_notifiable_and_config"
-    t.index ["user_id", "notifiable_type", "notifiable_id"], name: "idx_notification_subs_on_user_id_notifiable_type_notifiable_id", unique: true
+    t.index %w[notifiable_id notifiable_type
+               config], name: "index_notification_subscriptions_on_notifiable_and_config"
+    t.index %w[user_id notifiable_type
+               notifiable_id], name: "idx_notification_subs_on_user_id_notifiable_type_notifiable_id", unique: true
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -713,14 +720,20 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.bigint "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
-    t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
+    t.index %w[notifiable_id notifiable_type
+               action], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
-    t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
-    t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
-    t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
-    t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
-    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
+    t.index %w[organization_id notifiable_id notifiable_type
+               action], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
+    t.index %w[organization_id notifiable_id
+               notifiable_type], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index %w[user_id notifiable_id notifiable_type
+               action], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
+    t.index %w[user_id notifiable_id
+               notifiable_type], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index %w[user_id organization_id notifiable_id notifiable_type
+               action], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -772,7 +785,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "user_title"
-    t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
+    t.index %w[user_id
+               organization_id], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -917,7 +931,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.bigint "poll_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["poll_id", "user_id"], name: "index_poll_skips_on_poll_and_user", unique: true
+    t.index %w[poll_id user_id], name: "index_poll_skips_on_poll_and_user", unique: true
   end
 
   create_table "poll_votes", force: :cascade do |t|
@@ -926,8 +940,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.bigint "poll_option_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["poll_id", "user_id"], name: "index_poll_votes_on_poll_id_and_user_id", unique: true
-    t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_and_user", unique: true
+    t.index %w[poll_id user_id], name: "index_poll_votes_on_poll_id_and_user_id", unique: true
+    t.index %w[poll_option_id user_id], name: "index_poll_votes_on_poll_option_and_user", unique: true
   end
 
   create_table "polls", force: :cascade do |t|
@@ -971,7 +985,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.bigint "profile_id"
     t.string "profile_type"
     t.datetime "updated_at", null: false
-    t.index ["pinnable_id", "profile_id", "profile_type", "pinnable_type"], name: "idx_pins_on_pinnable_id_profile_id_profile_type_pinnable_type", unique: true
+    t.index %w[pinnable_id profile_id profile_type
+               pinnable_type], name: "idx_pins_on_pinnable_id_profile_id_profile_type_pinnable_type", unique: true
     t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
 
@@ -992,7 +1007,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["article_id"], name: "index_rating_votes_on_article_id"
-    t.index ["user_id", "article_id", "context"], name: "index_rating_votes_on_user_id_and_article_id_and_context", unique: true
+    t.index %w[user_id article_id
+               context], name: "index_rating_votes_on_user_id_and_article_id_and_context", unique: true
   end
 
   create_table "reactions", force: :cascade do |t|
@@ -1007,9 +1023,10 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.index ["category"], name: "index_reactions_on_category"
     t.index ["created_at"], name: "index_reactions_on_created_at"
     t.index ["points"], name: "index_reactions_on_points"
-    t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
+    t.index %w[reactable_id reactable_type], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
-    t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
+    t.index %w[user_id reactable_id reactable_type
+               category], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
   end
 
   create_table "response_templates", force: :cascade do |t|
@@ -1020,9 +1037,10 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "type_of", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["content", "user_id", "type_of", "content_type"], name: "idx_response_templates_on_content_user_id_type_of_content_type", unique: true
+    t.index %w[content user_id type_of
+               content_type], name: "idx_response_templates_on_content_user_id_type_of_content_type", unique: true
     t.index ["type_of"], name: "index_response_templates_on_type_of"
-    t.index ["user_id", "type_of"], name: "index_response_templates_on_user_id_and_type_of"
+    t.index %w[user_id type_of], name: "index_response_templates_on_user_id_and_type_of"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -1031,7 +1049,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.bigint "resource_id"
     t.string "resource_type"
     t.datetime "updated_at"
-    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
+    t.index %w[name resource_type resource_id], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
   end
 
@@ -1061,7 +1079,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.bigint "user_id"
     t.index ["level"], name: "index_sponsorships_on_level"
     t.index ["organization_id"], name: "index_sponsorships_on_organization_id"
-    t.index ["sponsorable_id", "sponsorable_type"], name: "index_sponsorships_on_sponsorable_id_and_sponsorable_type"
+    t.index %w[sponsorable_id sponsorable_type], name: "index_sponsorships_on_sponsorable_id_and_sponsorable_type"
     t.index ["status"], name: "index_sponsorships_on_status"
     t.index ["user_id"], name: "index_sponsorships_on_user_id"
   end
@@ -1076,7 +1094,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "tag_name"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["tag_name", "article_id"], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
+    t.index %w[tag_name article_id], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
   end
 
   create_table "taggings", force: :cascade do |t|
@@ -1088,13 +1106,15 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.bigint "tagger_id"
     t.string "tagger_type"
     t.index ["context"], name: "index_taggings_on_context"
-    t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
+    t.index %w[tag_id taggable_id taggable_type context tagger_id
+               tagger_type], name: "taggings_idx", unique: true
     t.index ["tag_id"], name: "index_taggings_on_tag_id"
-    t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
-    t.index ["taggable_id", "taggable_type", "tagger_id", "context"], name: "taggings_idy"
+    t.index %w[taggable_id taggable_type
+               context], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
+    t.index %w[taggable_id taggable_type tagger_id context], name: "taggings_idy"
     t.index ["taggable_id"], name: "index_taggings_on_taggable_id"
     t.index ["taggable_type"], name: "index_taggings_on_taggable_type"
-    t.index ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type"
+    t.index %w[tagger_id tagger_type], name: "index_taggings_on_tagger_id_and_tagger_type"
     t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
   end
 
@@ -1165,7 +1185,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "config", default: "default", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
+    t.index %w[blocked_id blocker_id], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
   end
 
   create_table "user_subscriptions", force: :cascade do |t|
@@ -1178,8 +1198,10 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.string "user_subscription_sourceable_type"
     t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
     t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
-    t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
-    t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
+    t.index %w[subscriber_id subscriber_email user_subscription_sourceable_type
+               user_subscription_sourceable_id], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
+    t.index %w[user_subscription_sourceable_type
+               user_subscription_sourceable_id], name: "index_on_user_subscription_sourcebable_type_and_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -1265,7 +1287,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
-    t.datetime "last_reacted_at", default: "2017-01-01 05:00:00"
+    t.datetime "last_reacted_at"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
@@ -1331,7 +1353,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
-    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
+    t.index %w[invited_by_type invited_by_id], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -1342,7 +1364,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "role_id"
     t.bigint "user_id"
-    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+    t.index %w[user_id role_id], name: "index_users_roles_on_user_id_and_role_id"
   end
 
   create_table "webhook_endpoints", force: :cascade do |t|
