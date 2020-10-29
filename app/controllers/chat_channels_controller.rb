@@ -13,19 +13,19 @@ class ChatChannelsController < ApplicationController
     case params[:state]
     when "unopened"
       authorize ChatChannel
-      @chat_channels_memberships = render_unopened_json_response
+      @chat_channels_memberships = unopened_json_response
       render "index.json"
     when "unopened_ids"
       authorize ChatChannel
-      @unopened_ids = render_unopened_ids_response
+      @unopened_ids = unopened_ids_response
       render json: { unopened_ids: @unopened_ids }
     when "pending"
       authorize ChatChannel
-      @chat_channels_memberships = render_pending_json_response
+      @chat_channels_memberships = pending_json_response
       render "index.json"
     when "joining_request"
       authorize ChatChannel
-      @chat_channels_memberships = render_joining_request_json_response
+      @chat_channels_memberships = joining_request_json_response
       render "index.json"
     else
       skip_authorization
