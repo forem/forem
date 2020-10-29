@@ -1,6 +1,6 @@
 <div class="crayons-card p-6">
   <h4 class="mb-4">Edit details</h4>
-  <%= form_with model: [:admin, tag] do |f| %>
+  <%= form_with model: [:admin, tag], data: { remote: false } do |f| %>
   <div class="crayons-field crayons-field--checkbox">
     <%= f.check_box :supported, class: "crayons-checkbox" %>
     <label class="crayons-field__label" for="tag_supported">
