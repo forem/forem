@@ -5,15 +5,6 @@ RSpec.describe Images::Optimizer, type: :service do
 
   let(:image_url) { "https://i.imgur.com/fKYKgo4.png" }
 
-  def stub_imgproxy
-    imgproxy_config_stub = Imgproxy::Config.new.tap do |config|
-      config.key = "secret"
-      config.salt = "secret"
-      config.base64_encode_urls = true
-    end
-    allow(Imgproxy).to receive(:config).and_return(imgproxy_config_stub)
-  end
-
   describe "#call" do
     before do
       allow(described_class).to receive(:cloudinary)
@@ -31,15 +22,9 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class).to have_received(:cloudinary)
     end
 
-    it "calls cloudinary if imgproxy's key and salt is missing" do
-      allow(Imgproxy).to receive(:config).and_return(Imgproxy::Config.new)
-      described_class.call(image_url, service: :imgproxy)
-      expect(described_class).to have_received(:cloudinary)
-    end
-
-    it "calls imgproxy if imgproxy's key and salt is provided" do
-      stub_imgproxy
-      described_class.call(image_url, service: :imgproxy)
+    it "calls imgproxy if imgproxy is enabled" do
+      allow(described_class).to receive(:imgproxy_enabled?).and_return(true)
+      described_class.call(image_url)
       expect(described_class).to have_received(:imgproxy)
     end
   end
@@ -72,9 +57,27 @@ RSpec.describe Images::Optimizer, type: :service do
 
   describe "#imgproxy" do
     it "works" do
-      stub_imgproxy
+      allow(described_class).to receive(:imgproxy_enabled?).and_return(true)
       imgproxy_url = described_class.imgproxy(image_url, service: :imgproxy, width: 500, height: 500)
       expect(imgproxy_url).to match(%r{/s:500:500/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+    end
+  end
+
+  describe "#imgproxy_enabled?" do
+    it "returns false if key and salt are missing" do
+      allow(Imgproxy).to receive(:config).and_return(Imgproxy::Config.new)
+      expect(described_class.imgproxy_enabled?).to eq(false)
+    end
+
+    it "returns true if key and salt are provided" do
+      imgproxy_config_stub = Imgproxy::Config.new.tap do |config|
+        config.key = "secret"
+        config.salt = "secret"
+        config.base64_encode_urls = true
+      end
+      allow(Imgproxy).to receive(:config).and_return(imgproxy_config_stub)
+
+      expect(described_class.imgproxy_enabled?).to eq(true)
     end
   end
 
