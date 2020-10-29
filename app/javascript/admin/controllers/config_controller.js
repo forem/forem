@@ -127,6 +127,7 @@ export default class ConfigController extends Controller {
   disableEmailAuthFromModal() {
     event.preventDefault();
     emailSigninAndLoginCheckbox.checked = false;
+    this.hideEmailAuthSettings();
     this.closeAdminConfigModal();
   }
 
