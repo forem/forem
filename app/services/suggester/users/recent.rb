@@ -22,8 +22,8 @@ module Suggester
 
       def tagged_article_user_ids(num_weeks = 1)
         Article.published
-          .tagged_with(user.decorate.cached_followed_tag_names, any: true)
-          .where("score >= ? AND published_at > ?", article_score_average, num_weeks.weeks.ago)
+          .tagged_with(user.decorate.cached_followed_tag_names.sample(5), any: true)
+          .where("score > ? AND published_at > ?", article_score_average, num_weeks.weeks.ago)
           .pluck(:user_id)
           .each_with_object(Hash.new(0)) { |value, counts| counts[value] += 1 }
           .sort_by { |_key, value| value }

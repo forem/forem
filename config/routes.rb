@@ -66,7 +66,7 @@ Rails.application.routes.draw do
                                               destroy], path: "listings/categories"
 
       resources :comments, only: [:index]
-      resources :events, only: %i[index create update]
+      resources :events, only: %i[index create update new edit]
       resources :feedback_messages, only: %i[index show]
       resources :invitations, only: %i[index new create destroy]
       resources :pages, only: %i[index new create edit update destroy]
@@ -103,6 +103,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[index show edit update] do
         member do
           post "banish"
+          post "export_data"
           post "full_delete"
           patch "user_status"
           post "merge"

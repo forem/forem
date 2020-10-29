@@ -39,14 +39,17 @@ RSpec.describe "Users", type: :request do
     end
 
     context "when follow_suggestions params are present" do
-      it "returns follow suggestions for an authenticated user" do
-        user = create(:user)
-        tag = create(:tag)
+      let(:user) { create(:user) }
+      let(:tag) { create(:tag) }
+      let(:other_user) { create(:user) }
+
+      before do
+        # Prepare auto-generated user suggestions
         user.follow(tag)
-
-        other_user = create(:user)
         create(:article, user: other_user, tags: [tag.name])
+      end
 
+      it "returns follow suggestions for an authenticated user" do
         sign_in user
 
         get users_path(state: "follow_suggestions")
@@ -56,19 +59,30 @@ RSpec.describe "Users", type: :request do
       end
 
       it "returns follow suggestions that have profile images" do
-        user = create(:user)
-        tag = create(:tag)
-        user.follow(tag)
-
-        other_user = create(:user)
-        create(:article, user: other_user, tags: [tag.name])
-
         sign_in user
 
         get users_path(state: "follow_suggestions")
 
         response_user = response.parsed_body.first
         expect(response_user["profile_image_url"]).to eq(other_user.profile_image_url)
+      end
+
+      it "returns the default suggested_users from SiteConfig if prefer_manual_suggested_users is true" do
+        allow(SiteConfig).to receive(:prefer_manual_suggested_users).and_return(true)
+
+        sign_in user
+
+        get users_path(state: "follow_suggestions")
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.first).to include(
+          "id" => suggested_user.id,
+          "name" => suggested_user.name,
+          "username" => suggested_user.username,
+          "summary" => suggested_user.summary,
+          "profile_image_url" => Images::Profile.call(suggested_user.profile_image_url, length: 90),
+          "following" => false,
+        )
       end
     end
 

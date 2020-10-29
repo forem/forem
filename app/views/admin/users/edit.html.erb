@@ -9,7 +9,7 @@
         <%= link_to "Unlock access", unlock_access_admin_user_path(@user), method: :patch, class: "btn btn-success" %>
       </div>
     <% end %>
-    <a href="<%= admin_user_path(@user) %>" class="btn btn-primary float-right">Admin Profile</a>
+    <a href="<%= admin_user_path(@user) %>" class="crayons-btn float-right">Admin Profile</a>
     <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
   </div>
 
@@ -43,18 +43,19 @@
         <%= f.label "Reason for action:" %>
         <%= f.text_area :note_for_current_role, required: true, class: "form-control" %>
       </div>
-      <%= f.submit "Update User Status", class: "btn btn-primary float-right" %>
+      <%= f.submit "Update User Status", class: "crayons-btn float-right" %>
     <% end %>
   </div>
 
 <%= render "notes" %>
 <%= render "negative_reactions" %>
 <%= render "reports" %>
+<%= render "data_export" %>
 
   <div class="crayons-card p-6">
     <div>
       <h2 class="d-inline">Remove Identity</h2>
-      <button type="button" data-toggle="collapse" data-target="#identity-row" class="btn btn-secondary float-right">Toggle</button>
+      <button type="button" data-toggle="collapse" data-target="#identity-row" class="crayons-btn float-right">Toggle</button>
     </div>
     <div class="pt-6 collapse" id="identity-row">
       <p>Removing a social account identity can solve certain sign in issues, for example:</p>
@@ -92,7 +93,7 @@
   <div class="crayons-card p-6">
     <div>
       <h2 class="d-inline">Destructive Actions</h2>
-      <button type="button" data-toggle="collapse" data-target="#destructive-actions" class="btn btn-secondary float-right">Toggle</button>
+      <button type="button" data-toggle="collapse" data-target="#destructive-actions" class="crayons-btn float-right">Toggle</button>
     </div>
 
     <div id="destructive-actions" class="pt-6 collapse">
