@@ -58,7 +58,7 @@
         data-user-status="<%= user_logged_in_status %>"
         class="<%= SiteConfig.default_font.tr("_", "-") %>-article-body default-header"
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
-        data-app-name="<%= ApplicationConfig["APP_DOMAIN"] %>"
+        data-app-domain="<%= ChatChannel.urlsafe_encoded_app_domain %>"
         data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
         data-release-footprint="<%= ApplicationConfig["RELEASE_FOOTPRINT"] %>"
         data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
