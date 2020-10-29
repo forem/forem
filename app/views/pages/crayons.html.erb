@@ -57,6 +57,24 @@
 
 <div class="container">
   <div class="body">
+    <h2>Tooltips</h2>
+    <p>Tooltips should be short, simple and without any styling - just pure text. Its purpose is to provide some additional context or explanation.</p>
+    <p>Keep in mind they should be only ADDITIONAL information since tooltips are accessible on :hover which means you may not really see the tooltip content while on mobile.</p>
+    <p>Hover over the label below to see a tooltip.</p>
+    <p>All you have to do to set up this kind of a tooltip is add <code>crayons-tooltip</code> class name to an element as well as <code>data-tooltip</code> attribute which will contain the tooltip content.</p>
+  </div>
+
+  <div>
+    <p>You can <strong class="crayons-tooltip" data-tooltip="Tooltip message">hover here</strong> to see the tooltip</p>
+  </div>
+
+  <pre><%= '
+  <p>You can <strong class="crayons-tooltip" data-tooltip="Tooltip message">hover here</strong> to ...</p>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
     <h2>Main Typography</h2>
     <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
     <p>XS size should be used as little as possible in edge cases. Even though it’s readable we could consider it not meeting <%= community_name %>’s standards. So keep it for like “asterisk copy” etc.</p>
@@ -366,7 +384,7 @@
 
   <div class="crayons-field">
     <label for="t1" class="crayons-field__label">
-      Textfield Label
+      Textfield Label <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
       <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
     </label>
     <input type="text" id="t1" class="crayons-textfield" placeholder="This is placeholder...">

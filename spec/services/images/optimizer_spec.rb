@@ -77,4 +77,11 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(imgproxy_url).to match(%r{/s:500:500/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
+
+  describe "#translate_cloudinary_options" do
+    it "Set resizing_type to fill if crop: fill is provided" do
+      options = { width: 100, height: 100, crop: "fill" }
+      expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fill")
+    end
+  end
 end

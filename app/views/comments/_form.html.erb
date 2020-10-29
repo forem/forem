@@ -36,12 +36,10 @@
       <%= f.text_area :body_markdown,
                       placeholder: "Add to the discussion",
                       onfocus: "handleFocus(event)",
-                      onblur: "handleBlur(event)",
                       onkeyup: "handleKeyUp(event)",
                       onkeydown: "handleKeyDown(event)",
                       oninput: "handleChange(event)",
                       id: "text-area",
-                      # autofocus: @comment.persisted?,
                       required: true,
                       class: "crayons-textfield comment-textarea crayons-textfield--ghost",
                       'aria-label': "Add a comment to the discussion" %>
