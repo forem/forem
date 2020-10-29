@@ -49,7 +49,7 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "shows the correct count of links" do
         visit "/"
-        within(".sidebar-navigation-links") do
+        within(".spec-sidebar-navigation-links") do
           expect(page).to have_selector(".sidebar-navigation-link", count: 1)
         end
       end
@@ -153,13 +153,13 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the correct count of links" do
-        within(".sidebar-navigation-links") do
+        within(".spec-sidebar-navigation-links") do
           expect(page).to have_selector(".sidebar-navigation-link", count: 3)
         end
       end
 
       it "shows the correct navigation_links" do
-        within(".sidebar-navigation-links") do
+        within(".spec-sidebar-navigation-links") do
           expect(page).to have_text(navigation_link_1.name)
           expect(page).to have_text(navigation_link_2.name)
           expect(page).to have_text(navigation_link_3.name)
@@ -167,7 +167,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the correct urls" do
-        within(".sidebar-navigation-links") do
+        within(".spec-sidebar-navigation-links") do
           expect(page).to have_link(href: navigation_link_1.url)
           expect(page).to have_link(href: navigation_link_2.url)
           expect(page).to have_link(href: navigation_link_3.url)
@@ -175,19 +175,23 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the correct order of the links" do
-        sidebar_navigation_link1 = page.find(".sidebar-navigation-link:nth-child(1)")
-        expect(sidebar_navigation_link1).to have_text(navigation_link_1.name)
+        within(".spec-sidebar-navigation-links") do
+          sidebar_navigation_link1 = page.find(".sidebar-navigation-link:nth-child(1)")
+          expect(sidebar_navigation_link1).to have_text(navigation_link_1.name)
 
-        sidebar_navigation_link2 = page.find(".sidebar-navigation-link:nth-child(2)")
-        expect(sidebar_navigation_link2).to have_text(navigation_link_3.name)
+          sidebar_navigation_link2 = page.find(".sidebar-navigation-link:nth-child(2)")
+          expect(sidebar_navigation_link2).to have_text(navigation_link_3.name)
 
-        sidebar_navigation_link3 = page.find(".sidebar-navigation-link:nth-child(3)")
-        expect(sidebar_navigation_link3).to have_text(navigation_link_2.name)
+          sidebar_navigation_link3 = page.find(".sidebar-navigation-link:nth-child(3)")
+          expect(sidebar_navigation_link3).to have_text(navigation_link_2.name)
+        end
       end
 
       it "shows the count when the url /readinglist is added" do
-        within(".sidebar-navigation-link:nth-child(1)") do
-          expect(page).to have_selector("#reading-list-count")
+        within(".spec-sidebar-navigation-links") do
+          within(".sidebar-navigation-link:nth-child(1)") do
+            expect(page).to have_selector("#reading-list-count")
+          end
         end
       end
     end
@@ -199,7 +203,7 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "shows some in the 'More' section" do
         visit "/"
-        within("#main-nav-more") do
+        within(".spec-nav-more") do
           expect(page).to have_selector(".sidebar-navigation-link", count: 2)
         end
       end
