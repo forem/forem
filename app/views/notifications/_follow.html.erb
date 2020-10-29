@@ -28,7 +28,7 @@
         <a href="<%= json_data_array.first["path"] %>" class="crayons-link fw-bold"><%= json_data_array.first["name"] %></a> and
         <a href="<%= json_data_array.second["path"] %>" class="crayons-link fw-bold"><%= json_data_array.second["name"] %></a> followed you!
       <% else %>
-        <a href="<%= first_notification["path"] %>" class="crayons-link fw-bold"><%= first_notification["name"] %></a>
+        <a href="<%= json_data_array.first["path"] %>" class="crayons-link fw-bold"><%= json_data_array.first["name"] %></a>
         and <%= notification.json_data["aggregated_siblings"].size - 1 %> others followed you!
       <% end %>
     </p>

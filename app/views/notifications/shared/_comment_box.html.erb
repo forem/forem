@@ -3,8 +3,7 @@
     <% if json_data["comment"]["depth"] && json_data["comment"]["depth"] > 0 %>
       <h3>
         <a href="<%= json_data["comment"]["ancestors"].last["path"] %>" class="crayons-link notification__reply-title">
-          <span class="fw-normal opacity-50">Re: </span>
-          <%= json_data["comment"]["ancestors"].last["title"] %>
+          <span class="fw-normal opacity-50">Re: </span><%= json_data["comment"]["ancestors"].last["title"] %>
         </a>
       </h3>
     <% end %>
