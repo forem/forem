@@ -19,27 +19,16 @@ export class Help extends Component {
       frontmatterHelpHTML:
         document.getElementById('editor-frontmatter-help') &&
         document.getElementById('editor-frontmatter-help').innerHTML,
+      liquidShowing: false,
+      markdownShowing: false,
+      frontmatterShowing: false,
     };
   }
-
-  setCommonProps = ({
-    liquidShowing = false,
-    markdownShowing = false,
-    frontmatterShowing = false,
-  }) => {
-    return {
-      liquidShowing,
-      markdownShowing,
-      frontmatterShowing,
-    };
-  };
 
   toggleModal = (varShowing) => (e) => {
     e.preventDefault();
     this.setState((prevState) => ({
-      ...this.setCommonProps({
-        [varShowing]: !prevState[varShowing],
-      }),
+      [varShowing]: !prevState[varShowing],
     }));
   };
 
