@@ -15,11 +15,11 @@ class CommentDecorator < ApplicationDecorator
     created_at.to_i
   end
 
-  def edited_at 
-    return "" if edited_at.nil ?
+  def edited_timestamp
+    return "" if edited_at.nil?
 
     edited_at.utc.iso8601
-  end 
+  end
 
   def readable_publish_date
     if created_at.year == Time.current.year
