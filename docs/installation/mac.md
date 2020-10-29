@@ -12,8 +12,7 @@ title: macOS
    [rbenv](https://github.com/rbenv/rbenv). Please follow their
    [installation guide](https://github.com/rbenv/rbenv#installation).
 2. With the Ruby version manager, install the Ruby version listed on our badge.
-   (i.e. with rbenv: `rbenv install *latest badge version*`) 
-    example: `rbenv install 2.7.1`
+   (i.e. with rbenv: `rbenv install $(cat .ruby-version)`)
 
 ### Yarn
 
@@ -62,10 +61,9 @@ redis-cli ping
 
 ### Elasticsearch
 
-Forem requires a version of Elasticsearch between 7.1 and 7.5 to be running. Version 7.6 is
-not supported. We recommend version 7.5.2.
+Forem requires a version of Elasticsearch 7.5 or higher to be running. We recommend version 7.5.2.
 
-We recommend installing from archive on Mac.
+You have the option of installing Elasticsearch with Homebrew or through an archive. We **recommend** installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
 
@@ -106,6 +104,26 @@ To start elasticsearch as a daemonized process:
 ```shell
 ./bin/elasticsearch -d
 ```
+
+### Installing Elasticsearch with Homebrew
+
+To install Elasticsearch with Homebrew we will use the following commands to: 
+- tap the Elastic Homebrew repository
+- install the latest OSS distribution
+- pin the latest OSS distribution. 
+
+```shell
+brew tap elastic/tap
+brew install elastic/tap/elasticsearch-oss
+brew pin elasticsearch-oss
+```
+
+After installation you can manually test if the Elasticsearch server starts by
+issuing the command `elasticsearch` in the shell. You can then start the server
+as a service with `brew services start elasticsearch-oss`.
+
+You can find further info on your local Elasticsearch installation by typing
+`brew info elastic/tap/elasticsearch-oss`.
 
 #### Troubleshooting startup issues
 
