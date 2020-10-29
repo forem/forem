@@ -274,10 +274,6 @@ To install Elasticsearch perform the following steps:
      export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
-   - If you are missing `ENV` variables on bootup, the
-     [envied](https://rubygems.org/gems/envied) gem will alert you with messages
-     similar to
-     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
