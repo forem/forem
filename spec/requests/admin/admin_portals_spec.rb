@@ -14,7 +14,7 @@ RSpec.describe "/admin", type: :request do
       expect(response.body).to include("Config: Profile Setup")
     end
 
-    it "does shows the option when the feature flag is enabled" do
+    it "does not show the option when the feature flag is disabled" do
       allow(Flipper).to receive(:enabled?).with(:profile_admin).and_return(false)
 
       get admin_path
