@@ -65,10 +65,18 @@ module Feeds
         response = HTTParty.get(url.strip, timeout: 10)
 
         [user_id, response.body]
-      rescue StandardError
-        # TODO: add exception handling
+      rescue StandardError => e
+        # TODO: add better exception handling
         # For example, we should stop pulling feeds that return 404 and disable them?
-        nil
+
+        report_error(
+          e,
+          feeds_import_info: {
+            user_id: user_id,
+            url: url,
+            error: "Feeds::Import::FetchFeedError"
+          },
+        )
       end
 
       batch_of_users.update_all(feed_fetched_at: Time.current)
@@ -82,9 +90,15 @@ module Feeds
         parsed_feed = Feedjira.parse(feed_xml)
 
         [user_id, parsed_feed]
-      rescue Feedjira::NoParserAvailable
-        # TODO: add exception handling
-        nil
+      rescue StandardError => e
+        # TODO: add better exception handling (eg. rescueing Feedjira::NoParserAvailable separately)
+        report_error(
+          e,
+          feeds_import_info: {
+            user_id: user_id,
+            error: "Feeds::Import::ParseFeedError"
+          },
+        )
       end
 
       result.compact.to_h
@@ -114,10 +128,17 @@ module Feeds
         )
 
         articles.append(article)
-      rescue StandardError
-        # TODO: add exception handling
-
-        next
+      rescue StandardError => e
+        # TODO: add better exception handling
+        report_error(
+          e,
+          feeds_import_info: {
+            username: user.username,
+            feed_url: user.feed_url,
+            item_count: get_item_count_error(feed),
+            error: "Feeds::Import::CreateArticleError:#{item.url}"
+          },
+        )
       end
 
       articles
@@ -147,6 +168,19 @@ module Feeds
       feed_source_url = item.url.strip.split("?source=")[0]
       relation = user.articles
       relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
+    end
+
+    def report_error(error, metadata)
+      Honeybadger.context(metadata)
+      Honeybadger.notify(error)
+    end
+
+    def get_item_count_error(feed)
+      if feed
+        feed.entries ? feed.entries.length : "no count"
+      else
+        "NIL FEED, INVALID URL"
+      end
     end
   end
 end
