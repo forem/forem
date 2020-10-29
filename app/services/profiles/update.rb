@@ -19,6 +19,9 @@ module Profiles
     def call
       if update_successful?
         @user.touch(:profile_updated_at)
+        # TODO: @citizen428 Preserving a DEV specific feature for now, we should
+        # probably remove this sooner than later as it may not make much sense
+        # for other communities.
         follow_hiring_tag if SiteConfig.dev_to?
       else
         Honeycomb.add_field("error", @error_message)
