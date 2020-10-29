@@ -7,8 +7,10 @@ describe('ConfigController', () => {
       <button data-action="click->config#activateEmailAuthModal">
         Disable
       </button>
-      <div class="admin-config-modal-anchor"></div>
+      <div data-target="config.configModalAnchor"></div>
     </div>`;
+
+    global.scrollTo = jest.fn();
 
     const application = Application.start();
     application.register('config', ConfigController);
@@ -17,12 +19,14 @@ describe('ConfigController', () => {
   describe('#activateEmailAuthModal', () => {
     it('builds and adds a Modal to the page', () => {
       const button = document.querySelector('button');
-      const modalAnchor = document.querySelector('.admin-config-modal-anchor');
+      const modalAnchor = document.querySelector(
+        '[data-target="config.configModalAnchor"]',
+      );
 
       button.click();
 
       expect(
-        modalAnchor.firstChild.classList.contains('crayons-modal'),
+        modalAnchor.firstElementChild.classList.contains('crayons-modal'),
       ).toBe(true);
     });
   });

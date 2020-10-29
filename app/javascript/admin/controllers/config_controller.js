@@ -8,7 +8,6 @@ const emailSigninAndLoginCheckbox = document.querySelector(
 const emailAuthSettingsSection = document.querySelector(
   '#email-auth-settings-section',
 );
-const modalAnchor = document.querySelector('.admin-config-modal-anchor');
 const emailAuthModalTitle = 'Disable email address registration';
 // TODO: Remove the sentence "You must update site config to save this action!"
 // once we build more robust flow for Admin/Config
@@ -19,6 +18,7 @@ export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
     'collectiveNoun',
+    'configModalAnchor',
     'emailAuthSettingsBtn',
     'inviteOnlyMode',
     'requireCaptchaForEmailPasswordRegistration',
@@ -65,9 +65,9 @@ export default class ConfigController extends Controller {
     emailAuthSettingsSection.classList.add('hidden');
   }
 
-  activateEmailAuthModal() {
+  activateEmailAuthModal(event) {
     event.preventDefault();
-    modalAnchor.innerHTML = adminModal(
+    this.configModalAnchorTarget.innerHTML = adminModal(
       emailAuthModalTitle,
       emailAuthModalBody,
       'Confirm',
@@ -83,7 +83,7 @@ export default class ConfigController extends Controller {
   }
 
   closeAdminConfigModal() {
-    modalAnchor.innerHTML = '';
+    this.configModalAnchorTarget.innerHTML = '';
     document.body.style.height = 'inherit';
     document.body.style.overflowY = 'inherit';
   }
