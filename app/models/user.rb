@@ -254,7 +254,7 @@ class User < ApplicationRecord
   before_destroy :destroy_follows, prepend: true
 
   # NOTE: @citizen428 Temporarily while migrating to generalized profiles
-  before_save { |user| user.profile&.save if valid? && user.profile&.changed? }
+  after_save { |user| user.profile&.save if user.profile&.changed? }
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
   after_save :conditionally_resave_articles
