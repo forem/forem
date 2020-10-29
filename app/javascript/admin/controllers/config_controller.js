@@ -12,7 +12,7 @@ const emailAuthModalTitle = 'Disable email address registration';
 // TODO: Remove the sentence "You must update site config to save this action!"
 // once we build more robust flow for Admin/Config
 const emailAuthModalBody =
-  '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><br /><p>However, people who have already created an account using their email address can continue to login.</p><br /><p><strong>You must update site config to save this action!</strong></p>';
+  '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><p>However, people who have already created an account using their email address can continue to login.</p><p><strong>Please update site config to save this action.</strong></p>';
 
 const adminConfigModal = (
   title,
@@ -22,7 +22,7 @@ const adminConfigModal = (
   cancelBtnText,
   cancelBtnAction,
 ) => `
-  <div class="crayons-modal crayons-modal--s absolute">
+  <div class="crayons-modal crayons-modal--s fixed">
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
         <p class="fw-bold fs-l">${title}</p>
@@ -32,9 +32,9 @@ const adminConfigModal = (
           </svg>
         </button>
       </header>
-      <div class="crayons-modal__box__body">
+      <div class="crayons-modal__box__body flex flex-col gap-4">
         ${body}
-        <div class="mt-6">
+        <div class="flex gap-2">
           <button
             class="crayons-btn crayons-btn--danger"
             data-action="click->config#${confirmBtnAction}">
@@ -107,13 +107,12 @@ export default class ConfigController extends Controller {
     modalAnchor.innerHTML = adminConfigModal(
       emailAuthModalTitle,
       emailAuthModalBody,
-      'Confirm',
+      'Confirm disable',
       'disableEmailAuthFromModal',
       'Cancel',
       'closeAdminConfigModal',
     );
     if (document.querySelector('.crayons-modal')) {
-      window.scrollTo(0, 0);
       document.body.style.height = '100vh';
       document.body.style.overflowY = 'hidden';
     }
