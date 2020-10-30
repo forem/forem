@@ -109,7 +109,6 @@
         margin-top: -63px;
       }
       position: absolute;
-      z-index: 13;
       text-align: center;
       left: 0;
       right: 0;
@@ -160,7 +159,6 @@
         box-shadow: 5px 5px 60px rgba(0, 0, 0, 0.3);
         background: $black;
         position: relative;
-        z-index: 12;
         width: 100%;
         height: 100%;
         min-height: 160px;
@@ -176,11 +174,9 @@
         position: absolute;
         width: 120px;
         height: 120px;
-        position: absolute;
         top: 50%;
         left: 50%;
         margin: -60px 0 0 -60px;
-        z-index: 18;
       }
       .pause-butt {
         display: none;
