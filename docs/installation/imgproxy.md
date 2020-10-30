@@ -5,7 +5,8 @@ title: Imgproxy
 # Imgproxy
 
 Imgproxy is a standalone server for resizing images. It is optional and you do
-not need it to start Forem locally. We are currently only using it in Forem Cloud.
+not need it to start Forem locally. We are currently only using it in Forem
+Cloud.
 
 ## Installation
 

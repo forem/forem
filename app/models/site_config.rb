@@ -10,9 +10,11 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
-  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
+  LOGO_PNG = URL.local_image("icon.png").freeze
   MAIN_SOCIAL_IMAGE = URL.local_image("social-media-cover.png").freeze
+  MASCOT_IMAGE_URL = URL.local_image("mascot.png").freeze
+  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
 
   # Meta
   field :admin_action_taken_at, type: :datetime, default: Time.current
@@ -88,7 +90,7 @@ class SiteConfig < RailsSettings::Base
   # Images
   field :main_social_image, type: :string, default: MAIN_SOCIAL_IMAGE
   field :favicon_url, type: :string, default: "favicon.ico"
-  field :logo_png, type: :string
+  field :logo_png, type: :string, default: LOGO_PNG
   field :logo_svg, type: :string
   field :secondary_logo_url, type: :string
 
@@ -98,7 +100,7 @@ class SiteConfig < RailsSettings::Base
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
-  field :mascot_image_url, type: :string
+  field :mascot_image_url, type: :string, default: MASCOT_IMAGE_URL
   field :mascot_image_description, type: :string, default: "The community mascot"
   field :mascot_footer_image_url, type: :string
   field :mascot_footer_image_width, type: :integer, default: 52

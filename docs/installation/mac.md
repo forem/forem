@@ -63,7 +63,8 @@ redis-cli ping
 
 Forem requires Elasticsearch 7.x to run. We recommend version 7.5.2.
 
-You have the option of installing Elasticsearch with Homebrew or through an archive. We **recommend** installing from archive on Mac.
+You have the option of installing Elasticsearch with Homebrew or through an
+archive. We **recommend** installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
 
@@ -107,10 +108,11 @@ To start elasticsearch as a daemonized process:
 
 ### Installing Elasticsearch with Homebrew
 
-To install Elasticsearch with Homebrew we will use the following commands to: 
+To install Elasticsearch with Homebrew we will use the following commands to:
+
 - tap the Elastic Homebrew repository
 - install the latest OSS distribution
-- pin the latest OSS distribution. 
+- pin the latest OSS distribution.
 
 ```shell
 brew tap elastic/tap
@@ -227,10 +229,6 @@ your local Elasticsearch installation, for example:
       export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
-   - If you are missing `ENV` variables on bootup, the
-     [envied](https://rubygems.org/gems/envied) gem will alert you with messages
-     similar to
-     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
