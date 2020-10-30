@@ -201,10 +201,10 @@
   }
 
   &.swiped-in {
-    z-index: 100;
+    z-index: var(--z-drawer);
     display: block;
     position: fixed;
-    top: var(--header-height);
+    top: 0;
     bottom: 0;
     -webkit-overflow-scrolling: touch;
 
@@ -215,7 +215,6 @@
     .side-bar {
       position: relative;
       background: var(--body-bg);
-      z-index: 2;
       padding: 16px;
       align-content: start;
       height: 100%;

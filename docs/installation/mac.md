@@ -63,7 +63,8 @@ redis-cli ping
 
 Forem requires Elasticsearch 7.x to run. We recommend version 7.5.2.
 
-You have the option of installing Elasticsearch with Homebrew or through an archive. We **recommend** installing from archive on Mac.
+You have the option of installing Elasticsearch with Homebrew or through an
+archive. We **recommend** installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
 
@@ -107,10 +108,11 @@ To start elasticsearch as a daemonized process:
 
 ### Installing Elasticsearch with Homebrew
 
-To install Elasticsearch with Homebrew we will use the following commands to: 
+To install Elasticsearch with Homebrew we will use the following commands to:
+
 - tap the Elastic Homebrew repository
 - install the latest OSS distribution
-- pin the latest OSS distribution. 
+- pin the latest OSS distribution.
 
 ```shell
 brew tap elastic/tap
