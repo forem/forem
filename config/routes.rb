@@ -83,8 +83,14 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :profile_field_groups, only: %i[update create destroy]
-      resources :profile_fields, only: %i[index update create destroy]
+      # NOTE: @citizen428 The next two routes have temporary constraint while
+      # this feature is WIP
+      resources :profile_field_groups,
+                only: %i[update create destroy],
+                constraints: -> { Flipper.enabled?(:profile_admin) }
+      resources :profile_fields,
+                only: %i[index update create destroy],
+                constraints: -> { Flipper.enabled?(:profile_admin) }
       resources :reactions, only: [:update]
       resources :response_templates, only: %i[index new edit create update destroy]
       resources :chat_channels, only: %i[index create update destroy] do
