@@ -28,7 +28,7 @@ export class ArticleCoverImage extends Component {
 
     if (validateFileInputs()) {
       const { files: image } = event.dataTransfer || event.target;
-      const payload = { image, wrap_cloudinary: true };
+      const payload = { image };
 
       generateMainImage(payload, this.onImageUploadSuccess, this.onUploadError);
     }

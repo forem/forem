@@ -163,6 +163,10 @@ Forem is the open source software which powers [DEV](https://dev.to).
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
 
+## Acknowledgments
+
+Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the usage of their emojis.
+
 ## License
 
 This program is free software: you can redistribute it and/or modify it under

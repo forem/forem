@@ -47,11 +47,14 @@ RSpec.describe "/admin/config", type: :request do
         sign_in(admin_plus_config)
       end
 
-      it "deletes release-tied fragment caches" do
-        allow(Rails.cache).to receive(:delete_matched).and_call_original
-        post "/admin/config", params: { site_config: { health_check_token: "token" },
-                                        confirmation: confirmation_message }
-        expect(Rails.cache).to have_received(:delete_matched).with("*-#{ApplicationConfig['RELEASE_FOOTPRINT']}")
+      it "updates site config admin action taken" do
+        Timecop.freeze do
+          expect(SiteConfig.admin_action_taken_at).not_to eq(5.minutes.ago)
+          allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
+          post "/admin/config", params: { site_config: { health_check_token: "token" },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.admin_action_taken_at).to eq(5.minutes.ago)
+        end
       end
 
       describe "API tokens" do
@@ -85,10 +88,19 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
 
-        it "allows all authentication providers to be unset" do
-          post "/admin/config", params: { site_config: { authentication_providers: [] },
+        it "enables email authentication" do
+          post "/admin/config", params: { site_config: { allow_both_email_signup_and_login: true },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to be_empty
+          expect(SiteConfig.allow_email_password_registration).to be(true)
+          expect(SiteConfig.allow_email_password_login).to be(true)
+        end
+
+        it "disables email authentication and invite-only mode" do
+          post "/admin/config", params: { site_config: { allow_both_email_signup_and_login: false },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.allow_email_password_registration).to be(false)
+          expect(SiteConfig.allow_email_password_login).to be(false)
+          expect(SiteConfig.invite_only_mode).to be(false)
         end
       end
 
@@ -106,6 +118,13 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { community_name: name_magoo },
                                           confirmation: confirmation_message }
           expect(SiteConfig.community_name).to eq(name_magoo)
+        end
+
+        it "updates the collective_noun" do
+          collective_noun = "Rhumba"
+          post "/admin/config", params: { site_config: { collective_noun: collective_noun },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.collective_noun).to eq(collective_noun)
         end
 
         it "updates the community_member_label" do
@@ -131,6 +150,20 @@ RSpec.describe "/admin/config", type: :request do
         it "updates the staff_user_id" do
           post "/admin/config", params: { site_config: { staff_user_id: 22 }, confirmation: confirmation_message }
           expect(SiteConfig.staff_user_id).to eq(22)
+        end
+
+        it "updates the experience_low" do
+          experience_low = "Noobs"
+          post "/admin/config", params: { site_config: { experience_low: experience_low },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.experience_low).to eq(experience_low)
+        end
+
+        it "updates the experience_high" do
+          experience_high = "Advanced Peeps"
+          post "/admin/config", params: { site_config: { experience_high: experience_high },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.experience_high).to eq(experience_high)
         end
       end
 
@@ -195,6 +228,9 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Images" do
         it "updates main_social_image" do
+          expected_default_image_url = URL.local_image("social-media-cover.png")
+          expect(SiteConfig.main_social_image).to eq(expected_default_image_url)
+
           expected_image_url = "https://dummyimage.com/300x300"
           post "/admin/config", params: { site_config: { main_social_image: expected_image_url },
                                           confirmation: confirmation_message }
@@ -456,6 +492,20 @@ RSpec.describe "/admin/config", type: :request do
           }
           expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
         end
+
+        it "updates prefer_manual_suggested_users to true" do
+          prefer_manual = true
+          post "/admin/config", params: { site_config: { prefer_manual_suggested_users: prefer_manual },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.prefer_manual_suggested_users).to eq(prefer_manual)
+        end
+
+        it "updates prefer_manual_suggested_users to false" do
+          prefer_manual = false
+          post "/admin/config", params: { site_config: { prefer_manual_suggested_users: prefer_manual },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.prefer_manual_suggested_users).to eq(prefer_manual)
+        end
       end
 
       describe "Rate Limits and spam" do
@@ -639,6 +689,20 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.feed_strategy).to eq(feed_strategy)
         end
 
+        it "updates the tag_feed_minimum_score" do
+          tag_feed_minimum_score = 3
+          post "/admin/config", params: { site_config: { tag_feed_minimum_score: tag_feed_minimum_score },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.tag_feed_minimum_score).to eq(tag_feed_minimum_score)
+        end
+
+        it "updates the home_feed_minimum_score" do
+          home_feed_minimum_score = 5
+          post "/admin/config", params: { site_config: { home_feed_minimum_score: home_feed_minimum_score },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.home_feed_minimum_score).to eq(home_feed_minimum_score)
+        end
+
         it "updates the brand color if proper hex" do
           hex = "#0a0a0a" # dark enough
           post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
@@ -668,6 +732,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates public to false" do
+          allow(SiteConfig).to receive(:public).and_return(false)
           is_public = false
           post "/admin/config", params: { site_config: { public: is_public },
                                           confirmation: confirmation_message }

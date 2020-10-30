@@ -29,13 +29,19 @@ to your own `.env` file.
 ## How do I see comments in the Feed?
 
 On the home Feed, we only show comments above certain "score". It's likely the
-comments in the local environment will never meet this score. If you want to see comments locally, you will need to
-update the score of your local comments manually. Here's how:
+comments in the local environment will never meet this score. If you want to see
+comments locally, you will need to update the score of your local comments
+manually. Here's how:
 
 1. Open the terminal.
-2. Run `psql PracticalDeveloper_development` to open `psql`, the PostgreSQL terminal.
+2. Run `rails dbconsole` to open the PostgreSQL terminal. Alternatively, run
+   `psql PracticalDeveloper_development` to open `psql`, the PostgreSQL
+   terminal.
 3. Enter `update comments set score = 30;`.
 4. Type `exit` to leave the PostgreSQL terminal.
+
+> Note: dbconsole reads database information from config/database.yml which is
+> always better since database configs might change in the future.
 
 Once you refresh the app, you should be able to see some comments in the Feed.
 
@@ -65,8 +71,9 @@ Boom, you have a new follower!
 If you ever want to add Listings locally, you must have credits on your account
 to "pay" for listing. Here's how:
 
-1. Open the rails console `rails c`.
+1. Open the rails console `rails console`.
 2. Enter the following commands:
+
    ```ruby
    user = User.find_by(username: "your_username")
    Credit.add_to(user, 1000)

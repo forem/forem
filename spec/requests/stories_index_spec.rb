@@ -25,7 +25,7 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders registration page if site config is private" do
-      SiteConfig.public = false
+      allow(SiteConfig).to receive(:public).and_return(false)
 
       get root_path
       expect(response.body).to include("Continue with")
@@ -44,8 +44,9 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders page with proper sidebar" do
+      navigation_link = create(:navigation_link)
       get "/"
-      expect(response.body).to include("Podcasts")
+      expect(response.body).to include(CGI.escapeHTML(navigation_link.name))
     end
 
     it "renders left display_ads when published and approved" do
@@ -130,13 +131,13 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "shows default meta keywords if set" do
-      SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ default: "cool developers, civil engineers" })
       get "/"
       expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
     end
 
     it "does not show default meta keywords if not set" do
-      SiteConfig.meta_keywords = { default: "" }
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ default: "" })
       get "/"
       expect(response.body).not_to include(
         "<meta name=\"keywords\" content=\"cool developers, civil engineers\">",
@@ -146,7 +147,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "shows only one cover if basic feed style" do
       create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
 
-      SiteConfig.feed_style = "basic"
+      allow(SiteConfig).to receive(:feed_style).and_return("basic")
       get "/"
       expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be 1
     end
@@ -154,7 +155,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "shows multiple cover images if rich feed style" do
       create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
 
-      SiteConfig.feed_style = "rich"
+      allow(SiteConfig).to receive(:feed_style).and_return("rich")
       get "/"
       expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be > 1
     end
@@ -172,21 +173,21 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "displays hero html when it exists and is set in config" do
-        SiteConfig.campaign_hero_html_variant_name = "hero"
+        allow(SiteConfig).to receive(:campaign_hero_html_variant_name).and_return("hero")
 
         get root_path
         expect(response.body).to include(hero_html.html)
       end
 
       it "doesn't display when campaign_hero_html_variant_name is not set" do
-        SiteConfig.campaign_hero_html_variant_name = ""
+        allow(SiteConfig).to receive(:campaign_hero_html_variant_name).and_return("")
 
         get root_path
         expect(response.body).not_to include(hero_html.html)
       end
 
       it "doesn't display when hero html is not approved" do
-        SiteConfig.campaign_hero_html_variant_name = "hero"
+        allow(SiteConfig).to receive(:campaign_hero_html_variant_name).and_return("hero")
         hero_html.update_column(:approved, false)
 
         get root_path
@@ -196,7 +197,8 @@ RSpec.describe "StoriesIndex", type: :request do
 
     context "with campaign_sidebar" do
       before do
-        SiteConfig.campaign_featured_tags = "shecoded,theycoded"
+        allow(SiteConfig).to receive(:campaign_featured_tags).and_return("shecoded,theycoded")
+        allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(7)
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
         create(:article, approved: true, body_markdown: a_body, score: 1)
@@ -205,52 +207,52 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "doesn't display posts with the campaign tags when sidebar is disabled" do
-        SiteConfig.campaign_sidebar_enabled = false
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
       end
 
       it "doesn't display low-score posts" do
-        SiteConfig.campaign_sidebar_enabled = true
-        SiteConfig.campaign_articles_require_approval = true
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_articles_require_approval).and_return(true)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "doesn't display unapproved posts" do
-        SiteConfig.campaign_sidebar_enabled = true
-        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
-        SiteConfig.campaign_articles_require_approval = true
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_sidebar_image).and_return("https://example.com/image.png")
+        allow(SiteConfig).to receive(:campaign_articles_require_approval).and_return(true)
         Article.last.update_column(:score, -2)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "displays unapproved post if approval is not required" do
-        SiteConfig.campaign_sidebar_enabled = true
-        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
-        SiteConfig.campaign_articles_require_approval = false
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_sidebar_image).and_return("https://example.com/image.png")
+        allow(SiteConfig).to receive(:campaign_articles_require_approval).and_return(false)
         get "/"
         expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "displays only approved posts with the campaign tags" do
-        SiteConfig.campaign_sidebar_enabled = false
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
       end
 
       it "displays sidebar url if campaign_url is set" do
-        SiteConfig.campaign_sidebar_enabled = true
-        SiteConfig.campaign_url = "https://campaign-lander.com"
-        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_url).and_return("https://campaign-lander.com")
+        allow(SiteConfig).to receive(:campaign_sidebar_image).and_return("https://example.com/image.png")
         get "/"
         expect(response.body).to include('<a href="https://campaign-lander.com"')
       end
 
       it "does not display sidebar url if image is not present is set" do
-        SiteConfig.campaign_sidebar_enabled = true
-        SiteConfig.campaign_url = "https://campaign-lander.com"
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_url).and_return("https://campaign-lander.com")
         get "/"
         expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end
@@ -260,7 +262,7 @@ RSpec.describe "StoriesIndex", type: :request do
   describe "GET query page" do
     it "renders page with proper header" do
       get "/search?q=hello"
-      expect(response.body).to include("query-header-text")
+      expect(response.body).to include("=> Search Results")
     end
   end
 
@@ -367,13 +369,13 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "shows meta keywords if set" do
-      SiteConfig.meta_keywords = { tag: "software engineering, ruby" }
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ tag: "software engineering, ruby" })
       get "/t/#{tag.name}"
       expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
     end
 
     it "does not show meta keywords if not set" do
-      SiteConfig.meta_keywords = { tag: "" }
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ tag: "" })
       get "/t/#{tag.name}"
       expect(response.body).not_to include(
         "<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">",
@@ -391,14 +393,14 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "renders properly even if site config is private" do
-        SiteConfig.public = false
+        allow(SiteConfig).to receive(:public).and_return(false)
         get "/t/#{tag.name}"
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
       end
 
       it "has mod-action-button" do
         get "/t/#{tag.name}"
-        expect(response.body).to include('<a class="crayons-btn mod-action-button"')
+        expect(response.body).to include('class="crayons-btn crayons-btn--outlined mod-action-button fs-s"')
       end
 
       it "does not render pagination" do

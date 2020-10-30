@@ -47,6 +47,14 @@
     width: var(--layout-sidebar-right-width);
   }
 
+  &__content {
+    // Hack preventing content exceeding its container - it works for scenarios where we have
+    // `pre` tag having wide (overflowing) text. And the container itself is part of a layout
+    // built using CSS `grid`. Without this, the grid layout wouldn't stick to its defined
+    // widths...
+    min-width: 0;
+  }
+
   &__content__inner {
     margin: 0 auto;
     width: 100%;
@@ -232,7 +240,7 @@
 .zen-mode {
   --site-width: 1024px;
   --header-height: 0;
-  .crayons-layout {
+  .crayons-layout--3-cols {
     --layout: var(--layout-sidebar-left-width) 1fr;
     @media (min-width: $breakpoint-m) {
       --layout: var(--layout-sidebar-left-width) 1fr;

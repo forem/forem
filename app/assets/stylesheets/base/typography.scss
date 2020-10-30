@@ -5,6 +5,7 @@
   --content-rythm: var(--su-2);
   --content-font-size: var(--fs-l);
   --content-secondary-font-size: var(--fs-base);
+  --content-tertiary-font-size: var(--fs-base);
 
   @media (min-width: $breakpoint-s) {
     --content-secondary-font-size: var(--fs-l);
@@ -70,6 +71,10 @@ body {
 
   &--secondary {
     font-size: var(--content-secondary-font-size);
+  }
+
+  &--tertiary {
+    font-size: var(--content-tertiary-font-size);
   }
 
   a {

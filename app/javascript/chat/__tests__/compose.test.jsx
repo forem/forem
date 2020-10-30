@@ -21,10 +21,13 @@ const handleSubmitFake = () => {
 
 const handleKeyDownFake = (e) => {
   const enterPressed = e.keyCode === 13;
+  const shiftPressed = e.shiftKey;
   if (!enterPressed) {
     textfieldIsEmpty = false;
-  } else if (textfieldIsEmpty) {
+  } else if (textfieldIsEmpty && !shiftPressed) {
     handleSubmitEmpty();
+  } else if (textfieldIsEmpty && shiftPressed) {
+    textfieldIsEmpty = false;
   } else {
     handleSubmitFake();
   }
@@ -87,6 +90,16 @@ describe('<Compose />', () => {
       expect(submitWithMessage).toEqual(false);
       expect(textfieldIsEmpty).toEqual(true);
     });
+
+    it('should pressed enter and shift', () => {
+      const { getByLabelText } = render(getCompose(false));
+      const input = getByLabelText('Compose a message');
+
+      fireEvent.keyDown(input, { keyCode: 13 });
+      fireEvent.keyDown(input, { keyCode: 16 });
+
+      expect(textfieldIsEmpty).toEqual(false);
+    });
   });
 
   describe('behavior with message', () => {
@@ -104,7 +117,7 @@ describe('<Compose />', () => {
 
       expect(input.textContent).toEqual('');
       expect(input.getAttribute('maxLength')).toEqual('1000');
-      expect(input.getAttribute('placeholder')).toEqual('Write message...');
+      expect(input.getAttribute('placeholder')).toContain('Write message to');
 
       // Ensure send button is pressent
       getByText(/send/i);

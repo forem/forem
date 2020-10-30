@@ -3,7 +3,7 @@
     <span class="crayons-icon crayons-icon--default" title="Listings">
       <%= link.icon.html_safe %>
     </span>
-    &nbsp;<%= link.name %>
+    <%= link.name %>
     <% if link.url.include?("readinglist") %>
       <span id="reading-list-count" class="crayons-indicator"></span>
     <% end %>

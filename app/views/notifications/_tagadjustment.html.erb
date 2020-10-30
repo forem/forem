@@ -1,28 +1,31 @@
-<div class="small-pic">
-  <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--LnVw15KE--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg"
-       alt="Sloan, the sloth mascot">
-</div>
-<div class="content notification-content comment-content">
-  <% data = notification.json_data %>
-  <% removal = data["adjustment_type"] == "removal" %>
-  Hey there 👋
-  <br /><br />
-  Moderators <%= removal ? "removed" : "added" %>  the
-  <b><a href="/t/<%= data["tag_name"] %>" style="font-weight: 900">#<%= data["tag_name"] %></a></b> tag <%= removal ? "from" : "to" %> your post
-  <a href="<%= data["article"]["path"] %>"><%= h(data["article"]["title"]) %></a>.
-  <br /><br />
-  <%= removal ? "Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community." : "Mods felt this tag represented your article." %>
-  <br /><br />
-  <div class="comment-text">
-    <div style="font-size:0.8em;margin-top: -3px;font-weight: 900;margin-bottom: 5px;">Reason for action</div>
-    <%= data["reason_for_adjustment"] %>
+<div class="crayons-card notification">
+  <span class="crayons-avatar crayons-avatar--xl shrink-0">
+    <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--LnVw15KE--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" class="crayons-avatar__image" alt="Sloan, the sloth mascot" width="48" height="48">
+  </span>
+
+  <div class="notification__content">
+    <% data = notification.json_data %>
+    <% removal = data["adjustment_type"] == "removal" %>
+      <h3 class="mb-2 color-base-90">Hey there 👋</h3>
+      <p class="mb-4">
+        Moderators <%= removal ? "removed" : "added" %> the
+        <strong><a href="/t/<%= data["tag_name"] %>">#<%= data["tag_name"] %></a></strong> tag
+        <%= removal ? "from" : "to" %> your post
+        <a href="<%= data["article"]["path"] %>"><%= h(data["article"]["title"]) %></a>.
+        <%= removal ? "Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community." : "Mods felt this tag represented your article." %>
+      </p>
+      <div class="crayons-card crayons-card--secondary p-4 mb-4">
+        <p class="color-base-70">
+          <strong>Reason for action:</strong>
+          <em><%= data["reason_for_adjustment"] %></em>
+        </p>
+      </div>
+      <% if removal %>
+        <p class="mb-2">Check out <a href="/tags">other popular tags</a> which may be more appropriate</p>
+      <% end %>
+      <p>
+        Thanks for being part of <%= community_name %>! If you feel like this mod action was a mistake, feel free to contact
+        <%= email_link %>. 🤗
+      </p>
   </div>
-  <br />
-  <% if removal %>
-    Check out <a href="/tags">other popular tags</a> which may be more appropriate
-  <% end %>
-  <br><br />
-  Thanks for being part of <%= community_name %>! If you feel like this mod action was a mistake, feel free to contact
-  <%= email_link %>. 🤗
-  <br /><br />
 </div>

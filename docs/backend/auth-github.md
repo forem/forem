@@ -18,8 +18,8 @@ keys. Then you'll need to provide these keys to the Rails application.
    ![github-1](https://user-images.githubusercontent.com/22895284/51085500-877a6c00-173a-11e9-913a-0dccad234cf3.png)
 
 3. You will be redirected to the app's **Developer settings**. Here you will
-   find the keys. Change them accordingly (name of GitHub key -> name of our
-   `ENV` variable):
+   find the keys. Add them to your `.env` file accordingly (name of GitHub key
+   -> name of our `ENV` variable):
 
    ```text
    Client ID -> GITHUB_KEY

@@ -12,6 +12,10 @@ class SiteConfig < RailsSettings::Base
 
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
+  MAIN_SOCIAL_IMAGE = URL.local_image("social-media-cover.png").freeze
+
+  # Meta
+  field :admin_action_taken_at, type: :datetime, default: Time.current
 
   # Core setup
   field :waiting_on_first_user, type: :boolean, default: !User.exists?
@@ -22,8 +26,10 @@ class SiteConfig < RailsSettings::Base
   field :video_encoder_key, type: :string
 
   # Authentication
-  field :allow_email_password_registration, type: :boolean, default: false
-  field :allow_email_password_login, type: :boolean, default: false
+  field :allow_email_password_registration, type: :boolean, default: true
+  field :allow_email_password_login, type: :boolean, default: true
+  field :allow_both_email_signup_and_login, type: :boolean, default: true
+  field :require_captcha_for_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :invite_only_mode, type: :boolean, default: false
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
@@ -34,6 +40,7 @@ class SiteConfig < RailsSettings::Base
   field :facebook_secret, type: :string
 
   # Campaign
+  field :campaign_call_to_action, type: :string, default: "Share your project"
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
@@ -43,6 +50,8 @@ class SiteConfig < RailsSettings::Base
 
   # Community Content
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
+  field :collective_noun, type: :string, default: "Community"
+  field :collective_noun_disabled, type: :boolean, default: false
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
   field :tagline, type: :string
@@ -50,6 +59,8 @@ class SiteConfig < RailsSettings::Base
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
                                            Time.zone.today.year
   field :staff_user_id, type: :integer, default: 1
+  field :experience_low, type: :string, default: "Total Newbies"
+  field :experience_high, type: :string, default: "Experienced Users"
 
   # Emails
   field :email_addresses, type: :hash, default: {
@@ -75,7 +86,7 @@ class SiteConfig < RailsSettings::Base
   field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
   # Images
-  field :main_social_image, type: :string
+  field :main_social_image, type: :string, default: MAIN_SOCIAL_IMAGE
   field :favicon_url, type: :string, default: "favicon.ico"
   field :logo_png, type: :string
   field :logo_svg, type: :string
@@ -83,6 +94,7 @@ class SiteConfig < RailsSettings::Base
 
   field :left_navbar_svg_icon, type: :string, default: STACK_ICON
   field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
+  field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
@@ -122,6 +134,7 @@ class SiteConfig < RailsSettings::Base
   field :onboarding_taskcard_image, type: :string
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
+  field :prefer_manual_suggested_users, type: :boolean, default: false
 
   # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
@@ -168,6 +181,8 @@ class SiteConfig < RailsSettings::Base
   field :default_font, type: :string, default: "sans_serif"
   field :primary_brand_color_hex, type: :string, default: "#3b49df"
   field :feed_strategy, type: :string, default: "basic"
+  field :tag_feed_minimum_score, type: :integer, default: 0
+  field :home_feed_minimum_score, type: :integer, default: 0
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
