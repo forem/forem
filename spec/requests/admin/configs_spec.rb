@@ -228,6 +228,9 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Images" do
         it "updates main_social_image" do
+          expected_default_image_url = URL.local_image("social-media-cover.png")
+          expect(SiteConfig.main_social_image).to eq(expected_default_image_url)
+
           expected_image_url = "https://dummyimage.com/300x300"
           post "/admin/config", params: { site_config: { main_social_image: expected_image_url },
                                           confirmation: confirmation_message }

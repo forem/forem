@@ -506,7 +506,8 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "contextualize comment title properly" do
-        expect(response.body).to include CGI.escapeHTML("re: #{comment.title}")
+        expect(response.body).to include CGI.escapeHTML("Re")
+        expect(response.body).to include CGI.escapeHTML(comment.title.to_s)
       end
     end
 
@@ -710,7 +711,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "renders the proper message" do
-        expect(response.body).to include "made a new post:"
+        expect(response.body).to include "made a new post"
       end
 
       it "renders the article's path" do
@@ -751,7 +752,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "can view other people's notifications" do
         get "/notifications?username=#{user2.username}"
-        expect(response.body).to include "made a new post:"
+        expect(response.body).to include "made a new post"
       end
     end
 
