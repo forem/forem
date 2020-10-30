@@ -68,6 +68,7 @@ body {
 .text-styles {
   font-size: var(--content-font-size);
   font-family: var(--content-font-family);
+  overflow-wrap: break-word;
 
   &--secondary {
     font-size: var(--content-secondary-font-size);
