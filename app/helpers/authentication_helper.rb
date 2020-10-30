@@ -37,18 +37,31 @@ module AuthenticationHelper
     SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "crayons-tooltip" : ""
   end
 
+  def disable_auth_provider_tooltip_class
+    !SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1 ? "crayons-tooltip" : ""
+  end
+
+  def disable_auth_provider_button_class
+    !SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1 ? "disabled" : ""
+  end
+
+  def disable_auth_provider_tooltip_content
+    !SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1 ? disable_tooltip_text : ""
+  end
+
   def disable_email_tooltip_content
-    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? disable_email_auth_tooltip_text : ""
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? disable_tooltip_text : ""
   end
 
   def disable_button_class
     SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "disabled" : ""
   end
 
-  def disable_email_auth_tooltip_text
+  def disable_tooltip_text
     if SiteConfig.invite_only_mode
       "You cannot do this until you disable Invite Only Mode"
-    elsif authentication_enabled_providers.none?
+    elsif authentication_enabled_providers.none? ||
+        (!SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1)
       "You cannot do this until you enable at least one other registration option"
     end
   end

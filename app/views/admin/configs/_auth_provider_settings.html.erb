@@ -25,12 +25,12 @@
         <div class="mt-6">
           <% if authentication_enabled_providers.include?(provider) %>
             <button
-              class="crayons-btn crayons-btn--danger <%= disable_email_tooltip_class %>"
+              class="crayons-btn crayons-btn--danger <%= disable_auth_provider_tooltip_class %>"
               data-action="click->config#activateAuthProviderModal"
-              data-tooltip="<%= disable_email_tooltip_content %>"
+              data-tooltip="<%= disable_auth_provider_tooltip_content %>"
               data-auth-provider="<%= provider.provider_name %>"
               data-auth-provider-official="<%= provider.official_name %>"
-              <%= disable_button_class %>>
+              <%= disable_auth_provider_button_class %>>
               Disable
             </button>
             <button

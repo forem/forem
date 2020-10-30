@@ -54,6 +54,7 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
       emailSigninAndLoginCheckbox.checked = true;
+      this.listAuthToBeEnabled();
     }
     this.emailAuthSettingsBtnTarget.classList.add('hidden');
     emailAuthSettingsSection.classList.remove('hidden');
@@ -95,12 +96,14 @@ export default class ConfigController extends Controller {
   disableEmailAuthFromModal() {
     event.preventDefault();
     emailSigninAndLoginCheckbox.checked = false;
+    this.listAuthToBeEnabled();
     this.closeAdminConfigModal();
   }
 
   disableEmailAuth() {
     event.preventDefault();
     emailSigninAndLoginCheckbox.checked = false;
+    this.listAuthToBeEnabled();
     this.hideEmailAuthSettings();
   }
 

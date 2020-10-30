@@ -144,7 +144,9 @@ module Admin
       clean_up_params
 
       config_params.each do |key, value|
-        if value.is_a?(Array)
+        if key == "auth_providers_to_enable"
+          update_enabled_auth_providers(value)
+        elsif value.is_a?(Array)
           SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
         elsif value.respond_to?(:to_h)
           SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
@@ -222,6 +224,10 @@ module Admin
         SiteConfig.allow_email_password_login = false
         SiteConfig.invite_only_mode = false
       end
+    end
+
+    def update_enabled_auth_providers(value)
+      SiteConfig.authentication_providers = value
     end
 
     # Validations
