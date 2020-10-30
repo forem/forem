@@ -139,7 +139,8 @@
                 <h3 class="crayons-subtitle-3 mb-3">
                   General settings
                 </h3>
-                <div class="crayons-field crayons-field--checkbox <%= !SiteConfig.allow_both_email_signup_and_login ? 'crayons-tooltip' : '' %>" data-tooltip="<%= !SiteConfig.allow_both_email_signup_and_login ? 'To enable this, you must first enable Email Address as a registration option' : '' %>">
+                <div class="crayons-field crayons-field--checkbox <%= !SiteConfig.allow_both_email_signup_and_login ? 'crayons-tooltip' : '' %>"
+                  data-tooltip="<%= !SiteConfig.allow_both_email_signup_and_login ? 'To enable this, you must first enable Email Address as a registration option' : '' %>">
                   <%= f.check_box :invite_only_mode,
                                   checked: SiteConfig.invite_only_mode,
                                   disabled: !SiteConfig.allow_both_email_signup_and_login,
@@ -207,7 +208,7 @@
                             <%= admin_config_description Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %>
                           </div>
                         </div>
-                        <div id="recaptchaContainer" class="<%= SiteConfig.require_captcha_for_email_password_registration ? "" : "hidden" %> ml-7 flex flex-col gap-4" aria-labelledby="recaptchaContainer">
+                        <div id="recaptchaContainer" class="ml-7 <%= SiteConfig.require_captcha_for_email_password_registration ? "flex flex-col gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
                           <div class="crayons-field">
                             <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
                             <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
