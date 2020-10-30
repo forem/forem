@@ -3,6 +3,7 @@
 .notification {
   --unseen-border-width: 0px;
   --padding: var(--su-3);
+
   padding: var(--padding);
   padding-left: calc(var(--padding) - var(--unseen-border-width));
 
@@ -62,13 +63,12 @@
 
   &__reply-title {
     border-radius: var(--radius) var(--radius) 0 0;
-    margin-bottom: var(--su-1);
-    padding: var(--su-2) var(--su-3);
+    margin-bottom: calc(-1 * var(--su-2));
+    padding: var(--su-2) var(--su-3) var(--su-4) var(--su-3);
     font-size: var(--fs-s);
     background: var(--base-a5);
-    margin-left: var(--su-2);
     display: inline-block;
-    max-width: 80%;
+    max-width: 85%;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -86,6 +86,16 @@
 
       @media (min-width: $breakpoint-m) {
         font-size: var(--fs-2xl);
+      }
+    }
+
+    &__inner {
+      padding: var(--su-2);
+      padding-bottom: var(--su-3);
+
+      @media (min-width: $breakpoint-m) {
+        padding: var(--su-3);
+        padding-bottom: var(--su-4);
       }
     }
   }
