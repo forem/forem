@@ -20,13 +20,14 @@
     transform: translateY(var(--su-1));
     opacity: 0;
     transition: all var(--transition-props);
-    z-index: 1000;
     text-align: left;
     transition-delay: 250ms;
+    z-index: var(--z-popover);
   }
 
   &:hover {
-    z-index: 1000;
+    z-index: var(--z-popover);
+    
     &:after {
       opacity: 1;
       transform: translateY(calc(-1 * var(--su-1)));

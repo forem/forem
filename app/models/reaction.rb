@@ -81,11 +81,7 @@ class Reaction < ApplicationRecord
   end
 
   def target_user
-    if reactable_type == "User"
-      reactable
-    else
-      reactable.user
-    end
+    reactable_type == "User" ? reactable : reactable.user
   end
 
   def negative?
@@ -93,10 +89,6 @@ class Reaction < ApplicationRecord
   end
 
   private
-
-  def indexable?
-    category == "readinglist" && reactable && reactable.published
-  end
 
   def update_reactable
     Reactions::UpdateReactableWorker.perform_async(id)
@@ -120,40 +112,6 @@ class Reaction < ApplicationRecord
 
   def reading_time
     reactable.reading_time if category == "readinglist"
-  end
-
-  def reactable_user
-    return unless category == "readinglist"
-
-    {
-      username: reactable.user_username,
-      name: reactable.user_name,
-      profile_image_90: reactable.user.profile_image_90
-    }
-  end
-
-  def reactable_published_date
-    reactable.readable_publish_date if category == "readinglist"
-  end
-
-  def searchable_reactable_title
-    reactable.title if category == "readinglist"
-  end
-
-  def searchable_reactable_text
-    reactable.body_text[0..350] if category == "readinglist"
-  end
-
-  def searchable_reactable_tags
-    reactable.cached_tag_list if category == "readinglist"
-  end
-
-  def searchable_reactable_path
-    reactable.path if category == "readinglist"
-  end
-
-  def reactable_tags
-    reactable.decorate.cached_tag_list_array if category == "readinglist"
   end
 
   def viewable_by

@@ -15,7 +15,6 @@
 // modal box card
 .onboarding-main {
   border: none;
-  z-index: 1;
 
   @media screen and (min-width: 600px) {
     border-width: 2px;
@@ -310,7 +309,6 @@
       right: 0;
       top: 0;
       transition: all ease-in-out 0.1s;
-      z-index: 2;
     }
 
     &:hover,
