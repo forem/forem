@@ -85,6 +85,12 @@ class FollowsController < ApplicationController
     redirect_to "/dashboard/following" if @follow.update(follow_params)
   end
 
+  def destroy
+    @follow = Follow.find(params[:id])
+    authorize @follow
+    redirect_to "/dashboard/following" if @follow.destroy
+  end
+
   private
 
   def follow_params

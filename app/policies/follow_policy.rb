@@ -7,6 +7,10 @@ class FollowPolicy < ApplicationPolicy
     user_is_follower?
   end
 
+  def destroy?
+    !user_is_banned?
+  end
+
   def permitted_attributes
     %i[points]
   end
