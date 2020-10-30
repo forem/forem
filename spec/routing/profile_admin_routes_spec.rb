@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Profile admin routes", type: :routing do
-  let(:user) { create(:super_admin) }
-
   it "renders the profile admin route if the feature flag is enabled" do
     allow(Flipper).to receive(:enabled?).with(:profile_admin).and_return(true)
 
