@@ -23,8 +23,10 @@ module Feeds
 
       users.in_batches(of: users_batch_size) do |batch_of_users|
         feeds_per_user_id = fetch_feeds(batch_of_users)
+        Rails.logger.error("feeds::import::feeds_per_user_id.length: #{feeds_per_user_id.length}")
 
         feedjira_objects = parse_feeds(feeds_per_user_id)
+        Rails.logger.error("feeds::import::feedjira_objects.length: #{feedjira_objects.length}")
 
         # NOTE: doing this sequentially to avoid locking problems with the DB
         # and unnecessary conflicts
@@ -34,8 +36,10 @@ module Feeds
           user = batch_of_users.detect { |u| u.id == user_id }
           create_articles_from_user_feed(user, feed)
         end
+        Rails.logger.error("feeds::import::articles.length: #{articles.length}")
 
         total_articles_count += articles.length
+        Rails.logger.error("feeds::import::total_articles_count: #{total_articles_count}")
 
         articles.each { |article| Slack::Messengers::ArticleFetchedFeed.call(article: article) }
       end
@@ -167,8 +171,8 @@ module Feeds
     end
 
     def report_error(error, metadata)
-      Honeybadger.context(metadata)
-      Honeybadger.notify(error)
+      Rails.logger.error("feeds::import::error::#{error.class}::#{metadata}")
+      Rails.logger.error(error)
     end
 
     def get_item_count_error(feed)
