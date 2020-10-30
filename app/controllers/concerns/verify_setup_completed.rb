@@ -7,7 +7,6 @@ module VerifySetupCompleted
     community_name
     community_description
 
-    main_social_image
     logo_png
     logo_svg
 

@@ -1,16 +1,16 @@
-<% json_data = notification.json_data %>
-<% user = User.find_by(id: json_data["user"]["id"]) %>
-<% cache "broadcast-html-#{notification.json_data['broadcast']['title']}" do %>
-  <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
-    <div class="small-pic">
-      <img src="<%= Images::Profile.call(user.profile_image_url) %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
-    </div>
-  </a>
-  <div class="content notification-content broadcast-content" id="<%= sanitized_broadcast_id(json_data["broadcast"]["title"]) %>">
-    <%= json_data["broadcast"]["processed_html"].html_safe %>
+<div class="crayons-card p-9 notification notification--promoted">
+  <% json_data = notification.json_data %>
+  <% user = User.find_by(id: json_data["user"]["id"]) %>
+  <% cache "broadcast-html-#{notification.json_data['broadcast']['title']}" do %>
+    <a href="<%= json_data["user"]["path"] %>" class="crayons-avatar crayons-avatar--3xl shrink-0 mb-6">
+      <img src="<%= Images::Profile.call(user.profile_image_url) %>" class="crayons-avatar__image" alt="link to <%= json_data["user"]["username"] %>'s profile" width="48" height="48">
+    </a>
+    <div class="fs-l broadcast-content" id="<%= sanitized_broadcast_id(json_data["broadcast"]["title"]) %>">
+      <%= json_data["broadcast"]["processed_html"].html_safe %>
 
-    <% if notification.json_data['broadcast']['type_of'] == "Welcome" %>
-      <div class="opt-out"><a href="<%= user_settings_path(tab: :notifications) %>">Go to your settings to manage your notification settings.</a></div>
-    <% end %>
-  </div>
-<% end %>
+      <% if notification.json_data['broadcast']['type_of'] == "Welcome" %>
+        <p class="fs-base pt-6 color-base-70">Visit <a href="<%= user_settings_path(tab: :notifications) %>">Settings</a> to manage your notifications.</p>
+      <% end %>
+    </div>
+  <% end %>
+</div>

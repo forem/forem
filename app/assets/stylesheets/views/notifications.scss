@@ -1,0 +1,167 @@
+@import '../config/import';
+
+.notification {
+  --unseen-border-width: 0px;
+  --padding: var(--su-3);
+  padding: var(--padding);
+  padding-left: calc(var(--padding) - var(--unseen-border-width));
+
+  display: flex;
+  color: var(--base-80);
+  border-radius: 0;
+
+  @media (min-width: $breakpoint-s) {
+    --padding: var(--su-4);
+  }
+  @media (min-width: $breakpoint-m) {
+    --padding: var(--su-5);
+    border-radius: var(--radius);
+  }
+
+  &--middle {
+    align-items: center;
+  }
+
+  &--promoted {
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--su-5);
+
+    @media (min-width: $breakpoint-m) {
+      padding: var(--su-8);
+    }
+  }
+
+  &__content {
+    padding-left: var(--su-4);
+    flex: 1 auto;
+    // Hack preventing content exceeding its container - it works for scenarios where we have
+    // `pre` tag having wide (overflowing) text. And the container itself is part of a layout
+    // built using CSS `grid`. Without this, the grid layout wouldn't stick to its defined
+    // widths...
+    min-width: 0;
+  }
+
+  &__mod-controls {
+    padding: var(--su-1);
+    display: flex;
+    align-items: center;
+    font-size: var(--fs-s);
+    position: absolute;
+    right: calc(var(--su-2) * -1);
+    top: calc(var(--su-3) * -1);
+    border-radius: 9999px;
+  }
+
+  &__actions {
+    border-top: 1px solid var(--base-10);
+    padding-top: var(--su-1);
+    display: flex;
+  }
+
+  &__reply-title {
+    border-radius: var(--radius) var(--radius) 0 0;
+    margin-bottom: var(--su-1);
+    padding: var(--su-2) var(--su-3);
+    font-size: var(--fs-s);
+    background: var(--base-a5);
+    margin-left: var(--su-2);
+    display: inline-block;
+    max-width: 80%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
+    font-weight: var(--fw-medium);
+  }
+
+  &__preview {
+    padding: var(--su-1);
+
+    &__title {
+      font-size: var(--fs-xl);
+      line-height: var(--lh-tight);
+      margin-bottom: var(--su-2);
+
+      @media (min-width: $breakpoint-m) {
+        font-size: var(--fs-2xl);
+      }
+    }
+  }
+
+  .unseen & {
+    --unseen-border-width: 4px;
+
+    @media (min-width: $breakpoint-l) {
+      --unseen-border-width: 8px;
+    }
+
+    border-left: var(--unseen-border-width) solid var(--accent-brand);
+  }
+}
+
+//////////////////////////////////////////////
+// TODO: /////////////////////////////////////
+//////////////////////////////////////////////
+//                                          //
+// Dear Paweł,                              //
+// You can do it better.                    //
+//                                          //
+//                Sincerely yours, Paweł.   //
+//                                          //
+//////////////////////////////////////////////
+
+.reaction-icon--like {
+  color: var(--reaction-like-color);
+}
+.reaction-icon--unicorn {
+  color: var(--reaction-custom-color);
+}
+.reaction-icon--readinglist {
+  color: var(--reaction-save-color);
+}
+.reaction-icon--comment {
+  color: var(--reaction-comment-color);
+}
+
+.crayons-btn--ghost {
+  &.reaction-like {
+    &.reacted {
+      --bg: var(--reaction-like-bg);
+      --bg-hover: var(--reaction-like-bg);
+    }
+  }
+
+  &.reaction-comment {
+    &.reacted {
+      --bg: var(--reaction-comment-bg);
+      --bg-hover: var(--reaction-comment-bg);
+    }
+  }
+
+  &.reaction-readinglist {
+    &.reacted {
+      --bg: var(--reaction-save-bg);
+      --bg-hover: var(--reaction-save-bg);
+    }
+  }
+
+  .reaction-icon {
+    --not-reacted-display: inline-block;
+    --reacted-display: none;
+    &.not-reacted {
+      display: var(--not-reacted-display);
+    }
+    &.reacted {
+      display: var(--reacted-display);
+    }
+  }
+
+  &.reacted {
+    .reaction-icon {
+      --not-reacted-display: none;
+      --reacted-display: inline-block;
+    }
+  }
+}
