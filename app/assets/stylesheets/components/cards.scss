@@ -18,6 +18,21 @@
       0 3px 9px var(--base-a5);
   }
 
+  &--content-rows {
+    padding: var(--su-4);
+    margin-bottom: var(--su-4);
+    grid-gap: var(--su-4);
+    display: grid;
+    border-radius: 0;
+
+    @media (min-width: $breakpoint-m) {
+      padding: var(--su-6);
+      margin-bottom: var(--su-6);
+      grid-gap: var(--su-6);
+      border-radius: var(--radius);
+    }
+  }
+
   &__header {
     padding: var(--su-3) var(--su-4);
     border-bottom: 1px solid var(--body-bg);

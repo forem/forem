@@ -1,4 +1,4 @@
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h3>Connect</h3>
   <%= form_for(@user, html: { id: nil, class: "grid gap-6" }) do |f| %>
     <div class="crayons-field">
@@ -24,7 +24,7 @@
 
 <%= render "language_settings" %>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <header>
     <h3 class="mb-2">Web Monetization</h3>
     <p>Receive micropayments for time spent reading your posts directly.</p>
@@ -42,7 +42,7 @@
   <% end %>
 </div>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <header>
     <h3 class="mb-2">Sponsors</h3>
     <p>You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence constructive to the community, but feel free to use this setting if you wish.</p>
@@ -64,7 +64,7 @@
   <% end %>
 </div>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <header>
     <h3 class="mb-2">Announcements</h3>
     <p>You have the option to dismiss announcements. Announcements are used to inform you on important site-wide information, like updates and events.</p>
@@ -81,7 +81,7 @@
   <% end %>
 </div>
 
-<div class="crayons-card grid gap-4 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h3>Export Content</h3>
 
   <% if @user.export_requested? %>
