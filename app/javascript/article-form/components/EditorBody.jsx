@@ -10,6 +10,7 @@ import {
   onDragExit,
 } from './dragAndDropHelpers';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
+import { handleKeyDown } from '@utilities/editorKeyboardShortcuts';
 
 function handleImageSuccess(textAreaRef) {
   return function (response) {
@@ -70,6 +71,9 @@ export const EditorBody = ({
         placeholder="Write your post content here..."
         value={defaultValue}
         onInput={onChange}
+        onKeyDown={(e) => {
+          handleKeyDown(e);
+        }}
         onFocus={(_event) => {
           switchHelpContext(_event);
         }}
