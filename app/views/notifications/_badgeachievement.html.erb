@@ -1,8 +1,8 @@
 <% json_data = notification.json_data %>
 <div class="crayons-card notification notification--promoted grid gap-4">
   <% cache "activity-badge-reward-#{json_data['badge_achievement']['badge_id']}" do %>
-    <header>
-      <h3 class="fw-normal fs-2xl">
+    <header class="mb-2 m:mb-4">
+      <h3 class="fw-normal fs-l s:fs-xl m:fs-2xl">
       You received the <strong class="fw-bold"><%= sanitize(json_data["badge_achievement"]["badge"]["title"]) %></strong> badge
       </h3>
       <p class="fs-l"><%= json_data["badge_achievement"]["badge"]["description"] %></p>
