@@ -5,7 +5,7 @@
   bottom: 0px;
   left: 0px;
   right: 0px;
-  z-index: 15;
+  z-index: var(--z-sticky);
   font-family: var(--ff-sans-serif);
   display: block;
   #progressBar {
@@ -19,7 +19,6 @@
     right: 0;
     text-align: left;
     background: rgb(236, 236, 236);
-    z-index: 19;
     display: none;
     &.playing {
       display: block;
@@ -105,7 +104,7 @@
           top: 0px;
           left: 26px;
           background: rgb(32, 32, 32);
-          z-index: 30;
+          z-index: var(--z-elevate);
           width: 0;
           overflow: hidden;
           transition: width 200ms ease-out 95ms;
@@ -137,7 +136,6 @@
         height: calc(48px + 1vh);
         display: inline-block;
         position: relative;
-        z-index: 23;
         transition: width 0.25s ease-in-out;
       }
       #buffer {
@@ -146,18 +144,17 @@
         display: inline-block;
         position: absolute;
         bottom: 0;
-        z-index: 22;
         transition: width 0.15s ease-in-out;
       }
       #time {
         position: absolute;
         right: calc(50px + 0.1vh + 1.5vw);
         top: calc(16px + 0.1vh);
-        z-index: 23;
         color: rgb(161, 161, 161);
         font-size: calc(14px + 0.2vh);
         background: rgba(236, 236, 236, 0.74);
         padding: 2px;
+        pointer-events: none;
       }
       #closebutt {
         position: absolute;
@@ -172,7 +169,6 @@
         padding-top: calc(8px + 0.2vh);
         color: #535353;
         font-size: 13.5px;
-        z-index: 25;
         width: calc(42px + 0.1vh + 1.5vw);
         text-align: center;
         transition: all 0.3s ease 0s;

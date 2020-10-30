@@ -41,7 +41,7 @@ label {
 .broadcast-wrapper {
   display: flex;
   position: relative;
-  z-index: auto;
+  z-index: unset;
 }
 
 .site-config__required {

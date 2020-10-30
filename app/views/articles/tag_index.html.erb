@@ -4,31 +4,38 @@
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
 <% cache("tag-stories-index-#{params}-#{flag}-#{@tag_model.updated_at}-#{user_signed_in?}", expires_in: expiry_minutes.minutes) do %>
-  <style>
-    .tag-header {
-      border: 2px solid<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
-      box-shadow: 5px 6px 0px<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
-    }
-  </style>
-  <div class="user-profile-header tag-header">
-    <div class="tag-or-query-header-container">
-      <h1>
+  <div class="crayons-layout">
+    <header class="tag-header crayons-card branded-4" style="border-top-color: <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>">
+      <div class="flex gap-4">
         <% if @tag_model.badge_id && @tag_model.badge %>
-            <img src="<%= optimized_image_url(@tag_model.badge.badge_image_url, width: 180) %>" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg);" />
+            <img src="<%= optimized_image_url(@tag_model.badge.badge_image_url, width: 64) %>" class="" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg); width: 64px; height: 64px;" />
         <% end %>
-        <% if @tag_model && @tag_model.pretty_name.present? %>
-          <%= @tag_model.pretty_name %>
-        <% else %>
-          <%= @tag %>
-        <% end %>
-        <% if @tag_model %>
-            <span class="user-profile-follow-button-wrapper">
-              <button id="user-follow-butt" class="crayons-btn follow-action-button user-profile-follow-button" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>&nbsp;</button>
-            </span>
-        <% end %>
-      </h1>
-    </div>
+        <div class="flex flex-col w-100 justify-center">
+          <div class="flex justify-between items-center">
+            <h1 class="crayons-title">
+              <% if @tag_model && @tag_model.pretty_name.present? %>
+                <%= @tag_model.pretty_name %>
+              <% else %>
+                <span class="opacity-50">#</span>
+                <%= @tag %>
+              <% end %>
+            </h1>
+            <% if @tag_model %>
+              <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>Follow</button>
+            <% end %>
+          </div>
+          <% if @tag_model && @tag_model.short_summary.present? %>
+            <p class="max-w-100 m:max-w-75 pt-2 s:pt-4">
+              <%= strip_tags(@tag_model.short_summary) %>
+            </p>
+          <% end %>
+        </div>
+      </div>
+      <% if @tag_model && @tag_model.short_summary.present? %>
+      <% end %>
+    </header>
   </div>
+
   <div class="home sub-home" id="index-container"
       data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username sort_by sort_direction]) %>" data-which=""
       data-tag="<%= @tag %>"

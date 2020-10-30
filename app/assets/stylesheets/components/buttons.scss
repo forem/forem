@@ -78,7 +78,7 @@
     border-color: var(--border-hover);
     box-shadow: var(--shadow-hover);
     color: var(--color-hover);
-    z-index: 2;
+    z-index: var(--z-elevate);
   }
 
   &.crayons-btn--inverted {
