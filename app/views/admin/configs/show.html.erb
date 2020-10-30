@@ -188,14 +188,14 @@
                             <% end %>
                           </div>
                           <button
-                            class="crayons-btn crayons-btn--secondary <%= disable_auth_provider_tooltip_class %>"
+                            class="crayons-btn crayons-btn--secondary <%= auth_provider_enable_btn_tooltip_class %>"
                             id="<%= provider.provider_name %>-auth-btn"
                             data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
                             data-action="click->config#enableOrEditAuthProvider"
                             data-auth-provider-enable="<%= provider.provider_name %>"
                             data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
-                            data-tooltip="<%= disable_auth_provider_tooltip_content %>"
-                            <%= disable_button_class_auth_provider %>>
+                            data-tooltip="<%= enable_disable_btn_tooltip_text %>"
+                            <%= auth_provider_enable_btn_disable_class %>>
                             <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>
@@ -284,10 +284,10 @@
                         <div class="mt-6">
                           <% if SiteConfig.allow_both_email_signup_and_login %>
                             <button
-                              class="crayons-btn crayons-btn--danger <%= disable_email_tooltip_class %>"
+                              class="crayons-btn crayons-btn--danger <%= email_auth_disable_btn_tooltip_class %>"
                               data-action="click->config#activateEmailAuthModal"
-                              data-tooltip="<%= disable_email_tooltip_content %>"
-                              <%= disable_button_class_email %>>
+                              data-tooltip="<%= enable_disable_btn_tooltip_text %>"
+                              <%= email_auth_disable_btn_disable_class %>>
                               Disable
                             </button>
                              <button

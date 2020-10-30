@@ -228,7 +228,11 @@ module Admin
 
     def update_enabled_auth_providers(value)
       SiteConfig.public_send("authentication_providers=", value.split(",")) unless value.nil? ||
-        value.class.name != "String"
+        value.class.name != "String" || prevent_all_auth_provider_disable?(value)
+    end
+
+    def prevent_all_auth_provider_disable?(value)
+      value.blank? && !SiteConfig.allow_email_password_login
     end
 
     # Validations
