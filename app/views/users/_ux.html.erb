@@ -62,3 +62,19 @@
     <button class="crayons-btn" type="submit">Save</button>
   </div>
 <% end %>
+<script>
+  document.getElementById("user_config_theme_default").onclick = function() {
+    updateStyles("minimal");
+  };
+  var config_themes = ["night", "minimal_light", "pink", "ten_x_hacker"];
+  for( let theme of config_themes){
+    document.getElementById(`user_config_theme_${theme}_theme`).onclick = function() {
+      if (theme === "ten_x_hacker"){
+        theme = "hacker";
+      } else if( theme === "minimal_light" ) {
+        theme = "minimal";
+      }
+      updateStyles(theme);
+    };
+  }
+</script>
