@@ -20,7 +20,7 @@ Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
 
-Forem requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher to run.
 
 The easiest way to get started is to use
 [Postgres.app](https://postgresapp.com/). Alternatively, check out the official
@@ -38,7 +38,7 @@ You can install ImageMagick with `brew install imagemagick`.
 
 ### Redis
 
-Forem requires Redis version 4.0 or higher.
+Forem requires Redis version 4.0 or higher to run.
 
 We recommend using [Homebrew](https://brew.sh):
 
@@ -61,11 +61,9 @@ redis-cli ping
 
 ### Elasticsearch
 
-Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
-not supported. We recommend version 7.5.2.
+Forem requires Elasticsearch 7.x to run. We recommend version 7.5.2.
 
-You have the option of installing Elasticsearch with Homebrew or through an
-archive. We recommend installing from archive on Mac.
+You have the option of installing Elasticsearch with Homebrew or through an archive. We **recommend** installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
 
@@ -109,13 +107,14 @@ To start elasticsearch as a daemonized process:
 
 ### Installing Elasticsearch with Homebrew
 
-As the default version of the Homebrew formula points to Elasticsearch 7.6, we
-need to retrieve the correct revision of the formula to make sure we install the
-latest supported version: 7.5.2.
+To install Elasticsearch with Homebrew we will use the following commands to: 
+- tap the Elastic Homebrew repository
+- install the latest OSS distribution
+- pin the latest OSS distribution. 
 
 ```shell
 brew tap elastic/tap
-brew install https://raw.githubusercontent.com/elastic/homebrew-tap/bed8bc6b03213c2c1a7df6e4b9f928e7082fae46/Formula/elasticsearch-oss.rb
+brew install elastic/tap/elasticsearch-oss
 brew pin elasticsearch-oss
 ```
 

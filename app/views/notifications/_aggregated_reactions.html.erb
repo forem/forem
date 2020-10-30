@@ -1,34 +1,45 @@
 <%# TODO: change to map of IDs %>
 <% actors = siblings.map { |n| n["user"] }.uniq %>
 <% reactable_data = notification.json_data["reaction"]["reactable"] %>
-<a href="<%= actors.first["path"] %>" class="small-pic-link-wrapper">
-  <div class="small-pic">
-    <img src="<%= actors.first["profile_image_90"] %>" alt="link to <%= actors.first["username"] %>'s profile">
-  </div>
-</a>
 
-<div class="content notification-content reaction-content">
+<div class="relative shrink-0 self-start">
   <% if actors.size == 1 %>
-    <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a>
-  <% elsif actors.size == 2 %>
-    <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and
-    <a href="<%= actors.last["path"] %>"><%= actors.last["name"] %></a>
-  <% elsif actors.size > 1 %>
-    <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and <%= pluralize(actors.size - 1, "other") %>
+    <a href="<%= actors.first["path"] %>" class="crayons-avatar crayons-avatar--xl">
+      <img src="<%= actors.first["profile_image_90"] %>" class="crayons-avatar__image" alt="link to <%= actors.first["username"] %>'s profile" width="48" height="48">
+    </a>
+  <% else %>
+    <a href="<%= actors.first["path"] %>" class="crayons-avatar crayons-avatar--l mr-4">
+      <img src="<%= actors.first["profile_image_90"] %>" class="crayons-avatar__image" alt="link to <%= actors.first["username"] %>'s profile" width="48" height="48">
+    </a>
+    <a href="<%= actors.first["path"] %>" class="crayons-avatar crayons-avatar--l absolute -right-1 -bottom-3 border-solid border-2 border-base-inverted">
+      <img src="<%= actors.last["profile_image_90"] %>" class="crayons-avatar__image" alt="link to <%= actors.last["username"] %>'s profile" width="48" height="48">
+    </a>
   <% end %>
-  reacted to
-  <a href="<%= reactable_data["path"] %>" class="notification-comment-reacted-link">
-    <%# your article/comment or the actual title of the article/comment %>
-    <%= reactable_data["title"].blank? ? "your #{reactable_data['class']['name'].downcase}" : h(reactable_data["title"]) %>
-  </a>
-  <span class="reaction-images">
-        with
-    <% reaction_categories = siblings.map { |n| n["category"] } %>
-    <% reaction_categories.each do |cat| %>
-        <% image_path = ReactionImage.new(cat).path %>
-        <% if image_path.present? %>
-          <%= image_tag(image_path, class: "reaction-image", alt: cat.to_s.humanize) %>
-        <% end %>
-      <% end %>
-    </span>
+</div>
+
+<div class="notification__content pt-2">
+  <span class="inline-block py-1">
+    <% if actors.size == 1 %>
+      <a href="<%= actors.first["path"] %>" class="crayons-link fw-bold"><%= actors.first["name"] %></a>
+    <% elsif actors.size == 2 %>
+      <a href="<%= actors.first["path"] %>" class="crayons-link fw-bold"><%= actors.first["name"] %></a> and
+      <a href="<%= actors.last["path"] %>" class="crayons-link fw-bold"><%= actors.last["name"] %></a>
+    <% elsif actors.size > 1 %>
+      <a href="<%= actors.first["path"] %>" class="crayons-link fw-bold"><%= actors.first["name"] %></a> and <%= pluralize(actors.size - 1, "other") %>
+    <% end %>
+    reacted to
+    <a href="<%= reactable_data["path"] %>" class="crayons-link fw-bold">
+      <%# your article/comment or the actual title of the article/comment %>
+      <%= reactable_data["title"].blank? ? "your #{reactable_data['class']['name'].downcase}" : h(reactable_data["title"]) %>
+    </a>
+    with
+  </span>
+
+  <% reaction_categories = siblings.map { |n| n["category"] } %>
+  <% reaction_categories.each do |cat| %>
+    <% image_path = ReactionImage.new(cat).path %>
+    <% if image_path.present? %>
+      <%= inline_svg_tag(image_path, aria: true, class: "crayons-icon reaction-image mx-1 my-1 reaction-icon--#{cat}", title: cat.to_s.humanize) %>
+    <% end %>
+  <% end %>
 </div>

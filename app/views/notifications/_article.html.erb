@@ -1,59 +1,60 @@
-<% if notification.action == "Reaction" %>
-  <%= render "reaction", notification: notification %>
-<% elsif notification.action.include? "Milestone" %>
-  <%= render "milestone", notification: notification %>
-<% else %>
-  <% json_data = notification.json_data %>
-  <% if json_data["organization"] %>
-    <div class="article-organization-headline">
-      <a class="org-headline-filler" href="<%= json_data["organization"]["path"] %>">
-        <img alt="<%= json_data["organization"]["name"] %> logo" src="<%= json_data["organization"]["profile_image_90"] %>">
-        <%= json_data["organization"]["name"] %>
-      </a>
-   </div>
-  <% end %>
-  <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
-    <div class="small-pic">
-      <img src="<%= json_data["user"]["profile_image_90"] %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
-    </div>
-  </a>
-  <div class="content notification-content article-content">
-    <a href="<%= json_data["user"]["path"] %>">
-      <%= json_data["user"]["name"] %>
-    </a>
-    made a new post<%= ":" unless json_data["organization"] %>
-    <% if json_data["organization"] %>
-      under <a href="<%= json_data["organization"]["path"] %>"><%= json_data["organization"]["name"] %></a>:
-    <% end %>
+<div class="crayons-card notification">
+  <% if notification.action == "Reaction" %>
+    <%= render "reaction", notification: notification %>
+  <% elsif notification.action.include? "Milestone" %>
+    <%= render "milestone", notification: notification %>
+  <% else %>
+    <% json_data = notification.json_data %>
+    <%= render "notifications/shared/profile_pic", json_data: json_data %>
 
-    <div>
-      <small><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small>
-    </div>
-
-    <a href="<%= json_data["article"]["path"] %>">
-      <div class="notification-new-post">
-        <div class="notification-new-post-title">
-          <%= h(json_data["article"]["title"]) %>
-        </div>
-        <div class="notification-new-post-tags">
-          <% json_data["article"]["cached_tag_list_array"].each do |tag| %>
-            #<%= tag %>
+    <div class="notification__content">
+      <header class="mb-4">
+        <h2 class="fs-base fw-normal">
+          <a href="<%= json_data["user"]["path"] %>" class="crayons-link fw-bold">
+            <%= json_data["user"]["name"] %>
+          </a>
+          made a new post
+          <% if json_data["organization"] %>
+            under <a href="<%= json_data["organization"]["path"] %>" class="crayons-link fw-bold"><%= json_data["organization"]["name"] %></a>
           <% end %>
-        </div>
-      </div>
-    </a>
+        </h2>
+        <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words json_data["article"]["published_at"] %> ago</small></p>
+      </header>
 
-    <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{json_data['article']['updated_at']}-#{json_data['article']['id']}" do %>
-      <div class="comment-actions">
-        <button class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "like") ? "reacted" : "" %>" data-reactable-id="<%= json_data["article"]["id"] %>" data-category="like" data-reactable-type="Article">
-          <%= image_tag("favorite-heart-outline-button.svg", alt: "Favorite heart outline button") %>
-          <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
-        </button>
-        <button class="reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "readinglist") ? "reacted" : "" %>" data-reactable-id="<%= json_data["article"]["id"] %>" data-category="readinglist" data-reactable-type="Article">
-          <span class="reaction-button-text">SAVE</span>
-          <img class="reacted-emoji reaction-button-reacted-emoji" src="<%= asset_path("readinglist-button.png") %>" alt="Save button" />
-        </button>
-      </div>
-    <% end %>
-  </div>
-<% end %>
+      <article class="notification__preview crayons-card">
+        <a href="<%= json_data["article"]["path"] %>" class="crayons-link block p-3 pb-4">
+          <h3 class="notification__preview__title"><%= h(json_data["article"]["title"]) %></h3>
+          <div class="-ml-1">
+            <% json_data["article"]["cached_tag_list_array"].each do |tag| %>
+              <span class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></span>
+            <% end %>
+          </div>
+        </a>
+
+        <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{json_data['article']['updated_at']}-#{json_data['article']['id']}" do %>
+          <footer class="comment-actions notification__actions">
+            <button
+              class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s reaction-like reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "like") ? "reacted" : "" %>"
+              data-reactable-id="<%= json_data["article"]["id"] %>"
+              data-category="like"
+              data-reactable-type="Article">
+              <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Favorite heart button") %>
+              <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: "Favorite heart button") %>
+              <span class="hidden m:inline-block">Like</span>
+            </button>
+
+            <button
+              class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-right crayons-btn--s reaction-readinglist reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "readinglist") ? "reacted" : "" %>"
+              data-reactable-id="<%= json_data["article"]["id"] %>"
+              data-category="readinglist"
+              data-reactable-type="Article">
+              <span class="reaction-button-text hidden m:inline-block">Save</span>
+              <%= inline_svg_tag("small-save.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Save button") %>
+              <%= inline_svg_tag("small-save-filled.svg", aria: true, class: "crayons-icon reaction-icon--readinglist reaction-icon reacted", title: "Save button") %>
+            </button>
+          </footer>
+        <% end %>
+      </article>
+    </div>
+  <% end %>
+</div>
