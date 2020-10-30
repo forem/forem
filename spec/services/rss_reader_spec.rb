@@ -7,7 +7,6 @@ RSpec.describe RssReader, type: :service, vcr: true, db_strategy: :truncation do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
-  let(:rss_data) { RSS::Parser.parse(HTTParty.get(link).body, false) }
   let!(:rss_reader) { described_class.new }
 
   describe "#get_all_articles" do
