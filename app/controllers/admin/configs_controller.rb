@@ -227,7 +227,8 @@ module Admin
     end
 
     def update_enabled_auth_providers(value)
-      SiteConfig.authentication_providers = value
+      SiteConfig.public_send("authentication_providers=", value.split(",")) unless value.nil? ||
+        value.class.name != "String"
     end
 
     # Validations

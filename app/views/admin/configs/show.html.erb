@@ -162,12 +162,12 @@
                 </p>
 
                 <section>
-                <div class="form-group">
-                  <%= f.text_field :auth_providers_to_enable,
-                                   id: "auth_providers_to_enable",
-                                   class: "form-control",
-                                   value: "facebook, github" %>
-                </div>
+                  <div class="form-group">
+                    <%= f.text_field :auth_providers_to_enable,
+                                     id: "auth_providers_to_enable",
+                                     class: "form-control",
+                                     value: SiteConfig.authentication_providers.join(",") %>
+                  </div>
                   <% authentication_available_providers.each do |provider| %>
                     <section class="config-authentication__item mb-0">
                       <figure class="config-authentication__item--icon">
