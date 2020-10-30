@@ -70,20 +70,19 @@ with Podman. You can install it by following these
 
     2.  For any key that you wish to enter/replace:
 
+        - You do not need "real" keys for basic development. Some features
+          require certain keys, so you may be able to add them as you go.
         - The [backend guide](/backend) will show you how to get free API keys
           for additional services that may be required to run certain parts of
           the app.
         - Obtain the development variable and apply the key you wish to
           enter/replace. i.e.:
 
-    ```shell
-     export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
-     export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
-     export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
-    ```
-
-    - You do not need "real" keys for basic development. Some features require
-      certain keys, so you may be able to add them as you go.
+        ```shell
+        export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+        export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+        export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
+        ```
 
 ## Running Forem with Docker via docker-compose
 
