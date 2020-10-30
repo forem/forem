@@ -1,7 +1,7 @@
 module AdminHelper
   # This is used in app/views/admin/shared/_navbar.html.erb to build the
-  # side navbar in alphabetical order It's also used to display the "menu"
-  # in app/views/admin/admin_portals/index.html.erb.
+  # side navbar in alphabetical order. It's also used to display the "menu"
+  # in app/vews/admin/admin_portals/index.html.erb.
   MENU_ITEMS = [
     { name: "articles",              controller: "articles" },
     { name: "broadcasts",            controller: "broadcasts" },
