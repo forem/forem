@@ -144,7 +144,7 @@
                     <%= f.check_box :invite_only_mode,
                                     checked: SiteConfig.invite_only_mode,
                                     disabled: !SiteConfig.allow_both_email_signup_and_login,
-                                    data: { action: "config#dauthentication_providers_to_enableisableAuthenticationOptions", target: "config.inviteOnlyMode" },
+                                    data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" },
                                     class: "crayons-checkbox #{!SiteConfig.allow_both_email_signup_and_login ? 'cursor-disabled' : ''}" %>
                     <div class="mt-0">
                       <%= admin_config_label :invite_only_mode %>
@@ -166,7 +166,8 @@
                     <%= f.text_field :auth_providers_to_enable,
                                      id: "auth_providers_to_enable",
                                      class: "form-control",
-                                     value: SiteConfig.authentication_providers.join(",") %>
+                                     value: SiteConfig.authentication_providers.join(","),
+                                     readonly: true %>
                   </div>
                   <% authentication_available_providers.each do |provider| %>
                     <section class="config-authentication__item mb-0">
@@ -187,12 +188,14 @@
                             <% end %>
                           </div>
                           <button
-                            class="crayons-btn crayons-btn--secondary"
+                            class="crayons-btn crayons-btn--secondary <%= disable_auth_provider_tooltip_class %>"
                             id="<%= provider.provider_name %>-auth-btn"
                             data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
                             data-action="click->config#enableOrEditAuthProvider"
                             data-auth-provider-enable="<%= provider.provider_name %>"
-                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>">
+                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
+                            data-tooltip="<%= disable_auth_provider_tooltip_content %>"
+                            <%= disable_button_class_auth_provider %>>
                             <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>
@@ -207,6 +210,7 @@
                         </div>
                       </div>
                     </section>
+                    <hr class="my-0" />
                   <% end %>
                 </section>
 
@@ -283,7 +287,7 @@
                               class="crayons-btn crayons-btn--danger <%= disable_email_tooltip_class %>"
                               data-action="click->config#activateEmailAuthModal"
                               data-tooltip="<%= disable_email_tooltip_content %>"
-                              <%= disable_button_class %>>
+                              <%= disable_button_class_email %>>
                               Disable
                             </button>
                              <button

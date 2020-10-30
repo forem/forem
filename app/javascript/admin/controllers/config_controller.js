@@ -42,6 +42,18 @@ export default class ConfigController extends Controller {
     }
   }
 
+  disableAuthenticationOptions() {
+    const disableAllProvidersArray = [];
+    document
+      .querySelectorAll('[data-auth-provider-enable]')
+      .forEach((provider) => {
+        disableAllProvidersArray.push(provider.dataset.authProviderEnable);
+      });
+    document.querySelector(
+      '#auth_providers_to_enable',
+    ).value = disableAllProvidersArray;
+  }
+
   toggleGoogleRecaptchaFields() {
     if (this.requireCaptchaForEmailPasswordRegistrationTarget.checked) {
       recaptchaFields.classList.remove('hidden');

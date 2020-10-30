@@ -38,7 +38,12 @@ module AuthenticationHelper
   end
 
   def disable_auth_provider_tooltip_class
-    !SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1 ? "crayons-tooltip" : ""
+    if (!SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1) ||
+        SiteConfig.invite_only_mode
+      "crayons-tooltip"
+    else
+      ""
+    end
   end
 
   def disable_auth_provider_button_class
@@ -46,15 +51,24 @@ module AuthenticationHelper
   end
 
   def disable_auth_provider_tooltip_content
-    !SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1 ? disable_tooltip_text : ""
+    if (!SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1) ||
+        SiteConfig.invite_only_mode
+      disable_tooltip_text
+    else
+      ""
+    end
   end
 
   def disable_email_tooltip_content
     SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? disable_tooltip_text : ""
   end
 
-  def disable_button_class
+  def disable_button_class_email
     SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "disabled" : ""
+  end
+
+  def disable_button_class_auth_provider
+    SiteConfig.invite_only_mode ? "disabled" : ""
   end
 
   def disable_tooltip_text
