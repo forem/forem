@@ -21,6 +21,11 @@
     align-items: center;
   }
 
+  &__follow {
+    display: flex;
+    justify-content: space-between;
+  }
+
   &__body {
     padding: var(--su-4);
   }

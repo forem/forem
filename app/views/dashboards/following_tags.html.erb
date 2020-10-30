@@ -26,14 +26,21 @@
             <% if tag %>
               <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
               <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
-                <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
-                  <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
-                    <span class="crayons-tag__prefix">#</span><%= tag.name %>
-                  </a>
-                  <% if follow.points < 0 %>
-                    <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>
+                <div class="crayons-card__follow">
+                  <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
+                    <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
+                      <span class="crayons-tag__prefix">#</span><%= tag.name %>
+                    </a>
+                    <% if follow.points < 0 %>
+                      <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>
+                    <% end %>
+                  </h3>
+                  <%= form_for(follow, html: { method: :delete }) do %>
+                    <button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s">
+                      <%= inline_svg_tag("cancel.svg", class: "crayons-icon", aria: true, title: "Unfollow", height: 16, width: 16) %>
+                    </button>
                   <% end %>
-                </h3>
+                </div>
 
                 <p class="grid-cell__summary truncate-at-3 mb-4 fs-s">
                   <%= strip_tags(tag.short_summary) %>
