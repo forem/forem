@@ -2,6 +2,8 @@ module AdminHelper
   # This is used in app/views/admin/shared/_navbar.html.erb to build the
   # side navbar in alphabetical order. It's also used to display the "menu"
   # in app/vews/admin/admin_portals/index.html.erb.
+  # If you add an item before "config", please update the insert call in
+  # admin_menu_items below.
   MENU_ITEMS = [
     { name: "articles",              controller: "articles" },
     { name: "broadcasts",            controller: "broadcasts" },
@@ -32,16 +34,13 @@ module AdminHelper
     { name: "vault secrets",         controller: "secrets" },
     { name: "webhooks",              controller: "webhook_endpoints" },
     { name: "welcome",               controller: "welcome" },
-  ].freeze
+  ].sort_by { |menu_item| menu_item[:name] }
 
   PROFILE_ADMIN = { name: "config: profile setup", controller: "profile_fields" }.freeze
 
   def admin_menu_items
-    menu_items = if Flipper.enabled?(:profile_admin)
-                   MENU_ITEMS.dup << PROFILE_ADMIN
-                 else
-                   MENU_ITEMS
-                 end
-    menu_items.sort_by { |menu_item| menu_item[:name] }
+    return MENU_ITEMS unless Flipper.enabled?(:profile_admin)
+
+    MENU_ITEMS.dup.insert(7, PROFILE_ADMIN)
   end
 end
