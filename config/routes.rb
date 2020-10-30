@@ -256,7 +256,6 @@ Rails.application.routes.draw do
         post "/update_or_create", to: "github_repos#update_or_create"
       end
     end
-    resources :buffered_articles, only: [:index]
     resources :events, only: %i[index show]
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
