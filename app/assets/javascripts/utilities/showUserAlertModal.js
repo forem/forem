@@ -1,18 +1,16 @@
 /**
- * Displays a general purpose user alert modal with a title, body text, confirmation button, and explanation link.
+ * Displays a general purpose user alert modal with a title, body text, and confirmation button.
  *
  * @function showUserAlertModal
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
  * @param {string} confirm_text Text of the confirmation button
- * @param {string} link URL location for the 'more information' link 
- * @param {string} link_text Text description of the 'more information' link
  * 
  * @example 
  * showUserAlertModal('Warning', 'You must wait', 'OK', '/faq/why-must-i-wait', 'Why must I wait?');
  */
-function showUserAlertModal(title, text, confirm_text, link, link_text) {
-  let modalDiv = buildModalDiv(title, text, confirm_text, link, link_text);
+function showUserAlertModal(title, text, confirm_text) {
+  let modalDiv = buildModalDiv(title, text, confirm_text);
   toggleUserAlertModal();
 }
 /**
@@ -50,12 +48,10 @@ const modalId = 'user-alert-modal';
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
  * @param {string} confirm_text Text of the confirmation button
- * @param {string} link URL location for the 'more information' link 
- * @param {string} link_text Text description of the 'more information' link
  * 
  * @returns {string} HTML for the modal
  */
-const modalHTML = (title, text, confirm_text, link, link_text) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal hidden">
+const modalHTML = (title, text, confirm_text) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal hidden">
     <div role="dialog" aria-modal="true" class="crayons-modal__box">
       <div class="crayons-modal__box__header">
         <h2>${title}</h2>
@@ -74,7 +70,6 @@ const modalHTML = (title, text, confirm_text, link, link_text) => `<div id="${mo
         <p>${text}</p>
         </br>
         <button class="crayons-btn crayons-btn--icon" type="button" onClick="toggleUserAlertModal();">${confirm_text}</button>
-        <a href="${link}" onClick="toggleUserAlertModal();">${link_text}</button>
       </div>
     </div>
     <div data-testid="modal-overlay" class="crayons-modal__overlay"></div>
@@ -119,15 +114,13 @@ function toggleUserAlertModal() {
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
  * @param {string} confirm_text Text of the confirmation button
- * @param {string} link URL location for the 'more information' link 
- * @param {string} link_text Text description of the 'more information' link
  * 
  * @returns {Element} DOM node of the inserted alert modal
  */
-function buildModalDiv(title, text, confirm_text, link, link_text) {
+function buildModalDiv(title, text, confirm_text) {
   let modalDiv = document.getElementById(modalId);
   if (!modalDiv) {
-    modalDiv = buildModalHTML(title, text, confirm_text, link, link_text);
+    modalDiv = buildModalHTML(title, text, confirm_text);
     document.body.appendChild(modalDiv);
   }
   return modalDiv;
@@ -142,13 +135,11 @@ function buildModalDiv(title, text, confirm_text, link, link_text) {
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
  * @param {string} confirm_text Text of the confirmation button
- * @param {string} link URL location for the 'more information' link 
- * @param {string} link_text Text description of the 'more information' link
  * 
  * @returns {Element} DOM node of alert modal with formatted text
  */
-function buildModalHTML(title, text, confirm_text, link, link_text) {
+function buildModalHTML(title, text, confirm_text) {
   let wrapper = document.createElement('div');
-  wrapper.innerHTML= modalHTML(title, text, confirm_text, link, link_text);
+  wrapper.innerHTML= modalHTML(title, text, confirm_text);
   return wrapper.firstChild;
 }
