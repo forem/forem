@@ -2,7 +2,6 @@
 
 .crayons-header {
   --indicator-outline: var(--header-bg);
-  --dropdown-display: none;
 
   height: var(--header-height);
   background: var(--header-bg);
@@ -95,6 +94,11 @@
   display: flex;
   align-items: center;
   z-index: 20;
+
+  @media (min-width: $breakpoint-s) {
+    perspective: 1000px;
+  }
+
   &__trigger {
     all: unset;
     padding: var(--su-1);
@@ -105,14 +109,26 @@
   }
 
   &__dropdown {
-    display: var(--dropdown-display);
+    transform-style: preserve-3d;
     top: var(--header-height);
+    transform-origin: top right;
+    transition: all var(--transition-props);
+    transition-delay: var(--dropdown-delay, 0.25s);
+    transform: var(
+      --dropdown-transform,
+      translateY(calc(1 * var(--su-1))) rotateX(-10deg)
+    );
+    opacity: var(--dropdown-opacity, 0);
+    visibility: var(--dropdown-visibility, hidden);
   }
 
   &.showing,
   &.desktop:hover,
   &.desktop:focus {
-    --dropdown-display: block;
+    --dropdown-transform: translateY(0) rotateX(0);
+    --dropdown-delay: 0;
+    --dropdown-opacity: 1;
+    --dropdown-visibility: visible;
 
     .crayons-header__menu__trigger {
       color: var(--header-icons-color-hover);
