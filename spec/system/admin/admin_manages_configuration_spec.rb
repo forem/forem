@@ -32,7 +32,7 @@ RSpec.describe "Admin manages configuration", type: :system do
       allow(SiteConfig).to receive(:suggested_users).and_return(nil)
       allow(SiteConfig).to receive(:suggested_tags).and_return(nil)
       visit root_path
-      expect(page.body).to match(/Setup not completed yet, missing(.*)logo png(.*), and others/)
+      expect(page.body).to include("Setup not completed yet, missing suggested tags and suggested users.")
     end
   end
 end
