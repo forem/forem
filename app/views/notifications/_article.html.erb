@@ -22,7 +22,7 @@
       </header>
 
       <article class="notification__preview crayons-card">
-        <a href="<%= json_data["article"]["path"] %>" class="crayons-link block p-3 pb-4">
+        <a href="<%= json_data["article"]["path"] %>" class="crayons-link block notification__preview__inner">
           <h3 class="notification__preview__title"><%= h(json_data["article"]["title"]) %></h3>
           <div class="-ml-1">
             <% json_data["article"]["cached_tag_list_array"].each do |tag| %>
