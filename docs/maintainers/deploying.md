@@ -5,8 +5,8 @@ title: Deployment Guide
 # Deploying Forem
 
 Anyone with the ability to merge PRs on GitHub can deploy the application.
-Whenever a PR is merged the code is deployed. When deploying complex code, be
-sure that other team members are around to help if something goes wrong.
+**Whenever a PR is merged the code is deployed. When deploying complex code, be
+sure that other team members are around to help if something goes wrong.**
 
 Generally, it's a good idea to keep the SRE team in the loop on high risk
 deploys. However, deployments are our collective responsibility, so it's
