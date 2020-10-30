@@ -1,0 +1,47 @@
+module AdminHelper
+  # This is used in app/views/admin/shared/_navbar.html.erb to build the
+  # side navbar in alphabetical order It's also used to display the "menu"
+  # in app/views/admin/admin_portals/index.html.erb.
+  MENU_ITEMS = [
+    { name: "articles",              controller: "articles" },
+    { name: "broadcasts",            controller: "broadcasts" },
+    { name: "badges",                controller: "badges" },
+    { name: "badge_achievements",    controller: "badge_achievements" },
+    { name: "chat_channels",         controller: "chat_channels" },
+    { name: "comments",              controller: "comments" },
+    { name: "config",                controller: "config" },
+    { name: "display_ads",           controller: "display_ads" },
+    { name: "events",                controller: "events" },
+    { name: "growth",                controller: "growth" },
+    { name: "html_variants",         controller: "html_variants" },
+    { name: "listings",              controller: "listings" },
+    { name: "moderator_actions",     controller: "moderator_actions" },
+    { name: "mods",                  controller: "mods" },
+    { name: "navigation_links",      controller: "navigation_links" },
+    { name: "privileged_reactions",  controller: "privileged_reactions" },
+    { name: "organizations",         controller: "organizations" },
+    { name: "pages",                 controller: "pages" },
+    { name: "permissions",           controller: "permissions" },
+    { name: "podcasts",              controller: "podcasts" },
+    { name: "reports",               controller: "reports" },
+    { name: "response_templates",    controller: "response_templates" },
+    { name: "sponsorships",          controller: "sponsorships" },
+    { name: "tags",                  controller: "tags" },
+    { name: "tools",                 controller: "tools" },
+    { name: "users",                 controller: "users" },
+    { name: "vault secrets",         controller: "secrets" },
+    { name: "webhooks",              controller: "webhook_endpoints" },
+    { name: "welcome",               controller: "welcome" },
+  ].freeze
+
+  PROFILE_ADMIN = { name: "config: profile setup", controller: "profile_fields" }.freeze
+
+  def admin_menu_items
+    menu_items = if Flipper.enabled?(:profile_admin)
+                   MENU_ITEMS.dup << PROFILE_ADMIN
+                 else
+                   MENU_ITEMS
+                 end
+    menu_items.sort_by { |menu_item| menu_item[:name] }
+  end
+end
