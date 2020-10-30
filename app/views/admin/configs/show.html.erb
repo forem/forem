@@ -137,19 +137,17 @@
             <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
               <section class="mb-6">
                 <h3 class="crayons-subtitle-3 mb-3">
-                  General
+                  General settings
                 </h3>
-                <div class="form-group">
-                  <div class="crayons-field--checkbox">
-                    <%= f.check_box :invite_only_mode,
-                                    checked: SiteConfig.invite_only_mode,
-                                    disabled: !SiteConfig.allow_both_email_signup_and_login,
-                                    data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" },
-                                    class: "crayons-checkbox mt-2 #{!SiteConfig.allow_both_email_signup_and_login ? 'cursor-disabled' : ''}" %>
-                    <div>
-                      <%= admin_config_label :invite_only_mode %>
-                      <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
-                    </div>
+                <div class="crayons-field crayons-field--checkbox <%= !SiteConfig.allow_both_email_signup_and_login ? 'crayons-tooltip' : '' %>" data-tooltip="<%= !SiteConfig.allow_both_email_signup_and_login ? 'To enable this, you must first enable Email Address as a registration option' : '' %>">
+                  <%= f.check_box :invite_only_mode,
+                                  checked: SiteConfig.invite_only_mode,
+                                  disabled: !SiteConfig.allow_both_email_signup_and_login,
+                                  data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" },
+                                  class: "crayons-checkbox #{!SiteConfig.allow_both_email_signup_and_login ? 'crayons-checkox--disabled' : ''}" %>
+                  <div class="mt-0">
+                    <%= admin_config_label :invite_only_mode, "Invite-only mode" %>
+                    <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
                   </div>
                 </div>
               </section>
@@ -169,6 +167,7 @@
                   </figure>
                   <div class="config-authentication__item--container">
                     <div class="flex items-center justify-between">
+
                       <div>
                         <p class="config-authentication__item--label fw-medium <%= SiteConfig.allow_both_email_signup_and_login ? "pb-0" : "" %>">
                           Email address
@@ -180,6 +179,7 @@
                           </div>
                         <% end %>
                       </div>
+
                       <button
                         class="crayons-btn crayons-btn--secondary"
                         data-button-text="<%= SiteConfig.allow_both_email_signup_and_login ? "edit" : "enable" %>"
@@ -187,6 +187,7 @@
                         data-action="click->config#enableOrEditEmailAuthSettings">
                         <%= SiteConfig.allow_both_email_signup_and_login ? "Edit" : "Enable" %>
                       </button>
+
                     </div>
                     <div id="email-auth-settings-section" class="config-authentication__item--body hidden">
                       <fieldset class="config-authentication-form">
