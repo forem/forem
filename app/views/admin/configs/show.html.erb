@@ -161,65 +161,12 @@
                   How can people create an account on your community?
                 </p>
 
-                <section>
-                  <div class="form-group">
-                    <%= f.text_field :auth_providers_to_enable,
-                                     id: "auth_providers_to_enable",
-                                     class: "form-control hidden",
-                                     value: SiteConfig.authentication_providers.join(","),
-                                     readonly: true %>
-                  </div>
-                  <% authentication_available_providers.each do |provider| %>
-                    <section class="config-authentication__item mb-0">
-                      <figure class="config-authentication__item--icon">
-                        <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
-                      </figure>
-                      <div class="config-authentication__item--container">
-                        <div class="config-authentication__item mb-0 flex items-baseline justify-between">
-                          <div>
-                            <p class="config-authentication__item--label fw-medium <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
-                              <%= provider.official_name %>
-                            </p>
-                            <% if authentication_enabled_providers.include?(provider) %>
-                              <div class="mb-5 flex items-center">
-                                <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
-                                <small class="crayons-field__description ml-1">Enabled</small>
-                              </div>
-                            <% end %>
-                          </div>
-                          <button
-                            class="crayons-btn crayons-btn--secondary <%= auth_provider_enable_btn_tooltip_class %>"
-                            id="<%= provider.provider_name %>-auth-btn"
-                            data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
-                            data-action="click->config#enableOrEditAuthProvider"
-                            data-auth-provider-enable="<%= provider.provider_name %>"
-                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
-                            data-tooltip="<%= enable_disable_btn_tooltip_text %>"
-                            <%= auth_provider_enable_btn_disable_class %>>
-                            <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
-                          </button>
-                        </div>
-                        <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
-                          <fieldset class="config-authentication-form">
-                            <%= render partial: "auth_provider_settings",
-                                       locals: {
-                                         f: f,
-                                         provider: provider
-                                       } %>
-                          </fieldset>
-                        </div>
-                      </div>
-                    </section>
-                    <hr class="my-0" />
-                  <% end %>
-                </section>
-
-                <section class="config-authentication__item">
+                <section class="config-authentication__item mb-0">
                   <figure class="config-authentication__item--icon">
                     <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Email icon") %>
                   </figure>
                   <div class="config-authentication__item--container">
-                    <div class="config-authentication__item flex items-baseline justify-between">
+                    <div class="config-authentication__item flex items-baseline justify-between mb-0">
                       <div>
                         <p class="config-authentication__item--label fw-medium <%= SiteConfig.allow_both_email_signup_and_login ? "pb-0" : "" %>">
                           Email address
@@ -306,6 +253,60 @@
                       </fieldset>
                     </div>
                   </div>
+                </section>
+                <hr class="my-0" />
+
+                <section class="mb-6">
+                  <div class="form-group mb-0">
+                    <%= f.text_field :auth_providers_to_enable,
+                                     id: "auth_providers_to_enable",
+                                     class: "form-control hidden",
+                                     value: SiteConfig.authentication_providers.join(","),
+                                     readonly: true %>
+                  </div>
+                  <% authentication_available_providers.each do |provider| %>
+                    <section class="config-authentication__item mb-0">
+                      <figure class="config-authentication__item--icon">
+                        <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
+                      </figure>
+                      <div class="config-authentication__item--container">
+                        <div class="config-authentication__item mb-0 flex items-baseline justify-between">
+                          <div>
+                            <p class="config-authentication__item--label fw-medium <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
+                              <%= provider.official_name %>
+                            </p>
+                            <% if authentication_enabled_providers.include?(provider) %>
+                              <div class="mb-5 flex items-center">
+                                <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                                <small class="crayons-field__description ml-1">Enabled</small>
+                              </div>
+                            <% end %>
+                          </div>
+                          <button
+                            class="crayons-btn crayons-btn--secondary <%= auth_provider_enable_btn_tooltip_class %>"
+                            id="<%= provider.provider_name %>-auth-btn"
+                            data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
+                            data-action="click->config#enableOrEditAuthProvider"
+                            data-auth-provider-enable="<%= provider.provider_name %>"
+                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
+                            data-tooltip="<%= enable_disable_btn_tooltip_text %>"
+                            <%= auth_provider_enable_btn_disable_class %>>
+                            <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
+                          </button>
+                        </div>
+                        <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
+                          <fieldset class="config-authentication-form">
+                            <%= render partial: "auth_provider_settings",
+                                       locals: {
+                                         f: f,
+                                         provider: provider
+                                       } %>
+                          </fieldset>
+                        </div>
+                      </div>
+                    </section>
+                    <hr class="my-0" />
+                  <% end %>
                 </section>
               </section>
               <div class="crayons-notice crayons-notice--info mb-4">
