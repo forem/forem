@@ -19,6 +19,10 @@ module AuthenticationHelper
     Authentication::Providers.enabled_for_user(user)
   end
 
+  def available_providers_array
+    Authentication::Providers.available.map(&:to_s)
+  end
+
   def recaptcha_configured_and_enabled?
     SiteConfig.recaptcha_secret_key.present? &&
       SiteConfig.recaptcha_site_key.present? &&

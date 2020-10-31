@@ -89,11 +89,6 @@ module Admin
         display_jobs_banner
       ].freeze
 
-    ALLOWED_EMPTY_ENUMERABLES =
-      %i[
-        authentication_providers
-      ].freeze
-
     ALLOWED_PARAMS =
       %i[
         ga_tracking_id
@@ -227,12 +222,20 @@ module Admin
     end
 
     def update_enabled_auth_providers(value)
-      SiteConfig.public_send("authentication_providers=", value.split(",")) unless value.nil? ||
-        value.class.name != "String" || prevent_all_auth_provider_disable?(value)
+      final_array = []
+      value.split(",").each do |entry|
+        final_array.push(entry) unless invalid_provider_entry(entry)
+      end
+      SiteConfig.public_send("authentication_providers=", final_array) unless
+        prevent_all_auth_provider_disable?(final_array)
+    end
+
+    def invalid_provider_entry(entry)
+      entry.blank? || helpers.available_providers_array.exclude?(entry)
     end
 
     def prevent_all_auth_provider_disable?(value)
-      value.blank? && !SiteConfig.allow_email_password_login
+      value.empty? && !SiteConfig.allow_email_password_login
     end
 
     # Validations

@@ -28,6 +28,16 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
+  describe "#available_providers_array" do
+    it "returns array of available providers in lowercase" do
+      provider = Authentication::Providers.available.first
+      allow(Authentication::Providers).to receive(:available).and_return([provider])
+
+      expected_result = provider.to_s
+      expect(helper.available_providers_array).to match_array([expected_result])
+    end
+  end
+
   describe "#recaptcha_configured_and_enabled?" do
     context "when recaptcha is enabled" do
       before do
