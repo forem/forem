@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.1"
+  version: "0.9.2"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -1104,6 +1104,49 @@ components:
           type: string
           description: Profile image (90x90)
 
+    Organization:
+      description: Organization
+      type: object
+      properties:
+        type_of:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        summary:
+          type: string
+          nullable: true
+        twitter_username:
+          type: string
+          nullable: true
+        github_username:
+          type: string
+          nullable: true
+        url:
+          type: string
+          format: url
+        location:
+          type: string
+          nullable: true
+        tech_stack:
+          type: string
+          nullable: true
+        tag_line:
+          type: string
+          nullable: true
+        story:
+          type: string
+          nullable: true
+        joined_at:
+          description: Date of joining
+          type: string
+          format: date-time
+        profile_image:
+          type: string
+          description: Profile image (640x640)
+          format: url
+
   examples:
     ErrorBadRequest:
       value:
@@ -1667,6 +1710,22 @@ components:
         profile_image: https://res.cloudinary.com/...jpeg
         profile_image_90: https://res.cloudinary.com/...jpeg
 
+    Organization:
+      value:
+        type_of: organization
+        username: ecorp
+        name: E Corp
+        summary: Together we can change the world, with E Corp
+        twitter_username: ecorp
+        github_username: ecorp
+        url: https://ecorp.internet
+        location: New York
+        joined_at: '2019-10-24T13:41:29Z'
+        tech_stack: Ruby
+        tag_line: 
+        story:
+        profile_image: https://res.cloudinary.com/...jpeg
+
 tags:
   - name: articles
     description: Articles are all the posts users create on DEV
@@ -1678,6 +1737,8 @@ tags:
     description: Users can follow other users on the website
   - name: listings
     description: Listings are classified ads
+  - name: organizations
+    description: Users can create and join organizations
   - name: podcast-episodes
     description: Podcast episodes
   - name: readinglist
@@ -2919,6 +2980,48 @@ paths:
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/readinglist
+
+  /organizations/{org_username}:
+    get:
+      operationId: getOrganization
+      summary: An organization
+      description: |
+        This endpoint allows the client to retrieve a single organization by their username
+      tags:
+        - organizations
+      parameters:
+        - name: org_username
+          in: path
+          required: true
+          description: |
+            Username of the organization
+          schema:
+            type: string
+          example: "ecorp"
+      responses:
+        "200":
+          description: An organization
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+              examples:
+                user-success:
+                  $ref: "#/components/examples/Organization"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                user-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/organizations/ecorp
 
   /podcast_episodes:
     get:

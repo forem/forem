@@ -2,6 +2,7 @@
   position: relative;
 
   &:after {
+    all: unset;
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
@@ -19,13 +20,18 @@
     transform: translateY(var(--su-1));
     opacity: 0;
     transition: all var(--transition-props);
+    text-align: left;
+    transition-delay: 250ms;
     z-index: var(--z-popover);
   }
 
   &:hover {
+    z-index: var(--z-popover);
+    
     &:after {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(calc(-1 * var(--su-1)));
+      transition-delay: 0s;
     }
   }
 }

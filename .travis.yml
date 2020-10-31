@@ -91,5 +91,3 @@ jobs:
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
           master: practicaldev
-        on:
-          condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]

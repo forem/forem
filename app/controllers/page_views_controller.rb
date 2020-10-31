@@ -32,7 +32,7 @@ class PageViewsController < ApplicationMetalController
   private
 
   def update_article_page_views
-    return if Rails.env.production? && rand(15) != 1 # We don't need to update the article page views every time.
+    return if skip_page_view_update?
 
     @article = Article.find(page_view_params[:article_id])
     new_page_views_count = @article.page_views.sum(:counts_for_number_of_views)
@@ -46,7 +46,7 @@ class PageViewsController < ApplicationMetalController
   end
 
   def update_organic_page_views
-    return if Rails.env.production? && rand(100) != 1 # We need to do this operation only once in a while.
+    return if skip_organic_page_view_update?
 
     page_views_from_google_com = @article.page_views.where(referrer: "https://www.google.com/")
 
@@ -63,5 +63,15 @@ class PageViewsController < ApplicationMetalController
     organic_count_past_month_count = page_views_from_google_com
       .where("created_at > ?", 1.month.ago).sum(:counts_for_number_of_views)
     @article.update_column(:organic_page_views_past_month_count, organic_count_past_month_count)
+  end
+
+  def skip_page_view_update?
+    # We don't need to update the article page views every time.
+    rand(15) != 1
+  end
+
+  def skip_organic_page_view_update?
+    # We need to do this operation only once in a while.
+    rand(100) != 1
   end
 end

@@ -245,10 +245,12 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates logo_png" do
+          expected_default_image_url = URL.local_image("icon.png")
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/admin/config", params: { site_config: { logo_png: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.logo_png).to eq(expected_image_url)
+          expect do
+            post "/admin/config", params: { site_config: { logo_png: expected_image_url },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :logo_png).from(expected_default_image_url).to(expected_image_url)
         end
 
         it "updates logo_svg" do
@@ -307,10 +309,12 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates mascot_image_url" do
+          expected_default_image_url = URL.local_image("mascot.png")
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
+          expect do
+            post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :mascot_image_url).from(expected_default_image_url).to(expected_image_url)
         end
 
         it "updates mascot_footer_image_url" do
