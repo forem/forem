@@ -140,7 +140,7 @@ module Admin
 
       config_params.each do |key, value|
         if key == "auth_providers_to_enable"
-          update_enabled_auth_providers(value)
+          update_enabled_auth_providers(value) unless value.class.name != "String"
         elsif value.is_a?(Array)
           SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
         elsif value.respond_to?(:to_h)
