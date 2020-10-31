@@ -54,4 +54,55 @@ RSpec.describe AuthenticationHelper, type: :helper do
       expect(recaptcha_configured_and_enabled?).to be(false)
     end
   end
+
+  describe "tooltip classes, attributes and content" do
+    context "when invite-only-mode enabled and no enabled auth providers" do
+      before do
+        allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
+        allow(SiteConfig).to receive(:authentication_providers).and_return([])
+      end
+
+      it "returns 'crayons-tooltip' class for relevant helpers" do
+        expect(auth_provider_enable_btn_tooltip_class).to eq("crayons-tooltip")
+        expect(email_auth_disable_btn_tooltip_class).to eq("crayons-tooltip")
+      end
+
+      it "returns 'disabled' attribute for relevant helper" do
+        expect(auth_provider_enable_btn_disable_class).to eq("disabled")
+        expect(email_auth_disable_btn_disable_class).to eq("disabled")
+      end
+
+      it "returns appropriate text for 'enable_disable_btn_tooltip_text' helper" do
+        invite_only_mode_warning = "You cannot do this until you disable Invite Only Mode"
+        only_one_auth_method_warning = "You cannot do this until you enable at least one other registration option"
+
+        expect(enable_disable_btn_tooltip_text).to eq(invite_only_mode_warning)
+
+        allow(SiteConfig).to receive(:invite_only_mode).and_return(false)
+
+        expect(enable_disable_btn_tooltip_text).to eq(only_one_auth_method_warning)
+      end
+    end
+
+    context "when email login enabled and one enabled auth provider" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
+        allow(SiteConfig).to receive(:authentication_providers).and_return(["facebook"])
+      end
+
+      it "returns 'crayons-tooltip' class for relevant helpers" do
+        expect(auth_provider_disable_btn_tooltip_class).to eq("crayons-tooltip")
+      end
+
+      it "returns 'disabled' attribute for relevant helper" do
+        expect(auth_provider_disable_btn_disable_class).to eq("disabled")
+      end
+
+      it "returns appropriate text for 'enable_disable_btn_tooltip_text' helper" do
+        only_one_auth_method_warning = "You cannot do this until you enable at least one other registration option"
+
+        expect(enable_disable_btn_tooltip_text).to eq(only_one_auth_method_warning)
+      end
+    end
+  end
 end

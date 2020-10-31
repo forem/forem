@@ -24,6 +24,8 @@ export default class ConfigController extends Controller {
     'requireCaptchaForEmailPasswordRegistration',
   ];
 
+  // GENERAL FUNCTIONS START
+
   disableTargetField(event) {
     const targetElementName = event.target.dataset.disableTarget;
     const targetElement = this[`${targetElementName}Target`];
@@ -42,17 +44,23 @@ export default class ConfigController extends Controller {
     }
   }
 
-  disableAuthenticationOptions() {
-    const disableAllProvidersArray = [];
-    document
-      .querySelectorAll('[data-auth-provider-enable]')
-      .forEach((provider) => {
-        disableAllProvidersArray.push(provider.dataset.authProviderEnable);
-      });
-    document.querySelector(
-      '#auth_providers_to_enable',
-    ).value = disableAllProvidersArray;
+  closeAdminConfigModal() {
+    this.configModalAnchorTarget.innerHTML = '';
+    document.body.style.height = 'inherit';
+    document.body.style.overflowY = 'inherit';
   }
+
+  positionModalOnPage() {
+    if (document.querySelector('.crayons-modal')) {
+      window.scrollTo(0, 0);
+      document.body.style.height = '100vh';
+      document.body.style.overflowY = 'hidden';
+    }
+  }
+
+  // GENERAL FUNCTIONS END
+
+  // EMAIL AUTH FUNCTIONS START
 
   toggleGoogleRecaptchaFields() {
     if (this.requireCaptchaForEmailPasswordRegistrationTarget.checked) {
@@ -77,14 +85,6 @@ export default class ConfigController extends Controller {
     emailAuthSettingsSection.classList.add('hidden');
   }
 
-  positionModalOnPage() {
-    if (document.querySelector('.crayons-modal')) {
-      window.scrollTo(0, 0);
-      document.body.style.height = '100vh';
-      document.body.style.overflowY = 'hidden';
-    }
-  }
-
   activateEmailAuthModal(event) {
     event.preventDefault();
     this.configModalAnchorTarget.innerHTML = adminModal(
@@ -98,12 +98,6 @@ export default class ConfigController extends Controller {
     this.positionModalOnPage();
   }
 
-  closeAdminConfigModal() {
-    this.configModalAnchorTarget.innerHTML = '';
-    document.body.style.height = 'inherit';
-    document.body.style.overflowY = 'inherit';
-  }
-
   disableEmailAuthFromModal() {
     event.preventDefault();
     emailSigninAndLoginCheckbox.checked = false;
@@ -115,6 +109,10 @@ export default class ConfigController extends Controller {
     emailSigninAndLoginCheckbox.checked = false;
     this.hideEmailAuthSettings();
   }
+
+  // EMAIL AUTH FUNCTIONS END
+
+  // AUTH PROVIDERS FUNCTIONS START
 
   enableOrEditAuthProvider() {
     event.preventDefault();
@@ -194,4 +192,18 @@ export default class ConfigController extends Controller {
       '#auth_providers_to_enable',
     ).value = enabledProviderArray;
   }
+
+  disableAuthenticationOptions() {
+    const disableAllProvidersArray = [];
+    document
+      .querySelectorAll('[data-auth-provider-enable]')
+      .forEach((provider) => {
+        disableAllProvidersArray.push(provider.dataset.authProviderEnable);
+      });
+    document.querySelector(
+      '#auth_providers_to_enable',
+    ).value = disableAllProvidersArray;
+  }
+
+  // AUTH PROVIDERS FUNCTIONS END
 }

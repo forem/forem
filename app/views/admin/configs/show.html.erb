@@ -165,7 +165,7 @@
                   <div class="form-group">
                     <%= f.text_field :auth_providers_to_enable,
                                      id: "auth_providers_to_enable",
-                                     class: "form-control",
+                                     class: "form-control hidden",
                                      value: SiteConfig.authentication_providers.join(","),
                                      readonly: true %>
                   </div>
