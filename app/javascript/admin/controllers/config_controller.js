@@ -70,7 +70,7 @@ export default class ConfigController extends Controller {
     }
   }
 
-  enableOrEditEmailAuthSettings() {
+  enableOrEditEmailAuthSettings(event) {
     event.preventDefault();
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
       emailSigninAndLoginCheckbox.checked = true;
@@ -79,7 +79,7 @@ export default class ConfigController extends Controller {
     emailAuthSettingsSection.classList.remove('hidden');
   }
 
-  hideEmailAuthSettings() {
+  hideEmailAuthSettings(event) {
     event.preventDefault();
     this.emailAuthSettingsBtnTarget.classList.remove('hidden');
     emailAuthSettingsSection.classList.add('hidden');
@@ -98,13 +98,13 @@ export default class ConfigController extends Controller {
     this.positionModalOnPage();
   }
 
-  disableEmailAuthFromModal() {
+  disableEmailAuthFromModal(event) {
     event.preventDefault();
     emailSigninAndLoginCheckbox.checked = false;
     this.closeAdminConfigModal();
   }
 
-  disableEmailAuth() {
+  disableEmailAuth(event) {
     event.preventDefault();
     emailSigninAndLoginCheckbox.checked = false;
     this.hideEmailAuthSettings();
@@ -114,7 +114,7 @@ export default class ConfigController extends Controller {
 
   // AUTH PROVIDERS FUNCTIONS START
 
-  enableOrEditAuthProvider() {
+  enableOrEditAuthProvider(event) {
     event.preventDefault();
     if (event.target.dataset.buttonText === 'enable') {
       event.target.setAttribute('data-enable-auth', 'true');
@@ -127,7 +127,7 @@ export default class ConfigController extends Controller {
     event.target.classList.add('hidden');
   }
 
-  disableAuthProvider() {
+  disableAuthProvider(event) {
     event.preventDefault();
     const authEnableButton = document.querySelector(
       `[data-auth-provider-enable="${event.target.dataset.authProvider}"]`,
@@ -162,7 +162,7 @@ export default class ConfigController extends Controller {
     this.positionModalOnPage();
   }
 
-  disableAuthProviderFromModal() {
+  disableAuthProviderFromModal(event) {
     event.preventDefault();
     const authEnableButton = document.querySelector(
       `[data-auth-provider-enable="${event.target.dataset.authProvider}"]`,
@@ -172,7 +172,7 @@ export default class ConfigController extends Controller {
     this.closeAdminConfigModal();
   }
 
-  hideAuthProviderSettings() {
+  hideAuthProviderSettings(event) {
     event.preventDefault();
     const provider = event.target.dataset.authProvider;
     document
