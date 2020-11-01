@@ -1,5 +1,13 @@
 @import '../config/import';
 
+.crayons-page-header {
+  padding: var(--su-3) var(--su-3) var(--su-1);
+
+  @media (min-width: $breakpoint-m) {
+    padding: 0;
+  }
+}
+
 .crayons-title,
 .crayons-subtitle-1,
 .crayons-subtitle-2,
@@ -33,7 +41,4 @@
 
 .crayons-subtitle-3 {
   font-size: var(--fs-base);
-  @media (min-width: $breakpoint-s) {
-    font-size: var(--fs-l);
-  }
 }

@@ -31,7 +31,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     end
 
     it "returns feed when feed_strategy is basic" do
-      SiteConfig.feed_strategy = "basic"
+      allow(SiteConfig).to receive(:feed_strategy).and_return("basic")
       get "/stories/feed"
       expect(response_article).to include(
         "id" => article.id,
@@ -45,7 +45,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     end
 
     it "returns feed when feed_strategy is optimized" do
-      SiteConfig.feed_strategy = "optimized"
+      allow(SiteConfig).to receive(:feed_strategy).and_return("optimized")
       get "/stories/feed"
       expect(response_article).to include(
         "id" => article.id,
@@ -128,7 +128,7 @@ RSpec.describe "Stories::Feeds", type: :request do
       end
 
       it "sets a field test when feed_strategy is optimized" do
-        SiteConfig.feed_strategy = "optimized"
+        allow(SiteConfig).to receive(:feed_strategy).and_return("optimized")
         expect do
           get "/stories/feed"
         end.to change(user.field_test_memberships, :count).by(1)
@@ -138,14 +138,14 @@ RSpec.describe "Stories::Feeds", type: :request do
       end
 
       it "does not set a field test when feed_strategy is basic" do
-        SiteConfig.feed_strategy = "basic"
+        allow(SiteConfig).to receive(:feed_strategy).and_return("basic")
         expect do
           get "/stories/feed"
         end.not_to change(user.field_test_memberships, :count)
       end
 
       it "returns feed when feed_strategy is basic" do
-        SiteConfig.feed_strategy = "basic"
+        allow(SiteConfig).to receive(:feed_strategy).and_return("basic")
         get "/stories/feed"
         expect(response_article).to include(
           "id" => article.id,
@@ -159,7 +159,7 @@ RSpec.describe "Stories::Feeds", type: :request do
       end
 
       it "returns feed when feed_strategy is optimized" do
-        SiteConfig.feed_strategy = "optimized"
+        allow(SiteConfig).to receive(:feed_strategy).and_return("optimized")
         get "/stories/feed"
         expect(response_article).to include(
           "id" => article.id,

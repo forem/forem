@@ -1,0 +1,37 @@
+.crayons-tooltip[data-tooltip] {
+  position: relative;
+
+  &:after {
+    all: unset;
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: var(--base-a90);
+    color: var(--base-inverted);
+    font-size: var(--fs-s);
+    padding: var(--su-2) var(--su-3);
+    max-width: 256px;
+    width: max-content;
+    border-radius: var(--radius);
+    font-family: var(--ff-sans-serif);
+    font-weight: var(--fw-normal);
+    line-height: var(--lh-tight);
+    transform: translateY(var(--su-1));
+    opacity: 0;
+    transition: all var(--transition-props);
+    text-align: left;
+    transition-delay: 250ms;
+    z-index: var(--z-popover);
+  }
+
+  &:hover {
+    z-index: var(--z-popover);
+    
+    &:after {
+      opacity: 1;
+      transform: translateY(calc(-1 * var(--su-1)));
+      transition-delay: 0s;
+    }
+  }
+}

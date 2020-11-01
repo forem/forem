@@ -39,11 +39,6 @@ class UsersController < ApplicationController
   def update
     set_current_tab(params["user"]["tab"])
 
-    unless valid_image?
-      render :edit, status: :bad_request
-      return
-    end
-
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
@@ -52,10 +47,9 @@ class UsersController < ApplicationController
       end
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
-        ExportContentWorker.perform_async(@user.id)
+        ExportContentWorker.perform_async(@user.id, @user.email)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
-      follow_hiring_tag(@user)
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
@@ -234,15 +228,6 @@ class UsersController < ApplicationController
 
   def signout_confirm; end
 
-  def follow_hiring_tag(user)
-    return unless user.looking_for_work?
-
-    hiring_tag = Tag.find_by(name: "hiring")
-    return if !hiring_tag || user.following?(hiring_tag)
-
-    Users::FollowWorker.perform_async(user.id, hiring_tag.id, "Tag")
-  end
-
   def handle_settings_tab
     return @tab = "profile" if @tab.blank?
 
@@ -275,6 +260,8 @@ class UsersController < ApplicationController
   end
 
   def determine_follow_suggestions(current_user)
+    return default_suggested_users if SiteConfig.prefer_manual_suggested_users? && default_suggested_users
+
     recent_suggestions = Suggester::Users::Recent.new(
       current_user,
       attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
@@ -284,14 +271,10 @@ class UsersController < ApplicationController
   end
 
   def render_update_response
-    if current_user.save
-      respond_to do |format|
-        format.json { render json: { outcome: "updated successfully" } }
-      end
-    else
-      respond_to do |format|
-        format.json { render json: { outcome: "update failed" } }
-      end
+    outcome = current_user.save ? "updated successfully" : "update failed"
+
+    respond_to do |format|
+      format.json { render json: { outcome: outcome } }
     end
   end
 
@@ -337,48 +320,6 @@ class UsersController < ApplicationController
 
   def config_changed?
     params[:user].include?(:config_theme)
-  end
-
-  def less_than_one_day_old?(user)
-    # we check all the `_created_at` fields for all available providers
-    # we use `.available` and not `.enabled` to avoid a situation in which
-    # an admin disables an authentication method after users have already
-    # registered, risking that they would be flagged as new
-    # the last one is a fallback in case all created_at fields are nil
-    user_identity_age = Authentication::Providers.available.map do |provider|
-      user.public_send("#{provider}_created_at")
-    end.detect(&:present?)
-
-    user_identity_age = user_identity_age.presence || 8.days.ago
-
-    range = 1.day.ago.beginning_of_day..Time.current
-    range.cover?(user_identity_age)
-  end
-
-  def valid_image?
-    image = params.dig("user", "profile_image")
-    return true unless image
-
-    return true if valid_image_file?(image) && valid_filename?(image)
-
-    Honeycomb.add_field("error", @user.errors.messages)
-    Honeycomb.add_field("errored", true)
-
-    false
-  end
-
-  def valid_image_file?(image)
-    return true if file?(image)
-
-    @user.errors.add(:profile_image, IS_NOT_FILE_MESSAGE)
-    false
-  end
-
-  def valid_filename?(image)
-    return true unless long_filename?(image)
-
-    @user.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
-    false
   end
 
   def destroy_request_in_progress?

@@ -47,9 +47,9 @@ Rails.application.routes.draw do
     end
 
     namespace :admin do
-      get "/", to: redirect("/admin/articles")
+      get "/" => "admin_portals#index"
 
-      authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
+      authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
 
         flipper_ui = Flipper::UI.app(Flipper,
@@ -66,9 +66,9 @@ Rails.application.routes.draw do
                                               destroy], path: "listings/categories"
 
       resources :comments, only: [:index]
-      resources :events, only: %i[index create update]
+      resources :events, only: %i[index create update new edit]
       resources :feedback_messages, only: %i[index show]
-      resources :invitations, only: %i[index new create]
+      resources :invitations, only: %i[index new create destroy]
       resources :pages, only: %i[index new create edit update destroy]
       resources :mods, only: %i[index update]
       resources :moderator_actions, only: %i[index]
@@ -103,6 +103,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[index show edit update] do
         member do
           post "banish"
+          post "export_data"
           post "full_delete"
           patch "user_status"
           post "merge"
@@ -196,6 +197,11 @@ Rails.application.routes.draw do
         end
 
         resources :profile_images, only: %i[show], param: :username
+        resources :organizations, only: [] do
+          collection do
+            get "/:org_username", to: "organizations#show"
+          end
+        end
       end
     end
 
@@ -250,7 +256,6 @@ Rails.application.routes.draw do
         post "/update_or_create", to: "github_repos#update_or_create"
       end
     end
-    resources :buffered_articles, only: [:index]
     resources :events, only: %i[index show]
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
@@ -357,7 +362,6 @@ Rails.application.routes.draw do
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     get "/future", to: redirect("devteam/the-future-of-dev-160n")
-    get "/forem", to: redirect("devteam/for-empowering-community-2k6h")
 
     # Settings
     post "users/update_language_settings" => "users#update_language_settings"

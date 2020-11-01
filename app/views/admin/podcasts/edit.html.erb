@@ -113,9 +113,12 @@
         <%= f.label :reachable, "Podcast is reachable", class: "crayons-field__label" %>
       </div>
       <div class="crayons-field crayons-field--checkbox">
-        <%= f.check_box :published, class: "crayons-checkbox" %>
-        <%= f.label :published, "Podcast is published", class: "crayons-field__label" %>
+        <%= f.check_box "published", class: "crayons-checkbox" %>
+        <label class="crayons-field__label" for="published">
+          Published
+        </label>
       </div>
+      <br>
       <%= f.submit class: "btn btn-primary" %>
     <% end %>
   </div>

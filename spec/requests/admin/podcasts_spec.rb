@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "/admin/podcasts", type: :request do
   let(:admin) { create(:user, :super_admin) }
-  let(:podcast) { create(:podcast) }
+  let(:podcast) { create(:podcast, published: false) }
   let(:user) { create(:user) }
 
   before do
@@ -80,27 +80,7 @@ RSpec.describe "/admin/podcasts", type: :request do
       }
     end
 
-    let(:update_params) do
-      {
-        title: "hello",
-        feed_url: "https://pod.example.com/rss.rss",
-        description: "Description",
-        itunes_url: "https://itunes.example.com",
-        overcast_url: "https://overcast.example.com",
-        android_url: "https://android.example.com",
-        soundcloud_url: "https://soundcloud.example.com",
-        website_url: "https://example.com",
-        twitter_username: "@ThePracticalDev",
-        pattern_image: fixture_file_upload("files/800x600.png", "image/png"),
-        main_color_hex: "ffffff",
-        image: fixture_file_upload("files/podcast.png", "image/png"),
-        slug: "postcast-test-url",
-        reachable: true,
-        published: true,
-      }
-    end
-
-    it "updates" do
+    it "updates the podcast" do
       put admin_podcast_path(podcast), params: { podcast: update_params }
       podcast.reload
       expect(podcast.title).to eq("hello")

@@ -168,7 +168,9 @@ describe('<Chat />', () => {
 
   it('should have no a11y violations', async () => {
     fetch.mockResponse(getMockResponse());
-    const { container } = render(<Chat {...getRootData()} />);
+    const { container } = render(
+      <Chat {...getRootData()} />,
+    );
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
@@ -209,7 +211,9 @@ describe('<Chat />', () => {
 
   it('should collapse and expand chat channels properly', async () => {
     fetch.mockResponse(getMockResponse());
-    const { queryByText } = render(<Chat {...getRootData()} />);
+    const { queryByText } = render(
+      <Chat {...getRootData()} />,
+    );
 
     // // chat channels
     expect(

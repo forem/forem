@@ -58,6 +58,15 @@ describe('Search utilities', () => {
         const actual = getInitialSearchTerm(querystring);
         expect(actual).toEqual(expected);
       });
+
+      it(`should return an empty string when the search term is not defined`, () => {
+        /* eslint-disable-next-line no-global-assign */
+        filterXSS = jest.fn(() => undefined);
+        const querystring = `?q=`;
+
+        const actual = getInitialSearchTerm(querystring);
+        expect(actual).toEqual('');
+      });
     });
 
     describe(`When the querystring key 'q' does not exist`, () => {

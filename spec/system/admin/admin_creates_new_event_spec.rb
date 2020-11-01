@@ -6,7 +6,7 @@ RSpec.describe "Admin creates new event", type: :system do
 
   before do
     sign_in admin
-    visit "/admin/events"
+    visit "/admin/events/new"
   end
 
   def select_date_and_time(year, month, date, hour, min, field_name)
@@ -26,7 +26,7 @@ RSpec.describe "Admin creates new event", type: :system do
   end
 
   it "loads /admin/events" do
-    expect(page).to have_content("Create New Event")
+    expect(page).to have_content("New Event")
   end
 
   it "loads published events on /events" do

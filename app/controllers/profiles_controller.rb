@@ -1,13 +1,20 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
+  ALLOWED_USER_PARAMS = %i[email username profile_image].freeze
 
   def update
-    Profiles::Update.call(current_user.profile, update_params)
+    update_result = Profiles::Update.call(current_user, update_params)
+    if update_result.success?
+      flash[:settings_notice] = "Your profile has been updated"
+    else
+      flash[:error] = "Error: #{update_result.error_message}"
+    end
+    redirect_to user_settings_path
   end
 
   private
 
   def update_params
-    params.require(:profile).permit(*Profile.attributes)
+    params.permit(profile: Profile.attributes!, user: ALLOWED_USER_PARAMS)
   end
 end
