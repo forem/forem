@@ -98,6 +98,13 @@ RSpec.describe "/admin/podcasts", type: :request do
       expect(podcast.published).to eq(true)
     end
 
+    it "updates image & pattern_image" do
+      expect do
+        put admin_podcast_path(podcast), params: { podcast: update_params }
+        podcast.reload
+      end.to change(podcast, :image) && change(podcast, :pattern_image)
+    end
+
     it "redirects after update" do
       put admin_podcast_path(podcast), params: { podcast: update_params }
       expect(response).to redirect_to(admin_podcasts_path)
