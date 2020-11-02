@@ -139,6 +139,13 @@ Rails.application.configure do
     config.middleware.use Rack::HostRedirect,
                           ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
   end
+
+  # If we are opening a rails console without WRITE_CONSOLE set and a BLAZER_DATABASE_URL
+  # is present, use that url as our DATABASE_URL. BLAZER_DATABASE_URL by default is readonly
+  # and this will ensure the console is readonly as well
+  if ENV["WRITE_CONSOLE"].nil? && Rails.const_defined?("Console") && ENV["BLAZER_DATABASE_URL"].present?
+    ENV["DATABASE_URL"] = ENV["BLAZER_DATABASE_URL"]
+  end
 end
 # rubocop:enable Metrics/BlockLength
 
