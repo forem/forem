@@ -42,15 +42,15 @@
     <br>
     <%= f.text_area :wiki_body_markdown, value: tag.wiki_body_markdown, class: "crayons-textfield" %>
   </div>
-    <%= f.label :bg_color_hex, class: "crayons-field__label" %>
+  <%= f.label :bg_color_hex, class: "crayons-field__label" %>
   <div class="flex items-center w-100 m:w-50">
-    <%= f.text_field :bg_color_hex, class: "crayons-textfield js-color-field", value: tag.bg_color_hex, placeholder: "#000000" %>
-    <%= f.color_field :bg_color_hex, class: "crayons-color-selector js-color-field ml-2", required: true %>
+    <%= f.text_field :bg_color_hex, class: "crayons-textfield", value: tag.bg_color_hex.presence || "#000000", placeholder: "#000000" %>
+    <%= f.color_field :bg_color_hex, class: "crayons-color-selector ml-2", required: true %>
   </div>
-    <%= f.label :text_color_hex, class: "crayons-field__label" %>
+  <%= f.label :text_color_hex, class: "crayons-field__label" %>
   <div class="flex items-center w-100 m:w-50">
-    <%= f.text_field :text_color_hex, class: "crayons-textfield js-color-field", value: tag.text_color_hex, placeholder: "#ffffff" %>
-    <%= f.color_field :text_color_hex, class: "crayons-color-selector js-color-field ml-2", required: true %>
+    <%= f.text_field :text_color_hex, class: "crayons-textfield", value: @tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff" %>
+    <%= f.color_field :text_color_hex, class: "crayons-color-selector ml-2", required: true %>
   </div>
   <%= f.submit class: "btn btn-primary float-right" %>
   <% end %>
