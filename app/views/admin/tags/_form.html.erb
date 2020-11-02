@@ -1,0 +1,68 @@
+<% if params[:action] == "new" %>
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "crayons-textfield" %>
+  </div>
+<% end %>
+<div class="form-group">
+  <%= form.label :supported %>
+  <%= form.check_box :supported %>
+</div>
+<div class="form-group">
+  <%= form.label :requires_approval %>
+  <%= form.check_box :requires_approval %>
+</div>
+<div class="form-group">
+  <%= form.label :wiki_body_markdown %>
+  <br>
+  <%= form.text_area :wiki_body_markdown, class: "crayons-textfield" %>
+</div>
+<div class="form-group">
+  <%= form.label :short_summary %>
+  <%= form.text_field :short_summary, class: "crayons-textfield" %>
+</div>
+<div class="form-group">
+  <%= form.label :rules_markdown %>
+  <br>
+  <%= form.text_area :rules_markdown, class: " crayons-textfield" %>
+</div>
+<div class="form-group">
+  <%= form.label :submission_template %>
+  <br>
+  <%= form.text_area :submission_template, class: "crayons-textfield" %>
+</div>
+<div class="form-group">
+  <%= form.label :pretty_name %>
+  <%= form.text_field :pretty_name, class: "crayons-textfield" %>
+</div>
+
+<!-- Profile/Social Image -->
+
+<div class="form-group">
+  <%= form.label :bg_color_hex %>
+  <%= form.color_field :bg_color_hex, required: true %>
+</div>
+<div class="form-group">
+  <%= form.label :text_color_hex %>
+  <%= form.color_field :text_color_hex, required: true, value: @tag.text_color_hex.presence || "#ffffff" %>
+</div>
+
+<div class="form-group">
+  <%= form.label :badge_id %>
+  <% badges_array = Badge.pluck(:title, :id) %>
+  <%= form.select(:badge_id, options_for_select([["None", nil]] + badges_array, @tag.badge_id)) %>
+</div>
+<div class="form-group">
+  <%= form.label :category %>
+  <%= form.select(:category, options_for_select(Tag.valid_categories, @tag.category)) %>
+</div>
+<div class="form-group">
+  <%= form.label :social_preview_template %>
+  <%= form.select(:social_preview_template, Tag.social_preview_templates) %>
+</div>
+<div class="form-group">
+  <%= form.label :alias_for %>
+  <%= form.text_field :alias_for, class: "crayons-textfield" %>
+</div>
+
+<%= form.submit class: "crayons-btn float-right" %>

@@ -1,0 +1,6 @@
+<div class="crayons-card p-6">
+  <h4 class="mb-4">New Tag</h4>
+  <%= form_for [:admin, @tag] do |form| %>
+    <%= render partial: "form", locals: { form: form } %>
+  <% end %>
+</div>
