@@ -145,7 +145,7 @@
                                   checked: SiteConfig.invite_only_mode,
                                   disabled: !SiteConfig.allow_both_email_signup_and_login,
                                   data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" },
-                                  class: "crayons-checkbox #{!SiteConfig.allow_both_email_signup_and_login ? 'crayons-checkox--disabled' : ''}" %>
+                                  class: "crayons-checkbox #{!SiteConfig.allow_both_email_signup_and_login ? 'crayons-checkbox--disabled' : ''}" %>
                   <div class="mt-0">
                     <%= admin_config_label :invite_only_mode, "Invite-only mode" %>
                     <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
