@@ -172,9 +172,29 @@ class ApplicationController < ActionController::Base
     redirect_to URL.url(request.fullpath)
   end
 
+  def current_user
+
+    return super unless edge_cached_action?
+
+    if session_current_user_id.present?
+      message = "😱😱😱😱😱 You cannot use current_user in this action\
+  because this code path will be cached at the edge in production.\
+  Check out this section in the docs: https://docs.forem.com/technical-overview/architecture/#we-cache-many-content-pages-on-the-edge"
+      p message
+      Object.const_set("YouCannotUseCurrentUserHereCheckTheTerminalOutput", Class.new)
+    end
+  end
+  helper_method :current_user
+
   protected
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+  end
+
+  def edge_cached_action?
+    # X-Accel-Expires will only be present if we are setting cache headers
+    # And let's only run this code in development and test
+    !Rails.env.production? && response.headers["X-Accel-Expires"].present?
   end
 end
