@@ -36,7 +36,7 @@ RSpec.describe "ArticlesShow", type: :request do
         "publisher" => {
           "@context" => "http://schema.org",
           "@type" => "Organization",
-          "name" => "#{SiteConfig.community_name} Community",
+          "name" => "#{SiteConfig.community_name} #{SiteConfig.collective_noun}",
           "logo" => {
             "@context" => "http://schema.org",
             "@type" => "ImageObject",
@@ -80,7 +80,7 @@ RSpec.describe "ArticlesShow", type: :request do
 
   context "when keywords are set" do
     it "shows keywords" do
-      SiteConfig.meta_keywords = { article: "hello, world" }
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ article: "hello, world" })
       article.update_column(:cached_tag_list, "super sheep")
       get article.path
       expect(response.body).to include('<meta name="keywords" content="super sheep, hello, world">')
@@ -89,7 +89,7 @@ RSpec.describe "ArticlesShow", type: :request do
 
   context "when keywords are not" do
     it "does not show keywords" do
-      SiteConfig.meta_keywords = { article: "" }
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ article: "" })
       article.update_column(:cached_tag_list, "super sheep")
       get article.path
       expect(response.body).not_to include(

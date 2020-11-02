@@ -76,11 +76,11 @@ export default class SingleArticle extends Component {
             </header>
             {tags}
           </span>
-          <span className="article-author fs-s lw-medium lh-tight">
+          <span className="article-author">
             {newAuthorNotification}
             {user.name}
           </span>
-          <span className="article-published-at fs-s fw-bold lh-tight">
+          <span className="article-published-at">
             <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
           </span>
           <div

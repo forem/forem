@@ -2,7 +2,6 @@
 
 .crayons-header {
   --indicator-outline: var(--header-bg);
-  --dropdown-display: none;
 
   height: var(--header-height);
   background: var(--header-bg);
@@ -13,7 +12,7 @@
     top: 0px;
     left: 0px;
     right: 0px;
-    z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
+    z-index: var(--z-sticky);
   }
 
   &__container {
@@ -79,7 +78,11 @@
   height: 100%;
   display: flex;
   align-items: center;
-  z-index: 20;
+
+  @media (min-width: $breakpoint-s) {
+    perspective: 1000px;
+  }
+
   &__trigger {
     all: unset;
     padding: var(--su-1);
@@ -90,14 +93,26 @@
   }
 
   &__dropdown {
-    display: var(--dropdown-display);
+    transform-style: preserve-3d;
     top: var(--header-height);
+    transform-origin: top right;
+    transition: all var(--transition-props);
+    transition-delay: var(--dropdown-delay, 0.25s);
+    transform: var(
+      --dropdown-transform,
+      translateY(calc(1 * var(--su-1))) rotateX(-10deg)
+    );
+    opacity: var(--dropdown-opacity, 0);
+    visibility: var(--dropdown-visibility, hidden);
   }
 
   &.showing,
   &.desktop:hover,
   &.desktop:focus {
-    --dropdown-display: block;
+    --dropdown-transform: translateY(0) rotateX(0);
+    --dropdown-delay: 0;
+    --dropdown-opacity: 1;
+    --dropdown-visibility: visible;
 
     .crayons-header__menu__trigger {
       color: var(--header-icons-color-hover);
@@ -113,7 +128,7 @@
   transform: translate(-50%, -100px);
   background: var(--body-color);
   color: var(--body-color-inverted);
-  z-index: 9999;
+  z-index: var(--z-popover);
   padding: var(--su-4);
   pointer-events: none;
   opacity: 0;
@@ -199,7 +214,7 @@
   position: fixed;
   top: 0;
   background: var(--accent-brand);
-  z-index: 103;
+  z-index: var(--popover);
   height: var(--su-1);
   width: 0;
   &.showing {

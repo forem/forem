@@ -17,7 +17,7 @@
       top: 48px;
       left: 0;
       bottom: 0;
-      z-index: 100;
+      z-index: var(--z-drawer);
       overflow-y: auto;
       width: 200%;
       height: calc(100% - 48px);
@@ -68,7 +68,7 @@
     line-height: 1.35em;
     display: none;
     position: relative;
-    z-index: 5;
+    z-index: var(--z-drawer);
     padding: 16px 0;
     box-sizing: border-box;
     color: var(--card-secondary-color);
@@ -307,15 +307,6 @@
       // TODO: what is this .active thingy?
       opacity: 0.66;
     }
-    &.big-article {
-      &.active {
-        opacity: 0.84;
-      }
-      .time-ago-indicator {
-        // TODO: where do we use it?
-        vertical-align: 0.11em;
-      }
-    }
     &.single-article-small-pic {
       vertical-align: top;
       overflow: hidden;
@@ -344,37 +335,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .single-article-video-preview {
-      img {
-        width: 100%;
-      }
-      position: relative;
-      padding-top: 56%;
-      display: block;
-      background: $black no-repeat center center;
-      background-size: cover;
-      &:hover {
-        opacity: 1;
-      }
-      .single-article-video-duration {
-        position: absolute;
-        bottom: 8px;
-        right: 7px;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        border-radius: 3px;
-        padding: 2px 5px 3px;
-        font-size: 0.75em;
-        font-weight: 500;
-        img {
-          width: 12px;
-          height: 12px;
-          margin-right: 4px;
-          vertical-align: -1px;
-        }
-      }
-    }
-
     // Organization Badge
     .org-headline-filler {
       @include themeable(
@@ -543,89 +503,6 @@
       color: rgb(163, 188, 201);
       padding-bottom: 16px;
     }
-    &.big-article {
-      padding: 0px;
-      .picture {
-        padding-top: 42%;
-        border-radius: 3px 3px 0 0;
-        background: no-repeat center center;
-        background-size: cover;
-      }
-      .content-wrapper {
-        padding-bottom: 115px;
-        h3 {
-          font-size: 28px;
-          padding: 16px;
-          margin: 0;
-          word-break: break-word;
-          line-height: 1.28em;
-          @media screen and (min-width: 450px) {
-            font-size: 40px;
-          }
-        }
-        .title-block {
-          display: inline-block;
-        }
-      }
-    }
-  }
-  .featured-profile-button {
-    float: left;
-    z-index: 10;
-    left: 16px;
-    position: absolute;
-    margin-top: -110px;
-  }
-  img.featured-profile-pic {
-    height: 40px;
-    width: 40px;
-    border-radius: 50px;
-    overflow: hidden;
-    &:hover {
-      opacity: 0.9;
-    }
-  }
-  .featured-user-name {
-    font-weight: bold;
-    margin-top: 0;
-    position: absolute;
-    width: 80%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    z-index: 10;
-    left: 72px;
-    bottom: 65px;
-    font-size: 0.8em;
-    a {
-      color: var(--card-color-tertiary);
-    }
-    @media screen and (min-width: 450px) {
-      font-size: 1em;
-    }
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-  .featured-tags {
-    font-size: 1em;
-    position: absolute;
-    max-width: 80%;
-    bottom: 95px !important;
-    left: 62px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    z-index: 10;
-  }
-  .article-reading-time {
-    position: absolute;
-    right: 82px;
-    bottom: 12px;
-    font-size: 0.7em;
-    padding: 6px 0px;
-    z-index: 8;
-    color: var(--card-color-tertiary);
   }
   .article-engagement-count {
     font-size: 13px;
@@ -706,28 +583,6 @@
       min-width: 28px;
       text-align: left;
       display: inline-block;
-    }
-  }
-  .video-player-header {
-    background: $black;
-    margin-top: 0;
-    max-width: 1050px;
-    margin: auto;
-    margin-bottom: 15px;
-    height: 52.5vw;
-    margin-bottom: -5px;
-    overflow-y: hidden;
-    @media screen and (min-width: 750px) {
-      height: 396px;
-    }
-    @media screen and (min-width: 950px) {
-      height: calc(52.5vw - 172px);
-    }
-    @media screen and (min-width: 1120px) {
-      height: calc(52.5vw - 314px);
-    }
-    @media screen and (min-width: 1240px) {
-      height: 339px;
     }
   }
 }

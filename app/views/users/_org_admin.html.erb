@@ -1,7 +1,7 @@
 <%= javascript_packs_with_chunks_tag "colorPreview", "clipboardCopy", defer: true %>
 <%= render "shared/webcomponents_loader_script" %>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h2>Organization Members</h2>
 
   <div class="grid gap-2">
@@ -76,7 +76,7 @@
   </div>
 </div>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h2>Organization details</h2>
 
   <%= form_for @organization, html: { class: "grid gap-6" } do |f| %>
@@ -199,7 +199,7 @@
   <% end %>
 </div>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <header>
     <h2 class="color-accent-danger">Danger Zone</h2>
   </header>

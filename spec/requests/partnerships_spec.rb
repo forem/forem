@@ -64,7 +64,7 @@ RSpec.describe "Partnerships", type: :request do
         let(:biz_email) { "community@example.com" }
 
         before do
-          SiteConfig.email_addresses = { business: biz_email }
+          allow(SiteConfig).to receive(:email_addresses).and_return({ business: biz_email })
           create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         end
 

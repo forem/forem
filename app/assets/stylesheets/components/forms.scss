@@ -163,6 +163,12 @@
     }
   }
 
+  &__required {
+    color: var(--accent-danger);
+    padding: 0 var(--su-1);
+    display: inline-block;
+  }
+
   &__description {
     color: var(--label-secondary);
     font-size: var(--fs-s);

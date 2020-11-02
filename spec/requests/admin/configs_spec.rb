@@ -87,6 +87,21 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
+
+        it "enables email authentication" do
+          post "/admin/config", params: { site_config: { allow_both_email_signup_and_login: true },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.allow_email_password_registration).to be(true)
+          expect(SiteConfig.allow_email_password_login).to be(true)
+        end
+
+        it "disables email authentication and invite-only mode" do
+          post "/admin/config", params: { site_config: { allow_both_email_signup_and_login: false },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.allow_email_password_registration).to be(false)
+          expect(SiteConfig.allow_email_password_login).to be(false)
+          expect(SiteConfig.invite_only_mode).to be(false)
+        end
       end
 
       describe "Community Content" do
@@ -103,6 +118,13 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { community_name: name_magoo },
                                           confirmation: confirmation_message }
           expect(SiteConfig.community_name).to eq(name_magoo)
+        end
+
+        it "updates the collective_noun" do
+          collective_noun = "Rhumba"
+          post "/admin/config", params: { site_config: { collective_noun: collective_noun },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.collective_noun).to eq(collective_noun)
         end
 
         it "updates the community_member_label" do
@@ -206,6 +228,9 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Images" do
         it "updates main_social_image" do
+          expected_default_image_url = URL.local_image("social-media-cover.png")
+          expect(SiteConfig.main_social_image).to eq(expected_default_image_url)
+
           expected_image_url = "https://dummyimage.com/300x300"
           post "/admin/config", params: { site_config: { main_social_image: expected_image_url },
                                           confirmation: confirmation_message }
@@ -220,10 +245,12 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates logo_png" do
+          expected_default_image_url = URL.local_image("icon.png")
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/admin/config", params: { site_config: { logo_png: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.logo_png).to eq(expected_image_url)
+          expect do
+            post "/admin/config", params: { site_config: { logo_png: expected_image_url },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :logo_png).from(expected_default_image_url).to(expected_image_url)
         end
 
         it "updates logo_svg" do
@@ -282,10 +309,12 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates mascot_image_url" do
+          expected_default_image_url = URL.local_image("mascot.png")
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
+          expect do
+            post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :mascot_image_url).from(expected_default_image_url).to(expected_image_url)
         end
 
         it "updates mascot_footer_image_url" do
@@ -466,6 +495,20 @@ RSpec.describe "/admin/config", type: :request do
             confirmation: confirmation_message
           }
           expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
+        end
+
+        it "updates prefer_manual_suggested_users to true" do
+          prefer_manual = true
+          post "/admin/config", params: { site_config: { prefer_manual_suggested_users: prefer_manual },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.prefer_manual_suggested_users).to eq(prefer_manual)
+        end
+
+        it "updates prefer_manual_suggested_users to false" do
+          prefer_manual = false
+          post "/admin/config", params: { site_config: { prefer_manual_suggested_users: prefer_manual },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.prefer_manual_suggested_users).to eq(prefer_manual)
         end
       end
 
@@ -664,7 +707,6 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.home_feed_minimum_score).to eq(home_feed_minimum_score)
         end
 
-
         it "updates the brand color if proper hex" do
           hex = "#0a0a0a" # dark enough
           post "/admin/config", params: { site_config: { primary_brand_color_hex: hex },
@@ -694,6 +736,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates public to false" do
+          allow(SiteConfig).to receive(:public).and_return(false)
           is_public = false
           post "/admin/config", params: { site_config: { public: is_public },
                                           confirmation: confirmation_message }

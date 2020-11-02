@@ -14,6 +14,8 @@ module Admin
     COMMUNITY_PARAMS =
       %i[
         community_name
+        collective_noun
+        collective_noun_disabled
         community_description
         community_member_label
         community_copyright_start_year
@@ -78,6 +80,7 @@ module Admin
         onboarding_taskcard_image
         suggested_tags
         suggested_users
+        prefer_manual_suggested_users
       ].freeze
 
     JOB_PARAMS =
@@ -115,8 +118,7 @@ module Admin
         facebook_key
         facebook_secret
         invite_only_mode
-        allow_email_password_registration
-        allow_email_password_login
+        allow_both_email_signup_and_login
         require_captcha_for_email_password_registration
         primary_brand_color_hex
         spam_trigger_terms
@@ -149,6 +151,8 @@ module Admin
           SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
         end
       end
+
+      toggle_email_password_authentication
 
       redirect_to admin_config_path, notice: "Site configuration was successfully updated."
     end
@@ -206,6 +210,17 @@ module Admin
         config[param] = config[param]&.downcase&.delete(" ") if config[param]
       end
       config[:credit_prices_in_cents]&.transform_values!(&:to_i)
+    end
+
+    def toggle_email_password_authentication
+      if SiteConfig.allow_both_email_signup_and_login
+        SiteConfig.allow_email_password_registration = true
+        SiteConfig.allow_email_password_login = true
+      else
+        SiteConfig.allow_email_password_registration = false
+        SiteConfig.allow_email_password_login = false
+        SiteConfig.invite_only_mode = false
+      end
     end
 
     # Validations
