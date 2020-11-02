@@ -33,7 +33,7 @@ RSpec.describe "Views an article", type: :system do
     # here
     it "shows the readable publish date" do
       visit article.path
-      expect(page).to have_selector("article time", text: article.readable_publish_date)
+      expect(page).to have_selector("article time", text: article.readable_publish_date.gsub("  ", " "))
     end
 
     it "embeds the published timestamp" do
@@ -61,11 +61,13 @@ RSpec.describe "Views an article", type: :system do
       # here
       it "shows the identical readable publish dates in each page" do
         visit first_article.path
-        expect(page).to have_selector("article time", text: first_article.readable_publish_date)
-        expect(page).to have_selector(".crayons-card--secondary time", text: first_article.readable_publish_date)
+        expect(page).to have_selector("article time", text: first_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_selector(".crayons-card--secondary time",
+                                      text: first_article.readable_publish_date.gsub("  ", " "))
         visit second_article.path
-        expect(page).to have_selector("article time", text: second_article.readable_publish_date)
-        expect(page).to have_selector(".crayons-card--secondary time", text: second_article.readable_publish_date)
+        expect(page).to have_selector("article time", text: second_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_selector(".crayons-card--secondary time",
+                                      text: second_article.readable_publish_date.gsub("  ", " "))
       end
     end
   end
