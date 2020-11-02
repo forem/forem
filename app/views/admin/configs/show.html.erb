@@ -139,8 +139,8 @@
                 <h3 class="crayons-subtitle-3 mb-3">
                   General settings
                 </h3>
-                <div class="crayons-field crayons-field--checkbox <%= !SiteConfig.allow_both_email_signup_and_login ? 'crayons-tooltip' : '' %>"
-                  data-tooltip="<%= !SiteConfig.allow_both_email_signup_and_login ? 'To enable this, you must first enable Email Address as a registration option' : '' %>">
+                <div class="crayons-field crayons-field--checkbox <%= !SiteConfig.allow_both_email_signup_and_login ? "crayons-tooltip" : "" %>"
+                  data-tooltip="<%= !SiteConfig.allow_both_email_signup_and_login ? "To enable this, you must first enable Email Address as a registration option" : "" %>">
                   <%= f.check_box :invite_only_mode,
                                   checked: SiteConfig.invite_only_mode,
                                   disabled: !SiteConfig.allow_both_email_signup_and_login,
@@ -174,7 +174,7 @@
                           Email address
                         </p>
                         <% if SiteConfig.allow_both_email_signup_and_login %>
-                          <div class="flex items-center">
+                          <div class="flex items-center" data-target="config.enabledIndicator">
                             <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                             <small class="crayons-field__description ml-1">Enabled</small>
                           </div>

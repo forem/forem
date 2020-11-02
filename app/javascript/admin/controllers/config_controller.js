@@ -20,6 +20,7 @@ export default class ConfigController extends Controller {
     'collectiveNoun',
     'configModalAnchor',
     'emailAuthSettingsBtn',
+    'enabledIndicator',
     'inviteOnlyMode',
     'requireCaptchaForEmailPasswordRegistration',
   ];
@@ -89,14 +90,16 @@ export default class ConfigController extends Controller {
 
   disableEmailAuthFromModal() {
     event.preventDefault();
-    emailSigninAndLoginCheckbox.checked = false;
-    this.hideEmailAuthSettings();
+    this.disableEmailAuth();
     this.closeAdminConfigModal();
   }
 
   disableEmailAuth() {
     event.preventDefault();
     emailSigninAndLoginCheckbox.checked = false;
+    this.emailAuthSettingsBtnTarget.innerHTML = 'Enable';
+    this.enabledIndicatorTarget.classList.remove('flex', 'items-center');
+    this.enabledIndicatorTarget.classList.add('hidden');
     this.hideEmailAuthSettings();
   }
 }
