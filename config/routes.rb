@@ -365,8 +365,6 @@ Rails.application.routes.draw do
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
-    get "/future", to: redirect("devteam/the-future-of-dev-160n")
-
     # Settings
     post "users/update_language_settings" => "users#update_language_settings"
     post "users/join_org" => "users#join_org"
