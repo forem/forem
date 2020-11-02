@@ -14,7 +14,7 @@
     <div class="crayons-card__header">
       <h4 class="crayons-card__headline">Moderators</h4>
     </div>
-    <div class="crayons-card__body">
+    <div class="crayons-card__body flex flex-col gap-2">
       <% if @tag.tag_moderator_ids.any? %>
         <ul class="list-none">
           <% @tag.tag_moderator_ids.each do |id| %>

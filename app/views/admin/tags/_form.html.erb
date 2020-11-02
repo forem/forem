@@ -1,4 +1,4 @@
-<div class="crayons-card p-6">
+<div class="crayons-card crayons-card--content-rows">
   <h4 class="mb-4">Edit details</h4>
   <%= form_with model: [:admin, tag], data: { remote: false } do |f| %>
   <div class="crayons-field crayons-field--checkbox">
@@ -52,6 +52,6 @@
     <%= f.text_field :text_color_hex, class: "crayons-textfield", value: @tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff" %>
     <%= f.color_field :text_color_hex, class: "crayons-color-selector ml-2", required: true %>
   </div>
-  <%= f.submit class: "btn btn-primary float-right" %>
+  <%= f.submit class: "crayons-btn mt-2" %>
   <% end %>
 </div>
