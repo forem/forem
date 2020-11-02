@@ -14,10 +14,10 @@ const adminModal = (
   body,
   confirmBtnText,
   confirmBtnAction,
-  customAttr = null,
-  customAttrValue = null,
   cancelBtnText,
   cancelBtnAction,
+  customAttr = null,
+  customAttrValue = null,
 ) => `
   <div class="crayons-modal crayons-modal--s absolute">
     <div class="crayons-modal__box">
