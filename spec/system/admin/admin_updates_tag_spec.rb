@@ -17,7 +17,9 @@ RSpec.describe "Admin updates a tag", type: :system do
     it "defaults to black and white upon update" do
       check "Supported"
       click_button("Update Tag")
-      expect(page).to have_xpath("/html/body/div/main/header/div[1]/h2/span")
+      tag.reload
+      expect(tag.bg_color_hex).to eq("#000000")
+      expect(tag.text_color_hex).to eq("#ffffff")
     end
   end
 
