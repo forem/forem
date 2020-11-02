@@ -49,10 +49,6 @@
 .crayons-header__link {
   margin: 0 var(--su-1);
 
-  @media (min-width: $breakpoint-m) {
-    margin: 0 var(--su-2);
-  }
-
   &:hover,
   &:focus {
     --indicator-outline: var(--header-bg-hover);
