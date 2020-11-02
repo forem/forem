@@ -26,7 +26,7 @@ module Admin
     end
 
     def self.potential_role_ids
-      Role.where(name: NAMES_FOR_POTENTIAL).select(:id)
+      @potential_role_ids ||= Role.where(name: VALID_ROLES).select(:id)
     end
 
     def self.search_relation(relation, search)
