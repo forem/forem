@@ -86,7 +86,7 @@
       </div>
       <div class="form-group">
         <%= f.label :text_color_hex %>
-        <%= f.color_field :text_color_hex, class: "form-control", required: true %>
+        <%= f.color_field :text_color_hex, class: "form-control", required: true, value: @tag.text_color_hex.presence || "#ffffff" %>
       </div>
       <%= f.submit class: "btn btn-primary float-right" %>
     <% end %>
