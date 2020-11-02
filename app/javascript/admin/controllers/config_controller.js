@@ -154,10 +154,10 @@ export default class ConfigController extends Controller {
       this.authProviderModalBody(official_provider),
       'Confirm',
       'disableAuthProviderFromModal',
-      'auth-provider',
-      provider,
       'Cancel',
       'closeAdminConfigModal',
+      'auth-provider',
+      provider,
     );
     this.positionModalOnPage();
   }

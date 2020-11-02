@@ -270,7 +270,9 @@
                         <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
                       </figure>
                       <div class="config-authentication__item--container">
-                        <div class="config-authentication__item mb-0 flex items-baseline justify-between">
+                        <div
+                          class="config-authentication__item mb-0 flex items-baseline justify-between <%= auth_provider_enable_btn_tooltip_class %>"
+                          data-tooltip="<%= enable_disable_btn_tooltip_text %>">
                           <div>
                             <p class="config-authentication__item--label fw-medium <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
                               <%= provider.official_name %>
@@ -283,13 +285,12 @@
                             <% end %>
                           </div>
                           <button
-                            class="crayons-btn crayons-btn--secondary <%= auth_provider_enable_btn_tooltip_class %>"
+                            class="crayons-btn crayons-btn--secondary"
                             id="<%= provider.provider_name %>-auth-btn"
                             data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
                             data-action="click->config#enableOrEditAuthProvider"
                             data-auth-provider-enable="<%= provider.provider_name %>"
                             data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
-                            data-tooltip="<%= enable_disable_btn_tooltip_text %>"
                             <%= auth_provider_enable_btn_disable_class %>>
                             <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
                           </button>

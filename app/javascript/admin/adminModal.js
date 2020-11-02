@@ -8,6 +8,8 @@
  * @param {string} confirmBtnAction The function that fires when "Confirm" button is clicked.
  * @param {string} cancelBtnText The text for the modal's "Cancel" button.
  * @param {string} cancelBtnAction The function that fires when "Cancel" button is clicked.
+ * @param {string} customAttr A custom data attribute name. Will be apprended to the "data-" part.
+ * @param {string} customAttrValue The value of the custom attribute "customAttr".
  */
 const adminModal = (
   title,
