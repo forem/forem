@@ -89,7 +89,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
       end
 
       it "reports a parsing error" do
-        allow(FeedJira).to receive(:parse).and_raise(StandardError)
+        allow(Feedjira).to receive(:parse).and_raise(StandardError)
         allow(Rails.logger).to receive(:error)
 
         described_class.call
