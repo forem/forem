@@ -5,6 +5,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
 
   before do
     sign_in admin
+    allow(Flipper).to receive(:enabled?).with(:profile_admin).and_return(true)
   end
 
   describe "GET /admin/profile_fields" do
