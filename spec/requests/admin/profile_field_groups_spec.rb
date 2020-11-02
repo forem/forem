@@ -5,6 +5,7 @@ RSpec.describe "/admin/profile_field_groups", type: :request do
 
   before do
     sign_in admin
+    allow(Flipper).to receive(:enabled?).with(:profile_admin).and_return(true)
   end
 
   describe "POST /admin/profile_field_groups" do
