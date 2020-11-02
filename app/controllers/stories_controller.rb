@@ -12,7 +12,7 @@ class StoriesController < ApplicationController
     ]
   }.freeze
 
-  SIGNED_OUT_RECORD_COUNT = (Rails.env.production? ? 60 : 10).freeze
+  SIGNED_OUT_RECORD_COUNT = 60
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
