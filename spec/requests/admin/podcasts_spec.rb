@@ -60,19 +60,53 @@ RSpec.describe "/admin/podcasts", type: :request do
   end
 
   describe "Updating" do
+    let(:update_params) do
+      {
+        title: "hello",
+        feed_url: "https://pod.example.com/rss.rss",
+        description: "Description",
+        itunes_url: "https://itunes.example.com",
+        overcast_url: "https://overcast.example.com",
+        android_url: "https://android.example.com",
+        soundcloud_url: "https://soundcloud.example.com",
+        website_url: "https://example.com",
+        twitter_username: "@ThePracticalDev",
+        pattern_image: fixture_file_upload("files/800x600.png", "image/png"),
+        main_color_hex: "ffffff",
+        image: fixture_file_upload("files/podcast.png", "image/png"),
+        slug: "postcast-test-url",
+        reachable: true,
+        published: true,
+      }
+    end
+
     it "updates the podcast" do
-      put admin_podcast_path(podcast), params: { podcast: { title: "hello",
-                                                            feed_url: "https://pod.example.com/rss.rss",
-                                                            published: true } }
+      put admin_podcast_path(podcast), params: { podcast: update_params }
       podcast.reload
       expect(podcast.title).to eq("hello")
       expect(podcast.feed_url).to eq("https://pod.example.com/rss.rss")
+      expect(podcast.description).to eq("Description")
+      expect(podcast.itunes_url).to eq("https://itunes.example.com")
+      expect(podcast.overcast_url).to eq("https://overcast.example.com")
+      expect(podcast.android_url).to eq("https://android.example.com")
+      expect(podcast.soundcloud_url).to eq("https://soundcloud.example.com")
+      expect(podcast.website_url).to eq("https://example.com")
+      expect(podcast.twitter_username).to eq("@ThePracticalDev")
+      expect(podcast.main_color_hex).to eq("ffffff")
+      expect(podcast.slug).to eq("postcast-test-url")
+      expect(podcast.reachable).to eq(true)
       expect(podcast.published).to eq(true)
     end
 
+    it "updates image & pattern_image" do
+      expect do
+        put admin_podcast_path(podcast), params: { podcast: update_params }
+        podcast.reload
+      end.to change(podcast, :image) && change(podcast, :pattern_image)
+    end
+
     it "redirects after update" do
-      put admin_podcast_path(podcast), params: { podcast: { title: "hello",
-                                                            feed_url: "https://pod.example.com/rss.rss" } }
+      put admin_podcast_path(podcast), params: { podcast: update_params }
       expect(response).to redirect_to(admin_podcasts_path)
     end
   end
