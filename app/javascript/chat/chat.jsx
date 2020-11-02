@@ -347,8 +347,8 @@ export default class Chat extends Component {
     });
   };
 
-  setupChannel = (channelId) => {
-    const { messages, messageOffset, activeChannel, appDomain } = this.state;
+  setupChannel = (channelId, activeChannel) => {
+    const { messages, messageOffset, appDomain } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
@@ -1601,6 +1601,10 @@ export default class Chat extends Component {
     const { activeChannel } = this.state;
     const mention = e.keyCode === 64;
     if (mention && activeChannel.channel_type !== 'direct') {
+      const memberListElemt = document.getElementById('mentionList');
+      memberListElemt.focus();
+      // console.log('Hello')
+      // document.getElementById('messageform').blur();
       this.setState({ showMemberlist: true });
     }
   };
@@ -1713,6 +1717,7 @@ export default class Chat extends Component {
     } = this.state;
 
     const filterRegx = new RegExp(memberFilterQuery, 'gi');
+
     return (
       <div
         className={
