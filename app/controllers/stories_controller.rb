@@ -344,11 +344,10 @@ class StoriesController < ApplicationController
   def assign_podcasts
     return unless user_signed_in?
 
-    num_hours = Rails.env.production? ? 24 : 2400
     @podcast_episodes = PodcastEpisode
       .includes(:podcast)
       .order(published_at: :desc)
-      .where("published_at > ?", num_hours.hours.ago)
+      .where("published_at > ?", 24.hours.ago)
       .select(:slug, :title, :podcast_id, :image)
   end
 
