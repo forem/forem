@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import { Modal } from '../../crayons/Modal';
+import { Modal } from '@crayons/Modal';
 import { createChannel } from '../actions/chat_channel_setting_actions';
 const CreateChatModal = ({
   toggleModalCreateChannel,
