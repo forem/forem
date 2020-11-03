@@ -80,6 +80,16 @@ RSpec.describe "Authenticating with Email" do
 
         expect(page).to have_current_path("/?signin=true")
       end
+
+      it "logs in and redirects to onboarding if it hasn't been seen" do
+        user.update(saw_onboarding: false)
+
+        visit sign_up_path
+        log_in_user(user)
+
+        expect(page).to have_current_path("/onboarding", ignore_query: true)
+        expect(page.html).to include("onboarding-container")
+      end
     end
 
     context "when already signed in" do
