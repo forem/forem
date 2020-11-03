@@ -1,8 +1,5 @@
 export default function notifyUser() {
   modifyTitle();
-  // May need it's own big feature
-  // const audio = new Audio('../../../assets/sound/notification.mp3');
-  // audio.play();
 }
 
 const modifyTitle = () => {
