@@ -83,7 +83,8 @@ module ApplicationHelper
 
     return unless (image_url = url.presence || fallback_image)
 
-    Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: fetch_format)
+    normalized_url = Addressable::URI.parse(image_url).normalize.to_s
+    Images::Optimizer.call(normalized_url, width: width, quality: quality, fetch_format: fetch_format)
   end
 
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
