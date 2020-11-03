@@ -55,6 +55,8 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
       emailSigninAndLoginCheckbox.checked = true;
+      this.enabledIndicatorTarget.classList.add('flex', 'items-center');
+      this.enabledIndicatorTarget.classList.remove('hidden');
     }
     this.emailAuthSettingsBtnTarget.classList.add('hidden');
     emailAuthSettingsSection.classList.remove('hidden');

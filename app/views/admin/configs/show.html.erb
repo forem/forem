@@ -173,12 +173,10 @@
                         <p class="crayons-field__label <%= SiteConfig.allow_both_email_signup_and_login ? "pb-0" : "" %>">
                           Email address
                         </p>
-                        <% if SiteConfig.allow_both_email_signup_and_login %>
-                          <div class="flex items-center" data-target="config.enabledIndicator">
-                            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
-                            <small class="crayons-field__description ml-1">Enabled</small>
-                          </div>
-                        <% end %>
+                        <div class="<%= SiteConfig.allow_both_email_signup_and_login ? "flex items-center" : "hidden" %>" data-target="config.enabledIndicator">
+                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                          <small class="crayons-field__description ml-1">Enabled</small>
+                        </div>
                       </div>
 
                       <button
