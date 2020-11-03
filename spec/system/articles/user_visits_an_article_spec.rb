@@ -135,7 +135,7 @@ RSpec.describe "Views an article", type: :system do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "shows the article edit link" do
+      it "shows the article edit link", js: true do
         visit article_path
         expect(page).to have_text('display: inline-block;">Click to edit</a>')
       end
