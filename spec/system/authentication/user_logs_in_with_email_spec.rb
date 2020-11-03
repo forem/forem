@@ -10,7 +10,7 @@ RSpec.describe "Authenticating with Email" do
   end
 
   context "when a user is new" do
-    let(:user) { build(:user) }
+    let(:user) { build(:user, saw_onboarding: false) }
 
     context "when using valid credentials" do
       it "creates a new user", js: true do
