@@ -40,6 +40,26 @@ module DataUpdateScripts
 end
 ```
 
+The generator will also automatically create the corresponding spec file.
+
+```ruby
+require "rails_helper"
+require Rails.root.join(
+  "20201103042915_backfill_column_for_articles.rb",
+)
+
+describe DataUpdateScripts::BackfillColumnForArticles do
+  pending "add some examples to (or delete) #{__FILE__}"
+end
+```
+
+While we encourage adding tests for data update scripts, you can skip spec
+creation by adding the `--no-spec` option to the `rails generate` command:
+
+```
+rails generate data_update BackfillColumnForArticles --no-spec
+```
+
 Once your script is in place then you can either run `rails data_updates:run`
 manually or you can let our setup script handle it. In our local
 [bin/setup](https://github.com/forem/forem/blob/master/bin/setup) script you
