@@ -434,7 +434,8 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).not_to include('<span class="olderposts-pagenumber">')
       end
 
-      it "does not render pagination even with many posts" do
+      it "renders pagination with many posts" do
+        stub_const("StoriesController::SIGNED_OUT_RECORD_COUNT", 10)
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}"
         expect(response.body).to include('<span class="olderposts-pagenumber">')
@@ -459,6 +460,7 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "does not include current page link" do
+        stub_const("StoriesController::SIGNED_OUT_RECORD_COUNT", 10)
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}/page/2"
         expect(response.body).to include('<span class="olderposts-pagenumber">2')

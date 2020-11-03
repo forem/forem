@@ -14,13 +14,12 @@
   @media screen and (max-width: 949px) {
     .sidebar-wrapper {
       position: fixed;
-      top: 48px;
+      top: 0;
       left: 0;
       bottom: 0;
-      z-index: var(--z-drawer);
       overflow-y: auto;
       width: 200%;
-      height: calc(100% - 48px);
+      height: 100%;
       display: none;
       -webkit-overflow-scrolling: touch;
       .sidebar-bg {
@@ -35,6 +34,7 @@
       }
       &.swiped-in {
         display: block;
+        z-index: var(--z-drawer);
         .side-bar {
           display: block;
           background: var(--card-bg);
@@ -68,7 +68,6 @@
     line-height: 1.35em;
     display: none;
     position: relative;
-    z-index: var(--z-drawer);
     padding: 16px 0;
     box-sizing: border-box;
     color: var(--card-secondary-color);
