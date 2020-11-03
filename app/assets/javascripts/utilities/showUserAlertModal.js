@@ -43,7 +43,7 @@ const modalId = 'user-alert-modal';
  * HTML template for modal
  * 
  * @private
- * @function modalHTML
+ * @function getModalHtml
  * 
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
@@ -51,7 +51,7 @@ const modalId = 'user-alert-modal';
  * 
  * @returns {string} HTML for the modal
  */
-const modalHTML = (title, text, confirm_text) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal hidden">
+const getModalHtml = (title, text, confirm_text) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal hidden">
     <div role="dialog" aria-modal="true" class="crayons-modal__box">
       <div class="crayons-modal__box__header">
         <h2>${title}</h2>
@@ -120,7 +120,7 @@ function toggleUserAlertModal() {
 function buildModalDiv(title, text, confirm_text) {
   let modalDiv = document.getElementById(modalId);
   if (!modalDiv) {
-    modalDiv = buildModalHTML(title, text, confirm_text);
+    modalDiv = getModal(title, text, confirm_text);
     document.body.appendChild(modalDiv);
   }
   return modalDiv;
@@ -130,7 +130,7 @@ function buildModalDiv(title, text, confirm_text) {
  * Takes template HTML for a modal and creates a DOM node based on supplied arguments
  * 
  * @private
- * @function buildModalHTML
+ * @function getModal
  * 
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
@@ -138,8 +138,8 @@ function buildModalDiv(title, text, confirm_text) {
  * 
  * @returns {Element} DOM node of alert modal with formatted text
  */
-function buildModalHTML(title, text, confirm_text) {
+function getModal(title, text, confirm_text) {
   let wrapper = document.createElement('div');
-  wrapper.innerHTML= modalHTML(title, text, confirm_text);
+  wrapper.innerHTML= getModalHtml(title, text, confirm_text);
   return wrapper.firstChild;
 }

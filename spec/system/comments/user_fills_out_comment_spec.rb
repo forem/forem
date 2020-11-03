@@ -7,7 +7,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   let(:raw_comment) { Faker::Lorem.paragraph }
   let(:runkit_comment) { compose_runkit_comment "comment 1" }
   let(:runkit_comment2) { compose_runkit_comment "comment 2" }
-  let(:rate_limit_checker) { RateLimitChecker.new(user) }
+
 
   # the article should be created before signing in
   let!(:article) { create(:article, user_id: user.id, show_comments: true) }
@@ -25,18 +25,44 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     expect(page).to have_text(raw_comment)
   end
 
-  it "User makes too many comments" do
-    allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
-    allow(rate_limit_checker).to receive(:limit_by_action)
-      .with(:comment_creation)
-      .and_return(true)
+  context "when user makes too many comments" do
+    let(:rate_limit_checker) { RateLimitChecker.new(user) }
 
-    visit article.path.to_s
-    wait_for_javascript
+    before do
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+      allow(rate_limit_checker).to receive(:limit_by_action)
+        .with(:comment_creation)
+        .and_return(true)
+    end
 
-    fill_in "text-area", with: raw_comment
-    click_button("Submit")
-    expect(page).to have_text("Wait a Moment...")
+    it "displays a rate limit modal" do
+      visit article.path.to_s
+      wait_for_javascript
+
+      fill_in "text-area", with: raw_comment
+      click_button("Submit")
+      expect(page).to have_text("Wait a Moment...")
+    end
+
+    it "closes modal with close button" do
+      visit article.path.to_s
+      wait_for_javascript
+
+      fill_in "text-area", with: raw_comment
+      click_button("Submit")
+      click_button("Got it")
+      expect(page).not_to have_text("Wait a Moment...")
+    end
+
+    it "closes model with 'x' image button" do
+      visit article.path.to_s
+      wait_for_javascript
+
+      fill_in "text-area", with: raw_comment
+      click_button("Submit")
+      find(".crayons-modal__box__header").click_button
+      expect(page).not_to have_text("Wait a Moment...")
+    end
   end
 
   context "with Runkit tags" do
