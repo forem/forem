@@ -96,8 +96,8 @@
       <% if !@article.published %>
         <div class="crayons-notice crayons-notice--danger mb-4">
           <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
-          <% if user_signed_in? && policy(@article.object).update? %>
-            <a href="<%= @article.path %>/edit" class="fw-bold">Click to edit</a>.
+          <% if user_signed_in? %>
+            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none">Click to edit</a>
           <% end %>
         </div>
       <% end %>
