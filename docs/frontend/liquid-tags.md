@@ -58,6 +58,7 @@ Here is a bunch of liquid tags supported on Forem:
 {% kotlin https://pl.kotl.in/owreUFFUG %}
 {% wikipedia https://en.wikipedia.org/wiki/Wikipedia %}
 {% reddit https://www.reddit.com/r/aww/comments/ag3s4b/ive_waited_28_years_to_finally_havr_my_first_pet %}
+{% observablehq @d3/sortable-bar-chart?cell=viewof+order&cell=chart %}
 ```
 
 ## How liquid tags are developed

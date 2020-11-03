@@ -176,6 +176,19 @@
         <code>{% stackblitz ball-demo file=style.css %}</code>
       </dd>
     </dl>
+   <h3>Observablehq Notebook Embed</h3>
+    <p>To embed a public Observablehq notebook you need the notebook url. It can be the username and notebook title or just the notebook id (in case the notebook is shared and unlisted)</p>
+    <code>{% observablehq @d3/sortable-bar-chart %}</code>
+    <p> or</p>
+    <code>{% observablehq 09403b146bada149 %}</code>
+
+    <p> You can also specify named cells, following the official documentation
+      <a href="https://observablehq.com/@observablehq/introduction-to-embedding">Introduction to Embedding</a>
+    </p>
+    <code>{% observablehq @d3/sortable-bar-chart?cell=viewof+order&cell=chart %}</code>
+    <p> or </p>
+    <code>{% observablehq 09403b146bada149?cell=viewof+order&cell=chart %}</code>
+    <p> Obs: The embeds heights are not auto-resized on preview mode, the js only works after you publish your article. </p>
     <h3>CodeSandbox Embed</h3>
     <p>All you need is the ID of the Sandbox:</p>
     <code>{% codesandbox ppxnl191zx %}</code>

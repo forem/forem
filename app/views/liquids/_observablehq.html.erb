@@ -1,0 +1,30 @@
+<div class="observablehq-embed-wrap">
+      <iframe
+        id="<%= iframeid %>"
+        width="600"
+        style="width: 100%;"
+        frameborder="no"
+        allowtransparency="true"
+        loading="lazy"
+        src="<%== url %>"></iframe>
+      <script>
+        (function(){
+          function onMessage(msg) {
+              const iframe = document.getElementById("<%= iframeid %>");
+              let {data} = msg;
+              if (msg.source === iframe.contentWindow && typeof data === "string") {
+                try {
+                    data = JSON.parse(data);
+                } catch {
+                    return;
+                }
+              }
+              if (data.context === "iframe.resize") {
+              const {height} = data;
+              iframe.style.height = height + "px";
+              }
+          }
+          window.addEventListener("message", onMessage);
+        })();
+    </script>
+</div>
