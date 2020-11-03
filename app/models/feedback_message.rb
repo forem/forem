@@ -25,10 +25,6 @@ class FeedbackMessage < ApplicationRecord
     feedback_type == "abuse-reports"
   end
 
-  def capitalize_status
-    self.status = status.capitalize if status.present?
-  end
-
   def user_types(user_id)
     types = []
     types << "Affected" if user_id == affected_id

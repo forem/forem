@@ -77,7 +77,7 @@
      data-commentable-type="<%= @commentable.class.name %>">
   <% if @root_comment %>
     <div id="response-templates-data"></div>
-    <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
+    <%= javascript_packs_with_chunks_tag "responseTemplates", "fullScreenModeControl", defer: true %>
     <div class="top-level-actions">
       <h3>re: <%= @commentable.title %> <a href="<%= @commentable.path %>">VIEW POST</a></h3>
       <span class="comment-action-buttons">
@@ -127,6 +127,8 @@
 <% if has_vid?(@commentable) %>
   <%= render "articles/fitvids" %>
 <% end %>
+
+<div class="fullscreen-code js-fullscreen-code"></div>
 
 <script async>
   <%== TweetTag.script %>
