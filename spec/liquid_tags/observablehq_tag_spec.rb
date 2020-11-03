@@ -7,23 +7,6 @@ RSpec.describe ObservablehqTag, type: :liquid_template do
       Liquid::Template.parse("{% observablehq #{id} %}")
     end
 
-    it "accepts only ObservableHQ Notebooks patterns" do
-      badid = "fsffsfsf/sfsdfsdfsd"
-      expect do
-        generate_new_liquid(badid)
-      end.to raise_error(StandardError)
-
-      badid = "not a valid url"
-      expect do
-        generate_new_liquid(badid)
-      end.to raise_error(StandardError)
-
-      badid = "@d3"
-      expect do
-        generate_new_liquid(badid)
-      end.to raise_error(StandardError)
-    end
-
     def check(url, expected)
       expect(ObservablehqTag.parse_link(url)).to eq(expected)
     end

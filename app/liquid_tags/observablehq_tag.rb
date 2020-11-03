@@ -43,7 +43,7 @@ class ObservablehqTag < LiquidTagBase
       raise_error(the_input, "URL params")
     end
 
-    url
+    url.to_s
   end
 
   def self.raise_error(the_input, msg)
