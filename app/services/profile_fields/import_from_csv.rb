@@ -1,6 +1,6 @@
 module ProfileFields
   class ImportFromCsv
-    HEADERS = %i[label input_type placeholder_text description group].freeze
+    HEADERS = %i[label input_type placeholder_text description group display_area].freeze
 
     def self.call(file)
       CSV.foreach(file, headers: HEADERS, skip_blanks: true) do |row|
