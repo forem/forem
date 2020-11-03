@@ -53,7 +53,7 @@ export default class Chat extends Component {
     chatChannels: PropTypes.string.isRequired,
     chatOptions: PropTypes.string.isRequired,
     githubToken: PropTypes.string.isRequired,
-    tagModerator: PropTypes.object.isRequired,
+    tagModerator: PropTypes.shape({ isTagModerator: PropTypes.bool.isRequired }).isRequired,
   };
 
   constructor(props) {
