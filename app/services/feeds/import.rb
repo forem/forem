@@ -3,13 +3,13 @@
 # => add Feeds::ValidateFeedUrl to validate a single feed URL
 module Feeds
   class Import
-    def self.call
-      new.call
+    def self.call(users: nil)
+      new(users: users).call
     end
 
-    # TODO: add `users` param
-    def initialize
-      @users = User.where.not(feed_url: [nil, ""])
+    def initialize(users: nil)
+      # using nil here to avoid an unnecessary table count to check presence
+      @users = users || User.with_feed
 
       # NOTE: should these be configurable? Currently they are the result of empiric
       # tests trying to find a balance between memory occupation and speed
@@ -56,7 +56,10 @@ module Feeds
       data = batch_of_users.pluck(:id, :feed_url)
 
       result = Parallel.map(data, in_threads: num_fetchers) do |user_id, url|
-        response = HTTParty.get(url.strip, timeout: 10)
+        cleaned_url = url.to_s.strip
+        next if cleaned_url.blank?
+
+        response = HTTParty.get(cleaned_url, timeout: 10)
 
         [user_id, response.body]
       rescue StandardError => e

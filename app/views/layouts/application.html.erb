@@ -21,6 +21,47 @@
         <%= @hero_html.html_safe %>
       </div>
     <% end %>
+    
+    <meta name="page-cached-at" content="<%= Time.current.to_i %>">
+    <meta name="proper-stylesheet-crayons" content="<%= stylesheet_path "crayons" %>">
+    <meta name="proper-stylesheet-views" content="<%= stylesheet_path "views" %>">
+    <meta name="proper-stylesheet-minimal" content="<%= stylesheet_path "minimal" %>">
+    <meta name="proper-js-base" content="<%= javascript_url "base" %>">
+
+    <script defer>
+
+      // This area is designed to reconcile issues of mismatched caches stylesheets.
+      // Currently it handles a scenario where the head assets are out of date and need to be updated.
+      // There is a legitimate reverse scenario we do not yet handle where we *should* use the "out-of-date"
+      // content on the page, but since we may have issues persisting old stylesheets etc.
+      // this only handles the most troubling issues of pages that load with no styles.
+
+      var headCacheCheck = document.querySelector("meta[name='head-cached-at']");
+      var pageCacheCheck = document.querySelector("meta[name='page-cached-at']");
+      var headCrayonsPath = document.getElementById("main-crayons-stylesheet")
+      var headViewsPath = document.getElementById("main-views-stylesheet")
+      var headMinimalPath = document.getElementById("main-minimal-stylesheet")
+      var pageCrayonsPath = document.querySelector("meta[name='proper-stylesheet-crayons']");
+      var pageViewsPath = document.querySelector("meta[name='proper-stylesheet-views']");
+      var pageMinimalPath = document.querySelector("meta[name='proper-stylesheet-minimal']");
+
+      var headBaseJSPath = document.getElementById("main-base-javascript")
+      var pageBaseJSPath = document.querySelector("proper-js-base")
+
+      if (headCacheCheck && headCrayonsPath && // If these elements exist, we can proceed.
+        parseInt(pageCacheCheck) > parseInt(headCacheCheck) && // If page cached-at is larger than head cached-at
+        (pageCrayonsPath.content != headCrayonsPath.href || // If the head-cached values do not match page-cached, we replace
+         pageViewsPath.content != headViewsPath.href ||
+         pageMinimalPath.content != headMinimalPath.href ||
+         pageBaseJSPath.content != headBaseJSPath.href ||
+        )
+      ) {
+        headCrayonsPath.href = pageCrayonsPath.content
+        headViewsPath.href = pageViewsPath.content
+        headMinimalPath.href = pageMinimalPath.content
+        headBaseJSPath.src = pageBaseJSPath.content
+      }
+    </script>
     <%= yield %>
   </div>
 </div>
