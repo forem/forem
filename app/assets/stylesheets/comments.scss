@@ -123,7 +123,7 @@ a.header-link {
   }
 }
 
-.comments-container {
+._comments-container {
   padding-top: 10px;
   margin: auto;
   margin-bottom: var(--su-4);
@@ -234,42 +234,6 @@ a.header-link {
     }
   }
 
-  .comment-trees {
-    .comment-hash-marker {
-      margin-top: -45px;
-      margin-bottom: 45px;
-      border: 1px solid transparent;
-      z-index: var(--z-negative);
-      position: relative;
-      &:target + .single-comment-node {
-        animation-name: fade-out;
-        animation-duration: 5s;
-        animation-timing-function: ease-out;
-      }
-    }
-    .root-comment {
-      margin-top: -80px;
-      .comment-parent-link {
-        background: var(--card-bg);
-        @include themeable(
-          border,
-          theme-container-border,
-          1px solid $medium-gray
-        );
-        display: block;
-        padding: 9px 12px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 0.8em;
-        @include themeable(
-          background,
-          theme-container-accent-background,
-          lighten($lightest-gray, 1%)
-        );
-      }
-    }
-  }
   .comment-view-parent {
     margin-bottom: 7px;
     text-align: left;
