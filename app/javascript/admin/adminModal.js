@@ -17,7 +17,7 @@ const adminModal = (
   cancelBtnText,
   cancelBtnAction,
 ) => `
-  <div class="crayons-modal crayons-modal--s fixed">
+  <div class="crayons-modal crayons-modal--s">
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
         <p class="fw-bold fs-l">${title}</p>
