@@ -6,13 +6,13 @@
   height: var(--header-height);
   background: var(--header-bg);
   box-shadow: 0 1px 1px var(--header-shadow);
+  z-index: var(--z-sticky);
 
   .default-header & {
     position: fixed;
     top: 0px;
     left: 0px;
     right: 0px;
-    z-index: var(--z-sticky);
   }
 
   &__container {
