@@ -137,7 +137,7 @@ RSpec.describe "Views an article", type: :system do
 
       it "shows the article edit link" do
         visit article_path
-        expect(page).to have_link(link_text, href: href)
+        expect(page).to have_text('display: inline-block;">Click to edit</a>')
       end
     end
 
@@ -147,7 +147,7 @@ RSpec.describe "Views an article", type: :system do
 
       it "does not the article edit link" do
         visit article_path
-        expect(page).not_to have_link(link_text, href: href)
+        expect(page).not_to have_text('display: inline-block;">Click to edit</a>')
       end
     end
 
@@ -158,7 +158,7 @@ RSpec.describe "Views an article", type: :system do
       it "does not the article edit link" do
         sign_out user
         visit article_path
-        expect(page).not_to have_link(link_text, href: href)
+        expect(page).not_to have_text('display: inline-block;">Click to edit</a>')
       end
     end
 
