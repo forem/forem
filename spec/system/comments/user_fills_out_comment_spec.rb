@@ -7,6 +7,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   let(:raw_comment) { Faker::Lorem.paragraph }
   let(:runkit_comment) { compose_runkit_comment "comment 1" }
   let(:runkit_comment2) { compose_runkit_comment "comment 2" }
+  let(:rate_limit_checker) { RateLimitChecker.new(user) }
 
   # the article should be created before signing in
   let!(:article) { create(:article, user_id: user.id, show_comments: true) }
@@ -22,6 +23,20 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     fill_in "text-area", with: raw_comment
     click_button("Submit")
     expect(page).to have_text(raw_comment)
+  end
+
+  it "User makes too many comments" do
+    allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+    allow(rate_limit_checker).to receive(:limit_by_action)
+      .with(:comment_creation)
+      .and_return(true)
+
+    visit article.path.to_s
+    wait_for_javascript
+
+    fill_in "text-area", with: raw_comment
+    click_button("Submit")
+    expect(page).to have_text("Wait a Moment...")
   end
 
   context "with Runkit tags" do
