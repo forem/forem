@@ -1,56 +1,64 @@
-# Crayons
+# Introduction to Crayons
 
-Crayons is the design system of Forem. It will provide you everything you need
-to quickly design, build, and ship coherent experience and style across Forem.
+Crayons is the design system of Forem. Defining our design language and
+front-end approach, Crayons provides you everything you need to quickly design,
+build, and ship coherent experience and style across Forem.
 
-In other words - Crayons defines our design language and frontend approach.
+Crayons consists of libraries of:
 
-Crayons is a combination of:
+- **Components** to create reusable features and views, such as buttons, form
+  elements, tabs, and more.
 
-- **Components** to create features or views. Think of buttons, form elements,
-  tabs, etc.
+- **Utility-first CSS classes** to let developers write front-end code almost
+  without touching a single CSS file.
 
-- **Utility-first CSS classes** enabling developers to create frontend code
-  almost without touching CSS.
-  [Click here to read more about Utility-first CSS](https://www.notion.so/devto/Utility-First-CSS-19a8c3a74b3d4d23a802923be206aba9)
-  .
+---
 
-## How to best use Crayons?
+### How can I use Crayons?
 
-Imagine you have to build a new feature or a view. A designer will likely give
-you a mockup and there are several scenarios that can happen:
+There are a few scenarios how you can incorporate Crayons into your workflow.
+Depending on the scenario, you'll build the front-end using components,
+utility-first CSS classes, or both.
 
-- **Mockup uses existing components.** In that case you should be able to simply
-  copy and paste code responsible for rendering specific component and call it a
-  day.
+#### 1. I want to use existing components.
 
-- **Mockup uses existing components but they look customized a little.** You
-  have two options:
+A designer hands you a mockup featuring UI components that already exist. You
+can find the documented component here, copy and paste the code that renders the
+specific component, and call it a day.
 
-  - Copy and paste component code and customize it with _utility-first classes_
-    . It makes sense if you need to make small changes like increase padding,
-    make border thicker etc...
+#### 2. I want to use an existing component, but customize it a bit\*
 
-  - Consider extending existing component to support your case. This is more
-    time-consuming solution because you should make sure it's context-agnostic -
-    so it should work in any context, not only for your feature.
+A designer hands you a mockup featuring existing UI components with a small
+change to them; the padding is slightly different, the background color is
+different. There are two things you can do in this scenario:
 
-- **Mockup doesn't use existing components.** Looks like you will have to build
-  everything from scratch. And you have two options again:
+1. Implement the existing `component` and customize it with _utility-first
+   classes_. It makes sense if you need to make small changes like increase
+   padding, make border thicker etc...
 
-  - You may either build it using _utility-first classes_ , so you don't have to
-    be worried where to put CSS or how to structure it. _Utility-first classes_
-    should let you not only apply simple customizations like padding etc. but
-    they should let you also create entire views.
+2. Consider extending existing `component` to support your case. This is more
+   time-consuming solution because you should make sure it's context-agnostic -
+   so it should work in any context, not only for your feature.
 
-  - You can split your work - try to build some things with _utility-first
-    classes_ (so you can move on faster), but also consider building actual
-    reusable components.
+#### 3. I want to implement a view, but no existing components exist to help me build it.
 
-- **It's something completely new.** You probably think you'll have to write
-  tons of custom CSS and import your .scss file somewhere. Well, hopefully not.
-  As mentioned earlier, _utility-first classes_ let you create even complex
-  components without a single line of CSS. From a design point of view, this is
-  the preferred way to write frontend code instead of creating new SCSS files.
-  Every line of CSS you write, the more CSS we have to maintain, the more our
-  users have to download, and the more bytes we have to host.
+If this is the case, you will have to build everything from scratch. There are
+two ways you can do this:
+
+1. Build the view using `utility-first CSS classes`. This lets you avoid having
+   to create or work in any existing CSS files, and you can do anything from
+   applying simple padding styles to styling entire views.
+
+2. Build some of the view using both `utility-first CSS classes` and existing
+   `components. This will allow you to move more quickly.
+
+#### 4. I want to an entire view from scratch (whoa!)
+
+Think you have to write tons of custom CSS and import your .scss file somewhere?
+Think again.
+
+As mentioned earlier, `utility-first CSS classes` let you create even the most
+complex components without writing a single line of CSS. **We recommend choosing
+to write code using utility-first CSS over creating a new SCSS each time.**
+Every additional line of CSS you write translates to more CSS that we have to
+maintain, more CSS for our users to download, and more bytes for us to host.

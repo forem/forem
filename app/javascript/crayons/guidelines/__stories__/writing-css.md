@@ -1,18 +1,18 @@
-# Styling
+# Writing CSS
 
 If you ever end up writing your own CSS, it's worth to know several things.
 
-## Mobile first approach
+### Mobile first approach
 
 We try to write frontend code for mobile and then use media queries for bigger
 breakpoints. You can read more about it in Responsiveness section.
 
-## SCSS
+### SCSS
 
 We use SCSS as a CSS preprocessor. So you can use all the magic that SCSS
 offers.
 
-## CSS Variables
+### CSS Variables
 
 Even though we use SCSS, we prefer to use native CSS variables because they are
 more flexible. You should be able to view all variables we have in
@@ -23,7 +23,7 @@ Fun fact: there's one exception to that: responsiveness breakpoints. Since you
 can't use a CSS variables when defining a media query, this is the only case
 when we use SCSS variables. It's just easier.
 
-## Themes
+### Themes
 
 Forem support multiple themes so you should always test your work against all
 themes. We have a file with all color variables and each theme has its own too.
@@ -32,13 +32,13 @@ themes. We have a file with all color variables and each theme has its own too.
 
 - Other themes (minimal, night, pink, hacker): `app/assets/stylesheets/themes`
 
-## Import.scss
+### Import.scss
 
 When you create a new SCSS file you may want to import one file at the top of
 your new file: `app/assets/stylesheets/config/_import.scss` - it contains some
 helpers as well as breakpoint variables I mentioned earlier.
 
-## Folders
+### Folders
 
 You can access all of the SCSS files in `app/assets/stylesheets` folder.
 

@@ -4,44 +4,57 @@ import '../../storybook-utilities/designSystem.scss';
 
 import guidelinesDocs from './guidelines.md';
 import componentDocs from './components.md';
-import stylingDocs from './styling.md';
+import utilityFirstCssDocs from './utility-first-css.md';
+import writingCssDocs from './writing-css.md';
 
 export default {
-  title: '1_Guidelines',
+  title: 'Welcome',
 };
 
 export const Crayons = () => (
   <div
-    className="container"
+    className="crayons-card text-styles text-padding"
     // eslint-disable-next-line react/no-danger
     dangerouslySetInnerHTML={{ __html: guidelinesDocs }}
   />
 );
 
 Crayons.story = {
-  name: '1.1_Crayons',
+  name: 'Introduction',
 };
 
 export const Components = () => (
   <div
-    className="container"
+    className="crayons-card text-styles text-padding"
     // eslint-disable-next-line react/no-danger
     dangerouslySetInnerHTML={{ __html: componentDocs }}
   />
 );
 
 Components.story = {
-  name: '1.2_Components',
+  name: 'Components',
 };
 
-export const Styling = () => (
+export const UtilityFirstCss = () => (
   <div
-    className="container"
+    className="crayons-card text-styles text-padding"
     // eslint-disable-next-line react/no-danger
-    dangerouslySetInnerHTML={{ __html: stylingDocs }}
+    dangerouslySetInnerHTML={{ __html: utilityFirstCssDocs }}
   />
 );
 
-Styling.story = {
-  name: '1.3_Styling',
+UtilityFirstCss.story = {
+  name: 'Utility-First CSS',
+};
+
+export const WritingCss = () => (
+  <div
+    className="crayons-card text-styles text-padding"
+    // eslint-disable-next-line react/no-danger
+    dangerouslySetInnerHTML={{ __html: writingCssDocs }}
+  />
+);
+
+WritingCss.story = {
+  name: 'Writing CSS',
 };
