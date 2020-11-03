@@ -9,7 +9,7 @@ module Feeds
 
     def initialize(users: nil)
       # using nil here to avoid an unnecessary table count to check presence
-      @users = users.nil? ? User.with_feed : users
+      @users = users || User.with_feed
 
       # NOTE: should these be configurable? Currently they are the result of empiric
       # tests trying to find a balance between memory occupation and speed
