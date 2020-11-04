@@ -11,7 +11,7 @@ function DireactIntroMessages({ activeChannel }) {
         </a>
         {' are connected because you both follow each other. All interactions '}
         <em>
-          <b>must</b>
+          must
         </em>
         {' abide by the '}
         <a href="/code-of-conduct">code of conduct</a>.
