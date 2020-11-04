@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { addDecorator, addParameters } from '@storybook/preact';
+import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/crayons.scss';
@@ -73,5 +74,10 @@ addParameters({
       a[1].kind === b[1].kind
         ? 0
         : a[1].id.localeCompare(b[1].id, undefined, { numeric: true }),
+  },
+
+  docs: {
+    container: DocsContainer,
+    page: DocsPage,
   },
 });

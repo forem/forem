@@ -1,4 +1,4 @@
-# Introduction to Crayons
+# **Introduction to Crayons**
 
 Crayons is the design system of Forem. Defining our design language and
 front-end approach, Crayons provides you everything you need to quickly design,
@@ -14,7 +14,7 @@ Crayons consists of libraries of:
 
 ---
 
-### How can I use Crayons?
+### **How can I use Crayons?**
 
 There are a few scenarios how you can incorporate Crayons into your workflow.
 Depending on the scenario, you'll build the front-end using components,
@@ -26,7 +26,7 @@ A designer hands you a mockup featuring UI components that already exist. You
 can find the documented component here, copy and paste the code that renders the
 specific component, and call it a day.
 
-#### 2. I want to use an existing component, but customize it a bit\*
+#### 2. I want to use an existing component, but customize it a bit.
 
 A designer hands you a mockup featuring existing UI components with a small
 change to them; the padding is slightly different, the background color is
@@ -52,7 +52,7 @@ two ways you can do this:
 2. Build some of the view using both `utility-first CSS classes` and existing
    `components. This will allow you to move more quickly.
 
-#### 4. I want to an entire view from scratch (whoa!)
+#### 4. I want to an entire view from scratch (whoa!).
 
 Think you have to write tons of custom CSS and import your .scss file somewhere?
 Think again.
