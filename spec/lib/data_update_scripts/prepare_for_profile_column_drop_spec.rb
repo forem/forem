@@ -5,12 +5,13 @@ require Rails.root.join(
 
 describe DataUpdateScripts::PrepareForProfileColumnDrop do
   context "when using only DEV profile fields" do
-    it "migrates data from the user to the profile" do
-      user = create(:user)
+    it "migrates data from the user to the profile", :aggregate_failures do
+      summary = "I hack on profiles a lot"
+      user = create(:user, summary: summary)
 
-      expect do
-        described_class.new.run
-      end.to change { user.profile.reload.data.keys.size }.to(30)
+      expect(user.profile).not_to respond_to(:summary)
+      described_class.new.run
+      expect(user.profile.reload.summary).to eq(summary)
     end
   end
 
