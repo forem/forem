@@ -102,8 +102,8 @@ export default class ConfigController extends Controller {
 
   disableEmailAuthFromModal(event) {
     event.preventDefault();
-    this.disableEmailAuth();
-    this.closeAdminConfigModal();
+    this.disableEmailAuth(event);
+    this.closeAdminConfigModal(event);
   }
 
   disableEmailAuth(event) {
@@ -112,7 +112,7 @@ export default class ConfigController extends Controller {
     this.emailAuthSettingsBtnTarget.innerHTML = 'Enable';
     this.enabledIndicatorTarget.classList.remove('flex', 'items-center');
     this.enabledIndicatorTarget.classList.add('hidden');
-    this.hideEmailAuthSettings();
+    this.hideEmailAuthSettings(event);
   }
 
   // EMAIL AUTH FUNCTIONS END
@@ -121,11 +121,16 @@ export default class ConfigController extends Controller {
 
   enableOrEditAuthProvider(event) {
     event.preventDefault();
+    const provider = event.target.dataset.authProviderEnable;
+    const enabledIndicator = document.querySelector(
+      `#${provider}-enabled-indicator`,
+    );
     if (event.target.dataset.buttonText === 'enable') {
+      enabledIndicator.classList.add('flex', 'items-center');
+      enabledIndicator.classList.remove('hidden');
       event.target.setAttribute('data-enable-auth', 'true');
       this.listAuthToBeEnabled();
     }
-    const provider = event.target.dataset.authProviderEnable;
     document
       .querySelector(`#${provider}-auth-settings`)
       .classList.remove('hidden');
@@ -134,12 +139,18 @@ export default class ConfigController extends Controller {
 
   disableAuthProvider(event) {
     event.preventDefault();
+    const provider = event.target.dataset.authProvider;
+    const enabledIndicator = document.querySelector(
+      `#${provider}-enabled-indicator`,
+    );
     const authEnableButton = document.querySelector(
-      `[data-auth-provider-enable="${event.target.dataset.authProvider}"]`,
+      `[data-auth-provider-enable="${provider}"]`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
-    this.listAuthToBeEnabled();
-    this.hideAuthProviderSettings();
+    enabledIndicator.classList.remove('flex', 'items-center');
+    enabledIndicator.classList.add('hidden');
+    this.listAuthToBeEnabled(event);
+    this.hideAuthProviderSettings(event);
   }
 
   authProviderModalTitle(provider) {
@@ -173,8 +184,8 @@ export default class ConfigController extends Controller {
       `[data-auth-provider-enable="${event.target.dataset.authProvider}"]`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
-    this.listAuthToBeEnabled();
-    this.closeAdminConfigModal();
+    this.listAuthToBeEnabled(event);
+    this.closeAdminConfigModal(event);
   }
 
   hideAuthProviderSettings(event) {

@@ -273,12 +273,10 @@
                             <p class="config-authentication__item--label fw-medium <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
                               <%= provider.official_name %>
                             </p>
-                            <% if authentication_enabled_providers.include?(provider) %>
-                              <div class="mb-5 flex items-center">
-                                <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
-                                <small class="crayons-field__description ml-1">Enabled</small>
-                              </div>
-                            <% end %>
+                            <div id="<%= provider.provider_name %>-enabled-indicator" class="<%= authentication_enabled_providers.include?(provider) ? "flex items-center" : "hidden" %>">
+                              <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                              <small class="crayons-field__description ml-1">Enabled</small>
+                            </div>
                           </div>
                           <button
                             class="crayons-btn crayons-btn--secondary"
