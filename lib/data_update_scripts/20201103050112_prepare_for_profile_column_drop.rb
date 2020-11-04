@@ -12,7 +12,7 @@ module DataUpdateScripts
       User.includes(:profile).find_each do |user|
         profile = user.profile
         user_data = Profiles::ExtractData.call(user)
-        profile.update(data: profile.data.merge(user_data))
+        profile.update(data: profile.data.merge(user_data.compact))
       end
     end
   end
