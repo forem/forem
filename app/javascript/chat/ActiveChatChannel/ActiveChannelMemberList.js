@@ -44,8 +44,7 @@ function ActiveChannelMemberList({
                     'font-size': '16px',
                   }}
                 >
-                  {'@'}
-                  {user.username}
+                  {`@${user.username}`}
                   <p>{user.name}</p>
                 </span>
               </div>
