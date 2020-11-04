@@ -33,7 +33,7 @@ gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the Sta
 gem "doorkeeper", "~> 5.4" # Oauth 2 provider
 gem "elasticsearch", "~> 7.9" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
-gem "emoji_regex", "~> 3.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
+gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
@@ -69,7 +69,7 @@ gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.19" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with Elasticsearch to support http keep-alive connections
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
-gem "puma", "~> 5.0.2" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.0.4" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.4" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.3" # Pusher Push Notifications Ruby server SDK
@@ -91,8 +91,7 @@ gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
 gem "sidekiq", "~> 6.1.2" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 6.0.24" # Ensures that Sidekiq jobs are unique when enqueued
-gem "simpleidn", "~> 0.1" # Convert IDN domains to Punycode
+gem "sidekiq-unique-jobs", "~> 6.0.25" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system

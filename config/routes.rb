@@ -83,8 +83,12 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :profile_field_groups, only: %i[update create destroy]
-      resources :profile_fields, only: %i[index update create destroy]
+      # NOTE: @citizen428 The next two resources have a temporary constraint
+      # while profile generalization is still WIP
+      constraints(->(_request) { Flipper.enabled?(:profile_admin) }) do
+        resources :profile_field_groups, only: %i[update create destroy]
+        resources :profile_fields, only: %i[index update create destroy]
+      end
       resources :reactions, only: [:update]
       resources :response_templates, only: %i[index new edit create update destroy]
       resources :chat_channels, only: %i[index create update destroy] do
@@ -197,6 +201,11 @@ Rails.application.routes.draw do
         end
 
         resources :profile_images, only: %i[show], param: :username
+        resources :organizations, only: [] do
+          collection do
+            get "/:org_username", to: "organizations#show"
+          end
+        end
       end
     end
 
@@ -251,7 +260,6 @@ Rails.application.routes.draw do
         post "/update_or_create", to: "github_repos#update_or_create"
       end
     end
-    resources :buffered_articles, only: [:index]
     resources :events, only: %i[index show]
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
@@ -356,8 +364,6 @@ Rails.application.routes.draw do
 
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
-
-    get "/future", to: redirect("devteam/the-future-of-dev-160n")
 
     # Settings
     post "users/update_language_settings" => "users#update_language_settings"

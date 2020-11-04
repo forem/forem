@@ -65,7 +65,21 @@ module Admin
 
     def podcast_params
       allowed_params = %i[
-        title feed_url published
+        title
+        feed_url
+        description
+        itunes_url
+        overcast_url
+        android_url
+        soundcloud_url
+        website_url
+        twitter_username
+        pattern_image
+        main_color_hex
+        slug
+        image
+        reachable
+        published
       ]
       params.require(:podcast).permit(allowed_params)
     end
