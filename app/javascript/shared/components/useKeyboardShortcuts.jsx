@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "preact/hooks";
 import PropTypes from 'prop-types';
-import { h } from 'preact';
 
 /**
  * Checker that return true if element is a form element
