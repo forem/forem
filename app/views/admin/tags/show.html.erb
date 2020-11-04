@@ -15,13 +15,13 @@
       <h4 class="crayons-card__headline">Moderators</h4>
     </div>
     <div class="crayons-card__body flex flex-col gap-2">
-      <% if @tag.tag_moderator_ids.any? %>
+      <% if @tag_moderators.exists? %>
         <ul class="list-none">
-          <% @tag.tag_moderator_ids.each do |id| %>
+          <% @tag_moderators.each do |user| %>
               <li class="flex justify-between">
-                <a href="/<%= User.find_by(id: id)&.username %>">@<%= User.find_by(id: id)&.username %></a>
+                <a href="/<%= URL.user(user) %>">@<%= user.username %></a>
                 <%= form_with url: remove_tag_moderator_admin_tag_path(@tag.id), model: [:admin, @tag], method: :delete, data: { remote: false } do |f| %>
-                  <%= f.hidden_field :user_id, value: id %>
+                  <%= f.hidden_field :user_id, value: user.id %>
                   <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
                 <% end %>
               </li>

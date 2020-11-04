@@ -20,6 +20,7 @@ module Admin
 
     def show
       @tag = Tag.find(params[:id])
+      @tag_moderators = User.with_role(:tag_moderator, @tag).select(:id, :username)
       @badges_for_options = Badge.pluck(:title, :id)
     end
 
