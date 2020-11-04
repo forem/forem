@@ -153,7 +153,9 @@ export function KeyboardShortcuts({ shortcuts, eventTarget, options }) {
 
 KeyboardShortcuts.propTypes = {
   shortcuts: PropTypes.object.isRequired,
-  options: PropTypes.object,
+  options: PropTypes.shape({
+    timeout: PropTypes.number
+  }),
   eventTarget: PropTypes.instanceOf(Element)
 }
 
