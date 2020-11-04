@@ -35,7 +35,7 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
       log_in_user(user)
     end
 
-    it "logs in and renders the feed" do
+    xit "logs in and renders the feed" do
       expect(page).to have_current_path("/?signin=true")
       expect(page.html).not_to include("onboarding-container")
     end
