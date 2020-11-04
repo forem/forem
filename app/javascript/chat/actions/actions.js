@@ -1,7 +1,7 @@
 import { createDataHash } from '../util';
 import { request } from '../../utilities/http';
 
-export function sendMessage(messageObject, successCb, failureCb) {
+export async function sendMessage(messageObject, successCb, failureCb) {
   fetch('/messages', {
     method: 'POST',
     headers: {
