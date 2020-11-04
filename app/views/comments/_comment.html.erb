@@ -1,7 +1,7 @@
 <% if comment && comment.user %>
   <% if comment.depth < 3 && !should_be_hidden?(comment, @root_comment) %>
     <details open>
-      <summary><span>&nbsp;</span></summary>
+      <summary hidden><span>&nbsp;</span></summary>
       <%= render("comments/comment_proper",
                  comment: comment,
                  commentable: commentable,

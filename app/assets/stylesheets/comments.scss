@@ -265,7 +265,7 @@ a.header-link {
   }
 }
 
-.single-comment-node {
+._single-comment-node {
   padding: 2px 0px 0px $indent-distance;
   text-align: left;
   &.root {
@@ -674,7 +674,7 @@ a.header-link {
       }
     }
   }
-  .inner-comment {
+  ._inner-comment {
     padding: 0px;
     border: 1px solid $light-medium-gray;
     background: var(--card-bg);
@@ -736,4 +736,14 @@ a.header-link {
   &--subtitle {
     color: var(--base-60);
   }
+}
+
+.comment-deep-1 {
+  margin-left: var(--su-7);
+}
+.comment-deep-2 {
+  margin-left: calc(var(--su-7) * 2);
+}
+.comment-deep-3 {
+  margin-left: calc(var(--su-7) * 3);
 }
