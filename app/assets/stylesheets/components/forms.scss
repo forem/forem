@@ -86,6 +86,7 @@
   &--disabled,
   &[disabled] {
     @extend %form-styling-disabled;
+    cursor: not-allowed;
   }
 
   &--checked,

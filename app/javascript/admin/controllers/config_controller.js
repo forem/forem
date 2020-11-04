@@ -12,7 +12,7 @@ const emailAuthModalTitle = 'Disable email address registration';
 // TODO: Remove the sentence "You must update site config to save this action!"
 // once we build more robust flow for Admin/Config
 const emailAuthModalBody =
-  '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><br /><p>However, people who have already created an account using their email address can continue to login.</p><br /><p><strong>You must update site config to save this action!</strong></p>';
+  '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><p>However, people who have already created an account using their email address can continue to login.</p><p><strong>Please update site config to save this action.</strong></p>';
 
 export default class ConfigController extends Controller {
   static targets = [
@@ -20,6 +20,7 @@ export default class ConfigController extends Controller {
     'collectiveNoun',
     'configModalAnchor',
     'emailAuthSettingsBtn',
+    'enabledIndicator',
     'inviteOnlyMode',
     'requireCaptchaForEmailPasswordRegistration',
   ];
@@ -52,7 +53,6 @@ export default class ConfigController extends Controller {
 
   positionModalOnPage() {
     if (document.querySelector('.crayons-modal')) {
-      window.scrollTo(0, 0);
       document.body.style.height = '100vh';
       document.body.style.overflowY = 'hidden';
     }
@@ -74,6 +74,8 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
       emailSigninAndLoginCheckbox.checked = true;
+      this.enabledIndicatorTarget.classList.add('flex', 'items-center');
+      this.enabledIndicatorTarget.classList.remove('hidden');
     }
     this.emailAuthSettingsBtnTarget.classList.add('hidden');
     emailAuthSettingsSection.classList.remove('hidden');
@@ -90,7 +92,7 @@ export default class ConfigController extends Controller {
     this.configModalAnchorTarget.innerHTML = adminModal(
       emailAuthModalTitle,
       emailAuthModalBody,
-      'Confirm',
+      'Confirm disable',
       'disableEmailAuthFromModal',
       'Cancel',
       'closeAdminConfigModal',
@@ -100,13 +102,16 @@ export default class ConfigController extends Controller {
 
   disableEmailAuthFromModal(event) {
     event.preventDefault();
-    emailSigninAndLoginCheckbox.checked = false;
+    this.disableEmailAuth();
     this.closeAdminConfigModal();
   }
 
   disableEmailAuth(event) {
     event.preventDefault();
     emailSigninAndLoginCheckbox.checked = false;
+    this.emailAuthSettingsBtnTarget.innerHTML = 'Enable';
+    this.enabledIndicatorTarget.classList.remove('flex', 'items-center');
+    this.enabledIndicatorTarget.classList.add('hidden');
     this.hideEmailAuthSettings();
   }
 

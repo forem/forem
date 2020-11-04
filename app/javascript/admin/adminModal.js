@@ -21,7 +21,7 @@ const adminModal = (
   customAttr = null,
   customAttrValue = null,
 ) => `
-  <div class="crayons-modal crayons-modal--s absolute">
+  <div class="crayons-modal crayons-modal--s">
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
         <p class="fw-bold fs-l">${title}</p>
@@ -31,9 +31,9 @@ const adminModal = (
           </svg>
         </button>
       </header>
-      <div class="crayons-modal__box__body">
+      <div class="crayons-modal__box__body flex flex-col gap-4">
         ${body}
-        <div class="mt-6">
+        <div class="flex gap-2">
           <button
             class="crayons-btn crayons-btn--danger"
             data-action="click->config#${confirmBtnAction}"
