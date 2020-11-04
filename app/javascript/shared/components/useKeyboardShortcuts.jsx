@@ -127,7 +127,7 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = 
 }
 
 /**
- * component that can be added to a component to listen
+ * A component that can be added to a component to listen
  * for keyboard presses using the useKeyboardShortcuts hook
  *
  * @example
