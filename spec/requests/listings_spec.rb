@@ -46,7 +46,7 @@ RSpec.describe "/listings", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "has correct keys in the response" do
+    it "listings have correct keys" do
       get "/listings"
 
       parsed_response = Nokogiri.HTML(response.body)
