@@ -29,7 +29,7 @@ class DataUpdateScript < ApplicationRecord
 
     def filenames
       Dir.glob("*.rb", base: DIRECTORY).map do |f|
-        File.basename(".rb")
+        File.basename(f, ".rb")
       end
     end
 
