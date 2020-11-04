@@ -1,0 +1,18 @@
+<% if module_name.present? %>module <%= module_name %><% end -%>
+class <%= class_name %>
+  def self.call<%= signature %>
+    new<%= signature %>.call
+  end
+
+<%- if arguments.present? -%>
+  def initialize<%= signature %>
+<% arguments.each do |argument| -%>
+    <%= "@#{argument}" %> = <%= argument %>
+<% end -%>
+  end
+
+<% end -%>
+  def call
+  end
+end
+<% if module_name.present? %>end<% end -%>
