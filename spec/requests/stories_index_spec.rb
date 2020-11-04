@@ -487,6 +487,18 @@ RSpec.describe "StoriesIndex", type: :request do
         get "/t/#{tag.name}"
         expect(response.cookies["remember_user_token"]).to be nil
       end
+
+      it "has necessary asset reconciliation code" do
+        # Ensure code elements are available for fixing assets if necessary.
+        # app/views/layouts/_asset_reconciliation.html.erb
+        # Basic regression test to ensure we don't accidentally remove something we should not.
+
+        expect(response.body).to include('<meta name="head-cached-at"')
+        expect(response.body).to include('<meta name="page-cached-at"')
+        expect(response.body).to include('"main-crayons-stylesheet"')
+        expect(response.body).to include('"main-minimal-stylesheet"')
+        expect(response.body).to include("if (headCacheCheck && headCrayonsPath &&")
+      end
     end
   end
 
