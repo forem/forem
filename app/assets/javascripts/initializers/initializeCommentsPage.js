@@ -162,10 +162,10 @@ function addCommentDropdownFunctionality(user) {
       let shellData = shell.dataset
       let hideHTML = '';
       let hideAction = '';
-      if (user) {
-        if (user.id === shellData.commentableUserId && shellData.hidden === 'false') {
+      if (user && user.id === shellData.commentableUserId) {
+        if (shellData.hidden === 'false') {
           hideAction = 'hide'
-        } else if (user.id === shellData.commentableUserId) {
+        } else {
           hideAction = 'unhide'
         }  
         hideHTML = `<a href="#" class="crayons-link crayons-link--block hide-comment" data-hide-type="${hideAction}" data-comment-id="${shellData.commentId}">${capitalizeFirstLetter(hideAction)}</a>`
