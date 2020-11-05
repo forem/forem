@@ -1,4 +1,5 @@
 require "rails_helper"
+require "nokogiri"
 
 RSpec.describe "/listings", type: :request do
   let(:user) { create(:user) }
@@ -35,12 +36,29 @@ RSpec.describe "/listings", type: :request do
     before do
       sign_in user
       create_list(:credit, 25, user: user)
+      listing_params[:listing][:post_as_organization] = "1"
+      post "/listings", params: listing_params
     end
 
     it "returns text/html and has status 200" do
       get "/listings"
       expect(response.media_type).to eq("text/html")
       expect(response).to have_http_status(:ok)
+    end
+
+    it "listings have correct keys" do
+      get "/listings"
+
+      parsed_response = Nokogiri.HTML(response.body)
+
+      listings = JSON.parse(parsed_response.xpath("//*[@id='listings-index-container']")[0]["data-listings"])
+
+      index_keys = %w[
+        title processed_html tag_list id user_id slug contact_via_connect location bumped_at
+        originally_published_at author user
+      ]
+
+      expect(listings.first.keys).to match_array index_keys
     end
 
     context "when the user has no params" do

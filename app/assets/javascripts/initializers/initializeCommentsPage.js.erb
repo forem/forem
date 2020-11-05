@@ -252,7 +252,7 @@ function handleCommentSubmit(event) {
       } else {
         response.json().then(function parseError(errorReponse) {
           form.classList.remove('submitting');
-          window.alert(errorReponse.error); // eslint-disable-line no-alert
+          showRateLimitModal('made a comment', 'making another comment')
           return false;
         });
       }
