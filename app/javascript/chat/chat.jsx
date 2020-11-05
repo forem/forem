@@ -1160,7 +1160,6 @@ export default class Chat extends Component {
         );
       }
     }
-
     return messages[activeChannelId].map((message) =>
       message.action ? (
         <ActionMessage
@@ -1185,11 +1184,21 @@ export default class Chat extends Component {
           onContentTrigger={this.triggerActiveContent}
           onDeleteMessageTrigger={this.triggerDeleteMessage}
           onEditMessageTrigger={this.triggerEditMessage}
+          onReportMessageTrigger={this.triggerReportMessage}
         />
       ),
     );
   };
+  triggerReportMessage = (messageId) => {
+    const { activeChannelId, messages } = this.state;
 
+    this.setActiveContent({
+      data: messages[activeChannelId].find(
+        (message) => message.id === messageId,
+      ),
+      type_of: 'message-report-abuse',
+    });
+  };
   triggerChannelFilter = (e) => {
     const { channelTypeFilter } = this.state;
     const filters =

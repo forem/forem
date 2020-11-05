@@ -5,6 +5,7 @@ import ChannelRequest from './channelRequest';
 import RequestManager from './RequestManager/RequestManager';
 import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
 import Draw from './draw';
+import ReportAbuse from './ReportAbuse';
 
 const smartSvgIcon = (content, d) => (
   <svg
@@ -116,6 +117,8 @@ const Display = ({ resource }) => {
           handleLeavingChannel={resource.handleLeavingChannel}
         />
       );
+    case 'message-report-abuse':
+      return <ReportAbuse resource={resource.data} />;
     default:
       return null;
   }

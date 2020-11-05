@@ -1262,7 +1262,22 @@
     }
   }
 }
-
+.report__abuse__button {
+  width: 135px;
+}
+.reported__message {
+  border: 1px solid;
+  margin: 25px auto;
+  padding: 20px;
+  max-height: 300px;
+  overflow: scroll;
+}
+.reported__message__section {
+  position: absolute;
+  background: var(--card-secondary-bg);
+  margin: 10px;
+  font-weight: bold;
+}
 .membership-section {
   position: relative;
 
