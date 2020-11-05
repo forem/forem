@@ -104,10 +104,7 @@ Rails.application.routes.draw do
         end
       end
       resources :tags, only: %i[index update show] do
-        member do
-          patch "add_tag_moderator"
-          delete "remove_tag_moderator"
-        end
+        resource :moderator, only: %i[create destroy], module: "tags"
       end
       resources :users, only: %i[index show edit update] do
         member do
