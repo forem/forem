@@ -73,34 +73,37 @@
       </p>
     </center>
   <% end %>
-  <div class="container">
-    <div class="body">
-      <% if @episode.podcast.feed_url.include?("soundcloud") %>
-        <%= simple_format((@episode.processed_html || @episode.body), sanitize: true) %>
-      <% else %>
-        <%= sanitize (@episode.processed_html || ""),
-                     tags: %w[strong br em a table tbody thead tfoot th tr td col colgroup del p h1 h2 h3 h4 h5 h6 blockquote time div span i em u b ul ol li dd dl dt q code pre img sup cite center small],
-                     attributes: %w[href strong em class ref rel src title alt colspan height width size rowspan span value start data-conversation data-lang id] %>
-      <% end %>
-      <p style="font-size:16px;">
-        <a href="<%= @episode.website_url %>">Episode source</a>
-      </p>
-    </div>
-    <div
-      class="comments-container"
-      id="comments-container"
-      data-commentable-id="<%= @episode.id %>"
-      data-commentable-type="PodcastEpisode">
-      <%= render "/comments/form",
-                 commentable: @episode,
-                 commentable_type: "PodcastEpisode" %>
-      <div class="comment-trees" id="comment-trees-container">
-        <% Comment.tree_for(@episode, 12).each do |comment, sub_comments| %>
-          <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-            <%= tree_for(comment, sub_comments, @episode) %>
-          <% end %>
+
+  <div class="crayons-layout crayons-layout--limited-l gap-0">
+    <div class="crayons-card">
+      <div class="text-padding text-styles">
+        <% if @episode.podcast.feed_url.include?("soundcloud") %>
+          <%= simple_format((@episode.processed_html || @episode.body), sanitize: true) %>
+        <% else %>
+          <%= sanitize (@episode.processed_html || ""),
+                       tags: %w[strong br em a table tbody thead tfoot th tr td col colgroup del p h1 h2 h3 h4 h5 h6 blockquote time div span i em u b ul ol li dd dl dt q code pre img sup cite center small],
+                       attributes: %w[href strong em class ref rel src title alt colspan height width size rowspan span value start data-conversation data-lang id] %>
         <% end %>
+
+        <p><a href="<%= @episode.website_url %>">Episode source</a></p>
       </div>
+
+      <section
+        class="comments-container text-padding"
+        id="comments-container"
+        data-commentable-id="<%= @episode.id %>"
+        data-commentable-type="PodcastEpisode">
+        <%= render "/comments/form",
+                   commentable: @episode,
+                   commentable_type: "PodcastEpisode" %>
+        <div class="comment-trees" id="comment-trees-container">
+          <% Comment.tree_for(@episode, 12).each do |comment, sub_comments| %>
+            <% cache ["comment_root_#{user_signed_in?}", comment] do %>
+              <%= tree_for(comment, sub_comments, @episode) %>
+            <% end %>
+          <% end %>
+        </div>
+      </section>
     </div>
   </div>
 </div>
