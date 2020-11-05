@@ -6,7 +6,10 @@
   <div class="crayons-notice crayons-notice--danger mb-10 mt-8 mx-auto" style="width: 680px;max-width:94%;">
     Email authentication is not enabled for this Forem.
   </div>
-<% elsif SiteConfig.waiting_on_first_user %>
+<% elsif forem_creator_flow_enabled? %>
+  <%= render "shared/authentication/forem_creator_signup" %>
+<% elsif waiting_on_first_user? %>
+  <%# TODO: Vaidehi Joshi - Delete this view once forem creator onboarding is shipped %>
   <%= render "shared/authentication/initial_account_wizard" %>
 <% else %>
   <%= render "devise/shared/authorization_error" %>

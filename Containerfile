@@ -59,4 +59,4 @@ VOLUME "${APP_HOME}"/public/
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
-CMD ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]

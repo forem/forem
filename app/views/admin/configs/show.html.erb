@@ -137,22 +137,122 @@
             <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
               <section class="mb-6">
                 <h3 class="crayons-subtitle-3 mb-3">
-                  General
+                  General settings
                 </h3>
-                <div class="form-group">
-                  <div class="crayons-field--checkbox">
-                    <%= f.check_box :invite_only_mode, checked: SiteConfig.invite_only_mode, data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" }, class: "crayons-checkbox" %>
-                    <div class="mt-0">
-                      <%= admin_config_label :invite_only_mode %>
-                      <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
-                    </div>
+                <div class="crayons-field crayons-field--checkbox <%= !SiteConfig.allow_both_email_signup_and_login ? "crayons-tooltip" : "" %>"
+                  data-tooltip="<%= !SiteConfig.allow_both_email_signup_and_login ? "To enable this, you must first enable Email Address as a registration option" : "" %>">
+                  <%= f.check_box :invite_only_mode,
+                                  checked: SiteConfig.invite_only_mode,
+                                  disabled: !SiteConfig.allow_both_email_signup_and_login,
+                                  data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" },
+                                  class: "crayons-checkbox #{!SiteConfig.allow_both_email_signup_and_login ? 'crayons-checkbox--disabled' : ''}" %>
+                  <div class="mt-0">
+                    <%= admin_config_label :invite_only_mode, "Invite-only mode" %>
+                    <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
                   </div>
                 </div>
               </section>
               <section>
-                <h3 class="crayons-subtitle-3 mb-3">
-                  Authentication methods
-                </h3>
+                <header class="mb-2">
+                  <h3 class="crayons-subtitle-3">
+                    Registration options
+                  </h3>
+                  <p class="crayons-field__description">
+                    How can people create an account on your community?
+                  </p>
+                </header>
+
+                <section class="config-authentication__item">
+                  <figure class="config-authentication__item--icon">
+                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Email icon") %>
+                  </figure>
+                  <div class="config-authentication__item--container">
+                    <div class="config-authentication__item--row flex items-center justify-between">
+
+                      <div class="config-authentication__item--label">
+                        <p class="crayons-field__label <%= SiteConfig.allow_both_email_signup_and_login ? "pb-0" : "" %>">
+                          Email address
+                        </p>
+                        <div class="<%= SiteConfig.allow_both_email_signup_and_login ? "flex items-center" : "hidden" %>" data-target="config.enabledIndicator">
+                          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                          <small class="crayons-field__description ml-1">Enabled</small>
+                        </div>
+                      </div>
+
+                      <button
+                        class="crayons-btn crayons-btn--secondary"
+                        data-button-text="<%= SiteConfig.allow_both_email_signup_and_login ? "edit" : "enable" %>"
+                        data-target="config.emailAuthSettingsBtn"
+                        data-action="click->config#enableOrEditEmailAuthSettings">
+                        <%= SiteConfig.allow_both_email_signup_and_login ? "Edit" : "Enable" %>
+                      </button>
+
+                    </div>
+                    <div id="email-auth-settings-section" class="config-authentication__item--body hidden">
+                      <fieldset class="config-authentication-form">
+                        <div class="crayons-field--checkbox hidden">
+                          <%= f.check_box :allow_both_email_signup_and_login,
+                                          checked: SiteConfig.allow_both_email_signup_and_login,
+                                          id: "email-signup-and-login-checkbox",
+                                          class: "crayons-checkbox" %>
+                        </div>
+                        <div class="crayons-field--checkbox">
+                          <%= f.check_box :require_captcha_for_email_password_registration,
+                                          checked: SiteConfig.require_captcha_for_email_password_registration,
+                                          data: { action: "config#toggleGoogleRecaptchaFields", target: "config.requireCaptchaForEmailPasswordRegistration" },
+                                          class: "crayons-checkbox mt-2" %>
+                          <div>
+                            <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration" %>
+                            <%= admin_config_description Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %>
+                          </div>
+                        </div>
+                        <div id="recaptchaContainer" class="ml-7 <%= SiteConfig.require_captcha_for_email_password_registration ? "flex flex-col gap-4" : "hidden" %>" aria-labelledby="recaptchaContainer">
+                          <div class="crayons-field">
+                            <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
+                            <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
+                            <%= f.text_field :recaptcha_site_key,
+                                             class: "crayons-textfield",
+                                             value: SiteConfig.recaptcha_site_key,
+                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_site_key][:placeholder] %>
+                          </div>
+                          <div class="crayons-field">
+                            <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key" %>
+                            <%= admin_config_description Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %>
+                            <%= f.text_field :recaptcha_secret_key,
+                                             class: "crayons-textfield",
+                                             value: SiteConfig.recaptcha_secret_key,
+                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
+                          </div>
+                        </div>
+                        <div class="flex gap-2">
+                          <% if SiteConfig.allow_both_email_signup_and_login %>
+                            <button
+                              class="crayons-btn crayons-btn--danger <%= disable_email_tooltip_class %>"
+                              data-action="click->config#activateEmailAuthModal"
+                              data-tooltip="<%= disable_email_tooltip_content %>"
+                              <%= disable_button_class %>>
+                              Disable
+                            </button>
+                          <% end %>
+                          <% if SiteConfig.allow_both_email_signup_and_login %>
+                            <button
+                              class="crayons-btn crayons-btn--secondary"
+                              data-action="click->config#hideEmailAuthSettings">
+                              Close
+                            </button>
+                          <% else %>
+                            <button
+                              class="crayons-btn crayons-btn--secondary"
+                              data-action="click->config#disableEmailAuth">
+                              Undo
+                            </button>
+                          <% end %>
+                        </div>
+                      </fieldset>
+                    </div>
+                  </div>
+                </section>
+
                 <div class="form-group">
                   <%= admin_config_label :authentication_providers %>
                   <p class="crayons-field__description">
@@ -169,75 +269,6 @@
                                  class: "form-control selectpicker",
                                  data: { target: "config.authenticationProviders" } %>
                 </div>
-
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Email address and password
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field--checkbox">
-                          <%= f.check_box :allow_email_password_registration, checked: SiteConfig.allow_email_password_registration, class: "crayons-checkbox" %>
-                          <div>
-                            <%= admin_config_label :allow_email_password_registration %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_registration][:description] %>
-                            </p>
-                          </div>
-                        </div>
-                        <div class="crayons-field--checkbox">
-                          <%= f.check_box :allow_email_password_login, checked: SiteConfig.allow_email_password_login, class: "crayons-checkbox" %>
-                          <div>
-                            <%= admin_config_label :allow_email_password_login %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:allow_email_password_login][:description] %>
-                            </p>
-                          </div>
-                        </div>
-                        <div class="crayons-field--checkbox">
-                          <%= f.check_box :require_captcha_for_email_password_registration,
-                                          checked: SiteConfig.require_captcha_for_email_password_registration,
-                                          data: { action: "config#toggleGoogleRecaptchaFields", target: "config.requireCaptchaForEmailPasswordRegistration" },
-                                          class: "crayons-checkbox" %>
-                          <div>
-                            <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration" %>
-                            <p class="crayons-field__description">
-                              <%= Constants::SiteConfig::DETAILS[:require_captcha_for_email_password_registration][:description] %>
-                            </p>
-                          </div>
-                        </div>
-                        <div id="recaptchaContainer" class="<%= SiteConfig.require_captcha_for_email_password_registration ? "" : "collapse" %> ml-7" aria-labelledby="recaptchaContainer">
-                          <div class="form-group">
-                            <%= admin_config_label :recaptcha_site_key, "Google reCAPTCHA site key" %>
-                            <p class="crayons-field__description mb-1">
-                              <%= Constants::SiteConfig::DETAILS[:recaptcha_site_key][:description] %>
-                            </p>
-                            <%= f.text_field :recaptcha_site_key,
-                                             class: "form-control",
-                                             value: SiteConfig.recaptcha_site_key,
-                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_site_key][:placeholder] %>
-                          </div>
-                          <div class="form-group">
-                            <%= admin_config_label :recaptcha_secret_key, "Google reCAPTCHA secret key" %>
-                            <p class="crayons-field__description mb-1">
-                              <%= Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:description] %>
-                            </p>
-                            <%= f.text_field :recaptcha_secret_key,
-                                             class: "form-control",
-                                             value: SiteConfig.recaptcha_secret_key,
-                                             placeholder: Constants::SiteConfig::DETAILS[:recaptcha_secret_key][:placeholder] %>
-                          </div>
-                        </div>
-                      </fieldset>
-                    </div>
-                  </div>
-                </section>
 
                 <section class="config-authentication__item">
                   <figure class="config-authentication__item--icon">
@@ -461,6 +492,19 @@
                                    class: "crayons-textfield",
                                    value: SiteConfig.community_name,
                                    placeholder: Constants::SiteConfig::DETAILS[:community_name][:placeholder] %>
+                </div>
+
+                <div class="crayons-field">
+                  <%= admin_config_label :collective_noun %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:collective_noun][:description] %>
+                  <%= f.text_field :collective_noun,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.collective_noun,
+                                   placeholder: Constants::SiteConfig::DETAILS[:collective_noun][:placeholder],
+                                   disabled: SiteConfig.collective_noun_disabled,
+                                   data: { target: "config.collectiveNoun" } %>
+                  <%= admin_config_label :collective_noun_disabled %>
+                  <%= f.check_box :collective_noun_disabled, checked: SiteConfig.collective_noun_disabled, data: { action: "config#disableTargetField", disable_target: "collectiveNoun" }, class: "crayons-checkbox" %>
                 </div>
 
                 <div class="crayons-field">
@@ -755,7 +799,7 @@
                                    value: SiteConfig.logo_png,
                                    placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
                   <% if SiteConfig.logo_png.present? %>
-                    <img class="preview" src="<%= SiteConfig.logo_png %>" />
+                    <img src="<%= SiteConfig.logo_png %>" width="128" height="128" />
                   <% end %>
                 </div>
 
@@ -1096,6 +1140,16 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:suggested_users][:placeholder] %>
                 </div>
 
+                <div class="crayons-field crayons-field--checkbox">
+                  <%= f.check_box :prefer_manual_suggested_users, checked: SiteConfig.prefer_manual_suggested_users, class: "crayons-checkbox" %>
+                  <div class="mt-0">
+                    <%= admin_config_label :prefer_manual_suggested_users %>
+                    <p class="crayons-field__description">
+                      <%= Constants::SiteConfig::DETAILS[:prefer_manual_suggested_users][:description] %>
+                    </p>
+                  </div>
+                </div>
+
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>
@@ -1315,4 +1369,5 @@
       </div>
     </div>
   </div>
+  <div data-target="config.configModalAnchor"></div>
 </div>

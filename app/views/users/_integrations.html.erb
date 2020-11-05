@@ -1,6 +1,6 @@
 <%= render partial: "users/integrations_github_repositories", locals: { show_integration: @github_repositories_show } %>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h3>Generate a personal blog from your <%= community_name %> posts</h3>
   <div class="single-app-integration">
     <% if current_user.decorate.stackbit_integration? %>

@@ -23,14 +23,25 @@ module Admin
 
     def update
       @page = Page.find(params[:id])
-      @page.update!(page_params)
-      redirect_to "/admin/pages"
+      @page.assign_attributes(page_params)
+      if @page.valid?
+        @page.update!(page_params)
+        redirect_to admin_pages_path
+      else
+        flash.now[:error] = @page.errors_as_sentence
+        render :edit
+      end
     end
 
     def create
       @page = Page.new(page_params)
-      @page.save!
-      redirect_to "/admin/pages"
+      if @page.valid?
+        @page.save!
+        redirect_to admin_pages_path
+      else
+        flash.now[:error] = @page.errors_as_sentence
+        render :new
+      end
     end
 
     def destroy

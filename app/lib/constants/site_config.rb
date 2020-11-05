@@ -4,14 +4,6 @@ module Constants
     SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
     DETAILS = {
-      allow_email_password_registration: {
-        description: "People can sign up using their email and password",
-        placeholder: ""
-      },
-      allow_email_password_login: {
-        description: "People can login using their email and password",
-        placeholder: ""
-      },
       require_captcha_for_email_password_registration: {
         description: "People will be required to fill out a captcha when
           they're creating a new account in your community",
@@ -48,6 +40,10 @@ module Constants
       campaign_url: {
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
+      },
+      collective_noun: {
+        description: "Used to describe your collective identity.",
+        placeholder: "Herd"
       },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
@@ -299,10 +295,14 @@ module Constants
         placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin"
       },
       suggested_users: {
-        description: "Determines which users are suggested to follow to new users during onboarding (comma" \
-        "separated, letters only). Please note that these users will be shown as a fallback if no" \
+        description: "Determines which users are suggested to follow to new users during onboarding (comma " \
+        "separated, letters only). Please note that these users will be shown as a fallback if no " \
         "recently-active commenters or producers can be suggested",
         placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
+      },
+      prefer_manual_suggested_users: {
+        description: "Always show suggested users as suggested people to follow even when " \
+        "auto-suggestion is available"
       },
       tag_feed_minimum_score: {
         description: "Minimum score needed for a post to show up on default tag page.",

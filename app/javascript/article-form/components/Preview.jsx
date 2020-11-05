@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { useEffect } from 'preact/hooks';
 import { ErrorList } from './ErrorList';
 
 function titleArea(previewResponse, articleState, errors) {
@@ -68,6 +69,12 @@ const previewResponsePropTypes = PropTypes.shape({
 });
 
 export const Preview = ({ previewResponse, articleState, errors }) => {
+  useEffect(() => {
+    if (previewResponse.processed_html.includes('twitter-timeline')) {
+      attachTwitterTimelineScript();
+    }
+  }, [previewResponse]);
+
   return (
     <div className="crayons-article-form__content crayons-card">
       <article className="crayons-article">
@@ -83,6 +90,16 @@ export const Preview = ({ previewResponse, articleState, errors }) => {
     </div>
   );
 };
+
+function attachTwitterTimelineScript() {
+  const script = document.createElement('script');
+  script.src = 'https://platform.twitter.com/widgets.js';
+  script.async = true;
+  document.body.appendChild(script);
+  return () => {
+    document.body.removeChild(script);
+  };
+}
 
 Preview.propTypes = {
   previewResponse: previewResponsePropTypes.isRequired,

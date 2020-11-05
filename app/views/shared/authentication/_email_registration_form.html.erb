@@ -20,6 +20,12 @@
           </ul>
         </div>
       </div>
+    <% elsif forem_creator_flow_enabled? %>
+      <%# TODO: Vaidehi Joshi - Extract this into its own form %>
+      <div class="align-center">
+        <p class="pb-4 fw-bold">Almost there!</p>
+        <p class="registration__description">Let's create an admin account for your community.</p>
+      </div>
     <% else %>
       <p class="pb-4 fw-bold">Create your account</p>
     <% end %>
@@ -69,8 +75,16 @@
         <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>
       </div>
     <% end %>
-    <div class="actions pt-3">
-      <%= f.submit "Sign up", class: "crayons-btn" %>
-    </div>
+
+    <% if forem_creator_flow_enabled? %>
+      <%# TODO: Vaidehi Joshi - Extract this into its own form %>
+      <div class="flex flex-col pt-3">
+        <%= f.submit "Create admin account", class: "crayons-btn" %>
+      </div>
+    <% else %>
+      <div class="actions pt-3">
+        <%= f.submit "Sign up", class: "crayons-btn" %>
+      </div>
+    <% end %>
   <% end %>
 </div>

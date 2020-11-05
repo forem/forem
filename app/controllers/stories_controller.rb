@@ -12,7 +12,7 @@ class StoriesController < ApplicationController
     ]
   }.freeze
 
-  SIGNED_OUT_RECORD_COUNT = (Rails.env.production? ? 60 : 10).freeze
+  SIGNED_OUT_RECORD_COUNT = 60
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
@@ -344,11 +344,10 @@ class StoriesController < ApplicationController
   def assign_podcasts
     return unless user_signed_in?
 
-    num_hours = Rails.env.production? ? 24 : 2400
     @podcast_episodes = PodcastEpisode
       .includes(:podcast)
       .order(published_at: :desc)
-      .where("published_at > ?", num_hours.hours.ago)
+      .where("published_at > ?", 24.hours.ago)
       .select(:slug, :title, :podcast_id, :image)
   end
 
