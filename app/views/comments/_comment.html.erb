@@ -5,7 +5,7 @@
         comment-wrapper
         js-comment-wrapper
         comment--deep-<%= comment.depth %>
-        <%= "comment--too-deep" if comment.depth > 4 %>
+        <%= "comment--too-deep" if comment.depth >= 4 %>
         <%= comment_class(comment, is_view_root: is_view_root) %>
       "
       open>
