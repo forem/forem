@@ -133,6 +133,7 @@ module Admin
 
     before_action :extra_authorization_and_confirmation, only: [:create]
     before_action :validate_inputs, only: [:create]
+    before_action :validate_image_urls, only: [:create]
     after_action :bust_content_change_caches, only: [:create]
 
     def show
@@ -202,6 +203,12 @@ module Admin
       redirect_to admin_config_path, alert: "😭 #{errors.join(',')}" if errors.any?
     end
 
+    def validate_image_urls
+      errors = []
+      errors << "Image URL must be a valid URL" unless valid_image_url
+      redirect_to admin_config_path, alert: "😭 #{errors.join(',')}" if errors.any?
+    end
+
     def clean_up_params
       config = params[:site_config]
       return unless config
@@ -232,6 +239,14 @@ module Admin
     def brand_color_not_hex
       hex = params.dig(:site_config, :primary_brand_color_hex)
       hex.present? && !hex.match?(/\A#(\h{6}|\h{3})\z/)
+    end
+
+    def valid_image_url
+      image_url = params.dig(:site_config, :main_social_image) ||
+        params.dig(:site_config, :logo_png) ||
+        params.dig(:site_config, :secondary_logo_url)
+      valid_url = %r{\A(https:)//([/|.|\w|\s|-])*\.(?:jpg|gif|png)/}
+      image_url.present? && image_url.match?(valid_url)
     end
   end
 end
