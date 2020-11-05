@@ -158,7 +158,7 @@ export default class ConfigController extends Controller {
   }
 
   authProviderModalBody(provider) {
-    return `<p>If you disable ${provider} as a login option, people cannot authenticate with ${provider}.</p><p><strong>You must update site config to save this action!</strong></p>`;
+    return `<p>If you disable ${provider} as a login option, people cannot authenticate with ${provider}.</p><p><strong>You must update Site Config to save this action!</strong></p>`;
   }
 
   activateAuthProviderModal(event) {
