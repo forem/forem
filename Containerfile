@@ -1,4 +1,4 @@
-FROM quay.io/forem/ruby:2.7.1
+FROM quay.io/forem/ruby:2.7.2
 
 USER root
 
