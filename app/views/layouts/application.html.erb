@@ -21,9 +21,8 @@
         <%= @hero_html.html_safe %>
       </div>
     <% end %>
-    
-    <%= render "layouts/asset_reconciliation" %>
     <%= yield %>
+    <%= render "layouts/asset_reconciliation" %>
   </div>
 </div>
 <%= render "shell/bottom" %>
