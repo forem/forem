@@ -97,8 +97,7 @@ RSpec.describe EdgeCache::Bust, type: :service do
   end
 
   def stub_nginx
-    allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return(nil)
-    allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return(nil)
+    allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_URL").and_return(nil)
   end
 
   def configure_fastly
@@ -108,7 +107,6 @@ RSpec.describe EdgeCache::Bust, type: :service do
   end
 
   def configure_nginx
-    allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_PROTOCOL").and_return("http://")
-    allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_DOMAIN").and_return("localhost:9090")
+    allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_URL").and_return("http://localhost:9090")
   end
 end
