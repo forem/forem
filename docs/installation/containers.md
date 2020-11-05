@@ -111,14 +111,14 @@ The script executes the following steps:
 
   ![docker gui](https://user-images.githubusercontent.com/47985/74210448-b63b7c80-4c83-11ea-959b-02249b2a6952.png)
 
-- In case `rails server` doesn't start with the following message:
+- In case `rails server` starts with the following message:
 
-  ```
+  ```shell
   Data update scripts need to be run before you can start the application. Please run rails data_updates:run (RuntimeError)
   ```
 
   run the following command:
 
   ```shell
-  docker-compose run web rails data_updates:run
+  docker-compose run rails rails data_updates:run
   ```
