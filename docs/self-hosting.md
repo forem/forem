@@ -11,7 +11,7 @@ platform.
 
 We aren't quite ready for mainstream adoption of our platform,
 [Forem](https://forem.com), but that hasn't stopped some adventurous developers
-from starting up new communities.
+from standing up new communities.
 
 This page is designed to serve as an FAQ and a checklist of considerations that
 are relevant to the goal of eventually hosting your own version of our community
@@ -35,7 +35,7 @@ platform.
   section. These licenses are specific to the Forem/DEV project, and may not
   extend to self-hosted versions.
 
-### I want to start up my own entity using the Forem codebase, how can I help?
+### I want to stand up my own entity using the Forem codebase, how can I help?
 
 - You can help us to generalize the code by removing DEV-specific language and
   images and replacing them with environment variables or database tables as
