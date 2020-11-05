@@ -244,7 +244,13 @@ module Admin
     def valid_image_url
       image_url = params.dig(:site_config, :main_social_image) ||
         params.dig(:site_config, :logo_png) ||
-        params.dig(:site_config, :secondary_logo_url)
+        params.dig(:site_config, :secondary_logo_url) ||
+        params.dig(:site_config, :campaign_sidebar_image) ||
+        params.dig(:site_config, :mascot_image_url) ||
+        params.dig(:site_config, :mascot_footer_image_url) ||
+        params.dig(:site_config, :onboarding_logo_image) ||
+        params.dig(:site_config, :onboarding_background_image) ||
+        params.dig(:site_config, :onboarding_taskcard_image)
       valid_url = %r{\A(https:)//([/|.|\w|\s|-])*\.(?:jpg|gif|png)/}
       image_url.present? && image_url.match?(valid_url)
     end
