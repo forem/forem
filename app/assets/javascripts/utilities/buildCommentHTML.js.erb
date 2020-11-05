@@ -12,13 +12,13 @@ function buildCommentHTML(comment) {
   var commentBody = "";
 
   if (!comment.newly_created) {
-    depthClass="child flat-node"
+    depthClass="child comment--too-deep"
   } else if (comment.depth == 0 ){
     depthClass = "root";
   } else if (comment.depth < 4) {
     depthClass="child"
   } else {
-    depthClass="child flat-node"
+    depthClass="child comment--too-deep"
   }
   if (comment.newly_created) {
     customClass = "comment-created-via-fetch"
