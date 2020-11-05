@@ -26,9 +26,9 @@ module EdgeCache
 
         return true if response.is_a?(Net::HTTPSuccess)
       rescue StandardError
-        # If we can't connect to Openresty, alert ourselves that
+        # If we can't connect to OpenResty, alert ourselves that
         # it is unavailable and return false.
-        Rails.logger.error("Could not connect to Openresty via #{ApplicationConfig['OPENRESTY_URL']}!")
+        Rails.logger.error("Could not connect to OpenResty via #{ApplicationConfig['OPENRESTY_URL']}!")
         DatadogStatsClient.increment("edgecache_bust.service_unavailable",
                                      tags: ["path:#{ApplicationConfig['OPENRESTY_URL']}"])
         false
