@@ -137,12 +137,12 @@ function initializeCommentsPage() {
             showModal('reply-to-comment');
             return;
           }
-          var parentId = event.target.dataset.commentId;
+          var parentId = event.target.closest('.comment').dataset.commentId;
           var waitingOnCSRF = setInterval(function () {
             var metaTag = document.querySelector("meta[name='csrf-token']");
             if (metaTag) {
               clearInterval(waitingOnCSRF);
-              commentWrapper = event.target.closest('.inner-comment');
+              commentWrapper = event.target.closest('.comment__details');
               commentWrapper.classList.add("replying");
               commentWrapper.innerHTML += buildCommentFormHTML(commentableId, commentableType, parentId);
               initializeCommentsPage();
@@ -156,14 +156,7 @@ function initializeCommentsPage() {
         return false;
       }
     }
-    var editButts = document.getElementsByClassName('edit-butt');
-    for (var i = 0; i < editButts.length; i++) {
-      var butt = editButts[i];
-      butt.onclick = function () {
-        // event.preventDefault();
-        // alert("edit clicked!")
-      };
-    }
+
     if (document.getElementById('new_comment')) {
       document.getElementById('new_comment').addEventListener('submit', handleCommentSubmit);
     }

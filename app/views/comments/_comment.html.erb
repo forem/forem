@@ -1,11 +1,21 @@
 <% if comment && comment.user %>
-  <% if comment.depth < 3 && !should_be_hidden?(comment, @root_comment) %>
-    <details class="comment-wrapper comment-deep-<%= comment.depth %> js-comment-wrapper" open>
+  <% if comment.depth < 4 && !should_be_hidden?(comment, @root_comment) %>
+    <details
+      class="
+        comment-wrapper
+        comment-deep-<%= comment.depth %>
+        js-comment-wrapper
+        comment--deep-<%= comment.depth %>
+        <%= "comment--too-deep" if comment.depth > 4 %>
+        <%= comment_class(comment, is_view_root: is_view_root) %>
+      "
+      open>
       <summary>
-        <span class="<% if comment.depth > 0 %>mx-0<% else %>mx-1<% end %>">
-          <%= inline_svg_tag("collapse.svg", aria: true, class: "crayons-icon", title: "Collapse") %>
+        <span class="<% if comment.depth > 0 %>mx-0<% else %>m:mx-1<% end %> inline-block align-middle">
+          <%= inline_svg_tag("collapse.svg", aria: true, class: "crayons-icon expanded", title: "Collapse") %>
+          <%= inline_svg_tag("expand.svg", aria: true, class: "crayons-icon collapsed", title: "Expand") %>
         </span>
-        <span class="js-collapse-comment-content ml-3"></span>
+        <span class="js-collapse-comment-content ml-1 inline-block align-middle"></span>
       </summary>
       <%= render("comments/comment_proper",
                  comment: comment,
