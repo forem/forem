@@ -208,7 +208,7 @@ export default class ConfigController extends Controller {
       targetAuthDisableBtn.parentElement.classList.add('crayons-tooltip');
       targetAuthDisableBtn.parentElement.setAttribute(
         'data-tooltip',
-        'To edit this, you must first enable Email Address as a registration option',
+        'To edit this, you must first enable Email address as a registration option',
       );
       targetAuthDisableBtn.setAttribute('disabled', true);
     }
