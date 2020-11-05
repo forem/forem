@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Redirects authentication using Referer", type: :system do
   let(:article) { build(:article) }
   let(:user) do
-    create(:user, :with_identity, identities: [:twitter], saw_onboarding: true)
+    create(:user, :with_identity, identities: [:twitter])
   end
 
   let(:login_link) { "Log in" }

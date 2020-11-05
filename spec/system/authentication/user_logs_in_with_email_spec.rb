@@ -10,7 +10,7 @@ RSpec.describe "Authenticating with Email" do
   end
 
   context "when a user is new" do
-    let(:user) { build(:user) }
+    let(:user) { build(:user, saw_onboarding: false) }
 
     context "when using valid credentials" do
       it "creates a new user", js: true do
@@ -79,6 +79,16 @@ RSpec.describe "Authenticating with Email" do
         log_in_user(user)
 
         expect(page).to have_current_path("/?signin=true")
+      end
+
+      it "logs in and redirects to onboarding if it hasn't been seen" do
+        user.update(saw_onboarding: false)
+
+        visit sign_up_path
+        log_in_user(user)
+
+        expect(page).to have_current_path("/onboarding", ignore_query: true)
+        expect(page.html).to include("onboarding-container")
       end
     end
 
