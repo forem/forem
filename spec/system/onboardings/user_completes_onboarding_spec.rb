@@ -30,7 +30,7 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
   end
 
   context "when the user has seen onboarding" do
-    let(:user) { create(:user, password: password, password_confirmation: password) }
+    let(:user) { create(:user, password: password, password_confirmation: password, saw_onboarding: true) }
 
     before do
       visit sign_up_path
