@@ -222,7 +222,7 @@ function handleCommentSubmit(event) {
             if (newComment.depth > 2) {
               parentComment.getElementsByClassName("toggle-reply-form")[0].innerHTML = ""
             }
-            var actionsNode = parentComment.getElementsByClassName("inner-comment")[0];
+            var actionsNode = parentComment.getElementsByClassName("comment__inner")[0];
             actionsNode.parentNode.insertBefore(newNode, actionsNode.nextSibling);
           }
 

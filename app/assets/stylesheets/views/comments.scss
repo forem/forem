@@ -82,6 +82,10 @@
   --footer-display: flex;
 
   &__dropdown {
+    margin-left: auto;
+    margin-right: calc(-1 * var(--su-1));
+    position: relative;
+
     @media (min-width: $breakpoint-s) {
       visibility: var(--dropdown-visiblity);
       opacity: var(--dropdown-opacity);
