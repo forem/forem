@@ -3,7 +3,7 @@ module AssignTagModerator
     return if user.has_role?(:trusted)
     return if user.has_role?(:banned)
 
-    user.add_role :trusted
+    user.add_role(:trusted)
     user.update(email_community_mod_newsletter: true)
     MailchimpBot.new(user).manage_community_moderator_list if community_mod_newsletter_enabled?
     Rails.cache.delete("user-#{user.id}/has_trusted_role")
