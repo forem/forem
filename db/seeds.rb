@@ -450,9 +450,16 @@ seeder.create_if_none(FeedbackMessage) do
   )
 
   3.times do
+    article_id = Article
+      .left_joins(:reactions)
+      .where.not(articles: { id: Reaction.article_vomits.pluck(:reactable_id) })
+      .order(Arel.sql("RANDOM()"))
+      .first
+      .id
+
     Reaction.create!(
       category: "vomit",
-      reactable_id: Article.order(Arel.sql("RANDOM()")).first.id,
+      reactable_id: article_id,
       reactable_type: "Article",
       user_id: mod.id,
     )
