@@ -1,13 +1,6 @@
 function buildCommentFormHTML(commentableId, commentableType, parentId) {
   var authToken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
   var user = userData();
-  var codeOfConductHTML = ""
-  if (user && !user.codeOfConduct && user.commentCount < 1){
-    codeOfConductHTML =   '<div class="code-of-conduct sub-comment-code-of-conduct" style="display:block" id="toggle-code-of-conduct-checkbox">\
-                            <input class="checkbox" type="checkbox" name="checked_code_of_conduct" required />\
-                            <label for="checked_code_of_conduct">I\'ve read the <a href="/code-of-conduct">code of conduct</a></label>\
-                          </div>'
-  }
   var randomIdNumber = Math.floor(Math.random() * 1991);
 
   return `<form class="comment-form pt-4" onsubmit="handleCommentSubmit.bind(this)(event)" id="new-comment-${parentId}" action="/comments" accept-charset="UTF-8" method="post" data-comment-id="${parentId}">

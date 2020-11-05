@@ -1,6 +1,5 @@
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
-    toggleCodeOfConduct();
     var commentableId = document.getElementById('comments-container').dataset.commentableId;
     var commentableType = document.getElementById('comments-container').dataset.commentableType;
     commentableIdList = commentableId.split(",");
@@ -150,20 +149,40 @@ function initializeCommentsPage() {
     }
   }
   listenForDetailsToggle();
+  const user = userData();
+  addCommentDropdownFunctionality(user);
 }
 
-function toggleCodeOfConduct() {
-  var user = userData();
-  if (!user) {
-    return;
-  }
-  var codeOfConduct = user.checked_code_of_conduct
-  var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox');
-  if (checkboxWrapper && !codeOfConduct) {
-    checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
-                                  <label for="checked_code_of_conduct">I\'ve read the <a href="/code-of-conduct">code of conduct</a></label>'
+function addCommentDropdownFunctionality(user) {
+  if (document.getElementById('comments-container')) {
+    var commentDropdowns = document.getElementsByClassName('comment-dropdown-shell');
+
+    for (let i = 0; i < commentDropdowns.length; i += 1) {
+      let shell = commentDropdowns[i];
+      let shellData = shell.dataset
+      let hideHTML = '';
+      let hideAction = '';
+      if (user) {
+        if (user.id === shellData.commentableUserId && shellData.hidden === 'false') {
+          hideAction = 'hide'
+        } else if (user.id === shellData.commentableUserId) {
+          hideAction = 'unhide'
+        }  
+        hideHTML = `<a href="#" class="crayons-link crayons-link--block hide-comment" data-hide-type="${hideAction}" data-comment-id="${shellData.commentId}">${capitalizeFirstLetter(hideAction)}</a>`
+      }
+      shell.innerHTML = `<div class="crayons-dropdown p-1 right-1 left-1 s:right-0 s:left-auto fs-base">
+        <a href="${shellData.commentPath}" class="crayons-link crayons-link--block">Permalink</a>
+        ${user && user.id === shellData.commentUserId ?
+          `<a href="${shellData.commentPath}/settings" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Settings</a>` : ''}
+        ${hideHTML}
+        </span>
+        <span class="mod-actions hidden mod-actions-comment-button" data-path="${shellData.commentPath}/mod"></span>
+        <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=${window.location.origin + shellData.commentPath}"></span>
+      </div>`
+    }
   }
 }
+
 
 function replaceActionButts(el) {
   var loggedInActionButts = "";

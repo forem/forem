@@ -46,50 +46,6 @@ function addRelevantButtonsToArticle(user) {
   }
 }
 
-function addRelevantButtonsToComments(user) {
-  if (document.getElementById('comments-container')) {
-    // buttons are actually <span>'s
-    var settingsButts = document.getElementsByClassName('comment-actions');
-
-    for (let i = 0; i < settingsButts.length; i += 1) {
-      let butt = settingsButts[i];
-      const { action, commentableUserId, userId } = butt.dataset;
-      if (parseInt(userId, 10) === user.id && action === 'settings-button') {
-        butt.innerHTML =
-          '<a href="' +
-          butt.dataset.path +
-          '" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Settings</a>';
-        butt.classList.remove('hidden');
-        butt.classList.add('block');
-      }
-
-      if (
-        action === 'hide-button' &&
-        parseInt(commentableUserId, 10) === user.id
-      ) {
-        butt.classList.remove('hidden');
-        butt.classList.add('block');
-      }
-    }
-
-    if (user.trusted) {
-      var modButts = document.getElementsByClassName('mod-actions');
-      for (let i = 0; i < modButts.length; i += 1) {
-        let butt = modButts[i];
-        if (butt.classList.contains('mod-actions-comment-button')) {
-          butt.innerHTML =
-            '<a href="' +
-            butt.dataset.path +
-            '" rel="nofollow" class="crayons-link crayons-link--block">Moderate</a>';
-        }
-        butt.className = 'mod-actions';
-        butt.classList.remove('hidden');
-        butt.classList.add('block');
-      }
-    }
-  }
-}
-
 function setCurrentUserToNavBar(user) {
   const userNavLink = document.getElementById('first-nav-link');
   userNavLink.href = `/${user.username}`;
@@ -109,5 +65,9 @@ function initializeBaseUserData() {
   initializeUserSidebar(user);
   initializeProfileImage(user);
   addRelevantButtonsToArticle(user);
-  addRelevantButtonsToComments(user);
+
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }

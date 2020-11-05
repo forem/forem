@@ -131,5 +131,5 @@ function initializeCommentDropdown() {
 
   setTimeout(function addListeners() {
     getAllByClassName('dropbtn').forEach(addDropdownListener);
-  }, 100);
+  }, 200);
 }
