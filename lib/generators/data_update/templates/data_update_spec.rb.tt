@@ -1,6 +1,6 @@
 require "rails_helper"
 require Rails.root.join(
-  "<%= script_name %>",
+  "<%= script_path %>",
 )
 
 describe DataUpdateScripts::<%= class_name %> do
