@@ -92,3 +92,32 @@ export async function updateMembership(membershipId, userAction) {
 
   return response.json();
 }
+
+/**
+ *
+ * @param {message} feedback_message
+ * @param {feedback_type}  type_of_feedback
+ * @param {category} category
+ * @param {reported_url} reported_url
+ */
+
+export async function reportAbuse(
+  message,
+  feedback_type,
+  category,
+  reported_url,
+) {
+  const response = await request('/feedback_messages', {
+    method: 'POST',
+    body: {
+      chat_channel_membership: {
+        message,
+        feedback_type,
+        category,
+        reported_url,
+      },
+    },
+  });
+
+  return response.json();
+}

@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 function ReportAbuse({ resource: data }) {
   return (
@@ -74,9 +75,9 @@ function ReportAbuse({ resource: data }) {
           />
         </div>
         <div>
-          <button type="submit" name="commit" className="crayons-btn">
+          <Button className="m-2" size="s" onClick={() => {}}>
             Report Message
-          </button>
+          </Button>
         </div>
       </div>
     </div>
