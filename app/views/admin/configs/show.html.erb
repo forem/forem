@@ -788,7 +788,7 @@
                                    class: "form-control",
                                    value: SiteConfig.favicon_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
-                  <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
+                  <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" />
                 </div>
 
                 <div class="crayons-field">
@@ -799,7 +799,7 @@
                                    value: SiteConfig.logo_png,
                                    placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
                   <% if SiteConfig.logo_png.present? %>
-                    <img src="<%= SiteConfig.logo_png %>" width="128" height="128" />
+                    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 256) %>" width="128" height="128" />
                   <% end %>
                 </div>
 
@@ -826,7 +826,7 @@
                                    value: SiteConfig.secondary_logo_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:secondary_logo_url][:placeholder] %>
                   <% if SiteConfig.secondary_logo_url.present? %>
-                    <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
+                    <img alt="secondary logo image" class="img-fluid" src="<%= Images::Optimizer.call(SiteConfig.secondary_logo_url, width: 256) %>" />
                   <% end %>
                 </div>
 
