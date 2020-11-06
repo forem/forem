@@ -162,7 +162,7 @@
                   </p>
                 </header>
 
-                <section class="config-authentication__item">
+                <section class="config-authentication__item mb-0">
                   <figure class="config-authentication__item--icon">
                     <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Email icon") %>
                   </figure>
@@ -173,7 +173,9 @@
                         <p class="crayons-field__label <%= SiteConfig.allow_both_email_signup_and_login ? "pb-0" : "" %>">
                           Email address
                         </p>
-                        <div class="<%= SiteConfig.allow_both_email_signup_and_login ? "flex items-center" : "hidden" %>" data-target="config.enabledIndicator">
+                        <div
+                          class="enabled-indicator-hidden <%= SiteConfig.allow_both_email_signup_and_login ? "enabled-indicator-visible" : "" %>"
+                          data-target="config.enabledIndicator">
                           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
                         </div>
@@ -181,6 +183,7 @@
 
                       <button
                         class="crayons-btn crayons-btn--secondary"
+                        id="email-auth-enable-edit-btn"
                         data-button-text="<%= SiteConfig.allow_both_email_signup_and_login ? "edit" : "enable" %>"
                         data-target="config.emailAuthSettingsBtn"
                         data-action="click->config#enableOrEditEmailAuthSettings">
@@ -227,15 +230,13 @@
                         <div class="flex gap-2">
                           <% if SiteConfig.allow_both_email_signup_and_login %>
                             <button
-                              class="crayons-btn crayons-btn--danger <%= disable_email_tooltip_class %>"
+                              class="crayons-btn crayons-btn--danger <%= tooltip_class_on_email_auth_disablebtn %>"
                               data-action="click->config#activateEmailAuthModal"
-                              data-tooltip="<%= disable_email_tooltip_content %>"
-                              <%= disable_button_class %>>
+                              data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
+                              <%= disabled_attr_on_email_auth_disablebtn %>>
                               Disable
                             </button>
-                          <% end %>
-                          <% if SiteConfig.allow_both_email_signup_and_login %>
-                            <button
+                             <button
                               class="crayons-btn crayons-btn--secondary"
                               data-action="click->config#hideEmailAuthSettings">
                               Close
@@ -252,136 +253,60 @@
                     </div>
                   </div>
                 </section>
+                <hr class="my-0" />
 
-                <div class="form-group">
-                  <%= admin_config_label :authentication_providers %>
-                  <p class="crayons-field__description">
-                    <%= Constants::SiteConfig::DETAILS[:authentication_providers][:description] %>
-                  </p>
-                  <%= select_tag "site_config[authentication_providers]",
-                                 options_from_collection_for_select(
-                                   authentication_available_providers,
-                                   :provider_name,
-                                   :official_name,
-                                   authentication_enabled_providers.map(&:provider_name),
-                                 ),
-                                 multiple: true,
-                                 class: "form-control selectpicker",
-                                 data: { target: "config.authenticationProviders" } %>
-                </div>
-
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("twitter.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Twitter
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field">
-                          <%= admin_config_label :twitter_key %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:twitter_key][:description] %>
-                          </p>
-                          <%= f.text_field :twitter_key,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.twitter_key,
-                                           placeholder: Constants::SiteConfig::DETAILS[:twitter_key][:placeholder] %>
-                        </div>
-
-                        <div class="crayons-field">
-                          <%= admin_config_label :twitter_secret %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:twitter_secret][:description] %>
-                          <p>
-                          <%= f.text_field :twitter_secret,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.twitter_secret,
-                                           placeholder: Constants::SiteConfig::DETAILS[:twitter_secret][:placeholder] %>
-                        </div>
-                      </fieldset>
-                    </div>
+                <section class="mb-6">
+                  <div class="form-group mb-0">
+                    <%= f.text_field :auth_providers_to_enable,
+                                     id: "auth_providers_to_enable",
+                                     class: "form-control hidden",
+                                     value: SiteConfig.authentication_providers.join(","),
+                                     readonly: true %>
                   </div>
-                </section>
-
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Github
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field">
-                          <%= admin_config_label :github_key %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:github_key][:description] %>
-                          </p>
-                          <%= f.text_field :github_key,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.github_key,
-                                           placeholder: Constants::SiteConfig::DETAILS[:github_key][:placeholder] %>
-
-                        </div>
-                        <div class="crayons-field">
-                          <%= admin_config_label :github_secret %>
-                          <p class="config-authentication__row--subtitle">
-                            <%= Constants::SiteConfig::DETAILS[:github_secret][:description] %>
-                          </p>
-                          <%= f.text_field :github_secret,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.github_secret,
-                                           placeholder: Constants::SiteConfig::DETAILS[:github_secret][:placeholder] %>
-                        </div>
-                      </fieldset>
-                    </div>
-                  </div>
-                </section>
-
-                <section class="config-authentication__item">
-                  <figure class="config-authentication__item--icon">
-                    <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Twitter logo") %>
-                  </figure>
-                  <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--label">
-                      <p class="fw-medium">
-                        Facebook
-                      </p>
-                    </div>
-                    <div class="config-authentication__item--body">
-                      <fieldset class="config-authentication-form">
-                        <div class="crayons-field">
-                          <%= admin_config_label :facebook_key %>
-                          <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:facebook_key][:description] %>
-                          </p>
-                          <%= f.text_field :facebook_key,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.facebook_key,
-                                           placeholder: Constants::SiteConfig::DETAILS[:facebook_key][:placeholder] %>
-                        </div>
-
-                        <div class="crayons-field">
-                          <%= admin_config_label :facebook_secret %>
-                            <p class="crayons-field__description">
-                            <%= Constants::SiteConfig::DETAILS[:facebook_secret][:description] %>
+                  <% authentication_available_providers.each do |provider| %>
+                    <section class="config-authentication__item mb-0">
+                      <figure class="config-authentication__item--icon">
+                        <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
+                      </figure>
+                      <div class="config-authentication__item--container">
+                        <div
+                          class="config-authentication__item mb-0 flex items-baseline justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
+                          data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
+                          <div class="config-authentication__item--label">
+                            <p class="crayons-field__label <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
+                              <%= provider.official_name %>
                             </p>
-                          <%= f.text_field :facebook_secret,
-                                           class: "crayons-textfield",
-                                           value: SiteConfig.facebook_secret,
-                                           placeholder: Constants::SiteConfig::DETAILS[:facebook_secret][:placeholder] %>
+                            <div
+                              id="<%= provider.provider_name %>-enabled-indicator"
+                              class="enabled-indicator-hidden <%= authentication_enabled_providers.include?(provider) ? "enabled-indicator-visible" : "" %>">
+                              <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
+                              <small class="crayons-field__description ml-1">Enabled</small>
+                            </div>
+                          </div>
+                          <button
+                            class="crayons-btn crayons-btn--secondary"
+                            id="<%= provider.provider_name %>-auth-btn"
+                            data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
+                            data-action="click->config#enableOrEditAuthProvider"
+                            data-auth-provider-enable="<%= provider.provider_name %>"
+                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
+                            <%= disabled_attr_on_auth_provider_enablebtn %>>
+                            <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
+                          </button>
                         </div>
-                      </fieldset>
-                    </div>
-                  </div>
+                        <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
+                          <fieldset class="config-authentication-form">
+                            <%= render partial: "auth_provider_settings",
+                                       locals: {
+                                         f: f,
+                                         provider: provider
+                                       } %>
+                          </fieldset>
+                        </div>
+                      </div>
+                    </section>
+                    <hr class="my-0" />
+                  <% end %>
                 </section>
               </section>
               <div class="crayons-notice crayons-notice--info mb-4">

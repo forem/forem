@@ -128,6 +128,17 @@ label {
     height: 40px;
     width: 40px;
   }
+
+  &--label {
+    .enabled-indicator-hidden {
+      display: none;
+    }
+
+    .enabled-indicator-visible {
+      display: flex;
+      align-items: center;
+    }
+  }
 }
 
 .config-authentication-form {
