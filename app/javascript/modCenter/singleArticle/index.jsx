@@ -1,8 +1,7 @@
-
 import PropTypes from 'prop-types';
 import { h, Component, Fragment } from 'preact';
 import { createPortal } from 'preact/compat';
-import { toggleFlagUserModal, FlagUserModal } from '../../packs/flagUserModal';
+import { FlagUserModal } from '../../packs/flagUserModal';
 import { formatDate } from './util';
 
 export default class SingleArticle extends Component {
@@ -43,15 +42,6 @@ export default class SingleArticle extends Component {
     const modContainer = id
       ? document.getElementById(`mod-iframe-${id}`)
       : document.getElementById('mod-container');
-
-    // Check whether context is ModCenter or Friday-Night-Mode
-    if (modContainer) {
-      modContainer.addEventListener('load', () => {
-        modContainer.contentWindow.document
-          .getElementById('open-flag-user-modal')
-          .addEventListener('click', toggleFlagUserModal);
-      });
-    }
 
     return (
       <Fragment>

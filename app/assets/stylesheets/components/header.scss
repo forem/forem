@@ -229,7 +229,7 @@
   position: fixed;
   top: 0;
   background: var(--accent-brand);
-  z-index: var(--popover);
+  z-index: var(--z-popover);
   height: var(--su-1);
   width: 0;
   &.showing {

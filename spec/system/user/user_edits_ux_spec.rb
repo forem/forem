@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "User edits their UX settings", type: :system do
-  let(:user) { create(:user, saw_onboarding: true) }
+  let(:user) { create(:user) }
 
   before do
     sign_in user

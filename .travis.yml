@@ -5,7 +5,7 @@ cache:
     - node_modules
     - $HOME/.nvm
 rvm:
-  - 2.7.1
+  - 2.7.2
 addons:
   postgresql: '10' # Travis does not work out of the box with Postgres 11 yet
   chrome: 'stable'
