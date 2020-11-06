@@ -4,17 +4,13 @@ module EdgeCache
       def self.call(path)
         return unless nginx_available?
 
-        uri = URI.parse("#{openresty_path}#{path}")
+        uri = URI.parse("#{ApplicationConfig['OPENRESTY_URL']}#{path}")
         http = Net::HTTP.new(uri.host, uri.port)
         response = http.request Net::HTTP::Purge.new(uri.request_uri)
 
         raise StandardError, "Nginx Purge request failed: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
 
         response.body
-      end
-
-      def self.openresty_path
-        "#{ApplicationConfig['OPENRESTY_PROTOCOL']}#{ApplicationConfig['OPENRESTY_DOMAIN']}"
       end
 
       def self.nginx_available?
@@ -24,16 +20,17 @@ module EdgeCache
         # available just once, and persist it on the class with @provider_available?.
         # Then, we could allow for an array of @paths = [] to be passed in,
         # and on single bust instance could bust multiple paths in order.
-        uri = URI.parse(openresty_path)
+        uri = URI.parse(ApplicationConfig["OPENRESTY_URL"])
         http = Net::HTTP.new(uri.host, uri.port)
         response = http.get(uri.request_uri)
 
         return true if response.is_a?(Net::HTTPSuccess)
       rescue StandardError
-        # If we can't connect to Openresty, alert ourselves that
+        # If we can't connect to OpenResty, alert ourselves that
         # it is unavailable and return false.
-        Rails.logger.error("Could not connect to Openresty via #{openresty_path}!")
-        DatadogStatsClient.increment("edgecache_bust.service_unavailable", tags: ["path:#{openresty_path}"])
+        Rails.logger.error("Could not connect to OpenResty via #{ApplicationConfig['OPENRESTY_URL']}!")
+        DatadogStatsClient.increment("edgecache_bust.service_unavailable",
+                                     tags: ["path:#{ApplicationConfig['OPENRESTY_URL']}"])
         false
       end
     end
