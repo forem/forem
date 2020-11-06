@@ -95,10 +95,10 @@ export async function updateMembership(membershipId, userAction) {
 
 /**
  *
- * @param {message} feedback_message
- * @param {feedback_type}  type_of_feedback
- * @param {category} category
- * @param {reported_url} reported_url
+ * @param {string} feedback_message
+ * @param {string}  type_of_feedback
+ * @param {string} category
+ * @param {string} reported_url
  */
 
 export async function reportAbuse(
