@@ -2,6 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useState } from 'preact/hooks';
 import { reportAbuse } from '../actions/requestActions';
+import { addSnackbarItem } from '../../Snackbar';
 import { Button } from '@crayons';
 
 function ReportAbuse({ resource: data }) {
@@ -12,7 +13,38 @@ function ReportAbuse({ resource: data }) {
   };
 
   const handleSubmit = async () => {
-    await reportAbuse(data.message, 'connect', category, data.user_id);
+    const response = await reportAbuse(
+      data.message,
+      'connect',
+      category,
+      data.user_id,
+    );
+    const { success, message } = response;
+    if (success) {
+      const confirmBlock = window.confirm(
+        `Are you sure you want to block this person? This will:
+      - prevent them from commenting on your posts
+      - block all notifications from them
+      - prevent them from messaging you via DEV Connect`,
+      );
+      if (confirmBlock) {
+        fetch(`/user_blocks`, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'X-CSRF-Token': window.csrfToken,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_block: {
+              blocked_id: data.user_id,
+            },
+          }),
+        }).then((response) => response.json());
+      }
+    } else {
+      addSnackbarItem({ message });
+    }
   };
 
   return (
