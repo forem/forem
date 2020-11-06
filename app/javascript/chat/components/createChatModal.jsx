@@ -1,14 +1,33 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import { Modal } from '@crayons/Modal';
 import { createChannel } from '../actions/chat_channel_setting_actions';
-const CreateChatModal = ({
+import { Modal, Button } from '@crayons';
+
+/**
+ *
+ * This component is used to create a chat channel. At the moment only  support for tag_moderator user types.
+ *
+ * @param {object} props
+ * @param {function} props.toggleModalCreateChannel
+ * @param {function} props.handleCreateChannelSuccess
+ *
+ * @component
+ *
+ * @example
+ *
+ * <CreateChatModal
+ * toggleModalCreateChannel={toggleModalCreateChannel}
+ * handleCreateChannelSuccess={handleCreateChannelSuccess}
+ * />
+ *
+ */
+function CreateChatModal({
   toggleModalCreateChannel,
   handleCreateChannelSuccess,
-}) => {
-  const [channelName, setchannelName] = useState('');
-  const [userNames, setUserNames] = useState('');
+}) {
+  const [channelName, setchannelName] = useState(null);
+  const [userNames, setUserNames] = useState(null);
 
   const handleCreateChannel = async (e) => {
     e.preventDefault();
@@ -44,18 +63,18 @@ const CreateChatModal = ({
           onChange={(e) => setUserNames(e.target.value)}
         />
 
-        <button
-          href="#"
+        <Button
           className="crayons-btn"
           onClick={handleCreateChannel}
           style="margin-top:20px"
+          disabled={!channelName}
         >
           Create
-        </button>
+        </Button>
       </div>
     </Modal>
   );
-};
+}
 
 CreateChatModal.propTypes = {
   toggleModalCreateChannel: PropTypes.func.isRequired,
