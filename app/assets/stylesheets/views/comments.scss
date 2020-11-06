@@ -87,7 +87,7 @@
   position: relative;
 
   > summary {
-    --indent: var(--level-n-indent);
+    // --indent: var(--level-n-indent);
     position: static;
     display: block;
     align-items: center;
@@ -121,8 +121,12 @@
     --indent: 0;
   }
 
-  &--deep-1 > summary {
+  &--deep-1:not(.root) > summary {
     --indent: var(--level-1-indent);
+  }
+
+  &--deep-2:not(.root) > summary {
+    --indent: var(--level-n-indent);
   }
 
   &[open] > summary {

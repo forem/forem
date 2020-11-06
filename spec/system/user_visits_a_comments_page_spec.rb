@@ -18,7 +18,7 @@ RSpec.describe "Views an article", type: :system, js: true do
     visit "#{article.path}/comments/#{comment.id_code_generated}"
 
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 2)
-    expect(page).to have_selector(".comment--deep-0 #comment-node-#{comment.id}", visible: :visible, count: 1)
-    expect(page).to have_selector(".comment--deep-1 #comment-node-#{child_comment.id}", visible: :visible, count: 1)
+    expect(page).to have_selector(".comment--deep-0#comment-node-#{comment.id}", visible: :visible, count: 1)
+    expect(page).to have_selector(".comment--deep-1#comment-node-#{child_comment.id}", visible: :visible, count: 1)
   end
 end

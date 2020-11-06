@@ -26,8 +26,7 @@ RSpec.describe "Visiting article comments", type: :system, js: true do
     end
 
     it "displays grandchild comments" do
-      expect(page).to have_selector(".comment--deep-2 #comment-node-#{grandchild_comment.id}", visible: :visible,
-                                                                                               count: 1)
+      expect(page).to have_selector(".comment--deep-2#comment-node-#{grandchild_comment.id}", visible: :visible, count: 1)
     end
   end
 
@@ -43,8 +42,7 @@ RSpec.describe "Visiting article comments", type: :system, js: true do
     end
 
     it "displays grandchild comments" do
-      expect(page).to have_selector(".comment--deep-2 #comment-node-#{grandchild_comment.id}", visible: :visible,
-                                                                                               count: 1)
+      expect(page).to have_selector(".comment--deep-2 #comment-node-#{grandchild_comment.id}", visible: :visible, count: 1)
     end
   end
 end
