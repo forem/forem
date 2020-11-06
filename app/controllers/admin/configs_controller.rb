@@ -129,7 +129,7 @@ module Admin
         home_feed_minimum_score
       ].freeze
 
-    VALID_IMAGE_URLS =
+    IMAGE_FIELDS =
       %i[
         logo_png
         secondary_logo_url
