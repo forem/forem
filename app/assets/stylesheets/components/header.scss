@@ -156,7 +156,7 @@
   &:focus-within {
     pointer-events: auto;
     opacity: 1;
-    transform: translateY(0em);
+    transform: translateY(0);
     -webkit-transition: top 0.1s ease-in;
     transition: top 0.1s ease-in;
   }
