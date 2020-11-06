@@ -5,8 +5,8 @@
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
  * @param {string} confirm_text Text of the confirmation button
- * 
- * @example 
+ *
+ * @example
  * showUserAlertModal('Warning', 'You must wait', 'OK', '/faq/why-must-i-wait', 'Why must I wait?');
  */
 function showUserAlertModal(title, text, confirm_text) {
@@ -14,44 +14,54 @@ function showUserAlertModal(title, text, confirm_text) {
   toggleUserAlertModal();
 }
 /**
- * Displays a user rate limit alert modal letting the user know what they did that exceeded a rate limit, 
+ * Displays a user rate limit alert modal letting the user know what they did that exceeded a rate limit,
  * and gives them links to explain why they must wait
  *
  * @function showUserAlertModal
  * @param {string} action_text Description of the action taken by the user
  * @param {string} next_action_text Description of the next action that can be taken
- *  
- * @example 
+ *
+ * @example
  * showRateLimitModal('Made a comment', 'comment again');
  */
 function showRateLimitModal(action_text, next_action_text) {
   let rateLimitText = buildRateLimitText(action_text, next_action_text);
-  let rateLimitLink = "/faq";
-  showUserAlertModal('Wait a Moment...', rateLimitText, 'Got it', rateLimitLink, "Why do I have to wait?")
+  let rateLimitLink = '/faq';
+  showUserAlertModal(
+    'Wait a Moment...',
+    rateLimitText,
+    'Got it',
+    rateLimitLink,
+    'Why do I have to wait?',
+  );
 }
 
 /**
  * HTML ID for modal DOM node
- * 
+ *
  * @private
- * @constant modalId * 
+ * @constant modalId *
  * @type {string}
  */
 const modalId = 'user-alert-modal';
 
 /**
  * HTML template for modal
- * 
+ *
  * @private
  * @function getModalHtml
- * 
+ *
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
  * @param {string} confirm_text Text of the confirmation button
- * 
+ *
  * @returns {string} HTML for the modal
  */
-const getModalHtml = (title, text, confirm_text) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal hidden">
+const getModalHtml = (
+  title,
+  text,
+  confirm_text,
+) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal hidden">
     <div role="dialog" aria-modal="true" class="crayons-modal__box">
       <div class="crayons-modal__box__header">
         <h2>${title}</h2>
@@ -78,25 +88,25 @@ const getModalHtml = (title, text, confirm_text) => `<div id="${modalId}" data-t
 
 /**
  * Constructs wording for rate limit modals
- * 
+ *
  * @private
  * @function buildRateLimitText
- * 
+ *
  * @param {string} action_text Description of the action taken by the user
  * @param {string} next_action_text Description of the next action that can be taken
- * 
+ *
  * @returns {string} Formatted body text for a rate limit modal
  */
 function buildRateLimitText(action_text, next_action_text) {
-  return `Since you recently ${action_text}, you’ll need to wait a moment before ${next_action_text}.`
+  return `Since you recently ${action_text}, you’ll need to wait a moment before ${next_action_text}.`;
 }
 
 /**
  * Shows or hides the user alert modal by toggling it's 'hidden' class
- * 
+ *
  * @private
  * @function toggleUserAlertModal
- * 
+ *
  */
 function toggleUserAlertModal() {
   let modalDiv = document.getElementById(modalId);
@@ -107,14 +117,14 @@ function toggleUserAlertModal() {
 
 /**
  * Checks for the alert modal, and if it's not present builds and inserts it in the DOM
- * 
+ *
  * @private
  * @function buildModalDiv
- * 
+ *
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
  * @param {string} confirm_text Text of the confirmation button
- * 
+ *
  * @returns {Element} DOM node of the inserted alert modal
  */
 function buildModalDiv(title, text, confirm_text) {
@@ -128,18 +138,18 @@ function buildModalDiv(title, text, confirm_text) {
 
 /**
  * Takes template HTML for a modal and creates a DOM node based on supplied arguments
- * 
+ *
  * @private
  * @function getModal
- * 
+ *
  * @param {string} title The title/heading text to be displayed
  * @param {string} text The body text to be displayed
  * @param {string} confirm_text Text of the confirmation button
- * 
+ *
  * @returns {Element} DOM node of alert modal with formatted text
  */
 function getModal(title, text, confirm_text) {
   let wrapper = document.createElement('div');
-  wrapper.innerHTML= getModalHtml(title, text, confirm_text);
+  wrapper.innerHTML = getModalHtml(title, text, confirm_text);
   return wrapper.firstChild;
 }
