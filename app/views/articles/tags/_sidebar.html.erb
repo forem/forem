@@ -2,16 +2,6 @@
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <div class="side-bar">
-      <% if @tag_model && @tag_model.short_summary.present? %>
-        <div class="widget">
-          <header>
-            <h4>#<%= @tag %> 👋</h4>
-          </header>
-          <div class="widget-body">
-            <%= sanitize @tag_model.short_summary %>
-          </div>
-        </div>
-      <% end %>
       <% if @tag_model && @tag_model.rules_html.present? %>
         <div class="widget">
           <header>

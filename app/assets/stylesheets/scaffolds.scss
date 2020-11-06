@@ -71,7 +71,7 @@ body.ten-x-hacker-theme {
   position: fixed;
   text-align: center;
   width: 100%;
-  z-index: 101; // Must be higher than the z-index of the sticky-nav.
+  z-index: var(--z-sticky);
 
   .static-header & {
     position: relative;
@@ -105,7 +105,7 @@ body.trusted-status-true .trusted-visible-block {
   animation: loading-fadein 1.5s;
   animation-delay: 0.6s;
   font-size: 1.2em;
-  z-index: -1;
+  z-index: var(--z-negative);
 }
 
 @keyframes loading-fadein {

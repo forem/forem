@@ -1,46 +1,57 @@
 <% cache("user-profile-comments-#{@user.last_comment_at}-#{@user.id}-#{@comments.size}", expires_in: 2.days) do %>
-  <style>
-    .index-comments header {
-      color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
-    }
-    .night-theme .index-comments header {
-      color: #cedae2;
-    }
-  </style>
-  <div class="index-comments crayons-card">
+  <div class="profile-comment-card crayons-card mt-2 m:mt-0 mb-2">
     <% if @comments.present? %>
       <% if params[:view] == "comments" %>
-        <div class="breadcrumb"><a href="<%= @user.path %>">View All Activity</a></div>
-        <header>
-          <% if @user.comments_count > 250 %>
-            <h4>Last 250 Comments</h4>
-          <% else %>
-            <h4>All <%= @user.comments_count %> Comments</h4>
-          <% end %>
-        </header>
+        <div class="crayons-card__header">
+          <h4 class="crayons-card__headline">
+            <% if @user.comments_count > 250 %>
+              Last 250 comments
+            <% else %>
+              All <%= @user.comments_count %> comments
+            <% end %>
+          </h4>
+          <div class="crayons-card__actions">
+            <a href="<%= @user.path %>" class="crayons-link--branded fs-base">
+              View all activity
+            </a>
+          </div>
+        </div>
       <% else %>
-        <header>
-          <h4>Recent Comments</h4>
-        </header>
+        <div class="crayons-card__header">
+          <h4 class="crayons-card__headline">
+            Recent comments
+          </h4>
+        </div>
       <% end %>
     <% end %>
     <% @comments.each do |comment| %>
       <% if comment.commentable.present? && comment.commentable.published && !comment.deleted %>
-        <a href="<%= comment.path %>">
-          <div class="single-comment <%= "strong-comment" if comment.ancestry.nil? %>">
-            <span class="comment-title">re: <%= comment.commentable.title %></span>
-            <span class="comment-date">
+        <a href="<%= comment.path %>" class="profile-comment-row ">
+          <h5 class="fw-bold fs-base m-0 mb-1">
+            <%= comment.commentable.title %>
+          </h5>
+          <div class="inline-flex items-center fs-s gap-2">
+            <p class="color-base-80">
+              <%= truncate(strip_tags(comment.processed_html), length: 64).html_safe %>
+            <p>
+            <small class="color-base-60 fs-s comment-date whitespace-nowrap">
               <time datetime="<%= comment.decorate.published_timestamp %>"><%= comment.readable_publish_date %></time>
-            </span>
-            <div class="comment-preview"><%= truncate(strip_tags(comment.processed_html), length: 64).html_safe %></div>
+            </small>
           </div>
         </a>
       <% end %>
     <% end %>
     <% if params[:view] != "comments" && @user.comments_count > 250 %>
-      <div class="breadcrumb"><a href="<%= @user.path %>/comments">Last 250 Comments</a></div>
+      <div class="pt-3 pl-4 pb-3 pr-4">
+        <a href="<%= @user.path %>/comments" class="fs-base">
+          View last 250 Comments
+        </a>
+      </div>
     <% elsif params[:view] != "comments" && @user.comments_count > 8 %>
-      <div class="breadcrumb"><a href="<%= @user.path %>/comments">View All <%= @user.comments_count %> Comments</a>
+      <div class="py-3 px-4">
+        <a href="<%= @user.path %>/comments" class="fs-base">
+          View all <%= @user.comments_count %> comments
+        </a>
       </div>
     <% end %>
   </div>

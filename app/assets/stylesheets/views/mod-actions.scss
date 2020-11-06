@@ -7,7 +7,7 @@
   top: var(--header-height);
   right: 0;
   height: calc(100vh - var(--header-height));
-  z-index: 100;
+  z-index: var(--z-drawer);
   transform: translateX(360px);
   transition: var(--transition-props);
 
@@ -35,7 +35,7 @@
   bottom: var(--su-7);
   margin-bottom: env(safe-area-inset-bottom);
   right: var(--su-7);
-  z-index: 201;
+  z-index: var(--z-elevate);
   cursor: pointer;
   border-radius: 50px;
 

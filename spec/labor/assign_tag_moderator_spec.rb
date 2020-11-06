@@ -5,7 +5,7 @@ RSpec.describe AssignTagModerator, type: :labor do
   let(:user_two) { create(:user) }
   let(:mod_relator) { create(:user) }
   let(:tag_one) { create(:tag) }
-  let(:tag_two) { create(:tag) }
+  let(:tag_two) { create(:tag, supported: false) }
   let!(:channel) do
     create(:chat_channel,
            slug: "tag-moderators",
@@ -66,5 +66,11 @@ RSpec.describe AssignTagModerator, type: :labor do
     it "doesn't raise a NoMethodError error" do
       expect { add_tag_moderators }.not_to raise_error(NoMethodError)
     end
+  end
+
+  it "marks tags as supported if they aren't already" do
+    expect do
+      add_tag_moderators
+    end.to change { tag_two.reload.supported? }.from(false).to(true)
   end
 end

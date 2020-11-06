@@ -214,7 +214,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "returns an ASCII domain for Unicode input" do
-      expect(helper.optimized_image_url("https://www.火.dev/image.png")).to include("https://www.xn--vnx.dev")
+      expect(helper.optimized_image_url("https://www.火.dev/IMAGE.png")).to include("https://www.xn--vnx.dev/IMAGE.png")
     end
 
     it "keeps an ASCII domain as ASCII" do
