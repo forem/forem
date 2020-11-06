@@ -31,7 +31,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 500;
+  z-index: var(--z-modal);
   pointer-events: none;
 
   &__overlay {
@@ -42,7 +42,6 @@
     right: 0;
     top: 0;
     bottom: 0;
-    z-index: 600;
     pointer-events: auto;
   }
 
@@ -52,7 +51,7 @@
     max-width: var(--modal-max-width);
     background: var(--card-bg);
     color: var(--card-color);
-    z-index: 700;
+    z-index: var(--z-elevate);
     max-height: 100%;
     width: 100%;
     height: 100%;

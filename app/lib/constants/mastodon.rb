@@ -19,6 +19,7 @@ module Constants
       "hex.bz",
       "horiedon.com",
       "hostux.social",
+      "im-in.space",
       "imastodon.net",
       "infosec.exchange",
       "kirakiratter.com",

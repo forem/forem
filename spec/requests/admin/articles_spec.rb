@@ -12,25 +12,33 @@ RSpec.describe "/admin/articles", type: :request do
     let(:second_user) { create(:user) }
     let(:third_user) { create(:user) }
 
-    before { sign_in super_admin }
+    before do
+      sign_in super_admin
+    end
 
     it "allows an Admin to add a co-author to an individual article" do
       get request
-
       expect do
-        article.update_columns(second_user_id: second_user.id)
-      end.to change(article, :second_user_id).from(nil).to(second_user.id)
+        article.update_columns(co_author_ids: [1])
+      end.to change(article, :co_author_ids).from([]).to([1])
     end
 
-    it "allows an Admin to add multiple co-authors to an individual article" do
-      article.update_columns(second_user_id: second_user.id, third_user_id: third_user.id)
-
+    it "allows an Admin to add co-authors to an individual article" do
       get request
+      article.update_columns(co_author_ids: [2, 3])
+      expect(article.co_author_ids).to eq([2, 3])
+    end
 
-      article.reload
+    it "allows an Admin to mark an article as approved" do
+      expect do
+        patch "/admin/articles/#{article.id}", params: { article: { approved: true } }
+      end.to change { article.reload.approved }.to(true)
+    end
 
-      expect(article.second_user_id).to eq(second_user.id)
-      expect(article.third_user_id).to eq(third_user.id)
+    it "allows an Admin to mark an article as featured" do
+      expect do
+        patch "/admin/articles/#{article.id}", params: { article: { featured: true } }
+      end.to change { article.reload.featured }.to(true)
     end
   end
 end

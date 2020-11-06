@@ -50,12 +50,12 @@
 <% if internal_navigation? %>
   <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
   <meta name="description" content="<%= @article.description_and_tags %>">
-  <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
+  <%= meta_keywords_article(@article.cached_tag_list) %>
 <% else %>
   <%= content_for :page_meta do %>
     <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
-    <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
+    <%= meta_keywords_article(@article.cached_tag_list) %>
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= article_url(@article) %>" />
@@ -155,11 +155,8 @@
                 <% if @article.published_timestamp.present? %>
                   <%= local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year) %>
                 <% end %>
-                <% if @second_user.present? %>
-                  <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
-                <% end %>
-                <% if @third_user.present? %>
-                  <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
+                <% if @article.co_author_ids.present? %>
+                  <em>with <%= @article.co_author_name_and_path.html_safe %></em>
                 <% end %>
 
                 <% if should_show_updated_on?(@article) %>
@@ -179,7 +176,6 @@
               </span>
               <span id="action-space" class="mb-4 s:mb-0"></span>
             </div>
-
           </div>
         </header>
 
@@ -202,18 +198,9 @@
                        articles: @collection_articles %>
           <% end %>
         </div>
+        <%= render "articles/full_comment_area" %>
+
       </article>
-
-      <% if @article.long_markdown? || @organization %>
-        <section class="crayons-card crayons-card--secondary text-padding mb-4">
-          <% if @article.long_markdown? %>
-            <%= render "articles/about_author", published: @article.readable_publish_date %>
-          <% end %>
-          <%= render "articles/org_branding", organization: @organization, author: @article.long_markdown? %>
-        </section>
-      <% end %>
-
-      <%= render "articles/full_comment_area" %>
 
       <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}", expires_in: 18.hours) do %>
         <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
@@ -246,6 +233,8 @@
 <div id="mod-actions-menu-btn-area"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 
+<div class="fullscreen-code js-fullscreen-code"></div>
+
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
     <%# we consider these scripts safe for embedding as they come from our code %>
@@ -255,4 +244,5 @@
     <%== TweetTag.script %>
     <%== UserSubscriptionTag.script %>
   </script>
+  <%== TwitterTimelineTag.script %>
 <% end %>

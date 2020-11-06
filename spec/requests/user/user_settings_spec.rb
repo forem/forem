@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserSettings", type: :request do
-  let(:user) { create(:user, twitch_username: nil) }
+  let(:user) { create(:user) }
 
   describe "GET /settings/:tab" do
     context "when not signed-in" do
@@ -172,7 +172,7 @@ RSpec.describe "UserSettings", type: :request do
 
     it "enables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 1 } }
-      expect(user.reload.mod_roundrobin_notifications).to be(true)
+      expect(user.reload.subscribed_to_mod_roundrobin_notifications?).to be(true)
     end
 
     it "updates the users announcement display preferences" do
@@ -183,7 +183,7 @@ RSpec.describe "UserSettings", type: :request do
 
     it "disables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 0 } }
-      expect(user.reload.mod_roundrobin_notifications).to be(false)
+      expect(user.reload.subscribed_to_mod_roundrobin_notifications?).to be(false)
     end
 
     it "can toggle welcome notifications" do
@@ -197,28 +197,6 @@ RSpec.describe "UserSettings", type: :request do
     it "updates username to too short username" do
       put "/users/#{user.id}", params: { user: { tab: "profile", username: "h" } }
       expect(response.body).to include("Username is too short")
-    end
-
-    it "returns error if Profile image is too large" do
-      profile_image = fixture_file_upload("files/large_profile_img.jpg", "image/jpeg")
-      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
-      expect(response.body).to include("Profile image File size should be less than 2 MB")
-    end
-
-    it "returns error if Profile image file name is too long" do
-      profile_image = fixture_file_upload("files/800x600.png", "image/png")
-      allow(profile_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
-
-      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
-
-      expect(response).to have_http_status(:bad_request)
-    end
-
-    it "returns error if Profile image is not a file" do
-      profile_image = "A String"
-      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
-
-      expect(response).to have_http_status(:bad_request)
     end
 
     it "returns error message if user can't be saved" do
@@ -274,47 +252,6 @@ RSpec.describe "UserSettings", type: :request do
         sidekiq_perform_enqueued_jobs do
           expect { send_request(export_requested: false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
-      end
-    end
-  end
-
-  describe "POST /users/update_twitch_username" do
-    before { sign_in user }
-
-    it "updates twitch username" do
-      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      user.reload
-      expect(user.twitch_username).to eq("anna_lightalloy")
-    end
-
-    it "redirects after updating" do
-      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      expect(response).to redirect_to "/settings/integrations"
-    end
-
-    it "schedules the job while updating" do
-      sidekiq_assert_enqueued_with(job: Streams::TwitchWebhookRegistrationWorker, args: [user.id]) do
-        post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
-      end
-    end
-
-    it "removes twitch_username" do
-      user.update_column(:twitch_username, "robot")
-      post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
-      user.reload
-      expect(user.twitch_username).to be_nil
-    end
-
-    it "doesn't schedule the job when removing" do
-      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
-        post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
-      end
-    end
-
-    it "doesn't schedule the job when saving the same twitch username" do
-      user.update_column(:twitch_username, "robot")
-      sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
-        post "/users/update_twitch_username", params: { user: { twitch_username: "robot" } }
       end
     end
   end
