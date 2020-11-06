@@ -102,20 +102,18 @@ export async function updateMembership(membershipId, userAction) {
  */
 
 export async function reportAbuse(
-  message,
+  feedback_message,
   feedback_type,
   category,
-  reported_url,
+  offender_id,
 ) {
   const response = await request('/feedback_messages', {
     method: 'POST',
     body: {
-      chat_channel_membership: {
-        message,
-        feedback_type,
-        category,
-        reported_url,
-      },
+      feedback_message,
+      feedback_type,
+      category,
+      offender_id,
     },
   });
 
