@@ -173,7 +173,9 @@
                         <p class="crayons-field__label <%= SiteConfig.allow_both_email_signup_and_login ? "pb-0" : "" %>">
                           Email address
                         </p>
-                        <div class="<%= SiteConfig.allow_both_email_signup_and_login ? "flex items-center" : "hidden" %>" data-target="config.enabledIndicator">
+                        <div
+                          class="enabled-indicator-hidden <%= SiteConfig.allow_both_email_signup_and_login ? "enabled-indicator-visible" : "" %>"
+                          data-target="config.enabledIndicator">
                           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
                         </div>
@@ -270,11 +272,13 @@
                         <div
                           class="config-authentication__item mb-0 flex items-baseline justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
                           data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
-                          <div>
-                            <p class="config-authentication__item--label fw-medium <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
+                          <div class="config-authentication__item--label">
+                            <p class="crayons-field__label <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
                               <%= provider.official_name %>
                             </p>
-                            <div id="<%= provider.provider_name %>-enabled-indicator" class="<%= authentication_enabled_providers.include?(provider) ? "flex items-center" : "hidden" %>">
+                            <div
+                              id="<%= provider.provider_name %>-enabled-indicator"
+                              class="enabled-indicator-hidden <%= authentication_enabled_providers.include?(provider) ? "enabled-indicator-visible" : "" %>">
                               <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                               <small class="crayons-field__description ml-1">Enabled</small>
                             </div>

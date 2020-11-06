@@ -75,8 +75,7 @@ export default class ConfigController extends Controller {
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
       emailSigninAndLoginCheckbox.checked = true;
       this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'edit');
-      this.enabledIndicatorTarget.classList.add('flex', 'items-center');
-      this.enabledIndicatorTarget.classList.remove('hidden');
+      this.enabledIndicatorTarget.classList.toggle('enabled-indicator-visible');
     }
     this.emailAuthSettingsBtnTarget.classList.add('hidden');
     emailAuthSettingsSection.classList.remove('hidden');
@@ -112,8 +111,7 @@ export default class ConfigController extends Controller {
     emailSigninAndLoginCheckbox.checked = false;
     this.emailAuthSettingsBtnTarget.innerHTML = 'Enable';
     this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'enable');
-    this.enabledIndicatorTarget.classList.remove('flex', 'items-center');
-    this.enabledIndicatorTarget.classList.add('hidden');
+    this.enabledIndicatorTarget.classList.toggle('enabled-indicator-visible');
     this.hideEmailAuthSettings(event);
   }
 
@@ -128,7 +126,7 @@ export default class ConfigController extends Controller {
       `#${provider}-enabled-indicator`,
     );
     if (event.target.dataset.buttonText === 'enable') {
-      this.showHideAuthEnabledIndicator(enabledIndicator, 'show');
+      enabledIndicator.classList.add('enabled-indicator-visible');
       event.target.setAttribute('data-enable-auth', 'true');
       this.listAuthToBeEnabled();
     }
@@ -148,7 +146,7 @@ export default class ConfigController extends Controller {
       `[data-auth-provider-enable="${provider}"]`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
-    this.showHideAuthEnabledIndicator(enabledIndicator, 'hide');
+    enabledIndicator.classList.remove('enabled-indicator-visible');
     this.listAuthToBeEnabled(event);
     this.hideAuthProviderSettings(event);
   }
@@ -190,7 +188,7 @@ export default class ConfigController extends Controller {
     authEnableButton.setAttribute('data-enable-auth', 'false');
     this.listAuthToBeEnabled(event);
     this.checkForAndGuardSoleAuthProvider();
-    this.showHideAuthEnabledIndicator(enabledIndicator, 'hide');
+    enabledIndicator.classList.remove('enabled-indicator-visible');
     this.hideAuthProviderSettings(event);
     this.closeAdminConfigModal(event);
   }
@@ -238,16 +236,5 @@ export default class ConfigController extends Controller {
   disableAuthenticationOptions() {
     document.querySelector('#auth_providers_to_enable').value = '';
   }
-
-  showHideAuthEnabledIndicator(indicatorDiv, action) {
-    if (action === 'show') {
-      indicatorDiv.classList.add('flex', 'items-center');
-      indicatorDiv.classList.remove('hidden');
-    } else if (action === 'hide') {
-      indicatorDiv.classList.remove('flex', 'items-center');
-      indicatorDiv.classList.add('hidden');
-    }
-  }
-
   // AUTH PROVIDERS FUNCTIONS END
 }
