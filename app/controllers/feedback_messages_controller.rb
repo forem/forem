@@ -8,8 +8,7 @@ class FeedbackMessagesController < ApplicationController
 
     params = feedback_message_params.merge(reporter_id: current_user&.id)
     @feedback_message = FeedbackMessage.new(params)
-
-    if (recaptcha_disabled? || recaptcha_verified?) && @feedback_message.save
+    if (recaptcha_disabled? || recaptcha_verified? || params[:feedback_type] == "connect") && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
         type: feedback_message_params[:feedback_type],
@@ -19,12 +18,18 @@ class FeedbackMessagesController < ApplicationController
       )
       rate_limiter.track_limit_by_action(:feedback_message_creation)
 
-      redirect_to feedback_messages_path
+      respond_to do |format|
+        format.html { redirect_to feedback_messages_path }
+        format.json { render json: { success: true, message: "Your report is submitted" } }
+      end
     else
       @previous_message = feedback_message_params[:message]
-
       flash[:notice] = "Make sure the forms are filled 🤖"
-      render "pages/report_abuse"
+
+      respond_to do |format|
+        format.html { render "pages/report_abuse" }
+        format.json { render json: { success: false, message: "Your report is submitted" }, status: bad_request }
+      end
     end
   end
 
@@ -40,7 +45,7 @@ class FeedbackMessagesController < ApplicationController
   end
 
   def feedback_message_params
-    allowed_params = %i[message feedback_type category reported_url]
+    allowed_params = %i[message feedback_type category reported_url offender_id]
     params.require(:feedback_message).permit(allowed_params)
   end
 end

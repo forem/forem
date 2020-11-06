@@ -10,9 +10,11 @@ function ReportAbuse({ resource: data }) {
   const handleChange = (e) => {
     setCategory(e.target.value);
   };
+
   const handleSubmit = async () => {
-    await reportAbuse(data.message, 'Connect', category, data.user_id);
+    await reportAbuse(data.message, 'connect', category, data.user_id);
   };
+
   return (
     <div className="p4">
       <div className="p-4 grid gap-2 crayons-card mb-4">
@@ -24,7 +26,7 @@ function ReportAbuse({ resource: data }) {
           environment a great one for everybody.
         </p>
       </div>
-      <div className="crayons-card crayons-card--secondary p-4 ">
+      <div className="crayons-card crayons-card--secondary p-4">
         <div className="crayons-fields">
           <div className="crayons-field crayons-field--radio">
             <input
