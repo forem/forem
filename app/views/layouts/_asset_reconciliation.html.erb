@@ -1,69 +1,58 @@
-    <meta name="page-cached-at" content="<%= Time.current.to_i %>">
+<meta name="page-cached-at" content="<%= Time.current.to_i %>">
 
-    <meta name="proper-stylesheet-crayons" content="<%= stylesheet_url "crayons" %>">
-    <meta name="proper-stylesheet-views" content="<%= stylesheet_url "views" %>">
-    <meta name="proper-stylesheet-minimal" content="<%= stylesheet_url "minimal" %>">
-    <meta name="proper-js-base" content="<%= javascript_url "base" %>">
+<meta name="proper-stylesheet-crayons" content="<%= stylesheet_url "crayons" %>">
+<meta name="proper-stylesheet-views" content="<%= stylesheet_url "views" %>">
+<meta name="proper-stylesheet-minimal" content="<%= stylesheet_url "minimal" %>">
 
-    <script async>
+<script async>
 
-      // This area is designed to reconcile issues of mismatched caches stylesheets.
-      // Currently it handles a scenario where the head assets are out of date and need to be updated.
-      // There is a legitimate reverse scenario we do not yet handle where we *should* use the "out-of-date"
-      // content on the page, but since we may have issues persisting old stylesheets etc.
-      // this only handles the most troubling issues of pages that load with no styles.
+  // This area is designed to reconcile issues of mismatched caches stylesheets.
+  // Currently it handles a scenario where the head assets are out of date and need to be updated.
+  // There is a legitimate reverse scenario we do not yet handle where we *should* use the "out-of-date"
+  // content on the page, but since we may have issues persisting old stylesheets etc.
+  // this only handles the most troubling issues of pages that load with no styles.
 
-      var headCacheCheck = document.querySelector("meta[name='head-cached-at']");
-      var pageCacheCheck = document.querySelector("meta[name='page-cached-at']");
-      var headCrayonsPath = document.getElementById("main-crayons-stylesheet")
-      var headViewsPath = document.getElementById("main-views-stylesheet")
-      var headMinimalPath = document.getElementById("main-minimal-stylesheet")
-      var pageCrayonsPath = document.querySelector("meta[name='proper-stylesheet-crayons']");
-      var pageViewsPath = document.querySelector("meta[name='proper-stylesheet-views']");
-      var pageMinimalPath = document.querySelector("meta[name='proper-stylesheet-minimal']");
+  var headCacheCheck = document.querySelector("meta[name='head-cached-at']");
+  var pageCacheCheck = document.querySelector("meta[name='page-cached-at']");
+  var headCrayonsPath = document.getElementById("main-crayons-stylesheet")
+  var headViewsPath = document.getElementById("main-views-stylesheet")
+  var headMinimalPath = document.getElementById("main-minimal-stylesheet")
+  var pageCrayonsPath = document.querySelector("meta[name='proper-stylesheet-crayons']");
+  var pageViewsPath = document.querySelector("meta[name='proper-stylesheet-views']");
+  var pageMinimalPath = document.querySelector("meta[name='proper-stylesheet-minimal']");
 
-      var headBaseJSPath = document.getElementById("main-base-javascript");
-      var pageBaseJSPath = document.querySelector("meta[name='proper-js-base']");
+  if (headCacheCheck && headCrayonsPath && // If these elements exist, we can proceed.
+    parseInt(pageCacheCheck.content) > parseInt(headCacheCheck.content) && // If page cached-at is larger than head cached-at
+    (pageCrayonsPath.content != headCrayonsPath.href || // If the head-cached values do not match page-cached, we replace
+      pageViewsPath.content != headViewsPath.href ||
+      pageMinimalPath.content != headMinimalPath.href)
+  ) {
+    var head = document.head;
+    console.log("hllo?")
+    // Add new stylesheets if we deem we should.
+    var link = document.createElement("link");
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.href = pageCrayonsPath.content;
+    head.appendChild(link);
+    var link = document.createElement("link");
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.href = pageViewsPath.content;
+    head.appendChild(link);
+    var link = document.createElement("link");
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.href = pageMinimalPath.content;
+    head.appendChild(link);
 
-      if (headCacheCheck && headCrayonsPath && // If these elements exist, we can proceed.
-        parseInt(pageCacheCheck.content) > parseInt(headCacheCheck.content) && // If page cached-at is larger than head cached-at
-        (pageCrayonsPath.content != headCrayonsPath.href || // If the head-cached values do not match page-cached, we replace
-         pageViewsPath.content != headViewsPath.href ||
-         pageMinimalPath.content != headMinimalPath.href ||
-         pageBaseJSPath.content != headBaseJSPath.href)
-      ) {
-
-        var head = document.head;
-
-        // Add new stylesheets if we deem we should.
-        var link = document.createElement("link");
-        link.type = "text/css";
-        link.rel = "stylesheet";
-        link.href = pageCrayonsPath.content;
-        head.appendChild(link);
-        var link = document.createElement("link");
-        link.type = "text/css";
-        link.rel = "stylesheet";
-        link.href = pageViewsPath.content;
-        head.appendChild(link);
-        var link = document.createElement("link");
-        link.type = "text/css";
-        link.rel = "stylesheet";
-        link.href = pageMinimalPath.content;
-        head.appendChild(link);
-
-        // Take a breath and then remove the old ones.
-        // If we call this immediately it could cause a flash of unstyled comments.
-        // We're giving *a little bit* of time before we remove the old css.
-        // The old CSS is most likely compatible with the new stuff, so for most changes
-        // It won't show a difference.
-        setTimeout(function(){
-          document.getElementById("head-stylesheets").innerHTML = ""
-        }, 350)
-
-        // Replace JS if it does not match
-        if (pageBaseJSPath.content != headBaseJSPath.href) {
-          headBaseJSPath.src = pageBaseJSPath.content
-        }
-      }
-    </script>
+    // Take a breath and then remove the old ones.
+    // If we call this immediately it could cause a flash of unstyled comments.
+    // We're giving *a little bit* of time before we remove the old css.
+    // The old CSS is most likely compatible with the new stuff, so for most changes
+    // It won't show a difference.
+    setTimeout(function(){
+      document.getElementById("head-stylesheets").innerHTML = ""
+    }, 350)
+  }
+</script>
