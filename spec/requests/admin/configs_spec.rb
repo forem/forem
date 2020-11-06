@@ -242,7 +242,6 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { main_social_image: expected_image_url },
                                             confirmation: confirmation_message }
-            # expect(SiteConfig.main_social_image).not_to eq(expected_image_url)
           end.not_to change(SiteConfig, :main_social_image)
         end
 
@@ -258,7 +257,6 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { favicon_url: expected_image_url },
                                             confirmation: confirmation_message }
-            # expect(SiteConfig.main_social_image).not_to eq(expected_image_url)
           end.not_to change(SiteConfig, :favicon_url)
         end
 
@@ -276,7 +274,6 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { logo_png: expected_image_url },
                                             confirmation: confirmation_message }
-            # expect(SiteConfig.main_social_image).not_to eq(expected_image_url)
           end.not_to change(SiteConfig, :logo_png)
         end
 
@@ -299,7 +296,6 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { secondary_logo_url: expected_image_url },
                                             confirmation: confirmation_message }
-            # expect(SiteConfig.main_social_image).not_to eq(expected_image_url)
           end.not_to change(SiteConfig, :secondary_logo_url)
         end
 
