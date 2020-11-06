@@ -23,11 +23,9 @@ module Feeds
 
       users.in_batches(of: users_batch_size) do |batch_of_users|
         feeds_per_user_id = fetch_feeds(batch_of_users)
-        Rails.logger.error("feeds::import::feeds_per_user_id.length: #{feeds_per_user_id.length}")
         DatadogStatsClient.count("feeds::import::fetch_feeds.count", feeds_per_user_id.length)
 
         feedjira_objects = parse_feeds(feeds_per_user_id)
-        Rails.logger.error("feeds::import::feedjira_objects.length: #{feedjira_objects.length}")
         DatadogStatsClient.count("feeds::import::parse_feeds.count", feedjira_objects.length)
 
         # NOTE: doing this sequentially to avoid locking problems with the DB
@@ -41,7 +39,6 @@ module Feeds
             create_articles_from_user_feed(user, feed)
           end
         end
-        Rails.logger.error("feeds::import::articles.length: #{articles.length}")
         DatadogStatsClient.count("feeds::import::parse_feeds.count", articles.length)
 
         total_articles_count += articles.length
