@@ -1,6 +1,11 @@
 module BadgeRewarder
   YEARS = { 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six", 7 => "seven" }.freeze
-  REPOSITORIES = ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].freeze
+  REPOSITORIES = [
+    "forem/forem",
+    "forem/forem-browser-extension",
+    "thepracticaldev/DEV-Android",
+    "thepracticaldev/DEV-ios",
+  ].freeze
 
   LONGEST_STREAK_WEEKS = 16
   LONGEST_STREAK_MESSAGE = "16 weeks! You've achieved the longest writing " \

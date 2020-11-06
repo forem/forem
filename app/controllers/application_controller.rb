@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
   before_action :remember_cookie_sync
+  before_action :forward_to_app_config_domain
 
   include SessionCurrentUser
   include ValidRequest
@@ -11,6 +12,7 @@ class ApplicationController < ActionController::Base
   include CachingHeaders
   include ImageUploads
   include VerifySetupCompleted
+  include DevelopmentDependencyChecks if Rails.env.development?
   include Devise::Controllers::Rememberable
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
@@ -26,7 +28,9 @@ class ApplicationController < ActionController::Base
                           omniauth_callbacks
                           registrations
                           confirmations
-                          passwords].freeze
+                          invitations
+                          passwords
+                          health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
 
   def verify_private_forem
@@ -100,6 +104,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def after_accept_path_for(_resource)
+    onboarding_path
+  end
+
   def raise_suspended
     raise "SUSPENDED" if current_user&.banned
   end
@@ -154,6 +162,14 @@ class ApplicationController < ActionController::Base
       current_user.remember_me!
       remember_me(current_user)
     end
+  end
+
+  def forward_to_app_config_domain
+    return unless request.get? && # Let's only redirect get requests for this purpose.
+      request.host == ENV["APP_DOMAIN"] && # If the request equals the original set domain, e.g. forem-x.forem.cloud.
+      ENV["APP_DOMAIN"] != SiteConfig.app_domain # If the app domain config has now been set, let's go there instead.
+
+    redirect_to URL.url(request.fullpath)
   end
 
   protected

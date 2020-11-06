@@ -135,7 +135,7 @@
 
   &__flare-tag {
     font-weight: normal;
-    font-size: 0.6em;
+    // font-size: 0.6em;
     padding: 0.3em;
     vertical-align: middle;
     position: relative;
@@ -187,8 +187,6 @@
 
     &__actions {
       padding-left: calc(var(--su-6) + var(--su-4));
-      z-index: 6;
-      position: relative;
       margin-top: var(--su-1);
     }
   }

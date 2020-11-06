@@ -272,7 +272,7 @@ class ChatChannelMembershipsController < ApplicationController
     temp_message_id = SecureRandom.hex(20)
     message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
                              "chat_action" => action)
-    pusher_message_created(false, message, temp_message_id)
+    pusher_message_created(false, message, temp_message_id) unless message.left_channel?
   end
 
   def user_not_authorized

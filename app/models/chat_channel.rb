@@ -28,6 +28,9 @@ class ChatChannel < ApplicationRecord
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
+  has_one :mod_tag, class_name: "Tag", foreign_key: "mod_chat_channel_id",
+                    inverse_of: :mod_chat_channel, dependent: :nullify
+
   validates :channel_type, presence: true, inclusion: { in: CHANNEL_TYPES }
   validates :status, presence: true, inclusion: { in: STATUSES }
   validates :slug, uniqueness: true, presence: true
@@ -110,10 +113,11 @@ class ChatChannel < ApplicationRecord
   end
 
   def pusher_channels
+    # TODO: use something more unique here (uuid?) rather than just id.
     if invite_only?
-      "private-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
+      "private-channel--#{ChatChannel.urlsafe_encoded_app_domain}-#{id}"
     elsif open?
-      "open-channel--#{ApplicationConfig['APP_NAME']}-#{id}"
+      "open-channel--#{ChatChannel.urlsafe_encoded_app_domain}-#{id}"
     else
       chat_channel_memberships.pluck(:user_id).map { |id| ChatChannel.pm_notifications_channel(id) }
     end
@@ -163,7 +167,11 @@ class ChatChannel < ApplicationRecord
   end
 
   def self.pm_notifications_channel(user_id)
-    "private-message-notifications--#{ApplicationConfig['APP_NAME']}-#{user_id}"
+    "private-message-notifications--#{urlsafe_encoded_app_domain}-#{user_id}"
+  end
+
+  def self.urlsafe_encoded_app_domain
+    Base64.urlsafe_encode64(ApplicationConfig["APP_DOMAIN"])
   end
 
   private

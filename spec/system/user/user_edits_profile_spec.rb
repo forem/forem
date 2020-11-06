@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "User edits their profile", type: :system do
-  let(:user) { create(:user, saw_onboarding: true) }
+  let(:user) { create(:user) }
 
   before do
     sign_in user
@@ -17,13 +17,13 @@ RSpec.describe "User edits their profile", type: :system do
     end
 
     it "makes the 'Save Button' footer sticky once a field is filled in", js: true do
-      expect(page).not_to have_css(".sticky-save-footer")
+      expect(page).not_to have_css(".sticky")
 
-      fill_in "user[website_url]", with: "example.com"
+      fill_in "user[username]", with: "sloan"
 
-      find("#user_website_url").native.send_keys :tab # this un-focuses the filled-in field
+      find_field(id: "user[username]").native.send_keys :tab # this un-focuses the filled-in field
 
-      expect(page).to have_css(".sticky-save-footer")
+      expect(page).to have_css(".sticky")
     end
   end
 end

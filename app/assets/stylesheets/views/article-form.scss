@@ -164,13 +164,14 @@
   }
 
   &__toolbar {
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     background: var(--base-0);
-    padding: var(--su-2) var(--article-padding-x);
-    margin: calc(var(--article-padding-y) * -1)
-      calc(var(--article-padding-x) * -1) var(--su-6)
-      calc(var(--article-padding-x) * -1);
+    padding: var(--su-2) var(--content-padding-x);
+    margin: calc(var(--content-padding-y) * -1)
+      calc(var(--content-padding-x) * -1) var(--su-6)
+      calc(var(--content-padding-x) * -1);
 
     > :first-child {
       margin-left: calc(var(--su-2) * -1);
@@ -245,7 +246,7 @@
     left: 0;
     right: 0;
     top: calc(100% + var(--su-4));
-    z-index: 100;
+    z-index: var(--z-dropdown);
     padding: var(--su-1);
 
     @media (min-width: $breakpoint-s) {
@@ -260,10 +261,8 @@
   }
 
   &__tagname {
-    font-family: var(--ff-monospace);
     color: var(--base-90);
-    letter-spacing: -0.05em;
-    font-weight: bold;
+    font-weight: var(--fw-medium);
   }
 
   &__tagoptionrow {

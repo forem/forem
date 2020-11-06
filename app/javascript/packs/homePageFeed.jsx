@@ -82,7 +82,7 @@ export const renderFeed = (timeFrame) => {
 
         const [featuredStory, ...subStories] = feedItems;
         const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
-        if(featuredStory) {
+        if (featuredStory) {
           sendFeaturedArticleAnalytics(featuredStory.id);
         }
 
@@ -91,14 +91,15 @@ export const renderFeed = (timeFrame) => {
         // 3. Rest of the stories for the feed
         return (
           <div>
-            {featuredStory && 
-            <Article
-              {...commonProps}
-              article={featuredStory}
-              isFeatured
-              feedStyle={feedStyle}
-              isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
-            />}
+            {featuredStory && (
+              <Article
+                {...commonProps}
+                article={featuredStory}
+                isFeatured
+                feedStyle={feedStyle}
+                isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
+              />
+            )}
             {podcastEpisodes.length > 0 && (
               <PodcastEpisodes episodes={podcastEpisodes} />
             )}

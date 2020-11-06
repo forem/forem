@@ -13,28 +13,15 @@ function initializeUserProfileContent(user) {
   document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
+function initializeProfileImage(user) {
+  if (!document.getElementById('comment-primary-user-profile--avatar')) return;
+  document.getElementById('comment-primary-user-profile--avatar').src =
+    user.profile_image_90;
+}
+
 function initializeUserSidebar(user) {
   if (!document.getElementById('sidebar-nav')) return;
   initializeUserProfileContent(user);
-
-  let followedTags = JSON.parse(user.followed_tags);
-  const tagSeparatorLabel =
-    followedTags.length === 0
-      ? 'FOLLOW TAGS TO IMPROVE YOUR FEED'
-      : 'OTHER POPULAR TAGS';
-
-  followedTags.forEach((tag) => {
-    const element = document.getElementById(
-      'default-sidebar-element-' + tag.name,
-    );
-
-    if (element) {
-      element.remove();
-    }
-  });
-
-  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
-  document.getElementById('sidebar-nav-default-tags').classList.add('showing');
 }
 
 function addRelevantButtonsToArticle(user) {
@@ -103,29 +90,24 @@ function addRelevantButtonsToComments(user) {
   }
 }
 
-function initializeBaseUserData() {
-  const user = userData();
-  const userProfileLinkHTML =
-    '<a href="/' +
-    user.username +
-    '" id="first-nav-link" class="crayons-link crayons-link--block"><div>' +
-    '<span class="fw-medium block">' +
-    user.name +
-    '</span>' +
-    '<small class="fs-s color-base-50">@' +
-    user.username +
-    '</small>' +
-    '</div></a>';
-  document.getElementById(
-    'user-profile-link-placeholder',
-  ).innerHTML = userProfileLinkHTML;
+function setCurrentUserToNavBar(user) {
   const userNavLink = document.getElementById('first-nav-link');
   userNavLink.href = `/${user.username}`;
   userNavLink.querySelector('span').textContent = user.name;
   userNavLink.querySelector('small').textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
+  if (user.admin) {
+    document
+      .querySelector('.js-header-menu-admin-link')
+      .classList.remove('hidden');
+  }
+}
 
+function initializeBaseUserData() {
+  const user = userData();
+  setCurrentUserToNavBar(user);
   initializeUserSidebar(user);
+  initializeProfileImage(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);
 }

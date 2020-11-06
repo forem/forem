@@ -117,7 +117,7 @@ RSpec.describe "Authenticating with Facebook" do
           "Callback error", "Error reason", "https://example.com/error"
         )
 
-        omniauth_setup_authentication_error(error)
+        omniauth_setup_authentication_error(error, params)
 
         visit sign_up_path
         click_link(sign_in_link, match: :first)
@@ -133,7 +133,7 @@ RSpec.describe "Authenticating with Facebook" do
         allow(request).to receive(:code).and_return(401)
         allow(request).to receive(:message).and_return("unauthorized")
         error = OAuth::Unauthorized.new(request)
-        omniauth_setup_authentication_error(error)
+        omniauth_setup_authentication_error(error, params)
 
         visit sign_up_path
         click_link(sign_in_link, match: :first)
@@ -146,7 +146,7 @@ RSpec.describe "Authenticating with Facebook" do
 
       it "notifies Datadog even with no OmniAuth error present" do
         error = nil
-        omniauth_setup_authentication_error(error)
+        omniauth_setup_authentication_error(error, params)
 
         visit sign_up_path
         click_link(sign_in_link, match: :first)
@@ -218,6 +218,18 @@ RSpec.describe "Authenticating with Facebook" do
 
         expect(page).to have_current_path("/?signin=true")
       end
+    end
+  end
+
+  context "when community is in invite only mode" do
+    before do
+      allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
+    end
+
+    it "doesn't present the authentication option" do
+      visit sign_up_path(state: "new-user")
+      expect(page).not_to have_text(sign_in_link)
+      expect(page).to have_text("invite only")
     end
   end
 end

@@ -7,6 +7,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
+import notifyUser from '../utilities/connect/newMessageNotify';
 import debounceAction from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
 import { processImageUpload } from '../article-form/actions';
@@ -43,6 +44,7 @@ import ActionMessage from './actionMessage';
 import Content from './content';
 import { VideoContent } from './videoContent';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
+import { dragAndUpload } from '@utilities/dragAndUpload';
 
 const NARROW_WIDTH_LIMIT = 767;
 const WIDE_WIDTH_LIMIT = 1600;
@@ -67,7 +69,7 @@ export default class Chat extends Component {
     );
 
     this.state = {
-      appName: document.body.dataset.appName,
+      appDomain: document.body.dataset.appDomain,
       messages: [],
       scrolled: false,
       showAlert: false,
@@ -121,7 +123,7 @@ export default class Chat extends Component {
       isMobileDevice,
       channelPaginationNum,
       currentUserId,
-      appName,
+      appDomain,
       messageOffset,
     } = this.state;
 
@@ -132,13 +134,13 @@ export default class Chat extends Component {
     );
     this.subscribeChannelsToPusher(
       channelsForPusherSub,
-      (channel) => `open-channel--${appName}-${channel.chat_channel_id}`,
+      (channel) => `open-channel--${appDomain}-${channel.chat_channel_id}`,
     );
 
     setupObserver(this.observerCallback);
 
     this.subscribePusher(
-      `private-message-notifications--${appName}-${currentUserId}`,
+      `private-message-notifications--${appDomain}-${currentUserId}`,
     );
 
     if (activeChannelId) {
@@ -241,7 +243,7 @@ export default class Chat extends Component {
   messageOpened = () => {};
 
   loadChannels = (channels, query) => {
-    const { activeChannelId, appName } = this.state;
+    const { activeChannelId, appDomain } = this.state;
     const activeChannel =
       this.state.activeChannel ||
       channels.filter(
@@ -290,11 +292,11 @@ export default class Chat extends Component {
     }
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('open')),
-      (channel) => `open-channel--${appName}-${channel.chat_channel_id}`,
+      (channel) => `open-channel--${appDomain}-${channel.chat_channel_id}`,
     );
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('invite_only')),
-      (channel) => `private-channel--${appName}-${channel.chat_channel_id}`,
+      (channel) => `private-channel--${appDomain}-${channel.chat_channel_id}`,
     );
     const chatChannelsList = document.getElementById(
       'chatchannels__channelslist',
@@ -351,7 +353,7 @@ export default class Chat extends Component {
   };
 
   setupChannel = (channelId) => {
-    const { messages, messageOffset, activeChannel, appName } = this.state;
+    const { messages, messageOffset, activeChannel, appDomain } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
@@ -366,9 +368,9 @@ export default class Chat extends Component {
         null,
       );
       if (activeChannel.channel_type === 'open')
-        this.subscribePusher(`open-channel--${appName}-${channelId}`);
+        this.subscribePusher(`open-channel--${appDomain}-${channelId}`);
     }
-    this.subscribePusher(`private-channel--${appName}-${channelId}`);
+    this.subscribePusher(`private-channel--${appDomain}-${channelId}`);
   };
 
   setOpenChannelUsers = (res) => {
@@ -457,13 +459,13 @@ export default class Chat extends Component {
       activeChannelId,
       scrolled,
       chatChannels,
+      currentUserId,
       unopenedChannelIds,
     } = this.state;
 
     const receivedChatChannelId = message.chat_channel_id;
     const messageList = document.getElementById('messagelist');
     let newMessages = [];
-
     const nearBottom =
       messageList.scrollTop + messageList.offsetHeight + 400 >
       messageList.scrollHeight;
@@ -471,7 +473,12 @@ export default class Chat extends Component {
     if (nearBottom) {
       scrollToBottom();
     }
-    // Remove reduntant messages
+
+    // If I'm not sender and tab is not active
+    if (message.user_id !== currentUserId && document.hidden) {
+      notifyUser();
+    }
+
     if (
       message.temp_id &&
       messages[receivedChatChannelId] &&
@@ -479,6 +486,7 @@ export default class Chat extends Component {
         (oldmessage) => oldmessage.temp_id === message.temp_id,
       ) > -1
     ) {
+      // Remove reduntant messages
       return;
     }
 
@@ -490,7 +498,7 @@ export default class Chat extends Component {
       }
     }
 
-    //Show alert if message received and you have scrolled up
+    // Show alert if message received and you have scrolled up
     const newShowAlert =
       activeChannelId === receivedChatChannelId
         ? { showAlert: !nearBottom }
@@ -607,7 +615,6 @@ export default class Chat extends Component {
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
         this.handleMessageSubmit(e.target.value);
-        e.target.value = '';
       }
     }
     if (e.target.value.includes('@')) {
@@ -684,7 +691,6 @@ export default class Chat extends Component {
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
         this.handleMessageSubmitEdit(e.target.value);
-        e.target.value = '';
       }
     }
   };
@@ -752,6 +758,11 @@ export default class Chat extends Component {
         this.handleSuccess,
         this.handleFailure,
       );
+    } else if (message.startsWith('/draw')) {
+      this.setActiveContent({
+        sendCanvasImage: this.sendCanvasImage,
+        type_of: 'draw',
+      });
     } else if (message.startsWith('/')) {
       this.setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
@@ -845,7 +856,6 @@ export default class Chat extends Component {
     const message = document.getElementById('messageform').value;
     if (message.length > 0) {
       this.handleMessageSubmit(message);
-      document.getElementById('messageform').value = '';
     }
   };
 
@@ -854,7 +864,6 @@ export default class Chat extends Component {
     const message = document.getElementById('messageform').value;
     if (message.length > 0) {
       this.handleMessageSubmitEdit(message);
-      document.getElementById('messageform').value = '';
     }
   };
 
@@ -1471,9 +1480,11 @@ export default class Chat extends Component {
   handleImageDrop = (event) => {
     event.preventDefault();
     const { files } = event.dataTransfer;
-
     event.currentTarget.classList.remove('opacity-25');
     processImageUpload(files, this.handleImageSuccess, this.handleImageFailure);
+  };
+  sendCanvasImage = (files) => {
+    dragAndUpload([files], this.handleImageSuccess, this.handleImageFailure);
   };
   handleImageSuccess = (res) => {
     const { links, image } = res;
@@ -1505,7 +1516,9 @@ export default class Chat extends Component {
   }
   renderActiveChatChannel = (channelHeader) => {
     const { state, props } = this;
-
+    const channelName = state.activeChannel
+      ? state.activeChannel.channel_name
+      : ' ';
     return (
       <div className="activechatchannel">
         <div className="activechatchannel__conversation">
@@ -1560,10 +1573,12 @@ export default class Chat extends Component {
               handleKeyUp={this.handleKeyUp}
               handleKeyDownEdit={this.handleKeyDownEdit}
               activeChannelId={state.activeChannelId}
+              activeChannelName={channelName}
               startEditing={state.startEditing}
               markdownEdited={state.markdownEdited}
               editMessageMarkdown={state.activeEditMessage.markdown}
               handleEditMessageClose={this.handleEditMessageClose}
+              handleFilePaste={this.handleFilePaste}
             />
           </div>
         </div>
@@ -1580,6 +1595,27 @@ export default class Chat extends Component {
         />
       </div>
     );
+  };
+
+  handleFilePaste = (e) => {
+    if (!e.clipboardData || !e.clipboardData.items) {
+      return;
+    }
+    const items = [];
+    for (let i = 0; i < e.clipboardData.items.length; i++) {
+      const item = e.clipboardData.items[i];
+      if (item.kind !== 'file') {
+        continue;
+      }
+      items.push(item);
+    }
+    if (items && items.length > 0) {
+      processImageUpload(
+        [items[0].getAsFile()],
+        this.handleImageSuccess,
+        this.handleImageFailure,
+      );
+    }
   };
 
   onTriggerVideoContent = (e) => {
@@ -1759,13 +1795,11 @@ export default class Chat extends Component {
   };
 
   handleEditMessageClose = () => {
-    const textarea = document.getElementById('messageform');
     this.setState({
       startEditing: false,
       markdownEdited: false,
       activeEditMessage: { message: '', markdown: '' },
     });
-    textarea.value = '';
   };
 
   renderDeleteModal = () => {

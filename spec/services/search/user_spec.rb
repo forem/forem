@@ -30,6 +30,17 @@ RSpec.describe Search::User, type: :service do
         doc_ids = user_docs.map { |t| t["id"] }
         expect(doc_ids).to include(user1.id, user2.id)
       end
+
+      it "searches by a username" do
+        allow(user1).to receive(:username).and_return("kyloren")
+        index_documents([user1])
+        query_params = { size: 5, search_fields: "kyloren" }
+
+        user_docs = described_class.search_documents(params: query_params)
+        expect(user_docs.count).to eq(1)
+        doc_ids = user_docs.map { |t| t["id"] }
+        expect(doc_ids).to include(user1.id)
+      end
     end
 
     context "with a filter" do

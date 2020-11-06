@@ -103,7 +103,7 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders second and third users if present" do
       # 3rd user doesn't seem to get rendered for some reason
       user2 = create(:user)
-      article.update(second_user_id: user2.id)
+      article.update(co_author_ids: [user2.id])
       get article.path
       expect(response.body).to include "<em>with <b><a href=\"#{user2.path}\">"
     end
