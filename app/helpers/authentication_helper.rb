@@ -61,7 +61,7 @@ module AuthenticationHelper
     invite_only_mode_or_no_enabled_providers ? "disabled" : ""
   end
 
-  def disabled_attr_on_auth_rpovider_enablebtn
+  def disabled_attr_on_auth_provider_enablebtn
     SiteConfig.invite_only_mode ? "disabled" : ""
   end
 
