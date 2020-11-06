@@ -224,10 +224,10 @@ module Admin
     def update_enabled_auth_providers(value)
       enabled_providers = []
       value.split(",").each do |entry|
-        final_array.push(entry) unless invalid_provider_entry(entry)
+        enabled_providers.push(entry) unless invalid_provider_entry(entry)
       end
-      SiteConfig.public_send("authentication_providers=", final_array) unless
-        prevent_all_auth_provider_disable?(final_array)
+      SiteConfig.public_send("authentication_providers=", enabled_providers) unless
+        prevent_all_auth_provider_disable?(enabled_providers)
     end
 
     def invalid_provider_entry(entry)
