@@ -129,28 +129,23 @@ module Admin
         home_feed_minimum_score
       ].freeze
 
-    # VALID_IMAGE_URLS =
-    #   %i[
-    #     logo_png
-    #     secondary_logo_url
-    #     mascot_image_url
-    #     mascot_footer_image_url
-    #     campaign_sidebar_image
-    #     onboarding_logo_image
-    #     onboarding_background_image
-    #     onboarding_taskcard_image
-    #   ].freeze
+    VALID_IMAGE_URLS =
+      %i[
+        logo_png
+        secondary_logo_url
+        mascot_image_url
+        mascot_footer_image_url
+        campaign_sidebar_image
+        onboarding_logo_image
+        onboarding_background_image
+        onboarding_taskcard_image
+      ].freeze
 
     layout "admin"
 
     before_action :extra_authorization_and_confirmation, only: [:create]
     before_action :validate_inputs, only: [:create]
-    after_action :validate_image_urls, only: [:create]
-    # before_action :validate_image_urls, only: [:valid_image_url]
-    # before_action :validate_image_urls, if: :valid_image_url, only: [:create]
-    # before_action :validate_image_urls, only: [:valid_image_url], if: -> { :VALID_IMAGE_URLS }
-    # before_save :validate_image_urls
-    # before_action :validate_image_urls, only: [:valid_image_url]
+    before_action :validate_image_urls, only: [:create], if: -> { VALID_IMAGE_URLS.present? }
     after_action :bust_content_change_caches, only: [:create]
 
     def show
@@ -159,7 +154,6 @@ module Admin
 
     def create
       clean_up_params
-      # validate_image_urls
 
       config_params.each do |key, value|
         if value.is_a?(Array)
@@ -271,7 +265,6 @@ module Admin
         params.dig(:site_config, :onboarding_taskcard_image)
       valid_url = %r{\A(https:)//([/|.|\w|\s|-])*\.(?:jpg|gif|png)/}
       image_url.present? && image_url.match?(valid_url)
-      # VALID_IMAGE_URLS.present? && VALID_IMAGE_URLS.match?(valid_url)
     end
   end
 end
