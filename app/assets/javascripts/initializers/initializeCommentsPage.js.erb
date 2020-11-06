@@ -1,3 +1,5 @@
+var iconSmallThread = `<svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 13l-5 6-5-6h3.125c0-3.314 2.798-6 6.25-6 .17 0 .34.006.506.02-1.787.904-3.006 2.705-3.006 4.78V13H17z" /></svg>`;
+
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
@@ -219,8 +221,11 @@ function handleCommentSubmit(event) {
           var mainCommentsForm = document.getElementById("new_comment");
           if (parentComment) {
             handleFormClose(event);
-            if (newComment.depth > 2) {
-              parentComment.getElementsByClassName("toggle-reply-form")[0].innerHTML = ""
+            if (newComment.depth > 3) {
+              var replyTrigger = parentComment.getElementsByClassName("toggle-reply-form")[0];
+              var threadIndicator = `<span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">${ iconSmallThread }Thread</span>`;
+              replyTrigger.classList.replace("inline-flex", "hidden");
+              replyTrigger.parentNode.innerHTML += threadIndicator;
             }
             var actionsNode = parentComment.getElementsByClassName("comment__inner")[0];
             actionsNode.parentNode.insertBefore(newNode, actionsNode.nextSibling);

@@ -1,48 +1,39 @@
 <% decorated_comment = comment.decorate %>
-<div
-  id="comment-node-<%= comment.id %>"
-  class="
-    comment single-comment-node
-    <%= "low-quality-comment" if decorated_comment.low_quality %>
-  "
-  data-comment-id="<%= comment.id %>"
-  data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
-  data-comment-author-id="<%= comment_user_id_unless_deleted comment %>"
-  data-content-user-id="<%= comment_user_id_unless_deleted comment %>">
-  <div class="comment__inner">
-    <%= render partial: "comments/comment_avatar", locals: { comment: comment } %>
 
-    <div class="inner-comment comment__details">
-      <div class="comment__content crayons-card">
-        <% if comment.deleted %>
-          <div class="p-6 align-center opacity-50 fs-s">
-            <span class="js-comment-username">Comment deleted</span>
-          </div>
-        <% else %>
-          <%= render partial: "comments/comment_quality_marker", locals: {
-                comment: comment,
-                decorated_comment: decorated_comment
-              } %>
+<div class="comment__inner">
+  <%= render partial: "comments/comment_avatar", locals: { comment: comment } %>
 
-          <%= render partial: "comments/comment_header", locals: {
-                comment: comment,
-                commentable: commentable,
-                decorated_comment: decorated_comment
-              } %>
-
-          <div class="comment__body text-styles text-styles--secondary body">
-            <%= comment.safe_processed_html %>
-          </div>
-        <% end %>
-      </div>
-
-      <%= unless comment.deleted
-            (render partial: "comments/comment_footer", locals: {
+  <div class="inner-comment comment__details">
+    <div class="comment__content crayons-card">
+      <% if comment.deleted %>
+        <div class="p-6 align-center opacity-50 fs-s">
+          <span class="js-comment-username">Comment deleted</span>
+        </div>
+      <% else %>
+        <%= render partial: "comments/comment_quality_marker", locals: {
               comment: comment,
-              commentable: commentable
-            })
-          end %>
+              decorated_comment: decorated_comment
+            } %>
+
+        <%= render partial: "comments/comment_header", locals: {
+              comment: comment,
+              commentable: commentable,
+              decorated_comment: decorated_comment
+            } %>
+
+        <div class="comment__body text-styles text-styles--secondary body">
+          <%= comment.safe_processed_html %>
+        </div>
+      <% end %>
     </div>
+
+    <%= unless comment.deleted
+          (render partial: "comments/comment_footer", locals: {
+            comment: comment,
+            commentable: commentable,
+            is_childless: is_childless
+          })
+        end %>
   </div>
-  <%= subtree_html %>
 </div>
+<%= subtree_html %>

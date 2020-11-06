@@ -76,10 +76,101 @@
   }
 }
 
+.comment-wrapper {
+  --level-n-indent: var(--su-3);
+  --level-1-indent: var(--su-4);
+
+  @media (min-width: $breakpoint-m) {
+    --level-n-indent: var(--su-5);
+    --level-1-indent: var(--su-6);
+  }
+  position: relative;
+
+  > summary {
+    --indent: var(--level-n-indent);
+    position: static;
+    display: block;
+    align-items: center;
+    transform: initial;
+    top: 0;
+    left: var(--indent);
+    cursor: pointer;
+    font-size: var(--fs-s);
+    color: var(--base-60);
+    margin-bottom: var(--su-4);
+    margin-left: var(--indent);
+    padding: var(--su-1) var(--su-2);
+    font-style: italic;
+    border-radius: var(--radius);
+    background: var(--base-0);
+
+    .expanded {
+      display: none;
+    }
+
+    .collapsed {
+      display: block;
+    }
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &--deep-0 > summary {
+    --indent: 0;
+  }
+
+  &--deep-1 > summary {
+    --indent: var(--level-1-indent);
+  }
+
+  &[open] > summary {
+    position: absolute;
+    top: var(--su-8);
+    background: transparent;
+    width: auto;
+    padding: var(--su-1) 0;
+    margin-left: 0;
+
+    .expanded {
+      display: block;
+    }
+
+    .collapsed {
+      display: none;
+    }
+
+    @media (min-width: $breakpoint-s) {
+      display: none;
+    }
+  }
+
+  &[open]:hover {
+    > summary {
+      display: block;
+    }
+  }
+}
+
 .comment {
+  --comment-gap: var(--su-4);
   --dropdown-visibility: hidden;
   --dropdown-opacity: 0;
   --footer-display: flex;
+
+  @media (min-width: $breakpoint-m) {
+    --comment-gap: var(--su-6);
+  }
+
+  &.child {
+    &:not(.comment--too-deep) {
+      padding-left: var(--level-n-indent);
+    }
+    &.comment--deep-1 {
+      padding-left: var(--level-1-indent);
+    }
+  }
 
   &__dropdown {
     margin-left: auto;
@@ -95,7 +186,7 @@
   &__inner {
     display: flex;
     align-items: flex-start;
-    margin-bottom: var(--su-6);
+    margin-bottom: var(--comment-gap);
 
     &:hover,
     &:focus-within {
@@ -149,78 +240,5 @@
     font-weight: var(--fw-medium);
     display: flex;
     align-items: center;
-  }
-}
-
-.comment-wrapper {
-  position: relative;
-
-  > summary {
-    position: static;
-    display: inline-block;
-    align-items: center;
-    transform: initial;
-    top: 0;
-    cursor: pointer;
-    font-size: var(--fs-s);
-    color: var(--base-60);
-    margin-bottom: var(--su-4);
-    padding: var(--su-1) 0;
-    font-style: italic;
-    border-radius: var(--radius);
-    background: var(--base-0);
-    width: 100%;
-
-    .expanded {
-      display: none;
-    }
-
-    .collapsed {
-      display: block;
-    }
-
-    &::-webkit-details-marker {
-      display: none;
-    }
-  }
-
-  &[open] > summary {
-    position: absolute;
-    top: var(--su-8);
-    background: transparent;
-    width: auto;
-
-    .expanded {
-      display: block;
-    }
-
-    .collapsed {
-      display: none;
-    }
-
-    @media (min-width: $breakpoint-s) {
-      display: none;
-    }
-  }
-
-  &:hover {
-    > summary {
-      display: inline-block;
-    }
-  }
-
-  &.child {
-    &:not(.comment--too-deep) {
-      padding-left: var(--su-3);
-      @media (min-width: $breakpoint-m) {
-        padding-left: var(--su-5);
-      }
-    }
-    &.comment--deep-1 {
-      padding-left: var(--su-4);
-      @media (min-width: $breakpoint-m) {
-        padding-left: var(--su-6);
-      }
-    }
   }
 }

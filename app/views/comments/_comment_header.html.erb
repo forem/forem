@@ -1,5 +1,5 @@
 <header class="comment__header">
-  <a href="/<%= comment.user.username %>" class="crayons-link crayons-link--secondary flex items-center fw-medium">
+  <a href="<%= URL.user(comment.user) %>" class="crayons-link crayons-link--secondary flex items-center fw-medium">
     <span class="js-comment-username"><%= comment.user.name %></span>
     <% if commentable_author_is_op?(commentable, comment) %>
       <span class="crayons-tooltip inline-block" data-tooltip="<%= get_ama_or_op_banner(commentable) %>">
@@ -16,17 +16,16 @@
     </button>
     <div class="dropdown">
       <div class="crayons-dropdown p-1 right-1 s:right-0 s:left-auto fs-base">
-        <a href="<%= comment.path %>" class="crayons-link crayons-link--block">Permalink</a>
-        <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= comment.path %>/settings">
-        </span>
+        <a href="<%= URL.comment(comment) %>" class="crayons-link crayons-link--block">Permalink</a>
+        <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= URL.comment(comment) %>/settings"></span>
         <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
         <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>" style="display: none; width: 100%;">
           <a href="#" class="crayons-link crayons-link--block hide-comment" data-hide-type="<%= action.downcase %>" data-comment-id="<%= comment.id %>">
             <%= action %>
           </a>
         </span>
-        <span class="mod-actions hidden mod-actions-comment-button" data-path="<%= comment.path %>/mod"></span>
-        <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= comment_url(comment) %>"></span>
+        <span class="mod-actions hidden mod-actions-comment-button" data-path="<%= URL.comment(comment) %>/mod"></span>
+        <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= URL.comment(comment) %>"></span>
         <span class="current-user-actions"></span>
       </div>
     </div>

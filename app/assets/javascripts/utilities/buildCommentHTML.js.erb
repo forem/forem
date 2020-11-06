@@ -1,8 +1,11 @@
 function buildCommentHTML(comment) {
   var iconOverflowHorizontal = `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon pointer-events-none"><path fill-rule="evenodd" clip-rule="evenodd" d="M7 12a2 2 0 11-4 0 2 2 0 014 0zm7 0a2 2 0 11-4 0 2 2 0 014 0zm5 2a2 2 0 100-4 2 2 0 000 4z"/></svg>`;
+  var iconCollaspe = `<svg width="24" height="24" class="crayons-icon expanded" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 10.6771L8 6.93529L8.99982 6L12 8.80653L15.0002 6L16 6.93529L12 10.6771ZM12 15.1935L8.99982 18L8 17.0647L12 13.3229L16 17.0647L15.0002 17.9993L12 15.1935Z" /></svg>`;
+  var iconExpand = `<svg width="24" height="24" class="crayons-icon collapsed" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18L8 14.2287L8.99982 13.286L12 16.1147L15.0002 13.286L16 14.2287L12 18ZM12 7.88533L8.99982 10.714L8 9.77133L12 6L16 9.77133L15.0002 10.7133L12 7.88533Z" /></svg>`;
   
   var depthClass = "";
   var customClass = "";
+
   var detailsStartHTML = "";
   var detailsEndHTML = "";
   
@@ -11,24 +14,29 @@ function buildCommentHTML(comment) {
   var commentAvatar = "";
   var commentBody = "";
 
-  if (!comment.newly_created) {
-    depthClass="child comment--too-deep"
-  } else if (comment.depth == 0 ){
-    depthClass = "root";
-  } else if (comment.depth < 4) {
-    depthClass="child"
+  if ( comment.depth == 0 ) {
+    depthClass += "root ";
   } else {
-    depthClass="child comment--too-deep"
+    depthClass += "child "
   }
+  
+  if ( comment.depth > 3 ) {
+    depthClass += "comment--too-deep ";
+  }
+
   if (comment.newly_created) {
     customClass = "comment-created-via-fetch"
   }
-  if (comment.depth < 4) {
+
+  if (comment.depth < 3) {
     detailsStartHTML = `
-      <details class="comment-wrapper comment-deep--${ comment.depth } ${ depthClass } js-comment-wrapper" open>
+      <details class="comment-wrapper comment-wrapper--deep-${ comment.depth } js-comment-wrapper" open>
         <summary>
-          <span class="inline-block align-middle"></span>
-          <span class="js-collapse-comment-content ml-1 inline-block align-middle"></span>
+          <span class="inline-block align-middle ${ comment.depth > 0 ? 'mx-0' : 'm:mx-1'}">
+            ${ iconCollaspe }
+            ${ iconExpand }
+          </span>
+          <span class="js-collapse-comment-content inline-block align-middle"></span>
         </summary>
     `;
     detailsEndHTML = `</details>`;
@@ -73,7 +81,7 @@ function buildCommentHTML(comment) {
   </footer>`;
 
   commentBody = `${ detailsStartHTML }
-    <div class="comment single-comment-node" id="comment-node-${ comment.id }" data-comment-id="${ comment.id }" data-path="${ comment.url }" data-comment-author-id="${ comment.user.id }" data-current-user-comment="${ comment.newly_created }" data-content-user-id="${ comment.user.id }">
+    <div class="comment single-comment-node ${ depthClass } comment--deep-${ comment.depth }" id="comment-node-${ comment.id }" data-comment-id="${ comment.id }" data-path="${ comment.url }" data-comment-author-id="${ comment.user.id }" data-current-user-comment="${ comment.newly_created }" data-content-user-id="${ comment.user.id }">
       <div class="comment__inner">
         ${ commentAvatar }
         <div class="inner-comment comment__details">
@@ -94,7 +102,7 @@ function buildCommentHTML(comment) {
 
 function reply(comment) {
   var iconSmallComment = `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon reaction-icon not-reacted"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>`;
-  var replyButton = `<a class="actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
+  var replyButton = `<a class="js actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
     href="#${ comment.url }"
     data-comment-id="${ comment.id }"
     data-path="${ comment.url }"

@@ -43,7 +43,7 @@
     <span id="comment-article-indicator" data-article-id="<%= @commentable.id %>"></span>
   <% end %>
 
-  <% if !@root_comment %>
+  <% unless @root_comment %>
     <article class="crayons-article crayons-card crayons-card--secondary s:mx-2 m:mx-4 -mb-1 z-0">
       <header class="crayons-article__header">
         <% if @commentable.respond_to?(:main_image) && @commentable.main_image.present? %>
@@ -109,7 +109,7 @@
     data-commentable-id="<%= @commentable.id %>"
     data-commentable-type="<%= @commentable.class.name %>">
 
-    <% if !@root_comment %>
+    <% unless @root_comment %>
       <%= render "form",
                  commentable: @commentable,
                  commentable_type: "Article" %>
