@@ -228,10 +228,10 @@
                         <div class="flex gap-2">
                           <% if SiteConfig.allow_both_email_signup_and_login %>
                             <button
-                              class="crayons-btn crayons-btn--danger <%= email_auth_disable_btn_tooltip_class %>"
+                              class="crayons-btn crayons-btn--danger <%= tooltip_class_on_email_auth_disablebtn %>"
                               data-action="click->config#activateEmailAuthModal"
-                              data-tooltip="<%= enable_disable_btn_tooltip_text %>"
-                              <%= email_auth_disable_btn_disable_class %>>
+                              data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
+                              <%= disabled_attr_on_email_auth_disablebtn %>>
                               Disable
                             </button>
                              <button
@@ -268,8 +268,8 @@
                       </figure>
                       <div class="config-authentication__item--container">
                         <div
-                          class="config-authentication__item mb-0 flex items-baseline justify-between <%= auth_provider_enable_btn_tooltip_class %>"
-                          data-tooltip="<%= enable_disable_btn_tooltip_text %>">
+                          class="config-authentication__item mb-0 flex items-baseline justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
+                          data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
                           <div>
                             <p class="config-authentication__item--label fw-medium <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
                               <%= provider.official_name %>
@@ -286,7 +286,7 @@
                             data-action="click->config#enableOrEditAuthProvider"
                             data-auth-provider-enable="<%= provider.provider_name %>"
                             data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
-                            <%= auth_provider_enable_btn_disable_class %>>
+                            <%= disabled_attr_on_auth_rpovider_enablebtn %>>
                             <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>

@@ -37,35 +37,42 @@ module AuthenticationHelper
     SiteConfig.waiting_on_first_user
   end
 
-  def email_auth_disable_btn_tooltip_class
-    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "crayons-tooltip" : ""
+  def invite_only_mode_or_no_enabled_providers
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none?
   end
 
-  def auth_provider_enable_btn_tooltip_class
+  def email_login_disabled_and_one_auth_provider_enabled
+    !SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1
+  end
+
+  def tooltip_class_on_email_auth_disablebtn
+    invite_only_mode_or_no_enabled_providers ? "crayons-tooltip" : ""
+  end
+
+  def tooltip_class_on_auth_provider_enablebtn
     SiteConfig.invite_only_mode ? "crayons-tooltip" : ""
   end
 
-  def auth_provider_disable_btn_tooltip_class
-    !SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1 ? "crayons-tooltip" : ""
+  def tooltip_class_on_auth_provider_disablebtn
+    email_login_disabled_and_one_auth_provider_enabled ? "crayons-tooltip" : ""
   end
 
-  def email_auth_disable_btn_disable_class
-    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "disabled" : ""
+  def disabled_attr_on_email_auth_disablebtn
+    invite_only_mode_or_no_enabled_providers ? "disabled" : ""
   end
 
-  def auth_provider_enable_btn_disable_class
+  def disabled_attr_on_auth_rpovider_enablebtn
     SiteConfig.invite_only_mode ? "disabled" : ""
   end
 
-  def auth_provider_disable_btn_disable_class
-    !SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1 ? "disabled" : ""
+  def disabled_attr_on_auth_rpovider_disablebtn
+    email_login_disabled_and_one_auth_provider_enabled ? "disabled" : ""
   end
 
-  def enable_disable_btn_tooltip_text
+  def tooltip_text_email_or_auth_provider_btns
     if SiteConfig.invite_only_mode
       "You cannot do this until you disable Invite Only Mode"
-    elsif authentication_enabled_providers.none? ||
-        (!SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1)
+    elsif authentication_enabled_providers.none? || email_login_disabled_and_one_auth_provider_enabled
       "You cannot do this until you enable at least one other registration option"
     else
       ""
