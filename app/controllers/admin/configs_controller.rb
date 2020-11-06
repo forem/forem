@@ -222,7 +222,7 @@ module Admin
     end
 
     def update_enabled_auth_providers(value)
-      final_array = []
+      enabled_providers = []
       value.split(",").each do |entry|
         final_array.push(entry) unless invalid_provider_entry(entry)
       end

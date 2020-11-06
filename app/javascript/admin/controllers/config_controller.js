@@ -156,7 +156,7 @@ export default class ConfigController extends Controller {
   }
 
   authProviderModalBody(provider) {
-    return `<p>If you disable ${provider} as a login option, people cannot authenticate with ${provider}.</p><p><strong>You must update site config to save this action!</strong></p>`;
+    return `<p>If you disable ${provider} as a login option, people cannot authenticate with ${provider}.</p><p><strong>You must update Site Config to save this action!</strong></p>`;
   }
 
   activateAuthProviderModal(event) {
@@ -206,7 +206,7 @@ export default class ConfigController extends Controller {
       targetAuthDisableBtn.parentElement.classList.add('crayons-tooltip');
       targetAuthDisableBtn.parentElement.setAttribute(
         'data-tooltip',
-        'To edit this, you must first enable Email Address as a registration option',
+        'To edit this, you must first enable Email address as a registration option',
       );
       targetAuthDisableBtn.setAttribute('disabled', true);
     }
