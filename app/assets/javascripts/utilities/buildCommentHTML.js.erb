@@ -67,8 +67,8 @@ function buildCommentHTML(comment) {
           <a href="${ comment.url }/settings" class="crayons-link crayons-link--block">Settings</a>
           <a href="/report-abuse?url=${ comment.url }" class="crayons-link crayons-link--block">Report Abuse</a>
           <span class="current-user-actions ${ comment.newly_created ? '' : 'hidden' }">
+            <a href="${ comment.url }/edit" class="crayons-link crayons-link--block" rel="nofollow">Edit</a>
             <a data-no-instant="" href="${ comment.url }/delete_confirm" class="crayons-link crayons-link--block" rel="nofollow">Delete</a>
-            <a href="${ comment.url }/edit" class="crayons-link crayons-link--block" rel="nofollow">Edut</a>
           </span>\
         </div>
       </div>

@@ -57,8 +57,8 @@ function initializeCommentsPage() {
                   var userActionsEl = allNodes[i].querySelector('.current-user-actions');
                   var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
                   if (userActionsEl && buttEl) {
-                    userActionsEl.innerHTML = '<a data-no-instant href="' + path + '/delete_confirm" class="edit-butt crayons-link crayons-link--block">Delete</a>\
-                                                <a href="' + path + '/edit" class="crayons-link crayons-link--block">Edit</a>'
+                    userActionsEl.innerHTML = `<a href="${ path }/edit" class="crayons-link crayons-link--block">Edit</a>
+                                              <a data-no-instant href="${ path }/delete_confirm" class="edit-butt crayons-link crayons-link--block">Delete</a>`
                     userActionsEl.classList.remove('hidden');
                   }
                 }
