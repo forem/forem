@@ -1,4 +1,4 @@
-<% if module_name.present? %>module <%= module_name %><% end -%>
+<% module_namespacing do -%>
 class <%= class_name %>
   def self.call<%= signature %>
     new<%= signature %>.call
@@ -15,4 +15,4 @@ class <%= class_name %>
   def call
   end
 end
-<% if module_name.present? %>end<% end -%>
+<% end -%>
