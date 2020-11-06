@@ -129,17 +129,17 @@ module Admin
         home_feed_minimum_score
       ].freeze
 
-    VALID_IMAGE_URLS =
-      %i[
-        logo_png
-        secondary_logo_url
-        mascot_image_url
-        mascot_footer_image_url
-        campaign_sidebar_image
-        onboarding_logo_image
-        onboarding_background_image
-        onboarding_taskcard_image
-      ].freeze
+    # VALID_IMAGE_URLS =
+    #   %i[
+    #     logo_png
+    #     secondary_logo_url
+    #     mascot_image_url
+    #     mascot_footer_image_url
+    #     campaign_sidebar_image
+    #     onboarding_logo_image
+    #     onboarding_background_image
+    #     onboarding_taskcard_image
+    #   ].freeze
 
     layout "admin"
 
