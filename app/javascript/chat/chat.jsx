@@ -21,7 +21,7 @@ import {
   deleteMessage,
   editMessage,
 } from './actions/actions';
-import CreateChatModal from './components/createChatModal';
+import CreateChatModal from './components/CreateChatModal';
 import {
   sendChannelRequest,
   rejectJoiningRequest,
@@ -53,7 +53,8 @@ export default class Chat extends Component {
     chatChannels: PropTypes.string.isRequired,
     chatOptions: PropTypes.string.isRequired,
     githubToken: PropTypes.string.isRequired,
-    tagModerator: PropTypes.shape({ isTagModerator: PropTypes.bool.isRequired }).isRequired,
+    tagModerator: PropTypes.shape({ isTagModerator: PropTypes.bool.isRequired })
+      .isRequired,
   };
 
   constructor(props) {

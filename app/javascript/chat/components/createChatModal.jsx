@@ -22,6 +22,7 @@ import { Modal, Button } from '@crayons';
  * />
  *
  */
+
 function CreateChatModal({
   toggleModalCreateChannel,
   handleCreateChannelSuccess,
