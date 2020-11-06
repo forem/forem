@@ -150,6 +150,7 @@
   height: var(-header-height);
   transform: translateY(-10em);
   transition: transform 0.2s ease-in-out;
+  outline: none; // not required as the opacity change on focus is the visual cue.
 
   &:focus,
   &:focus-within {
