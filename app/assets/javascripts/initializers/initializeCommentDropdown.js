@@ -40,7 +40,8 @@ function initializeCommentDropdown() {
       event.target.matches('.dropdown-icon') ||
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
-      document.getElementById('article-copy-icon').contains(event.target) ||
+      (document.getElementById('article-copy-icon') &&
+        document.getElementById('article-copy-icon').contains(event.target)) ||
       event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }
