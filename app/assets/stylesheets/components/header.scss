@@ -163,7 +163,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     &.skip-content-link {
-      transition-duration: 0.0001ms !important;
+      transition-duration: 0.0001ms;
     }
   }
 }
