@@ -114,7 +114,7 @@ module Admin
         facebook_secret
         auth_providers_to_enable
         invite_only_mode
-        allow_both_email_signup_and_login
+        allow_email_password_registration
         require_captcha_for_email_password_registration
         primary_brand_color_hex
         spam_trigger_terms
@@ -150,7 +150,7 @@ module Admin
         end
       end
 
-      toggle_email_password_authentication
+      disable_invite_mode_when_email_registration_off
 
       redirect_to admin_config_path, notice: "Site configuration was successfully updated."
     end
@@ -210,15 +210,10 @@ module Admin
       config[:credit_prices_in_cents]&.transform_values!(&:to_i)
     end
 
-    def toggle_email_password_authentication
-      if SiteConfig.allow_both_email_signup_and_login
-        SiteConfig.allow_email_password_registration = true
-        SiteConfig.allow_email_password_login = true
-      else
-        SiteConfig.allow_email_password_registration = false
-        SiteConfig.allow_email_password_login = false
-        SiteConfig.invite_only_mode = false
-      end
+    def disable_invite_mode_when_email_registration_off
+      return unless SiteConfig.allow_email_password_registration == false
+
+      SiteConfig.invite_only_mode = false
     end
 
     def update_enabled_auth_providers(value)
