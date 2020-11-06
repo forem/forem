@@ -1,6 +1,31 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
+/**
+ * This component is used to render the list of all Achtive chat channel Members
+ * in the mention list
+ * 
+ * @param {object} props
+ * @param {booleam} props.showMemberlist
+ * @param {number} props.activeChannelId
+ * @param {object} props.channelUsers
+ * @param {string} props.memberFilterQuery
+ * @param {function} props.addUserName
+ * 
+ * @component
+ * 
+ * @example
+ * 
+ * <ActiveChannelMemberList 
+ *  showMemberlist={showMemberlist}
+    activeChannelId={activeChannelId}
+    channelUsers={channelUsers}
+    memberFilterQuery={memberFilterQuery}
+    addUserName={addUserName}
+ * />
+ * 
+ */
+
 function ActiveChannelMemberList({
   showMemberlist,
   activeChannelId,

@@ -1,6 +1,25 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
+/**
+ * This is Delete message component modal.
+ *
+ * @param {object} props
+ * @param {boolean} props.showDeleteModal
+ * @param {function} props.handleMessageDelete
+ * @param {function} props.handleCloseDeleteModal
+ *
+ * @component
+ *
+ * @example
+ *
+ * <DeleteModal
+ *   showDeleteModal={showDeleteModal}
+ *   handleMessageDelete={handleMessageDelete}
+ *   handleCloseDeleteModal={handleCloseDeleteModal}
+ * />
+ */
+
 function DeleteModal({
   showDeleteModal,
   handleMessageDelete,

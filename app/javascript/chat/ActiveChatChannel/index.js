@@ -25,6 +25,31 @@ import { DragAndDropZone } from '@utilities/dragAndDrop';
 const WIDE_WIDTH_LIMIT = 1600;
 const NARROW_WIDTH_LIMIT = 767;
 
+/**
+ * 
+ * This component render the active chat channel
+ * 
+ * @param {object} props
+ * @param {element} channelHeader
+ * @param {function} triggerActiveContent
+ * @param {function} setActiveContent
+ * @param {function} setActiveContentState
+ * @param {function} handleFailure
+ *
+ * @component
+ * 
+ * @example
+ * 
+ * <ActiveChatChannel 
+ *  channelHeader={channelHeader}
+    setActiveContentState={setActiveContentState}
+    setActiveContent={setActiveContent}
+    handleFailure={handleFailure}
+    triggerActiveContent={triggerActiveContent}
+ * />
+ * 
+ */
+
 function ActiveChatChannel({
   channelHeader,
   triggerActiveContent,

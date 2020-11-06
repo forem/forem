@@ -3,7 +3,36 @@ import PropTypes from 'prop-types';
 import ActionMessage from '../actionMessage';
 import Message from '../message';
 import DirectChatInfoMessage from './IntroductionMessages/DireactIntroMessages';
-import OpenChatInfoMessagge from './IntroductionMessages/OpenItnroMessage';
+import IntroductionMessage from './IntroductionMessages/OpenItnroMessage';
+
+/**
+ * 
+ * This component is used to render all the active chat channel messages
+ * 
+ * @param {object} props
+ * @param {object} props.messages
+ * @param {boolean} props.showTimestamp
+ * @param {object} props.activeChannel
+ * @param {number} props.currentUserId
+ * @param {function} props.triggerActiveContent
+ * @param {function} props.triggerEditMessage
+ * @param {function} props.triggerDeleteMessage
+ * 
+ * @component
+ * 
+ * @example
+ * 
+ * <ChatMessages 
+ *  activeChannelId={activeChannelId}
+    messages={messages}
+    showTimestamp={showTimestamp}
+    activeChannel={activeChannel}
+    currentUserId={currentUserId}
+    triggerActiveContent={triggerActiveContent}
+    triggerEditMessage={triggerEditMessage}
+    triggerDeleteMessage={triggerDeleteMessage}
+ * />
+ */
 
 function ChatMessages({
   activeChannelId,
@@ -24,7 +53,7 @@ function ChatMessages({
       case 'direct':
         return <DirectChatInfoMessage activeChannel={activeChannel} />;
       case 'open':
-        return <OpenChatInfoMessagge activeChannel={activeChannel} />;
+        return <IntroductionMessage activeChannel={activeChannel} />;
       default:
         return null;
     }
