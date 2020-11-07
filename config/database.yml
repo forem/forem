@@ -63,7 +63,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  url: <%= ENV['DATABASE_URL_TEST'] || ENV['DATABASE_URL'] || ''%>
+  url: <%= ENV['DATABASE_URL_TEST'] || ''%>
   variables:
       statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 10_000).to_i %>
 
