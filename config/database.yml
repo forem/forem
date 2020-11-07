@@ -28,7 +28,6 @@ default: &default
 development:
   <<: *default
   url: <%= ENV.fetch('DATABASE_URL', '') %>
-  database: PracticalDeveloper_development
   variables:
       statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 10_000).to_i %>
 
@@ -65,7 +64,6 @@ development:
 test:
   <<: *default
   url: <%= ENV['DATABASE_URL_TEST'] || ENV['DATABASE_URL'] || ''%>
-  database: PracticalDeveloper_test<%= ENV['TEST_ENV_NUMBER'] %>
   variables:
       statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 10_000).to_i %>
 
@@ -90,7 +88,5 @@ test:
 #
 production:
   <<: *default
-  database: PracticalDeveloper_production
+  url: <%= ENV['DATABASE_URL'] || ''%>
   pool: <%= ENV['DATABASE_POOL_SIZE'] %>
-  username: PracticalDeveloper
-  password: <%= ENV['PRACTICALDEVELOPER_DATABASE_PASSWORD'] %>
