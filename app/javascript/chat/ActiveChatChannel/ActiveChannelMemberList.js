@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 /**
- * This component is used to render the list of all Achtive chat channel Members
+ * This component is used to render the list of all Active chat channel Members
  * in the mention list
  * 
  * @param {object} props

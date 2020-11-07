@@ -105,16 +105,16 @@ const Channels = ({
       >
         {topNotice}
         {channels}
-        {discoverableChannels.length > 0 && filterQuery.length > 0 ? (
+        {discoverableChannels.length > 0 &&
+        filterQuery &&
+        filterQuery.length > 0 ? (
           <div>
             <span className="crayons-indicator crayons-indicator--">
               Global Channel Search
             </span>
             {discoverableChannels}
           </div>
-        ) : (
-          ''
-        )}
+        ) : null}
         {channelsListFooter}
       </div>
       {configFooter}

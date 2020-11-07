@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ActionMessage from '../actionMessage';
 import Message from '../message';
 import DirectChatInfoMessage from './IntroductionMessages/DireactIntroMessages';
-import IntroductionMessage from './IntroductionMessages/OpenItnroMessage';
+import IntroductionMessage from './IntroductionMessages/IntroductionMessage';
 
 /**
  * 
