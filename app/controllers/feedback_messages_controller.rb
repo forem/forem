@@ -28,7 +28,12 @@ class FeedbackMessagesController < ApplicationController
 
       respond_to do |format|
         format.html { render "pages/report_abuse" }
-        format.json { render json: { success: false, message: "Your report is submitted" }, status: bad_request }
+        format.json do
+          render json: {
+            success: false, message: "Make sure the forms are filled 🤖",
+            status: :bad_request
+          }
+        end
       end
     end
   end
