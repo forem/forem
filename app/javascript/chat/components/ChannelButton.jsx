@@ -1,6 +1,8 @@
 import { h, createRef } from 'preact';
 import { useEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { defaultChannelPropTypes } from '../../common-prop-types/channel-list-prop-type';
+import ChannelImage from './ChannelImage';
 import { Button } from '@crayons';
 
 export default function ChannelButton(props) {
@@ -12,33 +14,6 @@ export default function ChannelButton(props) {
       buttonRef.current.click();
     }
   }, [isActiveChannel, buttonRef]);
-
-  function renderChannelImage() {
-    const { channel, newMessagesIndicator, discoverableChannel } = props;
-
-    return (
-      <span
-        data-channel-slug={channel.channel_modified_slug}
-        className={
-          discoverableChannel
-            ? 'chatchanneltabindicator'
-            : `chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`
-        }
-        data-channel-id={channel.chat_channel_id}
-      >
-        <img
-          src={channel.channel_image}
-          alt="pic"
-          data-channel-id={channel.chat_channel_id}
-          className={
-            channel.channel_type === 'direct'
-              ? 'chatchanneltabindicatordirectimage'
-              : 'chatchanneltabindicatordirectimage invert-channel-image'
-          }
-        />
-      </span>
-    );
-  }
 
   const {
     channel,
@@ -66,7 +41,11 @@ export default function ChannelButton(props) {
       data-channel-status={channel.status}
       data-channel-name={channel.channel_name}
     >
-      {renderChannelImage()}
+      <ChannelImage
+        channel={channel}
+        newMessagesIndicator={newMessagesIndicator}
+        discoverableChannel={discoverableChannel}
+      />
       {isUnopened ? (
         <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
       ) : null}
@@ -76,16 +55,7 @@ export default function ChannelButton(props) {
 }
 
 ChannelButton.propTypes = {
-  channel: PropTypes.shape({
-    channel_name: PropTypes.string,
-    channel_color: PropTypes.string,
-    channel_type: PropTypes.string,
-    channel_modified_slug: PropTypes.string,
-    id: PropTypes.number,
-    chat_channel_id: PropTypes.number,
-    status: PropTypes.string,
-    channel_image: PropTypes.string,
-  }).isRequired,
+  channel: defaultChannelPropTypes,
   discoverableChannel: PropTypes.bool,
   handleSwitchChannel: PropTypes.func,
   triggerActiveContent: PropTypes.func,
