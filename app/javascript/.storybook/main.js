@@ -5,18 +5,25 @@ const renderer = new marked.Renderer();
 const prettierConfig = require('../../../.prettierrc.json');
 
 module.exports = {
-  stories: ['../**/__stories__/*.stories.jsx'],
+  stories: ['../**/__stories__/*.stories.jsx|mdx'],
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-links',
-    '@storybook/addon-docs',
     '@storybook/addon-a11y',
     '@storybook/addon-notes/register-panel',
     {
       name: '@storybook/addon-storysource',
       loaderOptions: {
         prettierConfig,
+      },
+    },
+    {
+      name: '@storybook/addon-docs',
+      options: {
+        configureJSX: true,
+        babelOptions: {},
+        sourceLoaderOptions: null,
       },
     },
   ],

@@ -81,3 +81,8 @@ addParameters({
     page: DocsPage,
   },
 });
+
+export const Foo = () => <Component />;
+Foo.parameters = {
+  previewTabs: { 'storybook/docs/panel': { index: -1 } },
+};
