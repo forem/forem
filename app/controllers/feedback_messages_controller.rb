@@ -30,7 +30,8 @@ class FeedbackMessagesController < ApplicationController
         format.html { render "pages/report_abuse" }
         format.json do
           render json: {
-            success: false, message: "Make sure the forms are filled 🤖",
+            success: false,
+            message: @feedback_message.errors.full_messages.to_sentence,
             status: :bad_request
           }
         end
