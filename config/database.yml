@@ -19,7 +19,7 @@ default: &default
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV['DATABASE_POOL_SIZE'] || ENV.fetch('RAILS_MAX_THREADS', 5).to_i %>
   connect_timeout: 2
   checkout_timeout: 2
   variables:
@@ -89,4 +89,3 @@ test:
 production:
   <<: *default
   url: <%= ENV['DATABASE_URL'] || ''%>
-  pool: <%= ENV['DATABASE_POOL_SIZE'] %>
