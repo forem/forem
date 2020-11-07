@@ -174,7 +174,7 @@
                           Email address
                         </p>
                         <div
-                          class="enabled-indicator-hidden <%= SiteConfig.allow_both_email_signup_and_login ? "enabled-indicator-visible" : "" %>"
+                          class="enabled-indicator <%= SiteConfig.allow_both_email_signup_and_login ? "visible" : "" %>"
                           data-target="config.enabledIndicator">
                           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
@@ -278,7 +278,7 @@
                             </p>
                             <div
                               id="<%= provider.provider_name %>-enabled-indicator"
-                              class="enabled-indicator-hidden <%= authentication_enabled_providers.include?(provider) ? "enabled-indicator-visible" : "" %>">
+                              class="enabled-indicator <%= authentication_enabled_providers.include?(provider) ? "visible" : "" %>">
                               <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                               <small class="crayons-field__description ml-1">Enabled</small>
                             </div>
