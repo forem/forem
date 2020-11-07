@@ -1,19 +1,20 @@
-import { h, Component, createRef } from 'preact';
+import { h, createRef } from 'preact';
+import { useEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
-class ChannelButton extends Component {
-  buttonRef = createRef();
+export default function ChannelButton(props) {
+  const buttonRef = createRef();
+  const { isActiveChannel = false } = props;
 
-  componentDidMount() {
-    const { isActiveChannel = false } = this.props;
-
+  useEffect(() => {
     if (isActiveChannel) {
-      this.buttonRef.current.click();
+      buttonRef.current.click();
     }
-  }
+  }, [isActiveChannel, buttonRef]);
 
-  renderChannelImage = () => {
-    const { channel, newMessagesIndicator, discoverableChannel } = this.props;
+  function renderChannelImage() {
+    const { channel, newMessagesIndicator, discoverableChannel } = props;
 
     return (
       <span
@@ -28,6 +29,7 @@ class ChannelButton extends Component {
         <img
           src={channel.channel_image}
           alt="pic"
+          data-channel-id={channel.chat_channel_id}
           className={
             channel.channel_type === 'direct'
               ? 'chatchanneltabindicatordirectimage'
@@ -36,61 +38,41 @@ class ChannelButton extends Component {
         />
       </span>
     );
-  };
-
-  render() {
-    const {
-      channel,
-      handleSwitchChannel,
-      otherClassname,
-      newMessagesIndicator,
-      isUnopened,
-      discoverableChannel,
-      triggerActiveContent,
-    } = this.props;
-
-    return (
-      <button
-        type="button"
-        ref={this.buttonRef}
-        key={channel.id}
-        className="chatchanneltabbutton"
-        onClick={
-          discoverableChannel ? triggerActiveContent : handleSwitchChannel
-        }
-        data-content="sidecar-channel-request"
-        data-channel-id={channel.chat_channel_id}
-        data-channel-slug={channel.channel_modified_slug}
-        data-channel-status={channel.status}
-        data-channel-name={channel.channel_name}
-      >
-        <span
-          className={
-            discoverableChannel
-              ? 'chatchanneltab chatchanneltab--inactive'
-              : `chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator}`
-          }
-          data-channel-id={channel.chat_channel_id}
-          data-content="sidecar-channel-request"
-          data-channel-slug={channel.channel_modified_slug}
-          data-channel-status={channel.status}
-          data-channel-name={channel.channel_name}
-          style={{
-            border: `1px solid ${channel.channel_color}`,
-            boxShadow: `3px 3px 0px ${channel.channel_color}`,
-          }}
-        >
-          {this.renderChannelImage()}
-          {isUnopened ? (
-            <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
-          ) : (
-            ''
-          )}
-          {channel.channel_name}
-        </span>
-      </button>
-    );
   }
+
+  const {
+    channel,
+    handleSwitchChannel,
+    otherClassname,
+    newMessagesIndicator,
+    isUnopened,
+    discoverableChannel,
+    triggerActiveContent,
+  } = props;
+
+  return (
+    <Button
+      ref={buttonRef}
+      key={channel.id}
+      className={
+        discoverableChannel
+          ? 'chatchanneltab chatchanneltab--inactive crayons-btn--ghost'
+          : `chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator} crayons-btn--ghost`
+      }
+      onClick={discoverableChannel ? triggerActiveContent : handleSwitchChannel}
+      data-content="sidecar-channel-request"
+      data-channel-id={channel.chat_channel_id}
+      data-channel-slug={channel.channel_modified_slug}
+      data-channel-status={channel.status}
+      data-channel-name={channel.channel_name}
+    >
+      {renderChannelImage()}
+      {isUnopened ? (
+        <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
+      ) : null}
+      {channel.channel_name}
+    </Button>
+  );
 }
 
 ChannelButton.propTypes = {
@@ -120,4 +102,3 @@ ChannelButton.defaultProps = {
   handleSwitchChannel: null,
   triggerActiveContent: null,
 };
-export default ChannelButton;
