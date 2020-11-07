@@ -6,7 +6,35 @@ import ActiveMembershipSection from './ActiveMembershipsSection';
 import PendingMembershipSection from './PendingMembershipSection';
 import RequestedMembershipSection from './RequestedMembershipSection';
 
-const ChatChannelMembershipSection = ({
+/**
+ * This component render the section for the all memberships
+ * 
+ * 
+ * @param {object} props 
+ * @param {array} pendingMemberships 
+ * @param {array} requestedMemberships 
+ * @param {function} chatChannelAcceptMembership 
+ * @param {array} activeMemberships 
+ * @param {function} removeMembership 
+ * @param {string} currentMembershipRole 
+ * @param {function} toggleScreens 
+ * 
+ * @component
+ * 
+ * @example
+ * 
+  <ChatChannelMembershipSection
+    currentMembershipRole={currentMembership.role}
+    activeMemberships={activeMemberships}
+    removeMembership={removeMembership}
+    pendingMemberships={pendingMemberships}
+    requestedMemberships={requestedMemberships}
+    chatChannelAcceptMembership={chatChannelAcceptMembership}
+    toggleScreens={toggleScreens}
+  />
+ * 
+ */
+export default function ChatChannelMembershipSection({
   pendingMemberships,
   requestedMemberships,
   chatChannelAcceptMembership,
@@ -14,7 +42,7 @@ const ChatChannelMembershipSection = ({
   removeMembership,
   currentMembershipRole,
   toggleScreens,
-}) => {
+}) {
   return (
     <div className="membership-list">
       <ActiveMembershipSection
@@ -36,7 +64,7 @@ const ChatChannelMembershipSection = ({
       />
     </div>
   );
-};
+}
 
 ChatChannelMembershipSection.propTypes = {
   pendingMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
@@ -47,5 +75,3 @@ ChatChannelMembershipSection.propTypes = {
   currentMembershipRole: PropTypes.string.isRequired,
   toggleScreens: PropTypes.func.isRequired,
 };
-
-export default ChatChannelMembershipSection;

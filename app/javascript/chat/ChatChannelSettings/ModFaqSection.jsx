@@ -1,7 +1,23 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ModFaqSection = ({ currentMembershipRole }) => {
+/**
+ * This is a mod FAQ section, Where MOD user can ask questions
+ *
+ * @param {object} props
+ * @param {string} currentMembershipRole
+ *
+ * @component
+ *
+ * @example
+ *
+ * <ModFaqSection
+ *  currentMembershipRole={currentMembershipRole}
+ * />
+ *
+ */
+
+export default function ModFaqSection({ currentMembershipRole }) {
   if (currentMembershipRole === 'member') {
     return null;
   }
@@ -21,10 +37,8 @@ const ModFaqSection = ({ currentMembershipRole }) => {
       </p>
     </div>
   );
-};
+}
 
 ModFaqSection.propTypes = {
   currentMembershipRole: PropTypes.string.isRequired,
 };
-
-export default ModFaqSection;

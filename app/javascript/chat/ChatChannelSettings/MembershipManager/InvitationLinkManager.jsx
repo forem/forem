@@ -20,6 +20,21 @@ const CopyIcon = () => (
   </svg>
 );
 
+/**
+ * This component render the Active chat channel invitation links
+ *
+ * @param {object} props
+ * @param {string} props.invitationLink
+ * @param {object} props.currentMembership
+ *
+ * <InvitationLinkManager
+ *   invitationLink={invitationLink}
+ *   currentMembership={currentMembership}
+ * />
+ *
+ *
+ */
+
 export default class InvitationLinkManager extends Component {
   static propTypes = {
     invitationLink: PropTypes.string.isRequired,

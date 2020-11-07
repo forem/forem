@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 /**
  * This is Delete message component modal.
@@ -40,8 +41,7 @@ function DeleteModal({
         <div className="crayons-modal__box__body">
           <h3>Are you sure, you want to delete this message?</h3>
           <div className="delete-actions__container">
-            <div
-              role="button"
+            <Button
               className="crayons-btn crayons-btn--danger message__delete__button"
               onClick={handleMessageDelete}
               tabIndex="0"
@@ -51,9 +51,8 @@ function DeleteModal({
             >
               {' '}
               Delete
-            </div>
-            <div
-              role="button"
+            </Button>
+            <Button
               className="crayons-btn crayons-btn--secondary message__cancel__button"
               onClick={handleCloseDeleteModal}
               tabIndex="0"
@@ -63,7 +62,7 @@ function DeleteModal({
             >
               {' '}
               Cancel
-            </div>
+            </Button>
           </div>
         </div>
       </div>

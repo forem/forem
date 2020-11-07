@@ -2,13 +2,37 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import Membership from './Membership';
 
-const MembershipSection = ({
+/**
+ * This component render all the List of Active chat channel memberships
+ * 
+ * @param {object} props
+ *  
+ * @param {object} membership
+ * @param {object} currentMembership
+ * @param {function} removeMembership
+ * @param {function} handleUpdateMembershipRole
+ * @param {boolean} membershipCount
+ * 
+ * @component
+ * 
+ * @example
+ * 
+ *<Membership
+    membership={pendingMembership}
+    removeMembership={removeMembership}
+    currentMembershipRole={currentMembershipRole}
+    handleUpdateMembershipRole={handleUpdateMembershipRole}
+    membershipCount={membershipCount}
+  />
+ * 
+ */
+export default function MembershipSection({
   memberships,
   currentMembership,
   removeMembership,
   handleUpdateMembershipRole,
   membershipCount,
-}) => {
+}) {
   if (!memberships || memberships.length === 0) {
     return <p className="lh-base">No membership</p>;
   }
@@ -29,7 +53,7 @@ const MembershipSection = ({
       ))}
     </div>
   );
-};
+}
 
 MembershipSection.propType = {
   memberships: PropTypes.arrayOf(
@@ -48,5 +72,3 @@ MembershipSection.propType = {
   handleUpdateMembershipRole: PropTypes.func.isRequired,
   membershipCount: PropTypes.number.isRequired,
 };
-
-export default MembershipSection;

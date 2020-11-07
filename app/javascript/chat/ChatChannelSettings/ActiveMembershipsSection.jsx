@@ -5,12 +5,34 @@ import { defaulMembershipPropType } from '../../common-prop-types/membership-pro
 import Membership from './Membership';
 import { Button } from '@crayons';
 
-const ActiveMembershipSection = ({
+/**
+ * This coponent is used to render the active membershiop secton
+ *
+ * @param {object} props
+ * @param {array} props.activeMemberships
+ * @param {function} props.removeMembership
+ * @param {string} props.currentMembershipRole
+ * @param {function} props.toggleScreens
+ *
+ * @component
+ *
+ * @example
+ *
+ * <ActiveMembershipSection
+ *   activeMemberships={activeMemberships}
+ *   removeMembership={removeMembership}
+ *   currentMembershipRole={currentMembershipRole}
+ *   toggleScreens = {toggleScreens}
+ * />
+ *
+ */
+
+export default function ActiveMembershipSection({
   activeMemberships,
   removeMembership,
   currentMembershipRole,
   toggleScreens,
-}) => {
+}) {
   const activeMembershipList = activeMemberships.slice(0, 4);
 
   return (
@@ -41,7 +63,7 @@ const ActiveMembershipSection = ({
       </div>
     </div>
   );
-};
+}
 
 ActiveMembershipSection.propTypes = {
   activeMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
@@ -49,5 +71,3 @@ ActiveMembershipSection.propTypes = {
   currentMembershipRole: PropTypes.string.isRequired,
   toggleScreens: PropTypes.func.isRequired,
 };
-
-export default ActiveMembershipSection;

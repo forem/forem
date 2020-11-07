@@ -3,13 +3,28 @@ import PropTypes from 'prop-types';
 import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
 import { Button } from '@crayons';
 
-const Membership = ({
+/**
+ *
+ * This component render the membership section
+ *
+ * @param {object} props
+ * @param {object} membership
+ * @param {function} removeMembership
+ * @param {function} membershipType
+ * @param {function} chatChannelAcceptMembership
+ * @param {string} currentMembershipRole
+ *
+ * @compoent
+ *
+ * @example
+ */
+export default function Membership({
   membership,
   removeMembership,
   membershipType,
   chatChannelAcceptMembership,
   currentMembershipRole,
-}) => {
+}) {
   return (
     <div className="flex items-center">
       <a
@@ -51,7 +66,7 @@ const Membership = ({
       ) : null}
     </div>
   );
-};
+}
 
 Membership.propTypes = {
   membership: PropTypes.objectOf(defaulMembershipPropType).isRequired,
@@ -60,5 +75,3 @@ Membership.propTypes = {
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
 };
-
-export default Membership;

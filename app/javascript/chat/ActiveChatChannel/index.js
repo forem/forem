@@ -21,6 +21,7 @@ import ChatMessages from './ChatMessages';
 import DeleteModal from './Modal/DeleteModal';
 import ActiveChannelMembershipList from './ActiveChannelMemberList';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
+import { Button } from '@crayons';
 
 const WIDE_WIDTH_LIMIT = 1600;
 const NARROW_WIDTH_LIMIT = 767;
@@ -598,9 +599,8 @@ function ActiveChatChannel({
           className="chatchanneljumpback chatchanneljumpback__hide"
           id="jumpback_button"
         >
-          <div
-            role="button"
-            className="chatchanneljumpback__messages"
+          <Button
+            className="chatchanneljumpback__messages crayons-btn--outlined"
             onClick={jumpBacktoBottom}
             tabIndex="0"
             onKeyUp={(e) => {
@@ -608,7 +608,7 @@ function ActiveChatChannel({
             }}
           >
             Scroll to Bottom
-          </div>
+          </Button>
         </div>
         <DeleteModal
           showDeleteModal={state.showDeleteModal}

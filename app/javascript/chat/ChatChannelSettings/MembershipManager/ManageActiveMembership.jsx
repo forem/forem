@@ -4,6 +4,30 @@ import PropTypes from 'prop-types';
 import MembershipSection from './MembershipSection';
 import InvitationLinkManager from './InvitationLinkManager';
 
+/**
+ * 
+ * This component render the Active chat channel Membership management section
+ * 
+ * @param {object} props
+ * @param {object} activeMemberships
+ * @param {object} currentMembership
+ * @param {string} invitationLink
+ * @param {function} removeMembership
+ * @param {function} handleUpdateMembershipRole
+ * 
+ * @component
+ * 
+ * @exampl
+ * 
+ * <ManageActiveMembership
+    activeMemberships={activeMemberships}
+    currentMembership={currentMembership}
+    chatChannel={chatChannel}
+    invitationLink={invitationLink}
+    removeMembership={this.removeMembership}
+    handleUpdateMembershipRole={this.handleUpdateMembershipRole}
+  />
+ */
 export default class ManageActiveMembership extends Component {
   static propTypes = {
     activeMemberships: PropTypes.arrayOf(
@@ -95,6 +119,7 @@ export default class ManageActiveMembership extends Component {
             placeholder="Search Member..."
             value={searchMembers}
             name="search-members"
+            // eslint-disable-next-line react/jsx-no-bind
             onKeyUp={this.searchTheMembershipUser.bind(this)}
             aria-label="search memberships"
           />

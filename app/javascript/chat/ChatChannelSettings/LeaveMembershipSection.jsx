@@ -2,10 +2,27 @@ import { h } from 'preact';
 import PropsType from 'prop-types';
 import { Button } from '@crayons';
 
-const LeaveMembershipSection = ({
+/**
+ * This component render the Leave chat channel membership actions
+ *
+ * @param {object} props
+ * @param {function} handleleaveChannelMembership
+ * @param {string} currentMembershipRole
+ *
+ * @component
+ *
+ * @example
+ *
+ * <LeaveMembershipSection
+ *   handleleaveChannelMembership={handleleaveChannelMembership}
+ *   currentMembershipRole={currentMembershipRole}
+ * />
+ *
+ */
+export default function LeaveMembershipSection({
   handleleaveChannelMembership,
   currentMembershipRole,
-}) => {
+}) {
   if (currentMembershipRole === 'mod') {
     return null;
   }
@@ -25,10 +42,8 @@ const LeaveMembershipSection = ({
       </div>
     </div>
   );
-};
+}
 
 LeaveMembershipSection.propTypes = {
   handleleaveChannelMembership: PropsType.func.isRequired,
 };
-
-export default LeaveMembershipSection;

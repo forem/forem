@@ -3,13 +3,36 @@ import PropTypes from 'prop-types';
 import adminEmoji from '../../../../assets/images/emoji/apple-fire.png';
 import { Button } from '@crayons';
 
-const Membership = ({
+/**
+ * This component is used to render the membership
+ * 
+ * @param {object} props
+ * @param {object} membership
+ * @param {object} currentMembership
+ * @param {function} removeMembership
+ * @param {function} handleUpdateMembershipRole
+ * @param {boolean} showActionButton
+ * 
+ * @component
+ * 
+ * @example
+ * 
+ *<Membership
+    membership={pendingMembership}
+    removeMembership={removeMembership}
+    currentMembershipRole={currentMembershipRole}
+    handleUpdateMembershipRole={handleUpdateMembershipRole}
+    showActionButton={showActionButton}
+  />
+ * 
+ */
+export default function Membership({
   membership,
   currentMembership,
   removeMembership,
   handleUpdateMembershipRole,
   showActionButton,
-}) => {
+}) {
   const addAsModButton =
     membership.role === 'member' ? (
       <Button
@@ -108,7 +131,7 @@ const Membership = ({
       <div className="">{dropdown}</div>
     </div>
   );
-};
+}
 
 Membership.propTypes = {
   membership: PropTypes.objectOf(
@@ -127,5 +150,3 @@ Membership.propTypes = {
   handleUpdateMembershipRole: PropTypes.func.isRequired,
   showActionButton: PropTypes.bool.isRequired,
 };
-
-export default Membership;

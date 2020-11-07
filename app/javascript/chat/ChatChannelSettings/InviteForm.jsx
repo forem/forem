@@ -2,11 +2,30 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const InviteForm = ({
+/**
+ * This component render the invitation form
+ *
+ * @param {object} props
+ * @param {function} handleChannelInvitations
+ * @param {string} invitationUsernames
+ * @param {function} handleInvitationUsernames
+ *
+ *
+ * @component
+ *
+ * @example
+ * <InviteForm
+ *  handleChannelInvitations={handleChannelInvitations}
+ *  invitationUsernames={invitationUsernames}
+ *  handleInvitationUsernames={handleInvitationUsernames}
+ * />
+ *
+ */
+export default function InviteForm({
   handleChannelInvitations,
   invitationUsernames,
   handleInvitationUsernames,
-}) => {
+}) {
   return (
     <div data-testid="invite-form" className="crayons-card p-4 grid gap-2 mb-4">
       <div className="crayons-field">
@@ -33,12 +52,10 @@ const InviteForm = ({
       </div>
     </div>
   );
-};
+}
 
 InviteForm.propTypes = {
   handleInvitationUsernames: PropTypes.func.isRequired,
   handleChannelInvitations: PropTypes.func.isRequired,
   invitationUsernames: PropTypes.func.isRequired,
 };
-
-export default InviteForm;

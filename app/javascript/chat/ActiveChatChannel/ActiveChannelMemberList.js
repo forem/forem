@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 /**
  * This component is used to render the list of all Active chat channel Members
@@ -46,10 +47,9 @@ function ActiveChannelMemberList({
         ? Object.values(channelUsers[activeChannelId])
             .filter((user) => user.username.match(filterRegx))
             .map((user) => (
-              <div
+              <Button
                 key={user.username}
-                className="mention__user"
-                role="button"
+                className="mention__user crayons-btn--ghost w-100 align-left"
                 onClick={(e) => addUserName(e)}
                 tabIndex="0"
                 data-content={user.username}
@@ -72,7 +72,7 @@ function ActiveChannelMemberList({
                   {`@${user.username}`}
                   <p>{user.name}</p>
                 </span>
-              </div>
+              </Button>
             ))
         : ' '}
     </div>

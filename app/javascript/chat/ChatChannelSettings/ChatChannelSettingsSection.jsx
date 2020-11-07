@@ -8,7 +8,7 @@ import ModFaqSection from './ModFaqSection';
 import ChannelDescriptionSection from './ChannelDescriptionSection';
 import ChatChannelMembershipSection from './ChatChannelMembershipSection';
 
-const ChatChannelSettingsSection = ({
+export default function ChatChannelSettingsSection({
   channelDiscoverable,
   updateCurrentMembershipNotificationSettings,
   handleleaveChannelMembership,
@@ -29,55 +29,57 @@ const ChatChannelSettingsSection = ({
   requestedMemberships,
   invitationUsernames,
   showGlobalBadgeNotification,
-}) => (
-  <div>
-    <ChannelDescriptionSection
-      channelName={chatChannel.name}
-      channelDescription={chatChannel.description}
-      currentMembershipRole={currentMembership.role}
-      className="channel-description-section"
-    />
-    <ChatChannelMembershipSection
-      currentMembershipRole={currentMembership.role}
-      activeMemberships={activeMemberships}
-      removeMembership={removeMembership}
-      pendingMemberships={pendingMemberships}
-      requestedMemberships={requestedMemberships}
-      chatChannelAcceptMembership={chatChannelAcceptMembership}
-      toggleScreens={toggleScreens}
-      className="channel-membership-sections"
-    />
-    <ModSection
-      invitationUsernames={invitationUsernames}
-      handleInvitationUsernames={handleInvitationUsernames}
-      handleChannelInvitations={handleChannelInvitations}
-      channelDescription={channelDescription}
-      handleDescriptionChange={handleDescriptionChange}
-      channelDiscoverable={channelDiscoverable}
-      handleChannelDiscoverableStatus={handleChannelDiscoverableStatus}
-      handleChannelDescriptionChanges={handleChannelDescriptionChanges}
-      currentMembershipRole={currentMembership.role}
-      className="channel-mod-section"
-    />
-    <PersonalSettings
-      updateCurrentMembershipNotificationSettings={
-        updateCurrentMembershipNotificationSettings
-      }
-      showGlobalBadgeNotification={showGlobalBadgeNotification}
-      handlePersonChannelSetting={handlePersonChannelSetting}
-      className="channel-personal-seeting"
-    />
-    <LeaveMembershipSection
-      currentMembershipRole={currentMembership.role}
-      handleleaveChannelMembership={handleleaveChannelMembership}
-      className="channel-leave-membership-section"
-    />
-    <ModFaqSection
-      currentMembershipRole={currentMembership.role}
-      className="channel-mod-faq"
-    />
-  </div>
-);
+}) {
+  return (
+    <div>
+      <ChannelDescriptionSection
+        channelName={chatChannel.name}
+        channelDescription={chatChannel.description}
+        currentMembershipRole={currentMembership.role}
+        className="channel-description-section"
+      />
+      <ChatChannelMembershipSection
+        currentMembershipRole={currentMembership.role}
+        activeMemberships={activeMemberships}
+        removeMembership={removeMembership}
+        pendingMemberships={pendingMemberships}
+        requestedMemberships={requestedMemberships}
+        chatChannelAcceptMembership={chatChannelAcceptMembership}
+        toggleScreens={toggleScreens}
+        className="channel-membership-sections"
+      />
+      <ModSection
+        invitationUsernames={invitationUsernames}
+        handleInvitationUsernames={handleInvitationUsernames}
+        handleChannelInvitations={handleChannelInvitations}
+        channelDescription={channelDescription}
+        handleDescriptionChange={handleDescriptionChange}
+        channelDiscoverable={channelDiscoverable}
+        handleChannelDiscoverableStatus={handleChannelDiscoverableStatus}
+        handleChannelDescriptionChanges={handleChannelDescriptionChanges}
+        currentMembershipRole={currentMembership.role}
+        className="channel-mod-section"
+      />
+      <PersonalSettings
+        updateCurrentMembershipNotificationSettings={
+          updateCurrentMembershipNotificationSettings
+        }
+        showGlobalBadgeNotification={showGlobalBadgeNotification}
+        handlePersonChannelSetting={handlePersonChannelSetting}
+        className="channel-personal-seeting"
+      />
+      <LeaveMembershipSection
+        currentMembershipRole={currentMembership.role}
+        handleleaveChannelMembership={handleleaveChannelMembership}
+        className="channel-leave-membership-section"
+      />
+      <ModFaqSection
+        currentMembershipRole={currentMembership.role}
+        className="channel-mod-faq"
+      />
+    </div>
+  );
+}
 
 ChatChannelSettingsSection.propTypes = {
   chatChannel: PropTypes.isRequired,
@@ -101,5 +103,3 @@ ChatChannelSettingsSection.propTypes = {
   handlePersonChannelSetting: PropTypes.func.isRequired,
   updateCurrentMembershipNotificationSettings: PropTypes.func.isRequired,
 };
-
-export default ChatChannelSettingsSection;
