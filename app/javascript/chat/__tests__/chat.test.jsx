@@ -169,9 +169,7 @@ describe('<Chat />', () => {
 
   it('should have no a11y violations', async () => {
     fetch.mockResponse(getMockResponse());
-    const { container } = render(
-      <Chat {...getRootData()} />,
-    );
+    const { container } = render(<Chat {...getRootData()} />);
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
@@ -196,22 +194,20 @@ describe('<Chat />', () => {
 
     expect(activeChat).not.toBeNull();
 
-    getByText('Scroll to Bottom', { selector: '[role="button"]' });
+    getByText('Scroll to Bottom', { selector: '[type="button"]' });
 
     // Delete modal should be visible
     getByRole('dialog', {
       selector: '[aria-hidden="false"]',
     });
     getByText('Are you sure, you want to delete this message?');
-    getByText('Cancel', { selector: '[role="button"]' });
-    getByText('Delete', { selector: '[role="button"]' });
+    getByText('Cancel', { selector: '[type="button"]' });
+    getByText('Delete', { selector: '[type="button"]' });
   });
 
   it('should collapse and expand chat channels properly', async () => {
     fetch.mockResponse(getMockResponse());
-    const { queryByText } = render(
-      <Chat {...getRootData()} />,
-    );
+    const { queryByText } = render(<Chat {...getRootData()} />);
 
     // // chat channels
     expect(
