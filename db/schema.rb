@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_18_101700) do
-
+ActiveRecord::Schema.define(version: 2020_11_07_111600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -825,6 +824,18 @@ ActiveRecord::Schema.define(version: 2020_08_18_101700) do
     t.index ["slug"], name: "index_pages_on_slug", unique: true
   end
 
+  create_table "podcast_appearances", force: :cascade do |t|
+    t.boolean "approved", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "featured_on_user_profile", default: false, null: false
+    t.bigint "podcast_episode_id", null: false
+    t.string "role", default: "guest", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["podcast_episode_id"], name: "index_podcast_appearances_on_podcast_episode_id"
+    t.index ["user_id"], name: "index_podcast_appearances_on_user_id"
+  end
+
   create_table "podcast_episodes", force: :cascade do |t|
     t.boolean "any_comments_hidden", default: false
     t.text "body"
@@ -1365,6 +1376,8 @@ ActiveRecord::Schema.define(version: 2020_08_18_101700) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "page_views", "articles", on_delete: :cascade
+  add_foreign_key "podcast_appearances", "podcast_episodes"
+  add_foreign_key "podcast_appearances", "users"
   add_foreign_key "podcasts", "users", column: "creator_id"
   add_foreign_key "profiles", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"

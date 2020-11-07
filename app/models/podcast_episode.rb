@@ -16,6 +16,8 @@ class PodcastEpisode < ApplicationRecord
 
   belongs_to :podcast
   has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :podcast_appearances, dependent: :destroy
+  has_many :users, through: :podcast_appearances
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
