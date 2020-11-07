@@ -130,13 +130,13 @@ label {
   }
 
   &--label {
-    .enabled-indicator-hidden {
+    .enabled-indicator {
       display: none;
-    }
 
-    .enabled-indicator-visible {
-      display: flex;
-      align-items: center;
+      &.visible {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }

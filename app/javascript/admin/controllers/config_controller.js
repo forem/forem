@@ -75,7 +75,7 @@ export default class ConfigController extends Controller {
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
       emailSigninAndLoginCheckbox.checked = true;
       this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'edit');
-      this.enabledIndicatorTarget.classList.toggle('enabled-indicator-visible');
+      this.enabledIndicatorTarget.classList.add('visible');
     }
     this.emailAuthSettingsBtnTarget.classList.add('hidden');
     emailAuthSettingsSection.classList.remove('hidden');
@@ -111,7 +111,7 @@ export default class ConfigController extends Controller {
     emailSigninAndLoginCheckbox.checked = false;
     this.emailAuthSettingsBtnTarget.innerHTML = 'Enable';
     this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'enable');
-    this.enabledIndicatorTarget.classList.toggle('enabled-indicator-visible');
+    this.enabledIndicatorTarget.classList.remove('visible');
     this.hideEmailAuthSettings(event);
   }
 
@@ -126,7 +126,7 @@ export default class ConfigController extends Controller {
       `#${provider}-enabled-indicator`,
     );
     if (event.target.dataset.buttonText === 'enable') {
-      enabledIndicator.classList.add('enabled-indicator-visible');
+      enabledIndicator.classList.add('visible');
       event.target.setAttribute('data-enable-auth', 'true');
       this.listAuthToBeEnabled();
     }
@@ -146,7 +146,7 @@ export default class ConfigController extends Controller {
       `[data-auth-provider-enable="${provider}"]`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
-    enabledIndicator.classList.remove('enabled-indicator-visible');
+    enabledIndicator.classList.remove('visible');
     this.listAuthToBeEnabled(event);
     this.hideAuthProviderSettings(event);
   }
@@ -188,7 +188,7 @@ export default class ConfigController extends Controller {
     authEnableButton.setAttribute('data-enable-auth', 'false');
     this.listAuthToBeEnabled(event);
     this.checkForAndGuardSoleAuthProvider();
-    enabledIndicator.classList.remove('enabled-indicator-visible');
+    enabledIndicator.classList.remove('visible');
     this.hideAuthProviderSettings(event);
     this.closeAdminConfigModal(event);
   }
