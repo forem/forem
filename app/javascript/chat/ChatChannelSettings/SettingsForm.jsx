@@ -2,13 +2,39 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const SettingsFrom = ({
+/**
+ *
+ * This component render the setting for for the chat channel. This section is only available for mod users
+ *
+ *
+ * @param {object} props
+ * @param {string} props.channelDescription
+ * @param {function} props.handleDescriptionChange
+ * @param {string} props.channelDiscoverable
+ * @param {function} props.handleChannelDiscoverableStatus
+ * @param {function} props.handleChannelDescriptionChanges
+ *
+ *
+ * @component
+ *
+ * @example
+ *
+ * <SettingsFrom
+ *  channelDescription={channelDescription}
+ *  handleDescriptionChange={handleDescriptionChange}
+ *  channelDiscoverable={channelDiscoverable}
+ *  handleChannelDiscoverableStatus={handleChannelDiscoverableStatus}
+ *  handleChannelDescriptionChanges={handleChannelDescriptionChanges}
+ * />
+ *
+ */
+export default function SettingsFrom({
   channelDescription,
   handleDescriptionChange,
   channelDiscoverable,
   handleChannelDiscoverableStatus,
   handleChannelDescriptionChanges,
-}) => {
+}) {
   return (
     <div
       data-testid="settings-form"
@@ -49,7 +75,7 @@ const SettingsFrom = ({
       </div>
     </div>
   );
-};
+}
 
 SettingsFrom.propTypes = {
   channelDescription: PropTypes.string.isRequired,
@@ -58,5 +84,3 @@ SettingsFrom.propTypes = {
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,
 };
-
-export default SettingsFrom;

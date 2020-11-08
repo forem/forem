@@ -2,14 +2,41 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { adjustTimestamp } from './util';
 
-const ActionMessage = ({
+/**
+ * This component render the action messages
+ * 
+ * @param {object} props
+ * @param {string} props.user
+ * @param {string} props.message
+ * @param {string} props.color
+ * @param {string} props.timestamp
+ * @param {string} props.profileImageUrl
+ * @param {function} props.onContentTrigger
+ * 
+ * 
+ * @component
+ * 
+ * @example
+ * 
+ * <ActionMessage
+ *  user={user}
+    message={message}
+    color={color}
+    timestamp={timestamp}
+    profileImageUrl={profileImageUrl}
+    onContentTrigger={onContentTrigger}
+ * />
+ * 
+ */
+
+export default function ActionMessage({
   user,
   message,
   color,
   timestamp,
   profileImageUrl,
   onContentTrigger,
-}) => {
+}) {
   const spanStyle = { color };
 
   const messageArea = (
@@ -71,7 +98,7 @@ const ActionMessage = ({
       </div>
     </div>
   );
-};
+}
 
 ActionMessage.propTypes = {
   user: PropTypes.string.isRequired,
@@ -86,5 +113,3 @@ ActionMessage.defaultProps = {
   profileImageUrl: '',
   timestamp: null,
 };
-
-export default ActionMessage;

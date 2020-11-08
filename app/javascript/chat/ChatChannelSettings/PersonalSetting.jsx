@@ -2,11 +2,30 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 
-const PersonalSettings = ({
+/**
+ * This component is used to render the personal setting section for active chat channel
+ *
+ * @param {object} props
+ * @param {function} props.handlePersonChannelSetting
+ * @param {boolean} props.showGlobalBadgeNotification
+ * @param {function} props.updateCurrentMembershipNotificationSettings
+ *
+ * @component
+ *
+ * @example
+ *
+ * <PersonalSettings
+ *  handlePersonChannelSetting={handlePersonChannelSetting}
+ *  showGlobalBadgeNotification={showGlobalBadgeNotification}
+ *  updateCurrentMembershipNotificationSettings={updateCurrentMembershipNotificationSettings}
+ * />
+ */
+
+export default function PersonalSettings({
   handlePersonChannelSetting,
   showGlobalBadgeNotification,
   updateCurrentMembershipNotificationSettings,
-}) => {
+}) {
   return (
     <div className="crayons-card p-4 grid gap-2 mb-4 personl-settings">
       <h3>Personal Settings</h3>
@@ -33,12 +52,10 @@ const PersonalSettings = ({
       </div>
     </div>
   );
-};
+}
 
 PersonalSettings.propTypes = {
   updateCurrentMembershipNotificationSettings: PropTypes.func.isRequired,
   showGlobalBadgeNotification: PropTypes.bool.isRequired,
   handlePersonChannelSetting: PropTypes.func.isRequired,
 };
-
-export default PersonalSettings;

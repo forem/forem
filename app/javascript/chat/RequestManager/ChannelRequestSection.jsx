@@ -2,11 +2,32 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import RequestListItem from './RequestListItem';
 
-const ChannelRequestSection = ({
+/**
+ *
+ * This component is used to render the Channel request section
+ *
+ * @param {object} props
+ * @param {array} props.channelRequests
+ * @param {function} props.handleRequestApproval
+ * @param {function} props.handleRequestRejection
+ *
+ * @component
+ *
+ * @example
+ *
+ * <ChannelRequestSection
+ *  channelRequests={channelRequests}
+ *  handleRequestApproval={handleRequestApproval}
+ *  handleRequestRejection={handleRequestRejection}
+ * />
+ *
+ */
+
+export default function ChannelRequestSection({
   channelRequests,
   handleRequestApproval,
   handleRequestRejection,
-}) => {
+}) {
   if (channelRequests.length < 0) {
     return null;
   }
@@ -28,7 +49,7 @@ const ChannelRequestSection = ({
         })}
     </div>
   );
-};
+}
 
 ChannelRequestSection.propTypes = {
   channelRequests: PropTypes.arrayOf(
@@ -46,5 +67,3 @@ ChannelRequestSection.propTypes = {
   handleRequestApproval: PropTypes.func.isRequired,
   handleRequestRejection: PropTypes.func.isRequired,
 };
-
-export default ChannelRequestSection;

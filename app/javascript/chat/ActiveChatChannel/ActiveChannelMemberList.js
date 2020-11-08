@@ -63,18 +63,13 @@ function ActiveChannelMemberList({
                   alt={user.name}
                   style={!user.profile_image ? { display: 'none' } : ' '}
                 />
-                <span
-                  style={{
-                    padding: '3px 0px',
-                    'font-size': '16px',
-                  }}
-                >
+                <span>
                   {`@${user.username}`}
                   <p>{user.name}</p>
                 </span>
               </Button>
             ))
-        : ' '}
+        : null}
     </div>
   );
 }

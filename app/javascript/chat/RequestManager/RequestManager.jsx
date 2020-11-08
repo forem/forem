@@ -12,6 +12,21 @@ import HeaderSection from './HeaderSection';
 import ChannelRequestSection from './ChannelRequestSection';
 import PersonalInvitations from './PersonalInvitationSection';
 
+/**
+ * Component render Request manager
+ *
+ * @param {object} props
+ * @param {number} props.updateRequestCount
+ *
+ * @component
+ *
+ * @example
+ *
+ * <RequestManager
+ *  updateRequestCount={updateRequestCount}
+ * />
+ *
+ */
 export default class RequestManager extends Component {
   static propTypes = {
     resource: PropTypes.shape({

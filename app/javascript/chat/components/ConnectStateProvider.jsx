@@ -13,8 +13,8 @@ const { Provider } = store;
  * @param {Function} props.reducer Given the current state and an action, returns the new state
  */
 
-const ConnectStateProvider = ({ children, initialState, reducer }) => {
+function ConnectStateProvider({ children, initialState, reducer }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   return <Provider value={{ state, dispatch }}>{children}</Provider>;
-};
+}
 export { store, ConnectStateProvider };

@@ -2,7 +2,26 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import PendingInvitationListItem from './PersonalInvitationListItem';
 
-const PersonalInvitationSection = ({ userInvitations, updateMembership }) => {
+/**
+ *
+ * This component render the personal request section
+ *
+ * @param {object} props
+ * @param {array} props.userInvitations
+ * @param {function} props.updateMembership
+ *
+ * @component
+ *
+ * @example
+ *
+ * <PersonalInvitationSection userInvitations={userInvitations} updateMembership={updateMembership} />
+ *
+ */
+
+export default function PersonalInvitationSection({
+  userInvitations,
+  updateMembership,
+}) {
   if (!userInvitations || userInvitations?.length < 0) {
     return null;
   }
@@ -23,7 +42,7 @@ const PersonalInvitationSection = ({ userInvitations, updateMembership }) => {
         })}
     </div>
   );
-};
+}
 
 PersonalInvitationSection.propTypes = {
   userInvitations: PropTypes.arrayOf(
@@ -40,5 +59,3 @@ PersonalInvitationSection.propTypes = {
   ).isRequired,
   updateMembership: PropTypes.func.isRequired,
 };
-
-export default PersonalInvitationSection;

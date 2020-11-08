@@ -4,11 +4,32 @@ import PropTypes from 'prop-types';
 import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
 import Membership from './Membership';
 
-const PendingMembershipSection = ({
+/**
+ * This component is used render the pending memberships
+ *
+ *
+ * @param {object} props
+ * @param {array} props.pendingMemberships
+ * @param {function} props.removeMembership
+ * @param {string} props.currentMembershipRole
+ *
+ * @component
+ *
+ * @example
+ *
+ * <PendingMembershipSection
+ *  pendingMemberships={pendingMemberships}
+ *  removeMembership={removeMembership}
+ *  currentMembershipRole={currentMembershipRole}
+ * />
+ *
+ */
+
+export default function PendingMembershipSection({
   pendingMemberships,
   removeMembership,
   currentMembershipRole,
-}) => {
+}) {
   if (currentMembershipRole === 'member') {
     return null;
   }
@@ -33,12 +54,10 @@ const PendingMembershipSection = ({
         : null}
     </div>
   );
-};
+}
 
 PendingMembershipSection.propTypes = {
   pendingMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.func.isRequired,
 };
-
-export default PendingMembershipSection;

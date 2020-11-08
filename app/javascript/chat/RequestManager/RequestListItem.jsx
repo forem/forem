@@ -3,41 +3,63 @@ import PropTypes from 'prop-types';
 
 import { Button } from '@crayons';
 
-const RequestListItem = ({
+/**
+ * Render the list of request
+ *
+ * @param {object} props
+ * @param {object} props.request
+ * @param {function} props.handleRequestRejection
+ * @param {function} props.handleRequestApproval
+ *
+ * @component
+ *
+ * @example
+ *
+ * <RequestListItem
+ *  request={request}
+ *  handleRequestRejection={handleRequestRejection}
+ *  handleRequestApproval={handleRequestApproval}
+ * />
+ *
+ */
+
+export default function RequestListItem({
   request,
   handleRequestRejection,
   handleRequestApproval,
-}) => (
-  <div className="crayons-card mb-6">
-    <div className="crayons-card__body channel-request-card">
-      <div className="request-message d-flex flex-wrap">
-        <b>{request.name}</b> requested to join{' '}
-        <b>{request.chat_channel_name}</b>
-      </div>
-      <div className="request-actions">
-        <Button
-          className="m-2"
-          variant="danger"
-          size="s"
-          onClick={handleRequestRejection}
-          data-channel-id={request.chat_channel_id}
-          data-membership-id={request.membership_id}
-        >
-          Reject
-        </Button>
-        <Button
-          className="m-2"
-          size="s"
-          onClick={handleRequestApproval}
-          data-channel-id={request.chat_channel_id}
-          data-membership-id={request.membership_id}
-        >
-          Accept
-        </Button>
+}) {
+  return (
+    <div className="crayons-card mb-6">
+      <div className="crayons-card__body channel-request-card">
+        <div className="request-message d-flex flex-wrap">
+          <b>{request.name}</b> requested to join{' '}
+          <b>{request.chat_channel_name}</b>
+        </div>
+        <div className="request-actions">
+          <Button
+            className="m-2"
+            variant="danger"
+            size="s"
+            onClick={handleRequestRejection}
+            data-channel-id={request.chat_channel_id}
+            data-membership-id={request.membership_id}
+          >
+            Reject
+          </Button>
+          <Button
+            className="m-2"
+            size="s"
+            onClick={handleRequestApproval}
+            data-channel-id={request.chat_channel_id}
+            data-membership-id={request.membership_id}
+          >
+            Accept
+          </Button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+}
 
 RequestListItem.propTypes = {
   request: PropTypes.arrayOf(
@@ -55,5 +77,3 @@ RequestListItem.propTypes = {
   handleRequestRejection: PropTypes.func.isRequired,
   handleRequestApproval: PropTypes.func.isRequired,
 };
-
-export default RequestListItem;

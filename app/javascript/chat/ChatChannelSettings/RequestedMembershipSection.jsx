@@ -4,12 +4,35 @@ import { defaulMembershipPropType } from '../../common-prop-types/membership-pro
 
 import Membership from './Membership';
 
-const RequestedMembershipSection = ({
+/**
+ *
+ * This component is used to render the list of the request memberships
+ *
+ * @param {object} props
+ * @param {array} props.requestedMemberships
+ * @param {function} props.removeMembership
+ * @param {function} props.removeMembership
+ * @param {string} props.currentMembershipRole
+ *
+ * @component
+ *
+ * @example
+ *
+ * <RequestedMembershipSection
+ *  requestedMemberships={requestedMemberships}
+ *  removeMembership={removeMembership}
+ *  chatChannelAcceptMembership={chatChannelAcceptMembership}
+ *  currentMembershipRole={currentMembershipRole}
+ * />
+ *
+ */
+
+export default function RequestedMembershipSection({
   requestedMemberships,
   removeMembership,
   chatChannelAcceptMembership,
   currentMembershipRole,
-}) => {
+}) {
   if (currentMembershipRole === 'member') {
     return null;
   }
@@ -36,7 +59,7 @@ const RequestedMembershipSection = ({
         : null}
     </div>
   );
-};
+}
 
 RequestedMembershipSection.propTypes = {
   requestedMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
@@ -44,5 +67,3 @@ RequestedMembershipSection.propTypes = {
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.func.isRequired,
 };
-
-export default RequestedMembershipSection;

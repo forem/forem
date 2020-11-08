@@ -4,7 +4,39 @@ import PropTypes from 'prop-types';
 import InviteForm from './InviteForm';
 import SettingsForm from './SettingsForm';
 
-const ModSection = ({
+/**
+ *
+ * This component render the mod section
+ *
+ *
+ * @param {object} props
+ * @param {function} props.handleChannelInvitations
+ * @param {string} props.invitationUsernames
+ * @param {function} props.handleInvitationUsernames
+ * @param {string} props.channelDescription
+ * @param {function} props.handleDescriptionChange
+ * @param {object} props.channelDiscoverable
+ * @param {object} props.handleChannelDiscoverableStatus
+ * @param {object} props.handleChannelDescriptionChanges
+ * @param {object} props.currentMembershipRole
+ *
+ * @component
+ *
+ * @example
+ *
+ * <ModSection
+ *  handleChannelInvitations={handleChannelInvitations}
+ *  invitationUsernames={invitationUsernames}
+ *  handleInvitationUsernames={handleInvitationUsernames}
+ *  channelDescription={channelDescription}
+ *  handleDescriptionChange={handleDescriptionChange}
+ *  channelDiscoverable={channelDiscoverable}
+ *  handleChannelDiscoverableStatus={handleChannelDiscoverableStatus}
+ *  handleChannelDescriptionChanges={handleChannelDescriptionChanges}
+ *  currentMembershipRole={currentMembershipRole}
+ * />
+ */
+export default function ModSection({
   handleChannelInvitations,
   invitationUsernames,
   handleInvitationUsernames,
@@ -14,7 +46,7 @@ const ModSection = ({
   handleChannelDiscoverableStatus,
   handleChannelDescriptionChanges,
   currentMembershipRole,
-}) => {
+}) {
   if (currentMembershipRole === 'member') {
     return null;
   }
@@ -35,7 +67,7 @@ const ModSection = ({
       />
     </div>
   );
-};
+}
 
 ModSection.propTypes = {
   handleInvitationUsernames: PropTypes.func.isRequired,
@@ -47,5 +79,3 @@ ModSection.propTypes = {
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,
 };
-
-export default ModSection;

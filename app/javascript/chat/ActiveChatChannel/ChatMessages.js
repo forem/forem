@@ -34,7 +34,7 @@ import IntroductionMessage from './IntroductionMessages/IntroductionMessage';
  * />
  */
 
-function ChatMessages({
+export default function ChatMessages({
   activeChannelId,
   messages,
   showTimestamp,
@@ -98,5 +98,3 @@ Message.propTypes = {
   triggerEditMessage: PropTypes.func,
   triggerDeleteMessage: PropTypes.func,
 };
-
-export default ChatMessages;

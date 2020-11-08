@@ -1,6 +1,15 @@
 import * as Type from './components/ChatTypes';
+
+/**
+ *
+ *
+ * @param {object} state
+ * @param {object} action
+ *
+ *
+ */
 export function connectReducer(state, action) {
-  const { type, payload = {} } = action;
+  const { type, payload } = action;
 
   switch (type) {
     case Type.CLOSE_DELETE_MODAL:
