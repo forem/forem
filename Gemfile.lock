@@ -673,7 +673,7 @@ GEM
     rubocop-rspec (1.44.1)
       rubocop (~> 0.87)
       rubocop-ast (>= 0.7.1)
-    ruby-prof (1.4.1)
+    ruby-prof (1.4.2)
     ruby-progressbar (1.10.1)
     ruby-statistics (2.1.2)
     ruby-vips (2.0.17)
