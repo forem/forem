@@ -37,14 +37,14 @@ describe('Keyboard shortcuts for components', () => {
         "KeyA~KeyB": jest.fn()
       };
       
-      const timeout = 0;
+      const timeout = 1;
 
       renderHook(() =>
         useKeyboardShortcuts(shortcut, document, { timeout }),
       );
       fireEvent.keyDown(document, { code: "KeyA" });
       
-      await new Promise(resolve => setTimeout(() => resolve(),timeout + 5));
+      await new Promise(resolve => setTimeout(() => resolve(), 5));
       
       fireEvent.keyDown(document, { code: "KeyB" });
 
