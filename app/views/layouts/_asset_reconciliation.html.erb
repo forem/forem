@@ -6,6 +6,7 @@
 
 <script async>
 
+<% unless Rails.env.test? %>
   // This area is designed to reconcile issues of mismatched caches stylesheets.
   // Currently it handles a scenario where the head assets are out of date and need to be updated.
   // There is a legitimate reverse scenario we do not yet handle where we *should* use the "out-of-date"
@@ -54,4 +55,6 @@
       document.getElementById("head-stylesheets").innerHTML = ""
     }, 350)
   }
+
+<% end %>
 </script>
