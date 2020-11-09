@@ -97,7 +97,7 @@ export function useKeyboardShortcuts( shortcuts, eventTarget = window, options =
     }
 
     return () => clearTimeout(timeout);
-  }, [keyChain, keyChainQueue, mergedOptions]);
+  }, [keyChain, keyChainQueue, mergedOptions.timeout]);
 
   // set up event listeners
   useEffect(() => {
