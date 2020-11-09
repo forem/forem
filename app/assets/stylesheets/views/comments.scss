@@ -136,6 +136,10 @@
     padding: var(--su-1) 0;
     margin-left: 0;
 
+    @media (min-width: $breakpoint-s) {
+      // display: none;
+    }
+
     .expanded {
       display: block;
     }
@@ -144,14 +148,21 @@
       display: none;
     }
 
-    @media (min-width: $breakpoint-s) {
-      display: none;
+    .expanded,
+    .collapsed {
+      opacity: 0.5;
+      transition: all var(--transition-props);
     }
   }
 
   &[open]:hover {
     > summary {
       display: block;
+    }
+
+    .expanded,
+    .collapsed {
+      opacity: 1;
     }
   }
 }
