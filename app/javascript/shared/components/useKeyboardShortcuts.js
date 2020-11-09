@@ -76,7 +76,7 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = 
   // update mergedOptions if options prop changes
   useEffect(() => {
     const newOptions = {};
-    if (options.timeout) newOptions.timeout = options.timeout;
+    if (typeof options.timeout === "number") newOptions.timeout = options.timeout;
     setMergedOptions({ ...defaultOptions, ...newOptions });
   }, [options.timeout]);
 
