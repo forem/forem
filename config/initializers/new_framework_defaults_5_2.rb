@@ -36,6 +36,7 @@ Rails.application.config.action_controller.default_protect_from_forgery = true
 # see <https://github.com/rails/rails/blob/5-2-stable/actionview/lib/action_view/digestor.rb> and
 # <https://github.com/rails/rails/blob/5-2-stable/actionview/lib/action_view/helpers/cache_helper.rb#L227>
 # Use SHA-1 instead of MD5 to generate non-sensitive digests, such as the ETag header.
+# NOTE: deprecated in Rails 6.1 in favor of config.active_support.hash_digest_class = ::Digest::SHA1
 # Rails.application.config.active_support.use_sha1_digests = true
 
 # Make `form_with` generate id attributes for any generated HTML tags.
