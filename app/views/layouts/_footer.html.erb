@@ -1,5 +1,5 @@
-<footer class="footer print-hidden">
-  <div id="footer-container" class="crayons-layout crayons-layout--limited-m footer__container">
+<footer class="crayons-footer print-hidden">
+  <div id="footer-container" class="crayons-layout crayons-layout--limited-m crayons-footer__container">
     <nav class="m:-mt-4">
       <a href="/" class="crayons-link inline-block p-2">Home</a>
       <% NavigationLink.ordered.each do |link| %>
@@ -13,10 +13,10 @@
       <% else %>
         <a href="/new" class="crayons-link fw-bold inline-block p-2">Write a post</a>
       <% end %>
-      
+
       <div class="pt-4"><%= render partial: "layouts/social_media" %></div>
     </nav>
-    <hr class="footer__divider">
+    <hr class="crayons-footer__divider">
     <p class="fs-s"><a href="/" aria-label="<%= community_name %> Home" class="crayons-link"><%= community_qualified_name %></a> – <%= SiteConfig.community_description %></p>
     <div>
       <%# The following copy is necessary for compatability with the Forem AGPL licence which requires instances to link back to the source. %>
@@ -27,7 +27,7 @@
   </div>
   <% if SiteConfig.mascot_footer_image_url.present? %>
     <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_footer_image_url, width: 100),
-                  class: "footer__mascot",
+                  class: "crayons-footer__mascot",
                   alt: SiteConfig.mascot_image_description,
                   width: SiteConfig.mascot_footer_image_width,
                   height: SiteConfig.mascot_footer_image_height,
