@@ -805,7 +805,7 @@ GEM
     warden (1.2.9)
       rack (>= 2.0.9)
     wcag_color_contrast (0.1.0)
-    web-console (4.0.4)
+    web-console (4.1.0)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
@@ -834,7 +834,7 @@ GEM
       yard (>= 0.8.3)
     yard-activesupport-concern (0.0.1)
       yard (>= 0.8)
-    zeitwerk (2.4.0)
+    zeitwerk (2.4.1)
     zonebie (0.6.1)
 
 PLATFORMS
@@ -984,7 +984,7 @@ DEPENDENCIES
   vault (~> 0.15)
   vcr (~> 6.0)
   wcag_color_contrast (~> 0.1)
-  web-console (~> 4.0)
+  web-console (~> 4.1)
   webdrivers (~> 4.4)
   webmock (~> 3.9)
   webpacker (~> 5.2.1)
