@@ -1,5 +1,5 @@
 # NOTE: this middleware is only for test mode
-class TimeZoneSetter
+class SetTimeZone
   def initialize(app)
     @app = app
   end
