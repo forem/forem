@@ -16,6 +16,7 @@
 # It's best enabled when your entire app is migrated and stable on 6.0.
 # Rails.application.config.action_dispatch.use_cookies_with_metadata = true
 
+# NOTE: deprecated in Rails 6.1, see <https://github.com/rails/rails/commit/64efe502f3c7bbf6d17fc1470f4b15d0c9a08b02>
 # Change the return value of `ActionDispatch::Response#content_type` to Content-Type header without modification.
 # Rails.application.config.action_dispatch.return_only_media_type_on_content_type = false
 
