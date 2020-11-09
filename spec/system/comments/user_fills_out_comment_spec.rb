@@ -8,7 +8,6 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   let(:runkit_comment) { compose_runkit_comment "comment 1" }
   let(:runkit_comment2) { compose_runkit_comment "comment 2" }
 
-
   # the article should be created before signing in
   let!(:article) { create(:article, user_id: user.id, show_comments: true) }
 

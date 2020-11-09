@@ -23,10 +23,10 @@ module Feeds
 
       users.in_batches(of: users_batch_size) do |batch_of_users|
         feeds_per_user_id = fetch_feeds(batch_of_users)
-        Rails.logger.error("feeds::import::feeds_per_user_id.length: #{feeds_per_user_id.length}")
+        DatadogStatsClient.count("feeds::import::fetch_feeds.count", feeds_per_user_id.length)
 
         feedjira_objects = parse_feeds(feeds_per_user_id)
-        Rails.logger.error("feeds::import::feedjira_objects.length: #{feedjira_objects.length}")
+        DatadogStatsClient.count("feeds::import::parse_feeds.count", feedjira_objects.length)
 
         # NOTE: doing this sequentially to avoid locking problems with the DB
         # and unnecessary conflicts
@@ -34,16 +34,19 @@ module Feeds
           # TODO: replace `feed` with `feed.url` as `RssReader::Assembler`
           # only actually needs feed.url
           user = batch_of_users.detect { |u| u.id == user_id }
-          create_articles_from_user_feed(user, feed)
+
+          DatadogStatsClient.time("feeds::import::create_articles_from_user_feed", tags: ["user_id:#{user_id}"]) do
+            create_articles_from_user_feed(user, feed)
+          end
         end
-        Rails.logger.error("feeds::import::articles.length: #{articles.length}")
+        DatadogStatsClient.count("feeds::import::parse_feeds.count", articles.length)
 
         total_articles_count += articles.length
-        Rails.logger.error("feeds::import::total_articles_count: #{total_articles_count}")
 
         articles.each { |article| Slack::Messengers::ArticleFetchedFeed.call(article: article) }
       end
 
+      DatadogStatsClient.count("feeds::import::articles.count", total_articles_count)
       total_articles_count
     end
 
@@ -59,7 +62,9 @@ module Feeds
         cleaned_url = url.to_s.strip
         next if cleaned_url.blank?
 
-        response = HTTParty.get(cleaned_url, timeout: 10)
+        response = DatadogStatsClient.time("feeds::import::fetch_feed", tags: ["user_id:#{user_id}", "url:#{url}"]) do
+          HTTParty.get(cleaned_url, timeout: 10)
+        end
 
         [user_id, response.body]
       rescue StandardError => e
@@ -86,7 +91,9 @@ module Feeds
     # TODO: put this in separate service object
     def parse_feeds(feeds_per_user_id)
       result = Parallel.map(feeds_per_user_id, in_threads: num_parsers) do |user_id, feed_xml|
-        parsed_feed = Feedjira.parse(feed_xml)
+        parsed_feed = DatadogStatsClient.time("feeds::import::parse_feed", tags: ["user_id:#{user_id}"]) do
+          Feedjira.parse(feed_xml)
+        end
 
         [user_id, parsed_feed]
       rescue StandardError => e

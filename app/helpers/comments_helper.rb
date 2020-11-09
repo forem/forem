@@ -16,7 +16,7 @@ module CommentsHelper
       [
         commentable.user_id,
         commentable.co_author_ids,
-      ].any? { |id| id == comment.user_id }
+      ].flatten.any? { |id| id == comment.user_id }
   end
 
   def get_ama_or_op_banner(commentable)

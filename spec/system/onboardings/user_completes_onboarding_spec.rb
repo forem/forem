@@ -19,7 +19,7 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
       expect(page.html).to include("onboarding-container")
     end
 
-    it "does not render the onboarding task card on the feed" do
+    xit "does not render the onboarding task card on the feed" do
       visit "/"
 
       # Explicitly test that the task card element HTML is not on the page.
