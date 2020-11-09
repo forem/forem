@@ -61,7 +61,7 @@ const getModalHtml = (
   title,
   text,
   confirm_text,
-) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal crayons-modal--s crayons-hidden">
+) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal crayons-modal--s hidden">
     <div role="dialog" aria-modal="true" class="crayons-modal__box">
       <div class="crayons-modal__box__header border-b-0 justify-end">
           <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button" 
