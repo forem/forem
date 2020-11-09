@@ -28,7 +28,7 @@
       <% unless user_signed_in? %>
         <%= javascript_packs_with_chunks_tag "Search", defer: true %>
       <% end %>
-      <%= javascript_include_tag "base", defer: true, id: "main-base-javascript" %>
+      <%= javascript_include_tag "base", defer: true %>
       <% if user_signed_in? %>
         <%= javascript_packs_with_chunks_tag "Search", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% end %>
