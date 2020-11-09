@@ -68,6 +68,7 @@ function ReportAbuse({ resource: data }) {
               className="crayons-radio"
               checked={category === 'rude or vulgar'}
               onChange={handleChange}
+              aria-label="rude or vulgar"
             />
             <label htmlFor="rude or vulgar" className="crayons-field__label">
               Rude or vulgar
@@ -82,6 +83,7 @@ function ReportAbuse({ resource: data }) {
               className="crayons-radio"
               checked={category === 'harassment'}
               onChange={handleChange}
+              aria-label="harassment"
             />
             <label htmlFor="harassment" className="crayons-field__label">
               Harassment or hate speech
@@ -96,6 +98,7 @@ function ReportAbuse({ resource: data }) {
               className="crayons-radio"
               checked={category === 'spam'}
               onChange={handleChange}
+              aria-label="spam"
             />
             <label htmlFor="spam" className="crayons-field__label">
               Spam or copyright issue
@@ -110,6 +113,7 @@ function ReportAbuse({ resource: data }) {
               className="crayons-radio"
               checked={category === 'listings'}
               onChange={handleChange}
+              aria-label="listings"
             />
             <label htmlFor="listings" className="crayons-field__label">
               Inappropriate listings message/category
