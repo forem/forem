@@ -75,8 +75,8 @@ export function useKeyboardShortcuts(shortcuts, eventTarget = window, options = 
   
   // update mergedOptions if options prop changes
   useEffect(() => {
-    setMergedOptions({...defaultOptions, ...options})
-  },[options])
+    setMergedOptions({...defaultOptions, ...{timeout: options.timeout} });
+  }, [options.timeout]);
 
   // Set up key chains
   useEffect(() => {
