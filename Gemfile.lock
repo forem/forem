@@ -1,7 +1,4 @@
 GIT
-<<<<<<< HEAD
-  remote: https://github.com/forem/acts_as_follower.git
-=======
   remote: https://github.com/flyerhzm/bullet.git
   revision: 074a5ed31468b1c9e236461abef388008e08f667
   specs:
@@ -10,8 +7,7 @@ GIT
       uniform_notifier (~> 1.11)
 
 GIT
-  remote: https://github.com/thepracticaldev/acts_as_follower.git
->>>>>>> c7456aa18 (Switch to unreleased bullet)
+  remote: https://github.com/forem/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
   specs:
@@ -599,10 +595,6 @@ GEM
       thor (~> 1.0)
     rainbow (3.0.0)
     rake (13.0.3)
-    ransack (2.4.2)
-      activerecord (>= 5.2.4)
-      activesupport (>= 5.2.4)
-      i18n
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -951,7 +943,6 @@ DEPENDENCIES
   rack-timeout (~> 0.6)
   rails (~> 6.1.0.rc1)
   rails-settings-cached (>= 2.1.1)
-  ransack (~> 2.4)
   recaptcha (~> 5.6)
   redcarpet (~> 3.5)
   redis (~> 4.2.5)
