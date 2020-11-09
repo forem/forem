@@ -63,11 +63,13 @@ describe('Keyboard shortcuts for components', () => {
 
     it('should add event listener to window', () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
+      
+      const shortcut = {
+        KeyK: null
+      }
 
       renderHook(() =>
-        useKeyboardShortcuts({
-          KeyK: null
-        }, document),
+        useKeyboardShortcuts(shortcut, document),
       );
 
       expect(HTMLDocument.prototype.addEventListener).toHaveBeenCalledTimes(1);
@@ -91,9 +93,13 @@ describe('Keyboard shortcuts for components', () => {
     it('should remove event listener when the hook is unmounted', () => {
       HTMLDocument.prototype.addEventListener = jest.fn();
       HTMLDocument.prototype.removeEventListener = jest.fn();
+      
+      const shortcut = {
+        KeyK: null
+      }
 
       const { unmount } = renderHook(() =>
-        useKeyboardShortcuts({ KeyK: null }, document),
+        useKeyboardShortcuts(shortcut, document),
       );
 
       unmount();
