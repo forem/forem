@@ -2,7 +2,9 @@
 
 <%= form_for @user, html: { id: "ux-customization-form", class: "sticky-footer-form" } do |f| %>
   <div class="crayons-card crayons-card--content-rows">
-    <h2>Style Customization</h2>
+    <h2 class="crayons-subtitle-1">
+      Appearance
+    </h2>
 
     <fieldset class="crayons-field">
       <legend class="crayons-field__label">Site Theme</legend>
@@ -33,7 +35,9 @@
   </div>
 
   <div class="crayons-card crayons-card--content-rows">
-    <h2>Writing</h2>
+    <h2 class="crayons-subtitle-1">
+      Writing
+    </h2>
     <div class="crayons-field">
       <%= f.label :editor_version, "Editor Version", class: "crayons-field__label" %>
       <div class="theme-selector-field grid gap-4 grid-cols-2 l:grid-cols-3">
@@ -45,7 +49,9 @@
   </div>
 
   <div class="crayons-card crayons-card--content-rows">
-    <h2>Content Customization</h2>
+    <h2 class="crayons-subtitle-1">
+      Content
+    </h2>
     <div class="crayons-field">
       <%= f.label :experience_level, "What is your approximate experience level (1-5)?", class: "crayons-field__label" %>
       <div class="theme-selector-field grid grid-cols-5">
@@ -57,8 +63,62 @@
     </div>
   </div>
 
+  <%= render partial: "language_settings" %>
+
+  <div class="crayons-card crayons-card--content-rows">
+    <header>
+      <h2 class="crayons-subtitle-1">
+        Sponsors
+      </h2>
+      <p>
+        You have the option to remove sponsor messaging (where it is practical
+        to do so). Our wonderful sponsors help sustain the platform and improve
+        your experience, and we strive to make their presence constructive to
+        the community, but feel free to use this setting if you wish.
+      </p>
+    </header>
+
+    <%= form_for(@user, html: { id: nil, class: "grid gap-4" }) do |f| %>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :display_sponsors, class: "crayons-checkbox" %>
+        <%= f.label :display_sponsors, "Display Sponsors (When browsing)", class: "crayons-field__label" %>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :permit_adjacent_sponsors, class: "crayons-checkbox" %>
+        <%= f.label :permit_adjacent_sponsors, "Permit Nearby Sponsors (When publishing)", class: "crayons-field__label" %>
+      </div>
+
+      <%= f.hidden_field :tab, value: @tab, id: nil %>
+      <div><button type="submit" class="crayons-btn">Save Sponsors Settings</button></div>
+    <% end %>
+  </div>
+
+  <div class="crayons-card crayons-card--content-rows">
+    <header>
+      <h2 class="crayons-subtitle-1">
+        Announcements
+      </h2>
+      <p>
+        Announcements inform you on important site-wide
+        information, like updates and events.
+      </p>
+    </header>
+
+    <%= form_for(@user, html: { id: nil, class: "grid gap-4" }) do |f| %>
+    <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :display_announcements, class: "crayons-checkbox" %>
+        <%= f.label :display_announcements, "Display Announcements (When browsing)", class: "crayons-field__label" %>
+      </div>
+
+      <%= f.hidden_field :tab, value: @tab, id: nil %>
+      <div><button type="submit" class="crayons-btn">Save Announcements Settings</button></div>
+    <% end %>
+  </div>
+
   <div class="save-footer crayons-card crayons-card--content-rows">
     <%= f.hidden_field :tab, value: @tab, id: nil %>
     <button class="crayons-btn" type="submit">Save</button>
   </div>
+
 <% end %>
