@@ -1,18 +1,16 @@
 <% json_data = notification.json_data %>
-<div class="content notification-content badge-content">
-  <div class="badge-title">
+<div class="p-6 m:p-8 align-center w-100">
+  <p class="fs-l m:fs-2xl mb-4">🎉🎉🎉🎉🎉🎉🎉🎉</p>
+  <h2 class="fw-normal fs-xl m:fs-2xl mb-4">
     Your post
-    <a href="<%= json_data["article"]["path"] %>"><%= h(json_data["article"]["title"]) %></a> passed <%= notification.milestone_count %> <%= notification.milestone_type.pluralize.downcase %>!
-  </div>
-  <p class="badge-description milestone-emojis">🎉🎉🎉🎉🎉🎉🎉🎉</p>
+    <a href="<%= json_data["article"]["path"] %>" class="crayons-link fw-bold"><%= h(json_data["article"]["title"]) %></a> passed <%= notification.milestone_count %> <%= notification.milestone_type.pluralize.downcase %>!
+  </h2>
 
-  <a href="https://giphy.com/gifs/<%= json_data["gif_id"] %>" rel="noopener noreferrer" target="_blank">
-    <img style="height: <%= RandomGif.get_aspect_ratio(json_data["gif_id"]) * 300 %>px;" class="milestone-gif" src="https://media.giphy.com/media/<%= json_data["gif_id"] %>/giphy-downsized.gif" alt="A random celebratory gif!">
+  <a href="https://giphy.com/gifs/<%= json_data["gif_id"] %>" rel="noopener noreferrer" class="block my-4" target="_blank">
+    <img class="radius-default w-100 m:max-w-50 h-auto inline-block" src="https://media.giphy.com/media/<%= json_data["gif_id"] %>/giphy-downsized.gif" alt="A random celebratory gif!">
   </a>
-  <br>
-  <a href="/dashboard">
-    <button class="crayons-btn follow-action-button badge-button">
-      Check your dashboard
-    </button>
+
+  <a href="/dashboard" class="crayons-btn w-100 m:w-50">
+    Check your dashboard
   </a>
 </div>

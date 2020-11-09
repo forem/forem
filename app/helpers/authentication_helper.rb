@@ -19,6 +19,10 @@ module AuthenticationHelper
     Authentication::Providers.enabled_for_user(user)
   end
 
+  def available_providers_array
+    Authentication::Providers.available.map(&:to_s)
+  end
+
   def recaptcha_configured_and_enabled?
     SiteConfig.recaptcha_secret_key.present? &&
       SiteConfig.recaptcha_site_key.present? &&
@@ -33,23 +37,45 @@ module AuthenticationHelper
     SiteConfig.waiting_on_first_user
   end
 
-  def disable_email_tooltip_class
-    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "crayons-tooltip" : ""
+  def invite_only_mode_or_no_enabled_providers
+    SiteConfig.invite_only_mode || authentication_enabled_providers.none?
   end
 
-  def disable_email_tooltip_content
-    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? disable_email_auth_tooltip_text : ""
+  def email_login_disabled_and_one_auth_provider_enabled
+    !SiteConfig.allow_email_password_login && authentication_enabled_providers.count == 1
   end
 
-  def disable_button_class
-    SiteConfig.invite_only_mode || authentication_enabled_providers.none? ? "disabled" : ""
+  def tooltip_class_on_email_auth_disablebtn
+    invite_only_mode_or_no_enabled_providers ? "crayons-tooltip" : ""
   end
 
-  def disable_email_auth_tooltip_text
+  def tooltip_class_on_auth_provider_enablebtn
+    SiteConfig.invite_only_mode ? "crayons-tooltip" : ""
+  end
+
+  def tooltip_class_on_auth_provider_disablebtn
+    email_login_disabled_and_one_auth_provider_enabled ? "crayons-tooltip" : ""
+  end
+
+  def disabled_attr_on_email_auth_disablebtn
+    invite_only_mode_or_no_enabled_providers ? "disabled" : ""
+  end
+
+  def disabled_attr_on_auth_provider_enablebtn
+    SiteConfig.invite_only_mode ? "disabled" : ""
+  end
+
+  def disabled_attr_on_auth_rpovider_disablebtn
+    email_login_disabled_and_one_auth_provider_enabled ? "disabled" : ""
+  end
+
+  def tooltip_text_email_or_auth_provider_btns
     if SiteConfig.invite_only_mode
       "You cannot do this until you disable Invite Only Mode"
-    elsif authentication_enabled_providers.none?
+    elsif authentication_enabled_providers.none? || email_login_disabled_and_one_auth_provider_enabled
       "You cannot do this until you enable at least one other registration option"
+    else
+      ""
     end
   end
 end

@@ -74,16 +74,16 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Authentication" do
         it "updates enabled authentication providers" do
-          enabled = Array.wrap(Authentication::Providers.available.first.to_s)
-          post "/admin/config", params: { site_config: { authentication_providers: enabled },
+          enabled = Authentication::Providers.available.first.to_s
+          post "/admin/config", params: { site_config: { auth_providers_to_enable: enabled },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq(enabled)
+          expect(SiteConfig.authentication_providers).to eq([enabled])
         end
 
         it "strips empty elements" do
           provider = Authentication::Providers.available.first.to_s
-          enabled = [provider, "", nil]
-          post "/admin/config", params: { site_config: { authentication_providers: enabled },
+          enabled = "#{provider}, '', nil"
+          post "/admin/config", params: { site_config: { auth_providers_to_enable: enabled },
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
@@ -228,6 +228,9 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Images" do
         it "updates main_social_image" do
+          expected_default_image_url = URL.local_image("social-media-cover.png")
+          expect(SiteConfig.main_social_image).to eq(expected_default_image_url)
+
           expected_image_url = "https://dummyimage.com/300x300"
           post "/admin/config", params: { site_config: { main_social_image: expected_image_url },
                                           confirmation: confirmation_message }
@@ -242,10 +245,12 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates logo_png" do
+          expected_default_image_url = URL.local_image("icon.png")
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/admin/config", params: { site_config: { logo_png: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.logo_png).to eq(expected_image_url)
+          expect do
+            post "/admin/config", params: { site_config: { logo_png: expected_image_url },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :logo_png).from(expected_default_image_url).to(expected_image_url)
         end
 
         it "updates logo_svg" do
@@ -304,10 +309,12 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates mascot_image_url" do
+          expected_default_image_url = URL.local_image("mascot.png")
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
+          expect do
+            post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
+                                            confirmation: confirmation_message }
+          end.to change(SiteConfig, :mascot_image_url).from(expected_default_image_url).to(expected_image_url)
         end
 
         it "updates mascot_footer_image_url" do

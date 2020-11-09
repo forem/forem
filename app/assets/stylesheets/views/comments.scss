@@ -30,16 +30,7 @@
   .comment-textarea {
     resize: vertical;
     padding: 0.5em;
-
-    &.embiggened {
-      height: 96px;
-    }
-    &.embiggened-more {
-      height: 256px;
-    }
-    &.embiggened-max {
-      height: 384px;
-    }
+    max-height: 40vh;
   }
 
   &__toolbar,
@@ -49,7 +40,7 @@
 
   &--initiated {
     .comment-textarea {
-      height: 96px;
+      height: 128px;
     }
   }
 
