@@ -233,6 +233,23 @@ module Admin
       value.empty? && !SiteConfig.allow_email_password_login
     end
 
+    def update_enabled_auth_providers(value)
+      enabled_providers = []
+      value.split(",").each do |entry|
+        enabled_providers.push(entry) unless invalid_provider_entry(entry)
+      end
+      SiteConfig.public_send("authentication_providers=", enabled_providers) unless
+        prevent_all_auth_provider_disable?(enabled_providers)
+    end
+
+    def invalid_provider_entry(entry)
+      entry.blank? || helpers.available_providers_array.exclude?(entry)
+    end
+
+    def prevent_all_auth_provider_disable?(value)
+      value.empty? && !SiteConfig.allow_email_password_login
+    end
+
     # Validations
     def brand_contrast_too_low
       hex = params.dig(:site_config, :primary_brand_color_hex)

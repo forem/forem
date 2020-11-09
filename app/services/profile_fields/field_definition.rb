@@ -32,7 +32,7 @@ module ProfileFields
     end
 
     def add_fields
-      self.class.fields.each { |field| ProfileField.create(field) }
+      self.class.fields.each { |field| ProfileField.find_or_create_by(field) }
     end
   end
 end

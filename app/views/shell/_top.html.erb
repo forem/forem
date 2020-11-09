@@ -33,7 +33,7 @@
       <% end %>
       <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-      <%= favicon_link_tag SiteConfig.favicon_url %>
+      <%= favicon_link_tag Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>
       <link rel="apple-touch-icon" href="<%= optimized_image_url(SiteConfig.logo_png, width: 180, fetch_format: "png") %>">
       <link rel="apple-touch-icon" sizes="152x152" href="<%= optimized_image_url(SiteConfig.logo_png, width: 152, fetch_format: "png") %>">
       <link rel="apple-touch-icon" sizes="180x180" href="<%= optimized_image_url(SiteConfig.logo_png, width: 180, fetch_format: "png") %>">

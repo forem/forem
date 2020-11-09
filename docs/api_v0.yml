@@ -579,6 +579,7 @@ components:
         - title
         - user_id
         - video_duration_in_minutes
+        - video_source_url
         - user
       properties:
         type_of:
@@ -603,6 +604,9 @@ components:
 
             If the video duration is below 1 hour, the format will be `mm:ss`,
             if it's 1 hour or above the format will be `h:mm:ss`.
+          type: string
+        video_source_url:
+          format: url
           type: string
         user:
           type: object
@@ -1316,6 +1320,7 @@ components:
           title: 'BaseCS: Depth First Search Implementing'
           user_id: 2882
           video_duration_in_minutes: '11:47'
+          video_source_url: 'https://dw71fyauz7yz9.cloudfront.net/123/123.m3u8'
           user:
             name: Vaidehi Joshi
 

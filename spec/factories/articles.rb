@@ -18,6 +18,7 @@ FactoryBot.define do
       with_title { true }
       with_collection { nil }
     end
+    co_author_ids { [] }
     association :user, factory: :user, strategy: :create
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
     main_image    { with_main_image ? Faker::Avatar.image : nil }

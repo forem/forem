@@ -23,11 +23,12 @@
     text-align: left;
     transition-delay: 250ms;
     z-index: var(--z-popover);
+    pointer-events: none;
   }
 
   &:hover {
     z-index: var(--z-popover);
-    
+
     &:after {
       opacity: 1;
       transform: translateY(calc(-1 * var(--su-1)));

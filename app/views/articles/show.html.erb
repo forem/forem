@@ -176,7 +176,6 @@
               </span>
               <span id="action-space" class="mb-4 s:mb-0"></span>
             </div>
-
           </div>
         </header>
 
@@ -199,18 +198,9 @@
                        articles: @collection_articles %>
           <% end %>
         </div>
+        <%= render "articles/full_comment_area" %>
+
       </article>
-
-      <% if @article.long_markdown? || @organization %>
-        <section class="crayons-card crayons-card--secondary text-padding mb-4">
-          <% if @article.long_markdown? %>
-            <%= render "articles/about_author", published: @article.readable_publish_date %>
-          <% end %>
-          <%= render "articles/org_branding", organization: @organization, author: @article.long_markdown? %>
-        </section>
-      <% end %>
-
-      <%= render "articles/full_comment_area" %>
 
       <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}", expires_in: 18.hours) do %>
         <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>

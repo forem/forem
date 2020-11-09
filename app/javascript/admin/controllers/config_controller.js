@@ -8,11 +8,11 @@ const emailSigninAndLoginCheckbox = document.querySelector(
 const emailAuthSettingsSection = document.querySelector(
   '#email-auth-settings-section',
 );
-const emailAuthModalTitle = 'Disable email address registration';
+const emailAuthModalTitle = 'Disable Email address registration';
 // TODO: Remove the sentence "You must update site config to save this action!"
 // once we build more robust flow for Admin/Config
 const emailAuthModalBody =
-  '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><p>However, people who have already created an account using their email address can continue to login.</p><p><strong>Please update site config to save this action.</strong></p>';
+  '<p>If you disable Email address as a registration option, people cannot create an account with their email address.</p><p>However, people who have already created an account using their email address can continue to login.</p><p><strong>Please update site config to save this action.</strong></p>';
 
 export default class ConfigController extends Controller {
   static targets = [
@@ -75,8 +75,7 @@ export default class ConfigController extends Controller {
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
       emailSigninAndLoginCheckbox.checked = true;
       this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'edit');
-      this.enabledIndicatorTarget.classList.add('flex', 'items-center');
-      this.enabledIndicatorTarget.classList.remove('hidden');
+      this.enabledIndicatorTarget.classList.add('visible');
     }
     this.emailAuthSettingsBtnTarget.classList.add('hidden');
     emailAuthSettingsSection.classList.remove('hidden');
@@ -112,8 +111,7 @@ export default class ConfigController extends Controller {
     emailSigninAndLoginCheckbox.checked = false;
     this.emailAuthSettingsBtnTarget.innerHTML = 'Enable';
     this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'enable');
-    this.enabledIndicatorTarget.classList.remove('flex', 'items-center');
-    this.enabledIndicatorTarget.classList.add('hidden');
+    this.enabledIndicatorTarget.classList.remove('visible');
     this.hideEmailAuthSettings(event);
   }
 
@@ -128,7 +126,7 @@ export default class ConfigController extends Controller {
       `#${provider}-enabled-indicator`,
     );
     if (event.target.dataset.buttonText === 'enable') {
-      this.showHideAuthEnabledIndicator(enabledIndicator, 'show');
+      enabledIndicator.classList.add('visible');
       event.target.setAttribute('data-enable-auth', 'true');
       this.listAuthToBeEnabled();
     }
@@ -148,7 +146,7 @@ export default class ConfigController extends Controller {
       `[data-auth-provider-enable="${provider}"]`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
-    this.showHideAuthEnabledIndicator(enabledIndicator, 'hide');
+    enabledIndicator.classList.remove('visible');
     this.listAuthToBeEnabled(event);
     this.hideAuthProviderSettings(event);
   }
@@ -158,7 +156,7 @@ export default class ConfigController extends Controller {
   }
 
   authProviderModalBody(provider) {
-    return `<p>If you disable ${provider} as a login option, people cannot authenticate with ${provider}.</p><p><strong>You must update site config to save this action!</strong></p>`;
+    return `<p>If you disable ${provider} as a login option, people cannot authenticate with ${provider}.</p><p><strong>You must update Site Config to save this action!</strong></p>`;
   }
 
   activateAuthProviderModal(event) {
@@ -190,7 +188,7 @@ export default class ConfigController extends Controller {
     authEnableButton.setAttribute('data-enable-auth', 'false');
     this.listAuthToBeEnabled(event);
     this.checkForAndGuardSoleAuthProvider();
-    this.showHideAuthEnabledIndicator(enabledIndicator, 'hide');
+    enabledIndicator.classList.remove('visible');
     this.hideAuthProviderSettings(event);
     this.closeAdminConfigModal(event);
   }
@@ -208,7 +206,7 @@ export default class ConfigController extends Controller {
       targetAuthDisableBtn.parentElement.classList.add('crayons-tooltip');
       targetAuthDisableBtn.parentElement.setAttribute(
         'data-tooltip',
-        'To edit this, you must first enable Email Address as a registration option',
+        'To edit this, you must first enable Email address as a registration option',
       );
       targetAuthDisableBtn.setAttribute('disabled', true);
     }
@@ -238,16 +236,5 @@ export default class ConfigController extends Controller {
   disableAuthenticationOptions() {
     document.querySelector('#auth_providers_to_enable').value = '';
   }
-
-  showHideAuthEnabledIndicator(indicatorDiv, action) {
-    if (action === 'show') {
-      indicatorDiv.classList.add('flex', 'items-center');
-      indicatorDiv.classList.remove('hidden');
-    } else if (action === 'hide') {
-      indicatorDiv.classList.remove('flex', 'items-center');
-      indicatorDiv.classList.add('hidden');
-    }
-  }
-
   // AUTH PROVIDERS FUNCTIONS END
 }

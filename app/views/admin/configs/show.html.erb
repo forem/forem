@@ -173,7 +173,9 @@
                         <p class="crayons-field__label <%= SiteConfig.allow_email_password_registration ? "pb-0" : "" %>">
                           Email address
                         </p>
-                        <div class="<%= SiteConfig.allow_email_password_registration ? "flex items-center" : "hidden" %>" data-target="config.enabledIndicator">
+                        <div
+                          class="enabled-indicator <%= SiteConfig.allow_email_password_registration ? "visible" : "" %>"
+                          data-target="config.enabledIndicator">
                           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
                         </div>
@@ -228,10 +230,10 @@
                         <div class="flex gap-2">
                           <% if SiteConfig.allow_email_password_registration %>
                             <button
-                              class="crayons-btn crayons-btn--danger <%= email_auth_disable_btn_tooltip_class %>"
+                              class="crayons-btn crayons-btn--danger <%= tooltip_class_on_email_auth_disablebtn %>"
                               data-action="click->config#activateEmailAuthModal"
-                              data-tooltip="<%= enable_disable_btn_tooltip_text %>"
-                              <%= email_auth_disable_btn_disable_class %>>
+                              data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
+                              <%= disabled_attr_on_email_auth_disablebtn %>>
                               Disable
                             </button>
                              <button
@@ -268,13 +270,15 @@
                       </figure>
                       <div class="config-authentication__item--container">
                         <div
-                          class="config-authentication__item mb-0 flex items-baseline justify-between <%= auth_provider_enable_btn_tooltip_class %>"
-                          data-tooltip="<%= enable_disable_btn_tooltip_text %>">
-                          <div>
-                            <p class="config-authentication__item--label fw-medium <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
+                          class="config-authentication__item mb-0 flex items-baseline justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
+                          data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
+                          <div class="config-authentication__item--label">
+                            <p class="crayons-field__label <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
                               <%= provider.official_name %>
                             </p>
-                            <div id="<%= provider.provider_name %>-enabled-indicator" class="<%= authentication_enabled_providers.include?(provider) ? "flex items-center" : "hidden" %>">
+                            <div
+                              id="<%= provider.provider_name %>-enabled-indicator"
+                              class="enabled-indicator <%= authentication_enabled_providers.include?(provider) ? "visible" : "" %>">
                               <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                               <small class="crayons-field__description ml-1">Enabled</small>
                             </div>
@@ -286,7 +290,7 @@
                             data-action="click->config#enableOrEditAuthProvider"
                             data-auth-provider-enable="<%= provider.provider_name %>"
                             data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
-                            <%= auth_provider_enable_btn_disable_class %>>
+                            <%= disabled_attr_on_auth_provider_enablebtn %>>
                             <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>
@@ -709,7 +713,7 @@
                                    class: "form-control",
                                    value: SiteConfig.favicon_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
-                  <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
+                  <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" />
                 </div>
 
                 <div class="crayons-field">
@@ -720,7 +724,7 @@
                                    value: SiteConfig.logo_png,
                                    placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
                   <% if SiteConfig.logo_png.present? %>
-                    <img src="<%= SiteConfig.logo_png %>" width="128" height="128" />
+                    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 256) %>" width="128" height="128" />
                   <% end %>
                 </div>
 
@@ -747,7 +751,7 @@
                                    value: SiteConfig.secondary_logo_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:secondary_logo_url][:placeholder] %>
                   <% if SiteConfig.secondary_logo_url.present? %>
-                    <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
+                    <img alt="secondary logo image" class="img-fluid" src="<%= Images::Optimizer.call(SiteConfig.secondary_logo_url, width: 256) %>" />
                   <% end %>
                 </div>
 

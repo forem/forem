@@ -1,3 +1,4 @@
+import { toggleFlagUserModal } from '../packs/flagUserModal';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
@@ -403,6 +404,10 @@ export function addBottomActionsListeners() {
       }
     });
   }
+
+  document
+    .getElementById('open-flag-user-modal')
+    .addEventListener('click', toggleFlagUserModal);
 }
 
 export function initializeActionsPanel() {
