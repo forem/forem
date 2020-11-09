@@ -6,6 +6,7 @@ class ListingsController < ApplicationController
       title processed_html tag_list category id user_id slug contact_via_connect location bumped_at
       originally_published_at
     ],
+    methods: %i[category],
     include: {
       author: { only: %i[username name], methods: %i[username profile_image_90] },
       user: { only: %i[username], methods: %i[username] }

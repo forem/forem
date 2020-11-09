@@ -1,0 +1,54 @@
+<div class="config-authentication__item">
+  <div class="config-authentication__item--container">
+    <div class="config-authentication__item--body">
+      <fieldset class="config-authentication-form">
+        <div class="crayons-field">
+          <%= admin_config_label :"#{provider.provider_name}_key" %>
+          <p class="crayons-field__description">
+            <%= Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_key"][:description] %>
+          </p>
+          <%= f.text_field :"#{provider.provider_name}_key",
+                           class: "crayons-textfield",
+                           value: SiteConfig.public_send("#{provider.provider_name}_key"),
+                           placeholder: Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_key"][:placeholder] %>
+        </div>
+        <div class="crayons-field">
+          <%= admin_config_label :"#{provider.provider_name}_secret" %>
+          <p class="crayons-field__description">
+            <%= Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_secret"][:description] %>
+          <p>
+          <%= f.text_field :"#{provider.provider_name}_secret",
+                           class: "crayons-textfield",
+                           value: SiteConfig.public_send("#{provider.provider_name}_secret"),
+                           placeholder: Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_secret"][:placeholder] %>
+        </div>
+        <div class="mt-6">
+          <% if authentication_enabled_providers.include?(provider) %>
+            <button
+              class="crayons-btn crayons-btn--danger <%= tooltip_class_on_auth_provider_disablebtn %>"
+              data-action="click->config#activateAuthProviderModal"
+              data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
+              data-auth-provider="<%= provider.provider_name %>"
+              data-auth-provider-official="<%= provider.official_name %>"
+              <%= disabled_attr_on_auth_rpovider_disablebtn %>>
+              Disable
+            </button>
+            <button
+              class="crayons-btn crayons-btn--secondary"
+              data-auth-provider="<%= provider.provider_name %>"
+              data-action="click->config#hideAuthProviderSettings">
+              Close
+            </button>
+          <% else %>
+            <button
+              class="crayons-btn crayons-btn--secondary"
+              data-auth-provider="<%= provider.provider_name %>"
+              data-action="click->config#disableAuthProvider">
+              Undo
+            </button>
+          <% end %>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</div>

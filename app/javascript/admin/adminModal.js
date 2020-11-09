@@ -8,6 +8,8 @@
  * @param {string} confirmBtnAction The function that fires when "Confirm" button is clicked.
  * @param {string} cancelBtnText The text for the modal's "Cancel" button.
  * @param {string} cancelBtnAction The function that fires when "Cancel" button is clicked.
+ * @param {string} customAttr A custom data attribute name. Will be apprended to the "data-" part.
+ * @param {string} customAttrValue The value of the custom attribute "customAttr".
  */
 const adminModal = (
   title,
@@ -16,6 +18,8 @@ const adminModal = (
   confirmBtnAction,
   cancelBtnText,
   cancelBtnAction,
+  customAttr = null,
+  customAttrValue = null,
 ) => `
   <div class="crayons-modal crayons-modal--s">
     <div class="crayons-modal__box">
@@ -32,7 +36,8 @@ const adminModal = (
         <div class="flex gap-2">
           <button
             class="crayons-btn crayons-btn--danger"
-            data-action="click->config#${confirmBtnAction}">
+            data-action="click->config#${confirmBtnAction}"
+            data-${customAttr}="${customAttrValue}">
             ${confirmBtnText}
           </button>
           <button
