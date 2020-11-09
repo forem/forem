@@ -71,6 +71,8 @@ export function useKeyboardShortcuts( shortcuts, eventTarget = window, options =
     if (shortcut) {
       shortcut(e);
       setKeyChain([]);
+    } else {
+      setKeyChainQueue(e.code);
     }
   }, [shortcuts, keyChain]);
 
@@ -107,19 +109,15 @@ export function useKeyboardShortcuts( shortcuts, eventTarget = window, options =
       if (e.defaultPrevented) return;
 
       // Get special keys
-      const keys = `${e.ctrlKey || e.metaKey ? "ctrl+" : ""}${e.altKey ? "alt+" : ""}${e.shiftKey ? "shift+" : ""}`;
+      const keys = `${e.ctrlKey || e.metaKey ? "ctrl+" : ""}${e.altKey ? "alt+" : ""}${(e.ctrlKey || e.metaKey || e.altKey) && e.shiftKey ? "shift+" : ""}`;
 
       // If no special keys, except shift, are pressed and focus is inside a field return
       if (e.target instanceof Node && isFormField(e.target) && (!keys || keys === "shift+")) return;
 
       // If a special key is pressed reset the key chain else add to the chain
-      if (keys) {
-        setKeyChain([]);
-      } else {
-        setKeyChainQueue(e.code);
-      }
+      if (keys) setKeyChain([]);
 
-      callShortcut(e, keys === "shift+" ? "" : keys);
+      callShortcut(e, keys);
     };
 
     eventTarget.addEventListener("keydown", keyEvent);
