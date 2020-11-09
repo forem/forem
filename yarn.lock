@@ -11991,10 +11991,10 @@ mobx-react@^6.2.2:
   dependencies:
     mobx-react-lite ">=2.2.0"
 
-mobx@^4.2.0:
-  version "4.15.6"
-  resolved "https://registry.yarnpkg.com/mobx/-/mobx-4.15.6.tgz#c3de77ab272f7074720914070370335fb68cfcda"
-  integrity sha512-eZVEHZLi/Fe+V4qurBBQoFHCqaGrfMuYK1Vy4t5MHYfy90f52ptAKsemHsJcYl+R5/sA3oeT3rMLiVsbB7bllA==
+mobx@^6.0.1:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.0.3.tgz#cec784bb41acf9eb87b449f1181c9dd8c77ccc0b"
+  integrity sha512-DBMd0NXsMn25HJMUAWBndgJ2wRjOJPbpn6wdzUvZW0PVsyTnrw028XwQfzsjnxnKG+bAXGVNb38rvd+1o0G9uQ==
 
 moment@^2.10.2:
   version "2.27.0"
@@ -15212,28 +15212,28 @@ redent@^3.0.0:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
 
-redoc-cli@0.9.12:
-  version "0.9.12"
-  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.12.tgz#9a0f45311bb8cf06c90d63354565f3a12f9f8542"
-  integrity sha512-9Ap7WfEsYtAoVZNyA8lryWAsU2Wq0lHXaNiFgdVZb4zltHNTYEqKmRi06WhileeuqVTNkd1CF2S5CCS5Xg9+aQ==
+redoc-cli@0.9.13:
+  version "0.9.13"
+  resolved "https://registry.yarnpkg.com/redoc-cli/-/redoc-cli-0.9.13.tgz#f754011ab5e7e92ff620266eaa5755b70e0b480c"
+  integrity sha512-6zNhK7KiiYPGaMIFISsIkgAJaXTY0n8hY3xGAeQuS52GRm/DR5bA1Jna52GUzWM/LXgyp6HSBvYucd+wmOQYCQ==
   dependencies:
     chokidar "^3.4.1"
     handlebars "^4.7.6"
     isarray "^2.0.5"
     mkdirp "^1.0.4"
-    mobx "^4.2.0"
+    mobx "^6.0.1"
     node-libs-browser "^2.2.1"
     react "^16.13.1"
     react-dom "^16.13.1"
-    redoc "^2.0.0-rc.40"
+    redoc "2.0.0-rc.45"
     styled-components "^5.1.1"
     tslib "^2.0.0"
     yargs "^15.4.1"
 
-redoc@^2.0.0-rc.40:
-  version "2.0.0-rc.40"
-  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.40.tgz#4dd7d095265bd2af464069e684863a5b17f7a507"
-  integrity sha512-f1na5vWCr37R5+G4xhbD1TjH6j6b/he8nEMGGJOwDcIMMcDK88S0YEWuhplhdVuZdc4c61CoxZqGXqcDRp5m0w==
+redoc@2.0.0-rc.45:
+  version "2.0.0-rc.45"
+  resolved "https://registry.yarnpkg.com/redoc/-/redoc-2.0.0-rc.45.tgz#a42301a032582c9fbe1cb81b10f192d289e9467d"
+  integrity sha512-yOgyXFybwBItvY+y9cFEA6X0W6KDdnkdeWK8LMkTxWN4HUecRwPFYPRdzx+SvDUb8ICh4PDtfyDU3Fo1e9N8Iw==
   dependencies:
     "@redocly/react-dropdown-aria" "^2.0.11"
     "@types/node" "^13.11.1"
