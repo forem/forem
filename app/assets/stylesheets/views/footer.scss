@@ -6,6 +6,7 @@
   color: var(--footer-color);
   padding: var(--footer-padding);
   position: relative;
+  text-align: center;
 
   @media (min-width: $breakpoint-m) {
     --footer-padding: var(--su-8);
