@@ -74,16 +74,16 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Authentication" do
         it "updates enabled authentication providers" do
-          enabled = Array.wrap(Authentication::Providers.available.first.to_s)
-          post "/admin/config", params: { site_config: { authentication_providers: enabled },
+          enabled = Authentication::Providers.available.first.to_s
+          post "/admin/config", params: { site_config: { auth_providers_to_enable: enabled },
                                           confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq(enabled)
+          expect(SiteConfig.authentication_providers).to eq([enabled])
         end
 
         it "strips empty elements" do
           provider = Authentication::Providers.available.first.to_s
-          enabled = [provider, "", nil]
-          post "/admin/config", params: { site_config: { authentication_providers: enabled },
+          enabled = "#{provider}, '', nil"
+          post "/admin/config", params: { site_config: { auth_providers_to_enable: enabled },
                                           confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
