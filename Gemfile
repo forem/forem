@@ -167,7 +167,3 @@ group :test do
   gem "webmock", "~> 3.9", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
-
-group :doc do
-  gem "sdoc", "~> 1.1" # rdoc generator html with javascript search index
-end
