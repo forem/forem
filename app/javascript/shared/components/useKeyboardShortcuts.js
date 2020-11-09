@@ -64,9 +64,7 @@ export function useKeyboardShortcuts( shortcuts, eventTarget = window, options =
     if (keyChain.length > 0) {
       shortcut = shortcuts[`${keyChain.join("~")}~${e.code}`];
     } else {
-      shortcut =
-        shortcuts[`${keys}${e.code}`] ||
-        shortcuts[`${keys}${e.key.toLowerCase()}`];
+      shortcut = shortcuts[`${keys}${e.code}`] || shortcuts[`${keys}${e.key.toLowerCase()}`];
     }
 
     // if a valid shortcut is found call it and reset the chain
