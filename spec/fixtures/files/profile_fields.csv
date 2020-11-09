@@ -1,4 +1,4 @@
-Name,text_field,John Doe,,Basic
-Skills/Languages,text_area,,Programming languages,Coding
+Name,text_field,John Doe,,Basic,header
+Skills/Languages,text_area,,Programming languages,Coding,left_sidebar
 
-Color,color_field,#000000,"Used for backgrounds, borders etc.",Branding
+Color,color_field,#000000,"Used for backgrounds, borders etc.",Branding,settings_only
