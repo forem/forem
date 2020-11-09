@@ -29,7 +29,7 @@
     </nav>
 
     <% if SiteConfig.mascot_footer_image_url.present? %>
-      <%= image_tag(SiteConfig.mascot_footer_image_url,
+      <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_footer_image_url, width: 100),
                     class: "crayons-footer__mascot",
                     alt: SiteConfig.mascot_image_description,
                     width: SiteConfig.mascot_footer_image_width,

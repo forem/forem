@@ -50,16 +50,18 @@ async function confirmFlagUser({ reactableType, category, reactableId }) {
  * Shows or hides the flag user modal.
  */
 export function toggleFlagUserModal() {
-  const modalContainer = document.querySelector('.flag-user-modal-container');
+  const modalContainer = top.document.querySelector(
+    '.flag-user-modal-container',
+  );
   modalContainer.classList.toggle('hidden');
 
   if (!modalContainer.classList.contains('hidden')) {
-    window.scrollTo(0, 0);
-    document.body.style.height = '100vh';
-    document.body.style.overflowY = 'hidden';
+    top.window.scrollTo(0, 0);
+    top.document.body.style.height = '100vh';
+    top.document.body.style.overflowY = 'hidden';
   } else {
-    document.body.style.height = 'inherit';
-    document.body.style.overflowY = 'inherit';
+    top.document.body.style.height = 'inherit';
+    top.document.body.style.overflowY = 'inherit';
   }
 }
 
@@ -80,12 +82,6 @@ export function initializeFlagUserModal(authorId) {
     <FlagUserModal authorId={authorId} />,
     document.querySelector('.flag-user-modal-container'),
   );
-
-  modContainer.addEventListener('load', () => {
-    modContainer.contentWindow.document
-      .getElementById('open-flag-user-modal')
-      .addEventListener('click', toggleFlagUserModal);
-  });
 }
 
 /**
