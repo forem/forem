@@ -131,11 +131,12 @@ module Admin
 
     IMAGE_FIELDS =
       %i[
+        main_social_image
         logo_png
         secondary_logo_url
+        campaign_sidebar_image
         mascot_image_url
         mascot_footer_image_url
-        campaign_sidebar_image
         onboarding_logo_image
         onboarding_background_image
         onboarding_taskcard_image
@@ -145,7 +146,7 @@ module Admin
 
     before_action :extra_authorization_and_confirmation, only: [:create]
     before_action :validate_inputs, only: [:create]
-    before_action :validate_image_urls, only: [:create], if: -> { VALID_IMAGE_URLS.present? }
+    before_action :validate_image_urls, only: [:create], if: -> { params[:site_config].key?(IMAGE_FIELDS) }
     after_action :bust_content_change_caches, only: [:create]
 
     def show
