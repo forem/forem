@@ -1,5 +1,17 @@
 GIT
+<<<<<<< HEAD
   remote: https://github.com/forem/acts_as_follower.git
+=======
+  remote: https://github.com/flyerhzm/bullet.git
+  revision: 074a5ed31468b1c9e236461abef388008e08f667
+  specs:
+    bullet (6.1.0)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11)
+
+GIT
+  remote: https://github.com/thepracticaldev/acts_as_follower.git
+>>>>>>> c7456aa18 (Switch to unreleased bullet)
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
   specs:
@@ -859,7 +871,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   brakeman (~> 5.0)
   buffer (~> 0.1)
-  bullet (~> 6.1)
+  bullet!
   bundler-audit (~> 0.7)
   capybara (~> 3.35.3)
   carrierwave (~> 2.0)
