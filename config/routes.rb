@@ -208,6 +208,10 @@ Rails.application.routes.draw do
             get "/:org_username", to: "organizations#show"
           end
         end
+
+        namespace :admin do
+          resources :configs, only: %i[show create]
+        end
       end
     end
 

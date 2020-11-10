@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.2"
+  version: "0.9.3"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -151,7 +151,6 @@ components:
         status:
           type: integer
           format: int32
-
     ArticleIndex:
       type: object
       required:
@@ -1732,6 +1731,8 @@ components:
         profile_image: https://res.cloudinary.com/...jpeg
 
 tags:
+  - name: adminconfigs
+    description: Configs is the site-wide configuration set by admins (requires authorization)
   - name: articles
     description: Articles are all the posts users create on DEV
   - name: comments
@@ -1760,6 +1761,29 @@ tags:
     description: User or organization profile images
 
 paths:
+  /admin/configs/all:
+    get:
+      operationId: getConfigs
+      summary: Admin configs
+      description: |
+        This endpoint returns the "site config" as set by admin.
+      tags:
+        - adminconfigs
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/admin/configs/all
+      responses:
+        "200":
+          description: All site-wide configs
+          content:
+            application/json:
+              schema:
+                type: object
   /articles:
     get:
       operationId: getArticles
