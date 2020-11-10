@@ -1,15 +1,11 @@
 <div class="grid gap-6" data-controller="config">
-  <div class="crayons-notice crayons-notice--info" role="alert">
-    <p class="mb-1">
-      Only admins with explicit <strong>single resource admin</strong> role may make changes to site config. Even super admins require this permission.
-    </p>
-      <% if current_user.has_role?(:single_resource_admin, Config) %>
-        <p class="fw-bold">You have permission to make config changes. Do so with care.</p>
-      <% else %>
-        <p>You do not have permission to make config changes. (Read Only)</p>
-      <% end %>
-    </h2>
-  </div>
+  <% unless current_user.has_role?(:super_admin) %>
+    <div class="crayons-notice crayons-notice--info" role="alert">
+      <p class="mb-1">
+        Only users with <strong>Super Admin</strong> privileges may edit this page.
+      </p>
+    </div>
+  <% end %>
 
   <div id="getStarted">
     <div class="card w-100">

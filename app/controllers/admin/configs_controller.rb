@@ -189,7 +189,7 @@ module Admin
     end
 
     def extra_authorization_and_confirmation
-      not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
+      not_authorized unless current_user.has_role?(:super_admin) # Special additional permission
       raise_confirmation_mismatch_error if params.require(:confirmation) != confirmation_text
     end
 
