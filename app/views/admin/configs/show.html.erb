@@ -270,7 +270,7 @@
                       </figure>
                       <div class="config-authentication__item--container">
                         <div
-                          class="config-authentication__item mb-0 flex items-baseline justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
+                          class="flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
                           data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
                           <div class="config-authentication__item--label">
                             <p class="crayons-field__label <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
@@ -295,13 +295,11 @@
                           </button>
                         </div>
                         <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
-                          <fieldset class="config-authentication-form">
-                            <%= render partial: "auth_provider_settings",
-                                       locals: {
-                                         f: f,
-                                         provider: provider
-                                       } %>
-                          </fieldset>
+                          <%= render partial: "auth_provider_settings",
+                                     locals: {
+                                       f: f,
+                                       provider: provider
+                                     } %>
                         </div>
                       </div>
                     </section>
