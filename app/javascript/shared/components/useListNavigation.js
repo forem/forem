@@ -56,10 +56,14 @@ export function useListNavigation(
     );
   }
 
-  useKeyboardShortcuts({
-    [NAVIGATION_UP_KEY]: () => navigateInDirection(DIRECTIONS.UP),
-    [NAVIGATION_DOWN_KEY]: () => navigateInDirection(DIRECTIONS.DOWN),
-  });
+  useKeyboardShortcuts(
+    {
+      [NAVIGATION_UP_KEY]: () => navigateInDirection(DIRECTIONS.UP),
+      [NAVIGATION_DOWN_KEY]: () => navigateInDirection(DIRECTIONS.DOWN),
+    },
+    window,
+    { timeout: 0 },
+  );
 }
 
 /**
