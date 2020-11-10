@@ -100,7 +100,6 @@ export async function updateMembership(membershipId, userAction) {
  * @param {string} category
  * @param {string} reported_url
  */
-
 export async function reportAbuse(
   feedback_message,
   feedback_type,
