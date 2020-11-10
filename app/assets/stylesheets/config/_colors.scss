@@ -40,7 +40,7 @@
   --base-inverted: #fff;
 
   // Accent colors
-  --accent-brand: #3b49df;
+  --accent-brand: #3b49dd;
   --accent-brand-darker: #1827ce;
   --accent-brand-lighter: #8d95f2;
   --accent-brand-a10: #{rgba(#3b49df, 0.1)};
@@ -92,6 +92,11 @@
   --header-shadow: rgba(0, 0, 0, 0.1);
   --header-icons-color: var(--base-70);
   --header-icons-color-hover: var(--base-100);
+
+  // Global notice
+  --global-notice-bg: var(--accent-success-lighter);
+  --global-notice-text: #000;
+  --global-notice-link: #000;
 
   // Logo
   --logo-bg: var(--base-100);
