@@ -169,7 +169,7 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include('<meta name="page-cached-at"')
       expect(response.body).to include('"main-crayons-stylesheet"')
       expect(response.body).to include('"main-minimal-stylesheet"')
-      expect(response.body).to include("if (headCacheCheck && headCrayonsPath &&")
+      expect(response.body).to include("if (headCacheCheck && headCrayons &&")
     end
 
     context "with campaign hero" do
