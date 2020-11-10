@@ -168,12 +168,9 @@
                       <%= local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year) %>
                     <% end %>
                   </em>
-                  <% if should_show_updated_on?(@article) %>
-                    ・
-                  <% end %>
                 <% end %>
                 <% if should_show_updated_on?(@article) %>
-                  <em>Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %></em>
+                  ・<em>Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %></em>
                 <% end %>
 
                 <span class="mr-4">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
