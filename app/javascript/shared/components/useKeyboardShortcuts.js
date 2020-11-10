@@ -16,8 +16,7 @@ function isFormField(element) {
   return (
     name === "select" ||
     name === "textarea" ||
-    (name === "input" &&
-      ["submit", "reset", "checkbox", "radio"].indexOf(type) < 0) ||
+    (name === "input" && type !== 'submit' && type !== 'reset' && type !== 'checkbox' && type !== 'radio') ||
     element.isContentEditable
   );
 }
@@ -71,8 +70,6 @@ export function useKeyboardShortcuts( shortcuts, eventTarget = window, options =
     if (shortcut) {
       shortcut(e);
       setKeyChain([]);
-    } else {
-      setKeyChainQueue(e.code);
     }
   }, [shortcuts, keyChain]);
 
@@ -112,10 +109,14 @@ export function useKeyboardShortcuts( shortcuts, eventTarget = window, options =
       const keys = `${e.ctrlKey || e.metaKey ? "ctrl+" : ""}${e.altKey ? "alt+" : ""}${(e.ctrlKey || e.metaKey || e.altKey) && e.shiftKey ? "shift+" : ""}`;
 
       // If no special keys, except shift, are pressed and focus is inside a field return
-      if (e.target instanceof Node && isFormField(e.target) && (!keys || keys === "shift+")) return;
+      if (e.target instanceof Node && isFormField(e.target) && !keys) return;
 
       // If a special key is pressed reset the key chain else add to the chain
-      if (keys) setKeyChain([]);
+      if (keys) {
+        setKeyChain([]);
+      } else {
+        setKeyChainQueue(e.code);
+      }
 
       callShortcut(e, keys);
     };
