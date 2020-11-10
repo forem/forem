@@ -117,3 +117,24 @@ export async function reportAbuse(
   });
   return response.json();
 }
+
+/**
+ * This Api block the user
+ *
+ * @param {number} userId
+ *
+ *
+ */
+
+export async function blockUser(userId) {
+  const response = await request('/user_blocks', {
+    method: 'POST',
+    body: {
+      user_block: {
+        blocked_id: userId,
+      },
+    },
+  });
+
+  return response.json();
+}

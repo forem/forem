@@ -8,7 +8,7 @@ class FeedbackMessagesController < ApplicationController
 
     params = feedback_message_params.merge(reporter_id: current_user&.id)
     @feedback_message = FeedbackMessage.new(params)
-    if (recaptcha_disabled? || recaptcha_verified? || params[:feedback_type] == "connect") && @feedback_message.save
+    if (recaptcha_disabled? || recaptcha_verified? || connect_feedback?) && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
         type: feedback_message_params[:feedback_type],
@@ -31,7 +31,7 @@ class FeedbackMessagesController < ApplicationController
         format.json do
           render json: {
             success: false,
-            message: @feedback_message.errors.full_messages.to_sentence,
+            message: @feedback_message.errors_as_sentence,
             status: :bad_request
           }
         end
@@ -48,6 +48,10 @@ class FeedbackMessagesController < ApplicationController
   def recaptcha_verified?
     recaptcha_params = { secret_key: SiteConfig.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
+  end
+
+  def connect_feedback?
+    params[:feedback_type] == "connect"
   end
 
   def feedback_message_params

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useState } from 'preact/hooks';
-import { reportAbuse } from '../actions/requestActions';
+import { reportAbuse, blockUser } from '../actions/requestActions';
 import { addSnackbarItem } from '../../Snackbar';
 import { Button } from '@crayons';
 
@@ -28,19 +28,14 @@ function ReportAbuse({ resource: data }) {
       - prevent them from messaging you via DEV Connect`,
       );
       if (confirmBlock) {
-        fetch(`/user_blocks`, {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'X-CSRF-Token': window.csrfToken,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_block: {
-              blocked_id: data.user_id,
-            },
-          }),
-        }).then((response) => response.json());
+        const response = await blockUser(data.user_id);
+        if (response.result === 'blocked') {
+          addSnackbarItem({
+            message: 'Your report has been submitted and User has been blocker',
+          });
+        }
+      } else {
+        addSnackbarItem({ message: 'Your report has been submitted.' });
       }
     } else {
       addSnackbarItem({ message });
@@ -140,7 +135,10 @@ function ReportAbuse({ resource: data }) {
 
 ReportAbuse.propTypes = {
   resource: PropTypes.shape({
-    data: PropTypes.object,
+    data: PropTypes.shape({
+      user_id: PropTypes.number.isRequired,
+      message: PropTypes.element.isRequired,
+    }),
   }).isRequired,
 };
 
