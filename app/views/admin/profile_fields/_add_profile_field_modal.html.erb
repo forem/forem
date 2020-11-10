@@ -1,13 +1,13 @@
-<div onclick="showAddProfileFieldModal('<%= group_name %>')">
+<button data-controller="modal" data-action="modal#toggleModal" data-modal-target-id="add-<%= group_name %>-profile-field-modal" class="crayons-btn mx-1">
   Add Field
-</div>
+</button>
 
 <div id="add-<%= group_name %>-profile-field-modal" class="hidden">
   <div class="crayons-modal crayons-modal--s">
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
         <h2>Add Profile Field</h2>
-        <button type="button" onclick="hideProfileFieldModal('<%= group_name %>')" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
+        <button type="button" data-controller="modal" data-action="modal#toggleModal" data-modal-target-id="add-<%= group_name %>-profile-field-modal" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
           <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -25,19 +25,3 @@
     <div class="crayons-modal__overlay"></div>
   </div>
 </div>
-
-<script>
-  function showAddProfileFieldModal(group_name) {
-    const confirmationModal = document.getElementById(`add-${group_name}-profile-field-modal`);
-    if (confirmationModal) {
-      confirmationModal.classList.remove("hidden");
-    }
-  }
-
-  function hideProfileFieldModal(group_name) {
-    const confirmationModal = document.getElementById(`add-${group_name}-profile-field-modal`);
-    if (confirmationModal) {
-      confirmationModal.classList.add("hidden");
-    }
-  }
-</script>

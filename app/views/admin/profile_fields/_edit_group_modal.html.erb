@@ -1,13 +1,13 @@
-<div onclick="showEditGroupModal('<%= group_name %>')" class="color-accent-warning-darker">
+<button data-controller="modal" data-action="modal#toggleModal" data-modal-target-id="edit-group-<%= group_name %>-modal" class="crayons-btn crayons-btn--secondary mx-1">
   Edit group
-</div>
+</button>
 
 <div id="edit-group-<%= group_name %>-modal" class="hidden">
   <div class="crayons-modal crayons-modal--s">
     <div class="crayons-modal__box">
       <header class="crayons-modal__box__header">
         <h2>Edit Group <%= group_name %></h2>
-        <button type="button" onclick="hideEditGroupModal('<%= group_name %>')" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
+        <button type="button" data-controller="modal" data-action="modal#toggleModal" data-modal-target-id="edit-group-<%= group_name %>-modal" class="crayons-btn crayons-btn--icon crayons-btn--ghost">
           <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
           </svg>
@@ -32,19 +32,3 @@
     <div class="crayons-modal__overlay"></div>
   </div>
 </div>
-
-<script>
-  function showEditGroupModal(group_name) {
-    const confirmationModal = document.getElementById(`edit-group-${group_name}-modal`);
-    if (confirmationModal) {
-      confirmationModal.classList.remove("hidden");
-    }
-  }
-
-  function hideEditGroupModal(group_name) {
-    const confirmationModal = document.getElementById(`edit-group-${group_name}-modal`);
-    if (confirmationModal) {
-      confirmationModal.classList.add("hidden");
-    }
-  }
-</script>
