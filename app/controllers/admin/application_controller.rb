@@ -17,7 +17,6 @@ module Admin
       display_ads: "https://forem.gitbook.io/forem-admin-guide/admin/display-ads",
       chat_channels: "https://forem.gitbook.io/forem-admin-guide/admin/chat-channels",
       tags: "https://forem.gitbook.io/forem-admin-guide/admin/tags"
-
     }.freeze
 
     private
