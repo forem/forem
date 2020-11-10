@@ -22,18 +22,16 @@
 <header class="crayons-layout crayons-layout--limited-l crayons-layout--1-col p-4">
   <% if @tab == "organization" && @organizations.present? %>
     <h1 class="crayons-title">Settings for
-      <span class="organization-dropdown">
-        <select id="organization-dropdown-select" onchange="window.location.href=this.value">
-          <% options = @organizations.pluck(:slug, :id).each do |arr| %>
-            <% arr[0] = "@#{arr[0]}" %>
-            <% arr[1] = "/settings/organization/#{arr[1]}" %>
-          <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
-          <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
-          <%# For example: %>
-          <%# <option value="/settings/organization/1>@devteam</option> %>
-          <%# <option value="/settings/organization/new" selected>New Organization</option> %>
-        </select>
-      </span>
+      <select class="crayons-select lh-tight w-25 align-text-top w-max" onchange="window.location.href=this.value">
+        <% options = @organizations.pluck(:slug, :id).each do |arr| %>
+          <% arr[0] = "@#{arr[0]}" %>
+          <% arr[1] = "/settings/organization/#{arr[1]}" %>
+        <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
+        <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
+        <%# For example: %>
+        <%# <option value="/settings/organization/1>@devteam</option> %>
+        <%# <option value="/settings/organization/new" selected>New Organization</option> %>
+      </select>
     </h1>
   <% else %>
     <h1 class="crayons-title">

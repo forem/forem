@@ -43,23 +43,23 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       end
 
       def shows_comments
-        within("#substories div.index-comments") do
-          expect(page).to have_content("Recent Comments")
+        within("#substories div.profile-comment-card") do
+          expect(page).to have_content("Recent comments")
           expect(page).to have_link(nil, href: comment.path)
         end
 
         within("#substories") do
-          expect(page).to have_selector(".index-comments", count: 1)
+          expect(page).to have_selector(".profile-comment-card", count: 1)
         end
 
-        within("#substories .index-comments .single-comment") do
+        within("#substories .profile-comment-card .profile-comment-row") do
           comment_date = comment.readable_publish_date.gsub("  ", " ")
           expect(page).to have_selector(".comment-date", text: comment_date)
         end
       end
 
       def shows_comment_timestamp
-        within("#substories .index-comments .single-comment") do
+        within("#substories .profile-comment-card .profile-comment-row") do
           ts = comment.decorate.published_timestamp
           timestamp_selector = ".comment-date time[datetime='#{ts}']"
           expect(page).to have_selector(timestamp_selector)
@@ -107,8 +107,8 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
     end
 
     def shows_comments
-      within("#substories div.index-comments") do
-        expect(page).to have_content("Recent Comments")
+      within("#substories div.profile-comment-card") do
+        expect(page).to have_content("Recent comments")
         expect(page).to have_link(nil, href: comment.path)
       end
     end
