@@ -6,7 +6,7 @@
     <div class="crayons-card__body grid gap-4 grid-cols-3 m:grid-cols-2">
       <% @user.badge_achievements.order(id: :desc).includes(:badge).each do |achievement| %>
         <a href="/badge/<%= achievement.badge.slug %>" title="<%= achievement.badge.title %>">
-          <img src="<%= optimized_image_url(achievement.badge.badge_image_url, width: 180) %>" alt="<%= achievement.badge.title %>" class="mx-auto max-w-100 h-auto" style="transform: rotate(<%= rand(-10..10) %>deg);" />
+          <img src="<%= optimized_image_url(achievement.badge.badge_image_url, width: 180) %>" alt="<%= achievement.badge.title %>" class="mx-auto max-w-100 h-auto align-middle" style="transform: rotate(<%= rand(-10..10) %>deg);" />
         </a>
       <% end %>
     </div>
