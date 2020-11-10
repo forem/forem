@@ -7,6 +7,7 @@
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
+      <meta name="head-cached-at" content="<%= Time.current.to_i %>">
       <% if SiteConfig.payment_pointer.present? %>
         <!-- Experimental web monetization payment pointer for micropayments -->
         <!-- It lets readers make micropayments to websites they visit. -->
