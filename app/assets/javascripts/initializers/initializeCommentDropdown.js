@@ -32,14 +32,10 @@ function initializeCommentDropdown() {
     event.preventDefault();
     const permalink = event.target.href;
 
-    Runtime.copyToClipboard(permalink)
-      .then(() => {
-        // eslint-disable-next-line no-undef
-        addSnackbarItem({ message: 'Copied to clipboard' });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    Runtime.copyToClipboard(permalink).then(() => {
+      // eslint-disable-next-line no-undef
+      addSnackbarItem({ message: 'Copied to clipboard' });
+    });
   }
 
   function copyArticleLink() {
