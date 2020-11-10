@@ -27,7 +27,7 @@ class ImportUsers
 end
 ```
 
-To distinguish services from models we often give them verb names vs nound
+To distinguish services from models we often give them verb names vs noun
 names, e.g. `ImportUsers` instead of `UserImporter`.
 
 ## Generating Service Objects
