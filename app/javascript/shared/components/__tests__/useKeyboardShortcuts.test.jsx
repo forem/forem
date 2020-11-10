@@ -47,7 +47,7 @@ describe('Keyboard shortcuts for components', () => {
       await new Promise(resolve => setTimeout(() => {
         fireEvent.keyDown(document, { code: "KeyB" });
         resolve();
-      }, 5));
+      }, 25));
 
       expect(shortcut["KeyA~KeyB"]).not.toHaveBeenCalled();
     });
