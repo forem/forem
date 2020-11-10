@@ -130,7 +130,7 @@ module Admin
       ].freeze
 
     IMAGE_FIELDS =
-      %i[
+      %w[
         main_social_image
         logo_png
         secondary_logo_url
@@ -146,7 +146,7 @@ module Admin
 
     before_action :extra_authorization_and_confirmation, only: [:create]
     before_action :validate_inputs, only: [:create]
-    before_action :validate_image_urls, only: [:create], if: -> { params[:site_config].key?(IMAGE_FIELDS) }
+    before_action :validate_image_urls, only: [:create], if: -> { params[:site_config].keys & IMAGE_FIELDS }
     after_action :bust_content_change_caches, only: [:create]
 
     def show
@@ -218,7 +218,10 @@ module Admin
 
     def validate_image_urls
       errors = []
-      errors << "Image URL must be a valid URL" unless valid_image_url
+      values = []
+      params[:site_config].each { |k, v| values.push(v) if IMAGE_FIELDS.include?(k) }
+      values = values.reject(&:blank?)
+      values.each { |url| errors << "Image URL must be a valid URL" unless valid_image_url(url) }
       redirect_to admin_config_path, alert: "😭 #{errors.join(',')}" if errors.any?
     end
 
@@ -254,18 +257,9 @@ module Admin
       hex.present? && !hex.match?(/\A#(\h{6}|\h{3})\z/)
     end
 
-    def valid_image_url
-      image_url = params.dig(:site_config, :main_social_image) ||
-        params.dig(:site_config, :logo_png) ||
-        params.dig(:site_config, :secondary_logo_url) ||
-        params.dig(:site_config, :campaign_sidebar_image) ||
-        params.dig(:site_config, :mascot_image_url) ||
-        params.dig(:site_config, :mascot_footer_image_url) ||
-        params.dig(:site_config, :onboarding_logo_image) ||
-        params.dig(:site_config, :onboarding_background_image) ||
-        params.dig(:site_config, :onboarding_taskcard_image)
-      valid_url = %r{\A(https:)//([/|.|\w|\s|-])*\.(?:jpg|gif|png)/}
-      image_url.present? && image_url.match?(valid_url)
+    def valid_image_url(url)
+      valid_url = %r{\A(http|https)://([/|.|\w|\s|-])*.(?:jpg|gif|png)}
+      url.match?(valid_url)
     end
   end
 end
