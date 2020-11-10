@@ -27,7 +27,7 @@ function isFormField(element) {
 
 // Default options to be used if null
 const defaultOptions = {
-  timeout: 0,
+  timeout: 0, // The default is zero as we want no delays between keystrokes by default.
 };
 
 /**
