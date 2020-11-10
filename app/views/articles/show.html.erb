@@ -159,17 +159,18 @@
                   <em>with <%= @article.co_author_name_and_path.html_safe %></em>
                 <% end %>
 
-                <% if should_show_updated_on?(@article) %>
-                  <em>Updated on <time datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em>
-                <% elsif should_show_crossposted_on?(@article) %>
+                <% if should_show_crossposted_on?(@article) %>
                   <em>
                     Originally published at
                     <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
                     <% if @article.crossposted_at %>
                       on
-                      <time datetime="<%= (@article.originally_published_at || @article.published_at)&.utc&.iso8601 %>"><%= (@article.originally_published_at || @article.published_at)&.strftime("%b %d, %Y") %></time>
+                      <%= local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year) %>
                     <% end %>
                   </em>
+                <% end %>
+                <% if should_show_updated_on?(@article) %>
+                  ・<em>Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %></em>
                 <% end %>
 
                 <span class="mr-4">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
