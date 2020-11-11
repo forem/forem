@@ -56,19 +56,19 @@ module Suggester
 
       def established_user_article_count
         Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
-          User.average(:articles_count)
+          User.where("articles_count > 0").average(:articles_count) || User.average(:articles_count)
         end
       end
 
       def established_user_comment_count
         Rails.cache.fetch("established_user_comment_count", expires_in: 1.day) do
-          User.average(:comments_count)
+          User.where("comments_count > 0").average(:comments_count) || User.average(:comments_count)
         end
       end
 
       def article_score_average
         Rails.cache.fetch("article_score_average", expires_in: 1.day) do
-          Article.average(:score)
+          Article.where("score >= 0").average(:score) || Article.average(:score)
         end
       end
     end
