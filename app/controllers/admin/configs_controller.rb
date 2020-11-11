@@ -150,8 +150,6 @@ module Admin
         end
       end
 
-      disable_invite_mode_when_email_registration_off
-
       redirect_to admin_config_path, notice: "Site configuration was successfully updated."
     end
 
@@ -210,14 +208,12 @@ module Admin
       config[:credit_prices_in_cents]&.transform_values!(&:to_i)
     end
 
-    def disable_invite_mode_when_email_registration_off
-      return unless SiteConfig.allow_email_password_registration == false
-
-      SiteConfig.invite_only_mode = false
-    end
-
     def invalid_provider_entry(entry)
       entry.blank? || helpers.available_providers_array.exclude?(entry)
+    end
+
+    def email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
+      !SiteConfig.allow_email_password_login && enabled_providers.count <= 1
     end
 
     def update_enabled_auth_providers(value)
@@ -225,7 +221,8 @@ module Admin
       value.split(",").each do |entry|
         enabled_providers.push(entry) unless invalid_provider_entry(entry)
       end
-      SiteConfig.public_send("authentication_providers=", enabled_providers) unless value.empty?
+      SiteConfig.public_send("authentication_providers=", enabled_providers) unless
+        email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
     end
 
     # Validations
