@@ -26,7 +26,7 @@
         <% else %>
           <% group.profile_fields.each do |field| %>
             <div class="card mt-3">
-              <%= render partial: "admin/configs/card_header",
+              <%= render partial: "admin/shared/card_header",
                          locals: {
                            header: field.label,
                            state: "collapse",
