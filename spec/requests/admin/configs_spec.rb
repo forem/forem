@@ -95,10 +95,22 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.allow_email_password_login).to be(true)
         end
 
-        it "disables email authentication and invite-only mode" do
+        it "disables email authentication" do
           post "/admin/config", params: { site_config: { allow_email_password_registration: false },
                                           confirmation: confirmation_message }
           expect(SiteConfig.allow_email_password_registration).to be(false)
+          expect(SiteConfig.allow_email_password_login).to be(true)
+        end
+
+        it "enables invite-only-mode" do
+          post "/admin/config", params: { site_config: { invite_only_mode: true },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.invite_only_mode).to be(true)
+        end
+
+        it "disables invite-only-mode & enables just email registration" do
+          post "/admin/config", params: { site_config: { invite_only_mode: false },
+                                          confirmation: confirmation_message }
           expect(SiteConfig.invite_only_mode).to be(false)
         end
       end

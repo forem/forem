@@ -139,13 +139,11 @@
                 <h3 class="crayons-subtitle-3 mb-3">
                   General settings
                 </h3>
-                <div class="crayons-field crayons-field--checkbox <%= !SiteConfig.allow_email_password_registration ? "crayons-tooltip" : "" %>"
-                  data-tooltip="<%= !SiteConfig.allow_email_password_registration ? "To enable this, you must first enable Email Address as a registration option" : "" %>">
+                <div class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : "" %>" data-tooltip="Unchecking this will enable Email Registration">
                   <%= f.check_box :invite_only_mode,
-                                  checked: SiteConfig.invite_only_mode,
-                                  disabled: !SiteConfig.allow_email_password_registration,
-                                  data: { action: "config#disableAuthenticationOptions", target: "config.inviteOnlyMode" },
-                                  class: "crayons-checkbox #{!SiteConfig.allow_email_password_registration ? 'crayons-checkbox--disabled' : ''}" %>
+                                  checked: invite_only_mode_or_no_enabled_auth_options,
+                                  data: { action: "config#adjustAuthenticationOptions", target: "config.inviteOnlyMode" },
+                                  class: "crayons-checkbox" %>
                   <div class="mt-0">
                     <%= admin_config_label :invite_only_mode, "Invite-only mode" %>
                     <%= admin_config_description Constants::SiteConfig::DETAILS[:invite_only_mode][:description] %>
@@ -167,7 +165,9 @@
                     <%= inline_svg_tag("email.svg", class: "crayons-icon", aria: true, title: "Email icon") %>
                   </figure>
                   <div class="config-authentication__item--container">
-                    <div class="config-authentication__item--row flex items-center justify-between">
+                    <div
+                      class="config-authentication__item--row flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
+                      data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
 
                       <div class="config-authentication__item--label">
                         <p class="crayons-field__label <%= SiteConfig.allow_email_password_registration ? "pb-0" : "" %>">
@@ -186,7 +186,8 @@
                         id="email-auth-enable-edit-btn"
                         data-button-text="<%= SiteConfig.allow_email_password_registration ? "edit" : "enable" %>"
                         data-target="config.emailAuthSettingsBtn"
-                        data-action="click->config#enableOrEditEmailAuthSettings">
+                        data-action="click->config#enableOrEditEmailAuthSettings"
+                        <%= disabled_attr_on_auth_provider_enablebtn %>>
                         <%= SiteConfig.allow_email_password_registration ? "Edit" : "Enable" %>
                       </button>
 
@@ -196,7 +197,7 @@
                         <div class="crayons-field--checkbox hidden">
                           <%= f.check_box :allow_email_password_registration,
                                           checked: SiteConfig.allow_email_password_registration,
-                                          id: "email-signup-and-login-checkbox",
+                                          id: "email-registration-checkbox",
                                           class: "crayons-checkbox" %>
                         </div>
                         <div class="crayons-field--checkbox">
@@ -230,10 +231,8 @@
                         <div class="flex gap-2">
                           <% if SiteConfig.allow_email_password_registration %>
                             <button
-                              class="crayons-btn crayons-btn--danger <%= tooltip_class_on_email_auth_disablebtn %>"
-                              data-action="click->config#activateEmailAuthModal"
-                              data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
-                              <%= disabled_attr_on_email_auth_disablebtn %>>
+                              class="crayons-btn crayons-btn--danger"
+                              data-action="click->config#activateEmailAuthModal">
                               Disable
                             </button>
                              <button
