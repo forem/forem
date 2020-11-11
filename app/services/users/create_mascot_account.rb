@@ -15,7 +15,7 @@ module Users
     end
 
     def call
-      return if User.mascot_account
+      return if SiteConfig.mascot_user_id
 
       mascot = User.create(mascot_params)
       SiteConfig.mascot_user_id = mascot.id

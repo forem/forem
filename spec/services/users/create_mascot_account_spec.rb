@@ -20,10 +20,8 @@ RSpec.describe Users::CreateMascotAccount, type: :service do
   end
 
   context "when a mascot user already exists" do
-    let(:mascot) { create(:user) }
-
     before do
-      allow(User).to receive(:mascot_account).and_return(mascot)
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(2)
       allow(User).to receive(:create)
     end
 
