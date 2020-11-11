@@ -53,7 +53,7 @@ class Reaction < ApplicationRecord
     end
 
     def cached_any_reactions_for?(reactable, user, category)
-      class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
+      class_name = reactable.instance_of?(ArticleDecorator) ? "Article" : reactable.class.name
       cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
         "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
@@ -81,11 +81,7 @@ class Reaction < ApplicationRecord
   end
 
   def target_user
-    if reactable_type == "User"
-      reactable
-    else
-      reactable.user
-    end
+    reactable_type == "User" ? reactable : reactable.user
   end
 
   def negative?
@@ -93,10 +89,6 @@ class Reaction < ApplicationRecord
   end
 
   private
-
-  def indexable?
-    category == "readinglist" && reactable && reactable.published
-  end
 
   def update_reactable
     Reactions::UpdateReactableWorker.perform_async(id)
@@ -120,40 +112,6 @@ class Reaction < ApplicationRecord
 
   def reading_time
     reactable.reading_time if category == "readinglist"
-  end
-
-  def reactable_user
-    return unless category == "readinglist"
-
-    {
-      username: reactable.user_username,
-      name: reactable.user_name,
-      profile_image_90: reactable.user.profile_image_90
-    }
-  end
-
-  def reactable_published_date
-    reactable.readable_publish_date if category == "readinglist"
-  end
-
-  def searchable_reactable_title
-    reactable.title if category == "readinglist"
-  end
-
-  def searchable_reactable_text
-    reactable.body_text[0..350] if category == "readinglist"
-  end
-
-  def searchable_reactable_tags
-    reactable.cached_tag_list if category == "readinglist"
-  end
-
-  def searchable_reactable_path
-    reactable.path if category == "readinglist"
-  end
-
-  def reactable_tags
-    reactable.decorate.cached_tag_list_array if category == "readinglist"
   end
 
   def viewable_by

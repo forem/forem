@@ -116,12 +116,11 @@ class NotifyMailer < ApplicationMailer
   end
 
   def export_email
-    @user = params[:user]
     attachment = params[:attachment]
 
     export_filename = "devto-export-#{Date.current.iso8601}.zip"
     attachments[export_filename] = attachment
-    mail(to: @user.email, subject: "The export of your content is ready")
+    mail(to: params[:email], subject: "The export of your content is ready")
   end
 
   def tag_moderator_confirmation_email

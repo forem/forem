@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_07_091041) do
+ActiveRecord::Schema.define(version: 2020_10_19_012200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1207,7 +1207,6 @@ ActiveRecord::Schema.define(version: 2020_10_07_091041) do
     t.inet "current_sign_in_ip"
     t.string "currently_hacking_on"
     t.string "currently_learning"
-    t.string "currently_streaming_on"
     t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
@@ -1218,11 +1217,11 @@ ActiveRecord::Schema.define(version: 2020_10_07_091041) do
     t.boolean "email_comment_notifications", default: true
     t.boolean "email_community_mod_newsletter", default: false
     t.boolean "email_connect_messages", default: true
-    t.boolean "email_digest_periodic", default: true, null: false
+    t.boolean "email_digest_periodic", default: false, null: false
     t.boolean "email_follower_notifications", default: true
     t.boolean "email_membership_newsletter", default: false
     t.boolean "email_mention_notifications", default: true
-    t.boolean "email_newsletter", default: true
+    t.boolean "email_newsletter", default: false
     t.boolean "email_public", default: false
     t.boolean "email_tag_mod_newsletter", default: false
     t.boolean "email_unread_notifications", default: true
@@ -1267,6 +1266,7 @@ ActiveRecord::Schema.define(version: 2020_10_07_091041) do
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
+    t.datetime "last_reacted_at"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
@@ -1311,7 +1311,6 @@ ActiveRecord::Schema.define(version: 2020_10_07_091041) do
     t.text "summary"
     t.string "text_color_hex"
     t.string "twitch_url"
-    t.string "twitch_username"
     t.datetime "twitter_created_at"
     t.integer "twitter_followers_count"
     t.integer "twitter_following_count"

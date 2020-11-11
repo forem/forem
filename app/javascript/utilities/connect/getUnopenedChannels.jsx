@@ -23,9 +23,9 @@ class UnopenedChannelNotice extends Component {
 
   componentDidMount() {
     const { pusherKey } = this.props;
-    const appName = document.body.dataset.appName;
+    const { appDomain } = document.body.dataset;
     setupPusher(pusherKey, {
-      channelId: `private-message-notifications--${appName}-${window.currentUser.id}`,
+      channelId: `private-message-notifications--${appDomain}-${window.currentUser.id}`,
       messageCreated: this.receiveNewMessage,
       messageDeleted: this.removeMessage,
       messageEdited: this.updateMessage,

@@ -1,5 +1,5 @@
 <% unless @user.authenticated_with_all_providers? %>
-  <div class="crayons-card mb-6 p-5">
+  <div class="crayons-card crayons-card--content-rows block">
     <% authentication_enabled_providers.each do |provider| %>
       <% unless @user.authenticated_through?(provider.provider_name) %>
         <a

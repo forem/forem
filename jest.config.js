@@ -1,7 +1,7 @@
 // Consistent timezone for testing.
 // This does not work on windows, see https://github.com/nodejs/node/issues/4230
 
-/* global process, module */
+/* eslint-env node */
 
 process.env.TZ = 'UTC';
 

@@ -8,9 +8,9 @@ class GeneratedImage
   def social_image
     if resource.class.name.include?("Article")
       article_image
-    elsif resource.class.name == "User"
+    elsif resource.instance_of?(User)
       optimize_image "/user/#{resource.id}?bust=#{resource.profile_image_url}"
-    elsif resource.class.name == "Organization"
+    elsif resource.instance_of?(Organization)
       optimize_image "/organization/#{resource.id}?bust=#{resource.profile_image_url}"
     elsif resource.class.name.include?("Tag")
       optimize_image "/tag/#{@resource.id}?bust=#{@resource.pretty_name}"

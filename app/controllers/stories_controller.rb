@@ -12,7 +12,7 @@ class StoriesController < ApplicationController
     ]
   }.freeze
 
-  SIGNED_OUT_RECORD_COUNT = (Rails.env.production? ? 60 : 10).freeze
+  SIGNED_OUT_RECORD_COUNT = 60
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
@@ -132,6 +132,9 @@ class StoriesController < ApplicationController
 
     @num_published_articles = if @tag_model.requires_approval?
                                 Article.published.cached_tagged_by_approval_with(@tag).size
+                              elsif SiteConfig.feed_strategy == "basic"
+                                Article.published.cached_tagged_with(@tag)
+                                  .where("score >= ?", SiteConfig.tag_feed_minimum_score).size
                               else
                                 cached_tagged_count
                               end
@@ -334,18 +337,17 @@ class StoriesController < ApplicationController
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order(published_at: :desc)
     else
-      @stories.order(hotness_score: :desc).where("score > 2")
+      @stories.order(hotness_score: :desc).where("score >= ?", SiteConfig.home_feed_minimum_score)
     end
   end
 
   def assign_podcasts
     return unless user_signed_in?
 
-    num_hours = Rails.env.production? ? 24 : 2400
     @podcast_episodes = PodcastEpisode
       .includes(:podcast)
       .order(published_at: :desc)
-      .where("published_at > ?", num_hours.hours.ago)
+      .where("published_at > ?", 24.hours.ago)
       .select(:slug, :title, :podcast_id, :image)
   end
 
@@ -487,7 +489,7 @@ class StoriesController < ApplicationController
 
   def cached_tagged_count
     Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
-      Article.published.cached_tagged_with(@tag).where("score > 2").size
+      Article.published.cached_tagged_with(@tag).where("score >= ?", SiteConfig.tag_feed_minimum_score).size
     end
   end
 end
