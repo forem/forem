@@ -52,6 +52,7 @@
         <div class="dropdown">
           <div class="crayons-dropdown p-1 right-1 left-1 s:right-0 s:left-auto fs-base">
             <a href="<%= comment.path %>" class="crayons-link crayons-link--block">Permalink</a>
+            <a href="<%= comment.path %>" class="crayons-link crayons-link--block permalink-copybtn" data-no-instant>Copy Permalink</a>
             <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= comment.path %>/settings">
             </span>
             <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>

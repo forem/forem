@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
@@ -131,6 +132,12 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     }
   }
 
+  useListNavigation(
+    'article.crayons-story',
+    'a.crayons-story__hidden-navigation-link',
+    'div.paged-stories',
+  );
+  
   useKeyboardShortcuts({
     b: (event) => {
       const article = event.target?.closest('article.crayons-story');

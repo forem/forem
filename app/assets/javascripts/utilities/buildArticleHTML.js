@@ -267,13 +267,27 @@ function buildArticleHTML(article) {
         '</div></a>';
     }
 
-    return (
-      '<article class="crayons-story" data-article-path="' +
+    var navigationLink = `
+      <a
+        href="${article.path}"
+        aria-labelledby="article-link-${article.id}"
+        class="crayons-story__hidden-navigation-link"
+      >
+        ${article.title}
+      </a>
+    `;
+
+    var articleElement =
+      '<article class="crayons-story" ' +
+      'data-article-path="' +
       article.path +
+      'id="article-' +
+      article.id +
       '" data-content-user-id="' +
       article.user_id +
-      '">\
-      <div role="presentation">\
+      '">' +
+      navigationLink +
+      '<div role="presentation">\
         ' +
       videoHTML +
       '\
@@ -314,8 +328,9 @@ function buildArticleHTML(article) {
           </div>\
         </div>\
       </div>\
-    </article>'
-    );
+    </article>';
+
+    return articleElement;
   }
 
   return '';

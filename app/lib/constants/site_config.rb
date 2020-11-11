@@ -261,7 +261,7 @@ module Constants
       },
       spam_trigger_terms: {
         description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
-        placeholder: "used cares near you, pokemon go hack"
+        placeholder: "used cars near you, pokemon go hack"
       },
       shop_url: {
         description: "Used as the shop url of the community",
