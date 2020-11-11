@@ -1,7 +1,7 @@
 <% @ungrouped_profile_fields.each do |field| %>
   <div class="row my-3">
     <div class="card w-100">
-      <%= render partial: "admin/configs/card_header",
+      <%= render partial: "admin/shared/card_header",
                  locals: {
                    header: field.label,
                    state: "collapse",
