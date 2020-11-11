@@ -4,8 +4,9 @@ RSpec.describe Metrics::CheckDataUpdateScriptStatuses, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
 
   describe "#perform" do
-    it "logs failed script" do
+    it "logs recently failed script" do
       create(:data_update_script)
+      create(:data_update_script, status: :failed, created_at: 1.month.ago)
       failed_script = create(:data_update_script, status: :failed)
       allow(DatadogStatsClient).to receive(:count)
       described_class.new.perform
