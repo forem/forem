@@ -82,21 +82,17 @@ notifications:
 
 jobs:
   include:
-    - stage: Deploy DEV
-      if: type != pull_request
+    - stage: Deploy
+      name: Deploy DEV
+      if: type = pull_request
       script: skip
       after_script: skip
       deploy:
         provider: heroku
-        api_key: '$HEROKU_AUTH_TOKEN'
-        app:
-          master: practicaldev
-    - stage: Deploy BenHalpern
-      if: type != pull_request
+    - stage: Deploy
+      name: Deploy BenHalpern
+      if: type = pull_request
       script: skip
       after_script: skip
       deploy:
         provider: heroku
-        api_key: '$HEROKU_AUTH_TOKEN'
-        app:
-          master: benhalpern-community
