@@ -138,13 +138,13 @@ function initializeCommentDropdown() {
     dropdown.addEventListener('click', dropdownFunction);
   }
 
-  function copyPermalinkButtonListener(copyPermalinkButton) {
+  function copyPermalinkListener(copyPermalinkButton) {
     copyPermalinkButton.addEventListener('click', copyPermalink);
   }
 
   setTimeout(function addListeners() {
     getAllByClassName('dropbtn').forEach(addDropdownListener);
 
-    getAllByClassName('permalink-copybtn').forEach(copyPermalinkButtonListener);
+    getAllByClassName('permalink-copybtn').forEach(copyPermalinkListener);
   }, 100);
 }
