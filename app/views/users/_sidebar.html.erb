@@ -85,7 +85,7 @@
         <%= pluralize @user.comments.where(deleted: false).size, "comment" %> written
       </div>
       <div class="flex items-center">
-        <%= inline_svg_tag("hashtag.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Tags") %>
+        <%= inline_svg_tag("tag.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Tag") %>
         <%= pluralize @user.decorate.cached_followed_tags.size, "tag" %> followed
       </div>
     </div>
