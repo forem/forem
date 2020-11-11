@@ -18,7 +18,7 @@
     }
   </style>
   <div class="brand-bg">
-    <div class="crayons-layout pt-7 m:pt-9">
+    <div class="crayons-layout crayons-layout--limited-l pt-7 m:pt-9">
       <header class="profile-header crayons-card mt-2">
         <div class="relative profile-header__top">
           <span class="crayons-avatar crayons-avatar--3xl">
@@ -148,6 +148,10 @@
         </div>
 
         <%= render "users/metadata" %>
+
+        <div class="p-3 pt-0 block m:hidden js-user-info-trigger-wrapper">
+          <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger">More info about user...</button>
+        </div>
 
         <div class="crayons-modal align-left hidden">
           <div class="crayons-modal__box">

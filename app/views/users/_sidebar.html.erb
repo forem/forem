@@ -75,16 +75,19 @@
   <% end %>
 
   <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}", expires_in: 10.days do %>
-    <div class="fs-s color-base-60">
-      <ul>
-        <li><%= pluralize @user.articles.published.size, "post" %> published</li>
-        <li><%= pluralize @user.comments.where(deleted: false).size, "comment" %> written</li>
-        <li><%= pluralize @user.decorate.cached_followed_tags.size, "tag" %> followed</li>
-      </ul>
+    <div class="crayons-card crayons-card--secondary p-4">
+      <div class="flex items-center mb-4">
+        <%= inline_svg_tag("post.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Post") %>
+        <%= pluralize @user.articles.published.size, "post" %> published
+      </div>
+      <div class="flex items-center mb-4">
+        <%= inline_svg_tag("comment.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Comment") %>
+        <%= pluralize @user.comments.where(deleted: false).size, "comment" %> written
+      </div>
+      <div class="flex items-center">
+        <%= inline_svg_tag("hashtag.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Tags") %>
+        <%= pluralize @user.decorate.cached_followed_tags.size, "tag" %> followed
+      </div>
     </div>
   <% end %>
-</div>
-
-<div class="px-2 pb-4 block m:hidden js-user-info-trigger-wrapper">
-  <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger">More info about user...</button>
 </div>
