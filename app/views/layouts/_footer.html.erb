@@ -3,7 +3,7 @@
     <nav class="m:-mt-4">
       <a href="/" class="crayons-link inline-block p-2">Home</a>
       <% NavigationLink.ordered.each do |link| %>
-        <% if !link.display_only_when_signed_in || (link.display_only_when_signed_in && user_signed_in?) %>
+        <% if !link.display_only_when_signed_in? || (link.display_only_when_signed_in? && user_signed_in?) %>
           <a href="<%= link.url %>" class="crayons-link inline-block p-2"><%= link.name %></a>
         <% end %>
       <% end %>
