@@ -273,13 +273,15 @@ RSpec.describe "Registrations", type: :request do
       end
 
       it "creates user with valid params passed" do
+        user_email = "yoooo#{rand(100)}@yo.co"
         post "/users", params:
           { user: { name: "test #{rand(10)}",
                     username: "haha_#{rand(10)}",
-                    email: "yoooo#{rand(100)}@yo.co",
+                    email: user_email,
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.all.size).to be 1
+        expect(User.all.size).to be 2
+        expect(User.first.email).to eq user_email
       end
 
       it "makes user super admin and config admin" do
@@ -347,13 +349,16 @@ RSpec.describe "Registrations", type: :request do
       end
 
       it "creates user with valid params passed" do
+        user_email = "yoooo#{rand(100)}@yo.co"
+
         post "/users", params:
           { user: { name: "test #{rand(10)}",
                     username: "haha_#{rand(10)}",
-                    email: "yoooo#{rand(100)}@yo.co",
+                    email: user_email,
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.all.size).to be 1
+        expect(User.all.size).to be 2
+        expect(User.first.email).to eq user_email
       end
 
       it "makes user super admin and config admin" do
