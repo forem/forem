@@ -13,6 +13,13 @@
   background: var(--card-bg);
   font-size: var(--fs-base); // Todo: remove when ready.
   box-shadow: 0 0 0 1px var(--card-border);
+  position: relative;
+
+  &:focus-within {
+    outline: none;
+    --card-border: var(--accent-brand);
+    box-shadow: 0 0 0 2px var(--card-border);
+  }
 
   @media (min-width: $breakpoint-m) {
     border-radius: var(--radius);
@@ -31,6 +38,16 @@
     &--featured {
       --title-font-size: var(--fs-3xl);
     }
+  }
+
+  &__hidden-navigation-link {
+    pointer-events: none;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
 
   // Defining additional colors.

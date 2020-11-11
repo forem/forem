@@ -87,8 +87,8 @@ describe('<Search />', () => {
 
     render(<Search />);
 
-    expect(window.addEventListener).toHaveBeenCalledTimes(1);
-    expect(window.addEventListener).toHaveBeenCalledWith(
+    expect(window.addEventListener).toHaveBeenNthCalledWith(
+      1,
       'popstate',
       expect.any(Function),
     );
@@ -103,8 +103,8 @@ describe('<Search />', () => {
 
     unmount();
 
-    expect(window.removeEventListener).toHaveBeenCalledTimes(1);
-    expect(window.removeEventListener).toHaveBeenCalledWith(
+    expect(window.removeEventListener).toHaveBeenNthCalledWith(
+      1,
       'popstate',
       expect.any(Function),
     );

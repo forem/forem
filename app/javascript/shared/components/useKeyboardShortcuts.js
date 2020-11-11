@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "preact/hooks";
-import PropTypes from "prop-types";
+import { useState, useEffect, useCallback } from 'preact/hooks';
+import PropTypes from 'prop-types';
 
 /**
  * Checker that return true if element is a form element
@@ -12,18 +12,22 @@ function isFormField(element) {
   if (element instanceof HTMLElement === false) return false;
 
   const name = element.nodeName.toLowerCase();
-  const type = (element.getAttribute("type") || "").toLowerCase();
+  const type = (element.getAttribute('type') || '').toLowerCase();
   return (
-    name === "select" ||
-    name === "textarea" ||
-    (name === "input" && type !== 'submit' && type !== 'reset' && type !== 'checkbox' && type !== 'radio') ||
+    name === 'select' ||
+    name === 'textarea' ||
+    (name === 'input' &&
+      type !== 'submit' &&
+      type !== 'reset' &&
+      type !== 'checkbox' &&
+      type !== 'radio') ||
     element.isContentEditable
   );
 }
 
 // Default options to be used if null
 const defaultOptions = {
-  timeout: 500
+  timeout: 0, // The default is zero as we want no delays between keystrokes by default.
 };
 
 /**
@@ -52,31 +56,44 @@ const defaultOptions = {
  * @param {object} [options = {}] An object for extra options
  *
  */
-export function useKeyboardShortcuts( shortcuts, eventTarget = window, options = {} ) {
+export function useKeyboardShortcuts(
+  shortcuts,
+  eventTarget = window,
+  options = {},
+) {
   const [keyChain, setKeyChain] = useState([]);
   const [keyChainQueue, setKeyChainQueue] = useState(null);
-  const [mergedOptions, setMergedOptions] = useState({ ...defaultOptions, ...options });
+  const [mergedOptions, setMergedOptions] = useState({
+    ...defaultOptions,
+    ...options,
+  });
 
   // Work out the correct shortcut for the key press
-  const callShortcut = useCallback((e, keys) => {
-    let shortcut;
-    if (keyChain.length > 0) {
-      shortcut = shortcuts[`${keyChain.join("~")}~${e.code}`];
-    } else {
-      shortcut = shortcuts[`${keys}${e.code}`] || shortcuts[`${keys}${e.key.toLowerCase()}`];
-    }
+  const callShortcut = useCallback(
+    (e, keys) => {
+      let shortcut;
+      if (keyChain.length > 0) {
+        shortcut = shortcuts[`${keyChain.join('~')}~${e.code}`];
+      } else {
+        shortcut =
+          shortcuts[`${keys}${e.code}`] ||
+          shortcuts[`${keys}${e.key.toLowerCase()}`];
+      }
 
-    // if a valid shortcut is found call it and reset the chain
-    if (shortcut) {
-      shortcut(e);
-      setKeyChain([]);
-    }
-  }, [shortcuts, keyChain]);
+      // if a valid shortcut is found call it and reset the chain
+      if (shortcut) {
+        shortcut(e);
+        setKeyChain([]);
+      }
+    },
+    [shortcuts, keyChain],
+  );
 
   // update mergedOptions if options prop changes
   useEffect(() => {
     const newOptions = {};
-    if (typeof options.timeout === "number") newOptions.timeout = options.timeout;
+    if (typeof options.timeout === 'number')
+      newOptions.timeout = options.timeout;
     setMergedOptions({ ...defaultOptions, ...newOptions });
   }, [options.timeout]);
 
@@ -106,7 +123,9 @@ export function useKeyboardShortcuts( shortcuts, eventTarget = window, options =
       if (e.defaultPrevented) return;
 
       // Get special keys
-      const keys = `${e.ctrlKey || e.metaKey ? "ctrl+" : ""}${e.altKey ? "alt+" : ""}${(e.ctrlKey || e.metaKey || e.altKey) && e.shiftKey ? "shift+" : ""}`;
+      const keys = `${e.ctrlKey || e.metaKey ? 'ctrl+' : ''}${
+        e.altKey ? 'alt+' : ''
+      }${(e.ctrlKey || e.metaKey || e.altKey) && e.shiftKey ? 'shift+' : ''}`;
 
       // If no special keys, except shift, are pressed and focus is inside a field return
       if (e.target instanceof Node && isFormField(e.target) && !keys) return;
@@ -121,9 +140,9 @@ export function useKeyboardShortcuts( shortcuts, eventTarget = window, options =
       callShortcut(e, keys);
     };
 
-    eventTarget.addEventListener("keydown", keyEvent);
+    eventTarget.addEventListener('keydown', keyEvent);
 
-    return () => eventTarget.removeEventListener("keydown", keyEvent);
+    return () => eventTarget.removeEventListener('keydown', keyEvent);
   }, [shortcuts, eventTarget, callShortcut]);
 }
 
@@ -156,13 +175,13 @@ export function KeyboardShortcuts({ shortcuts, eventTarget, options }) {
 KeyboardShortcuts.propTypes = {
   shortcuts: PropTypes.object.isRequired,
   options: PropTypes.shape({
-    timeout: PropTypes.number
+    timeout: PropTypes.number,
   }),
-  eventTarget: PropTypes.instanceOf(Element)
+  eventTarget: PropTypes.instanceOf(Element),
 };
 
 KeyboardShortcuts.defaultProps = {
   shortcuts: {},
   options: {},
-  eventTarget: window
+  eventTarget: window,
 };
