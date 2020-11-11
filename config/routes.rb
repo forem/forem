@@ -427,7 +427,7 @@ Rails.application.routes.draw do
 
     get "/page/:slug" => "pages#show"
 
-    # TODO: [forem/teamsmash] removed p/information and added a redirect for SEO purposes.
+    # TODO: [forem/teamsmash] removed the /p/information view and added a redirect for SEO purposes.
     # We need to remove this route in 2 months (11 January 2021).
     get "/p/information", to: redirect("/about")
 
