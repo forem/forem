@@ -41,7 +41,7 @@
                     <%= render "profile_field_form", form: form, group: group %>
                     <%= form.submit class: "btn btn-primary" %>
                   <% end %>
-                  <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
+                  <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary mx-auto" %>
                 </div>
               </div>
             </div>

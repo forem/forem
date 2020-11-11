@@ -1,10 +1,11 @@
 import { Controller } from 'stimulus';
 
 export default class ModalController extends Controller {
+  static targets = ['toggle'];
+
   toggleModal() {
-    let modal = document.getElementById(this.data.get('target-id'));
-    if (modal) {
-      modal.classList.toggle('hidden');
+    if (this.toggleTarget) {
+      this.toggleTarget.classList.toggle('hidden');
     }
   }
 }
