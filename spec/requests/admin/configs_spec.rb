@@ -238,9 +238,9 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "only updates the main_social_image if given a valid image URL" do
-          expected_image_url = "![logo_lowres]https://dummyimage.com/300x300"
+          invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300"
           expect do
-            post "/admin/config", params: { site_config: { main_social_image: expected_image_url },
+            post "/admin/config", params: { site_config: { main_social_image: invalid_image_url },
                                             confirmation: confirmation_message }
           end.not_to change(SiteConfig, :main_social_image)
         end
@@ -250,14 +250,6 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { favicon_url: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.favicon_url).to eq(expected_image_url)
-        end
-
-        it "only updates the favicon_url if given a valid image URL" do
-          expected_image_url = "![logo_lowres]https://dummyimage.com/300x300"
-          expect do
-            post "/admin/config", params: { site_config: { favicon_url: expected_image_url },
-                                            confirmation: confirmation_message }
-          end.not_to change(SiteConfig, :favicon_url)
         end
 
         it "updates logo_png" do
@@ -270,9 +262,9 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "only updates the logo_png if given a valid image URL" do
-          expected_image_url = "![logo_lowres]https://dummyimage.com/300x300"
+          invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300"
           expect do
-            post "/admin/config", params: { site_config: { logo_png: expected_image_url },
+            post "/admin/config", params: { site_config: { logo_png: invalid_image_url },
                                             confirmation: confirmation_message }
           end.not_to change(SiteConfig, :logo_png)
         end
@@ -292,9 +284,9 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "only updates the secondary_logo_url if given a valid image URL" do
-          expected_image_url = "![logo_lowres]https://dummyimage.com/300x300"
+          invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300"
           expect do
-            post "/admin/config", params: { site_config: { secondary_logo_url: expected_image_url },
+            post "/admin/config", params: { site_config: { secondary_logo_url: invalid_image_url },
                                             confirmation: confirmation_message }
           end.not_to change(SiteConfig, :secondary_logo_url)
         end
