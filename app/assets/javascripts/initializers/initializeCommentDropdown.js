@@ -28,7 +28,17 @@ function initializeCommentDropdown() {
     }
   }
 
-  function copyText() {
+  function copyPermalink(event) {
+    event.preventDefault();
+    const permalink = event.target.href;
+
+    Runtime.copyToClipboard(permalink).then(() => {
+      // eslint-disable-next-line no-undef
+      addSnackbarItem({ message: 'Copied to clipboard' });
+    });
+  }
+
+  function copyArticleLink() {
     const inputValue = document.getElementById('article-copy-link-input').value;
     Runtime.copyToClipboard(inputValue).then(() => {
       showAnnouncer();
@@ -36,11 +46,13 @@ function initializeCommentDropdown() {
   }
 
   function shouldCloseDropdown(event) {
+    var copyIcon = document.getElementById('article-copy-icon');
+    var isCopyIconChild = copyIcon && copyIcon.contains(event.target);
     return !(
       event.target.matches('.dropdown-icon') ||
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
-      document.getElementById('article-copy-icon').contains(event.target) ||
+      isCopyIconChild ||
       event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }
@@ -57,7 +69,7 @@ function initializeCommentDropdown() {
       'clipboard-copy',
     )[0];
     if (clipboardCopyElement) {
-      clipboardCopyElement.removeEventListener('click', copyText);
+      clipboardCopyElement.removeEventListener('click', copyArticleLink);
     }
   }
 
@@ -108,7 +120,7 @@ function initializeCommentDropdown() {
 
       document.addEventListener('click', outsideClickListener);
       if (clipboardCopyElement) {
-        clipboardCopyElement.addEventListener('click', copyText);
+        clipboardCopyElement.addEventListener('click', copyArticleLink);
       }
     }
   }
@@ -129,7 +141,13 @@ function initializeCommentDropdown() {
     }
   }
 
+  function copyPermalinkListener(copyPermalinkButton) {
+    copyPermalinkButton.addEventListener('click', copyPermalink);
+  }
+
   setTimeout(function addListeners() {
     getAllByClassName('dropbtn').forEach(addDropdownListener);
+
+    getAllByClassName('permalink-copybtn').forEach(copyPermalinkListener);
   }, 100);
 }

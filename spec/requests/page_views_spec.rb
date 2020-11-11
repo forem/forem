@@ -4,6 +4,13 @@ RSpec.describe "PageViews", type: :request do
   let(:user) { create(:user, :trusted) }
   let(:article) { create(:article) }
 
+  before do
+    # rubocop:disable RSpec/AnyInstance
+    allow_any_instance_of(PageViewsController).to receive(:skip_page_view_update?).and_return(false)
+    allow_any_instance_of(PageViewsController).to receive(:skip_organic_page_view_update?).and_return(false)
+    # rubocop:enable RSpec/AnyInstance
+  end
+
   describe "POST /page_views" do
     context "when user signed in" do
       before do

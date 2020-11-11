@@ -15,7 +15,7 @@
     <p>(view full history in notes below)</p>
     <ul>
       <% @user.roles.each do |role| %>
-        <li><%= role.name %> <em><%= "- #{Tag.find(role.resource_id).name}" if role.resource_id.present? %></em></li>
+        <li><%= role.name %> <em><%= role.resource_name.to_s %></em></li>
       <% end %>
     </ul>
   </div>

@@ -238,7 +238,7 @@ function handleCommentSubmit(event) {
           }
           else if (document.getElementById("notifications-container")) {
             var newDiv = document.createElement("span")
-            newDiv.innerHTML = '<div class="reply-sent-notice">Reply sent — <a href="' + newComment.url + '">Check it out</a></div>'
+            newDiv.innerHTML = '<div class="crayons-notice align-center p-2 m-2 crayons-notice--success reply-sent-notice reply-sent-notice">Reply sent — <a href="' + newComment.url + '">Check it out</a></div>'
             form.replaceWith(newDiv);
           }
           else {
@@ -252,7 +252,7 @@ function handleCommentSubmit(event) {
       } else {
         response.json().then(function parseError(errorReponse) {
           form.classList.remove('submitting');
-          window.alert(errorReponse.error); // eslint-disable-line no-alert
+          showRateLimitModal('made a comment', 'making another comment')
           return false;
         });
       }

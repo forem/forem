@@ -160,6 +160,18 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be > 1
     end
 
+    it "has necessary asset reconciliation code" do
+      # Ensure code elements are available for fixing assets if necessary.
+      # app/views/layouts/_asset_reconciliation.html.erb
+      # Basic regression test to ensure we don't accidentally remove something we should not.
+      get "/"
+      expect(response.body).to include('<meta name="head-cached-at"')
+      expect(response.body).to include('<meta name="page-cached-at"')
+      expect(response.body).to include('"main-crayons-stylesheet"')
+      expect(response.body).to include('"main-minimal-stylesheet"')
+      expect(response.body).to include("if (headCacheCheck && headCrayons &&")
+    end
+
     context "with campaign hero" do
       let!(:hero_html) do
         create(
@@ -434,7 +446,8 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).not_to include('<span class="olderposts-pagenumber">')
       end
 
-      it "does not render pagination even with many posts" do
+      it "renders pagination with many posts" do
+        stub_const("StoriesController::SIGNED_OUT_RECORD_COUNT", 10)
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}"
         expect(response.body).to include('<span class="olderposts-pagenumber">')
@@ -459,6 +472,7 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "does not include current page link" do
+        stub_const("StoriesController::SIGNED_OUT_RECORD_COUNT", 10)
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}/page/2"
         expect(response.body).to include('<span class="olderposts-pagenumber">2')

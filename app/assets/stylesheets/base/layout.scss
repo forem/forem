@@ -47,6 +47,14 @@
     width: var(--layout-sidebar-right-width);
   }
 
+  &__content {
+    // Hack preventing content exceeding its container - it works for scenarios where we have
+    // `pre` tag having wide (overflowing) text. And the container itself is part of a layout
+    // built using CSS `grid`. Without this, the grid layout wouldn't stick to its defined
+    // widths...
+    min-width: 0;
+  }
+
   &__content__inner {
     margin: 0 auto;
     width: 100%;
@@ -193,10 +201,10 @@
   }
 
   &.swiped-in {
-    z-index: 100;
+    z-index: var(--z-drawer);
     display: block;
     position: fixed;
-    top: var(--header-height);
+    top: 0;
     bottom: 0;
     -webkit-overflow-scrolling: touch;
 
@@ -207,7 +215,6 @@
     .side-bar {
       position: relative;
       background: var(--body-bg);
-      z-index: 2;
       padding: 16px;
       align-content: start;
       height: 100%;
