@@ -142,6 +142,8 @@ module Admin
         onboarding_taskcard_image
       ].freeze
 
+    VALID_URL = %r{\A(http|https)://([/|.|\w|\s|-])*.(?:jpg|gif|png)}.freeze
+
     layout "admin"
 
     before_action :extra_authorization_and_confirmation, only: [:create]
@@ -213,16 +215,15 @@ module Admin
       errors = []
       errors << "Brand color must be darker for accessibility." if brand_contrast_too_low
       errors << "Brand color must be be a 6 character hex (starting with #)." if brand_color_not_hex
-      redirect_to admin_config_path, alert: "😭 #{errors.join(',')}" if errors.any?
+      redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}" if errors.any?
     end
 
     def validate_image_urls
-      errors = []
-      values = []
-      params[:site_config].each { |k, v| values.push(v) if IMAGE_FIELDS.include?(k) }
-      values = values.reject(&:blank?)
-      values.each { |url| errors << "Image URL must be a valid URL" unless valid_image_url(url) }
-      redirect_to admin_config_path, alert: "😭 #{errors.join(',')}" if errors.any?
+      image_params = config_params.slice(*IMAGE_FIELDS).to_h
+      errors = image_params.filter_map do |field, url|
+        "#{field} must be a valid URL" unless url.blank? || valid_image_url(url)
+      end
+      redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}" if errors.any?
     end
 
     def clean_up_params
@@ -258,8 +259,7 @@ module Admin
     end
 
     def valid_image_url(url)
-      valid_url = %r{\A(http|https)://([/|.|\w|\s|-])*.(?:jpg|gif|png)}
-      url.match?(valid_url)
+      url.match?(VALID_URL)
     end
   end
 end
