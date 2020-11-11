@@ -7,11 +7,9 @@ module EdgeCacheSafetyCheck
     # In production, current_user will cause a cache leak if it's placed within an edge-cached code path.
     # More information here:
     # https://docs.forem.com/technical-overview/architecture/#we-cache-many-content-pages-on-the-edge
-    return super unless @edge_caching_in_place
+    return super unless RequestStore.store[:edge_caching_in_place]
 
     return if session_current_user_id.blank?
-
-    @current_user_called_erroneously = true
 
     CANNOT_USE_CURRENT_USER
   end
