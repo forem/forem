@@ -16,7 +16,7 @@
       <div class="card-header" id="getStartedHeader" data-toggle="collapse"
         data-target="#getStartedBodyContainer" aria-expanded="true" aria-controls="getStartedBodyContainer">
         <h2 class="d-inline">Get Started</h2>
-        <button class="btn btn-secondary float-right" type="button">
+        <button class="crayons-btn crayons-btn--secondary float-right" type="button">
           Toggle Get Started
         </button>
       </div>
@@ -87,14 +87,14 @@
       <div class="card-header" id="siteConfigHeader" data-toggle="collapse"
         data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
         <h2 class="d-inline">All Site Configuration</h2>
-        <button class="btn btn-secondary float-right" type="button">
+        <button class="crayons-btn crayons-btn--secondary float-right" type="button">
           Toggle Site Configuration
         </button>
       </div>
       <div id="siteConfigBodyContainer" class="p-3" aria-labelledby="siteConfigHeader">
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "API Tokens",
                          state: "collapse",
@@ -127,7 +127,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Authentication",
                          state: "collapse",
@@ -318,7 +318,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Campaign",
                          state: "collapse",
@@ -399,7 +399,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Community Content",
                          state: "collapse",
@@ -500,7 +500,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Credits",
                          state: "collapse",
@@ -551,7 +551,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Emails",
                          state: "collapse",
@@ -590,7 +590,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Email digest frequency",
                          state: "collapse",
@@ -625,7 +625,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Jobs",
                          state: "collapse",
@@ -658,7 +658,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Google Analytics Reporting API v4",
                          state: "collapse",
@@ -683,7 +683,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Images",
                          state: "collapse",
@@ -783,7 +783,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Mascot",
                          state: "collapse",
@@ -861,7 +861,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Meta Keywords",
                          state: "collapse",
@@ -893,7 +893,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Monetization",
                          state: "collapse",
@@ -946,7 +946,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Newsletter",
                          state: "collapse",
@@ -1003,7 +1003,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Onboarding",
                          state: "collapse",
@@ -1081,7 +1081,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Rate limits and anti-spam",
                          state: "collapse",
@@ -1120,7 +1120,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Social Media",
                          state: "collapse",
@@ -1160,7 +1160,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Sponsors",
                          state: "collapse",
@@ -1186,7 +1186,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class="card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "Tags",
                          state: "collapse",
@@ -1213,7 +1213,7 @@
 
         <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
           <div class=" card mt-3">
-            <%= render partial: "card_header",
+            <%= render partial: "admin/shared/card_header",
                        locals: {
                          header: "User Experience and Brand",
                          state: "collapse",
