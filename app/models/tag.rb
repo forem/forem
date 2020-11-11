@@ -89,6 +89,10 @@ class Tag < ActsAsTaggableOn::Tag
     errors.add(:name, "contains non-ASCII characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
   end
 
+  def errors_as_sentence
+    errors.full_messages.to_sentence
+  end
+
   private
 
   def evaluate_markdown

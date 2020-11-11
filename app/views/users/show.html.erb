@@ -31,7 +31,7 @@
                 <%= inline_svg_tag("overflow-horizontal.svg", class: "dropdown-icon crayons-icon", aria: true, title: "Toggle dropdown menu") %>
               </button>
 
-              <div id="user-profile-dropdownmenu" class="crayons-dropdown top-100 right-0 z-10 p-1">
+              <div id="user-profile-dropdownmenu" class="crayons-dropdown top-100 right-0 p-1">
                 <a href="javascript:void(0);" id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="border-none crayons-link crayons-link--block">Block @<%= @user.username %></a>
                 <% if user_signed_in? %>
                   <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>

@@ -5,7 +5,7 @@
 <% if SiteConfig.dev_to? %>
   <%# @forem/oss Temporary disabling of overly DEV-specialized link. %>
   <%# We should create a generalized version of the badge page, including a permanent proxied path for the badge image for hotlinking. %>
-  <div class="crayons-card mb-6 p-6 grid gap-6">
+  <div class="crayons-card crayons-card--content-rows">
     <div class="flex items-center">
       <a href="<%= user_url(current_user) || "#" %>" aria-label="Go to your profile page" class="mr-2">
         <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= community_name %> badge" height="32" width="32" class="dev-badge crayons-icon" />
@@ -17,7 +17,7 @@
 
 <%= form_with(url: profile_path(@user.profile_id), method: "put", html: { class: "sticky-footer-form" }) do |f| %>
 
-  <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
+  <div class="crayons-card crayons-card--content-rows">
     <h2>User</h2>
     <div class="crayons-field">
       <%= f.label :email, class: "crayons-field__label" %>
@@ -42,7 +42,7 @@
   </div>
 
   <% ProfileFieldGroup.non_empty_groups.each do |group| %>
-    <div class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
+    <div class="crayons-card crayons-card--content-rows">
       <h2><%= group.name %></h2>
       <% if group.description.present? %>
         <div class="color-base-60"><%= group.description %></div>
@@ -55,18 +55,49 @@
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
+          <% elsif field["input_type"] == "color_field" %>
+            <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
+              <%= field.label %>
+            </label>
+            <div class="flex items-center w-100 m:w-50">
+              <%= f.public_send("text_field", "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], placeholder: field["placeholder_text"], class: "crayons-textfield js-color-field") %>
+              <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], class: "crayons-color-selector js-color-field ml-2") %>
+            </div>
           <% else %>
             <label class="crayons-field__label" for="<%= "profile[#{field.attribute_name}]" %>">
               <%= field.label %>
             </label>
-            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], class: "crayons-textfield") %>
+            <%= f.public_send(field["input_type"], "profile[#{field.attribute_name}]", value: @user.profile.data[field.attribute_name], placeholder: field["placeholder_text"], class: "crayons-textfield") %>
+          <% end %>
+          <% if field.description.present? %>
+            <p class="crayons-field__description"><%= field.description %></p>
           <% end %>
         </div>
       <% end %>
     </div>
   <% end %>
 
-  <div class="save-footer crayons-card mb-6 grid p-6">
+  <div class="save-footer crayons-card crayons-card--content-rows">
     <button type="submit" class="crayons-btn">Save Profile Information</button>
   </div>
 <% end %>
+
+<script>
+  var pickers = document.querySelectorAll('.js-color-field');
+
+  function colorValueChange(e) {
+    var field = e.target;
+    var sibling = '';
+    if (field.nextElementSibling) {
+      sibling = field.nextElementSibling;
+    } else {
+      sibling = field.previousElementSibling;
+    }
+
+    sibling.value = field.value;
+  }
+
+  pickers.forEach(function(picker) {
+    picker.addEventListener('change', colorValueChange);
+  });
+</script>

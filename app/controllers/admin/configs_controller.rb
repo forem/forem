@@ -14,6 +14,8 @@ module Admin
     COMMUNITY_PARAMS =
       %i[
         community_name
+        collective_noun
+        collective_noun_disabled
         community_description
         community_member_label
         community_copyright_start_year
@@ -78,17 +80,13 @@ module Admin
         onboarding_taskcard_image
         suggested_tags
         suggested_users
+        prefer_manual_suggested_users
       ].freeze
 
     JOB_PARAMS =
       %i[
         jobs_url
         display_jobs_banner
-      ].freeze
-
-    ALLOWED_EMPTY_ENUMERABLES =
-      %i[
-        authentication_providers
       ].freeze
 
     ALLOWED_PARAMS =
@@ -114,9 +112,9 @@ module Admin
         github_secret
         facebook_key
         facebook_secret
+        auth_providers_to_enable
         invite_only_mode
-        allow_email_password_registration
-        allow_email_password_login
+        allow_both_email_signup_and_login
         require_captcha_for_email_password_registration
         primary_brand_color_hex
         spam_trigger_terms
@@ -141,7 +139,9 @@ module Admin
       clean_up_params
 
       config_params.each do |key, value|
-        if value.is_a?(Array)
+        if key == "auth_providers_to_enable"
+          update_enabled_auth_providers(value) unless value.class.name != "String"
+        elsif value.is_a?(Array)
           SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
         elsif value.respond_to?(:to_h)
           SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
@@ -149,6 +149,8 @@ module Admin
           SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
         end
       end
+
+      toggle_email_password_authentication
 
       redirect_to admin_config_path, notice: "Site configuration was successfully updated."
     end
@@ -206,6 +208,34 @@ module Admin
         config[param] = config[param]&.downcase&.delete(" ") if config[param]
       end
       config[:credit_prices_in_cents]&.transform_values!(&:to_i)
+    end
+
+    def toggle_email_password_authentication
+      if SiteConfig.allow_both_email_signup_and_login
+        SiteConfig.allow_email_password_registration = true
+        SiteConfig.allow_email_password_login = true
+      else
+        SiteConfig.allow_email_password_registration = false
+        SiteConfig.allow_email_password_login = false
+        SiteConfig.invite_only_mode = false
+      end
+    end
+
+    def update_enabled_auth_providers(value)
+      enabled_providers = []
+      value.split(",").each do |entry|
+        enabled_providers.push(entry) unless invalid_provider_entry(entry)
+      end
+      SiteConfig.public_send("authentication_providers=", enabled_providers) unless
+        prevent_all_auth_provider_disable?(enabled_providers)
+    end
+
+    def invalid_provider_entry(entry)
+      entry.blank? || helpers.available_providers_array.exclude?(entry)
+    end
+
+    def prevent_all_auth_provider_disable?(value)
+      value.empty? && !SiteConfig.allow_email_password_login
     end
 
     # Validations

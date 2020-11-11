@@ -6,6 +6,10 @@ task fetch_all_rss: :environment do
   RssReader.get_all_articles(force: false) # don't force fetch. Fetch "random" subset instead of all of them.
 end
 
+task fetch_feeds_import: :environment do
+  Feeds::Import.call
+end
+
 # Temporary
 # @sre:mstruve This is temporary until we have an efficient way to handle this task
 # in Sidekiq for our large DEV community.

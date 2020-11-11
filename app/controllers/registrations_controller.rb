@@ -2,8 +2,6 @@ class RegistrationsController < Devise::RegistrationsController
   prepend_before_action :require_no_authentication, only: []
 
   def new
-    @registered_users_count = User.registered.estimated_count
-
     if user_signed_in?
       redirect_to root_path(signin: "true")
     else
@@ -22,6 +20,8 @@ class RegistrationsController < Devise::RegistrationsController
     if recaptcha_disabled? || recaptcha_verified?
       build_resource(sign_up_params)
       resource.saw_onboarding = false
+      resource.registered = true
+      resource.registered_at = Time.current
       resource.editor_version = "v2"
       resource.save if resource.email.present?
       yield resource if block_given?

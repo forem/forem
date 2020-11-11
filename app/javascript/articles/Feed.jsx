@@ -1,47 +1,49 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
+import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
-export class Feed extends Component {
-  constructor(props) {
-    super(props);
+export const Feed = ({ timeFrame, renderFeed }) => {
+  const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
+  const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
+    new Set(reading_list_ids),
+  );
+  const [feedItems, setFeedItems] = useState([]);
+  const [podcastEpisodes, setPodcastEpisodes] = useState([]);
+  const [onError, setOnError] = useState(false);
 
-    const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
+  useEffect(() => {
+    setPodcastEpisodes(getPodcastEpisodes());
+  }, []);
 
-    this.state = { bookmarkedFeedItems: new Set(reading_list_ids) };
-  }
+  useEffect(() => {
+    const fetchFeedItems = async () => {
+      try {
+        if (onError) setOnError(false);
 
-  componentDidMount() {
-    const { timeFrame } = this.props;
+        const feedItems = await getFeedItems(timeFrame);
 
-    Feed.getFeedItems(timeFrame).then((feedItems) => {
-      // Ensure first article is one with a main_image
-      const featuredStory = feedItems.find(
-        (story) => story.main_image !== null,
-      );
-      // Remove that first one from the array.
-      const index = feedItems.indexOf(featuredStory);
-      feedItems.splice(index, 1);
-      const subStories = feedItems;
-      const organizedFeedItems = [featuredStory, subStories].flat();
+        // Ensure first article is one with a main_image
+        const featuredStory = feedItems.find(
+          (story) => story.main_image !== null,
+        );
 
-      this.setState({
-        feedItems: organizedFeedItems,
-        podcastEpisodes: Feed.getPodcastEpisodes(),
-      });
-    });
-  }
+        // Remove that first one from the array.
+        const index = feedItems.indexOf(featuredStory);
+        feedItems.splice(index, 1);
+        const subStories = feedItems;
+        const organizedFeedItems = [featuredStory, subStories].flat();
 
-  componentDidUpdate(prevProps) {
-    const { timeFrame } = this.props;
-    if (prevProps.timeFrame !== timeFrame) {
-      // The feed timeframe has changed. Get new feed data.
-      Feed.getFeedItems(timeFrame).then((feedItems) => {
-        this.setState((_prevState) => ({ feedItems }));
-      });
-    }
-  }
+        setFeedItems(organizedFeedItems);
+      } catch {
+        if (!onError) setOnError(true);
+      }
+    };
+
+    fetchFeedItems();
+  }, [timeFrame, onError]);
 
   /**
    * Retrieves feed data.
@@ -50,8 +52,8 @@ export class Feed extends Component {
    *
    * @returns {Promise} A promise containing the JSON response for the feed data.
    */
-  static getFeedItems(timeFrame = '', page = 1) {
-    return fetch(`/stories/feed/${timeFrame}?page=${page}`, {
+  async function getFeedItems(timeFrame = '', page = 1) {
+    const response = await fetch(`/stories/feed/${timeFrame}?page=${page}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -59,10 +61,11 @@ export class Feed extends Component {
         'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
-    }).then((response) => response.json());
+    });
+    return await response.json();
   }
 
-  static getPodcastEpisodes() {
+  function getPodcastEpisodes() {
     const el = document.getElementById('followed-podcasts');
     const user = userData(); // Global
     const episodes = [];
@@ -86,7 +89,7 @@ export class Feed extends Component {
    *
    * @param {Event} event
    */
-  bookmarkClick = (event) => {
+  async function bookmarkClick(event) {
     // The assumption is that the user is logged on at this point.
     const { userStatus } = document.body;
     event.preventDefault();
@@ -100,67 +103,61 @@ export class Feed extends Component {
     const { currentTarget: button } = event;
     const data = buttonFormData(button);
 
-    getCsrfToken()
-      .then(sendFetch('reaction-creation', data))
-      // eslint-disable-next-line consistent-return
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json().then((json) => {
-            const articleId = Number(button.dataset.reactableId);
+    const csrfToken = await getCsrfToken();
+    if (!csrfToken) return;
 
-            this.setState((previousState) => {
-              const { bookmarkedFeedItems } = previousState;
+    const fetchCallback = sendFetch('reaction-creation', data);
+    const response = await fetchCallback(csrfToken);
+    if (response.status === 200) {
+      const json = await response.json();
+      const articleId = Number(button.dataset.reactableId);
 
-              const { result } = json;
-              const updatedBookmarkedFeedItems = new Set([
-                ...bookmarkedFeedItems.values(),
-              ]);
+      const { result } = json;
+      const updatedBookmarkedFeedItems = new Set([
+        ...bookmarkedFeedItems.values(),
+      ]);
 
-              if (result === 'create') {
-                updatedBookmarkedFeedItems.add(articleId);
-              }
+      if (result === 'create') {
+        updatedBookmarkedFeedItems.add(articleId);
+      }
 
-              if (result === 'destroy') {
-                updatedBookmarkedFeedItems.delete(articleId);
-              }
+      if (result === 'destroy') {
+        updatedBookmarkedFeedItems.delete(articleId);
+      }
 
-              renderNewSidebarCount(button, json);
+      renderNewSidebarCount(button, json);
 
-              return {
-                ...previousState,
-                bookmarkedFeedItems: updatedBookmarkedFeedItems,
-              };
-            });
-          });
-        }
-      });
-  };
+      setBookmarkedFeedItems(updatedBookmarkedFeedItems);
+    }
+  }
 
-  render() {
-    const { renderFeed } = this.props;
-    const {
-      feedItems = [],
-      podcastEpisodes = [],
-      bookmarkedFeedItems = new Set(),
-    } = this.state;
+  useKeyboardShortcuts({
+    b: (event) => {
+      const article = event.target?.closest('article.crayons-story');
 
-    return (
-      <div
-        id='rendered-article-feed'
-        ref={(element) => {
-          this.feedContainer = element;
-        }}
-      >
-        {renderFeed({
+      if (!article) return;
+
+      article.querySelector('button[id^=article-save-button]')?.click();
+    },
+  });
+
+  return (
+    <div id="rendered-article-feed">
+      {onError ? (
+        <div class="crayons-notice crayons-notice--danger">
+          There was a problem fetching your feed.
+        </div>
+      ) : (
+        renderFeed({
           feedItems,
           podcastEpisodes,
           bookmarkedFeedItems,
-          bookmarkClick: this.bookmarkClick,
-        })}
-      </div>
-    );
-  }
-}
+          bookmarkClick,
+        })
+      )}
+    </div>
+  );
+};
 
 Feed.defaultProps = {
   timeFrame: '',
