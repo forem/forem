@@ -97,7 +97,7 @@ class SiteConfig < RailsSettings::Base
   field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
-  field :mascot_user_id, type: :integer, default: 1
+  field :mascot_user_id, type: :integer, default: nil
   field :mascot_image_url, type: :string, default: proc { URL.local_image("mascot.png") }
   field :mascot_image_description, type: :string, default: "The community mascot"
   field :mascot_footer_image_url, type: :string
