@@ -48,3 +48,19 @@ function initializeProfileInfoToggle() {
     });
   }
 }
+
+function initializeProfileBadgesToggle() {
+  const badgesWrapper = document.querySelector('.js-profile-badges');
+  const trigger = document.querySelector('.js-profile-badges-trigger');
+
+  if (badgesWrapper && trigger) {
+    const badges = badgesWrapper.querySelectorAll('.js-profile-badge.hidden');
+    trigger.addEventListener('click', () => {
+      badges.forEach((badge) => {
+        badge.classList.remove('hidden');
+      });
+
+      trigger.classList.add('hidden');
+    });
+  }
+}

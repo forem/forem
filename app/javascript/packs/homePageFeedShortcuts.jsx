@@ -1,21 +1,29 @@
-import { h, render } from 'preact';
+import { h, render, Fragment } from 'preact';
+import { ListNavigation } from '../shared/components/useListNavigation';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.querySelector('#articles-list');
 
   render(
-    <KeyboardShortcuts
-      shortcuts={{
-        b: (event) => {
-          const article = event.target?.closest('.crayons-story');
+    <Fragment>
+      <KeyboardShortcuts
+        shortcuts={{
+          b: (event) => {
+            const article = event.target?.closest('.crayons-story');
 
-          if (!article) return;
+            if (!article) return;
 
-          article.querySelector('button[id^=article-save-button-]')?.click();
-        },
-      }}
-    />,
+            article.querySelector('button[id^=article-save-button-]')?.click();
+          },
+        }}
+      />
+      <ListNavigation
+        itemSelector=".crayons-story"
+        focusableSelector="a.crayons-story__hidden-navigation-link"
+        waterfallItemContainerSelector="div.paged-stories,div.substories"
+      />
+    </Fragment>,
     root,
   );
 });

@@ -39,7 +39,7 @@ module AdminHelper
   PROFILE_ADMIN = { name: "config: profile setup", controller: "profile_fields" }.freeze
 
   def admin_menu_items
-    return MENU_ITEMS unless Flipper.enabled?(:profile_admin)
+    return MENU_ITEMS unless FeatureFlag.enabled?(:profile_admin)
 
     MENU_ITEMS.dup.insert(7, PROFILE_ADMIN)
   end
