@@ -21,7 +21,7 @@ module CachingHeaders
 
     request.session_options[:skip] = true # no cookies
 
-    RequestStore.store[:edge_caching_in_place] = true # Used primarily for downstream meta information about whether a path is cached.
+    RequestStore.store[:edge_caching_in_place] = true # To be observed downstream.
 
     response.headers["Cache-Control"] = "public, no-cache" # Used only by Fastly.
     response.headers["X-Accel-Expires"] = max_age.to_s # Used only by Nginx.
