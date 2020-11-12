@@ -255,8 +255,6 @@ var instantClick
       return
     }
 
-    a.removeEventListener('focus', focusListener)
-
     if (!$delayBeforePreload) {
       preload(a.href)
     }
