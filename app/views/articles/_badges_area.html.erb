@@ -1,77 +1,14 @@
 <% if @user.badge_achievements_count > 0 %>
-  <style>
-    .badge-achievement {
-      display: block;
-      position: relative;
-      z-index: 1;
-      color: black;
-      opacity: 1 !important;
-    }
-
-    .badge-achievement-image {
-      width: auto !important;
-      max-height: 110px;
-      min-height: 10px;
-      max-width: 230px;
-      border-radius: 50%;
-      border: none;
-      border-radius: 0px;
-      border: 0px !important;
-      margin: 3px;
-      background: transparent;
-    }
-
-    .badge-achievement-info h2 {
-      font-size: 15px;
-    }
-
-    .badge-achievement img:hover {
-      opacity: 0.88 !important;
-    }
-
-    .badge-widget {
-      position: relative;
-      overflow: auto;
-      min-height: 105px;
-      overflow: visible;
-      display: grid;
-      grid-template-columns: 50% 50%;
-    }
-  </style>
-  <div style="overflow: visible;padding-top:20px;">
-    <div class="widget-body badge-widget">
+  <div class="crayons-card crayons-card--secondary">
+    <header class="crayons-card__header">
+      <h3 class="crayons-subtitle-3">Badges</h3>
+    </header>
+    <div class="crayons-card__body grid gap-4 grid-cols-3 m:grid-cols-2">
       <% @user.badge_achievements.order(id: :desc).includes(:badge).each do |achievement| %>
-        <a class="badge-achievement" href="/badge/<%= achievement.badge.slug %>">
-          <img
-            src="<%= optimized_image_url(achievement.badge.badge_image_url, width: 180) %>"
-            alt="<%= achievement.badge.title %>"
-            title="<%= achievement.badge.title %>"
-            class="badge-achievement-image mx-auto"
-            style="transform: rotate(<%= -25 + (achievement.id.digits.first * 5) %>deg);
-              margin-left: <%= achievement.id.digits.first * 3 %>px;
-              margin-right: <%= achievement.id.digits.first * 1 %>px;" />
+        <a href="/badge/<%= achievement.badge.slug %>" title="<%= achievement.badge.title %>">
+          <img src="<%= optimized_image_url(achievement.badge.badge_image_url, width: 180) %>" alt="<%= achievement.badge.title %>" class="mx-auto max-w-100 h-auto align-middle" style="transform: rotate(<%= rand(-10..10) %>deg);" />
         </a>
       <% end %>
-    </div>
-  </div>
-<% else %>
-  <style>
-    .widget-body {
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    @media screen and (min-width: 1024px) {
-      .no-badges-text {
-        display: none;
-      }
-    }
-  </style>
-  <div style="overflow: visible;padding-top:20px;">
-    <div class="widget-body">
-      <p class="no-badges-text">
-        Eat and than sleep on your face annoy the old grumpy cat, start a fight and then retreat to wash when I lose and I shall purr myself to sleep or run around the house at 4 in the morning.
-      </p>
     </div>
   </div>
 <% end %>
