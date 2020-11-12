@@ -111,12 +111,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "with the creator_onboarding feature flag" do
       before do
-        Flipper.enable(:creator_onboarding)
+        allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
         allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
-      end
-
-      after do
-        Flipper.disable(:creator_onboarding)
       end
 
       it "renders the creator onboarding form" do
@@ -176,7 +172,7 @@ RSpec.describe "Registrations", type: :request do
       end
 
       it "does not raise disallowed if community is set to allow email" do
-        expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
+        expect { post "/users" }.not_to raise_error
       end
 
       it "does not create user with invalid params" do
@@ -269,7 +265,7 @@ RSpec.describe "Registrations", type: :request do
       end
 
       it "does not raise disallowed" do
-        expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
+        expect { post "/users" }.not_to raise_error
       end
 
       it "creates user with valid params passed" do
@@ -323,12 +319,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "with the creator_onboarding feature flag" do
       before do
-        Flipper.enable(:creator_onboarding)
+        allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
         allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
-      end
-
-      after do
-        Flipper.disable(:creator_onboarding)
       end
 
       it "creates user with valid params passed" do
