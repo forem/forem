@@ -2,7 +2,23 @@ require "rails_helper"
 
 UserStruct = Struct.new(:flipper_id)
 
-describe FeatureFlag, type: :helper do
+describe FeatureFlag, type: :service do
+  describe ".enable" do
+    it "calls Flipper's enable method" do
+      allow(Flipper).to receive(:enable).with("foo")
+
+      described_class.enable("foo")
+
+      expect(Flipper).to have_received(:enable).with("foo")
+    end
+
+    it "enables the feature" do
+      described_class.enable("foo")
+
+      expect(described_class.enabled?("foo")).to be(true)
+    end
+  end
+
   describe ".enabled?" do
     it "calls Flipper's enabled? method" do
       allow(Flipper).to receive(:enabled?).with("foo")
