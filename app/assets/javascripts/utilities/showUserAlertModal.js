@@ -64,7 +64,7 @@ const getModalHtml = (
 ) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal crayons-modal--m hidden">
     <div role="dialog" aria-modal="true" class="crayons-modal__box">
       <div class="crayons-modal__box__header border-b-0 justify-end">
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button" 
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button"
               onClick="toggleUserAlertModal();" aria-label="Close">
             <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon"
               xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="714d29e78a3867c79b07f310e075e824">
@@ -87,11 +87,6 @@ const getModalHtml = (
             ${confirm_text}
           </button>
         </div>
-        <% if SiteConfig.mascot_image_url.present? %>
-          <figure class="w-25">
-            <img src="<%= SiteConfig.mascot_image_url %>" class="w-100" />
-          </figure>
-        <% end %>
       </div>
     </div>
     <div data-testid="modal-overlay" class="crayons-modal__overlay"></div>
