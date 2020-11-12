@@ -31,6 +31,10 @@ function addRelevantButtonsToArticle(user) {
       let actions = [
         `<a class="crayons-btn crayons-btn--s crayons-btn--secondary" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
       ];
+      let clickToEditButton = document.getElementById("author-click-to-edit")
+      if (clickToEditButton) {
+        clickToEditButton.style.display = "inline-block"
+      }
       if (JSON.parse(articleContainer.dataset.published) === true) {
         actions.push(
           `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,

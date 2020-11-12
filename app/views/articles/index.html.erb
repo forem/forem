@@ -25,8 +25,7 @@
 <% end %>
 
 <%= javascript_packs_with_chunks_tag "homePage", defer: true %>
-
-<% cache(release_adjusted_cache_key("main-stories-index-#{params}-#{user_signed_in?}-#{current_user&.following_tags_count&.positive?}"), expires_in: 90.seconds) do %>
+<% cache(release_adjusted_cache_key("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
   <div class="crayons-layout crayons-layout--3-cols crayons-layout--3-cols--drop-right-left" id="index-container"
       data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
       data-tag=""
@@ -38,7 +37,7 @@
     <%# BEGIN Feed menu bar %>
     <main class="articles-list crayons-layout__content" id="articles-list" role="main">
       <h1 class="visually-hidden-header">Articles</h1>
-      <%= render(partial: "onboardings/task_card") if user_signed_in? && current_user.saw_onboarding? %>
+      <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden" id="on-page-nav-butt-left" aria-label="nav-button-left">

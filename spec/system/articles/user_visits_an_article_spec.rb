@@ -135,9 +135,9 @@ RSpec.describe "Views an article", type: :system do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "shows the article edit link" do
+      it "shows the article edit link", js: true do
         visit article_path
-        expect(page).to have_link(link_text, href: href)
+        expect(page.body).to include('display: inline-block;">Click to edit</a>')
       end
     end
 
@@ -147,7 +147,7 @@ RSpec.describe "Views an article", type: :system do
 
       it "does not the article edit link" do
         visit article_path
-        expect(page).not_to have_link(link_text, href: href)
+        expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
       end
     end
 
@@ -158,7 +158,7 @@ RSpec.describe "Views an article", type: :system do
       it "does not the article edit link" do
         sign_out user
         visit article_path
-        expect(page).not_to have_link(link_text, href: href)
+        expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
       end
     end
 

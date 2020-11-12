@@ -940,6 +940,7 @@ DEPENDENCIES
   redcarpet (~> 3.5)
   redis (~> 4.2.2)
   redis-rails (~> 5.0.2)
+  request_store (~> 1.5)
   reverse_markdown (~> 2.0)
   rolify (~> 5.3)
   rouge (~> 3.24)
