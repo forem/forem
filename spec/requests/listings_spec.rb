@@ -54,7 +54,7 @@ RSpec.describe "/listings", type: :request do
       listings = JSON.parse(parsed_response.xpath("//*[@id='listings-index-container']")[0]["data-listings"])
 
       index_keys = %w[
-        title processed_html tag_list id user_id slug contact_via_connect location bumped_at
+        title processed_html tag_list category id user_id slug contact_via_connect location bumped_at
         originally_published_at author user
       ]
 

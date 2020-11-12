@@ -128,14 +128,25 @@ label {
     height: 40px;
     width: 40px;
   }
+
+  &--label {
+    .enabled-indicator {
+      display: none;
+
+      &.visible {
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
 }
 
 .config-authentication-form {
   display: flex;
   flex-direction: column;
   gap: var(--su-4);
-  padding-top: var(--su-4);
-  padding-bottom: var(--su-4);
+  padding-top: var(--su-6);
+  padding-bottom: var(--su-2);
 }
 
 .admin-config-checkmark {

@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <%= csrf_meta_tags %>
-  <%= favicon_link_tag SiteConfig.favicon_url %>
+  <%= favicon_link_tag Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>
   <title><%= controller_name.titleize %></title>
 
   <!-- StimulusJS -->
