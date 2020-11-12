@@ -15,9 +15,9 @@ module Users
     end
 
     def call
-      return if SiteConfig.mascot_user_id
+      raise "Mascot already set" if SiteConfig.mascot_user_id
 
-      mascot = User.create(mascot_params)
+      mascot = User.create!(mascot_params)
       SiteConfig.mascot_user_id = mascot.id
     end
 

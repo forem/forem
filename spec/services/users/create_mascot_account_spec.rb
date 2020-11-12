@@ -25,9 +25,8 @@ RSpec.describe Users::CreateMascotAccount, type: :service do
       allow(User).to receive(:create)
     end
 
-    it "does nothing" do
-      described_class.call
-      expect(User).not_to have_received(:create)
+    it "raises an error" do
+      expect { described_class.call }.to raise_error(StandardError)
     end
   end
 end
