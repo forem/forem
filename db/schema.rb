@@ -832,6 +832,7 @@ ActiveRecord::Schema.define(version: 2020_11_07_111600) do
     t.string "role", default: "guest", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
+    t.index ["podcast_episode_id", "user_id"], name: "index_podcast_appearances_on_podcast_episode_id_and_user_id", unique: true
     t.index ["podcast_episode_id"], name: "index_podcast_appearances_on_podcast_episode_id"
     t.index ["user_id"], name: "index_podcast_appearances_on_user_id"
   end
