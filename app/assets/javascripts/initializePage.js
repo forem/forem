@@ -7,7 +7,7 @@
   initializeCommentPreview,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
   initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
-  initializeUserProfilePage, initializePodcastPlayback,
+  initializeUserProfilePage, initializeProfileInfoToggle, initializePodcastPlayback,
   initializeVideoPlayback, initializeDrawerSliders,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
@@ -57,6 +57,7 @@ function callInitializers() {
   initializeArchivedPostFilter();
   initializeCreditsPage();
   initializeUserProfilePage();
+  initializeProfileInfoToggle();
   initializePodcastPlayback();
   initializeVideoPlayback();
   initializeDrawerSliders();

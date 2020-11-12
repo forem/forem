@@ -18,7 +18,7 @@
     }
   </style>
   <div class="brand-bg">
-    <div class="crayons-layout pt-7 m:pt-9">
+    <div class="crayons-layout crayons-layout--limited-l pt-7 m:pt-9">
       <header class="profile-header crayons-card mt-2">
         <div class="relative profile-header__top">
           <span class="crayons-avatar crayons-avatar--3xl">
@@ -149,6 +149,10 @@
 
         <%= render "users/metadata" %>
 
+        <div class="p-3 pt-0 block m:hidden js-user-info-trigger-wrapper">
+          <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger">More info about user...</button>
+        </div>
+
         <div class="crayons-modal align-left hidden">
           <div class="crayons-modal__box">
             <div class="crayons-modal__box__header">
@@ -177,23 +181,19 @@
   </div>
 <% end %>
 
-<div class="home sub-home" id="index-container"
-     data-params="<%= params.merge(user_id: @user.id, class_name: "Article", sort_by: "published_at", sort_direction: "desc").to_json(only: %i[tag user_id q class_name sort_by sort_direction]) %>" data-which="<%= @list_of %>"
-     data-tag=""
-     data-feed="<%= params[:timeframe] || "base-feed" %>"
-     data-articles-since="0">
-  <%= render "users/sidebar" %>
-  <div class="articles-list" id="articles-list">
-    <div class="on-page-nav-controls user-nav-controls" id="on-page-nav-controls">
-      <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-        <div class="crayons-icon nav-icon">
-          <%= SiteConfig.left_navbar_svg_icon.html_safe %>
-        </div>
-      </button>
-      <button class="on-page-nav-butt on-page-nav-butt-right" style="margin-top:-1px;" id="on-page-nav-butt-right" aria-label="nav-button-right">
-        <img style="height:28px;width:28px;" src="<%= asset_path "ribbon.svg" %>" alt="right-sidebar-nav">
-      </button>
-    </div>
+<div
+  class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols crayons-layout--2-cols--1-2 pt-4 m:pt-0"
+  id="index-container"
+  data-params="<%= params.merge(user_id: @user.id, class_name: "Article", sort_by: "published_at", sort_direction: "desc").to_json(only: %i[tag user_id q class_name sort_by sort_direction]) %>" data-which="<%= @list_of %>"
+  data-tag=""
+  data-feed="<%= params[:timeframe] || "base-feed" %>"
+  data-articles-since="0">
+
+  <div class="crayons-layout__sidebar-left">
+    <%= render partial: "users/sidebar", locals: { repositories: @github_repositories } %>
+  </div>
+
+  <main class="crayons-layout__content articles-list" id="articles-list">
     <div class="substories" id="substories">
       <% if params[:view] == "comments" %>
         <%= render "users/comments_section" %>
@@ -204,10 +204,7 @@
     <div class="loading-articles" id="loading-articles">
       loading...
     </div>
-  </div>
-  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
-    <%= render partial: "users/sidebar_additional", locals: { repositories: @github_repositories } %>
-  <% end %>
+  </main>
 </div>
 
 <%= render "stories/stories_list_script" %>
