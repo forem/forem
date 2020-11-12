@@ -638,6 +638,7 @@ function ActiveChatChannel({
             markdownEdited={state.markdownEdited}
             editMessageMarkdown={state.activeEditMessage.markdown}
             handleEditMessageClose={handleEditMessageClose}
+            activeChannelName={state.activeChannel?.channel_name}
           />
         </div>
       </div>
