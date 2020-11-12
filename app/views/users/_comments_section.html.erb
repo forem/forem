@@ -3,7 +3,7 @@
     <% if @comments.present? %>
       <% if params[:view] == "comments" %>
         <div class="crayons-card__header">
-          <h4 class="crayons-card__headline">
+          <h4 class="crayons-subtitle-2">
             <% if @user.comments_count > 250 %>
               Last 250 comments
             <% else %>
@@ -18,7 +18,7 @@
         </div>
       <% else %>
         <div class="crayons-card__header">
-          <h4 class="crayons-card__headline">
+          <h4 class="crayons-subtitle-2">
             Recent comments
           </h4>
         </div>

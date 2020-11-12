@@ -1,62 +1,93 @@
-<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
-  <div class="sidebar-bg" id="sidebar-bg-left"></div>
-  <div class="side-bar">
-    <div class="user-sidebar">
-      <% cache "user-profile-sidebar-profile-details-#{@user.id}-#{@user.profile_updated_at}", expires_in: 10.days do %>
-        <% if @user.mostly_work_with.present? %>
-          <div class="widget">
-            <header>
-              <h4>skills/languages</h4>
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.mostly_work_with %>
-            </div>
-          </div>
-        <% end %>
-        <% if @user.currently_learning.present? %>
-          <div class="widget">
-            <header>
-              <h4>learning/trying</h4>
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.currently_learning %>
-            </div>
-          </div>
-        <% end %>
-        <% if @user.currently_hacking_on.present? %>
-          <div class="widget">
-            <header>
-              <h4>projects and hacks</h4>
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.currently_hacking_on %>
-            </div>
-          </div>
-        <% end %>
-        <% if @user.available_for.present? %>
-          <div class="widget">
-            <header>
-              <h4>available for</h4>
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.available_for %>
-            </div>
-          </div>
-        <% end %>
-      <% end %>
-      <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}", expires_in: 10.days do %>
-        <div class="sidebar-data">
-          <div>
-            <%= pluralize @user.articles.published.size, "Post" %> Published
-          </div>
-          <div>
-            <%= pluralize @user.comments.where(deleted: false).size, "Comment" %> Written
-          </div>
-          <div>
-            <%= pluralize @user.decorate.cached_followed_tags.size, "Tag" %> Followed
-          </div>
+<div class="gap-2 m:gap-4 hidden m:grid js-user-info">
+  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
+    <% if @user.organizations.present? %>
+      <div class="crayons-card crayons-card--secondary">
+        <header class="crayons-card__header">
+          <h3 class="crayons-subtitle-3 spec-org-titles">Organizations</h3>
+        </header>
+        <div>
+          <%# it's highly unlikely a single use will belong to so many organizations to slow down this fetch, thus we can safely use the .present?/.each pattern to load them %>
+          <% @user.organizations.each do |organization| %>
+            <a href="/<%= organization.slug %>" class="flex items-center crayons-link crayons-link--contentful">
+              <span class="crayons-logo crayons-logo--l mr-2 shrink-0">
+                <img src="<%= Images::Profile.call(organization.profile_image_url, length: 90) %>" alt="<%= organization.name %> profile image" class="crayons-logo__image">
+              </span>
+              <h4 class="fs-base fw-medium"><%= organization.name %></h4>
+            </a>
+          <% end %>
         </div>
-      <% end %>
+      </div>
+    <% end %>
+
+    <%= render partial: "users/github_repositories_area", locals: { repositories: repositories } %>
+
+    <%= render "articles/badges_area" %>
+  <% end %>
+
+  <% cache "user-profile-sidebar-profile-details-#{@user.id}-#{@user.profile_updated_at}", expires_in: 10.days do %>
+    <% if @user.mostly_work_with.present? %>
+      <div class="crayons-card crayons-card--secondary">
+        <header class="crayons-card__header">
+          <h3 class="crayons-subtitle-3">Skills/languages</h3>
+        </header>
+
+        <div class="crayons-card__body">
+          <%= sanitized_sidebar @user.mostly_work_with %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @user.currently_learning.present? %>
+      <div class="crayons-card crayons-card--secondary">
+        <header class="crayons-card__header">
+          <h3 class="crayons-subtitle-3">Learning/trying</h3>
+        </header>
+
+        <div class="crayons-card__body">
+          <%= sanitized_sidebar @user.currently_learning %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @user.currently_hacking_on.present? %>
+      <div class="crayons-card crayons-card--secondary">
+        <header class="crayons-card__header">
+          <h3 class="crayons-subtitle-3">Projects</h3>
+        </header>
+
+        <div class="crayons-card__body">
+          <%= sanitized_sidebar @user.currently_hacking_on %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @user.available_for.present? %>
+      <div class="crayons-card crayons-card--secondary">
+        <header class="crayons-card__header">
+          <h3 class="crayons-subtitle-3">Available for...</h3>
+        </header>
+
+        <div class="crayons-card__body">
+          <%= sanitized_sidebar @user.available_for %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at&.rfc3339}-#{@user.last_comment_at&.rfc3339}-#{@user.following_tags_count}-#{@user.last_followed_at&.rfc3339}", expires_in: 10.days do %>
+    <div class="crayons-card crayons-card--secondary p-4">
+      <div class="flex items-center mb-4">
+        <%= inline_svg_tag("post.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Post") %>
+        <%= pluralize @user.articles.published.size, "post" %> published
+      </div>
+      <div class="flex items-center mb-4">
+        <%= inline_svg_tag("comment.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Comment") %>
+        <%= pluralize @user.comments.where(deleted: false).size, "comment" %> written
+      </div>
+      <div class="flex items-center">
+        <%= inline_svg_tag("tag.svg", aria: true, class: "crayons-icon mr-3 color-base-50", title: "Tag") %>
+        <%= pluralize @user.decorate.cached_followed_tags.size, "tag" %> followed
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>
