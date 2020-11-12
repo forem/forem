@@ -22,12 +22,12 @@
 <div class="flex gap-2">
   <% if authentication_enabled_providers.include?(provider) %>
     <button
-      class="crayons-btn crayons-btn--danger <%= tooltip_class_on_auth_provider_disablebtn %>"
+      class="crayons-btn crayons-btn--danger"
       data-action="click->config#activateAuthProviderModal"
       data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
       data-auth-provider="<%= provider.provider_name %>"
       data-auth-provider-official="<%= provider.official_name %>"
-      <%= disabled_attr_on_auth_rpovider_disablebtn %>>
+      <%= disabled_attr_on_auth_provider_enablebtn %>>
       Disable
     </button>
     <button
