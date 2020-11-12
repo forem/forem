@@ -1,41 +1,37 @@
 <footer class="crayons-footer print-hidden">
-  <div id="footer-container" class="crayons-layout crayons-footer__container">
-    <div class="crayons-footer__info">
-      <div><%= render "layouts/logo" %></div>
-      <p><%= SiteConfig.community_description %></p>
-      <div><%= render partial: "layouts/social_media" %></div>
-      <%# The following copy is necessary for compatability with the Forem AGPL licence which requires instances to link back to the source. %>
-      <p class="fs-xs color-base-60"><%= community_qualified_name %> copyright <%= copyright_notice %></p>
-      <p class="fs-xs color-base-60">Built on <a href="https://www.forem.com">Forem</a> — the <a href="https://dev.to/t/opensource">open source</a> software that powers <a href="https://dev.to">DEV</a> and other inclusive communities.</p>
-      <p class="fs-xs color-base-60">Made with love and <a href="https://dev.to/t/rails">Ruby on Rails</a>.</p>
-    </div>
+  <div id="footer-container" class="crayons-layout crayons-layout--limited-m crayons-footer__container">
+    <nav class="m:-mt-4">
+      <a href="/" class="crayons-link inline-block p-2">Home</a>
+      <% NavigationLink.ordered.each do |link| %>
+        <% if !link.display_only_when_signed_in? || (link.display_only_when_signed_in? && user_signed_in?) %>
+          <a href="<%= link.url %>" class="crayons-link inline-block p-2"><%= link.name %></a>
+        <% end %>
+      <% end %>
 
-    <nav class="crayons-footer__nav">
-        <a href="/" class="crayons-link crayons-link--block">Home</a>
-        <% NavigationLink.ordered.each do |link| %>
-          <% if !link.display_only_when_signed_in || (link.display_only_when_signed_in && user_signed_in?) %>
-            <a href="<%= link.url %>" class="crayons-link crayons-link--block">
-              <%= link.name %>
-            </a>
-          <% end %>
-        <% end %>
-        <% unless user_signed_in? %>
-          <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
-            Sign In/Up
-          </a>
-        <% else %>
-          <a href="/new" class="crayons-link crayons-link--block fw-bold">Write a post</a>
-        <% end %>
+      <% unless user_signed_in? %>
+        <a href="<%= sign_up_path %>" class="crayons-link fw-bold inline-block p-2">Sign In/Up</a>
+      <% else %>
+        <a href="/new" class="crayons-link fw-bold inline-block p-2">Write a post</a>
+      <% end %>
+
+      <div class="pt-4"><%= render partial: "layouts/social_media" %></div>
     </nav>
-
-    <% if SiteConfig.mascot_footer_image_url.present? %>
-      <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_footer_image_url, width: 100),
-                    class: "crayons-footer__mascot",
-                    alt: SiteConfig.mascot_image_description,
-                    width: SiteConfig.mascot_footer_image_width,
-                    height: SiteConfig.mascot_footer_image_height,
-                    loading: "lazy") %>
-    <% end %>
+    <hr class="crayons-footer__divider">
+    <p class="fs-s"><a href="/" aria-label="<%= community_name %> Home" class="crayons-link"><%= community_qualified_name %></a> – <%= SiteConfig.community_description %></p>
+    <div class="m:-mb-4">
+      <%# The following copy is necessary for compatability with the Forem AGPL licence which requires instances to link back to the source. %>
+      <p class="fs-s">Built on <a href="https://www.forem.com" class="crayons-link" target="_blank">Forem</a> — the <a href="https://dev.to/t/opensource" class="crayons-link">open source</a> software that powers <a href="https://dev.to" class="crayons-link">DEV</a> and other inclusive communities.</p>
+      <p class="fs-s">Made with love and <a href="https://dev.to/t/rails" class="crayons-link">Ruby on Rails</a>. <%= community_qualified_name %> <span title="copyright">&copy;</span> <%= copyright_notice %>.</p>
+      <div><a href="https://www.forem.com" target="_blank" class="inline-block mt-4"><%= inline_svg_tag("logo-forem.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Forem logo") %></a></div>
+    </div>
   </div>
+  <% if SiteConfig.mascot_footer_image_url.present? %>
+    <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_footer_image_url, width: 100),
+                  class: "crayons-footer__mascot",
+                  alt: SiteConfig.mascot_image_description,
+                  width: SiteConfig.mascot_footer_image_width,
+                  height: SiteConfig.mascot_footer_image_height,
+                  loading: "lazy") %>
+  <% end %>
 </footer>
 <div id="snack-zone"></div>
