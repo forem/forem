@@ -58,6 +58,9 @@ function buildCommentHTML(comment) {
                     <a href="'+comment.url+'" class="crayons-link crayons-link--block">\
                       Permalink\
                     </a>\
+                    <a href="'+comment.url+'" class="crayons-link crayons-link--block permalink-copybtn" data-no-instant>\
+                      Copy Permalink\
+                    </a>\
                     <a href="'+comment.url+'/settings" class="crayons-link crayons-link--block">\
                       Settings\
                     </a>\
@@ -84,7 +87,7 @@ function actions(comment) {
                 <a data-no-instant="" href="'+comment.url+'/delete_confirm" class="edit-butt" rel="nofollow">DELETE</a>\
                 <a href="'+comment.url+'/edit" class="edit-butt" rel="nofollow">EDIT</a>\
               </span>\
-                <a href="#" class="toggle-reply-form" rel="nofollow">REPLY</a>\
+                <a href="#" class="toggle-reply-form" rel="nofollow">Reply</a>\
             </div>';
   } else {
     return '<div class="actions" data-comment-id="'+comment.id+'" data-path="'+comment.url+'" data-commentable-id="'+comment.commentable.id+'">\

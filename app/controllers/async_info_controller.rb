@@ -29,8 +29,8 @@ class AsyncInfoController < ApplicationController
     set_surrogate_key_header "shell-version-endpoint"
     # shell_version will change on every deploy.
     # *Technically* could be only on changes to assets and shell, but this is more fool-proof.
-    shell_version = ApplicationConfig["RELEASE_FOOTPRINT"]
-    render json: { version: Rails.env.production? ? shell_version : rand(1000) }.to_json
+    shell_version = ApplicationConfig["RELEASE_FOOTPRINT"] + SiteConfig.admin_action_taken_at.to_s
+    render json: { version: shell_version }.to_json
   end
 
   def broadcast_data
@@ -66,7 +66,8 @@ class AsyncInfoController < ApplicationController
         config_body_class: @user.config_body_class,
         pro: @user.pro?,
         feed_style: feed_style_preference,
-        created_at: @user.created_at
+        created_at: @user.created_at,
+        admin: @user.any_admin?
       }
     end.to_json
   end
@@ -76,6 +77,7 @@ class AsyncInfoController < ApplicationController
     #{current_user&.last_sign_in_at}__
     #{current_user&.following_tags_count}__
     #{current_user&.last_followed_at}__
+    #{current_user&.last_reacted_at}__
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
     #{current_user&.articles_count}__

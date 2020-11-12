@@ -21,7 +21,7 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       expect do
         liquid_tag_options = { source: source, user: source.user }
         Liquid::Template.parse("{% liquid_tag_base %}", liquid_tag_options)
-      end.not_to raise_error(LiquidTags::Errors::InvalidParseContext)
+      end.not_to raise_error
     end
   end
 
@@ -31,7 +31,7 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       liquid_tag_options = { source: source, user: source.user }
       expect do
         Liquid::Template.parse("{% liquid_tag_base %}", liquid_tag_options)
-      end.not_to raise_error(LiquidTags::Errors::InvalidParseContext)
+      end.not_to raise_error
     end
   end
 
@@ -52,7 +52,7 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       stub_const("#{described_class}::VALID_ROLES", %i[admin])
       expect do
         Liquid::Template.parse("{% liquid_tag_base %}", liquid_tag_options)
-      end.not_to raise_error(Pundit::NotAuthorizedError)
+      end.not_to raise_error
     end
 
     it "validates single resource roles" do
@@ -63,7 +63,7 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       stub_const("#{described_class}::VALID_ROLES", [[:single_resource_admin, Article]])
       expect do
         Liquid::Template.parse("{% liquid_tag_base %}", liquid_tag_options)
-      end.not_to raise_error(Pundit::NotAuthorizedError)
+      end.not_to raise_error
     end
   end
 
@@ -73,7 +73,7 @@ RSpec.describe LiquidTagBase, type: :liquid_tag do
       liquid_tag_options = { source: source, user: source.user }
       expect do
         Liquid::Template.parse("{% liquid_tag_base %}", liquid_tag_options)
-      end.not_to raise_error(Pundit::NotAuthorizedError)
+      end.not_to raise_error
     end
   end
 end

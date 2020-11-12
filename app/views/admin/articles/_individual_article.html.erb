@@ -68,7 +68,7 @@
       <img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;max-width:380px;border-radius:8px;background:<%= article.main_image_background_hex_color %>;" alt="cover image" /><br />
     </div>
     <% end %>
-    <%= form_with url: admin_article_path(article.id), html: { data: { action: "submit->article#highlightElement" } } do |f| %>
+    <%= form_with url: admin_article_path(article.id), local: true do |f| %>
     <div class="form-group">
       <input name="utf8" type="hidden" value="✓">
       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
@@ -86,14 +86,9 @@
           value="<%= article.user_id %>">
       </div>
       <div class="form-group col">
-        <label for="second_author_id_<%= article.id %>">Second Author ID:</label>
-        <input id="second_author_id_<%= article.id %>" class="form-control" size="6" name="article[second_user_id]"
-          value="<%= article.second_user_id %>">
-      </div>
-      <div class="form-group col">
-        <label for="third_author_id_<%= article.id %>">Third Author ID:</label>
-        <input id="third_author_id_<%= article.id %>" class="form-control" size="6" name="article[third_user_id]"
-          value="<%= article.third_user_id %>">
+        <label for="co_author_ids_<%= article.id %>">Co-Author IDs (comma separated):</label>
+        <input id="co_author_ids_<%= article.id %>" class="form-control" size="6" name="article[co_author_ids]"
+          value="<%= article.co_author_ids&.join(", ") %>">
       </div>
     </div>
     <div class="row">

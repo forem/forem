@@ -40,7 +40,6 @@ class User < ApplicationRecord
   FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
   INBOXES = %w[open private].freeze
   NAVBARS = %w[default static].freeze
-  STREAMING_PLATFORMS = %w[twitch].freeze
   THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
   USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
@@ -145,23 +144,42 @@ class User < ApplicationRecord
   devise :invitable, :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable,
          :recoverable, :lockable
 
+  validates :articles_count, presence: true
+  validates :badge_achievements_count, presence: true
+  validates :blocked_by_count, presence: true
+  validates :blocking_others_count, presence: true
+  validates :comments_count, presence: true
   validates :config_font, inclusion: { in: FONTS + ["default".freeze], message: MESSAGES[:invalid_config_font] }
+  validates :config_font, presence: true
   validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }
+  validates :config_navbar, presence: true
   validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
-  validates :currently_streaming_on, inclusion: { in: STREAMING_PLATFORMS }, allow_nil: true
+  validates :config_theme, presence: true
+  validates :credits_count, presence: true
   validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
   validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
+  validates :email_digest_periodic, inclusion: { in: [true, false] }
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :feed_referential_link, inclusion: { in: [true, false] }
   validates :feed_url, length: { maximum: 500 }, allow_nil: true
+  validates :following_orgs_count, presence: true
+  validates :following_tags_count, presence: true
+  validates :following_users_count, presence: true
   validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
   validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
-  validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
+  validates :rating_votes_count, presence: true
+  validates :reactions_count, presence: true
+  validates :sign_in_count, presence: true
+  validates :spent_credits_count, presence: true
+  validates :subscribed_to_user_subscriptions_count, presence: true
+  validates :unspent_credits_count, presence: true
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
+  validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
   validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
+  validates :welcome_notifications, inclusion: { in: [true, false] }
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -188,15 +206,18 @@ class User < ApplicationRecord
 
   alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
+  alias_attribute :subscribed_to_mod_roundrobin_notifications?, :mod_roundrobin_notifications
+  alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
 
   scope :eager_load_serialized_data, -> { includes(:roles) }
   scope :registered, -> { where(registered: true) }
+  scope :with_feed, -> { where.not(feed_url: [nil, ""]) }
 
   before_validation :check_for_username_change
   before_validation :downcase_email
   before_validation :set_config_input
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_email, :verify_twitch_username
+  before_validation :verify_email
   before_validation :set_username
   before_create :set_default_language
   before_destroy :unsubscribe_from_newsletters, prepend: true
@@ -268,7 +289,7 @@ class User < ApplicationRecord
   end
 
   def cached_reading_list_article_ids
-    Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}") do
+    Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}") do
       Reaction.readinglist.where(
         user_id: id, reactable_type: "Article",
       ).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
@@ -430,21 +451,6 @@ class User < ApplicationRecord
     end
   end
 
-  def settings_tab_list
-    %w[
-      Profile
-      UX
-      Integrations
-      Notifications
-      Publishing\ from\ RSS
-      Organization
-      Response\ Templates
-      Billing
-      Account
-      Misc
-    ]
-  end
-
   def profile_image_90
     Images::Profile.call(profile_image_url, length: 90)
   end
@@ -463,21 +469,12 @@ class User < ApplicationRecord
     roles.where(name: "tag_moderator").any?
   end
 
-  def currently_streaming?
-    currently_streaming_on.present?
-  end
-
-  def currently_streaming_on_twitch?
-    currently_streaming_on == "twitch"
-  end
-
   def enough_credits?(num_credits_needed)
     credits.unspent.size >= num_credits_needed
   end
 
   def receives_follower_email_notifications?
-    email.present? &&
-      email_follower_notifications
+    email.present? && subscribed_to_email_follower_notifications?
   end
 
   def hotness_score
@@ -523,10 +520,6 @@ class User < ApplicationRecord
     self.email = nil if email == ""
   end
 
-  def verify_twitch_username
-    self.twitch_username = nil if twitch_username == ""
-  end
-
   def set_username
     set_temp_username if username.blank?
     self.username = username&.downcase
@@ -558,9 +551,9 @@ class User < ApplicationRecord
   end
 
   def set_config_input
-    self.config_theme = config_theme.tr(" ", "_")
-    self.config_font = config_font.tr(" ", "_")
-    self.config_navbar = config_navbar.tr(" ", "_")
+    self.config_theme = config_theme&.tr(" ", "_")
+    self.config_font = config_font&.tr(" ", "_")
+    self.config_navbar = config_navbar&.tr(" ", "_")
   end
 
   def check_for_username_change

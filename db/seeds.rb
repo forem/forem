@@ -21,6 +21,16 @@ class Seeder
       puts "  #{@counter}. #{plural} already exist. Skipping."
     end
   end
+
+  def create_if_doesnt_exist(klass, attribute_name, attribute_value)
+    record = klass.find_by("#{attribute_name}": attribute_value)
+    if record.nil?
+      puts "  #{klass} with #{attribute_name} = #{attribute_value} not found, proceeding..."
+      yield
+    else
+      puts "  #{klass} with #{attribute_name} = #{attribute_value} found, skipping."
+    end
+  end
 end
 
 # we use this to be able to increase the size of the seeded DB at will
@@ -84,6 +94,8 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
       # Emails limited to 50 characters
       email: Faker::Internet.email(name: name, separators: "+", domain: Faker::Internet.domain_word.first(20)),
       confirmed_at: Time.current,
+      registered_at: Time.current,
+      registered: true,
       password: "password",
       password_confirmation: "password",
     )
@@ -134,6 +146,25 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
   end
 
   User.order(Arel.sql("RANDOM()"))
+end
+
+seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
+  user = User.create!(
+    name: "Admin McAdmin",
+    email: "admin@forem.local",
+    username: "Admin_McAdmin",
+    summary: Faker::Lorem.paragraph_by_chars(number: 199, supplemental: false),
+    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    website_url: Faker::Internet.url,
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    confirmed_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+  )
+
+  user.add_role(:super_admin)
+  user.add_role(:single_resource_admin, Config)
 end
 
 ##############################################################################
@@ -341,6 +372,13 @@ seeder.create_if_none(ChatChannel) do
     )
   end
 
+  # This channel is hard-coded in a few places
+  ChatChannel.create!(
+    channel_name: "Tag Moderators",
+    channel_type: "open",
+    slug: "tag-moderators",
+  )
+
   direct_channel = ChatChannels::CreateWithUsers.call(users: User.last(2), channel_type: "direct")
   Message.create!(
     chat_channel: direct_channel,
@@ -412,9 +450,16 @@ seeder.create_if_none(FeedbackMessage) do
   )
 
   3.times do
+    article_id = Article
+      .left_joins(:reactions)
+      .where.not(articles: { id: Reaction.article_vomits.pluck(:reactable_id) })
+      .order(Arel.sql("RANDOM()"))
+      .first
+      .id
+
     Reaction.create!(
       category: "vomit",
-      reactable_id: Article.order(Arel.sql("RANDOM()")).first.id,
+      reactable_id: article_id,
       reactable_type: "Article",
       user_id: mod.id,
     )
@@ -541,6 +586,12 @@ seeder.create_if_none(Sponsorship) do
       blurb_html: Faker::Hacker.say_something_smart,
     )
   end
+end
+
+##############################################################################
+
+seeder.create_if_none(NavigationLink) do
+  Rake::Task["navigation_links:update"].invoke
 end
 
 ##############################################################################

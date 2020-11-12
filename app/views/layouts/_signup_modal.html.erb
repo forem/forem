@@ -19,7 +19,7 @@
             <% if SiteConfig.tagline.present? %>
               <%= SiteConfig.tagline %>
             <% else %>
-              We’d love for you to be apart of this community.
+              We’d love for you to be a part of this community.
             <% end %>
           </p>
         </div>
@@ -42,3 +42,5 @@
   </div>
   <div class="crayons-modal__overlay"></div>
 </div>
+
+<%= javascript_packs_with_chunks_tag "signupModalShortcuts", defer: true %>

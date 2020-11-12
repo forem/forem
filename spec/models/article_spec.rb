@@ -35,8 +35,18 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
     it { is_expected.to validate_length_of(:title).is_at_most(128) }
+
+    it { is_expected.to validate_presence_of(:boost_states) }
+    it { is_expected.to validate_presence_of(:comments_count) }
+    it { is_expected.to validate_presence_of(:positive_reactions_count) }
+    it { is_expected.to validate_presence_of(:previous_public_reactions_count) }
+    it { is_expected.to validate_presence_of(:public_reactions_count) }
+    it { is_expected.to validate_presence_of(:rating_votes_count) }
+    it { is_expected.to validate_presence_of(:reactions_count) }
+    it { is_expected.to validate_presence_of(:user_subscriptions_count) }
     it { is_expected.to validate_presence_of(:title) }
     it { is_expected.to validate_presence_of(:user_id) }
+
     it { is_expected.to validate_uniqueness_of(:canonical_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_nil }
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
@@ -49,6 +59,39 @@ RSpec.describe Article, type: :model do
 
         expect(art2).not_to be_valid
         expect(art2.errors.full_messages.to_sentence).to match("markdown has already been taken")
+      end
+    end
+
+    describe "#validate co_authors" do
+      it "is invalid if the co_author is the same as the author" do
+        article.co_author_ids = [user.id]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if there are duplicate co_authors for the same article" do
+        co_author1 = create(:user)
+        article.co_author_ids = [co_author1, co_author1]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if the co_author is entered as a text value rather than an integer" do
+        article.co_author_ids = [user.id, "abc"]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is invalid if the co_author ID is not greater than 0" do
+        article.co_author_ids = [user.id, 0]
+
+        expect(article).not_to be_valid
+      end
+
+      it "is valid if co_author_ids is nil" do
+        article.co_author_ids = nil
+
+        expect(article).to be_valid
       end
     end
 
@@ -151,7 +194,7 @@ RSpec.describe Article, type: :model do
     end
 
     describe "liquid tags" do
-      it "is not valid if it contains invalid liquid tags" do
+      xit "is not valid if it contains invalid liquid tags" do
         body = "{% github /thepracticaldev/dev.to %}"
         article = build(:article, body_markdown: body)
         expect(article).not_to be_valid
@@ -730,6 +773,60 @@ RSpec.describe Article, type: :model do
           article.save
         end
         expect(article).to have_received(:update_main_image_background_hex)
+      end
+    end
+
+    describe "spam" do
+      before do
+        allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+        allow(SiteConfig).to receive(:spam_trigger_terms).and_return(
+          ["yahoomagoo gogo", "testtestetest", "magoo.+magee"],
+        )
+      end
+
+      it "creates vomit reaction if possible spam" do
+        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
+        article.save
+        expect(Reaction.last.category).to eq("vomit")
+        expect(Reaction.last.user_id).to eq(user.id)
+      end
+
+      it "creates vomit reaction if possible spam based on pattern" do
+        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about magoo to the magee")
+        article.save
+        expect(Reaction.last.category).to eq("vomit")
+        expect(Reaction.last.user_id).to eq(user.id)
+      end
+
+      it "does not ban user if only single vomit" do
+        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
+        article.save
+        expect(article.user.banned).to be false
+      end
+
+      it "bans user with 3 comment vomits" do
+        second_article = create(:article, user: article.user)
+        third_article = create(:article, user: article.user)
+        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
+        second_article.body_markdown = second_article.body_markdown.gsub(second_article.title, "testtestetest")
+        third_article.body_markdown = third_article.body_markdown.gsub(third_article.title, "yahoomagoo gogo")
+
+        article.save
+        second_article.save
+        third_article.save
+        expect(article.user.banned).to be true
+        expect(Note.last.reason).to eq "automatic_ban"
+      end
+
+      it "does not create vomit reaction if does not have matching title" do
+        article.save
+        expect(Reaction.last).to be nil
+      end
+
+      it "does not create vomit reaction if does not have pattern match" do
+        article.body_markdown = article.body_markdown.gsub(article.title, "This post is about magoo to")
+        article.save
+        expect(Reaction.last).to be nil
       end
     end
 

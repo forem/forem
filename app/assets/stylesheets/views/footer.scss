@@ -30,16 +30,18 @@
 
   &__nav {
     display: grid;
-    gap: var(--su-4);
-    flex: 1 auto;
-    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--su-4);
+    grid-template-rows: repeat(9, 1fr);
+    grid-auto-flow: column;
 
     @media (min-width: $breakpoint-s) {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+      column-gap: var(--su-8);
     }
 
     @media (min-width: $breakpoint-l) {
-      grid-template-columns: repeat(3, 200px);
+      grid-template-rows: repeat(6, 1fr);
+      column-gap: var(--su-10);
     }
   }
 

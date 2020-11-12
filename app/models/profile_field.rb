@@ -11,11 +11,14 @@ class ProfileField < ApplicationRecord
 
   enum display_area: {
     header: 0,
-    left_sidebar: 1
+    left_sidebar: 1,
+    settings_only: 2
   }
 
   belongs_to :profile_field_group, optional: true
 
+  validates :display_area, presence: true
+  validates :input_type, presence: true
   validates :show_in_onboarding, inclusion: { in: [true, false] }
 
   def type

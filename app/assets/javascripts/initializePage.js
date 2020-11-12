@@ -1,5 +1,5 @@
 /*
-  global initializeLocalStorageRender, initializeStylesheetAppend, initializeBodyData,
+  global initializeLocalStorageRender, initializeBodyData,
   initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
   initializeBaseTracking, initializeTouchDevice, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
@@ -54,7 +54,6 @@ function callInitializers() {
 
 function initializePage() {
   initializeLocalStorageRender();
-  initializeStylesheetAppend();
   callInitializers();
 }
 
@@ -67,7 +66,6 @@ function callDefaultInitializers() {
   initializeArticleDate();
   initializeArticleReactions();
   initNotifications();
-  initializeStylesheetAppend();
   initializeCommentDate();
   initializeCommentDropdown();
   initializeSettings();
@@ -85,4 +83,24 @@ function callDefaultInitializers() {
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
   initializeDateHelpers();
+
+  function freezeScrolling(event) {
+    event.preventDefault();
+  }
+
+  nextPage = 0;
+  fetching = false;
+  done = false;
+  adClicked = false;
+  setTimeout(function undone() {
+    done = false;
+  }, 300);
+  if (!initScrolling.called) {
+    initScrolling();
+  }
+}
+
+function initializePage() {
+  initializeLocalStorageRender();
+  callInitializers();
 }
