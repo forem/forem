@@ -85,7 +85,7 @@ Rails.application.routes.draw do
 
       # NOTE: @citizen428 The next two resources have a temporary constraint
       # while profile generalization is still WIP
-      constraints(->(_request) { Flipper.enabled?(:profile_admin) }) do
+      constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
         resources :profile_field_groups, only: %i[update create destroy]
         resources :profile_fields, only: %i[index update create destroy]
       end
