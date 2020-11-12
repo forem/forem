@@ -2,8 +2,8 @@ import { Controller } from 'stimulus';
 import adminModal from '../adminModal';
 
 const recaptchaFields = document.querySelector('#recaptchaContainer');
-const emailSigninAndLoginCheckbox = document.querySelector(
-  '#email-signup-and-login-checkbox',
+const emailRegistrationCheckbox = document.querySelector(
+  '#email-registration-checkbox',
 );
 const emailAuthSettingsSection = document.querySelector(
   '#email-auth-settings-section',
@@ -73,7 +73,7 @@ export default class ConfigController extends Controller {
   enableOrEditEmailAuthSettings(event) {
     event.preventDefault();
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
-      emailSigninAndLoginCheckbox.checked = true;
+      emailRegistrationCheckbox.checked = true;
       this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'edit');
       this.enabledIndicatorTarget.classList.add('visible');
     }
@@ -108,7 +108,7 @@ export default class ConfigController extends Controller {
 
   disableEmailAuth(event) {
     event.preventDefault();
-    emailSigninAndLoginCheckbox.checked = false;
+    emailRegistrationCheckbox.checked = false;
     this.emailAuthSettingsBtnTarget.innerHTML = 'Enable';
     this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'enable');
     this.enabledIndicatorTarget.classList.remove('visible');
@@ -233,8 +233,13 @@ export default class ConfigController extends Controller {
     ).value = enabledProviderArray;
   }
 
-  disableAuthenticationOptions() {
-    document.querySelector('#auth_providers_to_enable').value = '';
+  adjustAuthenticationOptions() {
+    if (this.inviteOnlyModeTarget.checked) {
+      document.querySelector('#auth_providers_to_enable').value = '';
+      emailRegistrationCheckbox.checked = false;
+    } else {
+      emailRegistrationCheckbox.checked = true;
+    }
   }
   // AUTH PROVIDERS FUNCTIONS END
 }
