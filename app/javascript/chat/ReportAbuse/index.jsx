@@ -5,7 +5,7 @@ import { reportAbuse, blockUser } from '../actions/requestActions';
 import { addSnackbarItem } from '../../Snackbar';
 import { Button } from '@crayons';
 
-function ReportAbuse({ resource: data }) {
+function ReportAbuse({ resource: data, closeReportAbuseForm }) {
   const [category, setCategory] = useState(null);
 
   const handleChange = (e) => {
@@ -37,6 +37,7 @@ function ReportAbuse({ resource: data }) {
       } else {
         addSnackbarItem({ message: 'Your report has been submitted.' });
       }
+      closeReportAbuseForm();
     } else {
       addSnackbarItem({ message });
     }

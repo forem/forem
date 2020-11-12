@@ -1049,6 +1049,15 @@ export default class Chat extends Component {
     }));
   };
 
+  closeReportAbuseForm = () => {
+    const { activeChannelId } = this.state;
+    this.setActiveContentState(activeChannelId, null);
+    this.setState({
+      fullscreenContent: null,
+      expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
+    });
+  };
+
   setActiveContent = (response) => {
     const { activeChannelId } = this.state;
     this.setActiveContentState(activeChannelId, response);
@@ -1554,6 +1563,7 @@ export default class Chat extends Component {
           resource={state.activeContent[state.activeChannelId]}
           activeChannel={state.activeChannel}
           fullscreen={state.fullscreenContent === 'sidecar'}
+          closeReportAbuseForm={this.closeReportAbuseForm}
         />
         <VideoContent
           videoPath={state.videoPath}
