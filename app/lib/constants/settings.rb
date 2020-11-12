@@ -6,9 +6,7 @@ module Constants
       Notifications
       Account
       Billing
-      Integrations
       Organization
-      Response\ Templates
       Extensions
     ].freeze
   end
