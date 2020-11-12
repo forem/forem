@@ -30,7 +30,7 @@ module AuthenticationHelper
   end
 
   def forem_creator_flow_enabled?
-    Flipper.enabled?(:creator_onboarding) && waiting_on_first_user?
+    FeatureFlag.enabled?(:creator_onboarding) && waiting_on_first_user?
   end
 
   def waiting_on_first_user?
