@@ -14,9 +14,11 @@
         <div class="card-header__actions">
           <%= render partial: "add_profile_field_modal", locals: { group: group, group_name: group_name } %>
           <%= render partial: "edit_group_modal", locals: { group: group, group_name: group_name } %>
-          <div><%= link_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "color-accent-danger" %></div>
-          <div id="<%= group_name %>Header" data-toggle="collapse" class="color-base-70"
-            data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer">Toggle</div>
+          <%= button_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "crayons-btn crayons-btn--danger mx-1" %>
+          <button id="<%= group_name %>Header" data-toggle="collapse" class="crayons-btn crayons-btn--secondary mx-1"
+                  data-target="#<%= group_name %>BodyContainer" aria-expanded="false" aria-controls="<%= group_name %>BodyContainer">
+            Toggle
+          </button>
         </div>
       </div>
 
@@ -39,7 +41,7 @@
                     <%= render "profile_field_form", form: form, group: group %>
                     <%= form.submit class: "btn btn-primary" %>
                   <% end %>
-                  <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary" %>
+                  <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary mx-auto" %>
                 </div>
               </div>
             </div>

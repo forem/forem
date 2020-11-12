@@ -82,7 +82,8 @@ notifications:
 
 jobs:
   include:
-    - stage: Deploy DEV
+    - stage: Deploy
+      name: Deploy DEV
       if: type != pull_request
       script: skip
       after_script: skip
@@ -91,7 +92,8 @@ jobs:
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
           master: practicaldev
-    - stage: Deploy BenHalpern
+    - stage: Deploy
+      name: Deploy BenHalpern
       if: type != pull_request
       script: skip
       after_script: skip

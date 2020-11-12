@@ -33,3 +33,18 @@ function initializeUserProfilePage() {
     }
   }
 }
+
+function initializeProfileInfoToggle() {
+  const infoPanels = document.querySelector('.js-user-info');
+  const trigger = document.querySelector('.js-user-info-trigger');
+  const triggerWrapper = document.querySelector(
+    '.js-user-info-trigger-wrapper',
+  );
+
+  if (trigger && infoPanels) {
+    trigger.addEventListener('click', () => {
+      triggerWrapper.classList.replace('block', 'hidden');
+      infoPanels.classList.replace('hidden', 'grid');
+    });
+  }
+}

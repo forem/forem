@@ -40,7 +40,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
       fill_in "text-area", with: raw_comment
       click_button("Submit")
-      expect(page).to have_text("Wait a Moment...")
+      expect(page).to have_text("Wait a moment...")
     end
 
     it "closes modal with close button" do
@@ -50,7 +50,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       fill_in "text-area", with: raw_comment
       click_button("Submit")
       click_button("Got it")
-      expect(page).not_to have_text("Wait a Moment...")
+      expect(page).not_to have_text("Wait a moment...")
     end
 
     it "closes model with 'x' image button" do
@@ -60,7 +60,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       fill_in "text-area", with: raw_comment
       click_button("Submit")
       find(".crayons-modal__box__header").click_button
-      expect(page).not_to have_text("Wait a Moment...")
+      expect(page).not_to have_text("Wait a moment...")
     end
   end
 
