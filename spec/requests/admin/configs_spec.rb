@@ -237,6 +237,13 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.main_social_image).to eq(expected_image_url)
         end
 
+        it "updates main_social_image with a valid image" do
+          expected_image = "https://dummyimage.com/300x300"
+          post "/admin/config", params: { site_config: { main_social_image: expected_image },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.main_social_image).to eq(expected_image)
+        end
+
         it "only updates the main_social_image if given a valid image URL" do
           invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300"
           expect do
@@ -261,6 +268,13 @@ RSpec.describe "/admin/config", type: :request do
           end.to change(SiteConfig, :logo_png).from(expected_default_image_url).to(expected_image_url)
         end
 
+        it "updates logo_png with a valid image" do
+          expected_image = "https://dummyimage.com/300x300"
+          post "/admin/config", params: { site_config: { logo_png: expected_image },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.logo_png).to eq(expected_image)
+        end
+
         it "only updates the logo_png if given a valid image URL" do
           invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300.png"
           expect do
@@ -281,6 +295,13 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { secondary_logo_url: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.secondary_logo_url).to eq(expected_image_url)
+        end
+
+        it "updates secondary_logo_url with a valid image" do
+          expected_image = "https://dummyimage.com/300x300"
+          post "/admin/config", params: { site_config: { secondary_logo_url: expected_image },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.secondary_logo_url).to eq(expected_image)
         end
 
         it "only updates the secondary_logo_url if given a valid image URL" do
