@@ -14,7 +14,7 @@
       </div>
 
       <% if @user.badge_achievements_count > badges_limit %>
-        <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s w-100 js-profile-badges-trigger">Show all badges</button>
+        <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s w-100 js-profile-badges-trigger">Show all <%= @user.badge_achievements_count %> badges</button>
       <% end %>
     </div>
   </div>
