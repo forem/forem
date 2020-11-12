@@ -224,6 +224,8 @@ class StoriesController < ApplicationController
 
     assign_user_github_repositories
 
+    @badges_limit = 6
+
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
 
