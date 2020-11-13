@@ -27,7 +27,6 @@ class SiteConfig < RailsSettings::Base
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
   field :allow_email_password_login, type: :boolean, default: true
-  field :allow_both_email_signup_and_login, type: :boolean, default: true
   field :require_captcha_for_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :invite_only_mode, type: :boolean, default: false
@@ -98,7 +97,7 @@ class SiteConfig < RailsSettings::Base
   field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
-  field :mascot_user_id, type: :integer, default: 1
+  field :mascot_user_id, type: :integer, default: nil
   field :mascot_image_url, type: :string, default: proc { URL.local_image("mascot.png") }
   field :mascot_image_description, type: :string, default: "The community mascot"
   field :mascot_footer_image_url, type: :string
