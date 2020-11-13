@@ -119,7 +119,7 @@ export async function reportAbuse(
 }
 
 /**
- * This Api block the user
+ * Blocks a user with the given ID from using Connect
  *
  * @param {number} userId
  *
