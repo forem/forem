@@ -1,5 +1,5 @@
 import 'preact/devtools';
-import { Component, h } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import {
   getInitialSearchTerm,
@@ -7,10 +7,11 @@ import {
   preloadSearchResults,
   displaySearchResults,
 } from '../utilities/search';
+import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { SearchForm } from './SearchForm';
 
-const GLOBAL_MINIMIZE_KEY = '0';
-const GLOBAL_SEARCH_KEY = '/';
+const GLOBAL_MINIMIZE_KEY = 'Digit0';
+const GLOBAL_SEARCH_KEY = 'Slash';
 const ENTER_KEY = 'Enter';
 
 export class Search extends Component {
@@ -56,12 +57,12 @@ export class Search extends Component {
     // TODO: Consolidate search functionality.
     // Note that push states for search occur in _search.html.erb
     // in initializeSortingTabs(query)
-    const { searchBoxId } = this.props;
+    const { searchBoxSelector } = this.props;
     const searchTerm = getInitialSearchTerm(window.location.search);
 
     // We set the value outside of React state so that there is no flickering of placeholder
     // to search term.
-    const searchBox = document.getElementById(searchBoxId);
+    const searchBox = document.getElementById(searchBoxSelector);
     searchBox.value = searchTerm;
 
     // Even though we set the search term directly via the DOM, it still needs to reside
@@ -72,7 +73,6 @@ export class Search extends Component {
   }
 
   componentDidMount() {
-    this.registerGlobalKeysListener();
     InstantClick.on('change', this.enableSearchPageListener);
 
     window.addEventListener('popstate', this.syncSearchUrlWithInput);
@@ -112,54 +112,43 @@ export class Search extends Component {
     InstantClick.off('change', this.enableSearchPageListener);
   }
 
-  registerGlobalKeysListener() {
+  minimizeHeader = (event) => {
+    event.preventDefault();
+    document.body.classList.toggle('zen-mode');
+  };
+
+  focusOnSearchBox = (event) => {
+    event.preventDefault();
+    document.body.classList.remove('zen-mode');
+
     const { searchBoxSelector } = this.props;
-    const searchBox = document.querySelector(searchBoxSelector);
-
-    this.globalKeysListener = (event) => {
-      const { tagName, classList } = document.activeElement;
-
-      if (
-        (event.key !== GLOBAL_SEARCH_KEY &&
-          event.key !== GLOBAL_MINIMIZE_KEY) ||
-        tagName === 'INPUT' ||
-        tagName === 'TEXTAREA' ||
-        classList.contains('input')
-      ) {
-        return;
-      }
-
-      if (event.key === GLOBAL_SEARCH_KEY) {
-        event.preventDefault();
-        document.body.classList.remove('zen-mode');
-        searchBox.focus();
-        searchBox.select();
-      } else if (
-        event.key === GLOBAL_MINIMIZE_KEY &&
-        !this.hasKeyModifiers(event)
-      ) {
-        event.preventDefault();
-        document.body.classList.toggle('zen-mode');
-      }
-    };
-
-    document.addEventListener('keydown', this.globalKeysListener);
-  }
+    const searchBox = document.getElementById(searchBoxSelector);
+    searchBox.focus();
+    searchBox.select();
+  };
 
   render({ searchBoxSelector }, { searchTerm = '' }) {
     return (
-      <SearchForm
-        searchTerm={searchTerm}
-        onSearch={(event) => {
-          const {
-            key,
-            target: { value },
-          } = event;
-          this.search(key, value);
-        }}
-        onSubmitSearch={this.submit}
-        searchBoxSelector={searchBoxSelector}
-      />
+      <Fragment>
+        <KeyboardShortcuts
+          shortcuts={{
+            [GLOBAL_SEARCH_KEY]: this.focusOnSearchBox,
+            [GLOBAL_MINIMIZE_KEY]: this.minimizeHeader,
+          }}
+        />
+        <SearchForm
+          searchTerm={searchTerm}
+          onSearch={(event) => {
+            const {
+              key,
+              target: { value },
+            } = event;
+            this.search(key, value);
+          }}
+          onSubmitSearch={this.submit}
+          searchBoxSelector={searchBoxSelector}
+        />
+      </Fragment>
     );
   }
 }

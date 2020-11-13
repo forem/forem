@@ -4,20 +4,23 @@ module Admin
       state: :trusted
     }.with_indifferent_access.freeze
 
+    VALID_ROLES = %i[banned warned trusted comment_banned].freeze
+
     def self.call(relation: User.all, options: {})
       options = DEFAULT_OPTIONS.merge(options)
       state, search = options.values_at(:state, :search)
+      role_id = Role.find_by(name: state)&.id
 
       relation = if state.to_s == "potential"
                    relation.where(
-                     "id NOT IN (SELECT user_id FROM users_roles WHERE role_id = ?)
-                     AND id NOT IN (SELECT user_id FROM users_roles WHERE role_id = ?)",
-                     role_id_for(:trusted),
-                     role_id_for(:banned),
+                     "id NOT IN (SELECT user_id FROM users_roles WHERE role_id IN (?))",
+                     potential_role_ids,
                    ).order("users.comments_count" => :desc)
-                 else
+                 elsif role_id.present?
                    relation.joins(:roles)
-                     .where(users_roles: { role_id: role_id_for(state) })
+                     .where(users_roles: { role_id: role_id })
+                 else
+                   User.none
                  end
 
       relation = search_relation(relation, search) if search.presence
@@ -25,8 +28,8 @@ module Admin
       relation
     end
 
-    def self.role_id_for(role)
-      Role.find_by(name: role)&.id
+    def self.potential_role_ids
+      @potential_role_ids ||= Role.where(name: VALID_ROLES).select(:id)
     end
 
     def self.search_relation(relation, search)
