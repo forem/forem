@@ -6,13 +6,13 @@ RSpec.describe "Admin manages profile fields", type: :system do
   let!(:profile_field) { create(:profile_field, profile_field_group: profile_field_group, label: "Delete Me Too!") }
 
   before do
-    Flipper.enable(:profile_admin)
+    FeatureFlag.enable(:profile_admin)
     sign_in admin
     visit admin_profile_fields_path
   end
 
   after do
-    Flipper.disable(:profile_admin)
+    FeatureFlag.disable(:profile_admin)
   end
 
   it "adds a profile group" do
