@@ -43,6 +43,16 @@ export default class ArticleForm extends Component {
     }
   }
 
+  static handleEmgithubPreview() {
+    const els = document.getElementsByClassName('ltag_emgithub-liquid-tag');
+    for (let i = 0; i < els.length; i += 1) {
+      postscribe(
+        els[i],
+        els[i].firstElementChild.outerHTML.replace(/&amp;/g, '&'),
+      );
+    }
+  }
+
   static propTypes = {
     version: PropTypes.string.isRequired,
     article: PropTypes.string.isRequired,
@@ -123,6 +133,7 @@ export default class ArticleForm extends Component {
       this.constructor.handleGistPreview();
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
+      this.constructor.handleEmgithubPreview();
     }
   }
 

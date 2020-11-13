@@ -1,9 +1,7 @@
-require "cgi"
-
 class EmgithubTag < LiquidTagBase
   PARTIAL = "liquids/emgithub".freeze
   OPTION_REGEXP = /\A(showBorder|showLineNumbers|showFileMeta)*\z/.freeze
-  LINK_REGEXP = %r{\A(http|https)://github.com/\w+/\w+/blob/[a-zA-Z0-9_./#-]*\z}.freeze
+  LINK_REGEXP = %r{\A(http|https)://github.com/\w+/[a-zA-Z0-9-]+/blob/[a-zA-Z0-9_./#-]*\z}.freeze
 
   def initialize(_tag_name, link, _parse_context)
     super
