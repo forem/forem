@@ -7,7 +7,7 @@ describe('<ReportAbuse />', () => {
   it('should have no a11y violations', async () => {
     const { container } = render(
       <ReportAbuse
-        resource={{
+        data={{
           message: 'HI',
           user_id: 1,
         }}
@@ -19,22 +19,22 @@ describe('<ReportAbuse />', () => {
   });
 
   it('should render the component', () => {
-    const { queryByText, queryByLabelText } = render(
-      <ReportAbuse resource={{ message: 'HI', user_id: 1 }} />,
+    const { queryByText, getByTestId } = render(
+      <ReportAbuse data={{ message: 'HI', user_id: 1 }} />,
     );
 
     expect(queryByText('Report Abuse')).toBeDefined();
 
-    const vulgarInput = queryByLabelText('rude or vulgar');
+    const vulgarInput = getByTestId('rude_or_vulgar');
     expect(vulgarInput.value).toEqual('rude or vulgar');
 
-    const harassmentInput = queryByLabelText('harassment');
+    const harassmentInput = getByTestId('harassment');
     expect(harassmentInput.value).toEqual('harassment');
 
-    const listingsInput = queryByLabelText('listings');
+    const listingsInput = getByTestId('listings');
     expect(listingsInput.value).toEqual('listings');
 
-    const spamInput = queryByLabelText('spam');
+    const spamInput = getByTestId('spam');
     expect(spamInput.value).toEqual('spam');
 
     expect(queryByText('Report Message')).toBeDefined();

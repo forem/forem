@@ -130,7 +130,7 @@ function Display({ resource, closeReportAbuseForm }) {
     case 'message-report-abuse':
       return (
         <ReportAbuse
-          resource={resource.data}
+          data={resource.data}
           closeReportAbuseForm={closeReportAbuseForm}
         />
       );
