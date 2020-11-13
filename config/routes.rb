@@ -396,7 +396,7 @@ Rails.application.routes.draw do
     get "/welcome" => "pages#welcome"
     get "/challenge" => "pages#challenge"
     get "/checkin" => "pages#checkin"
-    get "/badge" => "pages#badge"
+    get "/badge" => "pages#badge", :as => :pages_badge
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
     get "/events" => "events#index"
@@ -500,7 +500,7 @@ Rails.application.routes.draw do
     get "/t/:tag/:timeframe" => "stories#index",
         :constraints => { timeframe: /latest/ }
 
-    get "/badge/:slug" => "badges#show"
+    get "/badge/:slug" => "badges#show", :as => :badge
 
     get "/top/:timeframe" => "stories#index"
 
