@@ -27,6 +27,8 @@ class SiteConfig < RailsSettings::Base
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
   field :allow_email_password_login, type: :boolean, default: true
+  field :allowed_registration_email_domains, type: :array, default: %w[]
+  field :display_email_domain_allow_list_publicly, type: :boolean, default: false
   field :require_captcha_for_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :invite_only_mode, type: :boolean, default: false
