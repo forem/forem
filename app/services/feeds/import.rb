@@ -39,7 +39,6 @@ module Feeds
             create_articles_from_user_feed(user, feed)
           end
         end
-        DatadogStatsClient.count("feeds::import::parse_feeds.count", articles.length)
 
         total_articles_count += articles.length
 
