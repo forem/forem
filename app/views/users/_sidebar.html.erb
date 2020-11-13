@@ -21,7 +21,13 @@
 
     <%= render partial: "users/github_repositories_area", locals: { repositories: repositories } %>
 
-    <%= render "articles/badges_area" %>
+    <% if @user.badge_achievements_count.positive? %>
+      <%= render partial: "users/badges_area", locals: {
+            achievements: @user.badge_achievements.order(id: :desc).includes(:badge),
+            count: @user.badge_achievements_count,
+            limit: @badges_limit
+          } %>
+    <% end %>
   <% end %>
 
   <% cache "user-profile-sidebar-profile-details-#{@user.id}-#{@user.profile_updated_at}", expires_in: 10.days do %>
