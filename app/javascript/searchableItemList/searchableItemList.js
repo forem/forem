@@ -77,7 +77,7 @@ export function performInitialSearch({ searchOptions = {} }) {
     const reactions = response.result;
     const availableTags = [
       ...new Set(reactions.flatMap((rxn) => rxn.reactable.tag_list)),
-    ];
+    ].sort();
     component.setState({
       page: 0,
       items: reactions,
