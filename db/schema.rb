@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_18_101700) do
+ActiveRecord::Schema.define(version: 2020_11_10_180614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -857,6 +857,15 @@ ActiveRecord::Schema.define(version: 2020_08_18_101700) do
     t.index ["website_url"], name: "index_podcast_episodes_on_website_url"
   end
 
+  create_table "podcast_ownerships", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "podcast_id"
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id"
+    t.index ["podcast_id"], name: "index_podcast_ownerships_on_podcast_id"
+    t.index ["user_id"], name: "index_podcast_ownerships_on_user_id"
+  end
+
   create_table "podcasts", force: :cascade do |t|
     t.string "android_url"
     t.datetime "created_at", null: false
@@ -1365,6 +1374,8 @@ ActiveRecord::Schema.define(version: 2020_08_18_101700) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "page_views", "articles", on_delete: :cascade
+  add_foreign_key "podcast_ownerships", "podcasts"
+  add_foreign_key "podcast_ownerships", "users"
   add_foreign_key "podcasts", "users", column: "creator_id"
   add_foreign_key "profiles", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"

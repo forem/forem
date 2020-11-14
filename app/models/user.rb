@@ -101,6 +101,7 @@ class User < ApplicationRecord
   has_many :organization_memberships, dependent: :destroy
   has_many :organizations, through: :organization_memberships
   has_many :page_views, dependent: :destroy
+  has_many :podcasts, through: :podcast_ownerships
   has_many :poll_skips, dependent: :destroy
   has_many :poll_votes, dependent: :destroy
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
