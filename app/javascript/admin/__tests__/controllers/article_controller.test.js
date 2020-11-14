@@ -50,7 +50,7 @@ describe('ArticleController', () => {
   describe('#highlightElement', () => {
     it('adds a class to the controller element', () => {
       const button = document.getElementsByTagName('button')[2];
-      const element = document.querySelector('.card-body');
+      const element = document.getElementsByClassName('card-body')[0];
 
       button.click();
 

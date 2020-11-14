@@ -91,7 +91,7 @@ async function updateExperienceLevel(currentUserId, articleId, rating, group) {
   }
 }
 
-document.querySelectorAll('.level-rating-button').forEach((btn) => {
+document.getElementsByClassName('level-rating-button').forEach((btn) => {
   btn.addEventListener('click', () => {
     updateExperienceLevel(
       btn.dataset.userId,

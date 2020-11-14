@@ -2,17 +2,17 @@ import { toggleFlagUserModal } from '../packs/flagUserModal';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
-  const button = document.querySelector('.close-actions-panel');
+  const button = document.getElementsByClassName('close-actions-panel')[0];
   button.addEventListener('click', () => {
     // getting the article show page document because this is called within an iframe
     // eslint-disable-next-line no-restricted-globals
     const articleDocument = top.document;
 
     articleDocument
-      .querySelector('.mod-actions-menu')
+      .getElementsByClassName('mod-actions-menu')[0]
       .classList.toggle('showing');
     articleDocument
-      .querySelector('.mod-actions-menu-btn')
+      .getElementsByClassName('mod-actions-menu-btn')[0]
       .classList.toggle('hidden');
   });
 }
@@ -28,10 +28,12 @@ export function initializeHeight() {
 function toggleDropdown(type) {
   if (type === 'set-experience') {
     document
-      .querySelector('.set-experience-options')
+      .getElementsByClassName('set-experience-options')[0]
       .classList.toggle('hidden');
   } else if (type === 'adjust-tags') {
-    document.querySelector('.adjust-tags-options').classList.toggle('hidden');
+    document
+      .getElementsByClassName('adjust-tags-options')[0]
+      .classList.toggle('hidden');
   }
 }
 
@@ -372,7 +374,7 @@ export function addBottomActionsListeners() {
 
         btn.querySelector('.label-wrapper > .icon').classList.toggle('hidden');
         btn
-          .querySelector('.toggle-chevron-container')
+          .getElementsByClassName('toggle-chevron-container')[0]
           .classList.toggle('rotated');
         toggleDropdown(btn.dataset.otherThingsType);
       });
@@ -390,7 +392,7 @@ export function addBottomActionsListeners() {
     });
   });
 
-  const unpublishArticleBtn = document.querySelector('#unpublish-article-btn');
+  const unpublishArticleBtn = document.getElementsById('unpublish-article-btn');
   if (unpublishArticleBtn) {
     unpublishArticleBtn.addEventListener('click', () => {
       const {

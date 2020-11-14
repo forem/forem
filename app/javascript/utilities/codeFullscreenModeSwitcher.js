@@ -1,6 +1,8 @@
 let isFullScreenModeCodeOn = false;
 let screenScroll = 0;
-const fullScreenWindow = document.querySelector('.js-fullscreen-code');
+const fullScreenWindow = document.getElementsByClassName(
+  'js-fullscreen-code',
+)[0];
 const body = document.body;
 
 function setAfterFullScreenScrollPosition() {

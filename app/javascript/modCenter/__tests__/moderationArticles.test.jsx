@@ -73,12 +73,14 @@ describe('<ModerationArticles />', () => {
 
     fireEvent.click(singleArticle);
     expect(
-      singleArticle.querySelector('.article-iframes-container').classList,
+      singleArticle.getElementsByClassName('article-iframes-container')[0]
+        .classList,
     ).toContain('opened');
 
     fireEvent.click(singleArticle);
     expect(
-      singleArticle.querySelector('.article-iframes-container').classList,
+      singleArticle.getElementsByClassName('article-iframes-container')[0]
+        .classList,
     ).not.toContain('opened');
   });
 
@@ -104,7 +106,7 @@ describe('<ModerationArticles />', () => {
     expect(flagUserModal).not.toBeNull();
 
     const actualArticleId = Number(
-      flagUserModal.querySelector('input').dataset.reactableId,
+      flagUserModal.getElementsByTagName('input')[0].dataset.reactableId,
     );
 
     expect(actualArticleId).toEqual(expectedArticleId);

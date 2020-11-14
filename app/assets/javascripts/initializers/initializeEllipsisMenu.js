@@ -47,7 +47,9 @@ function onXhrSuccess(form, article, values) {
     toggleNotifications(submit, submitValue);
   }
 
-  article.querySelector('.js-dashboard-row-more').classList.add('hidden');
+  article
+    .getElementsByClassName('js-dashboard-row-more')[0]
+    .classList.add('hidden');
 }
 
 function handleFormSubmit(e) {
@@ -75,10 +77,13 @@ function handleFormSubmit(e) {
         values.commit === 'Mute Notifications'
           ? 'Notifications Muted'
           : 'Notifications Restored';
-      article.querySelector('.js-dashboard-story-details').innerHTML = message;
+      article.getElementsByClassName(
+        'js-dashboard-story-details',
+      )[0].innerHTML = message;
     } else {
-      article.querySelector('.js-dashboard-story-details').innerHTML =
-        'Failed to update article.';
+      article.getElementsByClassName(
+        'js-dashboard-story-details',
+      )[0].innerHTML = 'Failed to update article.';
     }
   };
 }
@@ -97,7 +102,9 @@ function initializeFormSubmit() {
 
 function getMenu(el) {
   var parentDiv = el.closest('.js-dashboard-row-more');
-  var menu = parentDiv.querySelector('.js-dashboard-row-more-dropdown');
+  var menu = parentDiv.getElementsByClassName(
+    'js-dashboard-row-more-dropdown',
+  )[0];
   return menu;
 }
 
