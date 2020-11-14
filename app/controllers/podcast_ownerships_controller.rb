@@ -24,7 +24,7 @@ class PodcastOwnershipsController < ApplicationController
   def update
     @podcast_ownership = PodcastOwnership.find(params[:id])
 
-    if @podcast_ownership.update_attributes(podcast_ownership_params)
+    if @podcast_ownership.update(podcast_ownership_params)
       @podcast_ownership.save
       flash[:success] = "Updated successfully"
       redirect_to pod_path
