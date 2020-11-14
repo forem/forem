@@ -64,21 +64,13 @@ class RssReader
     []
   end
 
-  def get_item_count_error(feed)
-    if feed
-      feed.entries ? feed.entries.length : "no count"
-    else
-      "NIL FEED, INVALID URL"
-    end
-  end
-
   def fetch_rss(url)
     xml = HTTParty.get(url).body
     Feedjira.parse xml
   end
 
   def make_from_rss_item(item, user, feed)
-    return if Feeds::CheckItemMediumReply.call(item) || article_exists?(user, item)
+    return if Feeds::CheckItemMediumReply.call(item) || Feeds::CheckItemPreviouslyImported.call(item, user)
 
     feed_source_url = item.url.strip.split("?source=")[0]
     article = Article.create!(
@@ -95,15 +87,16 @@ class RssReader
     article
   end
 
-  def article_exists?(user, item)
-    title = item.title.strip.gsub('"', '\"')
-    feed_source_url = item.url.strip.split("?source=")[0]
-    relation = user.articles
-    relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
-  end
-
   def report_error(error, metadata)
     Honeybadger.context(metadata)
     Honeybadger.notify(error)
+  end
+
+  def get_item_count_error(feed)
+    if feed
+      feed.entries ? feed.entries.length : "no count"
+    else
+      "NIL FEED, INVALID URL"
+    end
   end
 end

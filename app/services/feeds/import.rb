@@ -122,7 +122,7 @@ module Feeds
       articles = []
 
       feed.entries.reverse_each do |item|
-        next if Feeds::CheckItemMediumReply.call(item) || article_exists?(user, item)
+        next if Feeds::CheckItemMediumReply.call(item) || Feeds::CheckItemPreviouslyImported.call(item, user)
 
         feed_source_url = item.url.strip.split("?source=")[0]
         article = Article.create!(
@@ -151,13 +151,6 @@ module Feeds
       end
 
       articles
-    end
-
-    def article_exists?(user, item)
-      title = item.title.strip.gsub('"', '\"')
-      feed_source_url = item.url.strip.split("?source=")[0]
-      relation = user.articles
-      relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
     end
 
     def report_error(error, metadata)

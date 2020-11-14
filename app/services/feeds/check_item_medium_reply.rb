@@ -1,4 +1,4 @@
-# Check if a Feedjira item represents a Medium reply or not
+# Checks if a Feedjira item represents a Medium reply or not
 module Feeds
   class CheckItemMediumReply
     MEDIUM_DOMAIN = "medium.com".freeze
