@@ -122,7 +122,7 @@ module Feeds
       articles = []
 
       feed.entries.reverse_each do |item|
-        next if medium_reply?(item) || article_exists?(user, item)
+        next if Feeds::CheckItemMediumReply.call(item) || article_exists?(user, item)
 
         feed_source_url = item.url.strip.split("?source=")[0]
         article = Article.create!(
@@ -151,25 +151,6 @@ module Feeds
       end
 
       articles
-    end
-
-    def get_host_without_www(url)
-      url = "http://#{url}" if URI.parse(url).scheme.nil?
-      host = URI.parse(url).host.downcase
-      host.start_with?("www.") ? host[4..] : host
-    end
-
-    def medium_reply?(item)
-      get_host_without_www(item.url.strip) == "medium.com" &&
-        !item[:categories] &&
-        content_is_not_the_title?(item)
-    end
-
-    def content_is_not_the_title?(item)
-      # [[:space:]] removes all whitespace, including unicode ones.
-      content = item.content.gsub(/[[:space:]]/, " ")
-      title = item.title.delete("…")
-      content.include?(title)
     end
 
     def article_exists?(user, item)
