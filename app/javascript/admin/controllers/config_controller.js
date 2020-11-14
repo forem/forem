@@ -52,7 +52,7 @@ export default class ConfigController extends Controller {
   }
 
   positionModalOnPage() {
-    if (document.getElementByClassName('crayons-modal')[0]) {
+    if (document.getElementsByClassName('crayons-modal')[0]) {
       document.body.style.height = '100vh';
       document.body.style.overflowY = 'hidden';
     }
