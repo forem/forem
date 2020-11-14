@@ -1,7 +1,7 @@
 import { h, render } from 'preact';
+import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 
 /* global userData */
-
 // This logic is similar to that in initScrolling.js.erb
 const frontPageFeedPathNames = new Map([
   ['/', ''],
@@ -21,28 +21,6 @@ if (mainNavMoreTrigger) {
   mainNavMoreTrigger.addEventListener('click', toggleMainNavMore);
 }
 
-function toggleListingsMinimization() {
-  if (document.body.classList.contains('config_minimize_newest_listings')) {
-    // Un-minimize
-    localStorage.setItem('config_minimize_newest_listings', 'no');
-    document.body.classList.remove('config_minimize_newest_listings');
-  } else {
-    // Minimize
-    localStorage.setItem('config_minimize_newest_listings', 'yes');
-    document.body.classList.add('config_minimize_newest_listings');
-  }
-}
-
-const sidebarListingsMinimizeButton = document.getElementById(
-  'sidebar-listings-widget-minimize-button',
-);
-if (sidebarListingsMinimizeButton) {
-  sidebarListingsMinimizeButton.addEventListener(
-    'click',
-    toggleListingsMinimization,
-  );
-}
-
 /**
  * Renders tags followed in the left side bar of the homepage.
  *
@@ -56,26 +34,24 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
   }
 
   // Only render if a user is logged on.
-  import('../leftSidebar/TagsFollowed').then(({ TagsFollowed }) => {
-    const { followed_tags } = user; // eslint-disable-line camelcase
-    const followedTags = JSON.parse(followed_tags);
+  const { followed_tags } = user; // eslint-disable-line camelcase
+  const followedTags = JSON.parse(followed_tags);
 
-    // This should be done server-side potentially
-    // sort tags by descending weight, descending popularity and name
-    followedTags.sort((tagA, tagB) => {
-      return (
-        tagB.points - tagA.points ||
-        tagB.hotness_score - tagA.hotness_score ||
-        tagA.name.localeCompare(tagB.name)
-      );
-    });
-
-    render(
-      <TagsFollowed tags={followedTags} />,
-      tagsFollowedContainer,
-      tagsFollowedContainer.firstElementChild,
+  // This should be done server-side potentially
+  // sort tags by descending weight, descending popularity and name
+  followedTags.sort((tagA, tagB) => {
+    return (
+      tagB.points - tagA.points ||
+      tagB.hotness_score - tagA.hotness_score ||
+      tagA.name.localeCompare(tagB.name)
     );
   });
+
+  render(
+    <TagsFollowed tags={followedTags} />,
+    tagsFollowedContainer,
+    tagsFollowedContainer.firstElementChild,
+  );
 }
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
@@ -113,18 +89,23 @@ if (!document.getElementById('featured-story-marker')) {
           renderFeed(changedFeedTimeFrame);
         });
       });
-      renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
+
+      const tagsFollowedContainer = document.getElementById(
+        'sidebar-nav-followed-tags',
+      );
+
+      if (tagsFollowedContainer) renderTagsFollowed(tagsFollowedContainer);
     }
   }, 2);
 }
 
-InstantClick.on('receive', (address, body, title) => {
+InstantClick.on('change', () => {
   if (document.body.dataset.userStatus !== 'logged-in') {
     // Nothing to do, the user is not logged on.
     return false;
   }
 
-  const tagsFollowedContainer = body.querySelector(
+  const tagsFollowedContainer = document.body.querySelector(
     '#sidebar-nav-followed-tags',
   );
 
@@ -134,10 +115,5 @@ InstantClick.on('receive', (address, body, title) => {
   }
 
   renderTagsFollowed(tagsFollowedContainer);
-
-  return {
-    body,
-    title,
-  };
 });
 InstantClick.init();

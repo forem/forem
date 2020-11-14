@@ -1,19 +1,13 @@
-<div class="row m-3">
-  <div class="col">
-    <%= form_tag("/admin/podcasts", method: "get") do %>
-      <div class="form-row justify-content-end">
-        <div class="form-group">
-          <%= text_field_tag(:search, params[:search]) %>
-          <%= submit_tag("Search") %>
-        </div>
-      </div>
-    <% end %>
+<%= form_tag("/admin/podcasts", method: "get", class: "mb-6") do %>
+  <div class="form-group">
+    <%= text_field_tag(:search, params[:search], aria: { label: "Search" }) %>
+    <%= submit_tag("Search") %>
   </div>
-</div>
+<% end %>
 
 <%= paginate @podcasts %>
 
-<table class="table">
+<table class="crayons-table" width="100%">
   <thead>
     <tr>
       <th scope="col">ID</th>
@@ -26,22 +20,22 @@
       <th scope="col">Admin</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="crayons-card">
     <% @podcasts.each do |podcast| %>
-    <tr>
-      <td><%= podcast.id %></td>
-      <td><%= link_to podcast.title, edit_admin_podcast_path(podcast) %></td>
-      <td><%= link_to podcast.feed_url, podcast.feed_url %></td>
-      <td><%= podcast.episodes_count %></td>
-      <td><%= podcast.reachable %></td>
-      <td><%= podcast.published %></td>
-      <td><%= podcast.status_notice %></td>
-      <td>
-        <% podcast.admins.pluck(:username).each do |username| %>
-          <%= link_to "@#{username}", "/#{username}" %>
-        <% end %>
-      </td>
-    </tr>
+      <tr>
+        <td><%= podcast.id %></td>
+        <td><%= link_to podcast.title, edit_admin_podcast_path(podcast) %></td>
+        <td><%= link_to podcast.feed_url, podcast.feed_url %></td>
+        <td><%= podcast.episodes_count %></td>
+        <td><%= podcast.reachable %></td>
+        <td><%= podcast.published %></td>
+        <td><%= podcast.status_notice %></td>
+        <td>
+          <% podcast.admins.pluck(:username).each do |username| %>
+            <%= link_to "@#{username}", "/#{username}" %>
+          <% end %>
+        </td>
+      </tr>
     <% end %>
   </tbody>
 </table>

@@ -1,6 +1,7 @@
 module Admin
   class UsersController < Admin::ApplicationController
     layout "admin"
+    using StringToBoolean
 
     after_action only: %i[update user_status banish full_delete merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
@@ -15,6 +16,8 @@ module Admin
     def edit
       @user = User.find(params[:id])
       @notes = @user.notes.order(created_at: :desc).limit(10).load
+      set_feedback_messages
+      set_related_reactions
     end
 
     def show
@@ -32,7 +35,7 @@ module Admin
 
     def update
       @user = User.find(params[:id])
-      manage_credits
+      Credits::Manage.call(@user, user_params)
       add_note if user_params[:new_note]
       redirect_to "/admin/users/#{params[:id]}"
     end
@@ -48,6 +51,21 @@ module Admin
       redirect_to "/admin/users/#{@user.id}/edit"
     end
 
+    def export_data
+      user = User.find(params[:id])
+      send_to_admin = params[:send_to_admin].to_boolean
+      if send_to_admin
+        email = SiteConfig.email_addresses[:default]
+        receiver = "admin"
+      else
+        email = user.email
+        receiver = "user"
+      end
+      ExportContentWorker.perform_async(user.id, email)
+      flash[:success] = "Data exported to the #{receiver}. The job will complete momentarily."
+      redirect_to edit_admin_user_path(user.id)
+    end
+
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
       flash[:success] = "This user is being banished in the background. The job will complete soon."
@@ -57,9 +75,9 @@ module Admin
     def full_delete
       @user = User.find(params[:id])
       begin
-        Moderator::DeleteUser.call(admin: current_user, user: @user, user_params: user_params)
+        Moderator::DeleteUser.call(user: @user)
         message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
-          "has been fully deleted. If requested, old content may have been ghostified. " \
+          "has been fully deleted." \
           "If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
         flash[:success] = message
       rescue StandardError => e
@@ -83,22 +101,9 @@ module Admin
       identity = Identity.find(user_params[:identity_id])
       @user = identity.user
       begin
-        BackupData.backup!(identity)
         identity.delete
         @user.update("#{identity.provider}_username" => nil)
         flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
-      rescue StandardError => e
-        flash[:danger] = e.message
-      end
-      redirect_to "/admin/users/#{@user.id}/edit"
-    end
-
-    def recover_identity
-      backup = BackupData.find(user_params[:backup_data_id])
-      @user = backup.instance_user
-      begin
-        identity = backup.recover!
-        flash[:success] = "The #{identity.provider} identity was successfully recovered, and the backup was removed."
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -131,13 +136,6 @@ module Admin
 
     private
 
-    def manage_credits
-      add_credits if user_params[:add_credits]
-      add_org_credits if user_params[:add_org_credits]
-      remove_org_credits if user_params[:remove_org_credits]
-      remove_credits if user_params[:remove_credits]
-    end
-
     def add_note
       Note.create(
         author_id: current_user.id,
@@ -148,34 +146,30 @@ module Admin
       )
     end
 
-    def add_credits
-      amount = user_params[:add_credits].to_i
-      Credit.add_to(@user, amount)
+    def set_feedback_messages
+      @related_reports = FeedbackMessage.where(id: @user.reporter_feedback_messages.ids)
+        .or(FeedbackMessage.where(id: @user.affected_feedback_messages.ids))
+        .or(FeedbackMessage.where(id: @user.offender_feedback_messages.ids))
+        .order(created_at: :desc).limit(15)
     end
 
-    def remove_credits
-      amount = user_params[:remove_credits].to_i
-      Credit.remove_from(@user, amount)
-    end
-
-    def add_org_credits
-      org = Organization.find(user_params[:organization_id])
-      amount = user_params[:add_org_credits].to_i
-      Credit.add_to(org, amount)
-    end
-
-    def remove_org_credits
-      org = Organization.find(user_params[:organization_id])
-      amount = user_params[:remove_org_credits].to_i
-      Credit.remove_from(org, amount)
+    def set_related_reactions
+      user_article_ids = @user.articles.ids
+      user_comment_ids = @user.comments.ids
+      @related_vomit_reactions = Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids,
+                                                category: "vomit")
+        .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
+        .or(Reaction.where(reactable_type: "User", user_id: @user.id, category: "vomit"))
+        .includes(:reactable)
+        .order(created_at: :desc).limit(15)
     end
 
     def user_params
       allowed_params = %i[
         new_note note_for_current_role user_status
         pro merge_user_id add_credits remove_credits
-        add_org_credits remove_org_credits ghostify
-        organization_id identity_id backup_data_id
+        add_org_credits remove_org_credits
+        organization_id identity_id
       ]
       params.require(:user).permit(allowed_params)
     end

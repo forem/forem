@@ -10,7 +10,7 @@ function userProfilePage(username) {
 
 export const CommentListItem = ({ comment }) => (
   <div
-    className="crayons-comment pl-2 cursor-pointer"
+    className="crayons-comment cursor-pointer"
     role="presentation"
     onClick={(_event) => {
       if (_event.which > 1 || _event.metaKey || _event.ctrlKey) {
@@ -52,7 +52,6 @@ export const CommentListItem = ({ comment }) => (
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: comment.safe_processed_html }}
     />
-    <div className="crayons-comment__footer" />
   </div>
 );
 

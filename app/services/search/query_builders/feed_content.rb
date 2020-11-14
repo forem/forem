@@ -17,6 +17,7 @@ module Search
       # Search keys from our controllers may not match what we have stored in Elasticsearch so we map them here,
       # this allows us to change our Elasticsearch docs without worrying about the frontend
       TERM_KEYS = {
+        id: "id", # NOTE: FeedContent ids are formatted article_#, podcast_episode_#, comment_#
         tag_names: "tags.name",
         approved: "approved",
         user_id: "user.id",
@@ -137,8 +138,14 @@ module Search
         TERM_KEYS.filter_map do |term_key, search_key|
           next unless @params.key? term_key
 
-          { terms: { search_key => Array.wrap(@params[term_key]) } }
-        end
+          values = Array.wrap(@params[term_key])
+
+          if params[:tag_boolean_mode] == "all" && term_key == :tag_names
+            values.map { |val| { term: { search_key => val } } }
+          else
+            { terms: { search_key => values } }
+          end
+        end.compact
       end
 
       def range_keys

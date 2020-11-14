@@ -46,7 +46,7 @@ RSpec.describe ArticleDecorator, type: :decorator do
 
     it "returns the article url without a canonical_url" do
       article.canonical_url = ""
-      expected_url = "https://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
+      expected_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
       expect(article.decorate.processed_canonical_url).to eq(expected_url)
     end
   end
@@ -77,7 +77,7 @@ RSpec.describe ArticleDecorator, type: :decorator do
 
   describe "#url" do
     it "returns the article url" do
-      expected_url = "https://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
+      expected_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
       expect(article.decorate.url).to eq(expected_url)
     end
   end

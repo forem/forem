@@ -8,6 +8,10 @@ RSpec.describe MarkdownParser, type: :labor do
     described_class.new(raw_markdown).finalize
   end
 
+  it "has the correct raw tag delimiters" do
+    expect(described_class::RAW_TAG_DELIMITERS).to match_array(["{", "}", "raw", "endraw", "----"])
+  end
+
   it "renders plain text as-is" do
     expect(basic_parsed_markdown.finalize).to include(random_word)
   end
@@ -185,7 +189,7 @@ RSpec.describe MarkdownParser, type: :labor do
     it "does not raise error if no XSS attempt detected" do
       expect do
         generate_and_parse_markdown("```const data = 'data:text/html';```")
-      end.not_to raise_error(ArgumentError)
+      end.not_to raise_error
     end
   end
 

@@ -8,8 +8,8 @@ module ProfileFields
         new.add_fields
       end
 
-      def group(group = nil)
-        @group = group
+      def group(name = nil)
+        @group = ProfileFieldGroup.find_or_create_by(name: name)
         yield if block_given?
         @group = nil
       end
@@ -26,13 +26,13 @@ module ProfileFields
           input_type: input_type,
           placeholder_text: placeholder,
           description: description,
-          group: group
+          profile_field_group: group
         }.compact
       end
     end
 
     def add_fields
-      self.class.fields.each { |field| ProfileField.create(field) }
+      self.class.fields.each { |field| ProfileField.find_or_create_by(field) }
     end
   end
 end

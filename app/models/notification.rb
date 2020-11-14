@@ -118,7 +118,7 @@ class Notification < ApplicationRecord
     end
 
     def fast_destroy_old_notifications(destroy_before_timestamp = 3.months.ago)
-      sql = <<-SQL
+      sql = <<-SQL.squish
         DELETE FROM notifications
         WHERE notifications.id IN (
           SELECT notifications.id

@@ -4,19 +4,19 @@ RSpec.describe Search::BulkIndexWorker, type: :worker do
   let(:worker) { subject }
   let(:article) { create(:article) }
 
-  include_examples "#enqueues_on_correct_queue", "high_priority", ["Reaction", 1]
+  include_examples "#enqueues_on_correct_queue", "high_priority", ["Tag", 1]
 
-  it "indexes documents for a set of given ids and object class", elasticsearch: "Reaction" do
-    reactions = [create(:reaction, reactable: article), create(:reaction), create(:reaction)]
+  it "indexes documents for a set of given ids and object class", elasticsearch: "Tag" do
+    tags = [create(:tag), create(:tag), create(:tag)]
     Sidekiq::Worker.clear_all
 
-    reactions.each do |reaction|
-      expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+    tags.each do |tag|
+      expect { tag.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
     end
-    worker.perform("Reaction", reactions.map(&:id))
+    worker.perform("Tag", tags.map(&:id))
 
-    reactions.each do |reaction|
-      expect(reaction.elasticsearch_doc.dig("_source", "id")).to eql(reaction.id)
+    tags.each do |tag|
+      expect(tag.elasticsearch_doc.dig("_source", "id")).to eql(tag.id)
     end
   end
 end

@@ -26,8 +26,6 @@ FactoryBot.define do
     bg_color_hex                 { Faker::Color.hex_color }
     text_color_hex               { Faker::Color.hex_color }
 
-    after(:create) { |user| create(:profile, user: user) }
-
     trait :with_identity do
       transient { identities { Authentication::Providers.available } }
 
@@ -83,6 +81,13 @@ FactoryBot.define do
 
     trait :banned do
       after(:build) { |user| user.add_role(:banned) }
+    end
+
+    trait :invited do
+      after(:build) do |user|
+        user.registered = false
+        user.registered_at = nil
+      end
     end
 
     trait :ignore_mailchimp_subscribe_callback do
@@ -159,7 +164,15 @@ FactoryBot.define do
       medium_url { "www.medium.com/example" }
       gitlab_url { "www.gitlab.com/example" }
       instagram_url { "www.instagram.com/example" }
-      twitch_username { "Example007" }
+    end
+
+    trait :without_profile do
+      _skip_creating_profile { true }
+    end
+
+    trait :with_newsletters do
+      email_newsletter { true }
+      email_digest_periodic { true }
     end
   end
 end

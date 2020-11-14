@@ -79,29 +79,11 @@ RSpec.describe GithubRepo, type: :model do
   end
 
   describe "::update_to_latest" do
-    let(:fake_github_client) do
-      Class.new(Github::OauthClient) do
-        def repository(name); end
-      end
-    end
-
-    let(:stubbed_github_repo) do
-      OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url))
-    end
-    let(:github_client) { instance_double(fake_github_client, repository: stubbed_github_repo) }
-
-    before do
-      allow(Github::OauthClient).to receive(:new).and_return(github_client)
-    end
-
-    it "updates all repositories" do
-      repo.save
-      old_updated_at = repo.updated_at
-
-      Timecop.freeze(3.days.from_now) do
-        described_class.update_to_latest
-        expect(old_updated_at).not_to eq(described_class.find(repo.id).updated_at)
-      end
+    it "enqueues GithubRepos::RepoSyncWorker" do
+      repo.update(updated_at: 1.week.ago)
+      allow(GithubRepos::RepoSyncWorker).to receive(:perform_async)
+      described_class.update_to_latest
+      expect(GithubRepos::RepoSyncWorker).to have_received(:perform_async).with(repo.id)
     end
   end
 end

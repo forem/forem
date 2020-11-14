@@ -18,7 +18,7 @@ describe('<ReadingList />', () => {
             body_text: 'Some body text',
             class_name: 'Article',
             path: '/bobbytables/what-s-in-your-database-2d3f',
-            published_date_string: 'Jun 22',
+            readable_publish_date_string: 'Jun 22',
             reading_time: 0,
             tags: [
               {

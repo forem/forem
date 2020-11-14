@@ -75,7 +75,7 @@ export class Help extends Component {
             post.
           </li>
           <li>
-            Add up to four tags per post. Combine tags to reach the appropriate
+            Add up to four comma-separated tags per post. Combine tags to reach the appropriate
             subcommunities.
           </li>
           <li>Use existing tags whenever possible.</li>
@@ -234,6 +234,10 @@ export class Help extends Component {
               Liquid tags
             </a>{' '}
             to add rich content such as Tweets, YouTube videos, etc.
+          </li>
+          <li>
+            In addition to images for the post's content, you can also drag and
+            drop a cover image
           </li>
         </ul>
       </div>

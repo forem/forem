@@ -1,9 +1,18 @@
 require "rails_helper"
 
-RSpec.describe "User visits podcast show page", type: :system do
+RSpec.describe "User visits podcast show page", type: :system, js: true do
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:single_quote_episode) { create(:podcast_episode, title: "What's up doc?!") }
+
+  it "doesn't detect native capabilities from a non-mobile web browser" do
+    visit podcast_episode.path.to_s
+
+    result = execute_script("return Runtime.isNativeIOS('podcast')")
+    expect(result).to be false
+    result = execute_script("return Runtime.isNativeAndroid('podcast')")
+    expect(result).to be false
+  end
 
   it "they see the content of the hero", js: true, retry: 3 do
     visit podcast_episode.path.to_s

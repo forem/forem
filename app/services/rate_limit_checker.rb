@@ -9,6 +9,7 @@ class RateLimitChecker
     listing_creation: { retry_after: 60 },
     organization_creation: { retry_after: 300 },
     published_article_creation: { retry_after: 30 },
+    published_article_antispam_creation: { retry_after: 300 },
     reaction_creation: { retry_after: 30 },
     send_email_confirmation: { retry_after: 120 },
     user_subscription_creation: { retry_after: 30 },
@@ -85,8 +86,15 @@ class RateLimitChecker
   end
 
   def check_published_article_creation_limit
+    # TODO: Vaidehi Joshi - We should make this time frame configurable.
     user.articles.published.where("created_at > ?", 30.seconds.ago).size >
       SiteConfig.rate_limit_published_article_creation
+  end
+
+  def check_published_article_antispam_creation_limit
+    # TODO: Vaidehi Joshi - We should make this time frame configurable.
+    user.articles.published.where("created_at > ?", 5.minutes.ago).size >
+      SiteConfig.rate_limit_published_article_antispam_creation
   end
 
   def check_follow_account_limit

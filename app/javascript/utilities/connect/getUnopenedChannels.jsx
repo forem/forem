@@ -23,8 +23,9 @@ class UnopenedChannelNotice extends Component {
 
   componentDidMount() {
     const { pusherKey } = this.props;
+    const { appDomain } = document.body.dataset;
     setupPusher(pusherKey, {
-      channelId: `private-message-notifications-${window.currentUser.id}`,
+      channelId: `private-message-notifications--${appDomain}-${window.currentUser.id}`,
       messageCreated: this.receiveNewMessage,
       messageDeleted: this.removeMessage,
       messageEdited: this.updateMessage,
@@ -98,6 +99,7 @@ class UnopenedChannelNotice extends Component {
 
   receiveNewMessage = (e) => {
     if (
+      e.user_id === window.currentUser.id ||
       (window.location.pathname.startsWith('/connect') &&
         e.user_id === window.currentUser.id &&
         e.channel_type !== 'direct') ||
@@ -173,8 +175,7 @@ class UnopenedChannelNotice extends Component {
           <div>
             {channel.request_type === 'mentioned'
               ? 'You got mentioned in'
-              : 'New Message from'}
-            {' '}
+              : 'New Message from'}{' '}
             <a
               href={`/connect/${channel.adjusted_slug}`}
               style={{

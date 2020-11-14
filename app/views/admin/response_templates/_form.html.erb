@@ -1,4 +1,4 @@
-<%= form_with(model: [:admin, response_template], local: true, html: { class: "mb-5" }) do |f| %>
+<%= form_with(model: [:admin, response_template], local: true, html: { class: "crayons-card p-6" }) do |f| %>
   <div class="form-group">
     <%= f.label :type_of, "Type of Response Template" %>
     <% type_of_options = [["Mod Comment", "mod_comment"], ["Personal Comment", "personal_comment"], %w[Email email_reply], ["Abuse Report Email", "abuse_report_email_reply"]] %>

@@ -34,8 +34,12 @@ RSpec.describe User, type: :model do
     describe "builtin validations" do
       subject { user }
 
-      it { is_expected.to have_many(:ahoy_events).dependent(:destroy) }
-      it { is_expected.to have_many(:ahoy_visits).dependent(:destroy) }
+      it { is_expected.to have_one(:profile).dependent(:destroy) }
+
+      it { is_expected.to have_many(:access_grants).class_name("Doorkeeper::AccessGrant").dependent(:delete_all) }
+      it { is_expected.to have_many(:access_tokens).class_name("Doorkeeper::AccessToken").dependent(:delete_all) }
+      it { is_expected.to have_many(:ahoy_events).class_name("Ahoy::Event").dependent(:destroy) }
+      it { is_expected.to have_many(:ahoy_visits).class_name("Ahoy::Visit").dependent(:destroy) }
       it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
       it { is_expected.to have_many(:articles).dependent(:destroy) }
       it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
@@ -43,32 +47,38 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-      it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:collections).dependent(:destroy) }
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
       it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
+      it { is_expected.to have_many(:endorsements).dependent(:destroy) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:html_variants).dependent(:destroy) }
       it { is_expected.to have_many(:identities).dependent(:destroy) }
+      it { is_expected.to have_many(:identities_enabled) }
+      it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:mentions).dependent(:destroy) }
       it { is_expected.to have_many(:messages).dependent(:destroy) }
-      it { is_expected.to have_many(:notes) }
+      it { is_expected.to have_many(:notes).dependent(:destroy) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:notifications).dependent(:destroy) }
       it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
-      it { is_expected.to have_many(:page_views).dependent(:destroy) }
+      it { is_expected.to have_many(:page_views).dependent(:nullify) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
       it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
       it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
-      it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:rating_votes).dependent(:nullify) }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:response_templates).dependent(:destroy) }
-      it { is_expected.to have_many(:tweets).dependent(:destroy) }
+      it { is_expected.to have_many(:source_authored_user_subscriptions).dependent(:destroy) }
+      it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
+      it { is_expected.to have_many(:subscribers).dependent(:destroy) }
+      it { is_expected.to have_many(:tweets).dependent(:nullify) }
+      it { is_expected.to have_many(:webhook_endpoints).class_name("Webhook::Endpoint").dependent(:delete_all) }
 
       # rubocop:disable RSpec/NamedSubject
       it do
@@ -100,10 +110,19 @@ RSpec.describe User, type: :model do
       end
 
       it do
-        expect(subject).to have_many(:backup_data)
-          .class_name("BackupData")
-          .with_foreign_key("instance_user_id")
-          .dependent(:delete_all)
+        expect(subject).to have_many(:badge_achievements_rewarded)
+          .class_name("BadgeAchievement")
+          .with_foreign_key("rewarder_id")
+          .inverse_of(:rewarder)
+          .dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:banished_users)
+          .class_name("BanishedUser")
+          .with_foreign_key("banished_by_id")
+          .inverse_of(:banished_by)
+          .dependent(:nullify)
       end
 
       it do
@@ -118,6 +137,22 @@ RSpec.describe User, type: :model do
           .class_name("UserBlock")
           .with_foreign_key("blocker_id")
           .dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:buffer_updates_approved)
+          .class_name("BufferUpdate")
+          .with_foreign_key("approver_user_id")
+          .inverse_of(:approver_user)
+          .dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:buffer_updates_composed)
+          .class_name("BufferUpdate")
+          .with_foreign_key("composer_user_id")
+          .inverse_of(:composer_user)
+          .dependent(:nullify)
       end
 
       it do
@@ -140,43 +175,40 @@ RSpec.describe User, type: :model do
           .with_foreign_key(:reporter_id)
           .dependent(:nullify)
       end
-
-      it do
-        expect(subject).to have_many(:webhook_endpoints)
-          .class_name("Webhook::Endpoint")
-          .dependent(:delete_all)
-      end
       # rubocop:enable RSpec/NamedSubject
 
-      it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
-      it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
-      it { is_expected.to allow_value("#aabbcc").for(:bg_color_hex) }
-      it { is_expected.to allow_value("#aabbcc").for(:text_color_hex) }
-      it { is_expected.to allow_value("#abc").for(:bg_color_hex) }
-      it { is_expected.to allow_value("#abc").for(:text_color_hex) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
+      it { is_expected.to validate_inclusion_of(:email_digest_periodic).in_array([true, false]) }
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
-      it { is_expected.to validate_length_of(:available_for).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:behance_url).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:currently_hacking_on).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:currently_learning).is_at_most(500).allow_nil }
-      it { is_expected.to validate_length_of(:education).is_at_most(100).allow_nil }
+      it { is_expected.to validate_inclusion_of(:welcome_notifications).in_array([true, false]) }
+
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
-      it { is_expected.to validate_length_of(:employer_name).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:employer_url).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:employment_title).is_at_most(100).allow_nil }
       it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
-      it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
-      it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
-      it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+
+      it { is_expected.to validate_presence_of(:articles_count) }
+      it { is_expected.to validate_presence_of(:badge_achievements_count) }
+      it { is_expected.to validate_presence_of(:blocked_by_count) }
+      it { is_expected.to validate_presence_of(:blocking_others_count) }
+      it { is_expected.to validate_presence_of(:comments_count) }
+      it { is_expected.to validate_presence_of(:config_font) }
+      it { is_expected.to validate_presence_of(:config_navbar) }
+      it { is_expected.to validate_presence_of(:config_theme) }
+      it { is_expected.to validate_presence_of(:credits_count) }
+      it { is_expected.to validate_presence_of(:following_orgs_count) }
+      it { is_expected.to validate_presence_of(:following_tags_count) }
+      it { is_expected.to validate_presence_of(:following_users_count) }
+      it { is_expected.to validate_presence_of(:rating_votes_count) }
+      it { is_expected.to validate_presence_of(:reactions_count) }
+      it { is_expected.to validate_presence_of(:sign_in_count) }
+      it { is_expected.to validate_presence_of(:spent_credits_count) }
+      it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
+
       it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
-      it { is_expected.to validate_url_of(:employer_url) }
-      it { is_expected.to validate_url_of(:website_url) }
 
       Authentication::Providers.username_fields.each do |username_field|
         it { is_expected.to validate_uniqueness_of(username_field).allow_nil }
@@ -308,224 +340,6 @@ RSpec.describe User, type: :model do
       it "does not allow to change to a username that is taken by an organization" do
         user.username = create(:organization).slug
         expect(user).not_to be_valid
-      end
-    end
-
-    describe "#website_url" do
-      it "does not accept invalid website url" do
-        user.website_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid http website url" do
-        user.website_url = "http://ben.com"
-        expect(user).to be_valid
-      end
-    end
-
-    describe "#mastodon_url" do
-      it "accepts valid https mastodon url" do
-        user.mastodon_url = "https://mastodon.social/@test"
-        expect(user).to be_valid
-      end
-
-      it "does not accept a denied mastodon instance" do
-        user.mastodon_url = "https://SpammyMcSpamface.com/"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept invalid mastodon url" do
-        user.mastodon_url = "mastodon.social/@test"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept an invalid url" do
-        user.mastodon_url = "ben .com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#facebook_url" do
-      it "accepts valid https facebook url", :aggregate_failures do
-        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
-          user.facebook_url = "https://facebook.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid facebook url" do
-        user.facebook_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#youtube_url" do
-      it "accepts valid https youtube url", :aggregate_failures do
-        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
-          user.youtube_url = "https://youtube.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid youtube url" do
-        user.youtube_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#behance_url" do
-      it "accepts valid https behance url", :aggregate_failures do
-        %w[jess jess/ je-ss jes_ss].each do |username|
-          user.behance_url = "https://behance.net/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid behance url" do
-        user.behance_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#twitch_url" do
-      it "does not accept invalid twitch url" do
-        user.twitch_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid https twitch url", :aggregate_failures do
-        %w[pandyzhao pandyzhao/ PandyZhao_ pandy_Zhao].each do |username|
-          user.twitch_url = "https://twitch.tv/#{username}"
-          expect(user).to be_valid
-        end
-      end
-    end
-
-    describe "#stackoverflow_url" do
-      it "accepts valid https stackoverflow url", :aggregate_failures do
-        %w[pandyzhao pandyzhao/ pandy-zhao].each do |username|
-          user.stackoverflow_url = "https://stackoverflow.com/users/7381391/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid stackoverflow url" do
-        user.stackoverflow_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid stackoverflow sub community url", :aggregate_failures do
-        %w[pt ru es ja].each do |subcommunity|
-          user.stackoverflow_url = "https://#{subcommunity}.stackoverflow.com/users/7381391/mazen"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid stackoverflow sub community url" do
-        user.stackoverflow_url = "https://fr.stackoverflow.com/users/7381391/mazen"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#linkedin_url" do
-      it "accepts valid https linkedin url", :aggregate_failures do
-        %w[jessleenyc jessleenyc/ jess-lee-nyc].each do |username|
-          user.linkedin_url = "https://linkedin.com/in/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "accepts valid country specific https linkedin url" do
-        user.linkedin_url = "https://mx.linkedin.com/in/jessleenyc"
-        expect(user).to be_valid
-      end
-
-      it "does not accept three letters country codes in http linkedin url" do
-        user.linkedin_url = "http://mex.linkedin.com/in/jessleenyc"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept three letters country codes in https linkedin url" do
-        user.linkedin_url = "https://mex.linkedin.com/in/jessleenyc"
-        expect(user).not_to be_valid
-      end
-
-      it "does not accept invalid linkedin url" do
-        user.linkedin_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#dribbble_url", :aggregate_failures do
-      it "accepts valid https dribbble url" do
-        %w[jess jess/ je-ss je_ss].each do |username|
-          user.dribbble_url = "https://dribbble.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid dribbble url" do
-        user.dribbble_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#medium_url" do
-      it "accepts valid https medium url", :aggregate_failures do
-        %w[jess jess/ je-ss je_ss].each do |username|
-          user.medium_url = "https://medium.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid medium url" do
-        user.medium_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#instagram_url" do
-      it "does not accept invalid instagram url" do
-        user.instagram_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "accepts valid instagram url", :aggregate_failures do
-        %w[jess je_ss je_ss.tt A.z.E.r.T.y].each do |username|
-          user.instagram_url = "https://instagram.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-    end
-
-    describe "#gitlab_url" do
-      it "accepts valid https gitlab url", :aggregate_failures do
-        %w[jess jess/ je-ss je_ss].each do |username|
-          user.gitlab_url = "https://gitlab.com/#{username}"
-          expect(user).to be_valid
-        end
-      end
-
-      it "does not accept invalid gitlab url" do
-        user.gitlab_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-    end
-
-    describe "#employer_url" do
-      it "does not accept invalid employer url" do
-        user.employer_url = "ben.com"
-        expect(user).not_to be_valid
-      end
-
-      it "does accept valid http employer url" do
-        user.employer_url = "http://ben.com"
-        expect(user).to be_valid
-      end
-
-      it "does accept valid https employer url" do
-        user.employer_url = "https://ben.com"
-        expect(user).to be_valid
       end
     end
 
@@ -862,8 +676,11 @@ RSpec.describe User, type: :model do
         mock_username(provider_name, "valid_username")
         new_user = user_from_authorization_service(provider_name)
 
-        if provider_name == :apple
+        case provider_name
+        when :apple
           expect(new_user.username).to match(/valid_username_\w+/)
+        when :facebook
+          expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("valid_username")
         end
@@ -878,8 +695,11 @@ RSpec.describe User, type: :model do
         mock_username(provider_name, "invalid.username")
         new_user = user_from_authorization_service(provider_name)
 
-        if provider_name == :apple
+        case provider_name
+        when :apple
           expect(new_user.username).to match(/invalidusername_\w+/)
+        when :facebook
+          expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
           expect(new_user.username).to eq("invalidusername")
         end
@@ -974,7 +794,7 @@ RSpec.describe User, type: :model do
 
   describe "theming properties" do
     it "creates proper body class with defaults" do
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
@@ -996,28 +816,28 @@ RSpec.describe User, type: :model do
     it "creates proper body class with sans serif config" do
       user.config_font = "sans_serif"
 
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.config_font = "open_dyslexic"
 
-      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
 
-      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
 
-      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
@@ -1046,6 +866,15 @@ RSpec.describe User, type: :model do
     it "has an accurate organization follow count" do
       user.follow(org)
       expect(user.reload.following_orgs_count).to eq(1)
+    end
+
+    it "returns cached ids of articles that have been saved to their readinglist" do
+      article = create(:article)
+      article2 = create(:article)
+      create(:reading_reaction, user: user, reactable: article)
+      create(:reading_reaction, user: user, reactable: article2)
+
+      expect(user.cached_reading_list_article_ids).to eq([article2.id, article.id])
     end
   end
 
@@ -1179,6 +1008,38 @@ RSpec.describe User, type: :model do
       user = create(:user, :with_identity)
 
       expect(user.authenticated_with_all_providers?).to be(true)
+    end
+  end
+
+  describe "profiles" do
+    before do
+      create(:profile_field, label: "Available for")
+      create(:profile_field, label: "Brand Color 1")
+      Profile.refresh_attributes!
+    end
+
+    it "automatically creates a profile for new users", :aggregate_failures do
+      user = create(:user)
+      expect(user.profile).to be_present
+      expect(user.profile).to respond_to(:available_for)
+    end
+
+    it "propagates changes of unmapped attributes to the profile model", :aggregate_failures do
+      expect do
+        user.update(available_for: "profile migrations")
+      end.to change { user.profile.reload.available_for }.from(nil).to("profile migrations")
+
+      # Changes were also persisted in the users table
+      expect(user.reload.available_for).to eq "profile migrations"
+    end
+
+    it "propagates changes of mapped attributes to the profile model", :aggregate_failures do
+      expect do
+        user.update(bg_color_hex: "#abcdef")
+      end.to change { user.profile.reload.brand_color1 }.to("#abcdef")
+
+      # Changes were also persisted in the users table
+      expect(user.reload.bg_color_hex).to eq "#abcdef"
     end
   end
 end

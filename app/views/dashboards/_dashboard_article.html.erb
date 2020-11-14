@@ -41,32 +41,32 @@
   </div>
   <div class="dashboard-actions">
     <% if !article.published %>
-      <a href="<%= article.current_state_path %>" class="pill cta yellow">DRAFT</a>
+      <a href="<%= article.current_state_path %>" class="crayons-btn">Draft</a>
     <% end %>
-    <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
+    <a href="<%= article.path %>/edit" class="crayons-btn">Edit</a>
     <% if manage_view %>
-      <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
+      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--danger">Delete</a>
       <% if article.profile_pins.any? %>
         <%= form_for(article.profile_pins.first) do |f| %>
-          <button class="pill cta">UNPIN</button>
+          <button class="crayons-btn crayons-btn--secondary">UNPIN</button>
         <% end %>
       <% else %>
         <%= form_for(ProfilePin.new) do |f| %>
           <%= f.hidden_field :pinnable_id, value: article.id %>
-          <button class="pill cta">PIN TO PROFILE</button>
+          <button class="crayons-btn">Pin to profile</button>
         <% end %>
       <% end %>
     <% elsif article.published %>
-      <a href="<%= article.path %>/manage" class="cta pill black">MANAGE</a>
+      <a href="<%= article.path %>/manage" class="crayons-btn">Manage</a>
     <% elsif @user == article.user %>
-      <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
+      <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--danger">Delete</a>
     <% end %>
     <% if @current_user_pro %>
-      <a href="<%= article.path %>/stats" data-no-instant class="cta pill blue">STATS</a>
+      <a href="<%= article.path %>/stats" data-no-instant class="crayons-btn">Stats</a>
     <% end %>
 
     <% if article.published %>
-      <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
+      <span id="pageviews-<%= article.id %>" class="crayons-btn dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="page-views-count">
           <span class="value">
             <% if article.page_views_count > 25 %>
@@ -98,7 +98,7 @@
     <%= form_for(article) do |f| %>
       <input type="hidden" name="destination" value="/dashboard/organization/<%= organization.id %>" />
       AUTHOR: <%= f.select(:user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id)) %>
-      <%= f.submit "SUBMIT AUTHOR CHANGE", class: "cta pill black" %>
+      <%= f.submit "Submit author change", class: "crayons-btn crayons-btn--secondary" %>
     <% end %>
   <% end %>
 </div>

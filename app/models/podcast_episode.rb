@@ -15,15 +15,17 @@ class PodcastEpisode < ApplicationRecord
   delegate :published, to: :podcast
 
   belongs_to :podcast
-  has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
-  validates :title, presence: true
-  validates :slug, presence: true
-  validates :media_url, presence: true, uniqueness: true
+  validates :comments_count, presence: true
   validates :guid, presence: true, uniqueness: true
+  validates :media_url, presence: true, uniqueness: true
+  validates :reactions_count, presence: true
+  validates :slug, presence: true
+  validates :title, presence: true
 
   before_validation :process_html_and_prefix_all_images
   # NOTE: Any create callbacks will not be run since we use activerecord-import to create episodes
@@ -89,8 +91,7 @@ class PodcastEpisode < ApplicationRecord
     nil
   end
   alias user_id nil_method
-  alias second_user_id nil_method
-  alias third_user_id nil_method
+  alias co_author_ids nil_method
 
   private
 

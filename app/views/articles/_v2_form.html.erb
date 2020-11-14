@@ -1,14 +1,14 @@
 <style>
   body {
-    padding-top: 0;
+    padding-top: 0 !important;
   }
 
-  body > footer,
-  #top-bar {
-    display: none
+  .crayons-footer,
+  .crayons-header {
+    display: none;
   }
 
-  .universal-page-content-wrapper {
+  .wrapper {
     overflow: unset;
   }
 </style>
@@ -17,11 +17,13 @@
   data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
   data-version="<%= version %>"
-  data-logo-svg='<%= logo_svg %>'>
+  data-site-logo='<%= render "layouts/logo" %>'>
   <form class="crayons-article-form crayons-article-form--<%= version %>">
 
     <div class="crayons-article-form__header">
-      <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+      <span class="crayons-article-form__logo">
+        <%= render "layouts/logo" %>
+      </span>
 
       <div class="crayons-field__label">
         <span class="hidden s:inline-block mr-2">Write a new post</span>
@@ -68,7 +70,7 @@
       <div class="crayons-article-form__body text-padding">
         <div class="crayons-article-form__toolbar">
           <button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-left fw-normal" type="button">
-            <%= (inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") + "Upload image").delete!("\n").html_safe %>
+            <%= ("#{inline_svg_tag('image.svg', aria: true, class: 'crayons-icon', title: 'Image')}Upload image").delete!("\n").html_safe %>
             <input type="file" id="image-upload-field" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" multiple accept="image/*" data-max-file-size-mb="25" />
           </button>
         </div>

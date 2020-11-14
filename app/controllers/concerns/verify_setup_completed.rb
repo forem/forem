@@ -4,17 +4,8 @@ module VerifySetupCompleted
   module_function
 
   MANDATORY_CONFIGS = %i[
+    community_name
     community_description
-    community_action
-    tagline
-
-    main_social_image
-    logo_png
-
-    mascot_user_id
-    mascot_image_url
-
-    meta_keywords
 
     suggested_tags
     suggested_users
@@ -27,17 +18,26 @@ module VerifySetupCompleted
   end
 
   def setup_completed?
-    MANDATORY_CONFIGS.all? { |config| SiteConfig.public_send(config).present? }
+    missing_configs.empty?
+  end
+
+  def missing_configs
+    @missing_configs ||= MANDATORY_CONFIGS.reject { |config| SiteConfig.public_send(config).present? }
   end
 
   private
 
-  def verify_setup_completed
-    return if config_path? || setup_completed?
+  def missing_configs_text
+    display_missing = missing_configs.size > 3 ? missing_configs.first(3) + ["others"] : missing_configs
+    display_missing.map { |c| c.to_s.tr("_", " ") }.to_sentence
+  end
 
-    link = helpers.link_to("the configuration page", admin_config_path)
+  def verify_setup_completed
+    return if config_path? || setup_completed? || SiteConfig.waiting_on_first_user
+
+    link = helpers.link_to("the configuration page", admin_config_path, "data-no-instant" => true)
     # rubocop:disable Rails/OutputSafety
-    flash[:global_notice] = "Setup not completed yet, please visit #{link}.".html_safe
+    flash[:global_notice] = "Setup not completed yet, missing #{missing_configs_text}. Please visit #{link}.".html_safe
     # rubocop:enable Rails/OutputSafety
   end
 

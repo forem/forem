@@ -1,9 +1,13 @@
 class Podcast < ApplicationRecord
   resourcify
 
+<<<<<<< HEAD
   has_many :podcast_episodes
   has_many :users, through: :podcast_ownerships
+=======
+>>>>>>> master
   belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, optional: true
+  has_many :podcast_episodes, dependent: :destroy
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader
@@ -44,7 +48,7 @@ class Podcast < ApplicationRecord
   end
 
   def image_90
-    ProfileImage.new(self).get(width: 90)
+    Images::Profile.call(profile_image_url, length: 90)
   end
 
   private

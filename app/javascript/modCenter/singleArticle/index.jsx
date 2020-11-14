@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import { createPortal } from 'preact/compat';
-import { toggleFlagUserModal, FlagUserModal } from '../../packs/flagUserModal';
+import { FlagUserModal } from '../../packs/flagUserModal';
 import { formatDate } from './util';
 
 export default class SingleArticle extends Component {
@@ -10,6 +10,17 @@ export default class SingleArticle extends Component {
     const { id, path, toggleArticle } = this.props;
 
     toggleArticle(id, path);
+  };
+
+  tagsFormat = (tag, key) => {
+    if (tag) {
+      return (
+        <span className="crayons-tag" key={key}>
+          <span className="crayons-tag__prefix">#</span>
+          {tag}
+        </span>
+      );
+    }
   };
 
   render() {
@@ -24,14 +35,7 @@ export default class SingleArticle extends Component {
       path,
     } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
-      if (tag) {
-        return (
-          <span className="crayons-tag" key={key}>
-            <span className="crayons-tag__prefix">#</span>
-            {tag}
-          </span>
-        );
-      }
+      this.tagsFormat(tag, key);
     });
 
     const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
@@ -39,17 +43,8 @@ export default class SingleArticle extends Component {
       ? document.getElementById(`mod-iframe-${id}`)
       : document.getElementById('mod-container');
 
-    // Check whether context is ModCenter or Friday-Night-Mode
-    if (modContainer) {
-      modContainer.addEventListener('load', () => {
-        modContainer.contentWindow.document
-          .getElementById('open-flag-user-modal')
-          .addEventListener('click', toggleFlagUserModal);
-      });
-    }
-
     return (
-      <>
+      <Fragment>
         {modContainer &&
           createPortal(
             <FlagUserModal moderationUrl={path} authorId={user.id} />,
@@ -63,15 +58,19 @@ export default class SingleArticle extends Component {
         >
           <span className="article-title">
             <header>
-              <h3 className="fs-base fw-bold lh-tight">{title}</h3>
+              <h3 className="fs-base fw-bold lh-tight">
+                <a className="article-title-link" href={path}>
+                  {title}
+                </a>
+              </h3>
             </header>
             {tags}
           </span>
-          <span className="article-author fs-s lw-medium lh-tight">
+          <span className="article-author">
             {newAuthorNotification}
             {user.name}
           </span>
-          <span className="article-published-at fs-s fw-bold lh-tight">
+          <span className="article-published-at">
             <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
           </span>
           <div
@@ -81,7 +80,7 @@ export default class SingleArticle extends Component {
             id={`article-iframe-${id}`}
           />
         </button>
-      </>
+      </Fragment>
     );
   }
 }

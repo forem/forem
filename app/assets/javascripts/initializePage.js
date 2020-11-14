@@ -1,5 +1,5 @@
 /*
-  global initializeLocalStorageRender, initializeStylesheetAppend, initializeBodyData,
+  global initializeLocalStorageRender, initializeBodyData,
   initializeAllChatButtons, initializeAllTagEditButtons, initializeUserFollowButts,
   initializeBaseTracking, initializeTouchDevice, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
@@ -7,8 +7,8 @@
   initializeCommentPreview,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
   initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
-  initializeUserProfilePage, initializePodcastPlayback,
-  initializeVideoPlayback, initializeDrawerSliders,
+  initializeUserProfilePage, initializeProfileInfoToggle, initializePodcastPlayback,
+  initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
   initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast,
@@ -46,7 +46,6 @@ function callInitializers() {
   initializeArticleDate();
   initializeArticleReactions();
   initNotifications();
-  initializeStylesheetAppend();
   initializeCommentDate();
   initializeCommentDropdown();
   initializeSettings();
@@ -58,6 +57,8 @@ function callInitializers() {
   initializeArchivedPostFilter();
   initializeCreditsPage();
   initializeUserProfilePage();
+  initializeProfileInfoToggle();
+  initializeProfileBadgesToggle();
   initializePodcastPlayback();
   initializeVideoPlayback();
   initializeDrawerSliders();
@@ -83,6 +84,5 @@ function callInitializers() {
 
 function initializePage() {
   initializeLocalStorageRender();
-  initializeStylesheetAppend();
   callInitializers();
 }

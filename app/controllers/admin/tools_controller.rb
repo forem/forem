@@ -40,9 +40,8 @@ module Admin
     end
 
     def bust_link(link)
-      if link.starts_with?("https://#{ApplicationConfig['APP_DOMAIN']}")
-        link.sub!("https://#{ApplicationConfig['APP_DOMAIN']}",
-                  "")
+      if link.starts_with?(URL.url)
+        link.sub!(URL.url, "")
       end
       CacheBuster.bust(link)
       CacheBuster.bust("#{link}/")

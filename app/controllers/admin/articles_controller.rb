@@ -44,9 +44,15 @@ module Admin
       article.email_digest_eligible = article_params[:email_digest_eligible].to_s == "true"
       article.boosted_additional_articles = article_params[:boosted_additional_articles].to_s == "true"
       article.boosted_dev_digest_email = article_params[:boosted_dev_digest_email].to_s == "true"
-      article.user_id = article_params[:user_id].to_i
-      article.update!(article_params)
-      render body: nil
+      article.user_id = article_params[:user_id].to_i if article_params[:user_id].present?
+      article.update(article_params)
+      article.co_author_ids = article_params[:co_author_ids]&.split(",")&.map(&:strip)
+      if article.save
+        flash[:success] = "Article saved!"
+      else
+        flash[:danger] = article.errors_as_sentence
+      end
+      redirect_to admin_article_path(article.id)
     end
 
     private
@@ -129,6 +135,7 @@ module Admin
                           main_image_background_hex_color
                           featured_number
                           user_id
+                          co_author_ids
                           last_buffered]
       params.require(:article).permit(allowed_params)
     end

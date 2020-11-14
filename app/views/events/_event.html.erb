@@ -56,7 +56,7 @@
 
 <div class="event">
   <div class="event-image">
-    <img src="<%= cloudinary(event.cover_image_url, 500) %>" alt="event image">
+    <img src="<%= optimized_image_url(event.cover_image_url, width: 500) %>" alt="event image">
   </div>
   <div class="event-details">
     <h3><a href="/events/<%= event.slug %>"><%= event.category %>: <%= event.title %></a></h3>
@@ -80,14 +80,14 @@
       <span class="location"><%= event.location_url %></span>
       <span class="alarm_reminder">15</span>
       <span class="description">
-        <%= event.description_html.html_safe %>
+        <%= event.description_html&.html_safe %>
         ------
         Link to attend - <%= event.location_url %>
       </span>
     </div>
   </div>
   <div class="event-description">
-    <%= event.description_html.html_safe %>
+    <%= event.description_html&.html_safe %>
   </div>
 </div>
 

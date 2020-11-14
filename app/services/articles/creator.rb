@@ -31,7 +31,13 @@ module Articles
     attr_reader :user, :article_params, :event_dispatcher
 
     def rate_limit!
-      user.rate_limiter.check_limit!(:published_article_creation)
+      rate_limit_to_use = if user.created_at > 3.days.ago.beginning_of_day
+                            :published_article_antispam_creation
+                          else
+                            :published_article_creation
+                          end
+
+      user.rate_limiter.check_limit!(rate_limit_to_use)
     end
 
     def dispatch_event(article)
