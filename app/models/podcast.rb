@@ -1,11 +1,8 @@
 class Podcast < ApplicationRecord
   resourcify
 
-<<<<<<< HEAD
   has_many :podcast_episodes
   has_many :users, through: :podcast_ownerships
-=======
->>>>>>> master
   belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, optional: true
   has_many :podcast_episodes, dependent: :destroy
 
