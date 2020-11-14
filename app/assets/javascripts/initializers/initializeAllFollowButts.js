@@ -167,7 +167,7 @@ function handleOptimisticButtRender(butt) {
       var requestVerb = butt.dataset.verb;
       //now for all follow action buttons
       document
-        .querySelectorAll('.follow-action-button')
+        .getElementsByClassName('follow-action-button')
         .forEach(function (fab) {
           try {
             //lets check they have info data attributes

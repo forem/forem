@@ -2,7 +2,7 @@
 
 function getFormValues(form) {
   var articleId = form.action.match(/\/(\d+)$/)[1];
-  var inputs = form.querySelectorAll('input');
+  var inputs = form.getElementsByTagName('input');
   var formData = { id: articleId, article: {} };
 
   for (var i = 0; i < inputs.length; i += 1) {
@@ -108,7 +108,7 @@ function hideIfNotAlreadyHidden(menu) {
 }
 
 function hideAllEllipsisMenusExcept(menu) {
-  var menus = document.querySelectorAll('.js-dashboard-row-more-dropdown');
+  var menus = document.getElementsByClassName('js-dashboard-row-more-dropdown');
 
   for (var i = 0; i < menus.length; i += 1) {
     if (menus[i] !== menu) {
@@ -119,7 +119,9 @@ function hideAllEllipsisMenusExcept(menu) {
 
 function hideEllipsisMenus(e) {
   if (!e.target.closest('.js-dashboard-row-more')) {
-    var menus = document.querySelectorAll('.js-dashboard-row-more-dropdown');
+    var menus = document.getElementsByClassName(
+      'js-dashboard-row-more-dropdown',
+    );
 
     for (var i = 0; i < menus.length; i += 1) {
       hideIfNotAlreadyHidden(menus[i]);

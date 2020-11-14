@@ -54,7 +54,7 @@ function fullScreenModeControl(event) {
     ? event.currentTarget.closest('.js-code-highlight').cloneNode(true)
     : null;
   const codeBlockControls = codeBlock
-    ? codeBlock.querySelectorAll('.js-fullscreen-code-action')
+    ? codeBlock.getElementsByClassName('js-fullscreen-code-action')
     : null;
 
   if (isFullScreenModeCodeOn) {

@@ -637,7 +637,9 @@ export default class Chat extends Component {
       e.target.value === ''
     ) {
       e.preventDefault();
-      const richLinks = document.querySelectorAll('.chatchannels__richlink');
+      const richLinks = document.getElementsByClassName(
+        'chatchannels__richlink',
+      );
       if (richLinks.length === 0) {
         return;
       }

@@ -379,7 +379,7 @@ export function addBottomActionsListeners() {
     },
   );
 
-  document.querySelectorAll('.level-rating-button').forEach((btn) => {
+  document.getElementsByClassName('level-rating-button').forEach((btn) => {
     btn.addEventListener('click', () => {
       updateExperienceLevel(
         btn.dataset.userId,

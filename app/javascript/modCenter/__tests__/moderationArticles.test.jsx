@@ -63,7 +63,7 @@ describe('<ModerationArticles />', () => {
     const { getByTestId } = render(<ModerationArticles />);
     const singleArticle = getByTestId('mod-article-1');
     singleArticle.click();
-    const iframes = singleArticle.querySelectorAll('iframe');
+    const iframes = singleArticle.getElementsByTagName('iframe');
     expect(iframes.length).toEqual(2);
   });
 
