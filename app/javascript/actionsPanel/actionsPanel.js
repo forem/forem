@@ -381,16 +381,18 @@ export function addBottomActionsListeners() {
     },
   );
 
-  document.getElementsByClassName('level-rating-button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      updateExperienceLevel(
-        btn.dataset.userId,
-        btn.dataset.articleId,
-        btn.value,
-        btn.dataset.group,
-      );
-    });
-  });
+  Array.fom(document.getElementsByClassName('level-rating-button')).forEach(
+    (btn) => {
+      btn.addEventListener('click', () => {
+        updateExperienceLevel(
+          btn.dataset.userId,
+          btn.dataset.articleId,
+          btn.value,
+          btn.dataset.group,
+        );
+      });
+    },
+  );
 
   const unpublishArticleBtn = document.getElementsById('unpublish-article-btn');
   if (unpublishArticleBtn) {
