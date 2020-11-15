@@ -1433,6 +1433,8 @@ ActiveRecord::Schema.define(version: 2020_11_10_180614) do
   add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
+  add_foreign_key "page_views", "users", on_delete: :nullify
+  add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade
   add_foreign_key "podcast_ownerships", "podcasts"
   add_foreign_key "podcast_ownerships", "users"
   add_foreign_key "podcasts", "users", column: "creator_id"
