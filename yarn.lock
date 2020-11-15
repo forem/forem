@@ -10169,10 +10169,10 @@ jake@^10.6.1:
     filelist "^1.0.1"
     minimatch "^3.0.4"
 
-jest-axe@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/jest-axe/-/jest-axe-4.0.0.tgz#cb7a55da739d3e085d26491285139ebd784a18d1"
-  integrity sha512-Uu8bpPdl+EMtlXIh9KtUY+0us41Lb+KIWL+tP42Kl/tRmDWtgd0qJO4XAkJ/FW90OcKaOwRrQyfTboH+UsmUmA==
+jest-axe@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/jest-axe/-/jest-axe-4.1.0.tgz#5e73069c6517ffa106f31bb6a589a09250e4a04c"
+  integrity sha512-TPWRbwQYwdt1jtvM0DRi//0e51omWirMkyf99paeY7kYS5XsUZ9IcyP4omrqPKJ46xHDxs1AYqIwVz/minBoFw==
   dependencies:
     axe-core "^4.0.1"
     chalk "^4.0.0"
@@ -10396,17 +10396,7 @@ jest-leak-detector@^26.6.2:
     jest-get-type "^26.3.0"
     pretty-format "^26.6.2"
 
-jest-matcher-utils@^26.0.1, jest-matcher-utils@^26.4.2:
-  version "26.4.2"
-  resolved "https://registry.yarnpkg.com/jest-matcher-utils/-/jest-matcher-utils-26.4.2.tgz#fa81f3693f7cb67e5fc1537317525ef3b85f4b06"
-  integrity sha512-KcbNqWfWUG24R7tu9WcAOKKdiXiXCbMvQYT6iodZ9k1f7065k0keUOW6XpJMMvah+hTfqkhJhRXmA3r3zMAg0Q==
-  dependencies:
-    chalk "^4.0.0"
-    jest-diff "^26.4.2"
-    jest-get-type "^26.3.0"
-    pretty-format "^26.4.2"
-
-jest-matcher-utils@^26.6.2:
+jest-matcher-utils@^26.0.1, jest-matcher-utils@^26.4.2, jest-matcher-utils@^26.6.2:
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/jest-matcher-utils/-/jest-matcher-utils-26.6.2.tgz#8e6fd6e863c8b2d31ac6472eeb237bc595e53e7a"
   integrity sha512-llnc8vQgYcNqDrqRDXWwMr9i7rS5XFiCwvh6DTP7Jqa2mqpcCBBlpCbn+trkG0KNhPu/h8rzyBkriOtBstvWhw==
