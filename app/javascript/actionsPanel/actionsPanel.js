@@ -381,7 +381,7 @@ export function addBottomActionsListeners() {
     },
   );
 
-  Array.fom(document.getElementsByClassName('level-rating-button')).forEach(
+  Array.from(document.getElementsByClassName('level-rating-button')).forEach(
     (btn) => {
       btn.addEventListener('click', () => {
         updateExperienceLevel(
@@ -394,7 +394,7 @@ export function addBottomActionsListeners() {
     },
   );
 
-  const unpublishArticleBtn = document.getElementsById('unpublish-article-btn');
+  const unpublishArticleBtn = document.getElementById('unpublish-article-btn');
   if (unpublishArticleBtn) {
     unpublishArticleBtn.addEventListener('click', () => {
       const {

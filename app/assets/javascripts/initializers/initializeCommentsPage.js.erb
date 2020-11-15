@@ -186,12 +186,13 @@ function handleCommentSubmit(event) {
   }
   var parentComment = document.getElementById("comment-node-" + event.target.dataset.commentId);
 
-  var commentParentId = form.getElementById("comment_parent_id");
+  // as there can be multiple forms rendered in the comments, we need to use querySelector to find descendants
+  var commentParentId = form.querySelector("#comment_parent_id");
   var body = JSON.stringify({
     comment: {
       body_markdown: form.getElementsByTagName("textarea")[0].value,
-      commentable_id: form.getElementById("comment_commentable_id").value,
-      commentable_type: form.getElementById("comment_commentable_type").value,
+      commentable_id: form.querySelector("#comment_commentable_id").value,
+      commentable_type: form.querySelector("#comment_commentable_type").value,
       parent_id: commentParentId ? commentParentId.value : null,
     }
   });
