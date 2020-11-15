@@ -48,7 +48,7 @@ function onXhrSuccess(form, article, values) {
   }
 
   article
-    .getElementsByClassName('js-dashboard-row-more')[0]
+    .getElementsByClassName('.js-ellipsis-menu')[0]
     .classList.add('hidden');
 }
 
@@ -90,7 +90,7 @@ function handleFormSubmit(e) {
 
 function initializeFormSubmit() {
   var forms = document.querySelectorAll(
-    '.js-dashboard-row-more-dropdown .js-archive-toggle',
+    '.js-ellipsis-menu-dropdown .js-archive-toggle',
   );
 
   for (var i = 0; i < forms.length; i += 1) {
@@ -101,10 +101,9 @@ function initializeFormSubmit() {
 // TOGGLING MENU //
 
 function getMenu(el) {
-  var parentDiv = el.closest('.js-dashboard-row-more');
-  var menu = parentDiv.getElementsByClassName(
-    'js-dashboard-row-more-dropdown',
-  )[0];
+  var parentDiv = el.closest('.js-ellipsis-menu');
+  var menu = parentDiv.getElementsByClassName('js-ellipsis-menu-dropdown')[0];
+
   return menu;
 }
 
@@ -115,7 +114,7 @@ function hideIfNotAlreadyHidden(menu) {
 }
 
 function hideAllEllipsisMenusExcept(menu) {
-  var menus = document.getElementsByClassName('js-dashboard-row-more-dropdown');
+  var menus = document.getElementsByClassName('js-ellipsis-menu-dropdown');
 
   for (var i = 0; i < menus.length; i += 1) {
     if (menus[i] !== menu) {
@@ -125,10 +124,8 @@ function hideAllEllipsisMenusExcept(menu) {
 }
 
 function hideEllipsisMenus(e) {
-  if (!e.target.closest('.js-dashboard-row-more')) {
-    var menus = document.getElementsByClassName(
-      'js-dashboard-row-more-dropdown',
-    );
+  if (!e.target.closest('.js-ellipsis-menu')) {
+    var menus = document.getElementsByClassName('js-ellipsis-menu-dropdown');
 
     for (var i = 0; i < menus.length; i += 1) {
       hideIfNotAlreadyHidden(menus[i]);
@@ -151,9 +148,7 @@ function toggleEllipsisMenu(e) {
 }
 
 function initializeEllipsisMenuToggle() {
-  var buttons = document.getElementsByClassName(
-    'js-dashboard-row-more-trigger',
-  );
+  var buttons = document.getElementsByClassName('js-ellipsis-menu-trigger');
 
   for (var i = 0; i < buttons.length; i += 1) {
     buttons[i].addEventListener('click', toggleEllipsisMenu);
