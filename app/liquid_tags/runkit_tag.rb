@@ -24,7 +24,7 @@ class RunkitTag < Liquid::Block
     }
 
     function isRunkitTagAlreadyActive(runkitTag) {
-      return runkitTag.querySelector("iframe") !== null;
+      return runkitTag.getElementsTagName("iframe") !== null;
     };
 
     function areAnyRunkitTagsPresent() {
