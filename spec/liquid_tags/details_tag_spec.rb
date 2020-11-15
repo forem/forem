@@ -3,11 +3,7 @@ require "rails_helper"
 RSpec.describe DetailsTag, type: :liquid_tag do
   describe "#render" do
     let(:summary) { "Click to see the answer!" }
-    let(:content) do
-      "The answer is Forem!\n<br>
-       \n<iframe\n  width=\"710\"\n  height=\"399\"\n  src=\"https://www.youtube.com/embed/3xTiHxHDb4U\"
-       \n  allowfullscreen\n  loading=\"lazy\">\n</iframe>\n<br>\n"
-    end
+    let(:content) { "The answer is Forem!" }
 
     def generate_details_liquid(summary, content)
       Liquid::Template.register_tag("details", described_class)
@@ -17,6 +13,12 @@ RSpec.describe DetailsTag, type: :liquid_tag do
     it "generates proper details div with summary" do
       rendered = generate_details_liquid(summary, content).render
       Approvals.verify(rendered, name: "details_liquid_tag_spec", format: :html)
+    end
+
+    it "generates proper details div with summary for an iframe producing tag inside details tag" do
+      content = "{% youtube 3xTiHxHDb4U %}"
+      rendered = generate_details_liquid(summary, content).render
+      Approvals.verify(rendered, name: "details_liquid_tag_with_iframe_spec", format: :html)
     end
   end
 end

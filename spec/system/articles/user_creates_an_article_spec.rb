@@ -8,6 +8,9 @@ RSpec.describe "Creating an article with the editor", type: :system do
   let!(:template_with_runkit_tag) do
     file_fixture("article_with_runkit_tag.txt").read
   end
+  let!(:template_with_iframe) do
+    file_fixture("article_published_with_iframe.txt").read
+  end
 
   before do
     sign_in user
@@ -18,6 +21,19 @@ RSpec.describe "Creating an article with the editor", type: :system do
     fill_in "article_body_markdown", with: template
     click_button "Save changes"
     expect(page).to have_selector("header h1", text: "Sample Article")
+  end
+
+  context "with a tag that uses iframe", js: true do
+    it "creates a new article that has the right iframe" do
+      visit new_path
+      fill_in "article_body_markdown", with: ""
+      fill_in "article_body_markdown", with: template_with_iframe
+      click_button "Save changes"
+
+      expect(page).to have_selector("summary", text: "Details and Video")
+      find("summary", text: "Details and Video").click
+      expect(page).to have_selector("details iframe", count: 1)
+    end
   end
 
   context "with an active announcement" do

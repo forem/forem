@@ -1,0 +1,11 @@
+---
+title: Article with iframe
+published: true
+description: this is a sample article with iframe
+tags: test
+---
+
+{% details Details and Video %}
+    This is a youtube video
+    {% youtube 3xTiHxHDb4U %}
+{% enddetails %}
