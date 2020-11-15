@@ -9,49 +9,57 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
 
   context "when user is unauthorized" do
     context "when 1 article" do
-      before { visit "/#{user.username}" }
+      before do
+        Timecop.freeze
+        visit "/#{user.username}"
+      end
 
-      it "shows the header", js: true do
+      after { Timecop.return }
+
+      it "shows all proper elements", :aggregate_failures, js: true do
+        shows_header
+        shows_title
+        shows_articles
+        shows_comments
+        shows_comment_timestamp
+      end
+
+      def shows_header
         within("h1") { expect(page).to have_content(user.name) }
         within(".profile-header__actions") do
           expect(page).to have_button("Follow")
         end
       end
 
-      it "shows proper title tag" do
+      def shows_title
         expect(page).to have_title("#{user.name} - #{SiteConfig.community_name}")
       end
 
-      it "shows user's articles" do
+      def shows_articles
         within(".crayons-story") do
           expect(page).to have_content(article.title)
           expect(page).not_to have_content(other_article.title)
         end
       end
 
-      it "shows user's comments" do
-        within("#substories div.index-comments") do
-          expect(page).to have_content("Recent Comments")
+      def shows_comments
+        within("#substories div.profile-comment-card") do
+          expect(page).to have_content("Recent comments")
           expect(page).to have_link(nil, href: comment.path)
         end
-      end
 
-      it "shows user's comments once" do
         within("#substories") do
-          expect(page).to have_selector(".index-comments", count: 1)
+          expect(page).to have_selector(".profile-comment-card", count: 1)
         end
-      end
 
-      it "shows comment date" do
-        within("#substories .index-comments .single-comment") do
-          # %e blank pads days from 1 to 9, the double space isn't in the HTML
+        within("#substories .profile-comment-card .profile-comment-row") do
           comment_date = comment.readable_publish_date.gsub("  ", " ")
           expect(page).to have_selector(".comment-date", text: comment_date)
         end
       end
 
-      it "embeds comment timestamp" do
-        within("#substories .index-comments .single-comment") do
+      def shows_comment_timestamp
+        within("#substories .profile-comment-card .profile-comment-row") do
           ts = comment.decorate.published_timestamp
           timestamp_selector = ".comment-date time[datetime='#{ts}']"
           expect(page).to have_selector(timestamp_selector)
@@ -68,7 +76,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
 
     it "shows organizations", js: true do
       Capybara.current_session.driver.browser.manage.window.resize_to(1920, 1080)
-      expect(page).to have_css("#sidebar-wrapper-right h4", text: "organizations")
+      expect(page).to have_css(".spec-org-titles", text: "Organizations")
     end
   end
 
@@ -78,23 +86,29 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       visit "/#{user.username}"
     end
 
-    it "shows the header", js: true do
+    it "shows all proper elements", :aggregate_failures, js: true do
+      shows_header
+      shows_articles
+      shows_comments
+    end
+
+    def shows_header
       within("h1") { expect(page).to have_content(user.name) }
       within(".profile-header__actions") do
         expect(page).to have_button("Edit profile")
       end
     end
 
-    it "shows user's articles" do
+    def shows_articles
       within(".crayons-story") do
         expect(page).to have_content(article.title)
         expect(page).not_to have_content(other_article.title)
       end
     end
 
-    it "shows user's comments" do
-      within("#substories div.index-comments") do
-        expect(page).to have_content("Recent Comments")
+    def shows_comments
+      within("#substories div.profile-comment-card") do
+        expect(page).to have_content("Recent comments")
         expect(page).to have_link(nil, href: comment.path)
       end
     end

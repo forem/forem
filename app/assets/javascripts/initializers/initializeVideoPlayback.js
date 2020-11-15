@@ -136,12 +136,22 @@ function initializeVideoPlayback() {
       return;
     }
 
-    if (message.action == 'pause') {
-      getById('pause-butt').classList.remove('active');
-      getById('play-butt').classList.add('active');
-      videoPlayerEvent(false);
-    } else if (message.action == 'tick') {
-      currentTime = message.currentTime;
+    switch (message.action) {
+      case 'play':
+        getById('pause-butt').classList.add('active');
+        getById('play-butt').classList.remove('active');
+        videoPlayerEvent(true);
+        break;
+      case 'pause':
+        getById('pause-butt').classList.remove('active');
+        getById('play-butt').classList.add('active');
+        videoPlayerEvent(false);
+        break;
+      case 'tick':
+        currentTime = message.currentTime;
+        break;
+      default:
+        console.log('Unrecognized video message: ', message); // eslint-disable-line no-console
     }
   }
 

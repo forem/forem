@@ -192,7 +192,9 @@
       }
 
       .listing-row-actions {
-        padding: 7px 0px 10px;
+        padding: var(--su-2) 0;
+        display: flex;
+        gap: var(--su-2);
 
         .pill {
           background: $bold-blue;

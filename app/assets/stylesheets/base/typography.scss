@@ -4,6 +4,12 @@
 :root {
   --content-rythm: var(--su-2);
   --content-font-size: var(--fs-l);
+  --content-secondary-font-size: var(--fs-base);
+  --content-tertiary-font-size: var(--fs-base);
+
+  @media (min-width: $breakpoint-s) {
+    --content-secondary-font-size: var(--fs-l);
+  }
 
   @media (min-width: $breakpoint-m) {
     --content-rythm: var(--su-4);
@@ -62,12 +68,17 @@ body {
 .text-styles {
   font-size: var(--content-font-size);
   font-family: var(--content-font-family);
+  overflow-wrap: break-word;
+
+  &--secondary {
+    font-size: var(--content-secondary-font-size);
+  }
+
+  &--tertiary {
+    font-size: var(--content-tertiary-font-size);
+  }
 
   a {
-    code {
-      color: var(--link-color);
-    }
-
     &.anchor {
       padding-top: 0;
       margin-top: 0;

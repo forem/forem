@@ -6,7 +6,7 @@
 
 <link rel="canonical" href="<%= tag_url(@tag_model, @page) %>" />
 <meta name="description" content="<%= @tag %> content on <%= community_name %>">
-<meta name="keywords" content="<%= SiteConfig.meta_keywords[:tag] %>, <%= @tag %>">
+<%= meta_keywords_tag(@tag) %>
 
 <meta property="og:type" content="website" />
 <meta property="og:url" content="<%= tag_url(@tag_model, @page) %>" />

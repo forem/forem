@@ -3,7 +3,7 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/#{@podcast.slug}/#{@episode.slug}") %>" />
   <meta name="description" content="<%= truncate(strip_tags(@episode.body), length: 140) %>">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/#{@podcast.slug}/#{@episode.slug}") %>" />
@@ -36,7 +36,7 @@
         <a href="/<%= @podcast.slug %>">
           <img alt="<%= @podcast.title %>" src="<%= optimized_image_url(@podcast.image_url, width: 60, quality: 80) %>" /><%= @podcast.title %>
         </a>
-        <button id="user-follow-butt" class="cta follow-action-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
+        <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @podcast.id %>,"className":"<%= @podcast.class.name %>"}'>&nbsp;</button>
       </h2>
       <% if @episode.title.size > 60 %>
         <h1 class="smaller"><%= @episode.title %></h1>

@@ -4,7 +4,7 @@
   <%= content_for :page_meta do %>
     <link rel="canonical" href="<%= app_url(@podcast.slug) %>" />
     <meta name="description" content="<%= @podcast.description %>">
-    <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+    <%= meta_keywords_default %>
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= app_url(@podcast.slug) %>" />
@@ -26,7 +26,7 @@
   <%= content_for :page_meta do %>
     <link rel="canonical" href="<%= app_url(pod_path) %>" />
     <meta name="description" content="Discover technical podcasts for <%= community_members_label %>">
-    <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+    <%= meta_keywords_default %>
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= app_url(pod_path) %>" />

@@ -3,7 +3,7 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/p/editor_guide") %>" />
   <meta name="description" content="<%= community_name %> | editor guideline">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
 <% end %>
 
 <div class="blank-space"></div>

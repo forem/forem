@@ -5,11 +5,32 @@
   background: var(--card-bg);
   color: var(--card-color);
   box-shadow: 0 0 0 1px var(--card-border);
+  overflow-wrap: anywhere;
 
   &--secondary {
     background: var(--card-secondary-bg);
     color: var(--card-secondary-color);
     box-shadow: 0 0 0 1px var(--card-secondary-border);
+  }
+
+  &--elevated {
+    box-shadow: 0 0 0 1px var(--card-secondary-border), 0 1px 3px var(--base-a5),
+      0 3px 9px var(--base-a5);
+  }
+
+  &--content-rows {
+    padding: var(--su-4);
+    margin-bottom: var(--su-4);
+    grid-gap: var(--su-4);
+    display: grid;
+    border-radius: 0;
+
+    @media (min-width: $breakpoint-m) {
+      padding: var(--su-6);
+      margin-bottom: var(--su-6);
+      grid-gap: var(--su-6);
+      border-radius: var(--radius);
+    }
   }
 
   &__header {

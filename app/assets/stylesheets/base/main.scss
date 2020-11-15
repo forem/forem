@@ -20,6 +20,26 @@ body {
     }
   }
 
+  &.user-tags-followed-0,
+  &.user-tags-followed-1,
+  &.user-tags-followed-2 {
+    #sidebar-nav-followed-tags {
+      height: 90px;
+    }
+  }
+  &.user-tags-followed-3,
+  &.user-tags-followed-4,
+  &.user-tags-followed-5 {
+    #sidebar-nav-followed-tags {
+      height: 205px;
+    }
+  }
+  &.user-tags-followed-max {
+    #sidebar-nav-followed-tags {
+      height: 42vh;
+    }
+  }
+
   &.default-header {
     padding-top: var(--header-height);
     min-height: calc(100vh - var(--header-height));
@@ -30,4 +50,55 @@ body {
   flex: 1 auto;
   visibility: visible;
   font-size: 18px;
+}
+
+a {
+  color: var(--link-brand-color);
+  text-decoration: none;
+}
+
+// Logo
+.site-logo {
+  max-width: var(--max-width, 125px);
+  font-size: var(--font-size, var(--fs-base));
+  font-weight: var(--font-weight, var(--fw-medium));
+
+  display: inline-flex;
+  flex-shrink: 0;
+  align-self: stretch;
+  align-items: center;
+  vertical-align: middle;
+  color: var(--base-100);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  line-height: var(--lh-tight);
+  overflow-wrap: anywhere;
+
+  @media (min-width: $breakpoint-s) {
+    --max-width: 150px;
+  }
+
+  @media (min-width: $breakpoint-m) {
+    --max-width: 175px;
+    --font-size: var(--fs-l);
+    --font-weight: var(--fw-bold);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --max-width: 200px;
+    --font-size: var(--fs-xl);
+  }
+
+  &:hover {
+    color: var(--base-80);
+    text-decoration: none;
+  }
+
+  svg {
+    max-width: 100%;
+    width: auto;
+    height: calc(var(--header-height) - var(--su-2) * 2);
+    vertical-align: middle;
+    display: inline-block;
+  }
 }

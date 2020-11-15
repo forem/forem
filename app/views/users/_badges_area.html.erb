@@ -1,0 +1,28 @@
+<div class="crayons-card crayons-card--secondary">
+  <header class="crayons-card__header">
+    <h3 class="crayons-subtitle-3">Badges</h3>
+  </header>
+
+  <div class="crayons-card__body">
+    <div class="grid gap-4 grid-cols-3 s:grid-cols-4 m:grid-cols-2 align-center items-center js-profile-badges">
+      <% achievements.each_with_index do |achievement, i| %>
+        <a href="<%= badge_path(achievement.badge_slug) %>"
+           title="<%= achievement.badge_title %>"
+           class="js-profile-badge <% if i >= limit %>hidden<% end %>">
+
+          <img src="<%= optimized_image_url(achievement.badge_image_url, width: 180) %>"
+               alt="<%= achievement.badge_title %>"
+               class="mx-auto max-w-75 h-auto align-middle"
+               style="transform: rotate(<%= rand(-10..10) %>deg);" />
+        </a>
+      <% end %>
+    </div>
+
+    <% if limit > 1 && count > limit %>
+      <button type="button"
+              class="crayons-btn crayons-btn--ghost-brand crayons-btn--s w-100 js-profile-badges-trigger">
+        Show all <%= count %> badges
+      </button>
+    <% end %>
+  </div>
+</div>

@@ -51,6 +51,13 @@ export const Article = ({
       data-content-user-id={article.user_id}
       data-testid={isFeatured ? 'featured-article' : `article-${article.id}`}
     >
+      <a
+        href={article.path}
+        aria-labelledby={`article-link-${article.id}`}
+        className="crayons-story__hidden-navigation-link"
+      >
+        {article.title}
+      </a>
       <div
         role="presentation"
         onClick={(event) => {
@@ -77,7 +84,7 @@ export const Article = ({
 
           <div className="crayons-story__indention">
             <ContentTitle article={article} />
-            <TagList tags={article.tag_list} />
+            <TagList tags={article.tag_list} flare_tag={article.flare_tag} />
 
             {article.class_name === 'Article' && (
               // eslint-disable-next-line no-underscore-dangle

@@ -2,6 +2,8 @@
 items:
   - stack.md
   - architecture.md
+  - feed.md
+  - compatibility.md
 ---
 
 # Technical Overview
