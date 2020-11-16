@@ -57,12 +57,12 @@ export class Search extends Component {
     // TODO: Consolidate search functionality.
     // Note that push states for search occur in _search.html.erb
     // in initializeSortingTabs(query)
-    const { searchBoxSelector } = this.props;
+    const { searchBoxId } = this.props;
     const searchTerm = getInitialSearchTerm(window.location.search);
 
     // We set the value outside of React state so that there is no flickering of placeholder
     // to search term.
-    const searchBox = document.getElementById(searchBoxSelector);
+    const searchBox = document.getElementById(searchBoxId);
     searchBox.value = searchTerm;
 
     // Even though we set the search term directly via the DOM, it still needs to reside
@@ -121,8 +121,8 @@ export class Search extends Component {
     event.preventDefault();
     document.body.classList.remove('zen-mode');
 
-    const { searchBoxSelector } = this.props;
-    const searchBox = document.getElementById(searchBoxSelector);
+    const { searchBoxId } = this.props;
+    const searchBox = document.getElementById(searchBoxId);
     searchBox.focus();
     searchBox.select();
   };
@@ -146,7 +146,7 @@ export class Search extends Component {
             this.search(key, value);
           }}
           onSubmitSearch={this.submit}
-          searchBoxSelector={searchBoxSelector}
+          searchBoxId={searchBoxId}
         />
       </Fragment>
     );
