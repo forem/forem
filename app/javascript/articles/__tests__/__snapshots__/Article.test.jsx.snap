@@ -8,7 +8,6 @@ Object {
       <article
         class="crayons-story cursor-pointer crayons-story--featured"
         data-content-user-id="23289"
-        data-testid="featured-article"
         id="featured-story-marker"
       >
         <a
@@ -221,7 +220,6 @@ Object {
     <article
       class="crayons-story cursor-pointer crayons-story--featured"
       data-content-user-id="23289"
-      data-testid="featured-article"
       id="featured-story-marker"
     >
       <a
