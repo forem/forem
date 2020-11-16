@@ -86,3 +86,20 @@ export const Foo = () => <Component />;
 Foo.parameters = {
   previewTabs: { 'storybook/docs/panel': { index: -1 } },
 };
+
+export const parameters = {
+  options: {
+    storySort: {
+      order: [
+        'Introduction',
+        'Component Library',
+        'Utility-First CSS',
+        'Writing CSS',
+        'Fundamentals',
+        'Components',
+        'App Components',
+        'Utility-First Classes',
+      ],
+    },
+  },
+};

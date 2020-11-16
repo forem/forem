@@ -1,3 +1,9 @@
+import { h } from 'preact';
+import '../../storybook-utilities/designSystem.scss';
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Writing CSS" />
+
 # Writing CSS
 
 If you ever end up writing your own CSS, it's worth to know several things.
@@ -42,37 +48,25 @@ helpers as well as breakpoint variables I mentioned earlier.
 
 You can access all of the SCSS files in `app/assets/stylesheets` folder.
 
-- `/base` - this folder contains some fundamental styling for layouts, resets
-  and icons.
+|Folder/File|Description|
+|---|---|
+|`/base`| Contains some fundamental styling for layouts, resets and icons.|
+|`/components`| Contains separate SCSS file for each component.
+|—|—|
+|`/config`| Contains many configuration files.
+|`/config/_colors.scss`| Contains all color variables.
+|`/config/_generator.scss`| Contains SCSS mixins generating *all* of our utility classes.
+|`/config/_import.scss`| Contains helpers for SCSS as well as media breakpoints variables.
+|`/config/_variables.scss`| Contains all CSS native variables.
+|—|—|
+|`/themes`| Contains color declarations for other themes.
 
-- `/components` - this folder contains separate SCSS file for each component we
-  have... tags, buttons, forms, ...
 
-- `/config` - this folder contains bunch of configuration files. These are worth
-  explaining:
+There are other folders and top level files that we use, but they might be deprecated in the future. They are:
 
-  - `_colors.scss` - I mentioned it couple lines above - it contains all color
-    variables used in Crayons.
-
-  - `_generator.scss` - it's basically a huge SCSS mixin generating ALL our
-    utility classes.
-
-  - `_import.scss` - it contains bunch of helpers for SCSS as well as media
-    breakpoints variables.
-
-  - `_variables.scss` - it contains all CSS native variables.
-
-- `/themes` - this folder contains color declarations for other themes.
-
-- Other folders and top level files are mostly legacy... :) We still use them,
-  but slowly trying to move all the styling to appropriate Crayons-related
-  files. Exceptions:
-
-  - `crayons.scss` - this is one importing everything Crayons-related like
+- `crayons.scss` - this is one importing everything Crayons-related like
     variables, components styling, utility classes etc.
-
-  - `views.scss` - this one contains views-specific styling. It is separated
+- `views.scss` - this one contains views-specific styling. It is separated
     from Crayons to make Crayons library DEV agnostic.
-
-  - `minimal.scss` - this one is actually one of the main stylesheets from
+- `minimal.scss` - this one is actually one of the main stylesheets from
     pre-Crayons era. It imports everything basically :).

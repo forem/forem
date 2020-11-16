@@ -5,7 +5,7 @@ const renderer = new marked.Renderer();
 const prettierConfig = require('../../../.prettierrc.json');
 
 module.exports = {
-  stories: ['../**/__stories__/*.stories.jsx|mdx'],
+  stories: ['../**/__stories__/*.stories.(mdx|jsx)'],
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
