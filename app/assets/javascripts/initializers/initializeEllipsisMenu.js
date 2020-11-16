@@ -48,7 +48,7 @@ function onXhrSuccess(form, article, values) {
   }
 
   article
-    .getElementsByClassName('.js-ellipsis-menu')[0]
+    .getElementsByClassName('js-ellipsis-menu')[0]
     .classList.add('hidden');
 }
 
