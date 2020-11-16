@@ -242,7 +242,7 @@ RSpec.describe "Registrations", type: :request do
     context "when email registration allowed and email allow list present" do
       before do
         allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
-        allow(SiteConfig).to receive(:allowed_registration_email_domains).and_return(["@dev.to", "@forem.com"])
+        allow(SiteConfig).to receive(:allowed_registration_email_domains).and_return(["dev.to", "forem.com"])
       end
 
       it "does not create user when email not in allow list" do
