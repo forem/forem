@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 2020_11_14_130315) do
-=======
 ActiveRecord::Schema.define(version: 2020_11_14_151157) do
->>>>>>> master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -884,9 +880,9 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
 
   create_table "podcast_ownerships", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.bigint "podcast_id", null: false
+    t.bigint "podcast_id"
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.index ["podcast_id"], name: "index_podcast_ownerships_on_podcast_id"
     t.index ["user_id"], name: "index_podcast_ownerships_on_user_id"
   end
@@ -1276,7 +1272,7 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
-    t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
+    t.datetime "last_moderation_notification", default: "2016-12-31 18:30:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at"
