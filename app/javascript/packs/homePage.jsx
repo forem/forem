@@ -105,7 +105,7 @@ InstantClick.on('change', () => {
     return false;
   }
 
-  const tagsFollowedContainer = document.body.getElementById(
+  const tagsFollowedContainer = document.getElementById(
     'sidebar-nav-followed-tags',
   );
 
