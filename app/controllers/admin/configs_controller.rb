@@ -123,6 +123,8 @@ module Admin
         video_encoder_key
         tag_feed_minimum_score
         home_feed_minimum_score
+        allowed_registration_email_domains
+        display_email_domain_allow_list_publicly
       ].freeze
 
     IMAGE_FIELDS =
@@ -265,8 +267,10 @@ module Admin
       domains = params.dig(:site_config, :allowed_registration_email_domains)
       return unless domains
 
-      valid_domains = domains.select { |d| d.match?(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/) }
-      valid_domains.size != domains.size
+      domains_array = domains.delete(" ").split(",")
+      valid_domains = domains_array.
+        select { |d| d.match?(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/) }
+      valid_domains.size != domains_array.size
     end
 
     def valid_image_url(url)

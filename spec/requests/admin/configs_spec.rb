@@ -88,6 +88,26 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
 
+        it "enables proper domains to allow list" do
+          proper_list = "dev.to, forem.com, forem.dev"
+          post "/admin/config", params: { site_config: { allowed_registration_email_domains: proper_list },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.allowed_registration_email_domains).to eq(%w[dev.to forem.com forem.dev])
+        end
+
+        it "does not allow improper domain list" do
+          impproper_list = "dev.to, foremcom, forem.dev"
+          post "/admin/config", params: { site_config: { allowed_registration_email_domains: impproper_list },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.allowed_registration_email_domains).not_to eq(%w[dev.to foremcom forem.dev])
+        end
+
+        it "enables display_email_domain_allow_list_publicly" do
+          post "/admin/config", params: { site_config: { display_email_domain_allow_list_publicly: true },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.display_email_domain_allow_list_publicly).to be(true)
+        end
+
         it "enables email authentication" do
           post "/admin/config", params: { site_config: { allow_email_password_registration: true },
                                           confirmation: confirmation_message }
