@@ -16,7 +16,7 @@ function slideSidebar(side, direction) {
     document.body.classList.remove('modal-open');
     document
       .getElementById('sidebar-wrapper-' + side)
-      .getElementsByClassName('.side-bar')[0].scrollTop = 0;
+      .getElementsByClassName('side-bar')[0].scrollTop = 0;
     document
       .getElementById('sidebar-wrapper-' + side)
       .classList.remove('swiped-in');
