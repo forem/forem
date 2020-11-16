@@ -4,7 +4,11 @@ export default function mainNavigation() {
     e.target.classList.add('hidden');
   }
 
-  document.querySelectorAll('.js-nav-more-trigger').forEach(function (trigger) {
+  const navMoreTriggers = document.getElementsByClassName(
+    'js-nav-more-trigger',
+  );
+
+  Array.from(navMoreTriggers).forEach((trigger) => {
     trigger.addEventListener('click', listenNavMoreTrigger);
   });
 }

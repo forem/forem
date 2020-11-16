@@ -1,8 +1,10 @@
 function listenHamburgerTriggers() {
-  document.querySelector('body').classList.toggle('hamburger-open');
+  document.body.classList.toggle('hamburger-open');
 }
 
-document.querySelectorAll('.js-hamburger-trigger').forEach(function (trigger) {
+const triggers = document.getElementsByClassName('js-hamburger-trigger');
+
+Array.from(triggers).forEach((trigger) => {
   trigger.addEventListener('click', listenHamburgerTriggers);
 });
 
@@ -11,6 +13,8 @@ function listenNavMoreTrigger(e) {
   e.target.classList.add('hidden');
 }
 
-document.querySelectorAll('.js-nav-more-trigger').forEach(function (trigger) {
+const navMoreTriggers = document.getElementsByClassName('js-nav-more-trigger');
+
+Array.from(navMoreTriggers).forEach((trigger) => {
   trigger.addEventListener('click', listenNavMoreTrigger);
 });

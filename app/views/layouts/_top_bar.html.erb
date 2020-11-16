@@ -20,7 +20,7 @@
     </div>
 
     <div class="crayons-header--search js-search-form" id="header-search">
-      <form accept-charset="UTF-8" method="get" action="/search">
+      <form accept-charset="UTF-8" method="get" action="<%= search_path %>">
         <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="Search..." autocomplete="off" />
       </form>
     </div>
@@ -30,18 +30,18 @@
         <%= inline_svg_tag("search.svg", aria: true, class: "crayons-icon", title: "Search") %>
       </a>
       <% if user_signed_in? %>
-        <a href="/new" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto">Write a post</a>
+        <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto">Write a post</a>
 
         <a id="moderation-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded hidden m:flex" aria-label="Moderation" href="<%= mod_path %>">
           <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
         </a>
 
-        <a href="/connect" id="connect-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Connect">
+        <a href="<%= connect_path %>" id="connect-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Connect">
           <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Connect") %>
           <span class="crayons-indicator crayons-indicator--accent hidden" id="connect-number"></span>
         </a>
 
-        <a href="/notifications" id="notifications-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Notifications">
+        <a href="<%= notifications_path %>" id="notifications-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Notifications">
           <%= inline_svg_tag("bell.svg", aria: true, class: "crayons-icon", title: "Notifications") %>
           <span class="crayons-indicator crayons-indicator--critical hidden" id="notifications-number"></span>
         </a>

@@ -1,7 +1,9 @@
 function listenHamburgerTriggers() {
-  document.querySelector('body').classList.toggle('hamburger-open');
+  document.body.classList.toggle('hamburger-open');
 }
 
-document.querySelectorAll('.js-hamburger-trigger').forEach(function (trigger) {
+const triggers = document.getElementsByClassName('js-hamburger-trigger');
+
+Array.from(triggers).forEach((trigger) => {
   trigger.addEventListener('click', listenHamburgerTriggers);
 });

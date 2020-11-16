@@ -19,6 +19,8 @@ function initializeTopBarIcons() {
   triggerIcon('stories-search', 'search-link');
 }
 
-document.querySelectorAll('.crayons-header__link').forEach(function (icon) {
+const icons = document.getElementsByClassName('crayons-header__link');
+
+Array.from(icons).forEach((icon) => {
   icon.addEventListener('click', initializeTopBarIcons);
 });
