@@ -125,7 +125,7 @@ GEM
     bindex (0.8.1)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    blazer (2.2.7)
+    blazer (2.2.8)
       activerecord (>= 5)
       chartkick (>= 3.2)
       railties (>= 5)
@@ -173,7 +173,7 @@ GEM
       fastimage
     caze (0.2.2)
       activesupport (>= 3)
-    chartkick (3.4.0)
+    chartkick (3.4.2)
     childprocess (3.0.0)
     cld (0.8.0)
       ffi
@@ -266,7 +266,7 @@ GEM
       rubocop (~> 0.79)
       smart_properties
     errbase (0.2.0)
-    erubi (1.9.0)
+    erubi (1.10.0)
     et-orbi (1.2.4)
       tzinfo
     eventmachine (1.2.5)
@@ -778,7 +778,7 @@ GEM
       multipart-post (~> 2.0)
       naught (~> 1.0)
       simple_oauth (~> 0.3.0)
-    tzinfo (1.2.7)
+    tzinfo (1.2.8)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
@@ -850,7 +850,7 @@ DEPENDENCIES
   approvals (~> 0.0)
   better_errors (~> 2.8)
   binding_of_caller (~> 0.8)
-  blazer (~> 2.2.7)
+  blazer (~> 2.2.8)
   bootsnap (>= 1.1.0)
   brakeman (~> 4.10)
   buffer (~> 0.1)
