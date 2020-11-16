@@ -2,17 +2,17 @@ import { Controller } from 'stimulus';
 import adminModal from '../adminModal';
 
 const recaptchaFields = document.querySelector('#recaptchaContainer');
-const emailSigninAndLoginCheckbox = document.querySelector(
-  '#email-signup-and-login-checkbox',
+const emailRegistrationCheckbox = document.querySelector(
+  '#email-registration-checkbox',
 );
 const emailAuthSettingsSection = document.querySelector(
   '#email-auth-settings-section',
 );
-const emailAuthModalTitle = 'Disable email address registration';
+const emailAuthModalTitle = 'Disable Email address registration';
 // TODO: Remove the sentence "You must update site config to save this action!"
 // once we build more robust flow for Admin/Config
 const emailAuthModalBody =
-  '<p>If you disable email address as a registration option, people cannot create an account with their email address.</p><br /><p>However, people who have already created an account using their email address can continue to login.</p><br /><p><strong>You must update site config to save this action!</strong></p>';
+  '<p>If you disable Email address as a registration option, people cannot create an account with their email address.</p><p>However, people who have already created an account using their email address can continue to login.</p><p><strong>Please update site config to save this action.</strong></p>';
 
 export default class ConfigController extends Controller {
   static targets = [
@@ -20,9 +20,12 @@ export default class ConfigController extends Controller {
     'collectiveNoun',
     'configModalAnchor',
     'emailAuthSettingsBtn',
+    'enabledIndicator',
     'inviteOnlyMode',
     'requireCaptchaForEmailPasswordRegistration',
   ];
+
+  // GENERAL FUNCTIONS START
 
   disableTargetField(event) {
     const targetElementName = event.target.dataset.disableTarget;
@@ -42,6 +45,23 @@ export default class ConfigController extends Controller {
     }
   }
 
+  closeAdminConfigModal() {
+    this.configModalAnchorTarget.innerHTML = '';
+    document.body.style.height = 'inherit';
+    document.body.style.overflowY = 'inherit';
+  }
+
+  positionModalOnPage() {
+    if (document.querySelector('.crayons-modal')) {
+      document.body.style.height = '100vh';
+      document.body.style.overflowY = 'hidden';
+    }
+  }
+
+  // GENERAL FUNCTIONS END
+
+  // EMAIL AUTH FUNCTIONS START
+
   toggleGoogleRecaptchaFields() {
     if (this.requireCaptchaForEmailPasswordRegistrationTarget.checked) {
       recaptchaFields.classList.remove('hidden');
@@ -50,16 +70,18 @@ export default class ConfigController extends Controller {
     }
   }
 
-  enableOrEditEmailAuthSettings() {
+  enableOrEditEmailAuthSettings(event) {
     event.preventDefault();
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
-      emailSigninAndLoginCheckbox.checked = true;
+      emailRegistrationCheckbox.checked = true;
+      this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'edit');
+      this.enabledIndicatorTarget.classList.add('visible');
     }
     this.emailAuthSettingsBtnTarget.classList.add('hidden');
     emailAuthSettingsSection.classList.remove('hidden');
   }
 
-  hideEmailAuthSettings() {
+  hideEmailAuthSettings(event) {
     event.preventDefault();
     this.emailAuthSettingsBtnTarget.classList.remove('hidden');
     emailAuthSettingsSection.classList.add('hidden');
@@ -70,33 +92,154 @@ export default class ConfigController extends Controller {
     this.configModalAnchorTarget.innerHTML = adminModal(
       emailAuthModalTitle,
       emailAuthModalBody,
-      'Confirm',
+      'Confirm disable',
       'disableEmailAuthFromModal',
       'Cancel',
       'closeAdminConfigModal',
     );
-    if (document.querySelector('.crayons-modal')) {
-      window.scrollTo(0, 0);
-      document.body.style.height = '100vh';
-      document.body.style.overflowY = 'hidden';
+    this.positionModalOnPage();
+  }
+
+  disableEmailAuthFromModal(event) {
+    event.preventDefault();
+    this.disableEmailAuth(event);
+    this.closeAdminConfigModal(event);
+  }
+
+  disableEmailAuth(event) {
+    event.preventDefault();
+    emailRegistrationCheckbox.checked = false;
+    this.emailAuthSettingsBtnTarget.innerHTML = 'Enable';
+    this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'enable');
+    this.enabledIndicatorTarget.classList.remove('visible');
+    this.hideEmailAuthSettings(event);
+  }
+
+  // EMAIL AUTH FUNCTIONS END
+
+  // AUTH PROVIDERS FUNCTIONS START
+
+  enableOrEditAuthProvider(event) {
+    event.preventDefault();
+    const provider = event.target.dataset.authProviderEnable;
+    const enabledIndicator = document.querySelector(
+      `#${provider}-enabled-indicator`,
+    );
+    if (event.target.dataset.buttonText === 'enable') {
+      enabledIndicator.classList.add('visible');
+      event.target.setAttribute('data-enable-auth', 'true');
+      this.listAuthToBeEnabled();
+    }
+    document
+      .querySelector(`#${provider}-auth-settings`)
+      .classList.remove('hidden');
+    event.target.classList.add('hidden');
+  }
+
+  disableAuthProvider(event) {
+    event.preventDefault();
+    const provider = event.target.dataset.authProvider;
+    const enabledIndicator = document.querySelector(
+      `#${provider}-enabled-indicator`,
+    );
+    const authEnableButton = document.querySelector(
+      `[data-auth-provider-enable="${provider}"]`,
+    );
+    authEnableButton.setAttribute('data-enable-auth', 'false');
+    enabledIndicator.classList.remove('visible');
+    this.listAuthToBeEnabled(event);
+    this.hideAuthProviderSettings(event);
+  }
+
+  authProviderModalTitle(provider) {
+    return `Disable ${provider} login`;
+  }
+
+  authProviderModalBody(provider) {
+    return `<p>If you disable ${provider} as a login option, people cannot authenticate with ${provider}.</p><p><strong>You must update Site Config to save this action!</strong></p>`;
+  }
+
+  activateAuthProviderModal(event) {
+    event.preventDefault();
+    const provider = event.target.dataset.authProvider;
+    const official_provider = event.target.dataset.authProviderOfficial;
+    this.configModalAnchorTarget.innerHTML = adminModal(
+      this.authProviderModalTitle(official_provider),
+      this.authProviderModalBody(official_provider),
+      'Confirm disable',
+      'disableAuthProviderFromModal',
+      'Cancel',
+      'closeAdminConfigModal',
+      'auth-provider',
+      provider,
+    );
+    this.positionModalOnPage();
+  }
+
+  disableAuthProviderFromModal(event) {
+    event.preventDefault();
+    const provider = event.target.dataset.authProvider;
+    const authEnableButton = document.querySelector(
+      `[data-auth-provider-enable="${provider}"]`,
+    );
+    const enabledIndicator = document.querySelector(
+      `#${provider}-enabled-indicator`,
+    );
+    authEnableButton.setAttribute('data-enable-auth', 'false');
+    this.listAuthToBeEnabled(event);
+    this.checkForAndGuardSoleAuthProvider();
+    enabledIndicator.classList.remove('visible');
+    this.hideAuthProviderSettings(event);
+    this.closeAdminConfigModal(event);
+  }
+
+  checkForAndGuardSoleAuthProvider() {
+    if (
+      document.querySelectorAll('[data-enable-auth="true"]').length === 1 &&
+      document
+        .querySelector('#email-auth-enable-edit-btn')
+        .getAttribute('data-button-text') === 'enable'
+    ) {
+      const targetAuthDisableBtn = document.querySelector(
+        '[data-enable-auth="true"]',
+      );
+      targetAuthDisableBtn.parentElement.classList.add('crayons-tooltip');
+      targetAuthDisableBtn.parentElement.setAttribute(
+        'data-tooltip',
+        'To edit this, you must first enable Email address as a registration option',
+      );
+      targetAuthDisableBtn.setAttribute('disabled', true);
     }
   }
 
-  closeAdminConfigModal() {
-    this.configModalAnchorTarget.innerHTML = '';
-    document.body.style.height = 'inherit';
-    document.body.style.overflowY = 'inherit';
+  hideAuthProviderSettings(event) {
+    event.preventDefault();
+    const provider = event.target.dataset.authProvider;
+    document
+      .querySelector(`#${provider}-auth-settings`)
+      .classList.add('hidden');
+    document.querySelector(`#${provider}-auth-btn`).classList.remove('hidden');
   }
 
-  disableEmailAuthFromModal() {
-    event.preventDefault();
-    emailSigninAndLoginCheckbox.checked = false;
-    this.closeAdminConfigModal();
+  listAuthToBeEnabled() {
+    const enabledProviderArray = [];
+    document
+      .querySelectorAll('[data-enable-auth="true"]')
+      .forEach((provider) => {
+        enabledProviderArray.push(provider.dataset.authProviderEnable);
+      });
+    document.querySelector(
+      '#auth_providers_to_enable',
+    ).value = enabledProviderArray;
   }
 
-  disableEmailAuth() {
-    event.preventDefault();
-    emailSigninAndLoginCheckbox.checked = false;
-    this.hideEmailAuthSettings();
+  adjustAuthenticationOptions() {
+    if (this.inviteOnlyModeTarget.checked) {
+      document.querySelector('#auth_providers_to_enable').value = '';
+      emailRegistrationCheckbox.checked = false;
+    } else {
+      emailRegistrationCheckbox.checked = true;
+    }
   }
+  // AUTH PROVIDERS FUNCTIONS END
 }
