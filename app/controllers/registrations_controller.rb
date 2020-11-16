@@ -23,7 +23,7 @@ class RegistrationsController < Devise::RegistrationsController
       resource.registered = true
       resource.registered_at = Time.current
       resource.editor_version = "v2"
-      check_allowed_email(resource)
+      check_allowed_email(resource) if resource.email.present?
       resource.save if resource.email.present?
       yield resource if block_given?
       if resource.persisted?
