@@ -7,7 +7,7 @@ RSpec.describe "Admin updates a tag", type: :system do
   context "when no colors have been choosen for the tag" do
     before do
       sign_in super_admin
-      visit "/admin/tags/#{tag.id}"
+      visit admin_tag_path(tag.id)
     end
 
     it "defaults to white text for the color picker" do

@@ -2,10 +2,10 @@ require "rails_helper"
 
 RSpec.describe "/admin/config", type: :request do
   let(:user) { create(:user) }
-  let(:admin) { create(:user, :super_admin) }
-  let(:admin_plus_config) { create(:user, :super_plus_single_resource_admin, resource: Config) }
+  let(:admin) { create(:user, :admin) }
+  let(:super_admin) { create(:user, :super_admin) }
   let(:confirmation_message) do
-    "My username is @#{admin_plus_config.username} and this action is 100% safe and appropriate."
+    "My username is @#{super_admin.username} and this action is 100% safe and appropriate."
   end
 
   describe "POST admin/config as a user" do
@@ -20,7 +20,7 @@ RSpec.describe "/admin/config", type: :request do
 
   # rubocop:disable RSpec/NestedGroups
   describe "POST admin/config" do
-    context "when admin has typical admin permissions but not single resource" do
+    context "when admin has typical admin permissions but not super admin" do
       before do
         sign_in(admin)
       end
@@ -42,9 +42,9 @@ RSpec.describe "/admin/config", type: :request do
       end
     end
 
-    context "when admin has full permissions including single resource" do
+    context "when admin has full permissions including super" do
       before do
-        sign_in(admin_plus_config)
+        sign_in(super_admin)
       end
 
       it "updates site config admin action taken" do
