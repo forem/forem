@@ -64,7 +64,7 @@ development:
 test:
   <<: *default
   url: <%= ENV['DATABASE_URL_TEST'] || ENV['DATABASE_URL'] || ''%>
-  database: PracticalDeveloper_test<%= ENV['TEST_ENV_NUMBER'] %>
+  database: <%= ENV['DATABASE_NAME_TEST'] || 'PracticalDeveloper_test' %><%= ENV['TEST_ENV_NUMBER'] %>
   variables:
       statement_timeout: <%= ENV.fetch('STATEMENT_TIMEOUT', 10_000).to_i %>
 
