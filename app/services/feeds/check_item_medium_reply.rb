@@ -1,4 +1,5 @@
-# Checks if a Feedjira item represents a Medium reply or not
+# Checks if a Feedjira item represents a user's comment on a Medium post as
+# unfortunately they include those as items in their feeds
 module Feeds
   class CheckItemMediumReply
     MEDIUM_DOMAIN = "medium.com".freeze
