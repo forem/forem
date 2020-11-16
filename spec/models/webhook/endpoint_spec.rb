@@ -11,10 +11,14 @@ RSpec.describe Webhook::Endpoint, type: :model do
   describe "validations" do
     it { is_expected.to belong_to(:user).inverse_of(:webhook_endpoints) }
     it { is_expected.to belong_to(:oauth_application).inverse_of(:webhook_endpoints).optional }
-    it { is_expected.to validate_presence_of(:target_url) }
-    it { is_expected.to validate_presence_of(:source) }
+
     it { is_expected.to validate_presence_of(:events) }
+    it { is_expected.to validate_presence_of(:source) }
+    it { is_expected.to validate_presence_of(:target_url) }
+    it { is_expected.to validate_presence_of(:user_id) }
+
     it { is_expected.to validate_uniqueness_of(:target_url) }
+
     it { is_expected.to allow_value("https://foo.com").for(:target_url) }
     it { is_expected.not_to allow_value("http://foo.com").for(:target_url) }
   end
@@ -41,16 +45,16 @@ RSpec.describe Webhook::Endpoint, type: :model do
 
     it "finds for events" do
       d_points = described_class.for_events("article_destroyed")
-      expect(d_points.pluck(:id).sort).to eq([endpoint, epoint2, epoint3].map(&:id).sort)
+      expect(d_points.ids.sort).to eq([endpoint, epoint2, epoint3].map(&:id).sort)
     end
 
     it "finds for_events array" do
       endpoints = described_class.for_events(%w[article_created article_destroyed])
-      expect(endpoints.pluck(:id)).to eq([endpoint.id])
+      expect(endpoints.ids).to eq([endpoint.id])
     end
 
     it "belongs to user" do
-      expect(user.webhook_endpoints.pluck(:id).sort).to eq([endpoint, epoint2].map(&:id).sort)
+      expect(user.webhook_endpoints.ids.sort).to eq([endpoint, epoint2].map(&:id).sort)
     end
   end
 end

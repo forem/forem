@@ -33,6 +33,12 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(card.is_a?(Stripe::Card)).to eq(true)
     end
 
+    it "creates an AuditLog entry for successful creates" do
+      expect do
+        post stripe_active_cards_path(stripe_token: stripe_helper.generate_card_token)
+      end.to change(AuditLog, :count).by(1)
+    end
+
     it "does not add a card if there is a card error" do
       StripeMock.prepare_card_error(:incorrect_number, :create_source)
 
@@ -91,6 +97,17 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(flash[:settings_notice]).to eq("Your billing information has been updated")
 
       expect(Payments::Customer.get(customer.id).default_source).to eq(new_card.id)
+    end
+
+    it "creates an AuditLog entry for successful updates" do
+      customer, = create_user_with_card(user, card_token)
+      # add a second source
+      new_card_token = stripe_helper.generate_card_token
+      new_card = Payments::Customer.create_source(customer.id, new_card_token)
+
+      expect do
+        put stripe_active_card_path(id: new_card.id)
+      end.to change(AuditLog, :count).by(1)
     end
 
     it "does not update the customer default souce if the source ID is unknown" do
@@ -165,6 +182,14 @@ RSpec.describe "StripeActiveCards", type: :request do
       it "successfully deletes the card from sources" do
         customer = Payments::Customer.get(user.stripe_id_code)
         expect(Payments::Customer.get_sources(customer).count).to eq(0)
+      end
+
+      it "creates an AuditLog entry for successful deletes" do
+        _, source = create_user_with_card(user, card_token)
+
+        expect do
+          delete stripe_active_card_path(id: source.id)
+        end.to change(AuditLog, :count).by(1)
       end
     end
 

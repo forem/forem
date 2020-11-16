@@ -214,6 +214,105 @@ RSpec.describe Authentication::Authenticator, type: :service do
     end
   end
 
+  context "when authenticating through Facebook" do
+    let!(:auth_payload) { OmniAuth.config.mock_auth[:facebook] }
+    let!(:service) { described_class.new(auth_payload) }
+
+    # Freeze time since `facebook_created_at` will be based on server time
+    before do
+      Timecop.freeze
+    end
+
+    after do
+      Timecop.return
+    end
+
+    describe "new user" do
+      it "creates a new user" do
+        expect do
+          service.call
+        end.to change(User, :count).by(1)
+      end
+
+      it "creates a new identity" do
+        expect do
+          service.call
+        end.to change(Identity, :count).by(1)
+      end
+
+      it "extracts the proper data from the auth payload" do
+        user = service.call
+
+        info = auth_payload.info
+        raw_info = auth_payload.extra.raw_info
+
+        expect(user.email).to eq(info.email)
+        expect(user.name).to eq(raw_info.name)
+        expect(user.remote_profile_image_url).to eq(info.image)
+        expect(user.facebook_created_at.to_i).to eq(Time.zone.now.to_i)
+        expect(user.facebook_username).to match(/#{info.name.sub(' ', '_')}_\S*\z/)
+      end
+
+      it "sets default fields" do
+        user = service.call
+
+        expect(user.password).to be_present
+        expect(user.signup_cta_variant).to be_nil
+        expect(user.saw_onboarding).to be(false)
+        expect(user.editor_version).to eq("v2")
+      end
+
+      it "sets the correct sign up cta variant" do
+        user = described_class.call(auth_payload, cta_variant: "awesome")
+
+        expect(user.signup_cta_variant).to eq("awesome")
+      end
+
+      it "sets remember_me for the new user" do
+        user = service.call
+
+        expect(user.remember_me).to be(true)
+        expect(user.remember_token).to be_present
+        expect(user.remember_created_at).to be_present
+      end
+
+      it "sets confirmed_at" do
+        user = service.call
+
+        expect(user.confirmed_at).to be_present
+      end
+
+      it "queues a slack message to be sent for a user whose identity is brand new" do
+        auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
+
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
+          described_class.call(auth_payload)
+        end
+      end
+
+      it "records successful identity creation metric" do
+        allow(DatadogStatsClient).to receive(:increment)
+        service.call
+
+        expect(DatadogStatsClient).to have_received(:increment).with(
+          "identity.created", tags: ["provider:facebook"]
+        )
+      end
+
+      it "increments identity.errors if any errors occur in the transaction" do
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
+        # rubocop:enable RSpec/AnyInstance
+        allow(DatadogStatsClient).to receive(:increment)
+
+        expect { described_class.call(auth_payload) }.to raise_error(StandardError)
+
+        tags = hash_including(tags: array_including("error:StandardError"))
+        expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
+      end
+    end
+  end
+
   context "when authenticating through Twitter" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:twitter] }
     let!(:service) { described_class.new(auth_payload) }

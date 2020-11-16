@@ -67,10 +67,8 @@ function renderBroadcast(broadcastElement, data) {
     }
   }
 
-  const closeButton = `<button class="close-announcement-button">
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M6.99974 5.58623L11.9497 0.63623L13.3637 2.05023L8.41374 7.00023L13.3637 11.9502L11.9497 13.3642L6.99974 8.41423L2.04974 13.3642L0.635742 11.9502L5.58574 7.00023L0.635742 2.05023L2.04974 0.63623L6.99974 5.58623Z" fill="white" />
-    </svg>
+  const closeButton = `<button class="close-announcement-button crayons-btn crayons-btn--icon-rounded crayons-btn--inverted crayons-btn--ghost">
+    <svg class="crayons-icon" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" /></svg>
   </button>`;
 
   broadcastElement.insertAdjacentHTML(
@@ -83,20 +81,27 @@ function renderBroadcast(broadcastElement, data) {
 
 /**
  * A function to determine if a broadcast should render.
- * Does not render a broadcast on the `/new` route or in an iframe.
+ * Does not render a broadcast in an iframe, or on `/connect` and `/new` routes.
  * Does not render a broadcast if the current user has opted-out,
  * if the broadcast has already been inserted, or if the key for
  * the broadcast's title exists in localStorage.
  *
- * If the broadcast exists in the DOM but was hidden by the articleForm,
- * the function will re-display it again by adding a class.
- *
  * @function initializeBroadcast
  */
 function initializeBroadcast() {
+  const shouldHideBroadcast = window.location.pathname.match(
+    /^(?:\/connect|\/new)/,
+  );
+
   // Iframes will attempt to re-render a broadcast, so we want to explicitly
   // avoid initializing one if we are within `window.frameElement`.
-  if (window.frameElement || window.location.pathname === '/new') {
+  if (window.frameElement || shouldHideBroadcast) {
+    const broadcast = document.getElementById('active-broadcast');
+
+    // Hide the broadcast if it exists and we are on a path where it should be hidden.
+    if (broadcast) {
+      broadcast.classList.remove('broadcast-visible');
+    }
     return;
   }
 

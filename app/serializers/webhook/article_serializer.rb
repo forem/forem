@@ -1,7 +1,5 @@
 module Webhook
-  class ArticleSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class ArticleSerializer < ApplicationSerializer
     set_type :article
     attributes :title, :description, :readable_publish_date, :cached_tag_list, :cached_tag_list_array,
                :slug, :path, :url, :comments_count, :public_reactions_count, :body_markdown

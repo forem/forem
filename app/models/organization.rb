@@ -11,22 +11,23 @@ class Organization < ApplicationRecord
 
   acts_as_followable
 
-  has_many :api_secrets, through: :users
-  has_many :articles
-  has_many :listings
-  has_many :collections
-  has_many :credits
-  has_many :display_ads
-  has_many :notifications
+  has_many :articles, dependent: :nullify
+  has_many :collections, dependent: :nullify
+  has_many :credits, dependent: :restrict_with_error
+  has_many :display_ads, dependent: :destroy
+  has_many :listings, dependent: :destroy
+  has_many :notifications, dependent: :destroy
   has_many :organization_memberships, dependent: :delete_all
-  has_many :profile_pins, as: :profile, inverse_of: :profile
-  has_many :sponsorships
+  has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
+  has_many :sponsorships, dependent: :destroy
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :users, through: :organization_memberships
 
+  validates :articles_count, presence: true
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :company_size, format: { with: INTEGER_REGEXP, message: MESSAGES[:integer_only], allow_blank: true }
   validates :company_size, length: { maximum: 7 }, allow_nil: true
+  validates :credits_count, presence: true
   validates :cta_body_markdown, length: { maximum: 256 }
   validates :cta_button_text, length: { maximum: 20 }
   validates :cta_button_url, length: { maximum: 150 }, url: { allow_blank: true, no_local: true }
@@ -40,24 +41,27 @@ class Organization < ApplicationRecord
   validates :slug, exclusion: { in: ReservedWords.all, message: MESSAGES[:reserved_word] }
   validates :slug, format: { with: SLUG_REGEXP }, length: { in: 2..18 }
   validates :slug, presence: true, uniqueness: { case_sensitive: false }
+  validates :spent_credits_count, presence: true
   validates :summary, length: { maximum: 250 }
   validates :tag_line, length: { maximum: 60 }
   validates :tech_stack, :story, length: { maximum: 640 }
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :twitter_username, length: { maximum: 15 }
+  validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
 
-  after_save :bust_cache
-  before_save :generate_secret
-  before_save :remove_at_from_usernames
-  before_save :update_articles
-  before_validation :check_for_slug_change
   before_validation :downcase_slug
+  before_validation :check_for_slug_change
   before_validation :evaluate_markdown
+  before_save :update_articles
+  before_save :remove_at_from_usernames
+  before_save :generate_secret
+  after_save :bust_cache
 
   after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
+  after_commit :bust_cache, on: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -93,7 +97,7 @@ class Organization < ApplicationRecord
   end
 
   def profile_image_90
-    ProfileImage.new(self).get(width: 90)
+    Images::Profile.call(profile_image_url, length: 90)
   end
 
   def enough_credits?(num_credits_needed)
@@ -102,6 +106,10 @@ class Organization < ApplicationRecord
 
   def banned
     false
+  end
+
+  def destroyable?
+    organization_memberships.count == 1 && articles.count.zero?
   end
 
   private
@@ -122,14 +130,7 @@ class Organization < ApplicationRecord
   def update_articles
     return unless saved_change_to_slug || saved_change_to_name || saved_change_to_profile_image
 
-    cached_org_object = {
-      name: name,
-      username: username,
-      slug: slug,
-      profile_image_90: profile_image_90,
-      profile_image_url: profile_image_url
-    }
-    articles.update(cached_organization: OpenStruct.new(cached_org_object))
+    articles.update(cached_organization: Articles::CachedEntity.from_object(self))
   end
 
   def bust_cache

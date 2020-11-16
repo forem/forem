@@ -6,7 +6,7 @@ items:
   - contributing
   - backend
   - frontend
-  - internal
+  - admin
   - design
   - tests
   - faqs.md
@@ -14,6 +14,8 @@ items:
   - licensing.md
   - self-hosting.md
   - maintainers
+  - component: Divider
+  - creators
 ---
 
 # Welcome to Forem's developer documentation
@@ -35,26 +37,11 @@ request. Follow these steps to get the documentation site running locally.
 
 Forem's documentation is built with [GitDocs NodeJS library][gitdocs].
 
-The first step to running the documentations locally is to install the `GitDocs`
-package globally.
-
-With npm:
+To start the gitdocs server, you should run `yarn gitdocs serve` from the root
+of the `forem` project or from the `/docs` directory.
 
 ```shell
-npm install gitdocs -g
-```
-
-Alternatively, you can use Yarn:
-
-```shell
-yarn global add gitdocs
-```
-
-Once installed, you should run `gitdocs serve` from the root of the `forem`
-project or from the `/docs` directory.
-
-```shell
-gitdocs serve
+yarn gitdocs serve
 ```
 
 This will start a server where you can browse the documentation:
@@ -68,8 +55,8 @@ for those changes to take effect.
 If you're looking for more information on contributing, check out the
 [Contributing guide][contributing].
 
-[installation]: /installation/
-[architecture]: /technical-overview/architecture/
-[contributing]: /contributing/
+[installation]: /docs/installation/
+[architecture]: /docs/technical-overview/architecture/
+[contributing]: /docs/contributing/
 [docs]: https://github.com/forem/forem/tree/master/docs/
 [gitdocs]: https://www.npmjs.com/package/gitdocs/

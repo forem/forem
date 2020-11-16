@@ -26,17 +26,18 @@ class BufferUpdatesController < ApplicationController
     tags_names = @article.decorate.cached_tag_list_array
     tags_names.each do |name|
       tag = Tag.find_by(name: name)
-      if tag&.buffer_profile_id_code.present?
-        BufferUpdate.create(
-          article_id: @article.id,
-          composer_user_id: current_user.id,
-          body_text: modified_body_text,
-          social_service_name: "twitter",
-          buffer_profile_id_code: tag.buffer_profile_id_code,
-          tag_id: tag.id,
-          status: "pending",
-        )
-      end
+
+      next if tag&.buffer_profile_id_code.blank?
+
+      BufferUpdate.create(
+        article_id: @article.id,
+        composer_user_id: current_user.id,
+        body_text: modified_body_text,
+        social_service_name: "twitter",
+        buffer_profile_id_code: tag.buffer_profile_id_code,
+        tag_id: tag.id,
+        status: "pending",
+      )
     end
   end
 

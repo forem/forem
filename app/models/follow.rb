@@ -16,7 +16,7 @@ class Follow < ApplicationRecord
 
   # Follows belong to the "followable" interface, and also to followers
   belongs_to :followable, polymorphic: true
-  belongs_to :follower,   polymorphic: true
+  belongs_to :follower, polymorphic: true
 
   scope :followable_user, ->(id) { where(followable_id: id, followable_type: "User") }
   scope :followable_tag, ->(id) { where(followable_id: id, followable_type: "ActsAsTaggableOn::Tag") }
@@ -28,12 +28,17 @@ class Follow < ApplicationRecord
 
   counter_culture :follower, column_name: proc { |follow| COUNTER_CULTURE_COLUMN_NAME_BY_TYPE[follow.followable_type] },
                              column_names: COUNTER_CULTURE_COLUMNS_NAMES
-  after_save :touch_follower
   after_create :send_email_notification
-  after_create_commit :create_chat_channel
   before_destroy :modify_chat_channel_status
+  after_save :touch_follower
+  after_create_commit :create_chat_channel
 
-  validates :subscription_status, inclusion: { in: %w[all_articles none] }
+  validates :blocked, inclusion: { in: [true, false] }
+  validates :followable_id, presence: true
+  validates :followable_type, presence: true
+  validates :follower_id, presence: true
+  validates :follower_type, presence: true
+  validates :subscription_status, presence: true, inclusion: { in: %w[all_articles none] }
 
   def self.need_new_follower_notification_for?(followable_type)
     %w[User Organization].include?(followable_type)
@@ -52,7 +57,7 @@ class Follow < ApplicationRecord
   end
 
   def send_email_notification
-    return unless followable.class.name == "User" && followable.email?
+    return unless followable.instance_of?(User) && followable.email?
 
     Follows::SendEmailNotificationWorker.perform_async(id)
   end

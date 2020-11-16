@@ -16,7 +16,7 @@ RSpec.describe Comments::SendEmailNotificationWorker, type: :worker do
     end
 
     context "with comment" do
-      let_it_be(:comment) { double }
+      let(:comment) { double }
 
       before do
         allow(Comment).to receive(:find_by).with(id: 1).and_return(comment)

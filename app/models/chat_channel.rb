@@ -1,5 +1,5 @@
 class ChatChannel < ApplicationRecord
-  attr_accessor :current_user, :usernames_string
+  attr_accessor :current_user, :usernames_string, :username_string
 
   resourcify
 
@@ -27,6 +27,9 @@ class ChatChannel < ApplicationRecord
   has_many :pending_users, through: :pending_memberships, class_name: "User", source: :user
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
+
+  has_one :mod_tag, class_name: "Tag", foreign_key: "mod_chat_channel_id",
+                    inverse_of: :mod_chat_channel, dependent: :nullify
 
   validates :channel_type, presence: true, inclusion: { in: CHANNEL_TYPES }
   validates :status, presence: true, inclusion: { in: STATUSES }
@@ -70,51 +73,6 @@ class ChatChannel < ApplicationRecord
     chat_channel_memberships.where(user_id: user.id).pick(:last_opened_at)
   end
 
-  class << self
-    def create_with_users(users:, channel_type: "direct", contrived_name: "New Channel", membership_role: "member")
-      raise "Invalid direct channel" if invalid_direct_channel?(users, channel_type)
-
-      usernames = users.map(&:username).sort
-      slug = if channel_type == "direct"
-               usernames.join("/")
-             else
-               "#{contrived_name.to_s.parameterize}-#{rand(100_000).to_s(26)}"
-             end
-
-      contrived_name = "Direct chat between " + usernames.join(" and ") if channel_type == "direct"
-      channel = find_or_create_chat_channel(channel_type, slug, contrived_name)
-      if channel_type == "direct"
-        channel.add_users(users)
-      else
-        channel.invite_users(users: users, membership_role: membership_role)
-      end
-      channel
-    end
-
-    def find_or_create_chat_channel(channel_type, slug, contrived_name)
-      channel = ChatChannel.find_by(slug: slug)
-      if channel
-        raise "Blocked channel" if channel.status == "blocked"
-
-        channel.status = "active"
-        channel.save
-      else
-        channel = create(
-          channel_type: channel_type,
-          channel_name: contrived_name,
-          slug: slug,
-          last_message_at: 1.week.ago,
-          status: "active",
-        )
-      end
-      channel
-    end
-
-    def invalid_direct_channel?(users, channel_type)
-      (users.size != 2 || users.map(&:id).uniq.count < 2) && channel_type == "direct"
-    end
-  end
-
   def add_users(users)
     now = Time.current
     users_params = Array.wrap(users).map do |user|
@@ -154,12 +112,13 @@ class ChatChannel < ApplicationRecord
   end
 
   def pusher_channels
+    # TODO: use something more unique here (uuid?) rather than just id.
     if invite_only?
-      "presence-channel-#{id}"
+      "private-channel--#{ChatChannel.urlsafe_encoded_app_domain}-#{id}"
     elsif open?
-      "open-channel-#{id}"
+      "open-channel--#{ChatChannel.urlsafe_encoded_app_domain}-#{id}"
     else
-      chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}" }
+      chat_channel_memberships.pluck(:user_id).map { |id| ChatChannel.pm_notifications_channel(id) }
     end
   end
 
@@ -170,9 +129,10 @@ class ChatChannel < ApplicationRecord
   def adjusted_slug(user = nil, caller_type = "receiver")
     user ||= current_user
     if direct? && caller_type == "receiver"
-      "@" + slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
+      cleaned_slug = slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
+      "@#{cleaned_slug}"
     elsif caller_type == "sender"
-      "@" + user.username
+      "@#{user.username}"
     else
       slug
     end
@@ -180,7 +140,7 @@ class ChatChannel < ApplicationRecord
 
   def channel_human_names
     active_memberships
-      .order("last_opened_at DESC").limit(5).includes(:user).map do |membership|
+      .order(last_opened_at: :desc).limit(5).includes(:user).map do |membership|
         membership.user.name
       end
   end
@@ -198,18 +158,26 @@ class ChatChannel < ApplicationRecord
   end
 
   def channel_mod_ids
-    mod_users.pluck(:id)
+    mod_users.ids
   end
 
   def pending_users_select_fields
     pending_users.select(:id, :username, :name, :updated_at)
   end
 
+  def self.pm_notifications_channel(user_id)
+    "private-message-notifications--#{urlsafe_encoded_app_domain}-#{user_id}"
+  end
+
+  def self.urlsafe_encoded_app_domain
+    Base64.urlsafe_encode64(ApplicationConfig["APP_DOMAIN"])
+  end
+
   private
 
   def user_obj(membership)
     {
-      profile_image: ProfileImage.new(membership.user).get(width: 90),
+      profile_image: Images::Profile.call(membership.user.profile_image_url, length: 90),
       darker_color: membership.user.decorate.darker_color,
       name: membership.user.name,
       last_opened_at: membership.last_opened_at,

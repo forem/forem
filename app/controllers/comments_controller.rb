@@ -3,13 +3,14 @@ class CommentsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index]
   before_action :authenticate_user!, only: %i[preview create hide unhide]
   after_action :verify_authorized
-  after_action only: [:moderator_create] do
+  after_action only: %i[moderator_create admin_delete] do
     Audit::Logger.log(:moderator, current_user, params.dup)
   end
 
   # GET /comments
   # GET /comments.json
   # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def index
     skip_authorization
     @on_comments_page = true
@@ -39,6 +40,7 @@ class CommentsController < ApplicationController
     render :deleted_commentable_comment unless @commentable
   end
   # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   # GET /comments/1
   # GET /comments/1.json
@@ -139,7 +141,33 @@ class CommentsController < ApplicationController
     authorize @comment
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
-      redirect_to URI.parse(@comment.path).path, notice: "Comment was successfully updated."
+
+      # The following sets variables used in the index view. We render the
+      # index view directly to avoid having to redirect.
+      #
+      # Redirects lead to a race condition where we redirect to a cached view
+      # after updating data and we don't bust the cache fast enough before
+      # hitting the view, therefore stale content ends up being served from
+      # cache.
+      #
+      # https://github.com/forem/forem/issues/10338#issuecomment-693401481
+      @on_comments_page = true
+      @root_comment = @comment
+      @commentable = @comment.commentable
+      @commentable_type = @comment.commentable_type
+
+      case @commentable_type
+      when "PodcastEpisode"
+        @user = @commentable&.podcast
+      when "Article"
+        # user could be a user or an organization
+        @user = @commentable&.user
+        @article = @commentable
+      else
+        @user = @commentable&.user
+      end
+
+      render :index
     else
       @commentable = @comment.commentable
       render :edit
@@ -204,10 +232,6 @@ class CommentsController < ApplicationController
     @comment.hidden_by_commentable_user = true
     @comment&.commentable&.update_column(:any_comments_hidden, true)
 
-    Notification.destroy_by(user_id: current_user.id,
-                            notifiable_type: "Comment",
-                            notifiable_id: params[:comment_id])
-
     if @comment.save
       render json: { hidden: "true" }, status: :ok
     else
@@ -230,10 +254,33 @@ class CommentsController < ApplicationController
     end
   end
 
+  def admin_delete
+    @comment = Comment.find(params[:comment_id])
+    authorize @comment
+    @comment.deleted = true
+
+    if @comment.save
+      redirect_url = @comment.commentable&.path
+      if redirect_url
+        flash[:success] = "Comment was successfully deleted."
+        redirect_to redirect_url
+      else
+        redirect_to_comment_path
+      end
+    else
+      redirect_to_comment_path
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])
+  end
+
+  def redirect_to_comment_path
+    flash[:error] = "Something went wrong; Comment NOT deleted."
+    redirect_to "#{@comment.path}/mod"
   end
 end

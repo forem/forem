@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "VideoPlayerShow", type: :request do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:video_article) { create(:article, user: user) }
+  let(:user) { create(:user) }
+  let(:video_article) { create(:article, user: user) }
 
   describe "GET /:slug (video articles)" do
     before do

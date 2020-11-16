@@ -15,16 +15,19 @@ class PodcastEpisode < ApplicationRecord
   delegate :published, to: :podcast
 
   belongs_to :podcast
-  has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
-  validates :title, presence: true
-  validates :slug, presence: true
-  validates :media_url, presence: true, uniqueness: true
+  validates :comments_count, presence: true
   validates :guid, presence: true, uniqueness: true
+  validates :media_url, presence: true, uniqueness: true
+  validates :reactions_count, presence: true
+  validates :slug, presence: true
+  validates :title, presence: true
 
+  before_validation :process_html_and_prefix_all_images
   # NOTE: Any create callbacks will not be run since we use activerecord-import to create episodes
   # https://github.com/zdennis/activerecord-import#callbacks
   after_update :purge
@@ -33,8 +36,6 @@ class PodcastEpisode < ApplicationRecord
 
   after_commit :index_to_elasticsearch, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
-
-  before_validation :process_html_and_prefix_all_images
 
   scope :reachable, -> { where(reachable: true) }
   scope :published, -> { joins(:podcast).where(podcasts: { published: true }) }
@@ -90,8 +91,7 @@ class PodcastEpisode < ApplicationRecord
     nil
   end
   alias user_id nil_method
-  alias second_user_id nil_method
-  alias third_user_id nil_method
+  alias co_author_ids nil_method
 
   private
 
@@ -112,21 +112,10 @@ class PodcastEpisode < ApplicationRecord
     doc.css("img").each do |img|
       img_src = img.attr("src")
 
-      if img_src
-        quality = "auto"
-        quality = 66 if img_src.include?(".gif")
+      next unless img_src
 
-        cloudinary_img_src = ActionController::Base.helpers
-          .cl_image_path(img_src,
-                         type: "fetch",
-                         width: 725,
-                         crop: "limit",
-                         quality: quality,
-                         flags: "progressive",
-                         fetch_format: "auto",
-                         sign_url: true)
-        self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
-      end
+      cloudinary_img_src = Images::Optimizer.call(img_src, width: 725)
+      self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
     end
   end
 end

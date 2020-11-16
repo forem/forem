@@ -4,19 +4,19 @@ module Api
       before_action :set_cache_control_headers, only: %i[index show]
 
       ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id processed_html user_id ancestry deleted hidden_by_commentable_user
+        id processed_html user_id ancestry deleted hidden_by_commentable_user created_at
       ].freeze
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       def index
-        article = Article.find(params[:a_id])
+        commentable = params[:a_id] ? Article.find(params[:a_id]) : PodcastEpisode.find(params[:p_id])
 
-        @comments = article.comments
+        @comments = commentable.comments
           .includes(:user)
           .select(ATTRIBUTES_FOR_SERIALIZATION)
           .arrange
 
-        set_surrogate_key_header article.record_key, Comment.table_key, edge_cache_keys(@comments)
+        set_surrogate_key_header commentable.record_key, Comment.table_key, edge_cache_keys(@comments)
       end
 
       def show

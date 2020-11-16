@@ -1,38 +1,30 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import CategoryLinks from './CategoryLinks';
+import CategoryLinksMobile from './CategoryLinksMobile';
 
 const ListingFiltersCategories = ({ categories, category, onClick }) => (
-  <div className="listing-filters-categories">
-    <a
-      id="listings-link"
-      href="/listings"
-      className={category === '' ? 'selected' : ''}
-      data-testid={category === '' ? 'selected' : ''}
-      onClick={onClick}
-      data-no-instant
-    >
-      all
-    </a>
-    <CategoryLinks
-      categories={categories}
-      onClick={onClick}
-      selectedCategory={category}
-    />
-    <a
-      id="listings-new-link"
-      href="/listings/new"
-      className="listing-create-link"
-    >
-      Create a Listing
-    </a>
-    <a
-      id="listings-dashboard-link"
-      href="/listings/dashboard"
-      className="listing-create-link"
-    >
-      Manage Listings
-    </a>
+  <div className="listing-filters px-2 m:px-0" id="listing-filters">
+    <nav className="hidden m:block">
+      <a
+        id="listings-link"
+        href="/listings"
+        className={`crayons-link crayons-link--block ${
+          category === '' ? 'crayons-link--current' : ''
+        }`}
+        data-testid={category === '' ? 'selected' : ''}
+        onClick={onClick}
+        data-no-instant
+      >
+        All listings
+      </a>
+      <CategoryLinks
+        categories={categories}
+        onClick={onClick}
+        selectedCategory={category}
+      />
+    </nav>
+    <CategoryLinksMobile categories={categories} selectedCategory={category} />
   </div>
 );
 

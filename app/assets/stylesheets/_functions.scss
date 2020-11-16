@@ -8,7 +8,7 @@
 */
 @function image-src($image) {
   @if variable-exists(environment) and $environment == 'storybook' {
-    @return '/images/' + image;
+    @return '../images/' + $image;
   } @else {
     @return image_path('loading-ellipsis.svg');
   }

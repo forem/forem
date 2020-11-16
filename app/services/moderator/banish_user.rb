@@ -1,14 +1,13 @@
 module Moderator
   class BanishUser < ManageActivityAndRoles
+    attr_reader :user, :admin
+
     def self.call(admin:, user:)
       new(user: user, admin: admin).banish
     end
 
-    attr_reader :user, :admin
-
     def initialize(admin:, user:)
-      @user = user
-      @admin = admin
+      super(user: user, admin: admin, user_params: {})
     end
 
     def banish
@@ -39,6 +38,10 @@ module Moderator
     end
 
     def remove_profile_info
+      user.profile.clear!
+
+      # TODO: @forem/oss Remove this block once we drop the columns from users.
+      user._skip_profile_sync = true
       user.update_columns(
         twitter_username: nil, github_username: nil, website_url: "", summary: "",
         location: "", education: "", employer_name: "", employer_url: "", employment_title: "",
@@ -48,6 +51,7 @@ module Moderator
         behance_url: nil, linkedin_url: nil, gitlab_url: nil, instagram_url: nil, mastodon_url: nil,
         twitch_url: nil, feed_url: nil
       )
+      user._skip_profile_sync = false
 
       user.update_columns(profile_image: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")
     end

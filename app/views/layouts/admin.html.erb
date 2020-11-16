@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%# The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags %>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <%= csrf_meta_tags %>
+  <%= favicon_link_tag Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>
+  <title><%= controller_name.titleize %></title>
+
+  <!-- StimulusJS -->
+  <%= javascript_packs_with_chunks_tag "admin", defer: true %>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+  <!-- Bootstrap and FontAwesome -->
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.16/css/bootstrap-select.min.css" integrity="sha256-g19F2KOr/H58l6XdI/rhCdEK3NmB8OILHwP/QYBQ8M4=" crossorigin="anonymous" />
+
+  <%= stylesheet_link_tag "admin" %>
+
+</head>
+<body class="admin default-header"
+  data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
+  data-release-footprint="<%= ApplicationConfig["RELEASE_FOOTPRINT"] %>"
+  data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
+  <header class="crayons-header" role="banner">
+    <div class="crayons-header__container">
+      <%= render "layouts/logo" %>
+
+      <h1 class="pl-4 fs-l">
+        <% if controller_name == "admin_portals" %>
+          Admin
+        <% else %>
+          <a href="/admin">Admin</a>
+          <span class="color-base-40">&raquo;</span> <span class="fw-bold"><%= controller_name.titleize %></span>
+        <% end %>
+      </h1>
+
+      <div class="crayons-header__links">
+        <a href="https://forem.gitbook.io/forem-admin-guide/" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap s:block">
+          Forem Admin Guide
+        </a>
+
+        <a href="/" class="crayons-btn hidden mr-2 whitespace-nowrap s:block">
+          Go to <%= community_name %> home page
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="crayons-layout <%= controller_name == "admin_portals" ? "" : "crayons-layout--2-cols" %>">
+    <% unless controller_name == "admin_portals" %>
+    <div class="crayons-layout__left-sidebar">
+      <nav class="hidden m:block">
+        <%= render "admin/shared/navbar" %>
+      </nav>
+    </div>
+    <% end %>
+    <main class="crayons-layout__content min-w-0">
+      <% flash.each do |type, message| %>
+        <div class="alert alert-<%= type == "notice" || type == "success" ? "success" : "danger" %>">
+          <button class="close" data-dismiss="alert" aria-label="Close">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+          <%= message %>
+        </div>
+      <% end %>
+      <%= yield %>
+      <% if @help_url %>
+        <a class="admin-help-button crayons-btn crayons-btn--icon-rounded crayons-btn--s" href="<%= @help_url %>" target="_blank" rel="noopener noreferer" >
+          <%= inline_svg_tag("circle-question.svg", aria: true, title: "Forem Admin Guide") %>
+        </a>
+      <% end %>
+    </main>
+  </div>
+
+  <!-- Bootstrap Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.16/js/bootstrap-select.min.js" integrity="sha256-COIM4OdXvo3jkE0/jD/QIEDe3x0jRuqHhOdGTkno3uM=" crossorigin="anonymous"></script>
+
+  <%= javascript_include_tag "internal" %>
+
+</body>
+</html>

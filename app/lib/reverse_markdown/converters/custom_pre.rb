@@ -14,7 +14,7 @@ module ReverseMarkdown
 
       def treat(node, state)
         case node.name
-        when "code"
+        when "code", "text"
           node.text
         when "br"
           "\n"

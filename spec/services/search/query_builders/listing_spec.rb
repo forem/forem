@@ -56,12 +56,12 @@ RSpec.describe Search::QueryBuilders::Listing, type: :service do
     end
 
     it "applies QUERY_KEYS from params" do
-      params = { classified_listing_search: "test" }
+      params = { listing_search: "test" }
       filter = described_class.new(params: params)
       expected_query = [{
         "simple_query_string" => {
           "query" => "test*",
-          "fields" => [:classified_listing_search],
+          "fields" => [:listing_search],
           "lenient" => true,
           "analyze_wildcard" => true
         }
@@ -71,10 +71,10 @@ RSpec.describe Search::QueryBuilders::Listing, type: :service do
 
     it "applies QUERY_KEYS, TERM_KEYS, and RANGE_KEYS from params" do
       Timecop.freeze(Time.current) do
-        params = { classified_listing_search: "test", bumped_at: Time.current, category: "cfp" }
+        params = { listing_search: "test", bumped_at: Time.current, category: "cfp" }
         filter = described_class.new(params: params)
         expected_query = [{
-          "simple_query_string" => { "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true,
+          "simple_query_string" => { "query" => "test*", "fields" => [:listing_search], "lenient" => true,
                                      "analyze_wildcard" => true }
         }]
         expected_filters = [
@@ -99,16 +99,16 @@ RSpec.describe Search::QueryBuilders::Listing, type: :service do
 
     it "sets default params when not present" do
       filter = described_class.new(params: {}).as_hash
-      expect(filter.dig("sort")).to eq("bumped_at" => "desc")
-      expect(filter.dig("size")).to eq(0)
+      expect(filter["sort"]).to eq("bumped_at" => "desc")
+      expect(filter["size"]).to eq(0)
       expect(filter.dig("query", "bool", "filter")).to match_array([{ "terms" => { "published" => [true] } }])
     end
 
     it "allows default params to be overriden" do
       params = { sort_by: "category", sort_direction: "asc", size: 20 }
       filter = described_class.new(params: params).as_hash
-      expect(filter.dig("sort")).to eq("category" => "asc")
-      expect(filter.dig("size")).to eq(20)
+      expect(filter["sort"]).to eq("category" => "asc")
+      expect(filter["size"]).to eq(20)
     end
   end
 end

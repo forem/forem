@@ -1,9 +1,9 @@
 class RssReader
-  def self.get_all_articles(force = true)
-    new.get_all_articles(force)
+  def self.get_all_articles(force: true)
+    new.get_all_articles(force: force)
   end
 
-  def get_all_articles(force = true)
+  def get_all_articles(force: true)
     articles = []
 
     User.where.not(feed_url: [nil, ""]).find_each do |user|

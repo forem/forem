@@ -60,13 +60,6 @@ describe('<MessageModal />', () => {
         ),
       ).toBeDefined();
     });
-
-    it('should show the personalized message about the interactions', () => {
-      const { getByTestId } = renderMessageModal(listingWithCurrentUserId);
-      expect(
-        getByTestId('personal-message-about-interactions').textContent,
-      ).toEqual('All private interactions must abide by the code of conduct');
-    });
   });
 
   describe('When current user is not the author', () => {
@@ -85,17 +78,6 @@ describe('<MessageModal />', () => {
           `Contact ${listingWithDifferentCurrentUserId.author.name} via DEV Connect`,
         ),
       ).toBeDefined();
-    });
-
-    it('should show a generic message about the interactions', () => {
-      const { getByTestId } = renderMessageModal(
-        listingWithDifferentCurrentUserId,
-      );
-      expect(
-        getByTestId('generic-message-about-interactions').textContent,
-      ).toEqual(
-        'Message must be relevant and on-topic with the listing. All private interactions must abide by the code of conduct',
-      );
     });
   });
 });

@@ -83,6 +83,13 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:banned) }
     end
 
+    trait :invited do
+      after(:build) do |user|
+        user.registered = false
+        user.registered_at = nil
+      end
+    end
+
     trait :ignore_mailchimp_subscribe_callback do
       after(:build) do |user|
         user.define_singleton_method(:subscribe_to_mailchimp_newsletter) {}
@@ -139,14 +146,6 @@ FactoryBot.define do
       end
     end
 
-    trait :with_user_optional_fields do
-      after(:create) do |user|
-        create(:user_optional_field, user: user)
-        create(:user_optional_field, user: user, label: "another field1", value: "another value1")
-        create(:user_optional_field, user: user, label: "another field2", value: "another value2")
-      end
-    end
-
     trait :with_all_info do
       education { "DEV University" }
       employment_title { "Software Engineer" }
@@ -165,7 +164,15 @@ FactoryBot.define do
       medium_url { "www.medium.com/example" }
       gitlab_url { "www.gitlab.com/example" }
       instagram_url { "www.instagram.com/example" }
-      twitch_username { "Example007" }
+    end
+
+    trait :without_profile do
+      _skip_creating_profile { true }
+    end
+
+    trait :with_newsletters do
+      email_newsletter { true }
+      email_digest_periodic { true }
     end
   end
 end

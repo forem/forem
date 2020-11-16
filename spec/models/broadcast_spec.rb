@@ -8,7 +8,7 @@ RSpec.describe Broadcast, type: :model do
   it { is_expected.to validate_inclusion_of(:banner_style).in_array(%w[default brand success warning error]) }
   it { is_expected.to validate_uniqueness_of(:title).scoped_to(:type_of) }
 
-  it { is_expected.to have_many(:notifications) }
+  it { is_expected.to have_many(:notifications).dependent(:destroy) }
 
   it "validates that only one Broadcast with a type_of Announcement can be active" do
     create(:announcement_broadcast)

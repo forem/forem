@@ -4,10 +4,21 @@ RSpec.describe RatingVote, type: :model do
   let(:user) { create(:user, :trusted) }
   let(:user2) { create(:user, :trusted) }
   let(:article) { create(:article, user: user) }
+  let(:rating_vote) { create(:rating_vote, user: user2, article: article) }
 
   describe "validations" do
-    it { is_expected.to validate_numericality_of(:rating).is_greater_than(0.0).is_less_than_or_equal_to(10.0) }
-    it { is_expected.to validate_inclusion_of(:group).in_array(%w[experience_level]) }
+    describe "builtin validations" do
+      subject { rating_vote }
+
+      it { is_expected.to belong_to(:article) }
+      it { is_expected.to belong_to(:user).optional }
+
+      it { is_expected.to validate_inclusion_of(:context).in_array(%w[explicit readinglist_reaction comment]) }
+      it { is_expected.to validate_inclusion_of(:group).in_array(%w[experience_level]) }
+      it { is_expected.to validate_numericality_of(:rating).is_greater_than(0.0).is_less_than_or_equal_to(10.0) }
+      it { is_expected.to validate_presence_of(:user_id).on(:create) }
+      it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[article_id context]) }
+    end
   end
 
   describe "uniqueness" do
@@ -49,7 +60,7 @@ RSpec.describe RatingVote, type: :model do
   end
 
   describe "permissions" do
-    let_it_be(:untrusted_user) { create(:user) }
+    let(:untrusted_user) { create(:user) }
 
     it "allows untrusted user to leave readinglist_reaction context rating" do
       rating = build(:rating_vote, article_id: article.id, user_id: untrusted_user.id, context: "readinglist_reaction")

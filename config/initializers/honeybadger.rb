@@ -12,10 +12,18 @@ COMPONENT_FINGERPRINTS = {
   "internal" => "internal"
 }.freeze
 
+# https://docs.honeybadger.io/lib/ruby/gem-reference/configuration.html
 Honeybadger.configure do |config|
   config.env = "#{ApplicationConfig['APP_DOMAIN']}-#{Rails.env}"
   config.api_key = ApplicationConfig["HONEYBADGER_API_KEY"]
-  config.revision = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+  config.revision = ApplicationConfig["RELEASE_FOOTPRINT"]
+
+  # Prevent Ruby from exiting until all queued notices have been delivered to Honeybadger.
+  # When set to true(default), it can lead to a large number of errors causing a process to get stuck.
+  # To prevent this we set it to false ensuring that a process can exit quickly regardless of errors.
+  # Logging allows us to fill in gaps if we need to when errors get discarded.
+  config.send_data_at_exit = false
+
   config.exceptions.ignore += [
     Pundit::NotAuthorizedError,
     ActiveRecord::RecordNotFound,

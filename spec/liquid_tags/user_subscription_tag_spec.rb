@@ -124,7 +124,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
     end
   end
 
-  context "when signed out", type: :sytem, js: true do
+  context "when signed out", type: :system, js: true do
     before { visit article_with_user_subscription_tag.path }
 
     it "prompts a user to sign in when they're signed out", type: :system, js: true do
@@ -141,7 +141,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
     end
   end
 
-  # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation
+  # TODO: [@forem/delightful]: re-enable this once email confirmation
   # is re-enabled and confirm it isn't flaky.
   xcontext "when a user has an Apple private relay email address", type: :system, js: true do
     it "prompts the user to update their email address" do

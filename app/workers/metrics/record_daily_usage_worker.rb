@@ -64,9 +64,9 @@ module Metrics
         ids_by_day << id
       end
       flat_id_list = ids_by_day.flatten.uniq
-      non_new_user_ids = User.where("registered_at < ?", 7.days.ago).where(id: flat_id_list).pluck(:id)
+      non_new_user_ids = User.where("registered_at < ?", 7.days.ago).where(id: flat_id_list).ids
       new_user_ids = User.where("registered_at > ? AND registered_at < ?", 8.days.ago,
-                                7.days.ago).where(id: flat_id_list).pluck(:id)
+                                7.days.ago).where(id: flat_id_list).ids
       record_active_days_of_group(ids_by_day, non_new_user_ids, "established")
       record_active_days_of_group(ids_by_day, new_user_ids, "new")
     end

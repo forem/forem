@@ -28,35 +28,31 @@ class DashboardsController < ApplicationController
 
     @articles = @articles.sorting(params[:sort]).decorate
     @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(50)
-
-    # Updates analytics in background if appropriate
-    update_analytics = @articles && SiteConfig.ga_fetch_rate < 50 # Rate limited, sometimes we throttle down
-    Articles::UpdateAnalyticsWorker.perform_async(current_user.id) if update_analytics
   end
 
   def following_tags
     @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag")
-      .order("points DESC").includes(:followable).limit(@follows_limit)
+      .order(points: :desc).includes(:followable).limit(@follows_limit)
   end
 
   def following_users
     @follows = @user.follows_by_type("User")
-      .order("created_at DESC").includes(:followable).limit(@follows_limit)
+      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
   end
 
   def following_organizations
     @followed_organizations = @user.follows_by_type("Organization")
-      .order("created_at DESC").includes(:followable).limit(@follows_limit)
+      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
   end
 
   def following_podcasts
     @followed_podcasts = @user.follows_by_type("Podcast")
-      .order("created_at DESC").includes(:followable).limit(@follows_limit)
+      .order(created_at: :desc).includes(:followable).limit(@follows_limit)
   end
 
   def followers
     @follows = Follow.followable_user(@user.id)
-      .includes(:follower).order("created_at DESC").limit(@follows_limit)
+      .includes(:follower).order(created_at: :desc).limit(@follows_limit)
   end
 
   def pro
@@ -80,8 +76,9 @@ class DashboardsController < ApplicationController
   private
 
   def set_source
-    source_type = params[:source_type]
-    not_found unless UserSubscription::ALLOWED_TYPES.include? source_type
+    source_type = UserSubscription::ALLOWED_TYPES.detect { |allowed_type| allowed_type == params[:source_type] }
+
+    not_found unless source_type
 
     source = source_type.constantize.find_by(id: params[:source_id])
     @source = source || not_found

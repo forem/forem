@@ -6,7 +6,7 @@ class ReplitTag < LiquidTagBase
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         id: @id
@@ -24,7 +24,7 @@ class ReplitTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id =~ /\A@\w{2,15}\/[a-zA-Z0-9\-]{0,60}\Z/
+    id =~ %r{\A@\w{2,15}/[a-zA-Z0-9\-]{0,60}\Z}
   end
 end
 

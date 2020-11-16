@@ -1,5 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+
+import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
 import Membership from './Membership';
 
 const PendingMembershipSection = ({
@@ -34,17 +36,7 @@ const PendingMembershipSection = ({
 };
 
 PendingMembershipSection.propTypes = {
-  pendingMemberships: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      membership_id: PropTypes.number.isRequired,
-      user_id: PropTypes.number.isRequired,
-      role: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-      status: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
+  pendingMemberships: PropTypes.arrayOf(defaulMembershipPropType).isRequired,
   removeMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.func.isRequired,
 };

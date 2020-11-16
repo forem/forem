@@ -8,7 +8,6 @@ module Api
         id username name summary twitter_username github_username website_url
         location created_at profile_image registered
       ].freeze
-      private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
 
       def show
         relation = User.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)

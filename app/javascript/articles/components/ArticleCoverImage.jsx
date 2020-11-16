@@ -7,11 +7,9 @@ export const ArticleCoverImage = ({ article }) => {
       href={article.path}
       className="crayons-story__cover"
       title={article.title}
+      style={{ backgroundImage: `url(${article.main_image})` }}
     >
-      <div
-        style={{ backgroundImage: `url(${article.main_image})` }}
-        className="crayons-story__cover__image"
-      />
+      <span class="hidden">{article.title}</span>
     </a>
   );
 };

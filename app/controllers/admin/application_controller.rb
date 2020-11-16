@@ -1,30 +1,46 @@
-# All Administrate controllers inherit from this `Admin::ApplicationController`,
-# making it the ideal place to put authentication logic or other
-# before_filters.
-#
-# If you want to add pagination or other controller-level concerns,
-# you're free to overwrite the RESTful controller actions.
 module Admin
-  class ApplicationController < Administrate::ApplicationController
-    include Pundit
+  class ApplicationController < ApplicationController
     before_action :authorize_admin
+    before_action :assign_help_url
+    after_action :verify_authorized
 
-    def order
-      @order ||= Administrate::Order.new(params[:order] || "id", params[:direction] || "desc")
-    end
-
-    def valid_request_origin?
-      # Temp monkey patch. Since we use https at the edge via fastly I think our protocol expectations
-      # are out of wack.
-      raise InvalidAuthenticityToken, NULL_ORIGIN_MESSAGE if request.origin == "null"
-
-      request.origin.nil? || request.origin.gsub("https", "http") == request.base_url.gsub("https", "http")
-    end
+    HELP_URLS = {
+      badges: "https://forem.gitbook.io/forem-admin-guide/admin/badges",
+      badge_achievements: "https://forem.gitbook.io/forem-admin-guide/admin/badges",
+      configs: "https://forem.gitbook.io/forem-admin-guide/admin/config",
+      navigation_links: "https://forem.gitbook.io/forem-admin-guide/admin/navigation-links",
+      pages: "https://forem.gitbook.io/forem-admin-guide/admin/pages",
+      podcasts: "https://forem.gitbook.io/forem-admin-guide/admin/podcasts",
+      reports: "https://forem.gitbook.io/forem-admin-guide/admin/reports",
+      users: "https://forem.gitbook.io/forem-admin-guide/admin/users",
+      html_variants: "https://forem.gitbook.io/forem-admin-guide/admin/html-variants",
+      display_ads: "https://forem.gitbook.io/forem-admin-guide/admin/display-ads",
+      chat_channels: "https://forem.gitbook.io/forem-admin-guide/admin/chat-channels",
+      tags: "https://forem.gitbook.io/forem-admin-guide/admin/tags"
+    }.freeze
 
     private
 
+    def authorization_resource
+      self.class.name.demodulize.sub("Controller", "").singularize.constantize
+    end
+
     def authorize_admin
-      authorize :admin, :show?
+      authorize(authorization_resource, :access?, policy_class: InternalPolicy)
+    end
+
+    def bust_content_change_caches
+      CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited.
+      CacheBuster.bust("/shell_top") # Cached at edge, sent to service worker.
+      CacheBuster.bust("/shell_bottom") # Cached at edge, sent to service worker.
+      CacheBuster.bust("/async_info/shell_version") # Checks if current users should be busted.
+      CacheBuster.bust("/onboarding") # Page is cached at edge.
+      CacheBuster.bust("/") # Page is cached at edge.
+      SiteConfig.admin_action_taken_at = Time.current # Used as cache key
+    end
+
+    def assign_help_url
+      @help_url = HELP_URLS[controller_name.to_sym]
     end
   end
 end

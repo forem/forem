@@ -6,7 +6,6 @@ class OrganizationsController < ApplicationController
 
     @tab = "organization"
     @user = current_user
-    @tab_list = @user.settings_tab_list
 
     unless valid_image?
       render template: "users/edit"
@@ -29,7 +28,6 @@ class OrganizationsController < ApplicationController
   def update
     @user = current_user
     @tab = "organization"
-    @tab_list = @user.settings_tab_list
     set_organization
 
     unless valid_image?
@@ -47,6 +45,25 @@ class OrganizationsController < ApplicationController
 
       render template: "users/edit"
     end
+  end
+
+  def destroy
+    organization = Organization.find_by(id: params[:id])
+    authorize organization
+    if organization.destroy
+      current_user.touch(:organization_info_updated_at)
+      CacheBuster.bust_user(current_user)
+      flash[:settings_notice] = "Your organization: \"#{organization.name}\" was successfully deleted."
+      redirect_to user_settings_path(:organization)
+    else
+      flash[:settings_notice] = "#{organization.errors.full_messages.to_sentence}.
+        Please email #{SiteConfig.email_addresses['default']} for assistance."
+      redirect_to user_settings_path(:organization, id: organization.id)
+    end
+  rescue Pundit::NotAuthorizedError
+    flash[:error] = "Your organization was not deleted; you must be an admin, the only member in the organization,
+      and have no articles connected to the organization."
+    redirect_to user_settings_path(:organization, id: organization.id)
   end
 
   def generate_new_secret
@@ -89,7 +106,7 @@ class OrganizationsController < ApplicationController
   def organization_params
     params.require(:organization).permit(permitted_params)
       .transform_values do |value|
-        if value.class.name == "String"
+        if value.instance_of?(String)
           ActionController::Base.helpers.strip_tags(value)
         else
           value

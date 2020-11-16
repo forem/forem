@@ -12,7 +12,7 @@ class StickyArticleCollection
     author.articles.published
       .limited_column_select
       .tagged_with(article_tags, any: true)
-      .where.not(id: article.id).order("published_at DESC")
+      .where.not(id: article.id).order(published_at: :desc)
       .limit(3)
   end
 
@@ -22,7 +22,7 @@ class StickyArticleCollection
 
   def tag_articles
     @tag_articles ||= Article.published.tagged_with(article_tags, any: true)
-      .includes(:user)
+      .limited_column_select
       .where("public_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num)
       .where.not(id: article.id).where.not(user_id: article.user_id)
       .where("featured_number > ?", 5.days.ago.to_i)
@@ -34,7 +34,7 @@ class StickyArticleCollection
     return [] if tag_articles.size > 6
 
     Article.published.tagged_with(%w[career productivity discuss explainlikeimfive], any: true)
-      .includes(:user)
+      .limited_column_select
       .where("comments_count > ?", comment_count_num)
       .where.not(id: article.id).where.not(user_id: article.user_id)
       .where("featured_number > ?", 5.days.ago.to_i)

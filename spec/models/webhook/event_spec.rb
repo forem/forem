@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Webhook::Event, type: :model do
-  let_it_be(:article) { create(:article) }
-  let_it_be(:payload) { Webhook::PayloadAdapter.new(article).hash }
+  let(:article) { create(:article) }
+  let(:payload) { Webhook::PayloadAdapter.new(article).hash }
 
   describe "validations" do
     it "raises an exception with a unknown event type" do

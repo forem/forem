@@ -3,7 +3,7 @@
   <div id="base-payment-pointer" data-payment-pointer="<%= SiteConfig.payment_pointer %>"></div>
 <% end %>
 <style>.app-shell-loader {display: none;}</style>
-<div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
+<div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>
     <div class="global-notice">
       <%= flash[:global_notice] %>
@@ -13,7 +13,7 @@
     <% if @hero_html %>
       <div id="hero-html-wrapper" data-name="<%= @hero_area.name %>">
         <script>
-          // Make sure html variant element has id js-hero-banner and data-name as its name
+          // Make sure html variant element has id hero-html-wrapper and data-name as its name
           if (localStorage.getItem('exited_hero') === '<%= @hero_area.name %>') {
             document.getElementById('hero-html-wrapper').style.display = 'none';
           }
@@ -22,6 +22,7 @@
       </div>
     <% end %>
     <%= yield %>
+    <%= render "layouts/asset_reconciliation" %>
   </div>
 </div>
 <%= render "shell/bottom" %>

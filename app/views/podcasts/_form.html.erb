@@ -2,7 +2,7 @@
 
 <%= form_with(model: podcast, local: true) do |form| %>
   <div>
-    <header>
+    <header class="mb-4">
       <a href="/pod" class="podcast-back-button">&lt; return to podcasts</a>
       <h2>Suggest a Podcast</h2>
     </header>
@@ -16,64 +16,65 @@
         </ul>
       </div>
     <% end %>
-    <div id="podcast-form-data">
-      <div class="field">
-        <%= check_box_tag :i_am_owner %><%= label_tag :i_am_owner, "I am the owner of this podcast", class: "i_am_owner" %>
+    <div id="podcast-form-data" class="crayons-card mb-6 grid grid-flow-row gap-6 p-6">
+      <div class="crayons-field crayons-field--checkbox">
+        <%= check_box_tag :i_am_owner, class: "crayons-checkbox" %>
+        <%= label_tag :i_am_owner, "I am the owner of this podcast", class: "i_am_owner", class: "crayons-field__label" %>
       </div>
-      <div class="field">
-        <%= form.label :title %>
-        <%= form.text_field :title, placeholder: "" %>
+      <div class="crayons-field">
+        <%= form.label :title, class: "crayons-field__label" %>
+        <%= form.text_field :title, placeholder: "", class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :description, "Description" %>
-        <%= form.text_area :description, placeholder: "" %>
+      <div class="crayons-field">
+        <%= form.label :description, "Description", class: "crayons-field__label" %>
+        <%= form.text_area :description, placeholder: "", class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :website_url %>
-        <%= form.text_field :website_url %>
+      <div class="crayons-field">
+        <%= form.label :website_url, class: "crayons-field__label" %>
+        <%= form.text_field :website_url, class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :feed_url %>
-        <%= form.text_field :feed_url %>
+      <div class="crayons-field">
+        <%= form.label :feed_url, class: "crayons-field__label" %>
+        <%= form.text_field :feed_url, class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :twitter_username %>
-        <%= form.text_field :twitter_username %>
+      <div class="crayons-field">
+        <%= form.label :twitter_username, class: "crayons-field__label" %>
+        <%= form.text_field :twitter_username, class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :slug %>
-        <%= form.text_field :slug %>
+      <div class="crayons-field">
+        <%= form.label :slug, class: "crayons-field__label" %>
+        <%= form.text_field :slug, class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :main_color_hex %>
-        <%= form.text_field :main_color_hex, placeholder: "FF00FF" %>
+      <div class="crayons-field">
+        <%= form.label :main_color_hex, class: "crayons-field__label" %>
+        <%= form.text_field :main_color_hex, placeholder: "FF00FF", class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :image %>
+      <div class="crayons-field">
+        <%= form.label :image, class: "crayons-field__label" %>
         <%= form.file_field :image, accept: "image/*" %>
       </div>
-      <div class="field">
-        <%= form.label :pattern_image %>
+      <div class="crayons-field">
+        <%= form.label :pattern_image, class: "crayons-field__label" %>
         <%= form.file_field :pattern_image, accept: "image/*" %>
       </div>
-      <div class="field">
-        <%= form.label :android_url %>
-        <%= form.text_field :android_url %>
+      <div class="crayons-field">
+        <%= form.label :android_url, class: "crayons-field__label" %>
+        <%= form.text_field :android_url, class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :itunes_url %>
-        <%= form.text_field :itunes_url %>
+      <div class="crayons-field">
+        <%= form.label :itunes_url, class: "crayons-field__label" %>
+        <%= form.text_field :itunes_url, class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :overcast_url %>
-        <%= form.text_field :overcast_url %>
+      <div class="crayons-field">
+        <%= form.label :overcast_url, class: "crayons-field__label" %>
+        <%= form.text_field :overcast_url, class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.label :soundcloud_url %>
-        <%= form.text_field :soundcloud_url %>
+      <div class="crayons-field">
+        <%= form.label :soundcloud_url, class: "crayons-field__label" %>
+        <%= form.text_field :soundcloud_url, class: "crayons-textfield" %>
       </div>
-      <div class="field">
-        <%= form.submit "Suggest", class: "cta" %>
+      <div class="crayons-field">
+        <%= form.submit "Suggest", class: "crayons-btn" %>
       </div>
     </div>
   </div>

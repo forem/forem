@@ -20,6 +20,14 @@ export default function initializeActionsPanel(user, path) {
   function toggleModActionsMenu() {
     document.querySelector('.mod-actions-menu').classList.toggle('showing');
     document.querySelector('.mod-actions-menu-btn').classList.toggle('hidden');
+
+    // showing close icon in the mod panel if it is opened by clicking the button
+    const modContainer = document.getElementById('mod-container');
+    const panelDocument = modContainer.contentDocument;
+
+    panelDocument
+      .querySelector('.close-actions-panel')
+      .classList.remove('hidden');
   }
 
   document.querySelector('.mod-actions-menu').innerHTML = modActionsMenuHTML;

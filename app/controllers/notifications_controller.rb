@@ -1,5 +1,6 @@
 class NotificationsController < ApplicationController
   # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   # No authorization required because we provide authentication on notifications page
   def index
     return unless user_signed_in?
@@ -49,6 +50,7 @@ class NotificationsController < ApplicationController
     render partial: "notifications_list" if notified_at_offset
   end
   # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   private
 

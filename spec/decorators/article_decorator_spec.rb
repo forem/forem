@@ -46,7 +46,7 @@ RSpec.describe ArticleDecorator, type: :decorator do
 
     it "returns the article url without a canonical_url" do
       article.canonical_url = ""
-      expected_url = "https://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
+      expected_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
       expect(article.decorate.processed_canonical_url).to eq(expected_url)
     end
   end
@@ -77,7 +77,7 @@ RSpec.describe ArticleDecorator, type: :decorator do
 
   describe "#url" do
     it "returns the article url" do
-      expected_url = "https://#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
+      expected_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
       expect(article.decorate.url).to eq(expected_url)
     end
   end
@@ -181,6 +181,44 @@ RSpec.describe ArticleDecorator, type: :decorator do
       expect(create_article(body_markdown: body_markdown,
                             search_optimized_description_replacement: search_optimized_description_replacement)
         .description_and_tags).to eq(search_optimized_description_replacement)
+    end
+  end
+
+  describe "#video_metadata" do
+    it "responds with a hash representation of video metadata" do
+      article_with_video = create(:article,
+                                  video_code: "ABC",
+                                  video_source_url: "https://cdn.com/ABC.m3u8",
+                                  video_thumbnail_url: "https://cdn.com/ABC.png",
+                                  video_closed_caption_track_url: "https://cdn.com/ABC_captions")
+
+      expect(article_with_video.decorate.video_metadata).to eq(
+        {
+          id: article_with_video.id,
+          video_code: article_with_video.video_code,
+          video_source_url: article_with_video.video_source_url,
+          video_thumbnail_url: article_with_video.cloudinary_video_url,
+          video_closed_caption_track_url: article_with_video.video_closed_caption_track_url
+        },
+      )
+    end
+  end
+
+  describe "#long_markdown?" do
+    it "returns false if body_markdown is nil" do
+      article.body_markdown = nil
+      expect(article.decorate.long_markdown?).to eq false
+    end
+
+    it "returns false if body_markdown has fewer characters than LONG_MARKDOWN_THRESHOLD" do
+      article.body_markdown = "---\ntitle: Title\n---\n\nHey this is the article"
+      expect(article.decorate.long_markdown?).to eq false
+    end
+
+    it "returns true if body_markdown has more characters than LONG_MARKDOWN_THRESHOLD" do
+      additional_characters_length = (ArticleDecorator::LONG_MARKDOWN_THRESHOLD + 1) - article.body_markdown.length
+      article.body_markdown << Faker::Hipster.paragraph_by_chars(characters: additional_characters_length)
+      expect(article.decorate.long_markdown?).to eq true
     end
   end
 end

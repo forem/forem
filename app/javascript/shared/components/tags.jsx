@@ -430,8 +430,12 @@ class Tags extends Component {
     }
 
     return (
-      <div className={`${classPrefix}__tagswrapper`}>
-        {listing && <label htmlFor="Tags">Tags</label>}
+      <div className={`${classPrefix}__tagswrapper crayons-field`}>
+        {listing && (
+          <label htmlFor="Tags" class="crayons-field__label">
+            Tags
+          </label>
+        )}
         <input
           data-testid="tag-input"
           aria-label="Post Tags"
@@ -467,6 +471,7 @@ Tags.propTypes = {
   listing: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   onFocus: PropTypes.func.isRequired,
+  pattern: PropTypes.string.isRequired,
 };
 
 export default Tags;

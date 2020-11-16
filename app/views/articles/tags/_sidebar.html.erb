@@ -2,16 +2,6 @@
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <div class="side-bar">
-      <% if @tag_model && @tag_model.short_summary.present? %>
-        <div class="widget">
-          <header>
-            <h4>#<%= @tag %> 👋</h4>
-          </header>
-          <div class="widget-body">
-            <%= sanitize @tag_model.short_summary %>
-          </div>
-        </div>
-      <% end %>
       <% if @tag_model && @tag_model.rules_html.present? %>
         <div class="widget">
           <header>
@@ -19,8 +9,8 @@
           </header>
           <div class="widget-body">
             <%= sanitize @tag_model.rules_html %>
-            <a class="cta cta-button" href="/new/<%= @tag %>">
-              WRITE A POST
+            <a class="crayons-btn crayons-btn--s" href="/new/<%= @tag %>">
+              Write a post
             </a>
           </div>
         </div>
@@ -54,7 +44,7 @@
             <% @moderators.each do |user| %>
               <div class="widget-user-pic">
                 <a href="/<%= user.username %>" title="<%= user.username %>">
-                  <img src="<%= ProfileImage.new(user).get(width: 90) %>" alt="<%= user.username %> profile image">
+                  <img src="<%= Images::Profile.call(user.profile_image_url, length: 90) %>" alt="<%= user.username %> profile image">
                 </a>
               </div>
             <% end %>
@@ -66,16 +56,17 @@
           <%= pluralize @num_published_articles, "Post" %> Published
         </div>
         <% if user_signed_in? %>
-          <span style="display:none;" id="tag-edit-button" data-tag="<%= @tag_model.name %>">
-            <a class="cta mod-action-button" href="<%= tag_url(@tag_model, @page) %>/edit" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
-              EDIT
+          <div class="crayons-btn-group mt-3">
+            <a style="display:none;" id="tag-edit-button" data-tag="<%= @tag_model.name %>" class="crayons-btn crayons-btn--outlined mod-action-button fs-s" href="<%= tag_url(@tag_model, @page) %>/edit" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+              Edit
             </a>
-          </span>
-          <span style="display:none;" id="tag-mod-button" data-tag="<%= @tag_model.name %>">
-            <a class="cta mod-action-button" href="/mod/<%= @tag_model.name %>" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
-              MODERATE
+            <a style="display:none;" id="tag-admin-button" data-tag="<%= @tag_model.name %>" class="crayons-btn crayons-btn--outlined mod-action-button fs-s" href="/admin/tags/<%= @tag_model.id %>" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>" data-no-instant>
+              Admin
             </a>
-          </span>
+            <a style="display:none;" id="tag-mod-button" data-tag="<%= @tag_model.name %>" class="crayons-btn crayons-btn--outlined mod-action-button fs-s" href="/mod/<%= @tag_model.name %>" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+              Moderate
+            </a>
+          </div>
         <% else %>
           <% number_of_pages = @num_published_articles / @number_of_articles %>
           <% range = number_of_pages < 10 || @page < 4 ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>

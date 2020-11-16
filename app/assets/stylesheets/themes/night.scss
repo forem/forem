@@ -74,6 +74,8 @@
   --card-headline-color: var(--base-100);
   --card-border: rgba(255, 255, 255, 0.15);
   --card-secondary-border: rgba(255, 255, 255, 0.1);
+  --card-hover-bg: var(--accent-brand-lighter);
+  --card-selected-bg: var(--accent-brand-darker);
 
   // Header
   --header-bg: var(--base-10);
@@ -147,6 +149,8 @@
   --button-ghost-bg-hover: rgba(255, 255, 255, 0.035);
   --button-ghost-color: var(--base-80);
   --button-ghost-color-hover: var(--base-100);
+  --button-ghost-dimmed-color: var(--base-60);
+  --button-ghost-dimmed-color-hover: var(--base-100);
   //-- Inverted
   --button-ghost-inverted-bg: transparent;
   --button-ghost-inverted-bg-hover: rgba(0, 0, 0, 0.1);
@@ -161,7 +165,7 @@
   --form-border-focus: var(--accent-brand);
   --form-placeholder-color: var(--base-60);
 
-  // Form lables
+  // Form labels
   --label-primary: var(--base-90);
   --label-secondary: var(--base-60);
 

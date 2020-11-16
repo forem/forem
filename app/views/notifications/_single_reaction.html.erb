@@ -1,0 +1,18 @@
+<div class="flex items-center">
+  <% cache "activity-profile-pic-#{notification.json_data['user']['id']}-#{notification.json_data['user']['profile_image_90']}" do %>
+    <%= render "notifications/shared/profile_pic", json_data: notification.json_data %>
+  <% end %>
+  <div class="notification__content">
+    <a href="<%= notification.json_data["user"]["path"] %>" class="crayons-link fw-bold"><%= notification.json_data["user"]["name"] %></a>
+    reacted to
+    <a href="<%= notification.json_data["reaction"]["reactable"]["path"] %>" class="crayons-link fw-bold">
+      <%# title is blank when it's a comment with only an image, for example %>
+      <%= notification.json_data["reaction"]["reactable"]["title"].blank? ? "your #{notification.json_data['reaction']['reactable_type'].downcase}" : sanitize(notification.json_data["reaction"]["reactable"]["title"]) %>
+    </a>
+    with
+    <span>
+      <% category = notification.json_data["reaction"]["category"] %>
+      <%= inline_svg_tag(ReactionImage.new(category).path, class: "crayons-icon reaction-image mx-1 reaction-icon--#{category}", title: category.to_s.humanize) %>
+    </span>
+  </div>
+</div>

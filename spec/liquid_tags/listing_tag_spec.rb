@@ -28,7 +28,7 @@ RSpec.describe ListingTag, type: :liquid_tag do
       updated_at: datetime,
     )
   end
-  let(:org) { build_stubbed(:organization) }
+  let(:org) { create(:organization) }
   let(:org_user) do
     user = create(:user)
     create(:organization_membership, user: user, organization: org)

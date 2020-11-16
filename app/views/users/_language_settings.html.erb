@@ -12,7 +12,7 @@
   <%= form_tag users_update_language_settings_path, class: "grid gap-4"  do |f| %>
     <% Languages::LIST.each do |code, name| %>
       <label class="crayons-field crayons-field--checkbox">
-        <%= check_box_tag "user[preferred_languages][]", code, @user.preferred_languages_array.include?(code), class: "crayons-checkbox" %>
+        <%= check_box_tag "user[preferred_languages][]", code, @user.preferred_languages_array&.include?(code), class: "crayons-checkbox" %>
         <div class="crayons-field__label"><%= name %></div>
       </label>
     <% end %>

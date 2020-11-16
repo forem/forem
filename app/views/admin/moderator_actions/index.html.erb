@@ -1,0 +1,36 @@
+<div class="mb-6">
+  <%= search_form_for @q, url: admin_moderator_actions_path, class: "form-inline" do |f| %>
+    <%= f.label :user_username_cont, "User", class: "sr-only" %>
+    <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mr-2" %>
+    <%= f.submit "Search", class: "btn btn-secondary" %>
+  <% end %>
+</div>
+
+<%= paginate @moderator_actions %>
+
+<table class="crayons-table" width="100%">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">User</th>
+      <th scope="col">Action</th>
+      <th scope="col">Data</th>
+      <th scope="col">
+        <%= tag.span(sort_link(@q, :created_at, "Date")) %>
+      </th>
+    </tr>
+  </thead>
+  <tbody class="crayons-card">
+    <% @moderator_actions.each do |action| %>
+      <tr>
+        <td><%= action.id %></td>
+        <td><%= link_to(action.user.username, admin_user_path(action.user_id)) if action.user %></td>
+        <td><%= "#{action.data['action'].humanize} #{action.data['controller'].humanize.singularize.titleize}" if action.data.present? %></td>
+        <td><%= action.data %></td>
+        <td><%= action.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @moderator_actions %>

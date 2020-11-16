@@ -19,7 +19,11 @@ RSpec.describe GeneratedImage, type: :labor do
     article.main_image = nil
     article.social_image = nil
     article.cached_tag_list = "discuss, hello, goodbye"
-    expect(described_class.new(article).social_image.include?("article/#{article.id}")).to eq(true)
+    expect(described_class.new(article).social_image).to include(
+      "article/#{article.id}",
+      "image/url2png",
+      "c_fill,g_north,h_400,w_800/",
+    )
   end
 
   it "creates various generated images of different title lengths" do

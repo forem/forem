@@ -7,8 +7,8 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
     let(:worker) { subject }
 
     context "with comment" do
-      let_it_be(:article) { create(:article) }
-      let_it_be(:comment) { create(:comment, commentable: article) }
+      let(:article) { create(:article) }
+      let(:comment) { create(:comment, commentable: article) }
 
       before do
         allow(BlackBox).to receive(:comment_quality_score).and_return(7)

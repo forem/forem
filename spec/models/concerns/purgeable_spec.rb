@@ -18,6 +18,8 @@ RSpec.describe Purgeable do
   let(:fastly_service) { instance_double(Fastly::Service) }
 
   before do
+    allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return("fake-key")
+    allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("fake-service-id")
     allow(Fastly::Service).to receive(:new).and_return(fastly_service)
   end
 

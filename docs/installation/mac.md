@@ -20,7 +20,7 @@ Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 ### PostgreSQL
 
-Forem requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher to run.
 
 The easiest way to get started is to use
 [Postgres.app](https://postgresapp.com/). Alternatively, check out the official
@@ -38,7 +38,7 @@ You can install ImageMagick with `brew install imagemagick`.
 
 ### Redis
 
-Forem requires Redis version 4.0 or higher.
+Forem requires Redis version 4.0 or higher to run.
 
 We recommend using [Homebrew](https://brew.sh):
 
@@ -61,13 +61,17 @@ redis-cli ping
 
 ### Elasticsearch
 
-Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
-not supported. We recommend version 7.5.2.
+Forem requires Elasticsearch 7.x to run. We recommend version 7.5.2.
 
 You have the option of installing Elasticsearch with Homebrew or through an
-archive. We recommend installing from archive on Mac.
+archive. We **recommend** installing from archive on Mac.
 
 ### Installing Elasticsearch from the archive
+
+We recommend that you **do not** install Elasticsearch in the app directory.
+Instead, we recommend installing it in your home directory (for example,
+`cd $HOME`). (This also ensures that we don't accidentally commit Elasticsearch
+code to the project's repository!)
 
 The following directions were
 [taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-macos),
@@ -104,13 +108,15 @@ To start elasticsearch as a daemonized process:
 
 ### Installing Elasticsearch with Homebrew
 
-As the default version of the Homebrew formula points to Elasticsearch 7.6, we
-need to retrieve the correct revision of the formula to make sure we install the
-latest supported version: 7.5.2.
+To install Elasticsearch with Homebrew we will use the following commands to:
+
+- tap the Elastic Homebrew repository
+- install the latest OSS distribution
+- pin the latest OSS distribution.
 
 ```shell
 brew tap elastic/tap
-brew install https://raw.githubusercontent.com/elastic/homebrew-tap/bed8bc6b03213c2c1a7df6e4b9f928e7082fae46/Formula/elasticsearch-oss.rb
+brew install elastic/tap/elasticsearch-oss
 brew pin elasticsearch-oss
 ```
 
@@ -204,30 +210,25 @@ your local Elasticsearch installation, for example:
 3. Install bundler with `gem install bundler`
 4. Set up your environment variables/secrets
 
-   - Take a look at `Envfile` to see all the `ENV` variables we use and the fake
-     default provided for any missing keys.
+   - Take a look at `.env_sample` to see all the `ENV` variables we use and the
+     fake default provided for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
    - The [backend guide](/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace, follow the steps below.
 
-     1. Create `config/application.yml` by copying from the provided template
-        (i.e. with bash:
-        `cp config/sample_application.yml config/application.yml`). This is a
-        personal file that is ignored in git.
+     1. Create `.env` by copying from the provided template (i.e. with bash:
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      2. Obtain the development variable and apply the key you wish to
         enter/replace. i.e.:
 
      ```shell
-     GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
-     GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
-   - If you are missing `ENV` variables on bootup, the
-     [envied](https://rubygems.org/gems/envied) gem will alert you with messages
-     similar to
-     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 

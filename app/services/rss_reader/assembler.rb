@@ -59,15 +59,19 @@ class RssReader
 
     def thorough_parsing(content, feed_url)
       html_doc = Nokogiri::HTML(content)
+
       find_and_replace_possible_links!(html_doc) if @user.feed_referential_link
-      if feed_url.include?("medium.com")
+      find_and_replace_picture_tags_with_img!(html_doc)
+
+      if feed_url&.include?("medium.com")
         parse_and_translate_gist_iframe!(html_doc)
         parse_and_translate_youtube_iframe!(html_doc)
         parse_and_translate_tweet!(html_doc)
         parse_liquid_variable!(html_doc)
-      else
+      elsif feed_url
         clean_relative_path!(html_doc, feed_url)
       end
+
       html_doc.to_html
     end
 
@@ -77,14 +81,14 @@ class RssReader
         next if a_tag.empty?
 
         possible_link = a_tag[0].inner_html
-        if /medium\.com\/media\/.+\/href/.match?(possible_link)
-          real_link = HTTParty.head(possible_link).request.last_uri.to_s
-          return nil unless real_link.include?("gist.github.com")
+        next unless %r{medium\.com/media/.+/href}.match?(possible_link)
 
-          iframe.name = "p"
-          iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
-          iframe.inner_html = "{% gist #{real_link} %}"
-        end
+        real_link = HTTParty.head(possible_link).request.last_uri.to_s
+        return nil unless real_link.include?("gist.github.com")
+
+        iframe.name = "p"
+        iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
+        iframe.inner_html = "{% gist #{real_link} %}"
       end
       html_doc
     end
@@ -94,14 +98,14 @@ class RssReader
       html_doc.search("script").remove
       html_doc.css("blockquote").each do |bq|
         bq_with_p = bq.css("p")
-        next if bq_with_p.empty?
 
-        if (tweet_link = bq_with_p.css("a[href*='twitter.com']"))
-          bq.name = "p"
-          tweet_url = tweet_link.attribute("href").value
-          tweet_id = tweet_url.split("/status/").last
-          bq.inner_html = "{% tweet #{tweet_id} %}"
-        end
+        next if bq_with_p.empty?
+        next unless (tweet_link = bq_with_p.css("a[href*='twitter.com']"))
+
+        bq.name = "p"
+        tweet_url = tweet_link.attribute("href").value
+        tweet_id = tweet_url.split("/status/").last
+        bq.inner_html = "{% tweet #{tweet_id} %}"
       end
     end
 
@@ -115,12 +119,12 @@ class RssReader
 
     def parse_and_translate_youtube_iframe!(html_doc)
       html_doc.css("iframe").each do |iframe|
-        if /youtube\.com/.match?(iframe.attributes["src"].value)
-          iframe.name = "p"
-          youtube_id = iframe.attributes["src"].value.scan(/embed%2F(.{4,11})/).flatten.first
-          iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
-          iframe.inner_html = "{% youtube #{youtube_id} %}"
-        end
+        next unless /youtube\.com/.match?(iframe.attributes["src"].value)
+
+        iframe.name = "p"
+        youtube_id = iframe.attributes["src"].value.scan(/embed%2F(.{4,11})/).flatten.first
+        iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
+        iframe.inner_html = "{% youtube #{youtube_id} %}"
       end
     end
 
@@ -144,6 +148,22 @@ class RssReader
 
         found_article = Article.find_by(feed_source_url: link)&.decorate
         a_tag.attributes["href"].value = found_article.url if found_article
+      end
+    end
+
+    # <picture> tags are not automatically converted to Markdown, they live on as verbatim HTML.
+    # Since they are also not supported by the editor, we need to replace them with their inner <img> tag.
+    # We'll rely on Cloudinary to provide responsive images to the client
+    def find_and_replace_picture_tags_with_img!(html_doc)
+      picture_tags = html_doc.css("picture")
+      return unless picture_tags
+
+      picture_tags.each do |picture_tag|
+        img_tag = picture_tag.at_css("img")
+        next unless img_tag
+
+        picture_tag.add_next_sibling(img_tag)
+        picture_tag.remove
       end
     end
   end

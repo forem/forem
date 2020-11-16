@@ -1,7 +1,5 @@
 module Search
-  class CommentSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class CommentSerializer < ApplicationSerializer
     attribute :id, &:search_id
 
     attributes :path, :public_reactions_count

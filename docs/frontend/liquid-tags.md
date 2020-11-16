@@ -41,11 +41,13 @@ Here is a bunch of liquid tags supported on Forem:
 {% github https://github.com/forem/forem/blob/master/docker-compose.yml#L15-L23 %}
 {% youtube dQw4w9WgXcQ %}
 {% vimeo 193110695 %}
+{% twitch ClumsyPrettiestOilLitFam %}
 {% slideshare rdOzN9kr1yK5eE %}
 {% codepen https://codepen.io/twhite96/pen/XKqrJX %}
 {% stackblitz ball-demo %}
 {% codesandbox ppxnl191zx %}
 {% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}
+{% dotnetfiddle https://dotnetfiddle.net/PmoDip %}
 {% replit @WigWog/PositiveFineOpensource %}
 {% stackery deeheber lambda-layer-example layer-resource %}
 {% nexttech https://nt.dev/s/6ba1fffbd09e %}
@@ -83,7 +85,7 @@ Each liquid tag contains an `initialize` method which takes arguments and calls
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         url: @embedded_url
@@ -114,8 +116,8 @@ https://github.com/forem/forem/pull/3801
 
 To only allow users with specific roles to use a liquid tag, you need to define
 a `VALID_ROLES` constant on the liquid tag itself. It needs to be an `Array` of
-valid roles. For [single resource roles](/internal), it needs to be an `Array`
-with the role and the resource. Here's an example:
+valid roles. For [single resource roles](/admin), it needs to be an `Array` with
+the role and the resource. Here's an example:
 
 ```ruby
 class NewLiquidTag < LiquidTagBase
@@ -131,7 +133,7 @@ the `admin` role or with a role of `:restricted_liquid_tag` and a specified
 resource of `LiquidTags::UserSubscriptionTag`.
 
 `LiquidTags::UserSubscriptionTag` is a resource model so we that can play nicely
-with the [Rolify][rolify] gem. See [/internal](/internal) for more information.
+with the [Rolify][rolify] gem. See [/admin](/admin) for more information.
 
 **REMINDER: if you do not define a `VALID_ROLES` constant, the liquid tag will
 be usable by all users by default.**

@@ -7,7 +7,7 @@ class SlideshareTag < LiquidTagBase
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         key: @key,
@@ -19,7 +19,7 @@ class SlideshareTag < LiquidTagBase
   private
 
   def validate(key)
-    raise StandardError, "Invalid Slideshare Key" unless key.match?(/\A[a-zA-Z0-9]{14}\Z/)
+    raise StandardError, "Invalid Slideshare Key" unless key.match?(/\A[a-zA-Z0-9]{12,14}\Z/)
 
     key
   end

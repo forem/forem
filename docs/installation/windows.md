@@ -6,28 +6,47 @@ title: Windows
 
 ## Installing prerequisites
 
-_These prerequisites assume you're working on a 64bit Windows 10 operating
-system machine._
+These prerequisites assume you're working on a `64-bit Windows 10` operating
+system machine
+
+- updated to _version 1903, Build 18362_ or _higher_ for **x64 system**
+- updated to _version 2004, Build 19041_ or _higher_ for **ARM64 system**
+
+For further information regarding system requirements, head over to the
+[Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/install-win10#requirements)
+or
+[Microsoft's blog on extending WSL 2 Support](https://devblogs.microsoft.com/commandline/wsl-2-support-is-coming-to-windows-10-versions-1903-and-1909/).
+
+To check your Windows version, press `Win Logo key` + `R`, type `winver`, then
+click OK.
+
+There are other ways to get Forem running on lower versions, but we recommend a
+complete WSL 2 installation.
 
 ### Installing WSL
 
 Since Forem's codebase is using the Ruby on Rails framework, we will need to
-install Windows Subsystem for Linux. Some dependencies used by the source code
-triggered errors when installing on Windows, so using WSL allows you to work on
-the software and not having to fix gem incompatibilities.
+install the Windows Subsystem for Linux (WSL). Some dependencies used by the
+source code triggered errors when installing on Windows, so using WSL allows you
+to work on the software and not having to fix gem incompatibilities.
 
-First, let's enable Windows Subsystem for Linux in your machine. You can do this
-by opening `Control Panel`, going to `Programs`, and then clicking
-`Turn Windows Features On or Off`. Look for the `Windows Subsystem for Linux`
-option and check the box next to it. Windows will ask for a reboot.
+Follow the instructions for
+[Installing the Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+Once you've installed WSL, complete all the instructions under the following
+sections in the link above:
 
-![Enable WSL on Windows](/wsl-feature.png 'Enable WSL on Windows')
+1. [Update to WSL 2](https://docs.microsoft.com/en-us/windows/wsl/install-win10#update-to-wsl-2).
+2. [Enable the "Virtual Machine Platform" optional component](https://docs.microsoft.com/en-us/windows/wsl/install-win10#enable-the-virtual-machine-platform-optional-component).
+   Be sure to reboot your machine after this step.
+3. [Set WSL 2 as your default version](https://docs.microsoft.com/en-us/windows/wsl/install-win10#set-wsl-2-as-your-default-version).
 
-Once you've got this installed and after rebooting,
+Once all the steps mentioned above are completed,
 [install Ubuntu 18.04 on Windows](https://www.microsoft.com/store/productId/9N9TNGVNDL3Q).
 
 On your first run, the system will ask for username and password. Take note of
-both since it will be used for `sudo` commands.
+both since it will be used for `sudo` commands. More information about the
+process can be found at
+[create a user account and password for your new Linux distribution](https://docs.microsoft.com/en-us/windows/wsl/user-support)
 
 ### Installing rbenv
 
@@ -108,30 +127,46 @@ work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
-Forem requires PostgreSQL version 11 or higher.
+Forem requires PostgreSQL version 11 or higher. To Install PostgreSQL on WSL,
+follow steps under the
+[PostgreSQL APT Repository](https://www.postgresql.org/download/linux/ubuntu/)
+section.
 
-If you don't have PostgreSQL installed on your Windows system, you can do so
-right now. WSL is able to connect to a PostgreSQL instance on your Windows
-machine.
+Once Installed, perform the following steps in order to set up a username and
+password for PostgreSQL:
 
-Download [PostgreSQL for Windows](https://www.postgresql.org/download/windows/)
-and install it.
+1. Use `sudo -i service postgresql start` to start the server.
+2. Next, replace `$YOUR_USERNAME` in the following commands with your Linux
+   Username and execute them:
 
-Pay attention to the username and password you setup during installation of
-PostgreSQL as you will use this to configure your Rails applications to login to
-the database later.
+   ```shell
+   sudo -u postgres createuser -s $YOUR_USERNAME
+   createdb
+   sudo -u $YOUR_USERNAME psql
+   ```
+
+3. You should now be in PostgreSQL's shell interface. Execute `\password` to set
+   a password for your PostgreSQL user.
+4. Be sure to make a note of your username and password for future use. Exit
+   PostgreSQL by executing the command `\quit`.
 
 For additional configuration options, check our
-[PostgreSQL setup guide](/installation/postgresql).
+[PostgreSQL setup guide](/docs/installation/postgresql).
 
 ### ImageMagick
 
 Forem uses [ImageMagick](https://imagemagick.org/) to manipulate images on
 upload.
 
-Please refer to ImageMagick's
-[instructions](https://imagemagick.org/script/download.php) on how to install
-it.
+ImageMagick can be installed to WSL via installing its
+[imagemagick](https://packages.ubuntu.com/bionic/imagemagick) package with the
+following command:
+
+```shell
+sudo apt update && sudo apt install imagemagick
+```
+
+To verify its installation, run `identify -version` command.
 
 ### Redis
 
@@ -146,11 +181,54 @@ WSL.
 Forem requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is
 not supported. We recommend version 7.5.2.
 
-We recommend following the install guide
-[in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
-for installing on Windows machines.
+We recommend that you **do not** install Elasticsearch in the app directory.
+Instead, we recommend installing it in your home directory (for example,
+`cd $HOME`). (This also ensures that we don't accidentally commit Elasticsearch
+code to the project's repository!)
 
-NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
+The following directions were taken from
+[the Elasticsearch docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux),
+check them out to learn more about the installation process and troubleshooting
+issues. Make sure to refer to **the OSS version**, `elasticsearch-oss` while
+going through the Elasticsearch docs.
+
+To install Elasticsearch perform the following steps:
+
+1. Execute the following commands:
+
+   ```shell
+   cd
+   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
+   wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
+   shasum -a 512 -c elasticsearch-oss-7.5.2-linux-x86_64.tar.gz.sha512
+   tar -xzf elasticsearch-oss-7.5.2-linux-x86_64.tar.gz
+   ```
+
+2. Next, switch to the correct directory with:
+
+   ```shell
+   cd elasticsearch-7.5.2/
+   ```
+
+3. To start Elasticsearch, run the following command:
+
+   ```shell
+   ./bin/elasticsearch
+   ```
+
+   or, start it as a daemonized process with:
+
+   ```shell
+   ./bin/elasticsearch -d
+   ```
+
+4. Once Elasticsearch is running,
+   [verify Elasticsearch's installation](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#_checking_that_elasticsearch_is_running)
+   by executing the `cURL` command as follows:
+
+   ```shell
+   curl -X GET "localhost:9200/?pretty"
+   ```
 
 ## Installing Forem
 
@@ -178,34 +256,29 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys.
+   - Take a look at `.env_sample`. This file lists all the `ENV` variables we
+     use and provides a fake default for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
-   - The [backend guide](/backend) will show you how to get free API keys for
+   - The [backend guide](/docs/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
-     1. Create `config/application.yml` by copying from the provided template
-        (ie. with bash:
-        `cp config/sample_application.yml config/application.yml`). This is a
-        personal file that is ignored in git.
+     1. Create `.env` by copying from the provided template (ie. with bash:
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      1. Obtain the development variable and apply the key you wish to
         enter/replace. ie:
 
      ```shell
-     GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
-     GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
+     export GITHUB_KEY="SOME_REAL_SECURE_KEY_HERE"
+     export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
-   - If you are missing `ENV` variables on bootup, the
-     [envied](https://rubygems.org/gems/envied) gem will alert you with messages
-     similar to
-     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. Run `bin/setup`.
+1. After ensuring that Elasticsearch, the PostgreSQL server, and the Redis
+   server are running, run `bin/setup`.
 
    > The `bin/setup` script is responsible for installing a varienty of
    > dependencies. One can find it inside the `bin` folder by the name of
@@ -261,8 +334,7 @@ There are currently two work-arounds.
 
    1. `docker run -d --name selenium-hub -p 4444:4444 selenium/hub:3.141.59-20200409`
    2. `CH=$(docker run --rm --name=ch --link selenium-hub:hub -v /dev/shm:/dev/shm selenium/node-chrome:3.141.59-20200409)`
-   3. Add `SELENIUM_URL: "http://localhost:4444/wd/hub"` to your
-      `application.yml`
+   3. Add `export SELENIUM_URL="http://localhost:4444/wd/hub"` to your `.env`
    4. Run your System test!
 
 2. Port forward with `socats` (more info needed).

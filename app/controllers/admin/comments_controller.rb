@@ -1,21 +1,28 @@
 module Admin
   class CommentsController < Admin::ApplicationController
-    def update
-      comment = Comment.find(params[:id])
-      if comment.update(comment_params)
-        flash[:notice] = "Comment successfully updated"
-        redirect_to "/admin/comments/#{comment.id}"
-      else
-        flash.now[:error] = comment.errors.full_messages
-        render :new, locals: { page: Administrate::Page::Form.new(dashboard, comment) }
-      end
+    layout "admin"
+
+    def index
+      @comments = if params[:state]&.start_with?("toplast-")
+                    Comment
+                      .includes(:user)
+                      .includes(:commentable)
+                      .order(public_reactions_count: :desc)
+                      .where("created_at > ?", params[:state].split("-").last.to_i.days.ago)
+                      .page(params[:page] || 1).per(50)
+                  else
+                    Comment
+                      .includes(:user)
+                      .includes(:commentable)
+                      .order(created_at: :desc)
+                      .page(params[:page] || 1).per(50)
+                  end
     end
 
     private
 
-    def comment_params
-      accessible = %i[user_id body_markdown deleted score]
-      params.require(:comment).permit(accessible)
+    def authorize_admin
+      authorize Comment, :access?, policy_class: InternalPolicy
     end
   end
 end

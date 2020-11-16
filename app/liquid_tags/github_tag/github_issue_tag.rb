@@ -21,7 +21,7 @@ class GithubTag
     end
 
     def render
-      ActionController::Base.new.render_to_string(
+      ApplicationController.render(
         partial: PARTIAL,
         locals: {
           body: @body,
@@ -79,9 +79,9 @@ class GithubTag
     end
 
     def valid_link?(link)
-      link_without_domain = link.gsub(/.*github\.com\//, "").split("/")
+      link_without_domain = link.gsub(%r{.*github\.com/}, "").split("/")
       validations = [
-        /.*github\.com\//.match?(link),
+        %r{.*github\.com/}.match?(link),
         link_without_domain.length == 4,
         link_without_domain[3].to_i.positive?,
       ]

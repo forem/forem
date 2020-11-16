@@ -1,12 +1,14 @@
 module ArticlesHelper
+  DASHBOARD_POSTS_SORT_OPTIONS = [
+    ["Recently Created", "creation-desc"],
+    ["Recently Published", "published-desc"],
+    ["Most Views", "views-desc"],
+    ["Most Reactions", "reactions-desc"],
+    ["Most Comments", "comments-desc"],
+  ].freeze
+
   def sort_options
-    [
-      ["Recently Created", "creation-desc"],
-      ["Recently Published", "published-desc"],
-      ["Most Views", "views-desc"],
-      ["Most Reactions", "reactions-desc"],
-      ["Most Comments", "comments-desc"],
-    ]
+    DASHBOARD_POSTS_SORT_OPTIONS
   end
 
   def has_vid?(article)
@@ -14,15 +16,8 @@ module ArticlesHelper
 
     article.processed_html.include?("youtube.com/embed/") ||
       article.processed_html.include?("player.vimeo.com") ||
+      article.processed_html.include?("clips.twitch.tv/embed") ||
       article.comments_blob.include?("youtube")
-  end
-
-  def collection_link_class(current_article, linked_article)
-    if current_article.id == linked_article.id
-      "current-article"
-    elsif !linked_article.published
-      "coming-soon"
-    end
   end
 
   def image_tag_or_inline_svg_tag(service_name, width: nil, height: nil)

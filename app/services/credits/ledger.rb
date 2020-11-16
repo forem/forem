@@ -49,7 +49,7 @@ module Credits
 
       if credits_purchases_with_purchase.present?
         # to avoid N+1 on purchases, we load them by type separately
-        purchase_types = credits_purchases_with_purchase.map(&:purchase_type).uniq.compact
+        purchase_types = credits_purchases_with_purchase.filter_map(&:purchase_type).uniq
         purchase_types.each do |purchase_type|
           credits_purchases_by_type = credits_purchases_with_purchase.select do |row|
             row.purchase_type == purchase_type

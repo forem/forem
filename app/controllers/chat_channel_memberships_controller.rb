@@ -1,5 +1,7 @@
 class ChatChannelMembershipsController < ApplicationController
-  after_action :verify_authorized, except: :join_channel
+  before_action :authenticate_user!
+  after_action :verify_authorized, except: %w[join_channel request_details]
+
   include MessagesHelper
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
@@ -7,7 +9,8 @@ class ChatChannelMembershipsController < ApplicationController
 
   def index
     skip_authorization
-    @pending_invites = current_user.chat_channel_memberships.includes(:chat_channel).where(status: "pending")
+    memberships = current_user.chat_channel_memberships.includes(:chat_channel)
+    @pending_invites = memberships.filter_by_status("pending")
   end
 
   def find_by_chat_channel_id
@@ -25,15 +28,17 @@ class ChatChannelMembershipsController < ApplicationController
     @membership = ChatChannelMembership.find(params[:id])
     authorize @membership
     @channel = @membership.chat_channel
-    data = ChatChannelDetailPresenter.new(@channel, @membership).as_json
-
-    render json: { success: true, result: data, message: "" }, success: :ok
+    invite_cache_key = "chat-channel-invite-#{@channel.id}"
+    invitation_slug = Rails.cache.fetch(invite_cache_key, expires_in: 80.hours) do
+      "invitation-link-#{SecureRandom.hex(3)}"
+    end
+    @invitation_link = "/join_channel_invitation/#{@channel.slug}?invitation_slug=#{invitation_slug}"
   end
 
   def create_membership_request
-    chat_channel = ChatChannel.find_by(id: channel_membership_request_params[:chat_channel_id])
+    chat_channel = ChatChannel.find_by(id: channel_membership_params[:chat_channel_id])
     authorize chat_channel, :update?
-    usernames = channel_membership_request_params[:invitation_usernames].split(",").map do |username|
+    usernames = channel_membership_params[:invitation_usernames].split(",").map do |username|
       username.strip.delete("@")
     end
     users = User.where(username: usernames)
@@ -78,9 +83,7 @@ class ChatChannelMembershipsController < ApplicationController
       send_chat_action_message(
         message, current_user, @chat_channel_membership.chat_channel_id, "removed_from_channel"
       )
-
       @chat_channel_membership.update(status: "removed_from_channel")
-
       message = "Removed #{@chat_channel_membership.user.name}"
     end
 
@@ -131,14 +134,92 @@ class ChatChannelMembershipsController < ApplicationController
     end
   end
 
+  def request_details
+    user_chat_channels = ChatChannel.includes(:chat_channel_memberships).where(
+      chat_channel_memberships: { user_id: current_user.id, role: "mod", status: "active" },
+    )
+    @memberships = user_chat_channels.map(&:requested_memberships).flatten
+    @user_invitations = ChatChannelMembership.where(
+      user_id: current_user.id,
+      status: %w[pending],
+    ).order("created_at DESC")
+  end
+
+  def update_membership_role
+    @chat_channel = ChatChannel.find_by(id: params[:id])
+    authorize @chat_channel, :update?
+    membership = ChatChannelMembership.find_by(
+      id: channel_membership_params[:membership_id],
+      chat_channel_id: @chat_channel.id,
+    )
+
+    membership.update(role: channel_membership_params[:role])
+    if membership.errors.any?
+      render json: {
+        success: false,
+        message: "Failed to update membership",
+        errors: chat_channel_membership.errors.full_messages
+      }, status: :bad_request
+    else
+      role = membership.reload.role
+      send_chat_action_message(
+        "@#{membership.user.username} role is updated as #{role}",
+        current_user, @chat_channel.id,
+        "updated"
+      )
+
+      render json: { success: true, message: "User Membership is updated" }, status: :ok
+    end
+  end
+
+  def join_channel_invitation
+    @chat_channel = ChatChannel.find_by(slug: params[:channel_slug])
+    authorize @chat_channel
+    invite_cache_key = "chat-channel-invite-#{@chat_channel.id}"
+    invitation_slug = Rails.cache.read(invite_cache_key)
+    existing_membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: @chat_channel.id)
+    redirect_to "/connect/#{@chat_channel.slug}" if existing_membership && existing_membership.status == "active"
+    @link_expired = true if invitation_slug != params[:invitation_slug]
+  end
+
+  def joining_invitation_response
+    chat_channel = ChatChannel.find_by(id: params[:chat_channel_id])
+    authorize chat_channel
+    if params[:user_action] == "accept"
+      membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
+      if !membership
+        membership = ChatChannelMembership.create(user_id: current_user.id, chat_channel_id: chat_channel.id)
+        unless membership&.errors&.any?
+          send_chat_action_message("@#{membership.user.username} join the channel", current_user, chat_channel.id,
+                                   "joined")
+        end
+      elsif membership.status != "active"
+        # This check checks if the user already has the chatChannelMembership with the status pending, joining_request
+        # Then update it to as active.
+        membership.update(role: "member", status: "active")
+        send_chat_action_message("@#{membership.user.username} join the channel", current_user,
+                                 membership.chat_channel_id, "joined")
+      end
+
+      if membership&.errors&.any?
+        flash[:settings_notice] = membership.errors.full_messages
+        redirect_to root_path
+      end
+
+      redirect_to connect_path(chat_channel.slug)
+    else
+      redirect_to root_path
+    end
+  end
+
   private
 
   def permitted_params
     params.require(:chat_channel_membership).permit(:user_action, :show_global_badge_notification)
   end
 
-  def channel_membership_request_params
-    params.require(:chat_channel_membership).permit(:chat_channel_id, :invitation_usernames)
+  def channel_membership_params
+    params.require(:chat_channel_membership).permit(:chat_channel_id, :invitation_usernames, :membership_id, :role)
   end
 
   def respond_to_invitation(previous_status)
@@ -172,13 +253,11 @@ class ChatChannelMembershipsController < ApplicationController
       end
     else
       @chat_channel_membership.update(status: "rejected")
-
       notice = "Invitation rejected."
     end
 
+    membership_user = helpers.format_membership(@chat_channel_membership)
     flash[:settings_notice] = notice
-
-    membership_user = MembershipUserPresenter.new(@chat_channel_membership).as_json
 
     respond_to do |format|
       format.html { redirect_to chat_channel_memberships_path }
@@ -197,7 +276,7 @@ class ChatChannelMembershipsController < ApplicationController
     temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
     message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
                              "chat_action" => action)
-    pusher_message_created(false, message, temp_message_id)
+    pusher_message_created(false, message, temp_message_id) unless message.left_channel?
   end
 
   def user_not_authorized

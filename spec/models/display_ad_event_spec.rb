@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe DisplayAdEvent, type: :model do
-  let_it_be(:user) { build(:user) }
-  let_it_be(:organization) { build(:organization) }
-  let_it_be(:display_ad) { build(:display_ad, organization: organization) }
+  let(:user) { build(:user) }
+  let(:organization) { build(:organization) }
+  let(:display_ad) { build(:display_ad, organization: organization) }
 
   describe "#category" do
     it "is valid with a click category" do

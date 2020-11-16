@@ -9,14 +9,23 @@ class UserSubscription < ApplicationRecord
 
   belongs_to :author, class_name: "User", inverse_of: :source_authored_user_subscriptions
   belongs_to :subscriber, class_name: "User", inverse_of: :subscribed_to_user_subscriptions
-  belongs_to :user_subscription_sourceable, polymorphic: true
+  belongs_to :user_subscription_sourceable, polymorphic: true, optional: true
 
   validates :author_id, presence: true
+
   validates :subscriber_email, presence: true
-  validates :subscriber_id, presence: true, uniqueness: { scope: %i[subscriber_email user_subscription_sourceable_type
-                                                                    user_subscription_sourceable_id] }
-  validates :user_subscription_sourceable_id, presence: true
-  validates :user_subscription_sourceable_type, presence: true, inclusion: { in: ALLOWED_TYPES }
+  validates :subscriber_id, presence: true, uniqueness: {
+    scope: %i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id]
+  }
+
+  validates :user_subscription_sourceable_id, presence: true, on: :create
+  validates :user_subscription_sourceable_id, presence: true, on: :update, if: :user_subscription_sourceable_type
+  validates :user_subscription_sourceable_type, presence: true, on: :create
+  validates :user_subscription_sourceable_type, presence: true, on: :update, if: :user_subscription_sourceable_id
+
+  validates :user_subscription_sourceable_type, inclusion: { in: ALLOWED_TYPES }, on: :create
+  validates :user_subscription_sourceable_type,
+            inclusion: { in: ALLOWED_TYPES }, on: :update, if: :user_subscription_sourceable_id
 
   validate :tag_enabled
   validate :non_apple_auth_subscriber
