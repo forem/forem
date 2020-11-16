@@ -150,7 +150,7 @@
         <%= render "users/metadata" %>
 
         <div class="p-3 pt-0 block m:hidden js-user-info-trigger-wrapper">
-          <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger">More info about user...</button>
+          <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger">More info about @<%= @user.username %></button>
         </div>
 
         <div class="crayons-modal align-left hidden">
