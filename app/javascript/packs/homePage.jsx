@@ -1,6 +1,5 @@
 import { h, render } from 'preact';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
-import mainNavigation from '../utilities/mainNavigation';
 
 /* global userData */
 // This logic is similar to that in initScrolling.js.erb
@@ -12,8 +11,6 @@ const frontPageFeedPathNames = new Map([
   ['/top/infinity', 'infinity'],
   ['/latest', 'latest'],
 ]);
-
-mainNavigation();
 
 /**
  * Renders tags followed in the left side bar of the homepage.
