@@ -6,7 +6,7 @@ module DataUpdateScripts
       # This statement deletes all draft articles in excess found to be duplicate over feed_source_url,
       # excluding those whose body_markdown is different from the other duplicate occurrences
       result_same_body = ActiveRecord::Base.connection.execute(
-        <<-SQL # rubocop:disable Style/TrailingCommaInArguments
+        <<-SQL,
           WITH duplicates_draft_articles AS
               (SELECT id
                FROM
