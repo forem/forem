@@ -66,9 +66,7 @@ class GithubTag
                    Integer(line_info[1][1..])
                  end
 
-      unless end_line.nil?
-        start_line, end_line = end_line, start_line if start_line > end_line
-      end
+      start_line, end_line = end_line, start_line if end_line && start_line > end_line
 
       {
         file_path: file_path,
@@ -79,9 +77,9 @@ class GithubTag
     end
 
     def get_file_contents(repo_info, file_info)
-      file = Github::Client.contents(repo_info[:repo_path],
-                                     path: file_info[:file_path],
-                                     query: { ref: repo_info[:ref_name] })
+      file = Github::OauthClient.new.contents(repo_info[:repo_path],
+                                              path: file_info[:file_path],
+                                              query: { ref: repo_info[:ref_name] })
 
       Base64.decode64(file[:content]).split("\n")
     end
@@ -142,8 +140,8 @@ class GithubTag
 
     def sanitize_link(link)
       link = ActionController::Base.helpers.strip_tags(link)
-      raise_error unless /.*github\.com\//.match?(link)
-      link.gsub(/.*github\.com\//, "")
+      raise_error unless %r{.*github\.com/}.match?(link)
+      link.gsub(%r{.*github\.com/}, "")
     end
 
     def raise_line_number_error
