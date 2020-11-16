@@ -126,7 +126,7 @@
     "node-sass": "^4.14.1",
     "prettier": "^2.1.2",
     "redoc-cli": "0.9.13",
-    "sass-loader": "^10.0.5",
+    "sass-loader": "^10.1.0",
     "style-loader": "^2.0.0",
     "svgo": "1.3.2",
     "webpack-dev-server": "^3.11.0"
