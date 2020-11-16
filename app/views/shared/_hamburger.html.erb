@@ -24,7 +24,7 @@
         <% end %>
         <div class="sidebar-navigation-links">
           <% NavigationLink.all.ordered[0..4].each do |link| %>
-            <%= render "articles/sidebar_nav_link", link: link %>
+            <%= render "layouts/sidebar_nav_link", link: link %>
           <% end %>
 
           <% if NavigationLink.all.length > 5 %>
@@ -32,7 +32,7 @@
 
             <div class="hidden js-nav-more">
               <% NavigationLink.all.ordered[5..].each do |link| %>
-                <%= render "articles/sidebar_nav_link", link: link %>
+                <%= render "layouts/sidebar_nav_link", link: link %>
               <% end %>
             </div>
           <% end %>
