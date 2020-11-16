@@ -82,7 +82,6 @@ export function getInitialSearchTerm(querystring) {
 export function preloadSearchResults({
   searchTerm,
   location = window.location,
-  context = window,
 }) {
   const encodedQuery = fixedEncodeURIComponent(
     searchTerm.replace(/^[ ]+|[ ]+$/g, ''),
