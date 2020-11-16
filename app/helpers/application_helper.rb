@@ -185,6 +185,10 @@ module ApplicationHelper
     @community_name ||= SiteConfig.community_name
   end
 
+  def community_emoji
+    @community_emoji ||= SiteConfig.community_emoji
+  end
+
   def community_qualified_name
     return "#{community_name} #{SiteConfig.collective_noun}" unless SiteConfig.collective_noun_disabled
 
