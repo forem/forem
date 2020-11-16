@@ -48,7 +48,7 @@ export default class SingleArticle extends Component {
         {modContainer &&
           createPortal(
             <FlagUserModal moderationUrl={path} authorId={user.id} />,
-            document.querySelector('.flag-user-modal-container'),
+            document.getElementsByClassName('flag-user-modal-container')[0],
           )}
         <button
           data-testid={`mod-article-${id}`}
