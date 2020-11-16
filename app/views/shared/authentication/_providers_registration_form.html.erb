@@ -8,11 +8,10 @@
       <%= params[:state] == "new-user" ? "Sign up" : "Continue" %> with <%= provider.official_name %>
     </a>
   <% end %>
-  <% if params[:state] == "new-user" && SiteConfig.allow_email_password_registration %>
-    <%= link_to inline_svg_tag("email.svg", aria: true, class: "crayons-icon", title: "email") + "Sign up with Email", 
-      request.params.merge(state: "email_signup"),
-      class: "crayons-btn crayons-btn--l crayons-btn--brand-email crayons-btn--icon-left whitespace-nowrap",
-      data: {no_instant: ""}
-    %>
+  <% if params[:state] == "new-user" && SiteConfig.allow_email_password_registration && !SiteConfig.invite_only_mode %>
+    <%= link_to "#{inline_svg_tag('email.svg', aria: true, class: 'crayons-icon', title: 'email')}Sign up with Email".html_safe,
+                request.params.merge(state: "email_signup").except("i"),
+                class: "crayons-btn crayons-btn--l crayons-btn--brand-email crayons-btn--icon-left whitespace-nowrap",
+                data: { no_instant: "" } %>
   <% end %>
 </div>

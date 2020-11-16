@@ -3,8 +3,10 @@ class ListingsController < ApplicationController
 
   INDEX_JSON_OPTIONS = {
     only: %i[
-      title processed_html tag_list category id user_id slug contact_via_connect location
+      title processed_html tag_list category id user_id slug contact_via_connect location bumped_at
+      originally_published_at
     ],
+    methods: %i[category],
     include: {
       author: { only: %i[username name], methods: %i[username profile_image_90] },
       user: { only: %i[username], methods: %i[username] }
@@ -13,9 +15,10 @@ class ListingsController < ApplicationController
 
   DASHBOARD_JSON_OPTIONS = {
     only: %i[
-      title tag_list created_at expires_at bumped_at updated_at category id
+      title tag_list created_at expires_at bumped_at updated_at id
       user_id slug organization_id location published
     ],
+    methods: %i[category],
     include: {
       author: { only: %i[username name], methods: %i[username profile_image_90] }
     }
@@ -68,7 +71,7 @@ class ListingsController < ApplicationController
 
   def dashboard
     listings = current_user.listings
-      .includes(:organization, :taggings)
+      .includes(:organization, :taggings, :listing_category)
     @listings_json = listings.to_json(DASHBOARD_JSON_OPTIONS)
 
     organizations_ids = current_user.organization_memberships

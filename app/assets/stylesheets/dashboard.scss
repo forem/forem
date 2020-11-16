@@ -77,65 +77,6 @@
       }
     }
 
-    & div.ellipsis-menu {
-      float: right;
-      position: relative;
-
-      & button.ellipsis-menu-btn {
-        display: block;
-        float: right;
-        margin-top: 0.3em;
-        margin-right: -0.6em;
-        border: 0px;
-        background: transparent;
-        img {
-          width: 20px;
-        }
-
-        &:hover {
-          background-color: #eee;
-        }
-      }
-
-      & ul.ellipsis-menu {
-        position: absolute;
-        right: 0;
-        display: block;
-        background-color: white;
-        padding-left: 0;
-        border-style: solid;
-        border-color: #ccc;
-        border-radius: 3px;
-        border-width: 1px;
-        margin-top: 1.75em;
-        margin-right: -0.6em;
-
-        &.hidden {
-          display: none;
-        }
-
-        & hr {
-          margin: 0;
-          color: #ccc;
-          background-color: #ccc;
-          height: 1px;
-          border: 0;
-        }
-
-        & li.ellipsis-menu-item {
-          list-style: none;
-
-          & form * {
-            background-color: transparent;
-          }
-
-          &:hover {
-            background-color: #eee;
-          }
-        }
-      }
-    }
-
     .dashboard-collection-org-details {
       .dashboard-top-pill {
         @include themeable(
@@ -157,13 +98,6 @@
       font-size: 0.85em;
       padding: 3px 0px 6px;
       color: var(--card-color-tertiary);
-    }
-
-    a {
-      color: var(--card-color);
-      &.block-link {
-        display: block;
-      }
     }
 
     h2 {
@@ -280,54 +214,6 @@
         margin: 0;
         padding: 0;
         display: inline;
-
-        input[type='submit'],
-        button {
-          height: 30.4px;
-          border: 2px solid transparent;
-        }
-      }
-    }
-
-    .pill {
-      background: $bold-blue;
-      padding: 4px 20px;
-      border-radius: 100px;
-      color: white;
-      margin-right: 5px;
-      font-size: 14px;
-      border: 2px solid transparent;
-      margin-top: 6px;
-      display: inline-block;
-
-      &.yellow {
-        background: $yellow;
-        color: $black;
-        border: 2px solid $black;
-      }
-
-      &.green {
-        background: $green;
-        color: $black;
-      }
-
-      &.red {
-        background: $red;
-      }
-
-      &.black {
-        background: $dark-gray;
-      }
-
-      &.mute {
-        background-color: $medium-gray;
-        color: $white;
-      }
-
-      &.unmute {
-        // inverted background color
-        background-color: $blue;
-        color: $white;
       }
     }
 

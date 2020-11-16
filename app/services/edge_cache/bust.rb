@@ -44,7 +44,7 @@ module EdgeCache
     end
 
     def nginx_enabled?
-      ApplicationConfig["OPENRESTY_PROTOCOL"].present? && ApplicationConfig["OPENRESTY_DOMAIN"].present?
+      ApplicationConfig["OPENRESTY_URL"].present?
     end
   end
 end

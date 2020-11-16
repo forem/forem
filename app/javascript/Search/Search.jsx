@@ -1,5 +1,5 @@
 import 'preact/devtools';
-import { Component, h } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import {
   getInitialSearchTerm,
@@ -7,10 +7,11 @@ import {
   preloadSearchResults,
   displaySearchResults,
 } from '../utilities/search';
+import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { SearchForm } from './SearchForm';
 
-const GLOBAL_MINIMIZE_KEY = '0';
-const GLOBAL_SEARCH_KEY = '/';
+const GLOBAL_MINIMIZE_KEY = 'Digit0';
+const GLOBAL_SEARCH_KEY = 'Slash';
 const ENTER_KEY = 'Enter';
 
 export class Search extends Component {
@@ -21,6 +22,7 @@ export class Search extends Component {
   constructor(props) {
     super(props);
     this.enableSearchPageChecker = true;
+    this.syncSearchUrlWithInput = this.syncSearchUrlWithInput.bind(this);
   }
 
   componentWillMount() {
@@ -48,9 +50,32 @@ export class Search extends Component {
     searchPageChecker();
   }
 
+  /**
+   * Synchronizes the search input value with the search term defined in the URL.
+   */
+  syncSearchUrlWithInput() {
+    // TODO: Consolidate search functionality.
+    // Note that push states for search occur in _search.html.erb
+    // in initializeSortingTabs(query)
+    const { searchBoxId } = this.props;
+    const searchTerm = getInitialSearchTerm(window.location.search);
+
+    // We set the value outside of React state so that there is no flickering of placeholder
+    // to search term.
+    const searchBox = document.getElementById(searchBoxId);
+    searchBox.value = searchTerm;
+
+    // Even though we set the search term directly via the DOM, it still needs to reside
+    // in component state.
+    this.setState({
+      searchTerm,
+    });
+  }
+
   componentDidMount() {
-    this.registerGlobalKeysListener();
     InstantClick.on('change', this.enableSearchPageListener);
+
+    window.addEventListener('popstate', this.syncSearchUrlWithInput);
   }
 
   enableSearchPageListener = () => {
@@ -81,59 +106,49 @@ export class Search extends Component {
     }
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     document.removeEventListener('keydown', this.globalKeysListener);
+    window.removeEventListener('popstate', this.syncSearchUrlWithInput);
     InstantClick.off('change', this.enableSearchPageListener);
   }
 
-  registerGlobalKeysListener() {
+  minimizeHeader = (event) => {
+    event.preventDefault();
+    document.body.classList.toggle('zen-mode');
+  };
+
+  focusOnSearchBox = (event) => {
+    event.preventDefault();
+    document.body.classList.remove('zen-mode');
+
     const { searchBoxId } = this.props;
     const searchBox = document.getElementById(searchBoxId);
-
-    this.globalKeysListener = (event) => {
-      const { tagName, classList } = document.activeElement;
-
-      if (
-        (event.key !== GLOBAL_SEARCH_KEY &&
-          event.key !== GLOBAL_MINIMIZE_KEY) ||
-        tagName === 'INPUT' ||
-        tagName === 'TEXTAREA' ||
-        classList.contains('input')
-      ) {
-        return;
-      }
-
-      if (event.key === GLOBAL_SEARCH_KEY) {
-        event.preventDefault();
-        document.body.classList.remove('zen-mode');
-        searchBox.focus();
-        searchBox.select();
-      } else if (
-        event.key === GLOBAL_MINIMIZE_KEY &&
-        !this.hasKeyModifiers(event)
-      ) {
-        event.preventDefault();
-        document.body.classList.toggle('zen-mode');
-      }
-    };
-
-    document.addEventListener('keydown', this.globalKeysListener);
-  }
+    searchBox.focus();
+    searchBox.select();
+  };
 
   render({ searchBoxId }, { searchTerm = '' }) {
     return (
-      <SearchForm
-        searchTerm={searchTerm}
-        onSearch={(event) => {
-          const {
-            key,
-            target: { value },
-          } = event;
-          this.search(key, value);
-        }}
-        onSubmitSearch={this.submit}
-        searchBoxId={searchBoxId}
-      />
+      <Fragment>
+        <KeyboardShortcuts
+          shortcuts={{
+            [GLOBAL_SEARCH_KEY]: this.focusOnSearchBox,
+            [GLOBAL_MINIMIZE_KEY]: this.minimizeHeader,
+          }}
+        />
+        <SearchForm
+          searchTerm={searchTerm}
+          onSearch={(event) => {
+            const {
+              key,
+              target: { value },
+            } = event;
+            this.search(key, value);
+          }}
+          onSubmitSearch={this.submit}
+          searchBoxId={searchBoxId}
+        />
+      </Fragment>
     );
   }
 }

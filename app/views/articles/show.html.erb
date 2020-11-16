@@ -96,8 +96,8 @@
       <% if !@article.published %>
         <div class="crayons-notice crayons-notice--danger mb-4">
           <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
-          <% if user_signed_in? && policy(@article.object).update? %>
-            <a href="<%= @article.path %>/edit" class="fw-bold">Click to edit</a>.
+          <% if user_signed_in? %>
+            <a id="author-click-to-edit" href="<%= @article.path %>/edit" class="fw-bold" display="none">Click to edit</a>
           <% end %>
         </div>
       <% end %>
@@ -159,24 +159,24 @@
                   <em>with <%= @article.co_author_name_and_path.html_safe %></em>
                 <% end %>
 
-                <% if should_show_updated_on?(@article) %>
-                  <em>Updated on <time datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em>
-                <% elsif should_show_crossposted_on?(@article) %>
+                <% if should_show_crossposted_on?(@article) %>
                   <em>
                     Originally published at
                     <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
                     <% if @article.crossposted_at %>
                       on
-                      <time datetime="<%= (@article.originally_published_at || @article.published_at)&.utc&.iso8601 %>"><%= (@article.originally_published_at || @article.published_at)&.strftime("%b %d, %Y") %></time>
+                      <%= local_date(@article.originally_published_at || @article.published_at, show_year: (@article.originally_published_at || @article.published_at).year != Time.current.year) %>
                     <% end %>
                   </em>
+                <% end %>
+                <% if should_show_updated_on?(@article) %>
+                  ・<em>Updated on <%= local_date(@article.edited_at, show_year: @article.edited_at.year != Time.current.year) %></em>
                 <% end %>
 
                 <span class="mr-4">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
               </span>
               <span id="action-space" class="mb-4 s:mb-0"></span>
             </div>
-
           </div>
         </header>
 
@@ -199,21 +199,12 @@
                        articles: @collection_articles %>
           <% end %>
         </div>
+        <%= render "articles/full_comment_area" %>
+
       </article>
 
-      <% if @article.long_markdown? || @organization %>
-        <section class="crayons-card crayons-card--secondary text-padding mb-4">
-          <% if @article.long_markdown? %>
-            <%= render "articles/about_author", published: @article.readable_publish_date %>
-          <% end %>
-          <%= render "articles/org_branding", organization: @organization, author: @article.long_markdown? %>
-        </section>
-      <% end %>
-
-      <%= render "articles/full_comment_area" %>
-
       <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}", expires_in: 18.hours) do %>
-        <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
+        <% suggested_articles = Articles::Suggest.call(@article, max: 4) %>
         <%= render "articles/bottom_content", articles: suggested_articles %>
       <% end %>
     </div>
@@ -243,6 +234,8 @@
 <div id="mod-actions-menu-btn-area"></div>
 <div data-testid="flag-user-modal-container" class="flag-user-modal-container hidden"></div>
 
+<div class="fullscreen-code js-fullscreen-code"></div>
+
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
     <%# we consider these scripts safe for embedding as they come from our code %>
@@ -252,4 +245,5 @@
     <%== TweetTag.script %>
     <%== UserSubscriptionTag.script %>
   </script>
+  <%== TwitterTimelineTag.script %>
 <% end %>

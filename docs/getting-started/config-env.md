@@ -4,7 +4,7 @@ title: Configuring Environment Variables
 
 # Configuring environment variables and secret keys
 
-Take a look at `Envfile`. This file lists all the `ENV` variables we use and
+Take a look at `.env_sample`. This file lists all the `ENV` variables we use and
 provides a fake default for any missing keys.
 
 The [backend guide][backend_guide] will show you how to get free API keys for
@@ -36,5 +36,4 @@ warning message in your logs when you try to access that variable
 Only certain features require "real" keys, so you may be able to add them as you
 work on different areas of the application.
 
-[backend_guide]: /backend
-[envied]: https://rubygems.org/gems/envied
+[backend_guide]: /docs/backend

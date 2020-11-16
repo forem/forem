@@ -26,14 +26,14 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.18" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.6" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.41.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.42.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.0" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.4" # Oauth 2 provider
 gem "elasticsearch", "~> 7.9" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
-gem "emoji_regex", "~> 3.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
+gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
@@ -45,7 +45,7 @@ gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically co
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "honeybadger", "~> 4.7" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 2.2.0" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 2.3.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web services dead easy
@@ -60,17 +60,18 @@ gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aes
 gem "mini_racer", "~> 0.3.1" # Minimal embedded v8
 # gem "miro", "~> 0.4" # Extract colors from image
 gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
-gem "octokit", "~> 4.16" # Simple wrapper for the GitHub API
+gem "octokit", "~> 4.19" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.10" # JSON parser and object serializer
 gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider authentication
-gem "omniauth-facebook", "~> 7.0" # OmniAuth strategy for Facebook
+gem "omniauth-facebook", "~> 8.0" # OmniAuth strategy for Facebook
 gem "omniauth-github", "~> 1.3" # OmniAuth strategy for GitHub
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
+gem "parallel", "~> 1.20" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with Elasticsearch to support http keep-alive connections
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
-gem "puma", "~> 4.3" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.0.4" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
-gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
+gem "pusher", "~> 1.4" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.3" # Pusher Push Notifications Ruby server SDK
 gem "rack-attack", "~> 6.3.1" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
@@ -78,29 +79,29 @@ gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have b
 gem "rails", "~> 6.0.3" # Ruby on Rails
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.3" # Searching and sorting
-gem "recaptcha", "~> 5.5", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 5.6", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.2.2" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
+gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
 gem "rolify", "~> 5.3" # Very simple Roles library
-gem "rouge", "~> 3.23" # A pure-ruby code highlighter
+gem "rouge", "~> 3.24" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
 gem "sidekiq", "~> 6.1.2" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 6.0.24" # Ensures that Sidekiq jobs are unique when enqueued
-gem "simpleidn", "~> 0.1" # Convert IDN domains to Punycode
+gem "sidekiq-unique-jobs", "~> 6.0.25" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "store_attribute", "~> 0.8.0" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.26" # Ruby library for the Stripe API
+gem "stripe", "~> 5.28" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
-gem "twilio-ruby", "~> 5.40" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.42" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
@@ -124,7 +125,7 @@ group :development do
   gem "memory_profiler", "~> 0.9", require: false # Memory profiling routines for Ruby 2.3+
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
-  gem "web-console", "~> 4.0" # Rails Console on the Browser
+  gem "web-console", "~> 4.1" # Rails Console on the Browser
   gem "yard", "~> 0.9.25" # YARD is a documentation generation tool for the Ruby programming language
   gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
   gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
@@ -136,13 +137,13 @@ group :development, :test do
   gem "capybara", "~> 3.33" # Capybara is an integration testing tool for rack based web applications
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.14" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.6.0" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 2.8.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.92.0", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.93.1", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.8", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.8", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 1.43", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 1.44", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
@@ -166,8 +167,4 @@ group :test do
   gem "webdrivers", "~> 4.4" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.9", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
-end
-
-group :doc do
-  gem "sdoc", "~> 1.1" # rdoc generator html with javascript search index
 end

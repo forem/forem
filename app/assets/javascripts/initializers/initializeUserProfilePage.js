@@ -33,3 +33,34 @@ function initializeUserProfilePage() {
     }
   }
 }
+
+function initializeProfileInfoToggle() {
+  const infoPanels = document.querySelector('.js-user-info');
+  const trigger = document.querySelector('.js-user-info-trigger');
+  const triggerWrapper = document.querySelector(
+    '.js-user-info-trigger-wrapper',
+  );
+
+  if (trigger && infoPanels) {
+    trigger.addEventListener('click', () => {
+      triggerWrapper.classList.replace('block', 'hidden');
+      infoPanels.classList.replace('hidden', 'grid');
+    });
+  }
+}
+
+function initializeProfileBadgesToggle() {
+  const badgesWrapper = document.querySelector('.js-profile-badges');
+  const trigger = document.querySelector('.js-profile-badges-trigger');
+
+  if (badgesWrapper && trigger) {
+    const badges = badgesWrapper.querySelectorAll('.js-profile-badge.hidden');
+    trigger.addEventListener('click', () => {
+      badges.forEach((badge) => {
+        badge.classList.remove('hidden');
+      });
+
+      trigger.classList.add('hidden');
+    });
+  }
+}
