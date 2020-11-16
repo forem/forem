@@ -127,7 +127,7 @@ function initializeCommentsPage() {
               commentWrapper.classList.add("replying");
               commentWrapper.innerHTML += buildCommentFormHTML(commentableId, commentableType, parentId);
               initializeCommentsPage();
-              
+
               setTimeout(function () {
                 commentWrapper.getElementsByTagName('textarea')[0].focus();
               }, 30);
@@ -186,12 +186,14 @@ function handleCommentSubmit(event) {
   }
   var parentComment = document.getElementById("comment-node-" + event.target.dataset.commentId);
 
+  // as there can be multiple forms rendered in the comments, we need to use querySelector to find descendants
+  var commentParentId = form.querySelector("#comment_parent_id");
   var body = JSON.stringify({
     comment: {
       body_markdown: form.getElementsByTagName("textarea")[0].value,
       commentable_id: form.querySelector("#comment_commentable_id").value,
       commentable_type: form.querySelector("#comment_commentable_type").value,
-      parent_id: form.querySelector("#comment_parent_id") ? form.querySelector("#comment_parent_id").value : null,
+      parent_id: commentParentId ? commentParentId.value : null,
     }
   });
 
@@ -227,7 +229,7 @@ function handleCommentSubmit(event) {
           else if (mainCommentsForm) {
             var mainCommentsForm = document.getElementById("new_comment");
             mainCommentsForm.classList.remove("submitting");
-            const textArea = form.querySelector(".comment-textarea");
+            const textArea = form.getElementsByClassName("comment-textarea")[0];
             textArea.closest('.comment-form').classList.remove('comment-form--initiated');
             textArea.value = newComment.comment_template || "";
             var preview = document.getElementById("preview-div");
@@ -403,9 +405,9 @@ function handleSizeChange(event) {
 
 function handleButtonsActivation(event) {
   var textarea = event.target;
-  var buttons = textarea.closest('.comment-form').querySelectorAll('.js-btn-enable');
-  buttons.forEach(function(button) {
-    if( textarea.value.length > 0) {
+  var buttons = textarea.closest('.comment-form').getElementsByClassName('js-btn-enable');
+  Array.from(buttons).forEach(function(button) {
+    if (textarea.value.length > 0) {
       button.disabled = false;
     } else {
       button.disabled = true;
@@ -414,7 +416,7 @@ function handleButtonsActivation(event) {
 }
 
 function validateField(event) {
-  var textarea = event.target.closest('.comment-form').querySelector('.comment-textarea');
+  var textarea = event.target.closest('.comment-form').getElementsByClassName('comment-textarea')[0];
   if (textarea) {
     var commentField = textarea.value;
     if (commentField == '') {
