@@ -1,11 +1,11 @@
 require "rails_helper"
 
 RSpec.describe PodcastOwnership, type: :model do
-  let(:podcast_ownership) { create(:podcast_ownership) }
+  let(:podcast_episode) { create(:podcast_episode) }
 
   describe "validations" do
     describe "builtin validations" do
-      subject { podcast_ownership }
+      subject { podcast_episode }
 
       it { is_expected.to belong_to(:podcast) }
       it { is_expected.to belong_to(:user) }
