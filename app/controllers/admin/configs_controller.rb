@@ -268,8 +268,8 @@ module Admin
       return unless domains
 
       domains_array = domains.delete(" ").split(",")
-      valid_domains = domains_array.
-        select { |d| d.match?(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/) }
+      valid_domains = domains_array
+        .select { |d| d.match?(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/) }
       valid_domains.size != domains_array.size
     end
 
