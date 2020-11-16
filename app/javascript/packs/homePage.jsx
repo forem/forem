@@ -105,8 +105,8 @@ InstantClick.on('change', () => {
     return false;
   }
 
-  const tagsFollowedContainer = document.body.querySelector(
-    '#sidebar-nav-followed-tags',
+  const tagsFollowedContainer = document.body.getElementById(
+    'sidebar-nav-followed-tags',
   );
 
   if (!tagsFollowedContainer) {

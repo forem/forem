@@ -23,11 +23,15 @@ describe('addCloseListener()', () => {
     `;
     addCloseListener();
 
-    const closeButton = document.querySelector('.close-actions-panel');
+    const closeButton = document.getElementsByClassName(
+      'close-actions-panel',
+    )[0];
     closeButton.click();
     // eslint-disable-next-line no-restricted-globals
-    const modPanel = top.document.querySelector('.mod-actions-menu');
-    const modPanelBtn = top.document.querySelector('.mod-actions-menu-btn');
+    const modPanel = top.document.getElementsByClassName('mod-actions-menu')[0];
+    const modPanelBtn = top.document.getElementsByClassName(
+      'mod-actions-menu-btn',
+    )[0];
     expect(modPanel.classList).not.toContain('showing');
     expect(modPanelBtn.classList).not.toContain('hidden');
   });
@@ -170,7 +174,7 @@ describe('addAdjustTagListeners()', () => {
     });
     describe('when an article is tagged with #discuss', () => {
       it('toggles the tag button and the form', () => {
-        const tagBtn = document.querySelector('.adjustable-tag');
+        const tagBtn = document.getElementsByClassName('adjustable-tag')[0];
         tagBtn.click();
         expect(tagBtn.classList).toContain('active');
         expect(
@@ -178,7 +182,7 @@ describe('addAdjustTagListeners()', () => {
         ).not.toContain('hidden');
       });
       it('hides the form if the button is clicked again', () => {
-        const tagBtn = document.querySelector('.adjustable-tag');
+        const tagBtn = document.getElementsByClassName('adjustable-tag')[0];
         tagBtn.click();
         tagBtn.click();
         expect(
@@ -223,7 +227,7 @@ describe('addAdjustTagListeners()', () => {
         expect(window.confirm).toHaveBeenCalled();
       });
       it('does not the hide reason container when going from one tag to another tag', () => {
-        document.querySelector('.adjustable-tag').click();
+        document.getElementsByClassName('adjustable-tag')[0].click();
         document.querySelector('.adjustable-tag[data-tag-name="ruby"]').click();
         expect(
           document.getElementById('adjustment-reason-container').classList,

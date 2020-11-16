@@ -29,7 +29,7 @@
   <% end %>
 
   <span class="crayons-avatar crayons-avatar--l mr-2 shrink-0">
-    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 256)  %>" width="32" height="32" alt="pic" class="crayons-avatar__image" id="comment-primary-user-profile--avatar">
+    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image" id="comment-primary-user-profile--avatar">
   </span>
   <div class="comment-form__inner">
     <div class="comment-form__field">
@@ -101,11 +101,11 @@
 
 <% if @comment.persisted? %>
   <script defer>
-    var editForm = document.getElementById("edit_comment_<%= @comment&.id %>")
+    var editForm = document.getElementById("edit_comment_<%= @comment&.id %>");
     if ( editForm ) {
       editForm.onsubmit = function (e) {
         e.preventDefault();
-        document.querySelector(".comment-form").classList.add("opacity-50");
+        document.getElementsByClassName("comment-form")[0].classList.add("opacity-50");
         var form = this;
         var waitingOnCSRF = setInterval(function () {
           var metaTag = document.querySelector("meta[name='csrf-token']")
@@ -118,9 +118,9 @@
         }, 1);
       }
 
-      editForm.querySelector(".js-btn-dismiss").classList.remove("hidden");
+      editForm.getElementsByClassName("js-btn-dismiss")[0].classList.remove("hidden");
       setTimeout(function(){
-        editForm.querySelector('.comment-textarea').focus();
+        editForm.getElementsByClassName('comment-textarea')[0].focus();
       }, 50);
     }
   </script>

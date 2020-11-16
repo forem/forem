@@ -50,9 +50,9 @@ async function confirmFlagUser({ reactableType, category, reactableId }) {
  * Shows or hides the flag user modal.
  */
 export function toggleFlagUserModal() {
-  const modalContainer = top.document.querySelector(
-    '.flag-user-modal-container',
-  );
+  const modalContainer = top.document.getElementsByClassName(
+    'flag-user-modal-container',
+  )[0];
   modalContainer.classList.toggle('hidden');
 
   if (!modalContainer.classList.contains('hidden')) {
@@ -80,7 +80,7 @@ export function initializeFlagUserModal(authorId) {
 
   render(
     <FlagUserModal authorId={authorId} />,
-    document.querySelector('.flag-user-modal-container'),
+    document.getElementsByClassName('flag-user-modal-container')[0],
   );
 }
 
