@@ -2,44 +2,41 @@
   <% title("#{community_name} EVENTS") %>
   <link rel="canonical" href="<%= app_url("/events") %>" />
   <meta name="description" content="<%= community_name %> Events">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+<%= meta_keywords_default %>
+
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/events") %>" />
   <meta property="og:title" content="<%= community_name %> Events" />
-  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/bhavxzyx2e7bdsyvysve.jpg" />
-  <meta property="og:description" content="Talks and workshops designed to help community members level up." />
+  <meta property="og:description" content="Community events." />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= community_name %> Events">
-  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/bhavxzyx2e7bdsyvysve.jpg">
 <% end %>
-
-<div class="blank-space"></div>
 
 <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
 
-<div class="container article">
-  <div style="height:30px">
-  </div>
-  <div class="body">
-    <img src="<%= asset_path "sustaining-membership.svg" %>" style="height:200px;margin-top:30px;" alt="<%= community_name %> membership logo">
-    <h1 style="font-size:1.9em;font-weight:600;text-align:center;">
-      UPCOMING <br> EVENTS
+<div class="crayons-layout crayons-layout--limited-l">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">
+      Upcoming Events
     </h1>
-    <p><%= community_name %> Events is a series of ongoing talks and workshops designed to cover important topics to help community members level up. Because we have a global community we will be hosting events at varying times so nobody is restricted by time zone. Additionally,
-      <strong>some workshops are repeated multiple times</strong> to further account for this.</p>
-    <p>We have many more planned if you do not see a topic that interests you. Email
-      <%= email_link(:members) %> to request a topic. And if you're interested in speaking, please
-      <a href="https://dev.to/jess/would-you-like-to-give-a-dev-talkworkshop--31c6">apply to our CFP</a>.</p>
 
     <% @events.each do |event| %>
       <%= render "event", event: event %>
     <% end %>
 
-    <h1 style="font-size:1.9em;font-weight:600;text-align:center;">
-      PAST <br> EVENTS
-    </h1>
+    <% if @events.none? %>
+      <div class="crayons-notice">
+        There are no upcoming events currently scheduled
+      </div>
+    <% end %>
+
+    <% if @past_events.any? %>
+      <h1>
+        Past Events
+      </h1>
+    <% end %>
 
     <% @past_events.each do |event| %>
       <%= render "event", event: event %>

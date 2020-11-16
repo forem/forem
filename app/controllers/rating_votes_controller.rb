@@ -6,7 +6,8 @@ class RatingVotesController < ApplicationController
 
   def create
     authorize RatingVote
-    rating_vote = RatingVote.where(user_id: current_user.id, article_id: rating_vote_params[:article_id]).first || RatingVote.new
+    rating_vote = RatingVote.where(user_id: current_user.id,
+                                   article_id: rating_vote_params[:article_id]).first || RatingVote.new
     rating_vote.user_id = current_user.id
     rating_vote.article_id = rating_vote_params[:article_id]
     rating_vote.rating = rating_vote_params[:rating].to_f
@@ -18,7 +19,9 @@ class RatingVotesController < ApplicationController
       end
     else
       respond_to do |format|
-        format.json { render json: { error: rating_vote.errors.full_messages.to_sentence }, status: :unprocessable_entity }
+        format.json do
+          render json: { error: rating_vote.errors.full_messages.to_sentence }, status: :unprocessable_entity
+        end
         format.html { render json: { result: "Not Upserted Successfully" } }
       end
     end

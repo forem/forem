@@ -12,7 +12,7 @@ class StoriesController < ApplicationController
     ]
   }.freeze
 
-  SIGNED_OUT_RECORD_COUNT = (Rails.env.production? ? 60 : 10).freeze
+  SIGNED_OUT_RECORD_COUNT = 60
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
@@ -51,28 +51,24 @@ class StoriesController < ApplicationController
     end
   end
 
-  def warm_comments
-    @article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate || not_found
-    @warm_only = true
-    assign_article_show_variables
-    render partial: "articles/full_comment_area"
-  end
-
   private
 
   def assign_hero_html
-    return if SiteConfig.campaign_hero_html_variant_name.blank?
+    return if Campaign.current.hero_html_variant_name.blank?
 
-    @hero_area = HtmlVariant.relevant.select(:name, :html).
-      find_by(group: "campaign", name: SiteConfig.campaign_hero_html_variant_name)
+    @hero_area = HtmlVariant.relevant.select(:name, :html)
+      .find_by(group: "campaign", name: Campaign.current.hero_html_variant_name)
     @hero_html = @hero_area&.html
   end
 
   def get_latest_campaign_articles
-    campaign_articles_scope = Article.tagged_with(SiteConfig.campaign_featured_tags, any: true).
-      where("published_at > ? AND score > ?", 4.weeks.ago, 0).
-      order("hotness_score DESC")
-    campaign_articles_scope = campaign_articles_scope.where(approved: true) if SiteConfig.campaign_articles_require_approval?
+    campaign_articles_scope = Article.tagged_with(Campaign.current.featured_tags, any: true)
+      .where("published_at > ? AND score > ?", 4.weeks.ago, 0)
+      .order(hotness_score: :desc)
+
+    requires_approval = Campaign.current.articles_require_approval?
+    campaign_articles_scope = campaign_articles_scope.where(approved: true) if requires_approval
+
     @campaign_articles_count = campaign_articles_scope.count
     @latest_campaign_articles = campaign_articles_scope.limit(5).pluck(:path, :title, :comments_count, :created_at)
   end
@@ -136,12 +132,16 @@ class StoriesController < ApplicationController
 
     @num_published_articles = if @tag_model.requires_approval?
                                 Article.published.cached_tagged_by_approval_with(@tag).size
+                              elsif SiteConfig.feed_strategy == "basic"
+                                Article.published.cached_tagged_with(@tag)
+                                  .where("score >= ?", SiteConfig.tag_feed_minimum_score).size
                               else
                                 cached_tagged_count
                               end
     @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
-    @stories = Articles::Feed.new(number_of_articles: @number_of_articles, tag: @tag, page: @page).
-      published_articles_by_tag
+    @stories = Articles::Feeds::LargeForemExperimental
+      .new(number_of_articles: @number_of_articles, tag: @tag, page: @page)
+      .published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
@@ -172,7 +172,7 @@ class StoriesController < ApplicationController
     assign_hero_html
     assign_podcasts
     assign_listings
-    get_latest_campaign_articles if SiteConfig.campaign_sidebar_enabled?
+    get_latest_campaign_articles if Campaign.current.show_in_sidebar?
     @article_index = true
     @featured_story = (featured_story || Article.new)&.decorate
     @stories = ArticleDecorator.decorate_collection(@stories)
@@ -185,23 +185,23 @@ class StoriesController < ApplicationController
   end
 
   def featured_story
-    @featured_story ||= Articles::Feed.find_featured_story(@stories)
+    @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories)
   end
 
   def handle_podcast_index
     @podcast_index = true
     @list_of = "podcast-episodes"
-    @podcast_episodes = @podcast.podcast_episodes.
-      reachable.order("published_at DESC").limit(30).decorate
+    @podcast_episodes = @podcast.podcast_episodes
+      .reachable.order(published_at: :desc).limit(30).decorate
     set_surrogate_key_header "podcast_episodes"
     render template: "podcast_episodes/index"
   end
 
   def handle_organization_index
     @user = @organization
-    @stories = ArticleDecorator.decorate_collection(@organization.articles.published.
-      limited_column_select.
-      order("published_at DESC").page(@page).per(8))
+    @stories = ArticleDecorator.decorate_collection(@organization.articles.published
+      .limited_column_select
+      .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
@@ -215,6 +215,7 @@ class StoriesController < ApplicationController
       return
     end
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
+    not_found unless @user.registered
     assign_user_comments
     assign_user_stories
     @list_of = "articles"
@@ -222,6 +223,17 @@ class StoriesController < ApplicationController
     return if performed?
 
     assign_user_github_repositories
+
+    # @badges_limit is here and is set to 6 because it determines how many badges we will display
+    # on Profile sidebar widget. If user has more badges, we hide them and let them be revealed
+    # by clicking "See more" button (because we want to save space etc..). But why 6 exactly?
+    # To make that widget look good:
+    #   - On desktop it will have 3 rows, each row with 2 badges.
+    #   - On mobile it will have 2 rows, each row with 3 badges.
+    # So it's always 6. If we make it higher or lower number, we would have to sacrifice UI:
+    #   - Let's say it's `4`. On mobile it would display two rows: 1st with 3 badges and
+    # 2nd with 1 badge (!) <-- and that would look off.
+    @badges_limit = 6
 
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
@@ -240,12 +252,12 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_view_param
-    redirect_to "/internal/users/#{@user.id}" if params[:view] == "moderate"
-    redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
+    redirect_to "/admin/users/#{@user.id}" if params[:view] == "moderate"
+    redirect_to "/resource_admin/users/#{@user.id}/edit" if params[:view] == "admin"
   end
 
   def redirect_if_show_view_param
-    redirect_to "/internal/articles/#{@article.id}" if params[:view] == "moderate"
+    redirect_to "/admin/articles/#{@article.id}" if params[:view] == "moderate"
   end
 
   def handle_article_show
@@ -258,7 +270,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_feed_stories
-    feed = Articles::Feed.new(page: @page, tag: params[:tag])
+    feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
     if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
@@ -284,14 +296,14 @@ class StoriesController < ApplicationController
       # we need to make sure that articles that were cross posted after their
       # original publication date appear in the correct order in the collection,
       # considering non cross posted articles with a more recent publication date
-      @collection_articles = @article.collection.articles.
-        published.
-        order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
+      @collection_articles = @article.collection.articles
+        .published
+        .order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
     end
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
-    assign_second_and_third_user
     set_article_json_ld
+    assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
@@ -299,31 +311,30 @@ class StoriesController < ApplicationController
     !@article.published && params[:preview] != @article.password
   end
 
-  def assign_second_and_third_user
-    return if @article.second_user_id.blank?
+  def assign_co_authors
+    return if @article.co_author_ids.blank?
 
-    @second_user = User.find(@article.second_user_id)
-    @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
+    @co_author_ids = User.find(@article.co_author_ids)
   end
 
   def assign_user_comments
     comment_count = params[:view] == "comments" ? 250 : 8
     @comments = if @user.comments_count.positive?
-                  @user.comments.where(deleted: false).
-                    order("created_at DESC").includes(:commentable).limit(comment_count)
+                  @user.comments.where(deleted: false)
+                    .order(created_at: :desc).includes(:commentable).limit(comment_count)
                 else
                   []
                 end
   end
 
   def assign_user_stories
-    @pinned_stories = Article.published.where(id: @user.profile_pins.select(:pinnable_id)).
-      limited_column_select.
-      order("published_at DESC").decorate
-    @stories = ArticleDecorator.decorate_collection(@user.articles.published.
-      limited_column_select.
-      where.not(id: @pinned_stories.pluck(:id)).
-      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
+    @pinned_stories = Article.published.where(id: @user.profile_pins.select(:pinnable_id))
+      .limited_column_select
+      .order(published_at: :desc).decorate
+    @stories = ArticleDecorator.decorate_collection(@user.articles.published
+      .limited_column_select
+      .where.not(id: @pinned_stories.map(&:id))
+      .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
   end
 
   def assign_user_github_repositories
@@ -332,24 +343,23 @@ class StoriesController < ApplicationController
 
   def stories_by_timeframe
     if %w[week month year infinity].include?(params[:timeframe])
-      @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
-        order("public_reactions_count DESC")
+      @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime)
+        .order(public_reactions_count: :desc)
     elsif params[:timeframe] == "latest"
-      @stories.where("score > ?", -20).order("published_at DESC")
+      @stories.where("score > ?", -20).order(published_at: :desc)
     else
-      @stories.order("hotness_score DESC").where("score > 2")
+      @stories.order(hotness_score: :desc).where("score >= ?", SiteConfig.home_feed_minimum_score)
     end
   end
 
   def assign_podcasts
     return unless user_signed_in?
 
-    num_hours = Rails.env.production? ? 24 : 2400
-    @podcast_episodes = PodcastEpisode.
-      includes(:podcast).
-      order("published_at desc").
-      where("published_at > ?", num_hours.hours.ago).
-      select(:slug, :title, :podcast_id, :image)
+    @podcast_episodes = PodcastEpisode
+      .includes(:podcast)
+      .order(published_at: :desc)
+      .where("published_at > ?", 24.hours.ago)
+      .select(:slug, :title, :podcast_id, :image)
   end
 
   def assign_listings
@@ -374,7 +384,7 @@ class StoriesController < ApplicationController
       },
       "url": URL.user(@user),
       "sameAs": user_same_as,
-      "image": ProfileImage.new(@user).get(width: 320),
+      "image": Images::Profile.call(@user.profile_image_url, length: 320),
       "name": @user.name,
       "email": @user.email_public ? @user.email : nil,
       "jobTitle": @user.employment_title.presence,
@@ -398,11 +408,12 @@ class StoriesController < ApplicationController
       "publisher": {
         "@context": "http://schema.org",
         "@type": "Organization",
-        "name": "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+        "name": "#{SiteConfig.community_name} Community",
         "logo": {
           "@context": "http://schema.org",
           "@type": "ImageObject",
-          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, 80, "png"),
+          "url": ApplicationController.helpers.optimized_image_url(SiteConfig.logo_png, width: 192,
+                                                                                        fetch_format: "png"),
           "width": "192",
           "height": "192"
         }
@@ -439,7 +450,7 @@ class StoriesController < ApplicationController
         "@id": URL.organization(@organization)
       },
       "url": URL.organization(@organization),
-      "image": ProfileImage.new(@organization).get(width: 320),
+      "image": Images::Profile.call(@organization.profile_image_url, length: 320),
       "name": @organization.name,
       "description": @organization.summary.presence || "404 bio not found"
     }
@@ -477,7 +488,6 @@ class StoriesController < ApplicationController
       @user.medium_url,
       @user.gitlab_url,
       @user.instagram_url,
-      @user.twitch_username,
       @user.website_url,
     ].reject(&:blank?)
   end
@@ -490,7 +500,7 @@ class StoriesController < ApplicationController
 
   def cached_tagged_count
     Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
-      Article.published.cached_tagged_with(@tag).where("score > 2").size
+      Article.published.cached_tagged_with(@tag).where("score >= ?", SiteConfig.tag_feed_minimum_score).size
     end
   end
 end

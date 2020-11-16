@@ -32,6 +32,11 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       expect(episode.guid).to include("53b17a1e-271b-40e3-a084-a67b4fcba562")
     end
 
+    it "populates processed_html" do
+      episode = described_class.call(podcast.id, item)
+      expect(episode.processed_html).not_to be_blank
+    end
+
     it "sets correct availability statuses" do
       episode = described_class.call(podcast.id, item)
       expect(episode.https?).to be true
@@ -56,7 +61,9 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
   context "when item has an http media url" do
     let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/awayfromthekeyboard.rss", false).items.first }
     let!(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
-    let(:https_url) { "https://awayfromthekeyboard.com/wp-content/uploads/2018/02/Episode_075_Lara_Hogan_Demystifies_Public_Speaking.mp3" }
+    let(:https_url) do
+      "https://awayfromthekeyboard.com/wp-content/uploads/2018/02/Episode_075_Lara_Hogan_Demystifies_Public_Speaking.mp3"
+    end
 
     it "sets media_url to https version when it is available" do
       stub_request(:head, https_url).to_return(status: 200)

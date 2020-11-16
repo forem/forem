@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
-  let_it_be_readonly(:dev_account) { create(:user) }
-  let_it_be_readonly(:mascot_account) { create(:user) }
-  let_it_be_changeable(:user) { create(:user) }
-  let_it_be_changeable(:organization) { create(:organization) }
+  let(:dev_account) { create(:user) }
+  let(:mascot_account) { create(:user) }
+  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)
@@ -18,6 +18,14 @@ RSpec.describe "NotificationsIndex", type: :request do
       response_body.include?(CGI.escapeHTML(User.second_to_last.name))
   end
 
+  def renders_article_path(article)
+    expect(response.body).to include article.path
+  end
+
+  def renders_comments_html(comment)
+    expect(response.body).to include comment.processed_html
+  end
+
   describe "GET /notifications" do
     it "renders page with the proper heading" do
       get "/notifications"
@@ -25,17 +33,19 @@ RSpec.describe "NotificationsIndex", type: :request do
     end
 
     context "when signed out" do
-      it "renders the signup cue" do
+      it "renders the signup page" do
         get "/notifications"
-        expect(response.body).to include "Great to have you"
+
+        expect(response.body).to include("Continue with")
       end
     end
 
     context "when signed in" do
       it "does not render the signup cue" do
         sign_in user
+
         get "/notifications"
-        expect(response.body).not_to include "Create your account"
+        expect(response.body).not_to include("Continue with")
       end
     end
 
@@ -172,7 +182,9 @@ RSpec.describe "NotificationsIndex", type: :request do
             category: categories.sample,
           )
         end
-        reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user) }
+        reactions.each do |reaction|
+          Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+        end
       end
 
       it "renders the correct user for a single reaction" do
@@ -244,7 +256,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         reactions = users.map do |user|
           create(:reaction, user: user, reactable: reactable, category: categories.sample)
         end
-        reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) }
+        reactions.each do |reaction|
+          Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
+        end
 
         users
       end
@@ -347,34 +361,23 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "renders the correct message" do
+      it "renders the correct message data", :aggregate_failures do
         expect(response.body).to include "commented on"
-      end
-
-      it "does not render incorrect message" do
         expect(response.body).not_to include "replied to a thread in"
-      end
-
-      it "does not render the moderation message" do
         expect(response.body).not_to include "As a trusted member"
+        renders_article_path(article)
+        renders_comments_html(comment)
+        does_not_render_reaction
       end
 
-      it "renders the article's path" do
-        expect(response.body).to include article.path
-      end
-
-      it "renders the comment's processed HTML" do
-        expect(response.body).to include comment.processed_html
+      def does_not_render_reaction
+        expect(response.body).not_to include "reaction-button reacted"
       end
 
       it "renders the reaction as previously reacted if it was reacted on" do
         Reaction.create(user: user, reactable: comment, category: "like")
         get "/notifications"
         expect(response.body).to include "reaction-button reacted"
-      end
-
-      it "does not render the reaction as reacted if it was not reacted on" do
-        expect(response.body).not_to include "reaction-button reacted"
       end
     end
 
@@ -390,39 +393,15 @@ RSpec.describe "NotificationsIndex", type: :request do
         sign_in user
       end
 
-      it "renders the correct message" do
+      it "renders the correct message data", :aggregate_failures do
         Notification.send_new_comment_notifications_without_delay(comment)
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).to include("commented on")
-      end
-
-      it "does not render incorrect message" do
-        Notification.send_new_comment_notifications_without_delay(comment)
-
-        get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).not_to include("replied to a thread in")
-      end
-
-      it "does not render the moderation message" do
-        Notification.send_new_comment_notifications_without_delay(comment)
-
-        get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).not_to include("As a trusted member")
-      end
-
-      it "renders the article's path" do
-        Notification.send_new_comment_notifications_without_delay(comment)
-
-        get notifications_path(filter: :org, org_id: organization.id)
-        expect(response.body).to include(article.path)
-      end
-
-      it "renders the comment's processed HTML" do
-        Notification.send_new_comment_notifications_without_delay(comment)
-
-        get notifications_path(filter: :org, org_id: organization.id)
-        expect(response.body).to include(comment.processed_html)
+        renders_article_path(article)
+        renders_comments_html(comment)
       end
 
       it "renders the reaction as previously reacted if it was reacted on" do
@@ -445,7 +424,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
         get notifications_path(filter: :org)
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.map(&:organization_id).compact.size).to eq(0)
+        expect(notifications.filter_map(&:organization_id).size).to eq(0)
       end
 
       it "does not render notifications belonging to other orgs" do
@@ -478,8 +457,14 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:user2)    { create(:user) }
       let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
-      let(:second_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: comment.id) }
-      let(:third_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: second_comment.id) }
+      let(:second_comment) do
+        create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article",
+                         parent_id: comment.id)
+      end
+      let(:third_comment) do
+        create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article",
+                         parent_id: second_comment.id)
+      end
 
       before do
         sign_in user
@@ -489,12 +474,10 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "contextualize comment notification text properly" do
+      it "renders comment notification text properly", :aggregate_failures do
         expect(response.body).to include "replied to a thread in"
-      end
-
-      it "contextualize comment title properly" do
-        expect(response.body).to include CGI.escapeHTML("re: #{comment.title}")
+        expect(response.body).to include CGI.escapeHTML("Re")
+        expect(response.body).to include CGI.escapeHTML(comment.title.to_s)
       end
     end
 
@@ -512,16 +495,10 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "renders the proper message" do
+      it "renders the proper message data", :aggregate_failures do
         expect(response.body).to include "Since they are new to the community, could you leave a nice reply"
-      end
-
-      it "renders the article's path" do
-        expect(response.body).to include article.path
-      end
-
-      it "renders the comment's processed HTML" do
-        expect(response.body).to include comment.processed_html
+        renders_article_path(article)
+        renders_comments_html(comment)
       end
     end
 
@@ -538,15 +515,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "does not render the notification message" do
+      it "does not render the notification message", :aggregate_failures do
         expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
-      end
-
-      it "does not render the article's path" do
         expect(response.body).not_to include article.path
-      end
-
-      it "does not render the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
       end
     end
@@ -566,15 +537,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "does not render the proper message" do
+      it "does not render the proper message", :aggregate_failures do
         expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
-      end
-
-      it "does not render the article's path" do
         expect(response.body).not_to include article.path
-      end
-
-      it "does not render the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
       end
     end
@@ -636,20 +601,27 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "renders the badge's title" do
+      it "renders the correct badge's notification", :aggregate_failures do
+        renders_title
+        renders_correct_message(user)
+        renders_correct_description
+        renders_visit_profile_button
+      end
+
+      def renders_title
         expect(response.body).to include Badge.first.title
       end
 
-      it "renders the rewarding context message" do
+      def renders_correct_message(user)
         expect(response.body).to include user.badge_achievements.first.rewarding_context_message
       end
 
-      it "renders the badge's description" do
+      def renders_correct_description
         expect(response.body).to include CGI.escapeHTML(Badge.first.description)
       end
 
-      it "renders the CHECK YOUR PROFILE button" do
-        expect(response.body).to include "CHECK YOUR PROFILE"
+      def renders_visit_profile_button
+        expect(response.body).to include "Visit your profile"
       end
     end
 
@@ -677,10 +649,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the proper message" do
         expect(response.body).to include "mentioned you in a comment"
-      end
-
-      it "renders the processed HTML of the comment where they were mentioned" do
-        expect(response.body).to include comment.processed_html
+        renders_comments_html(comment)
       end
     end
 
@@ -697,16 +666,19 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "renders the proper message" do
-        expect(response.body).to include "made a new post:"
+      it "renders the proper message", :aggregate_failures do
+        expect(response.body).to include "made a new post"
+        renders_article_path(article)
+        renders_authors_name(article)
+        renders_article_published_at(article)
       end
 
-      it "renders the article's path" do
-        expect(response.body).to include article.path
-      end
-
-      it "renders the author's name" do
+      def renders_authors_name(article)
         expect(response.body).to include CGI.escapeHTML(article.user.name)
+      end
+
+      def renders_article_published_at(article)
+        expect(response.body).to include time_ago_in_words(article.published_at)
       end
 
       it "renders the reaction as previously reacted if it was reacted on" do
@@ -717,10 +689,6 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "does not render the reaction as reacted if it was not reacted on" do
         expect(response.body).not_to include "reaction-button reacted"
-      end
-
-      it "renders the article's published at" do
-        expect(response.body).to include time_ago_in_words(article.published_at)
       end
     end
 
@@ -739,7 +707,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "can view other people's notifications" do
         get "/notifications?username=#{user2.username}"
-        expect(response.body).to include "made a new post:"
+        expect(response.body).to include "made a new post"
       end
     end
 

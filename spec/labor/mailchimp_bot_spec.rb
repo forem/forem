@@ -1,6 +1,8 @@
 require "rails_helper"
 
+# [@forem/oss]: this should be probably refactored using a class_double but for now we silence Rubocop's complaint
 class FakeGibbonRequest < Gibbon::Request
+  # rubocop:disable Lint/UselessMethodDefinition
   def lists(*args)
     super
   end
@@ -16,13 +18,17 @@ class FakeGibbonRequest < Gibbon::Request
   def community_mods(*args)
     super
   end
+  # rubocop:enable Lint/UselessMethodDefinition
 end
 
 RSpec.describe MailchimpBot, type: :labor do
-  let(:user) { create(:user, :ignore_mailchimp_subscribe_callback) }
+  let(:user) { create(:user, :with_newsletters, :ignore_mailchimp_subscribe_callback) }
   let(:article) { create(:article, user_id: user.id) }
   let(:my_gibbon_client) { instance_double(FakeGibbonRequest) }
-  let(:tag) { create(:tag, name: "tagname", bg_color_hex: Faker::Color.hex_color, text_color_hex: Faker::Color.hex_color, supported: true) }
+  let(:tag) do
+    create(:tag, name: "tagname", bg_color_hex: Faker::Color.hex_color, text_color_hex: Faker::Color.hex_color,
+                 supported: true)
+  end
 
   before do
     allow(Gibbon::Request).to receive(:new) { my_gibbon_client }
@@ -69,24 +75,24 @@ RSpec.describe MailchimpBot, type: :labor do
     it "unsubscribes properly" do
       user.update(email_newsletter: false)
       described_class.new(user).upsert_to_newsletter
-      expect(my_gibbon_client).to have_received(:upsert).
-        with(hash_including(body: hash_including(status: "unsubscribed")))
+      expect(my_gibbon_client).to have_received(:upsert)
+        .with(hash_including(body: hash_including(status: "unsubscribed")))
     end
 
     it "subscribes properly" do
       user.update(email_newsletter: false)
       user.update(email_newsletter: true)
       described_class.new(user).upsert_to_newsletter
-      expect(my_gibbon_client).to have_received(:upsert).
-        with(hash_including(body: hash_including(status: "subscribed")))
+      expect(my_gibbon_client).to have_received(:upsert)
+        .with(hash_including(body: hash_including(status: "subscribed")))
     end
 
     it "updates email properly" do
       user.update(email: Faker::Internet.email)
       user.confirm
       described_class.new(user).upsert_to_newsletter
-      expect(my_gibbon_client).to have_received(:upsert).
-        with(hash_including(body: hash_including(email_address: user.email)))
+      expect(my_gibbon_client).to have_received(:upsert)
+        .with(hash_including(body: hash_including(email_address: user.email)))
     end
 
     it "tries to resubscribe the user if the user has previously been subscribed" do
@@ -112,12 +118,12 @@ RSpec.describe MailchimpBot, type: :labor do
       user.update(email_community_mod_newsletter: true)
       user.add_role :trusted
       described_class.new(user).manage_community_moderator_list
-      expect(my_gibbon_client).to have_received(:upsert).
-        with(hash_including(
-               body: hash_including(
-                 status: "subscribed",
-               ),
-             ))
+      expect(my_gibbon_client).to have_received(:upsert)
+        .with(hash_including(
+                body: hash_including(
+                  status: "subscribed",
+                ),
+              ))
     end
   end
 
@@ -130,12 +136,12 @@ RSpec.describe MailchimpBot, type: :labor do
       user.update(email_tag_mod_newsletter: true)
       user.add_role(:tag_moderator, tag)
       described_class.new(user).manage_tag_moderator_list
-      expect(my_gibbon_client).to have_received(:upsert).
-        with(hash_including(
-               body: hash_including(
-                 status: "subscribed",
-               ),
-             ))
+      expect(my_gibbon_client).to have_received(:upsert)
+        .with(hash_including(
+                body: hash_including(
+                  status: "subscribed",
+                ),
+              ))
     end
   end
 
@@ -145,8 +151,8 @@ RSpec.describe MailchimpBot, type: :labor do
 
       it "unsubscribes the user from the weekly newsletter" do
         described_class.new(user).unsubscribe_all_newsletters
-        expect(my_gibbon_client).to have_received(:update).
-          with(hash_including(body: hash_including(status: "unsubscribed")))
+        expect(my_gibbon_client).to have_received(:update)
+          .with(hash_including(body: hash_including(status: "unsubscribed")))
       end
     end
   end

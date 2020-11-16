@@ -1,8 +1,11 @@
 <div class="crayons-article__video">
   <% minutes, seconds = article.video_duration_in_minutes.split(":") %>
-  <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
+  <div id="video-player-source" data-meta="<%= article.decorate.video_metadata.to_json %>" data-message=""></div>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
-  <div id="video-player-<%= article.id %>" class="crayons-article__video__player"></div>
+  <div id="video-player-<%= article.id %>" class="crayons-article__video__player" style="background-image: url('<%= article.cloudinary_video_url %>');">
+    <img alt="Play Button" id="play-butt" src="<%= image_path("playbutt.png") %>" />
+    <img alt="Pause Button" id="pause-butt" src="<%= image_path("pausebutt.png") %>" />
+  </div>
   <% unless internal_navigation? || user_signed_in? %>
     <script type="application/ld+json">
       {
@@ -12,63 +15,10 @@
         "uploadDate": "<%= article.published_at&.rfc3339 %>",
         "name": "<%= article.title %>",
         "description": "<%= article.description %>",
-        "thumbnailUrl": "<%= cloudinary(article.video_thumbnail_url, 880) %>",
+        "thumbnailUrl": "<%= article.cloudinary_video_url %>",
         "contentUrl": "<%= article.video_source_url %>",
         "duration": "<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>"
       }
     </script>
   <% end %>
 </div>
-
-<script type="text/javascript" async>
-  function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-      results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-  }
-
-  function timeToSeconds(hms) {
-    if (hms.length < 3) {
-      return hms
-    } else if (hms.length < 6) {
-      var a = hms.split(':')
-      return hms = (+a[0]) * 60 + (+a[1])
-    } else {
-      var a = hms.split(':')
-      return hms = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2])
-    }
-  }
-
-  var waitingOnJWP<%= article.id %> = setInterval(function () {
-    if (typeof jwplayer !== 'undefined') {
-      clearInterval(waitingOnJWP<%= article.id %>);
-      var playerInstance = jwplayer("video-player-<%= article.id %>");
-      playerInstance.setup({
-        file: "<%= article.video_source_url %>",
-        mediaid: "<%= article.video_code %>",
-        autostart: <%= internal_navigation? %>,
-        image: "<%= cloudinary(article.video_thumbnail_url, 880) %>",
-        playbackRateControls: true,
-        tracks: [{
-          file: "<%= article.video_closed_caption_track_url %>",
-          label: "English",
-          kind: "captions",
-          "default": false
-        }]
-      });
-      var time = getParameterByName('t')
-      if (time) {
-        jwplayer().on('ready', function (event) {
-          jwplayer().play();
-        });
-        jwplayer().on('firstFrame', function () {
-          jwplayer().seek(timeToSeconds(time))
-        });
-      }
-    }
-  }, 2)
-</script>

@@ -16,8 +16,19 @@ RSpec.describe "StoriesIndex", type: :request do
       article = create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include(CGI.escapeHTML(article.title))
+    end
+
+    it "has data-ga-tracking" do
+      get "/"
+      expect(response.body).to include("data-ga-tracking=\"#{SiteConfig.ga_tracking_id}\"")
+    end
+
+    it "renders registration page if site config is private" do
+      allow(SiteConfig).to receive(:public).and_return(false)
+
+      get root_path
+      expect(response.body).to include("Continue with")
     end
 
     it "renders proper description" do
@@ -29,13 +40,13 @@ RSpec.describe "StoriesIndex", type: :request do
       create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include("min read")
     end
 
     it "renders page with proper sidebar" do
+      navigation_link = create(:navigation_link)
       get "/"
-      expect(response.body).to include("Podcasts")
+      expect(response.body).to include(CGI.escapeHTML(navigation_link.name))
     end
 
     it "renders left display_ads when published and approved" do
@@ -94,6 +105,16 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
 
+    it "does not set cache-related headers if private" do
+      allow(SiteConfig).to receive(:public).and_return(false)
+      get "/"
+      expect(response.status).to eq(200)
+
+      expect(response.headers["X-Accel-Expires"]).to eq(nil)
+      expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      expect(response.headers["Surrogate-Key"]).to eq(nil)
+    end
+
     it "sets Fastly Surrogate-Key headers" do
       get "/"
       expect(response.status).to eq(200)
@@ -102,16 +123,31 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
     end
 
-    it "shows default meta keywords" do
-      SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
+    it "sets Nginx X-Accel-Expires headers" do
+      get "/"
+      expect(response.status).to eq(200)
+
+      expect(response.headers["X-Accel-Expires"]).to eq("600")
+    end
+
+    it "shows default meta keywords if set" do
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ default: "cool developers, civil engineers" })
       get "/"
       expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
+    end
+
+    it "does not show default meta keywords if not set" do
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ default: "" })
+      get "/"
+      expect(response.body).not_to include(
+        "<meta name=\"keywords\" content=\"cool developers, civil engineers\">",
+      )
     end
 
     it "shows only one cover if basic feed style" do
       create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
 
-      SiteConfig.feed_style = "basic"
+      allow(SiteConfig).to receive(:feed_style).and_return("basic")
       get "/"
       expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be 1
     end
@@ -119,13 +155,25 @@ RSpec.describe "StoriesIndex", type: :request do
     it "shows multiple cover images if rich feed style" do
       create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
 
-      SiteConfig.feed_style = "rich"
+      allow(SiteConfig).to receive(:feed_style).and_return("rich")
       get "/"
       expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be > 1
     end
 
+    it "has necessary asset reconciliation code" do
+      # Ensure code elements are available for fixing assets if necessary.
+      # app/views/layouts/_asset_reconciliation.html.erb
+      # Basic regression test to ensure we don't accidentally remove something we should not.
+      get "/"
+      expect(response.body).to include('<meta name="head-cached-at"')
+      expect(response.body).to include('<meta name="page-cached-at"')
+      expect(response.body).to include('"main-crayons-stylesheet"')
+      expect(response.body).to include('"main-minimal-stylesheet"')
+      expect(response.body).to include("if (headCacheCheck && headCrayons &&")
+    end
+
     context "with campaign hero" do
-      let_it_be_readonly(:hero_html) do
+      let!(:hero_html) do
         create(
           :html_variant,
           group: "campaign",
@@ -137,21 +185,21 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "displays hero html when it exists and is set in config" do
-        SiteConfig.campaign_hero_html_variant_name = "hero"
+        allow(SiteConfig).to receive(:campaign_hero_html_variant_name).and_return("hero")
 
         get root_path
         expect(response.body).to include(hero_html.html)
       end
 
       it "doesn't display when campaign_hero_html_variant_name is not set" do
-        SiteConfig.campaign_hero_html_variant_name = ""
+        allow(SiteConfig).to receive(:campaign_hero_html_variant_name).and_return("")
 
         get root_path
         expect(response.body).not_to include(hero_html.html)
       end
 
       it "doesn't display when hero html is not approved" do
-        SiteConfig.campaign_hero_html_variant_name = "hero"
+        allow(SiteConfig).to receive(:campaign_hero_html_variant_name).and_return("hero")
         hero_html.update_column(:approved, false)
 
         get root_path
@@ -161,7 +209,8 @@ RSpec.describe "StoriesIndex", type: :request do
 
     context "with campaign_sidebar" do
       before do
-        SiteConfig.campaign_featured_tags = "shecoded,theycoded"
+        allow(SiteConfig).to receive(:campaign_featured_tags).and_return("shecoded,theycoded")
+        allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(7)
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
         create(:article, approved: true, body_markdown: a_body, score: 1)
@@ -170,49 +219,52 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "doesn't display posts with the campaign tags when sidebar is disabled" do
-        SiteConfig.campaign_sidebar_enabled = false
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
       end
 
       it "doesn't display low-score posts" do
-        SiteConfig.campaign_sidebar_enabled = true
-        SiteConfig.campaign_articles_require_approval = true
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_articles_require_approval).and_return(true)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "doesn't display unapproved posts" do
-        SiteConfig.campaign_sidebar_enabled = true
-        SiteConfig.campaign_articles_require_approval = true
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_sidebar_image).and_return("https://example.com/image.png")
+        allow(SiteConfig).to receive(:campaign_articles_require_approval).and_return(true)
         Article.last.update_column(:score, -2)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "displays unapproved post if approval is not required" do
-        SiteConfig.campaign_sidebar_enabled = true
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_sidebar_image).and_return("https://example.com/image.png")
+        allow(SiteConfig).to receive(:campaign_articles_require_approval).and_return(false)
         get "/"
         expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "displays only approved posts with the campaign tags" do
-        SiteConfig.campaign_sidebar_enabled = false
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
       end
 
       it "displays sidebar url if campaign_url is set" do
-        SiteConfig.campaign_sidebar_enabled = true
-        SiteConfig.campaign_url = "https://campaign-lander.com"
-        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_url).and_return("https://campaign-lander.com")
+        allow(SiteConfig).to receive(:campaign_sidebar_image).and_return("https://example.com/image.png")
         get "/"
         expect(response.body).to include('<a href="https://campaign-lander.com"')
       end
 
       it "does not display sidebar url if image is not present is set" do
-        SiteConfig.campaign_sidebar_enabled = true
-        SiteConfig.campaign_url = "https://campaign-lander.com"
+        allow(SiteConfig).to receive(:campaign_sidebar_enabled).and_return(true)
+        allow(SiteConfig).to receive(:campaign_url).and_return("https://campaign-lander.com")
         get "/"
         expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end
@@ -222,7 +274,7 @@ RSpec.describe "StoriesIndex", type: :request do
   describe "GET query page" do
     it "renders page with proper header" do
       get "/search?q=hello"
-      expect(response.body).to include("query-header-text")
+      expect(response.body).to include("=> Search Results")
     end
   end
 
@@ -234,7 +286,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "renders page with proper header" do
       podcast = create(:podcast)
       create(:podcast_episode, podcast: podcast)
-      get "/" + podcast.slug
+      get "/#{podcast.slug}"
       expect(response.body).to include(podcast.title)
     end
   end
@@ -256,33 +308,41 @@ RSpec.describe "StoriesIndex", type: :request do
       )
     end
 
-    it "renders page with proper header" do
-      get "/t/#{tag.name}"
-      expect(response.body).to include(tag.name)
-    end
+    context "with caching headers" do
+      before do
+        get "/t/#{tag.name}"
+      end
 
-    it "sets Fastly Cache-Control headers" do
-      get "/t/#{tag.name}"
-      expect(response.status).to eq(200)
+      it "renders page with proper header" do
+        expect(response.body).to include(tag.name)
+      end
 
-      expected_cache_control_headers = %w[public no-cache]
-      expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
-    end
+      it "sets Fastly Cache-Control headers" do
+        expect(response.status).to eq(200)
 
-    it "sets Fastly Surrogate-Control headers" do
-      get "/t/#{tag.name}"
-      expect(response.status).to eq(200)
+        expected_cache_control_headers = %w[public no-cache]
+        expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
+      end
 
-      expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
-      expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
-    end
+      it "sets Fastly Surrogate-Control headers" do
+        expect(response.status).to eq(200)
 
-    it "sets Fastly Surrogate-Key headers" do
-      get "/t/#{tag.name}"
-      expect(response.status).to eq(200)
+        expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
+        expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
+      end
 
-      expected_surrogate_key_headers = %W[articles-#{tag}]
-      expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      it "sets Fastly Surrogate-Key headers" do
+        expect(response.status).to eq(200)
+
+        expected_surrogate_key_headers = %W[articles-#{tag}]
+        expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      end
+
+      it "sets Nginx X-Accel-Expires headers" do
+        expect(response.status).to eq(200)
+
+        expect(response.headers["X-Accel-Expires"]).to eq("600")
+      end
     end
 
     it "renders page with top/week etc." do
@@ -320,10 +380,18 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(sponsorship.blurb_html)
     end
 
-    it "shows meta keywords" do
-      SiteConfig.meta_keywords = { tag: "software engineering, ruby" }
+    it "shows meta keywords if set" do
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ tag: "software engineering, ruby" })
       get "/t/#{tag.name}"
       expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
+    end
+
+    it "does not show meta keywords if not set" do
+      allow(SiteConfig).to receive(:meta_keywords).and_return({ tag: "" })
+      get "/t/#{tag.name}"
+      expect(response.body).not_to include(
+        "<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">",
+      )
     end
 
     context "with user signed in" do
@@ -336,9 +404,15 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
       end
 
+      it "renders properly even if site config is private" do
+        allow(SiteConfig).to receive(:public).and_return(false)
+        get "/t/#{tag.name}"
+        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+      end
+
       it "has mod-action-button" do
         get "/t/#{tag.name}"
-        expect(response.body).to include('<a class="cta mod-action-button"')
+        expect(response.body).to include('class="crayons-btn crayons-btn--outlined mod-action-button fs-s"')
       end
 
       it "does not render pagination" do
@@ -350,6 +424,11 @@ RSpec.describe "StoriesIndex", type: :request do
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}"
         expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+      end
+
+      it "sets remember_user_token" do
+        get "/t/#{tag.name}"
+        expect(response.cookies["remember_user_token"]).not_to be nil
       end
     end
 
@@ -367,7 +446,8 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).not_to include('<span class="olderposts-pagenumber">')
       end
 
-      it "does not render pagination even with many posts" do
+      it "renders pagination with many posts" do
+        stub_const("StoriesController::SIGNED_OUT_RECORD_COUNT", 10)
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}"
         expect(response.body).to include('<span class="olderposts-pagenumber">')
@@ -392,6 +472,7 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "does not include current page link" do
+        stub_const("StoriesController::SIGNED_OUT_RECORD_COUNT", 10)
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}/page/2"
         expect(response.body).to include('<span class="olderposts-pagenumber">2')
@@ -409,7 +490,14 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "renders proper canonical url for page 2" do
         get "/t/#{tag.name}/page/2"
-        expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />")
+
+        expected_tag = "<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />"
+        expect(response.body).to include(expected_tag)
+      end
+
+      it "sets does not set remember_user_token" do
+        get "/t/#{tag.name}"
+        expect(response.cookies["remember_user_token"]).to be nil
       end
     end
   end

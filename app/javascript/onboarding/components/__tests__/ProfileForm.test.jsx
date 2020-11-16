@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, fireEvent, waitForElement } from '@testing-library/preact';
+import { render, fireEvent } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { axe } from 'jest-axe';
@@ -113,7 +113,13 @@ describe('ProfileForm', () => {
   });
 
   it('should update the text on the forward button', async () => {
-    const { getByLabelText, getByText, queryByText } = renderProfileForm();
+    const {
+      getByLabelText,
+      getByText,
+      queryByText,
+      findByLabelText,
+      findByText,
+    } = renderProfileForm();
 
     // input the bio
     const bioInput = getByLabelText(/Bio/i);
@@ -140,13 +146,10 @@ describe('ProfileForm', () => {
       target: { value: 'Some location' },
     });
 
-    locationInput = await waitForElement(() =>
-      getByLabelText(/Where are you located/i),
-    );
+    locationInput = await findByLabelText(/Where are you located/i);
 
     expect(locationInput.value).toEqual('Some location');
 
-    // TODO: test that the button changes to continue
-    // await waitForElement(() => getByText(/continue/i));
+    findByText(/continue/i);
   });
 });

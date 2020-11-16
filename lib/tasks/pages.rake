@@ -1,6 +1,7 @@
 if Rails.env.development?
   require "listen"
 
+  # rubocop:disable Metrics/BlockLength
   namespace :pages do
     desc "Automated sync of Page HTML body by listening to changes of local file"
     task :sync, %i[slug filepath] => [:environment] do |_task, args|
@@ -38,4 +39,5 @@ if Rails.env.development?
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 end

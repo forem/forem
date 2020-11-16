@@ -47,16 +47,17 @@ RSpec.describe Notifications::Milestone::Send, type: :service do
         expect(user.notifications.count).to eq 2
       end
 
-      it "does not send a view milestone notification again if the latest number of views is not past the next milestone" do
+      it "does not send a view milestone notification again if the latest num of views isn't past the next milestone" do
         article.update_column(:page_views_count, rand(9002..16_383))
         send_milestone_notification_view
         expect(user.notifications.count).to eq 2
       end
 
       it "checks notification json data", :aggregate_failures do
-        expect(user.notifications.where(notifiable_type: "Article").first.json_data["article"]["class"]["name"]).to eq "Article"
-        expect(user.notifications.where(notifiable_id: article.id).first.json_data["article"]["id"]).to eq article.id
-        expect(user.notifications.where(notifiable_id: article.id).first.json_data["article"]["title"]).to eq article.title
+        nots = user.notifications
+        expect(nots.where(notifiable_type: "Article").first.json_data["article"]["class"]["name"]).to eq("Article")
+        expect(nots.where(notifiable_id: article.id).first.json_data["article"]["id"]).to eq(article.id)
+        expect(nots.where(notifiable_id: article.id).first.json_data["article"]["title"]).to eq(article.title)
       end
     end
 

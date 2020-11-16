@@ -20,6 +20,7 @@ FactoryBot.define do
     checked_code_of_conduct      { true }
     checked_terms_and_conditions { true }
     display_announcements        { true }
+    registered_at                { Time.current }
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
     bg_color_hex                 { Faker::Color.hex_color }
@@ -55,6 +56,14 @@ FactoryBot.define do
       after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
     end
 
+    trait :restricted_liquid_tag do
+      transient do
+        resource { nil }
+      end
+
+      after(:build) { |user, options| user.add_role(:restricted_liquid_tag, options.resource) }
+    end
+
     trait :super_plus_single_resource_admin do
       transient do
         resource { nil }
@@ -72,6 +81,13 @@ FactoryBot.define do
 
     trait :banned do
       after(:build) { |user| user.add_role(:banned) }
+    end
+
+    trait :invited do
+      after(:build) do |user|
+        user.registered = false
+        user.registered_at = nil
+      end
     end
 
     trait :ignore_mailchimp_subscribe_callback do
@@ -130,14 +146,6 @@ FactoryBot.define do
       end
     end
 
-    trait :with_user_optional_fields do
-      after(:create) do |user|
-        create(:user_optional_field, user: user)
-        create(:user_optional_field, user: user, label: "another field1", value: "another value1")
-        create(:user_optional_field, user: user, label: "another field2", value: "another value2")
-      end
-    end
-
     trait :with_all_info do
       education { "DEV University" }
       employment_title { "Software Engineer" }
@@ -156,7 +164,15 @@ FactoryBot.define do
       medium_url { "www.medium.com/example" }
       gitlab_url { "www.gitlab.com/example" }
       instagram_url { "www.instagram.com/example" }
-      twitch_username { "Example007" }
+    end
+
+    trait :without_profile do
+      _skip_creating_profile { true }
+    end
+
+    trait :with_newsletters do
+      email_newsletter { true }
+      email_digest_periodic { true }
     end
   end
 end

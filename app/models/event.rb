@@ -6,19 +6,18 @@ class Event < ApplicationRecord
   validates :location_url, url: { allow_blank: true, schemes: %w[https http] }
   validate :end_time_after_start
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/
+  before_validation :evaluate_markdown
+  before_validation :create_slug
   after_save :bust_cache
 
-  before_validation :create_slug
-  before_validation :evaluate_markdown
-
   scope :in_the_future_and_published, lambda {
-    where("starts_at > ?", Time.current).
-      where(published: true)
+    where("starts_at > ?", Time.current)
+      .where(published: true)
   }
 
   scope :in_the_past_and_published, lambda {
-    where("starts_at < ?", Time.current).
-      where(published: true)
+    where("starts_at < ?", Time.current)
+      .where(published: true)
   }
 
   private

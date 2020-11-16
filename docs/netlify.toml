@@ -8,55 +8,15 @@
 [build]
   command = "make"
 
+# See <https://docs.netlify.com/routing/redirects/redirect-options/> for more options
 [[redirects]]
-  force = true
-  from = "http://docs.dev.to"
-  to = "https://docs.dev.to"
+from = "http://docs.dev.to"
+to = "http://docs.forem.com"
+status = 301
+force = true
+
 [[redirects]]
-  force = true
-  from = "http://docs.dev.to/ruby-doc"
-  to = "https://docs.dev.to/ruby-doc/index.html"
-[[redirects]]
-  force = true
-  from = "http://docs.dev.to/ruby-doc/"
-  to = "https://docs.dev.to/ruby-doc/index.html"
-[[redirects]]
-  force = true
-  from = "http://docs.dev.to/api"
-  to = "https://docs.dev.to/api/index.html"
-[[redirects]]
-  force = true
-  from = "http://docs.dev.to/api/"
-  to = "https://docs.dev.to/api/index.html"
-[[redirects]]
-  force = true
-  from = "http://docs.dev.to/*"
-  to = "https://docs.dev.to/:splat"
-  status = 301
-[[redirects]]
-  force = true
-  from = "docs.dev.to"
-  to = "https://docs.dev.to"
-[[redirects]]
-  force = true
-  from = "docs.dev.to/*"
-  to = "https://docs.dev.to/:splat"
-  status = 301
-[[redirects]]
-  force = true
-  from = "http://devto.netlify.com"
-  to = "https://docs.dev.to"
-[[redirects]]
-  force = true
-  from = "http://devto.netlify.com/*"
-  to = "https://docs.dev.to/:splat"
-  status = 301
-[[redirects]]
-  force = true
-  from = "https://devto.netlify.com"
-  to = "https://docs.dev.to"
-[[redirects]]
-  force = true
-  from = "https://devto.netlify.com/*"
-  to = "https://docs.dev.to/:splat"
-  status = 301
+from = "http://docs.dev.to/*"
+to = "http://docs.forem.com/:splat"
+status = 301
+force = true

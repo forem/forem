@@ -1,6 +1,6 @@
 <% title "Moderating " + @moderatable.title %>
 
-<% cache(cache_key_heroku_slug("mod-styling")) do %>
+<% cache(release_adjusted_cache_key("mod-styling")) do %>
   <style>
     <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
   </style>
@@ -12,7 +12,7 @@
   <header class="top-header">
     <h1>Moderate Post</h1>
     <h2>Rate the quality of this post</h2>
-    <button class="crayons-btn crayons-btn--secondary crayons-btn--icon-rounded close-actions-panel" type="button" title="Close moderator actions panel">
+    <button class="crayons-btn crayons-btn--secondary crayons-btn--icon-rounded close-actions-panel hidden" type="button" title="Close moderator actions panel">
       <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Close moderator actions panel") %>
     </button>
   </header>
@@ -54,14 +54,15 @@
     <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
       <span class="how-this-works-section">
         How does this work?
-        <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
       </span>
     </a>
   </div>
 
   <div class="other-things-container">
     <header class="other-things">
-      <h1>Other things you can do</h1>
+      <h3>
+        Other things you can do
+      </h3>
     </header>
 
     <% if current_user.any_admin? || @should_show_adjust_tags %>
@@ -115,7 +116,6 @@
         <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
           <span class="how-this-works-section">
             How does this work?
-            <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
           </span>
         </a>
       </div>
@@ -158,10 +158,23 @@
       <a href="<%= URL.url %>/community-moderation#how-to-rate-the-experience-level-of-a-post" target="_blank" rel="noopener">
         <span class="how-this-works-section">
           How does this work?
-          <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
         </span>
       </a>
     </div>
+
+    <% if current_user.any_admin? && @moderatable.published %>
+      <div class="unpublish-article">
+        <button
+          class="crayons-btn crayons-btn--danger"
+          id="unpublish-article-btn"
+          data-article-id="<%= @moderatable.id %>"
+          data-article-author="<%= @moderatable.username %>"
+          data-article-slug="<%= @moderatable.slug %>"
+        >
+          Unpublish Article
+        </button>
+      </div>
+    <% end %>
   </div>
 
   <div class="bottom-actions">

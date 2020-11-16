@@ -1,8 +1,15 @@
 class MarkdownParser
   include ApplicationHelper
-  include CloudinaryHelper
+  include CodeBlockParser
+
+  BAD_XSS_REGEX = [
+    /src=["'](data|&)/i,
+    %r{data:text/html[,;][\sa-z0-9]*}i,
+  ].freeze
 
   WORDS_READ_PER_MINUTE = 275.0
+
+  RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
 
   def initialize(content, source: nil, user: nil)
     @content = content
@@ -28,6 +35,9 @@ class MarkdownParser
     html = remove_nested_linebreak_in_list(html)
     html = prefix_all_images(html)
     html = wrap_all_images_in_links(html)
+    html = add_control_class_to_codeblock(html)
+    html = add_control_panel_to_codeblock(html)
+    html = add_fullscreen_button_to_panel(html)
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
     html = escape_colon_emojis_in_codeblock(html)
@@ -105,58 +115,15 @@ class MarkdownParser
     []
   end
 
-  def prefix_all_images(html, width = 880)
-    # wrap with Cloudinary or allow if from giphy or githubusercontent.com
-    doc = Nokogiri::HTML.fragment(html)
-    doc.css("img").each do |img|
-      src = img.attr("src")
-      next unless src
-      # allow image to render as-is
-      next if allowed_image_host?(src)
-
-      img["loading"] = "lazy"
-      img["src"] = if Giphy::Image.valid_url?(src)
-                     src.gsub("https://media.", "https://i.")
-                   else
-                     img_of_size(src, width)
-                   end
-    end
-    doc.to_html
-  end
-
-  private
-
-  def escape_colon_emojis_in_codeblock(html)
-    html_doc = Nokogiri::HTML.fragment(html)
-
-    html_doc.children.each do |el|
-      next if el.name == "code"
-
-      if el.search("code").empty?
-        el.swap(EmojiConverter.call(el.to_html))
-      else
-        el.children = escape_colon_emojis_in_codeblock(el.children.to_html)
-      end
-    end
-    html_doc.to_html
-  end
-
   def catch_xss_attempts(markdown)
-    bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
-    bad_xss.each do |xss_attempt|
-      raise ArgumentError, "Invalid markdown detected" if markdown.include?(xss_attempt)
-    end
+    return unless markdown.match?(Regexp.union(BAD_XSS_REGEX))
+
+    raise ArgumentError, "Invalid markdown detected"
   end
 
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
     src.start_with?("https://camo.githubusercontent.com")
-  end
-
-  def remove_nested_linebreak_in_list(html)
-    html_doc = Nokogiri::HTML(html)
-    html_doc.xpath("//*[self::ul or self::ol or self::li]/br").each(&:remove)
-    html_doc.to_html
   end
 
   def escape_liquid_tags_in_codeblock(content)
@@ -165,89 +132,22 @@ class MarkdownParser
       codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
       codeblock.gsub!("{% raw %}", "{----% raw %----}")
       if codeblock.match?(/[[:space:]]*`{3}/)
-        "\n{% raw %}\n" + codeblock + "\n{% endraw %}\n"
+        "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
       else
-        "{% raw %}" + codeblock + "{% endraw %}"
+        "{% raw %}#{codeblock}{% endraw %}"
       end
     end
   end
 
   def possibly_raw_tag_syntax?(array)
-    array.any? { |string| ["{", "}", "raw", "endraw", "----"].include?(string) }
-  end
-
-  def unescape_raw_tag_in_codeblocks(html)
-    html.gsub!("{----% raw %----}", "{% raw %}")
-    html.gsub!("{----% endraw %----}", "{% endraw %}")
-    html_doc = Nokogiri::HTML(html)
-    html_doc.xpath("//body/div/pre/code").each do |codeblock|
-      next unless codeblock.content.include?("{----% raw %----}") || codeblock.content.include?("{----% endraw %----}")
-
-      children_content = codeblock.children.map(&:content)
-      indices = children_content.size.times.select do |i|
-        possibly_raw_tag_syntax?(children_content[i..i + 2])
-      end
-      indices.each do |i|
-        codeblock.children[i].content = codeblock.children[i].content.delete("----")
-      end
-    end
-    if html_doc.at_css("body")
-      html_doc.at_css("body").inner_html
-    else
-      html_doc.to_html
-    end
-  end
-
-  def wrap_all_figures_with_tags(html)
-    html_doc = Nokogiri::HTML(html)
-
-    html_doc.xpath("//figcaption").each do |caption|
-      next if caption.parent.name == "figure"
-      next unless caption.previous_element
-
-      fig = html_doc.create_element "figure"
-      prev = caption.previous_element
-      prev.replace(fig) << prev << caption
-    end
-    if html_doc.at_css("body")
-      html_doc.at_css("body").inner_html
-    else
-      html_doc.to_html
-    end
-  end
-
-  def wrap_mentions_with_links!(html)
-    html_doc = Nokogiri::HTML(html)
-
-    # looks for nodes that isn't <code>, <a>, and contains "@"
-    targets = html_doc.xpath('//html/body/*[not (self::code) and not(self::a) and contains(., "@")]').to_a
-
-    # A Queue system to look for and replace possible usernames
-    until targets.empty?
-      node = targets.shift
-
-      # only focus on portion of text with "@"
-      node.xpath("text()[contains(.,'@')]").each do |el|
-        el.replace(el.text.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
-      end
-
-      # enqueue children that has @ in it's text
-      children = node.xpath('*[not(self::code) and not(self::a) and contains(., "@")]').to_a
-      targets.concat(children)
-    end
-
-    if html_doc.at_css("body")
-      html_doc.at_css("body").inner_html
-    else
-      html_doc.to_html
-    end
+    (RAW_TAG_DELIMITERS & array).any?
   end
 
   def user_link_if_exists(mention)
     username = mention.delete("@").downcase
     if User.find_by(username: username)
       <<~HTML
-        <a class='comment-mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{username}'>@#{username}</a>
+        <a class='comment-mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{SiteConfig.app_domain}/#{username}'>@#{username}</a>
       HTML
     else
       mention
@@ -255,39 +155,7 @@ class MarkdownParser
   end
 
   def img_of_size(source, width = 880)
-    quality = if source && (source.include? ".gif")
-                66
-              else
-                "auto"
-              end
-    cl_image_path(source,
-                  type: "fetch",
-                  width: width,
-                  crop: "limit",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: "auto",
-                  sign_url: true).gsub(",", "%2C")
-  end
-
-  def wrap_all_images_in_links(html)
-    doc = Nokogiri::HTML.fragment(html)
-    doc.search("p img").each do |image|
-      image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>") unless image.parent.name == "a"
-    end
-    doc.to_html
-  end
-
-  def remove_empty_paragraphs(html)
-    doc = Nokogiri::HTML.fragment(html)
-    doc.css("p").select { |paragraph| all_children_are_blank?(paragraph) }.each(&:remove)
-    doc.to_html
-  end
-
-  def wrap_all_tables(html)
-    doc = Nokogiri::HTML.fragment(html)
-    doc.search("table").each { |table| table.swap("<div class='table-wrapper-paragraph'>#{table}</div>") }
-    doc.to_html
+    Images::Optimizer.call(source, width: width).gsub(",", "%2C")
   end
 
   def all_children_are_blank?(node)

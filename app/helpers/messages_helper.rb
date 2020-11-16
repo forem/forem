@@ -8,7 +8,7 @@ module MessagesHelper
       chat_channel_adjusted_slug: new_message.chat_channel.adjusted_slug(current_user, "sender"),
       channel_type: new_message.chat_channel.channel_type,
       username: new_message.user.username,
-      profile_image_url: ProfileImage.new(new_message.user).get(width: 90),
+      profile_image_url: Images::Profile.call(new_message.user.profile_image_url, length: 90),
       message: new_message.message_html,
       markdown: new_message.message_markdown,
       edited_at: new_message.edited_at,
@@ -30,12 +30,12 @@ module MessagesHelper
     begin
       message_json = create_pusher_payload(message, temp_message_id)
       if is_single
-        Pusher.trigger("private-message-notifications-#{message.user_id}", "message-created", message_json)
+        Pusher.trigger(ChatChannel.pm_notifications_channel(message.user_id), "message-created", message_json)
       else
         Pusher.trigger(message.chat_channel.pusher_channels, "message-created", message_json)
       end
     rescue Pusher::Error => e
-      logger.info "PUSHER ERROR: #{e.message}"
+      Honeybadger.notify(e)
     end
   end
 end

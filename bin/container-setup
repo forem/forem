@@ -64,7 +64,7 @@ else
 
 fi
 
-echo "Building the DEV container image!"
+echo "Building the Forem container image!"
 
 if [ "${CONTAINER_RUNTIME}" = "docker" ]; then
   echo "This will take a while if you are building the container for the first time."
@@ -73,11 +73,11 @@ if [ "${CONTAINER_RUNTIME}" = "docker" ]; then
 
 elif [ "${CONTAINER_RUNTIME}" = "podman" ]; then
 
-  podman-compose build
+  podman-compose -f container-compose.yml build
 
 fi
 
-echo "Starting the DEV container stack..."
+echo "Starting the Forem container stack..."
 
 if [ "${CONTAINER_RUNTIME}" = "docker" ]; then
 
@@ -93,14 +93,14 @@ if [ "${CONTAINER_RUNTIME}" = "docker" ]; then
 
 elif [ "${CONTAINER_RUNTIME}" = "podman" ]; then
 
-  if podman pod exists devto; then
-      echo "The devto pod is already setup. Please run:"
+  if podman pod exists forem; then
+      echo "The forem pod is already setup. Please run:"
       echo ""
-      echo "podman-compose -p devto -f container-compose.yml down"
+      echo "podman-compose -p forem -f container-compose.yml down"
       echo ""
-      echo "to bring down the DEV container stack before running container-setup."
+      echo "to bring down the Forem container stack before running container-setup."
   else
-      podman-compose -p devto -f container-compose.yml up
+      podman-compose -p forem -f container-compose.yml up
   fi
 
 fi

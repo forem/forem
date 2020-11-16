@@ -3,12 +3,21 @@ require "rails_helper"
 RSpec.describe PodcastEpisode, type: :model do
   let(:podcast_episode) { create(:podcast_episode) }
 
-  it { is_expected.to validate_presence_of(:title) }
-  it { is_expected.to validate_presence_of(:slug) }
-  it { is_expected.to validate_presence_of(:media_url) }
-  it { is_expected.to validate_presence_of(:guid) }
-
   describe "validations" do
+    describe "builtin validations" do
+      subject { podcast_episode }
+
+      it { is_expected.to belong_to(:podcast) }
+      it { is_expected.to have_many(:comments).inverse_of(:commentable).dependent(:nullify) }
+
+      it { is_expected.to validate_presence_of(:comments_count) }
+      it { is_expected.to validate_presence_of(:guid) }
+      it { is_expected.to validate_presence_of(:media_url) }
+      it { is_expected.to validate_presence_of(:reactions_count) }
+      it { is_expected.to validate_presence_of(:slug) }
+      it { is_expected.to validate_presence_of(:title) }
+    end
+
     # Couldn't use shoulda matchers for these tests because:
     # Shoulda uses `save(validate: false)` which skips validations, but runs callbacks
     # So an invalid record is saved and the elasticsearch callback fails because there's no associated podcast
@@ -39,7 +48,8 @@ RSpec.describe PodcastEpisode, type: :model do
 
     it "on destroy enqueues job to delete podcast_episode from elasticsearch" do
       podcast_episode.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, podcast_episode.search_id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [described_class::SEARCH_CLASS.to_s, podcast_episode.search_id]) do
         podcast_episode.destroy
       end
     end
@@ -61,7 +71,7 @@ RSpec.describe PodcastEpisode, type: :model do
   end
 
   describe ".available" do
-    let_it_be(:podcast) { create(:podcast) }
+    let(:podcast) { create(:podcast) }
 
     it "is available when reachable and published" do
       expect do
@@ -84,7 +94,7 @@ RSpec.describe PodcastEpisode, type: :model do
   end
 
   context "when callbacks are triggered before validation" do
-    let_it_be(:podcast_episode) { build(:podcast_episode) }
+    let(:podcast_episode) { build(:podcast_episode) }
 
     describe "paragraphs cleanup" do
       it "removes empty paragraphs" do
@@ -111,7 +121,10 @@ RSpec.describe PodcastEpisode, type: :model do
         image_url = "https://dummyimage.com/10x10"
         podcast_episode.body = "<img src=\"#{image_url}\">"
         podcast_episode.validate!
-        expect(podcast_episode.processed_html.include?("res.cloudinary.com")).to be(true)
+        expect(podcast_episode.processed_html).to include(
+          "res.cloudinary.com",
+          "c_limit,f_auto,fl_progressive,q_auto,w_725/https://dummyimage.com/10x10",
+        )
       end
 
       it "chooses the appropriate quality for an image" do
@@ -132,7 +145,8 @@ RSpec.describe PodcastEpisode, type: :model do
 
   context "when callbacks are triggered after save" do
     it "triggers cache busting on save" do
-      sidekiq_assert_enqueued_with(job: PodcastEpisodes::BustCacheWorker, args: [podcast_episode.id, podcast_episode.path, podcast_episode.podcast_slug]) do
+      sidekiq_assert_enqueued_with(job: PodcastEpisodes::BustCacheWorker,
+                                   args: [podcast_episode.id, podcast_episode.path, podcast_episode.podcast_slug]) do
         podcast_episode.save
       end
     end

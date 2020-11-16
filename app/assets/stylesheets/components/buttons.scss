@@ -1,6 +1,6 @@
 @import '../config/import';
 
-:root {
+.crayons-btn {
   --brand-apple-bg: #000;
   --brand-apple-color: #fff;
   --brand-apple-bg-hover: #1b1b1b;
@@ -12,6 +12,14 @@
   --brand-github-bg: #24292e;
   --brand-github-color: #fff;
   --brand-github-bg-hover: #000;
+
+  --brand-facebook-bg: #4267b2;
+  --brand-facebook-color: #fff;
+  --brand-facebook-bg-hover: #476fbf;
+
+  --brand-email-bg: #24292e;
+  --brand-email-color: #fff;
+  --brand-email-bg-hover: #000;
 }
 
 // Basic styling
@@ -64,12 +72,13 @@
   &[href]:focus,
   &:hover:enabled,
   &:active:enabled,
-  &:focus:enabled {
+  &:focus:enabled,
+  &:focus-within {
     background-color: var(--bg-hover);
     border-color: var(--border-hover);
     box-shadow: var(--shadow-hover);
     color: var(--color-hover);
-    z-index: 2;
+    z-index: var(--z-elevate);
   }
 
   &.crayons-btn--inverted {
@@ -92,6 +101,7 @@
     --font-size: var(--fs-s);
     --with-icon-padding: var(--su-2);
     --icon-margin: var(--su-1);
+    font-weight: normal;
   }
 
   &--l {
@@ -174,6 +184,19 @@
     --color-inverted-hover: var(--accent-brand-lighter);
   }
 
+  &-dimmed {
+    --bg: var(--button-ghost-bg);
+    --bg-hover: var(--button-ghost-bg-hover);
+    --color: var(--button-ghost-dimmed-color);
+    --color-hover: var(--button-ghost-dimmed-color-hover);
+    --shadow: none;
+    --shadow-hover: none;
+    --bg-inverted: var(--button-ghost-inverted-bg);
+    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
+    --color-inverted: var(--accent-ghost-dimmed-inverted-color);
+    --color-inverted-hover: var(--accent-ghost-dimmed-inverted-color-hover);
+  }
+
   &-success {
     --bg: var(--button-ghost-bg);
     --bg-hover: var(--button-ghost-bg-hover);
@@ -245,6 +268,28 @@
   --bg-inverted-hover: var(--brand-github-bg-hover);
   --color-inverted: var(--brand-github-color);
   --color-inverted-hover: var(--brand-github-color);
+}
+
+.crayons-btn--brand-facebook {
+  --bg: var(--brand-facebook-bg);
+  --bg-hover: var(--brand-facebook-bg-hover);
+  --color: var(--brand-facebook-color);
+  --color-hover: var(--brand-facebook-color);
+  --bg-inverted: var(--brand-facebook-bg);
+  --bg-inverted-hover: var(--brand-facebook-bg-hover);
+  --color-inverted: var(--brand-facebook-color);
+  --color-inverted-hover: var(--brand-facebook-color);
+}
+
+.crayons-btn--brand-email {
+  --bg: var(--brand-email-bg);
+  --bg-hover: var(--brand-email-bg-hover);
+  --color: var(--brand-email-color);
+  --color-hover: var(--brand-email-color);
+  --bg-inverted: var(--brand-email-bg);
+  --bg-inverted-hover: var(--brand-email-bg-hover);
+  --color-inverted: var(--brand-email-color);
+  --color-inverted-hover: var(--brand-email-color);
 }
 
 // Icon alone

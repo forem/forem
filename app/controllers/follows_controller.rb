@@ -14,7 +14,8 @@ class FollowsController < ApplicationController
 
     return render plain: following_them_check unless params[:followable_type] == "User"
 
-    following_you_check = FollowChecker.new(User.find_by(id: params[:id]), params[:followable_type], current_user.id).cached_follow_check
+    following_you_check = FollowChecker.new(User.find_by(id: params[:id]), params[:followable_type],
+                                            current_user.id).cached_follow_check
 
     if following_them_check && following_you_check
       render plain: "mutual"
@@ -34,7 +35,8 @@ class FollowsController < ApplicationController
         "self"
       else
         following_them_check = FollowChecker.new(current_user, params[:followable_type], id).cached_follow_check
-        following_you_check = FollowChecker.new(User.find_by(id: id), params[:followable_type], current_user.id).cached_follow_check
+        following_you_check = FollowChecker.new(User.find_by(id: id), params[:followable_type],
+                                                current_user.id).cached_follow_check
         if following_them_check && following_you_check
           "mutual"
         elsif following_you_check
@@ -51,11 +53,12 @@ class FollowsController < ApplicationController
   def create
     authorize Follow
 
-    followable = if params[:followable_type] == "Organization"
+    followable = case params[:followable_type]
+                 when "Organization"
                    Organization.find(params[:followable_id])
-                 elsif params[:followable_type] == "Tag"
+                 when "Tag"
                    Tag.find(params[:followable_id])
-                 elsif params[:followable_type] == "Podcast"
+                 when "Podcast"
                    Podcast.find(params[:followable_id])
                  else
                    User.find(params[:followable_id])
@@ -99,7 +102,7 @@ class FollowsController < ApplicationController
 
   def unfollow(followable, need_notification: false)
     user_follow = current_user.stop_following(followable)
-    Notification.send_new_follower_notification_without_delay(user_follow, true) if need_notification
+    Notification.send_new_follower_notification_without_delay(user_follow, is_read: true) if need_notification
 
     "unfollowed"
   end

@@ -2,7 +2,9 @@ require "rails_helper"
 
 RSpec.describe ParlerTag, type: :liquid_tag do
   describe "#id" do
-    let(:valid_id) { "https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3" }
+    let(:valid_id) do
+      "https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3"
+    end
 
     let(:invalid_id) { "https://www.google.com" }
 

@@ -40,12 +40,12 @@ function hasUserReacted(reactionName) {
 }
 
 function getNumReactions(reactionName) {
-  var num = document.getElementById('reaction-number-' + reactionName)
-    .textContent;
-  if (num === '') {
+  const reactionEl = document.getElementById('reaction-number-' + reactionName);
+  if (!reactionEl || reactionEl.textContent === '') {
     return 0;
   }
-  return parseInt(num, 10);
+
+  return parseInt(reactionEl.textContent, 10);
 }
 
 function reactToArticle(articleId, reaction) {
@@ -102,19 +102,21 @@ function reactToArticle(articleId, reaction) {
 function setCollectionFunctionality() {
   if (document.getElementById('collection-link-inbetween')) {
     var inbetweenLinks = document.getElementsByClassName(
-      'collection-link-inbetween',
+      'series-switcher__link--inbetween',
     );
     var inbetweenLinksLength = inbetweenLinks.length;
     for (var i = 0; i < inbetweenLinks.length; i += 1) {
       inbetweenLinks[i].onclick = (e) => {
         e.preventDefault();
-        var els = document.getElementsByClassName('collection-link-hidden');
+        var els = document.getElementsByClassName(
+          'series-switcher__link--hidden',
+        );
         var elsLength = els.length;
         for (var j = 0; j < elsLength; j += 1) {
-          els[0].classList.remove('collection-link-hidden');
+          els[0].classList.remove('series-switcher__link--hidden');
         }
         for (var k = 0; k < inbetweenLinksLength; k += 1) {
-          inbetweenLinks[0].className = 'collection-link-hidden';
+          inbetweenLinks[0].className = 'series-switcher__link--hidden';
         }
       };
     }

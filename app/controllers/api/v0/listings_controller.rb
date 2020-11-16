@@ -4,19 +4,28 @@ module Api
       include Pundit
       include ListingsToolkit
 
+      # actions `create` and `update` are defined in the module `ListingsToolkit`,
+      # we thus silence Rubocop lexical scope filter cop: https://rails.rubystyle.guide/#lexically-scoped-action-filter
+      # rubocop:disable Rails/LexicallyScopedActionFilter
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
       before_action :authenticate_with_api_key_or_current_user, only: %i[show]
-
-      before_action :set_listing, only: %i[update]
-
       before_action :set_cache_control_headers, only: %i[index show]
-
+      before_action :set_listing, only: %i[update]
       skip_before_action :verify_authenticity_token, only: %i[create update]
+      # rubocop:enable Rails/LexicallyScopedActionFilter
+
+      # Note: since this is used for selecting from the DB, we need to use the
+      # actual column name for the listing category, prefixed with classified_.
+      ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id title slug body_markdown cached_tag_list
+        classified_listing_category_id processed_html published
+      ].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       def index
-        @listings = Listing.published.
-          select(ATTRIBUTES_FOR_SERIALIZATION).
-          includes(:user, :organization, :taggings, :listing_category)
+        @listings = Listing.published
+          .select(ATTRIBUTES_FOR_SERIALIZATION)
+          .includes(:user, :organization, :taggings, :listing_category)
 
         if params[:category].present?
           @listings = @listings.in_category(params[:category])
@@ -42,22 +51,6 @@ module Api
 
         set_surrogate_key_header @listing.record_key
       end
-
-      def create
-        super
-      end
-
-      def update
-        super
-      end
-
-      # Note: since this is used for selecting from the DB, we need to use the
-      # actual column name for the listing category, prefixed with classified_.
-      ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id user_id organization_id title slug body_markdown cached_tag_list
-        classified_listing_category_id processed_html published
-      ].freeze
-      private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       private
 

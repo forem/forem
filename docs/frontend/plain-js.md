@@ -4,7 +4,7 @@ title: JavaScript and Initializers
 
 # JavaScript and Initializers
 
-DEV has two JavaScript codebases.
+Forem has two JavaScript codebases.
 
 One is located in the directory `app/assets/javascripts` and contains plain
 JavaScript (mostly ES5+) being served using
@@ -28,7 +28,7 @@ which is included globally in the primary template,
 ```
 
 One JS file in particular, `app/assets/javascripts/initializePage.js.erb`,
-boostraps the majority of the functionality. You will notice, within this file,
+bootstraps the majority of the functionality. You will notice, within this file,
 that major sections of the websites are bootstrapped, for example:
 
 ```javascript

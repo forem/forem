@@ -5,13 +5,13 @@ title: Liquid Tags
 # Liquid Tags
 
 Liquid tags are special elements of the
-[DEV Markdown editor](https://dev.to/new).
+[Forem Markdown editor](https://dev.to/new).
 
 They are custom embeds that are added via a `{% %}` syntax.
 [Liquid](https://shopify.github.io/liquid/) is a templating language developed
 by Shopify.
 
-Liquid embeds are for tweets, like `{% tweet 765282762081329153 %}` or a DEV
+Liquid embeds are for tweets, like `{% tweet 765282762081329153 %}` or a Forem
 user profile preview, like `{% user jess %}` etc.
 
 They make for good community contributions because they can be extended and
@@ -27,7 +27,7 @@ arguments they take. Currently, this could use improvements.
 _Note: Liquid tags are "compiled" when an article is saved. So you will need to
 re-save articles to see HTML changes._
 
-Here is a bunch of liquid tags supported on DEV:
+Here is a bunch of liquid tags supported on Forem:
 
 ```liquid
 {% link https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}
@@ -37,14 +37,16 @@ Here is a bunch of liquid tags supported on DEV:
 {% podcast https://dev.to/basecspodcast/s2e2--queues-irl %}
 {% twitter 834439977220112384 %}
 {% glitch earthy-course %}
-{% github thepracticaldev/dev.to %}
+{% github forem/forem %}
 {% youtube dQw4w9WgXcQ %}
 {% vimeo 193110695 %}
+{% twitch ClumsyPrettiestOilLitFam %}
 {% slideshare rdOzN9kr1yK5eE %}
 {% codepen https://codepen.io/twhite96/pen/XKqrJX %}
 {% stackblitz ball-demo %}
 {% codesandbox ppxnl191zx %}
 {% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}
+{% dotnetfiddle https://dotnetfiddle.net/PmoDip %}
 {% replit @WigWog/PositiveFineOpensource %}
 {% stackery deeheber lambda-layer-example layer-resource %}
 {% nexttech https://nt.dev/s/6ba1fffbd09e %}
@@ -82,7 +84,7 @@ Each liquid tag contains an `initialize` method which takes arguments and calls
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         url: @embedded_url
@@ -107,27 +109,30 @@ classes should generally be prepended by `ltag__`. e.g. `ltag__tag__content`
 etc.
 
 Here is an example of a good Liquid Tag pull request...
-https://github.com/thepracticaldev/dev.to/pull/3801
+https://github.com/forem/forem/pull/3801
 
 ### Restricting liquid tags by roles
 
 To only allow users with specific roles to use a liquid tag, you need to define
 a `VALID_ROLES` constant on the liquid tag itself. It needs to be an `Array` of
-valid roles. For [single admin resource roles](/internal), it needs to be an
-`Array` with the role and the resource. Here's an example:
+valid roles. For [single resource roles](/admin), it needs to be an `Array` with
+the role and the resource. Here's an example:
 
 ```ruby
 class NewLiquidTag < LiquidTagBase
   VALID_ROLES = [
     :admin,
-    [:single_resource_admin, NewLiquidTag]
+    [:restricted_liquid_tag, LiquidTags::UserSubscriptionTag]
   ].freeze
 end
 ```
 
-Here we are saying that the `NewLiquidTag` is only usable by users with the
-`admin` role or with a role of `:single_resource_admin` and a specified resource
-of `NewLiquidTag`.
+Here we are saying that the `UserSubscriptionTag` is only usable by users with
+the `admin` role or with a role of `:restricted_liquid_tag` and a specified
+resource of `LiquidTags::UserSubscriptionTag`.
+
+`LiquidTags::UserSubscriptionTag` is a resource model so we that can play nicely
+with the [Rolify][rolify] gem. See [/admin](/admin) for more information.
 
 **REMINDER: if you do not define a `VALID_ROLES` constant, the liquid tag will
 be usable by all users by default.**
@@ -151,3 +156,5 @@ end
 
 **REMINDER: if you do not define a `VALID_CONTEXTS` constant the liquid tag will
 be usable in all contexts by default.**
+
+[rolify]: https://github.com/RolifyCommunity/rolify

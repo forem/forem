@@ -16,7 +16,8 @@ module Articles
       article = save_article
 
       if article.persisted?
-        NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article", config: "all_comments")
+        NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article",
+                                        config: "all_comments")
         Notification.send_to_followers(article, "Published") if article.published?
 
         dispatch_event(article)
@@ -30,7 +31,13 @@ module Articles
     attr_reader :user, :article_params, :event_dispatcher
 
     def rate_limit!
-      user.rate_limiter.check_limit!(:published_article_creation)
+      rate_limit_to_use = if user.created_at > 3.days.ago.beginning_of_day
+                            :published_article_antispam_creation
+                          else
+                            :published_article_creation
+                          end
+
+      user.rate_limiter.check_limit!(rate_limit_to_use)
     end
 
     def dispatch_event(article)

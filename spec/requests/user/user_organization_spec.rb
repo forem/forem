@@ -22,7 +22,7 @@ RSpec.describe "UserOrganization", type: :request do
     end
 
     it "correctly strips the secret of the org_secret param" do
-      post "/users/join_org", params: { org_secret: organization.secret + "     " }
+      post "/users/join_org", params: { org_secret: "#{organization.secret}     " }
       expect(OrganizationMembership.exists?(user: user, organization: organization)).to eq true
     end
   end
@@ -34,7 +34,9 @@ RSpec.describe "UserOrganization", type: :request do
 
     before do
       sign_in user
-      org_params["profile_image"] = Rack::Test::UploadedFile.new(Rails.root.join("app/assets/images/android-icon-36x36.png"), "image/jpeg")
+      org_params["profile_image"] = Rack::Test::UploadedFile.new(
+        Rails.root.join("app/assets/images/android-icon-36x36.png"), "image/jpeg"
+      )
       allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
       allow(rate_limiter).to receive(:limit_by_action).and_return(false)
     end
@@ -131,8 +133,8 @@ RSpec.describe "UserOrganization", type: :request do
     it "raises not_authorized if user is not org_admin" do
       org_member_org_id = org_member.organizations.first.id
       sign_in org_member
-      expect { post "/users/add_org_admin", params: { user_id: user2.id, organization_id: org_member_org_id } }.
-        to raise_error Pundit::NotAuthorizedError
+      expect { post "/users/add_org_admin", params: { user_id: user2.id, organization_id: org_member_org_id } }
+        .to raise_error Pundit::NotAuthorizedError
     end
   end
 
@@ -159,8 +161,59 @@ RSpec.describe "UserOrganization", type: :request do
 
     it "remove_org_admin raises if user not org_admin" do
       org_admin.organization_memberships.update_all(type_of_user: "member")
-      expect { post "/users/remove_org_admin", params: { user_id: second_org_admin.id, organization_id: org_id } }.
-        to raise_error Pundit::NotAuthorizedError
+      expect { post "/users/remove_org_admin", params: { user_id: second_org_admin.id, organization_id: org_id } }
+        .to raise_error Pundit::NotAuthorizedError
+    end
+  end
+
+  context "when deleting an organization" do
+    let(:org_admin) { create(:user, :org_admin) }
+    let(:org_member) { create(:user, :org_member) }
+    let(:user) { create(:user) }
+
+    it "deletes the organization" do
+      org_id = org_admin.organizations.first.id
+      sign_in org_admin
+      delete "/organizations/#{org_id}"
+      expect { Organization.find(org_id) }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "does not delete the organization if the user is only an org member" do
+      org_id = org_member.organizations.first.id
+      sign_in org_member
+      delete "/organizations/#{org_id}"
+      expect(Organization.find(org_id).persisted?).to eq true
+    end
+
+    it "does not delete the organization if the user is not a part of the org" do
+      org = create(:organization)
+      sign_in user
+      delete "/organizations/#{org.id}"
+      expect(org.persisted?).to eq true
+    end
+
+    it "does not delete the organization if the organization has an article associated to it" do
+      org_id = org_admin.organizations.first.id
+      create(:article, user: org_admin, organization_id: org_id)
+      sign_in org_admin
+      delete "/organizations/#{org_id}"
+      expect(Organization.find(org_id).persisted?).to eq true
+    end
+
+    it "does not delete the organization if the organization has more than one member" do
+      org_id = org_admin.organizations.first.id
+      create(:organization_membership, user: user, organization_id: org_id, type_of_user: "member")
+      sign_in org_admin
+      delete "/organizations/#{org_id}"
+      expect(Organization.find(org_id).persisted?).to eq true
+    end
+
+    it "does not delete the organization if the organization has credits" do
+      org = org_admin.organizations.first
+      sign_in org_admin
+      Credit.add_to(org, 1)
+      delete "/organizations/#{org.id}"
+      expect(org.persisted?).to eq true
     end
   end
 end

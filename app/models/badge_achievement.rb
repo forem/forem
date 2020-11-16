@@ -6,14 +6,18 @@ class BadgeAchievement < ApplicationRecord
   belongs_to :badge
   belongs_to :rewarder, class_name: "User", optional: true
 
+  delegate :slug, to: :badge, prefix: true
+  delegate :title, to: :badge, prefix: true
+  delegate :badge_image_url, to: :badge, prefix: false
+
   counter_culture :user, column_name: "badge_achievements_count"
 
   validates :badge_id, uniqueness: { scope: :user_id }
 
+  before_validation :render_rewarding_context_message_html
   after_create :award_credits
   after_create_commit :notify_recipient
   after_create_commit :send_email_notification
-  before_validation :render_rewarding_context_message_html
 
   private
 

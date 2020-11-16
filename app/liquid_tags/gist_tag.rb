@@ -1,13 +1,19 @@
 class GistTag < LiquidTagBase
   PARTIAL = "liquids/gist".freeze
+  VALID_LINK_REGEXP =
+    %r{\Ahttps://gist\.github\.com/([a-zA-Z0-9](-?[a-zA-Z0-9]){0,38})/([a-zA-Z0-9]){1,32}(/[a-zA-Z0-9]+)?\Z}
+      .freeze
 
-  def initialize(tag_name, link, tokens)
+  def initialize(_tag_name, link, _parse_context)
     super
+
+    raise StandardError, "Invalid Gist link: You must provide a Gist link" if link.blank?
+
     @uri = build_uri(link)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         uri: @uri
@@ -46,8 +52,7 @@ class GistTag < LiquidTagBase
   end
 
   def valid_link?(link)
-    (link =~ /\Ahttps:\/\/gist\.github\.com\/([a-zA-Z0-9](-?[a-zA-Z0-9]){0,38})\/([a-zA-Z0-9]){1,32}(\/[a-zA-Z0-9]+)?\Z/)&.
-      zero?
+    (link =~ VALID_LINK_REGEXP)&.zero?
   end
 
   def valid_option?(option)

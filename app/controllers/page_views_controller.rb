@@ -1,5 +1,6 @@
 class PageViewsController < ApplicationMetalController
-  # ApplicationMetalController because we do not need all bells and whistles of ApplicationController, so should help performance.
+  # ApplicationMetalController because we do not need all bells and whistles of ApplicationController.
+  # It should help performance.
   include ActionController::Head
 
   def create
@@ -18,7 +19,8 @@ class PageViewsController < ApplicationMetalController
 
   def update
     if session_current_user_id
-      page_view = PageView.order("created_at DESC").find_or_create_by(article_id: params[:id], user_id: session_current_user_id)
+      page_view = PageView.order(created_at: :desc).find_or_create_by(article_id: params[:id],
+                                                                      user_id: session_current_user_id)
       unless page_view.new_record?
         page_view.update_column(:time_tracked_in_seconds, page_view.time_tracked_in_seconds + 15)
       end
@@ -30,7 +32,7 @@ class PageViewsController < ApplicationMetalController
   private
 
   def update_article_page_views
-    return if Rails.env.production? && rand(15) != 1 # We don't need to update the article page views every time.
+    return if skip_page_view_update?
 
     @article = Article.find(page_view_params[:article_id])
     new_page_views_count = @article.page_views.sum(:counts_for_number_of_views)
@@ -44,19 +46,32 @@ class PageViewsController < ApplicationMetalController
   end
 
   def update_organic_page_views
-    return if Rails.env.production? && rand(100) != 1 # We need to do this operation only once in a while.
+    return if skip_organic_page_view_update?
 
     page_views_from_google_com = @article.page_views.where(referrer: "https://www.google.com/")
 
     organic_count = page_views_from_google_com.sum(:counts_for_number_of_views)
-    @article.update_column(:organic_page_views_count, organic_count) if organic_count > @article.organic_page_views_count
+    if organic_count > @article.organic_page_views_count
+      @article.update_column(:organic_page_views_count,
+                             organic_count)
+    end
 
-    organic_count_past_week_count = page_views_from_google_com.
-      where("created_at > ?", 1.week.ago).sum(:counts_for_number_of_views)
+    organic_count_past_week_count = page_views_from_google_com
+      .where("created_at > ?", 1.week.ago).sum(:counts_for_number_of_views)
     @article.update_column(:organic_page_views_past_week_count, organic_count_past_week_count)
 
-    organic_count_past_month_count = page_views_from_google_com.
-      where("created_at > ?", 1.month.ago).sum(:counts_for_number_of_views)
+    organic_count_past_month_count = page_views_from_google_com
+      .where("created_at > ?", 1.month.ago).sum(:counts_for_number_of_views)
     @article.update_column(:organic_page_views_past_month_count, organic_count_past_month_count)
+  end
+
+  def skip_page_view_update?
+    # We don't need to update the article page views every time.
+    rand(8) != 1
+  end
+
+  def skip_organic_page_view_update?
+    # We need to do this operation only once in a while.
+    rand(100) != 1
   end
 end

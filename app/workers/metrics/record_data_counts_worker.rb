@@ -7,12 +7,12 @@ module Metrics
       models = [User, Article, Organization, Comment, Podcast, PodcastEpisode, Listing, PageView, Notification]
       models.each do |model|
         db_count = begin
-                     model.count
-                   rescue ActiveRecord::QueryCanceled
-                     model.estimated_count
-                   end
+          model.count
+        rescue ActiveRecord::QueryCanceled
+          model.estimated_count
+        end
 
-        Rails.logger.info("db_table_size", table_info: { table_name: model.table_name, table_size: db_count })
+        Rails.logger.info(message: "db_table_size", table_info: { table_name: model.table_name, table_size: db_count })
         DatadogStatsClient.gauge("postgres.db_table_size", db_count, tags: ["table_name:#{model.table_name}"])
 
         next unless model.const_defined?(:SEARCH_CLASS)
@@ -22,7 +22,8 @@ module Metrics
                          else
                            model::SEARCH_CLASS.document_count
                          end
-        DatadogStatsClient.gauge("elasticsearch.document_count", document_count, tags: ["table_name:#{model.table_name}"])
+        DatadogStatsClient.gauge("elasticsearch.document_count", document_count,
+                                 tags: ["table_name:#{model.table_name}"])
       end
     end
   end

@@ -3,6 +3,10 @@ class ArticlePolicy < ApplicationPolicy
     user_is_author? || user_admin? || user_org_admin? || minimal_admin?
   end
 
+  def admin_unpublish?
+    minimal_admin?
+  end
+
   def new?
     true
   end
@@ -32,6 +36,10 @@ class ArticlePolicy < ApplicationPolicy
        description tag_list publish_under_org
        video video_code video_source_url video_thumbnail_url receive_notifications
        archived]
+  end
+
+  def subscriptions?
+    user_is_author? || user_admin?
   end
 
   private

@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Listing, type: :model do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:organization) { create(:organization) }
+  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
   let(:listing) { create(:listing, user: user) }
 
   # TODO: Remove setting of default parser from a model's callback
@@ -12,6 +12,7 @@ RSpec.describe Listing, type: :model do
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
   it { is_expected.to have_many(:credits) }
+  it { is_expected.to have_many(:endorsements) }
 
   describe "valid associations" do
     it "is not valid w/o user and org" do
@@ -83,7 +84,8 @@ RSpec.describe Listing, type: :model do
 
     it "on destroy enqueues job to delete listing from elasticsearch" do
       listing.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, listing.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [described_class::SEARCH_CLASS.to_s, listing.id]) do
         listing.destroy
       end
     end

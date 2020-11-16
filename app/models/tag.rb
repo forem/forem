@@ -1,26 +1,31 @@
-require_relative "../lib/acts_as_taggable_on/tag.rb"
+require_relative "../lib/acts_as_taggable_on/tag"
 
 class Tag < ActsAsTaggableOn::Tag
-  attr_accessor :points
+  attr_accessor :points, :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
   resourcify
 
-  ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
+  # This model doesn't inherit from ApplicationRecord so this has to be included
+  include Purgeable
+  include Searchable
 
-  attr_accessor :tag_moderator_id, :remove_moderator_id
+  ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
+  HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
 
   belongs_to :badge, optional: true
+  belongs_to :mod_chat_channel, class_name: "ChatChannel", optional: true
+
+  has_many :buffer_updates, dependent: :nullify
+
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
-  validates :text_color_hex,
-            format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
-  validates :bg_color_hex,
-            format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
-  validates :category, inclusion: { in: ALLOWED_CATEGORIES }
+  validates :text_color_hex, format: HEX_COLOR_REGEXP, allow_nil: true
+  validates :bg_color_hex, format: HEX_COLOR_REGEXP, allow_nil: true
+  validates :category, presence: true, inclusion: { in: ALLOWED_CATEGORIES }
 
   validate :validate_alias_for, if: :alias_for?
   validate :validate_name, if: :name?
@@ -38,13 +43,9 @@ class Tag < ActsAsTaggableOn::Tag
 
   scope :eager_load_serialized_data, -> {}
 
-  include Searchable
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
   DATA_SYNC_CLASS = DataSync::Elasticsearch::Tag
-
-  # This model doesn't inherit from ApplicationRecord so this has to be included
-  include Purgeable
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
@@ -56,7 +57,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def tag_moderator_ids
-    User.with_role(:tag_moderator, self).order("id ASC").pluck(:id)
+    User.with_role(:tag_moderator, self).order(id: :asc).ids
   end
 
   def self.bufferized_tags
@@ -88,8 +89,8 @@ class Tag < ActsAsTaggableOn::Tag
     errors.add(:name, "contains non-ASCII characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
   end
 
-  def mod_chat_channel
-    ChatChannel.find(mod_chat_channel_id) if mod_chat_channel_id
+  def errors_as_sentence
+    errors.full_messages.to_sentence
   end
 
   private
@@ -100,12 +101,12 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def calculate_hotness_score
-    self.hotness_score = Article.tagged_with(name).
-      where("articles.featured_number > ?", 7.days.ago.to_i).
-      map do |article|
+    self.hotness_score = Article.tagged_with(name)
+      .where("articles.featured_number > ?", 7.days.ago.to_i)
+      .map do |article|
         (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
-      end.
-      sum
+      end
+      .sum
   end
 
   def bust_cache

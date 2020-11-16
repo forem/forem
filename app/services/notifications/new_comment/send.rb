@@ -14,6 +14,8 @@ module Notifications
       end
 
       def call
+        return if comment.score.negative?
+
         user_ids = Set.new(comment_user_ids + subscribed_user_ids + top_level_user_ids + author_subscriber_user_ids)
 
         json_data = {
@@ -54,9 +56,9 @@ module Notifications
       attr_reader :comment
 
       def user_ids_for(config_name)
-        NotificationSubscription.
-          where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: config_name).
-          pluck(:user_id)
+        NotificationSubscription
+          .where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: config_name)
+          .pluck(:user_id)
       end
 
       def comment_user_ids

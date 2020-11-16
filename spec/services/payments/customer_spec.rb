@@ -55,8 +55,8 @@ RSpec.describe Payments::Customer, type: :service do
     end
 
     it "raises Payments::PaymentsError for any other known error" do
-      allow(Stripe::Customer).to receive(:create).with(email: "foobar").
-        and_raise(Stripe::StripeError)
+      allow(Stripe::Customer).to receive(:create).with(email: "foobar")
+        .and_raise(Stripe::StripeError)
       expect { described_class.create(email: "foobar") }.to raise_error(Payments::PaymentsError)
     end
   end

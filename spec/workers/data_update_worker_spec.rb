@@ -2,9 +2,9 @@ require "rails_helper"
 require Rails.root.join("app/models/data_update_script.rb")
 
 RSpec.describe DataUpdateWorker, type: :worker do
-  let_it_be(:test_directory) { Rails.root.join("spec/support/fixtures/data_update_scripts") }
-  let_it_be(:worker) { described_class.new }
-  let_it_be(:statuses) { %w[working succeeded] }
+  let(:test_directory) { Rails.root.join("spec/support/fixtures/data_update_scripts") }
+  let(:worker) { described_class.new }
+  let(:statuses) { %w[working succeeded] }
 
   before do
     stub_const "DataUpdateScript::DIRECTORY", test_directory

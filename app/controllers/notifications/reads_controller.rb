@@ -1,15 +1,17 @@
-class Notifications::ReadsController < ApplicationController
-  def create
-    render plain: "" && return unless current_user
+module Notifications
+  class ReadsController < ApplicationController
+    def create
+      render plain: "" && return unless current_user
 
-    current_user.notifications.unread.update_all(read: true)
-    current_user.touch(:last_notification_activity)
+      current_user.notifications.unread.update_all(read: true)
+      current_user.touch(:last_notification_activity)
 
-    if params[:org_id] && current_user.org_member?(params[:org_id])
-      org = Organization.find_by(id: params[:org_id])
-      org.notifications.unread.update_all(read: true)
+      if params[:org_id] && current_user.org_member?(params[:org_id])
+        org = Organization.find_by(id: params[:org_id])
+        org.notifications.unread.update_all(read: true)
+      end
+
+      render plain: "read"
     end
-
-    render plain: "read"
   end
 end

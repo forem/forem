@@ -10,6 +10,6 @@ class ReleasePhaseNotifier
 
     client.ping("Release Phase Failed: #{ENV['FAILED_COMMAND']}")
   rescue Slack::Notifier::APIError => e
-    Rails.logger.info("Slack API error occured: #{e.message}")
+    Honeybadger.notify(e)
   end
 end

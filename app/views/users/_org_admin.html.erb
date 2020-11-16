@@ -1,7 +1,7 @@
 <%= javascript_packs_with_chunks_tag "colorPreview", "clipboardCopy", defer: true %>
 <%= render "shared/webcomponents_loader_script" %>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h2>Organization Members</h2>
 
   <div class="grid gap-2">
@@ -61,7 +61,7 @@
     <p>
       Your secret code is:
       <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false">
-        <input type="text" class="ff-accent ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="Organization secret (to be rotated regularly)">
+        <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="Organization secret (to be rotated regularly)">
         <%= inline_svg_tag("copy.svg", aria: true, class: "crayons-icon", title: "Copy to clipboard") %>
       </clipboard-copy>
       <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden>Copied to clipboard!</span>
@@ -76,7 +76,7 @@
   </div>
 </div>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h2>Organization details</h2>
 
   <%= form_for @organization, html: { class: "grid gap-6" } do |f| %>
@@ -96,7 +96,7 @@
       <div class="flex items-center">
           <span class="crayons-logo crayons-logo--xl mr-2">
             <% if @organization.profile_image_url.present? %>
-              <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.profile_image_url, 50) %>" class="crayons-logo__image" />
+              <img alt="<%= @organization.name %> profile image" src="<%= optimized_image_url(@organization.profile_image_url, width: 50) %>" class="crayons-logo__image" />
             <% end %>
           </span>
           <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
@@ -107,7 +107,7 @@
       <%= f.label :nav_image, "Logo for light themes", class: "crayons-field__label" %>
       <div class="flex items-center">
         <% if @organization.nav_image_url.present? %>
-          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= cloudinary(@organization.nav_image_url, 50) %>" />
+          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= optimized_image_url(@organization.nav_image_url, width: 50) %>" />
         <% end %>
         <%= f.file_field :nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
@@ -117,7 +117,7 @@
       <%= f.label :dark_nav_image, "Logo for dark themes", class: "crayons-field__label" %>
       <div class="flex items-center">
         <% if @organization.dark_nav_image_url.present? %>
-          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= cloudinary(@organization.dark_nav_image_url, 50) %>" />
+          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= optimized_image_url(@organization.dark_nav_image_url, width: 50) %>" />
         <% end %>
         <%= f.file_field :dark_nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
@@ -197,4 +197,46 @@
 
     <div><button class="crayons-btn" type="submit">Save</button></div>
   <% end %>
+</div>
+
+<div class="crayons-card crayons-card--content-rows">
+  <header>
+    <h2 class="color-accent-danger">Danger Zone</h2>
+  </header>
+  <div class="crayons-field">
+    <div class="grid gap-2">
+      <header>
+        <h3>Delete Organization</h3>
+      </header>
+      <p>
+        You can delete your organization if you:
+        <ul>
+          <li>are the only member in the organization</li>
+          <li>are an admin of the organization</li>
+          <li>the organization has no posts</li>
+          <li>and the organization has no credits</li>
+        </ul>
+      </p>
+      <% if @org_organization_memberships.size === 1 && @organization.articles_count.zero? %>
+        <% onsubmit = "return confirm('Are you absolutely sure you want to delete your organization: #{@organization.name}?');" %>
+        <%= form_tag organization_path(@organization.id), method: :delete, onsubmit: onsubmit do %>
+          <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
+            Delete "<%= @organization.name %>"
+          </button>
+        <% end %>
+      <% else %>
+        <div class="crayons-card crayons-card--secondary">
+          <div class="crayons-card__body">
+            Your organization currently does not meet the above requirements.
+            Please remove all other members and organization posts first.
+          </div>
+        </div>
+      <% end %>
+      <p>
+        Questions? Email us at
+        <a href="<%= SiteConfig.email_addresses[:default] %>"><%= SiteConfig.email_addresses[:default] %></a>
+        for help.
+      </p>
+    </div>
+  </div>
 </div>

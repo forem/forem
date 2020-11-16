@@ -1,19 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Metrics::RecordDataCountsWorker, type: :worker do
-  default_logger = Rails.logger
-
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
 
   describe "#perform" do
-    # Override the default Rails logger as these tests require the Timber logger.
-    before do
-      timber_logger = Timber::Logger.new(nil)
-      Rails.logger = ActiveSupport::TaggedLogging.new(timber_logger)
-    end
-
-    after { Rails.logger = default_logger }
-
     it "calls count on each model" do
       allow(User).to receive(:count)
       allow(User).to receive(:estimated_count)

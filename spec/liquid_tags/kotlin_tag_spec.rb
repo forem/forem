@@ -22,14 +22,26 @@ RSpec.describe KotlinTag, type: :liquid_tag do
     end
 
     def check(url, expected)
-      expect(KotlinTag.parse_link(url)).to eq(expected)
+      expect(described_class.parse_link(url)).to eq(expected)
     end
 
     it "parses URL correctly" do
       check("https://pl.kotl.in/owreUFFUG", from: nil, readOnly: nil, short: "owreUFFUG", theme: nil, to: nil)
-      check("https://pl.kotl.in/owreUFFUG?theme=dracula&from=3&to=6&readOnly=true", from: "3", readOnly: "true", short: "owreUFFUG", theme: "dracula", to: "6")
-      check("https://pl.kotl.in/owreUFFUG?theme=dracula&readOnly=true", from: nil, readOnly: "true", short: "owreUFFUG", theme: "dracula", to: nil)
-      check("https://pl.kotl.in/owreUFFUG?from=3&to=6", from: "3", readOnly: nil, short: "owreUFFUG", theme: nil, to: "6")
+
+      check(
+        "https://pl.kotl.in/owreUFFUG?theme=dracula&from=3&to=6&readOnly=true",
+        from: "3", readOnly: "true", short: "owreUFFUG", theme: "dracula", to: "6",
+      )
+
+      check(
+        "https://pl.kotl.in/owreUFFUG?theme=dracula&readOnly=true",
+        from: nil, readOnly: "true", short: "owreUFFUG", theme: "dracula", to: nil,
+      )
+
+      check(
+        "https://pl.kotl.in/owreUFFUG?from=3&to=6",
+        from: "3", readOnly: nil, short: "owreUFFUG", theme: nil, to: "6",
+      )
     end
 
     it "produces a correct final URL" do

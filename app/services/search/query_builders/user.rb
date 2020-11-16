@@ -17,6 +17,8 @@ module Search
       }.freeze
 
       def initialize(params:)
+        super()
+
         @params = params.deep_symbolize_keys
 
         # default to excluding users who are banned
@@ -38,11 +40,11 @@ module Search
       end
 
       def excluded_term_keys
-        EXCLUDED_TERM_KEYS.map do |term_key, search_key|
+        EXCLUDED_TERM_KEYS.filter_map do |term_key, search_key|
           next unless @params.key? term_key
 
           { terms: { search_key => Array.wrap(@params[term_key]) } }
-        end.compact
+        end
       end
     end
   end

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement, fireEvent } from '@testing-library/preact';
+import { render, fireEvent } from '@testing-library/preact';
 
 import { axe } from 'jest-axe';
 import { Search } from '../Search';
@@ -9,6 +9,7 @@ describe('<Search />', () => {
     global.filterXSS = jest.fn();
     global.InstantClick = jest.fn(() => ({
       on: jest.fn(),
+      off: jest.fn(),
       preload: jest.fn(),
       display: jest.fn(),
     }))();
@@ -33,7 +34,7 @@ describe('<Search />', () => {
   });
 
   it('should contain text the user entered in the search textbox', async () => {
-    const { getByLabelText } = render(<Search />);
+    const { getByLabelText, findByLabelText } = render(<Search />);
 
     let searchInput = getByLabelText(/search/i);
 
@@ -49,7 +50,7 @@ describe('<Search />', () => {
       target: { value: 'hello' },
     });
 
-    searchInput = await waitForElement(() => getByLabelText(/search/i));
+    searchInput = await findByLabelText(/search/i);
 
     expect(searchInput.value).toEqual('hello');
   });
@@ -57,7 +58,7 @@ describe('<Search />', () => {
   it('should submit the search form', async () => {
     jest.spyOn(Search.prototype, 'search');
 
-    const { getByLabelText } = render(<Search />);
+    const { getByLabelText, findByLabelText } = render(<Search />);
 
     let searchInput = getByLabelText(/search/i);
 
@@ -73,9 +74,39 @@ describe('<Search />', () => {
       target: { value: 'hello' },
     });
 
-    searchInput = await waitForElement(() => getByLabelText(/search/i));
+    searchInput = await findByLabelText(/search/i);
 
     expect(searchInput.value).toEqual('hello');
     expect(Search.prototype.search).toHaveBeenCalledWith('Enter', 'hello');
+  });
+
+  it('should be listening for history state changes', async () => {
+    // This is an implementation detail, but I want to make sure that this
+    // listener is registered as it affects the UI.
+    jest.spyOn(window, 'addEventListener');
+
+    render(<Search />);
+
+    expect(window.addEventListener).toHaveBeenNthCalledWith(
+      1,
+      'popstate',
+      expect.any(Function),
+    );
+  });
+
+  it('should stop listening for history state changes when the component is destroyed', async () => {
+    // This is an implementation detail, but I want to make sure that this
+    // listener is unregistered as it affects the UI.
+    jest.spyOn(window, 'removeEventListener');
+
+    const { unmount } = render(<Search />);
+
+    unmount();
+
+    expect(window.removeEventListener).toHaveBeenNthCalledWith(
+      1,
+      'popstate',
+      expect.any(Function),
+    );
   });
 });

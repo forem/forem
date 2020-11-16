@@ -142,7 +142,31 @@ export async function leaveChatChannelMembership(membershipId) {
     `/chat_channel_memberships/leave_membership/${membershipId}`,
     {
       method: 'PATCH',
+      credentials: 'same-origin',
+    },
+  );
 
+  return response.json();
+}
+
+/**
+ * This function is used to update the membership role
+ *  @param {number} membershipId selected User Chat channel membership id
+ *  @param {number} chatChannelId Current chat chaneel id
+ *  @param {string} role updated role for the membership
+ */
+export async function updateMembershipRole(membershipId, chatChannelId, role) {
+  const response = await request(
+    `/chat_channel_memberships/update_membership_role/${chatChannelId}`,
+    {
+      method: 'PATCH',
+      body: {
+        chat_channel_membership: {
+          chat_channel_id: chatChannelId,
+          membership_id: membershipId,
+          role,
+        },
+      },
       credentials: 'same-origin',
     },
   );

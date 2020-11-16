@@ -6,6 +6,9 @@ module Api
 
       skip_before_action :verify_authenticity_token, only: %w[create destroy]
 
+      ATTRIBUTES_FOR_SERIALIZATION = %i[id user_id source target_url events created_at].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
+
       def index
         @webhooks = webhooks_scope.order(:id)
       end
@@ -28,9 +31,6 @@ module Api
 
         head :no_content
       end
-
-      ATTRIBUTES_FOR_SERIALIZATION = %i[id user_id source target_url events created_at].freeze
-      private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       private
 

@@ -17,6 +17,21 @@ function getAdditionalClassNames({ size, className }) {
   return additionalClassNames;
 }
 
+const CloseIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    className="crayons-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-labelledby="714d29e78a3867c79b07f310e075e824"
+  >
+    <title id="714d29e78a3867c79b07f310e075e824">Close</title>
+    <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
+  </svg>
+);
+
 export const Modal = ({
   children,
   size = 'default',
@@ -25,44 +40,32 @@ export const Modal = ({
   overlay,
   onClose,
 }) => {
-  const Icon = () => (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      className="crayons-icon"
-      xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-labelledby="714d29e78a3867c79b07f310e075e824"
-    >
-      <title id="714d29e78a3867c79b07f310e075e824">Close</title>
-      <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z" />
-    </svg>
-  );
-
   return (
     <div
+      data-testid="modal-container"
       className={`crayons-modal${getAdditionalClassNames({
         size,
         className,
       })}`}
     >
-      <div className="crayons-modal__box">
+      <div role="dialog" aria-modal="true" className="crayons-modal__box">
         {title.length > 0 && title && (
           <div className="crayons-modal__box__header">
             <h2>{title}</h2>
             <Button
-              icon={Icon}
+              icon={CloseIcon}
               variant="ghost"
               contentType="icon"
-              title="Close"
+              aria-label="Close"
               onClick={onClose}
             />
           </div>
         )}
         <div className="crayons-modal__box__body">{children}</div>
       </div>
-      {overlay && <div className="crayons-modal__overlay" />}
+      {overlay && (
+        <div data-testid="modal-overlay" className="crayons-modal__overlay" />
+      )}
     </div>
   );
 };

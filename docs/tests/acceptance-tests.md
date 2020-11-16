@@ -6,19 +6,25 @@ title: Acceptance Tests
 
 Acceptance tests are tests from the perspective of the end-user.
 
-In the Rails world, we sometimes refer to these as Feature or System tests. In
-Rails 5.1, a tool called Capybara was included to help us simulate a human's
-actions inside of our tests.
+In the Rails world, we sometimes refer to these as Feature or System tests. A
+tool called Capybara is included to help us simulate a human's actions inside of
+our tests.
 
 Generally, we are simulating what a user could do from their web browser and
-ensuring that the app behaves as intended.
+ensuring that the app behaves as intended. When a feature is heavily reliant on
+interaction from a user via the browser, it's a good idea to write automated
+Acceptance tests to uncover any bugs that might not be apparent from manual
+testing.
 
-When a feature is heavily reliant on interaction from a user via the browser,
-it's a good idea to write automated Acceptance tests to uncover any bugs that
-might not be apparent from manual testing. It's important to note that Rails
-System tests can be fairly slow, so it's better to focus on testing core
-functionality or pieces of your code that you think might be prone to
-regressions.
+It's important to note that Rails System tests can be fairly slow, so it's
+better to focus on testing core functionality or pieces of your code that you
+think might be prone to regressions. Another strategy we use to help us keep
+acceptance tests fast is `:aggregate_failures`. `:aggregate_failures` allows us
+to make multiple assertions within a single test. The flag signals to Rspec to
+run each assertion and then report all of the failures back to us rather than
+just the first failure. This saves time because we only have to setup the
+conditions for the spec once and then make all of our assertions instead of
+setting up the conditions repeatedly for each individual assertion.
 
 Acceptance tests can be found in the directory `spec/system`.
 

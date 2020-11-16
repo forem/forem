@@ -55,9 +55,10 @@ module Notifications
           action: "Milestone::#{type}::#{@next_milestone}",
         )
 
-        if type == "View"
+        case type
+        when "View"
           last_milestone_notification.blank? && article.page_views_count > @next_milestone
-        elsif type == "Reaction"
+        when "Reaction"
           last_milestone_notification.blank? && article.public_reactions_count > @next_milestone
         end
       end

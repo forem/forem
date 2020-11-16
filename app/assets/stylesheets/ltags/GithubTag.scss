@@ -1,8 +1,11 @@
-@import 'variables';
+@import '../variables';
 
 .ltag_github-liquid-tag {
   margin: 1.1em auto 1.3em;
   max-width: 580px;
+  z-index: 1;
+  position: relative;
+
   h1 {
     font-size: 1.05em !important;
     line-height: 1.2em !important;
@@ -51,40 +54,6 @@
   margin: 0;
   width: 98%;
   overflow: hidden;
-  .arrow-left-outer {
-    display: none;
-    @media screen and (min-width: 500px) {
-      display: block;
-      width: 0;
-      height: 0;
-      border-width: 8px;
-      border-color: transparent;
-      border-style: solid solid outset;
-      border-right-color: #d1d5da;
-      content: ' ';
-      float: left;
-      margin-left: -31px;
-      margin-top: 13px;
-    }
-  }
-
-  .arrow-left-inner {
-    display: none;
-    @media screen and (min-width: 500px) {
-      display: block;
-      width: 0;
-      height: 0;
-      border-width: 8px;
-      border-color: transparent;
-      border-style: solid solid outset;
-      border-right-color: #f6f8fa;
-      content: ' ';
-      float: left;
-      margin-left: -30px;
-      margin-top: 13px;
-    }
-  }
-
   .timeline-comment-header {
     display: flex;
     background: #f6f8fa;

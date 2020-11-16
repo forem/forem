@@ -168,7 +168,9 @@ describe('<Chat />', () => {
 
   it('should have no a11y violations', async () => {
     fetch.mockResponse(getMockResponse());
-    const { container } = render(<Chat {...getRootData()} />);
+    const { container } = render(
+      <Chat {...getRootData()} />,
+    );
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
@@ -202,7 +204,7 @@ describe('<Chat />', () => {
     getByRole('dialog', {
       selector: '[aria-hidden="false"]',
     });
-    getByText('Are you sure, you want to delete this message ?');
+    getByText('Are you sure, you want to delete this message?');
     getByText('Cancel', { selector: '[role="button"]' });
     getByText('Delete', { selector: '[role="button"]' });
   });

@@ -44,11 +44,13 @@ RSpec.describe Reaction, type: :model do
     end
 
     it "does not allow vomit reaction for users without trusted role" do
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id + 1)
       reaction.category = "vomit"
       expect(reaction).not_to be_valid
     end
 
     it "does not allow thumbsdown reaction for users without trusted role" do
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id + 1)
       reaction.category = "thumbsdown"
       expect(reaction).not_to be_valid
     end
@@ -87,64 +89,9 @@ RSpec.describe Reaction, type: :model do
     end
   end
 
-  describe "#after_commit" do
-    context "when category is readingList and reactable is published" do
-      it "on update enqueues job to index reaction to elasticsearch" do
-        reaction.save
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, reaction.id]) do
-          reaction.update(category: "readinglist")
-        end
-      end
-
-      it "on create enqueues job to index reaction to elasticsearch" do
-        reaction.category = "readinglist"
-        sidekiq_assert_enqueued_with(job: Search::IndexWorker) do
-          reaction.save
-        end
-      end
-
-      it "on destroy enqueues job to delete reaction from elasticsearch" do
-        reaction.category = "readinglist"
-        reaction.save
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
-          reaction.destroy
-        end
-      end
-    end
-
-    context "when category is not readinglist" do
-      before do
-        reaction.category = "like"
-        allow(reaction.user).to receive(:index_to_elasticsearch)
-        allow(reaction.reactable).to receive(:index_to_elasticsearch)
-        sidekiq_perform_enqueued_jobs
-      end
-
-      it "on update does not enqueue job to index reaction to elasticsearch" do
-        reaction.save
-        sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
-          reaction.update(category: "unicorn")
-        end
-      end
-
-      it "on create does not enqueue job to index reaction to elasticsearch" do
-        sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
-          reaction.save
-        end
-      end
-
-      it "on destroy does not enqueue job to delete reaction from elasticsearch" do
-        reaction.save
-        sidekiq_assert_no_enqueued_jobs(only: Search::RemoveFromIndexWorker) do
-          reaction.destroy
-        end
-      end
-    end
-  end
-
   describe "#skip_notification_for?" do
-    let_it_be(:receiver) { build(:user) }
-    let_it_be(:reaction) { build(:reaction, reactable: build(:article), user: nil) }
+    let(:receiver) { build(:user) }
+    let(:reaction) { build(:reaction, reactable: build(:article), user: nil) }
 
     context "when false" do
       it "is false when points are positive" do
@@ -201,8 +148,8 @@ RSpec.describe Reaction, type: :model do
 
   context "when callbacks are called after create" do
     describe "slack messages" do
-      let_it_be_changeable(:user) { create(:user, :trusted) }
-      let_it_be_readonly(:article) { create(:article, user: user) }
+      let!(:user) { create(:user, :trusted) }
+      let!(:article) { create(:article, user: user) }
 
       before do
         # making sure there are no other enqueued jobs from other tests

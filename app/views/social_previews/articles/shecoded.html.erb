@@ -111,13 +111,13 @@
     </style>
     <% font_size *= 0.9 %>
     <div class="preview-info-header">
-      <%= (@article.tag_list & SiteConfig.campaign_featured_tags).map { |tag| "##{tag}" }.join(" ") %>
+      <%= (@article.tag_list & Campaign.current.featured_tags).map { |tag| "##{tag}" }.join(" ") %>
     </div>
     <div class="title-area">
       <h1 style="font-size:<%= font_size %>vw;"><%= @article.title %></h1>
     </div>
     <div class="preview-user">
-      <img src="<%= ProfileImage.new(@article.user).get(width: 90) %>" />
+      <img src="<%= Images::Profile.call(@article.user.profile_image_url, length: 90) %>" />
       <%= truncate @article.user.name, length: 28 %>・<%= @article.readable_publish_date %>
     </div>
     <div class="badge-images">

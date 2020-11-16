@@ -1,9 +1,7 @@
 class GithubTag < LiquidTagBase
-  def initialize(tag_name, link, tokens)
+  def initialize(_tag_name, link, _parse_context)
     super
-    @tag_name = tag_name
     @link = link
-    @tokens = tokens
     @rendered = pre_render
   end
 
@@ -16,9 +14,10 @@ class GithubTag < LiquidTagBase
   end
 
   def pre_render
-    if issue_or_readme == "issue"
+    case issue_or_readme
+    when "issue"
       GithubTag::GithubIssueTag.new(@link).render
-    elsif issue_or_readme == "readme"
+    when "readme"
       gt = GithubTag::GithubReadmeTag.new(@link)
       gt.render
     end

@@ -1,13 +1,13 @@
 class SoundcloudTag < LiquidTagBase
   PARTIAL = "liquids/soundcloud".freeze
 
-  def initialize(tag_name, link, tokens)
+  def initialize(_tag_name, link, _parse_context)
     super
     @link = parse_link(link)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         link: @link,
@@ -31,8 +31,8 @@ class SoundcloudTag < LiquidTagBase
   end
 
   def valid_link?(link)
-    (link =~ /\Ahttps:\/\/soundcloud\.com\/([a-zA-Z0-9_\-]){3,25}\/(sets\/)?([a-zA-Z0-9_\-]){3,255}\Z/)&.
-      zero?
+    (link =~ %r{\Ahttps://soundcloud\.com/([a-zA-Z0-9_\-]){3,25}/(sets/)?([a-zA-Z0-9_\-]){3,255}\Z})
+      &.zero?
   end
 
   def raise_error

@@ -2,14 +2,22 @@ const path = require('path');
 const marked = require('marked');
 const renderer = new marked.Renderer();
 
+const prettierConfig = require('../../../.prettierrc.json');
+
 module.exports = {
   stories: ['../**/__stories__/*.stories.jsx'],
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-links',
-    '@storybook/addon-a11y/register',
+    '@storybook/addon-a11y',
     '@storybook/addon-notes/register-panel',
+    {
+      name: '@storybook/addon-storysource',
+      loaderOptions: {
+        prettierConfig,
+      },
+    },
   ],
   webpackFinal: async (config, { configType }) => {
     config.module.rules.push({
@@ -23,7 +31,7 @@ module.exports = {
             // The injected environment variable is so that SASS mixins/functions can handle
             // generating correct CSS for Sprockets or webpack when in Storybook.
             // an example of it's usage can be found in /app/assets/stylesheets/_mixins.scss
-            prependData: '$environment: "storybook";',
+            additionalData: '$environment: "storybook";',
           },
         },
       ],

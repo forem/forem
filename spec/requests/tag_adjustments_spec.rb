@@ -25,7 +25,12 @@ RSpec.describe "TagAdjustments", type: :request do
     end
 
     context "when an article doesn't use front matter" do
-      let(:article) { Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}", tag_list: "#{tag.name}, yoyo, bobo", published: true) }
+      let(:article) do
+        Article.create(
+          user: user, title: "something", body_markdown: "blah blah #{rand(100)}",
+          tag_list: "#{tag.name}, yoyo, bobo", published: true
+        )
+      end
 
       it "removes the tag" do
         expect(article.reload.tag_list.include?(tag.name)).to be false
@@ -37,7 +42,10 @@ RSpec.describe "TagAdjustments", type: :request do
     end
 
     context "when an article uses front matter" do
-      let(:article) { create(:article, user: user, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello") }
+      let(:article) do
+        body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello"
+        create(:article, user: user, body_markdown: body)
+      end
 
       it "removes the tag" do
         expect(article.reload.tag_list.include?(tag.name)).to be false
@@ -62,7 +70,12 @@ RSpec.describe "TagAdjustments", type: :request do
     end
 
     context "when an article doesn't use front matter" do
-      let(:article) { Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}", tag_list: "yoyo, bobo", published: true) }
+      let(:article) do
+        Article.create(
+          user: user, title: "something", body_markdown: "blah blah #{rand(100)}",
+          tag_list: "yoyo, bobo", published: true
+        )
+      end
 
       it "adds the tag" do
         expect(article.reload.tag_list.include?(tag.name)).to be true
@@ -74,7 +87,10 @@ RSpec.describe "TagAdjustments", type: :request do
     end
 
     context "when an article uses front matter" do
-      let(:article) { create(:article, user: user, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey\n---\n\nHello") }
+      let(:article) do
+        body_markdown = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey\n---\n\nHello"
+        create(:article, user: user, body_markdown: body_markdown)
+      end
 
       it "adds the tag" do
         expect(article.reload.tag_list.include?(tag.name)).to be true
@@ -97,7 +113,10 @@ RSpec.describe "TagAdjustments", type: :request do
     end
 
     context "when an article doesn't use front matter" do
-      let(:article) { Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}", tag_list: "#{tag.name}, yoyo, bobo", published: true) }
+      let(:article) do
+        Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}",
+                       tag_list: "#{tag.name}, yoyo, bobo", published: true)
+      end
 
       it "adds the tag back in" do
         delete "/tag_adjustments/#{tag_adjustment.id}", params: {
@@ -108,7 +127,10 @@ RSpec.describe "TagAdjustments", type: :request do
     end
 
     context "when an article uses front matter" do
-      let(:article) { create(:article, user: user, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello") }
+      let(:article) do
+        body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello"
+        create(:article, user: user, body_markdown: body)
+      end
 
       it "adds the tag back in" do
         delete "/tag_adjustments/#{tag_adjustment.id}", params: {
@@ -120,7 +142,9 @@ RSpec.describe "TagAdjustments", type: :request do
   end
 
   describe "DELETE /tag_adjustments/:id with adjustment_type addition" do
-    let(:tag_adjustment) { create(:tag_adjustment, article_id: article.id, user: user, tag: tag, adjustment_type: "addition") }
+    let(:tag_adjustment) do
+      create(:tag_adjustment, article_id: article.id, user: user, tag: tag, adjustment_type: "addition")
+    end
 
     before do
       user.add_role(:admin)
@@ -130,7 +154,10 @@ RSpec.describe "TagAdjustments", type: :request do
     end
 
     context "when an article doesn't use front matter" do
-      let(:article) { Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}", tag_list: "yoyo, bobo", published: true) }
+      let(:article) do
+        Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}", tag_list: "yoyo, bobo",
+                       published: true)
+      end
 
       it "removes the added tag" do
         delete "/tag_adjustments/#{tag_adjustment.id}", params: {
@@ -141,7 +168,10 @@ RSpec.describe "TagAdjustments", type: :request do
     end
 
     context "when an article uses front matter" do
-      let(:article) { create(:article, user: user, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey\n---\n\nHello") }
+      let(:article) do
+        body_markdown = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey\n---\n\nHello"
+        create(:article, user: user, body_markdown: body_markdown)
+      end
 
       it "removes the added tag" do
         delete "/tag_adjustments/#{tag_adjustment.id}", params: {

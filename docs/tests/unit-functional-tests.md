@@ -39,8 +39,9 @@ where `10` is the line number of the test case that you want to execute.
 ## Testing Controllers
 
 Historically, it has been common to use Rspec to write tests for Rails
-controllers. This pattern isn't necessarily discouraged in the DEV codebase, but
-Rspec has introduced a more effective way to test controllers via Request Specs.
+controllers. This pattern isn't necessarily discouraged in the Forem codebase,
+but Rspec has introduced a more effective way to test controllers via Request
+Specs.
 
 Request specs test the actions on a controller across the entire stack,
 effectively acting as Integration Tests. You can read more about request specs

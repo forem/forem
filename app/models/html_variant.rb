@@ -1,24 +1,27 @@
 class HtmlVariant < ApplicationRecord
-  include CloudinaryHelper
+  resourcify
 
   GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign].freeze
 
+  belongs_to :user, optional: true
+
+  has_many :html_variant_successes, dependent: :destroy
+  has_many :html_variant_trials, dependent: :destroy
+
+  validates :group, inclusion: { in: GROUP_NAMES }
   validates :html, presence: true
   validates :name, uniqueness: true
-  validates :group, inclusion: { in: GROUP_NAMES }
   validates :success_rate, presence: true
-  validate  :no_edits
 
-  belongs_to :user, optional: true
-  has_many :html_variant_trials
-  has_many :html_variant_successes
+  validate  :no_edits
 
   before_save :prefix_all_images
 
   scope :relevant, -> { where(approved: true, published: true) }
 
   def calculate_success_rate!
-    self.success_rate = html_variant_successes.size.to_f / (html_variant_trials.size * 10.0) # x10 because we only capture every 10th
+    # x10 because we only capture every 10th
+    self.success_rate = html_variant_successes.size.to_f / (html_variant_trials.size * 10.0)
     save!
   end
 
@@ -35,13 +38,13 @@ class HtmlVariant < ApplicationRecord
     private
 
     def find_top_for_test(tags_array, group)
-      where(group: group, approved: true, published: true, target_tag: tags_array).
-        order("success_rate DESC").limit(rand(1..20)).sample
+      where(group: group, approved: true, published: true, target_tag: tags_array)
+        .order(success_rate: :desc).limit(rand(1..20)).sample
     end
 
     def find_random_for_test(tags_array, group)
-      where(group: group, approved: true, published: true, target_tag: tags_array).
-        order(Arel.sql("RANDOM()")).first
+      where(group: group, approved: true, published: true, target_tag: tags_array)
+        .order(Arel.sql("RANDOM()")).first
     end
   end
 
@@ -55,7 +58,7 @@ class HtmlVariant < ApplicationRecord
   end
 
   def prefix_all_images
-    # wrap with Cloudinary or allow if from giphy or githubusercontent.com
+    # Optimize image if not from giphy or githubusercontent.com
     doc = Nokogiri::HTML.fragment(html)
     doc.css("img").each do |img|
       src = img.attr("src")
@@ -65,7 +68,7 @@ class HtmlVariant < ApplicationRecord
       img["src"] = if Giphy::Image.valid_url?(src)
                      src.gsub("https://media.", "https://i.")
                    else
-                     img_of_size(src, 420)
+                     Images::Optimizer.call(src, width: 420).gsub(",", "%2C")
                    end
     end
     self.html = doc.to_html
@@ -73,21 +76,5 @@ class HtmlVariant < ApplicationRecord
 
   def allowed_image_host?(src)
     src.start_with?("https://res.cloudinary.com/")
-  end
-
-  def img_of_size(source, width = 420)
-    quality = if source && (source.include? ".gif")
-                66
-              else
-                "auto"
-              end
-    cl_image_path(source,
-                  type: "fetch",
-                  width: width,
-                  crop: "limit",
-                  quality: quality,
-                  flags: "progressive",
-                  fetch_format: "auto",
-                  sign_url: true).gsub(",", "%2C")
   end
 end

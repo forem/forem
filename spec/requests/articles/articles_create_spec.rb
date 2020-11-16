@@ -88,7 +88,8 @@ RSpec.describe "ArticlesCreate", type: :request do
     end
 
     it "schedules a dispatching event job (published)" do
-      article_params[:article][:body_markdown] = "---\ntitle: hey hey hahuu\npublished: true\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
+      body_markdown = "---\ntitle: hey hey hahuu\npublished: true\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
+      article_params[:article][:body_markdown] = body_markdown
       sidekiq_assert_enqueued_jobs(1, only: Webhook::DispatchEventWorker) do
         post "/articles", params: article_params
       end
@@ -103,12 +104,28 @@ RSpec.describe "ArticlesCreate", type: :request do
   end
 
   context "when creation limit is reached" do
-    it "returns a too_many_requests response if rate limit is reached" do
+    it "returns a too_many_requests response if antispam rate limit is reached" do
       rate_limit_checker = RateLimitChecker.new(user)
       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
       allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
 
       post articles_path, params: { article: { body_markdown: "123" } }
+
+      expect(response).to have_http_status(:too_many_requests)
+      expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_antispam_creation, :retry_after)
+      expect(response.headers["Retry-After"]).to eq(expected_retry_after)
+    end
+
+    it "returns a too_many_requests response if rate limit is reached" do
+      # Explicitly create this user more than 3.days.ago, since we
+      # check for this in Articles::Creator#rate_limit!
+      user.update!(created_at: 4.days.ago)
+
+      rate_limit_checker = RateLimitChecker.new(user)
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+
+      post articles_path, params: { article: { body_markdown: "123 i love to spam" } }
 
       expect(response).to have_http_status(:too_many_requests)
       expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)

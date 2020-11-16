@@ -18,6 +18,7 @@ FactoryBot.define do
       with_title { true }
       with_collection { nil }
     end
+    co_author_ids { [] }
     association :user, factory: :user, strategy: :create
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
     main_image    { with_main_image ? Faker::Avatar.image : nil }
@@ -56,8 +57,7 @@ FactoryBot.define do
     end
   end
 
-  # TODO: (Alex Smith) - update roles before release
   trait :with_user_subscription_tag_role_user do
-    after(:build) { |article| article.user.add_role(:super_admin) }
+    after(:build) { |article| article.user.add_role(:restricted_liquid_tag, LiquidTags::UserSubscriptionTag) }
   end
 end

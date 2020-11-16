@@ -29,7 +29,8 @@ RSpec.describe Users::EstimateDefaultLanguage, type: :service do
 
   it "estimates default language based on identity data dump" do
     user = create(:user)
-    create(:identity, provider: :twitter, user: user, auth_data_dump: { "extra" => { "raw_info" => { "lang" => "it" } } })
+    create(:identity, provider: :twitter, user: user,
+                      auth_data_dump: { "extra" => { "raw_info" => { "lang" => "it" } } })
     described_class.call(user)
     user.reload
     expect(user.estimated_default_language).to eq("it")
@@ -51,7 +52,8 @@ RSpec.describe Users::EstimateDefaultLanguage, type: :service do
 
   it "sets correct language_settings for pt" do
     user = create(:user)
-    create(:identity, provider: :twitter, user: user, auth_data_dump: { "extra" => { "raw_info" => { "lang" => "pt" } } })
+    create(:identity, provider: :twitter, user: user,
+                      auth_data_dump: { "extra" => { "raw_info" => { "lang" => "pt" } } })
     described_class.call(user)
     user.reload
     expect(user.language_settings).to eq("preferred_languages" => %w[en pt], "estimated_default_language" => "pt")
@@ -65,14 +67,16 @@ RSpec.describe Users::EstimateDefaultLanguage, type: :service do
 
   it "doesn't set incorrect language settings" do
     user = create(:user)
-    create(:identity, provider: :twitter, user: user, auth_data_dump: { "extra" => { "raw_info" => { "lang" => "supermario" } } })
+    create(:identity, provider: :twitter, user: user,
+                      auth_data_dump: { "extra" => { "raw_info" => { "lang" => "supermario" } } })
     described_class.call(user)
     expect(user.language_settings).to eq("preferred_languages" => %w[en], "estimated_default_language" => nil)
   end
 
   it "sets language settings when language is in twitter format (en-gb)" do
     user = create(:user)
-    create(:identity, provider: :twitter, user: user, auth_data_dump: { "extra" => { "raw_info" => { "lang" => "en-gb" } } })
+    create(:identity, provider: :twitter, user: user,
+                      auth_data_dump: { "extra" => { "raw_info" => { "lang" => "en-gb" } } })
     described_class.call(user)
     expect(user.language_settings).to eq("preferred_languages" => %w[en], "estimated_default_language" => "en")
   end

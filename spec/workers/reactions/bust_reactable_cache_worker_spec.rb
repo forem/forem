@@ -22,7 +22,8 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
     it "busts the reactable comment cache" do
       worker.perform(comment_reaction.id)
       expect(CacheBuster).to have_received(:bust).with(user.path).once
-      expect(CacheBuster).to have_received(:bust).with("/reactions?commentable_id=#{article.id}&commentable_type=Article").once
+      param = "/reactions?commentable_id=#{article.id}&commentable_type=Article"
+      expect(CacheBuster).to have_received(:bust).with(param).once
     end
 
     it "doesn't fail if a reaction doesn't exist" do

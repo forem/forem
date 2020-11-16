@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
@@ -91,9 +91,7 @@ describe('FollowUsers', () => {
 
     const { queryByText, findByText, findAllByTestId } = renderFollowUsers();
 
-    const userButtons = await waitForElement(() =>
-      findAllByTestId('onboarding-user-button'),
-    );
+    const userButtons = await findAllByTestId('onboarding-user-button');
 
     expect(queryByText(/skip for now/i)).toBeDefined();
     expect(queryByText("You're not following anyone")).toBeDefined();
@@ -102,7 +100,7 @@ describe('FollowUsers', () => {
     const firstUser = userButtons[0];
     firstUser.click();
 
-    await waitForElement(() => findByText('Following'));
+    await findByText('Following');
 
     expect(queryByText("You're following 1 person")).toBeDefined();
     expect(queryByText(/continue/i)).toBeDefined();
@@ -111,7 +109,7 @@ describe('FollowUsers', () => {
     const secondUser = userButtons[1];
     secondUser.click();
 
-    await waitForElement(() => findByText('Following'));
+    await findByText('Following');
 
     expect(queryByText("You're following 2 people")).toBeDefined();
     expect(queryByText(/continue/i)).toBeDefined();
@@ -119,27 +117,28 @@ describe('FollowUsers', () => {
 
   it('should have a functioning de/select all toggle', async () => {
     fetch.mockResponse(fakeUsersResponse);
-    const { getByText, queryByText, queryAllByText } = renderFollowUsers();
+    const {
+      getByText,
+      queryByText,
+      findByText,
+      findAllByText,
+    } = renderFollowUsers();
 
     // select all then test following count
-    const followAllSelector = await waitForElement(() =>
-      getByText(/Select all 3 people/i),
-    );
+    const followAllSelector = await findByText(/Select all 3 people/i);
 
     followAllSelector.click();
 
-    await waitForElement(() => queryAllByText('Following'));
+    await findAllByText('Following');
 
     expect(queryByText('Follow')).toBeNull();
     getByText("You're following 3 people (everyone)");
 
     // deselect all then test following count
-    const deselecAllSelector = await waitForElement(() =>
-      getByText(/Deselect all/i),
-    );
+    const deselecAllSelector = await findByText(/Deselect all/i);
 
     deselecAllSelector.click();
-    await waitForElement(() => queryAllByText('Follow'));
+    await findAllByText('Follow');
 
     expect(queryByText('Following')).toBeNull();
     getByText(/You're not following anyone/i);

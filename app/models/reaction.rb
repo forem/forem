@@ -1,8 +1,9 @@
 class Reaction < ApplicationRecord
-  include Searchable
-
-  SEARCH_SERIALIZER = Search::ReactionSerializer
-  SEARCH_CLASS = Search::Reaction
+  BASE_POINTS = {
+    "vomit" => -50.0,
+    "thumbsup" => 5.0,
+    "thumbsdown" => -10.0
+  }.freeze
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsup thumbsdown vomit].freeze
   PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
@@ -22,6 +23,8 @@ class Reaction < ApplicationRecord
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
+  scope :article_vomits, -> { where(category: "vomit", reactable_type: "Article") }
+  scope :comment_vomits, -> { where(category: "vomit", reactable_type: "Comment") }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -29,16 +32,13 @@ class Reaction < ApplicationRecord
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
-  after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_save :assign_points
+  after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
+  before_destroy :bust_reactable_cache_without_delay
+  before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   after_create_commit :record_field_test_event
   after_commit :async_bust
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
-  after_commit :index_to_elasticsearch, if: :indexable?, on: %i[create update]
-  after_commit :remove_from_elasticsearch, if: :indexable?, on: [:destroy]
-
-  before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
-  before_destroy :bust_reactable_cache_without_delay
 
   class << self
     def count_for_article(id)
@@ -53,8 +53,9 @@ class Reaction < ApplicationRecord
     end
 
     def cached_any_reactions_for?(reactable, user, category)
-      class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
-      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
+      class_name = reactable.instance_of?(ArticleDecorator) ? "Article" : reactable.class.name
+      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
+        "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
@@ -80,11 +81,7 @@ class Reaction < ApplicationRecord
   end
 
   def target_user
-    if reactable_type == "User"
-      reactable
-    else
-      reactable.user
-    end
+    reactable_type == "User" ? reactable : reactable.user
   end
 
   def negative?
@@ -92,10 +89,6 @@ class Reaction < ApplicationRecord
   end
 
   private
-
-  def indexable?
-    category == "readinglist" && reactable && reactable.published
-  end
 
   def update_reactable
     Reactions::UpdateReactableWorker.perform_async(id)
@@ -121,49 +114,9 @@ class Reaction < ApplicationRecord
     reactable.reading_time if category == "readinglist"
   end
 
-  def reactable_user
-    return unless category == "readinglist"
-
-    {
-      username: reactable.user_username,
-      name: reactable.user_name,
-      profile_image_90: reactable.user.profile_image_90
-    }
-  end
-
-  def reactable_published_date
-    reactable.readable_publish_date if category == "readinglist"
-  end
-
-  def searchable_reactable_title
-    reactable.title if category == "readinglist"
-  end
-
-  def searchable_reactable_text
-    reactable.body_text[0..350] if category == "readinglist"
-  end
-
-  def searchable_reactable_tags
-    reactable.cached_tag_list if category == "readinglist"
-  end
-
-  def searchable_reactable_path
-    reactable.path if category == "readinglist"
-  end
-
-  def reactable_tags
-    reactable.decorate.cached_tag_list_array if category == "readinglist"
-  end
-
   def viewable_by
     user_id
   end
-
-  BASE_POINTS = {
-    "vomit" => -50.0,
-    "thumbsup" => 5.0,
-    "thumbsdown" => -10.0
-  }.freeze
 
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)
@@ -180,7 +133,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return if user&.any_admin?
+    return if user&.any_admin? || user&.id == SiteConfig.mascot_user_id
 
     negative? && !user.trusted
   end

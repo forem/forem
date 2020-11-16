@@ -1,7 +1,5 @@
 module Webhook
-  class EventSerializer
-    include FastJsonapi::ObjectSerializer
-
+  class EventSerializer < ApplicationSerializer
     set_type :webhook_event
     set_id :event_id
 

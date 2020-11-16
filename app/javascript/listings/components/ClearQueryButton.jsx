@@ -1,16 +1,17 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons/Button/Button';
 
 const ClearQueryButton = ({ onClick }) => (
-  <button
+  <Button
     data-testid="clear-query-button"
-    type="button"
-    className="listing-search-clear"
+    variant="ghost"
+    className="absolute right-0"
     onClick={onClick}
     id="clear-query-button"
   >
     ×
-  </button>
+  </Button>
 );
 
 ClearQueryButton.propTypes = {

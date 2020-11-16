@@ -1,21 +1,11 @@
-json.array!    @articles do |article|
+json.array! @articles do |article|
   json.type_of "article"
 
   json.extract!(
     article,
-    :id,
-    :title,
-    :description,
-    :published,
-    :published_at,
-    :slug,
-    :path,
-    :url,
-    :comments_count,
-    :public_reactions_count,
-    :page_views_count,
-    :published_timestamp,
-    :body_markdown,
+    :id, :title, :description, :published, :published_at,
+    :slug, :path, :url, :comments_count, :public_reactions_count, :page_views_count,
+    :published_timestamp, :body_markdown
   )
 
   json.positive_reactions_count article.public_reactions_count

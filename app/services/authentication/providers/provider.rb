@@ -2,7 +2,7 @@ module Authentication
   module Providers
     # Authentication provider
     class Provider
-      delegate :email, :nickname, to: :info, prefix: :user
+      delegate :email, to: :info, prefix: :user
       delegate :user_created_at_field, :user_username_field, to: :class
 
       def initialize(auth_payload)
@@ -21,6 +21,10 @@ module Authentication
         raise SubclassResponsibility
       end
 
+      def user_nickname
+        info.nickname.to_s
+      end
+
       def name
         auth_payload.provider
       end
@@ -34,26 +38,26 @@ module Authentication
       end
 
       def self.user_created_at_field
-        raise SubclassResponsibility
+        "#{provider_name}_created_at".to_sym
       end
 
       def self.user_username_field
-        raise SubclassResponsibility
+        "#{provider_name}_username".to_sym
       end
 
       def self.official_name
-        raise SubclassResponsibility
+        name.demodulize
       end
 
       def self.settings_url
         raise SubclassResponsibility
       end
 
-      def self.authentication_path(params = {})
-        ::Authentication::Paths.authentication_path(provider_name, params)
+      def self.authentication_path(**kwargs)
+        ::Authentication::Paths.authentication_path(provider_name, **kwargs)
       end
 
-      def self.sign_in_path(_params = {})
+      def self.sign_in_path(**_kwargs)
         raise SubclassResponsibility
       end
 

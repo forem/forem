@@ -4,7 +4,7 @@ title: Preparing the Database
 
 # Preparing the database
 
-The next step is to create and prepare the database. Because DEV is a Rails
+The next step is to create and prepare the database. Because Forem is a Rails
 application, we have built-in tools to help us.
 
 We can use Rails to create our database, load the schema, and add some seed
@@ -45,3 +45,24 @@ will result in creating double the default amount of items in the database.
 It's currently used only for `articles` and `users`.
 
 It can also be used for `rails db:seed` and `rails db:reset`.
+
+## Default Admin User
+
+Seed data creates a handful of regular users, and a single admin user that can
+be used to log into the application with the Email login option:
+
+```
+email: admin@forem.local
+password: password
+```
+
+### Other seed modes
+
+To put your local forem into "starter mode", as it would be for a new creator,
+use `MODE=STARTER` i.e...
+
+```shell
+MODE=STARTER rails db:setup
+```
+
+This mode skips creation of all sample data.

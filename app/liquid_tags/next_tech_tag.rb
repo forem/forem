@@ -1,13 +1,13 @@
 class NextTechTag < LiquidTagBase
   PARTIAL = "liquids/nexttech".freeze
 
-  def initialize(tag_name, share_url, tokens)
+  def initialize(_tag_name, share_url, _parse_context)
     super
     @token = parse_share_url(share_url)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         token: @token
@@ -30,7 +30,7 @@ class NextTechTag < LiquidTagBase
   #   - http://nt.dev/s/123456abcdef/
   #   - nt.dev/s/123456abcdef
   def valid_share_url?(share_url)
-    (share_url =~ /^(?:(?:http|https):\/\/)?nt\.dev\/s\/[a-z0-9]{12}\/{0,1}$/)&.zero?
+    (share_url =~ %r{^(?:(?:http|https)://)?nt\.dev/s/[a-z0-9]{12}/{0,1}$})&.zero?
   end
 end
 

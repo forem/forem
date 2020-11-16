@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "User edits their integrations", type: :system, js: true do
-  let(:user) { create(:user, saw_onboarding: true) }
+  let(:user) { create(:user) }
   let(:github_response_body) do
     [
       {
@@ -15,7 +15,8 @@ RSpec.describe "User edits their integrations", type: :system, js: true do
 
   before do
     sign_in user
-    stub_request(:get, "https://api.github.com/user/repos?per_page=100").to_return(status: 200, body: github_response_body.to_json, headers: { "Content-Type" => "application/json" })
+    stub_request(:get, "https://api.github.com/user/repos?per_page=100")
+      .to_return(status: 200, body: github_response_body.to_json, headers: { "Content-Type" => "application/json" })
   end
 
   describe "via visiting /settings" do

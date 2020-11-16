@@ -20,13 +20,13 @@ RSpec.describe "Follows #create", type: :request do
     before do
       rate_limit_checker = RateLimitChecker.new(user)
 
-      allow(rate_limit_checker).
-        to receive(:user_today_follow_count).
-        and_return(SiteConfig.rate_limit_follow_count_daily + 1)
+      allow(rate_limit_checker)
+        .to receive(:user_today_follow_count)
+        .and_return(SiteConfig.rate_limit_follow_count_daily + 1)
 
-      allow(RateLimitChecker).
-        to receive(:new).
-        and_return(rate_limit_checker)
+      allow(RateLimitChecker)
+        .to receive(:new)
+        .and_return(rate_limit_checker)
     end
 
     it "returns an error for too many follows in a day" do

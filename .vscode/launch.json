@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Attach to Node",
+      "port": 9229,
+      "request": "attach",
+      "skipFiles": ["node_modules/*", "<node_internals>/**/*.js"],
+      "type": "node"
+    },
+    {
       "type": "edge",
       "request": "attach",
       "name": "Attach to Edge",

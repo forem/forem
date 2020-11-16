@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe ReactionPolicy do
   subject { described_class.new(user, reaction) }
 
-  let_it_be(:comment) { create(:comment, commentable: create(:article)) }
-  let_it_be(:reaction) { create(:reaction, reactable: comment) }
+  let(:comment) { create(:comment, commentable: create(:article)) }
+  let(:reaction) { create(:reaction, reactable: comment) }
   let!(:user) { create(:user) }
 
   context "when user is not signed in" do

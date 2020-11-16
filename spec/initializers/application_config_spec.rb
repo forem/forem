@@ -1,6 +1,12 @@
 require "rails_helper"
 
 describe ApplicationConfig do
+  it "logs warning if key is not found" do
+    allow(Rails.logger).to receive(:debug)
+    described_class["missing"]
+    expect(Rails.logger).to have_received(:debug).with("Unset ENV variable: missing.")
+  end
+
   describe ".app_domain_no_port" do
     it "handles plain subdomain only name" do
       setup_app_domain("renner")
@@ -29,11 +35,7 @@ describe ApplicationConfig do
     private
 
     def setup_app_domain(app_domain)
-      # No #and_return for #have_received.
-      # rubocop:disable RSpec/MessageSpies
-      expect(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").
-        and_return(app_domain)
-      # rubocop:enable RSpec/MessageSpies
+      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return(app_domain)
     end
   end
 end

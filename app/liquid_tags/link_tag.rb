@@ -2,13 +2,14 @@ class LinkTag < LiquidTagBase
   include ActionView::Helpers
   PARTIAL = "articles/liquid".freeze
 
-  def initialize(_tag_name, slug_or_path_or_url, _tokens)
+  def initialize(_tag_name, slug_or_path_or_url, _parse_context)
+    super
     @article = get_article(slug_or_path_or_url)
     @title = @article.title if @article
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: { article: @article, title: @title },
     )
@@ -20,11 +21,19 @@ class LinkTag < LiquidTagBase
   end
 
   def article_hash(slug)
-    path = Addressable::URI.parse(slug).path
+    url = Addressable::URI.parse(slug)
+    domain = url.port ? "#{url.host}:#{url.port}" : url.host
+    path = url.path
+
+    # If domain is present in url check if it belongs to the app
+    unless domain.blank? || domain&.casecmp?(SiteConfig.app_domain)
+      raise StandardError, "The article you're looking for does not exist: {% link #{slug} %}"
+    end
+
     path.slice!(0) if path.starts_with?("/") # remove leading slash if present
     path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
     extracted_hash = Addressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
-    raise StandardError, "This URL is not an article link: {% link #{slug} %}" unless extracted_hash
+    raise StandardError, "The article you're looking for does not exist: {% link #{slug} %}" unless extracted_hash
 
     extracted_hash
   end

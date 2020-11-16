@@ -26,31 +26,37 @@ RSpec.describe "Articles", type: :request do
       expect { get "/feed/#{tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "sets Fastly Cache-Control headers" do
-      create(:article, featured: true)
-      get "/feed"
-      expect(response.status).to eq(200)
+    context "with caching headers" do
+      before do
+        create(:article, featured: true)
+        get "/feed"
+      end
 
-      expected_cache_control_headers = %w[public no-cache]
-      expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
-    end
+      it "sets Fastly Cache-Control headers" do
+        expect(response.status).to eq(200)
 
-    it "sets Fastly Surrogate-Control headers" do
-      create(:article, featured: true)
-      get "/feed"
-      expect(response.status).to eq(200)
+        expected_cache_control_headers = %w[public no-cache]
+        expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
+      end
 
-      expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
-      expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
-    end
+      it "sets Fastly Surrogate-Control headers" do
+        expect(response.status).to eq(200)
 
-    it "sets Fastly Surrogate-Key headers" do
-      create(:article, featured: true)
-      get "/feed"
-      expect(response.status).to eq(200)
+        expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
+        expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
+      end
 
-      expected_surrogate_key_headers = %w[feed]
-      expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      it "sets Fastly Surrogate-Key headers" do
+        expect(response.status).to eq(200)
+
+        expected_surrogate_key_headers = %w[feed]
+        expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+      end
+
+      it "sets Nginx X-Accel-Expires headers" do
+        expect(response.status).to eq(200)
+        expect(response.headers["X-Accel-Expires"]).to eq("600")
+      end
     end
 
     context "when :username param is not given" do
@@ -68,12 +74,14 @@ RSpec.describe "Articles", type: :request do
     shared_context "when user/organization articles exist" do
       let(:user) { create(:user) }
       let(:organization) { create(:organization) }
-      let!(:user_article) { create(:article, user: user) }
-      let!(:organization_article) { create(:article, organization: organization) }
     end
 
     context "when :username param is given and belongs to a user" do
       include_context "when user/organization articles exist"
+
+      let!(:user_article) { create(:article, user: user) }
+      let!(:organization_article) { create(:article, organization: organization) }
+
       before { get user_feed_path(user.username) }
 
       it "returns only articles for that user" do
@@ -88,6 +96,10 @@ RSpec.describe "Articles", type: :request do
 
     context "when :username param is given and belongs to an organization" do
       include_context "when user/organization articles exist"
+
+      let!(:user_article) { create(:article, user: user) }
+      let!(:organization_article) { create(:article, organization: organization) }
+
       before { get user_feed_path(organization.slug) }
 
       it "returns only articles for that organization" do
@@ -101,8 +113,6 @@ RSpec.describe "Articles", type: :request do
     end
 
     context "when :username param is given but it belongs to neither user nor organization" do
-      include_context "when user/organization articles exist"
-
       it "renders empty body" do
         expect do
           get feed_path("unknown")
@@ -127,15 +137,14 @@ RSpec.describe "Articles", type: :request do
   end
 
   describe "GET /feed/tag" do
-    shared_context "when tagged articles exist" do
-      let!(:tag_article) { create(:article, tags: tag.name) }
-    end
-
     context "when :tag param is given and tag exists" do
-      include_context "when tagged articles exist"
+      before do
+        create(:article, tags: tag.name)
+      end
 
       it "returns only articles for that tag" do
         article = create(:article, tags: ["foobar"])
+        # tag_article = create(:article, tags: tag.name)
 
         get tag_feed_path(tag.name)
 
@@ -143,6 +152,8 @@ RSpec.describe "Articles", type: :request do
         titles = rss_feed.entries.map(&:title)
 
         expect(titles).not_to include(article.title)
+
+        tag_article = Article.cached_tagged_with(tag.name).take
         expect(titles).to include(tag_article.title)
       end
 
@@ -161,21 +172,23 @@ RSpec.describe "Articles", type: :request do
     end
 
     context "when :tag param is given and tag exists and is an alias" do
-      include_context "when tagged articles exist"
       before do
+        create(:article, tags: tag.name)
         alias_tag = create(:tag, alias_for: tag.name)
         get "/feed/tag/#{alias_tag.name}"
       end
 
       it "returns only articles for the aliased for tag" do
+        tag_article = Article.cached_tagged_with(tag.name).take
+
         expect(response.body).to include(tag_article.title)
       end
     end
 
     context "when :tag param is given and tag does not exist" do
-      include_context "when tagged articles exist"
-
-      it("renders empty body") { expect { get "/feed/tag/unknown" }.to raise_error(ActiveRecord::RecordNotFound) }
+      it "renders empty body" do
+        expect { get "/feed/tag/unknown" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 

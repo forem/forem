@@ -1,4 +1,4 @@
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h3>Billing Details</h3>
 
   <% if current_user.stripe_id_code.blank? %>
@@ -46,7 +46,7 @@
   <script>
     setTimeout(function () {
       var handler = StripeCheckout.configure({
-        key: '<%= Rails.configuration.stripe[:publishable_key] %>',
+        key: '<%= SiteConfig.stripe_publishable_key %>',
         image: "https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg",
         locale: 'auto',
         token: function (token) {

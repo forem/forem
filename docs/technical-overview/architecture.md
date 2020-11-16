@@ -4,7 +4,7 @@
 
 Ruby on Rails is a web framework heavy on conventions over configuration. All
 else equal, we should try to follow Rails convention. We are currently on
-version 5.2.3, due for an upgrade to 6.x.x.
+version 6.x.x.
 
 ## We cache many content pages on the edge
 
@@ -22,19 +22,21 @@ We also use server-side caching: [Rails caching][rails_caching]. If you see
 `Rails.cache` or `<%= cache ... %>`, this is code affected in production by
 caching.
 
-## We use inline CSS and deferred scripts for usage performance improvements
+## We Mostly defer scripts for usage performance improvements
 
-To avoid blocking the initial render, we frequently write critical CSS inline,
-and we use the `defer` attribute to accelerate page loads. This practice results
-in a faster page load, and doesn't leave users waiting on heavy assets. However,
+To avoid blocking the initial render, we use the `defer` attribute to
+accelerate page renders. This practice results in a faster page load,
+and doesn't leave users waiting on heavy assets. However,
 this practice limits our ability to manipulate layout with JavaScript. As a
-rule, you should avoid relying on JavaScript for layout when working on DEV.
+rule, you should avoid relying on JavaScript for layout when working on Forem.
+
+We have also experimented with different techniques involving inline CSS
 
 ## We attempt to reduce our bundle size
 
 We use [PreactJS](/frontend/preact), a lightweight alternative to ReactJS, and
 we try to reduce our bundle size with
-[dynamic imports](frontend/dynamic-imports).
+[dynamic imports](/frontend/dynamic-imports).
 
 ## Service workers and shell architecture
 
@@ -78,7 +80,7 @@ shared among all users.
 
 ## Inter-page navigation
 
-DEV uses a variation of "instant click", via
+Forem uses a variation of "instant click", via
 [InstantClick](/frontend/instant-click), which swaps out page content instead of
 making full-page requests. This approach is similar to the one used by the Rails
 gem `Turbolinks`, but our approach is more lightweight. The library is modified
@@ -111,6 +113,12 @@ Articles are the primary form of user generated content in the application. An
 Article has many comments and taggings through the acts-as-taggable gem, belongs
 to a single user (and possibly an organization), and is the core unit of
 content.
+
+## Collections (or series)
+
+Although the source code refers to them as "collections" groups of articles are
+referred to, throughout the user interface, as "series". They represent a
+collection of articles relating to the same topic, indeed, a series.
 
 ## Comments
 
@@ -150,7 +158,7 @@ The functionality of credits may be expanded in the future.
 
 Users can belong to organizations, which have their own profile pages where
 posts can be published etc. This can be any group endeavor such as a company, an
-open source project, or any standalone publication on DEV.
+open source project, or any standalone publication on Forem.
 
 ## Reactions
 
@@ -181,10 +189,10 @@ Example: "This user was warned for spammy content".
 
 ## Pages
 
-`Pages` in the [internal dashboard](/internal/) represent static pages to be
-served on the site. Admins are in full control to create and customize them to
-their needs using markdown or custom HTML. Pages are configured with a `slug`
-and they will be served on either the `/page/slug` or `/slug` path.
+`Pages` in the [admin dashboard](/admin/) represent static pages to be served on
+the site. Admins are in full control to create and customize them to their needs
+using markdown or custom HTML. Pages are configured with a `slug` and they will
+be served on either the `/page/slug` or `/slug` path.
 
 In order to ease development of custom HTML Pages in local environments the rake
 task `pages:sync` is available. It will listen to changes made to a local HTML

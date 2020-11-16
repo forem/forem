@@ -66,7 +66,7 @@ class RunkitTag < Liquid::Block
     activateRunkitTags();
   JAVASCRIPT
 
-  def initialize(tag_name, markup, tokens)
+  def initialize(_tag_name, markup, _parse_context)
     super
     @preamble = sanitized_preamble(markup)
   end
@@ -74,7 +74,7 @@ class RunkitTag < Liquid::Block
   def render(context)
     content = Nokogiri::HTML.parse(super)
     parsed_content = content.xpath("//html/body").text
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         preamble: @preamble,

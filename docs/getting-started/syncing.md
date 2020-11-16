@@ -4,15 +4,15 @@ title: Keeping Your Fork In Sync
 
 # Keeping your fork in sync
 
-Now that you have a fork of DEV's source code, there is work you will need to do
-to keep it updated.
+Now that you have a fork of Forem's source code, there is work you will need to
+do to keep it updated.
 
 ## Setup your upstream
 
-Inside your DEV directory, add a remote to the official DEV repo:
+Inside your Forem directory, add a remote to the official Forem repo:
 
 ```shell
-git remote add upstream https://github.com/thepracticaldev/dev.to.git
+git remote add upstream https://github.com/forem/forem.git
 ```
 
 ## Rebasing from upstream

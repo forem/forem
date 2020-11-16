@@ -107,6 +107,7 @@ RSpec.configure do |config|
     backtrace = backtrace.join("   ") if backtrace
     retry_attempt = ex.metadata[:retry_attempts]
 
-    RSpecRetryFormatterHelper.instance.rows << [description, file, status, start_date, start_time, run_time, exception, backtrace, retry_attempt]
+    RSpecRetryFormatterHelper.instance.rows << [description, file, status, start_date, start_time, run_time,
+                                                exception, backtrace, retry_attempt]
   end
 end

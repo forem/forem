@@ -6,7 +6,7 @@ RSpec.describe RateLimitChecker, type: :service do
   let(:rate_limit_checker) { described_class.new(user) }
 
   def cache_key(action)
-    rate_limit_checker.send("limit_cache_key", action)
+    rate_limit_checker.__send__("limit_cache_key", action)
   end
 
   describe "#limit_by_action" do
@@ -26,8 +26,10 @@ RSpec.describe RateLimitChecker, type: :service do
       expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: no unique component present")
     end
 
-    # published_article_creation limit we check against the database rather than our cache
-    described_class::ACTION_LIMITERS.except(:published_article_creation).each do |action, _options|
+    # We check published_article_creation + :published_article_antispam_creation
+    # limit against database, rather than our cache.
+    described_class::ACTION_LIMITERS.except(:published_article_creation,
+                                            :published_article_antispam_creation).each do |action, _options|
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
           cache_key(action), raw: true
@@ -60,6 +62,12 @@ RSpec.describe RateLimitChecker, type: :service do
       end
     end
 
+    it "returns true if too many published articles at once and potentially spammy" do
+      allow(SiteConfig).to receive(:rate_limit_published_article_antispam_creation).and_return(1)
+      create_list(:article, 2, user_id: user.id, published: true)
+      expect(rate_limit_checker.limit_by_action("published_article_antispam_creation")).to be(true)
+    end
+
     it "returns true if too many published articles at once" do
       allow(SiteConfig).to receive(:rate_limit_published_article_creation).and_return(1)
       create_list(:article, 2, user_id: user.id, published: true)
@@ -67,27 +75,31 @@ RSpec.describe RateLimitChecker, type: :service do
     end
 
     it "returns true if a user has followed more than <daily_limit> accounts today" do
-      allow(rate_limit_checker).
-        to receive(:user_today_follow_count).
-        and_return(SiteConfig.rate_limit_follow_count_daily + 1)
+      allow(rate_limit_checker)
+        .to receive(:user_today_follow_count)
+        .and_return(SiteConfig.rate_limit_follow_count_daily + 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to be(true)
     end
 
     it "returns false if a user's following_users_count is less than <daily_limit>" do
-      allow(user).
-        to receive(:following_users_count).
-        and_return(SiteConfig.rate_limit_follow_count_daily - 1)
+      allow(user)
+        .to receive(:following_users_count)
+        .and_return(SiteConfig.rate_limit_follow_count_daily - 1)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to be(false)
     end
 
     it "returns false if a user has followed less than <daily_limit> accounts today" do
-      allow(rate_limit_checker).
-        to receive(:user_today_follow_count).
-        and_return(SiteConfig.rate_limit_follow_count_daily)
+      allow(rate_limit_checker)
+        .to receive(:user_today_follow_count)
+        .and_return(SiteConfig.rate_limit_follow_count_daily)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to be(false)
+    end
+
+    it "returns false if published articles antispam limit has not been reached" do
+      expect(described_class.new(user).limit_by_action("published_article_antispam_creation")).to be(false)
     end
 
     it "returns false if published articles limit has not been reached" do
@@ -95,9 +107,9 @@ RSpec.describe RateLimitChecker, type: :service do
     end
 
     it "logs a rate limit hit to datadog" do
-      allow(Rails.cache).
-        to receive(:read).with("#{user.id}_organization_creation", raw: true).
-        and_return(SiteConfig.rate_limit_organization_creation + 1)
+      allow(Rails.cache)
+        .to receive(:read).with("#{user.id}_organization_creation", raw: true)
+        .and_return(SiteConfig.rate_limit_organization_creation + 1)
       allow(DatadogStatsClient).to receive(:increment)
       described_class.new(user).limit_by_action("organization_creation")
 

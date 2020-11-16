@@ -28,8 +28,8 @@ RSpec.describe "EmailSubscriptions", type: :request do
     end
 
     it "handles error properly" do
-      expect { get email_subscriptions_unsubscribe_url }.
-        to raise_error(ActiveRecord::RecordNotFound)
+      expect { get email_subscriptions_unsubscribe_url }
+        .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "won't work if it's past expiration date" do

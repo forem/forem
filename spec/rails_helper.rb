@@ -13,9 +13,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
-require "test_prof/recipes/rspec/before_all"
-require "test_prof/recipes/rspec/let_it_be"
-require "test_prof/recipes/rspec/sample"
 require "sidekiq/testing"
 require "validate_url/rspec_matcher"
 
@@ -51,6 +48,7 @@ allowed_sites = [
   "selenium-release.storage.googleapis.com",
   "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
   "api.knapsackpro.com",
+  "elasticsearch",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
@@ -70,7 +68,6 @@ RSpec.configure do |config|
 
   config.include ApplicationHelper
   config.include ActionMailer::TestHelper
-  config.include ActiveJob::TestHelper
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :request
@@ -88,6 +85,10 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
+    # Set the TZ ENV variable with the current random timezone from zonebie
+    # which we can then use to properly set the browser time for Capybara specs
+    ENV["TZ"] = Time.zone.tzinfo.name
+
     Search::Cluster.recreate_indexes
   end
 
@@ -138,32 +139,41 @@ RSpec.configure do |config|
   config.before do
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 
-    stub_request(:post, /api.fastly.com/).
-      to_return(status: 200, body: "".to_json, headers: {})
+    stub_request(:any, /emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/).to_rack("stubbed-emoji")
 
-    stub_request(:post, /api.bufferapp.com/).
-      to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
+    stub_request(:post, /api.fastly.com/)
+      .to_return(status: 200, body: "".to_json, headers: {})
+
+    stub_request(:any, /localhost:9090/)
+      .to_return(status: 200, body: "OK".to_json, headers: {})
+
+    stub_request(:post, /api.bufferapp.com/)
+      .to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
 
     # for twitter image cdn
-    stub_request(:get, /twimg.com/).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:get, /twimg.com/)
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /api.mailchimp.com/).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:any, /api.mailchimp.com/)
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /dummyimage.com/).
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:any, /dummyimage.com/)
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:post, "http://www.google-analytics.com/collect").
-      to_return(status: 200, body: "", headers: {})
+    stub_request(:post, "http://www.google-analytics.com/collect")
+      .to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /robohash.org/).
-      with(headers:
+    stub_request(:any, /robohash.org/)
+      .with(headers:
             {
               "Accept" => "*/*",
               "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
               "User-Agent" => "Ruby"
             }).to_return(status: 200, body: "", headers: {})
+
+    allow(SiteConfig).to receive(:community_description).and_return("Some description")
+    allow(SiteConfig).to receive(:public).and_return(true)
+    allow(SiteConfig).to receive(:waiting_on_first_user).and_return(false)
   end
 
   config.after do

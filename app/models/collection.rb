@@ -1,5 +1,6 @@
 class Collection < ApplicationRecord
-  has_many :articles
+  has_many :articles, dependent: :nullify
+
   belongs_to :user
   belongs_to :organization, optional: true
 
@@ -10,6 +11,10 @@ class Collection < ApplicationRecord
 
   def self.find_series(slug, user)
     Collection.find_or_create_by(slug: slug, user: user)
+  end
+
+  def path
+    "/#{user.username}/series/#{id}"
   end
 
   private

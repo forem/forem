@@ -1,14 +1,12 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
 
-  # Called upon successful redirect from Twitter
-  def twitter
-    callback_for(:twitter)
-  end
-
-  # Called upon successful redirect from GitHub
-  def github
-    callback_for(:github)
+  # Each available authentication method needs a related action that will be called
+  # as a callback on successful redirect from the upstream OAuth provider
+  Authentication::Providers.available.each do |provider_name|
+    define_method(provider_name) do
+      callback_for(provider_name)
+    end
   end
 
   # Callback for third party failures (shared by all providers)
@@ -72,18 +70,20 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       user_errors = @user.errors.full_messages
 
-      Rails.logger.error("Log in error: sign in failed. username: #{@user.username} - email: #{@user.email}")
-      Rails.logger.error("Log in error: auth data hash - #{request.env['omniauth.auth']}")
-      Rails.logger.error("Log in error: auth data hash - #{request.env['omniauth.error']&.inspect}")
-      Rails.logger.error("Log in error: user_errors: #{user_errors}")
+      Honeybadger.context({
+                            username: @user.username,
+                            user_id: @user.id,
+                            auth_data: request.env["omniauth.auth"],
+                            auth_error: request.env["omniauth.error"].inspect,
+                            user_errors: user_errors
+                          })
+      Honeybadger.notify("Omniauth log in error")
 
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
   rescue StandardError => e
-    Rails.logger.error("Log in error: #{e}")
-    Rails.logger.error("Log in error: auth data hash - #{request.env['omniauth.auth']}")
-    Rails.logger.error("Log in error: auth data hash - #{request.env['omniauth.error']&.inspect}")
+    Honeybadger.notify(e)
 
     flash[:alert] = "Log in error: #{e}"
     redirect_to new_user_registration_url

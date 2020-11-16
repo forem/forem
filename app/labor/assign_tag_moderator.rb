@@ -3,9 +3,9 @@ module AssignTagModerator
     return if user.has_role?(:trusted)
     return if user.has_role?(:banned)
 
-    user.add_role :trusted
+    user.add_role(:trusted)
     user.update(email_community_mod_newsletter: true)
-    MailchimpBot.new(user).manage_community_moderator_list
+    MailchimpBot.new(user).manage_community_moderator_list if community_mod_newsletter_enabled?
     Rails.cache.delete("user-#{user.id}/has_trusted_role")
     NotifyMailer.with(user: user).trusted_role_email.deliver_now
   end
@@ -17,19 +17,24 @@ module AssignTagModerator
       add_tag_mod_role(user, tag)
       add_trusted_role(user)
       add_to_chat_channels(user, tag)
+      tag.update(supported: true) unless tag.supported?
 
-      NotifyMailer.with(user: user, tag: tag, channel_slug: chat_channel_slug(tag)).
-        tag_moderator_confirmation_email.
-        deliver_now
+      NotifyMailer.with(user: user, tag: tag, channel_slug: chat_channel_slug(tag))
+        .tag_moderator_confirmation_email
+        .deliver_now
     end
   end
 
   def self.add_to_chat_channels(user, tag)
-    ChatChannel.find_by(slug: "tag-moderators").add_users(user) if user.chat_channels.where(slug: "tag-moderators").none?
-    if tag.mod_chat_channel_id
-      ChatChannel.find(tag.mod_chat_channel_id).add_users(user) if user.chat_channels.where(id: tag.mod_chat_channel_id).none?
-    else
-      channel = ChatChannel.create_with_users(
+    user_channels = user.chat_channels
+
+    ChatChannel.find_by(slug: "tag-moderators")&.add_users(user) unless
+      user_channels.exists?(slug: "tag-moderators")
+
+    if tag.mod_chat_channel_id && !user_channels.exists?(id: tag.mod_chat_channel_id)
+      ChatChannel.find(tag.mod_chat_channel_id).add_users(user)
+    elsif tag.mod_chat_channel_id.blank?
+      channel = ChatChannels::CreateWithUsers.call(
         users: ([user] + User.with_role(:mod_relations_admin)).flatten.uniq,
         channel_type: "invite_only",
         contrived_name: "##{tag.name} mods",
@@ -42,17 +47,25 @@ module AssignTagModerator
     user.update(email_tag_mod_newsletter: true) if user.email_tag_mod_newsletter == false
     user.add_role(:tag_moderator, tag)
     Rails.cache.delete("user-#{user.id}/tag_moderators_list")
-    MailchimpBot.new(user).manage_tag_moderator_list
+    MailchimpBot.new(user).manage_tag_moderator_list if tag_mod_newsletter_enabled?
   end
 
   def self.remove_tag_moderator(user, tag)
     user.remove_role(:tag_moderator, tag)
     user.update(email_tag_mod_newsletter: false) if user.email_tag_mod_newsletter == true
     Rails.cache.delete("user-#{user.id}/tag_moderators_list")
-    MailchimpBot.new(user).manage_tag_moderator_list
+    MailchimpBot.new(user).manage_tag_moderator_list if tag_mod_newsletter_enabled?
   end
 
   def self.chat_channel_slug(tag)
     tag.mod_chat_channel&.slug
+  end
+
+  def self.community_mod_newsletter_enabled?
+    SiteConfig.mailchimp_api_key.present? && SiteConfig.mailchimp_community_moderators_id.present?
+  end
+
+  def self.tag_mod_newsletter_enabled?
+    SiteConfig.mailchimp_api_key.present? && SiteConfig.mailchimp_tag_moderators_id.present?
   end
 end

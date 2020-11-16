@@ -2,7 +2,9 @@ require "rails_helper"
 require "rss"
 
 RSpec.describe Podcasts::EpisodeRssItem, type: :service do
-  let(:enclosure) { instance_double("RSS::Rss::Channel::Item::Enclosure", url: "https://audio.simplecast.com/2330f132.mp3") }
+  let(:enclosure) do
+    instance_double("RSS::Rss::Channel::Item::Enclosure", url: "https://audio.simplecast.com/2330f132.mp3")
+  end
   let(:guid) { "<guid isPermaLink=\"false\">http://podcast.example/file.mp3</guid>" }
   let(:item) do
     instance_double("RSS::Rss::Channel::Item", pubDate: "2019-06-19",

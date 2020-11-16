@@ -43,7 +43,7 @@ checks:
 plugins:
   rubocop:
     enabled: true
-    channel: rubocop-0-71
+    channel: rubocop-0-86
   brakeman:
     enabled: true
   eslint:

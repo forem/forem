@@ -1,13 +1,21 @@
 module Notifications
   module Reactions
-    module Types
-      include Dry.Types
-    end
+    class ReactionData
+      class DataError < RuntimeError; end
 
-    class ReactionData < Dry::Struct
-      attribute :reactable_id, Types::Strict::Integer
-      attribute :reactable_type, Types::Strict::String.enum("Article", "Comment")
-      attribute :reactable_user_id, Types::Strict::Integer
+      include ActiveModel::Model
+      include ActiveModel::Validations
+
+      attr_accessor :reactable_id, :reactable_type, :reactable_user_id
+
+      validates :reactable_id, numericality: { only_integer: true }
+      validates :reactable_type, inclusion: { in: %w[Article Comment] }
+      validates :reactable_user_id, numericality: { only_integer: true }
+
+      def initialize(*args, **kwargs)
+        super
+        raise DataError unless valid?
+      end
     end
   end
 end

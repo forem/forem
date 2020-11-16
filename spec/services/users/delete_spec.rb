@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Users::Delete, type: :service do
   before { omniauth_mock_github_payload }
 
-  let(:user) { create(:user, :with_identity, identities: ["github"]) }
+  let(:user) { create(:user, :trusted, :with_identity, identities: ["github"]) }
 
   it "deletes user" do
     described_class.call(user)
@@ -66,20 +66,6 @@ RSpec.describe Users::Delete, type: :service do
     expect { article.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
   end
 
-  it "removes reactions from Elasticsearch" do
-    article = create(:article, user: user)
-    reaction = create(:reaction, category: "readinglist", reactable: article)
-    user_reaction = create(:reaction, user_id: user.id, category: "readinglist")
-    sidekiq_perform_enqueued_jobs
-    expect(reaction.elasticsearch_doc).not_to be_nil
-    expect(user_reaction.elasticsearch_doc).not_to be_nil
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user)
-    end
-    expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-    expect { user_reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-  end
-
   it "deletes field tests memberships" do
     create(:field_test_membership, participant_id: user.id)
 
@@ -88,15 +74,29 @@ RSpec.describe Users::Delete, type: :service do
     end.to change(FieldTest::Membership, :count).by(-1)
   end
 
-  # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
+  # check that all the associated records are being destroyed,
+  # except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
     let(:kept_association_names) do
       %i[
-        affected_feedback_messages audit_logs created_podcasts notes
-        offender_feedback_messages reporter_feedback_messages
+        affected_feedback_messages
+        audit_logs
+        banished_users
+        buffer_updates_approved
+        buffer_updates_composed
+        created_podcasts
+        offender_feedback_messages
+        page_views
+        rating_votes
+        reporter_feedback_messages
+        tweets
       ]
     end
-    let(:direct_associations) { User.reflect_on_all_associations.reject { |a| a.options.key?(:join_table) || a.options.key?(:through) } }
+    let(:direct_associations) do
+      User.reflect_on_all_associations.reject do |a|
+        a.options.key?(:join_table) || a.options.key?(:through)
+      end
+    end
     let!(:user_associations) do
       create_associations(direct_associations.reject { |a| kept_association_names.include?(a.name) })
     end
@@ -124,6 +124,8 @@ RSpec.describe Users::Delete, type: :service do
             next
           end
 
+          next if possible_factory_name == "invited_by"
+
           record = create(possible_factory_name, inverse_of => user)
           associations.push(record)
         end
@@ -138,7 +140,7 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should exist" do
         kept_associations.each do |kept_association|
-          expect { kept_association.reload }.not_to raise_error
+          expect { kept_association.reload }.not_to raise_error, kept_association
         end
       end
     end
@@ -150,23 +152,23 @@ RSpec.describe Users::Delete, type: :service do
       described_class.call(user)
       aggregate_failures "associations should not exist" do
         user_associations.each do |user_association|
-          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound), user_association
         end
       end
     end
   end
 
   context "when cleaning up chat channels" do
-    let_it_be(:other_user) { create(:user) }
+    let(:other_user) { create(:user) }
 
     it "deletes the user's private chat channels" do
-      chat_channel = ChatChannel.create_with_users(users: [user, other_user])
+      chat_channel = ChatChannels::CreateWithUsers.call(users: [user, other_user])
       described_class.call(user)
       expect(ChatChannel.find_by(id: chat_channel.id)).to be_nil
     end
 
     it "does not delete the user's open channels" do
-      chat_channel = ChatChannel.create_with_users(users: [user, other_user], channel_type: "open")
+      chat_channel = ChatChannels::CreateWithUsers.call(users: [user, other_user], channel_type: "open")
       described_class.call(user)
       expect(ChatChannel.find_by(id: chat_channel.id)).not_to be_nil
     end

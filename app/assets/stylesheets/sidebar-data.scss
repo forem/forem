@@ -5,17 +5,10 @@
   border-radius: 3px;
   font-weight: bold;
   margin-bottom: 32px;
-  font-family: var(--ff-accent);
+  font-family: var(--ff-monospace);
   padding: 16px;
   @include themeable(color, theme-secondary-color, $dark-medium-gray);
   color: var(--card-color-tertiary);
-  .mod-action-button {
-    padding: 2px 9px;
-    font-size: 1.2em;
-    display: block;
-    margin-top: 5px;
-    border-radius: 3px;
-  }
   hr {
     opacity: 0.3;
     margin: 25px 0px 15px;

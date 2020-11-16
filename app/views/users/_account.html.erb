@@ -1,11 +1,13 @@
 <%= render "users/additional_authentication" %>
 
+<%= render "users/account_set_password" %>
+
 <%= render "users/account_providers_emails" %>
 
-<div class="crayons-card mb-6 p-6 grid gap-6">
+<div class="crayons-card crayons-card--content-rows">
   <header>
     <h2 class="mb-2"><%= community_name %> API Keys</h2>
-    <p>You can generate personal API keys to use for authentication with the <%= community_name %> API. The API is still in early beta though. The <a href="https://docs.dev.to/api"><%= community_name %> API documentation</a> contains further information.</a></p>
+    <p>You can generate personal API keys to use for authentication with the <%= community_name %> API.  The API is still in its beta stage. The <a href="https://docs.forem.com/api">documentation</a> contains further information.</a></p>
   </header>
 
   <div>
@@ -31,7 +33,7 @@
           <summary class="title fw-medium"><%= api_secret.description %></summary>
           <div class="flex pt-2">
             <div class="flex-1 pl-4">
-              <p class="ff-accent"><%= api_secret.secret %></p>
+              <p class="ff-monospace"><%= api_secret.secret %></p>
               <p class="fs-s">Created: <time datetime="<%= api_secret.created_at.rfc3339 %>"><%= api_secret.created_at.to_s %></time></p>
             </div>
             <%= form_tag users_api_secret_path(api_secret.id), class: "api__secret__revoke", method: :delete do %>
@@ -44,7 +46,7 @@
   <% end %>
 </div>
 
-<div class="crayons-card p-6 grid gap-6">
+<div class="crayons-card crayons-card--content-rows">
   <h2 class="color-accent-danger">Danger Zone</h2>
 
   <% if @user.identities.enabled.size > 1 %>
@@ -64,7 +66,7 @@
       </p>
     </div>
 
-    <% authentication_enabled_providers.each do |provider| %>
+    <% authentication_enabled_providers_for_user.each do |provider| %>
       <% onsubmit = "return confirm('Are you absolutely sure you want to remove your #{provider.official_name} account?');" %>
       <%= form_tag users_remove_identity_path, method: :delete, onsubmit: onsubmit do %>
         <%= hidden_field_tag :provider, provider.provider_name %>
@@ -103,13 +105,6 @@
   </div>
 
   <div>
-    <% if current_user.articles_count.positive? || current_user.comments_count.positive? %>
-      <p>
-        If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
-        please <%= email_link(text: "click here", additional_info: { subject: "Request Account Deletion", body: @email_body }) %>.
-      </p>
-    <% end %>
-
     <p>Feel free to contact <%= email_link %> with any questions.</p>
   </div>
 </div>

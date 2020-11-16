@@ -8,12 +8,31 @@ RSpec.describe "NotificationSubscriptions", type: :request do
   let(:headers) { { Accept: "application/json" } }
   let(:comment) { create(:comment, commentable: article, user: user) }
   let(:parent_comment_by_og)                    { create(:comment, commentable: article, user: user) }
-  let(:child_of_parent_by_other)              { create(:comment, commentable: article, user: other_user, ancestry: parent_comment_by_og.id.to_s) }
-  let(:child_of_child_by_og)                { create(:comment, commentable: article, user: user, ancestry: "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}") }
-  let(:child_of_child_of_child_by_other)  { create(:comment, commentable: article, user: other_user, ancestry: "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}/#{child_of_child_by_og.id}") }
-  let(:child_of_child_of_child_by_og)     { create(:comment, commentable: article, user: user, ancestry: "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}/#{child_of_child_by_og.id}/#{child_of_child_by_other.id}") }
-  let(:child_of_child_by_other)             { create(:comment, commentable: article, user: other_user, ancestry: "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}") }
-  let(:child2_of_child_of_child_by_og) { create(:comment, commentable: article, user: user, ancestry: "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}/#{child_of_child_by_other.id}") }
+  let(:child_of_parent_by_other) do
+    create(:comment, commentable: article, user: other_user, ancestry: parent_comment_by_og.id.to_s)
+  end
+  let(:child_of_child_by_og) do
+    create(:comment, commentable: article, user: user,
+                     ancestry: "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}")
+  end
+  let(:child_of_child_of_child_by_other) do
+    create(:comment, commentable: article, user: other_user,
+                     ancestry: "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}/#{child_of_child_by_og.id}")
+  end
+  let(:child_of_child_of_child_by_og) do
+    path = "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}"
+    ancestry = "#{path}/#{child_of_child_by_og.id}/#{child_of_child_by_other.id}"
+
+    create(:comment, commentable: article, user: user, ancestry: ancestry)
+  end
+  let(:child_of_child_by_other) do
+    create(:comment, commentable: article, user: other_user,
+                     ancestry: "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}")
+  end
+  let(:child2_of_child_of_child_by_og) do
+    ancestry = "#{parent_comment_by_og.id}/#{child_of_parent_by_other.id}/#{child_of_child_by_other.id}"
+    create(:comment, commentable: article, user: user, ancestry: ancestry)
+  end
   let(:parent_comment_by_other) { create(:comment, commentable: article, user: other_user) }
 
   describe "#show or GET /notification_subscriptions/:notifiable_type/:notifiable_id" do
@@ -101,19 +120,26 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       end
 
       it "mutes the parent comment" do
-        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { config: "not_subscribed" }
-        expect(parent_comment_by_og.reload.receive_notifications).to be false
+        params = { config: "not_subscribed" }
+        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: params
+
+        expect(parent_comment_by_og.reload.receive_notifications).to be(false)
       end
 
       it "does not mute the someone else's parent comment" do
-        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { config: "all_comments" }
-        expect(parent_comment_by_other.reload.receive_notifications).to be true
+        params = { config: "all_comments" }
+        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: params
+
+        expect(parent_comment_by_other.reload.receive_notifications).to be(true)
       end
 
       it "unmutes the parent comment if already muted" do
         parent_comment_by_og.update(receive_notifications: false)
-        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { config: "all_comments" }
-        expect(parent_comment_by_og.reload.receive_notifications).to eq true
+
+        params = { config: "all_comments" }
+        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: params
+
+        expect(parent_comment_by_og.reload.receive_notifications).to be(true)
       end
     end
 
@@ -124,7 +150,9 @@ RSpec.describe "NotificationSubscriptions", type: :request do
         child2_of_child_of_child_by_og
         parent_comment_by_other
         sign_in user
-        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { config: "not_subscribed" }
+
+        params = { config: "not_subscribed" }
+        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: params
       end
 
       it "mutes all of the original commenter's comments in a single thread" do

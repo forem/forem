@@ -23,7 +23,12 @@ If you run into issues while trying to run `bin/setup` and the error message
 isn't helpful, try running `bin/rails s -p 3000`. For example, you may need to
 `yarn install` before starting the app.
 
-If you're working on DEV regularly, you can use `alias start="bin/startup"` to
+If Sidekiq is producing errors similar to
+`No such file or directory - [SOME FILE]`, you may need to start Sidekiq by
+itself once to help it initialize itself fully. You can use the command
+`bundle exec sidekiq` to do this.
+
+If you're working on Forem regularly, you can use `alias start="bin/startup"` to
 make this even easier. 😊
 
 If you're using **`pry`** for debugging in Rails, note that using `foreman` and

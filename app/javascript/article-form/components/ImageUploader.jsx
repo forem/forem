@@ -1,22 +1,11 @@
-import { h, Component } from 'preact';
+/* global Runtime */
+
+import { h } from 'preact';
+import { useReducer } from 'preact/hooks';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { ClipboardButton } from './ClipboardButton';
 import { Button, Spinner } from '@crayons';
-
-function isNativeAndroid() {
-  return (
-    navigator.userAgent === 'DEV-Native-android' &&
-    typeof AndroidBridge !== 'undefined' &&
-    AndroidBridge !== null
-  );
-}
-
-function isClipboardSupported() {
-  return (
-    typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
-  );
-}
 
 const ImageIcon = () => (
   <svg
@@ -35,136 +24,146 @@ const ImageIcon = () => (
 
 ImageIcon.displayName = 'ImageIcon';
 
-export class ImageUploader extends Component {
-  state = {
+function imageUploaderReducer(state, action) {
+  const { type, payload } = action;
+
+  switch (type) {
+    case 'uploading_image':
+      return {
+        ...state,
+        uploadError: false,
+        uploadingErrorMessage: null,
+        uploadingImage: true,
+        insertionImageUrls: [],
+        showImageCopiedMessage: false,
+      };
+
+    case 'upload_error':
+      return {
+        ...state,
+        insertionImageUrls: [],
+        uploadError: true,
+        uploadErrorMessage: payload.errorMessage,
+        uploadingImage: false,
+      };
+
+    case 'show_copied_image_message':
+      return {
+        ...state,
+        showImageCopiedMessage: true,
+      };
+
+    case 'upload_image_success':
+      return {
+        ...state,
+        insertionImageUrls: payload.insertionImageUrls,
+        uploadingImage: false,
+      };
+
+    default:
+      return state;
+  }
+}
+
+export const ImageUploader = () => {
+  const [state, dispatch] = useReducer(imageUploaderReducer, {
     insertionImageUrls: [],
     uploadError: false,
     uploadErrorMessage: null,
     showImageCopiedMessage: false,
     uploadingImage: false,
-  };
+  });
 
-  onUploadError = (error) => {
-    this.setState({
-      insertionImageUrls: [],
-      uploadError: true,
-      uploadErrorMessage: error.message,
-      uploadingImage: false,
+  const {
+    uploadingImage,
+    showImageCopiedMessage,
+    uploadErrorMessage,
+    uploadError,
+    insertionImageUrls,
+  } = state;
+
+  let imageMarkdownInput = null;
+
+  function onUploadError(error) {
+    dispatch({
+      type: 'upload_error',
+      payload: { errorMessage: error.message },
     });
-  };
+  }
 
-  copyText = () => {
-    this.imageMarkdownInput = document.getElementById(
+  function copyText() {
+    imageMarkdownInput = document.getElementById(
       'image-markdown-copy-link-input',
     );
 
-    if (isNativeAndroid()) {
-      AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
-      this.setState({ showImageCopiedMessage: true });
-    } else if (isClipboardSupported()) {
-      navigator.clipboard
-        .writeText(this.imageMarkdownInput.value)
-        .then(() => {
-          this.setState({ showImageCopiedMessage: true });
-        })
-        .catch((_err) => {
-          this.execCopyText();
-        });
-    } else {
-      this.execCopyText();
-    }
-  };
+    Runtime.copyToClipboard(imageMarkdownInput.value).then(() => {
+      dispatch({
+        type: 'show_copied_image_message',
+      });
+    });
+  }
 
-  handleInsertionImageUpload = (e) => {
+  function handleInsertionImageUpload(e) {
     const { files } = e.target;
 
     if (files.length > 0 && validateFileInputs()) {
       const payload = { image: files };
-
-      this.setState({
-        uploadError: false,
-        uploadErrorMessage: null,
-        uploadingImage: true,
-        insertionImageUrls: [],
-        showImageCopiedMessage: false,
+      dispatch({
+        type: 'uploading_image',
       });
 
-      generateMainImage(
-        payload,
-        this.handleInsertImageUploadSuccess,
-        this.onUploadError,
-      );
+      generateMainImage(payload, handleInsertImageUploadSuccess, onUploadError);
     }
-  };
+  }
 
-  handleInsertImageUploadSuccess = (response) => {
-    this.setState({
-      uploadingImage: false,
-      insertionImageUrls: response.links,
+  function handleInsertImageUploadSuccess(response) {
+    dispatch({
+      type: 'upload_image_success',
+      payload: { insertionImageUrls: response.links },
     });
-  };
-
-  execCopyText() {
-    this.imageMarkdownInput.setSelectionRange(
-      0,
-      this.imageMarkdownInput.value.length,
-    );
-    document.execCommand('copy');
-    this.setState({ showImageCopiedMessage: true });
   }
 
-  render() {
-    const {
-      insertionImageUrls,
-      uploadError,
-      uploadErrorMessage,
-      showImageCopiedMessage,
-      uploadingImage,
-    } = this.state;
-
-    return (
-      <div className="flex items-center">
-        {uploadingImage ? (
-          <span class="lh-base pl-3 border-0 py-2 inline-block">
-            <Spinner /> Uploading...
-          </span>
-        ) : (
-          <Button
-            className="mr-2 fw-normal"
-            variant="ghost"
-            contentType="icon-left"
-            icon={ImageIcon}
-            tabIndex="-1"
-          >
-            Upload image
-            <input
-              type="file"
-              id="image-upload-field"
-              onChange={this.handleInsertionImageUpload}
-              className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
-              multiple
-              accept="image/*"
-              data-max-file-size-mb="25"
-              tabIndex="-1"
-              aria-label="Upload an image"
-            />
-          </Button>
-        )}
-
-        {insertionImageUrls.length > 0 && (
-          <ClipboardButton
-            onCopy={this.copyText}
-            imageUrls={insertionImageUrls}
-            showCopyMessage={showImageCopiedMessage}
+  return (
+    <div className="flex items-center">
+      {uploadingImage ? (
+        <span class="lh-base pl-3 border-0 py-2 inline-block">
+          <Spinner /> Uploading...
+        </span>
+      ) : (
+        <Button
+          className="mr-2 fw-normal"
+          variant="ghost"
+          contentType="icon-left"
+          icon={ImageIcon}
+          tabIndex="-1"
+        >
+          Upload image
+          <input
+            type="file"
+            id="image-upload-field"
+            onChange={handleInsertionImageUpload}
+            className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
+            multiple
+            accept="image/*"
+            data-max-file-size-mb="25"
+            aria-label="Upload an image"
           />
-        )}
+        </Button>
+      )}
 
-        {uploadError && (
-          <span className="color-accent-danger">{uploadErrorMessage}</span>
-        )}
-      </div>
-    );
-  }
-}
+      {insertionImageUrls.length > 0 && (
+        <ClipboardButton
+          onCopy={copyText}
+          imageUrls={insertionImageUrls}
+          showCopyMessage={showImageCopiedMessage}
+        />
+      )}
+
+      {uploadError && (
+        <span className="color-accent-danger">{uploadErrorMessage}</span>
+      )}
+    </div>
+  );
+};
 
 ImageUploader.displayName = 'ImageUploader';

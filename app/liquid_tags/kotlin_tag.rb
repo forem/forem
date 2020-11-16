@@ -2,7 +2,7 @@ class KotlinTag < LiquidTagBase
   PARTIAL = "liquids/kotlin".freeze
   PARAM_REGEXP = /\A[a-zA-Z0-9]+\z/.freeze
 
-  def initialize(tag_name, link, tokens)
+  def initialize(_tag_name, link, _parse_context)
     super
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split(" ").first
@@ -10,7 +10,7 @@ class KotlinTag < LiquidTagBase
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         url: @embedded_url
@@ -19,7 +19,7 @@ class KotlinTag < LiquidTagBase
   end
 
   def self.embedded_url(link)
-    "https://play.kotlinlang.org/embed?" + URI.encode_www_form(parse_link(link))
+    "https://play.kotlinlang.org/embed?#{URI.encode_www_form(parse_link(link))}"
   end
 
   def self.parse_link(link)

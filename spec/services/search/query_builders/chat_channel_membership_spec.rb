@@ -46,7 +46,11 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
           "query" => "a_name*", "fields" => [:channel_text], "lenient" => true, "analyze_wildcard" => true
         }
       }]
-      expected_filters = [{ "term" => { "channel_status" => "active" } }, { "terms" => { "status" => %w[active joining_request] } }, { "terms" => { "viewable_by" => 1 } }]
+      expected_filters = [
+        { "term" => { "channel_status" => "active" } },
+        { "terms" => { "status" => %w[active joining_request] } },
+        { "terms" => { "viewable_by" => 1 } },
+      ]
       expect(query.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
       expect(query.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
@@ -62,11 +66,13 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
     end
 
     it "always applies channel discoverable and status params" do
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(2)
+
       params = { user_id: SiteConfig.mascot_user_id }
       filter = described_class.new(params: params)
       expected_filters = [
         { "terms" => { "status" => %w[active joining_request] } },
-        { "terms" => { "viewable_by" => 1 } },
+        { "terms" => { "viewable_by" => SiteConfig.mascot_user_id } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
@@ -83,15 +89,15 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
 
     it "sets default params when not present" do
       filter = described_class.new(params: {})
-      expect(filter.as_hash.dig("sort")).to eq("channel_last_message_at" => "desc")
-      expect(filter.as_hash.dig("size")).to eq(0)
+      expect(filter.as_hash["sort"]).to eq("channel_last_message_at" => "desc")
+      expect(filter.as_hash["size"]).to eq(0)
     end
 
     it "allows default params to be overriden" do
       params = { sort_by: "status", sort_direction: "asc", size: 20 }
       filter = described_class.new(params: params)
-      expect(filter.as_hash.dig("sort")).to eq("status" => "asc")
-      expect(filter.as_hash.dig("size")).to eq(20)
+      expect(filter.as_hash["sort"]).to eq("status" => "asc")
+      expect(filter.as_hash["size"]).to eq(20)
     end
   end
 end

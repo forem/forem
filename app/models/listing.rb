@@ -15,13 +15,18 @@ class Listing < ApplicationRecord
   belongs_to :listing_category, inverse_of: :listings, foreign_key: :classified_listing_category_id
   belongs_to :user
   belongs_to :organization, optional: true
+  before_validation :modify_inputs
   before_save :evaluate_markdown
   before_create :create_slug
-  before_validation :modify_inputs
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
   acts_as_taggable_on :tags
   has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
+  has_many :endorsements,
+           foreign_key: :classified_listing_id,
+           dependent: :destroy,
+           inverse_of: :listing,
+           class_name: "ListingEndorsement"
 
   validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
@@ -81,7 +86,10 @@ class Listing < ApplicationRecord
 
   def restrict_markdown_input
     markdown_string = body_markdown.to_s
-    errors.add(:body_markdown, "has too many linebreaks. No more than 12 allowed.") if markdown_string.scan(/(?=\n)/).count > 12
+    if markdown_string.scan(/(?=\n)/).count > 12
+      errors.add(:body_markdown,
+                 "has too many linebreaks. No more than 12 allowed.")
+    end
     errors.add(:body_markdown, "is not allowed to include images.") if markdown_string.include?("![")
     errors.add(:body_markdown, "is not allowed to include liquid tags.") if markdown_string.include?("{% ")
   end

@@ -1,13 +1,13 @@
 class SpeakerdeckTag < LiquidTagBase
   PARTIAL = "liquids/speakerdeck".freeze
 
-  def initialize(tag_name, id, tokens)
+  def initialize(_tag_name, id, _parse_context)
     super
     @id = parse_id(id)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         id: @id

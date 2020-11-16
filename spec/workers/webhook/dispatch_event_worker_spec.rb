@@ -15,10 +15,10 @@ RSpec.describe Webhook::DispatchEventWorker, type: :worker do
     it "posts an event" do
       allow(client).to receive(:post)
       worker.perform(url, json)
-      expect(client).to have_received(:post).once.
-        with(Addressable::URI.parse(url), headers: { "Content-Type" => "application/json" },
-                                          body: json,
-                                          timeout: 10)
+      expect(client).to have_received(:post).once
+        .with(Addressable::URI.parse(url), headers: { "Content-Type" => "application/json" },
+                                           body: json,
+                                           timeout: 10)
     end
 
     it "doesn't fail" do

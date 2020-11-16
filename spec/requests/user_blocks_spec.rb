@@ -52,7 +52,8 @@ RSpec.describe "UserBlock", type: :request do
     end
 
     it "blocks the potential chat channel" do
-      chat_channel = create(:chat_channel, channel_type: "direct", slug: "#{blocker.username}/#{blocked.username}", status: "active")
+      chat_channel = create(:chat_channel, channel_type: "direct", slug: "#{blocker.username}/#{blocked.username}",
+                                           status: "active")
       create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocker.id)
       create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocked.id)
       post "/user_blocks", params: { user_block: { blocked_id: blocked.id } }
@@ -96,7 +97,8 @@ RSpec.describe "UserBlock", type: :request do
     end
 
     it "unblocks the direct chat channel" do
-      chat_channel = create(:chat_channel, channel_type: "direct", slug: "#{blocker.username}/#{blocked.username}", status: "blocked")
+      chat_channel = create(:chat_channel, channel_type: "direct", slug: "#{blocker.username}/#{blocked.username}",
+                                           status: "blocked")
       create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocker.id)
       create(:chat_channel_membership, chat_channel_id: chat_channel.id, user_id: blocked.id)
       delete "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }

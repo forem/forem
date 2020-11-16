@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe PollSkip, type: :model do
-  let_it_be(:article) { create(:article, featured: true) }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:poll) { create(:poll, article: article) }
+  let(:article) { create(:article, featured: true) }
+  let(:user) { create(:user) }
+  let(:poll) { create(:poll, article: article) }
 
   describe "validations" do
     context "when checking against poll" do

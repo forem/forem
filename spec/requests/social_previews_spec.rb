@@ -9,10 +9,10 @@ RSpec.describe "SocialPreviews", type: :request do
   let(:image_url) { "https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1" }
 
   before do
-    stub_request(:post, /hcti.io/).
-      to_return(status: 200,
-                body: "{ \"url\": \"#{image_url}\" }",
-                headers: { "Content-Type" => "application/json" })
+    stub_request(:post, /hcti.io/)
+      .to_return(status: 200,
+                 body: "{ \"url\": \"#{image_url}\" }",
+                 headers: { "Content-Type" => "application/json" })
   end
 
   describe "GET /social_previews/article/:id" do

@@ -3,14 +3,15 @@ class UserTag < LiquidTagBase
   include ActionView::Helpers::TagHelper
   PARTIAL = "users/liquid".freeze
 
-  def initialize(_tag_name, user, _tokens)
+  def initialize(_tag_name, user, _parse_context)
+    super
     @user = parse_username_to_user(user.delete(" "))
     @follow_button = follow_button(@user)
     @user_colors = user_colors(@user)
   end
 
   def render(_context)
-    ActionController::Base.new.render_to_string(
+    ApplicationController.render(
       partial: PARTIAL,
       locals: {
         user: user_object_for_partial(@user),
@@ -24,7 +25,7 @@ class UserTag < LiquidTagBase
   private
 
   def parse_username_to_user(user)
-    User.find_by(username: user) || DELETED_USER
+    User.find_by(username: user, registered: true) || DELETED_USER
   end
 
   def path_to_profile(user)

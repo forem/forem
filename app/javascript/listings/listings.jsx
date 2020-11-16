@@ -1,10 +1,10 @@
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import debounceAction from '../utilities/debounceAction';
 import { fetchSearch } from '../utilities/search';
+import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import ModalBackground from './components/ModalBackground';
 import Modal from './components/Modal';
 import AllListings from './components/AllListings';
-import NextPageButton from './components/NextPageButton';
 import ListingFilters from './components/ListingFilters';
 import {
   LISTING_PAGE_SIZE,
@@ -74,8 +74,6 @@ export class Listings extends Component {
     this.listingSearch(query, tags, category, slug);
     this.setUser();
 
-    document.body.addEventListener('keydown', this.handleKeyDown);
-
     /*
       The width of the columns also changes when the browser is resized
       so we will also call this function on window resize to recalculate
@@ -86,10 +84,6 @@ export class Listings extends Component {
 
   componentDidUpdate() {
     this.triggerMasonry();
-  }
-
-  componentWillUnmount() {
-    document.body.removeEventListener('keydown', this.handleKeyDown);
   }
 
   addTag = (e, tag) => {
@@ -130,11 +124,6 @@ export class Listings extends Component {
     const { query, tags } = this.state;
     this.setState({ category: cat, page: 0 });
     this.listingSearch(query, tags, cat, null);
-  };
-
-  handleKeyDown = (e) => {
-    // Enable Escape key to close an open listing.
-    this.handleCloseModal(e);
   };
 
   handleCloseModal = (e) => {
@@ -179,7 +168,7 @@ export class Listings extends Component {
     formData.append('message', `**re: ${openedListing.title}** ${message}`);
     formData.append('controller', 'chat_channels');
 
-    const destination = `/connect/@${openedListing.author.username}`;
+    const destination = `/connect/@${openedListing.user.username}`;
     const metaTag = document.querySelector("meta[name='csrf-token']");
     window
       .fetch('/chat_channels/create_chat', {
@@ -289,10 +278,7 @@ export class Listings extends Component {
       this.triggerMasonry();
     }
     return (
-      <div className="listings__container">
-        {shouldRenderModal && (
-          <ModalBackground onClick={this.handleCloseModal} />
-        )}
+      <div className="crayons-layout crayons-layout--2-cols">
         <ListingFilters
           categories={allCategories}
           category={category}
@@ -311,20 +297,31 @@ export class Listings extends Component {
           onChangeCategory={this.selectCategory}
           currentUserId={currentUserId}
           onOpenModal={this.handleOpenModal}
+          showNextPageButton={showNextPageButton}
+          loadNextPage={this.loadNextPage}
         />
-        {showNextPageButton && <NextPageButton onClick={this.loadNextPage} />}
         {shouldRenderModal && (
-          <Modal
-            currentUserId={currentUserId}
-            onAddTag={this.addTag}
-            onChangeDraftingMessage={this.handleDraftingMessage}
-            onClick={this.handleCloseModal}
-            onChangeCategory={this.selectCategory}
-            onOpenModal={this.handleOpenModal}
-            onSubmit={this.handleSubmitMessage}
-            listing={openedListing}
-            message={message}
-          />
+          <Fragment>
+            <div className="crayons-modal">
+              <Modal
+                currentUserId={currentUserId}
+                onAddTag={this.addTag}
+                onChangeDraftingMessage={this.handleDraftingMessage}
+                onClick={this.handleCloseModal}
+                onChangeCategory={this.selectCategory}
+                onOpenModal={this.handleOpenModal}
+                onSubmit={this.handleSubmitMessage}
+                listing={openedListing}
+                message={message}
+              />
+              <ModalBackground onClick={this.handleCloseModal} />
+            </div>
+            <KeyboardShortcuts
+              shortcuts={{
+                Escape: this.handleCloseModal,
+              }}
+            />
+          </Fragment>
         )}
       </div>
     );

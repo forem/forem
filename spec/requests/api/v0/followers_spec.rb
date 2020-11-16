@@ -42,7 +42,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         expect(response_follower["name"]).to eq(follower.name)
         expect(response_follower["path"]).to eq(follower.path)
         expect(response_follower["username"]).to eq(follower.username)
-        expect(response_follower["profile_image"]).to eq(ProfileImage.new(follower).get(width: 60))
+        expect(response_follower["profile_image"]).to eq(Images::Profile.call(follower.profile_image_url, length: 60))
       end
 
       it "supports pagination" do
@@ -61,7 +61,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
       it "order results for reverse following date" do
         follower2.follow(user)
 
-        follows = user.followings.order(id: :desc).last(2).pluck(:id)
+        follows = user.followings.order(id: :desc).last(2).map(&:id)
 
         get api_followers_users_path, headers: headers
         result = response.parsed_body.map { |f| f["id"] }

@@ -13,7 +13,7 @@
   for more information.
 */
 function timestampToLocalDateTime(timestamp, locale, options) {
-  if (timestamp === '') {
+  if (!timestamp) {
     return '';
   }
 
@@ -26,17 +26,6 @@ function timestampToLocalDateTime(timestamp, locale, options) {
 }
 
 function addLocalizedDateTimeToElementsTitles(elements, timestampAttribute) {
-  // example: "Wednesday, April 3, 2019, 2:55:14 PM"
-  var timeOptions = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-  };
-
   for (var i = 0; i < elements.length; i += 1) {
     var element = elements[i];
 
@@ -48,11 +37,7 @@ function addLocalizedDateTimeToElementsTitles(elements, timestampAttribute) {
       // `navigator.language` is used to allow the date to be localized
       // according to the browser's locale
       // see <https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage/language>
-      var localDateTime = timestampToLocalDateTime(
-        timestamp,
-        navigator.language,
-        timeOptions,
-      );
+      var localDateTime = timestampToLocalDateTimeLong(timestamp);
       element.setAttribute('title', localDateTime);
     }
   }
@@ -73,4 +58,46 @@ function localizeTimeElements(elements, timeOptions) {
       element.textContent = localDateTime;
     }
   }
+}
+
+function timestampToLocalDateTimeLong(timestamp) {
+  // example: "Wednesday, April 3, 2019, 2:55:14 PM"
+
+  return timestampToLocalDateTime(timestamp, navigator.language, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  });
+}
+
+function timestampToLocalDateTimeShort(timestamp) {
+  // example: "10 Dec 2018" if it is not the current year
+  // example: "6 Sep" if it is the current year
+
+  if (timestamp) {
+    const currentYear = new Date().getFullYear();
+    const givenYear = new Date(timestamp).getFullYear();
+
+    var timeOptions = {
+      day: 'numeric',
+      month: 'short',
+    };
+
+    if (givenYear !== currentYear) {
+      timeOptions.year = 'numeric';
+    }
+
+    return timestampToLocalDateTime(timestamp, navigator.language, timeOptions);
+  }
+
+  return '';
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.timestampToLocalDateTimeLong = timestampToLocalDateTimeLong; // eslint-disable-line no-undef
+  globalThis.timestampToLocalDateTimeShort = timestampToLocalDateTimeShort; // eslint-disable-line no-undef
 }

@@ -30,11 +30,20 @@ module Notifications
           action: welcome_broadcast.type_of,
           json_data: json_data,
         )
+
+        log_to_datadog
       end
 
       private
 
       attr_reader :receiver_id, :welcome_broadcast
+
+      def log_to_datadog
+        DatadogStatsClient.increment(
+          "notifications.welcome",
+          tags: ["user_id:#{receiver_id}", "title:#{welcome_broadcast.title}"],
+        )
+      end
     end
   end
 end

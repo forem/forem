@@ -21,14 +21,14 @@ module Mentions
     def users_mentioned_in_text_excluding_author
       mentioned_usernames = extract_usernames_from_mentions_in_text
 
-      collect_existing_users(mentioned_usernames).
-        yield_self do |existing_mentioned_users|
+      collect_existing_users(mentioned_usernames)
+        .yield_self do |existing_mentioned_users|
           reject_notifiable_author(existing_mentioned_users)
         end
     end
 
     def collect_existing_users(usernames)
-      User.where(username: usernames)
+      User.registered.where(username: usernames)
     end
 
     def create_mentions_for(users)
@@ -53,7 +53,7 @@ module Mentions
 
     def delete_mentions_removed_from_notifiable_text(users)
       mentions = @notifiable.mentions.where.not(user_id: users).destroy_all
-      Notification.remove_all(notifiable_ids: mentions.pluck(:id), notifiable_type: "Mention") if mentions.present?
+      Notification.remove_all(notifiable_ids: mentions.map(&:id), notifiable_type: "Mention") if mentions.present?
     end
 
     def user_has_comment_notifications?(user)
@@ -63,7 +63,8 @@ module Mentions
     def create_mention_for(user)
       return if user_has_comment_notifications?(user)
 
-      mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id, mentionable_type: @notifiable.class.name)
+      mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id,
+                               mentionable_type: @notifiable.class.name)
       # mentionable_type = model that created the mention, user = user to be mentioned
       Notification.send_mention_notification(mention)
       mention

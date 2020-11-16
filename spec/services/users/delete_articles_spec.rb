@@ -39,7 +39,7 @@ RSpec.describe Users::DeleteArticles, type: :service do
     end
 
     it "deletes articles' buffer updates" do
-      BufferUpdate.buff!(article.id, "twitter_buffer_text", "CODE", "twitter")
+      BufferUpdate.buff!(article.id, "twitter_buffer_text")
 
       described_class.call(user)
 

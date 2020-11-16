@@ -8,6 +8,10 @@ RSpec.describe MarkdownParser, type: :labor do
     described_class.new(raw_markdown).finalize
   end
 
+  it "has the correct raw tag delimiters" do
+    expect(described_class::RAW_TAG_DELIMITERS).to match_array(["{", "}", "raw", "endraw", "----"])
+  end
+
   it "renders plain text as-is" do
     expect(basic_parsed_markdown.finalize).to include(random_word)
   end
@@ -66,20 +70,20 @@ RSpec.describe MarkdownParser, type: :labor do
 
   it "wraps figcaptions with figures" do
     code_span = "<p>Statement</p>\n<figcaption>A fig</figcaption>"
-    test = generate_and_parse_markdown("<p>case: </p>" + code_span)
-    expect(test).to eq("<p>case: </p>\n<figure>" + code_span + "</figure>\n\n\n\n")
+    test = generate_and_parse_markdown("<p>case: </p>#{code_span}")
+    expect(test).to eq("<p>case: </p>\n<figure>#{code_span}</figure>\n\n\n\n")
   end
 
   it "does not wrap figcaptions already in figures" do
     code_span = "<figure><p>Statement</p>\n<figcaption>A fig</figcaption></figure>"
     test = generate_and_parse_markdown(code_span)
-    expect(test).to eq(code_span + "\n\n\n\n")
+    expect(test).to eq("#{code_span}\n\n\n\n")
   end
 
   it "does not wrap figcaptions without predecessors" do
     code_span = "<figcaption>A fig</figcaption>"
     test = generate_and_parse_markdown(code_span)
-    expect(test).to eq(code_span + "\n\n")
+    expect(test).to eq("#{code_span}\n\n")
   end
 
   context "when rendering links markdown" do
@@ -140,7 +144,11 @@ RSpec.describe MarkdownParser, type: :labor do
           - `@#{user.username}`
       DOC
       result = generate_and_parse_markdown(mention)
-      expect(result).to eq("<p><code>@#{user.username}</code> one two, <a class=\"comment-mentioned-user\" href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n")
+
+      expected_result = "<p><code>@#{user.username}</code> one two, <a class=\"comment-mentioned-user\" " \
+        "href=\"#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{user.username}\">" \
+        "@#{user.username}</a>\n three four:</p>\n\n<ul>\n<li><code>@#{user.username}</code></li>\n</ul>\n\n"
+      expect(result).to eq(expected_result)
     end
 
     it "will not work in code tag" do
@@ -167,8 +175,22 @@ RSpec.describe MarkdownParser, type: :labor do
     expect(generate_and_parse_markdown(inline_code)).to include(inline_code[1..-2])
   end
 
-  it "raises an error if it detects a XSS attempt" do
-    expect { generate_and_parse_markdown("data:text/html") }.to raise_error(ArgumentError)
+  context "when checking XSS attempt in markdown content" do
+    it "raises an error if XSS attempt detected" do
+      expect do
+        generate_and_parse_markdown("src='DatA:text/html;base64:xxxx'")
+      end.to raise_error(ArgumentError)
+
+      expect do
+        generate_and_parse_markdown("src=\"&\"")
+      end.to raise_error(ArgumentError)
+    end
+
+    it "does not raise error if no XSS attempt detected" do
+      expect do
+        generate_and_parse_markdown("```const data = 'data:text/html';```")
+      end.not_to raise_error
+    end
   end
 
   context "when provided with an @username" do
@@ -255,8 +277,8 @@ RSpec.describe MarkdownParser, type: :labor do
     end
 
     it "wraps the image with Cloudinary" do
-      expect(generate_and_parse_markdown(markdown_with_img)).
-        to include("https://res.cloudinary.com")
+      expect(generate_and_parse_markdown(markdown_with_img))
+        .to include("https://res.cloudinary.com")
     end
   end
 

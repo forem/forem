@@ -1,5 +1,9 @@
 class StripeActiveCardsController < ApplicationController
   before_action :authenticate_user!
+  before_action :initialize_stripe
+
+  AUDIT_LOG_CATEGORY = "user.credit_card.edit".freeze
+  private_constant :AUDIT_LOG_CATEGORY
 
   def create
     authorize :stripe_active_card
@@ -7,12 +11,11 @@ class StripeActiveCardsController < ApplicationController
     customer = find_or_create_customer
 
     if Payments::Customer.create_source(customer.id, stripe_params[:stripe_token])
-      Rails.logger.info("Stripe Add New Card Success - #{current_user.username}")
       flash[:settings_notice] = "Your billing information has been updated"
+      audit_log("add")
     else
       DatadogStatsClient.increment("stripe.errors", tags: ["action:create_card", "user_id:#{current_user.id}"])
 
-      Rails.logger.error("Stripe Add New Card Failure - #{current_user.username}")
       flash[:error] = "There was a problem updating your billing info."
     end
     redirect_to user_settings_path(:billing)
@@ -30,12 +33,10 @@ class StripeActiveCardsController < ApplicationController
     customer.default_source = card.id
 
     if Payments::Customer.save(customer)
-      Rails.logger.info("Stripe Card Update Success - #{current_user.username}")
       flash[:settings_notice] = "Your billing information has been updated"
+      audit_log("update")
     else
       DatadogStatsClient.increment("stripe.errors", tags: ["action:update_card", "user_id:#{current_user.id}"])
-
-      Rails.logger.error("Stripe Card Update Failure - #{current_user.username}")
       flash[:error] = "There was a problem updating your billing info."
     end
 
@@ -59,6 +60,7 @@ class StripeActiveCardsController < ApplicationController
       Payments::Customer.save(customer)
 
       flash[:settings_notice] = "Your card has been successfully removed."
+      audit_log("remove")
     end
 
     redirect_to user_settings_path(:billing)
@@ -86,5 +88,19 @@ class StripeActiveCardsController < ApplicationController
 
   def stripe_params
     params.permit(%i[stripe_token])
+  end
+
+  def audit_log(user_action)
+    AuditLog.create(
+      category: AUDIT_LOG_CATEGORY,
+      user: current_user,
+      roles: current_user.roles_name,
+      slug: "credit_card_#{user_action}",
+      data: {
+        action: action_name,
+        controller: controller_name,
+        user_action: user_action
+      },
+    )
   end
 end

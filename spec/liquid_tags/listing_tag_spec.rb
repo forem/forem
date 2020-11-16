@@ -28,7 +28,7 @@ RSpec.describe ListingTag, type: :liquid_tag do
       updated_at: datetime,
     )
   end
-  let(:org) { build_stubbed(:organization) }
+  let(:org) { create(:organization) }
   let(:org_user) do
     user = create(:user)
     create(:organization_membership, user: user, organization: org)
@@ -98,8 +98,8 @@ RSpec.describe ListingTag, type: :liquid_tag do
   end
 
   it "raises an error when invalid" do
-    expect { generate_new_liquid("/listings/fakecategory/fakeslug") }.
-      to raise_error("Invalid URL or slug. Listing not found.")
+    expect { generate_new_liquid("/listings/fakecategory/fakeslug") }
+      .to raise_error("Invalid URL or slug. Listing not found.")
   end
 
   it "displays expired message when listing is expired" do

@@ -203,10 +203,16 @@ function handleFollowButtPress(butt) {
 
 function assignState(butt, newState) {
   var style = JSON.parse(butt.dataset.info).style;
+  var followStyle = JSON.parse(butt.dataset.info).followStyle;
   butt.classList.add('showing');
   if (newState === 'follow' || newState === 'follow-back') {
     butt.dataset.verb = 'unfollow';
-    butt.classList.remove('following-butt');
+    butt.classList.remove('crayons-btn--outlined');
+    if (followStyle === 'primary') {
+      butt.classList.add('crayons-btn--primary');
+    } else if (followStyle === 'secondary') {
+      butt.classList.add('crayons-btn--secondary');
+    }
     if (newState === 'follow-back') {
       addFollowText(butt, newState);
     } else if (newState === 'follow') {
@@ -220,7 +226,9 @@ function assignState(butt, newState) {
   } else {
     butt.dataset.verb = 'follow';
     addFollowingText(butt, style);
-    butt.classList.add('following-butt');
+    butt.classList.remove('crayons-btn--primary');
+    butt.classList.remove('crayons-btn--secondary');
+    butt.classList.add('crayons-btn--outlined');
   }
 }
 

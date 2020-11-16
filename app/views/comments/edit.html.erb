@@ -3,7 +3,7 @@
   id="comments-container"
   data-commentable-id="<%= @comment.commentable_id %>"
   data-commentable-type="<%= @comment.commentable_type %>">
-  <h1 style="padding-top:8%;text-align:center">Editing comment</h1>
+  <h1 class="mb-6">Editing comment</h1>
   <%= render "form",
              commentable: @commentable,
              commentable_type: @comment.commentable_type %>

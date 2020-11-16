@@ -2,12 +2,12 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url(@page.path) %>" />
   <meta name="description" content="<%= @page.title %> — <%= community_qualified_name %>">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url(@page.path) %>" />
   <meta property="og:title" content="<%= @page.title %> — <%= community_qualified_name %>" />
-  <meta property="og:image" content="<%= @page.social_image_url || "https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" %>" />
+  <meta property="og:image" content="<%= @page.social_image_url || SiteConfig.main_social_image %>" />
   <meta property="og:description" content="<%= @page.description %>" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
@@ -15,18 +15,15 @@
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= @page.title %> — <%= community_qualified_name %>">
   <meta name="twitter:description" content="<%= @page.description %>">
-  <meta name="twitter:image:src" content="<%= @page.social_image_url || "https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" %>">
+  <meta name="twitter:image:src" content="<%= @page.social_image_url || SiteConfig.main_social_image %>">
 <% end %>
 
 <% if @page.template == "contained" %>
-  <div class="blank-space"></div>
-  <div class="container article">
-    <div class="title">
-      <h1>
-        <%= @page.title %>
-      </h1>
-    </div>
-    <div class="body">
+
+  <div class="crayons-layout crayons-layout--limited-l">
+    <div class="crayons-card text-styles text-padding">
+      <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= @page.title %></h1>
+
       <%= @page.processed_html.html_safe %>
     </div>
   </div>

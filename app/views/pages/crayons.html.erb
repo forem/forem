@@ -57,6 +57,24 @@
 
 <div class="container">
   <div class="body">
+    <h2>Tooltips</h2>
+    <p>Tooltips should be short, simple and without any styling - just pure text. Its purpose is to provide some additional context or explanation.</p>
+    <p>Keep in mind they should be only ADDITIONAL information since tooltips are accessible on :hover which means you may not really see the tooltip content while on mobile.</p>
+    <p>Hover over the label below to see a tooltip.</p>
+    <p>All you have to do to set up this kind of a tooltip is add <code>crayons-tooltip</code> class name to an element as well as <code>data-tooltip</code> attribute which will contain the tooltip content.</p>
+  </div>
+
+  <div>
+    <p>You can <strong class="crayons-tooltip" data-tooltip="Tooltip message">hover here</strong> to see the tooltip</p>
+  </div>
+
+  <pre><%= '
+  <p>You can <strong class="crayons-tooltip" data-tooltip="Tooltip message">hover here</strong> to ...</p>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
     <h2>Main Typography</h2>
     <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
     <p>XS size should be used as little as possible in edge cases. Even though it’s readable we could consider it not meeting <%= community_name %>’s standards. So keep it for like “asterisk copy” etc.</p>
@@ -114,8 +132,8 @@
   </div>
 
   <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 24px;">
-    <span class="ff-accent">Line height: 1.5 – .lh-base (default)</span>
-    <span class="ff-accent">Line height: 1.25 – .lh-tight</span>
+    <span class="ff-monospace">Line height: 1.5 – .lh-base (default)</span>
+    <span class="ff-monospace">Line height: 1.25 – .lh-tight</span>
 
     <h3 class="fs-2xl fw-bold">This is a bit longer text title to present line-height difference.</h3>
     <h3 class="fs-2xl fw-bold lh-tight">This is a bit longer text title to present line-height difference.</h3>
@@ -155,25 +173,25 @@
   </div>
 
   <div>
-    <p class="ff-accent fs-xs">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-s">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-base">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-l">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-xs">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-s">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-base">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-l">Lorem ipsum dolor sit amet.</p>
   </div>
 
   <div>
-    <p class="ff-accent fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
-    <p class="ff-accent fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+    <p class="ff-monospace fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
   </div>
 
   <pre><%= '
   <!-- font sizes -->
-  <p class="ff-accent fs-xs">...</p> <!-- 12px -->
-  <p class="ff-accent fs-s">...</p> <!-- 14px -->
-  <p class="ff-accent fs-base">...</p> <!-- default: 16px -->
-  <p class="ff-accent fs-l">...</p> <!-- 18px -->
+  <p class="ff-monospace fs-xs">...</p> <!-- 12px -->
+  <p class="ff-monospace fs-s">...</p> <!-- 14px -->
+  <p class="ff-monospace fs-base">...</p> <!-- default: 16px -->
+  <p class="ff-monospace fs-l">...</p> <!-- 18px -->
 
   <!-- font weights -->
   <p class="... fw-normal">...</p> <!-- default: regular -->
@@ -366,7 +384,7 @@
 
   <div class="crayons-field">
     <label for="t1" class="crayons-field__label">
-      Textfield Label
+      Textfield Label <span class="crayons-field__required crayons-tooltip" data-tooltip="* - required">*</span>
       <p class="crayons-field__description">This is some description for a textfield lorem ipsum...</p>
     </label>
     <input type="text" id="t1" class="crayons-textfield" placeholder="This is placeholder...">
@@ -655,6 +673,16 @@
           <td><button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--ghost" disabled>Button label</button></td>
           <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--ghost crayons-btn--inverted">Button label</button></td>
+        </tr>
+        <tr>
+          <td class="fs-s">.crayons-btn--ghost-dimmed</td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost-dimmed" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--inverted">Button label</button></td>
         </tr>
         <tr>
           <td class="fs-s">.crayons-btn--ghost-brand</td>
@@ -1002,11 +1030,11 @@
   '.rstrip %></pre>
 
   <div>
-    <span class="crayons-logo"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--l"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--2xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
-    <span class="crayons-logo crayons-logo--3xl"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--l"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--xl"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--2xl"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
+    <span class="crayons-logo crayons-logo--3xl"><img src="<%= optimized_image_url(SiteConfig.logo_png, width: 192, fetch_format: "png") %>" class="crayons-logo__image" alt="Acme Inc." /></span>
   </div>
 
   <pre><%= '

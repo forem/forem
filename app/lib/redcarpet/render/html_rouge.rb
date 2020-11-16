@@ -15,13 +15,13 @@ module Redcarpet
       def link(link, _title, content)
         # Probably not the best fix but it does it's job of preventing
         # a nested links.
-        return if /<a\s.+\/a>/.match?(content)
+        return if %r{<a\s.+/a>}.match?(content)
 
         link_attributes = ""
         @options[:link_attributes]&.each do |attribute, value|
           link_attributes += %( #{attribute}="#{value}")
         end
-        if (/https?:\/\/\S+/.match? link) || link.nil?
+        if (%r{https?://\S+}.match? link) || link.nil?
           %(<a href="#{link}"#{link_attributes}>#{content}</a>)
         elsif /\.{1}/.match? link
           %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
@@ -50,12 +50,12 @@ module Redcarpet
       end
 
       def app_domain
-        ApplicationConfig["APP_DOMAIN"]
+        SiteConfig.app_domain
       end
 
       def slugify(string)
         stripped_string = ActionView::Base.full_sanitizer.sanitize string
-        stripped_string.downcase.gsub(EmojiRegex::Regex, "").strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
+        stripped_string.downcase.gsub(EmojiRegex::RGIEmoji, "").strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
       end
     end
   end

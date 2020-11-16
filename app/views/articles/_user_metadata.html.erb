@@ -97,7 +97,7 @@
         Joined
       </div>
       <div class="value">
-        <%= @user.created_at.strftime("%b %e, %Y") %>
+        <%= local_date(@user.created_at) %>
       </div>
     </li>
   </ul>

@@ -9,6 +9,9 @@ RSpec.describe "DisplayAdEvents", type: :request do
     context "when user signed in" do
       before do
         sign_in user
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(DisplayAdEventsController).to receive(:skip_ad_update?).and_return(false)
+        # rubocop:enable RSpec/AnyInstance
       end
 
       it "creates a display ad click event" do
@@ -34,22 +37,14 @@ RSpec.describe "DisplayAdEvents", type: :request do
       end
 
       it "creates a display ad success rate" do
+        ad_event_params = { display_ad_id: display_ad.id, context_type: "home" }
+
         4.times do
-          post "/display_ad_events", params: {
-            display_ad_event: {
-              display_ad_id: display_ad.id,
-              context_type: "home",
-              category: "impression"
-            }
-          }
+          post "/display_ad_events", params: { display_ad_event: ad_event_params.merge(category: "impression") }
         end
-        post "/display_ad_events", params: {
-          display_ad_event: {
-            display_ad_id: display_ad.id,
-            context_type: "home",
-            category: "click"
-          }
-        }
+
+        post "/display_ad_events", params: { display_ad_event: ad_event_params.merge(category: "click") }
+
         expect(display_ad.reload.success_rate).to eq(0.25)
       end
 

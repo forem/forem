@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
@@ -50,7 +50,7 @@ describe('<Onboarding />', () => {
 
   it('should allow the modal to move forward and backward a step where relevant', async () => {
     // combined back and forward into one test to avoid a long test running time
-    const { getByTestId, getByText } = renderOnboarding();
+    const { getByTestId, findByText, findByTestId } = renderOnboarding();
 
     getByTestId('onboarding-intro-slide');
 
@@ -61,28 +61,31 @@ describe('<Onboarding />', () => {
     termsCheckbox.click();
 
     // click to next step
-    const nextButton = await waitForElement(() => getByText(/continue/i));
+    const nextButton = await findByText(/continue/i);
 
     fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
 
     // we should be on the Follow tags step
-    await waitForElement(() => getByTestId('onboarding-follow-tags'));
+    await findByTestId('onboarding-follow-tags');
 
     // click a step back
     const backButton = getByTestId('back-button');
     backButton.click();
 
     // we should be on the Intro Slide step
-    const introSlide = await waitForElement(() =>
-      getByTestId('onboarding-intro-slide'),
-    );
+    const introSlide = await findByTestId('onboarding-intro-slide');
 
     expect(introSlide).toBeDefined();
   });
 
   it("should skip the step when 'Skip for now' is clicked", async () => {
-    const { getByTestId, getByText } = renderOnboarding();
+    const {
+      getByTestId,
+      getByText,
+      findByText,
+      findByTestId,
+    } = renderOnboarding();
     getByTestId('onboarding-intro-slide');
 
     fetch.mockResponseOnce({});
@@ -92,15 +95,13 @@ describe('<Onboarding />', () => {
     termsCheckbox.click();
 
     // click to next step
-    const nextButton = await waitForElement(() => getByText(/continue/i));
+    const nextButton = await findByText(/continue/i);
 
     fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
 
     // we should be on the Follow tags step
-    const followTagsStep = await waitForElement(() =>
-      getByTestId('onboarding-follow-tags'),
-    );
+    const followTagsStep = await findByTestId('onboarding-follow-tags');
 
     expect(followTagsStep).toBeDefined();
 
@@ -109,15 +110,18 @@ describe('<Onboarding />', () => {
     skipButton.click();
 
     // we should be on the Profile Form step
-    const profileStep = await waitForElement(() =>
-      getByTestId('onboarding-profile-form'),
-    );
+    const profileStep = await findByTestId('onboarding-profile-form');
 
     expect(profileStep).toBeDefined();
   });
 
   it('should redirect the users to the correct steps every time', async () => {
-    const { getByTestId, getByText } = renderOnboarding();
+    const {
+      getByTestId,
+      getByText,
+      findByText,
+      findByTestId,
+    } = renderOnboarding();
     getByTestId('onboarding-intro-slide');
 
     fetch.mockResponseOnce({});
@@ -127,20 +131,20 @@ describe('<Onboarding />', () => {
     termsCheckbox.click();
 
     // click to next step
-    const nextButton = await waitForElement(() => getByText(/continue/i));
+    const nextButton = await findByText(/continue/i);
 
     fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
 
     // we should be on the Follow tags step
-    await waitForElement(() => getByTestId('onboarding-follow-tags'));
+    await findByTestId('onboarding-follow-tags');
 
     // click on skip for now
     let skipButton = getByText(/Skip for now/i);
     skipButton.click();
 
     // we should be on the Profile Form step
-    await waitForElement(() => getByTestId('onboarding-profile-form'));
+    await findByTestId('onboarding-profile-form');
 
     // click on skip for now
     skipButton = getByText(/Skip for now/i);
@@ -148,16 +152,14 @@ describe('<Onboarding />', () => {
     skipButton.click();
 
     // we should be on the Follow Users step
-    await waitForElement(() => getByTestId('onboarding-follow-users'));
+    await findByTestId('onboarding-follow-users');
 
     // click on skip for now
     skipButton = getByText(/Skip for now/i);
     skipButton.click();
 
     // we should be on the Onboarding Email Preferences Form step
-    await waitForElement(() =>
-      getByTestId('onboarding-email-preferences-form'),
-    );
+    await findByTestId('onboarding-email-preferences-form');
 
     fetch.once({});
     // Setup: Enable window.location to be writable.

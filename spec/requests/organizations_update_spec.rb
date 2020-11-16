@@ -32,7 +32,9 @@ RSpec.describe "OrganizationsUpdate", type: :request do
   end
 
   it "updates nav_image" do
-    put "/organizations/#{org_id}", params: { organization: { id: org_id, nav_image: fixture_file_upload("files/podcast.png", "image/png") } }
+    put "/organizations/#{org_id}", params: { organization: { id: org_id,
+                                                              nav_image: fixture_file_upload("files/podcast.png",
+                                                                                             "image/png") } }
     expect(Organization.find(org_id).nav_image_url).to be_present
   end
 

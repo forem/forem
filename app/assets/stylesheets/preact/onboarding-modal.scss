@@ -1,5 +1,5 @@
-@import 'variables';
-@import 'mixins';
+@import '../variables';
+@import '../mixins';
 @import 'components/buttons';
 @import 'components/forms';
 @import 'config/import';
@@ -15,7 +15,6 @@
 // modal box card
 .onboarding-main {
   border: none;
-  z-index: 1;
 
   @media screen and (min-width: 600px) {
     border-width: 2px;
@@ -81,7 +80,6 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background-image: url('/assets/onboarding-background-white.png');
   }
 
   &:before {
@@ -277,7 +275,7 @@
     bottom: var(--su-4);
     width: calc(100% - 32px);
     transform: translateY(0px);
-    font-family: var(--ff-default);
+    font-family: var(--ff-sans-serif);
     $button: &;
 
     @media screen and (min-width: 800px) {
@@ -303,7 +301,7 @@
     &__inner {
       background: var(--base-10);
       bottom: 0;
-      font-family: var(--ff-accent);
+      font-family: var(--ff-monospace);
       hyphens: auto;
       left: 0;
       padding: var(--su-4);
@@ -311,7 +309,6 @@
       right: 0;
       top: 0;
       transition: all ease-in-out 0.1s;
-      z-index: 2;
     }
 
     &:hover,

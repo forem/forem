@@ -15,13 +15,14 @@ const ListingFiltersTags = ({
   const shouldRenderClearQueryButton = query.length > 0;
 
   return (
-    <div className="listing-filters-tags" id="listing-filters-tags">
+    <div className="relative pb-2 m:pb-6 px-2 m:px-0">
       <input
         type="text"
-        placeholder="search"
+        placeholder="Search..."
         id="listings-search"
         aria-label="Search listings"
         autoComplete="off"
+        className="crayons-textfield"
         defaultValue={message}
         onKeyUp={onKeyUp}
       />
