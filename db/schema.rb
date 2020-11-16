@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_10_180614) do
+ActiveRecord::Schema.define(version: 2020_11_14_130315) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -880,9 +880,9 @@ ActiveRecord::Schema.define(version: 2020_11_10_180614) do
 
   create_table "podcast_ownerships", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.bigint "podcast_id"
+    t.bigint "podcast_id", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.index ["podcast_id"], name: "index_podcast_ownerships_on_podcast_id"
     t.index ["user_id"], name: "index_podcast_ownerships_on_user_id"
   end
