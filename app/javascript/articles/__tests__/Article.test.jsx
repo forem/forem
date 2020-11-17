@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
+import '@testing-library/jest-dom';
 import { Article } from '..';
 import {
   article,
@@ -54,7 +55,7 @@ describe('<Article /> component', () => {
   });
 
   it('should render a standard article', () => {
-    const { queryByTestId, queryByAltText } = render(
+    const { container, queryByAltText } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -63,12 +64,14 @@ describe('<Article /> component', () => {
       />,
     );
 
-    expect(queryByTestId('article-62407')).toBeDefined();
+    expect(container.firstChild).not.toHaveClass('crayons-story--featured', {
+      exact: false,
+    });
     expect(queryByAltText('Emil99 profile')).toBeDefined();
   });
 
   it('should render a featured article', () => {
-    const { queryByTestId, queryByAltText } = render(
+    const { container, queryByAltText } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -78,7 +81,9 @@ describe('<Article /> component', () => {
       />,
     );
 
-    expect(queryByTestId('featured-article')).toBeDefined();
+    expect(container.firstChild).toHaveClass('crayons-story--featured', {
+      exact: false,
+    });
     expect(queryByAltText('Emil99 profile')).toBeDefined();
   });
 
@@ -97,7 +102,7 @@ describe('<Article /> component', () => {
   });
 
   it('should render a featured article for an organization', () => {
-    const { queryByTestId, queryByAltText } = render(
+    const { container, queryByAltText } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -107,7 +112,9 @@ describe('<Article /> component', () => {
       />,
     );
 
-    expect(queryByTestId('featured-article')).toBeDefined();
+    expect(container.firstChild).toHaveClass('crayons-story--featured', {
+      exact: false,
+    });
     expect(queryByAltText('Web info-mediaries logo')).toBeDefined();
     expect(queryByAltText('Emil99 profile')).toBeDefined();
   });

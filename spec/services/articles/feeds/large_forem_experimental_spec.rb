@@ -1,7 +1,6 @@
 require "rails_helper"
 
 NON_DEFAULT_EXPERIMENTS = %i[
-  more_tag_weight_more_random_experiment
   more_comments_experiment
   more_tag_weight_randomized_at_end_experiment
   more_comments_randomized_at_end_experiment
