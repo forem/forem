@@ -67,7 +67,7 @@ class PageViewsController < ApplicationMetalController
 
   def skip_page_view_update?
     # We don't need to update the article page views every time.
-    rand(15) != 1
+    rand(8) != 1
   end
 
   def skip_organic_page_view_update?

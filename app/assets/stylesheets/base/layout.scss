@@ -126,6 +126,13 @@
       }
     }
   }
+
+  &--1-2 {
+    @media (min-width: $breakpoint-l) {
+      --layout-sidebar-left-width: 1fr;
+      --layout-content-width: 2fr;
+    }
+  }
 }
 
 .crayons-layout--3-cols {

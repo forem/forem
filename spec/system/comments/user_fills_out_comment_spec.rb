@@ -8,7 +8,6 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   let(:runkit_comment) { compose_runkit_comment "comment 1" }
   let(:runkit_comment2) { compose_runkit_comment "comment 2" }
 
-
   # the article should be created before signing in
   let!(:article) { create(:article, user_id: user.id, show_comments: true) }
 
@@ -41,7 +40,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
       fill_in "text-area", with: raw_comment
       click_button("Submit")
-      expect(page).to have_text("Wait a Moment...")
+      expect(page).to have_text("Wait a moment...")
     end
 
     it "closes modal with close button" do
@@ -51,7 +50,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       fill_in "text-area", with: raw_comment
       click_button("Submit")
       click_button("Got it")
-      expect(page).not_to have_text("Wait a Moment...")
+      expect(page).not_to have_text("Wait a moment...")
     end
 
     it "closes model with 'x' image button" do
@@ -61,7 +60,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       fill_in "text-area", with: raw_comment
       click_button("Submit")
       find(".crayons-modal__box__header").click_button
-      expect(page).not_to have_text("Wait a Moment...")
+      expect(page).not_to have_text("Wait a moment...")
     end
   end
 
@@ -143,7 +142,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   it "User attaches a large image" do
     visit article.path.to_s
 
-    reduce_max_file_size = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-size-mb", "0")'
+    reduce_max_file_size = 'document.getElementById("image-upload-main").setAttribute("data-max-file-size-mb", "0")'
     page.execute_script(reduce_max_file_size)
     expect(page).to have_selector('input[data-max-file-size-mb="0"]', visible: :hidden)
 
@@ -163,7 +162,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   it "User attaches an invalid file type" do
     visit article.path.to_s
 
-    allow_vids = 'document.querySelector("#image-upload-main").setAttribute("data-permitted-file-types", "[\"video\"]")'
+    allow_vids = 'document.getElementById("image-upload-main").setAttribute("data-permitted-file-types", "[\"video\"]")'
     page.execute_script(allow_vids)
     expect(page).to have_selector('input[data-permitted-file-types="[\"video\"]"]', visible: :hidden)
 
@@ -183,7 +182,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   it "User attaches a file with too long of a name" do
     visit article.path.to_s
 
-    limit_length = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-name-length", "5")'
+    limit_length = 'document.getElementById("image-upload-main").setAttribute("data-max-file-name-length", "5")'
     page.execute_script(limit_length)
     expect(page).to have_selector('input[data-max-file-name-length="5"]', visible: :hidden)
 

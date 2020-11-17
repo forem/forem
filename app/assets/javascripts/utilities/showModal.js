@@ -1,6 +1,8 @@
 function initSignupModal() {
   if (document.getElementById('global-signup-modal')) {
-    document.querySelector('.authentication-modal__close-btn').onclick = () => {
+    document.getElementsByClassName(
+      'authentication-modal__close-btn',
+    )[0].onclick = () => {
       document.getElementById('global-signup-modal').classList.add('hidden');
       document.body.classList.remove('modal-open');
     };

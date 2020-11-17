@@ -113,17 +113,6 @@ RSpec.describe "User visits a homepage", type: :system do
       end
     end
 
-    context "when user does not follow tags" do
-      before do
-        visit "/"
-      end
-
-      it "shows 'Explore Tags' and links to /tags", js: true do
-        expect(page).to have_text("Explore")
-        expect(page).to have_selector(:css, 'a[href="/tags"]')
-      end
-    end
-
     context "when rendering < 5 navigation links" do
       let!(:navigation_link_1) do
         create(:navigation_link,

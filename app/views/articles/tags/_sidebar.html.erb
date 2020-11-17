@@ -57,13 +57,29 @@
         </div>
         <% if user_signed_in? %>
           <div class="crayons-btn-group mt-3">
-            <a style="display:none;" id="tag-edit-button" data-tag="<%= @tag_model.name %>" class="crayons-btn crayons-btn--outlined mod-action-button fs-s" href="<%= tag_url(@tag_model, @page) %>/edit" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+            <a style="display:none;"
+                id="tag-edit-button"
+                data-tag="<%= @tag_model.name %>"
+                class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
+                href="<%= tag_url(@tag_model, @page) %>/edit"
+                style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
               Edit
             </a>
-            <a style="display:none;" id="tag-admin-button" data-tag="<%= @tag_model.name %>" class="crayons-btn crayons-btn--outlined mod-action-button fs-s" href="/admin/tags/<%= @tag_model.id %>" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>" data-no-instant>
+            <a style="display:none;"
+               id="tag-admin-button"
+               data-tag="<%= @tag_model.name %>"
+               class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
+               href="/admin/tags/<%= @tag_model.id %>"
+               style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>"
+               data-no-instant>
               Admin
             </a>
-            <a style="display:none;" id="tag-mod-button" data-tag="<%= @tag_model.name %>" class="crayons-btn crayons-btn--outlined mod-action-button fs-s" href="/mod/<%= @tag_model.name %>" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+            <a style="display:none;"
+               id="tag-mod-button"
+               data-tag="<%= @tag_model.name %>"
+               class="crayons-btn crayons-btn--outlined mod-action-button fs-s"
+               href="/mod/<%= @tag_model.name %>"
+               style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
               Moderate
             </a>
           </div>

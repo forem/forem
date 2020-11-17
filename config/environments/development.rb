@@ -1,7 +1,4 @@
 # rubocop:disable Metrics/BlockLength
-# Silence all Ruby 2.7 deprecation warnings
-$VERBOSE = nil
-
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
