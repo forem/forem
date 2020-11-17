@@ -155,6 +155,7 @@ A more complete overview of our stack is available in
 - [@msarit](https://dev.to/msarit)
 - [@jdoss](https://dev.to/jdoss)
 - [@cmgorton](https://dev.to/coffeecraftcode)
+- [@andygeorge](https://dev.to/andygeorge)
 
 ## Vulnerability disclosure
 
@@ -165,7 +166,8 @@ We welcome security research on DEV under the terms of our
 
 ## Acknowledgments
 
-Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the usage of their emojis.
+Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the
+usage of their emojis.
 
 ## License
 

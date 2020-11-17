@@ -2,13 +2,13 @@ import { h, render } from 'preact';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const root = document.querySelector('#global-signup-modal');
+  const root = document.getElementById('global-signup-modal');
 
   render(
     <KeyboardShortcuts
       shortcuts={{
         Escape() {
-          const modal = document.querySelector('#global-signup-modal');
+          const modal = document.getElementById('global-signup-modal');
           modal?.classList.add('hidden');
         },
       }}

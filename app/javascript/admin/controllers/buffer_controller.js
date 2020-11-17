@@ -31,7 +31,7 @@ export default class BufferController extends Controller {
   }
 
   clearPreviousBadge() {
-    const badge = this.headerTarget.querySelector('.badge');
+    const badge = this.headerTarget.getElementsByClassName('badge')[0];
     if (badge) {
       badge.remove();
     }

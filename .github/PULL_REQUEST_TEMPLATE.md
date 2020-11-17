@@ -40,7 +40,8 @@ as any relevant images for UI changes._
 
 ## Added to documentation?
 
-- [ ] Docs.forem.com
+- [ ] [Developer Docs](https://docs.forem.com) and/or
+      [Admin Guide](https://forem.gitbook.io/forem-admin-guide/)
 - [ ] README
 - [ ] No documentation needed
 

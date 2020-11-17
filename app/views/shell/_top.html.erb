@@ -7,6 +7,7 @@
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
+      <meta name="head-cached-at" content="<%= Time.current.to_i %>">
       <% if SiteConfig.payment_pointer.present? %>
         <!-- Experimental web monetization payment pointer for micropayments -->
         <!-- It lets readers make micropayments to websites they visit. -->
@@ -42,7 +43,6 @@
       <link href="<%= optimized_image_url(SiteConfig.logo_png, width: 128, fetch_format: "png") %>" rel="icon" sizes="128x128" />
       <meta name="apple-mobile-web-app-title" content="<%= SiteConfig.app_domain %>">
       <meta name="application-name" content="<%= SiteConfig.app_domain %>">
-      <meta property="fb:pages" content="568966383279687" />
       <meta name="theme-color" content="#000000" />
       <link rel="manifest" href="/manifest.json" />
       <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_qualified_name %>" />
