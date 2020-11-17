@@ -1,4 +1,4 @@
 Test name,text_field,John Doe,,Basic,header
-Test lLanguages,text_area,,Programming languages,Coding,left_sidebar
+Test languages,text_area,,Programming languages,Coding,left_sidebar
 
 Test color,color_field,#000000,"Used for backgrounds, borders etc.",Branding,settings_only
