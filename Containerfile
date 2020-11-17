@@ -4,11 +4,11 @@ USER root
 
 RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
     dnf install --setopt install_weak_deps=false -y \
-                  ImageMagick iproute jemalloc less libcurl libcurl-devel \
-                  libffi-devel libxml2-devel libxslt-devel nodejs pcre-devel \
-                  postgresql postgresql-devel tzdata yarn \
-                  && dnf -y clean all \
-                  && rm -rf /var/cache/yum
+    ImageMagick iproute jemalloc less libcurl libcurl-devel \
+    libffi-devel libxml2-devel libxslt-devel nodejs pcre-devel \
+    postgresql postgresql-devel tzdata yarn && \
+    dnf -y clean all && \
+    rm -rf /var/cache/yum
 
 ENV BUNDLER_VERSION=2.1.4 BUNDLE_SILENCE_ROOT_WARNING=1
 RUN gem install bundler:"${BUNDLER_VERSION}"
@@ -46,7 +46,26 @@ RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
     rm -rf "${APP_HOME}"/.git/
 
 ## Testing
-# FROM builder AS test
+FROM builder AS testing
+
+RUN dnf install --setopt install_weak_deps=false -y \
+    chromium-headless chromedriver && \
+    yum clean all && \
+    rm -rf /var/cache/yum
+
+RUN bundle config build.sassc --disable-march-tune-native && \
+    bundle config set deployment 'false' && \
+    bundle config set without 'development' && \
+    bundle install --jobs 4 --retry 5 && \
+    rm -rf "${APP_HOME}"/vendor/cache/ && \
+    find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
+    find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
+
+RUN RAILS_ENV=test NODE_ENV=test bundle exec rails webpacker:compile
+
+ENTRYPOINT ["./scripts/entrypoint-dev.sh"]
+
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
 ## Development
 FROM builder AS development
