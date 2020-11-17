@@ -196,6 +196,24 @@
                                           id: "email-registration-checkbox",
                                           class: "crayons-checkbox" %>
                         </div>
+                        <div class="crayons-field">
+                          <%= admin_config_label :allowed_registration_email_domains, "Allowed email domains" %>
+                          <%= admin_config_description Constants::SiteConfig::DETAILS[:allowed_registration_email_domains][:description] %>
+                          <%= f.text_field :allowed_registration_email_domains,
+                                            class: "crayons-textfield",
+                                            value: SiteConfig.allowed_registration_email_domains.join(","),
+                                            placeholder: Constants::SiteConfig::DETAILS[:allowed_registration_email_domains][:placeholder] %>
+                        </div>
+                        <div class="crayons-field--checkbox">
+                          <%= f.check_box :display_email_domain_allow_list_publicly,
+                                          checked: SiteConfig.display_email_domain_allow_list_publicly,
+                                          id: "email-display-emails-publicly-checkbox",
+                                          class: "crayons-checkbox mt-2" %>
+                          <div>
+                            <%= admin_config_label :display_email_domain_allow_list_publicly %>
+                            <%= admin_config_description Constants::SiteConfig::DETAILS[:display_email_domain_allow_list_publicly][:description] %>
+                          </div>
+                        </div>
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :require_captcha_for_email_password_registration,
                                           checked: SiteConfig.require_captcha_for_email_password_registration,
