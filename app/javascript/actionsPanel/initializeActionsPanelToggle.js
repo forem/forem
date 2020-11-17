@@ -18,19 +18,25 @@ export default function initializeActionsPanel(user, path) {
   `;
 
   function toggleModActionsMenu() {
-    document.querySelector('.mod-actions-menu').classList.toggle('showing');
-    document.querySelector('.mod-actions-menu-btn').classList.toggle('hidden');
+    document
+      .getElementsByClassName('mod-actions-menu')[0]
+      .classList.toggle('showing');
+    document
+      .getElementsByClassName('mod-actions-menu-btn')[0]
+      .classList.toggle('hidden');
 
     // showing close icon in the mod panel if it is opened by clicking the button
     const modContainer = document.getElementById('mod-container');
     const panelDocument = modContainer.contentDocument;
 
     panelDocument
-      .querySelector('.close-actions-panel')
+      .getElementsByClassName('close-actions-panel')[0]
       .classList.remove('hidden');
   }
 
-  document.querySelector('.mod-actions-menu').innerHTML = modActionsMenuHTML;
+  document.getElementsByClassName(
+    'mod-actions-menu',
+  )[0].innerHTML = modActionsMenuHTML;
   // eslint-disable-next-line no-restricted-globals
   if (!top.document.location.pathname.includes('/mod')) {
     // don't show mod button in mod center page
@@ -38,7 +44,7 @@ export default function initializeActionsPanel(user, path) {
       'mod-actions-menu-btn-area',
     ).innerHTML = modActionsMenuIconHTML;
     document
-      .querySelector('.mod-actions-menu-btn')
+      .getElementsByClassName('mod-actions-menu-btn')[0]
       .addEventListener('click', toggleModActionsMenu);
   }
 }

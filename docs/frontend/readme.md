@@ -12,6 +12,6 @@ items:
   - debugging.md
   - tracking.md
   - accessibility.md
----
+  - tips.md
 
 # Frontend Guide

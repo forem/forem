@@ -31,7 +31,7 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
       expect(page.html).not_to include("onboarding-container")
     end
 
-    it "renders the feed and onboarding task card" do
+    xit "renders the feed and onboarding task card" do
       visit "/"
 
       wait_for_javascript

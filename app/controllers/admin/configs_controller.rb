@@ -123,6 +123,8 @@ module Admin
         video_encoder_key
         tag_feed_minimum_score
         home_feed_minimum_score
+        allowed_registration_email_domains
+        display_email_domain_allow_list_publicly
       ].freeze
 
     IMAGE_FIELDS =
@@ -211,6 +213,7 @@ module Admin
       errors = []
       errors << "Brand color must be darker for accessibility." if brand_contrast_too_low
       errors << "Brand color must be be a 6 character hex (starting with #)." if brand_color_not_hex
+      errors << "Allowed emails must be list of domains." if allowed_domains_include_improper_format
       redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}" if errors.any?
     end
 
@@ -258,6 +261,16 @@ module Admin
     def brand_color_not_hex
       hex = params.dig(:site_config, :primary_brand_color_hex)
       hex.present? && !hex.match?(/\A#(\h{6}|\h{3})\z/)
+    end
+
+    def allowed_domains_include_improper_format
+      domains = params.dig(:site_config, :allowed_registration_email_domains)
+      return unless domains
+
+      domains_array = domains.delete(" ").split(",")
+      valid_domains = domains_array
+        .select { |d| d.match?(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/) }
+      valid_domains.size != domains_array.size
     end
 
     def valid_image_url(url)
