@@ -10,7 +10,7 @@ import { Button, FormField, RadioButton } from '@crayons';
  *
  * @param {object} props
  * @param {object} props.data
- * @param {object} props.closeReportAbuseForm
+ * @param {function} props.closeReportAbuseForm
  *
  * @component
  *
