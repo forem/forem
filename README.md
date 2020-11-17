@@ -166,8 +166,7 @@ We welcome security research on DEV under the terms of our
 
 ## Acknowledgments
 
-Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the
-usage of their emojis.
+Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the usage of their emojis.
 
 ## License
 
