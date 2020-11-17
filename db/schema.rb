@@ -880,11 +880,12 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
 
   create_table "podcast_ownerships", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.bigint "podcast_id"
+    t.bigint "podcast_id", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
-    t.index ["podcast_id"], name: "index_podcast_ownerships_on_podcast_id", unique: true
-    t.index ["user_id"], name: "index_podcast_ownerships_on_user_id", unique: true
+    t.bigint "user_id", null: false
+    t.index ["podcast_id", "user_id"], name: "index_podcast_ownerships_on_podcast_id_and_user_id", unique: true
+    t.index ["podcast_id"], name: "index_podcast_ownerships_on_podcast_id"
+    t.index ["user_id"], name: "index_podcast_ownerships_on_user_id"
   end
 
   create_table "podcasts", force: :cascade do |t|
