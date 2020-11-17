@@ -267,70 +267,39 @@ function buildArticleHTML(article) {
         '</div></a>';
     }
 
-    var navigationLink = `
-      <a
-        href="${article.path}"
-        aria-labelledby="article-link-${article.id}"
-        class="crayons-story__hidden-navigation-link"
-      >
-        ${article.title}
-      </a>
-    `;
-
-    var articleElement =
-      '<article class="crayons-story" ' +
-      'data-article-path="' +
-      article.path +
-      'id="article-' +
-      article.id +
-      '" data-content-user-id="' +
-      article.user_id +
-      '">' +
-      navigationLink +
-      '<div role="presentation">\
-        ' +
-      videoHTML +
-      '\
-        <div class="crayons-story__body">\
-          <div class="crayons-story__top">\
-            ' +
-      meta +
-      '\
-          </div>\
-          <div class="crayons-story__indention">\
-            <h2 class="crayons-story__title"><a href="' +
-      article.path +
-      '" id="article-link-' +
-      article.id +
-      '">' +
-      filterXSS(article.title) +
-      '</a></h2>\
-            <div class="crayons-story__tags">' +
-      tagString +
-      '</div>\
-            ' +
-      searchSnippetHTML +
-      '\
-            <div class="crayons-story__bottom">\
-              <div class="crayons-story__details">' +
-      reactionsDisplay +
-      commentsDisplay +
-      '</div>\
+    return `<article class="crayons-story"
+      data-article-path="${article.path}"
+      id="article-${article.id}"
+      data-content-user-id="${article.user_id}">\
+        <div role="presentation">\
+          ${videoHTML}\
+          <div class="crayons-story__body">\
+            <div class="crayons-story__top">\
+              ${meta}
+            </div>\
+            <div class="crayons-story__indention">
+              <h2 class="crayons-story__title">
+                <a href="${article.path}" id="article-link-${article.id}">
+                  ${filterXSS(article.title)}
+                </a>
+              </h2>\
+              <div class="crayons-story__tags">
+                ${tagString}
+              </div>\
+              ${searchSnippetHTML}\
+              <div class="crayons-story__bottom">\
+                <div class="crayons-story__details">
+                  ${reactionsDisplay} ${commentsDisplay}
+                </div>\
                 <div class="crayons-story__save">\
-                ' +
-      readingTimeHTML +
-      '\
-                ' +
-      saveButton +
-      '\
+                  ${readingTimeHTML}\
+                  ${saveButton}
+                </div>\
               </div>\
             </div>\
           </div>\
         </div>\
-      </div>\
-    </article>';
-
-    return articleElement;
+      </article>`;
   }
 
   return '';
