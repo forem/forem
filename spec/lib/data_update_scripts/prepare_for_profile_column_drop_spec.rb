@@ -26,7 +26,7 @@ describe DataUpdateScripts::PrepareForProfileColumnDrop do
 
     it "migrates data and keeps existing data intact", :aggregate_failures do
       described_class.new.run
-      expect(user.profile.reload.data.keys.size).to eq(31)
+      expect(user.profile.reload.data.keys.size).to eq(11)
       expect(user.profile.data).to have_key("doge_test")
     end
   end

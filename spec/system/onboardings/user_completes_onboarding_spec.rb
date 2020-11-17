@@ -9,7 +9,7 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
   end
 
   context "when the user hasn't seen onboarding" do
-    it "does not render the onboarding task card on the feed" do
+    xit "does not render the onboarding task card on the feed" do
       sign_in(user)
       visit "/"
 
@@ -31,7 +31,7 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
       expect(page.html).not_to include("onboarding-container")
     end
 
-    it "renders the feed and onboarding task card" do
+    xit "renders the feed and onboarding task card" do
       visit "/"
 
       wait_for_javascript

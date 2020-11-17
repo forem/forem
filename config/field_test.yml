@@ -2,7 +2,6 @@ experiments:
   user_home_feed: # Home feed collection for logged in user
     variants:
       - base
-      - more_tag_weight_more_random_experiment
       - more_comments_experiment
       - mix_of_everything_experiment
       - more_tag_weight_randomized_at_end_experiment
@@ -10,10 +9,9 @@ experiments:
       - more_comments_medium_weight_randomized_at_end_experiment
       - more_comments_minimal_weight_randomized_at_end_experiment
     weights:
-      - 10
       - 15
-      - 10
-      - 10
+      - 15
+      - 15
       - 15
       - 20
       - 10
