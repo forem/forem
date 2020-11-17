@@ -1,5 +1,5 @@
 import { render as preactRender } from 'preact';
-import { render } from '@utilities/preact';
+import { render } from '@utilities/preact/render';
 
 jest.mock('preact');
 

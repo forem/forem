@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { getUserDataAndCsrfToken } from '../chat/util';
 import ArticleForm from '../article-form/articleForm';
 import { Snackbar } from '../Snackbar';
-import { render } from '@utilities/preact';
+import { render } from '@utilities/preact/render';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {

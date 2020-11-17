@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { ModerationArticles } from '../modCenter/moderationArticles';
 import { addSnackbarItem, Snackbar } from '../Snackbar';
-import { render } from '@utilities/preact';
+import { render } from '@utilities/preact/render';
 
 let elementLoaded = false;
 

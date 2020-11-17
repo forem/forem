@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { getUserDataAndCsrfToken } from '../chat/util';
 import { getUnopenedChannels } from '../utilities/connect';
-import { render } from '@utilities/preact';
+import { render } from '@utilities/preact/render';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {

@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import Chat from '../chat/chat';
 import { Snackbar } from '../Snackbar/Snackbar';
-import { render } from '@utilities/preact';
+import { render } from '@utilities/preact/render';
 
 function loadElement() {
   const root = document.getElementById('chat');
