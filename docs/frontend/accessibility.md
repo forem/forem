@@ -4,7 +4,7 @@ title: Accessibility
 
 # Accessibility
 
-To make Forem the most inclusive community platform around,accessibility should be considered to enable people with disabilities to create and consume content.
+To make Forem the most inclusive community platform around, accessibility should be considered to enable people with disabilities to create and consume content.
 
 ## The Basics
 
@@ -21,6 +21,7 @@ Forem UI changes should consider accessibility wherever possible. This includes 
 
 If you're working on something JavaScript-heavy or animated, there are a few additional considerations for accessibility:
 
+- [Forem Accessibility Tests](https://docs.forem.com/tests/accessibility-tests/)
 - [Intro to ARIA](https://webaim.org/techniques/aria/)
 - [Handle focus for client-side interactions](https://dev.to/robdodson/managing-focus-64l)
 - [Reducing motion with CSS media queries](https://css-tricks.com/introduction-reduced-motion-media-query/)
