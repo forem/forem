@@ -22,13 +22,13 @@ function showUserAlertModal(title, text, confirm_text) {
  * @param {string} next_action_text Description of the next action that can be taken
  *
  * @example
- * showRateLimitModal('Made a comment', 'comment again');
+ * showRateLimitModal('Made a comment', 'comment again')
  */
 function showRateLimitModal(action_text, next_action_text) {
   let rateLimitText = buildRateLimitText(action_text, next_action_text);
   let rateLimitLink = '/faq';
   showUserAlertModal(
-    'Wait a Moment...',
+    'Wait a moment...',
     rateLimitText,
     'Got it',
     rateLimitLink,
@@ -61,11 +61,10 @@ const getModalHtml = (
   title,
   text,
   confirm_text,
-) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal hidden">
+) => `<div id="${modalId}" data-testid="modal-container" class="crayons-modal crayons-modal--m hidden">
     <div role="dialog" aria-modal="true" class="crayons-modal__box">
-      <div class="crayons-modal__box__header">
-        <h2>${title}</h2>
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button" 
+      <div class="crayons-modal__box__header border-b-0 justify-end">
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button"
               onClick="toggleUserAlertModal();" aria-label="Close">
             <svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon"
               xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="714d29e78a3867c79b07f310e075e824">
@@ -76,10 +75,18 @@ const getModalHtml = (
             </svg>
           </button>
       </div>
-      <div class="crayons-modal__box__body">
-        <p>${text}</p>
-        </br>
-        <button class="crayons-btn crayons-btn--icon" type="button" onClick="toggleUserAlertModal();">${confirm_text}</button>
+      <div class="crayons-modal__box__body pt-0 flex gap-2">
+        <div class="w-75">
+          <h2>
+            ${title}
+          </h2>
+          <p class="color-base-70">
+            ${text}
+          </p>
+          <button class="crayons-btn mt-4" type="button" onClick="toggleUserAlertModal();">
+            ${confirm_text}
+          </button>
+        </div>
       </div>
     </div>
     <div data-testid="modal-overlay" class="crayons-modal__overlay"></div>

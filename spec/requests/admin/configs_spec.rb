@@ -2,10 +2,10 @@ require "rails_helper"
 
 RSpec.describe "/admin/config", type: :request do
   let(:user) { create(:user) }
-  let(:admin) { create(:user, :super_admin) }
-  let(:admin_plus_config) { create(:user, :super_plus_single_resource_admin, resource: Config) }
+  let(:admin) { create(:user, :admin) }
+  let(:super_admin) { create(:user, :super_admin) }
   let(:confirmation_message) do
-    "My username is @#{admin_plus_config.username} and this action is 100% safe and appropriate."
+    "My username is @#{super_admin.username} and this action is 100% safe and appropriate."
   end
 
   describe "POST admin/config as a user" do
@@ -20,13 +20,13 @@ RSpec.describe "/admin/config", type: :request do
 
   # rubocop:disable RSpec/NestedGroups
   describe "POST admin/config" do
-    context "when admin has typical admin permissions but not single resource" do
+    context "when admin has typical admin permissions but not super admin" do
       before do
         sign_in(admin)
       end
 
       it "does not allow user to update config if they have proper confirmation" do
-        expected_image_url = "https://dummyimage.com/300x300"
+        expected_image_url = "https://dummyimage.com/300x300.png"
         expect do
           post "/admin/config", params: { site_config: { favicon_url: expected_image_url },
                                           confirmation: confirmation_message }
@@ -34,7 +34,7 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       it "does not allow user to update config if they do not have proper confirmation" do
-        expected_image_url = "https://dummyimage.com/300x300"
+        expected_image_url = "https://dummyimage.com/300x300.png"
         expect do
           post "/admin/config", params: { site_config: { favicon_url: expected_image_url },
                                           confirmation: "Not proper" }
@@ -42,9 +42,9 @@ RSpec.describe "/admin/config", type: :request do
       end
     end
 
-    context "when admin has full permissions including single resource" do
+    context "when admin has full permissions including super" do
       before do
-        sign_in(admin_plus_config)
+        sign_in(super_admin)
       end
 
       it "updates site config admin action taken" do
@@ -89,17 +89,28 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "enables email authentication" do
-          post "/admin/config", params: { site_config: { allow_both_email_signup_and_login: true },
+          post "/admin/config", params: { site_config: { allow_email_password_registration: true },
                                           confirmation: confirmation_message }
           expect(SiteConfig.allow_email_password_registration).to be(true)
           expect(SiteConfig.allow_email_password_login).to be(true)
         end
 
-        it "disables email authentication and invite-only mode" do
-          post "/admin/config", params: { site_config: { allow_both_email_signup_and_login: false },
+        it "disables email authentication" do
+          post "/admin/config", params: { site_config: { allow_email_password_registration: false },
                                           confirmation: confirmation_message }
           expect(SiteConfig.allow_email_password_registration).to be(false)
-          expect(SiteConfig.allow_email_password_login).to be(false)
+          expect(SiteConfig.allow_email_password_login).to be(true)
+        end
+
+        it "enables invite-only-mode" do
+          post "/admin/config", params: { site_config: { invite_only_mode: true },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.invite_only_mode).to be(true)
+        end
+
+        it "disables invite-only-mode & enables just email registration" do
+          post "/admin/config", params: { site_config: { invite_only_mode: false },
+                                          confirmation: confirmation_message }
           expect(SiteConfig.invite_only_mode).to be(false)
         end
       end
@@ -231,14 +242,29 @@ RSpec.describe "/admin/config", type: :request do
           expected_default_image_url = URL.local_image("social-media-cover.png")
           expect(SiteConfig.main_social_image).to eq(expected_default_image_url)
 
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { main_social_image: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.main_social_image).to eq(expected_image_url)
         end
 
+        it "updates main_social_image with a valid image" do
+          expected_image = "https://dummyimage.com/300x300"
+          post "/admin/config", params: { site_config: { main_social_image: expected_image },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.main_social_image).to eq(expected_image)
+        end
+
+        it "only updates the main_social_image if given a valid image URL" do
+          invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300"
+          expect do
+            post "/admin/config", params: { site_config: { main_social_image: invalid_image_url },
+                                            confirmation: confirmation_message }
+          end.not_to change(SiteConfig, :main_social_image)
+        end
+
         it "updates favicon_url" do
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { favicon_url: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.favicon_url).to eq(expected_image_url)
@@ -246,25 +272,55 @@ RSpec.describe "/admin/config", type: :request do
 
         it "updates logo_png" do
           expected_default_image_url = URL.local_image("icon.png")
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post "/admin/config", params: { site_config: { logo_png: expected_image_url },
                                             confirmation: confirmation_message }
           end.to change(SiteConfig, :logo_png).from(expected_default_image_url).to(expected_image_url)
         end
 
+        it "updates logo_png with a valid image" do
+          expected_image = "https://dummyimage.com/300x300"
+          post "/admin/config", params: { site_config: { logo_png: expected_image },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.logo_png).to eq(expected_image)
+        end
+
+        it "only updates the logo_png if given a valid image URL" do
+          invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300.png"
+          expect do
+            post "/admin/config", params: { site_config: { logo_png: invalid_image_url },
+                                            confirmation: confirmation_message }
+          end.not_to change(SiteConfig, :logo_png)
+        end
+
         it "updates logo_svg" do
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.logo_svg).to eq(expected_image_url)
         end
 
         it "updates secondary_logo_url" do
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { secondary_logo_url: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.secondary_logo_url).to eq(expected_image_url)
+        end
+
+        it "updates secondary_logo_url with a valid image" do
+          expected_image = "https://dummyimage.com/300x300"
+          post "/admin/config", params: { site_config: { secondary_logo_url: expected_image },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.secondary_logo_url).to eq(expected_image)
+        end
+
+        it "only updates the secondary_logo_url if given a valid image URL" do
+          invalid_image_url = "![logo_lowres]https://dummyimage.com/300x300.png"
+          expect do
+            post "/admin/config", params: { site_config: { secondary_logo_url: invalid_image_url },
+                                            confirmation: confirmation_message }
+          end.not_to change(SiteConfig, :secondary_logo_url)
         end
 
         it "updates left_navbar_svg_icon" do
@@ -284,7 +340,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "rejects update without proper confirmation" do
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
                                             confirmation: "Incorrect yo!" }
@@ -292,7 +348,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "rejects update without any confirmation" do
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post "/admin/config", params: { site_config: { logo_svg: expected_image_url },
                                             confirmation: "" }
@@ -310,7 +366,7 @@ RSpec.describe "/admin/config", type: :request do
 
         it "updates mascot_image_url" do
           expected_default_image_url = URL.local_image("mascot.png")
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
                                             confirmation: confirmation_message }
@@ -318,7 +374,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates mascot_footer_image_url" do
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { mascot_footer_image_url: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.mascot_footer_image_url).to eq(expected_image_url)
@@ -449,21 +505,21 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Onboarding" do
         it "updates onboarding_taskcard_image" do
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { onboarding_taskcard_image: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
         end
 
         it "updates onboarding_logo_image" do
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { onboarding_logo_image: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.onboarding_logo_image).to eq(expected_image_url)
         end
 
         it "updates onboarding_background_image" do
-          expected_image_url = "https://dummyimage.com/300x300"
+          expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { onboarding_background_image: expected_image_url },
                                           confirmation: confirmation_message }
           expect(SiteConfig.onboarding_background_image).to eq(expected_image_url)

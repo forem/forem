@@ -6,7 +6,7 @@ RSpec.describe "Admin creates new event", type: :system do
 
   before do
     sign_in admin
-    visit "/admin/events/new"
+    visit new_admin_event_path
   end
 
   def select_date_and_time(year, month, date, hour, min, field_name)

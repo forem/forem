@@ -21,7 +21,7 @@ describe('ArticleController', () => {
 
   describe('#increaseFeaturedNumber', () => {
     it('increases the featured number input', () => {
-      const button = document.querySelectorAll('button')[0];
+      const button = document.getElementsByTagName('button')[0];
       const input = document.querySelector(
         "[data-target='article.featuredNumber']",
       );
@@ -35,7 +35,7 @@ describe('ArticleController', () => {
 
   describe('#decreaseFeaturedNumber', () => {
     it('increases the featured number input', () => {
-      const button = document.querySelectorAll('button')[1];
+      const button = document.getElementsByTagName('button')[1];
       const input = document.querySelector(
         "[data-target='article.featuredNumber']",
       );
@@ -49,8 +49,8 @@ describe('ArticleController', () => {
 
   describe('#highlightElement', () => {
     it('adds a class to the controller element', () => {
-      const button = document.querySelectorAll('button')[2];
-      const element = document.querySelector('.card-body');
+      const button = document.getElementsByTagName('button')[2];
+      const element = document.getElementsByClassName('card-body')[0];
 
       button.click();
 

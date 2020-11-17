@@ -4,7 +4,7 @@ Rails.application.configure do
 
   # Include middleware to ensure timezone for browser requests for Capybara specs
   # matches the random zonebie timezone set at the beginning of our spec run
-  config.middleware.use(Middleware::TimeZoneSetter)
+  config.middleware.use SetTimeZone
 
   # The test environment is used exclusively to run your application's
   # test suite. You never need to work with it otherwise. Remember that

@@ -1,85 +1,40 @@
 @import '../config/import';
 
 .crayons-footer {
-  --footer-padding: var(--su-4);
+  --footer-padding: var(--su-5);
   background: var(--footer-bg);
   color: var(--footer-color);
-  padding: var(--footer-padding) 0;
+  padding: var(--footer-padding);
+  position: relative;
+  text-align: center;
 
   @media (min-width: $breakpoint-m) {
-    --footer-padding: var(--su-6);
-  }
-
-  @media (min-width: $breakpoint-l) {
     --footer-padding: var(--su-8);
   }
 
   &__container {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    padding: 0 var(--su-2);
-    margin-bottom: calc(var(--su-9) + env(safe-area-inset-bottom));
-
-    @media (min-width: $breakpoint-m) {
-      flex-direction: row;
-      padding: 0 var(--layout-padding);
-      margin-bottom: env(safe-area-inset-bottom);
-    }
-  }
-
-  &__nav {
-    display: grid;
-    column-gap: var(--su-4);
-    grid-template-rows: repeat(9, 1fr);
-    grid-auto-flow: column;
-
-    @media (min-width: $breakpoint-s) {
-      grid-template-rows: repeat(6, 1fr);
-      column-gap: var(--su-8);
-    }
-
-    @media (min-width: $breakpoint-l) {
-      grid-template-rows: repeat(6, 1fr);
-      column-gap: var(--su-10);
-    }
-  }
-
-  &__info {
-    display: grid;
-    gap: var(--su-4);
-    width: 100%;
-    align-self: flex-start;
+    justify-items: center;
     font-size: var(--fs-s);
-    order: 1;
-    padding: var(--su-6) 0 0 var(--su-3);
-
+    grid-gap: var(--su-6);
+    margin-bottom: env(safe-area-inset-bottom);
     @media (min-width: $breakpoint-m) {
-      width: 25%;
-      padding: 0;
-      margin-right: var(--su-8);
-      order: initial;
+      grid-gap: var(--su-5);
+      font-size: var(--fs-base);
     }
   }
 
-  // Logo
-  &__logo {
-    display: flex;
-
-    .logo {
-      width: 50px;
-      height: 40px;
-      padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
-      background: var(--logo-bg);
-      fill: var(--logo-color);
-      border-radius: 3px;
-    }
+  &__divider {
+    border: none;
+    border-top: 1px solid var(--footer-color);
+    opacity: 0.15;
+    width: 20%;
+    margin: 0;
   }
 
   &__mascot {
     position: absolute;
-    right: var(--su-4);
-    top: calc(var(--footer-padding) * -1 - 2px);
+    right: var(--footer-padding);
+    top: -2px;
     display: none;
     transform-origin: center top;
     transition: all var(--transition-props);

@@ -66,7 +66,7 @@ class UserSubscriptionTag < LiquidTagBase
         profileImages.classList.add("signed-out");
       }
 
-      const subscriberProfileImage = document.querySelector('.ltag__user-subscription-tag__subscriber-profile-image');
+      const subscriberProfileImage = document.getElementsByClassName('ltag__user-subscription-tag__subscriber-profile-image')[0];
       if (subscriberProfileImage) {
         subscriberProfileImage.classList.add("hidden");
       }

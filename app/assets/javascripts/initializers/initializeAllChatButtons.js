@@ -12,15 +12,17 @@ function hideChatModal(modal) {
 }
 
 function toggleModal() {
-  var modal = document.querySelector('.crayons-modal');
+  var modal = document.getElementsByClassName('crayons-modal')[0];
   modal.classList.toggle('hidden');
 }
 
 function initModal() {
-  var modal = document.querySelector('.crayons-modal');
-  modal.querySelector('.close-modal').addEventListener('click', toggleModal);
+  var modal = document.getElementsByClassName('crayons-modal')[0];
   modal
-    .querySelector('.crayons-modal__overlay')
+    .getElementsByClassName('close-modal')[0]
+    .addEventListener('click', toggleModal);
+  modal
+    .getElementsByClassName('crayons-modal__overlay')[0]
     .addEventListener('click', toggleModal);
 }
 

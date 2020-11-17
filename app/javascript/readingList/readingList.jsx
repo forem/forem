@@ -36,8 +36,8 @@ export class ReadingList extends Component {
   constructor(props) {
     super(props);
 
-    const { availableTags, statusView } = this.props;
-    this.state = defaultState({ availableTags, archiving: false, statusView });
+    const { statusView } = this.props;
+    this.state = defaultState({ archiving: false, statusView });
 
     // bind and initialize all shared functions
     this.onSearchBoxType = debounceAction(onSearchBoxType.bind(this), {
