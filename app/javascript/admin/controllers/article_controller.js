@@ -16,7 +16,7 @@ export default class ArticleController extends Controller {
   }
 
   highlightElement() {
-    const card = this.element.querySelector('.card-body');
+    const card = this.element.getElementsByClassName('card-body')[0];
     card.classList.add('bg-highlighted', 'border-highlighted');
     setTimeout(() => {
       card.classList.remove('bg-highlighted');

@@ -11,6 +11,7 @@ items:
   - liquid-tags.md
   - debugging.md
   - tracking.md
+  - tips.md
 ---
 
 # Frontend Guide

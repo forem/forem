@@ -26,7 +26,6 @@ class ReservedWords
     bit
     bits
     blocks
-    buffered_articles
     butt
     byte
     bytes

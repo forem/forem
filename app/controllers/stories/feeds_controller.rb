@@ -3,12 +3,8 @@ module Stories
     respond_to :json
 
     VARIANTS = {
-      "more_tag_weight_more_random_experiment" => :more_tag_weight_more_random_experiment,
       "more_comments_experiment" => :more_comments_experiment,
-      "more_experience_level_weight_experiment" => :more_experience_level_weight_experiment,
       "more_tag_weight_randomized_at_end_experiment" => :more_tag_weight_randomized_at_end_experiment,
-      "more_experience_level_weight_randomized_at_end_experiment" =>
-        :more_experience_level_weight_randomized_at_end_experiment,
       "more_comments_randomized_at_end_experiment" => :more_comments_randomized_at_end_experiment,
       "more_comments_medium_weight_randomized_at_end_experiment" =>
         :more_comments_medium_weight_randomized_at_end_experiment,

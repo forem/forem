@@ -7,6 +7,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from '../utilities/connect';
+import notifyUser from '../utilities/connect/newMessageNotify';
 import debounceAction from '../utilities/debounceAction';
 import { addSnackbarItem } from '../Snackbar';
 import { processImageUpload } from '../article-form/actions';
@@ -64,7 +65,7 @@ export default class Chat extends Component {
     );
 
     this.state = {
-      appName: document.body.dataset.appName,
+      appDomain: document.body.dataset.appDomain,
       messages: [],
       scrolled: false,
       showAlert: false,
@@ -116,7 +117,7 @@ export default class Chat extends Component {
       isMobileDevice,
       channelPaginationNum,
       currentUserId,
-      appName,
+      appDomain,
       messageOffset,
     } = this.state;
 
@@ -127,13 +128,13 @@ export default class Chat extends Component {
     );
     this.subscribeChannelsToPusher(
       channelsForPusherSub,
-      (channel) => `open-channel--${appName}-${channel.chat_channel_id}`,
+      (channel) => `open-channel--${appDomain}-${channel.chat_channel_id}`,
     );
 
     setupObserver(this.observerCallback);
 
     this.subscribePusher(
-      `private-message-notifications--${appName}-${currentUserId}`,
+      `private-message-notifications--${appDomain}-${currentUserId}`,
     );
 
     if (activeChannelId) {
@@ -236,7 +237,7 @@ export default class Chat extends Component {
   messageOpened = () => {};
 
   loadChannels = (channels, query) => {
-    const { activeChannelId, appName } = this.state;
+    const { activeChannelId, appDomain } = this.state;
     const activeChannel =
       this.state.activeChannel ||
       channels.filter(
@@ -285,11 +286,11 @@ export default class Chat extends Component {
     }
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('open')),
-      (channel) => `open-channel--${appName}-${channel.chat_channel_id}`,
+      (channel) => `open-channel--${appDomain}-${channel.chat_channel_id}`,
     );
     this.subscribeChannelsToPusher(
       channels.filter(this.channelTypeFilterFn('invite_only')),
-      (channel) => `private-channel--${appName}-${channel.chat_channel_id}`,
+      (channel) => `private-channel--${appDomain}-${channel.chat_channel_id}`,
     );
     const chatChannelsList = document.getElementById(
       'chatchannels__channelslist',
@@ -346,7 +347,7 @@ export default class Chat extends Component {
   };
 
   setupChannel = (channelId) => {
-    const { messages, messageOffset, activeChannel, appName } = this.state;
+    const { messages, messageOffset, activeChannel, appDomain } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
@@ -361,9 +362,9 @@ export default class Chat extends Component {
         null,
       );
       if (activeChannel.channel_type === 'open')
-        this.subscribePusher(`open-channel--${appName}-${channelId}`);
+        this.subscribePusher(`open-channel--${appDomain}-${channelId}`);
     }
-    this.subscribePusher(`private-channel--${appName}-${channelId}`);
+    this.subscribePusher(`private-channel--${appDomain}-${channelId}`);
   };
 
   setOpenChannelUsers = (res) => {
@@ -452,13 +453,13 @@ export default class Chat extends Component {
       activeChannelId,
       scrolled,
       chatChannels,
+      currentUserId,
       unopenedChannelIds,
     } = this.state;
 
     const receivedChatChannelId = message.chat_channel_id;
     const messageList = document.getElementById('messagelist');
     let newMessages = [];
-
     const nearBottom =
       messageList.scrollTop + messageList.offsetHeight + 400 >
       messageList.scrollHeight;
@@ -466,7 +467,12 @@ export default class Chat extends Component {
     if (nearBottom) {
       scrollToBottom();
     }
-    // Remove reduntant messages
+
+    // If I'm not sender and tab is not active
+    if (message.user_id !== currentUserId && document.hidden) {
+      notifyUser();
+    }
+
     if (
       message.temp_id &&
       messages[receivedChatChannelId] &&
@@ -474,6 +480,7 @@ export default class Chat extends Component {
         (oldmessage) => oldmessage.temp_id === message.temp_id,
       ) > -1
     ) {
+      // Remove reduntant messages
       return;
     }
 
@@ -485,7 +492,7 @@ export default class Chat extends Component {
       }
     }
 
-    //Show alert if message received and you have scrolled up
+    // Show alert if message received and you have scrolled up
     const newShowAlert =
       activeChannelId === receivedChatChannelId
         ? { showAlert: !nearBottom }
@@ -595,7 +602,9 @@ export default class Chat extends Component {
     if (enterPressed) {
       if (showMemberlist) {
         e.preventDefault();
-        const selectedUser = document.querySelector('.active__message__list');
+        const selectedUser = document.getElementsByClassName(
+          'active__message__list',
+        )[0];
         this.addUserName({ target: selectedUser });
       } else if (messageIsEmpty) {
         e.preventDefault();
@@ -630,7 +639,9 @@ export default class Chat extends Component {
       e.target.value === ''
     ) {
       e.preventDefault();
-      const richLinks = document.querySelectorAll('.chatchannels__richlink');
+      const richLinks = document.getElementsByClassName(
+        'chatchannels__richlink',
+      );
       if (richLinks.length === 0) {
         return;
       }
@@ -772,7 +783,9 @@ export default class Chat extends Component {
     }
   };
   hideChannelList = () => {
-    const chatContainer = document.querySelector('.chat__activechat');
+    const chatContainer = document.getElementsByClassName(
+      'chat__activechat',
+    )[0];
     chatContainer.classList.remove('chat__activechat--hidden');
   };
   handleSwitchChannel = (e) => {
@@ -1355,7 +1368,9 @@ export default class Chat extends Component {
   };
 
   navigateToChannelsList = () => {
-    const chatContainer = document.querySelector('.chat__activechat');
+    const chatContainer = document.getElementsByClassName(
+      'chat__activechat',
+    )[0];
 
     chatContainer.classList.add('chat__activechat--hidden');
   };
@@ -1649,7 +1664,9 @@ export default class Chat extends Component {
 
   listHighlightManager = (keyCode) => {
     const mentionList = document.getElementById('mentionList');
-    const activeElement = document.querySelector('.active__message__list');
+    const activeElement = document.getElementsByClassName(
+      'active__message__list',
+    )[0];
     if (mentionList.children.length > 0) {
       if (keyCode === 40 && activeElement) {
         if (activeElement.nextElementSibling) {

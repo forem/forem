@@ -1,9 +1,11 @@
 # Used for sharing behavior between ProfileField and CustomProfileField
-concern :ActsAsProfileField do
+module ActsAsProfileField
+  extend ActiveSupport::Concern
+
+  WORD_REGEX = /\w+/.freeze
+
   included do
     before_create :generate_attribute_name
-
-    WORD_REGEX = /\w+/.freeze # rubocop:disable Lint/ConstantDefinitionInBlock
 
     validates :label, presence: true, uniqueness: { case_sensitive: false }
     validates :attribute_name, presence: true, on: :update

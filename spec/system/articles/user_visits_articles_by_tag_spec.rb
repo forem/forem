@@ -23,7 +23,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows the follow button", js: true, stub_elasticsearch: true do
-        within("h1") { expect(page).to have_button("Follow") }
+        within("header.tag-header") { expect(page).to have_button("Follow") }
       end
 
       it "shows correct articles count" do
@@ -59,7 +59,7 @@ RSpec.describe "User visits articles by tag", type: :system do
     it "shows the following button", js: true, stub_elasticsearch: true do
       wait_for_javascript
 
-      within("h1") { expect(page).to have_button("Following") }
+      within("header.tag-header") { expect(page).to have_button("Following") }
     end
 
     it "shows time buttons" do

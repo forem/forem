@@ -60,13 +60,6 @@ module Articles
         stories
       end
 
-      def more_tag_weight_more_random_experiment
-        @tag_weight = 2
-        @randomness = 7
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
-      end
-
       # Test variation: the more comments a post has, the higher it's rated!
       def more_comments_experiment
         @comment_weight = 2
@@ -88,31 +81,19 @@ module Articles
         stories
       end
 
-      def more_experience_level_weight_experiment
-        @experience_level_weight = 3
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
-      end
-
       def mix_of_everything_experiment
-        case rand(9)
+        case rand(6)
         when 0
           default_home_feed(user_signed_in: true)
         when 1
-          more_tag_weight_more_random_experiment
-        when 2
           more_comments_experiment
-        when 3
-          more_experience_level_weight_experiment
-        when 4
+        when 2
           more_tag_weight_randomized_at_end_experiment
-        when 5
-          more_experience_level_weight_randomized_at_end_experiment
-        when 6
+        when 3
           more_comments_randomized_at_end_experiment
-        when 7
+        when 4
           more_comments_medium_weight_randomized_at_end_experiment
-        when 8
+        when 5
           more_comments_minimal_weight_randomized_at_end_experiment
         else
           default_home_feed(user_signed_in: true)
@@ -128,12 +109,6 @@ module Articles
         @randomness = 0
         @tag_weight = 2
         _featured_story, results = default_home_feed_and_featured_story(user_signed_in: true)
-        first_half(results).shuffle + last_half(results)
-      end
-
-      def more_experience_level_weight_randomized_at_end_experiment
-        @randomness = 0
-        results = more_experience_level_weight_experiment
         first_half(results).shuffle + last_half(results)
       end
 
