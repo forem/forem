@@ -57,6 +57,10 @@ module Constants
         description: "Used in meta description tags etc.",
         placeholder: "A fabulous community of kind and welcoming people."
       },
+      community_emoji: {
+        description: "Used in the title tags across the site alongside the community name",
+        placeholder: ""
+      },
       community_member_label: {
         description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
         placeholder: "user"
