@@ -109,7 +109,8 @@ export class Search extends Component {
   componentWillUnmount() {
     document.removeEventListener('keydown', this.globalKeysListener);
     window.removeEventListener('popstate', this.syncSearchUrlWithInput);
-    InstantClick.off('change', this.enableSearchPageListener);
+    InstantClick.off &&
+      InstantClick.off('change', this.enableSearchPageListener);
   }
 
   minimizeHeader = (event) => {
