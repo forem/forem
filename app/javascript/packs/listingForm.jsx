@@ -1,5 +1,6 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 import ListingForm from '../listings/listingForm';
+import { render } from '@utilities/preact';
 
 function loadElement() {
   const root = document.getElementById('listingform-data');

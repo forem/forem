@@ -1,5 +1,6 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 import { Search } from '../Search';
+import { render } from '@utilities/preact';
 import 'focus-visible';
 
 document.addEventListener('DOMContentLoaded', () => {

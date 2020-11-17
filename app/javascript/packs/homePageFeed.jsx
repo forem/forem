@@ -1,9 +1,10 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
+import { render } from '@utilities/preact';
 
 /**
  * Sends analytics about the featured article.

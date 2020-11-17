@@ -1,6 +1,7 @@
-import { h, render, Component } from 'preact';
+import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from './pusher';
+import { render } from '@utilities/preact';
 
 /* global userData */
 

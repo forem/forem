@@ -1,5 +1,6 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 import { ReadingList } from '../readingList/readingList';
+import { render } from '@utilities/preact';
 
 function loadElement() {
   const root = document.getElementById('reading-list');

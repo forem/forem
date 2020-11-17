@@ -1,5 +1,6 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
+import { render } from '@utilities/preact';
 
 /* global userData */
 // This logic is similar to that in initScrolling.js.erb

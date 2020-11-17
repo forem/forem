@@ -1,5 +1,6 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 import { GithubRepos } from '../githubRepos/githubRepos';
+import { render } from '@utilities/preact';
 
 function loadElement() {
   const root = document.getElementById('github-repos-container');

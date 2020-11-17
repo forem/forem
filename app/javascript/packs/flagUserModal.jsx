@@ -1,7 +1,8 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 import { useState, useRef } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
+import { render } from '@utilities/preact';
 import { Button } from '@crayons/Button/Button';
 
 async function confirmFlagUser({ reactableType, category, reactableId }) {

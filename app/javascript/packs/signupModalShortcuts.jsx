@@ -1,5 +1,6 @@
-import { h, render } from 'preact';
+import { h } from 'preact';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { render } from '@utilities/preact';
 
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.getElementById('global-signup-modal');

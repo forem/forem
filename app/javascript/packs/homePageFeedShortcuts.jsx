@@ -1,6 +1,7 @@
-import { h, render, Fragment } from 'preact';
+import { h, Fragment } from 'preact';
 import { ListNavigation } from '../shared/components/useListNavigation';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { render } from '@utilities/preact';
 
 document.addEventListener('DOMContentLoaded', () => {
   const root = document.getElementById('articles-list');
