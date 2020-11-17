@@ -4,6 +4,8 @@ RSpec.describe PodcastOwnership, type: :model do
   let(:podcast_ownership) { create(:podcast_ownership) }
 
   describe "validations" do
+    subject { podcast_ownership }
+
     it { is_expected.to belong_to(:owner).class_name("User").with_foreign_key(:user_id).inverse_of(:podcasts_owned) }
     it { is_expected.to belong_to(:podcast) }
 

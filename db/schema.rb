@@ -11,7 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2020_11_14_151157) do
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -883,8 +882,8 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
     t.bigint "podcast_id"
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id"
-    t.index ["podcast_id"], name: "index_podcast_ownerships_on_podcast_id"
-    t.index ["user_id"], name: "index_podcast_ownerships_on_user_id"
+    t.index ["podcast_id"], name: "index_podcast_ownerships_on_podcast_id", unique: true
+    t.index ["user_id"], name: "index_podcast_ownerships_on_user_id", unique: true
   end
 
   create_table "podcasts", force: :cascade do |t|
