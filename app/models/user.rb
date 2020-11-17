@@ -118,7 +118,7 @@ class User < ApplicationRecord
   has_many :organizations, through: :organization_memberships
   # we keep page views as they belong to the article, not to the user who viewed it
   has_many :page_views, dependent: :nullify
-  has_many :podcast_ownerships, dependent: :destroy
+  has_many :podcast_ownerships, dependent: :destroy, inverse_of: :owner
   has_many :podcasts_owned, through: :podcast_ownerships, source: :podcast
   has_many :poll_skips, dependent: :destroy
   has_many :poll_votes, dependent: :destroy
