@@ -5,5 +5,6 @@ class CreatePodcastOwnerships < ActiveRecord::Migration[6.0]
       t.references :user, index: true, foreign_key: true, null: false
       t.timestamps
     end
+    add_index :podcast_ownerships, %i[podcast_id user_id], unique: true
   end
 end
