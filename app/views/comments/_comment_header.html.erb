@@ -11,7 +11,7 @@
   <%= render "comments/comment_date", decorated_comment: decorated_comment %>
 
   <div class="comment__dropdown">
-    <button class="dropbtn crayons-btn crayons-btn--s crayons-btn--ghost-dimmed crayons-btn--icon opacity-75" aria-label="Toggle dropdown menu">
+    <button class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" aria-label="Toggle dropdown menu">
       <%= inline_svg_tag("small-overflow-horizontal.svg", aria: true, class: "crayons-icon pointer-events-none", title: "Dropdown menu") %>
     </button>
     <div class="dropdown">
@@ -20,7 +20,7 @@
         <a href="<%= URL.comment(comment) %>" class="crayons-link crayons-link--block permalink-copybtn" data-no-instant>Copy Permalink</a>
         <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= URL.comment(comment) %>/settings"></span>
         <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
-        <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>" style="display: none; width: 100%;">
+        <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>">
           <a href="#" class="crayons-link crayons-link--block hide-comment" data-hide-type="<%= action.downcase %>" data-comment-id="<%= comment.id %>">
             <%= action %>
           </a>

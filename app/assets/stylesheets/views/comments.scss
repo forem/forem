@@ -169,8 +169,7 @@
 
 .comment {
   --comment-gap: var(--su-4);
-  --dropdown-visibility: hidden;
-  --dropdown-opacity: 0;
+  --dropdown-opacity: 0.5;
   --footer-display: flex;
 
   @media (min-width: $breakpoint-m) {
@@ -186,15 +185,17 @@
     }
   }
 
-  &__dropdown {
-    margin-left: auto;
-    margin-right: calc(-1 * var(--su-1));
-    position: relative;
-
+  &__dropdown-trigger {
     @media (min-width: $breakpoint-s) {
-      visibility: var(--dropdown-visiblity);
       opacity: var(--dropdown-opacity);
     }
+  }
+
+  &__dropdown {
+    margin-left: auto;
+    margin-right: calc(-1 * var(--su-3));
+    position: relative;
+    top: calc(-1 * var(--su-2));
   }
 
   &__inner {
@@ -204,7 +205,6 @@
 
     &:hover,
     &:focus-within {
-      --dropdown-visibility: visible;
       --dropdown-opacity: 1;
     }
   }
