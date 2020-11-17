@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :podcast_ownership do
-    user
+    owner factory: :user
     podcast
   end
 end
