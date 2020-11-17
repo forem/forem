@@ -133,6 +133,9 @@ infinitely branching threads.
 The user is the authorization/identity component of logging into the app. It is
 also the public profile/authorship/etc. belonging to the people who use the app.
 
+While "user" is a perfectly good technical name, it is a fairly cold way to refer
+to humans, so we should prefer labeling people as members, or by their name/username.
+
 ## Tags
 
 Tags are used to organize user generated content. Each tag has a set of rules
