@@ -24,7 +24,6 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).to include "More info about @#{user.username}"
     end
 
-
     it "does not render pins if they don't exist" do
       get "/#{user.username}"
       expect(response.body).not_to include "Pinned"
