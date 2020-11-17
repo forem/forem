@@ -142,7 +142,7 @@ module Feeds
           feeds_import_info: {
             username: user.username,
             feed_url: user.feed_url,
-            item_count: get_item_count_error(feed),
+            item_count: item_count_error(feed),
             error: "Feeds::Import::CreateArticleError:#{item.url}"
           },
         )
@@ -158,12 +158,10 @@ module Feeds
       Rails.logger.error(error)
     end
 
-    def get_item_count_error(feed)
-      if feed
-        feed.entries ? feed.entries.length : "no count"
-      else
-        "NIL FEED, INVALID URL"
-      end
+    def item_count_error(feed)
+      return "NIL FEED, INVALID URL" unless feed
+
+      feed.entries ? feed.entries.length : "no count"
     end
   end
 end
