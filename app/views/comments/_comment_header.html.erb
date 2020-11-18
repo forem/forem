@@ -16,8 +16,7 @@
     </button>
     <div class="dropdown">
       <div class="crayons-dropdown p-1 right-1 s:right-0 s:left-auto fs-base">
-        <a href="<%= URL.comment(comment) %>" class="crayons-link crayons-link--block">Permalink</a>
-        <a href="<%= URL.comment(comment) %>" class="crayons-link crayons-link--block permalink-copybtn" data-no-instant>Copy Permalink</a>
+        <a href="<%= URL.comment(comment) %>" class="crayons-link crayons-link--block permalink-copybtn" data-no-instant>Copy link</a>
         <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= URL.comment(comment) %>/settings"></span>
         <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
         <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>">

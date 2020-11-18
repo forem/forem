@@ -63,8 +63,7 @@ function buildCommentHTML(comment) {
       </button>
       <div class="dropdown">
         <div class="crayons-dropdown p-1 right-1 s:right-0 s:left-auto fs-base">
-          <a href="${ comment.url }" class="crayons-link crayons-link--block">Permalink</a>
-          <a href="${ comment.url }" class="crayons-link crayons-link--block permalink-copybtn" data-no-instant>Copy Permalink</a>
+          <a href="${ comment.url }" class="crayons-link crayons-link--block permalink-copybtn" data-no-instant>Copy link</a>
           <a href="${ comment.url }/settings" class="crayons-link crayons-link--block">Settings</a>
           <a href="/report-abuse?url=${ comment.url }" class="crayons-link crayons-link--block">Report Abuse</a>
           <span class="current-user-actions ${ comment.newly_created ? '' : 'hidden' }">
