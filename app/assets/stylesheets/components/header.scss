@@ -120,6 +120,11 @@
     opacity: var(--dropdown-opacity, 0);
     visibility: var(--dropdown-visibility, hidden);
   }
+  .crayons-header__menu__trigger:focus .crayons-avatar {
+    // need to pick a color and respect the border-radius crop somehow
+    // but marking this as a needed item for accessibility
+    outline: 3px solid blue;
+  }
 
   &.showing,
   &.desktop:hover,
