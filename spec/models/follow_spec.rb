@@ -8,7 +8,6 @@ RSpec.describe Follow, type: :model do
     subject { user.follow(user_2) }
 
     it { is_expected.to validate_inclusion_of(:subscription_status).in_array(%w[all_articles none]) }
-    it { is_expected.to validate_inclusion_of(:blocked).in_array([true, false]) }
     it { is_expected.to validate_presence_of(:followable_id) }
     it { is_expected.to validate_presence_of(:followable_type) }
     it { is_expected.to validate_presence_of(:follower_id) }
