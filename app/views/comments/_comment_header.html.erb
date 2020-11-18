@@ -2,7 +2,7 @@
   <a href="<%= URL.user(comment.user) %>" class="crayons-link crayons-link--secondary flex items-center fw-medium">
     <span class="js-comment-username"><%= comment.user.name %></span>
     <% if commentable_author_is_op?(commentable, comment) %>
-      <span class="crayons-tooltip inline-block spec-op-author" data-tooltip="<%= get_ama_or_op_banner(commentable) %>">
+      <span class="crayons-tooltip inline-block spec-op-author -mr-2" data-tooltip="<%= get_ama_or_op_banner(commentable) %>">
         <%= inline_svg_tag("small-medal.svg", aria: true, class: "crayons-icon", title: get_ama_or_op_banner(commentable)) %>
       </span>
     <% end %>

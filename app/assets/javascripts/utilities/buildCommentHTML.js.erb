@@ -50,8 +50,10 @@ function buildCommentHTML(comment) {
     <a href="/${ comment.user.username }" class="crayons-link crayons-link--secondary flex items-center fw-medium">
       <span class="js-comment-username">${ comment.user.name }</span>
     </a>
-
-    <a href="${ comment.url }" class="comment-date crayons-link crayons-link--secondary ml-2 opacity-75 fs-s">
+    
+    <span class="color-base-30 px-2" role="presentation">&bull;</span>
+    
+    <a href="${ comment.url }" class="comment-date crayons-link crayons-link--secondary fs-s">
       <time datetime="${ comment.published_timestamp }">
         ${ comment.readable_publish_date }
       </time>
