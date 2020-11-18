@@ -11,7 +11,7 @@
   <%= render "comments/comment_date", decorated_comment: decorated_comment %>
 
   <div class="comment__dropdown">
-    <button class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" aria-label="Toggle dropdown menu">
+    <button class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" aria-label="Toggle dropdown menu" aria-haspopup="true">
       <%= inline_svg_tag("small-overflow-horizontal.svg", aria: true, class: "crayons-icon pointer-events-none", title: "Dropdown menu") %>
     </button>
     <div class="dropdown">
