@@ -48,5 +48,5 @@ If you do not see your editor here, consider contributing to the documentation.
 
 Preact has their
 [own developer tools](https://preactjs.github.io/preact-devtools/) in the form
-of a browser extension. The Forem codebase is already configured to support the
-Preact Devtools.
+of a browser extension. The Forem codebase is configured out of the box to
+support the Preact Devtools.
