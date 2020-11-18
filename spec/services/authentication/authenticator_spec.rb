@@ -221,6 +221,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
     # Freeze time since `facebook_created_at` will be based on server time
     before do
       Timecop.freeze
+      allow_any_instance_of(Authentication::Providers::Facebook)
+          .to receive(:image_url).and_return("https://dummyimage.com/400x400.jpg")
     end
 
     after do
