@@ -81,8 +81,8 @@
   --level-1-indent: var(--su-4);
 
   @media (min-width: $breakpoint-m) {
-    --level-n-indent: var(--su-5);
-    --level-1-indent: var(--su-6);
+    --level-n-indent: calc(var(--su-4) + var(--su-1));
+    --level-1-indent: calc(var(--su-6) + var(--su-1));
   }
   position: relative;
 

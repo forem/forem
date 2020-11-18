@@ -131,7 +131,7 @@ function initializeCommentDropdown() {
       return;
     }
 
-    reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
+    reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report abuse</a>`;
   }
 
   function addDropdownListener(dropdown) {
