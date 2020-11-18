@@ -6,7 +6,7 @@
           <h3 class="crayons-subtitle-3 spec-org-titles">Organizations</h3>
         </header>
         <div>
-          <%# it's highly unlikely a single use will belong to so many organizations to slow down this fetch, thus we can safely use the .present?/.each pattern to load them %>
+          <%# it's unlikely that a user will belong to enough organizations to cause a performance issue here %>
           <% @user.organizations.each do |organization| %>
             <a href="/<%= organization.slug %>" class="flex items-center crayons-link crayons-link--contentful">
               <span class="crayons-logo crayons-logo--l mr-2 shrink-0">
