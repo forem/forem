@@ -40,7 +40,10 @@ class UsersController < ApplicationController
     set_current_tab(params["user"]["tab"])
 
     if @user.update(permitted_attributes(@user))
+      # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
+      # explicitly requested "Feed fetch now" or simply updated any other field
       RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
+
       notice = "Your profile was successfully updated."
       if config_changed?
         notice = "Your config has been updated. Refresh to see all changes."
