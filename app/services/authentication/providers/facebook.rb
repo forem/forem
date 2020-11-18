@@ -9,7 +9,7 @@ module Authentication
         {
           name: @info.name,
           email: @info.email || "",
-          remote_profile_image_url: @info.image,
+          remote_profile_image_url: image_url,
           facebook_username: user_nickname,
           facebook_created_at: Time.zone.now
         }
@@ -45,6 +45,13 @@ module Authentication
           provider_name,
           **kwargs,
         )
+      end
+
+      def image_url
+        token = auth_payload.credentials.token
+        uid = auth_payload.uid
+        request = HTTParty.get("https://graph.facebook.com/#{uid}?fields=picture.type(small)&access_token=#{token}")
+        request["picture"]["data"]["url"]
       end
 
       protected
