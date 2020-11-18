@@ -19,7 +19,7 @@ default: &default
   encoding: unicode
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%= ENV["DATABASE_POOL_SIZE"] || ENV.fetch("RAILS_MAX_THREADS", 5).to_i %>
+  pool: <%= ENV.fetch("DATABASE_POOL_SIZE") || ENV.fetch("RAILS_MAX_THREADS", 5).to_i %>
   connect_timeout: 2
   checkout_timeout: 2
   variables:
@@ -63,8 +63,8 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  url: <%= ENV["DATABASE_URL_TEST"] || ENV["DATABASE_URL"] || ""%>
-  database: <%= ENV["DATABASE_NAME_TEST"] || "PracticalDeveloper_test" %><%= ENV["TEST_ENV_NUMBER"] %>
+  url: <%= ENV.fetch("DATABASE_URL_TEST", "") %>
+  database: <%= ENV.fetch("DATABASE_NAME_TEST", "PracticalDeveloper_test") %><%= ENV.fetch("TEST_ENV_NUMBER") %>
   variables:
       statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 10_000).to_i %>
 
@@ -85,8 +85,8 @@ test:
 # You can use this database configuration with:
 #
 #   production:
-#     url: <%= ENV['DATABASE_URL'] %>
+#     url: <%= ENV.fetch("DATABASE_URL") %>
 #
 production:
   <<: *default
-  url: <%= ENV["DATABASE_URL"] || ""%>
+  url: <%= ENV.fetch("DATABASE_URL", "") %>
