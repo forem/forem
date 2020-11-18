@@ -45,7 +45,7 @@ module ApplicationHelper
     derived_title = if page_title.include?(community_name)
                       page_title
                     elsif user_signed_in?
-                      "#{page_title} - #{community_qualified_name} 👩‍💻👨‍💻"
+                      "#{page_title} - #{community_qualified_name} #{community_emoji}"
                     else
                       "#{page_title} - #{community_name}"
                     end
@@ -183,6 +183,10 @@ module ApplicationHelper
 
   def community_name
     @community_name ||= SiteConfig.community_name
+  end
+
+  def community_emoji
+    @community_emoji ||= SiteConfig.community_emoji
   end
 
   def community_qualified_name

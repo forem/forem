@@ -444,6 +444,15 @@
                 </div>
 
                 <div class="crayons-field">
+                  <%= admin_config_label :community_emoji %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:community_emoji][:description] %>
+                  <%= f.text_field :community_emoji,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.community_emoji,
+                                   placeholder: Constants::SiteConfig::DETAILS[:community_emoji][:placeholder] %>
+                </div>
+
+                <div class="crayons-field">
                   <%= admin_config_label :tagline %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:tagline][:description] %>
                   <%= f.text_field :tagline,

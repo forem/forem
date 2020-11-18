@@ -50,6 +50,7 @@ class SiteConfig < RailsSettings::Base
 
   # Community Content
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
+  field :community_emoji, type: :string, default: "🌱"
   field :collective_noun, type: :string, default: "Community"
   field :collective_noun_disabled, type: :boolean, default: false
   field :community_description, type: :string
