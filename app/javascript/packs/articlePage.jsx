@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import addFullScreenModeControl from '../utilities/codeFullscreenModeSwitcher';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 const fullscreenActionElements = document.getElementsByClassName(
   'js-fullscreen-code-action',
@@ -15,7 +15,7 @@ if (fullscreenActionElements) {
 const snackZone = document.getElementById('snack-zone');
 
 if (snackZone) {
-  render(<Snackbar lifespan="3" />, snackZone);
+  instantClickRender(<Snackbar lifespan="3" />, snackZone);
 }
 
 // eslint-disable-next-line no-restricted-globals
@@ -52,7 +52,7 @@ const userDataIntervalID = setInterval(async () => {
         addSnackbarItem({ message, addCloseButton: true });
       };
 
-      render(
+      instantClickRender(
         <CommentSubscription
           subscriptionType={subscriptionType}
           positionType="static"

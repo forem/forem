@@ -4,7 +4,7 @@ import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 /**
  * Sends analytics about the featured article.
@@ -63,7 +63,7 @@ PodcastEpisodes.propTypes = {
 export const renderFeed = (timeFrame) => {
   const feedContainer = document.getElementById('homepage-feed');
 
-  render(
+  instantClickRender(
     <Feed
       timeFrame={timeFrame}
       renderFeed={({

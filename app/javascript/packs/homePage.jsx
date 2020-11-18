@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 /* global userData */
 // This logic is similar to that in initScrolling.js.erb
@@ -48,7 +48,7 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
     );
   });
 
-  render(
+  instantClickRender(
     <TagsFollowed tags={followedTags} />,
     tagsFollowedContainer,
     tagsFollowedContainer.firstElementChild,

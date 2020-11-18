@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import { ReadingList } from '../readingList/readingList';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 function loadElement() {
   const root = document.getElementById('reading-list');
   if (root) {
-    render(
+    instantClickRender(
       <ReadingList availableTags={[]} statusView={root.dataset.view} />,
       root,
     );

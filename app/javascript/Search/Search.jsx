@@ -108,6 +108,10 @@ export class Search extends Component {
   componentWillUnmount() {
     document.removeEventListener('keydown', this.globalKeysListener);
     window.removeEventListener('popstate', this.syncSearchUrlWithInput);
+
+    // This additional existence check is required due to the component being
+    // explicitly unmounted outside the normal Preact component lifecycle.
+    // See app/utilities/preact/render for more context.
     InstantClick.off &&
       InstantClick.off('change', this.enableSearchPageListener);
   }

@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { getUserDataAndCsrfToken } from '../chat/util';
 import ArticleForm from '../article-form/articleForm';
 import { Snackbar } from '../Snackbar';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -17,7 +17,7 @@ function loadForm() {
   const snackZone = document.getElementById('snack-zone');
 
   if (snackZone) {
-    render(<Snackbar lifespan="3" />, snackZone);
+    instantClickRender(<Snackbar lifespan="3" />, snackZone);
   }
 
   getUserDataAndCsrfToken().then(({ currentUser, csrfToken }) => {
@@ -27,7 +27,7 @@ function loadForm() {
     const root = document.getElementById('js-article-form');
     const { article, organizations, version, siteLogo } = root.dataset;
 
-    render(
+    instantClickRender(
       <ArticleForm
         article={article}
         organizations={organizations}

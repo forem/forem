@@ -1,5 +1,5 @@
 import { render as preactRender } from 'preact';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 jest.mock('preact');
 
@@ -17,7 +17,7 @@ describe('render', () => {
   it('should mount a component', () => {
     const component = () => null;
     const container = document.createElement('section');
-    render(component, container);
+    instantClickRender(component, container);
 
     expect(preactRender).toHaveBeenCalledTimes(1);
 
@@ -29,7 +29,7 @@ describe('render', () => {
     const container = document.createElement('section');
     const replaceNode = document.createElement('section');
 
-    render(component, container, replaceNode);
+    instantClickRender(component, container, replaceNode);
 
     expect(preactRender).toHaveBeenCalledTimes(1);
 
@@ -41,7 +41,7 @@ describe('render', () => {
   });
 
   it(`should register an InstantClick.on('change') when the component renders`, () => {
-    render(() => null, document.createElement('section'));
+    instantClickRender(() => null, document.createElement('section'));
 
     expect(InstantClick.on).toHaveBeenCalledTimes(1);
   });

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import ListingForm from '../listings/listingForm';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 function loadElement() {
   const root = document.getElementById('listingform-data');
@@ -11,7 +11,7 @@ function loadElement() {
       categoriesForSelect,
       categoriesForDetails,
     } = root.dataset;
-    render(
+    instantClickRender(
       <ListingForm
         organizations={organizations}
         listing={listing}

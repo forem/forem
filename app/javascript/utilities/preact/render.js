@@ -12,7 +12,7 @@ import { unmountComponentAtNode } from 'preact/compat';
  * @param {Element | Text} replaceNode An optional DOM element that must of the given parent.
  * Instead of inferring where to start rendering, it will update or replace the passed element using Preact's diffing algorithm.
  */
-export function render(vnode, parent, replaceNode) {
+export function instantClickRender(vnode, parent, replaceNode) {
   InstantClick.on('change', () => {
     // We need to explicitly unmount a Preact component since we are using InstantClick. Failing to do so
     // would leave references to past components.

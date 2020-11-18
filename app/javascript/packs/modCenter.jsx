@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { ModerationArticles } from '../modCenter/moderationArticles';
 import { addSnackbarItem, Snackbar } from '../Snackbar';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 let elementLoaded = false;
 
@@ -11,11 +11,11 @@ function loadElement() {
   const snackZone = document.getElementById('snack-zone');
 
   if (root) {
-    render(<ModerationArticles />, root);
+    instantClickRender(<ModerationArticles />, root);
   }
 
   if (snackZone) {
-    render(<Snackbar lifespan="0" />, snackZone);
+    instantClickRender(<Snackbar lifespan="0" />, snackZone);
   }
 
   if (isMobileDevice) {

@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { setupPusher } from './pusher';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 /* global userData */
 
@@ -228,7 +228,7 @@ export function getUnopenedChannels() {
   if (window.frameElement) {
     return;
   }
-  render(
+  instantClickRender(
     <UnopenedChannelNotice pusherKey={document.body.dataset.pusherKey} />,
     document.getElementById('message-notice'),
   );

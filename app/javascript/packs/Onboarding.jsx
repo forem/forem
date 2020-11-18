@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { getUserDataAndCsrfToken } from '../chat/util';
 import { getUnopenedChannels } from '../utilities/connect';
-import { render } from '@utilities/preact/render';
+import { instantClickRender } from '@utilities/preact/render';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -21,7 +21,7 @@ function renderPage() {
   };
   import('../onboarding/Onboarding')
     .then(({ default: Onboarding }) => {
-      render(
+      instantClickRender(
         <Onboarding communityConfig={communityConfig} />,
         document.getElementById('onboarding-container'),
       );
