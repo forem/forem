@@ -31,7 +31,7 @@ function buildCommentHTML(comment) {
   if (comment.depth < 3) {
     detailsStartHTML = `
       <details class="comment-wrapper comment-wrapper--deep-${ comment.depth } js-comment-wrapper" open>
-        <summary>
+        <summary aria-label="Toggle this comment (and replies)">
           <span class="inline-block align-middle ${ comment.depth > 0 ? 'mx-0' : 'm:mx-1'}">
             ${ iconCollaspe }
             ${ iconExpand }
