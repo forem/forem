@@ -47,17 +47,24 @@ module Authentication
         )
       end
 
-      def image_url
-        token = auth_payload.credentials.token
-        uid = auth_payload.uid
-        request = HTTParty.get("https://graph.facebook.com/#{uid}?fields=picture.type(small)&access_token=#{token}")
-        request["picture"]["data"]["url"]
-      end
-
       protected
 
       def cleanup_payload(auth_payload)
         auth_payload
+      end
+
+      private
+
+      def image_url
+        token = auth_payload.credentials.token
+        response = HTTParty.get(
+          "https://graph.facebook.com/#{auth_payload.uid}?fields=picture.type(small)&access_token=#{token}",
+        )
+        if response.ok?
+          response.dig("picture", "data", "url")
+        else
+          Users::ProfileImageGenerator.call
+        end
       end
     end
   end
