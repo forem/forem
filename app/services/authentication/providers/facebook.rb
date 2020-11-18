@@ -4,6 +4,7 @@ module Authentication
     class Facebook < Provider
       OFFICIAL_NAME = "Facebook".freeze
       SETTINGS_URL = "https://www.facebook.com/settings?tab=applications".freeze
+      PICTURE_URL = "https://graph.facebook.com/%<uid>s?fields=picture.type(small)&access_token=%<token>s".freeze
 
       def new_user_data
         {
@@ -56,10 +57,8 @@ module Authentication
       private
 
       def image_url
-        token = auth_payload.credentials.token
-        response = HTTParty.get(
-          "https://graph.facebook.com/#{auth_payload.uid}?fields=picture.type(small)&access_token=#{token}",
-        )
+        url = format(PICTURE_URL, uid: auth_payload.uid, token: auth_payload.credentials.token)
+        response = HTTParty.get(url)
         if response.ok?
           response.dig("picture", "data", "url")
         else
