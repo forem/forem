@@ -67,7 +67,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
         <p>
           Thank you for reporting any abuse that violates our{' '}
           <a href="/code-of-conduct">code of conduct</a> or
-          <a href="/terms">terms and conditions</a>. We continue to try to make
+          <a href="/terms">terms and conditions</a>. We continue to try to make this
           environment a great one for everybody.
         </p>
       </section>
