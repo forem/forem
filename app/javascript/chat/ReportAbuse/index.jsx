@@ -48,7 +48,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
         const response = await blockUser(data.user_id);
         if (response.result === 'blocked') {
           addSnackbarItem({
-            message: 'Your report has been submitted and User has been blocker',
+            message: 'Your report has been submitted and User has been blocked',
           });
         }
       } else {
