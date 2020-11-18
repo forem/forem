@@ -310,6 +310,7 @@ Rails.application.routes.draw do
     get "/search/chat_channels" => "search#chat_channels"
     get "/search/listings" => "search#listings"
     get "/search/users" => "search#users"
+    get "/search/usernames" => "search#usernames"
     get "/search/feed_content" => "search#feed_content"
     get "/search/reactions" => "search#reactions"
     get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"

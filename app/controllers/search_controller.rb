@@ -82,6 +82,14 @@ class SearchController < ApplicationController
     render json: { result: user_search }
   end
 
+  def usernames
+    usernames = Search::User.search_usernames(params[:username])
+
+    render json: { result: usernames }
+  rescue Search::Errors::Transport::BadRequest
+    render json: { result: [] }
+  end
+
   def feed_content
     feed_docs = if params[:class_name].blank?
                   # If we are in the main feed and not filtering by type return
