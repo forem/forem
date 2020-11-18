@@ -41,6 +41,11 @@ class Profile < ApplicationRecord
     custom_profile_fields.pluck(:attribute_name)
   end
 
+  def ui_attributes_for(area)
+    names = ProfileField.where(display_area: area).pluck(:attribute_name)
+    attributes["data"].select { |k, v| v.present? && names.include?(k) }
+  end
+
   def clear!
     update(data: {})
   end
