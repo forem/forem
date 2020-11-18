@@ -43,7 +43,7 @@ function buildCommentHTML(comment) {
   }
 
   commentAvatar = `<a href="/${ comment.user.username }" class="shrink-0 crayons-avatar ${ comment.depth == 0 ? 'm:crayons-avatar--l mt-4 m:mt-3' : 'mt-4' }">
-    <img class="crayons-avatar__image" width="32" height="32" src="${ comment.user.profile_pic }" alt="${ comment.user.username } profile image" />
+    <img class="crayons-avatar__image" width="32" height="32" src="${ comment.user.profile_pic }" alt="${ comment.user.username } profile" />
   </a>`;
 
   commentHeader = `<header class="comment__header">
