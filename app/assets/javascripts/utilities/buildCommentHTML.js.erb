@@ -1,116 +1,138 @@
 function buildCommentHTML(comment) {
+  var iconSmallOverflowHorizontal = `<svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon pointer-events-none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.25 12a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm5.25 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm3.75 1.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" /></svg>`;
+  var iconCollaspe = `<svg width="24" height="24" class="crayons-icon expanded" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 10.6771L8 6.93529L8.99982 6L12 8.80653L15.0002 6L16 6.93529L12 10.6771ZM12 15.1935L8.99982 18L8 17.0647L12 13.3229L16 17.0647L15.0002 17.9993L12 15.1935Z" /></svg>`;
+  var iconExpand = `<svg width="24" height="24" class="crayons-icon collapsed" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18L8 14.2287L8.99982 13.286L12 16.1147L15.0002 13.286L16 14.2287L12 18ZM12 7.88533L8.99982 10.714L8 9.77133L12 6L16 9.77133L15.0002 10.7133L12 7.88533Z" /></svg>`;
+  
   var depthClass = "";
-  var githubIcon = "";
-  var twitterIcon = "";
   var customClass = "";
-  var detailsStartHTML = "";
-  var detailsFinishHTML = "";
-  var body = "";
 
-  if (!comment.newly_created) {
-    depthClass="child flat-node"
-  } else if (comment.depth == 0 ){
-    depthClass = "root";
-  } else if (comment.depth < 3) {
-    depthClass="child"
+  var detailsStartHTML = "";
+  var detailsEndHTML = "";
+  
+  var commentHeader = "";
+  var commentFooter = "";
+  var commentAvatar = "";
+  var commentBody = "";
+
+  if ( comment.depth == 0 ) {
+    depthClass += "root ";
   } else {
-    depthClass="child flat-node"
+    depthClass += "child "
   }
-  if (comment.user.twitter_username && comment.user.twitter_username.length > 0) {
-    twitterIcon = '<a href="http://twitter.com/'+comment.user.twitter_username+'" rel="noopener noreferrer" target="_blank"><%= image_tag("twitter-logo.svg", class:"icon-img", alt: "twitter logo") %></a>'
+  
+  if ( comment.depth > 3 ) {
+    depthClass += "comment--too-deep ";
   }
-  if (comment.user.github_username && comment.user.github_username.length > 0) {
-    githubIcon = '<a href="http://github.com/'+comment.user.github_username+'" rel="noopener noreferrer" target="_blank"><%= image_tag("github-logo.svg", class:"icon-img", alt: "github logo") %></a>'
-  }
+
   if (comment.newly_created) {
     customClass = "comment-created-via-fetch"
   }
+
   if (comment.depth < 3) {
-    detailsStartHTML = '<details open><summary><span>&nbsp;</span></summary>'
-    detailsFinishHTML = '</details>'
+    detailsStartHTML = `
+      <details class="comment-wrapper comment-wrapper--deep-${ comment.depth } js-comment-wrapper" open>
+        <summary aria-label="Toggle this comment (and replies)">
+          <span class="inline-block align-middle ${ comment.depth > 0 ? 'mx-0' : 'm:mx-1'}">
+            ${ iconCollaspe }
+            ${ iconExpand }
+          </span>
+          <span class="js-collapse-comment-content inline-block align-middle"></span>
+        </summary>
+    `;
+    detailsEndHTML = `</details>`;
   }
 
-  body = '<style>'+comment.css+'</style>\
-          '+detailsStartHTML+'\
-          <div class="comment-hash-marker" id="'+comment.id_code+'"></div>\
-          <div id="comment-node-'+comment.id+'" class="single-comment-node '+depthClass+' comment-deep-'+comment.depth+'" "\
-          data-comment-id="'+comment.id+'" data-comment-author-id="'+comment.user.id+'" data-current-user-comment="'+comment.newly_created+'" data-content-user-id="'+comment.user.id+'">\
-          <div class="inner-comment '+customClass+'">\
-            <div class="details">\
-              <a href="/'+comment.user.username+'">\
-                <img class="profile-pic" src="'+comment.user.profile_pic+'" alt="'+comment.user.username+'">\
-                <span class="comment-username"><span class="comment-username-inner">'+comment.user.name+'</span></span>\
-              </a>\
-                '+twitterIcon+'\
-                '+githubIcon+'\
-              <div class="comment-date">\
-                <a href="'+comment.url+'">\
-                  <time datetime="'+comment.published_timestamp+'">\
-                    '+comment.readable_publish_date+'\
-                  </time>\
-                </a>\
-              </div>\
-              <button class="dropbtn">\
-                <%= image_tag("overflow-horizontal.svg", class: "dropdown-icon", alt: "Toggle dropdown menu") %>\
-              </button>\
-              <div class="dropdown">\
-                  <div class="crayons-dropdown p-1 z-30 right-1 left-1 s:right-0 s:left-auto fs-base">\
-                    <a href="'+comment.url+'" class="crayons-link crayons-link--block">\
-                      Permalink\
-                    </a>\
-                    <a href="'+comment.url+'" class="crayons-link crayons-link--block permalink-copybtn" data-no-instant>\
-                      Copy Permalink\
-                    </a>\
-                    <a href="'+comment.url+'/settings" class="crayons-link crayons-link--block">\
-                      Settings\
-                    </a>\
-                    <a href="/report-abuse?url='+comment.url+'" class="crayons-link crayons-link--block">Report Abuse</a>\
-                  </div>\
-              </div>\
-            </div>\
-            <div class="body">\
-              '+comment.body_html+'\
-              '+reactions(comment)+'\
-            </div>\
-            '+actions(comment)+'\
-          </div>\
-      </div>\
-      '+detailsFinishHTML;
+  commentAvatar = `<a href="/${ comment.user.username }" class="shrink-0 crayons-avatar ${ comment.depth == 0 ? 'm:crayons-avatar--l mt-4 m:mt-3' : 'mt-4' }">
+    <img class="crayons-avatar__image" width="32" height="32" src="${ comment.user.profile_pic }" alt="${ comment.user.username } profile" />
+  </a>`;
 
-  return body;
+  commentHeader = `<header class="comment__header">
+    <a href="/${ comment.user.username }" class="crayons-link crayons-link--secondary flex items-center fw-medium">
+      <span class="js-comment-username">${ comment.user.name }</span>
+    </a>
+    
+    <span class="color-base-30 px-2" role="presentation">&bull;</span>
+    
+    <a href="${ comment.url }" class="comment-date crayons-link crayons-link--secondary fs-s">
+      <time datetime="${ comment.published_timestamp }">
+        ${ comment.readable_publish_date }
+      </time>
+    </a>
+
+    <div class="comment__dropdown">
+      <button class="dropbtn comment__dropdown-trigger crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon" aria-label="Toggle dropdown menu" aria-haspopup="true">
+        ${ iconSmallOverflowHorizontal }
+      </button>
+      <ul class="crayons-dropdown p-1 right-1 s:right-0 s:left-auto fs-base dropdown">
+        <li><a href="${ comment.url }" class="crayons-link crayons-link--block permalink-copybtn" aria-label="Copy link to ${ comment.user.name }'s comment" data-no-instant>Copy link</a></li>
+        <li><a href="${ comment.url }/settings" class="crayons-link crayons-link--block" aria-label="Go to ${ comment.user.name }'s comment settings">Settings</a></li>
+        <li><a href="/report-abuse?url=${ comment.url }" class="crayons-link crayons-link--block" aria-label="Report ${ comment.user.name }'s comment as abusive or violating our code of conduct and/or terms and conditions">Report abuse</a></li>
+        <li class="${ comment.newly_created ? '' : 'hidden' }"><a href="${ comment.url }/edit" class="crayons-link crayons-link--block" rel="nofollow" aria-label="Delete this comment">Edit</a></li>
+        <li class="${ comment.newly_created ? '' : 'hidden' }"><a data-no-instant="" href="${ comment.url }/delete_confirm" class="crayons-link crayons-link--block" rel="nofollow" aria-label="Delete this comment">Delete</a></li>
+      </ul>
+    </div>
+  </header>`;
+
+  commentFooter = `<footer class="comment__footer">
+    ${ react(comment) }
+    ${ reply(comment) }
+  </footer>`;
+
+  commentBody = `${ detailsStartHTML }
+    <div class="comment single-comment-node ${ depthClass } comment--deep-${ comment.depth }" id="comment-node-${ comment.id }" data-comment-id="${ comment.id }" data-path="${ comment.url }" data-comment-author-id="${ comment.user.id }" data-current-user-comment="${ comment.newly_created }" data-content-user-id="${ comment.user.id }">
+      <div class="comment__inner">
+        ${ commentAvatar }
+        <div class="inner-comment comment__details">
+          <div class="comment__content crayons-card">
+            ${ commentHeader }
+            <div class="comment__body text-styles text-styles--secondary body">
+              ${ comment.body_html }
+            </div>
+          </div>
+          ${ commentFooter }
+        </div>
+      </div>
+    </div>
+  ${ detailsEndHTML }`;
+
+  return commentBody;
 }
 
-function actions(comment) {
+function reply(comment) {
+  var iconSmallComment = `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon reaction-icon not-reacted"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>`;
+  var replyButton = `<a class="js actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
+    href="#${ comment.url }"
+    data-comment-id="${ comment.id }"
+    data-path="${ comment.url }"
+    rel="nofollow">
+    ${ iconSmallComment }
+    <span class="hidden m:inline-block">Reply</span>
+  </a>`;
   if (comment.newly_created) {
-    return '<div class="actions" data-comment-id="'+comment.id+'" data-path="'+comment.url+'">\
-              <span class="current-user-actions" style="display: '+ (comment.newly_created ? 'inline-block' : 'none') +';">\
-                <a data-no-instant="" href="'+comment.url+'/delete_confirm" class="edit-butt" rel="nofollow">DELETE</a>\
-                <a href="'+comment.url+'/edit" class="edit-butt" rel="nofollow">EDIT</a>\
-              </span>\
-                <a href="#" class="toggle-reply-form" rel="nofollow">Reply</a>\
-            </div>';
-  } else {
-    return '<div class="actions" data-comment-id="'+comment.id+'" data-path="'+comment.url+'" data-commentable-id="'+comment.commentable.id+'">\
-                <a href="'+comment.url+'" rel="nofollow">VIEW/REPLY</a>\
-            </div>';
+    return replyButton;
   }
 }
 
-function reactions(comment) {
-  if (comment.newly_created) {
-    return '<button class="reaction-button reacted" id="button-for-comment-'+comment.id+'" data-comment-id="'+comment.id+'">\
-              <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="Favorite heart outline button">\
-              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button">\
-              <span class="reactions-count" id="reactions-count-'+comment.id+'">1</span></button>';
-  } else {
-    if (comment.heart_ids.indexOf(userData().id) > -1) {
-      var reactedClass = "reacted";
-    } else {
-      var reactedClass = ""
-    }
-    return '<button style="background:white" class="reaction-button '+ reactedClass +'" id="button-for-comment-'+comment.id+'" data-comment-id="'+comment.id+'">\
-              <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="Favorite heart outline button">\
-              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button">\
-              <span class="reactions-count" id="reactions-count-'+comment.id+'">'+comment.public_reactions_count+'</span></button>';
+function react(comment) {
+  var reactedClass = "";
+  var num = 1;
+  var iconSmallHeart = `<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon reaction-icon not-reacted"><path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"/></svg>`;
+  var iconSmallHeartFilled = `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon reaction-icon--like reaction-icon reacted"><path d="M5.116 12.595a4.875 4.875 0 015.56-7.68h-.002L7.493 8.098l1.06 1.061 3.181-3.182a4.875 4.875 0 016.895 6.894L12 19.5l-6.894-6.894.01-.01z"/></svg>`;
+  
+  if (!comment.newly_created && comment.heart_ids.indexOf(userData().id) > -1) {
+    reactedClass = "reacted"
   }
+
+  if (!comment.newly_created) {
+    num = comment.public_reactions_count;
+  }
+
+  var reactButton = `<button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button" id="button-for-comment-${ comment.id }" data-comment-id="${ comment.id }">
+    ${ iconSmallHeart }
+    ${ iconSmallHeartFilled }
+    <span class="reactions-count" id="reactions-count-${ comment.id }">${ num }</span>
+    <span class="reactions-label hidden m:inline-block">like</span>
+  </button>`;
+
+  return reactButton;
 }

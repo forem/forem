@@ -961,4 +961,13 @@ RSpec.describe Article, type: :model do
       end
     end
   end
+
+  describe "co_author_ids_list=" do
+    it "correctly sets co author ids from a comma separated list of ids" do
+      co_author1 = create(:user)
+      co_author2 = create(:user)
+      article.co_author_ids_list = "#{co_author1.id}, #{co_author2.id}"
+      expect(article.co_author_ids).to match_array([co_author1.id, co_author2.id])
+    end
+  end
 end
