@@ -4,7 +4,8 @@ module Follows
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform(reactable_id, user_id)
-      article = Article.find(reactable_id)
+      reaction = Reaction.find(reactable_id)
+      article = Article.find(reaction.reactable_id)
       user = User.find(user_id)
       return unless article && user
 
@@ -17,10 +18,10 @@ module Follows
 
     def recalculate_tag_follow_points(tag_name, user)
       tag = Tag.find_by(name: tag_name)
-      follow = Follow.follower_tag(user.id).where(followable_id: tag.id)
+      follow = Follow.follower_tag(user.id).where(followable_id: tag.id).last
 
       follow.implicit_points = calculate_implicit_points(tag, user)
-      follow.points = implicit_points + follow.explicit_points
+      follow.points = follow.implicit_points + follow.explicit_points
       follow.save
     end
 
@@ -32,7 +33,7 @@ module Follows
       articles = Article.where(id: last_100_reactable_ids + last_100_long_page_view_article_ids)
       tags = articles.pluck(:cached_tag_list).map { |list| list.split(", ") }.flatten
       occurrences = tags.count(tag.name)
-      Math.log(occurrences)
+      Math.log(occurrences + 1)
     end
   end
 end
