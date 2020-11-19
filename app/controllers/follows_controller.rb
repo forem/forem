@@ -79,16 +79,23 @@ class FollowsController < ApplicationController
     render json: { outcome: @result }
   end
 
-  def update
-    @follow = Follow.find(params[:id])
-    authorize @follow
-    redirect_to "/dashboard/following" if @follow.update(follow_params)
+  def bulk_update
+    @follows = Follow.where(id: params_for_update[:ids])
+    authorize @follows
+    redirect_to "/dashboard/following" if Follow.update(params_for_update[:ids], params_for_update[:points])
   end
 
   private
 
-  def follow_params
-    params.require(:follow).permit(policy(Follow).permitted_attributes)
+  def follows_params
+    params.permit(follows: policy(Follow).permitted_attributes)
+  end
+
+  def params_for_update
+    follows_params[:follows].each_with_object({ ids: [], points: [] }) do |follow, params|
+      params[:ids] << follow[:id]
+      params[:points] << follow.slice(:points)
+    end
   end
 
   def follow(followable, need_notification: false)
