@@ -88,9 +88,6 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
           >
             Rude or vulgar
           </label>
-        </FormField>
-
-        <FormField variant="radio">
           <RadioButton
             id="harassment"
             name="harassment"
@@ -106,9 +103,6 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
           >
             Harassment or hate speech
           </label>
-        </FormField>
-
-        <FormField variant="radio">
           <RadioButton
             id="spam"
             name="spam"
@@ -124,9 +118,6 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
           >
             Spam or copyright issue
           </label>
-        </FormField>
-
-        <FormField variant="radio">
           <RadioButton
             id="listings"
             name="listings"
