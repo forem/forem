@@ -11,6 +11,7 @@ function blur(event, className) {
 }
 
 function removeShowingMenu() {
+  menuNavButton.setAttribute('aria-expanded', 'false');
   crayonsHeaderMenuClassList.remove('showing');
   setTimeout(() => {
     crayonsHeaderMenuClassList.remove('showing');
@@ -21,7 +22,13 @@ function removeShowingMenu() {
 }
 
 function toggleMenu() {
-  crayonsHeaderMenuClassList.toggle('showing');
+  if (crayonsHeaderMenuClassList.contains('showing')) {
+      crayonsHeaderMenuClassList.remove('showing');
+      menuNavButton.setAttribute('aria-expanded', 'false');
+    } else {
+      crayonsHeaderMenuClassList.add('showing');
+      menuNavButton.setAttribute('aria-expanded', 'true');
+    }
 }
 
 function initializeTouchDevice() {
@@ -38,15 +45,8 @@ function initializeTouchDevice() {
       menuNavButton.addEventListener('click', toggleMenu);
     } else {
       crayonsHeaderMenuClassList.add('desktop');
-      menuNavButton.setAttribute('aria-expanded', 'false');
       menuNavButton.addEventListener('click', (e) => {
-        if (crayonsHeaderMenuClassList.contains('showing')) {
-          crayonsHeaderMenuClassList.remove('showing');
-          menuNavButton.setAttribute('aria-expanded', 'false');
-        } else {
-          crayonsHeaderMenuClassList.add('showing');
-          menuNavButton.setAttribute('aria-expanded', 'true');
-        }
+        toggleMenu();
       });
       crayonsHeaderMenu.addEventListener('keyup', (e) => {
         if (e.key === 'Escape' && crayonsHeaderMenuClassList.contains('showing')) {
