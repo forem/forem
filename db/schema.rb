@@ -391,7 +391,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.string "ancestry"
     t.text "body_html"
     t.text "body_markdown"
-    t.text "cached_user"
     t.bigint "commentable_id"
     t.string "commentable_type"
     t.datetime "created_at", null: false
