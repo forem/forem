@@ -639,9 +639,7 @@ RSpec.describe User, type: :model do
   describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
 
-    before do
-      omniauth_mock_providers_payload
-    end
+    before { omniauth_mock_providers_payload }
 
     Authentication::Providers.available.each do |provider_name|
       it "finds user by email and assigns identity to that if exists for #{provider_name}" do
