@@ -68,6 +68,8 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
       it { is_expected.to have_many(:page_views).dependent(:nullify) }
+      it { is_expected.to have_many(:podcast_ownerships).dependent(:destroy) }
+      it { is_expected.to have_many(:podcasts_owned).through(:podcast_ownerships).source(:podcast) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
       it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
       it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
@@ -180,9 +182,7 @@ RSpec.describe User, type: :model do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
-      it { is_expected.to validate_inclusion_of(:email_digest_periodic).in_array([true, false]) }
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
-      it { is_expected.to validate_inclusion_of(:welcome_notifications).in_array([true, false]) }
 
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
       it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }

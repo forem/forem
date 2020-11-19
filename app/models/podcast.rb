@@ -2,7 +2,12 @@ class Podcast < ApplicationRecord
   resourcify
 
   belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, optional: true
+
   has_many :podcast_episodes, dependent: :destroy
+
+  # order here is important, the :through association has to be defined after the m2m
+  has_many :podcast_ownerships, dependent: :destroy
+  has_many :owners, through: :podcast_ownerships
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader

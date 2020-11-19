@@ -97,7 +97,8 @@ class StoriesController < ApplicationController
       redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path + internal_nav_param, status: :moved_permanently
       return
     elsif (@organization = @article.organization)
-      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path + internal_nav_param, status: :moved_permanently
+      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path +
+        internal_nav_param, status: :moved_permanently
       return
     end
     not_found
