@@ -1,11 +1,21 @@
 Hey <%= @user.name %>!
 
-We are happy to let you know that your <%= community_name %> account has just been upgraded to "trusted" status.
+We are happy to let you know that you've been granted "trusted" status on <%= community_name %>.
 
-This gives you the power to privately downvote content which is low quality or spam and harassment, alongside a bit of additional functionality to help ensure the success of the community. Anywhere you now see a shield on the site indicates a place you can go to join our community's crowd-sourced moderation initiative. 
+This update allows you to make use of a few extra features—all of which further our goal of cultivating a welcoming and constructive community.
 
-You may occasionally receive notifications about optional moderation actions, but you can unsubscribe (<%= app_url(user_settings_path(:notifications)) %>) if you do not want to receive these notices.
+Here's an overview of your new abilities:
 
-For more information about what you can do as a "trusted" user, check out this page: <%= app_url("/community-moderation") %>
+- Use reactions (👎, 👍) to moderate content
+- Quickly flag rule-breaking behavior with 🤢 to <%= community_name %> staff
+- Rate the experience level of a post
 
-- <%= community_name %> Team
+You may occasionally receive notifications about optional moderation actions; please unsubscribe (<%= app_url(user_settings_path(:notifications)) %>) if you do not want to receive these updates.
+
+For details on all available features and how to access them, visit our <%= community_name %> Trusted User Guide: <%= app_url("/community-moderation") %>
+
+If you have any questions or feedback for us, please write to <%= SiteConfig.email_addresses[:default] %> and share your thoughts.
+
+Thanks for being such an awesome member of the community!
+
+<%= community_name %> Team
