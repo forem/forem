@@ -223,7 +223,11 @@ RSpec.describe Authentication::Authenticator, type: :service do
           "url" => "https://dummyimage.com/400x400.jpg"
         }
       }
-      Struct.new(picture: url_data, ok?: true)
+      Struct.new(:picture) do
+        def ok?
+          true
+        end
+      end.new(url_data)
     end
 
     # Freeze time since `facebook_created_at` will be based on server time
