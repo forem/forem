@@ -4,13 +4,12 @@ module Authentication
     class Facebook < Provider
       OFFICIAL_NAME = "Facebook".freeze
       SETTINGS_URL = "https://www.facebook.com/settings?tab=applications".freeze
-      PICTURE_URL = "https://graph.facebook.com/%<uid>s?fields=picture.type(small)&access_token=%<token>s".freeze
 
       def new_user_data
         {
           name: @info.name,
           email: @info.email || "",
-          remote_profile_image_url: image_url,
+          remote_profile_image_url: @info.image.gsub("http", "https"),
           facebook_username: user_nickname,
           facebook_created_at: Time.zone.now
         }
@@ -52,18 +51,6 @@ module Authentication
 
       def cleanup_payload(auth_payload)
         auth_payload
-      end
-
-      private
-
-      def image_url
-        url = format(PICTURE_URL, uid: auth_payload.uid, token: auth_payload.credentials.token)
-        response = HTTParty.get(url)
-        if response.ok?
-          response.dig("picture", "data", "url")
-        else
-          Users::ProfileImageGenerator.call
-        end
       end
     end
   end
