@@ -3,17 +3,18 @@ class FollowPolicy < ApplicationPolicy
     !user_is_banned?
   end
 
-  def update?
-    user_is_follower?
+  # record is an object of ActiveRecord_Relation
+  def bulk_update?
+    record.all? { |follow| user_is_follower?(follow) }
   end
 
   def permitted_attributes
-    %i[points]
+    %i[id points]
   end
 
   private
 
-  def user_is_follower?
-    record.follower_id == user.id && record.follower_type == "User"
+  def user_is_follower?(follow)
+    follow.follower_id == user.id && follow.follower_type == "User"
   end
 end
