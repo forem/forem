@@ -156,6 +156,7 @@ A more complete overview of our stack is available in
 - [@jdoss](https://dev.to/jdoss)
 - [@cmgorton](https://dev.to/coffeecraftcode)
 - [@andygeorge](https://dev.to/andygeorge)
+- [@phannon716](https://dev.to/phannon716)
 
 ## Vulnerability disclosure
 
