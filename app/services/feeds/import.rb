@@ -1,5 +1,3 @@
-# TODO: [rhymes]
-# => add Feeds::ValidateFeedUrl to validate a single feed URL
 module Feeds
   class Import
     def self.call(users: nil)
