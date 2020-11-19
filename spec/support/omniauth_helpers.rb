@@ -120,6 +120,17 @@ module OmniauthHelpers
 
   def omniauth_mock_facebook_payload
     OmniAuth.config.mock_auth[:facebook] = OMNIAUTH_PAYLOAD_FACEBOOK.dup
+    url_data = {
+      "data" => {
+        "url" => "https://dummyimage.com/400x400.jpg"
+      }
+    }
+    response = Struct.new(:picture) do
+      def ok?
+        true
+      end
+    end.new(url_data)
+    allow(HTTParty).to receive(:get).and_return(response)
   end
 
   def omniauth_mock_github_payload

@@ -638,9 +638,22 @@ RSpec.describe User, type: :model do
 
   describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
+    let(:response) do
+      url_data = {
+        "data" => {
+          "url" => "https://dummyimage.com/400x400.jpg"
+        }
+      }
+      Struct.new(:picture) do
+        def ok?
+          true
+        end
+      end.new(url_data)
+    end
 
     before do
       omniauth_mock_providers_payload
+      allow(HTTParty).to receive(:get).and_return(response)
     end
 
     Authentication::Providers.available.each do |provider_name|
