@@ -10,7 +10,7 @@ steps:
 
   - command: ./scripts/build_containers.sh
     label: ":rocket: Build production containers!"
-    branches: "master"
+    branches: "master main"
     key: build-production-containers
     plugins:
       - docker-login#v2.0.1:
