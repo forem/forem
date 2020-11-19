@@ -217,12 +217,19 @@ RSpec.describe Authentication::Authenticator, type: :service do
   context "when authenticating through Facebook" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:facebook] }
     let!(:service) { described_class.new(auth_payload) }
+    let(:response) do
+      url_data = {
+        "data" => {
+          "url" => "https://dummyimage.com/400x400.jpg"
+        }
+      }
+      Struct.new(picture: url_data, ok?: true)
+    end
 
     # Freeze time since `facebook_created_at` will be based on server time
     before do
       Timecop.freeze
-      allow_any_instance_of(Authentication::Providers::Facebook)
-          .to receive(:image_url).and_return("https://dummyimage.com/400x400.jpg")
+      allow(HTTParty).to receive(:get).and_return(response)
     end
 
     after do
