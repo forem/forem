@@ -119,6 +119,10 @@
     );
     opacity: var(--dropdown-opacity, 0);
     visibility: var(--dropdown-visibility, hidden);
+
+    ul {
+      list-style: none;
+    }
   }
   .crayons-header__menu__trigger:focus .crayons-avatar {
     // need to pick a color and respect the border-radius crop somehow
