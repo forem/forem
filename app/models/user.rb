@@ -254,7 +254,7 @@ class User < ApplicationRecord
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
-  # NOTE: @citizen428 Temporarily while migrating to generalized profiles
+  # NOTE: @citizen428 Temporary while migrating to generalized profiles
   after_save { |user| user.profile&.save if user.profile&.changed? }
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
