@@ -11,6 +11,7 @@ function create_pr_containers {
 
   # Pull images if available for caching
   echo "Pulling pull request #${PULL_REQUEST} containers from registry..."
+  docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder ||:
   docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" ||:
   docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" ||:
   docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" ||:
@@ -18,6 +19,7 @@ function create_pr_containers {
   # Build the builder image
   echo "Building builder-${PULL_REQUEST} container..."
   docker build --target builder \
+               --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
                --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" .
 
