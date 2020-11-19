@@ -1,0 +1,7 @@
+steps:
+  - command: ./scripts/build_containers.sh
+    plugins:
+      - docker-login#v2.0.1:
+          username: QUAY_LOGIN_USER
+          password-env: QUAY_LOGIN_PASSWORD
+          server: QUAY_LOGIN_SERVER
