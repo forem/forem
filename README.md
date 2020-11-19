@@ -31,7 +31,7 @@
     <img src="https://api.netlify.com/api/v1/badges/e5dbe779-7bca-4390-80b9-6e678b4806a3/deploy-status" alt="Netlify badge">
   </a>
   <img src="https://img.shields.io/github/languages/code-size/forem/forem" alt="GitHub code size in bytes">
-  <img src="https://img.shields.io/github/commit-activity/w/GitHub commit activity">
+  <img src="https://img.shields.io/github/commit-activity/w/forem/forem GitHub commit activity">
   <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
     <img src="https://img.shields.io/github/issues/forem/forem/ready for dev" alt="GitHub issues ready for dev">
   </a>
