@@ -34,7 +34,7 @@ function create_pr_containers {
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" \
                --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" \
-               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing .
+               --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" .
 
   # Push images to Quay
   echo "Pushing pull request #${PULL_REQUEST} containers to registry..."
@@ -92,6 +92,15 @@ function create_production_containers {
 
 }
 
+
+function prune_containers {
+
+  docker image prune -f
+
+}
+
+trap prune_containers ERR INT EXIT
+
 if [ ! -v BUILDKITE_BRANCH ]; then
 
     echo "Not running in Buildkite. Building Production Containers..."
@@ -124,6 +133,7 @@ else
 
         echo "Building containers for pull request #${BUILDKITE_PULL_REQUEST}..."
         create_pr_containers "${BUILDKITE_PULL_REQUEST}"
+
   fi
 
 fi
