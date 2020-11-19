@@ -1,6 +1,7 @@
 var crayonsHeaderMenu = document.getElementById('crayons-header__menu');
 var crayonsHeaderMenuClassList = crayonsHeaderMenu.classList;
 var menuNavButton = document.getElementById('navigation-butt');
+var firstNavLink = document.getElementById('first-nav-link');
 
 function blur(event, className) {
   setTimeout(() => {
@@ -28,6 +29,11 @@ function toggleMenu() {
     } else {
       crayonsHeaderMenuClassList.add('showing');
       menuNavButton.setAttribute('aria-expanded', 'true');
+
+      setTimeout(() => {
+        // focus first item on open
+        firstNavLink.focus();
+      }, 100);
     }
 }
 
