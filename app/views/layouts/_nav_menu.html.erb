@@ -1,7 +1,7 @@
 <div class="crayons-dropdown left-2 right-2 s:left-auto p-0 crayons-header__menu__dropdown inline-block">
   <% if user_signed_in? %>
     <ul class="p-0" id="crayons-header__menu__dropdown__list">
-      <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">
+      <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1 mb-1">
         <a id="first-nav-link" class="crayons-link crayons-link--block">
           <div>
             <span class="fw-medium block">...</span>
@@ -16,11 +16,11 @@
       <li class="px-1"><a href="<%= dashboard_path %>" class="crayons-link crayons-link--block">Dashboard</a></li>
       <li class="px-1"><a href="<%= new_path %>" class="crayons-link crayons-link--block">Write a Post</a></li>
       <li class="px-1"><a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a></li>
-      <li class="border-0 border-b-1 border-solid border-base-20 px-1">
+      <li class="border-0 border-b-1 border-solid border-base-20 px-1 pb-1">
         <a href="<%= user_settings_path %>" class="crayons-link crayons-link--block">Settings</a>
       </li>
 
-      <li class="px-1">
+      <li class="px-1 py-1">
         <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
       </li>
     </ul>
