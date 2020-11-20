@@ -64,6 +64,13 @@ export function displaySearchResults({
   );
 }
 
+/**
+ * Extracts the search term from an URL's query string.
+ *
+ * @param {string} querystring A URL query string
+ *
+ * @returns The extracted search term from the query string
+ */
 export function getSearchTermFromUrl(querystring) {
   const matches = /(?:&|\?)?q=([^&=]+)/.exec(querystring);
   const rawSearchTerm =
