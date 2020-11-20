@@ -1,12 +1,18 @@
 require "rails_helper"
 
-RSpec.describe Reactions::UpdateReactableWorker, type: :worker do
+RSpec.describe Reactions::UpdateRelevantScoresWorker, type: :worker do
   describe "#perform" do
     let(:article) { create(:article) }
     let(:reaction) { create(:reaction, reactable: article) }
     let(:comment) { create(:comment, commentable: article) }
     let(:comment_reaction) { create(:reaction, reactable: comment) }
     let(:worker) { subject }
+
+    it " updates the reactable Article" do
+      sidekiq_assert_enqueued_with(job: Follows::UpdatePointsWorker) do
+        worker.perform(reaction.id)
+      end
+    end
 
     it " updates the reactable Article" do
       sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker) do

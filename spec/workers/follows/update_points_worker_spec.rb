@@ -20,6 +20,7 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
     it "calculates scores" do
       follow = Follow.last
       worker.perform(reaction.id, user.id)
+      follow.update_column(:explicit_points, 2.2)
       follow.reload
       expect(follow.implicit_points).to be > 0
       expect(follow.points).to eq follow.implicit_points + follow.explicit_points

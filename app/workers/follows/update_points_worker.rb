@@ -4,8 +4,8 @@ module Follows
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform(reactable_id, user_id)
-      reaction = Reaction.find(reactable_id)
-      article = Article.find(reaction.reactable_id)
+      reaction = Reaction.find_by(id: reactable_id)
+      article = Article.find_by(id: reaction.reactable_id)
       user = User.find(user_id)
       return unless article && user
 
