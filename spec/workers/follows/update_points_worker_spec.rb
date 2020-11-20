@@ -23,7 +23,7 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
       worker.perform(reaction.id, user.id)
       follow.reload
       expect(follow.implicit_points).to be > 0
-      expect(follow.reload.points).to eq follow.implicit_points + follow.explicit_points
+      expect(follow.reload.points.round(2)).to eq (follow.implicit_points + follow.explicit_points).round(2)
     end
 
     it "has higher score with more long page views" do
