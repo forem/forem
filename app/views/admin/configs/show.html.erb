@@ -733,7 +733,7 @@
                                    class: "form-control",
                                    value: SiteConfig.favicon_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
-                  <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" />
+                  <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" width="32px" height="32px" />
                 </div>
 
                 <div class="crayons-field">
