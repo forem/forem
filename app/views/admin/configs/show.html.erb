@@ -200,9 +200,9 @@
                           <%= admin_config_label :allowed_registration_email_domains, "Allowed email domains" %>
                           <%= admin_config_description Constants::SiteConfig::DETAILS[:allowed_registration_email_domains][:description] %>
                           <%= f.text_field :allowed_registration_email_domains,
-                                            class: "crayons-textfield",
-                                            value: SiteConfig.allowed_registration_email_domains.join(","),
-                                            placeholder: Constants::SiteConfig::DETAILS[:allowed_registration_email_domains][:placeholder] %>
+                                           class: "crayons-textfield",
+                                           value: SiteConfig.allowed_registration_email_domains.join(","),
+                                           placeholder: Constants::SiteConfig::DETAILS[:allowed_registration_email_domains][:placeholder] %>
                         </div>
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :display_email_domain_allow_list_publicly,
@@ -722,7 +722,7 @@
                                    value: SiteConfig.main_social_image,
                                    placeholder: Constants::SiteConfig::DETAILS[:main_social_image][:placeholder] %>
                   <% if SiteConfig.main_social_image.present? %>
-                    <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
+                    <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" width="600px" height="337px" />
                   <% end %>
                 </div>
 
@@ -1043,7 +1043,7 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:onboarding_logo_image][:placeholder] %>
                   <div class="row mt-2">
                     <div class="col-12">
-                      <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" />
+                      <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" width="600px" height="337px" />
                     </div>
                   </div>
                 </div>

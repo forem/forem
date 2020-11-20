@@ -178,7 +178,7 @@ module Constants
         placeholder: SVG_PLACEHOLDER
       },
       main_social_image: {
-        description: "Used as the main image in social networks and OpenGraph",
+        description: "Used as the main image in social networks and OpenGraph. Recommended aspect ratio of 16:9 (600x337px,1200x675px)",
         placeholder: IMAGE_PLACEHOLDER
       },
       mailchimp_api_key: {
