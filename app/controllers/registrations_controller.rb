@@ -23,6 +23,7 @@ class RegistrationsController < Devise::RegistrationsController
       resource.registered = true
       resource.registered_at = Time.current
       resource.editor_version = "v2"
+      check_allowed_email(resource) if resource.email.present?
       resource.save if resource.email.present?
       yield resource if block_given?
       if resource.persisted?
@@ -45,6 +46,7 @@ class RegistrationsController < Devise::RegistrationsController
     resource.add_role(:super_admin)
     resource.add_role(:single_resource_admin, Config)
     SiteConfig.waiting_on_first_user = false
+    Users::CreateMascotAccount.call
   end
 
   def recaptcha_disabled?
@@ -55,5 +57,14 @@ class RegistrationsController < Devise::RegistrationsController
   def recaptcha_verified?
     recaptcha_params = { secret_key: SiteConfig.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
+  end
+
+  def check_allowed_email(resource)
+    domain = resource.email.split("@").last
+    allow_list = SiteConfig.allowed_registration_email_domains
+    return if allow_list.empty? || allow_list.include?(domain)
+
+    resource.email = nil
+    resource.errors.add(:email, "is not included in allowed domains.")
   end
 end

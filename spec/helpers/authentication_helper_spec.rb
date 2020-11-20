@@ -66,52 +66,25 @@ RSpec.describe AuthenticationHelper, type: :helper do
   end
 
   describe "tooltip classes, attributes and content" do
-    context "when invite-only-mode enabled and no enabled auth providers" do
+    context "when invite-only-mode enabled and no enabled registration options" do
       before do
         allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
         allow(SiteConfig).to receive(:authentication_providers).and_return([])
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(false)
       end
 
       it "returns 'crayons-tooltip' class for relevant helpers" do
         expect(tooltip_class_on_auth_provider_enablebtn).to eq("crayons-tooltip")
-        expect(tooltip_class_on_email_auth_disablebtn).to eq("crayons-tooltip")
       end
 
       it "returns 'disabled' attribute for relevant helper" do
         expect(disabled_attr_on_auth_provider_enablebtn).to eq("disabled")
-        expect(disabled_attr_on_email_auth_disablebtn).to eq("disabled")
       end
 
       it "returns appropriate text for 'tooltip_text_email_or_auth_provider_btns' helper" do
-        invite_only_mode_warning = "You cannot do this until you disable Invite Only Mode"
-        only_one_auth_method_warning = "You cannot do this until you enable at least one other registration option"
+        tooltip_text = "You cannot do this until you disable Invite Only Mode"
 
-        expect(tooltip_text_email_or_auth_provider_btns).to eq(invite_only_mode_warning)
-
-        allow(SiteConfig).to receive(:invite_only_mode).and_return(false)
-
-        expect(tooltip_text_email_or_auth_provider_btns).to eq(only_one_auth_method_warning)
-      end
-    end
-
-    context "when email login enabled and one enabled auth provider" do
-      before do
-        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
-        allow(SiteConfig).to receive(:authentication_providers).and_return(["facebook"])
-      end
-
-      it "returns 'crayons-tooltip' class for relevant helpers" do
-        expect(tooltip_class_on_auth_provider_disablebtn).to eq("crayons-tooltip")
-      end
-
-      it "returns 'disabled' attribute for relevant helper" do
-        expect(disabled_attr_on_auth_rpovider_disablebtn).to eq("disabled")
-      end
-
-      it "returns appropriate text for 'tooltip_text_email_or_auth_provider_btns' helper" do
-        only_one_auth_method_warning = "You cannot do this until you enable at least one other registration option"
-
-        expect(tooltip_text_email_or_auth_provider_btns).to eq(only_one_auth_method_warning)
+        expect(tooltip_text_email_or_auth_provider_btns).to eq(tooltip_text)
       end
     end
   end

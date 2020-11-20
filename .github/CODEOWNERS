@@ -17,8 +17,14 @@
 /lib/sidekiq/                                       @forem/sre
 /spec/rails_helper.rb                               @forem/sre
 /spec/support/                                      @forem/sre
+.buildkite/                                         @forem/systems @forem/sre
+.travis.yml                                         @forem/sre
+Containerfile                                       @forem/systems
+docker-compose.yml                                  @forem/systems
+Dockerfile                                          @forem/systems
 Gemfile                                             @forem/sre    @forem/oss
 Gemfile.lock                                        @forem/sre    @forem/oss
 package.json                                        @forem/oss    @nickytonline
+podman-compose.yml                                  @forem/systems
+scripts/                                            @forem/systems
 yarn.lock                                           @forem/oss    @nickytonline
-.travis.yml                                         @forem/sre

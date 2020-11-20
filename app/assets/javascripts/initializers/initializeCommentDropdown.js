@@ -15,7 +15,7 @@ function initializeCommentDropdown() {
     const { activeElement } = document;
     const input =
       activeElement.localName === 'clipboard-copy'
-        ? activeElement.querySelector('input')
+        ? activeElement.getElementsByTagName('input')[0]
         : document.getElementById('article-copy-link-input');
     input.focus();
     input.setSelectionRange(0, input.value.length);
@@ -103,7 +103,7 @@ function initializeCommentDropdown() {
     }
 
     finalizeAbuseReportLink(
-      dropdownContent.querySelector('.report-abuse-link-wrapper'),
+      dropdownContent.getElementsByClassName('report-abuse-link-wrapper')[0],
     );
 
     if (dropdownContent.classList.contains('block')) {
@@ -131,7 +131,7 @@ function initializeCommentDropdown() {
       return;
     }
 
-    reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
+    reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report abuse</a>`;
   }
 
   function addDropdownListener(dropdown) {

@@ -85,7 +85,7 @@ Rails.application.routes.draw do
 
       # NOTE: @citizen428 The next two resources have a temporary constraint
       # while profile generalization is still WIP
-      constraints(->(_request) { Flipper.enabled?(:profile_admin) }) do
+      constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
         resources :profile_field_groups, only: %i[update create destroy]
         resources :profile_fields, only: %i[index update create destroy]
       end
@@ -310,6 +310,7 @@ Rails.application.routes.draw do
     get "/search/chat_channels" => "search#chat_channels"
     get "/search/listings" => "search#listings"
     get "/search/users" => "search#users"
+    get "/search/usernames" => "search#usernames"
     get "/search/feed_content" => "search#feed_content"
     get "/search/reactions" => "search#reactions"
     get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
@@ -396,7 +397,7 @@ Rails.application.routes.draw do
     get "/welcome" => "pages#welcome"
     get "/challenge" => "pages#challenge"
     get "/checkin" => "pages#checkin"
-    get "/badge" => "pages#badge"
+    get "/badge" => "pages#badge", :as => :pages_badge
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
     get "/events" => "events#index"
@@ -427,8 +428,12 @@ Rails.application.routes.draw do
 
     get "/page/:slug" => "pages#show"
 
+    # TODO: [forem/teamsmash] removed the /p/information view and added a redirect for SEO purposes.
+    # We need to remove this route in 2 months (11 January 2021).
+    get "/p/information", to: redirect("/about")
+
     scope "p" do
-      pages_actions = %w[welcome editor_guide publishing_from_rss_guide information markdown_basics badges].freeze
+      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics badges].freeze
       pages_actions.each do |action|
         get action, action: action, controller: "pages"
       end
@@ -496,7 +501,7 @@ Rails.application.routes.draw do
     get "/t/:tag/:timeframe" => "stories#index",
         :constraints => { timeframe: /latest/ }
 
-    get "/badge/:slug" => "badges#show"
+    get "/badge/:slug" => "badges#show", :as => :badge
 
     get "/top/:timeframe" => "stories#index"
 

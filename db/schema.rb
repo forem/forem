@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_19_012200) do
+ActiveRecord::Schema.define(version: 2020_11_14_151157) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -878,6 +878,14 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.index ["website_url"], name: "index_podcast_episodes_on_website_url"
   end
 
+  create_table "podcast_ownerships", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "podcast_id", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["podcast_id", "user_id"], name: "index_podcast_ownerships_on_podcast_id_and_user_id", unique: true
+  end
+
   create_table "podcasts", force: :cascade do |t|
     t.string "android_url"
     t.datetime "created_at", null: false
@@ -1328,6 +1336,7 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
+    t.index ["feed_url"], name: "index_users_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
@@ -1426,6 +1435,8 @@ ActiveRecord::Schema.define(version: 2020_10_19_012200) do
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "page_views", "users", on_delete: :nullify
   add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade
+  add_foreign_key "podcast_ownerships", "podcasts"
+  add_foreign_key "podcast_ownerships", "users"
   add_foreign_key "podcasts", "users", column: "creator_id"
   add_foreign_key "poll_options", "polls", on_delete: :cascade
   add_foreign_key "poll_skips", "polls", on_delete: :cascade

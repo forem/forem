@@ -116,10 +116,10 @@ class User < ApplicationRecord
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :destroy
   has_many :organizations, through: :organization_memberships
-
   # we keep page views as they belong to the article, not to the user who viewed it
   has_many :page_views, dependent: :nullify
-
+  has_many :podcast_ownerships, dependent: :destroy, inverse_of: :owner
+  has_many :podcasts_owned, through: :podcast_ownerships, source: :podcast
   has_many :poll_skips, dependent: :destroy
   has_many :poll_votes, dependent: :destroy
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
