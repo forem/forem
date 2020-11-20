@@ -8,7 +8,7 @@ class Profile < ApplicationRecord
   validates :user_id, uniqueness: true
 
   # NOTE: @citizen428 The summary is a base profile field, which we add to all
-  # new Forem instances, so it should be save to validate. The method itself
+  # new Forem instances, so it should be safe to validate. The method itself
   # also guards against the field's absence.
   validate :conditionally_validate_summary
 
