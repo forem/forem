@@ -25,12 +25,12 @@
             <% tag = follow.followable %>
             <% if tag %>
               <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-              <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
+              <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.explicit_points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
                 <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
                   <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
                     <span class="crayons-tag__prefix">#</span><%= tag.name %>
                   </a>
-                  <% if follow.points < 0 %>
+                  <% if follow.explicit_points < 0 %>
                     <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>
                   <% end %>
                 </h3>
@@ -40,7 +40,7 @@
                 </p>
 
                 <%= form_for(follow, html: { class: "flex items-right w-100" }) do |f| %>
-                  <%= f.number_field(:points, step: :any, required: true, class: "crayons-textfield grow-1 fs-s inline-block w-75") %>
+                  <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield grow-1 fs-s inline-block w-75") %>
                   <button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s inline-block ml-2" name="commit" style="min-width:60px;">Save</button>
                 <% end %>
               </div>

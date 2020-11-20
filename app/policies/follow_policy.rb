@@ -8,7 +8,7 @@ class FollowPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    %i[points]
+    %i[explicit_points]
   end
 
   private
