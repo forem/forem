@@ -92,13 +92,13 @@ jobs:
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
           master: practicaldev
-    - stage: Deploy
-      name: Deploy BenHalpern
-      if: type != pull_request
-      script: skip
-      after_script: skip
-      deploy:
-        provider: heroku
-        api_key: '$HEROKU_AUTH_TOKEN'
-        app:
-          master: benhalpern-community
+    # - stage: Deploy
+    #   name: Deploy BenHalpern
+    #   if: type != pull_request
+    #   script: skip
+    #   after_script: skip
+    #   deploy:
+    #     provider: heroku
+    #     api_key: '$HEROKU_AUTH_TOKEN'
+    #     app:
+    #       master: benhalpern-community
