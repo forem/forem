@@ -82,7 +82,9 @@ class FollowsController < ApplicationController
   def update
     @follow = Follow.find(params[:id])
     authorize @follow
-    redirect_to "/dashboard/following" if @follow.update(follow_params)
+    @follow.explicit_points = follow_params[:explicit_points]
+    @follow = @follow.explicit_points + @follow.implicit_points
+    redirect_to "/dashboard/following" if @follow.save
   end
 
   private

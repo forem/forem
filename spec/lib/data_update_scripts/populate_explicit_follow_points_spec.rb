@@ -6,7 +6,6 @@ require Rails.root.join(
 describe DataUpdateScripts::PopulateExplicitFollowPoints do
   it "updates follows that had points to having explicit points", :aggregate_failures do
     follow = create(:follow, points: 3)
-    user.add_role(:tag_moderator, tag1)
 
     expect do
       described_class.new.run
