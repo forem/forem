@@ -4,7 +4,7 @@ import { createPortal, Fragment, unmountComponentAtNode } from 'preact/compat';
 import { Search } from './Search';
 import {
   displaySearchResults,
-  getInitialSearchTerm,
+  getSearchTermFromUrl,
   preloadSearchResults,
 } from '@utilities/search';
 
@@ -14,12 +14,12 @@ import {
  */
 export function SearchFormSync() {
   const [searchTerm, setSearchTerm] = useState(
-    getInitialSearchTerm(location.search),
+    getSearchTermFromUrl(location.search),
   );
   const [mobileSearchContainer, setMobileSearchContainer] = useState(null);
 
   function syncSearchFormsListener() {
-    const updatedSearchTerm = getInitialSearchTerm(location.search);
+    const updatedSearchTerm = getSearchTermFromUrl(location.search);
 
     // Server-side rendering of search results means the DOM node is destroyed everytime a search is performed,
     // So we need to get the reference every time and use that for the parent in the portal.

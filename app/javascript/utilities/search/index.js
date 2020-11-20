@@ -64,7 +64,7 @@ export function displaySearchResults({
   );
 }
 
-export function getInitialSearchTerm(querystring) {
+export function getSearchTermFromUrl(querystring) {
   const matches = /(?:&|\?)?q=([^&=]+)/.exec(querystring);
   const rawSearchTerm =
     matches !== null && matches.length === 2

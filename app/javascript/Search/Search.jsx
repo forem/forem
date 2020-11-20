@@ -1,6 +1,6 @@
 import { h, Component, Fragment, createRef } from 'preact';
 import PropTypes from 'prop-types';
-import { getInitialSearchTerm, hasInstantClick } from '../utilities/search';
+import { getSearchTermFromUrl, hasInstantClick } from '../utilities/search';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { SearchForm } from './SearchForm';
 
@@ -42,7 +42,7 @@ export class Search extends Component {
     // Note that push states for search occur in _search.html.erb
     // in initializeSortingTabs(query)
     const { setSearchTerm } = this.props;
-    const searchTerm = getInitialSearchTerm(window.location.search);
+    const searchTerm = getSearchTermFromUrl(window.location.search);
 
     // We set the value outside of React state so that there is no flickering of placeholder
     // to search term.
