@@ -25,8 +25,5 @@
   }
 
   // A custom even that gets dispatched to notify search forms to synchronize their state.
-  const syncSearchEvent = new Event('syncSearchForms')
-
-  window.dispatchEvent(syncSearchEvent);
-
+  window.dispatchEvent(new Event('syncSearchForms'));
 </script>
