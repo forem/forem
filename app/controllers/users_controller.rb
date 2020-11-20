@@ -236,8 +236,6 @@ class UsersController < ApplicationController
       handle_integrations_tab
     when "organization"
       handle_organization_tab
-    when "integrations"
-      handle_integrations_tab
     when "billing"
       handle_billing_tab
     when "response-templates"

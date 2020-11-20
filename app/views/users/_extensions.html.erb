@@ -31,6 +31,8 @@
   <% end %>
 </div>
 
+<%= render partial: "publishing_from_rss" %>
+
 <div class="crayons-card crayons-card--content-rows">
   <header>
     <h2 class="crayons-subtitle-1 flex gap-2 items-center">
@@ -53,4 +55,4 @@
 </div>
 
 <%= render partial: "integrations" %>
-<%= render partial: "publishing_from_rss" %>
+<%= render partial: "users/integrations_github_repositories", locals: { show_integration: @github_repositories_show } %>
