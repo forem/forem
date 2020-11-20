@@ -6,9 +6,8 @@ require Rails.root.join(
 describe DataUpdateScripts::PopulateExplicitFollowPoints do
   it "updates follows that had points to having explicit points", :aggregate_failures do
     follow = create(:follow, points: 3)
-
     expect do
       described_class.new.run
-    end.to change { follow.reload.explicit_points }.from(0.0).to(3.0)
+    end.to change { follow.explicit_points }.from(1.0).to(3.0)
   end
 end
