@@ -1,6 +1,15 @@
 require "rails_helper"
 
 RSpec.describe Profiles::Update, type: :service do
+  def sidekiq_assert_resave_article_worker(user, &block)
+    sidekiq_assert_enqueued_with(
+      job: Users::ResaveArticlesWorker,
+      args: [user.id],
+      queue: "medium_priority",
+      &block
+    )
+  end
+
   let(:profile) do
     create(:profile, data: { name: "Sloan Doe", looking_for_work: true, removed: "Bla" })
   end
@@ -62,5 +71,61 @@ RSpec.describe Profiles::Update, type: :service do
 
     expect(service.success?).to be false
     expect(service.error_message).to eq "filename too long - the max is 250 characters."
+  end
+
+  context "when conditionally resaving articles" do
+    it "enqueues resave articles job when changing username" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, user: { username: "#{user.username} changed" })
+      end
+    end
+
+    it "enqueues resave articles job when changing profile_image" do
+      profile_image = fixture_file_upload("files/large_profile_img.jpg")
+
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, user: { profile_image: profile_image })
+      end
+    end
+
+    it "enqueues resave articles job when changing name" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, profile: { name: "#{user.name} changed" })
+      end
+    end
+
+    it "enqueues resave articles job when changing summary" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, profile: { name: "#{user.summary} changed" })
+      end
+    end
+
+    it "enqueues resave articles job when changing bg_color_hex" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, profile: { brand_color1: "#12345F" })
+      end
+    end
+
+    it "enqueues resave articles job when changing text_color_hex" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, profile: { brand_color2: "#12345F" })
+      end
+    end
+
+    Authentication::Providers.username_fields.each do |username_field|
+      it "enqueues resave articles job when changing #{username_field}" do
+        sidekiq_assert_resave_article_worker(user) do
+          described_class.call(user, user: { username_field => "greatnewusername" })
+        end
+      end
+
+      it "doesn't enqueue resave articles job when changing #{username_field} for a banned user" do
+        banned_user = create(:user, :banned)
+
+        expect do
+          described_class.call(banned_user, user: { username_field => "greatnewusername" })
+        end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
+      end
+    end
   end
 end

@@ -2,6 +2,8 @@ module Profiles
   class Update
     include ImageUploads
 
+    CORE_PROFILE_FIELDS = %i[name summary brand_color1 brand_color2].freeze
+
     def self.call(user, updated_attributes = {})
       new(user, updated_attributes).call
     end
@@ -23,6 +25,7 @@ module Profiles
         # probably remove this sooner than later as it may not make much sense
         # for other communities.
         follow_hiring_tag if SiteConfig.dev_to?
+        conditionally_resave_articles
       else
         Honeycomb.add_field("error", @error_message)
         Honeycomb.add_field("errored", true)
@@ -104,6 +107,19 @@ module Profiles
       return unless hiring_tag && @user.following?(hiring_tag)
 
       Users::FollowWorker.perform_async(@user.id, hiring_tag.id, "Tag")
+    end
+
+    def conditionally_resave_articles
+      return unless core_profile_details_changed? && !@user.banned
+
+      Users::ResaveArticlesWorker.perform_async(@user.id)
+    end
+
+    def core_profile_details_changed?
+      @user.username_changed? ||
+        @updated_user_attributes.key?(:profile_image) ||
+        (@updated_profile_attributes.keys & CORE_PROFILE_FIELDS).any? ||
+        (@updated_user_attributes.keys & Authentication::Providers.username_fields).any?
     end
   end
 end

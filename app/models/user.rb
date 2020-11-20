@@ -258,7 +258,6 @@ class User < ApplicationRecord
   after_save { |user| user.profile&.save if user.profile&.changed? }
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
-  after_save :conditionally_resave_articles
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
@@ -605,19 +604,8 @@ class User < ApplicationRecord
     end
   end
 
-  def conditionally_resave_articles
-    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !banned
-  end
-
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
-  end
-
-  def core_profile_details_changed?
-    saved_change_to_username? ||
-      saved_change_to_profile_image? ||
-      profile&.changed? || # TODO: @citizen428 This is not ideal, need better solution
-      Authentication::Providers.username_fields.any? { |f| public_send("saved_change_to_#{f}?") }
   end
 
   def validate_feed_url
