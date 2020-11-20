@@ -204,6 +204,7 @@ Rails.application.routes.draw do
         resources :organizations, only: [] do
           collection do
             get "/:org_username", to: "organizations#show"
+            get "/:org_username/users", to: "organizations#users"
           end
         end
       end
