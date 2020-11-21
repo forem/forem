@@ -1,9 +1,7 @@
 version: "3"
 services:
   rails:
-    build: .
-      target: development
-    image: forem-rails:latest
+    image: quay.io/forem/forem:development
     container_name: forem_rails
     ports:
       - "3000:3000"
@@ -29,7 +27,7 @@ services:
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
   bundle:
-    image: forem-rails:latest
+    image: quay.io/forem/forem:development
     container_name: forem_bundle
     environment:
       RAILS_ENV: development
@@ -42,7 +40,7 @@ services:
     command: ["./scripts/bundle.sh"]
 
   yarn:
-    image: forem-rails:latest
+    image: quay.io/forem/forem:development
     container_name: forem_yarn
     environment:
       RAILS_ENV: development
@@ -55,7 +53,7 @@ services:
     command: ["yarn install --dev"]
 
   webpacker:
-    image: forem-rails:latest
+    image: quay.io/forem/forem:development
     container_name: forem_webpacker
     depends_on:
       - rails
@@ -71,7 +69,7 @@ services:
     command: ["./bin/webpack-dev-server"]
 
   seed:
-    image: forem-rails:latest
+    image: quay.io/forem/forem:development
     container_name: forem_seed
     depends_on:
       - rails
@@ -91,7 +89,7 @@ services:
     command: ["bundle", "exec", "rake","db:seed"]
 
   sidekiq:
-    image: forem-rails:latest
+    image: quay.io/forem/forem:development
     container_name: forem_sidekiq
     depends_on:
       - rails
