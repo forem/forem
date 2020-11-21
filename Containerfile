@@ -103,7 +103,7 @@ RUN bundle config --local build.sassc --disable-march-tune-native && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
-RUN yarn install --frozen-lockfile && RAILS_ENV=test NODE_ENV=test bundle exec rails webpacker:compile
+#RUN yarn install --frozen-lockfile && RAILS_ENV=test NODE_ENV=test bundle exec rails webpacker:compile
 
 ENTRYPOINT ["./scripts/entrypoint-dev.sh"]
 
