@@ -18,8 +18,13 @@ export function SearchFormSync() {
   );
   const [mobileSearchContainer, setMobileSearchContainer] = useState(null);
 
+  /**
+   * A listener for handling the synchronization of search forms.
+   *
+   * @param {CustomEvent<{ querystring: string }>} event A custom event for synching search forms.
+   */
   function syncSearchFormsListener(event) {
-    const { querystring } = event.detail;
+    const { querystring } = event.detail.querystring;
     const updatedSearchTerm = getSearchTermFromUrl(querystring);
 
     // Server-side rendering of search results means the DOM node is destroyed everytime a search is performed,
