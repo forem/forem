@@ -18,8 +18,9 @@ export function SearchFormSync() {
   );
   const [mobileSearchContainer, setMobileSearchContainer] = useState(null);
 
-  function syncSearchFormsListener() {
-    const updatedSearchTerm = getSearchTermFromUrl(location.search);
+  function syncSearchFormsListener(event) {
+    const { querystring } = event.detail;
+    const updatedSearchTerm = getSearchTermFromUrl(querystring);
 
     // Server-side rendering of search results means the DOM node is destroyed everytime a search is performed,
     // So we need to get the reference every time and use that for the parent in the portal.
