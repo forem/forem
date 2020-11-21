@@ -3,6 +3,7 @@ services:
   rails:
     image: quay.io/forem/forem:development
     container_name: forem_rails
+    user: root
     ports:
       - "3000:3000"
     depends_on:
@@ -23,12 +24,13 @@ services:
       APP_DOMAIN: rails
     volumes:
       - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/bundle/bundle_finished", "-timeout", "2700s", "./scripts/entrypoint-dev.sh"]
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/forem/bundle_finished", "-timeout", "2700s", "./scripts/entrypoint-dev.sh"]
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
   bundle:
     image: quay.io/forem/forem:development
     container_name: forem_bundle
+    user: root
     environment:
       RAILS_ENV: development
       REDIS_SIDEKIQ_URL: redis://redis:6379
@@ -42,6 +44,7 @@ services:
   yarn:
     image: quay.io/forem/forem:development
     container_name: forem_yarn
+    user: root
     environment:
       RAILS_ENV: development
       REDIS_SIDEKIQ_URL: redis://redis:6379
@@ -55,7 +58,9 @@ services:
   webpacker:
     image: quay.io/forem/forem:development
     container_name: forem_webpacker
+    user: root
     depends_on:
+      - bundle
       - rails
       - yarn
     environment:
@@ -65,12 +70,13 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "file:///opt/apps/forem/node_modules/.bin/webpack-dev-server", "-timeout", "2700s"]
+    entrypoint: ["dockerize", "-wait", "file:///opt/apps/forem/node_modules/.bin/webpack-dev-server", "file:///opt/apps/forem/bundle_finished", "-timeout", "2700s"]
     command: ["./bin/webpack-dev-server"]
 
   seed:
     image: quay.io/forem/forem:development
     container_name: forem_seed
+    user: root
     depends_on:
       - rails
       - redis
@@ -92,6 +98,7 @@ services:
   sidekiq:
     image: quay.io/forem/forem:development
     container_name: forem_sidekiq
+    user: root
     depends_on:
       - rails
       - redis
@@ -121,7 +128,7 @@ services:
       - db_data:/var/lib/postgresql/data:delegated
 
   redis:
-    image: "redis"
+    image: redis:6.0.9-alpine
     container_name: forem_redis
     ports:
       - "6379:6379"
