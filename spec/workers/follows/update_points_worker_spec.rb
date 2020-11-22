@@ -7,13 +7,16 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
     let(:worker) { subject }
 
     let(:user) { create(:user) }
-    let(:tag) { create(:tag) }
+    let(:tag) { create(:tag, name: "tag") }
+    let(:second_tag) { create(:tag, name: "secondtag") }
+    let(:third_tag) { create(:tag, name: "thirdtag") }
     let(:article) { create(:article, tags: [tag.name]) }
     let(:second_article) { create(:article, tags: [tag.name]) }
     let(:reaction) { create(:reaction, reactable: article, user: user) }
     let(:page_view) { create(:page_view, user: user, article: article, time_tracked_in_seconds: 100) }
 
     before do
+      user.follow(second_tag)
       user.follow(tag)
     end
 
@@ -50,6 +53,26 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
       worker.perform(reaction.id, user.id)
       follow.reload
       expect(follow.implicit_points).to be > first_implicit_score
+    end
+
+    it "bumps down tag follow points not included in this calc" do
+      follow = Follow.first
+      worker.perform(reaction.id, user.id)
+      expect(follow.reload.points.round(2)).to eq(0.98)
+    end
+
+    it "applies inverse bonus to slightly penalize more popular tags" do
+      follow = Follow.last
+      tag.update_column(:hotness_score, 1000)
+      second_tag.update_column(:hotness_score, 100)
+      worker.perform(reaction.id, user.id)
+      follow.reload
+      original_points = follow.points
+      tag.update_column(:hotness_score, 50)
+      tag.reload
+      worker.perform(reaction.id, user.id)
+
+      expect(follow.reload.points).to be > original_points # should be higher because tag is now less popular
     end
   end
 end
