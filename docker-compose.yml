@@ -24,7 +24,7 @@ services:
       APP_DOMAIN: rails
     volumes:
       - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/forem/bundle_finished", "-timeout", "2700s", "./scripts/entrypoint-dev.sh"]
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/forem/bundle_finished", "-timeout", "2700s", "./scripts/entrypoint.sh bootstrap"]
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
   bundle:
@@ -38,7 +38,6 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
-    entrypoint: ["bash"]
     command: ["./scripts/bundle.sh"]
 
   yarn:
@@ -52,7 +51,6 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
-    entrypoint: ["bash", "-c"]
     command: ["yarn install --dev"]
 
   webpacker:
@@ -70,7 +68,7 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "file:///opt/apps/forem/node_modules/.bin/webpack-dev-server", "file:///opt/apps/forem/bundle_finished", "-timeout", "2700s"]
+    entrypoint: ["dockerize", "-wait", "file:///opt/apps/forem/node_modules/.bin/webpack-dev-server", "-wait", "file:///opt/apps/forem/bundle_finished", "-timeout", "2700s"]
     command: ["./bin/webpack-dev-server"]
 
   seed:
@@ -91,7 +89,6 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
-
     entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "2700s"]
     command: ["bundle", "exec", "rake","db:seed"]
 
@@ -111,7 +108,6 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
-
     entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "2700s"]
     command: ["bundle", "exec", "sidekiq","-c","2"]
 
