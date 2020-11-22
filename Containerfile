@@ -102,7 +102,7 @@ RUN bundle config --local build.sassc --disable-march-tune-native && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
-ENTRYPOINT ["./scripts/entrypoint-dev.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
@@ -122,7 +122,7 @@ RUN bundle config --local build.sassc --disable-march-tune-native && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
-ENTRYPOINT ["./scripts/entrypoint-dev.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
