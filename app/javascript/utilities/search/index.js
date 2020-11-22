@@ -99,13 +99,10 @@ export function displaySearchResults({
  * @returns The extracted search term from the query string
  */
 export function getSearchTermFromUrl(querystring) {
-  const matches = /(?:&|\?)?q=([^&=]+)/.exec(querystring);
-  const rawSearchTerm =
-    matches !== null && matches.length === 2
-      ? decodeURIComponent(matches[1].replace(/\+/g, '%20'))
-      : '';
-  const query = filterXSS(rawSearchTerm) || '';
+  const searchParameters = new URLSearchParams(querystring);
+  const query = filterXSS(searchParameters.get('q')) ?? '';
   const divForDecode = document.createElement('div');
+
   divForDecode.innerHTML = query;
 
   return divForDecode.firstChild !== null
