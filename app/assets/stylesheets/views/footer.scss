@@ -1,6 +1,8 @@
 @import '../config/import';
 
 .crayons-footer {
+  content-visibility: auto;
+  contain-intrinsic-size: 320px;
   --footer-padding: var(--su-5);
   background: var(--footer-bg);
   color: var(--footer-color);
