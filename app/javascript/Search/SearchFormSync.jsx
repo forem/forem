@@ -24,7 +24,7 @@ export function SearchFormSync() {
    * @param {CustomEvent<{ querystring: string }>} event A custom event for synching search forms.
    */
   function syncSearchFormsListener(event) {
-    const { querystring } = event.detail.querystring;
+    const { querystring } = event.detail;
     const updatedSearchTerm = getSearchTermFromUrl(querystring);
 
     // Server-side rendering of search results means the DOM node is destroyed everytime a search is performed,
