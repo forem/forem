@@ -16,8 +16,9 @@ services:
       RAILS_ENV: development
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
-      REDIS_URL: redis://redis:6379
       REDIS_SESSIONS_URL: redis://redis:6379
+      REDIS_SIDEKIQ_URL: redis://redis:6379
+      REDIS_URL: redis://redis:6379
       RACK_TIMEOUT_WAIT_TIMEOUT: 10000
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
@@ -33,7 +34,9 @@ services:
     user: root
     environment:
       RAILS_ENV: development
+      REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
+      REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
@@ -46,7 +49,9 @@ services:
     user: root
     environment:
       RAILS_ENV: development
+      REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
+      REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
@@ -63,7 +68,9 @@ services:
       - yarn
     environment:
       RAILS_ENV: development
+      REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
+      REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
@@ -82,9 +89,9 @@ services:
       - elasticsearch
     environment:
       RAILS_ENV: development
+      REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
       REDIS_URL: redis://redis:6379
-      REDIS_SESSIONS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
@@ -103,7 +110,9 @@ services:
       - elasticsearch
     environment:
       RAILS_ENV: development
+      REDIS_SESSIONS_URL: redis://redis:6379
       REDIS_SIDEKIQ_URL: redis://redis:6379
+      REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
