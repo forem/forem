@@ -1,9 +1,7 @@
 module DataUpdateScripts
   class PopulateExplicitFollowPoints
     def run
-      Follow.where("points != 1").find_each do |follow|
-        follow.update_column(:explicit_points, follow.points)
-      end
+      Follow.connection.execute('UPDATE "follows" SET "explicit_points" = "points" WHERE points != 1')
     end
   end
 end
