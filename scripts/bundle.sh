@@ -6,5 +6,7 @@ if [ -f /opt/apps/forem/bundle_finished ]; then
   rm -f /opt/apps/forem/bundle_finished
 fi
 
-bundle install --local --jobs 20 --retry 5
+unset BUNDLE_WITHOUT
+bundle config --delete without
+bundle install --local --jobs 20 --retry 5 --path vendor/bundle
 echo $(date --utc +%FT%T%Z) > /opt/apps/forem/bundle_finished
