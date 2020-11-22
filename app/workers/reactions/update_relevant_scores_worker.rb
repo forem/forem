@@ -10,7 +10,9 @@ module Reactions
 
       reaction.reactable.touch_by_reaction if reaction.reactable.respond_to?(:touch_by_reaction)
       reaction.reactable.sync_reactions_count if rand(6) == 1 && reaction.reactable.respond_to?(:sync_reactions_count)
-      Follows::UpdatePointsWorker.perform_async(reaction_id, reaction.user_id)
+      return unless reaction.reactable_type == "Article" && Reaction::PUBLIC_CATEGORIES.include?(reaction.category)
+
+      Follows::UpdatePointsWorker.perform_async(reaction.reactable_id, reaction.user_id)
     end
   end
 end

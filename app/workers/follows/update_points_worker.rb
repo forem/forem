@@ -3,9 +3,8 @@ module Follows
     include Sidekiq::Worker
     sidekiq_options queue: :low_priority, retry: 10
 
-    def perform(reactable_id, user_id)
-      reaction = Reaction.find_by(id: reactable_id)
-      article = Article.find_by(id: reaction.reactable_id)
+    def perform(article_id, user_id)
+      article = Article.find_by(id: article_id)
       user = User.find_by(id: user_id)
       return unless article && user
 
