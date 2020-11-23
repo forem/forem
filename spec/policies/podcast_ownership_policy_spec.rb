@@ -13,7 +13,7 @@ RSpec.describe PodcastOwnershipPolicy do
     let(:user)       { build_stubbed(:user) }
     let(:podcast_ownership) { build_stubbed(:podcast_ownership) }
 
-    it { is_expected.to permit_actions %i[update edit destroy] }
+    it { is_expected.to permit_actions %i[new create update edit destroy] }
   end
 
   context "when user does not own the podcast" do
@@ -21,5 +21,6 @@ RSpec.describe PodcastOwnershipPolicy do
     let(:podcast_ownership) { build_stubbed(:podcast_ownership) }
 
     it { is_expected.to permit_actions %i[new create] }
+    it { is_expected.to forbid_actions %i[update edit destroy] }
   end
 end
