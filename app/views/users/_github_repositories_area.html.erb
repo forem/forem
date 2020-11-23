@@ -1,21 +1,37 @@
-<% repositories.each do |repo| %>
-  <a class="widget" href="<%= repo.url %>" target="_blank" rel="noopener">
-    <header>
-      <h4><span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" alt="github logo"></span><%= repo.name %></h4>
+<% if repositories.present? %>
+  <div class="crayons-card crayons-card--secondary">
+    <header class="crayons-card__header">
+      <h3 class="crayons-subtitle-3 flex items-center">GitHub Repositories</h3>
     </header>
-    <div class="widget-body">
-      <% if repo.description.present? %>
-        <%= EmojiConverter.call(repo.description) %>
+
+    <div>
+      <% repositories.each do |repo| %>
+        <a href="<%= repo.url %>" target="_blank" rel="noopener" class="crayons-link crayons-link--contentful">
+          <p class="fw-bold flex items-center">
+            <%= repo.name %>
+          </p>
+          <% if repo.description.present? %>
+            <p class="fs-s color-base-80 mb-1"><%= EmojiConverter.call(repo.description) %></p>
+          <% end %>
+          <p class="fs-s color-base-60 flex items-center">
+            <% if repo.fork %>
+              <span class="crayons-indicator mr-3">Fork</span>
+            <% end %>
+
+            <% if repo.language %>
+              <%= repo.language %>
+            <% end %>
+
+            <% if repo.language && repo.stargazers_count.to_i > 0 %>
+              <span class="opacity-50 inline-block px-1">&bull;</span>
+            <% end %>
+
+            <% if repo.stargazers_count.to_i > 0 %>
+              <%= pluralize repo.stargazers_count, "star" %>
+            <% end %>
+          </p>
+        </a>
       <% end %>
-      <div class="widget-footer">
-        <% if repo.fork %>
-          <span class="widget-accent">fork</span>
-        <% end %>
-        <%= repo.language %>
-        <% if repo.stargazers_count.to_i > 0 %>
-          <img src="<%= asset_path("star.svg") %>" alt="star icon"> <%= repo.stargazers_count %>
-        <% end %>
-      </div>
     </div>
-  </a>
+  </div>
 <% end %>

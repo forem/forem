@@ -1,13 +1,13 @@
 <%= content_for :page_meta do %>
   <% title_with_timeframe(
-       page_title: "#{community_qualified_name} 👩‍💻👨‍💻",
+       page_title: "#{community_qualified_name} #{community_emoji}",
        timeframe: params[:timeframe],
        content_for: true,
      ) %>
 
   <link rel="canonical" href="<%= app_url(request.path) %>" />
   <meta name="description" content="<%= SiteConfig.community_description %>">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= app_url(request.path) %>" />
@@ -25,8 +25,7 @@
 <% end %>
 
 <%= javascript_packs_with_chunks_tag "homePage", defer: true %>
-
-<% cache(cache_key_heroku_slug("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
+<% cache(release_adjusted_cache_key("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
   <div class="crayons-layout crayons-layout--3-cols crayons-layout--3-cols--drop-right-left" id="index-container"
       data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
       data-tag=""
@@ -47,7 +46,7 @@
           </div>
         </button>
         <div class="flex-1 flex items-center justify-between">
-          <h2 class="fs-l fw-heavy">Posts</h2>
+          <h2 class="crayons-subtitle-2">Posts</h2>
           <nav class="crayons-tabs hidden s:flex">
             <a href="<%= list_path %>/" class="crayons-tabs__item <%= "crayons-tabs__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>">Feed</a>
 
@@ -77,7 +76,7 @@
       </header>
 
       <% if user_signed_in? %>
-        <div id="homepage-feed"></div>
+        <div id="homepage-feed" style="min-height: 90vh"></div>
       <% else %>
         <%= render "stories/main_stories_feed" %>
       <% end %>
@@ -91,6 +90,5 @@
     <%= render "articles/sidebar_additional" %>
   </div>
 
-  <%= render "stories/narrow_nav_menu" %>
   <%= render "stories/stories_list_script" %>
 <% end %>

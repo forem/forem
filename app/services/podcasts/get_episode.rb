@@ -12,7 +12,9 @@ module Podcasts
       if episode
         try_update_media_url(episode: episode, item_data: item_data, force_update: force_update)
       else
-        PodcastEpisodes::CreateWorker.perform_async(podcast.id, item_data.to_h)
+        episode_cache_key = cache_key(item_data)
+        cache_episode_data(episode_cache_key, item_data)
+        PodcastEpisodes::CreateWorker.perform_async(podcast.id, episode_cache_key)
       end
     end
 
@@ -35,6 +37,14 @@ module Podcasts
       episode.save
     rescue ArgumentError, NoMethodError => e
       Rails.logger.error("not a valid date: #{e}")
+    end
+
+    def cache_episode_data(episode_cache_key, item_data)
+      Rails.cache.write(episode_cache_key, item_data.to_h)
+    end
+
+    def cache_key(item_data)
+      Digest::SHA1.hexdigest(item_data.to_s)
     end
   end
 end

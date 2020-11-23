@@ -50,12 +50,12 @@ module Redcarpet
       end
 
       def app_domain
-        ApplicationConfig["APP_DOMAIN"]
+        SiteConfig.app_domain
       end
 
       def slugify(string)
         stripped_string = ActionView::Base.full_sanitizer.sanitize string
-        stripped_string.downcase.gsub(EmojiRegex::Regex, "").strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
+        stripped_string.downcase.gsub(EmojiRegex::RGIEmoji, "").strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
       end
     end
   end

@@ -70,6 +70,14 @@ module Search
           }
         end
       end
+
+      def dynamic_index_settings
+        if Rails.env.production?
+          { refresh_interval: "5s" }
+        else
+          { refresh_interval: "1s" }
+        end
+      end
     end
   end
 end

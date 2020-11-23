@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title><%= community_name %> Community ❤️</title>
+  <title><%= community_qualified_name %> ❤️</title>
 </head>
 <body>
 <%= @html_variant.html.html_safe %>
@@ -115,7 +115,7 @@
     m.parentNode.insertBefore(a, m)
   })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-  ga('create', '<%= ApplicationConfig["GA_TRACKING_ID"] %>', 'auto');
+  ga('create', '<%= SiteConfig.ga_tracking_id %>', 'auto');
   ga('set', 'anonymizeIp', true);
   ga('send', 'pageview');
   ga('send', 'event', 'view', '/badge version impression', '<%= @html_variant.name %>', null);

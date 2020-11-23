@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       # Delete all Ahoy::Events belonging to users that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           DELETE FROM ahoy_events
           WHERE user_id IS NOT NULL
           AND user_id NOT IN (SELECT id FROM users);
@@ -12,7 +12,7 @@ module DataUpdateScripts
 
       # Delete all Ahoy::Messages belonging to users that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           DELETE FROM ahoy_messages
           WHERE user_id IS NOT NULL
           AND user_id NOT IN (SELECT id FROM users);
@@ -21,7 +21,7 @@ module DataUpdateScripts
 
       # Delete all Ahoy::Visits belonging to users that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           DELETE FROM ahoy_visits
           WHERE user_id IS NOT NULL
           AND user_id NOT IN (SELECT id FROM users);

@@ -1,25 +1,26 @@
+import { toggleFlagUserModal } from '../packs/flagUserModal';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
-  const button = document.querySelector('.close-actions-panel');
+  const button = document.getElementsByClassName('close-actions-panel')[0];
   button.addEventListener('click', () => {
     // getting the article show page document because this is called within an iframe
     // eslint-disable-next-line no-restricted-globals
     const articleDocument = top.document;
 
     articleDocument
-      .querySelector('.mod-actions-menu')
+      .getElementsByClassName('mod-actions-menu')[0]
       .classList.toggle('showing');
     articleDocument
-      .querySelector('.mod-actions-menu-btn')
+      .getElementsByClassName('mod-actions-menu-btn')[0]
       .classList.toggle('hidden');
   });
 }
 
 export function initializeHeight() {
-
   document.documentElement.style.height = '100%';
-  document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0; overflow-y: hidden';
+  document.body.style.cssText =
+    'height: 100%; margin: 0; padding-top: 0; overflow-y: hidden';
   document.getElementById('page-content').style.cssText =
     'margin-top: 0 !important; margin-bottom: 0;';
 }
@@ -27,13 +28,14 @@ export function initializeHeight() {
 function toggleDropdown(type) {
   if (type === 'set-experience') {
     document
-      .querySelector('.set-experience-options')
+      .getElementsByClassName('set-experience-options')[0]
       .classList.toggle('hidden');
   } else if (type === 'adjust-tags') {
-    document.querySelector('.adjust-tags-options').classList.toggle('hidden');
+    document
+      .getElementsByClassName('adjust-tags-options')[0]
+      .classList.toggle('hidden');
   }
 }
-
 
 function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
@@ -142,6 +144,33 @@ async function updateExperienceLevel(currentUserId, articleId, rating, group) {
     alert(error);
   }
 }
+
+const adminUnpublishArticle = async (id, username, slug) => {
+  try {
+    const response = await request(`/articles/${id}/admin_unpublish`, {
+      method: 'PATCH',
+      body: JSON.stringify({ id, username, slug }),
+      credentials: 'same-origin',
+    });
+
+    const outcome = await response.json();
+
+    /* eslint-disable no-restricted-globals */
+    if (outcome.message == 'success') {
+      window.top.location.assign(`${window.location.origin}${outcome.path}`);
+    } else {
+      top.addSnackbarItem({
+        message: `Error: ${outcome.message}`,
+        addCloseButton: true,
+      });
+    }
+  } catch (error) {
+    top.addSnackbarItem({
+      message: `Error: ${error}`,
+      addCloseButton: true,
+    });
+  }
+};
 
 function toggleSubmitContainer() {
   document
@@ -345,23 +374,44 @@ export function addBottomActionsListeners() {
 
         btn.querySelector('.label-wrapper > .icon').classList.toggle('hidden');
         btn
-          .querySelector('.toggle-chevron-container')
+          .getElementsByClassName('toggle-chevron-container')[0]
           .classList.toggle('rotated');
         toggleDropdown(btn.dataset.otherThingsType);
       });
     },
   );
 
-  document.querySelectorAll('.level-rating-button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      updateExperienceLevel(
-        btn.dataset.userId,
-        btn.dataset.articleId,
-        btn.value,
-        btn.dataset.group,
-      );
+  Array.from(document.getElementsByClassName('level-rating-button')).forEach(
+    (btn) => {
+      btn.addEventListener('click', () => {
+        updateExperienceLevel(
+          btn.dataset.userId,
+          btn.dataset.articleId,
+          btn.value,
+          btn.dataset.group,
+        );
+      });
+    },
+  );
+
+  const unpublishArticleBtn = document.getElementById('unpublish-article-btn');
+  if (unpublishArticleBtn) {
+    unpublishArticleBtn.addEventListener('click', () => {
+      const {
+        articleId: id,
+        articleAuthor: username,
+        articleSlug: slug,
+      } = unpublishArticleBtn.dataset;
+
+      if (confirm('You are unpublishing this article; are you sure?')) {
+        adminUnpublishArticle(id, username, slug);
+      }
     });
-  });
+  }
+
+  document
+    .getElementById('open-flag-user-modal')
+    .addEventListener('click', toggleFlagUserModal);
 }
 
 export function initializeActionsPanel() {

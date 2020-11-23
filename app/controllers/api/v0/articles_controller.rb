@@ -18,7 +18,6 @@ module Api
         public_reactions_count created_at edited_at last_comment_at published
         updated_at video_thumbnail_url
       ].freeze
-      private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
         *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html

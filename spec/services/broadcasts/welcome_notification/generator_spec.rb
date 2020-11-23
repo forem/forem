@@ -5,13 +5,14 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let!(:welcome_thread) { create(:article, user: mascot_account, published: true, tags: "welcome") }
 
   # welcome_broadcast is explicitly not readonly so that we can test against an inactive broadcast
-  let!(:welcome_broadcast)         { create(:welcome_broadcast) }
-  let!(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
-  let!(:github_connect_broadcast)  { create(:github_connect_broadcast) }
-  let!(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
-  let!(:discuss_and_ask_broadcast) { create(:discuss_and_ask_broadcast) }
-  let!(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
-  let!(:download_app_broadcast)    { create(:download_app_broadcast) }
+  let!(:welcome_broadcast)          { create(:welcome_broadcast) }
+  let!(:twitter_connect_broadcast)  { create(:twitter_connect_broadcast) }
+  let!(:github_connect_broadcast)   { create(:github_connect_broadcast) }
+  let!(:facebook_connect_broadcast) { create(:facebook_connect_broadcast) }
+  let!(:customize_feed_broadcast)   { create(:customize_feed_broadcast) }
+  let!(:discuss_and_ask_broadcast)  { create(:discuss_and_ask_broadcast) }
+  let!(:customize_ux_broadcast)     { create(:customize_ux_broadcast) }
+  let!(:download_app_broadcast)     { create(:download_app_broadcast) }
 
   before do
     omniauth_mock_providers_payload
@@ -59,7 +60,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
           described_class.call(user.id)
         end
       end.to change(user.notifications, :count).by(1)
-      expect(user.notifications.last.notifiable).to eq(twitter_connect_broadcast)
+      not_github = [facebook_connect_broadcast, twitter_connect_broadcast].include?(user.notifications.last.notifiable)
+      expect(not_github).to be(true)
 
       Timecop.travel(1.day.since)
       expect do
@@ -132,30 +134,16 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       expect(Notification).not_to have_received(:send_welcome_notification)
     end
 
-    it "generates and sends the appropriate broadcast (twitter)" do
-      user = create(:user, :with_identity, identities: ["github"], created_at: 1.day.ago)
-      sidekiq_perform_enqueued_jobs { described_class.new(user.id).__send__(:send_authentication_notification) }
-      expect(user.notifications.first.notifiable).to eq(twitter_connect_broadcast)
-    end
-
-    it "generates and sends the appropriate broadcast (github)" do
-      user = create(:user, :with_identity, identities: ["twitter"], created_at: 1.day.ago)
-      sidekiq_perform_enqueued_jobs { described_class.new(user.id).__send__(:send_authentication_notification) }
-      expect(user.notifications.first.notifiable).to eq(github_connect_broadcast)
-    end
-
     it "does not send notification if user is authenticated with both services" do
       user = create(:user, :with_identity, identities: %w[twitter github], created_at: 1.day.ago)
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).__send__(:send_authentication_notification) }
       expect(Notification).not_to have_received(:send_welcome_notification).with(user.id, github_connect_broadcast.id)
     end
 
-    it "does not send duplicate notifications (github)" do
-      user = create(:user, :with_identity, identities: ["twitter"], created_at: 1.day.ago)
-      2.times do
-        sidekiq_perform_enqueued_jobs { described_class.new(user.id).__send__(:send_authentication_notification) }
-      end
-      expect(user.notifications.count).to eq(1)
+    it "does not send notification if user is authenticated with all services" do
+      user = create(:user, :with_identity, created_at: 1.day.ago)
+      sidekiq_perform_enqueued_jobs { described_class.new(user.id).__send__(:send_authentication_notification) }
+      expect(Notification).not_to have_received(:send_welcome_notification).with(user.id, github_connect_broadcast.id)
     end
 
     it "does not send duplicate notifications (twitter)" do

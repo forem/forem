@@ -12,20 +12,18 @@ function hideChatModal(modal) {
 }
 
 function toggleModal() {
-  var modal = document.querySelector('.modal');
-  var currentState = modal.style.display;
-
-  if (currentState === 'none') {
-    showChatModal(modal);
-  } else {
-    hideChatModal(modal);
-  }
+  var modal = document.getElementsByClassName('crayons-modal')[0];
+  modal.classList.toggle('hidden');
 }
 
 function initModal() {
-  var modal = document.querySelector('.modal');
-  modal.querySelector('.close-modal').addEventListener('click', toggleModal);
-  modal.querySelector('.overlay').addEventListener('click', toggleModal);
+  var modal = document.getElementsByClassName('crayons-modal')[0];
+  modal
+    .getElementsByClassName('close-modal')[0]
+    .addEventListener('click', toggleModal);
+  modal
+    .getElementsByClassName('crayons-modal__overlay')[0]
+    .addEventListener('click', toggleModal);
 }
 
 function handleChatButtonPress(form) {
@@ -56,8 +54,8 @@ function addButtonClickHandle(response, button, modalInfo) {
     linkWrap.removeAttribute('href'); // remove link
     button.addEventListener('click', toggleModal);
     // eslint-disable-next-line no-param-reassign
-    button.style.display = 'initial'; // show button
-    linkWrap.style.display = 'initial'; // show button
+    button.classList.remove('hidden'); // show button
+    linkWrap.classList.remove('hidden'); // show button
     form.onsubmit = () => {
       handleChatButtonPress(form);
       return false;
@@ -65,8 +63,8 @@ function addButtonClickHandle(response, button, modalInfo) {
   } else if (response === 'mutual') {
     button.removeEventListener('click', toggleModal);
     // eslint-disable-next-line no-param-reassign
-    button.style.display = 'initial'; // show button
-    linkWrap.style.display = 'initial'; // show button
+    button.classList.remove('hidden'); // show button
+    linkWrap.classList.remove('hidden'); // show button
   }
 }
 

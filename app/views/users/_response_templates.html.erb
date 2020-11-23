@@ -2,7 +2,7 @@
 <p class="mb-6">Response templates are snippets that you can re-use for quick and accurate comments.</p>
 
 <% if @response_templates.present? %>
-  <div class="crayons-card grid gap-6 p-6 mb-6">
+  <div class="crayons-card crayons-card--content-rows">
     <h3>Your templates</h3>
 
     <div class="github-repos-container -mt-4">
@@ -28,7 +28,7 @@
 <% end %>
 
 <%= form_with model: @response_template do |f| %>
-  <div class="crayons-card grid gap-6 p-6 mb-6">
+  <div class="crayons-card crayons-card--content-rows">
     <header>
       <% if @response_template.persisted? %>
         <% title = params[:previous_title] || @response_template.title %>

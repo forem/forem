@@ -4,20 +4,43 @@
 class SiteConfig < RailsSettings::Base
   self.table_name = "site_configs"
 
+  validates :var, presence: true
+
   # the site configuration is cached, change this if you want to force update
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
-  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
+  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
+
+  # Meta
+  field :admin_action_taken_at, type: :datetime, default: Time.current
+
+  # Core setup
+  field :waiting_on_first_user, type: :boolean, default: !User.exists?
+  field :app_domain, type: :string, default: ApplicationConfig["APP_DOMAIN"]
 
   # API Tokens
   field :health_check_token, type: :string
+  field :video_encoder_key, type: :string
 
   # Authentication
-  field :authentication_providers, type: :array, default: Authentication::Providers.available
+  field :allow_email_password_registration, type: :boolean, default: false
+  field :allow_email_password_login, type: :boolean, default: true
+  field :allowed_registration_email_domains, type: :array, default: %w[]
+  field :display_email_domain_allow_list_publicly, type: :boolean, default: false
+  field :require_captcha_for_email_password_registration, type: :boolean, default: false
+  field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
+  field :invite_only_mode, type: :boolean, default: false
+  field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
+  field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
+  field :github_key, type: :string, default: ApplicationConfig["GITHUB_KEY"]
+  field :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
+  field :facebook_key, type: :string
+  field :facebook_secret, type: :string
 
   # Campaign
+  field :campaign_call_to_action, type: :string, default: "Share your project"
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
@@ -26,13 +49,19 @@ class SiteConfig < RailsSettings::Base
   field :campaign_articles_require_approval, type: :boolean, default: 0
 
   # Community Content
+  field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
+  field :community_emoji, type: :string, default: "🌱"
+  field :collective_noun, type: :string, default: "Community"
+  field :collective_noun_disabled, type: :boolean, default: false
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
-  field :community_action, type: :string
   field :tagline, type: :string
   field :community_copyright_start_year, type: :integer,
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
                                            Time.zone.today.year
+  field :staff_user_id, type: :integer, default: 1
+  field :experience_low, type: :string, default: "Total Newbies"
+  field :experience_high, type: :string, default: "Experienced Users"
 
   # Emails
   field :email_addresses, type: :hash, default: {
@@ -43,33 +72,40 @@ class SiteConfig < RailsSettings::Base
   }
 
   # Email digest frequency
-  field :periodic_email_digest_max, type: :integer, default: 0
-  field :periodic_email_digest_min, type: :integer, default: 2
+  field :periodic_email_digest_max, type: :integer, default: 2
+  field :periodic_email_digest_min, type: :integer, default: 0
 
   # Jobs
   field :jobs_url, type: :string
   field :display_jobs_banner, type: :boolean, default: false
 
-  # Google Analytics Reporting API v4
-  # <https://developers.google.com/analytics/devguides/reporting/core/v4>
-  field :ga_view_id, type: :string, default: ""
-  field :ga_fetch_rate, type: :integer, default: 25
+  # Google Analytics Tracking ID, e.g. UA-71991000-1
+  field :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
+
+  # Google ReCATPCHA keys
+  field :recaptcha_site_key, type: :string, default: ApplicationConfig["RECAPTCHA_SITE"]
+  field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
   # Images
-  field :main_social_image, type: :string
+  field :main_social_image, type: :string, default: proc { URL.local_image("social-media-cover.png") }
+
   field :favicon_url, type: :string, default: "favicon.ico"
-  field :logo_png, type: :string
+  field :logo_png, type: :string, default: proc { URL.local_image("icon.png") }
+
   field :logo_svg, type: :string
   field :secondary_logo_url, type: :string
 
   field :left_navbar_svg_icon, type: :string, default: STACK_ICON
   field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
+  field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
-  field :mascot_user_id, type: :integer, default: 1
-  field :mascot_image_url, type: :string
+  field :mascot_user_id, type: :integer, default: nil
+  field :mascot_image_url, type: :string, default: proc { URL.local_image("mascot.png") }
   field :mascot_image_description, type: :string, default: "The community mascot"
   field :mascot_footer_image_url, type: :string
+  field :mascot_footer_image_width, type: :integer, default: 52
+  field :mascot_footer_image_height, type: :integer, default: 120
 
   # Meta keywords
   field :meta_keywords, type: :hash, default: {
@@ -79,11 +115,14 @@ class SiteConfig < RailsSettings::Base
   }
 
   # Monetization
-  field :payment_pointer, type: :string # Experimental
+  field :payment_pointer, type: :string
+  field :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
+  field :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
   field :shop_url, type: :string
 
   # Newsletter
   # <https://mailchimp.com/developer/>
+  field :mailchimp_api_key, type: :string, default: ApplicationConfig["MAILCHIMP_API_KEY"]
   field :mailchimp_newsletter_id, type: :string, default: ""
   field :mailchimp_sustaining_members_id, type: :string, default: ""
   field :mailchimp_tag_moderators_id, type: :string, default: ""
@@ -98,12 +137,14 @@ class SiteConfig < RailsSettings::Base
   field :onboarding_taskcard_image, type: :string
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
+  field :prefer_manual_suggested_users, type: :boolean, default: false
 
-  # Rate limits
+  # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_listing_creation, type: :integer, default: 1
   field :rate_limit_published_article_creation, type: :integer, default: 9
+  field :rate_limit_published_article_antispam_creation, type: :integer, default: 1
   field :rate_limit_organization_creation, type: :integer, default: 1
   field :rate_limit_reaction_creation, type: :integer, default: 10
   field :rate_limit_image_upload, type: :integer, default: 9
@@ -114,8 +155,9 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_user_update, type: :integer, default: 5
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
 
+  field :spam_trigger_terms, type: :array, default: []
+
   # Social Media
-  field :staff_user_id, type: :integer, default: 1
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
     facebook: nil,
@@ -137,9 +179,13 @@ class SiteConfig < RailsSettings::Base
   field :feed_style, type: :string, default: "basic"
   # a non-public forem will redirect all unauthenticated pages to the registration page.
   # a public forem could have more fine-grained authentication (listings ar private etc.) in future
-  field :public, type: :boolean, default: 1
+  field :public, type: :boolean, default: 0
   # The default font for all users that have not chosen a custom font yet
   field :default_font, type: :string, default: "sans_serif"
+  field :primary_brand_color_hex, type: :string, default: "#3b49df"
+  field :feed_strategy, type: :string, default: "basic"
+  field :tag_feed_minimum_score, type: :integer, default: 0
+  field :home_feed_minimum_score, type: :integer, default: 0
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
@@ -151,4 +197,15 @@ class SiteConfig < RailsSettings::Base
     large: 300,
     xlarge: 250
   }
+
+  # Returns true if we are operating on a local installation, false otherwise
+  def self.local?
+    app_domain.include?("localhost")
+  end
+
+  # Used where we need to keep old DEV features around but don't want to/cannot
+  # expose them to other communities.
+  def self.dev_to?
+    app_domain == "dev.to"
+  end
 end

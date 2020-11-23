@@ -22,13 +22,15 @@ We also use server-side caching: [Rails caching][rails_caching]. If you see
 `Rails.cache` or `<%= cache ... %>`, this is code affected in production by
 caching.
 
-## We use inline CSS and deferred scripts for usage performance improvements
+## We Mostly defer scripts for usage performance improvements
 
-To avoid blocking the initial render, we frequently write critical CSS inline,
-and we use the `defer` attribute to accelerate page loads. This practice results
-in a faster page load, and doesn't leave users waiting on heavy assets. However,
+To avoid blocking the initial render, we use the `defer` attribute to
+accelerate page renders. This practice results in a faster page load,
+and doesn't leave users waiting on heavy assets. However,
 this practice limits our ability to manipulate layout with JavaScript. As a
 rule, you should avoid relying on JavaScript for layout when working on Forem.
+
+We have also experimented with different techniques involving inline CSS
 
 ## We attempt to reduce our bundle size
 
@@ -112,6 +114,12 @@ Article has many comments and taggings through the acts-as-taggable gem, belongs
 to a single user (and possibly an organization), and is the core unit of
 content.
 
+## Collections (or series)
+
+Although the source code refers to them as "collections" groups of articles are
+referred to, throughout the user interface, as "series". They represent a
+collection of articles relating to the same topic, indeed, a series.
+
 ## Comments
 
 Comments belong to articles or other content (they are generally polymorphic).
@@ -124,6 +132,9 @@ infinitely branching threads.
 
 The user is the authorization/identity component of logging into the app. It is
 also the public profile/authorship/etc. belonging to the people who use the app.
+
+While "user" is a perfectly good technical name, it is a fairly cold way to refer
+to humans, so we should prefer labeling people as members, or by their name/username.
 
 ## Tags
 

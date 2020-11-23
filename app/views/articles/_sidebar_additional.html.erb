@@ -1,17 +1,28 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
-    <% unless user_signed_in? || !any_selfserve_auth? %>
+    <% unless user_signed_in? || !any_enabled_auth_providers? %>
       <section class="crayons-card crayons-card--secondary signin-cta-widget">
-        <header class="crayons-card__header">
-          <h3 class="crayons-card__header__headline">Join <%= community_name %></h3>
-        </header>
-        <div class="p-4 grid gap-2">
-          <%= render partial: "shared/authentication/providers_sidebar" %>
+        <div class="authentication-widget__container">
+          <figure class="authentication-widget__image-container">
+            <img class="authentication-widget__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
+                  alt="Secondary <%= community_name %> logo" />
+          </figure>
+          <div class="authentication-widget__content">
+            <h3 class="authentication-widget__title">
+              <%= render "shared/authentication_title" %>
+            </h3>
+            <p class="authentication-widget__description">
+              <%= render "shared/authentication_description" %>
+            </p>
+            <div class="authentication-widget__actions">
+              <%= render "shared/authentication_actions" %>
+            </div>
+          </div>
         </div>
       </section>
     <% end %>
-    <% cache(cache_key_heroku_slug("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
+    <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
       <% @sidebar_ad = DisplayAd.for_display("sidebar_right") %>
       <% if @sidebar_ad %>
         <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget">
@@ -24,7 +35,7 @@
       <% if params[:timeframe].blank? && @listings.any? %>
         <section class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
-            <h3 class="crayons-card__header__headline">Listings</h3>
+            <h3 class="crayons-subtitle-2">Listings</h3>
             <div class="crayons-card__actions">
               <a href="/listings" class="crayons-link--branded fw-medium fs-s">See all</a>
             </div>
@@ -45,7 +56,7 @@
       <% SiteConfig.sidebar_tags.each do |tag| %>
         <section class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
-            <h3 class="crayons-card__header__headline"><a href="/t/<%= tag %>">#<%= tag %></a></h3>
+            <h3 class="crayons-subtitle-2"><a href="/t/<%= tag %>" class="crayons-link">#<%= tag %></a></h3>
           </header>
 
           <div>

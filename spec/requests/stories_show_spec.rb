@@ -21,11 +21,13 @@ RSpec.describe "StoriesShow", type: :request do
 
     ## Title tag
     it "renders signed-in title tag for signed-in user" do
+      allow(SiteConfig).to receive(:community_emoji).and_return("🌱")
+
       sign_in user
       get article.path
 
-      expected_title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
-      expect(response.body).to include(expected_title)
+      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} #{community_emoji}</title>"
+      expect(response.body).to include(title)
     end
 
     it "renders signed-out title tag for signed-out user" do
@@ -44,12 +46,14 @@ RSpec.describe "StoriesShow", type: :request do
     end
 
     it "does not render title tag with search_optimized_title_preamble if set and not signed in" do
+      allow(SiteConfig).to receive(:community_emoji).and_return("🌱")
+
       sign_in user
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
 
-      expected_title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
-      expect(response.body).to include(expected_title)
+      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} #{community_emoji}</title>"
+      expect(response.body).to include(title)
     end
 
     it "does not render preamble with search_optimized_title_preamble not signed in but not set" do
@@ -103,7 +107,7 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders second and third users if present" do
       # 3rd user doesn't seem to get rendered for some reason
       user2 = create(:user)
-      article.update(second_user_id: user2.id)
+      article.update(co_author_ids: [user2.id])
       get article.path
       expect(response.body).to include "<em>with <b><a href=\"#{user2.path}\">"
     end

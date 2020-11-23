@@ -46,8 +46,8 @@ Forem requires PostgreSQL version 11 or higher.
    username you are currently logged in as.
 
 There are more than one ways to setup PostgreSQL. For additional configuration,
-check out our [PostgreSQL setup guide](/installation/postgresql) or the official
-[PostgreSQL](https://www.postgresql.org/) site for further information.
+check out our [PostgreSQL setup guide](/docs/installation/postgresql) or the
+official [PostgreSQL](https://www.postgresql.org/) site for further information.
 
 ### ImageMagick
 
@@ -60,11 +60,11 @@ it.
 
 ### Redis
 
-Forem requires Redis version 4.0 or higher.
+Forem requires Redis version 6.0 or higher.
 
-We recommend following Digital Ocean's extensive
-[How To Install and Configure Redis on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-16-04)
-(available for other Linux distributions as well) to setup Redis.
+We recommend following Digital Ocean's extensive guides
+[How to Install and Secure Redis](https://www.digitalocean.com/community/tutorial_collections/how-to-install-and-secure-redis)
+to setup Redis.
 
 ### Elasticsearch
 
@@ -89,29 +89,26 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys.
+   - Take a look at `.env_sample`. This file lists all the `ENV` variables we
+     use and provides a fake default for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
-   - The [backend guide](/backend) will show you how to get free API keys for
-     additional services that may be required to run certain parts of the app.
+   - The [backend guide](/docs/backend) will show you how to get free API keys
+     for additional services that may be required to run certain parts of the
+     app.
    - For any key that you wish to enter/replace:
 
      1. Create `.env` by copying from the provided template (i.e. with bash:
-        `cp config/.env_sample .env`). This is a personal file that is ignored
-        in git.
+        `cp .env_sample .env`). This is a personal file that is ignored in git.
      1. Obtain the development variable and apply the key you wish to
         enter/replace. i.e.:
 
      ```shell
-     export GITHUB_KEY="SOME_REAL_SECURE_KEY_HERE"
-     export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_KEY="SOME_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_API_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
+      export CLOUDINARY_CLOUD_NAME="A_CLOUDINARY_NAME"
      ```
 
-   - If you are missing `ENV` variables on bootup, the
-     [envied](https://rubygems.org/gems/envied) gem will alert you with messages
-     similar to
-     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 

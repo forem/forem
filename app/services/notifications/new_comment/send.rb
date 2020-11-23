@@ -14,6 +14,8 @@ module Notifications
       end
 
       def call
+        return if comment.score.negative?
+
         user_ids = Set.new(comment_user_ids + subscribed_user_ids + top_level_user_ids + author_subscriber_user_ids)
 
         json_data = {

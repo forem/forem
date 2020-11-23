@@ -1,0 +1,54 @@
+@import '../config/import';
+
+.crayons-footer {
+  --footer-padding: var(--su-5);
+  background: var(--footer-bg);
+  color: var(--footer-color);
+  padding: var(--footer-padding);
+  position: relative;
+  text-align: center;
+
+  @media (min-width: $breakpoint-m) {
+    --footer-padding: var(--su-8);
+  }
+
+  &__container {
+    justify-items: center;
+    font-size: var(--fs-s);
+    grid-gap: var(--su-6);
+    margin-bottom: env(safe-area-inset-bottom);
+    @media (min-width: $breakpoint-m) {
+      grid-gap: var(--su-5);
+      font-size: var(--fs-base);
+    }
+  }
+
+  &__divider {
+    border: none;
+    border-top: 1px solid var(--footer-color);
+    opacity: 0.15;
+    width: 20%;
+    margin: 0;
+  }
+
+  &__mascot {
+    position: absolute;
+    right: var(--footer-padding);
+    top: -2px;
+    display: none;
+    transform-origin: center top;
+    transition: all var(--transition-props);
+
+    @media (min-width: $breakpoint-l) {
+      display: block;
+    }
+
+    &:hover {
+      transform: rotate(-3deg);
+    }
+  }
+
+  .crayons-footer__description a {
+    font-weight: var(--fw-bold);
+  }
+}
