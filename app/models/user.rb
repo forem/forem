@@ -103,7 +103,7 @@ class User < ApplicationRecord
   has_many :page_views, dependent: :destroy
   has_many :poll_skips, dependent: :destroy
   has_many :poll_votes, dependent: :destroy
-  has_many :podcast_appearances, dependent: :destroy
+  has_many :podcast_appearances, dependent: :destroy, inverse_of: :user
   has_many :podcast_episodes, through: :podcast_appearances
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
   has_many :rating_votes, dependent: :destroy
