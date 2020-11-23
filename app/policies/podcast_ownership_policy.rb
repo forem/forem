@@ -1,6 +1,6 @@
 class PodcastOwnershipPolicy < ApplicationPolicy
   def update?
-    (user_is_owner? || user_is_admin?) && !user_is_banned?
+    (user_is_owner? || user_admin?) && !user_is_banned?
   end
 
   def new?
