@@ -5,6 +5,23 @@ import { defaultChannelPropTypes } from '../../common-prop-types/channel-list-pr
 import ChannelImage from './ChannelImage';
 import { Button } from '@crayons';
 
+/**
+ * Render the cahnnel button
+ * @param {object} props
+ * 
+ * @component
+ * 
+ * @example
+ * 
+ * <ChannelButton 
+ *  channel={channel}
+    newMessagesIndicator={newMessagesIndicator}
+    otherClassname={otherClassname}
+    handleSwitchChannel={handleSwitchChannel}
+    isUnopened={isUnopened}
+ * />
+ *
+ */
 export default function ChannelButton(props) {
   const buttonRef = createRef();
   const { isActiveChannel = false } = props;
