@@ -137,7 +137,7 @@ export class ReadingList extends Component {
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
-                className="crayons-icon"
+                className="crayons-icon mx-1"
                 xmlns="http://www.w3.org/2000/svg"
                 role="img"
               >
