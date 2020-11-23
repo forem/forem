@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { createChannel } from '../actions/chat_channel_setting_actions';
+import { addSnackbarItem } from '../../Snackbar';
 import { Modal, Button } from '@crayons';
 
 /**
@@ -35,6 +36,9 @@ function CreateChatModal({
     const result = await createChannel(channelName, userNames);
     if (result.success) {
       handleCreateChannelSuccess();
+      addSnackbarItem({ message: result.message });
+    } else {
+      addSnackbarItem({ message: result.message });
     }
   };
 
