@@ -262,8 +262,8 @@ class ChatChannelsController < ApplicationController
 
   def send_chat_action_message(message, user, channel_id, action)
     temp_message_id = SecureRandom.hex(20)
-    message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
-                             "chat_action" => action)
+    message = Message.create(message_markdown: message, user_id: user.id, chat_channel_id: channel_id,
+                             chat_action: action)
     pusher_message_created(false, message, temp_message_id)
   end
 end
