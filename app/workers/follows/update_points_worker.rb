@@ -26,7 +26,7 @@ module Follows
     end
 
     def calculate_implicit_points(tag, user)
-      last_100_reactable_ids = suser.reactions.where(reactable_type: "Article", points: 0..)
+      last_100_reactable_ids = user.reactions.where(reactable_type: "Article", points: 0..)
         .pluck(:reactable_id).last(100)
       last_100_long_page_view_article_ids = user.page_views.where(time_tracked_in_seconds: 45..)
         .pluck(:article_id).last(100)
