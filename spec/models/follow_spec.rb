@@ -20,6 +20,13 @@ RSpec.describe Follow, type: :model do
     expect(user.following?(user_2)).to eq(true)
   end
 
+  it "calculates points with explicit and implicit combined" do
+    follow.explicit_points = 2.0
+    follow.implicit_points = 3.0
+    follow.save
+    expect(follow.points).to eq(5.0)
+  end
+
   context "when enqueuing jobs" do
     it "enqueues create channel job" do
       expect do

@@ -1,4 +1,7 @@
 class FollowPolicy < ApplicationPolicy
+
+  PERMITTED_ATTRIBUTES = %i[explicit_points].freeze
+
   def create?
     !user_is_banned?
   end
@@ -8,7 +11,7 @@ class FollowPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    %i[explicit_points]
+    PERMITTED_ATTRIBUTES
   end
 
   private

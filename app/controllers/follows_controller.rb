@@ -83,8 +83,7 @@ class FollowsController < ApplicationController
     @follow = Follow.find(params[:id])
     authorize @follow
     @follow.explicit_points = follow_params[:explicit_points]
-    @follow.points = @follow.explicit_points + @follow.implicit_points
-    redirect_to "/dashboard/following" if @follow.save
+    redirect_to dashboard_following_path if @follow.save
   end
 
   private

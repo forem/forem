@@ -22,26 +22,32 @@ module Follows
       follow = Follow.follower_tag(user.id).where(followable_id: tag.id).last
 
       follow.implicit_points = calculate_implicit_points(tag, user)
-      follow.points = follow.implicit_points + follow.explicit_points
       follow.save
     end
 
     def calculate_implicit_points(tag, user)
-      last_100_reactable_ids = user.reactions.where("points > 0").where(reactable_type: "Article")
+      last_100_reactable_ids = suser.reactions.where(reactable_type: "Article", points: 0..)
         .pluck(:reactable_id).last(100)
-      last_100_long_page_view_article_ids = user.page_views.where("time_tracked_in_seconds > 45")
+      last_100_long_page_view_article_ids = user.page_views.where(time_tracked_in_seconds: 45..)
         .pluck(:article_id).last(100)
       articles = Article.where(id: last_100_reactable_ids + last_100_long_page_view_article_ids)
-      tags = articles.pluck(:cached_tag_list).map { |list| list.split(", ") }.flatten
+      tags = articles.pluck(:cached_tag_list).flat_map { |list| list.split(", ") }
       occurrences = tags.count(tag.name)
       bonus = inverse_popularity_bonus(tag)
-      Math.log(occurrences + bonus + 1)
+      Math.log(occurrences + bonus + 1) # +1 is purelt to avoid log(0) => -infinity
     end
 
     def adjust_other_tag_follows_of_user(user_id)
       # As we bump one follow up, we should also give a slight penalty
       # to other follows to ensure re-balancing of overall points
       # This will help stale tags fade after a temporary interest bump
+
+      # 0.98 is used to ensure this is "a very small amount"
+      # And percentage seems to makes sense, as it will be relative to
+      # size of current points.
+
+      # That number could be adjusted at any point if we have reason to
+      # believe it is too much or too little.
       Follow.follower_tag(user_id).order(Arel.sql("RANDOM()")).limit(5).each do |follow|
         follow.update_column(:points, (follow.points * 0.98))
       end
