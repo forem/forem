@@ -13,9 +13,9 @@ import {
  * mobile (in search results page).
  */
 export function SearchFormSync() {
-  const [searchTerm, setSearchTerm] = useState(
-    getSearchTermFromUrl(location.search),
-  );
+  const [searchTerm, setSearchTerm] = useState(() => {
+    return getSearchTermFromUrl(location.search);
+  });
   const [mobileSearchContainer, setMobileSearchContainer] = useState(null);
 
   /**
@@ -41,14 +41,13 @@ export function SearchFormSync() {
       unmountComponentAtNode(mobileSearchContainer);
     }
 
-    setMobileSearchContainer(element);
-
     // We need to delete the existing server side rendered form because createPortal only appends to it's parent.
     if (element) {
       const form = element.querySelector('form');
       form && element.removeChild(form);
     }
 
+    setMobileSearchContainer(element);
     setSearchTerm(updatedSearchTerm);
   }
 
