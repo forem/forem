@@ -24,7 +24,7 @@ services:
       APP_DOMAIN: rails
     volumes:
       - .:/opt/apps/forem:z
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/forem/bundle_finished", "-timeout", "2700s"]
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "2700s"]
     command: [ "bash", "-c", "./scripts/entrypoint.sh bootstrap && bundle exec rails server -b 0.0.0.0 -p 3000"]
 
   bundle:
@@ -53,7 +53,7 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:z
-    command: ["yarn install --dev"]
+    command: [ "bash", "-c", "yarn install --dev"]
 
   webpacker:
     image: quay.io/forem/forem:development
