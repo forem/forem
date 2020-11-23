@@ -209,7 +209,7 @@ class ChatChannelsController < ApplicationController
     else
       render json: {
         success: false,
-        message: membership.errors.as_sentence
+        message: membership.errors_as_sentence
       }, status: 445
     end
   end
