@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Follow, type: :model do
   let(:user) { create(:user) }
+  let(:tag) { create(:tag) }
   let(:user_2) { create(:user) }
 
   describe "validations" do
@@ -21,6 +22,8 @@ RSpec.describe Follow, type: :model do
   end
 
   it "calculates points with explicit and implicit combined" do
+    user.follow(tag)
+    follow = described_class.last
     follow.explicit_points = 2.0
     follow.implicit_points = 3.0
     follow.save

@@ -5,10 +5,15 @@ require Rails.root.join(
 
 describe DataUpdateScripts::PopulateExplicitFollowPoints do
   it "updates follows that had points to having explicit points", :aggregate_failures do
-    follow = create(:follow, points: 3)
-    second_follow = create(:follow, points: 7)
-    third_follow = create(:follow, points: 1)
-    fourth_follow = create(:follow, points: 0.5)
+    follow = create(:follow)
+    second_follow = create(:follow)
+    third_follow = create(:follow)
+    fourth_follow = create(:follow)
+
+    follow.update_column(:points, 3)
+    second_follow.update_column(points: 7)
+    third_follow.update_column(:points, 1)
+    fourth_follow.update_column(:points, 0.5)
     expect(follow.explicit_points).to eq(1.0)
     expect(second_follow.explicit_points).to eq(1.0)
     described_class.new.run
