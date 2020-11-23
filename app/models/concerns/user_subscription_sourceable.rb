@@ -4,7 +4,7 @@ module UserSubscriptionSourceable
   # This all assumes there's an association with User under the column user_id.
 
   included do
-    has_many :user_subscriptions, as: :user_subscription_sourceable
+    has_many :user_subscriptions, as: :user_subscription_sourceable, dependent: :nullify
     has_many :sourced_subscribers,
              class_name: "User",
              through: :user_subscriptions,

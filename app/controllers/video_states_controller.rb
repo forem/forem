@@ -4,8 +4,8 @@ class VideoStatesController < ApplicationController
   # This is purely for responding to AWS video state changes.
 
   def create
-    unless valid_user
-      render json: { message: "invalid_user" }, status: :unprocessable_entity
+    unless valid_key
+      render json: { message: "invalid_key" }, status: :unprocessable_entity
       return
     end
     begin
@@ -27,9 +27,9 @@ class VideoStatesController < ApplicationController
     end
   end
 
-  def valid_user
-    user = User.find_by(secret: params[:key])
-    user = nil unless user.has_role?(:super_admin)
-    user
+  private
+
+  def valid_key
+    params[:key] == SiteConfig.video_encoder_key
   end
 end

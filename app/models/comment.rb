@@ -14,29 +14,38 @@ class Comment < ApplicationRecord
   TITLE_HIDDEN = "[hidden by post author]".freeze
 
   belongs_to :commentable, polymorphic: true, optional: true
-  counter_culture :commentable
   belongs_to :user
+
+  counter_culture :commentable
   counter_culture :user
+
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
 
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
+  before_save :synchronous_spam_score_check
   before_create :adjust_comment_parent_based_on_depth
   after_create :after_create_checks
   after_create :notify_slack_channel_about_warned_users
   after_update :update_descendant_notifications, if: :deleted
-  after_update :remove_notifications, if: :deleted
+  after_update :remove_notifications, if: :remove_notifications?
   before_destroy :before_destroy_actions
   after_destroy :after_destroy_actions
+
+  after_save :create_conditional_autovomits
   after_save :synchronous_bust
   after_save :bust_cache
-  validate :permissions, if: :commentable
+
+  validate :published_article, if: :commentable
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
   validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
-  validates :commentable_id, presence: true
-  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }
+  validates :commentable_id, presence: true, if: :commentable_type
+  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }, if: :commentable_id
+  validates :positive_reactions_count, presence: true
+  validates :public_reactions_count, presence: true
+  validates :reactions_count, presence: true
   validates :user_id, presence: true
 
   after_create_commit :record_field_test_event
@@ -130,6 +139,10 @@ class Comment < ApplicationRecord
 
   private
 
+  def remove_notifications?
+    deleted? || hidden_by_commentable_user?
+  end
+
   def update_notifications
     Notification.update_notifications(self)
   end
@@ -172,7 +185,7 @@ class Comment < ApplicationRecord
     doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
       unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
-        anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img")
+        anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img") # rubocop:disable Style/SoleNestedConditional
       end
     end
     self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
@@ -233,6 +246,37 @@ class Comment < ApplicationRecord
     Comments::SendEmailNotificationWorker.perform_async(id)
   end
 
+  def synchronous_spam_score_check
+    return unless
+      SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) }
+
+    self.score = -1 # ensure notification is not sent if possibly spammy
+  end
+
+  def create_conditional_autovomits
+    return unless
+      SiteConfig.spam_trigger_terms.any? { |term| Regexp.new(term.downcase).match?(title.downcase) } &&
+        user.registered_at > 5.days.ago
+
+    Reaction.create(
+      user_id: SiteConfig.mascot_user_id,
+      reactable_id: id,
+      reactable_type: "Comment",
+      category: "vomit",
+    )
+
+    return unless Reaction.comment_vomits.where(reactable_id: user.comments.pluck(:id)).size > 2
+
+    user.add_role(:banned)
+    Note.create(
+      author_id: SiteConfig.mascot_user_id,
+      noteable_id: user_id,
+      noteable_type: "User",
+      reason: "automatic_ban",
+      content: "User banned for too many spammy articles, triggered by autovomit.",
+    )
+  end
+
   def should_send_email_notification?
     parent_exists? &&
       parent_user.class.name != "Podcast" &&
@@ -255,7 +299,7 @@ class Comment < ApplicationRecord
     self.markdown_character_count = body_markdown.size
   end
 
-  def permissions
+  def published_article
     errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
   end
 

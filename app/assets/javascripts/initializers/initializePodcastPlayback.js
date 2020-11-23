@@ -22,12 +22,15 @@
  * the problem of using a method before it's defined:
  */
 
+/* global ahoy, Runtime */
 /* eslint no-use-before-define: 0 */
 /* eslint no-param-reassign: 0 */
 
 var audioInitialized = false;
 
 function initializePodcastPlayback() {
+  var deviceType = 'web';
+
   function getById(name) {
     return document.getElementById(name);
   }
@@ -41,7 +44,7 @@ function initializePodcastPlayback() {
       window.name = Math.random();
     }
     return {
-      html: document.getElementById('audiocontent').innerHTML,
+      html: getById('audiocontent').innerHTML,
       currentTime: 0,
       playing: false,
       muted: false,
@@ -100,41 +103,6 @@ function initializePodcastPlayback() {
     return podcastLiquidTagrecords;
   }
 
-  function isNativePlayer() {
-    return isNativeIOS() || isNativeAndroid();
-  }
-
-  function isNativeIOS() {
-    return (
-      navigator.userAgent === 'DEV-Native-ios' &&
-      window &&
-      window.webkit &&
-      window.webkit.messageHandlers &&
-      window.webkit.messageHandlers.podcast
-    );
-  }
-
-  function isNativeAndroid() {
-    return (
-      navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== 'undefined' &&
-      AndroidBridge !== null &&
-      AndroidBridge.podcastMessage !== undefined
-    );
-  }
-
-  function sendNativeMessage(message) {
-    try {
-      if (isNativeIOS()) {
-        window.webkit.messageHandlers.podcast.postMessage(message);
-      } else if (isNativeAndroid()) {
-        AndroidBridge.podcastMessage(JSON.stringify(message));
-      }
-    } catch (err) {
-      console.log(err.message); // eslint-disable-line no-console
-    }
-  }
-
   function saveMediaState(state) {
     var currentState = state || currentAudioState();
     var newState = newAudioState();
@@ -189,10 +157,10 @@ function initializePodcastPlayback() {
   }
 
   function loadAudio(audio) {
-    if (isNativePlayer()) {
-      sendNativeMessage({
+    if (Runtime.podcastMessage) {
+      Runtime.podcastMessage({
         action: 'load',
-        url: audio.querySelector('source').src,
+        url: audio.getElementsByTagName('source')[0].src,
       });
     } else {
       audio.load();
@@ -244,8 +212,8 @@ function initializePodcastPlayback() {
     }
     saveMediaState(currentState);
 
-    if (isNativePlayer()) {
-      sendNativeMessage({
+    if (Runtime.podcastMessage) {
+      Runtime.podcastMessage({
         action: 'rate',
         rate: currentState.playbackRate.toString(),
       });
@@ -265,9 +233,9 @@ function initializePodcastPlayback() {
       }
     } else if (
       message === 'initializing...' &&
-      document.querySelector('.status-message')
+      getByClass('status-message')[0]
     ) {
-      document.querySelector('.status-message').innerHTML = message;
+      getByClass('status-message')[0].innerHTML = message;
     }
   }
 
@@ -285,10 +253,10 @@ function initializePodcastPlayback() {
   function playAudio(audio) {
     return new Promise(function (resolve, reject) {
       var currentState = currentAudioState();
-      if (isNativePlayer()) {
-        sendNativeMessage({
+      if (Runtime.podcastMessage) {
+        Runtime.podcastMessage({
           action: 'play',
-          url: audio.querySelector('source').src,
+          url: audio.getElementsByTagName('source')[0].src,
           seconds: currentState.currentTime.toString(),
         });
         setPlaying(true);
@@ -319,23 +287,23 @@ function initializePodcastPlayback() {
   }
 
   function sendMetadataMessage() {
-    try {
-      var metadata = JSON.parse(fetchMetadataString());
-      sendNativeMessage({
-        action: 'metadata',
-        episodeName: metadata.episodeName,
-        podcastName: metadata.podcastName,
-        podcastImageUrl: metadata.podcastImageUrl,
-      });
-    } catch (e) {
-      console.log('Unable to load Podcast Episode metadata', e); // eslint-disable-line no-console
+    if (Runtime.podcastMessage) {
+      try {
+        var metadata = JSON.parse(fetchMetadataString());
+        Runtime.podcastMessage({
+          action: 'metadata',
+          episodeName: metadata.episodeName,
+          podcastName: metadata.podcastName,
+          podcastImageUrl: metadata.podcastImageUrl,
+        });
+      } catch (e) {
+        console.log('Unable to load Podcast Episode metadata', e); // eslint-disable-line no-console
+      }
     }
   }
 
   function startAudioPlayback(audio) {
-    if (isNativePlayer()) {
-      sendMetadataMessage();
-    }
+    sendMetadataMessage();
 
     playAudio(audio)
       .then(function () {
@@ -352,8 +320,8 @@ function initializePodcastPlayback() {
   }
 
   function pauseAudioPlayback(audio) {
-    if (isNativePlayer()) {
-      sendNativeMessage({ action: 'pause' });
+    if (Runtime.podcastMessage) {
+      Runtime.podcastMessage({ action: 'pause' });
     } else {
       audio.pause();
     }
@@ -362,31 +330,27 @@ function initializePodcastPlayback() {
     pausePodcastBar();
   }
 
-  function playPause(audio) {
+  function ahoyMessage(action) {
     window.activeEpisode = audio.getAttribute('data-episode');
     window.activePodcast = audio.getAttribute('data-podcast');
 
+    var properties = {
+      action: action,
+      episode: window.activeEpisode,
+      podcast: window.activePodcast,
+      deviceType: deviceType,
+    };
+    ahoy.track('Podcast Player Streaming', properties);
+  }
+
+  function playPause(audio) {
     var currentState = currentAudioState();
     if (!currentState.playing) {
-      ga(
-        'send',
-        'event',
-        'click',
-        'play podcast',
-        `${window.activePodcast} ${window.activeEpisode}`,
-        null,
-      );
+      ahoyMessage('play');
       changeStatusMessage('initializing...');
       startAudioPlayback(audio);
     } else {
-      ga(
-        'send',
-        'event',
-        'click',
-        'pause podcast',
-        `${window.activePodcast} ${window.activeEpisode}`,
-        null,
-      );
+      ahoyMessage('pause');
       pauseAudioPlayback(audio);
       changeStatusMessage(null);
     }
@@ -408,8 +372,8 @@ function initializePodcastPlayback() {
     );
 
     currentState.muted = !currentState.muted;
-    if (isNativePlayer()) {
-      sendNativeMessage({
+    if (Runtime.podcastMessage) {
+      Runtime.podcastMessage({
         action: 'muted',
         muted: currentState.muted.toString(),
       });
@@ -422,8 +386,8 @@ function initializePodcastPlayback() {
   function updateVolume(e, audio) {
     var currentState = currentAudioState();
     currentState.volume = e.target.value / 100;
-    if (isNativePlayer()) {
-      sendNativeMessage({ action: 'volume', volume: currentState.volume });
+    if (Runtime.podcastMessage) {
+      Runtime.podcastMessage({ action: 'volume', volume: currentState.volume });
     } else {
       audio.volume = currentState.volume;
     }
@@ -463,8 +427,8 @@ function initializePodcastPlayback() {
       var duration = currentState.duration;
       currentState.currentTime = duration * percent; // jumps to 29th secs
 
-      if (isNativePlayer()) {
-        sendNativeMessage({
+      if (Runtime.podcastMessage) {
+        Runtime.podcastMessage({
           action: 'seek',
           seconds: currentState.currentTime.toString(),
         });
@@ -498,8 +462,8 @@ function initializePodcastPlayback() {
     getById('audiocontent').innerHTML = '';
     stopRotatingActivePodcastIfExist();
     saveMediaState(newAudioState());
-    if (isNativePlayer()) {
-      sendNativeMessage({ action: 'terminate' });
+    if (Runtime.podcastMessage) {
+      Runtime.podcastMessage({ action: 'terminate' });
     }
   }
 
@@ -518,16 +482,20 @@ function initializePodcastPlayback() {
     }
 
     var currentState = currentAudioState();
-    if (message.action === 'tick') {
-      currentState.currentTime = message.currentTime;
-      currentState.duration = message.duration;
-      updateProgress(currentState.currentTime, currentState.duration, 100);
-    } else if (message.action === 'init') {
-      getById('time').innerHTML = 'initializing...';
-      currentState.currentTime = 0;
-    } else {
-      console.log('Unrecognized podcast message: ', message); // eslint-disable-line no-console
+    switch (message.action) {
+      case 'init':
+        getById('time').innerHTML = 'initializing...';
+        currentState.currentTime = 0;
+        break;
+      case 'tick':
+        currentState.currentTime = message.currentTime;
+        currentState.duration = message.duration;
+        updateProgress(currentState.currentTime, currentState.duration, 100);
+        break;
+      default:
+        console.log('Unrecognized podcast message: ', message); // eslint-disable-line no-console
     }
+
     saveMediaState(currentState);
   }
 
@@ -540,6 +508,29 @@ function initializePodcastPlayback() {
     mutationObserver.observe(getById('audiocontent'), { attributes: true });
   }
 
+  // When Runtime.podcastMessage is undefined we need to execute web logic
+  function initRuntime() {
+    if (Runtime.isNativeIOS('podcast')) {
+      deviceType = 'iOS';
+      Runtime.podcastMessage = function (message) {
+        try {
+          window.webkit.messageHandlers.podcast.postMessage(message);
+        } catch (err) {
+          console.log(err.message); // eslint-disable-line no-console
+        }
+      };
+    } else if (Runtime.isNativeAndroid('podcastMessage')) {
+      deviceType = 'Android';
+      Runtime.podcastMessage = function (message) {
+        try {
+          AndroidBridge.podcastMessage(JSON.stringify(message));
+        } catch (err) {
+          console.log(err.message); // eslint-disable-line no-console
+        }
+      };
+    }
+  }
+
   function initializeMedia() {
     var currentState = currentAudioState();
     document.getElementById('audiocontent').innerHTML = currentState.html;
@@ -548,7 +539,7 @@ function initializePodcastPlayback() {
       audioInitialized = false;
       return;
     }
-    if (!isNativeIOS()) {
+    if (Runtime.podcastMessage) {
       audio.currentTime = currentState.currentTime || 0;
     }
     loadAudio(audio);
@@ -574,6 +565,7 @@ function initializePodcastPlayback() {
     saveMediaState(currentState);
   }
 
+  initRuntime();
   spinPodcastRecord();
   findAndApplyOnclickToRecords();
   if (!audioInitialized) {

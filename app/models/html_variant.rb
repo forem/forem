@@ -1,4 +1,6 @@
 class HtmlVariant < ApplicationRecord
+  resourcify
+
   GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign].freeze
 
   belongs_to :user, optional: true
@@ -56,7 +58,7 @@ class HtmlVariant < ApplicationRecord
   end
 
   def prefix_all_images
-    # wrap with Cloudinary or allow if from giphy or githubusercontent.com
+    # Optimize image if not from giphy or githubusercontent.com
     doc = Nokogiri::HTML.fragment(html)
     doc.css("img").each do |img|
       src = img.attr("src")

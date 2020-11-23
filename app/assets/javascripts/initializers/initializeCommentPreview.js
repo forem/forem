@@ -1,17 +1,14 @@
 /* global activateRunkitTags */
 
-function getAndShowPreview(markdownPreviewPane, markdownEditor) {
+function getAndShowPreview(preview, editor) {
   function successCb(body) {
-    markdownPreviewPane.classList.toggle('preview-toggle');
-    markdownEditor.classList.toggle('preview-loading');
-    markdownEditor.classList.toggle('preview-toggle');
-    markdownPreviewPane.innerHTML = body.processed_html; // eslint-disable-line no-param-reassign
+    preview.innerHTML = body.processed_html; // eslint-disable-line no-param-reassign
     activateRunkitTags();
   }
 
   const payload = JSON.stringify({
     comment: {
-      body_markdown: markdownEditor.value,
+      body_markdown: editor.value,
     },
   });
   getCsrfToken()
@@ -29,26 +26,26 @@ function getAndShowPreview(markdownPreviewPane, markdownEditor) {
 function handleCommentPreview(event) {
   event.preventDefault();
   const { form } = event.target;
-  const markdownEditor = form.querySelector('textarea');
+  const editor = form.getElementsByClassName('comment-textarea')[0];
+  const preview = form.getElementsByClassName('comment-form__preview')[0];
+  const trigger = form.getElementsByClassName('preview-toggle')[0];
 
-  if (markdownEditor.value !== '') {
-    const markdownPreviewPane = form.querySelector('.comment-preview-div');
-    const previewButton = form.querySelector('.comment-action-preview');
-
-    if (previewButton.innerHTML.indexOf('PREVIEW') > -1) {
-      markdownEditor.classList.toggle('preview-loading');
-      getAndShowPreview(markdownPreviewPane, markdownEditor);
-      previewButton.innerHTML = 'MARKDOWN';
+  if (editor.value !== '') {
+    if (form.classList.contains('preview-open')) {
+      form.classList.toggle('preview-open');
+      trigger.innerHTML = 'Preview';
     } else {
-      markdownPreviewPane.classList.toggle('preview-toggle');
-      markdownEditor.classList.toggle('preview-toggle');
-      previewButton.innerHTML = 'PREVIEW';
+      getAndShowPreview(preview, editor);
+      const editorHeight = editor.offsetHeight + 43; // not ideal but prevents jumping screen
+      preview.style.minHeight = `${editorHeight}px`;
+      trigger.innerHTML = 'Continue editing';
+      form.classList.toggle('preview-open');
     }
   }
 }
 
 function initializeCommentPreview() {
-  const previewButton = document.getElementById('preview-button');
+  const previewButton = document.getElementsByClassName('preview-toggle')[0];
 
   if (!previewButton) {
     return;

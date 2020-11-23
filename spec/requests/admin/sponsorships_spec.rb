@@ -77,6 +77,63 @@ RSpec.describe "/admin/sponsorships", type: :request do
     end
   end
 
+  describe "POST /admin/sponsorships/:id" do
+    let(:ruby) { build_stubbed(:tag, name: "ruby") }
+    let(:invalid_attributes) { { status: "super-live", expires_at: 1.month.from_now } }
+    let(:valid_attributes) do
+      {
+        user_id: admin.id, organization_id: org.id, level: "gold",
+        status: "live", expires_at: 1.month.from_now, blurb_html: Faker::Book.title
+      }
+    end
+    let(:valid_empty_sponsorable_attributes) do
+      {
+        user_id: admin.id, organization_id: org.id, level: "gold",
+        status: "live", expires_at: 1.month.from_now, blurb_html: Faker::Book.title,
+        sponsorable_id: "", sponsorable_type: ""
+      }
+    end
+    let(:valid_sponsorable_attributes) do
+      {
+        user_id: admin.id, organization_id: org.id, level: "gold",
+        status: "live", expires_at: 1.month.from_now, blurb_html: Faker::Book.title,
+        sponsorable_id: ruby.id, sponsorable_type: "ActsAsTaggableOn::Tag"
+      }
+    end
+
+    before do
+      sign_in admin
+    end
+
+    it "creates and redirects to index without sponsorable association" do
+      expect do
+        post "/admin/sponsorships", params: { sponsorship: valid_attributes }
+        expect(response).to redirect_to(admin_sponsorships_path)
+      end.to change { Sponsorship.all.count }.by(1)
+    end
+
+    it "creates and redirects to index with empty sponsorable association params" do
+      expect do
+        post "/admin/sponsorships", params: { sponsorship: valid_empty_sponsorable_attributes }
+        expect(response).to redirect_to(admin_sponsorships_path)
+      end.to change { Sponsorship.all.count }.by(1)
+    end
+
+    it "creates and redirects to index with sponsorable association" do
+      expect do
+        post "/admin/sponsorships", params: { sponsorship: valid_sponsorable_attributes }
+        expect(response).to redirect_to(admin_sponsorships_path)
+      end.to change { Sponsorship.all.count }.by(1)
+    end
+
+    it "shows errors when attributes are invalid & doesn't persist to the DB" do
+      expect do
+        post "/admin/sponsorships", params: { sponsorship: invalid_attributes }
+        expect(response.body).to include("Status is not included in the list")
+      end.to change { Sponsorship.all.count }.by(0)
+    end
+  end
+
   describe "DELETE /admin/sponsorships/:id" do
     let!(:sponsorship) do
       create(:sponsorship, organization: org, level: :silver, status: "live", expires_at: Time.current)

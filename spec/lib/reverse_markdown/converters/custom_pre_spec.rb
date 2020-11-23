@@ -24,5 +24,11 @@ RSpec.describe ReverseMarkdown::Converters::CustomPre, type: :lib do
       result = create_custom_pre.convert(node)
       expect(result.split[0]).to eq("```html")
     end
+
+    it "preserves newlines and indentation" do
+      node = Nokogiri::HTML("<pre>def foo\n  puts 'Hello World'<br>end</pre>").search("pre")[0]
+      result = create_custom_pre.convert(node)
+      expect(result).to eq("\n```\ndef foo\n  puts 'Hello World'\nend\n```\n")
+    end
   end
 end

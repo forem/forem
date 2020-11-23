@@ -11,12 +11,13 @@ const msg = {
   color: '#00FFFF',
 };
 
-const getMessage = (message) => (
+const getMessage = (message, props) => (
   <Message
     user={message.username}
     userID={message.user_id}
     message={message.message}
     color={message.color}
+    {...props}
   />
 );
 
@@ -37,5 +38,23 @@ describe('<Message />', () => {
     const profileLink = getByText(msg.username);
 
     expect(profileLink.parentElement).toHaveStyle({ color: msg.color });
+  });
+
+  it('should highlight @mentions to the logged in user', () => {
+    const testMessage = {
+      username: 'testUser',
+      user_id: 456,
+      message: "<p>hello <a href='testUser'>@testUser</a></p>",
+    };
+
+    const { getByText } = render(
+      getMessage(testMessage, { currentUserId: testMessage.user_id }),
+    );
+
+    const profileLink = getByText(`@${testMessage.username}`);
+
+    expect(profileLink.parentElement.innerHTML).toMatch(
+      new RegExp(`<mark>@${testMessage.username}</mark>`, 'i'),
+    );
   });
 });

@@ -27,7 +27,7 @@ else
 
       # Scrub unused data to save space in Honeycomb
       config.presend_hook do |fields|
-        fields["global.build_id"] = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+        fields["global.build_id"] = ApplicationConfig["RELEASE_FOOTPRINT"]
 
         if fields.key?("redis.command")
           fields["redis.command"] = fields["redis.command"].slice(0, 300)

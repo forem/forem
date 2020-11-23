@@ -1,12 +1,12 @@
 <% title "Tags on #{community_name}" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="<%= app_url("/about") %>" />
+  <link rel="canonical" href="<%= app_url("/tags") %>" />
   <meta name="description" content="Tags to follow on <%= community_name %>">
-  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
+  <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="<%= app_url("/about") %>" />
+  <meta property="og:url" content="<%= app_url("/tags") %>" />
   <meta property="og:title" content="Tags to follow on <%= community_name %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <meta property="og:description" content="<%= community_qualified_name %> is great!" />
@@ -54,7 +54,7 @@
         <% end %>
 
         <% if tag.badge_id && tag.badge %>
-          <img src="<%= cloudinary tag.badge.badge_image_url, 180 %>" style="width: 64px; height: 64px; transform: rotate(<%= -25 + (tag.id.digits.first * 5) %>deg" class="right-1 bottom-1 absolute" />
+          <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 64px; height: 64px; transform: rotate(<%= -25 + (tag.id.digits.first * 5) %>deg);" class="right-1 bottom-1 absolute" />
         <% end %>
       </div>
     <% end %>

@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  before_action :authenticate_user!, only: %i[tags chat_channels reactions]
+  before_action :authenticate_user!, only: %i[tags chat_channels reactions usernames]
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[listings reactions feed_content]
 
@@ -35,6 +35,7 @@ class SearchController < ApplicationController
   FEED_PARAMS = [
     :approved,
     :class_name,
+    :id,
     :organization_id,
     :page,
     :per_page,
@@ -81,6 +82,14 @@ class SearchController < ApplicationController
     render json: { result: user_search }
   end
 
+  def usernames
+    usernames = Search::User.search_usernames(params[:username])
+
+    render json: { result: usernames }
+  rescue Search::Errors::Transport::BadRequest
+    render json: { result: [] }
+  end
+
   def feed_content
     feed_docs = if params[:class_name].blank?
                   # If we are in the main feed and not filtering by type return
@@ -102,8 +111,8 @@ class SearchController < ApplicationController
   end
 
   def reactions
-    result = Search::Reaction.search_documents(
-      params: reaction_params.merge(user_id: current_user.id).to_h,
+    result = Search::ReadingList.search_documents(
+      params: reaction_params.to_h, user: current_user,
     )
 
     render json: { result: result["reactions"], total: result["total"] }

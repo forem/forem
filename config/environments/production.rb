@@ -1,5 +1,14 @@
 # rubocop:disable Metrics/BlockLength
 Rails.application.configure do
+  # Allow the app to know when booted up in context where we haven't set ENV vars
+  # If we have not set this ENV var it means we haven't set the environment
+  ENV["ENV_AVAILABLE"] = ENV["APP_DOMAIN"].present?.to_s
+
+  if ENV["ENV_AVAILABLE"] == "false"
+    # We still need _something_ here, but if booted without environment (aka asset precompile),
+    # it shouldn't need to be the proper value
+    ENV["SECRET_KEY_BASE"] = "NOT_SET"
+  end
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -56,7 +65,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = ENV["LOG_LEVEL"] || :info
+  config.log_level = ENV["LOG_LEVEL"] || :error
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -65,8 +74,8 @@ Rails.application.configure do
   # DEV uses the RedisCloud Heroku Add-On which comes with the predefined env variable REDISCLOUD_URL
   redis_url = ENV["REDISCLOUD_URL"]
   redis_url ||= ENV["REDIS_URL"]
-  DEFAULT_EXPIRATION = 24.hours.to_i.freeze
-  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: DEFAULT_EXPIRATION }
+  default_expiration = 24.hours.to_i
+  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: default_expiration }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
@@ -110,30 +119,28 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.app_domain = ENV["APP_DOMAIN"] || "localhost:3000"
   protocol = ENV["APP_PROTOCOL"] || "http://"
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: protocol + config.app_domain }
+  config.action_mailer.default_url_options = { host: protocol + ENV["APP_DOMAIN"].to_s }
   ActionMailer::Base.smtp_settings = {
     address: "smtp.sendgrid.net",
     port: "587",
     authentication: :plain,
-    user_name: ENV["SENDGRID_USERNAME_ACCEL"],
-    password: ENV["SENDGRID_PASSWORD_ACCEL"],
+    user_name: "apikey",
+    password: ENV["SENDGRID_API_KEY"],
     domain: ENV["APP_DOMAIN"],
     enable_starttls_auto: true
   }
 
-  if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != config.app_domain
+  if ENV["HEROKU_APP_URL"].present? && ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
     config.middleware.use Rack::HostRedirect,
-                          ENV["HEROKU_APP_URL"] => config.app_domain
+                          ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
   end
 end
 # rubocop:enable Metrics/BlockLength
 
 Rails.application.routes.default_url_options = {
-  host: Rails.application.config.app_domain,
   protocol: (ENV["APP_PROTOCOL"] || "http://").delete_suffix("://")
 }

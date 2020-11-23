@@ -82,9 +82,10 @@ RSpec.describe Podcasts::GetEpisode, type: :service do
   end
 
   it "enqueues a worker to create an episode when it doesn't exist" do
+    cache_key = Digest::SHA1.hexdigest(item.to_s)
     allow(podcast).to receive(:existing_episode).and_return(nil)
 
-    sidekiq_assert_enqueued_with(job: PodcastEpisodes::CreateWorker, args: [podcast.id, item.to_h]) do
+    sidekiq_assert_enqueued_with(job: PodcastEpisodes::CreateWorker, args: [podcast.id, cache_key]) do
       described_class.new(podcast).call(item: item)
     end
   end

@@ -17,6 +17,7 @@ AllCops:
     - vendor/**/*
   DisplayStyleGuide: true
   ExtraDetails: true
+  NewCops: enable # opt-in to new cops by default
   TargetRubyVersion: 2.7
 
 #################### Bundler ###########################
@@ -81,6 +82,7 @@ Layout/LineLength:
   Exclude:
     - docs/Gemfile
     - Gemfile
+    - app/lib/constants/site_config.rb
 
 # Layout/MultilineArrayLineBreaks:
 #   Description: >-
@@ -662,6 +664,9 @@ Rails/SkipsModelValidations:
   Reference: 'https://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: false
 
+Rails/SquishedSQLHeredocs:
+  Enabled: false
+
 Rails/WhereExists:
   Description: 'Prefer `exists?(...)` over `where(...).exists?`.'
   Enabled: true
@@ -682,6 +687,11 @@ RSpec/ExampleLength:
   Enabled: true
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+
+RSpec/MultipleMemoizedHelpers:
+  Description: Checks if example groups contain too many `let` and `subject` calls.
+  Enabled: false
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleMemoizedHelpers
 
 RSpec/MultipleExpectations:
   Description: Checks if examples contain too many `expect` calls.

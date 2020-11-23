@@ -1,5 +1,5 @@
 <%= form_for @user do |f| %>
-  <div class="crayons-card mb-6 grid gap-4 p-6">
+  <div class="crayons-card crayons-card--content-rows">
     <header>
       <h3>Email Notification Settings</h3>
     </header>
@@ -55,7 +55,7 @@
     </div>
   </div>
 
-  <div class="crayons-card mb-6 grid gap-6 p-6">
+  <div class="crayons-card crayons-card--content-rows">
     <header>
       <h3 class="mb-2">Mobile Notification Settings (Beta)</h3>
       <p>Additional settings will be rolled out as new notification features are made available.</p>
@@ -66,19 +66,23 @@
     </div>
   </div>
 
-  <div class="crayons-card mb-6 grid gap-6 p-6">
+  <div class="crayons-card crayons-card--content-rows">
     <header>
-      <h3 class="mb-2">Platform Notification Settings</h3>
+      <h3 class="mb-2">General Notification Settings</h3>
       <p>Notifications that only appear on the <a href="<%= notifications_path %>">notifications page</a>.</p>
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :welcome_notifications, class: "crayons-checkbox" %>
       <%= f.label :welcome_notifications, "Send me occasional tips on how to enhance my #{community_name} experience", class: "crayons-field__label" %>
     </div>
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box :reaction_notifications, class: "crayons-checkbox" %>
+      <%= f.label :reaction_notifications, "Send notifications when someone reacts to my comments or posts", class: "crayons-field__label" %>
+    </div>
   </div>
 
   <% if current_user.trusted %>
-    <div class="crayons-card mb-6 grid gap-6 p-6">
+    <div class="crayons-card crayons-card--content-rows">
       <h3>Mod Notification Settings</h3>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :mod_roundrobin_notifications, class: "crayons-checkbox" %>
@@ -87,11 +91,9 @@
     </div>
   <% end %>
 
-  <div class="mb-6 grid gap-6 p-6">
-  <%= f.hidden_field :tab, value: @tab %>
-    <div>
-      <button type="submit" class="crayons-btn">Save</button>
-    </div>
+  <div class="crayons-card crayons-card--content-rows">
+    <%= f.hidden_field :tab, value: @tab %>
+    <button type="submit" class="crayons-btn">Save</button>
   </div>
 
 <% end %>

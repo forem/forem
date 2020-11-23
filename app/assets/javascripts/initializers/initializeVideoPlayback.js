@@ -12,36 +12,15 @@
 /* eslint no-use-before-define: 0 */
 /* eslint no-param-reassign: 0 */
 /* eslint no-useless-escape: 0 */
-/* global jwplayer */
-/* global ahoy */
+/* global jwplayer, ahoy, Runtime */
 
 function initializeVideoPlayback() {
-  var nativeBridgeMessage;
   var currentTime = '0';
   var deviceType = 'web';
   var lastEvent = '';
 
   function getById(name) {
     return document.getElementById(name);
-  }
-
-  function isNativeIOS() {
-    return (
-      navigator.userAgent === 'DEV-Native-ios' &&
-      window &&
-      window.webkit &&
-      window.webkit.messageHandlers &&
-      window.webkit.messageHandlers.video
-    );
-  }
-
-  function isNativeAndroid() {
-    return (
-      navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== 'undefined' &&
-      AndroidBridge !== null &&
-      AndroidBridge.videoMessage !== undefined
-    );
   }
 
   function getParameterByName(name, url) {
@@ -93,7 +72,6 @@ function initializeVideoPlayback() {
         playerInstance.setup({
           file: metadata.video_source_url,
           mediaid: metadata.video_code,
-          autostart: true,
           image: metadata.video_thumbnail_url,
           playbackRateControls: true,
           tracks: [
@@ -106,9 +84,6 @@ function initializeVideoPlayback() {
           ],
         });
         if (seconds) {
-          jwplayer().on('ready', function (event) {
-            jwplayer().play();
-          });
           jwplayer().on('firstFrame', function () {
             jwplayer().seek(seconds);
           });
@@ -138,7 +113,7 @@ function initializeVideoPlayback() {
     getById('pause-butt').classList.add('active');
     getById('play-butt').classList.remove('active');
 
-    nativeBridgeMessage({
+    Runtime.videoMessage({
       action: 'play',
       url: metadata.video_source_url,
       seconds: currentTime,
@@ -161,12 +136,22 @@ function initializeVideoPlayback() {
       return;
     }
 
-    if (message.action == 'pause') {
-      getById('pause-butt').classList.remove('active');
-      getById('play-butt').classList.add('active');
-      videoPlayerEvent(false);
-    } else if (message.action == 'tick') {
-      currentTime = message.currentTime;
+    switch (message.action) {
+      case 'play':
+        getById('pause-butt').classList.add('active');
+        getById('play-butt').classList.remove('active');
+        videoPlayerEvent(true);
+        break;
+      case 'pause':
+        getById('pause-butt').classList.remove('active');
+        getById('play-butt').classList.add('active');
+        videoPlayerEvent(false);
+        break;
+      case 'tick':
+        currentTime = message.currentTime;
+        break;
+      default:
+        console.log('Unrecognized video message: ', message); // eslint-disable-line no-console
     }
   }
 
@@ -174,18 +159,18 @@ function initializeVideoPlayback() {
     var seconds = timeToSeconds(getParameterByName('t') || '0');
     var metadata = videoMetadata(videoSource);
 
-    if (isNativeIOS()) {
+    if (Runtime.isNativeIOS('video')) {
       deviceType = 'iOS';
-      nativeBridgeMessage = function (message) {
+      Runtime.videoMessage = function (message) {
         try {
           window.webkit.messageHandlers.video.postMessage(message);
         } catch (err) {
           console.log(err.message); // eslint-disable-line no-console
         }
       };
-    } else if (isNativeAndroid()) {
+    } else if (Runtime.isNativeAndroid('videoMessage')) {
       deviceType = 'Android';
-      nativeBridgeMessage = function (message) {
+      Runtime.videoMessage = function (message) {
         try {
           AndroidBridge.videoMessage(JSON.stringify(message));
         } catch (err) {

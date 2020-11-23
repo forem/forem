@@ -5,7 +5,11 @@ module Github
     APP_AUTH_CREDENTIALS_PRESENT = proc { |key, value| APP_AUTH_CREDENTIALS.include?(key) && value.present? }.freeze
 
     # @param credentials [Hash] the OAuth credentials, {client_id:, client_secret:} or {access_token:}
-    def initialize(credentials)
+    def initialize(credentials = nil)
+      credentials ||= {
+        client_id: SiteConfig.github_key,
+        client_secret: SiteConfig.github_secret
+      }
       @credentials = check_credentials!(credentials)
     end
 
@@ -42,7 +46,7 @@ module Github
     end
 
     # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
-    def respond_to_missing?(method, _include_all = false) # rubocop:disable Style/OptionalBooleanParameter
+    def respond_to_missing?(method, _include_all = false)
       target.respond_to?(method, false) || super
     end
 
@@ -111,7 +115,6 @@ module Github
       # <https://github.com/octokit/octokit.rb#caching>
       # and <https://github.com/octokit/octokit.rb/blob/master/lib/octokit/default.rb>
       Faraday::RackBuilder.new do |builder|
-        builder.use Faraday::HttpCache, store: Rails.cache, serializer: Marshal, shared_cache: false
         builder.use Faraday::Request::Retry, exceptions: [Octokit::ServerError]
         builder.use Octokit::Middleware::FollowRedirects
         builder.use Octokit::Response::RaiseError

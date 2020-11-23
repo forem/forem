@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       # Delete all DisplayAdEvents belonging to DisplayAds that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           DELETE FROM display_ad_events
           WHERE display_ad_id NOT IN (SELECT id FROM display_ads);
         SQL
@@ -11,7 +11,7 @@ module DataUpdateScripts
 
       # Delete all DisplayAdEvents belonging to Users that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           DELETE FROM display_ad_events
           WHERE user_id NOT IN (SELECT id FROM users);
         SQL

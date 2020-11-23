@@ -18,7 +18,6 @@ function loadElement() {
         categoriesForDetails={categoriesForDetails}
       />,
       root,
-      root.firstElementChild,
     );
   }
 }
