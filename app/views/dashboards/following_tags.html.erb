@@ -19,36 +19,38 @@
             Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
             <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
         </div>
+
+        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, id: 'follows_update_form' do |f| %>
+          <button type="submit" class="crayons-btn crayons-btn--secondary crayons-btn--m mb-3" name="commit">Update Weight</button>
+        <% end %>
+        
         <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
           <% negative_follow_shown_once = false %>
-          <%= form_with url: bulk_update_follows_path, method: :patch, local: true do |f| %>
-            <button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s" name="commit">Save</button>
-            
-            <% @followed_tags.each do |follow| %>
-              <% tag = follow.followable %>
-              <% if tag %>
-                <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-                <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
-                  <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
-                    <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
-                      <span class="crayons-tag__prefix">#</span><%= tag.name %>
-                    </a>
-                    <% if follow.points < 0 %>
-                      <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>
-                    <% end %>
-                  </h3>
 
-                  <p class="grid-cell__summary truncate-at-3 mb-4 fs-s">
-                    <%= strip_tags(tag.short_summary) %>
-                  </p>
-                  
-                  <%= f.fields(model: follow) do |field| %>
-                    <%= field.hidden_field(:id, name: "follows[][id]", id: 'follow_id') %>
-                    <%= field.label(:points, "Follow weight:", class: "fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap", for: 'follow_points') %>
-                    <%= field.number_field(:points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: 'follows[][points]', id: 'follow_points') %>
+          <% @followed_tags.each do |follow| %>
+            <% tag = follow.followable %>
+            <% if tag %>
+              <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+              <div class="crayons-card branded-2 p-4 :p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
+                <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
+                  <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
+                    <span class="crayons-tag__prefix">#</span><%= tag.name %>
+                  </a>
+                  <% if follow.points < 0 %>
+                    <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>
                   <% end %>
-                </div>
-              <% end %>
+                </h3>
+
+                <p class="grid-cell__summary truncate-at-3 mb-4 fs-s">
+                  <%= strip_tags(tag.short_summary) %>
+                </p>
+
+                <%= fields(follow) do |f| %>
+                  <%= f.hidden_field(:id, name: "follows[][id]", form: 'follows_update_form') %>
+                  <%= f.label(:points, "Follow weight:", class: "fs-s flex-1 pr-2 color-base-60 align-left whitespace-nowrap") %>
+                  <%= f.number_field(:points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: 'follows[][points]', form: 'follows_update_form', onchange: 'addChanged(this)') %>
+                <% end %>
+              </div>
             <% end %>
           <% end %>
         </div>
@@ -59,3 +61,36 @@
     </div>
   </div>
 </main>
+
+<script>
+  document.getElementById('follows_update_form').addEventListener('submit', checkChanged)
+  
+  function addChanged(element) {
+    element.setAttribute('changed', true);
+  };
+
+  function checkChanged(event) {
+    if (document.querySelector('input[changed]')) {
+      disableAllUnchanged();
+    }
+    else {
+      event.preventDefault();
+    }
+  };
+
+  function disableAllUnchanged() {
+    document.querySelectorAll('div[id^="follows"]').forEach(disableUnchanged)
+  };
+
+  function disableUnchanged(item) {
+    item = item.getElementsByTagName('input')
+    var id = item[0]
+    var point = item[1]
+
+    if (!point.hasAttribute('changed')) {
+      point.setAttribute('disabled', true)
+      id.setAttribute('disabled', true)
+    }
+  };
+
+</script>

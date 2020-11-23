@@ -121,13 +121,13 @@ function buildTagsHTML(tag) {
     antifollow +
     '</h3>' +
     '<p class="grid-cell__summary truncate-at-3"></p>' +
-    '<input name="follows[][id]" id="follow_id" type="hidden" value="' +
+    '<input name="follows[][id]" id="follow_id" type="hidden" form="follows_update_form" value="' +
     tag.id +
     '">' +
-    '<label for="follow_points" class="fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap">Follow weight:</label>' +
-    '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" value="' +
+    '<label for="follow_points" class="fs-s flex-1 pr-2 color-base-60 align-left whitespace-nowrap">Follow weight:</label>' +
+    '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="' +
     tag.points +
-    '" name="follow[][points]" id="follow_points">' +
+    '" name="follow[][points]" id="follow_points" onchange="addChanged(this)">' +
     '</div>'
   );
 }
