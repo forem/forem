@@ -47,4 +47,8 @@
       transform: rotate(-3deg);
     }
   }
+
+  .crayons-footer__description a {
+    font-weight: var(--fw-bold);
+  }
 }

@@ -14,6 +14,7 @@ module Admin
     COMMUNITY_PARAMS =
       %i[
         community_name
+        community_emoji
         collective_noun
         collective_noun_disabled
         community_description
@@ -127,6 +128,7 @@ module Admin
         display_email_domain_allow_list_publicly
       ].freeze
 
+    EMOJI_ONLY_FIELDS = %w[community_emoji].freeze
     IMAGE_FIELDS =
       %w[
         main_social_image
@@ -146,6 +148,7 @@ module Admin
 
     before_action :extra_authorization_and_confirmation, only: [:create]
     before_action :validate_inputs, only: [:create]
+    before_action :validate_emoji, only: [:create], if: -> { params[:site_config].keys & EMOJI_ONLY_FIELDS }
     before_action :validate_image_urls, only: [:create], if: -> { params[:site_config].keys & IMAGE_FIELDS }
     after_action :bust_content_change_caches, only: [:create]
 
@@ -214,6 +217,15 @@ module Admin
       errors << "Brand color must be darker for accessibility." if brand_contrast_too_low
       errors << "Brand color must be be a 6 character hex (starting with #)." if brand_color_not_hex
       errors << "Allowed emails must be list of domains." if allowed_domains_include_improper_format
+      redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}" if errors.any?
+    end
+
+    def validate_emoji
+      emoji_params = config_params.slice(*EMOJI_ONLY_FIELDS).to_h
+      errors = emoji_params.filter_map do |field, value|
+        non_emoji_characters = value.downcase.gsub(EmojiRegex::RGIEmoji, "")
+        "#{field} contains invalid emoji" if non_emoji_characters.present?
+      end
       redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}" if errors.any?
     end
 

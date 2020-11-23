@@ -379,6 +379,10 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
+  def co_author_ids_list=(list_of_co_author_ids)
+    self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
+  end
+
   private
 
   def search_score
