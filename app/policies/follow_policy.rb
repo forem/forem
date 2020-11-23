@@ -1,5 +1,4 @@
 class FollowPolicy < ApplicationPolicy
-
   PERMITTED_ATTRIBUTES = %i[explicit_points].freeze
 
   def create?
