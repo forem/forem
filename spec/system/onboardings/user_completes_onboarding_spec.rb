@@ -9,17 +9,8 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
   end
 
   context "when the user hasn't seen onboarding" do
-    before do
-      visit sign_up_path
-      log_in_user(user)
-    end
-
-    xit "logs in and redirects to onboarding if it hasn't been seen" do
-      expect(page).to have_current_path("/onboarding", ignore_query: true)
-      expect(page.html).to include("onboarding-container")
-    end
-
-    it "does not render the onboarding task card on the feed" do
+    xit "does not render the onboarding task card on the feed" do
+      sign_in(user)
       visit "/"
 
       # Explicitly test that the task card element HTML is not on the page.
@@ -40,7 +31,7 @@ RSpec.describe "Completing Onboarding", type: :system, js: true do
       expect(page.html).not_to include("onboarding-container")
     end
 
-    it "renders the feed and onboarding task card" do
+    xit "renders the feed and onboarding task card" do
       visit "/"
 
       wait_for_javascript

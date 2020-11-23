@@ -609,7 +609,9 @@ export default class Chat extends Component {
     if (enterPressed) {
       if (showMemberlist) {
         e.preventDefault();
-        const selectedUser = document.querySelector('.active__message__list');
+        const selectedUser = document.getElementsByClassName(
+          'active__message__list',
+        )[0];
         this.addUserName({ target: selectedUser });
       } else if (messageIsEmpty) {
         e.preventDefault();
@@ -644,7 +646,9 @@ export default class Chat extends Component {
       e.target.value === ''
     ) {
       e.preventDefault();
-      const richLinks = document.querySelectorAll('.chatchannels__richlink');
+      const richLinks = document.getElementsByClassName(
+        'chatchannels__richlink',
+      );
       if (richLinks.length === 0) {
         return;
       }
@@ -786,7 +790,9 @@ export default class Chat extends Component {
     }
   };
   hideChannelList = () => {
-    const chatContainer = document.querySelector('.chat__activechat');
+    const chatContainer = document.getElementsByClassName(
+      'chat__activechat',
+    )[0];
     chatContainer.classList.remove('chat__activechat--hidden');
   };
   handleSwitchChannel = (e) => {
@@ -1381,7 +1387,10 @@ export default class Chat extends Component {
   };
 
   navigateToChannelsList = () => {
-    const chatContainer = document.querySelector('.chat__activechat');
+    const chatContainer = document.getElementsByClassName(
+      'chat__activechat',
+    )[0];
+
     chatContainer.classList.add('chat__activechat--hidden');
   };
 
@@ -1684,7 +1693,9 @@ export default class Chat extends Component {
 
   listHighlightManager = (keyCode) => {
     const mentionList = document.getElementById('mentionList');
-    const activeElement = document.querySelector('.active__message__list');
+    const activeElement = document.getElementsByClassName(
+      'active__message__list',
+    )[0];
     if (mentionList.children.length > 0) {
       if (keyCode === 40 && activeElement) {
         if (activeElement.nextElementSibling) {

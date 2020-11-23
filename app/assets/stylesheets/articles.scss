@@ -105,7 +105,7 @@
 
 .sidebar-navigation-links .crayons-icon svg {
   height: 24px;
-  weight: 24px;
+  width: 24px;
 }
 
 @keyframes fade-in {
@@ -275,19 +275,6 @@
 
   @media screen and (min-width: 1120px) {
     max-width: calc(100% - 560px); // 560 = 2*280: two sidebars
-  }
-
-  .pinned-articles {
-    padding: 8px;
-    margin: 0 auto;
-    @include dev-card;
-
-    h5 {
-      margin: 0 0 8px;
-      padding: 8px 0;
-      display: flex;
-      align-items: center;
-    }
   }
 
   .placeholder-div {

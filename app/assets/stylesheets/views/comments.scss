@@ -1,10 +1,14 @@
 @import '../config/import';
 
 .comment-form {
+  --preview-display: none;
+  --field-display: flex;
+
   display: flex;
+  margin-bottom: var(--su-4);
 
   &__field {
-    display: flex;
+    display: var(--field-display);
     flex: 1 auto;
     flex-direction: column;
     margin-bottom: var(--su-3);
@@ -63,34 +67,192 @@
     border: 1px solid var(--base-20);
     margin-bottom: var(--su-3);
     background: var(--card-bg);
-  }
-}
-
-// temporary until we have new design for comments
-.inner-comment {
-  &.replying {
-    .actions,
-    .reaction-button {
-      display: none;
-    }
-  }
-
-  .comment-form {
-    margin: var(--su-6) var(--su-4) 0 var(--su-4);
-  }
-}
-
-.comment-form {
-  .comment-form__preview {
-    display: none;
+    display: var(--preview-display);
   }
 
   &.preview-open {
-    .comment-form__preview {
-      display: block;
-    }
-    .comment-form__field {
+    --preview-display: block;
+    --field-display: none;
+  }
+}
+
+.comment-wrapper {
+  --level-n-indent: var(--su-3);
+  --level-1-indent: var(--su-4);
+
+  @media (min-width: $breakpoint-m) {
+    --level-n-indent: calc(var(--su-4) + var(--su-1));
+    --level-1-indent: calc(var(--su-6) + var(--su-1));
+  }
+  position: relative;
+
+  > summary {
+    position: static;
+    display: block;
+    align-items: center;
+    transform: initial;
+    top: 0;
+    left: var(--indent);
+    cursor: pointer;
+    font-size: var(--fs-s);
+    color: var(--base-60);
+    margin-bottom: var(--su-4);
+    margin-left: var(--indent);
+    padding: var(--su-1) var(--su-2);
+    font-style: italic;
+    border-radius: var(--radius);
+    background: var(--base-0);
+
+    .expanded {
       display: none;
     }
+
+    .collapsed {
+      display: block;
+    }
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &--deep-0 > summary {
+    --indent: 0;
+  }
+
+  &--deep-1:not(.root) > summary {
+    --indent: var(--level-1-indent);
+  }
+
+  &--deep-2:not(.root) > summary {
+    --indent: var(--level-n-indent);
+  }
+
+  &[open] > summary {
+    position: absolute;
+    top: var(--su-8);
+    background: transparent;
+    width: auto;
+    padding: var(--su-1) 0;
+    margin-left: 0;
+
+    @media (min-width: $breakpoint-s) {
+      // display: none;
+    }
+
+    .expanded {
+      display: block;
+    }
+
+    .collapsed {
+      display: none;
+    }
+
+    .expanded,
+    .collapsed {
+      opacity: 0.5;
+      transition: all var(--transition-props);
+    }
+  }
+
+  &[open]:hover {
+    > summary {
+      display: block;
+    }
+
+    .expanded,
+    .collapsed {
+      opacity: 1;
+    }
+  }
+}
+
+.comment {
+  --comment-gap: var(--su-4);
+  --dropdown-opacity: 0.5;
+  --footer-display: flex;
+
+  @media (min-width: $breakpoint-m) {
+    --comment-gap: var(--su-6);
+  }
+
+  &.child {
+    &:not(.comment--too-deep) {
+      padding-left: var(--level-n-indent);
+    }
+    &.comment--deep-1 {
+      padding-left: var(--level-1-indent);
+    }
+  }
+
+  &__dropdown-trigger {
+    @media (min-width: $breakpoint-s) {
+      opacity: var(--dropdown-opacity);
+    }
+  }
+
+  &__dropdown {
+    margin-left: auto;
+    margin-right: calc(-1 * var(--su-3));
+    position: relative;
+    top: calc(-1 * var(--su-2));
+  }
+
+  &__inner {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: var(--comment-gap);
+
+    &:hover,
+    &:focus-within {
+      --dropdown-opacity: 1;
+    }
+  }
+
+  &__details {
+    padding-left: var(--su-2);
+    flex: 1 auto;
+    min-width: 0;
+
+    &.replying {
+      --footer-display: none;
+    }
+  }
+
+  &__content {
+    padding: var(--su-1);
+    border-radius: var(--radius);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    padding: var(--su-2) var(--su-3) 0;
+    font-size: var(--fs-s);
+
+    @media (min-width: $breakpoint-m) {
+      font-size: var(--fs-base);
+    }
+  }
+
+  &__body {
+    padding: 0 var(--su-3);
+    margin: var(--su-2) 0 var(--su-4);
+  }
+
+  &__footer {
+    // border-top: 1px solid var(--base-10);
+    padding-top: var(--su-1);
+    display: var(--footer-display);
+    align-items: center;
+  }
+
+  &__quality-marker {
+    border-bottom: 1px solid var(--base-10);
+    padding: var(--su-3);
+    padding-top: var(--su-2);
+    font-weight: var(--fw-medium);
+    display: flex;
+    align-items: center;
   }
 }

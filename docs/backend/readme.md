@@ -20,6 +20,7 @@ items:
   - scheduled-jobs.md
   - metrics.md
   - tracking.md
+  - service-objects.md
 ---
 
 # Backend Guide

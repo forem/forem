@@ -91,16 +91,18 @@ async function updateExperienceLevel(currentUserId, articleId, rating, group) {
   }
 }
 
-document.querySelectorAll('.level-rating-button').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    updateExperienceLevel(
-      btn.dataset.userId,
-      btn.dataset.articleId,
-      btn.value,
-      btn.dataset.group,
-    );
-  });
-});
+Array.from(document.getElementsByClassName('level-rating-button')).forEach(
+  (btn) => {
+    btn.addEventListener('click', () => {
+      updateExperienceLevel(
+        btn.dataset.userId,
+        btn.dataset.articleId,
+        btn.value,
+        btn.dataset.group,
+      );
+    });
+  },
+);
 
 document
   .querySelectorAll('.reaction-button, .reaction-vomit-button')
