@@ -91,7 +91,7 @@
     "@storybook/addon-links": "^6.0.28",
     "@storybook/addon-notes": "^5.3.21",
     "@storybook/addon-storyshots": "^6.1.2",
-    "@storybook/addon-storysource": "^6.0.28",
+    "@storybook/addon-storysource": "^6.1.2",
     "@storybook/addons": "^6.0.26",
     "@storybook/preact": "^6.0.28",
     "@testing-library/jest-dom": "^5.11.5",
