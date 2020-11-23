@@ -61,21 +61,18 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     let(:default_feed) { feed.default_home_feed_and_featured_story }
     let(:featured_story) { default_feed.first }
     let(:stories) { default_feed.second }
+    let!(:min_score_article) { create(:article, score: 0) }
 
-    before { article.update(published_at: 1.week.ago) }
+    before do
+      article.update(published_at: 1.week.ago)
+      allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(0)
+    end
 
-    it "returns a featured article and array of other articles" do
-      expect(featured_story).to be_a(Article)
+    it "returns a featured article and correctly scored other articles", :aggregate_failures do
       expect(stories).to be_a(Array)
-      expect(stories.first).to be_a(Article)
-    end
-
-    it "chooses a featured story with a main image" do
       expect(featured_story).to eq hot_story
-    end
-
-    it "doesn't include low scoring stories" do
       expect(stories).not_to include(low_scoring_article)
+      expect(stories).to include(min_score_article)
     end
 
     context "when user logged in" do
