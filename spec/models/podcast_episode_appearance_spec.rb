@@ -1,14 +1,14 @@
 require "rails_helper"
 
-RSpec.describe PodcastAppearance, type: :model do
-  let(:podcast_appearance) { create(:podcast_appearance) }
+RSpec.describe PodcastEpisodeAppearance, type: :model do
+  let(:podcast_episode_appearance) { create(:podcast_episode_appearance) }
 
   describe "validations" do
-    subject { podcast_appearance }
+    subject { podcast_episode_appearance }
 
     it do
-      expect(podcast_appearance).to belong_to(:user).class_name("User").with_foreign_key(:user_id)
-        .inverse_of(:podcast_appearances)
+      expect(podcast_episode_appearance).to belong_to(:user).class_name("User").inverse_of(:podcast_episode_appearances)
+        .inverse_of(:podcast_episode_appearances)
     end
 
     it { is_expected.to belong_to(:podcast_episode) }
