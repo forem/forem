@@ -6,29 +6,33 @@ import { SearchFormSync } from '../SearchFormSync';
 // There is nothing UI related about this component.
 describe('<SearchFormSync />', () => {
   beforeEach(() => {
-    global.filterXSS = (x) => x;
+    global.filterXSS = (text) => text;
     global.InstantClick = jest.fn(() => ({
       on: jest.fn(),
       off: jest.fn(),
       preload: jest.fn(),
       display: jest.fn(),
     }))();
-    global.instantClick = jest.fn(() => ({}))();
   });
 
   it('should synchronize search forms', async () => {
-    // The portal root is to simulate the mobile search form which is part of the
-    // search results page that gets refreshed on every search.
-    const portalRoot = document.createElement('div');
-    portalRoot.setAttribute('id', 'mobile-search-container');
-    document.body.appendChild(portalRoot);
-
-    const { findAllByLabelText } = render(<SearchFormSync />, {
+    const { findByLabelText, findAllByLabelText } = render(<SearchFormSync />, {
       container: document.body,
     });
 
+    // Only one input is rendered at this point because the synchSearchForms custom event is what
+    // tells us that there is a new search form to sync with the existing one.
+    const searchInput = await findByLabelText('search');
+
+    // Because window.location has no search term in it's URL
+    expect(searchInput.value).toEqual('');
+
     // https://www.theatlantic.com/technology/archive/2012/09/here-it-is-the-best-word-ever/262348/
     const searchTerm = 'diphthong';
+
+    // simulates a search result returned which contains the server side rendered search form for mobile only.
+    document.body.innerHTML +=
+      '<div id="mobile-search-container"><form></form></div>';
 
     fireEvent(
       window,
@@ -44,11 +48,9 @@ describe('<SearchFormSync />', () => {
   });
 
   it('should synchronize search forms with empty text if no search term is provided.', async () => {
-    // The portal root is to simulate the mobile search form which is part of the
-    // search results page that gets refreshed on every search.
-    const portalRoot = document.createElement('div');
-    portalRoot.setAttribute('id', 'mobile-search-container');
-    document.body.appendChild(portalRoot);
+    // simulates a search result returned which contains the server side rendered search form for mobile only.
+    document.body.innerHTML +=
+      '<div id="mobile-search-container"><form></form></div>';
 
     const { findAllByLabelText } = render(<SearchFormSync />);
     fireEvent(
@@ -57,6 +59,7 @@ describe('<SearchFormSync />', () => {
         detail: { querystring: '?q=' },
       }),
     );
+
     const [desktopSearch, mobileSearch] = await findAllByLabelText('search');
     expect(desktopSearch.value).toEqual('');
     expect(mobileSearch.value).toEqual('');
