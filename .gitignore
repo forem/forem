@@ -82,5 +82,8 @@ db_data
 es_data
 gem_cache
 
+# Compose generated files
+bundle_finished
+
 # Auto-generated Storybook stories
 app/javascript/generated_stories/

@@ -31,9 +31,8 @@ COPY ./.ruby-version "${APP_HOME}"/
 COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"/
 COPY ./vendor/cache "${APP_HOME}"/vendor/cache
 
-ENV BUNDLE_WITHOUT="development:test"
 RUN bundle config --local build.sassc --disable-march-tune-native && \
-    bundle install --deployment --jobs 4 --retry 5 && \
+    BUNDLE_WITHOUT="development:test" bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
@@ -90,7 +89,6 @@ RUN dnf install --setopt install_weak_deps=false -y \
     yum clean all && \
     rm -rf /var/cache/yum
 
-COPY --chown="${APP_USER}":"${APP_USER}" ./app/assets "${APP_HOME}"/app/assets
 COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
 COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
 
@@ -99,20 +97,18 @@ RUN chown "${APP_USER}":"${APP_USER}" -R "${APP_HOME}"
 USER "${APP_USER}"
 
 RUN bundle config --local build.sassc --disable-march-tune-native && \
+    bundle config --delete without && \
     bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
-#RUN yarn install --frozen-lockfile && RAILS_ENV=test NODE_ENV=test bundle exec rails webpacker:compile
-
-ENTRYPOINT ["./scripts/entrypoint-dev.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
 ## Development
 FROM builder AS development
 
-COPY --chown="${APP_USER}":"${APP_USER}" ./app/assets "${APP_HOME}"/app/assets
 COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
 COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
 
@@ -121,11 +117,12 @@ RUN chown "${APP_USER}":"${APP_USER}" -R "${APP_HOME}"
 USER "${APP_USER}"
 
 RUN bundle config --local build.sassc --disable-march-tune-native && \
+    bundle config --delete without && \
     bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
-ENTRYPOINT ["./scripts/entrypoint-dev.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
