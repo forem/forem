@@ -226,7 +226,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise_invitable (2.0.2)
+    devise_invitable (2.0.3)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.3)
@@ -866,7 +866,7 @@ DEPENDENCIES
   ddtrace (~> 0.43.0)
   derailed_benchmarks (~> 1.8)
   devise (~> 4.7)
-  devise_invitable (~> 2.0.0)
+  devise_invitable (~> 2.0.3)
   dogstatsd-ruby (~> 4.8)
   doorkeeper (~> 5.4)
   dotenv-rails (~> 2.7.6)
