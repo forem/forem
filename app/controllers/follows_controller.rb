@@ -80,9 +80,9 @@ class FollowsController < ApplicationController
   end
 
   def bulk_update
-    @follows = Follow.where(id: params_for_update[:ids])
+    @follows = Follow.where(id: params_for_update.keys).includes(:follower, :followable)
     authorize @follows
-    redirect_to "/dashboard/following" if Follow.update(params_for_update[:ids], params_for_update[:points])
+    redirect_to "/dashboard/following" if @follows.all? { |follow| follow.update(params_for_update[follow.id.to_s]) }
   end
 
   private
@@ -92,9 +92,8 @@ class FollowsController < ApplicationController
   end
 
   def params_for_update
-    follows_params[:follows].each_with_object({ ids: [], points: [] }) do |follow, params|
-      params[:ids] << follow[:id]
-      params[:points] << follow.slice(:points)
+    follows_params[:follows].each_with_object({}) do |follow, params|
+      params[follow[:id]] = follow.slice(:points)
     end
   end
 
