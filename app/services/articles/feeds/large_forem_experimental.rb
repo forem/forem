@@ -186,7 +186,7 @@ module Articles
 
       def globally_hot_articles(user_signed_in)
         hot_stories = published_articles_by_tag
-          .where("score > ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
+          .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
           .order(hotness_score: :desc)
         featured_story = hot_stories.where.not(main_image: nil).first
         if user_signed_in
