@@ -130,8 +130,8 @@ export class ReadingList extends Component {
             value="Your reading list is empty"
           />
           <p class="color-base-60 pt-2">
-            Hit the <span class="fw-bold">Save</span> button to start your
-            Collection.
+            Click the <span class="fw-bold">bookmark reaction</span> when
+            viewing a post to add it to your reading list.
           </p>
         </div>
       );
