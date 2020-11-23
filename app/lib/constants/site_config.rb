@@ -170,7 +170,7 @@ module Constants
         placeholder: SVG_PLACEHOLDER
       },
       logo_png: {
-        description: "Minimum 192x192px, used for PWA etc.",
+        description: "Used as a fallback to the SVG. Recommended minimum of 192x192px for PWA support",
         placeholder: IMAGE_PLACEHOLDER
       },
       logo_svg: {
