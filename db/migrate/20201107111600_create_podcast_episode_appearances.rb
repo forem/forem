@@ -13,6 +13,6 @@ class CreatePodcastEpisodeAppearances < ActiveRecord::Migration[6.0]
     add_index :podcast_episode_appearances,
               %i[podcast_episode_id user_id],
               unique: true, algorithm: :concurrently,
-              name: "index_episodes_appearances"
+              name: "index_pod_episode_appearances_on_podcast_episode_id_and_user_id"
   end
 end

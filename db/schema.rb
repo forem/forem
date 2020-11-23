@@ -853,7 +853,7 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
     t.string "role", default: "guest", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["podcast_episode_id", "user_id"], name: "index_episodes_appearances", unique: true
+    t.index ["podcast_episode_id", "user_id"], name: "index_pod_episode_appearances_on_podcast_episode_id_and_user_id", unique: true
   end
 
   create_table "podcast_episodes", force: :cascade do |t|
