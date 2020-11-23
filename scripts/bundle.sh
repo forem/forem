@@ -2,9 +2,11 @@
 
 set -e
 
-if [ -f /opt/apps/bundle/bundle_finished ]; then
-  rm -f /opt/apps/bundle/bundle_finished
+if [ -f /opt/apps/forem/vendor/bundle/.bundle_finished ]; then
+  rm -f /opt/apps/forem/vendor/bundle/.bundle_finished
 fi
 
-bundle install --local --jobs 20 --retry 5
-echo $(date --utc +%FT%T%Z) > /opt/apps/bundle/bundle_finished
+unset BUNDLE_WITHOUT
+bundle config --delete without
+bundle install --local --jobs 20 --retry 5 --path vendor/bundle
+echo $(date --utc +%FT%T%Z) > /opt/apps/forem/vendor/bundle/.bundle_finished
