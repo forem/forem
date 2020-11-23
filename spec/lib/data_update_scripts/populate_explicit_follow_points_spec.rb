@@ -11,7 +11,7 @@ describe DataUpdateScripts::PopulateExplicitFollowPoints do
     fourth_follow = create(:follow)
 
     follow.update_column(:points, 3)
-    second_follow.update_column(points: 7)
+    second_follow.update_column(:points, 7)
     third_follow.update_column(:points, 1)
     fourth_follow.update_column(:points, 0.5)
     expect(follow.explicit_points).to eq(1.0)
