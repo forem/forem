@@ -49,8 +49,6 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_many :podcast_appearances, dependent: :destroy
-  has_many :podcast_episodes, through: :podcast_appearances
   has_one :profile, dependent: :destroy
   has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
                                                 foreign_key: :author_id, inverse_of: :author, dependent: :destroy
@@ -105,6 +103,8 @@ class User < ApplicationRecord
   has_many :page_views, dependent: :destroy
   has_many :poll_skips, dependent: :destroy
   has_many :poll_votes, dependent: :destroy
+  has_many :podcast_appearances, dependent: :destroy
+  has_many :podcast_episodes, through: :podcast_appearances
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
   has_many :rating_votes, dependent: :destroy
   has_many :reactions, dependent: :destroy
