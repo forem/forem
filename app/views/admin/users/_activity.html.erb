@@ -15,7 +15,7 @@
     <p>(view full history in notes below)</p>
     <ul>
       <% @user.roles.each do |role| %>
-        <% if role.name === "banned" %>
+        <% if role.name == "banned" %>
           <li>suspended</li>
         <% else %>
           <li><%= role.name %> <em><%= role.resource_name.to_s %></em></li>
