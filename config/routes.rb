@@ -210,7 +210,7 @@ Rails.application.routes.draw do
         end
 
         namespace :admin do
-          resources :configs, only: %i[show create]
+          resources :configs, only: %i[show create], defaults: { format: :json }
         end
       end
     end

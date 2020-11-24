@@ -5,8 +5,6 @@ module Api
         before_action :authorize_admin
         after_action :verify_authorized
 
-        respond_to :json
-
         def show
           @site_configs = SiteConfig.all
         end
