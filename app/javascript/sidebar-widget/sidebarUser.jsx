@@ -17,7 +17,11 @@ class SidebarUser extends Component {
     const { user } = this.props;
     return (
       <div className="widget-list-item__suggestions">
-        <a data-testid="widget-avatar" href={`/${user.username}`} className="widget-list-item__avatar">
+        <a
+          data-testid="widget-avatar"
+          href={`/${user.username}`}
+          className="widget-list-item__avatar"
+        >
           <img
             src={user.profile_image_url}
             alt={user.name}

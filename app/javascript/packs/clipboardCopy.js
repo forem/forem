@@ -1,4 +1,4 @@
-HTMLDocument.prototype.ready = new Promise(resolve => {
+HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
     return resolve();
   }
@@ -13,13 +13,11 @@ document.ready.then(() => {
     !navigator.clipboard &&
     !navigator.Clipboard
   ) {
-    import('clipboard-polyfill').then(module => {
+    import('clipboard-polyfill').then((module) => {
       window.clipboard = module;
     });
   }
 });
-
-
 
 // import('@github/clipboard-copy-element');
 // Temporarily removed due to problems
