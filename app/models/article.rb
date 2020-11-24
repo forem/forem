@@ -431,7 +431,7 @@ class Article < ApplicationRecord
 
     self.description = processed_description if description.blank?
   rescue StandardError => e
-    errors[:base] << ErrorMessages::Clean.call(e.message)
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
   def set_tag_list(tags)
