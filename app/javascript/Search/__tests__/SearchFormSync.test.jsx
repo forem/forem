@@ -6,7 +6,6 @@ import { SearchFormSync } from '../SearchFormSync';
 // There is nothing UI related about this component.
 describe('<SearchFormSync />', () => {
   beforeEach(() => {
-    global.filterXSS = (text) => text;
     global.InstantClick = jest.fn(() => ({
       on: jest.fn(),
       off: jest.fn(),
