@@ -7,6 +7,7 @@
         </header>
         <div>
           <%# it's unlikely that a user will belong to enough organizations to cause a performance issue here %>
+          <%# More info regarding the `.present?/.each` pattern: https://www.speedshop.co/2019/01/10/three-activerecord-mistakes.html %>
           <% @user.organizations.each do |organization| %>
             <a href="/<%= organization.slug %>" class="flex items-center crayons-link crayons-link--contentful">
               <span class="crayons-logo crayons-logo--l mr-2 shrink-0">
