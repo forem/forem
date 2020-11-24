@@ -15,8 +15,9 @@ RSpec.describe "UserSettings", type: :request do
       before { sign_in user }
 
       it "renders various settings tabs properly" do
-        %w[organization misc account ux].each do |tab|
-          get "/settings/#{tab}"
+        Constants::Settings::TAB_LIST.each do |tab|
+          get user_settings_path(tab.downcase.tr(" ", "-"))
+
           expect(response.body).to include("Settings for")
         end
       end
@@ -26,32 +27,80 @@ RSpec.describe "UserSettings", type: :request do
           .to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "displays content on ux tab properly" do
-        get "/settings/ux"
-        expect(response.body).to include("Style Customization")
+      it "displays content on Profile tab properly" do
+        get user_settings_path(:profile)
+
+        expect(response.body).to include("User")
       end
 
-      it "displays content on misc tab properly" do
-        get "/settings/misc"
-        expect(response.body).to include("Connect", "Languages", "Sponsors", "Announcements", "Export Content")
+      it "displays profile groups content on Profile tab" do
+        profile_field = create(:profile_field)
+
+        get user_settings_path(:profile)
+
+        expect(response.body).to include(profile_field.profile_field_group.name)
       end
 
-      it "displays content on RSS tab properly" do
-        get "/settings/publishing-from-rss"
-        title = "Publishing to #{SiteConfig.community_name} from RSS"
-        expect(response.body).to include(title)
+      it "displays content on Customization tab properly" do
+        get user_settings_path(:customization)
+
+        expect(response.body).to include("Appearance", "Writing", "Content", "Languages", "Sponsors", "Announcements")
+      end
+
+      it "displays content on Notifications tab properly" do
+        get user_settings_path(:notifications)
+
+        expect(response.body).to include("Email notifications", "Mobile notifications", "General notifications")
+      end
+
+      it "displays moderator notifications secons on Notifications tab if trusted" do
+        user.add_role(:trusted)
+
+        get user_settings_path(:notifications)
+
+        expect(response.body).to include("Moderator notifications")
+      end
+
+      it "displays content on Account tab properly" do
+        get user_settings_path(:account)
+
+        expect(response.body).to include("Set new password", "Account emails", "API Keys", "Danger Zone")
+      end
+
+      it "displays content on Billing tab properly" do
+        get user_settings_path(:billing)
+
+        expect(response.body).to include("Billing")
+      end
+
+      it "displays content on Organization tab properly" do
+        get user_settings_path(:organization)
+
+        expect(response.body).to include("Join An Organization", "Create An Organization")
+      end
+
+      it "displays content on Extensions tab properly" do
+        get user_settings_path(:extensions)
+
+        feed_section = "Publishing to #{SiteConfig.community_name} from RSS"
+        stackbit_section = "Generate a personal blog from your #{SiteConfig.community_name} posts"
+        titles = ["Comment templates", "Connect settings", feed_section, "Web monetization", stackbit_section]
+        expect(response.body).to include(*titles)
       end
 
       it "renders heads up dupe account message with proper param" do
         get "/settings?state=previous-registration"
+
         error_message = "There is an existing account authorized with that social account"
-        expect(response.body).to include error_message
+        expect(response.body).to include(error_message)
       end
 
       it "renders the proper response template" do
         response_template = create(:response_template, user: user)
+
         get user_settings_path(tab: "response-templates", id: response_template.id)
-        expect(response.body).to include "Editing a response template"
+
+        expect(response.body).to include("Edit comment template")
       end
     end
 
@@ -106,7 +155,7 @@ RSpec.describe "UserSettings", type: :request do
         user = create(:user, :with_identity, identities: [:github])
 
         sign_in user
-        get "/settings"
+        get user_settings_path
 
         expect(response.body).not_to include("Connect GitHub Account")
       end
@@ -117,7 +166,7 @@ RSpec.describe "UserSettings", type: :request do
         user = create(:user, :with_identity, identities: [:github])
 
         sign_in user
-        get "/settings"
+        get user_settings_path
 
         expect(response.body).not_to include("Connect GitHub Account")
       end
@@ -127,25 +176,27 @@ RSpec.describe "UserSettings", type: :request do
         user = create(:user, :with_identity, identities: [:twitter])
 
         sign_in user
-        get "/settings"
+        get user_settings_path
 
         expect(response.body).to include("Connect GitHub Account")
       end
     end
 
-    describe ":integrations" do
+    describe "GitHub repositories" do
       it "renders the repositories container if the user has authenticated through GitHub" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
         user = create(:user, :with_identity, identities: [:github])
-        sign_in user
 
-        get user_settings_path(tab: :integrations)
+        sign_in user
+        get user_settings_path(:extensions)
+
         expect(response.body).to include("github-repos-container")
       end
 
       it "does not render anything if the user has not authenticated through GitHub" do
         sign_in user
+        get user_settings_path(:extensions)
 
-        get user_settings_path(tab: :integrations)
         expect(response.body).not_to include("github-repos-container")
       end
     end
@@ -213,9 +264,7 @@ RSpec.describe "UserSettings", type: :request do
 
     context "when requesting an export of the articles" do
       def send_request(export_requested: true)
-        put "/users/#{user.id}", params: {
-          user: { tab: "misc", export_requested: export_requested }
-        }
+        put user_path(user.id), params: { user: { tab: :account, export_requested: export_requested } }
       end
 
       it "updates export_requested flag" do
