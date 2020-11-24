@@ -2,7 +2,7 @@
 @import '../config/import';
 
 :root {
-  --content-rythm: var(--su-2);
+  --content-rhythm: var(--su-2);
   --content-font-size: var(--fs-l);
   --content-secondary-font-size: var(--fs-base);
   --content-tertiary-font-size: var(--fs-base);
@@ -12,7 +12,7 @@
   }
 
   @media (min-width: $breakpoint-m) {
-    --content-rythm: var(--su-4);
+    --content-rhythm: var(--su-4);
     --content-font-size: var(--fs-xl);
   }
 }
@@ -96,8 +96,8 @@ body {
   h5,
   h6 {
     font-family: var(--ff-sans-serif);
-    margin: var(--content-rythm) 0;
-    margin-top: calc(var(--content-rythm) * 2);
+    margin: var(--content-rhythm) 0;
+    margin-top: calc(var(--content-rhythm) * 2);
     padding: 0;
   }
 
@@ -127,13 +127,13 @@ body {
   }
 
   p {
-    margin: var(--content-rythm) 0;
+    margin: var(--content-rhythm) 0;
   }
 
   ul,
   ol {
     padding-left: var(--su-6);
-    margin: var(--content-rythm) 0;
+    margin: var(--content-rhythm) 0;
     br {
       line-height: 0;
       margin: 0;
@@ -184,7 +184,7 @@ body {
   blockquote {
     border-left: 4px solid var(--base-50);
     padding: 0 var(--su-4);
-    margin: var(--content-rythm) 0;
+    margin: var(--content-rhythm) 0;
 
     p:first-child {
       margin: var(--su-2) 0;
@@ -231,7 +231,7 @@ body {
 
   pre:not(.highlight),
   div.highlight {
-    margin: var(--content-rythm) 0;
+    margin: var(--content-rhythm) 0;
   }
 
   img {
@@ -251,11 +251,11 @@ body {
   iframe {
     width: 100%;
     border: 0;
-    margin: var(--content-rythm) 0;
+    margin: var(--content-rhythm) 0;
   }
 
   .fluidvids {
-    margin: var(--content-rythm) 0;
+    margin: var(--content-rhythm) 0;
 
     iframe {
       margin: 0;
