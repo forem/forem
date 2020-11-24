@@ -75,8 +75,8 @@ export class Help extends Component {
             post.
           </li>
           <li>
-            Add up to four comma-separated tags per post. Combine tags to reach the appropriate
-            subcommunities.
+            Add up to four comma-separated tags per post. Combine tags to reach
+            the appropriate subcommunities.
           </li>
           <li>Use existing tags whenever possible.</li>
           <li>
