@@ -8,18 +8,18 @@ module Profiles
       new(user, updated_attributes).call
     end
 
-    attr_reader :error_message
-
     def initialize(user, updated_attributes)
       @user = user
       @profile = user.profile
       @updated_profile_attributes = updated_attributes[:profile] || {}
       @updated_user_attributes = updated_attributes[:user].to_h || {}
+      @errors = []
       @success = false
     end
 
     def call
       if update_successful?
+        @success = true
         @user.touch(:profile_updated_at)
         # TODO: @citizen428 Preserving a DEV specific feature for now, we should
         # probably remove this sooner than later as it may not make much sense
@@ -27,11 +27,11 @@ module Profiles
         follow_hiring_tag if SiteConfig.dev_to?
         conditionally_resave_articles
       else
-        Honeycomb.add_field("error", @error_message)
+        errors.concat(@profile.errors.full_messages)
+        errors.concat(@user.errors.full_messages)
+        Honeycomb.add_field("error", errors_as_sentence)
         Honeycomb.add_field("errored", true)
       end
-      self
-    rescue ActiveRecord::RecordInvalid
       self
     end
 
@@ -39,16 +39,23 @@ module Profiles
       @success
     end
 
+    def errors_as_sentence
+      errors.to_sentence
+    end
+
     private
+
+    attr_reader :errors
 
     def update_successful?
       return false unless verify_profile_image
 
-      ActiveRecord::Base.transaction do
-        raise ActiveRecord::Rollback unless update_profile && update_user_attributes
+      Profile.transaction do
+        update_profile
+        @user.update!(@updated_user_attributes)
       end
       true
-    rescue ActiveRecord::Rollback
+    rescue ActiveRecord::RecordInvalid
       false
     end
 
@@ -63,14 +70,14 @@ module Profiles
     def valid_image_file?(image)
       return true if file?(image)
 
-      @error_message = IS_NOT_FILE_MESSAGE
+      errors.append(IS_NOT_FILE_MESSAGE)
       false
     end
 
     def valid_filename?(image)
       return true unless long_filename?(image)
 
-      @error_message = FILENAME_TOO_LONG_MESSAGE
+      errors.append(FILENAME_TOO_LONG_MESSAGE)
       false
     end
 
@@ -88,16 +95,7 @@ module Profiles
       # Before saving, filter out obsolete profile fields
       @profile.data.slice!(*Profile.attributes)
 
-      @profile.save
-    end
-
-    def update_user_attributes
-      if (update = @user.update(@updated_user_attributes))
-        @success = true
-      else
-        @error_message = @user.errors_as_sentence
-      end
-      update
+      @profile.save!
     end
 
     def follow_hiring_tag

@@ -7,7 +7,7 @@ class ProfilesController < ApplicationController
     if update_result.success?
       flash[:settings_notice] = "Your profile has been updated"
     else
-      flash[:error] = "Error: #{update_result.error_message}"
+      flash[:error] = "Error: #{update_result.errors_as_sentence}"
     end
     redirect_to user_settings_path
   end
