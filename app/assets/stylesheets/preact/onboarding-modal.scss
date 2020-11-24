@@ -640,7 +640,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   label {
     @extend .crayons-field;
     @extend .crayons-field__label;
-    margin-bottom: var(--su-4);
 
     &:last-child {
       margin-bottom: 0;
@@ -653,6 +652,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     .checkbox-form {
       padding-bottom: var(--su-6);
     }
+  }
+
+  .crayons-field--checkbox {
+    align-items: center;
   }
 
   // Checkboxes
@@ -688,6 +691,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
         margin-right: var(--su-2) !important;
       }
     }
+  }
+
+  .onboarding-profile-sub-section {
+    margin-bottom: var(--su-6);
   }
 
   @media screen and (max-height: 790px) {
