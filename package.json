@@ -87,7 +87,7 @@
     "@stoplight/spectral": "5.7.1",
     "@storybook/addon-a11y": "^6.1.3",
     "@storybook/addon-actions": "^6.0.28",
-    "@storybook/addon-knobs": "^6.1.2",
+    "@storybook/addon-knobs": "^6.1.4",
     "@storybook/addon-links": "^6.1.3",
     "@storybook/addon-notes": "^5.3.21",
     "@storybook/addon-storyshots": "^6.1.2",
