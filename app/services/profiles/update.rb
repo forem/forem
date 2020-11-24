@@ -1,8 +1,10 @@
 module Profiles
   class Update
+    using HashAnyKey
     include ImageUploads
 
     CORE_PROFILE_FIELDS = %i[name summary brand_color1 brand_color2].freeze
+    CORE_USER_FIELDS = %i[username profile_image].freeze
 
     def self.call(user, updated_attributes = {})
       new(user, updated_attributes).call
@@ -114,10 +116,9 @@ module Profiles
     end
 
     def core_profile_details_changed?
-      @user.username_changed? ||
-        @updated_user_attributes.key?(:profile_image) ||
-        (@updated_profile_attributes.keys & CORE_PROFILE_FIELDS).any? ||
-        (@updated_user_attributes.keys & Authentication::Providers.username_fields).any?
+      user_fields = CORE_USER_FIELDS + Authentication::Providers.username_fields
+      @updated_user_attributes.any_key?(user_fields) ||
+        @updated_profile_attributes.any_key?(CORE_PROFILE_FIELDS)
     end
   end
 end

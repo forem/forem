@@ -53,7 +53,7 @@ RSpec.describe Profiles::Update, type: :service do
     service = described_class.call(user, profile: {}, user: { profile_image: profile_image })
 
     expect(service.success?).to be false
-    expect(service.error_message).to eq "Profile image File size should be less than 2 MB"
+    expect(service.errors_as_sentence).to eq "Profile image File size should be less than 2 MB"
   end
 
   it "returns an error if Profile image is not a file" do
@@ -61,7 +61,7 @@ RSpec.describe Profiles::Update, type: :service do
     service = described_class.call(user, profile: {}, user: { profile_image: profile_image })
 
     expect(service.success?).to be false
-    expect(service.error_message).to eq "invalid file type. Please upload a valid image."
+    expect(service.errors_as_sentence).to eq "invalid file type. Please upload a valid image."
   end
 
   it "returns an error if Profile image file name is too long" do
@@ -70,18 +70,18 @@ RSpec.describe Profiles::Update, type: :service do
     service = described_class.call(user, profile: {}, user: { profile_image: profile_image })
 
     expect(service.success?).to be false
-    expect(service.error_message).to eq "filename too long - the max is 250 characters."
+    expect(service.errors_as_sentence).to eq "filename too long - the max is 250 characters."
   end
 
   context "when conditionally resaving articles" do
     it "enqueues resave articles job when changing username" do
       sidekiq_assert_resave_article_worker(user) do
-        described_class.call(user, user: { username: "#{user.username} changed" })
+        described_class.call(user, user: { username: "#{user.username}_changed" })
       end
     end
 
     it "enqueues resave articles job when changing profile_image" do
-      profile_image = fixture_file_upload("files/large_profile_img.jpg")
+      profile_image = fixture_file_upload("files/800x600.jpg")
 
       sidekiq_assert_resave_article_worker(user) do
         described_class.call(user, user: { profile_image: profile_image })
