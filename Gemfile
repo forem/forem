@@ -18,20 +18,20 @@ gem "administrate", "~> 0.14" # A Rails engine that helps you put together a sup
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.0" # Tracking analytics for Rails
 gem "ancestry", "~> 3.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "blazer", "~> 2.2.7" # Allows admins to query data
+gem "blazer", "~> 2.3.0" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.18" # Client library for easily using the Cloudinary service
-gem "counter_culture", "~> 2.6" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.42.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "counter_culture", "~> 2.7" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "ddtrace", "~> 0.43.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
-gem "devise_invitable", "~> 2.0.0" # Allows invitations to be sent for joining
+gem "devise_invitable", "~> 2.0.3" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.4" # Oauth 2 provider
-gem "elasticsearch", "~> 7.9" # Powers DEVs core search functionality
+gem "elasticsearch", "~> 7.10" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
@@ -81,11 +81,12 @@ gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes m
 gem "ransack", "~> 2.3" # Searching and sorting
 gem "recaptcha", "~> 5.6", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
-gem "redis", "~> 4.2.2" # Redis ruby client
+gem "redis", "~> 4.2.5" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
+gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
 gem "rolify", "~> 5.3" # Very simple Roles library
-gem "rouge", "~> 3.24" # A pure-ruby code highlighter
+gem "rouge", "~> 3.25" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
@@ -100,7 +101,7 @@ gem "store_attribute", "~> 0.8.0" # ActiveRecord extension which adds typecastin
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 5.28" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
-gem "twilio-ruby", "~> 5.42" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.43" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
@@ -110,7 +111,7 @@ gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine rea
 gem "webpacker", "~> 5.2.1" # Use webpack to manage app-like JavaScript modules in Rails
 
 group :development do
-  gem "better_errors", "~> 2.8" # Provides a better error page for Rails and other Rack apps
+  gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
   gem "brakeman", "~> 4.10", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.7" # bundler-audit provides patch-level verification for Bundled apps
@@ -120,7 +121,7 @@ group :development do
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
-  gem "listen", "~> 3.2", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
+  gem "listen", "~> 3.3", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 0.9", require: false # Memory profiling routines for Ruby 2.3+
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
@@ -136,11 +137,11 @@ group :development, :test do
   gem "capybara", "~> 3.33" # Capybara is an integration testing tool for rack based web applications
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.14" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.8.0" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 2.9.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.93.1", require: false # Automatic Ruby code style checking tool
-  gem "rubocop-performance", "~> 1.8", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
+  gem "rubocop-performance", "~> 1.9", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.8", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.44", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
@@ -164,6 +165,6 @@ group :test do
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 4.4" # Run Selenium tests more easily with install and updates for all supported webdrivers
-  gem "webmock", "~> 3.9", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
+  gem "webmock", "~> 3.10", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

@@ -7,7 +7,26 @@ module Search
     DEFAULT_PER_PAGE = 20
 
     class << self
+      def search_usernames(username)
+        results = search(body: username_query(username))
+        results.dig("hits", "hits").map do |doc|
+          doc.dig("_source", "username")
+        end
+      end
+
       private
+
+      def username_query(username)
+        {
+          query: {
+            query_string: {
+              query: "username:#{username}*",
+              analyze_wildcard: true,
+              allow_leading_wildcard: false
+            }
+          }
+        }
+      end
 
       def prepare_doc(hit)
         source = hit["_source"]

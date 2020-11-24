@@ -1,18 +1,18 @@
 import { Controller } from 'stimulus';
 import adminModal from '../adminModal';
 
-const recaptchaFields = document.querySelector('#recaptchaContainer');
-const emailSigninAndLoginCheckbox = document.querySelector(
-  '#email-signup-and-login-checkbox',
+const recaptchaFields = document.getElementById('recaptchaContainer');
+const emailRegistrationCheckbox = document.getElementById(
+  'email-registration-checkbox',
 );
-const emailAuthSettingsSection = document.querySelector(
-  '#email-auth-settings-section',
+const emailAuthSettingsSection = document.getElementById(
+  'email-auth-settings-section',
 );
 const emailAuthModalTitle = 'Disable Email address registration';
 // TODO: Remove the sentence "You must update site config to save this action!"
 // once we build more robust flow for Admin/Config
 const emailAuthModalBody =
-  '<p>If you disable Email address as a registration option, people cannot create an account with their email address.</p><p>However, people who have already created an account using their email address can continue to login.</p><p><strong>Please update site config to save this action.</strong></p>';
+  '<p>If you disable Email address as a registration option, people cannot create an account with their email address.</p><p>However, people who have already created an account using their email address can continue to login.</p><p><strong>You must confirm and update site config to save below this action.</strong></p>';
 
 export default class ConfigController extends Controller {
   static targets = [
@@ -52,7 +52,7 @@ export default class ConfigController extends Controller {
   }
 
   positionModalOnPage() {
-    if (document.querySelector('.crayons-modal')) {
+    if (document.getElementsByClassName('crayons-modal')[0]) {
       document.body.style.height = '100vh';
       document.body.style.overflowY = 'hidden';
     }
@@ -73,7 +73,7 @@ export default class ConfigController extends Controller {
   enableOrEditEmailAuthSettings(event) {
     event.preventDefault();
     if (this.emailAuthSettingsBtnTarget.dataset.buttonText === 'enable') {
-      emailSigninAndLoginCheckbox.checked = true;
+      emailRegistrationCheckbox.checked = true;
       this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'edit');
       this.enabledIndicatorTarget.classList.add('visible');
     }
@@ -108,7 +108,7 @@ export default class ConfigController extends Controller {
 
   disableEmailAuth(event) {
     event.preventDefault();
-    emailSigninAndLoginCheckbox.checked = false;
+    emailRegistrationCheckbox.checked = false;
     this.emailAuthSettingsBtnTarget.innerHTML = 'Enable';
     this.emailAuthSettingsBtnTarget.setAttribute('data-button-text', 'enable');
     this.enabledIndicatorTarget.classList.remove('visible');
@@ -122,8 +122,8 @@ export default class ConfigController extends Controller {
   enableOrEditAuthProvider(event) {
     event.preventDefault();
     const provider = event.target.dataset.authProviderEnable;
-    const enabledIndicator = document.querySelector(
-      `#${provider}-enabled-indicator`,
+    const enabledIndicator = document.getElementById(
+      `${provider}-enabled-indicator`,
     );
     if (event.target.dataset.buttonText === 'enable') {
       enabledIndicator.classList.add('visible');
@@ -131,7 +131,7 @@ export default class ConfigController extends Controller {
       this.listAuthToBeEnabled();
     }
     document
-      .querySelector(`#${provider}-auth-settings`)
+      .getElementById(`${provider}-auth-settings`)
       .classList.remove('hidden');
     event.target.classList.add('hidden');
   }
@@ -139,8 +139,8 @@ export default class ConfigController extends Controller {
   disableAuthProvider(event) {
     event.preventDefault();
     const provider = event.target.dataset.authProvider;
-    const enabledIndicator = document.querySelector(
-      `#${provider}-enabled-indicator`,
+    const enabledIndicator = document.getElementById(
+      `${provider}-enabled-indicator`,
     );
     const authEnableButton = document.querySelector(
       `[data-auth-provider-enable="${provider}"]`,
@@ -182,8 +182,8 @@ export default class ConfigController extends Controller {
     const authEnableButton = document.querySelector(
       `[data-auth-provider-enable="${provider}"]`,
     );
-    const enabledIndicator = document.querySelector(
-      `#${provider}-enabled-indicator`,
+    const enabledIndicator = document.getElementById(
+      `${provider}-enabled-indicator`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
     this.listAuthToBeEnabled(event);
@@ -197,7 +197,7 @@ export default class ConfigController extends Controller {
     if (
       document.querySelectorAll('[data-enable-auth="true"]').length === 1 &&
       document
-        .querySelector('#email-auth-enable-edit-btn')
+        .getElementById('email-auth-enable-edit-btn')
         .getAttribute('data-button-text') === 'enable'
     ) {
       const targetAuthDisableBtn = document.querySelector(
@@ -216,9 +216,9 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     const provider = event.target.dataset.authProvider;
     document
-      .querySelector(`#${provider}-auth-settings`)
+      .getElementById(`${provider}-auth-settings`)
       .classList.add('hidden');
-    document.querySelector(`#${provider}-auth-btn`).classList.remove('hidden');
+    document.getElementById(`${provider}-auth-btn`).classList.remove('hidden');
   }
 
   listAuthToBeEnabled() {
@@ -228,13 +228,18 @@ export default class ConfigController extends Controller {
       .forEach((provider) => {
         enabledProviderArray.push(provider.dataset.authProviderEnable);
       });
-    document.querySelector(
-      '#auth_providers_to_enable',
+    document.getElementById(
+      'auth_providers_to_enable',
     ).value = enabledProviderArray;
   }
 
-  disableAuthenticationOptions() {
-    document.querySelector('#auth_providers_to_enable').value = '';
+  adjustAuthenticationOptions() {
+    if (this.inviteOnlyModeTarget.checked) {
+      document.getElementById('auth_providers_to_enable').value = '';
+      emailRegistrationCheckbox.checked = false;
+    } else {
+      emailRegistrationCheckbox.checked = true;
+    }
   }
   // AUTH PROVIDERS FUNCTIONS END
 }

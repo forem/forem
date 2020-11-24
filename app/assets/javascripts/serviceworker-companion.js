@@ -6,16 +6,16 @@ if ('serviceWorker' in navigator) {
     .then(function swStart(registration) {
       // registered!
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line no-console
       console.log('ServiceWorker registration failed: ', error);
     });
 }
 
-window.addEventListener('beforeinstallprompt', e => {
+window.addEventListener('beforeinstallprompt', (e) => {
   // beforeinstallprompt Event fired
   // e.userChoice will return a Promise.
-  e.userChoice.then(choiceResult => {
+  e.userChoice.then((choiceResult) => {
     ga('send', 'event', 'PWA-install', choiceResult.outcome);
   });
 });

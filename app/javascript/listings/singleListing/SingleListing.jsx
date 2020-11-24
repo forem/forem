@@ -6,8 +6,13 @@ import AuthorInfo from './AuthorInfo';
 import listingPropTypes from './listingPropTypes';
 
 export class SingleListing extends Component {
-
-  listingContent = (listing, currentUserId, onChangeCategory, onOpenModal, onAddTag) => {
+  listingContent = (
+    listing,
+    currentUserId,
+    onChangeCategory,
+    onOpenModal,
+    onAddTag,
+  ) => {
     return (
       <div className="relative">
         <Header
@@ -25,7 +30,13 @@ export class SingleListing extends Component {
     );
   };
 
-  listingInline = (listing, currentUserId, onChangeCategory, onOpenModal, onAddTag) => {
+  listingInline = (
+    listing,
+    currentUserId,
+    onChangeCategory,
+    onOpenModal,
+    onAddTag,
+  ) => {
     return (
       <div
         className="single-listing relative crayons-card"
@@ -38,14 +49,20 @@ export class SingleListing extends Component {
             currentUserId,
             onChangeCategory,
             onOpenModal,
-            onAddTag
+            onAddTag,
           )}
         </div>
       </div>
     );
   };
 
-  listingModal = (listing, currentUserId, onChangeCategory, onOpenModal, onAddTag) => {
+  listingModal = (
+    listing,
+    currentUserId,
+    onChangeCategory,
+    onOpenModal,
+    onAddTag,
+  ) => {
     return (
       <div
         className="single-listing relative"
@@ -66,25 +83,29 @@ export class SingleListing extends Component {
   };
 
   render() {
-    const { listing, currentUserId, onChangeCategory, onOpenModal, isOpen, onAddTag } = this.props;
-    return (
-      isOpen ?
-        this.listingModal(
+    const {
+      listing,
+      currentUserId,
+      onChangeCategory,
+      onOpenModal,
+      isOpen,
+      onAddTag,
+    } = this.props;
+    return isOpen
+      ? this.listingModal(
           listing,
           currentUserId,
           onChangeCategory,
           onOpenModal,
-          onAddTag
+          onAddTag,
         )
-        :
-        this.listingInline(
+      : this.listingInline(
           listing,
           currentUserId,
           onChangeCategory,
           onOpenModal,
-          onAddTag
-        )
-    );
+          onAddTag,
+        );
   }
 }
 
@@ -94,7 +115,7 @@ SingleListing.propTypes = {
   onChangeCategory: PropTypes.func.isRequired,
   isOpen: PropTypes.bool.isRequired,
   currentUserId: PropTypes.number,
-  onAddTag: PropTypes.func.isRequired
+  onAddTag: PropTypes.func.isRequired,
 };
 
 SingleListing.defaultProps = {

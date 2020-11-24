@@ -42,12 +42,9 @@ const AuthorInfo = ({ listing, onCategoryClick }) => {
           className="crayons-avatar__image"
         />
       </a>
-      
+
       <div>
-        <a
-          href={`/${username}`}
-          className="crayons-link fw-medium"
-        >
+        <a href={`/${username}`} className="crayons-link fw-medium">
           {name}
         </a>
         <p className="fs-xs">

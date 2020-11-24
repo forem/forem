@@ -16,7 +16,7 @@ export default function hideBlockedContent() {
     if (div.className.includes('single-article')) {
       div.style.display = 'none';
     } else if (div.className.includes('single-comment-node')) {
-      const divInnerComment = div.querySelector('div.inner-comment');
+      const divInnerComment = div.getElementsByClassName('inner-comment')[0];
       divInnerComment.innerHTML = `
         <div class="body " style="padding-bottom:32px;opacity:0.3;user-select:none;cursor:default">
           [blocked content]

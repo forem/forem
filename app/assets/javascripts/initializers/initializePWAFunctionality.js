@@ -1,19 +1,22 @@
 'use strict';
 
 function initializePWAFunctionality() {
-  if (window.matchMedia('(display-mode: standalone)').matches || window.frameElement) {
+  if (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.frameElement
+  ) {
     document
       .getElementById('pwa-nav-buttons')
       .classList.add('pwa-nav-buttons--showing');
-    document.getElementById('app-back-button').onclick = e => {
+    document.getElementById('app-back-button').onclick = (e) => {
       e.preventDefault();
       window.history.back();
     };
-    document.getElementById('app-forward-button').onclick = e => {
+    document.getElementById('app-forward-button').onclick = (e) => {
       e.preventDefault();
       window.history.forward();
     };
-    document.getElementById('app-refresh-button').onclick = e => {
+    document.getElementById('app-refresh-button').onclick = (e) => {
       e.preventDefault();
       window.location.reload();
     };
