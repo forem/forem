@@ -254,6 +254,32 @@ RSpec.describe "UserSettings", type: :request do
         end
       end
     end
+
+    context "when requesting a fetch of the feed", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+      let(:feed_url) { "https://medium.com/feed/@vaidehijoshi" }
+      let(:user) { create(:user, feed_url: feed_url) }
+
+      it "invokes RssReaderFetchUserWorker" do
+        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
+        allow(RssReaderFetchUserWorker).to receive(:perform_async).with(user.id)
+
+        put user_path(user.id), params: { user: { feed_url: feed_url } }
+
+        expect(Feeds::ImportArticlesWorker).not_to have_received(:perform_async)
+        expect(RssReaderFetchUserWorker).to have_received(:perform_async).with(user.id)
+      end
+
+      it "invokes Feeds::ImportArticlesWorker if feeds_import feature flag is on" do
+        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
+        allow(RssReaderFetchUserWorker).to receive(:perform_async).with(user.id)
+        allow(FeatureFlag).to receive(:enabled?).with(:feeds_import).and_return(true)
+
+        put user_path(user.id), params: { user: { feed_url: feed_url } }
+
+        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(user.id)
+        expect(RssReaderFetchUserWorker).not_to have_received(:perform_async).with(user.id)
+      end
+    end
   end
 
   describe "POST /users/update_language_settings" do

@@ -267,6 +267,50 @@ RSpec.describe User, type: :model do
       expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
       expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
     end
+
+    context "when validating feed_url with RSSReader", vcr: true do
+      it "is valid with no feed_url" do
+        user.feed_url = nil
+
+        expect(user).to be_valid
+      end
+
+      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
+        user.feed_url = "http://example.com"
+
+        expect(user).not_to be_valid
+      end
+
+      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
+
+        expect(user).to be_valid
+      end
+    end
+
+    context "with Feeds::ValidateUrl" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:feeds_import).and_return(true)
+      end
+
+      it "is valid with no feed_url" do
+        user.feed_url = nil
+
+        expect(user).to be_valid
+      end
+
+      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
+        user.feed_url = "http://example.com"
+
+        expect(user).not_to be_valid
+      end
+
+      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
+
+        expect(user).to be_valid
+      end
+    end
   end
 
   describe "#after_commit" do
