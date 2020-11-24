@@ -1,7 +1,9 @@
 <%= form_for @user do |f| %>
   <div class="crayons-card crayons-card--content-rows">
     <header>
-      <h3>Email Notification Settings</h3>
+      <h2 class="crayons-subtitle-1">
+        Email notifications
+      </h2>
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :email_newsletter, class: "crayons-checkbox" %>
@@ -57,8 +59,13 @@
 
   <div class="crayons-card crayons-card--content-rows">
     <header>
-      <h3 class="mb-2">Mobile Notification Settings (Beta)</h3>
-      <p>Additional settings will be rolled out as new notification features are made available.</p>
+      <h2 class="crayons-subtitle-1 flex items-center gap-2">
+        Mobile notifications
+        <span class="crayons-indicator crayons-indicator--accent">beta</span>
+      </h2>
+      <p class="color-base-70">
+        Additional settings will be rolled out as new notification features are made available.
+      </p>
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :mobile_comment_notifications, class: "crayons-checkbox" %>
@@ -68,8 +75,12 @@
 
   <div class="crayons-card crayons-card--content-rows">
     <header>
-      <h3 class="mb-2">General Notification Settings</h3>
-      <p>Notifications that only appear on the <a href="<%= notifications_path %>">notifications page</a>.</p>
+      <h2 class="crayons-subtitle-1">
+        General notifications
+      </h2>
+      <p class="color-base-70">
+        Notifications that only appear on the <a href="<%= notifications_path %>">notifications page</a>.
+      </p>
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :welcome_notifications, class: "crayons-checkbox" %>
@@ -83,7 +94,9 @@
 
   <% if current_user.trusted %>
     <div class="crayons-card crayons-card--content-rows">
-      <h3>Mod Notification Settings</h3>
+      <h2 class="crayons-subtitle-1">
+        Moderator notifications
+      </h2>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :mod_roundrobin_notifications, class: "crayons-checkbox" %>
         <%= f.label :mod_roundrobin_notifications, "Send me occasional community-success mod notifications", class: "crayons-field__label" %>

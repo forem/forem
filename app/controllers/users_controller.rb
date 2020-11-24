@@ -235,13 +235,16 @@ class UsersController < ApplicationController
     return @tab = "profile" if @tab.blank?
 
     case @tab
+    when "profile"
+      handle_integrations_tab
     when "organization"
       handle_organization_tab
-    when "integrations"
-      handle_integrations_tab
     when "billing"
       handle_billing_tab
     when "response-templates"
+      handle_response_templates_tab
+    when "extensions"
+      handle_integrations_tab
       handle_response_templates_tab
     else
       not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
