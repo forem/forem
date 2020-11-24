@@ -82,7 +82,10 @@ class FollowsController < ApplicationController
   def bulk_update
     @follows = Follow.where(id: params_for_update.keys).includes(:follower, :followable)
     authorize @follows
-    redirect_to "/dashboard/following" if @follows.all? { |follow| follow.update(params_for_update[follow.id.to_s]) }
+    Follow.transaction do
+      @follows.each { |follow| follow.update!(params_for_update[follow.id.to_s]) }
+    end
+    redirect_to dashboard_following_path
   end
 
   private
