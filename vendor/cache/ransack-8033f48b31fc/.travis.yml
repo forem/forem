@@ -1,0 +1,47 @@
+branches: master
+
+language: ruby
+
+rvm:
+  - 2.6.6
+
+services:
+  - mysql
+
+env:
+  - RAILS=v6.1.0.rc1 DB=sqlite3
+  - RAILS=v6.1.0.rc1 DB=mysql
+  - RAILS=v6.1.0.rc1 DB=postgres
+
+  - RAILS=v6.0.3 DB=sqlite3
+  - RAILS=v6.0.3 DB=mysql
+  - RAILS=v6.0.3 DB=postgres
+
+  - RAILS=6-0-stable DB=sqlite3
+  - RAILS=6-0-stable DB=mysql
+  - RAILS=6-0-stable DB=postgres
+
+  - RAILS=5-2-stable DB=sqlite3
+  - RAILS=5-2-stable DB=mysql
+  - RAILS=5-2-stable DB=postgres
+
+  - RAILS=v5.2.4 DB=sqlite3
+  - RAILS=v5.2.4 DB=mysql
+  - RAILS=v5.2.4 DB=postgres
+
+before_script:
+  - if [ "$DB" = "mysql" ];
+    then
+      mysql -e 'create database ransack collate utf8_general_ci;';
+      mysql -e 'use ransack;show variables like "%character%";show variables like "%collation%";';
+    fi
+
+  - if [ "$DB" = "postgres" ];
+    then
+      psql -c 'create database ransack;' -U postgres;
+    fi
+
+addons:
+  code_climate:
+    repo_token: 8b701c4364d51a0217105e08c06922d600cec3d9e60d546a89e3ddfe46e0664e
+  postgresql: "9.6"
