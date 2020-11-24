@@ -129,6 +129,7 @@ RSpec.describe "Pages", type: :request do
     let(:user) { create(:user, id: 1) }
 
     it "redirects to the latest welcome thread" do
+      user.add_role(:admin)
       earlier_welcome_thread = create(:article, user: user, tags: "welcome")
       earlier_welcome_thread.update(published_at: Time.current - 1.week)
       latest_welcome_thread = create(:article, user: user, tags: "welcome")
