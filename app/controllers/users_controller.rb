@@ -40,7 +40,10 @@ class UsersController < ApplicationController
     set_current_tab(params["user"]["tab"])
 
     if @user.update(permitted_attributes(@user))
-      RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
+      # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
+      # explicitly requested "Feed fetch now" or simply updated any other field
+      import_articles_from_feed(@user)
+
       notice = "Your profile was successfully updated."
       if config_changed?
         notice = "Your config has been updated. Refresh to see all changes."
@@ -324,5 +327,13 @@ class UsersController < ApplicationController
 
   def destroy_request_in_progress?
     Rails.cache.exist?("user-destroy-token-#{@user.id}")
+  end
+
+  def import_articles_from_feed(user)
+    return if user.feed_url.blank?
+
+    worker = FeatureFlag.enabled?(:feeds_import) ? Feeds::ImportArticlesWorker : RssReaderFetchUserWorker
+
+    worker.perform_async(user.id)
   end
 end
