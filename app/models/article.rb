@@ -112,7 +112,7 @@ class Article < ApplicationRecord
 
   scope :admin_published_with, lambda { |tag_name|
     published
-      .where(user_id: User.with_role(:super_admin).pluck(:id) + User.with_role(:admin).pluck(:id))
+      .where(user_id: User.with_role(:super_admin).union(User.with_role(:admin)).select(:id))
       .order(published_at: :desc)
       .tagged_with(tag_name)
   }
