@@ -15,13 +15,15 @@
 
     <div class="crayons-layout__content mb-5" id="user-dashboard">
       <% if @followed_tags.any? %>
+        <%= javascript_packs_with_chunks_tag "disableUnchangedButton", defer: true %>
+
         <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0">
             Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
             <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
         </div>
 
-        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, id: 'follows_update_form' do |f| %>
-          <button type="submit" class="crayons-btn crayons-btn--secondary crayons-btn--m mb-3" name="commit">Update Weight</button>
+        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, id: "follows_update_form" do |f| %>
+          <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit">Update Weights</button>
         <% end %>
         
         <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
@@ -45,9 +47,8 @@
                 </p>
 
                 <%= fields(follow) do |f| %>
-                  <%= f.hidden_field(:id, name: "follows[][id]", form: 'follows_update_form') %>
-                  <%= f.label(:points, "Follow weight:", class: "fs-s flex-1 pr-2 color-base-60 align-left whitespace-nowrap") %>
-                  <%= f.number_field(:points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: 'follows[][points]', form: 'follows_update_form', onchange: 'addChanged(this)') %>
+                  <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form") %>
+                  <%= f.number_field(:points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][points]", form: "follows_update_form") %>
                 <% end %>
               </div>
             <% end %>
@@ -60,36 +61,3 @@
     </div>
   </div>
 </main>
-
-<script>
-  document.getElementById('follows_update_form').addEventListener('submit', checkChanged)
-  
-  function addChanged(element) {
-    element.setAttribute('changed', true);
-  };
-
-  function checkChanged(event) {
-    if (document.querySelector('input[changed]')) {
-      disableAllUnchanged();
-    }
-    else {
-      event.preventDefault();
-    }
-  };
-
-  function disableAllUnchanged() {
-    document.querySelectorAll('div[id^="follows"]').forEach(disableUnchanged)
-  };
-
-  function disableUnchanged(item) {
-    item = item.getElementsByTagName('input')
-    var id = item[0]
-    var point = item[1]
-
-    if (!point.hasAttribute('changed')) {
-      point.setAttribute('disabled', true)
-      id.setAttribute('disabled', true)
-    }
-  };
-
-</script>

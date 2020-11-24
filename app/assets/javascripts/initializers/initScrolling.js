@@ -124,10 +124,9 @@ function buildTagsHTML(tag) {
     '<input name="follows[][id]" id="follow_id" type="hidden" form="follows_update_form" value="' +
     tag.id +
     '">' +
-    '<label for="follow_points" class="fs-s flex-1 pr-2 color-base-60 align-left whitespace-nowrap">Follow weight:</label>' +
     '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="' +
     tag.points +
-    '" name="follow[][points]" id="follow_points" onchange="addChanged(this)">' +
+    '" name="follows[][points]" id="follow_points">' +
     '</div>'
   );
 }
