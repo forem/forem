@@ -9,9 +9,11 @@ class NewProfileForm extends Component {
   constructor(props) {
     super(props);
 
+    this.handleChange = this.handleChange.bind(this);
     this.user = userData();
     this.state = {
-      groups: []
+      groups: [],
+      formValues: {}
     };
   }
 
@@ -36,10 +38,44 @@ class NewProfileForm extends Component {
     });
   }
 
+  onSubmit() {
+    // const csrfToken = getContentOfToken('csrf-token');
+    // const { formValues, last_onboarding_page } = this.state;
+    // fetch('/onboarding_update', {
+    //   method: 'PATCH',
+    //   headers: {
+    //     'X-CSRF-Token': csrfToken,
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ user: { ...formValues, last_onboarding_page } }),
+    //   credentials: 'same-origin',
+    // }).then((response) => {
+    //   if (response.ok) {
+    //     const { next } = this.props;
+    //     next();
+    //   }
+    // });
+  }
+
+  handleChange(e) {
+    const { formValues } = { ...this.state };
+    const currentFormState = formValues;
+    const { name, value } = e.target;
+
+    currentFormState[name] = value
+  // Once we've derived the new form values, check if the form is empty
+    // and use that value to set the `canSkip` property on the state.
+    const formIsEmpty =
+      Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
+
+    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+    console.log(currentFormState);
+  }
+
   checkboxField(field) {
     return (
       <div class="crayons-field crayons-field--checkbox">
-        <input class="crayons-checkbox" type="checkbox" name="profile[field.attribute_name]" id="profile[field.attribute_name]"></input>
+        <input class="crayons-checkbox" type="checkbox" name={field.attribute_name} id={field.attribute_name} onChange={this.handleChange}></input>
         <label class="crayons-field__label" for="profile[field.attribute_name]">
           {field.label}
         </label>
@@ -54,7 +90,7 @@ class NewProfileForm extends Component {
         <label class="crayons-field__label" for="profile[field.attribute_name]">
           {field.label}
         </label>
-        <input class="crayons-textfield" placeholder_text={field["placeholder_text"]} name="profile[field.attribute_name]" id="profile[field.attribute_name]"></input>
+        <input class="crayons-textfield" placeholder_text={field["placeholder_text"]} name={field.attribute_name} id={field.attribute_name} onChange={this.handleChange}></input>
         {field.description && <p class="crayons-field__description">{field.description}</p>}
       </div>
     )
@@ -67,8 +103,8 @@ class NewProfileForm extends Component {
           {field.label}
         </label>
         <div class="flex items-center w-100 m:w-50">
-          <input class="crayons-textfield js-color-field" placeholder_text={field["placeholder_text"]} name="profile[field.attribute_name]" id="profile[field.attribute_name]"></input>
-          <input class="crayons-color-selector js-color-field ml-2" placeholder_text={field["placeholder_text"]} name="profile[field.attribute_name]" id="profile[field.attribute_name]"></input>
+          <input class="crayons-textfield js-color-field" placeholder_text={field["placeholder_text"]} name={field.attribute_name} id={field.attribute_name}></input>
+          <input class="crayons-color-selector js-color-field ml-2" placeholder_text={field["placeholder_text"]} name={field.attribute_name} id={field.attribute_name}></input>
           {field.description && <p class="crayons-field__description">{field.description}</p>}
         </div>
       </div>
