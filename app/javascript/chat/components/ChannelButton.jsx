@@ -6,7 +6,7 @@ import ChannelImage from './ChannelImage';
 import { Button } from '@crayons';
 
 /**
- * Render the cahnnel button
+ * Render the channel button
  * @param {object} props
  * 
  * @component
