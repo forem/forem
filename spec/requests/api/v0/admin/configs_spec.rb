@@ -34,7 +34,7 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         get api_admin_config, headers: headers
 
-        expect(response.status).to eq 401
+        expect(response).to have_http_status(:unauthorized)
         expect(response.parsed_body["error"]).to eq "unauthorized"
       end
     end
@@ -42,7 +42,7 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
     context "when no user" do
       it "renders unauthorized json" do
         get api_admin_config
-        expect(response.status).to eq 401
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
