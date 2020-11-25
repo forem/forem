@@ -188,6 +188,11 @@ article in the user's reading list.
 How a user keeps track of the tags, users, or articles they care about. Follows
 impact a user's home feed and notifications.
 
+Follows can have a "score" which indicates how much a user wants to see the element
+in their feed. Currently we only calculate these for tag follows, but it could be
+expanded to users. The user can set an "explicit" score, and the system also calculates
+an "implicit" score based on their activity.
+
 ## Roles
 
 Through the "rolify" gem, users can have roles like "admin", etc. A role can

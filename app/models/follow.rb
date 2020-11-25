@@ -31,6 +31,7 @@ class Follow < ApplicationRecord
   after_create :send_email_notification
   before_destroy :modify_chat_channel_status
   after_save :touch_follower
+  before_save :calculate_points
   after_create_commit :create_chat_channel
 
   validates :blocked, inclusion: { in: [true, false] }
@@ -45,6 +46,10 @@ class Follow < ApplicationRecord
   end
 
   private
+
+  def calculate_points
+    self.points = explicit_points + implicit_points
+  end
 
   def touch_follower
     follower.touch(:updated_at, :last_followed_at)
