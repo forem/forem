@@ -105,6 +105,20 @@ differently than expected.
 Abstracting and removing these caveats is a long term goal, and contribution on
 that front is welcome!
 
+We use the parameter `i=i` (i for internal) to indicate to the backend that we only
+want the "internal" version of the page (the one without the top nav and footer, etc.)
+
+## URLS and constraints
+
+Because we use the top directory for user-generated pages, we need to be aware of
+some constraints. `some-forem.com/sophia` could be a user, a page, an organization,
+or a previously banished user. We allow users to retain two redirects and should
+use `:moved_permanently` when a user changes their username.
+
+Because we may silently insert `?i=i` on the frontend to indicate internal nav, we 
+need to maintain that parameter if we are redirecting. We use the method
+`redirect_permanently_to(location)` to encompass all of this behavior.
+
 # General app concepts
 
 ## Articles (or posts)
