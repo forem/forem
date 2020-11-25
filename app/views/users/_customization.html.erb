@@ -61,7 +61,10 @@
           <%= render partial: "experience_selector", locals: { f: f, exp: exp, i: i, label: user_experience_labels } %>
         <% end %>
       </div>
-      <p>This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.</p>
+      <p>
+        This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are
+        shown along with tags you follow etc.
+      </p>
     </div>
   </div>
 
@@ -80,15 +83,17 @@
       </p>
     </header>
 
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :display_sponsors, class: "crayons-checkbox" %>
-      <%= f.label :display_sponsors, "Display Sponsors (When browsing)", class: "crayons-field__label" %>
-    </div>
+    <fieldset class="grid gap-4">
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :display_sponsors, class: "crayons-checkbox" %>
+        <%= f.label :display_sponsors, "Display Sponsors (When browsing)", class: "crayons-field__label" %>
+      </div>
 
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :permit_adjacent_sponsors, class: "crayons-checkbox" %>
-      <%= f.label :permit_adjacent_sponsors, "Permit Nearby Sponsors (When publishing)", class: "crayons-field__label" %>
-    </div>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :permit_adjacent_sponsors, class: "crayons-checkbox" %>
+        <%= f.label :permit_adjacent_sponsors, "Permit Nearby Sponsors (When publishing)", class: "crayons-field__label" %>
+      </div>
+    </fieldset>
   </div>
 
   <div class="crayons-card crayons-card--content-rows">
@@ -102,10 +107,12 @@
       </p>
     </header>
 
-    <div class="crayons-field crayons-field--checkbox">
-      <%= f.check_box :display_announcements, class: "crayons-checkbox" %>
-      <%= f.label :display_announcements, "Display Announcements (When browsing)", class: "crayons-field__label" %>
-    </div>
+    <fieldset class="grid gap-4">
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :display_announcements, class: "crayons-checkbox" %>
+        <%= f.label :display_announcements, "Display Announcements (When browsing)", class: "crayons-field__label" %>
+      </div>
+    </fieldset>
   </div>
 
   <div class="save-footer crayons-card crayons-card--content-rows">
