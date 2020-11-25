@@ -9,17 +9,18 @@
       <div>
     </h2>
     <p>Select which languages you'd prefer to see in your feed.</p>
-    <p>This setting controls which languages you are more likely to see throughout the site, but you may still see other languages, especially English.</p>
+    <p>
+      This setting controls which languages you are more likely to see throughout the site,
+      but you may still see other languages, especially English.
+    </p>
   </header>
 
-  <%= form_tag users_update_language_settings_path, class: "grid gap-4"  do |f| %>
-    <% Languages::LIST.each do |code, name| %>
-      <label class="crayons-field crayons-field--checkbox">
-        <%= check_box_tag "user[preferred_languages][]", code, @user.preferred_languages_array&.include?(code), class: "crayons-checkbox" %>
-        <div class="crayons-field__label"><%= name %></div>
-      </label>
-    <% end %>
-    <%= hidden_field_tag :tab, value: @tab %>
-      <div class="mt-6"><button type="submit" class="crayons-btn">Save Language Settings</button></div>
+  <% Languages::LIST.each do |code, name| %>
+    <label class="crayons-field crayons-field--checkbox">
+      <%= check_box_tag "user[preferred_languages][]",
+                        code, @user.preferred_languages_array&.include?(code),
+                        class: "crayons-checkbox" %>
+      <div class="crayons-field__label"><%= name %></div>
+    </label>
   <% end %>
 </div>

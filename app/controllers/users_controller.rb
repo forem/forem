@@ -1,9 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
-  before_action :set_user, only: %i[
-    update update_language_settings confirm_destroy request_destroy full_delete remove_identity
-  ]
+  before_action :set_user, only: %i[update confirm_destroy request_destroy full_delete remove_identity]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
@@ -39,7 +37,12 @@ class UsersController < ApplicationController
   def update
     set_current_tab(params["user"]["tab"])
 
-    if @user.update(permitted_attributes(@user))
+    # preferred_languages is handled manually
+    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
+
+    @user.attributes = permitted_attributes(@user)
+
+    if @user.save
       # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
       # explicitly requested "Feed fetch now" or simply updated any other field
       import_articles_from_feed(@user)
@@ -66,18 +69,6 @@ class UsersController < ApplicationController
         flash[:error] = @user.errors.full_messages.join(", ")
         redirect_to "/settings"
       end
-    end
-  end
-
-  def update_language_settings
-    set_current_tab("misc")
-    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
-    if @user.save
-      flash[:settings_notice] = "Your language settings were successfully updated."
-      @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}"
-    else
-      render :edit
     end
   end
 

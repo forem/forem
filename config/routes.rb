@@ -367,7 +367,6 @@ Rails.application.routes.draw do
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     # Settings
-    post "users/update_language_settings" => "users#update_language_settings"
     post "users/join_org" => "users#join_org"
     post "users/leave_org/:organization_id" => "users#leave_org", :as => :users_leave_org
     post "users/add_org_admin" => "users#add_org_admin"
