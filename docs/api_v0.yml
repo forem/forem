@@ -1731,8 +1731,8 @@ components:
         profile_image: https://res.cloudinary.com/...jpeg
 
 tags:
-  - name: adminconfigs
-    description: Configs is the site-wide configuration set by admins (requires authorization)
+  - name: admin-configuration
+    description: Site-wide configuration set by admins (requires super admin authorization)
   - name: articles
     description: Articles are all the posts users create on DEV
   - name: comments
