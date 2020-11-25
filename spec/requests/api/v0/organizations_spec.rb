@@ -10,7 +10,7 @@ RSpec.describe "Api::V0::Organizations", type: :request do
     end
 
     it "returns the correct json representation of the organization", :aggregate_failures do
-      get "/api/organizations/#{organization.username}"
+      get api_organization_path(organization.username)
 
       response_organization = response.parsed_body
 
@@ -38,28 +38,31 @@ RSpec.describe "Api::V0::Organizations", type: :request do
     it "supports pagination" do
       create(:organization_membership, user: create(:user), organization: organization)
 
-      get "/api/organizations/#{organization.username}/users", params: { page: 1, per_page: 1 }
+      get api_organization_users_path(organization.username), params: { page: 1, per_page: 1 }
       expect(response.parsed_body.length).to eq(1)
 
-      get "/api/organizations/#{organization.username}/users", params: { page: 2, per_page: 1 }
+      get api_organization_users_path(organization.username), params: { page: 2, per_page: 1 }
       expect(response.parsed_body.length).to eq(1)
 
-      get "/api/organizations/#{organization.username}/users", params: { page: 3, per_page: 1 }
+      get api_organization_users_path(organization.username), params: { page: 3, per_page: 1 }
       expect(response.parsed_body.length).to eq(0)
     end
 
     it "returns the correct json representation of the organizations users", :aggregate_failures do
-      get "/api/organizations/#{organization.username}/users"
+      get api_organization_users_path(organization.username)
 
-      response_org_users = response.parsed_body
+      response_org_users = response.parsed_body.first
+
+      expect(response_org_users["type_of"]).to eq("user")
 
       %w[
-        username name twitter_username github_username website_url
+        id username name summary twitter_username github_username website_url location
       ].each do |attr|
-        expect(response_org_users.first[attr]).to eq(org_user.public_send(attr))
+        expect(response_org_users[attr]).to eq(org_user.public_send(attr))
       end
 
-      expect(response_org_users.first["profile_image_url"]).to eq(org_user["profile_image_url"])
+      expect(response_org_users["joined_at"]).to eq(org_user.created_at.strftime("%b %e, %Y"))
+      expect(response_org_users["profile_image"]).to eq(Images::Profile.call(org_user.profile_image_url, length: 320))
     end
   end
 end
