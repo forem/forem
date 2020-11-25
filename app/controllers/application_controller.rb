@@ -80,6 +80,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def redirect_permanently_to(location)
+    redirect_to location + internal_nav_param, status: :moved_permanently
+  end
+
   def customize_params
     params[:signed_in] = user_signed_in?.to_s
   end
@@ -177,5 +181,11 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+  end
+
+  def internal_nav_param
+    return "" unless params[:i] == "i"
+
+    "?i=i"
   end
 end
