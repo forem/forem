@@ -47,6 +47,20 @@ module SidekiqTestHelpers
     expect(matching_job).to be_present, "No enqueued job found with #{expected}"
   end
 
+  def sidekiq_assert_not_enqueued_with(job: nil, args: nil, at: nil, queue: nil)
+    expected = { job: job, args: args, at: at, queue: queue }.compact
+    expected_args = Utils.prepare_args(expected)
+
+    yield
+
+    # check there's at least one job with the given args
+    matching_job = job.jobs.detect do |queued_job|
+      expected_args.all? { |key, value| value == queued_job[key] }
+    end
+
+    expect(matching_job).not_to be_present, "Job unexpectedly found with #{expected}"
+  end
+
   # Asserts that no jobs have been enqueued.
   # see <https://api.rubyonrails.org/v5.2/classes/ActiveJob/TestHelper.html#method-i-assert_no_enqueued_jobs>
   def sidekiq_assert_no_enqueued_jobs(only: nil, except: nil, &block)
