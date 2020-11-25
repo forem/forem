@@ -42,8 +42,8 @@ Pull Requests should include accessibility testing to prevent barriers from
 making it into the codebase. Sometimes issues found may be out of scope for a
 particular PR – those can be opened as separate issues to be followed up on.
 
-Test the functionality in web browsers for accessibility impact: Chrome,
-Firefox, and IE 11 were popular for Windows screen reader users in 2019
+Test the functionality in Forem-supported browsers for accessibility impact:
+Chrome and Firefox were popular for Windows screen reader users in 2019
 [according to WebAIM](https://webaim.org/projects/screenreadersurvey8/#browsers).
 Safari is the most common choice for Voiceover users on the Mac, even if Chrome
 is widely used for development. Mobile browsers are worth checking, too.
