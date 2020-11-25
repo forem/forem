@@ -9,14 +9,15 @@ module Api
       ].freeze
       private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
 
-      ORG_USERS_FOR_SERIALIZATION = %i[
-        id username name twitter_username github_username profile_image website_url
+      USERS_FOR_SERIALIZATION = %i[
+        id username name twitter_username github_username
+        profile_image website_url location summary created_at
       ].freeze
-      private_constant :ORG_USERS_FOR_SERIALIZATION
+      private_constant :USERS_FOR_SERIALIZATION
 
       def show
         @organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-          .find_by!(username: params[:org_username])
+          .find_by!(username: params[:username])
       end
 
       def users
@@ -24,13 +25,13 @@ module Api
         num = [per_page, 1000].min
         page = params[:page] || 1
 
-        @users = @organization.users.select(ORG_USERS_FOR_SERIALIZATION).page(page).per(num)
+        @users = @organization.users.select(USERS_FOR_SERIALIZATION).page(page).per(num)
       end
 
       private
 
       def find_organization
-        @organization = Organization.find_by!(username: params[:org_username])
+        @organization = Organization.find_by!(username: params[:organization_username])
       end
     end
   end
