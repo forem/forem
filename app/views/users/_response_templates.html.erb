@@ -1,57 +1,69 @@
-<h3>Personal Response Templates</h3>
-<p class="mb-6">Response templates are snippets that you can re-use for quick and accurate comments.</p>
+<div class="crayons-card crayons-card--content-rows">
+  <header>
+    <h2 class="crayons-subtitle-1">
+      Comment templates
+    </h2>
+    <p class="color-base-70">
+      Create and save <strong> comment templates</strong> that you can reuse.</p>
+    </p>
+  </header>
 
-<% if @response_templates.present? %>
-  <div class="crayons-card crayons-card--content-rows">
-    <h3>Your templates</h3>
-
-    <div class="github-repos-container -mt-4">
-      <div class="github-repos">
+  <% if @response_templates.present? %>
+    <section>
+      <h3 class="crayons-subtitle-3">
+        Saved templates
+      </h3>
       <% @response_templates.each do |response_template| %>
-        <div class="github-repo-row <%= "github-repo-row-featured" if response_template.id == params[:id].to_i %>">
-          <div class="github-repo-row-name flex items-center crayons-card crayons-card--secondary p-2 pl-4 mt-2">
-            <div class="flex-1">
-              <%= response_template.title %>
-            </div>
-            <div class="flex">
-              <%= form_with url: response_template_path(response_template.id), method: :delete, local: true, html: { onsubmit: "return confirm('Are you sure you want to delete: #{response_template.title}?');" } do %>
-                <button type="submit" class="crayons-btn crayons-btn--secondary">Remove</button>
-              <% end %>
-              <a class="crayons-btn crayons-btn--secondary ml-2" href="/settings/response-templates/<%= response_template.id %>" role="button">Edit</a>
+          <div class="<%= "github-repo-row-featured" if response_template.id == params[:id].to_i %> mb-4">
+            <div class="flex items-center py-2 mt-2">
+              <div class="flex-1 ff-monospace">
+                <%= response_template.title %>
+              </div>
+              <div class="flex">
+                <%= form_with url: response_template_path(response_template.id), method: :delete, local: true, html: { onsubmit: "return confirm('Are you sure you want to delete: #{response_template.title}?');" } do %>
+                  <button type="submit" class="crayons-btn crayons-btn--secondary">Remove</button>
+                <% end %>
+                <a class="crayons-btn crayons-btn--secondary ml-2" href="/settings/response-templates/<%= response_template.id %>" role="button">Edit</a>
+              </div>
             </div>
           </div>
-        </div>
-      <% end %>
-      </div>
-    </div>
-  </div>
-<% end %>
+        <% end %>
+      </section>
+    <% end %>
 
-<%= form_with model: @response_template do |f| %>
-  <div class="crayons-card crayons-card--content-rows">
-    <header>
+  <%= form_with model: @response_template do |f| %>
+    <section class="flex flex-col gap-3">
       <% if @response_template.persisted? %>
         <% title = params[:previous_title] || @response_template.title %>
         <% content = params[:previous_content] || @response_template.content %>
-        <h3>Editing a response template</h3>
+        <h3 class="crayons-subtitle-3">
+          Edit comment template
+        </h3>
         <a href="/settings/response-templates">Create a new response template</a>
+
       <% else %>
         <% title = params[:previous_title] %>
         <% content = params[:previous_content] %>
-        <h3>Add a new response template</h3>
+        <h3 class="crayons-subtitle-3">
+          Add new comment template
+        </h3>
       <% end %>
-    </header>
 
-    <div class="crayons-field">
-      <%= f.label :title, class: "crayons-field__label" %>
-      <%= f.text_field :title, placeholder: "...", value: title, class: "crayons-textfield" %>
-      <p class="crayons-field__description">Memorable cue for template</p>
-    </div>
-    <div class="crayons-field">
-      <%= f.label :content, "Comment body (Markdown)", class: "crayons-field__label" %>
-      <%= f.text_area :content, value: content, class: "crayons-textfield" %>
-    </div>
+      <div class="crayons-field">
+        <%= f.label :title, class: "crayons-field__label" %>
+        <p class="crayons-field__description">
+          Memorable cue for template
+        </p>
+        <%= f.text_field :title, placeholder: "...", value: title, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :content, "Comment body (Markdown)", class: "crayons-field__label" %>
+        <%= f.text_area :content, value: content, class: "crayons-textfield" %>
+      </div>
 
-    <div><button type="submit" class="crayons-btn">Save template</button></div>
+      <div>
+        <button type="submit" class="crayons-btn">Save template</button>
+      </div>
+    </section>
+  <% end %>
   </div>
-<% end %>
