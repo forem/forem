@@ -75,15 +75,14 @@ is widely used for development. Mobile browsers are worth checking, too.
 ### Additional accessibility tests for PR reviews
 
 1. Screen reader testing
+   - Get feedback from people who use screen readers regularly if at all
+     possible.
+   - Understand that if you're a new screen reader user, there might be a
+     learning curve that can impact your results.
    - Navigate through a UI change using a screen reader such as Mac
      [Voiceover with Safari](https://webaim.org/articles/voiceover/), and
      [NVDA](https://webaim.org/articles/nvda/) with Firefox or Chrome on
      Windows.
-   - Understand that if you're a new screen reader user, there might be a
-     learning curve that can impact your results. (hence this being
-     "additional").
-   - Get feedback from people who use screen readers regularly if at all
-     possible.
 1. Zoom and magnification
    - In the web browser, try zooming in from 200% to 500%.
    - Would the layout or change of functionality be impacted by someone needing
