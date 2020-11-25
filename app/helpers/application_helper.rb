@@ -154,11 +154,8 @@ module ApplicationHelper
   end
 
   def logo_svg
-    if SiteConfig.logo_svg.present?
-      SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
-    else
-      inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
-    end
+    SiteConfig.logo_svg.presence || inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true,
+                                                                   title: "App logo")
   end
 
   def safe_logo_url(logo)
