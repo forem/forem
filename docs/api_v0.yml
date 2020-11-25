@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.2"
+  version: "0.9.3"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -1683,6 +1683,20 @@ components:
         joined_at: Jan 1, 2017
         profile_image: https://res.cloudinary.com/...jpeg
 
+    Users:
+      value:
+        - type_of: user
+          id: 1234
+          username: bob
+          name: bob
+          summary: Hello, world
+          twitter_username: bob
+          github_username: bob
+          website_url:
+          location: New York
+          joined_at: Jan 1, 2017
+          profile_image: https://res.cloudinary.com/...jpeg
+
     WebhookCreate:
       value:
         webhook_endpoint:
@@ -2986,7 +3000,7 @@ paths:
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/readinglist
 
-  /organizations/{org_username}:
+  /organizations/{username}:
     get:
       operationId: getOrganization
       summary: An organization
@@ -2995,7 +3009,7 @@ paths:
       tags:
         - organizations
       parameters:
-        - name: org_username
+        - name: username
           in: path
           required: true
           description: |
@@ -3027,6 +3041,54 @@ paths:
           label: curl
           source: |
             curl https://dev.to/api/organizations/ecorp
+
+  /organizations/{username}/users:
+    get:
+      operationId: getOrgUsers
+      summary: Organization's users
+      description: |
+        This endpoint allows the client to retrieve a list of users belonging to the organization
+
+        It supports pagination, each page will contain `30` users by default.
+      tags:
+        - organizations
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: |
+            Username of the organization
+          schema:
+            type: string
+          example: "ecorp"
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
+      responses:
+        "200":
+          description: A list of users belonging to the organization
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              examples:
+                user-success:
+                  $ref: "#/components/examples/Users"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                user-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/organizations/ecorp/users
 
   /podcast_episodes:
     get:
