@@ -1147,30 +1147,6 @@ components:
           description: Profile image (640x640)
           format: url
 
-    OrgUser:
-      description: Org user
-      type: object
-      properties:
-        type_of:
-          type: string
-        username:
-          type: string
-        name:
-          type: string
-        twitter_username:
-          type: string
-          nullable: true
-        github_username:
-          type: string
-          nullable: true
-        website_url:
-          type: string
-          format: url
-        profile_image:
-          type: string
-          description: Profile image (640x640)
-          format: url
-
   examples:
     ErrorBadRequest:
       value:
@@ -1702,6 +1678,20 @@ components:
         joined_at: Jan 1, 2017
         profile_image: https://res.cloudinary.com/...jpeg
 
+    Users:
+      value:
+        - type_of: user
+          id: 1234
+          username: bob
+          name: bob
+          summary: Hello, world
+          twitter_username: bob
+          github_username: bob
+          website_url:
+          location: New York
+          joined_at: Jan 1, 2017
+          profile_image: https://res.cloudinary.com/...jpeg
+
     WebhookCreate:
       value:
         webhook_endpoint:
@@ -1749,16 +1739,6 @@ components:
         tag_line: 
         story:
         profile_image: https://res.cloudinary.com/...jpeg
-
-    OrgUser:
-      value:
-        - type_of: org_user
-          username: miltonwaddams
-          name: Milton Waddams
-          twitter_username: stapler
-          github_username: stapler
-          website_url: https://stapler.internet
-          profile_image: https://res.cloudinary.com/...jpeg
 
 tags:
   - name: articles
@@ -3015,7 +2995,7 @@ paths:
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/readinglist
 
-  /organizations/{org_username}:
+  /organizations/{username}:
     get:
       operationId: getOrganization
       summary: An organization
@@ -3024,7 +3004,7 @@ paths:
       tags:
         - organizations
       parameters:
-        - name: org_username
+        - name: username
           in: path
           required: true
           description: |
@@ -3057,18 +3037,18 @@ paths:
           source: |
             curl https://dev.to/api/organizations/ecorp
 
-  /organizations/{org_username}/users:
+  /organizations/{username}/users:
     get:
       operationId: getOrgUsers
       summary: Organization's users
       description: |
-        This endpoint allows the client to retrieve a list of an organization's users
+        This endpoint allows the client to retrieve a list of users belonging to the organization
 
         It supports pagination, each page will contain `30` users by default.
       tags:
         - organizations
       parameters:
-        - name: org_username
+        - name: username
           in: path
           required: true
           description: |
@@ -3080,16 +3060,16 @@ paths:
         - $ref: '#/components/parameters/perPageParam30to1000'
       responses:
         "200":
-          description: A list of an organization's users
+          description: A list of users belonging to the organization
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/OrgUser"
+                  $ref: "#/components/schemas/User"
               examples:
                 user-success:
-                  $ref: "#/components/examples/OrgUser"
+                  $ref: "#/components/examples/Users"
         "404":
           description: Resource not found
           content:
