@@ -4,11 +4,13 @@ title: Accessibility
 
 # Accessibility
 
-To make Forem the most inclusive community platform around, accessibility should be considered to enable people with disabilities to create and consume content.
+To make Forem the most inclusive community platform around, accessibility should
+be considered to enable people with disabilities to create and consume content.
 
 ## The Basics
 
-Forem UI changes should consider accessibility wherever possible. This includes common requirements such as:
+Forem UI changes should consider accessibility wherever possible. Common issues
+to watch out for in frontend code:
 
 - [Adequate color contrast](https://webaim.org/articles/contrast/evaluating)
 - [Semantic structure and headings](https://webaim.org/techniques/semanticstructure/)
@@ -19,7 +21,8 @@ Forem UI changes should consider accessibility wherever possible. This includes 
 
 ## More Advanced Things
 
-If you're working on something JavaScript-heavy or animated, there are a few additional considerations for accessibility:
+If you're working on something JavaScript-heavy or animated, there are a few
+additional considerations for accessibility:
 
 - [Forem Accessibility Tests](https://docs.forem.com/tests/accessibility-tests/)
 - [Intro to ARIA](https://webaim.org/techniques/aria/)
@@ -28,9 +31,16 @@ If you're working on something JavaScript-heavy or animated, there are a few add
 - [Linting with eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y)
 - [Testing with Jest-axe](https://dev.to/bdougieyo/accessibility-testing-in-react-with-jest-axe-l7k)
 
+## Accessibility Testing
+
+See a list of testing steps to follow during development or for a Pull Request
+review on the
+[Forem Accessibility Testing Docs](https://docs.forem.com/tests/accessibility-tests/).
+
 ## Resources
 
-There's a wealth of information out there to learn about digital accessibility! Here are some resources:
+There's a wealth of information out there to learn about digital accessibility!
+Here are some resources:
 
 - [W3C's Web Accessibility Initiative](https://www.w3.org/WAI/)
 - [Web Content Accessibility Guidelines](https://www.w3.org/TR/WCAG21/)
@@ -38,7 +48,7 @@ There's a wealth of information out there to learn about digital accessibility! 
 - [WebAIM](http://webaim.org/)
 - [A11y Project](https://a11yproject.com)
 - [Deque University](https://dequeuniversity.com/)
-- [React Accessibility Docs](https://reactjs.org/docs/accessibility.html) (most will apply to Preact)
+- [React Accessibility Docs](https://reactjs.org/docs/accessibility.html) (most
+  will apply to Preact)
 - [The Importance of Manual Accessibility Testing](https://www.smashingmagazine.com/2018/09/importance-manual-accessibility-testing/)
 - [Accessibility Insights extension](https://accessibilityinsights.com)
-
