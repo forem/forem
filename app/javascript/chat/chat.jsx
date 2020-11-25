@@ -1810,6 +1810,7 @@ export default class Chat extends Component {
             : 'message__delete__modal message__delete__modal__hide crayons-modal crayons-modal--s absolute'
         }
         aria-hidden={showDeleteModal}
+        aria-label="delete confirmation"
         role="dialog"
       >
         <div className="crayons-modal__box">

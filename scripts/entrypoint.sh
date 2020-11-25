@@ -7,8 +7,18 @@ if [ -f tmp/pids/server.pid ]; then
 fi
 
 export RELEASE_FOOTPRINT=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-export FOREM_BUILD_DATE=$(cat FOREM_BUILD_DATE)
-export FOREM_BUILD_SHA=$(cat FOREM_BUILD_SHA)
+
+if [[ "${RAILS_ENV}" = "development" || "${RAILS_ENV}" = "test" ]]; then
+
+  export FOREM_BUILD_DATE=RELEASE_FOOTPRINT
+  export FOREM_BUILD_SHA=$(git rev-parse --short HEAD)
+
+else
+
+  export FOREM_BUILD_DATE=$(cat FOREM_BUILD_DATE)
+  export FOREM_BUILD_SHA=$(cat FOREM_BUILD_SHA)
+
+fi
 
 case "$@" in
 
