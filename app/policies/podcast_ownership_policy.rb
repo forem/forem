@@ -15,7 +15,7 @@ class PodcastOwnershipPolicy < ApplicationPolicy
     update?
   end
 
-  def destroy
+  def destroy?
     update?
   end
 
