@@ -137,22 +137,27 @@
       return;
     }
 
-    // Fetch and/or JS and CSS assets for better persistence than memory cache.
-    if (url.pathname.startsWith("/assets/") || url.pathname.startsWith("/packs/")) {
-      event.respondWith(
-        caches.open(staticCacheName).then(function (cache) {
-          return cache.match(event.request).then(function (response) {
-            return (
-              response ||
-              fetch(event.request).then(function (response) {
-                cache.put(event.request, response.clone());
-                return response;
-              })
-            );
-          });
-        })
-      );
-    }
+    <% if Rails.env.production? %>
+      // We should generally not run this in development
+      // Because the assets will not have cache-busting fingerprints.
+      // Fetch and/or JS and CSS assets for better persistence than memory cache.
+      if (url.pathname.startsWith("/assets/") || url.pathname.startsWith("/packs/")) {
+        event.respondWith(
+          caches.open(staticCacheName).then(function (cache) {
+            return cache.match(event.request).then(function (response) {
+              return (
+                response ||
+                fetch(event.request).then(function (response) {
+                  cache.put(event.request, response.clone());
+                  return response;
+                })
+              );
+            });
+          })
+        );
+      }
+    <% end %>
+
     if (url.origin === location.origin) {
       if (event.clientId === "" && // Not fetched via AJAX after page load.
         event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
