@@ -59,8 +59,14 @@ module Follows
       # On DEV, javascript has way more taggings than rust, for example, so we can
       # help rust outweigh JS in this calculation slightly.
       # The bonus will be applied to the logarithmic scale, as to blunt any outsized impact.
-      top_100_tag_names = Tag.order(hotness_score: :desc).limit(100).pluck(:name)
+      top_100_tag_names = cached_app_wide_top_tag_names
       top_100_tag_names.index(tag.name) || (top_100_tag_names.size * 1.5)
+    end
+
+    def cached_app_wide_top_tag_names
+      Rails.cache.fetch("top-100-tags") do
+        Tag.order(hotness_score: :desc).limit(100).pluck(:name)
+      end
     end
   end
 end
