@@ -53,7 +53,6 @@ describe('<ReadingList />', () => {
   afterEach(() => {
     delete global.fetch;
     delete global.getCsrfToken;
-    delete global.filterXSS;
   });
 
   it('should have no a11y violations', async () => {
