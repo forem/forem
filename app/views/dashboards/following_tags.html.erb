@@ -15,7 +15,7 @@
 
     <div class="crayons-layout__content mb-5" id="user-dashboard">
       <% if @followed_tags.any? %>
-        <%= javascript_packs_with_chunks_tag "disableUnchangedButton", defer: true %>
+        <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
 
         <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0">
             Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
