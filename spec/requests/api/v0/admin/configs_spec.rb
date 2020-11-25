@@ -4,7 +4,7 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
   let(:api_secret) { create(:api_secret) }
   let(:user) { api_secret.user }
 
-  describe "GET /api/admin/configs/all" do
+  describe "GET /api/admin/config" do
     before do
       SiteConfig.community_name = "ANYTHING"
     end

@@ -1768,7 +1768,7 @@ paths:
       description: |
         This endpoint returns the "site config" as set by admin.
       tags:
-        - adminconfig
+        - admin-configuration
       security:
         - api_key: []
         - oauth2: []
