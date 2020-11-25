@@ -16,14 +16,14 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
 
       it "renders json when passed key" do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-        get api_admin_config, headers: headers
+        get api_admin_config_path, headers: headers
 
         expect(response.parsed_body["community_name"]).to eq SiteConfig.community_name
       end
 
       it "renders json when signed in" do
         sign_in user
-        get api_admin_config
+        get api_admin_config_path
 
         expect(response.parsed_body["community_name"]).to eq SiteConfig.community_name
       end
@@ -32,7 +32,7 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
     context "when user is not super admin" do
       it "renders unauthorized json" do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-        get api_admin_config, headers: headers
+        get api_admin_config_path, headers: headers
 
         expect(response).to have_http_status(:unauthorized)
         expect(response.parsed_body["error"]).to eq "unauthorized"
@@ -41,7 +41,7 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
 
     context "when no user" do
       it "renders unauthorized json" do
-        get api_admin_config
+        get api_admin_config_path
         expect(response).to have_http_status(:unauthorized)
       end
     end
