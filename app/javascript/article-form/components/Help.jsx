@@ -99,7 +99,7 @@ export class Help extends Component {
           Jekyll front matter
         </a>
         . You can also use the <em>rich+markdown</em> editor you can find in{' '}
-        <a href="/settings/ux">
+        <a href="/settings/customization">
           UX settings
           <svg
             width="24"
