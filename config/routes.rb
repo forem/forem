@@ -201,11 +201,8 @@ Rails.application.routes.draw do
         end
 
         resources :profile_images, only: %i[show], param: :username
-        resources :organizations, only: [] do
-          collection do
-            get "/:org_username", to: "organizations#show"
-            get "/:org_username/users", to: "organizations#users"
-          end
+        resources :organizations, only: [:show], param: :username do
+          resources :users, only: [:index], to: "organizations#users"
         end
       end
     end
