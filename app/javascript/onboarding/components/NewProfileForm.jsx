@@ -10,10 +10,13 @@ class NewProfileForm extends Component {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
     this.user = userData();
     this.state = {
       groups: [],
-      formValues: {}
+      formValues: {},
+      canSkip: true,
+      last_onboarding_page: 'v2: new personal info form',
     };
   }
 
@@ -39,22 +42,22 @@ class NewProfileForm extends Component {
   }
 
   onSubmit() {
-    // const csrfToken = getContentOfToken('csrf-token');
-    // const { formValues, last_onboarding_page } = this.state;
-    // fetch('/onboarding_update', {
-    //   method: 'PATCH',
-    //   headers: {
-    //     'X-CSRF-Token': csrfToken,
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ user: { ...formValues, last_onboarding_page } }),
-    //   credentials: 'same-origin',
-    // }).then((response) => {
-    //   if (response.ok) {
-    //     const { next } = this.props;
-    //     next();
-    //   }
-    // });
+    const csrfToken = getContentOfToken('csrf-token');
+    const { formValues, last_onboarding_page } = this.state;
+    fetch('/onboarding_update', {
+      method: 'PATCH',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: { ...formValues, last_onboarding_page } }),
+      credentials: 'same-origin',
+    }).then((response) => {
+      if (response.ok) {
+        const { next } = this.props;
+        next();
+      }
+    });
   }
 
   handleChange(e) {
