@@ -1,0 +1,71 @@
+Description:
+    Generates a service object.
+
+Examples:
+    * Generating a service with no arguments:
+
+        $ rails generate service ImportUsers
+
+        # app/services/import_users.rb
+        class ImportUsers
+          def self.call
+            new.call
+          end
+
+          def call
+          end
+        end
+
+        # spec/services/import_users_spec.rb
+        require "rails_helper"
+
+        RSpec.describe ImportUsers, type: :service do
+          pending "add some examples to (or delete) #{__FILE__}"
+        end
+
+    * Generating a service with arguments:
+
+        $ rails generate service ImportUsers users
+
+        # app/services/import_users.rb
+        class ImportUsers
+          def self.call(user)
+            new(user).call
+          end
+
+          def initialize(user)
+            @user = user
+          end
+
+          def call
+          end
+        end
+
+        # spec/servics/import_users_spec.rb
+        # Same as above
+
+    * Generating a namespaced service:
+
+        $ rails generate service users/import users
+
+        # app/services/users/import.rb
+        class Users::Import
+          def self.call(users)
+            new(users).call
+          end
+
+          def initialize(users)
+            @users = users
+          end
+
+          def call
+          end
+        end
+
+        # spec/services/users/import_spec.rb
+        require "rails_helper"
+
+        RSpec.describe Users::Import, type: :service do
+          pending "add some examples to (or delete) #{__FILE__}"
+        end
+

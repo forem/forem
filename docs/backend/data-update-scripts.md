@@ -45,7 +45,7 @@ The generator will also automatically create the corresponding spec file.
 ```ruby
 require "rails_helper"
 require Rails.root.join(
-  "20201103042915_backfill_column_for_articles.rb",
+  "lib/data_updates/20201103042915_backfill_column_for_articles.rb",
 )
 
 describe DataUpdateScripts::BackfillColumnForArticles do

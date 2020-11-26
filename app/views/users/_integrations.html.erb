@@ -1,16 +1,23 @@
-<%= render partial: "users/integrations_github_repositories", locals: { show_integration: @github_repositories_show } %>
-
 <div class="crayons-card crayons-card--content-rows">
-  <h3>Generate a personal blog from your <%= community_name %> posts</h3>
+  <h2 class="crayons-subtitle-1">
+    Generate a personal blog from your <%= community_name %> posts
+  </h2>
   <div class="single-app-integration">
     <% if current_user.decorate.stackbit_integration? %>
       <h3>Connected to Stackbit <sup>beta</sup><img width="20px" style="margin-left:2px;" src="<%= asset_path("checkmark-green.svg") %>" /></h3>
       <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/dashboard">Go To Your Stackbit Dashboard</a></strong></p>
       <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto">Create New Stackbit Site</a></strong></p>
     <% else %>
-      <h3>Connect to Stackbit <span class="crayons-indicator crayons-indicator--accent">beta</span></h3>
-      <p>Automatically generate a self-hosted static blog feed from your <%= community_name %> posts.</p>
-      <p style="font-size: 1.1em"><strong><a href="/connecting-with-stackbit">Get Started</a></strong></p>
+      <h3 class="crayons-subtitle-2 flex gap-2 items-center">
+        Connect to Stackbit
+        <span class="crayons-indicator crayons-indicator--accent">beta</span>
+      </h3>
+      <p class="mb-4">
+        Automatically generate a self-hosted static blog feed from your <%= community_name %> posts.
+      </p>
+      <a href="/connecting-with-stackbit" class="crayons-btn">
+        Get Started
+      </a>
     <% end %>
   </div>
 </div>

@@ -76,10 +76,11 @@ RSpec.describe "/admin/podcasts", type: :request do
         image: fixture_file_upload("files/podcast.png", "image/png"),
         slug: "postcast-test-url",
         reachable: true,
-        published: true,
+        published: true
       }
     end
 
+    # rubocop:disable RSpec/MultipleExpectations
     it "updates the podcast" do
       put admin_podcast_path(podcast), params: { podcast: update_params }
       podcast.reload
@@ -97,6 +98,7 @@ RSpec.describe "/admin/podcasts", type: :request do
       expect(podcast.reachable).to eq(true)
       expect(podcast.published).to eq(true)
     end
+    # rubocop:enable RSpec/MultipleExpectations
 
     it "updates image & pattern_image" do
       expect do

@@ -48,30 +48,30 @@
       Resources
     </h3>
     <div id="mod-center-other-options">
-      <% if @community_mod_channel %>
-        <a href="/connect/<%= @community_mod_channel.slug %> " target=" _blank " rel="noopener noreferrer nofollow" class="crayons-link crayons-link--block mod-center--nav__item">
-          Connect Channel
-          <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
-        </a>
-      <% end %>
       <a href="<%= URL.url %>/community-moderation" class="crayons-link crayons-link--block mod-center--nav__item">
-        Moderator Guide
+        Trusted User Guide
+        <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
+      </a>
+      <a href="<%= URL.url %>/tag-moderation" class="crayons-link crayons-link--block mod-center--nav__item">
+        Tag Moderation Guide
         <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
       </a>
       <a href="<%= URL.url %>/terms" class="crayons-link crayons-link--block mod-center--nav__item">
-        Terms Of Conduct
+        Terms & Conditions
+        <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
+      </a>
+      <a href="<%= URL.url %>/code-of-conduct" class="crayons-link crayons-link--block mod-center--nav__item">
+        Code of Conduct
         <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
       </a>
     </div>
   </nav>
-  <% if @community_mod_channel %>
-    <div class="fs-s mod-feedback">
-      <span class="fw-medium">
-        Have feedback to improve your Mod experience?
-      </span>
-      <span>
-        Please share in your Connect Channel!
-      </span>
-    </div>
-  <% end %>
+  <div class="fs-s mod-feedback">
+    <span class="fw-medium">
+      Have feedback to improve your Mod experience?
+    </span>
+    <span>
+      Please email <%= SiteConfig.email_addresses[:default] %>!
+    </span>
+  </div>
 </aside>

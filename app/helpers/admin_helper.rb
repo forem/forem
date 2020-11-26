@@ -14,7 +14,6 @@ module AdminHelper
     { name: "config",                controller: "config" },
     { name: "display_ads",           controller: "display_ads" },
     { name: "events",                controller: "events" },
-    { name: "growth",                controller: "growth" },
     { name: "html_variants",         controller: "html_variants" },
     { name: "listings",              controller: "listings" },
     { name: "moderator_actions",     controller: "moderator_actions" },
@@ -39,7 +38,7 @@ module AdminHelper
   PROFILE_ADMIN = { name: "config: profile setup", controller: "profile_fields" }.freeze
 
   def admin_menu_items
-    return MENU_ITEMS unless Flipper.enabled?(:profile_admin)
+    return MENU_ITEMS unless FeatureFlag.enabled?(:profile_admin)
 
     MENU_ITEMS.dup.insert(7, PROFILE_ADMIN)
   end

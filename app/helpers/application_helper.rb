@@ -45,7 +45,7 @@ module ApplicationHelper
     derived_title = if page_title.include?(community_name)
                       page_title
                     elsif user_signed_in?
-                      "#{page_title} - #{community_qualified_name} 👩‍💻👨‍💻"
+                      "#{page_title} - #{community_qualified_name} #{community_emoji}"
                     else
                       "#{page_title} - #{community_name}"
                     end
@@ -60,22 +60,6 @@ module ApplicationHelper
 
     title_text = "#{page_title} - #{SUBTITLES.fetch(timeframe)}"
     content_for ? title(title_text) : title_text
-  end
-
-  def icon(name, pixels = "20")
-    image_tag(icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels)
-  end
-
-  def icon_url(name)
-    postfix = {
-      "twitter" => "v1456342401/twitter-logo-silhouette_1_letrqc.png",
-      "github" => "v1456342401/github-logo_m841aq.png",
-      "link" => "v1456342401/link-symbol_apfbll.png",
-      "volume" => "v1461589297/technology_1_aefet2.png",
-      "volume-mute" => "v1461589297/technology_jiugwb.png"
-    }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
-
-    "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
   def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto", random_fallback: true)
@@ -183,6 +167,10 @@ module ApplicationHelper
 
   def community_name
     @community_name ||= SiteConfig.community_name
+  end
+
+  def community_emoji
+    @community_emoji ||= SiteConfig.community_emoji
   end
 
   def community_qualified_name

@@ -83,7 +83,7 @@
 <% end %>
 
 <script>
-  var pickers = document.querySelectorAll('.js-color-field');
+  var pickers = Array.from(document.getElementsByClassName('js-color-field'));
 
   function colorValueChange(e) {
     var field = e.target;
