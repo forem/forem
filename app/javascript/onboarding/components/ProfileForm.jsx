@@ -5,28 +5,29 @@ import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
 
 /* eslint-disable camelcase */
-class ProfileForm extends Component {
+class NewProfileForm extends Component {
   constructor(props) {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.user = userData();
-
     this.state = {
-      formValues: {
-        summary: '',
-        location: '',
-        employment_title: '',
-        employer_name: '',
-      },
-      last_onboarding_page: 'v2: personal info form',
+      groups: [],
+      formValues: {},
       canSkip: true,
+      last_onboarding_page: 'v2: new personal info form',
     };
   }
 
   componentDidMount() {
-    updateOnboarding('v2: personal info form');
+    fetch('/profile_field_groups?onboarding=true')
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ groups: data.profile_field_groups });
+      });
+
+    updateOnboarding('v2: new personal info form');
   }
 
   onSubmit() {
@@ -38,7 +39,7 @@ class ProfileForm extends Component {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { ...formValues, last_onboarding_page } }),
+      body: JSON.stringify({ user: { last_onboarding_page }, profile: {...formValues} }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {
@@ -53,7 +54,7 @@ class ProfileForm extends Component {
     const currentFormState = formValues;
     const { name, value } = e.target;
 
-    currentFormState[name] = value;
+    currentFormState[name] = value
 
     // Once we've derived the new form values, check if the form is empty
     // and use that value to set the `canSkip` property on the state.
@@ -61,6 +62,45 @@ class ProfileForm extends Component {
       Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
 
     this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+  }
+
+  checkboxField(field) {
+    return (
+      <div class="crayons-field crayons-field--checkbox">
+        <input class="crayons-checkbox" type="checkbox" name={field.attribute_name} id={field.attribute_name} onChange={this.handleChange}></input>
+        <label class="crayons-field__label" for="profile[field.attribute_name]">
+          {field.label}
+        </label>
+        {field.description && <p class="crayons-field__description">{field.description}</p>}
+      </div>
+    )
+  }
+
+  textField(field) {
+    return (
+      <div>
+        <label class="crayons-field__label" for="profile[field.attribute_name]">
+          {field.label}
+        </label>
+        <input class="crayons-textfield" placeholder_text={field["placeholder_text"]} name={field.attribute_name} id={field.attribute_name} onChange={this.handleChange}></input>
+        {field.description && <p class="crayons-field__description">{field.description}</p>}
+      </div>
+    )
+  }
+
+  colorField(field) {
+    return (
+      <div>
+        <label class="crayons-field__label" for="profile[field.attribute_name]">
+          {field.label}
+        </label>
+        <div class="flex items-center w-100 m:w-50">
+          <input class="crayons-textfield js-color-field" placeholder_text={field["placeholder_text"]} name={field.attribute_name} id={field.attribute_name}></input>
+          <input class="crayons-color-selector js-color-field ml-2" placeholder_text={field["placeholder_text"]} name={field.attribute_name} id={field.attribute_name}></input>
+          {field.description && <p class="crayons-field__description">{field.description}</p>}
+        </div>
+      </div>
+    )
   }
 
   render() {
@@ -71,7 +111,26 @@ class ProfileForm extends Component {
       communityConfig,
     } = this.props;
     const { profile_image_90, username, name } = this.user;
-    const { canSkip } = this.state;
+    const { canSkip, groups } = this.state;
+
+    const sections = groups.map((group) => {
+      return (
+        <div class="onboarding-profile-sub-section">
+          <h2>{group.name}</h2>
+          {
+            group.description &&
+            (<div class="color-base-60">{group.description})</div>)
+          }
+          <div>
+            {group.profile_fields.map(field => {
+              return field.input_type === "check_box" ? this.checkboxField(field)
+                    : field.input_type === "color_field" ? this.colorField(field)
+                    : this.textField(field)
+            })}
+          </div>
+        </div>
+      )
+    });
 
     return (
       <div
@@ -109,70 +168,27 @@ class ProfileForm extends Component {
               <h3>{name}</h3>
               <p>{username}</p>
             </div>
-            <form>
-              <label htmlFor="summary">
-                Bio
-                <textarea
-                  name="summary"
-                  id="summary"
-                  placeholder="Tell us about yourself"
-                  onChange={this.handleChange}
-                  maxLength="120"
-                />
-              </label>
-              <label htmlFor="location">
-                Where are you located?
-                <input
-                  type="text"
-                  name="location"
-                  id="location"
-                  placeholder="e.g. New York, NY"
-                  onChange={this.handleChange}
-                  maxLength="60"
-                />
-              </label>
-              <label htmlFor="employment_title">
-                What is your title?
-                <input
-                  type="text"
-                  name="employment_title"
-                  id="employment_title"
-                  placeholder="e.g. Software Engineer"
-                  onChange={this.handleChange}
-                  maxLength="60"
-                />
-              </label>
-              <label htmlFor="employer_name">
-                Where do you work?
-                <input
-                  type="text"
-                  name="employer_name"
-                  id="employer_name"
-                  placeholder="e.g. Company name, self-employed, etc."
-                  onChange={this.handleChange}
-                  maxLength="60"
-                  className="onboarding-form-input--last"
-                />
-              </label>
-            </form>
+            <div>
+              {sections}
+            </div>
+
           </div>
         </div>
       </div>
-    );
+    )
   }
 }
 
-ProfileForm.propTypes = {
+NewProfileForm.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
   communityConfig: PropTypes.shape({
-    communityName: PropTypes.string.isRequired,
-    communityDescription: PropTypes.string.isRequired,
+    communityName: PropTypes.string.isRequired
   }),
 };
 
-export default ProfileForm;
+export default NewProfileForm;
 
 /* eslint-enable camelcase */
