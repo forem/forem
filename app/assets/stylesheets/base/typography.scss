@@ -3,11 +3,12 @@
 
 :root {
   --content-rhythm: var(--su-2);
-  --content-font-size: var(--fs-l);
+  --content-font-size: var(--fs-base);
   --content-secondary-font-size: var(--fs-base);
   --content-tertiary-font-size: var(--fs-base);
 
   @media (min-width: $breakpoint-s) {
+    --content-font-size: var(--fs-l);
     --content-secondary-font-size: var(--fs-l);
   }
 
@@ -70,6 +71,14 @@ body {
   font-family: var(--content-font-family);
   overflow-wrap: break-word;
 
+  & > *:only-child {
+    margin: 0;
+  }
+
+  & > *:first-child {
+    margin-top: 0;
+  }
+
   &--secondary {
     font-size: var(--content-secondary-font-size);
   }
@@ -96,27 +105,79 @@ body {
   h5,
   h6 {
     font-family: var(--ff-sans-serif);
-    margin: var(--content-rhythm) 0;
-    margin-top: calc(var(--content-rhythm) * 2);
+    margin: calc(var(--content-rhythm) * 2) 0 calc(var(--content-rhythm) / 2);
     padding: 0;
+
+    & + p,
+    & + ul {
+      margin-top: 0;
+    }
   }
 
   h1 {
-    font-size: 1.85em;
+    font-size: var(--fs-2xl);
     line-height: 1.25em;
-    font-weight: 400;
+    font-weight: var(--fw-bold);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-3xl);
+    }
+
+    @media (min-width: $breakpoint-l) {
+      font-size: var(--fs-4xl);
+    }
   }
 
   h2 {
-    font-size: 1.7em;
-    font-weight: 400;
-    line-height: 1.25em;
-    margin-bottom: 0.5em;
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-bold);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-2xl);
+    }
+
+    @media (min-width: $breakpoint-l) {
+      font-size: var(--fs-3xl);
+    }
   }
 
   h3 {
-    font-size: 1.32em;
-    font-weight: 400;
+    font-size: var(--fs-l);
+    font-weight: var(--fw-bold);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-xl);
+    }
+  }
+
+  h4 {
+    color: var(--base-80);
+    font-size: var(--fs-l);
+    font-weight: var(--fw-medium);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-xl);
+    }
+  }
+
+  h5 {
+    color: var(--card-color-tertiary);
+    font-size: var(--fs-base);
+    text-transform: uppercase;
+    font-weight: var(--fw-bold);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-l);
+    }
+  }
+
+  h6 {
+    font-size: var(--fs-base);
+    font-weight: var(--fw-bold);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-l);
+    }
   }
 
   hr {
