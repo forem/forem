@@ -37,18 +37,6 @@ class Profile < ApplicationRecord
     (stored_attributes[:data] || []).map(&:to_s)
   end
 
-  # Forces a reload before returning attributes
-  def self.attributes!
-    refresh_attributes!
-    attributes
-  end
-
-  # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
-  # profile migration/generalization work.
-  def self.mapped_attributes
-    attributes!.map { |attribute| MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s }
-  end
-
   # NOTE: @citizen428 We want to have a current list of profile attributes the
   # moment the application loads. However, doing this unconditionally fails if
   # the profiles table doesn't exist yet (e.g. when running bin/setup in a new
