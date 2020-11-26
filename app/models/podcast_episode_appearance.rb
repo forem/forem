@@ -3,5 +3,5 @@ class PodcastEpisodeAppearance < ApplicationRecord
   belongs_to :podcast_episode
   validates :podcast_episode_id, uniqueness: { scope: :user_id }
   validates :podcast_episode_id, :user_id, :role, presence: true
-  validates :role, inclusion: { in: %w[host guest], message: "%<value> is not a valid role" }
+  validates :role, inclusion: { in: %w[host guest], message: "provided role is not valid" }
 end
