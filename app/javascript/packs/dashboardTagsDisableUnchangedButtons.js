@@ -1,7 +1,7 @@
 document.getElementById('follows_update_form').addEventListener('submit', checkChanged);
 
 document.addEventListener('change', function(event) {
-  if (event.target && event.target.name == 'follows[][points]'){
+  if (event.target && event.target.name == 'follows[][explicit_points]'){
     addChanged(event.target)
   }
 });

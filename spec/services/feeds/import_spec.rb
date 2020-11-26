@@ -26,7 +26,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
       expect { described_class.call }.not_to change(Article, :count)
     end
 
-    it "parses correctly", vcr: { cassette_name: "rss_reader_fetch_articles" } do
+    it "parses correctly", vcr: { cassette_name: "feeds_import" } do
       described_class.call
 
       verify format: :txt do
@@ -128,29 +128,29 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
     end
   end
 
-  # describe "feeds parsing and regressions" do
-  #   it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "feeds_import_dvirsegal" } do
-  #     user = create(:user, feed_url: "https://medium.com/feed/@dvirsegal")
+  describe "feeds parsing and regressions" do
+    it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "rss_reader_dvirsegal" } do
+      user = create(:user, feed_url: "https://medium.com/feed/@dvirsegal")
 
-  #     expect do
-  #       rss_reader.fetch_user(user)
-  #     end.to change(user.articles, :count).by(10)
-  #   end
+      expect do
+        described_class.call(users: User.where(id: user.id))
+      end.to change(user.articles, :count).by(10)
+    end
 
-  #   it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "feeds_import_swimburger" } do
-  #     user = create(:user, feed_url: "https://swimburger.net/atom.xml")
+    it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "rss_reader_swimburger" } do
+      user = create(:user, feed_url: "https://swimburger.net/atom.xml")
 
-  #     expect do
-  #       rss_reader.fetch_user(user)
-  #     end.to change(user.articles, :count).by(10)
+      expect do
+        described_class.call(users: User.where(id: user.id))
+      end.to change(user.articles, :count).by(10)
 
-  #     body_markdown = user.articles.last.body_markdown
+      body_markdown = user.articles.last.body_markdown
 
-  #     expect(body_markdown).not_to include("<picture>")
-  #     expected_image_markdown =
-  #       "![Screenshot of Azure left navigation pane](https://swimburger.net/media/lxypkhak/azure-create-a-resource.png)"
+      expect(body_markdown).not_to include("<picture>")
+      expected_image_markdown =
+        "![Screenshot of Azure left navigation pane](https://swimburger.net/media/lxypkhak/azure-create-a-resource.png)"
 
-  #     expect(body_markdown).to include(expected_image_markdown)
-  #   end
-  # end
+      expect(body_markdown).to include(expected_image_markdown)
+    end
+  end
 end

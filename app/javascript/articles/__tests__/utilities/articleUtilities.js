@@ -266,7 +266,7 @@ export const podcastArticle = {
     image_url: '/images/16.png',
     image_90: '/images/16.png',
   },
-  slug: 'episode-slug'
+  slug: 'episode-slug',
 };
 
 export const podcastEpisodeArticle = {

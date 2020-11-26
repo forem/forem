@@ -12,18 +12,20 @@ RSpec.describe "Following/Unfollowing", type: :request do
   end
 
   describe "PATCH bulk_update" do
-    let(:params) { [{ id: follow_1.id, points: 3.0 }, { id: follow_2.id, points: 10.0 }] }
+    let(:params) { [{ id: follow_1.id, explicit_points: 3.0 }, { id: follow_2.id, explicit_points: 10.0 }] }
 
-    it "bulk updates follow points" do
+    it "bulk updates follow explicit_points" do
       patch "/follows/bulk_update", params: { follows: params }
+      expect(Follow.find(follow_1.id).explicit_points).to eq(3.0)
       expect(Follow.find(follow_1.id).points).to eq(3.0)
+      expect(Follow.find(follow_2.id).explicit_points).to eq(10.0)
       expect(Follow.find(follow_2.id).points).to eq(10.0)
     end
 
     it "does not update if follow does not belong to user" do
       user_2.follow(tags[0])
       expect do
-        patch "/follows/bulk_update", params: { follows: [{ id: Follow.last.id, points: 3.0 }] }
+        patch "/follows/bulk_update", params: { follows: [{ id: Follow.last.id, explicit_points: 3.0 }] }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end

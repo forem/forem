@@ -126,7 +126,7 @@ function buildTagsHTML(tag) {
     '">' +
     '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="' +
     tag.points +
-    '" name="follows[][points]" id="follow_points">' +
+    '" name="follows[][explicit_points]" id="follow_points">' +
     '</div>'
   );
 }

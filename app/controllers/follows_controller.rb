@@ -96,7 +96,7 @@ class FollowsController < ApplicationController
 
   def params_for_update
     follows_params[:follows].each_with_object({}) do |follow, params|
-      params[follow[:id]] = follow.slice(:points)
+      params[follow[:id]] = follow.slice(:explicit_points)
     end
   end
 
