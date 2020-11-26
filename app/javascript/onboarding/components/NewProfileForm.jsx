@@ -50,7 +50,7 @@ class NewProfileForm extends Component {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { ...formValues, last_onboarding_page } }),
+      body: JSON.stringify({ user: { last_onboarding_page }, profile: {...formValues} }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {

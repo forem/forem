@@ -149,13 +149,24 @@ class UsersController < ApplicationController
   def onboarding_update
     if params[:user]
       sanitize_user_params
-      permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
-      current_user.assign_attributes(params[:user].permit(permitted_params))
+      permitted_user_params = %i[last_onboarding_page]
+      current_user.assign_attributes(params[:user].permit(permitted_user_params))
       current_user.profile_updated_at = Time.current
+      if current_user.save
+        success = true
+      end
+    end
+
+    if params[:profile] && success == true
+      update_result = Profiles::Update.call(current_user, { profile: params[:profile].permit(Profile.attributes!)})
+
+      if update_result.success?
+        success = true
+      end
     end
     current_user.saw_onboarding = true
     authorize User
-    render_update_response
+    render_update_response(success)
   end
 
   def onboarding_checkbox_update
@@ -168,7 +179,10 @@ class UsersController < ApplicationController
 
     current_user.saw_onboarding = true
     authorize User
-    render_update_response
+    if current_user.save
+      success = true
+    end
+    render_update_response(success)
   end
 
   def join_org
@@ -270,8 +284,8 @@ class UsersController < ApplicationController
     recent_suggestions.presence || default_suggested_users
   end
 
-  def render_update_response
-    outcome = current_user.save ? "updated successfully" : "update failed"
+  def render_update_response(success)
+    outcome = success == true ? "updated successfully" : "update failed"
 
     respond_to do |format|
       format.json { render json: { outcome: outcome } }
