@@ -248,10 +248,6 @@ describe('Search utilities', () => {
   });
 
   describe('fetchSearch', () => {
-    it('should return a Promise', () => {
-      expect(fetchSearch('tags', { name: 'jav' })).toBeInstanceOf(Promise);
-    });
-
     it('should return response formatted as JSON', async () => {
       const expected = { results: [] };
 

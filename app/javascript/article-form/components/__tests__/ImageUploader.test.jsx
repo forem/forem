@@ -106,9 +106,10 @@ describe('<ImageUploader />', () => {
       },
     });
 
-    expect(await findByText(/uploading.../i)).toBeDefined();
+    expect(await findByText(/uploading.../i)).not.toBeNull();
 
-    waitForElementToBeRemoved(() => queryByText(/uploading.../i));
+    // Upload is finished, so the messsage has disappeared.
+    expect(queryByText(/uploading.../i)).toBeNull();
 
     await findByText(/some fake error/i);
   });

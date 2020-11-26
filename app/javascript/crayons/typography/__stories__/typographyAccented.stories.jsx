@@ -23,7 +23,9 @@ export const SampleTexts = () => (
     <div>
       <p className="ff-monospace fs-xs fw-bold">Lorem ipsum dolor sit amet.</p>
       <p className="ff-monospace fs-s fw-bold">Lorem ipsum dolor sit amet.</p>
-      <p className="ff-monospace fs-base fw-bold">Lorem ipsum dolor sit amet.</p>
+      <p className="ff-monospace fs-base fw-bold">
+        Lorem ipsum dolor sit amet.
+      </p>
       <p className="ff-monospace fs-l fw-bold">Lorem ipsum dolor sit amet.</p>
     </div>
   </div>

@@ -81,6 +81,8 @@ describe('FollowUsers', () => {
   });
 
   it('should render the correct navigation button on first load', () => {
+    fetch.mockResponseOnce(fakeUsersResponse);
+
     const { queryByText } = renderFollowUsers();
 
     expect(queryByText(/skip for now/i)).toBeDefined();
