@@ -113,7 +113,7 @@ class UsersController < ApplicationController
   def remove_identity
     set_current_tab("account")
 
-    error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+    error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:contact]}"
     unless Authentication::Providers.enabled?(params[:provider])
       flash[:error] = error_message
       redirect_to user_settings_path(@tab)
