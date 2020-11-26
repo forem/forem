@@ -5,7 +5,7 @@ import IntroSlide from './components/IntroSlide';
 import EmailPreferencesForm from './components/EmailPreferencesForm';
 import FollowTags from './components/FollowTags';
 import FollowUsers from './components/FollowUsers';
-import ProfileForm from './components/NewProfileForm';
+import ProfileForm from './components/ProfileForm';
 
 export default class Onboarding extends Component {
   constructor(props) {
