@@ -169,6 +169,7 @@ components:
         - url
         - canonical_url
         - comments_count
+        - positive_reactions_count
         - public_reactions_count
         - created_at
         - edited_at
@@ -214,6 +215,9 @@ components:
           type: string
           format: url
         comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
           type: integer
           format: int32
         public_reactions_count:
@@ -264,6 +268,7 @@ components:
         - url
         - canonical_url
         - comments_count
+        - positive_reactions_count
         - public_reactions_count
         - created_at
         - edited_at
@@ -311,6 +316,9 @@ components:
           type: string
           format: url
         comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
           type: integer
           format: int32
         public_reactions_count:
@@ -494,6 +502,7 @@ components:
         - url
         - canonical_url
         - comments_count
+        - positive_reactions_count
         - public_reactions_count
         - page_views_count
         - published_timestamp
@@ -534,6 +543,9 @@ components:
           type: string
           format: url
         comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
           type: integer
           format: int32
         public_reactions_count:
@@ -1202,6 +1214,7 @@ components:
           url: https://dev.to/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
           canonical_url: https://dev.to/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
           comments_count: 37
+          positive_reactions_count: 12
           public_reactions_count: 142
           collection_id:
           created_at: '2019-10-24T13:41:29Z'
@@ -1245,6 +1258,7 @@ components:
         url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         comments_count: 21
+        positive_reactions_count: 122
         public_reactions_count: 322
         collection_id: 1693
         created_at: "2019-07-31T11:15:06Z"
@@ -1741,7 +1755,7 @@ components:
         location: New York
         joined_at: '2019-10-24T13:41:29Z'
         tech_stack: Ruby
-        tag_line: 
+        tag_line:
         story:
         profile_image: https://res.cloudinary.com/...jpeg
 
