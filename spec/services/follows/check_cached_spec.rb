@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe CheckCachedFollows, type: :service do
+RSpec.describe Follows::CheckCached, type: :service do
   let(:user) { create(:user) }
 
   it "checks if following a thing and returns true if they are" do
