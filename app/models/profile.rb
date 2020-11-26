@@ -25,7 +25,7 @@ class Profile < ApplicationRecord
 
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
-    return unless db_ready?
+    return unless Database.table_exists?("profiles")
 
     ProfileField.find_each do |field|
       store_attribute :data, field.attribute_name.to_sym, field.type
@@ -37,22 +37,6 @@ class Profile < ApplicationRecord
     (stored_attributes[:data] || []).map(&:to_s)
   end
 
-  # NOTE: @citizen428 We want to have a current list of profile attributes the
-  # moment the application loads. However, doing this unconditionally fails if
-  # the profiles table doesn't exist yet (e.g. when running bin/setup in a new
-  # clone). I wish Rails had a hook for code to run after the app started, but
-  # for now this is the best I can come up with.
-  def self.db_ready?
-    ActiveRecord::Base.connection
-  rescue ActiveRecord::NoDatabaseError
-    false
-  else
-    ActiveRecord::Base.connection.table_exists?("profiles")
-  end
-  private_class_method :db_ready?
-
-  refresh_attributes!
-
   def custom_profile_attributes
     custom_profile_fields.pluck(:attribute_name)
   end
@@ -60,4 +44,9 @@ class Profile < ApplicationRecord
   def clear!
     update(data: {})
   end
+
+  # NOTE: @citizen428 We want to have a current list of profile attributes the
+  # moment the application loads. I wish Rails had a hook for code to run after
+  # the app started...
+  refresh_attributes!
 end
