@@ -11,6 +11,11 @@ module Api
 
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
+      wrap_parameters :article, include: %i[
+        title body_markdown published series main_image
+        canonical_url description tags
+      ]
+
       INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id collection_id
         title description main_image published_at crossposted_at social_image
