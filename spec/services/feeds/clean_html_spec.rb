@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe CleanHtml, type: :service do
+RSpec.describe Feeds::CleanHtml, type: :service do
   let(:html) do
     <<~HTML
-      <img src="#{CleanHtml::MEDIUM_TRACKING_PIXEL}" />
-      <p>#{CleanHtml::MEDIUM_CATCHPHRASE}</p>
+      <img src="#{Feeds::CleanHtml::MEDIUM_TRACKING_PIXEL}" />
+      <p>#{Feeds::CleanHtml::MEDIUM_CATCHPHRASE}</p>
     HTML
   end
 

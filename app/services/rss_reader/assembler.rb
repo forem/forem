@@ -38,7 +38,7 @@ class RssReader
     end
 
     def assemble_body_markdown
-      cleaned_content = CleanHtml.call(get_content)
+      cleaned_content = Feeds::CleanHtml.call(get_content)
       cleaned_content = thorough_parsing(cleaned_content, @feed.url)
 
       content = ReverseMarkdown
