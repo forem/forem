@@ -27,18 +27,7 @@ class NewProfileForm extends Component {
         this.setState({ groups: data.profile_field_groups });
       });
 
-    const csrfToken = getContentOfToken('csrf-token');
-    fetch('/onboarding_update', {
-      method: 'PATCH',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user: { last_onboarding_page: 'v2: new personal info form' },
-      }),
-      credentials: 'same-origin',
-    });
+    updateOnboarding('v2: new personal info form');
   }
 
   onSubmit() {
@@ -66,13 +55,13 @@ class NewProfileForm extends Component {
     const { name, value } = e.target;
 
     currentFormState[name] = value
-  // Once we've derived the new form values, check if the form is empty
+
+    // Once we've derived the new form values, check if the form is empty
     // and use that value to set the `canSkip` property on the state.
     const formIsEmpty =
       Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
 
     this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
-    console.log(currentFormState);
   }
 
   checkboxField(field) {
@@ -121,7 +110,6 @@ class NewProfileForm extends Component {
       currentSlideIndex,
       communityConfig,
     } = this.props;
-
     const { profile_image_90, username, name } = this.user;
     const { canSkip, groups } = this.state;
 
