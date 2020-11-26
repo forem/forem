@@ -19,6 +19,31 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    it "preserves internal nav param (i=i) upon redirect" do
+      old_path = article.path
+      article.update(organization: org)
+      get old_path + "?i=i"
+      expect(response.body).to redirect_to  "#{article.path}?i=i"
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "does not have ?i=i on redirects which did not originally include it" do
+      old_path = article.path
+      article.update(organization: org)
+      get old_path
+      expect(response.body).not_to redirect_to  "#{article.path}?i=i"
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "does not have ?i=i on redirects without that precise param" do
+      old_path = article.path
+      article.update(organization: org)
+      get old_path + "?i=j"
+      expect(response.body).to redirect_to  article.path
+      expect(response.body).not_to redirect_to  "#{article.path}?i=j"
+      expect(response.body).not_to redirect_to  "#{article.path}?i=j"
+    end
+
     ## Title tag
     it "renders signed-in title tag for signed-in user" do
       allow(SiteConfig).to receive(:community_emoji).and_return("🌱")

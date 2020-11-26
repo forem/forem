@@ -1,6 +1,8 @@
 <%= javascript_packs_with_chunks_tag "stickySaveFooter", defer: true %>
 
 <%= form_for @user, html: { id: "ux-customization-form", class: "sticky-footer-form" } do |f| %>
+  <%= f.hidden_field :tab, value: @tab, id: nil %>
+
   <div class="crayons-card crayons-card--content-rows">
     <h2 class="crayons-subtitle-1">
       Appearance
@@ -59,11 +61,14 @@
           <%= render partial: "experience_selector", locals: { f: f, exp: exp, i: i, label: user_experience_labels } %>
         <% end %>
       </div>
-      <p>This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.</p>
+      <p>
+        This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are
+        shown along with tags you follow etc.
+      </p>
     </div>
   </div>
 
-  <%= render partial: "language_settings" %>
+  <%= render partial: "language_settings", locals: { f: f } %>
 
   <div class="crayons-card crayons-card--content-rows">
     <header>
@@ -78,7 +83,7 @@
       </p>
     </header>
 
-    <%= form_for(@user, html: { id: nil, class: "grid gap-4" }) do |f| %>
+    <fieldset class="grid gap-4">
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :display_sponsors, class: "crayons-checkbox" %>
         <%= f.label :display_sponsors, "Display Sponsors (When browsing)", class: "crayons-field__label" %>
@@ -88,10 +93,7 @@
         <%= f.check_box :permit_adjacent_sponsors, class: "crayons-checkbox" %>
         <%= f.label :permit_adjacent_sponsors, "Permit Nearby Sponsors (When publishing)", class: "crayons-field__label" %>
       </div>
-
-      <%= f.hidden_field :tab, value: @tab, id: nil %>
-      <div><button type="submit" class="crayons-btn">Save Sponsors Settings</button></div>
-    <% end %>
+    </fieldset>
   </div>
 
   <div class="crayons-card crayons-card--content-rows">
@@ -105,20 +107,15 @@
       </p>
     </header>
 
-    <%= form_for(@user, html: { id: nil, class: "grid gap-4" }) do |f| %>
-    <div class="crayons-field crayons-field--checkbox">
+    <fieldset class="grid gap-4">
+      <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :display_announcements, class: "crayons-checkbox" %>
         <%= f.label :display_announcements, "Display Announcements (When browsing)", class: "crayons-field__label" %>
       </div>
-
-      <%= f.hidden_field :tab, value: @tab, id: nil %>
-      <div><button type="submit" class="crayons-btn">Save Announcements Settings</button></div>
-    <% end %>
+    </fieldset>
   </div>
 
   <div class="save-footer crayons-card crayons-card--content-rows">
-    <%= f.hidden_field :tab, value: @tab, id: nil %>
     <button class="crayons-btn" type="submit">Save</button>
   </div>
-
 <% end %>

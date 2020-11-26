@@ -9,8 +9,8 @@ be considered to enable people with disabilities to create and consume content.
 
 ## The Basics
 
-Forem UI changes should consider accessibility wherever possible. This includes
-common requirements such as:
+Forem UI changes should consider accessibility wherever possible. Common issues
+to watch out for in frontend code:
 
 - [Adequate color contrast](https://webaim.org/articles/contrast/evaluating)
 - [Semantic structure and headings](https://webaim.org/techniques/semanticstructure/)
@@ -30,6 +30,12 @@ additional considerations for accessibility:
 - [Reducing motion with CSS media queries](https://css-tricks.com/introduction-reduced-motion-media-query/)
 - [Linting with eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y)
 - [Testing with Jest-axe](https://dev.to/bdougieyo/accessibility-testing-in-react-with-jest-axe-l7k)
+
+## Accessibility Testing
+
+See a list of testing steps to follow during development or for a Pull Request
+review on the
+[Forem Accessibility Testing Docs](https://docs.forem.com/tests/accessibility-tests/).
 
 ## Resources
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_14_151157) do
+ActiveRecord::Schema.define(version: 2020_11_19_153512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -560,10 +560,12 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
   create_table "follows", force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
+    t.float "explicit_points", default: 1.0
     t.bigint "followable_id", null: false
     t.string "followable_type", null: false
     t.bigint "follower_id", null: false
     t.string "follower_type", null: false
+    t.float "implicit_points", default: 0.0
     t.float "points", default: 1.0
     t.string "subscription_status", default: "all_articles", null: false
     t.datetime "updated_at"
