@@ -229,6 +229,7 @@ RSpec.describe "/admin/config", type: :request do
             confirmation: confirmation_message
           }
 
+          expect(SiteConfig.email_addresses[:contact]).to eq("contact@example.com")
           expect(SiteConfig.email_addresses[:business]).to eq("partners@example.com")
           expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@example.com")
           expect(SiteConfig.email_addresses[:members]).to eq("members@example.com")
