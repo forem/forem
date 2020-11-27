@@ -25,6 +25,7 @@ data_sources:
       # zone_id: "SELECT id, name FROM zones ORDER BY name ASC"
       # period: ["day", "week", "month"]
       # status: {0: "Active", 1: "Archived"}
+      tag: "SELECT name FROM tags ORDER BY name ASC"
 
     linked_columns:
       # user_id: "/admin/users/{value}"
