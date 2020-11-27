@@ -52,7 +52,7 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def create_channel?
-    record.present? && user.has_role?(:tag_moderator)
+    record.present? && user.tag_moderator?
   end
 
   private
