@@ -5,9 +5,17 @@ import { SearchFormSync } from '../SearchFormSync';
 // a11y tests are not required for this component as it's job is to provide data to other components.
 // There is nothing UI related about this component.
 describe('<SearchFormSync />', () => {
+  // For some reason when document.body is used for renders, we need to clear out the rendered markup in it.
+  // My guess is that Preact testing library handles this internally when using the default container to render in.
+
   beforeEach(() => {
     delete window.location;
     window.location = new URL(`https://locahost:3000/`);
+
+    // The body is being cleared out because we are using it as the root element for the tests.
+    // Typically using the document.body as the root for rendering of components in tests is not necessary,
+    // but in the case of this component, it renders a portal, and this seemed to be the only way to get these
+    // tests to render portals.
     document.body.innerHTML = '';
 
     global.InstantClick = jest.fn(() => ({
@@ -39,8 +47,6 @@ describe('<SearchFormSync />', () => {
 
     // This part of the DOM would be rendered in the search results from the server side.
     // See search.html.erb.
-    // I'm not sure why, but with a portal being created in the code, it seems at least in the test
-    // scenario, the body needs to be reset.
     document.body.innerHTML =
       '<div id="mobile-search-container"><form></form></div>';
 
@@ -51,9 +57,6 @@ describe('<SearchFormSync />', () => {
       }),
     );
 
-    // TODO: Near future during work for #10424. I can't figure out why yet, but only in the test scenario does it generate
-    // an extra form. It's appears to be remnants of the previous render. Need to investigate.
-    // This is why the first item in the array of elements is skipped.
     const [desktopSearch, mobileSearch] = await findAllByLabelText('search');
 
     expect(desktopSearch.value).toEqual(searchTerm);
@@ -91,9 +94,6 @@ describe('<SearchFormSync />', () => {
       }),
     );
 
-    // TODO: Near future during work for #10424. I can't figure out why yet, but only in the test scenario does it generate
-    // an extra form. It's appears to be remnants of the previous render. Need to investigate.
-    // This is why the first item in the array of elements is skipped.
     let [desktopSearch, mobileSearch] = await findAllByLabelText('search');
 
     expect(desktopSearch.value).toEqual(searchTerm);
