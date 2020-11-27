@@ -1,6 +1,11 @@
 import { h, Component, Fragment, createRef } from 'preact';
 import PropTypes from 'prop-types';
-import { getSearchTermFromUrl, hasInstantClick } from '../utilities/search';
+import {
+  displaySearchResults,
+  getSearchTermFromUrl,
+  hasInstantClick,
+  preloadSearchResults,
+} from '../utilities/search';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { SearchForm } from './SearchForm';
 
@@ -71,20 +76,23 @@ export class Search extends Component {
   submit = (event) => {
     if (hasInstantClick) {
       event.preventDefault();
-      const { setSearchTerm } = this.props;
-
-      const searchTerm = this.searchInputRef.current.value;
-      setSearchTerm(searchTerm);
     }
   };
 
-  search(key, value) {
+  search(key, searchTerm) {
+    const { searchTerm: currentSearchTerm } = this.props;
     this.enableSearchPageChecker = false;
 
-    if (hasInstantClick() && key === ENTER_KEY) {
+    if (
+      hasInstantClick() &&
+      key === ENTER_KEY &&
+      currentSearchTerm !== searchTerm
+    ) {
       const { setSearchTerm } = this.props;
 
-      setSearchTerm(value);
+      setSearchTerm(searchTerm);
+      preloadSearchResults({ searchTerm });
+      displaySearchResults({ searchTerm });
     }
   }
 

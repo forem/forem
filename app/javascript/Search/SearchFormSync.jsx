@@ -2,11 +2,7 @@ import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { createPortal, Fragment, unmountComponentAtNode } from 'preact/compat';
 import { Search } from './Search';
-import {
-  displaySearchResults,
-  getSearchTermFromUrl,
-  preloadSearchResults,
-} from '@utilities/search';
+import { getSearchTermFromUrl } from '@utilities/search';
 
 /**
  * Manages the synchronization of search state between the top search bar (desktop) and
@@ -58,11 +54,6 @@ export function SearchFormSync() {
       window.removeEventListener('syncSearchForms', syncSearchFormsListener);
     };
   });
-
-  useEffect(() => {
-    preloadSearchResults({ searchTerm });
-    displaySearchResults({ searchTerm });
-  }, [searchTerm]);
 
   return (
     <Fragment>
