@@ -1,4 +1,8 @@
 class FeedbackMessagesController < ApplicationController
+  ALLOWED_PARAMS = %i[
+    message feedback_type category reported_url block_reported_user
+  ].freeze
+
   # No authorization required for entirely public controller
   skip_before_action :verify_authenticity_token
 
@@ -40,7 +44,6 @@ class FeedbackMessagesController < ApplicationController
   end
 
   def feedback_message_params
-    allowed_params = %i[message feedback_type category reported_url]
-    params.require(:feedback_message).permit(allowed_params)
+    params.require(:feedback_message).permit(ALLOWED_PARAMS)
   end
 end

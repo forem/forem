@@ -67,6 +67,13 @@
     <%= f.text_area :message, class: "crayons-textfield", placeholder: "...", value: @previous_message, required: true %>
   </div>
 
+  <div class="crayons-field crayons-field--checkbox">
+    <%= f.check_box :block_reported_user, class: "crayons-checkbox" %>
+    <label class="crayons-field__label" for="feedback_message_block_reported_user">
+      Also block the reported user
+    </label>
+  </div>
+
 <% if SiteConfig.recaptcha_secret_key.present? && SiteConfig.recaptcha_site_key.present? %>
   <div class="recaptcha-tag-container">
     <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>

@@ -1,6 +1,8 @@
 class FeedbackMessage < ApplicationRecord
   resourcify
 
+  attr_accessor :block_reported_user
+
   belongs_to :offender, class_name: "User", optional: true, inverse_of: :offender_feedback_messages
   belongs_to :reporter, class_name: "User", optional: true, inverse_of: :reporter_feedback_messages
   belongs_to :affected, class_name: "User", optional: true, inverse_of: :affected_feedback_messages
