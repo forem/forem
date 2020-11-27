@@ -37,7 +37,7 @@ export function SearchFormSync() {
       unmountComponentAtNode(mobileSearchContainer);
     }
 
-    // We need to delete the existing server side rendered form because createPortal only appends to it's parent.
+    // We need to delete the existing server-side rendered form because createPortal only appends to it's container.
     if (element) {
       const form = element.querySelector('form');
       form && element.removeChild(form);
