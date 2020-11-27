@@ -692,6 +692,17 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(Article.find(response.parsed_body["id"]).cached_tag_list).to eq(tags.join(", "))
       end
 
+      it "creates an article with a title, body and a list of tags when request is made without article property" do
+        tags = %w[meta discussion]
+        expect do
+          headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+          params = { "title" => Faker::Book.title, "body_markdown" => "Yo ho ho", "tags" => tags }
+          post api_articles_path, params: params.to_json, headers: headers
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(response.parsed_body["id"]).cached_tag_list).to eq(tags.join(", "))
+      end
+
       it "creates an unpublished article with the front matter in the body" do
         body_markdown = file_fixture("article_unpublished.txt").read
         expect do
