@@ -484,6 +484,7 @@ Rails.application.routes.draw do
 
     get "/pod", to: "podcast_episodes#index"
     get "/podcasts", to: redirect("pod")
+    get "/podcast_ownerships", to: redirect("pod")
     get "/readinglist" => "reading_list_items#index"
     get "/readinglist/:view" => "reading_list_items#index", :constraints => { view: /archive/ }
 

@@ -1,4 +1,6 @@
 class PodcastOwnershipsController < ApplicationController
+  before_action :authenticate_user!
+
   def new
     @podcast_ownership = PodcastOwnership.new
   end
