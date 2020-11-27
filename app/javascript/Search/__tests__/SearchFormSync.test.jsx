@@ -2,6 +2,11 @@ import { h } from 'preact';
 import { fireEvent, render } from '@testing-library/preact';
 import { SearchFormSync } from '../SearchFormSync';
 
+function setWindowLocation(url = '') {
+  delete window.location; // Inspired from https://www.benmvp.com/blog/mocking-window-location-methods-jest-jsdom/
+  window.location = new URL(url);
+}
+
 // a11y tests are not required for this component as it's job is to provide data to other components.
 // There is nothing UI related about this component.
 describe('<SearchFormSync />', () => {
@@ -9,8 +14,7 @@ describe('<SearchFormSync />', () => {
   // My guess is that Preact testing library handles this internally when using the default container to render in.
 
   beforeEach(() => {
-    delete window.location;
-    window.location = new URL(`https://locahost:3000/`);
+    setWindowLocation(`https://locahost:3000/`);
 
     // The body is being cleared out because we are using it as the root element for the tests.
     // Typically using the document.body as the root for rendering of components in tests is not necessary,
@@ -42,8 +46,7 @@ describe('<SearchFormSync />', () => {
     const searchTerm = 'diphthong';
 
     // simulates a search result returned which contains the server side rendered search form for mobile only.
-    delete window.location;
-    window.location = new URL(`https://locahost:3000/search?q=${searchTerm}`);
+    setWindowLocation(`https://locahost:3000/search?q=${searchTerm}`);
 
     // This part of the DOM would be rendered in the search results from the server side.
     // See search.html.erb.
@@ -79,8 +82,7 @@ describe('<SearchFormSync />', () => {
     const searchTerm = 'diphthong';
 
     // simulates a search result returned which contains the server side rendered search form for mobile only.
-    delete window.location;
-    window.location = new URL(`https://locahost:3000/search?q=${searchTerm}`);
+    setWindowLocation(`https://locahost:3000/search?q=${searchTerm}`);
 
     // This part of the DOM would be rendered in the search results from the server side.
     // See search.html.erb.
@@ -102,8 +104,7 @@ describe('<SearchFormSync />', () => {
     const searchTerm2 = 'diphthong2';
 
     // simulates a search result returned which contains the server side rendered search form for mobile only.
-    delete window.location;
-    window.location = new URL(`https://locahost:3000/search?q=${searchTerm2}`);
+    setWindowLocation(`https://locahost:3000/search?q=${searchTerm2}`);
 
     // This part of the DOM would be rendered in the search results from the server side.
     // See search.html.erb.
