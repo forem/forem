@@ -25,7 +25,7 @@ module Feeds
     def get_host_without_www(url)
       url = "http://#{url}" if URI.parse(url).scheme.nil?
       host = URI.parse(url).host.downcase
-      host.start_with?("www.") ? host[4..] : host
+      host.start_with?("www.") ? host.drop(4) : host
     end
 
     def content_is_not_the_title?(item)

@@ -34,7 +34,7 @@
       <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
 
       <div class="hidden" id="main-nav-more">
-        <% NavigationLink.ordered[5..].each do |link| %>
+        <% NavigationLink.ordered.drop(5).each do |link| %>
           <%= render "articles/sidebar_nav_link", link: link %>
         <% end %>
         <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">

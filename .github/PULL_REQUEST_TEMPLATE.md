@@ -33,7 +33,9 @@ as any relevant images for UI changes._
 
 ### UI accessibility concerns?
 
-_If your PR includes UI changes, please replace this line with details on how accessibility is impacted and tested. For more info, check out the [Forem Accessibility Docs](https://docs.forem.com/frontend/accessibility)._
+_If your PR includes UI changes, please replace this line with details on how
+accessibility is impacted and tested. For more info, check out the
+[Forem Accessibility Docs](https://docs.forem.com/frontend/accessibility)._
 
 ## Added tests?
 
@@ -44,7 +46,8 @@ _If your PR includes UI changes, please replace this line with details on how ac
 
 ## Added to documentation?
 
-- [ ] [Developer Docs](https://docs.forem.com) and/or [Admin Guide](https://forem.gitbook.io/forem-admin-guide/)
+- [ ] [Developer Docs](https://docs.forem.com) and/or
+      [Admin Guide](https://forem.gitbook.io/forem-admin-guide/)
 - [ ] README
 - [ ] No documentation needed
 
