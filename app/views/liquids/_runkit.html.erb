@@ -1,6 +1,6 @@
 <div class="runkit-element">
   <code style="display: none">
-    <%= preamble %>
+    <%= CGI.unescapeHTML preamble %>
   </code>
   <code style="display: none;">
     <%= parsed_content %>

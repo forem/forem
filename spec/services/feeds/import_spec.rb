@@ -26,7 +26,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
       expect { described_class.call }.not_to change(Article, :count)
     end
 
-    it "parses correctly", vcr: { cassette_name: "rss_reader_fetch_articles" } do
+    it "parses correctly", vcr: { cassette_name: "feeds_import" } do
       described_class.call
 
       verify format: :txt do
@@ -63,28 +63,54 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
       end
     end
 
-    # it "reports an article creation error" do
-    #   allow(described_classs).to receive(:create_articles_from_user_feed).and_raise(StandardError)
-    #   allow(Honeybadger).to receive(:notify)
-
-    #   described_class.call
-
-    #   expect(Honeybadger).to have_received(:notify).at_least(:once)
-    # end
-
-    # it "reports a fetching error" do
-    #   allow(rss_reader).to receive(:fetch_feeds).and_raise(StandardError)
-    #   allow(Honeybadger).to receive(:notify)
-
-    #   described_class.call
-
-    #   expect(Honeybadger).to have_received(:notify).at_least(:once)
-    # end
-
     it "queues as many slack messages as there are articles", vcr: { cassette_name: "feeds_import" } do
       old_count = Slack::Messengers::Worker.jobs.count
       num_articles = described_class.call
       expect(Slack::Messengers::Worker.jobs.count).to eq(old_count + num_articles)
+    end
+
+    context "when handling errors", vcr: { cassette_name: "feeds_import" } do
+      it "reports an article creation error" do
+        allow(Article).to receive(:create!).and_raise(StandardError)
+        allow(Rails.logger).to receive(:error)
+
+        described_class.call
+
+        expect(Rails.logger).to have_received(:error).at_least(:once)
+      end
+
+      it "reports a fetching error" do
+        allow(HTTParty).to receive(:get).and_raise(StandardError)
+        allow(Rails.logger).to receive(:error)
+
+        described_class.call
+
+        expect(Rails.logger).to have_received(:error).at_least(:once)
+      end
+
+      it "reports a parsing error" do
+        allow(Feedjira).to receive(:parse).and_raise(StandardError)
+        allow(Rails.logger).to receive(:error)
+
+        described_class.call
+
+        expect(Rails.logger).to have_received(:error).at_least(:once)
+      end
+    end
+
+    context "with an explicit set of users", vcr: { cassette_name: "feeds_import" } do
+      it "accepts a subset of users" do
+        num_articles = described_class.call(users: User.with_feed.limit(1))
+
+        verify(format: :txt) { num_articles }
+      end
+
+      it "imports no articles if given users are without feed" do
+        create(:user, feed_url: nil)
+
+        described_class.call(users: User.where(feed_url: nil))
+        verify(format: :txt) { 0 }
+      end
     end
   end
 
@@ -102,29 +128,29 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
     end
   end
 
-  # describe "feeds parsing and regressions" do
-  #   it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "feeds_import_dvirsegal" } do
-  #     user = create(:user, feed_url: "https://medium.com/feed/@dvirsegal")
+  describe "feeds parsing and regressions" do
+    it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "rss_reader_dvirsegal" } do
+      user = create(:user, feed_url: "https://medium.com/feed/@dvirsegal")
 
-  #     expect do
-  #       rss_reader.fetch_user(user)
-  #     end.to change(user.articles, :count).by(10)
-  #   end
+      expect do
+        described_class.call(users: User.where(id: user.id))
+      end.to change(user.articles, :count).by(10)
+    end
 
-  #   it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "feeds_import_swimburger" } do
-  #     user = create(:user, feed_url: "https://swimburger.net/atom.xml")
+    it "converts/replaces <picture> tags to <img>", vcr: { cassette_name: "rss_reader_swimburger" } do
+      user = create(:user, feed_url: "https://swimburger.net/atom.xml")
 
-  #     expect do
-  #       rss_reader.fetch_user(user)
-  #     end.to change(user.articles, :count).by(10)
+      expect do
+        described_class.call(users: User.where(id: user.id))
+      end.to change(user.articles, :count).by(10)
 
-  #     body_markdown = user.articles.last.body_markdown
+      body_markdown = user.articles.last.body_markdown
 
-  #     expect(body_markdown).not_to include("<picture>")
-  #     expected_image_markdown =
-  #       "![Screenshot of Azure left navigation pane](https://swimburger.net/media/lxypkhak/azure-create-a-resource.png)"
+      expect(body_markdown).not_to include("<picture>")
+      expected_image_markdown =
+        "![Screenshot of Azure left navigation pane](https://swimburger.net/media/lxypkhak/azure-create-a-resource.png)"
 
-  #     expect(body_markdown).to include(expected_image_markdown)
-  #   end
-  # end
+      expect(body_markdown).to include(expected_image_markdown)
+    end
+  end
 end

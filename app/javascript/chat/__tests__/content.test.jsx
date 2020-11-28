@@ -37,9 +37,7 @@ describe('<Content />', () => {
     it('should have no a11y violations', async () => {
       const channelRequestResource = getChannelRequestData();
       const { container } = render(
-        <Content
-          resource={channelRequestResource}
-        />,
+        <Content resource={channelRequestResource} />,
       );
       const results = await axe(container);
 
@@ -49,9 +47,7 @@ describe('<Content />', () => {
     it('should render', () => {
       const channelRequestResource = getChannelRequestData();
       const { queryByText, queryByTitle } = render(
-        <Content
-          resource={channelRequestResource}
-        />,
+        <Content resource={channelRequestResource} />,
       );
 
       // Ensure the two buttons render

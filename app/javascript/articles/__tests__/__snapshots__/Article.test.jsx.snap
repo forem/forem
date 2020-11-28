@@ -8,9 +8,15 @@ Object {
       <article
         class="crayons-story cursor-pointer crayons-story--featured"
         data-content-user-id="23289"
-        data-testid="featured-article"
         id="featured-story-marker"
       >
+        <a
+          aria-labelledby="article-link-62407"
+          class="crayons-story__hidden-navigation-link"
+          href="/some-post/path"
+        >
+          Unbranded Home Loan Account
+        </a>
         <div
           role="presentation"
         >
@@ -214,9 +220,15 @@ Object {
     <article
       class="crayons-story cursor-pointer crayons-story--featured"
       data-content-user-id="23289"
-      data-testid="featured-article"
       id="featured-story-marker"
     >
+      <a
+        aria-labelledby="article-link-62407"
+        class="crayons-story__hidden-navigation-link"
+        href="/some-post/path"
+      >
+        Unbranded Home Loan Account
+      </a>
       <div
         role="presentation"
       >

@@ -9,6 +9,10 @@ module Constants
           they're creating a new account in your community",
         placeholder: ""
       },
+      allowed_registration_email_domains: {
+        description: "Restrict registration to only certain emails? (comma-separated list)",
+        placeholder: "dev.to, forem.com, codenewbie.org"
+      },
       authentication_providers: {
         description: "How can users sign in?",
         placeholder: ""
@@ -53,6 +57,10 @@ module Constants
         description: "Used in meta description tags etc.",
         placeholder: "A fabulous community of kind and welcoming people."
       },
+      community_emoji: {
+        description: "Used in the title tags across the site alongside the community name",
+        placeholder: ""
+      },
       community_member_label: {
         description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
         placeholder: "user"
@@ -81,6 +89,9 @@ module Constants
       },
       default_font: {
         description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
+      },
+      display_email_domain_allow_list_publicly: {
+        description: "Do you want to display the list of allowed domains, or keep it private?"
       },
       display_jobs_banner: {
         description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
@@ -147,7 +158,7 @@ module Constants
         placeholder: "0"
       },
       invite_only_mode: {
-        description: "Only users invited by email can join this community. To use this, you must enable email address registration.",
+        description: "Only users invited by email can join this community.",
         placeholder: ""
       },
       jobs_url: {
@@ -261,7 +272,7 @@ module Constants
       },
       spam_trigger_terms: {
         description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
-        placeholder: "used cares near you, pokemon go hack"
+        placeholder: "used cars near you, pokemon go hack"
       },
       shop_url: {
         description: "Used as the shop url of the community",

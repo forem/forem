@@ -89,7 +89,12 @@ if (!document.getElementById('featured-story-marker')) {
           renderFeed(changedFeedTimeFrame);
         });
       });
-      renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
+
+      const tagsFollowedContainer = document.getElementById(
+        'sidebar-nav-followed-tags',
+      );
+
+      if (tagsFollowedContainer) renderTagsFollowed(tagsFollowedContainer);
     }
   }, 2);
 }
@@ -100,8 +105,8 @@ InstantClick.on('change', () => {
     return false;
   }
 
-  const tagsFollowedContainer = document.body.querySelector(
-    '#sidebar-nav-followed-tags',
+  const tagsFollowedContainer = document.getElementById(
+    'sidebar-nav-followed-tags',
   );
 
   if (!tagsFollowedContainer) {

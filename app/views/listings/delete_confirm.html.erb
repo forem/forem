@@ -1,18 +1,24 @@
 <%= javascript_include_tag "application" %>
 
-<div class="container delete-confirm">
-  <h4><%= @listing.title %></h4>
-  <h1>Are you sure you want to delete this listing?</h1>
+<div class="crayons-layout crayons-layout--limited-l gap-0">
+  <div class="crayons-card crayons-card--secondary text-styles text-styles--secondary text-padding -mb-1 mx-3 m:mx-6 mt-3">
+    <%= @listing.title %>
+  </div>
+  <div class="crayons-card text-padding">
+    <h1 class="crayons-subtitle-1 mb-2">Are you sure you want to delete this listing?</h1>
+    <p class="fs-l mb-4">
+      You cannot undo this action, perhaps you just want to
+      <a data-no-instant href="/listings/<%= @listing.id %>/edit">
+        <%= @listing.published ? "unpublish" : "edit" %>
+      </a>
+      instead?
+    </p>
 
-  <h2>
-    You cannot undo this action, perhaps you just want to
-    <a data-no-instant href="/listings/<%= @listing.id %>/edit">
-      <%= @listing.published ? "unpublish" : "edit" %>
-    </a>
-    instead?
-  </h2>
-
-  <%= form_tag "/listings/#{@listing.id}", method: :delete do %>
-    <button class="crayons-btn crayons-btn--danger">Delete</button>
-  <% end %>
+    <%= form_tag "/listings/#{@listing.id}", method: :delete do %>
+      <button class="crayons-btn crayons-btn--danger">Delete</button>
+      <a data-no-instant href="/listings/<%= @listing.id %>/edit" class="crayons-btn crayons-btn--secondary">
+        <%= @article.published ? "Unpublish" : "Edit" %>
+      </a>
+    <% end %>
+  </div>
 </div>

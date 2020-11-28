@@ -11,37 +11,35 @@
 
 <div class="grid gap-6">
   <div class="crayons-card p-6">
-    <h4 class="mb-4">Moderators</h4>
-    <% if @tag.tag_moderator_ids.any? %>
-      <ul class="list-group-flush">
-        <% @tag.tag_moderator_ids.each do |id| %>
-            <li class="list-group-item d-flex justify-content-between">
-              <a href="/<%= User.find(id).username %>">@<%= User.find(id).username %></a>
-              <%= form_for [:admin, @tag] do |f| %>
-                <%= f.hidden_field :remove_moderator_id, value: id %>
-                <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
-              <% end %>
-            </li>
-        <% end %>
-      </ul>
-    <% else %>
-      <p>This tag currently has no moderators.</p>
-    <% end %>
-    <%= form_for [:admin, @tag], html: { class: "form-inline justify-content-between mt-3" } do |f| %>
-      <div class="form-group">
-        <%= f.label :tag_moderator_id, "Add Moderator (id):", class: "mr-3" %>
-        <%= f.text_field :tag_moderator_id, class: "crayons-textfield" %>
-      </div>
-      <div>
-        <%= f.submit "Add Moderator", class: "crayons-btn" %>
-      </div>
-    <% end %>
+    <div class="crayons-card__header">
+      <h4 class="crayons-card__headline">Moderators</h4>
+    </div>
+    <div class="crayons-card__body flex flex-col gap-2">
+      <% if @tag_moderators.exists? %>
+        <ul class="list-none">
+          <% @tag_moderators.each do |user| %>
+              <li class="flex justify-between">
+                <a href="/<%= URL.user(user) %>">@<%= user.username %></a>
+                <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :delete, data: { remote: false } do |f| %>
+                  <%= f.hidden_field :user_id, value: user.id %>
+                  <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
+                <% end %>
+              </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <div class="crayons-notice mb-5">
+          This tag currently has no moderators.
+        </div>
+      <% end %>
+      <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :post, data: { remote: false } do |f| %>
+        <div class="crayons-field w-50">
+          <%= f.label :user_id, "Add Moderator (ID):", class: "crayons-field__label" %>
+          <%= f.text_field :user_id, class: "crayons-textfield" %>
+          <%= f.submit "Add Moderator", class: "crayons-btn" %>
+        </div>
+      <% end %>
+    </div>
   </div>
-
-  <div class="crayons-card p-6">
-    <h4 class="mb-4">Edit details</h4>
-    <%= form_for [:admin, @tag] do |form| %>
-      <%= render partial: "form", locals: { form: form } %>
-    <% end %>
-  </div>
+  <%= render "form", tag: @tag, badges_for_options: @badges_for_options %>
 </div>
