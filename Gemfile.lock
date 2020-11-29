@@ -756,7 +756,7 @@ GEM
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (> 5, < 6)
-    strong_migrations (0.7.2)
+    strong_migrations (0.7.3)
       activerecord (>= 5)
     test-prof (0.12.2)
     thor (0.20.3)
@@ -831,7 +831,7 @@ GEM
       yard (>= 0.8.3)
     yard-activesupport-concern (0.0.1)
       yard (>= 0.8)
-    zeitwerk (2.4.1)
+    zeitwerk (2.4.2)
     zonebie (0.6.1)
 
 PLATFORMS
