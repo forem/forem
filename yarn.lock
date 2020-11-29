@@ -14417,10 +14417,10 @@ pupa@^2.0.1:
   dependencies:
     escape-goat "^2.0.0"
 
-pusher-js@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-7.0.1.tgz#9fa4420f3a05546e520fdffc3d067eda2f8fd224"
-  integrity sha512-ovdHvHiOwlTxlYFsArYBBqyfgil9iYgzfosAen8p31R9OUMj+nqJ5YzOPy3iY4eUZYb6DvsvKpebg0rL5AgVAw==
+pusher-js@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-7.0.2.tgz#f577778674b20a909bcd95ccaf0d0ddf4f0cffe7"
+  integrity sha512-qNDTFfLTBHWJ9G/d083o2KQfS49vEotfX1PJVMQdo7XnNlQR9X01IASAMlt5iesASLy3Cv/VV1K/sQN/MNDMUQ==
   dependencies:
     tweetnacl "^1.0.3"
 
