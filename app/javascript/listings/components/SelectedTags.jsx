@@ -5,8 +5,16 @@ const SelectedTags = ({ tags, onRemoveTag, onKeyPress }) => {
   return (
     <section class="pt-2">
       {tags.map((tag) => (
-        <span className="listing-tag mr-1" key={tag.id} id={`selected-tag-${tag}`}>
-          <a href={`/listings?t=${tag}`} className="tag-name crayons-tag" data-no-instant>
+        <span
+          className="listing-tag mr-1"
+          key={tag.id}
+          id={`selected-tag-${tag}`}
+        >
+          <a
+            href={`/listings?t=${tag}`}
+            className="tag-name crayons-tag"
+            data-no-instant
+          >
             <span className="crayons-tag__prefix">#</span>
             <span role="button" tabIndex="0">
               {tag}

@@ -28,6 +28,7 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
       visit article.path.to_s
       wait_for_javascript
 
+      click_on(class: 'comment__dropdown-trigger')
       click_link("Edit")
       assert_updated
     end
@@ -41,6 +42,7 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
 
       wait_for_javascript
 
+      click_on(class: 'comment__dropdown-trigger')
       click_link("Edit")
       assert_updated
     end

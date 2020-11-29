@@ -1,5 +1,3 @@
-
-
 function dynamicallyLoadScript(url) {
   if (document.querySelector(`script[src='${url}']`)) return;
 

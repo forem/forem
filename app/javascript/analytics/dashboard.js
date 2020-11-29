@@ -60,7 +60,7 @@ function drawChart({ canvas, title, labels, datasets }) {
     },
   };
 
-  import("chart.js").then(({ Chart }) => {
+  import('chart.js').then(({ Chart }) => {
     // eslint-disable-next-line no-new
     new Chart(canvas, {
       type: 'line',
@@ -75,14 +75,14 @@ function drawChart({ canvas, title, labels, datasets }) {
 
 function drawCharts(data, timeRangeLabel) {
   const labels = Object.keys(data);
-  const parsedData = Object.entries(data).map(date => date[1]);
-  const comments = parsedData.map(date => date.comments.total);
-  const reactions = parsedData.map(date => date.reactions.total);
-  const likes = parsedData.map(date => date.reactions.like);
-  const readingList = parsedData.map(date => date.reactions.readinglist);
-  const unicorns = parsedData.map(date => date.reactions.unicorn);
-  const followers = parsedData.map(date => date.follows.total);
-  const readers = parsedData.map(date => date.page_views.total);
+  const parsedData = Object.entries(data).map((date) => date[1]);
+  const comments = parsedData.map((date) => date.comments.total);
+  const reactions = parsedData.map((date) => date.reactions.total);
+  const likes = parsedData.map((date) => date.reactions.like);
+  const readingList = parsedData.map((date) => date.reactions.readinglist);
+  const unicorns = parsedData.map((date) => date.reactions.unicorn);
+  const followers = parsedData.map((date) => date.follows.total);
+  const readers = parsedData.map((date) => date.page_views.total);
 
   drawChart({
     canvas: document.getElementById('reactions-chart'),
@@ -169,8 +169,8 @@ function drawCharts(data, timeRangeLabel) {
 function renderReferrers(data) {
   const container = document.getElementById('referrers-container');
   const tableBody = data.domains
-    .filter(referrer => referrer.domain)
-    .map(referrer => {
+    .filter((referrer) => referrer.domain)
+    .map((referrer) => {
       return `
       <tr>
         <td>${referrer.domain}</td>
@@ -181,7 +181,7 @@ function renderReferrers(data) {
 
   // add referrers with empty domains if present
   const emptyDomainReferrer = data.domains.filter(
-    referrer => !referrer.domain,
+    (referrer) => !referrer.domain,
   )[0];
   if (emptyDomainReferrer) {
     tableBody.push(`
@@ -196,12 +196,12 @@ function renderReferrers(data) {
 }
 
 function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
-  callHistoricalAPI(date, { organizationId, articleId }, data => {
+  callHistoricalAPI(date, { organizationId, articleId }, (data) => {
     writeCards(data, timeRangeLabel);
     drawCharts(data, timeRangeLabel);
   });
 
-  callReferrersAPI(date, { organizationId, articleId }, data => {
+  callReferrersAPI(date, { organizationId, articleId }, (data) => {
     renderReferrers(data);
   });
 }

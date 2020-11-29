@@ -2,17 +2,6 @@ module Stories
   class FeedsController < ApplicationController
     respond_to :json
 
-    VARIANTS = {
-      "more_comments_experiment" => :more_comments_experiment,
-      "more_tag_weight_randomized_at_end_experiment" => :more_tag_weight_randomized_at_end_experiment,
-      "more_comments_randomized_at_end_experiment" => :more_comments_randomized_at_end_experiment,
-      "more_comments_medium_weight_randomized_at_end_experiment" =>
-        :more_comments_medium_weight_randomized_at_end_experiment,
-      "more_comments_minimal_weight_randomized_at_end_experiment" =>
-        :more_comments_minimal_weight_randomized_at_end_experiment,
-      "mix_of_everything_experiment" => :mix_of_everything_experiment
-    }.freeze
-
     def show
       @stories = assign_feed_stories
     end
@@ -61,13 +50,11 @@ module Stories
 
     def optimized_signed_in_feed
       feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-      test_variant = field_test(:user_home_feed, participant: current_user)
-      Honeycomb.add_field("field_test_user_home_feed", test_variant) # Monitoring different variants
-      if VARIANTS[test_variant].nil? || test_variant == "base"
-        feed.default_home_feed(user_signed_in: true)
-      else
-        feed.public_send(VARIANTS[test_variant])
-      end
+      # continue to track conversions even in the absence of an experiment so we
+      # can develop a baseline to compare to
+      field_test(:user_home_feed, participant: current_user)
+
+      feed.more_comments_minimal_weight_randomized_at_end
     end
   end
 end

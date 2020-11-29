@@ -1,6 +1,8 @@
 <div class="crayons-card crayons-card--content-rows">
   <div class="grid gap-4">
-    <h3>Publishing to <%= community_name %> from RSS</h3>
+    <h2 class="crayons-subtitle-1">
+      Publishing to <%= community_name %> from RSS
+    </h2>
     <% if @user.feed_url.present? %>
       <%= form_for(@user) do |f| %>
         <%= f.hidden_field :feed_url, value: @user.feed_url %>

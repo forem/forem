@@ -48,7 +48,12 @@ export const Modal = ({
         className,
       })}`}
     >
-      <div role="dialog" aria-modal="true" className="crayons-modal__box">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="modal"
+        className="crayons-modal__box"
+      >
         {title.length > 0 && title && (
           <div className="crayons-modal__box__header">
             <h2>{title}</h2>
