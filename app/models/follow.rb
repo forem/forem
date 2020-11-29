@@ -28,10 +28,10 @@ class Follow < ApplicationRecord
 
   counter_culture :follower, column_name: proc { |follow| COUNTER_CULTURE_COLUMN_NAME_BY_TYPE[follow.followable_type] },
                              column_names: COUNTER_CULTURE_COLUMNS_NAMES
+  before_save :calculate_points
   after_create :send_email_notification
   before_destroy :modify_chat_channel_status
   after_save :touch_follower
-  before_save :calculate_points
   after_create_commit :create_chat_channel
 
   validates :blocked, inclusion: { in: [true, false] }
