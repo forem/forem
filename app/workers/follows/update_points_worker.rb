@@ -34,7 +34,7 @@ module Follows
       tags = articles.pluck(:cached_tag_list).compact.flat_map { |list| list.split(", ") }
       occurrences = tags.count(tag.name)
       bonus = inverse_popularity_bonus(tag)
-      Math.log(occurrences + bonus + 1) # +1 is purelt to avoid log(0) => -infinity
+      Math.log(occurrences + bonus + 1) # +1 is purely to avoid log(0) => -infinity
     end
 
     def adjust_other_tag_follows_of_user(user_id)
