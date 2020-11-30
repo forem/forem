@@ -5,14 +5,20 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#community_name" do
     it "equals to the community name" do
-      SiteConfig.community_name = "SLOAN"
+      allow(SiteConfig).to receive(:community_name).and_return("SLOAN")
       expect(helper.community_name).to eq("SLOAN")
     end
   end
 
   describe "#community_qualified_name" do
     it "equals to the full qualified community name" do
-      expected_name = "#{SiteConfig.community_name} Community"
+      allow(SiteConfig).to receive(:collective_noun_disabled).and_return(true)
+      expected_name = SiteConfig.community_name.to_s
+      expect(helper.community_qualified_name).to eq(expected_name)
+
+      allow(SiteConfig).to receive(:collective_noun).and_return("Flock")
+      allow(SiteConfig).to receive(:collective_noun_disabled).and_return(false)
+      expected_name = "#{SiteConfig.community_name} #{SiteConfig.collective_noun}"
       expect(helper.community_qualified_name).to eq(expected_name)
     end
   end
@@ -38,18 +44,25 @@ RSpec.describe ApplicationHelper, type: :helper do
   describe "#release_adjusted_cache_key" do
     it "does nothing when RELEASE_FOOTPRINT is not set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return(nil)
-      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me")
+      expect(helper.release_adjusted_cache_key("cache-me")).to include("cache-me")
     end
 
     it "appends the RELEASE_FOOTPRINT if it is set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
-      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me--abc123")
+      expect(helper.release_adjusted_cache_key("cache-me")).to include("cache-me--abc123")
     end
 
     it "includes locale param if it is set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
       params[:locale] = "fr-ca"
-      expect(helper.release_adjusted_cache_key("cache-me")).to eq("cache-me-fr-ca-abc123")
+      expect(helper.release_adjusted_cache_key("cache-me")).to include("cache-me-fr-ca-abc123")
+    end
+
+    it "includes SiteConfig.admin_action_taken_at" do
+      Timecop.freeze do
+        allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
+        expect(helper.release_adjusted_cache_key("cache-me")).to include(SiteConfig.admin_action_taken_at.rfc3339)
+      end
     end
   end
 
@@ -58,21 +71,21 @@ RSpec.describe ApplicationHelper, type: :helper do
 
     context "when the start year and current year is the same" do
       it "returns the current year only" do
-        SiteConfig.community_copyright_start_year = current_year
+        allow(SiteConfig).to receive(:community_copyright_start_year).and_return(current_year)
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
 
     context "when the start year and current year is different" do
       it "returns the start and current year" do
-        SiteConfig.community_copyright_start_year = "2014"
+        allow(SiteConfig).to receive(:community_copyright_start_year).and_return("2014")
         expect(helper.copyright_notice).to eq("2014 - #{current_year}")
       end
     end
 
     context "when the start year is blank" do
       it "returns the current year" do
-        SiteConfig.community_copyright_start_year = " "
+        allow(SiteConfig).to receive(:community_copyright_start_year).and_return(" ")
         expect(helper.copyright_notice).to eq(current_year)
       end
     end
@@ -135,10 +148,13 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#email_link" do
+    let(:contact_email) { "contact@dev.to" }
+
     before do
       allow(SiteConfig).to receive(:email_addresses).and_return(
         {
           default: "hi@dev.to",
+          contact: contact_email,
           business: "business@dev.to",
           privacy: "privacy@dev.to",
           members: "members@dev.to"
@@ -151,17 +167,17 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "sets the correct href" do
-      expect(helper.email_link).to have_link(href: "mailto:hi@dev.to")
+      expect(helper.email_link).to have_link(href: "mailto:#{contact_email}")
       expect(helper.email_link(:business)).to have_link(href: "mailto:business@dev.to")
     end
 
     it "has the correct text in the a tag" do
       expect(helper.email_link(text: "Link Name")).to have_text("Link Name")
-      expect(helper.email_link).to have_text("hi@dev.to")
+      expect(helper.email_link).to have_text(contact_email)
     end
 
     it "returns the default email if it doesn't understand the type parameter" do
-      expect(helper.email_link(:nonsense)).to have_link(href: "mailto:hi@dev.to")
+      expect(helper.email_link(:nonsense)).to have_link(href: "mailto:#{contact_email}")
     end
 
     it "returns an href with additional_info parameters" do
@@ -170,7 +186,7 @@ RSpec.describe ApplicationHelper, type: :helper do
         body: "This is a longer body with a question mark ? \n and a newline"
       }
 
-      link = "<a href=\"mailto:hi@dev.to?body=This%20is%20a%20longer%20body%20with%20a%20" \
+      link = "<a href=\"mailto:#{contact_email}?body=This%20is%20a%20longer%20body%20with%20a%20" \
         "question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>"
       expect(email_link(text: "text", additional_info: additional_info)).to eq(link)
     end
@@ -201,11 +217,16 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "returns an ASCII domain for Unicode input" do
-      expect(helper.optimized_image_url("https://www.火.dev/image.png")).to include("https://www.xn--vnx.dev")
+      expect(helper.optimized_image_url("https://www.火.dev/IMAGE.png")).to include("https://www.xn--vnx.dev/IMAGE.png")
     end
 
     it "keeps an ASCII domain as ASCII" do
       expect(helper.optimized_image_url("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
+    end
+
+    it "returns random fallback images as expected" do
+      expect(helper.optimized_image_url("")).not_to be_nil
+      expect(helper.optimized_image_url("", random_fallback: false)).to be_nil
     end
   end
 

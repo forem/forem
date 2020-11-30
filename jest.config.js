@@ -1,7 +1,7 @@
 // Consistent timezone for testing.
 // This does not work on windows, see https://github.com/nodejs/node/issues/4230
 
-/* global process, module */
+/* eslint-env node */
 
 process.env.TZ = 'UTC';
 
@@ -19,10 +19,10 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      statements: 41,
-      branches: 35,
-      functions: 39,
-      lines: 41,
+      statements: 42,
+      branches: 38,
+      functions: 41,
+      lines: 42,
     },
   },
   moduleNameMapper: {

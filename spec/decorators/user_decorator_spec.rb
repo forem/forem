@@ -47,7 +47,7 @@ RSpec.describe UserDecorator, type: :decorator do
 
     it "returns adjusted points for tag" do
       follow = saved_user.follow(tag1)
-      follow.update(points: 0.1)
+      follow.update(explicit_points: 0.1)
       expect(saved_user.decorate.cached_followed_tags.first.points).to eq(0.1)
     end
   end
@@ -125,7 +125,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "creates proper body class with defaults" do
       expected_result = %W[
         default sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config
+        trusted-status-#{user.trusted} #{user.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -134,7 +134,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.config_font = "sans_serif"
       expected_result = %W[
         default sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config
+        trusted-status-#{user.trusted} #{user.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -143,7 +143,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.config_theme = "night_theme"
       expected_result = %W[
         night-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config
+        trusted-status-#{user.trusted} #{user.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -152,7 +152,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.config_theme = "pink_theme"
       expected_result = %W[
         pink-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config
+        trusted-status-#{user.trusted} #{user.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -161,7 +161,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.config_theme = "minimal_light_theme"
       expected_result = %W[
         minimal-light-theme sans-serif-article-body
-        trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config
+        trusted-status-#{user.trusted} #{user.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -170,7 +170,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.config_navbar = "static"
       expected_result = %W[
         default sans-serif-article-body
-        trusted-status-#{user.trusted} static-navbar-config
+        trusted-status-#{user.trusted} static-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
@@ -183,7 +183,7 @@ RSpec.describe UserDecorator, type: :decorator do
 
         expected_result = %w[
           default sans-serif-article-body
-          trusted-status-true default-navbar-config
+          trusted-status-true default-header
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)
       end

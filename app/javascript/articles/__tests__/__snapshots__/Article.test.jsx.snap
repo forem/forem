@@ -8,9 +8,15 @@ Object {
       <article
         class="crayons-story cursor-pointer crayons-story--featured"
         data-content-user-id="23289"
-        data-testid="featured-article"
         id="featured-story-marker"
       >
+        <a
+          aria-labelledby="article-link-62407"
+          class="crayons-story__hidden-navigation-link"
+          href="/some-post/path"
+        >
+          Unbranded Home Loan Account
+        </a>
         <div
           role="presentation"
         >
@@ -83,12 +89,6 @@ Object {
                   href="/some-post/path"
                   id="article-link-62407"
                 >
-                  <span
-                    class="crayons-story__flare-tag"
-                    style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                  >
-                    #javascript
-                  </span>
                   <span>
                     Unbranded Home Loan Account
                   </span>
@@ -100,6 +100,7 @@ Object {
                 <a
                   class="crayons-tag"
                   href="/t/javascript"
+                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
                 >
                   <span
                     class="crayons-tag__prefix"
@@ -202,6 +203,7 @@ Object {
                     class="crayons-btn crayons-btn--s crayons-btn--secondary"
                     data-initial-feed="true"
                     data-reactable-id="62407"
+                    id="article-save-button-62407"
                     type="button"
                   >
                     Save
@@ -218,9 +220,15 @@ Object {
     <article
       class="crayons-story cursor-pointer crayons-story--featured"
       data-content-user-id="23289"
-      data-testid="featured-article"
       id="featured-story-marker"
     >
+      <a
+        aria-labelledby="article-link-62407"
+        class="crayons-story__hidden-navigation-link"
+        href="/some-post/path"
+      >
+        Unbranded Home Loan Account
+      </a>
       <div
         role="presentation"
       >
@@ -293,12 +301,6 @@ Object {
                 href="/some-post/path"
                 id="article-link-62407"
               >
-                <span
-                  class="crayons-story__flare-tag"
-                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
-                >
-                  #javascript
-                </span>
                 <span>
                   Unbranded Home Loan Account
                 </span>
@@ -310,6 +312,7 @@ Object {
               <a
                 class="crayons-tag"
                 href="/t/javascript"
+                style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
               >
                 <span
                   class="crayons-tag__prefix"
@@ -412,6 +415,7 @@ Object {
                   class="crayons-btn crayons-btn--s crayons-btn--secondary"
                   data-initial-feed="true"
                   data-reactable-id="62407"
+                  id="article-save-button-62407"
                   type="button"
                 >
                   Save

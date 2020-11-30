@@ -11,7 +11,7 @@ RSpec.describe "admin/users", type: :request do
     sign_in(admin)
   end
 
-  describe "GETS /admin/users" do
+  describe "GET /admin/users" do
     it "renders to appropriate page" do
       get "/admin/users"
       expect(response.body).to include(user.username)
@@ -22,6 +22,36 @@ RSpec.describe "admin/users", type: :request do
     it "renders to appropriate page" do
       get "/admin/users/#{user.id}"
       expect(response.body).to include(user.username)
+    end
+
+    context "when a user is unregistered" do
+      it "renders a message stating that the user isn't registered" do
+        user.update_columns(registered: false)
+        get "/admin/users/#{user.id}"
+        expect(response.body).to include("@#{user.username} has not accepted their invitation yet.")
+      end
+
+      it "only displays limited information about the user" do
+        user.update_columns(registered: false)
+        get "/admin/users/#{user.id}"
+        expect(response.body).not_to include("Current Roles")
+      end
+    end
+
+    context "when a user is registered" do
+      it "renders the Admin User profile as expected" do
+        get "/admin/users/#{user.id}"
+        expect(response.body).to include("Current Roles")
+      end
+    end
+
+    context "when a user has been sent an email" do
+      it "renders a link to the user email on the Resource Admin" do
+        email = create(:email_message, user: user, to: user.email)
+        get admin_user_path(user.id)
+
+        expect(response.body).to include(resource_admin_email_message_path(email.id))
+      end
     end
   end
 
@@ -39,6 +69,38 @@ RSpec.describe "admin/users", type: :request do
     it "does not show banish button for non-admins" do
       sign_out(admin)
       expect { get "/admin/users/#{user.id}/edit" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "displays the 'Recent Reactions' section" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Recent Reactions")
+    end
+
+    it "displays a message when there are no related vomit reactions for a user" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Nothing negative to see here! 👀")
+    end
+
+    it "displays a list of recent related vomit reactions for a user if any exist" do
+      vomit = build(:reaction, category: "vomit", user_id: user.id, reactable_type: "Article", status: "valid")
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include(vomit.reactable_type)
+    end
+
+    it "displays the 'Recent Reports' section" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Recent Reports")
+    end
+
+    it "displays a message when there are no related reports for a user" do
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include("Nothing to report here! 👀")
+    end
+
+    it "displays a list of recent reports for a user if any exist" do
+      report = build(:feedback_message, category: "spam", affected_id: user.id, feedback_type: "spam", status: "Open")
+      get "/admin/users/#{user.id}/edit"
+      expect(response.body).to include(report.feedback_type)
     end
   end
 
@@ -94,6 +156,14 @@ RSpec.describe "admin/users", type: :request do
       expect do
         patch unlock_access_admin_user_path(user)
       end.to change { user.reload.access_locked? }.from(true).to(false)
+    end
+  end
+
+  describe "POST admin/users/:id/export_data" do
+    it "redirects properly to the user edit page" do
+      sign_in admin
+      post export_data_admin_user_path(user), params: { send_to_admin: "true" }
+      expect(response).to redirect_to edit_admin_user_path(user)
     end
   end
 end

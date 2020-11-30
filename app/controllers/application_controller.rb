@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_action :verify_private_forem
   protect_from_forgery with: :exception, prepend: true
   before_action :remember_cookie_sync
+  before_action :forward_to_app_config_domain
 
   include SessionCurrentUser
   include ValidRequest
@@ -11,6 +12,8 @@ class ApplicationController < ActionController::Base
   include CachingHeaders
   include ImageUploads
   include VerifySetupCompleted
+  include DevelopmentDependencyChecks if Rails.env.development?
+  include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
@@ -26,6 +29,7 @@ class ApplicationController < ActionController::Base
                           omniauth_callbacks
                           registrations
                           confirmations
+                          invitations
                           passwords
                           health_checks].freeze
   private_constant :PUBLIC_CONTROLLERS
@@ -76,6 +80,10 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def redirect_permanently_to(location)
+    redirect_to location + internal_nav_param, status: :moved_permanently
+  end
+
   def customize_params
     params[:signed_in] = user_signed_in?.to_s
   end
@@ -99,6 +107,10 @@ class ApplicationController < ActionController::Base
       referrer = request.env["omniauth.origin"] || "none"
       onboarding_path(referrer: referrer)
     end
+  end
+
+  def after_accept_path_for(_resource)
+    onboarding_path
   end
 
   def raise_suspended
@@ -157,9 +169,23 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def forward_to_app_config_domain
+    return unless request.get? && # Let's only redirect get requests for this purpose.
+      request.host == ENV["APP_DOMAIN"] && # If the request equals the original set domain, e.g. forem-x.forem.cloud.
+      ENV["APP_DOMAIN"] != SiteConfig.app_domain # If the app domain config has now been set, let's go there instead.
+
+    redirect_to URL.url(request.fullpath)
+  end
+
   protected
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+  end
+
+  def internal_nav_param
+    return "" unless params[:i] == "i"
+
+    "?i=i"
   end
 end

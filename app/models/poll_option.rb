@@ -3,6 +3,7 @@ class PollOption < ApplicationRecord
   has_many :poll_votes, dependent: :destroy
 
   validates :markdown, presence: true, length: { maximum: 128 }
+  validates :poll_votes_count, presence: true
 
   before_save :evaluate_markdown
 

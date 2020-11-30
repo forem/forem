@@ -58,7 +58,8 @@
       "type": "text"
     },
     "username": {
-      "type": "keyword"
+      "type": "keyword",
+      "copy_to": "search_fields"
     },
     "profile_fields": {
       "type": "nested",

@@ -1,61 +1,36 @@
 <% title "Comment Settings" %>
 
-<style>
-  .pill {
-    padding: 8px 20px;
-    border-radius: 100px;
-    color: white;
-    margin-right: 5px;
-    font-size: 14px;
-    border: 2px solid transparent;
-    margin-top: 6px;
-    display: inline-block;
-  }
+<div class="crayons-layout crayons-layout--limited-m gap-0">
+  <div class="crayons-card text-padding">
+    <h1 class="crayons-title mb-4">Comment Settings</h1>
 
-  .mute {
-    background-color: #EE7453;
-    color: #ffffff;
-  }
+    <div class="flex">
+      <div class="pr-4 m:pr-8 flex-1">
+        <% if @notification_subscription.persisted? %>
+          <p class="fw-bold">Showing thread notifications</p>
+          <p class="fs-s color-base-60">You will receive all notifications for this comment and any of your comments in this chain.</p>
+        <% else %>
+          <p class="fw-bold">Muting thread notifications</p>
+          <p class="fs-s color-base-60">All notifications for this comment and any of your comments in the thread are currently muted.</p>
+        <% end %>
+      </div>
+      <%= form_for(@notification_subscription, url: "/notification_subscriptions/Comment/#{@comment.id}", method: "post", html: { class: "mute-form shrink-0" }) do |f| %>
+        <input type="hidden" name="config" value="<%= @notification_subscription.persisted? ? "not_subscribed" : "all_comments" %>">
+        <%= f.submit @notification_subscription.persisted? ? "Mute notifications" : "Unmute notifications", class: "crayons-btn crayons-btn--secondary #{@notification_subscription.persisted? ? 'mute' : 'unmute'}" %>
+      <% end %>
+    </div>
 
-  .unmute {
-    /* inverted background color */
-    background-color: #1395b8;
-    color: #ffffff;
-  }
-
-  .container {
-    text-align: center;
-    padding: 30px 0px;
-  }
-
-  @media screen and (min-width: 880px) {
-    .container {
-      margin-top: 100px;
-    }
-  }
-</style>
-<div class="container">
-  <h1>Comment Settings</h1>
-
-  <% if @notification_subscription.persisted? %>
-    <h4>Don't want notifications for this thread?</h4>
-    <p><em>This will mute all notifications for this comment and any of your comments in this chain.</em></p>
-  <% else %>
-    <p>All notifications for this comment and any of your comments in the thread are currently muted.</p>
-  <% end %>
-  <%= form_for(@notification_subscription, url: "/notification_subscriptions/Comment/#{@comment.id}", method: "post", html: { class: "mute-form" }) do |f| %>
-    <input type="hidden" name="config" value="<%= @notification_subscription.persisted? ? "not_subscribed" : "all_comments" %>">
-    <%= f.submit @notification_subscription.persisted? ? "MUTE NOTIFICATIONS" : "🔕 NOTIFICATIONS MUTED (click to unmute)", class: "cta pill #{@notification_subscription.persisted? ? 'mute' : 'unmute'}" %>
-  <% end %>
-
-  <% if NotificationSubscription.where(user_id: current_user, notifiable_type: "Article", notifiable_id: @comment.commentable_id, config: "all_comments").any? %>
-    <br /><br />
-    <p><em>You are still subscribed to all comments in the broader thread, which will mean you will still receive notifications for replies to this comment.</em></p>
-    <%= form_for(@notification_subscription, url: "/notification_subscriptions/Article/#{@comment.commentable_id}", method: "post", html: { class: "mute-form" }) do |f| %>
-      <input type="hidden" name="config" value="not_subscribed">
-      <%= f.submit "UNSUBSCRIBE FROM PARENT POST", class: "cta pill mute" %>
+    <% if NotificationSubscription.where(user_id: current_user, notifiable_type: "Article", notifiable_id: @comment.commentable_id, config: "all_comments").any? %>
+      <div class="flex pt-6">
+        <div class="pr-4 m:pr-8 flex-1">
+          <p class="fw-bold">Subscription</p>
+          <p class="fs-s color-base-60">You are still subscribed to all comments in the broader thread, which will mean you will still receive notifications for replies to this comment.</p>
+        </div>
+        <%= form_for(@notification_subscription, url: "/notification_subscriptions/Article/#{@comment.commentable_id}", method: "post", html: { class: "mute-form" }) do |f| %>
+          <input type="hidden" name="config" value="not_subscribed">
+          <%= f.submit "Unsubscribe from parent post", class: "crayons-btn crayons-btn--secondary" %>
+        <% end %>
+      </div>
     <% end %>
-  <% end %>
-
-  <br>
+  </div>
 </div>

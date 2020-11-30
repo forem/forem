@@ -11,6 +11,16 @@ module ApplicationHelper
   )
   # rubocop:enable Performance/OpenStruct
 
+  LARGE_USERBASE_THRESHOLD = 1000
+
+  SUBTITLES = {
+    "week" => "Top posts this week",
+    "month" => "Top posts this month",
+    "year" => "Top posts this year",
+    "infinity" => "All posts",
+    "latest" => "Latest posts"
+  }.freeze
+
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
@@ -35,7 +45,7 @@ module ApplicationHelper
     derived_title = if page_title.include?(community_name)
                       page_title
                     elsif user_signed_in?
-                      "#{page_title} - #{community_qualified_name} 👩‍💻👨‍💻"
+                      "#{page_title} - #{community_qualified_name} #{community_emoji}"
                     else
                       "#{page_title} - #{community_name}"
                     end
@@ -44,42 +54,21 @@ module ApplicationHelper
   end
 
   def title_with_timeframe(page_title:, timeframe:, content_for: false)
-    sub_titles = {
-      "week" => "Top posts this week",
-      "month" => "Top posts this month",
-      "year" => "Top posts this year",
-      "infinity" => "All posts",
-      "latest" => "Latest posts"
-    }
-
-    if timeframe.blank? || sub_titles[timeframe].blank?
+    if timeframe.blank? || SUBTITLES[timeframe].blank?
       return content_for ? title(page_title) : page_title
     end
 
-    title_text = "#{page_title} - #{sub_titles.fetch(timeframe)}"
+    title_text = "#{page_title} - #{SUBTITLES.fetch(timeframe)}"
     content_for ? title(title_text) : title_text
   end
 
-  def icon(name, pixels = "20")
-    image_tag(icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels)
-  end
+  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto", random_fallback: true)
+    fallback_image = asset_path("#{rand(1..40)}.png") if random_fallback
 
-  def icon_url(name)
-    postfix = {
-      "twitter" => "v1456342401/twitter-logo-silhouette_1_letrqc.png",
-      "github" => "v1456342401/github-logo_m841aq.png",
-      "link" => "v1456342401/link-symbol_apfbll.png",
-      "volume" => "v1461589297/technology_1_aefet2.png",
-      "volume-mute" => "v1461589297/technology_jiugwb.png"
-    }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
+    return unless (image_url = url.presence || fallback_image)
 
-    "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
-  end
-
-  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto")
-    image_url = url.presence || asset_path("#{rand(1..40)}.png")
-
-    Images::Optimizer.call(SimpleIDN.to_ascii(image_url), width: width, quality: quality, fetch_format: fetch_format)
+    normalized_url = Addressable::URI.parse(image_url).normalize.to_s
+    Images::Optimizer.call(normalized_url, width: width, quality: quality, fetch_format: fetch_format)
   end
 
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
@@ -104,7 +93,11 @@ module ApplicationHelper
     end
   end
 
-  def any_selfserve_auth?
+  def invite_only_mode?
+    SiteConfig.invite_only_mode?
+  end
+
+  def any_enabled_auth_providers?
     authentication_enabled_providers.any?
   end
 
@@ -176,15 +169,21 @@ module ApplicationHelper
     @community_name ||= SiteConfig.community_name
   end
 
+  def community_emoji
+    @community_emoji ||= SiteConfig.community_emoji
+  end
+
   def community_qualified_name
-    "#{community_name} Community"
+    return "#{community_name} #{SiteConfig.collective_noun}" unless SiteConfig.collective_noun_disabled
+
+    community_name
   end
 
   def release_adjusted_cache_key(path)
     release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
     return path if release_footprint.blank?
 
-    "#{path}-#{params[:locale]}-#{release_footprint}"
+    "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"
   end
 
   def copyright_notice
@@ -203,15 +202,39 @@ module ApplicationHelper
     link_to body, collection.path, **kwargs
   end
 
-  def email_link(type = :default, text: nil, additional_info: nil)
-    # The allowed types for type is :default, :business, :privacy, and members.
-    # These options can be found in field :email_addresses of models/site_config.rb
-    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
+  def email_link(type = :contact, text: nil, additional_info: nil)
+    # The allowed types for type are the keys of `SiteConfig.email_addresses`
+    # :default, :contact, :business, :privacy, :members
+    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:contact]
     mail_to email, text || email, additional_info
   end
 
   def community_members_label
     SiteConfig.community_member_label.pluralize
+  end
+
+  def meta_keywords_default
+    return if SiteConfig.meta_keywords[:default].blank?
+
+    tag.meta name: "keywords", content: SiteConfig.meta_keywords[:default]
+  end
+
+  def meta_keywords_article(article_tags = nil)
+    return if SiteConfig.meta_keywords[:article].blank?
+
+    content = if article_tags.present?
+                "#{article_tags}, #{SiteConfig.meta_keywords[:article]}"
+              else
+                SiteConfig.meta_keywords[:article]
+              end
+
+    tag.meta name: "keywords", content: content
+  end
+
+  def meta_keywords_tag(tag_name)
+    return if SiteConfig.meta_keywords[:tag].blank?
+
+    tag.meta name: "keywords", content: "#{SiteConfig.meta_keywords[:tag]}, #{tag_name}"
   end
 
   def app_url(uri = nil)
@@ -251,14 +274,26 @@ module ApplicationHelper
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
 
+  def estimated_user_count
+    User.registered.estimated_count
+  end
+
+  def display_estimated_user_count?
+    estimated_user_count > LARGE_USERBASE_THRESHOLD
+  end
+
   # rubocop:disable Rails/OutputSafety
   def admin_config_label(method, content = nil)
     content ||= raw("<span>#{method.to_s.humanize}</span>")
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-      content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+      content = safe_join([content, raw("<span class='crayons-indicator crayons-indicator--critical'>Required</span>")])
     end
 
-    tag.label(content, class: "site-config__label", for: "site_config_#{method}")
+    tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
   end
   # rubocop:enable Rails/OutputSafety
+
+  def admin_config_description(content)
+    tag.p(content, class: "crayons-field__description") unless content.empty?
+  end
 end

@@ -1,83 +1,48 @@
 @import '../config/import';
 
+#footer-container {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px; // Chromium only. See our discussion here: https://github.com/forem/forem/pull/11560
+  @media (min-width: $breakpoint-l) {
+    contain-intrinsic-size: 260px;
+  }
+}
+
 .crayons-footer {
-  --footer-padding: var(--su-4);
+  --footer-padding: var(--su-5);
   background: var(--footer-bg);
   color: var(--footer-color);
-  padding: var(--footer-padding) 0;
+  padding: var(--footer-padding);
+  position: relative;
+  text-align: center;
 
   @media (min-width: $breakpoint-m) {
-    --footer-padding: var(--su-6);
-  }
-
-  @media (min-width: $breakpoint-l) {
     --footer-padding: var(--su-8);
   }
 
   &__container {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    padding: 0 var(--su-2);
-    margin-bottom: calc(var(--su-9) + env(safe-area-inset-bottom));
-
-    @media (min-width: $breakpoint-m) {
-      flex-direction: row;
-      padding: 0 var(--layout-padding);
-      margin-bottom: env(safe-area-inset-bottom);
-    }
-  }
-
-  &__nav {
-    display: grid;
-    gap: var(--su-4);
-    flex: 1 auto;
-    grid-template-columns: repeat(2, 1fr);
-
-    @media (min-width: $breakpoint-s) {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    @media (min-width: $breakpoint-l) {
-      grid-template-columns: repeat(3, 200px);
-    }
-  }
-
-  &__info {
-    display: grid;
-    gap: var(--su-4);
-    width: 100%;
-    align-self: flex-start;
+    justify-items: center;
     font-size: var(--fs-s);
-    order: 1;
-    padding: var(--su-6) 0 0 var(--su-3);
-
+    grid-gap: var(--su-6);
+    margin-bottom: env(safe-area-inset-bottom);
     @media (min-width: $breakpoint-m) {
-      width: 25%;
-      padding: 0;
-      margin-right: var(--su-8);
-      order: initial;
+      grid-gap: var(--su-5);
+      font-size: var(--fs-base);
     }
   }
 
-  // Logo
-  &__logo {
-    display: flex;
-
-    .logo {
-      width: 50px;
-      height: 40px;
-      padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
-      background: var(--logo-bg);
-      fill: var(--logo-color);
-      border-radius: 3px;
-    }
+  &__divider {
+    border: none;
+    border-top: 1px solid var(--footer-color);
+    opacity: 0.15;
+    width: 20%;
+    margin: 0;
   }
 
   &__mascot {
     position: absolute;
-    right: var(--su-4);
-    top: calc(var(--footer-padding) * -1 - 2px);
+    right: var(--footer-padding);
+    top: -2px;
     display: none;
     transform-origin: center top;
     transition: all var(--transition-props);
@@ -89,5 +54,9 @@
     &:hover {
       transform: rotate(-3deg);
     }
+  }
+
+  .crayons-footer__description a {
+    font-weight: var(--fw-bold);
   }
 }

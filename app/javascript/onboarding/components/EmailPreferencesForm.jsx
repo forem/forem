@@ -13,8 +13,8 @@ class EmailPreferencesForm extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      email_newsletter: true,
-      email_digest_periodic: true,
+      email_newsletter: false,
+      email_digest_periodic: false,
     };
   }
 

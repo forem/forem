@@ -22,13 +22,15 @@ We also use server-side caching: [Rails caching][rails_caching]. If you see
 `Rails.cache` or `<%= cache ... %>`, this is code affected in production by
 caching.
 
-## We use inline CSS and deferred scripts for usage performance improvements
+## We Mostly defer scripts for usage performance improvements
 
-To avoid blocking the initial render, we frequently write critical CSS inline,
-and we use the `defer` attribute to accelerate page loads. This practice results
-in a faster page load, and doesn't leave users waiting on heavy assets. However,
+To avoid blocking the initial render, we use the `defer` attribute to
+accelerate page renders. This practice results in a faster page load,
+and doesn't leave users waiting on heavy assets. However,
 this practice limits our ability to manipulate layout with JavaScript. As a
 rule, you should avoid relying on JavaScript for layout when working on Forem.
+
+We have also experimented with different techniques involving inline CSS
 
 ## We attempt to reduce our bundle size
 
@@ -103,6 +105,20 @@ differently than expected.
 Abstracting and removing these caveats is a long term goal, and contribution on
 that front is welcome!
 
+We use the parameter `i=i` (i for internal) to indicate to the backend that we only
+want the "internal" version of the page (the one without the top nav and footer, etc.)
+
+## URLS and constraints
+
+Because we use the top directory for user-generated pages, we need to be aware of
+some constraints. `some-forem.com/sophia` could be a user, a page, an organization,
+or a previously banished user. We allow users to retain two redirects and should
+use `:moved_permanently` when a user changes their username.
+
+Because we may silently insert `?i=i` on the frontend to indicate internal nav, we 
+need to maintain that parameter if we are redirecting. We use the method
+`redirect_permanently_to(location)` to encompass all of this behavior.
+
 # General app concepts
 
 ## Articles (or posts)
@@ -111,6 +127,12 @@ Articles are the primary form of user generated content in the application. An
 Article has many comments and taggings through the acts-as-taggable gem, belongs
 to a single user (and possibly an organization), and is the core unit of
 content.
+
+## Collections (or series)
+
+Although the source code refers to them as "collections" groups of articles are
+referred to, throughout the user interface, as "series". They represent a
+collection of articles relating to the same topic, indeed, a series.
 
 ## Comments
 
@@ -124,6 +146,9 @@ infinitely branching threads.
 
 The user is the authorization/identity component of logging into the app. It is
 also the public profile/authorship/etc. belonging to the people who use the app.
+
+While "user" is a perfectly good technical name, it is a fairly cold way to refer
+to humans, so we should prefer labeling people as members, or by their name/username.
 
 ## Tags
 
@@ -162,6 +187,11 @@ article in the user's reading list.
 
 How a user keeps track of the tags, users, or articles they care about. Follows
 impact a user's home feed and notifications.
+
+Follows can have a "score" which indicates how much a user wants to see the element
+in their feed. Currently we only calculate these for tag follows, but it could be
+expanded to users. The user can set an "explicit" score, and the system also calculates
+an "implicit" score based on their activity.
 
 ## Roles
 

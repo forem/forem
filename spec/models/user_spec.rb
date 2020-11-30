@@ -68,6 +68,8 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
       it { is_expected.to have_many(:page_views).dependent(:nullify) }
+      it { is_expected.to have_many(:podcast_ownerships).dependent(:destroy) }
+      it { is_expected.to have_many(:podcasts_owned).through(:podcast_ownerships).source(:podcast) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
       it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
       it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
@@ -110,6 +112,22 @@ RSpec.describe User, type: :model do
       end
 
       it do
+        expect(subject).to have_many(:badge_achievements_rewarded)
+          .class_name("BadgeAchievement")
+          .with_foreign_key("rewarder_id")
+          .inverse_of(:rewarder)
+          .dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:banished_users)
+          .class_name("BanishedUser")
+          .with_foreign_key("banished_by_id")
+          .inverse_of(:banished_by)
+          .dependent(:nullify)
+      end
+
+      it do
         expect(subject).to have_many(:blocked_blocks)
           .class_name("UserBlock")
           .with_foreign_key("blocked_id")
@@ -121,6 +139,22 @@ RSpec.describe User, type: :model do
           .class_name("UserBlock")
           .with_foreign_key("blocker_id")
           .dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:buffer_updates_approved)
+          .class_name("BufferUpdate")
+          .with_foreign_key("approver_user_id")
+          .inverse_of(:approver_user)
+          .dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:buffer_updates_composed)
+          .class_name("BufferUpdate")
+          .with_foreign_key("composer_user_id")
+          .inverse_of(:composer_user)
+          .dependent(:nullify)
       end
 
       it do
@@ -149,11 +183,31 @@ RSpec.describe User, type: :model do
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
       it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+
+      it { is_expected.to validate_presence_of(:articles_count) }
+      it { is_expected.to validate_presence_of(:badge_achievements_count) }
+      it { is_expected.to validate_presence_of(:blocked_by_count) }
+      it { is_expected.to validate_presence_of(:blocking_others_count) }
+      it { is_expected.to validate_presence_of(:comments_count) }
+      it { is_expected.to validate_presence_of(:config_font) }
+      it { is_expected.to validate_presence_of(:config_navbar) }
+      it { is_expected.to validate_presence_of(:config_theme) }
+      it { is_expected.to validate_presence_of(:credits_count) }
+      it { is_expected.to validate_presence_of(:following_orgs_count) }
+      it { is_expected.to validate_presence_of(:following_tags_count) }
+      it { is_expected.to validate_presence_of(:following_users_count) }
+      it { is_expected.to validate_presence_of(:rating_votes_count) }
+      it { is_expected.to validate_presence_of(:reactions_count) }
+      it { is_expected.to validate_presence_of(:sign_in_count) }
+      it { is_expected.to validate_presence_of(:spent_credits_count) }
+      it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
+
       it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
 
       Authentication::Providers.username_fields.each do |username_field|
@@ -212,6 +266,50 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
       expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
       expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
+    end
+
+    context "when validating feed_url with RSSReader", vcr: true do
+      it "is valid with no feed_url" do
+        user.feed_url = nil
+
+        expect(user).to be_valid
+      end
+
+      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
+        user.feed_url = "http://example.com"
+
+        expect(user).not_to be_valid
+      end
+
+      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
+
+        expect(user).to be_valid
+      end
+    end
+
+    context "with Feeds::ValidateUrl" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:feeds_import).and_return(true)
+      end
+
+      it "is valid with no feed_url" do
+        user.feed_url = nil
+
+        expect(user).to be_valid
+      end
+
+      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
+        user.feed_url = "http://example.com"
+
+        expect(user).not_to be_valid
+      end
+
+      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
+
+        expect(user).to be_valid
+      end
     end
   end
 
@@ -585,9 +683,7 @@ RSpec.describe User, type: :model do
   describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
 
-    before do
-      omniauth_mock_providers_payload
-    end
+    before { omniauth_mock_providers_payload }
 
     Authentication::Providers.available.each do |provider_name|
       it "finds user by email and assigns identity to that if exists for #{provider_name}" do
@@ -740,7 +836,7 @@ RSpec.describe User, type: :model do
 
   describe "theming properties" do
     it "creates proper body class with defaults" do
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
@@ -762,28 +858,28 @@ RSpec.describe User, type: :model do
     it "creates proper body class with sans serif config" do
       user.config_font = "sans_serif"
 
-      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.config_font = "open_dyslexic"
 
-      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
 
-      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "night-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
 
-      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      classes = "pink-theme sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end

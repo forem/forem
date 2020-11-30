@@ -6,13 +6,13 @@ function toggleTemplateTypeButton(form, e) {
   const activeType = targetType === 'personal' ? 'moderator' : 'personal';
   e.target.classList.toggle('active');
   form
-    .querySelector(`.${activeType}-template-button`)
+    .getElementsByClassName(`${activeType}-template-button`)[0]
     .classList.toggle('active');
   form
-    .querySelector(`.${targetType}-responses-container`)
+    .getElementsByClassName(`${targetType}-responses-container`)[0]
     .classList.toggle('hidden');
   form
-    .querySelector(`.${activeType}-responses-container`)
+    .getElementsByClassName(`${activeType}-responses-container`)[0]
     .classList.toggle('hidden');
 }
 
@@ -30,10 +30,14 @@ function buildHTML(response, typeOf) {
     return response
       .map((obj) => {
         return `
-          <div class="mod-response-wrapper">
-            <span>${obj.title}</span>
-            <p>${obj.content}</p>
-            <button class="insert-template-button" type="button" data-content="${obj.content}">INSERT</button>
+          <div class="mod-response-wrapper flex mb-4">
+            <div class="flex-1">
+              <h4>${obj.title}</h4>
+              <p>${obj.content}</p>
+            </div>
+            <div class="pl-2">
+              <button class="crayons-btn crayons-btn--secondary crayons-btn--s insert-template-button" type="button" data-content="${obj.content}">Insert</button>
+            </div>
           </div>
         `;
       })
@@ -43,11 +47,15 @@ function buildHTML(response, typeOf) {
     return response
       .map((obj) => {
         return `
-            <div class="mod-response-wrapper">
-              <span>${obj.title}</span>
-              <p>${obj.content}</p>
-              <button class="insert-template-button" type="button" data-content="${obj.content}">INSERT</button>
-              <button class="moderator-submit-button" type="submit" data-response-template-id="${obj.id}">SEND AS MOD</button>
+            <div class="mod-response-wrapper mb-4 flex">
+              <div class="flex-1">
+                <h4>${obj.title}</h4>
+                <p>${obj.content}</p>
+              </div>
+              <div class="flex flex-nowrap pl-2">
+                <button class="crayons-btn crayons-btn--s crayons-btn--secondary moderator-submit-button" type="submit" data-response-template-id="${obj.id}">Send as Mod</button>
+                <button class="crayons-btn crayons-btn--s crayons-btn--outlined insert-template-button" type="button" data-content="${obj.content}">Insert</button>
+              </div>
             </div>
           `;
       })
@@ -57,8 +65,7 @@ function buildHTML(response, typeOf) {
 }
 
 function submitAsModerator(responseTemplateId, parentId) {
-  const commentableId = document.querySelector('input#comment_commentable_id')
-    .value;
+  const commentableId = document.getElementById('comment_commentable_id').value;
 
   fetch(`/comments/moderator_create`, {
     method: 'POST',
@@ -103,13 +110,11 @@ Make sure this is the appropriate comment for the situation.
 This action is not reversible.`;
 
 function addClickListeners(form) {
-  const responsesContainer = form.querySelector(
-    '.response-templates-container',
-  );
+  const responsesContainer = form.getElementsByClassName(
+    'response-templates-container',
+  )[0];
   const parentCommentId =
-    form.id !== 'new_comment'
-      ? form.querySelector('input#comment_parent_id').value
-      : null;
+    form.id !== 'new_comment' && !form.id.includes('edit_comment');
   const insertButtons = Array.from(
     responsesContainer.getElementsByClassName('insert-template-button'),
   );
@@ -120,7 +125,7 @@ function addClickListeners(form) {
   insertButtons.forEach((button) => {
     button.addEventListener('click', (e) => {
       const { content } = e.target.dataset;
-      const textArea = form.querySelector('textarea');
+      const textArea = form.getElementsByTagName('textarea')[0];
       const textAreaReplaceable =
         textArea.value === null ||
         textArea.value === '' ||
@@ -128,6 +133,7 @@ function addClickListeners(form) {
 
       if (textAreaReplaceable) {
         textArea.value = content;
+        textArea.focus();
         responsesContainer.classList.toggle('hidden');
       }
     });
@@ -148,9 +154,13 @@ function fetchResponseTemplates(typeOf, formId) {
   const form = document.getElementById(formId);
   let dataContainer;
   if (typeOf === 'personal_comment') {
-    dataContainer = form.querySelector('.personal-responses-container');
+    dataContainer = form.getElementsByClassName(
+      'personal-responses-container',
+    )[0];
   } else if (typeOf === 'mod_comment') {
-    dataContainer = form.querySelector('.moderator-responses-container');
+    dataContainer = form.getElementsByClassName(
+      'moderator-responses-container',
+    )[0];
   }
   /* eslint-disable-next-line no-undef */
   fetch(`/response_templates?type_of=${typeOf}`, {
@@ -172,10 +182,12 @@ function fetchResponseTemplates(typeOf, formId) {
 }
 
 function prepareHeaderButtons(form) {
-  const personalTemplateButton = form.querySelector(
-    '.personal-template-button',
-  );
-  const modTemplateButton = form.querySelector('.moderator-template-button');
+  const personalTemplateButton = form.getElementsByClassName(
+    'personal-template-button',
+  )[0];
+  const modTemplateButton = form.getElementsByClassName(
+    'moderator-template-button',
+  )[0];
 
   personalTemplateButton.addEventListener('click', (e) => {
     toggleTemplateTypeButton(form, e);
@@ -191,8 +203,9 @@ function prepareHeaderButtons(form) {
       const topLevelData = document.getElementById('response-templates-data');
       const modDataNotFetched =
         topLevelData.innerHTML !== ''
-          ? topLevelData.querySelector('.moderator-responses-container')
-              .childElementCount === 0
+          ? topLevelData.getElementsByClassName(
+              'moderator-responses-container',
+            )[0].childElementCount === 0
           : false;
       if (modDataNotFetched) {
         form.querySelector('img.loading-img').classList.toggle('hidden');
@@ -215,9 +228,9 @@ function loadData(form) {
 }
 
 function openButtonCallback(form) {
-  const responsesContainer = form.querySelector(
-    '.response-templates-container',
-  );
+  const responsesContainer = form.getElementsByClassName(
+    'response-templates-container',
+  )[0];
   const dataFetched =
     document.getElementById('response-templates-data').innerHTML !== '';
 
@@ -229,18 +242,20 @@ function openButtonCallback(form) {
     copyData(responsesContainer);
     addClickListeners(form);
   } else if (!dataFetched && !containerHidden) {
-    loadData(form)
+    loadData(form);
   }
   /* eslint-disable-next-line no-undef */
   if (userData().moderator_for_tags.length > 0) {
     prepareHeaderButtons(form);
   } else {
-    form.querySelector('.personal-template-button').classList.add('hidden');
+    form
+      .getElementsByClassName('personal-template-button')[0]
+      .classList.add('hidden');
   }
 }
 
 function prepareOpenButton(form) {
-  const button = form.querySelector('.response-templates-button');
+  const button = form.getElementsByClassName('response-templates-button')[0];
   if (!button) {
     return;
   }
@@ -249,23 +264,27 @@ function prepareOpenButton(form) {
     openButtonCallback(form);
   });
 
-  button.dataset.hasListener = "true";
+  button.dataset.hasListener = 'true';
 }
 
 function observeForReplyClick() {
   const config = { childList: true, subtree: true };
 
   const callback = (mutations) => {
-    const form = mutations[0].addedNodes[0];
-    if (form.nodeName === 'FORM') {
-      prepareOpenButton(form);
+    const form = Array.from(mutations[0].addedNodes).filter(
+      (node) => node.nodeName === 'FORM',
+    );
+    if (form.length > 0) {
+      prepareOpenButton(form[0]);
     }
   };
 
   const observer = new MutationObserver(callback);
 
   const commentTree = document.getElementById('comment-trees-container');
-  observer.observe(commentTree, config);
+  if (commentTree) {
+    observer.observe(commentTree, config);
+  }
 
   window.addEventListener('beforeunload', () => {
     observer.disconnect();
@@ -278,15 +297,17 @@ function observeForReplyClick() {
 
 function handleLoggedOut() {
   // global method from app/assets/javascripts/utilities/showModal.js
-  /* eslint-disable-next-line no-undef */
-  document.querySelector('.response-templates-button')?.addEventListener('click', showModal);
+  document
+    .getElementsByClassName('response-templates-button')[0]
+    ?.addEventListener('click', showModal); /* eslint-disable-line no-undef */
 }
 /* eslint-enable no-alert */
 /* eslint-enable no-restricted-globals */
 
 export function loadResponseTemplates() {
   const { userStatus } = document.body.dataset;
-  const form = document.getElementById('new_comment');
+
+  const form = document.getElementsByClassName('comment-form')[0];
 
   if (document.getElementById('response-templates-data')) {
     if (userStatus === 'logged-out') {
@@ -294,7 +315,8 @@ export function loadResponseTemplates() {
     }
     if (
       form &&
-      form.querySelector('.response-templates-button').dataset.hasListener === 'false'
+      form.getElementsByClassName('response-templates-button')[0].dataset
+        .hasListener === 'false'
     ) {
       prepareOpenButton(form);
     }

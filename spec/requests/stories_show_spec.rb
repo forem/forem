@@ -19,13 +19,40 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    it "preserves internal nav param (i=i) upon redirect" do
+      old_path = article.path
+      article.update(organization: org)
+      get old_path + "?i=i"
+      expect(response.body).to redirect_to  "#{article.path}?i=i"
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "does not have ?i=i on redirects which did not originally include it" do
+      old_path = article.path
+      article.update(organization: org)
+      get old_path
+      expect(response.body).not_to redirect_to  "#{article.path}?i=i"
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "does not have ?i=i on redirects without that precise param" do
+      old_path = article.path
+      article.update(organization: org)
+      get old_path + "?i=j"
+      expect(response.body).to redirect_to  article.path
+      expect(response.body).not_to redirect_to  "#{article.path}?i=j"
+      expect(response.body).not_to redirect_to  "#{article.path}?i=j"
+    end
+
     ## Title tag
     it "renders signed-in title tag for signed-in user" do
+      allow(SiteConfig).to receive(:community_emoji).and_return("🌱")
+
       sign_in user
       get article.path
 
-      expected_title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
-      expect(response.body).to include(expected_title)
+      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} #{community_emoji}</title>"
+      expect(response.body).to include(title)
     end
 
     it "renders signed-out title tag for signed-out user" do
@@ -44,12 +71,14 @@ RSpec.describe "StoriesShow", type: :request do
     end
 
     it "does not render title tag with search_optimized_title_preamble if set and not signed in" do
+      allow(SiteConfig).to receive(:community_emoji).and_return("🌱")
+
       sign_in user
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
 
-      expected_title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
-      expect(response.body).to include(expected_title)
+      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} #{community_emoji}</title>"
+      expect(response.body).to include(title)
     end
 
     it "does not render preamble with search_optimized_title_preamble not signed in but not set" do
@@ -103,7 +132,7 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders second and third users if present" do
       # 3rd user doesn't seem to get rendered for some reason
       user2 = create(:user)
-      article.update(second_user_id: user2.id)
+      article.update(co_author_ids: [user2.id])
       get article.path
       expect(response.body).to include "<em>with <b><a href=\"#{user2.path}\">"
     end

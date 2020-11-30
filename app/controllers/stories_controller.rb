@@ -12,7 +12,7 @@ class StoriesController < ApplicationController
     ]
   }.freeze
 
-  SIGNED_OUT_RECORD_COUNT = (Rails.env.production? ? 60 : 10).freeze
+  SIGNED_OUT_RECORD_COUNT = 60
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
@@ -51,13 +51,6 @@ class StoriesController < ApplicationController
     end
   end
 
-  def warm_comments
-    @article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate || not_found
-    @warm_only = true
-    assign_article_show_variables
-    render partial: "articles/full_comment_area"
-  end
-
   private
 
   def assign_hero_html
@@ -85,7 +78,7 @@ class StoriesController < ApplicationController
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
-      redirect_to user_or_org.path, status: :moved_permanently
+      redirect_permanently_to(user_or_org.path)
     else
       not_found
     end
@@ -95,10 +88,10 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path, status: :moved_permanently
+      redirect_permanently_to(URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
     elsif (@organization = @article.organization)
-      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path, status: :moved_permanently
+      redirect_permanently_to(URI.parse("/#{@organization.slug}/#{params[:slug]}").path)
       return
     end
     not_found
@@ -133,17 +126,21 @@ class StoriesController < ApplicationController
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
-      redirect_to "/t/#{@tag_model.alias_for}", status: :moved_permanently
+      redirect_permanently_to("/t/#{@tag_model.alias_for}")
       return
     end
 
     @num_published_articles = if @tag_model.requires_approval?
                                 Article.published.cached_tagged_by_approval_with(@tag).size
+                              elsif SiteConfig.feed_strategy == "basic"
+                                Article.published.cached_tagged_with(@tag)
+                                  .where("score >= ?", SiteConfig.tag_feed_minimum_score).size
                               else
                                 cached_tagged_count
                               end
     @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
-    @stories = Articles::Feed.new(number_of_articles: @number_of_articles, tag: @tag, page: @page)
+    @stories = Articles::Feeds::LargeForemExperimental
+      .new(number_of_articles: @number_of_articles, tag: @tag, page: @page)
       .published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
@@ -188,7 +185,7 @@ class StoriesController < ApplicationController
   end
 
   def featured_story
-    @featured_story ||= Articles::Feed.find_featured_story(@stories)
+    @featured_story ||= Articles::Feeds::LargeForemExperimental.find_featured_story(@stories)
   end
 
   def handle_podcast_index
@@ -227,6 +224,17 @@ class StoriesController < ApplicationController
 
     assign_user_github_repositories
 
+    # @badges_limit is here and is set to 6 because it determines how many badges we will display
+    # on Profile sidebar widget. If user has more badges, we hide them and let them be revealed
+    # by clicking "See more" button (because we want to save space etc..). But why 6 exactly?
+    # To make that widget look good:
+    #   - On desktop it will have 3 rows, each row with 2 badges.
+    #   - On mobile it will have 2 rows, each row with 3 badges.
+    # So it's always 6. If we make it higher or lower number, we would have to sacrifice UI:
+    #   - Let's say it's `4`. On mobile it would display two rows: 1st with 3 badges and
+    # 2nd with 1 badge (!) <-- and that would look off.
+    @badges_limit = 6
+
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
 
@@ -262,7 +270,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_feed_stories
-    feed = Articles::Feed.new(page: @page, tag: params[:tag])
+    feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
     if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
     elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
@@ -294,8 +302,8 @@ class StoriesController < ApplicationController
     end
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
-    assign_second_and_third_user
     set_article_json_ld
+    assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
@@ -303,11 +311,10 @@ class StoriesController < ApplicationController
     !@article.published && params[:preview] != @article.password
   end
 
-  def assign_second_and_third_user
-    return if @article.second_user_id.blank?
+  def assign_co_authors
+    return if @article.co_author_ids.blank?
 
-    @second_user = User.find(@article.second_user_id)
-    @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
+    @co_author_ids = User.find(@article.co_author_ids)
   end
 
   def assign_user_comments
@@ -341,18 +348,17 @@ class StoriesController < ApplicationController
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order(published_at: :desc)
     else
-      @stories.order(hotness_score: :desc).where("score > 2")
+      @stories.order(hotness_score: :desc).where("score >= ?", SiteConfig.home_feed_minimum_score)
     end
   end
 
   def assign_podcasts
     return unless user_signed_in?
 
-    num_hours = Rails.env.production? ? 24 : 2400
     @podcast_episodes = PodcastEpisode
       .includes(:podcast)
       .order(published_at: :desc)
-      .where("published_at > ?", num_hours.hours.ago)
+      .where("published_at > ?", 24.hours.ago)
       .select(:slug, :title, :podcast_id, :image)
   end
 
@@ -363,7 +369,7 @@ class StoriesController < ApplicationController
   def redirect_to_lowercase_username
     return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
 
-    redirect_to "/#{params[:username].downcase}", status: :moved_permanently
+    redirect_permanently_to("/#{params[:username].downcase}")
   end
 
   def set_user_json_ld
@@ -482,7 +488,6 @@ class StoriesController < ApplicationController
       @user.medium_url,
       @user.gitlab_url,
       @user.instagram_url,
-      @user.twitch_username,
       @user.website_url,
     ].reject(&:blank?)
   end
@@ -495,7 +500,7 @@ class StoriesController < ApplicationController
 
   def cached_tagged_count
     Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
-      Article.published.cached_tagged_with(@tag).where("score > 2").size
+      Article.published.cached_tagged_with(@tag).where("score >= ?", SiteConfig.tag_feed_minimum_score).size
     end
   end
 end

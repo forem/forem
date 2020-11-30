@@ -44,8 +44,8 @@ RSpec.describe "articles/show", type: :view do
 
   it "shows user new comment box" do
     render
-    expect(rendered).to have_css("form#new_comment")
-    expect(rendered).to have_css("input#submit-button")
+    expect(rendered).to have_css("form.comment-form textarea")
+    expect(rendered).to have_css("form.comment-form button[type='submit']")
   end
 
   it "shows a note about the canonical URL" do
@@ -53,5 +53,15 @@ RSpec.describe "articles/show", type: :view do
     render
     expect(rendered).to have_text("Originally published at")
     expect(rendered).to have_text("example.com")
+  end
+
+  it "shows a note about the canonical URL after edit" do
+    allow(article1).to receive(:canonical_url).and_return("https://example.com/lamas")
+    allow(article1).to receive(:published_at).and_return(Time.zone.at(0))
+    allow(article1).to receive(:edited_at).and_return(Time.current)
+    render
+    expect(rendered).to have_text("Originally published at")
+    expect(rendered).to have_text("example.com")
+    expect(rendered).to have_text("Updated on")
   end
 end
