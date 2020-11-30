@@ -68,7 +68,7 @@
       <img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;max-width:380px;border-radius:8px;background:<%= article.main_image_background_hex_color %>;" alt="cover image" /><br />
     </div>
     <% end %>
-    <%= form_with url: admin_article_path(article.id), local: true do |f| %>
+    <%= form_with url: admin_article_path(article.id), model: article, local: true do |f| %>
     <div class="form-group">
       <input name="utf8" type="hidden" value="✓">
       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
@@ -86,28 +86,35 @@
           value="<%= article.user_id %>">
       </div>
       <div class="form-group col">
-        <label for="co_author_ids_<%= article.id %>">Co-Author IDs (comma separated):</label>
-        <input id="co_author_ids_<%= article.id %>" class="form-control" size="6" name="article[co_author_ids]"
+        <label for="co_author_ids_list_<%= article.id %>">Co-Author IDs (comma separated):</label>
+        <input id="co_author_ids_list_<%= article.id %>" class="form-control" size="6" name="article[co_author_ids_list]"
           value="<%= article.co_author_ids&.join(", ") %>">
       </div>
     </div>
+    <% if article.published? %>
+      <div class="row">
+        <div class="form-group col">
+          <label for="published_at_<%= article.id %>">Published at:</label>
+          <%= f.datetime_select :published_at, required: true, include_blank: true, include_seconds: true, class: "form-control" %> UTC
+        </div>
+      </div>
+    <% end %>
     <div class="row">
       <div class="form-check col">
-        <input name="article[featured]" type="checkbox" <%= "checked" if article.featured %> id="featured-<%= article.id %>">
+        <%= f.check_box :featured, id: "featured-#{article.id}" %>
         <label for="featured-<%= article.id %>">Featured</label>
       </div>
       <div class="form-check col">
-        <input name="article[approved]" type="checkbox" <%= "checked" if article.approved %> id="approved-<%= article.id %>">
+        <%= f.check_box :approved, id: "approved-#{article.id}" %>
         <label for="approved-<%= article.id %>">Approved</label>
       </div>
       <div class="form-check col">
-        <input name="article[boosted_additional_articles]" type="checkbox"
-          <%= "checked" if article.boosted_additional_articles %> id="boosted_additional_articles-<%= article.id %>">
+        <%= f.check_box :boosted_additional_articles, id: "boosted_additional_articles-#{article.id}" %>
         <label for="boosted_additional_articles-<%= article.id %>">Boosted</label>
       </div>
       <% unless article.last_buffered %>
       <div class="form-check col">
-        <input name="article[last_buffered]" value="<%= Time.current %>" type="checkbox" id="last_buffered-<%= article.id %>">
+        <%= f.check_box :last_buffered, id: "last_buffered-#{article.id}" %>
         <label for="last_buffered-<%= article.id %>">Mark as buffered</label>
       </div>
       <% end %>

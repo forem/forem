@@ -48,13 +48,11 @@ describe('<ReadingList />', () => {
   beforeEach(() => {
     global.fetch = fetch;
     global.getCsrfToken = jest.fn(() => 'this-is-a-csrf-token');
-    global.filterXSS = (text) => text;
   });
 
   afterEach(() => {
     delete global.fetch;
     delete global.getCsrfToken;
-    delete global.filterXSS;
   });
 
   it('should have no a11y violations', async () => {

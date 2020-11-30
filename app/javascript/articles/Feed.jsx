@@ -137,7 +137,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     'a.crayons-story__hidden-navigation-link',
     'div.paged-stories',
   );
-  
+
   useKeyboardShortcuts({
     b: (event) => {
       const article = event.target?.closest('article.crayons-story');

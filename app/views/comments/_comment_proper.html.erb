@@ -1,88 +1,39 @@
-<div class="comment-hash-marker" id="<%= comment.id_code_generated %>"></div>
-<div id="comment-node-<%= comment.id %>"
-     class="single-comment-node <%= comment_class(comment, is_view_root: is_view_root) %> <%= "flat-node" if comment.depth > 3 %> comment-deep-<%= comment.depth %>" data-comment-id="<%= comment.id %>" data-comment-author-id="<%= comment_user_id_unless_deleted comment %>" data-content-user-id="<%= comment_user_id_unless_deleted comment %>">
-  <% if comment.deleted %>
-    <div class="inner-comment">
-      <div class="body" style="padding-bottom:32px;opacity:0.3;user-select:none;cursor:default">
-        [deleted]
-      </div>
-    </div>
-  <% else %>
-    <div class="inner-comment">
-      <% decorated_comment = comment.decorate %>
+<% decorated_comment = comment.decorate %>
 
-      <% if decorated_comment.low_quality %>
-        <div class="low-quality-comment-marker">
-          <%= image_tag(Images::Optimizer.call(SiteConfig.mascot_image_url, width: 50, height: 50, crop: "imagga_scale"), class: "sloan", alt: "Sloan, the sloth mascot", loading: "lazy") %>
-          Comment marked as low quality/non-constructive by the community
-          <a href="/code-of-conduct">View code of conduct</a>
+<div class="comment__inner">
+  <%= render partial: "comments/comment_avatar", locals: { comment: comment } %>
+
+  <div class="inner-comment comment__details">
+    <div class="comment__content crayons-card">
+      <% if comment.deleted %>
+        <div class="p-6 align-center opacity-50 fs-s">
+          <span class="js-comment-username">Comment deleted</span>
+        </div>
+      <% else %>
+        <%= render partial: "comments/comment_quality_marker", locals: {
+              comment: comment,
+              decorated_comment: decorated_comment
+            } %>
+
+        <%= render partial: "comments/comment_header", locals: {
+              comment: comment,
+              commentable: commentable,
+              decorated_comment: decorated_comment
+            } %>
+
+        <div class="comment__body text-styles text-styles--secondary body">
+          <%= comment.safe_processed_html %>
         </div>
       <% end %>
-      <% if comment.hidden_by_commentable_user %>
-        <div class="low-quality-comment-marker">
-          Comment hidden by post author - thread only visible in this permalink
-        </div>
-      <% end %>
-
-      <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
-        <a href="/<%= comment.user.username %>">
-          <img class="profile-pic" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" />
-          <span class="comment-username">
-            <span class="comment-username-inner">
-              <%= comment.user.name %>
-            </span>
-          </span>
-        </a>
-        <% if comment.user.twitter_username.present? %>
-          <a href="https://twitter.com/<%= comment.user.twitter_username %>" rel="noopener noreferrer" target="_blank">
-            <%= image_tag("twitter-logo.svg", class: "icon-img", alt: "twitter logo") %></a>
-        <% end %>
-        <% if comment.user.github_username.present? %>
-          <a href="https://github.com/<%= comment.user.github_username %>" rel="noopener noreferrer" target="_blank">
-            <%= image_tag("github-logo.svg", class: "icon-img", alt: "github logo") %>
-          </a>
-        <% end %>
-        <% if commentable_author_is_op?(commentable, comment) %>
-          <span class="op-marker"><%= get_ama_or_op_banner(commentable) %></span>
-        <% end %>
-        <%= render "comments/comment_date", decorated_comment: decorated_comment %>
-        <button class="dropbtn" aria-label="Toggle dropdown menu">
-          <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "dropdown-icon", title: "Dropdown menu") %>
-        </button>
-        <div class="dropdown">
-          <div class="crayons-dropdown p-1 right-1 left-1 s:right-0 s:left-auto fs-base">
-            <a href="<%= comment.path %>" class="crayons-link crayons-link--block">Permalink</a>
-            <a href="<%= comment.path %>" class="crayons-link crayons-link--block permalink-copybtn" data-no-instant>Copy Permalink</a>
-            <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= comment.path %>/settings">
-            </span>
-            <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
-            <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>" style="display: none; width: 100%;">
-              <a href="#" class="crayons-link crayons-link--block hide-comment" data-hide-type="<%= action.downcase %>" data-comment-id="<%= comment.id %>">
-                <%= action %>
-              </a>
-            </span>
-            <span class="mod-actions hidden mod-actions-comment-button" data-path="<%= comment.path %>/mod"></span>
-            <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= comment_url(comment) %>"></span>
-          </div>
-        </div>
-      </div>
-      <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %>">
-        <%= comment.safe_processed_html %>
-        <button class="reaction-button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>" title="heart">
-          <%= image_tag("favorite-heart-outline-button.svg", alt: "Favorite heart outline button") %>
-          <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
-        </button>
-      </div>
-      <div class="actions" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">
-        <span class="current-user-actions hidden" style="display:none">
-        </span>
-        <% if comment.depth < 2 || is_childless %>
-          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form" rel="nofollow">Reply</a>
-        <% else %>
-          <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication" rel="nofollow">Thread</a>
-        <% end %>
-      </div>
     </div>
-  <% end %>
-  <%= subtree_html %>
+
+    <%= unless comment.deleted
+          (render partial: "comments/comment_footer", locals: {
+            comment: comment,
+            commentable: commentable,
+            is_childless: is_childless
+          })
+        end %>
+  </div>
 </div>
+<%= subtree_html %>

@@ -29,6 +29,23 @@
     <% else %>
       <p class="pb-4 fw-bold">Create your account</p>
     <% end %>
+    <% if SiteConfig.display_email_domain_allow_list_publicly &&
+      SiteConfig.allowed_registration_email_domains.any? %>
+      <div class="crayons-notice crayons-notice--info">
+        <% if SiteConfig.allowed_registration_email_domains.one? %>
+          Registration restricted to <strong>@<%= SiteConfig.allowed_registration_email_domains.first %></strong> emails.
+        <% else %>
+          Registration restricted to the following emails
+          <ul>
+            <% SiteConfig.allowed_registration_email_domains.each do |domain| %>
+              <li>
+                <strong>@<%= domain %></strong></strong>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    <% end %>
     <div class="crayons-field mt-3">
       <%= f.label :profile_image, class: "crayons-field__label" %>
       <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100", required: true %>
