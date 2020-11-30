@@ -1,7 +1,7 @@
 module Loggers
   class LogWorkerQueueStats
     class << self
-      def run
+      def call
         queues = Sidekiq::Queue.all.map(&:itself)
         record_totals(queues)
         record_queue_stats(queues)
@@ -10,12 +10,14 @@ module Loggers
       private
 
       def record_totals(queues)
-        log_to_datadog("sidekiq.queues.total_size", queues.map(&:size).sum)
+        log_to_datadog("sidekiq.queues.total_size", queues.sum(&:size))
         log_to_datadog("sidekiq.queues.total_workers", Sidekiq::Workers.new.size)
       end
 
       def record_queue_stats(queues)
-        queue_hash = queues.map { |queue| [queue.name, { size: queue.size, latency: queue.latency }] }.to_h
+        queue_hash = queues.map do |queue|
+          [queue.name, { size: queue.size, latency: queue.latency }]
+        end.to_h
         queue_hash.each do |queue_name, queue_values|
           latency = queue_values.fetch(:latency, 0)
           size = queue_values.fetch(:size, 0)

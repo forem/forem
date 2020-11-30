@@ -31,10 +31,10 @@ module Follows
       last_100_long_page_view_article_ids = user.page_views.where(time_tracked_in_seconds: 45..)
         .pluck(:article_id).last(100)
       articles = Article.where(id: last_100_reactable_ids + last_100_long_page_view_article_ids)
-      tags = articles.pluck(:cached_tag_list).flat_map { |list| list.split(", ") }
+      tags = articles.pluck(:cached_tag_list).compact.flat_map { |list| list.split(", ") }
       occurrences = tags.count(tag.name)
       bonus = inverse_popularity_bonus(tag)
-      Math.log(occurrences + bonus + 1) # +1 is purelt to avoid log(0) => -infinity
+      Math.log(occurrences + bonus + 1) # +1 is purely to avoid log(0) => -infinity
     end
 
     def adjust_other_tag_follows_of_user(user_id)

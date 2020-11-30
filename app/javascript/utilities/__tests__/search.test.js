@@ -1,11 +1,10 @@
 import fetch from 'jest-fetch-mock';
 import {
-  getInitialSearchTerm,
+  getSearchTermFromUrl,
   preloadSearchResults,
   hasInstantClick,
   displaySearchResults,
   fetchSearch,
-  createSearchUrl,
 } from '../search';
 import '../../../assets/javascripts/lib/xss';
 
@@ -23,12 +22,12 @@ describe('Search utilities', () => {
     delete globalThis.getCsrfToken;
   });
 
-  describe('getInitialSearchTerm', () => {
+  describe('getSearchTermFromUrl', () => {
     describe(`When the querystring key 'q' has a value`, () => {
       it(`should return the querystring key q's value`, () => {
         const expected = 'hello';
         const querystring = `?q=${expected}`;
-        const actual = getInitialSearchTerm(querystring);
+        const actual = getSearchTermFromUrl(querystring);
         expect(actual).toEqual(expected);
       });
     });
@@ -37,7 +36,7 @@ describe('Search utilities', () => {
       it(`should return the querystring key q's decoded value with + characters replaced by a space`, () => {
         const expected = `my visual studio setup`;
         const querystring = `?q=my+visual+studio+setup`;
-        const actual = getInitialSearchTerm(querystring);
+        const actual = getSearchTermFromUrl(querystring);
         expect(actual).toEqual(expected);
       });
     });
@@ -46,7 +45,7 @@ describe('Search utilities', () => {
       it(`should return the querystring key q's decoded value`, () => {
         const expected = `<script>alert('XSS!');</script>`;
         const querystring = `?q=<script>alert(%27XSS!%27);</script>`;
-        const actual = getInitialSearchTerm(querystring);
+        const actual = getSearchTermFromUrl(querystring);
         expect(actual).toEqual(expected);
       });
     });
@@ -55,7 +54,7 @@ describe('Search utilities', () => {
       it(`should return an empty string`, () => {
         const expected = '';
         const querystring = `?q=`;
-        const actual = getInitialSearchTerm(querystring);
+        const actual = getSearchTermFromUrl(querystring);
         expect(actual).toEqual(expected);
       });
 
@@ -64,7 +63,7 @@ describe('Search utilities', () => {
         filterXSS = jest.fn(() => undefined);
         const querystring = `?q=`;
 
-        const actual = getInitialSearchTerm(querystring);
+        const actual = getSearchTermFromUrl(querystring);
         expect(actual).toEqual('');
       });
     });
@@ -73,7 +72,7 @@ describe('Search utilities', () => {
       it(`should return an empty string`, () => {
         const expected = '';
         const querystring = '?';
-        const actual = getInitialSearchTerm(querystring);
+        const actual = getSearchTermFromUrl(querystring);
         expect(actual).toEqual(expected);
       });
     });
@@ -257,15 +256,6 @@ describe('Search utilities', () => {
 
       expect(response).toBeInstanceOf(Object);
       expect(response).toMatchObject(expected);
-    });
-  });
-
-  describe('createSearchUrl', () => {
-    it('should return a url string', () => {
-      const dataHash = { name: 'jav', tags: ['one', 'two'] };
-      const responseString = createSearchUrl(dataHash);
-
-      expect(responseString).toEqual('name=jav&tags%5B%5D=one&tags%5B%5D=two');
     });
   });
 });
