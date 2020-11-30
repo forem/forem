@@ -34,7 +34,7 @@ describe('ProfileForm', () => {
       username: 'username',
     });
 
-  const profile_field_groups = {
+  const fakeGroupsResponse = JSON.stringify({
     profile_field_groups: [
       {
         id: 3,
@@ -75,21 +75,7 @@ describe('ProfileForm', () => {
         ],
       },
     ],
-  };
-
-  const fakeGroupsResponse = JSON.stringify(profile_field_groups, [
-    'profile_field_groups',
-    'id',
-    'name',
-    'description',
-    'profile_fields',
-    'id',
-    'attribute_name',
-    'description',
-    'input_type',
-    'label',
-    'placeholder_text',
-  ]);
+  });
 
   beforeAll(() => {
     document.head.innerHTML =
