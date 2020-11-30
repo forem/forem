@@ -2,6 +2,7 @@ module Admin
   class TagsController < Admin::ApplicationController
     layout "admin"
 
+    before_action :badges_for_options
     after_action only: [:update] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
@@ -38,7 +39,6 @@ module Admin
     def show
       @tag = Tag.find(params[:id])
       @tag_moderators = User.with_role(:tag_moderator, @tag).select(:id, :username)
-      @badges_for_options = Badge.pluck(:title, :id)
     end
 
     def update
@@ -52,6 +52,10 @@ module Admin
     end
 
     private
+
+    def badges_for_options
+      @badges_for_options = Badge.pluck(:title, :id)
+    end
 
     def tag_params
       allowed_params = %i[
