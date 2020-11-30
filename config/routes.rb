@@ -203,10 +203,8 @@ Rails.application.routes.draw do
         end
 
         resources :profile_images, only: %i[show], param: :username
-        resources :organizations, only: [] do
-          collection do
-            get "/:org_username", to: "organizations#show"
-          end
+        resources :organizations, only: [:show], param: :username do
+          resources :users, only: [:index], to: "organizations#users"
         end
       end
     end
@@ -369,7 +367,6 @@ Rails.application.routes.draw do
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     # Settings
-    post "users/update_language_settings" => "users#update_language_settings"
     post "users/join_org" => "users#join_org"
     post "users/leave_org/:organization_id" => "users#leave_org", :as => :users_leave_org
     post "users/add_org_admin" => "users#add_org_admin"
@@ -438,6 +435,12 @@ Rails.application.routes.draw do
         get action, action: action, controller: "pages"
       end
     end
+
+    # Redirect previous settings changed after https://github.com/forem/forem/pull/11347
+    get "/settings/integrations", to: redirect("/settings/extensions")
+    get "/settings/misc", to: redirect("/settings")
+    get "/settings/publishing-from-rss", to: redirect("/settings/extensions")
+    get "/settings/ux", to: redirect("/settings/customization")
 
     get "/settings/(:tab)" => "users#edit", :as => :user_settings
     get "/settings/:tab/:org_id" => "users#edit", :constraints => { tab: /organization/ }

@@ -1,9 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
-  before_action :set_user, only: %i[
-    update update_language_settings confirm_destroy request_destroy full_delete remove_identity
-  ]
+  before_action :set_user, only: %i[update confirm_destroy request_destroy full_delete remove_identity]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
@@ -39,8 +37,16 @@ class UsersController < ApplicationController
   def update
     set_current_tab(params["user"]["tab"])
 
-    if @user.update(permitted_attributes(@user))
-      RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
+    # preferred_languages is handled manually
+    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
+
+    @user.attributes = permitted_attributes(@user)
+
+    if @user.save
+      # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
+      # explicitly requested "Feed fetch now" or simply updated any other field
+      import_articles_from_feed(@user)
+
       notice = "Your profile was successfully updated."
       if config_changed?
         notice = "Your config has been updated. Refresh to see all changes."
@@ -63,18 +69,6 @@ class UsersController < ApplicationController
         flash[:error] = @user.errors.full_messages.join(", ")
         redirect_to "/settings"
       end
-    end
-  end
-
-  def update_language_settings
-    set_current_tab("misc")
-    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
-    if @user.save
-      flash[:settings_notice] = "Your language settings were successfully updated."
-      @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}"
-    else
-      render :edit
     end
   end
 
@@ -119,7 +113,7 @@ class UsersController < ApplicationController
   def remove_identity
     set_current_tab("account")
 
-    error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+    error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:contact]}"
     unless Authentication::Providers.enabled?(params[:provider])
       flash[:error] = error_message
       redirect_to user_settings_path(@tab)
@@ -246,13 +240,16 @@ class UsersController < ApplicationController
     return @tab = "profile" if @tab.blank?
 
     case @tab
+    when "profile"
+      handle_integrations_tab
     when "organization"
       handle_organization_tab
-    when "integrations"
-      handle_integrations_tab
     when "billing"
       handle_billing_tab
     when "response-templates"
+      handle_response_templates_tab
+    when "extensions"
+      handle_integrations_tab
       handle_response_templates_tab
     else
       not_found unless @tab.in?(Constants::Settings::TAB_LIST.map { |t| t.downcase.tr(" ", "-") })
@@ -338,5 +335,13 @@ class UsersController < ApplicationController
 
   def destroy_request_in_progress?
     Rails.cache.exist?("user-destroy-token-#{@user.id}")
+  end
+
+  def import_articles_from_feed(user)
+    return if user.feed_url.blank?
+
+    worker = FeatureFlag.enabled?(:feeds_import) ? Feeds::ImportArticlesWorker : RssReaderFetchUserWorker
+
+    worker.perform_async(user.id)
   end
 end

@@ -68,6 +68,10 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
       it { is_expected.to have_many(:page_views).dependent(:nullify) }
+      it { is_expected.to have_many(:podcast_episode_appearances).dependent(:destroy) }
+      it { is_expected.to have_many(:podcast_episodes).through(:podcast_episode_appearances).source(:podcast_episode) }
+      it { is_expected.to have_many(:podcast_ownerships).dependent(:destroy) }
+      it { is_expected.to have_many(:podcasts_owned).through(:podcast_ownerships).source(:podcast) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
       it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
       it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
@@ -180,9 +184,7 @@ RSpec.describe User, type: :model do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
-      it { is_expected.to validate_inclusion_of(:email_digest_periodic).in_array([true, false]) }
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
-      it { is_expected.to validate_inclusion_of(:welcome_notifications).in_array([true, false]) }
 
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
       it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
@@ -266,6 +268,50 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
       expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
       expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
+    end
+
+    context "when validating feed_url with RSSReader", vcr: true do
+      it "is valid with no feed_url" do
+        user.feed_url = nil
+
+        expect(user).to be_valid
+      end
+
+      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
+        user.feed_url = "http://example.com"
+
+        expect(user).not_to be_valid
+      end
+
+      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
+
+        expect(user).to be_valid
+      end
+    end
+
+    context "with Feeds::ValidateUrl" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:feeds_import).and_return(true)
+      end
+
+      it "is valid with no feed_url" do
+        user.feed_url = nil
+
+        expect(user).to be_valid
+      end
+
+      it "is not valid with an invalid feed_url", vcr: { cassette_name: "feeds_validate_url_invalid" } do
+        user.feed_url = "http://example.com"
+
+        expect(user).not_to be_valid
+      end
+
+      it "is valid with a valid feed_url", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+        user.feed_url = "https://medium.com/feed/@vaidehijoshi"
+
+        expect(user).to be_valid
+      end
     end
   end
 
@@ -639,9 +685,7 @@ RSpec.describe User, type: :model do
   describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
 
-    before do
-      omniauth_mock_providers_payload
-    end
+    before { omniauth_mock_providers_payload }
 
     Authentication::Providers.available.each do |provider_name|
       it "finds user by email and assigns identity to that if exists for #{provider_name}" do
