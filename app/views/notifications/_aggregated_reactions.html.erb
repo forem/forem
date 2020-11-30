@@ -37,7 +37,7 @@
 
   <% reaction_categories = siblings.map { |n| n["category"] } %>
   <% reaction_categories.each do |cat| %>
-    <% image_path = ReactionImage.new(cat).path %>
+    <% image_path = reaction_image(cat) %>
     <% if image_path.present? %>
       <%= inline_svg_tag(image_path, aria: true, class: "crayons-icon reaction-image mx-1 my-1 reaction-icon--#{cat}", title: cat.to_s.humanize) %>
     <% end %>
