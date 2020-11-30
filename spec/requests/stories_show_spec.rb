@@ -22,8 +22,9 @@ RSpec.describe "StoriesShow", type: :request do
     it "preserves internal nav param (i=i) upon redirect" do
       old_path = article.path
       article.update(organization: org)
-      get old_path + "?i=i"
-      expect(response.body).to redirect_to  "#{article.path}?i=i"
+
+      get "#{old_path}?i=i"
+      expect(response.body).to redirect_to "#{article.path}?i=i"
       expect(response).to have_http_status(:moved_permanently)
     end
 
@@ -31,15 +32,16 @@ RSpec.describe "StoriesShow", type: :request do
       old_path = article.path
       article.update(organization: org)
       get old_path
-      expect(response.body).not_to redirect_to  "#{article.path}?i=i"
+      expect(response.body).not_to redirect_to "#{article.path}?i=i"
       expect(response).to have_http_status(:moved_permanently)
     end
 
     it "does not have ?i=i on redirects without that precise param" do
       old_path = article.path
       article.update(organization: org)
-      get old_path + "?i=j"
-      expect(response.body).to redirect_to  article.path
+
+      get "#{old_path}?i=j"
+      expect(response.body).to redirect_to article.path
       expect(response.body).not_to redirect_to  "#{article.path}?i=j"
       expect(response.body).not_to redirect_to  "#{article.path}?i=j"
     end
