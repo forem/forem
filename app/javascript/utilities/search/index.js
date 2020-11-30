@@ -1,7 +1,7 @@
 // TODO: We should really be using the xss package by installing it in package.json
 // but for now filterXSS is global because of legacy JS
 
-import { request } from '../http';
+import { request } from '@utilities/http';
 
 function getParameterByName(name, url = window.location.href) {
   const sanitizedName = name.replace(/[[\]]/g, '\\$&');
@@ -40,16 +40,43 @@ function getSortParameters(url) {
   return sortBy + sortDirection;
 }
 
-export const hasInstantClick = () => typeof instantClick !== 'undefined';
+/**
+ * Determines whether or not InstantClick is enabled.
+ *
+ * @returns True if InstantClick is enabled, otherwise false.
+ */
+export function hasInstantClick() {
+  return typeof instantClick !== 'undefined';
+}
 
-function fixedEncodeURIComponent(str) {
+function fixedEncodeURIComponent(value) {
   // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
-  return encodeURIComponent(str).replace(
+  return encodeURIComponent(value).replace(
     /[!'()*]/g,
     (c) => `%${c.charCodeAt(0).toString(16)}`,
   );
 }
 
+function createSearchUrl(dataHash) {
+  const searchParams = new URLSearchParams();
+  Object.keys(dataHash).forEach((key) => {
+    const value = dataHash[key];
+    if (Array.isArray(value)) {
+      value.forEach((arrayValue) => {
+        searchParams.append(`${key}[]`, arrayValue);
+      });
+    } else {
+      searchParams.append(key, value);
+    }
+  });
+
+  return searchParams.toString();
+}
+
+/**
+ *
+ * @param {*} param0
+ */
 export function displaySearchResults({
   searchTerm,
   location = window.location,
@@ -64,14 +91,18 @@ export function displaySearchResults({
   );
 }
 
-export function getInitialSearchTerm(querystring) {
-  const matches = /(?:&|\?)?q=([^&=]+)/.exec(querystring);
-  const rawSearchTerm =
-    matches !== null && matches.length === 2
-      ? decodeURIComponent(matches[1].replace(/\+/g, '%20'))
-      : '';
-  const query = filterXSS(rawSearchTerm) || '';
+/**
+ * Extracts the search term from an URL's query string.
+ *
+ * @param {string} querystring A URL query string
+ *
+ * @returns The extracted search term from the query string
+ */
+export function getSearchTermFromUrl(querystring) {
+  const searchParameters = new URLSearchParams(querystring);
+  const query = filterXSS(searchParameters.get('q')) ?? '';
   const divForDecode = document.createElement('div');
+
   divForDecode.innerHTML = query;
 
   return divForDecode.firstChild !== null
@@ -79,6 +110,12 @@ export function getInitialSearchTerm(querystring) {
     : query;
 }
 
+/**
+ * Preloads search results for the given search term
+ * @param {string} searchTerm The search term
+ * @param {Location} location[window.location] The location (URL) of the object it is linked to.
+ * By default it is linked to the Window object.
+ */
 export function preloadSearchResults({
   searchTerm,
   location = window.location,
@@ -90,22 +127,6 @@ export function preloadSearchResults({
     location.origin
   }/search?q=${encodedQuery}${getFilterParameters(location.href)}`;
   InstantClick.preload(searchUrl);
-}
-
-export function createSearchUrl(dataHash) {
-  const searchParams = new URLSearchParams();
-  Object.keys(dataHash).forEach((key) => {
-    const value = dataHash[key];
-    if (Array.isArray(value)) {
-      value.forEach((arrayValue) => {
-        searchParams.append(`${key}[]`, arrayValue);
-      });
-    } else {
-      searchParams.append(key, value);
-    }
-  });
-
-  return searchParams.toString();
 }
 
 /**

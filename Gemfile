@@ -18,7 +18,7 @@ gem "administrate", "~> 0.14" # A Rails engine that helps you put together a sup
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.0" # Tracking analytics for Rails
 gem "ancestry", "~> 3.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "blazer", "~> 2.3.0" # Allows admins to query data
+gem "blazer", "~> 2.3.1" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -78,7 +78,7 @@ gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compa
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 6.0.3" # Ruby on Rails
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
-gem "ransack", "~> 2.3" # Searching and sorting
+gem "ransack", "~> 2.4" # Searching and sorting
 gem "recaptcha", "~> 5.6", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.2.5" # Redis ruby client
@@ -134,10 +134,10 @@ end
 group :development, :test do
   gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.33" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.34" # Capybara is an integration testing tool for rack based web applications
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
-  gem "faker", "~> 2.14" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.9.0" # Help parallelize Ruby spec builds
+  gem "faker", "~> 2.15" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "knapsack_pro", "~> 2.10.1" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.93.1", require: false # Automatic Ruby code style checking tool
