@@ -16,8 +16,8 @@ describe('BufferController', () => {
 
   describe('#tagBufferUpdateConfirmed', () => {
     it('adds a badge to the header', () => {
-      const button = document.querySelectorAll('button')[0];
-      const header = document.querySelector('h2');
+      const button = document.getElementsByTagName('button')[0];
+      const header = document.getElementsByTagName('h2')[0];
 
       button.click();
 
@@ -27,8 +27,8 @@ describe('BufferController', () => {
 
   describe('#tagBufferUpdateDismissed', () => {
     it('adds a badge to the header', () => {
-      const button = document.querySelectorAll('button')[1];
-      const header = document.querySelector('h2');
+      const button = document.getElementsByTagName('button')[1];
+      const header = document.getElementsByTagName('h2')[0];
 
       button.click();
 
@@ -38,7 +38,7 @@ describe('BufferController', () => {
 
   describe('#highlightElement', () => {
     it('adds a class to the controller element', () => {
-      const button = document.querySelectorAll('button')[2];
+      const button = document.getElementsByTagName('button')[2];
       const element = document.querySelector("[data-controller='buffer']");
 
       button.click();

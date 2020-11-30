@@ -18,7 +18,7 @@ describe('ConfigController', () => {
 
   describe('#activateEmailAuthModal', () => {
     it('builds and adds a Modal to the page', () => {
-      const button = document.querySelector('button');
+      const button = document.getElementsByTagName('button')[0];
       const modalAnchor = document.querySelector(
         '[data-target="config.configModalAnchor"]',
       );

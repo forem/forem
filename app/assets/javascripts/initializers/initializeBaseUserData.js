@@ -78,12 +78,14 @@ function addRelevantButtonsToComments(user) {
 function setCurrentUserToNavBar(user) {
   const userNavLink = document.getElementById('first-nav-link');
   userNavLink.href = `/${user.username}`;
-  userNavLink.querySelector('span').textContent = user.name;
-  userNavLink.querySelector('small').textContent = `@${user.username}`;
+  userNavLink.getElementsByTagName('span')[0].textContent = user.name;
+  userNavLink.getElementsByTagName(
+    'small',
+  )[0].textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
   if (user.admin) {
     document
-      .querySelector('.js-header-menu-admin-link')
+      .getElementsByClassName('js-header-menu-admin-link')[0]
       .classList.remove('hidden');
   }
 }

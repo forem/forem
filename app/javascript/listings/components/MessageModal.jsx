@@ -36,9 +36,7 @@ const MessageModal = ({
         className="crayons-textfield mb-0"
         placeholder="Enter your message here..."
       />
-      <p
-        className="mb-4 fs-s color-base-60"
-      >
+      <p className="mb-4 fs-s color-base-60">
         {isCurrentUserOnListing &&
           'Message must be relevant and on-topic with the listing.'}
         All private interactions <b>must</b> abide by the{' '}

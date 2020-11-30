@@ -25,7 +25,7 @@ describe('List navigation hook', () => {
 
     renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-    const firstFocusable = document.querySelector('#focusable-1');
+    const firstFocusable = document.getElementById('focusable-1');
 
     fireEvent.keyDown(document, { code: NAVIGATION_DOWN_KEY });
 
@@ -46,8 +46,8 @@ describe('List navigation hook', () => {
 
     renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-    const firstFocusable = document.querySelector('#focusable-1');
-    const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.getElementById('focusable-1');
+    const secondFocusable = document.getElementById('focusable-2');
 
     secondFocusable.focus();
 
@@ -70,8 +70,8 @@ describe('List navigation hook', () => {
 
     renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-    const firstFocusable = document.querySelector('#focusable-1');
-    const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.getElementById('focusable-1');
+    const secondFocusable = document.getElementById('focusable-2');
 
     firstFocusable.focus();
 
@@ -94,8 +94,8 @@ describe('List navigation hook', () => {
 
     renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-    const firstFocusable = document.querySelector('#focusable-1');
-    const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.getElementById('focusable-1');
+    const secondFocusable = document.getElementById('focusable-2');
 
     secondFocusable.focus();
 
@@ -121,8 +121,8 @@ describe('List navigation hook', () => {
 
     renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-    const firstFocusable = document.querySelector('#focusable-1');
-    const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.getElementById('focusable-1');
+    const secondFocusable = document.getElementById('focusable-2');
 
     firstFocusable.focus();
 
@@ -152,8 +152,8 @@ describe('List navigation hook', () => {
       useListNavigation('article.container', 'a.focusable', 'div.waterfall'),
     );
 
-    const firstFocusable = document.querySelector('#focusable-1');
-    const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.getElementById('focusable-1');
+    const secondFocusable = document.getElementById('focusable-2');
 
     secondFocusable.focus();
 
@@ -180,8 +180,8 @@ describe('List navigation hook', () => {
       useListNavigation('article.container', 'a.focusable', 'div.waterfall'),
     );
 
-    const firstFocusable = document.querySelector('#focusable-1');
-    const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.getElementById('focusable-1');
+    const secondFocusable = document.getElementById('focusable-2');
 
     firstFocusable.focus();
 
@@ -207,8 +207,8 @@ describe('List navigation hook', () => {
 
     renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-    const firstFocusable = document.querySelector('#focusable-1');
-    const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.getElementById('focusable-1');
+    const secondFocusable = document.getElementById('focusable-2');
 
     secondFocusable.focus();
 
@@ -234,8 +234,8 @@ describe('List navigation hook', () => {
 
     renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-    const firstFocusable = document.querySelector('#focusable-1');
-    const secondFocusable = document.querySelector('#focusable-2');
+    const firstFocusable = document.getElementById('focusable-1');
+    const secondFocusable = document.getElementById('focusable-2');
 
     firstFocusable.focus();
 
@@ -260,9 +260,9 @@ describe('List navigation hook', () => {
 
     renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-    const firstFocusable = document.querySelector('#focusable-1');
-    const secondInnerSecondaryFocusable = document.querySelector(
-      '#inner-secondary-2',
+    const firstFocusable = document.getElementById('focusable-1');
+    const secondInnerSecondaryFocusable = document.getElementById(
+      'inner-secondary-2',
     );
 
     secondInnerSecondaryFocusable.focus();
@@ -288,10 +288,10 @@ describe('List navigation hook', () => {
 
     renderHook(() => useListNavigation('article.container', 'a.focusable'));
 
-    const firstInnerSecondaryFocusable = document.querySelector(
-      '#inner-secondary-1',
+    const firstInnerSecondaryFocusable = document.getElementById(
+      'inner-secondary-1',
     );
-    const secondFocusable = document.querySelector('#focusable-2');
+    const secondFocusable = document.getElementById('focusable-2');
 
     firstInnerSecondaryFocusable.focus();
 
@@ -321,8 +321,8 @@ describe('List navigation hook', () => {
       useListNavigation('article.container', 'a.focusable', 'div.waterfall'),
     );
 
-    const firstElement = document.querySelector('#focusable-1');
-    const secondElement = document.querySelector('#focusable-2');
+    const firstElement = document.getElementById('focusable-1');
+    const secondElement = document.getElementById('focusable-2');
 
     secondElement.focus();
 
@@ -352,8 +352,8 @@ describe('List navigation hook', () => {
       useListNavigation('article.container', 'a.focusable', 'div.waterfall'),
     );
 
-    const firstElement = document.querySelector('#focusable-1');
-    const secondElement = document.querySelector('#focusable-2');
+    const firstElement = document.getElementById('focusable-1');
+    const secondElement = document.getElementById('focusable-2');
 
     firstElement.focus();
 

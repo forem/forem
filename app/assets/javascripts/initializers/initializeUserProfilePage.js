@@ -24,9 +24,9 @@ function initializeUserProfilePage() {
           userProfileDropdownMenu.classList.toggle('block');
 
           // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
-          var reportAbuseLink = profileDropdownDiv.querySelector(
-            '.report-abuse-link-wrapper',
-          );
+          var reportAbuseLink = profileDropdownDiv.getElementsByClassName(
+            'report-abuse-link-wrapper',
+          )[0];
           reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
         });
       }
@@ -35,11 +35,11 @@ function initializeUserProfilePage() {
 }
 
 function initializeProfileInfoToggle() {
-  const infoPanels = document.querySelector('.js-user-info');
-  const trigger = document.querySelector('.js-user-info-trigger');
-  const triggerWrapper = document.querySelector(
-    '.js-user-info-trigger-wrapper',
-  );
+  const infoPanels = document.getElementsByClassName('js-user-info')[0];
+  const trigger = document.getElementsByClassName('js-user-info-trigger')[0];
+  const triggerWrapper = document.getElementsByClassName(
+    'js-user-info-trigger-wrapper',
+  )[0];
 
   if (trigger && infoPanels) {
     trigger.addEventListener('click', () => {
@@ -50,8 +50,10 @@ function initializeProfileInfoToggle() {
 }
 
 function initializeProfileBadgesToggle() {
-  const badgesWrapper = document.querySelector('.js-profile-badges');
-  const trigger = document.querySelector('.js-profile-badges-trigger');
+  const badgesWrapper = document.getElementsByClassName('js-profile-badges')[0];
+  const trigger = document.getElementsByClassName(
+    'js-profile-badges-trigger',
+  )[0];
 
   if (badgesWrapper && trigger) {
     const badges = badgesWrapper.querySelectorAll('.js-profile-badge.hidden');

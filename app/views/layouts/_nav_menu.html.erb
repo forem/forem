@@ -1,4 +1,4 @@
-<div class="crayons-dropdown left-2 right-2 s:right-4 s:left-auto p-0 crayons-header__menu__dropdown block">
+<div class="crayons-dropdown left-2 right-2 s:right-4 s:left-auto p-0 crayons-header__menu__dropdown inline-block">
   <div id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">
     <a id="first-nav-link" class="crayons-link crayons-link--block">
       <div>
@@ -12,8 +12,10 @@
     <a href="<%= admin_path %>" class="crayons-link crayons-link--block js-header-menu-admin-link hidden" data-no-instant>Admin</a>
     <a href="<%= dashboard_path %>" class="crayons-link crayons-link--block">Dashboard</a>
     <a href="<%= new_path %>" class="crayons-link crayons-link--block">Write a Post</a>
+    <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a>
     <a href="<%= user_settings_path %>" class="crayons-link crayons-link--block">Settings</a>
   </div>
+  
   <div class="p-1">
     <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
   </div>

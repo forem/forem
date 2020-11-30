@@ -91,7 +91,7 @@ class Reaction < ApplicationRecord
   private
 
   def update_reactable
-    Reactions::UpdateReactableWorker.perform_async(id)
+    Reactions::UpdateRelevantScoresWorker.perform_async(id)
   end
 
   def bust_reactable_cache
@@ -107,7 +107,7 @@ class Reaction < ApplicationRecord
   end
 
   def update_reactable_without_delay
-    Reactions::UpdateReactableWorker.new.perform(id)
+    Reactions::UpdateRelevantScoresWorker.new.perform(id)
   end
 
   def reading_time
