@@ -3,8 +3,8 @@ module Profiles
     using HashAnyKey
     include ImageUploads
 
-    CORE_PROFILE_FIELDS = %i[name summary brand_color1 brand_color2].freeze
-    CORE_USER_FIELDS = %i[username profile_image].freeze
+    CORE_PROFILE_FIELDS = %i[summary brand_color1 brand_color2].freeze
+    CORE_USER_FIELDS = %i[name username profile_image].freeze
 
     def self.call(user, updated_attributes = {})
       new(user, updated_attributes).call

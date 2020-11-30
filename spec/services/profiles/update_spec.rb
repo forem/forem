@@ -11,13 +11,13 @@ RSpec.describe Profiles::Update, type: :service do
   end
 
   let(:profile) do
-    create(:profile, data: { name: "Sloan Doe", looking_for_work: true, removed: "Bla" })
+    create(:profile, data: { looking_for_work: true, removed: "Bla" })
   end
   let(:user) { profile.user }
 
   it "correctly typecasts new attributes", :aggregate_failures do
-    described_class.call(user, profile: { name: 123, looking_for_work: "false" })
-    expect(profile.name).to eq "123"
+    described_class.call(user, profile: { location: 123, looking_for_work: "false" })
+    expect(user.location).to eq "123"
     expect(profile.looking_for_work).to be false
   end
 
@@ -30,8 +30,7 @@ RSpec.describe Profiles::Update, type: :service do
   it "propagates changes to user", :agregate_failures do
     new_name = "Sloan Doe"
     described_class.call(user, profile: {}, user: { name: new_name })
-    expect(profile.name).to eq new_name
-    expect(profile.user[:name]).to eq new_name
+    expect(profile.user.name).to eq new_name
   end
 
   it "sets custom attributes for the user" do
@@ -44,7 +43,7 @@ RSpec.describe Profiles::Update, type: :service do
 
   it "updates the profile_updated_at column" do
     expect do
-      described_class.call(user, profile: { name: 123, looking_for_work: "false" })
+      described_class.call(user, profile: { looking_for_work: "false" })
     end.to change { user.reload.profile_updated_at }
   end
 
@@ -90,13 +89,13 @@ RSpec.describe Profiles::Update, type: :service do
 
     it "enqueues resave articles job when changing name" do
       sidekiq_assert_resave_article_worker(user) do
-        described_class.call(user, profile: { name: "#{user.name} changed" })
+        described_class.call(user, user: { name: "#{user.name} changed" })
       end
     end
 
     it "enqueues resave articles job when changing summary" do
       sidekiq_assert_resave_article_worker(user) do
-        described_class.call(user, profile: { name: "#{user.summary} changed" })
+        described_class.call(user, profile: { summary: "#{user.summary} changed" })
       end
     end
 
