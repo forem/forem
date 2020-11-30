@@ -39,7 +39,10 @@ class ProfileForm extends Component {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { last_onboarding_page }, profile: {...formValues} }),
+      body: JSON.stringify({
+        user: { last_onboarding_page },
+        profile: { ...formValues },
+      }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {
@@ -54,7 +57,7 @@ class ProfileForm extends Component {
     const currentFormState = formValues;
     const { name, value } = e.target;
 
-    currentFormState[name] = value
+    currentFormState[name] = value;
 
     // Once we've derived the new form values, check if the form is empty
     // and use that value to set the `canSkip` property on the state.
@@ -67,40 +70,68 @@ class ProfileForm extends Component {
   checkboxField(field) {
     return (
       <div class="crayons-field crayons-field--checkbox">
-        <input class="crayons-checkbox" type="checkbox" name={field.attribute_name} id={field.attribute_name} onChange={this.handleChange}></input>
-        <label class="crayons-field__label" for="profile[field.attribute_name]">
+        <input
+          class="crayons-checkbox"
+          type="checkbox"
+          name={field.attribute_name}
+          id={field.attribute_name}
+          onChange={this.handleChange}
+         />
+        <label class="crayons-field__label" htmlFor={field.attribute_name}>
           {field.label}
         </label>
-        {field.description && <p class="crayons-field__description">{field.description}</p>}
+        {field.description && (
+          <p class="crayons-field__description">{field.description}</p>
+        )}
       </div>
-    )
+    );
   }
 
   textField(field) {
     return (
       <div>
-        <label class="crayons-field__label" for="profile[field.attribute_name]">
+        <label class="crayons-field__label" htmlFor={field.attribute_name}>
           {field.label}
         </label>
-        <input class="crayons-textfield" placeholder_text={field["placeholder_text"]} name={field.attribute_name} id={field.attribute_name} onChange={this.handleChange}></input>
-        {field.description && <p class="crayons-field__description">{field.description}</p>}
+        <input
+          class="crayons-textfield"
+          placeholder={field['placeholder_text']}
+          name={field.attribute_name}
+          id={field.attribute_name}
+          onChange={this.handleChange}
+         />
+        {field.description && (
+          <p class="crayons-field__description">{field.description}</p>
+        )}
       </div>
-    )
+    );
   }
 
   colorField(field) {
     return (
       <div>
-        <label class="crayons-field__label" for="profile[field.attribute_name]">
+        <label class="crayons-field__label" htmlFor={field.attribute_name}>
           {field.label}
         </label>
         <div class="flex items-center w-100 m:w-50">
-          <input class="crayons-textfield js-color-field" placeholder_text={field["placeholder_text"]} name={field.attribute_name} id={field.attribute_name}></input>
-          <input class="crayons-color-selector js-color-field ml-2" placeholder_text={field["placeholder_text"]} name={field.attribute_name} id={field.attribute_name}></input>
-          {field.description && <p class="crayons-field__description">{field.description}</p>}
+          <input
+            class="crayons-textfield js-color-field"
+            placeholder={field['placeholder_text']}
+            name={field.attribute_name}
+            id={field.attribute_name}
+           />
+          <input
+            class="crayons-color-selector js-color-field ml-2"
+            placeholder={field['placeholder_text']}
+            name={field.attribute_name}
+            id={field.attribute_name}
+           />
+          {field.description && (
+            <p class="crayons-field__description">{field.description}</p>
+          )}
         </div>
       </div>
-    )
+    );
   }
 
   render() {
@@ -112,27 +143,27 @@ class ProfileForm extends Component {
     } = this.props;
     const { profile_image_90, username, name } = this.user;
     const { canSkip, groups } = this.state;
-    let sections = []
+    let sections = [];
 
-
-    if(groups) {
+    if (groups) {
       sections = groups.map((group) => {
         return (
           <div class="onboarding-profile-sub-section">
             <h2>{group.name}</h2>
-            {
-              group.description &&
-              (<div class="color-base-60">{group.description})</div>)
-            }
+            {group.description && (
+              <div class="color-base-60">{group.description})</div>
+            )}
             <div>
-              {group.profile_fields.map(field => {
-                return field.input_type === "check_box" ? this.checkboxField(field)
-                      : field.input_type === "color_field" ? this.colorField(field)
-                      : this.textField(field)
+              {group.profile_fields.map((field) => {
+                return field.input_type === 'check_box'
+                  ? this.checkboxField(field)
+                  : field.input_type === 'color_field'
+                  ? this.colorField(field)
+                  : this.textField(field);
               })}
             </div>
           </div>
-        )
+        );
       });
     }
 
@@ -172,14 +203,11 @@ class ProfileForm extends Component {
               <h3>{name}</h3>
               <p>{username}</p>
             </div>
-            <div>
-              {groups && groups.length > 0 && sections}
-            </div>
-
+            <div>{groups && groups.length > 0 && sections}</div>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -189,7 +217,7 @@ ProfileForm.propTypes = {
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
   communityConfig: PropTypes.shape({
-    communityName: PropTypes.string.isRequired
+    communityName: PropTypes.string.isRequired,
   }),
 };
 
