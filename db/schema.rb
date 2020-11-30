@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_19_153512) do
 
+ActiveRecord::Schema.define(version: 2020_11_19_153512) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
@@ -848,6 +848,17 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.index ["slug"], name: "index_pages_on_slug", unique: true
   end
 
+  create_table "podcast_episode_appearances", force: :cascade do |t|
+    t.boolean "approved", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "featured_on_user_profile", default: false, null: false
+    t.bigint "podcast_episode_id", null: false
+    t.string "role", default: "guest", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["podcast_episode_id", "user_id"], name: "index_pod_episode_appearances_on_podcast_episode_id_and_user_id", unique: true
+  end
+
   create_table "podcast_episodes", force: :cascade do |t|
     t.boolean "any_comments_hidden", default: false
     t.text "body"
@@ -1436,6 +1447,8 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "page_views", "users", on_delete: :nullify
+  add_foreign_key "podcast_episode_appearances", "podcast_episodes"
+  add_foreign_key "podcast_episode_appearances", "users"
   add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade
   add_foreign_key "podcast_ownerships", "podcasts"
   add_foreign_key "podcast_ownerships", "users"
