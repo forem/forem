@@ -9,6 +9,8 @@ RSpec.describe PodcastEpisode, type: :model do
 
       it { is_expected.to belong_to(:podcast) }
       it { is_expected.to have_many(:comments).inverse_of(:commentable).dependent(:nullify) }
+      it { is_expected.to have_many(:podcast_episode_appearances).dependent(:destroy) }
+      it { is_expected.to have_many(:users).through(:podcast_episode_appearances) }
 
       it { is_expected.to validate_presence_of(:comments_count) }
       it { is_expected.to validate_presence_of(:guid) }

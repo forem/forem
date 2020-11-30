@@ -68,6 +68,8 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:organizations).through(:organization_memberships) }
       it { is_expected.to have_many(:page_views).dependent(:nullify) }
+      it { is_expected.to have_many(:podcast_episode_appearances).dependent(:destroy) }
+      it { is_expected.to have_many(:podcast_episodes).through(:podcast_episode_appearances).source(:podcast_episode) }
       it { is_expected.to have_many(:podcast_ownerships).dependent(:destroy) }
       it { is_expected.to have_many(:podcasts_owned).through(:podcast_ownerships).source(:podcast) }
       it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
