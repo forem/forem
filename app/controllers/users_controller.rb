@@ -158,7 +158,7 @@ class UsersController < ApplicationController
     end
 
     if params[:profile] && success == true
-      update_result = Profiles::Update.call(current_user, { profile: params[:profile].permit(Profile.attributes!)})
+      update_result = Profiles::Update.call(current_user, { profile: params[:profile].permit(Profile.attributes!) })
 
       if update_result.success?
         success = true
