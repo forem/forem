@@ -5,7 +5,7 @@ import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
 
 /* eslint-disable camelcase */
-class NewProfileForm extends Component {
+class ProfileForm extends Component {
   constructor(props) {
     super(props);
 
@@ -112,25 +112,29 @@ class NewProfileForm extends Component {
     } = this.props;
     const { profile_image_90, username, name } = this.user;
     const { canSkip, groups } = this.state;
+    let sections = []
 
-    const sections = groups.map((group) => {
-      return (
-        <div class="onboarding-profile-sub-section">
-          <h2>{group.name}</h2>
-          {
-            group.description &&
-            (<div class="color-base-60">{group.description})</div>)
-          }
-          <div>
-            {group.profile_fields.map(field => {
-              return field.input_type === "check_box" ? this.checkboxField(field)
-                    : field.input_type === "color_field" ? this.colorField(field)
-                    : this.textField(field)
-            })}
+
+    if(groups) {
+      sections = groups.map((group) => {
+        return (
+          <div class="onboarding-profile-sub-section">
+            <h2>{group.name}</h2>
+            {
+              group.description &&
+              (<div class="color-base-60">{group.description})</div>)
+            }
+            <div>
+              {group.profile_fields.map(field => {
+                return field.input_type === "check_box" ? this.checkboxField(field)
+                      : field.input_type === "color_field" ? this.colorField(field)
+                      : this.textField(field)
+              })}
+            </div>
           </div>
-        </div>
-      )
-    });
+        )
+      });
+    }
 
     return (
       <div
@@ -169,7 +173,7 @@ class NewProfileForm extends Component {
               <p>{username}</p>
             </div>
             <div>
-              {sections}
+              {groups && groups.length > 0 && sections}
             </div>
 
           </div>
@@ -179,7 +183,7 @@ class NewProfileForm extends Component {
   }
 }
 
-NewProfileForm.propTypes = {
+ProfileForm.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
   slidesCount: PropTypes.number.isRequired,
@@ -189,6 +193,6 @@ NewProfileForm.propTypes = {
   }),
 };
 
-export default NewProfileForm;
+export default ProfileForm;
 
 /* eslint-enable camelcase */
