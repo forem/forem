@@ -4,7 +4,7 @@ module EdgeCache
       bust(path)
     end
 
-    def self.bust
+    def self.bust(path)
       provider_class = determine_provider_class
 
       return unless provider_class
@@ -21,9 +21,7 @@ module EdgeCache
       end
     end
 
-    private
-
-    def determine_provider_class
+    def self.determine_provider_class
       provider =
         if fastly_enabled?
           "fastly"
@@ -33,14 +31,14 @@ module EdgeCache
 
       return unless provider
 
-      "#{self.class}::#{provider.capitalize}".constantize
+      "#{self}::#{provider.capitalize}".constantize
     end
 
-    def fastly_enabled?
+    def self.fastly_enabled?
       ApplicationConfig["FASTLY_API_KEY"].present? && ApplicationConfig["FASTLY_SERVICE_ID"].present?
     end
 
-    def nginx_enabled?
+    def self.nginx_enabled?
       ApplicationConfig["OPENRESTY_URL"].present?
     end
   end

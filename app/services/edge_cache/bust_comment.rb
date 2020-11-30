@@ -18,7 +18,7 @@ module EdgeCache
     end
 
     # bust commentable if it's an article
-    def bust_article_comment(commentable)
+    def self.bust_article_comment(commentable)
       bust("/") if Article.published.order(hotness_score: :desc).limit(3).ids.include?(commentable.id)
 
       if commentable.decorate.cached_tag_list_array.include?("discuss") &&
