@@ -10,17 +10,14 @@ function setWindowLocation(url = '') {
 // a11y tests are not required for this component as it's job is to provide data to other components.
 // There is nothing UI related about this component.
 describe('<SearchFormSync />', () => {
-  // For some reason when document.body is used for renders, we need to clear out the rendered markup in it.
-  // My guess is that Preact testing library handles this internally when using the default container to render in.
-
   beforeEach(() => {
-    setWindowLocation(`https://locahost:3000/`);
+    // This part of the DOM would be rendered in the search results from the server side.
+    // See search.html.erb.
+    // It is where the portal will render.
+    document.body.innerHTML =
+      '<div id="mobile-search-container"><form></form></div>';
 
-    // The body is being cleared out because we are using it as the root element for the tests.
-    // Typically using the document.body as the root for rendering of components in tests is not necessary,
-    // but in the case of this component, it renders a portal, and this seemed to be the only way to get these
-    // tests to render portals.
-    document.body.innerHTML = '';
+    setWindowLocation(`https://locahost:3000/`);
 
     global.InstantClick = jest.fn(() => ({
       on: jest.fn(),
@@ -31,9 +28,7 @@ describe('<SearchFormSync />', () => {
   });
 
   it('should synchronize search forms', async () => {
-    const { findByLabelText, findAllByLabelText } = render(<SearchFormSync />, {
-      container: document.body,
-    });
+    const { findByLabelText, findAllByLabelText } = render(<SearchFormSync />);
 
     // Only one input is rendered at this point because the synchSearchForms custom event is what
     // tells us that there is a new search form to sync with the existing one.
@@ -47,11 +42,6 @@ describe('<SearchFormSync />', () => {
 
     // simulates a search result returned which contains the server side rendered search form for mobile only.
     setWindowLocation(`https://locahost:3000/search?q=${searchTerm}`);
-
-    // This part of the DOM would be rendered in the search results from the server side.
-    // See search.html.erb.
-    document.body.innerHTML =
-      '<div id="mobile-search-container"><form></form></div>';
 
     fireEvent(
       window,
@@ -67,9 +57,7 @@ describe('<SearchFormSync />', () => {
   });
 
   it('should synchronize search forms on a subsequent search', async () => {
-    const { findByLabelText, findAllByLabelText } = render(<SearchFormSync />, {
-      container: document.body,
-    });
+    const { findByLabelText, findAllByLabelText } = render(<SearchFormSync />);
 
     // Only one input is rendered at this point because the synchSearchForms custom event is what
     // tells us that there is a new search form to sync with the existing one.
@@ -83,11 +71,6 @@ describe('<SearchFormSync />', () => {
 
     // simulates a search result returned which contains the server side rendered search form for mobile only.
     setWindowLocation(`https://locahost:3000/search?q=${searchTerm}`);
-
-    // This part of the DOM would be rendered in the search results from the server side.
-    // See search.html.erb.
-    document.body.innerHTML =
-      '<div id="mobile-search-container"><form></form></div>';
 
     fireEvent(
       window,
@@ -106,10 +89,16 @@ describe('<SearchFormSync />', () => {
     // simulates a search result returned which contains the server side rendered search form for mobile only.
     setWindowLocation(`https://locahost:3000/search?q=${searchTerm2}`);
 
-    // This part of the DOM would be rendered in the search results from the server side.
-    // See search.html.erb.
-    document.body.innerHTML =
-      '<div id="mobile-search-container"><form></form></div>';
+    const oldPortalContainer = document.getElementById(
+      'mobile-search-container',
+    );
+
+    const newPortalContainer = oldPortalContainer.cloneNode(true);
+
+    // This simulates the search results wiping out the old portal container
+    // and providing a new portal container (different DOM elements).
+    document.body.removeChild(oldPortalContainer);
+    document.body.prepend(newPortalContainer);
 
     fireEvent(
       window,
