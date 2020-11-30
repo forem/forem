@@ -13,17 +13,17 @@ RSpec.describe "UsersOnboarding", type: :request do
       end
 
       it "updates the attributes on the user" do
-        params = { user: { location: "Alpaca Town" } }
+        params = { user: { last_onboarding_page: "v2: personal info form" } }
         expect do
           patch "/onboarding_update.json", params: params
-        end.to change(user, :location)
+        end.to change(user, :last_onboarding_page)
       end
 
       it "does not update attributes if params are empty" do
-        params = { user: { location: "" } }
+        params = { user: { last_onboarding_page: "" } }
         expect do
           patch "/onboarding_update.json", params: params
-        end.not_to change(user, :location)
+        end.not_to change(user, :last_onboarding_page)
       end
     end
 

@@ -16,7 +16,7 @@ class ProfileForm extends Component {
       groups: [],
       formValues: {},
       canSkip: true,
-      last_onboarding_page: 'v2: new personal info form',
+      last_onboarding_page: 'v2: personal info form',
     };
   }
 
@@ -27,7 +27,7 @@ class ProfileForm extends Component {
         this.setState({ groups: data.profile_field_groups });
       });
 
-    updateOnboarding('v2: new personal info form');
+    updateOnboarding('v2: personal info form');
   }
 
   onSubmit() {
@@ -76,7 +76,7 @@ class ProfileForm extends Component {
           name={field.attribute_name}
           id={field.attribute_name}
           onChange={this.handleChange}
-         />
+        />
         <label class="crayons-field__label" htmlFor={field.attribute_name}>
           {field.label}
         </label>
@@ -99,7 +99,7 @@ class ProfileForm extends Component {
           name={field.attribute_name}
           id={field.attribute_name}
           onChange={this.handleChange}
-         />
+        />
         {field.description && (
           <p class="crayons-field__description">{field.description}</p>
         )}
@@ -119,13 +119,13 @@ class ProfileForm extends Component {
             placeholder={field['placeholder_text']}
             name={field.attribute_name}
             id={field.attribute_name}
-           />
+          />
           <input
             class="crayons-color-selector js-color-field ml-2"
             placeholder={field['placeholder_text']}
             name={field.attribute_name}
             id={field.attribute_name}
-           />
+          />
           {field.description && (
             <p class="crayons-field__description">{field.description}</p>
           )}
