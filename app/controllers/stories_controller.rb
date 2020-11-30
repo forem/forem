@@ -12,7 +12,7 @@ class StoriesController < ApplicationController
     ]
   }.freeze
 
-  SIGNED_OUT_RECORD_COUNT = (Rails.env.production? ? 60 : 10).freeze
+  SIGNED_OUT_RECORD_COUNT = 60
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
@@ -78,7 +78,7 @@ class StoriesController < ApplicationController
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
-      redirect_to user_or_org.path, status: :moved_permanently
+      redirect_permanently_to(user_or_org.path)
     else
       not_found
     end
@@ -88,10 +88,10 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path, status: :moved_permanently
+      redirect_permanently_to(URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
     elsif (@organization = @article.organization)
-      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path, status: :moved_permanently
+      redirect_permanently_to(URI.parse("/#{@organization.slug}/#{params[:slug]}").path)
       return
     end
     not_found
@@ -126,7 +126,7 @@ class StoriesController < ApplicationController
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
-      redirect_to "/t/#{@tag_model.alias_for}", status: :moved_permanently
+      redirect_permanently_to("/t/#{@tag_model.alias_for}")
       return
     end
 
@@ -223,6 +223,17 @@ class StoriesController < ApplicationController
     return if performed?
 
     assign_user_github_repositories
+
+    # @badges_limit is here and is set to 6 because it determines how many badges we will display
+    # on Profile sidebar widget. If user has more badges, we hide them and let them be revealed
+    # by clicking "See more" button (because we want to save space etc..). But why 6 exactly?
+    # To make that widget look good:
+    #   - On desktop it will have 3 rows, each row with 2 badges.
+    #   - On mobile it will have 2 rows, each row with 3 badges.
+    # So it's always 6. If we make it higher or lower number, we would have to sacrifice UI:
+    #   - Let's say it's `4`. On mobile it would display two rows: 1st with 3 badges and
+    # 2nd with 1 badge (!) <-- and that would look off.
+    @badges_limit = 6
 
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
@@ -344,11 +355,10 @@ class StoriesController < ApplicationController
   def assign_podcasts
     return unless user_signed_in?
 
-    num_hours = Rails.env.production? ? 24 : 2400
     @podcast_episodes = PodcastEpisode
       .includes(:podcast)
       .order(published_at: :desc)
-      .where("published_at > ?", num_hours.hours.ago)
+      .where("published_at > ?", 24.hours.ago)
       .select(:slug, :title, :podcast_id, :image)
   end
 
@@ -359,7 +369,7 @@ class StoriesController < ApplicationController
   def redirect_to_lowercase_username
     return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
 
-    redirect_to "/#{params[:username].downcase}", status: :moved_permanently
+    redirect_permanently_to("/#{params[:username].downcase}")
   end
 
   def set_user_json_ld

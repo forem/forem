@@ -14,6 +14,7 @@ module Admin
     COMMUNITY_PARAMS =
       %i[
         community_name
+        community_emoji
         collective_noun
         collective_noun_disabled
         community_description
@@ -80,17 +81,13 @@ module Admin
         onboarding_taskcard_image
         suggested_tags
         suggested_users
+        prefer_manual_suggested_users
       ].freeze
 
     JOB_PARAMS =
       %i[
         jobs_url
         display_jobs_banner
-      ].freeze
-
-    ALLOWED_EMPTY_ENUMERABLES =
-      %i[
-        authentication_providers
       ].freeze
 
     ALLOWED_PARAMS =
@@ -116,9 +113,9 @@ module Admin
         github_secret
         facebook_key
         facebook_secret
+        auth_providers_to_enable
         invite_only_mode
         allow_email_password_registration
-        allow_email_password_login
         require_captcha_for_email_password_registration
         primary_brand_color_hex
         spam_trigger_terms
@@ -127,12 +124,32 @@ module Admin
         video_encoder_key
         tag_feed_minimum_score
         home_feed_minimum_score
+        allowed_registration_email_domains
+        display_email_domain_allow_list_publicly
       ].freeze
+
+    EMOJI_ONLY_FIELDS = %w[community_emoji].freeze
+    IMAGE_FIELDS =
+      %w[
+        main_social_image
+        logo_png
+        secondary_logo_url
+        campaign_sidebar_image
+        mascot_image_url
+        mascot_footer_image_url
+        onboarding_logo_image
+        onboarding_background_image
+        onboarding_taskcard_image
+      ].freeze
+
+    VALID_URL = %r{\A(http|https)://([/|.|\w|\s|-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
 
     layout "admin"
 
     before_action :extra_authorization_and_confirmation, only: [:create]
     before_action :validate_inputs, only: [:create]
+    before_action :validate_emoji, only: [:create], if: -> { params[:site_config].keys & EMOJI_ONLY_FIELDS }
+    before_action :validate_image_urls, only: [:create], if: -> { params[:site_config].keys & IMAGE_FIELDS }
     after_action :bust_content_change_caches, only: [:create]
 
     def show
@@ -143,7 +160,9 @@ module Admin
       clean_up_params
 
       config_params.each do |key, value|
-        if value.is_a?(Array)
+        if key == "auth_providers_to_enable"
+          update_enabled_auth_providers(value) unless value.class.name != "String"
+        elsif value.is_a?(Array)
           SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
         elsif value.respond_to?(:to_h)
           SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
@@ -189,7 +208,7 @@ module Admin
     end
 
     def extra_authorization_and_confirmation
-      not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
+      not_authorized unless current_user.has_role?(:super_admin)
       raise_confirmation_mismatch_error if params.require(:confirmation) != confirmation_text
     end
 
@@ -197,7 +216,25 @@ module Admin
       errors = []
       errors << "Brand color must be darker for accessibility." if brand_contrast_too_low
       errors << "Brand color must be be a 6 character hex (starting with #)." if brand_color_not_hex
-      redirect_to admin_config_path, alert: "😭 #{errors.join(',')}" if errors.any?
+      errors << "Allowed emails must be list of domains." if allowed_domains_include_improper_format
+      redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}" if errors.any?
+    end
+
+    def validate_emoji
+      emoji_params = config_params.slice(*EMOJI_ONLY_FIELDS).to_h
+      errors = emoji_params.filter_map do |field, value|
+        non_emoji_characters = value.downcase.gsub(EmojiRegex::RGIEmoji, "")
+        "#{field} contains invalid emoji" if non_emoji_characters.present?
+      end
+      redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}" if errors.any?
+    end
+
+    def validate_image_urls
+      image_params = config_params.slice(*IMAGE_FIELDS).to_h
+      errors = image_params.filter_map do |field, url|
+        "#{field} must be a valid URL" unless url.blank? || valid_image_url(url)
+      end
+      redirect_to admin_config_path, alert: "😭 #{errors.to_sentence}" if errors.any?
     end
 
     def clean_up_params
@@ -210,6 +247,23 @@ module Admin
       config[:credit_prices_in_cents]&.transform_values!(&:to_i)
     end
 
+    def invalid_provider_entry(entry)
+      entry.blank? || helpers.available_providers_array.exclude?(entry)
+    end
+
+    def email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
+      !SiteConfig.allow_email_password_login && enabled_providers.count <= 1
+    end
+
+    def update_enabled_auth_providers(value)
+      enabled_providers = []
+      value.split(",").each do |entry|
+        enabled_providers.push(entry) unless invalid_provider_entry(entry)
+      end
+      SiteConfig.public_send("authentication_providers=", enabled_providers) unless
+        email_login_disabled_with_one_or_less_auth_providers(enabled_providers)
+    end
+
     # Validations
     def brand_contrast_too_low
       hex = params.dig(:site_config, :primary_brand_color_hex)
@@ -219,6 +273,20 @@ module Admin
     def brand_color_not_hex
       hex = params.dig(:site_config, :primary_brand_color_hex)
       hex.present? && !hex.match?(/\A#(\h{6}|\h{3})\z/)
+    end
+
+    def allowed_domains_include_improper_format
+      domains = params.dig(:site_config, :allowed_registration_email_domains)
+      return unless domains
+
+      domains_array = domains.delete(" ").split(",")
+      valid_domains = domains_array
+        .select { |d| d.match?(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/) }
+      valid_domains.size != domains_array.size
+    end
+
+    def valid_image_url(url)
+      url.match?(VALID_URL)
     end
   end
 end

@@ -1,7 +1,7 @@
 <%= javascript_packs_with_chunks_tag "colorPreview", "clipboardCopy", defer: true %>
 <%= render "shared/webcomponents_loader_script" %>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h2>Organization Members</h2>
 
   <div class="grid gap-2">
@@ -76,7 +76,7 @@
   </div>
 </div>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h2>Organization details</h2>
 
   <%= form_for @organization, html: { class: "grid gap-6" } do |f| %>
@@ -175,10 +175,7 @@
     </div>
     <header>
       <h3 class="mb-2">Call-to-action box</h3>
-      <p>
-        Customizable text that appears to the right of every post for your organization.
-        See an example from the <a href="<%= app_url("/devteam/the-dev-badge-is-available-on-font-awesome-2ihe") %>" target="_blank" rel="noopener">DEV Team</a>.
-      </p>
+      <p>Customizable text that appears to the right of every post for your organization.</p>
     </header>
     <div class="crayons-field">
       <%= f.label :cta_body_markdown, "Body text", class: "crayons-field__label" %>
@@ -199,7 +196,7 @@
   <% end %>
 </div>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <header>
     <h2 class="color-accent-danger">Danger Zone</h2>
   </header>
@@ -234,7 +231,7 @@
       <% end %>
       <p>
         Questions? Email us at
-        <a href="<%= SiteConfig.email_addresses[:default] %>"><%= SiteConfig.email_addresses[:default] %></a>
+        <a href="<%= SiteConfig.email_addresses[:contact] %>"><%= SiteConfig.email_addresses[:contact] %></a>
         for help.
       </p>
     </div>

@@ -1,8 +1,8 @@
-const form = document.querySelector('.sticky-footer-form');
+const form = document.getElementsByClassName('sticky-footer-form')[0];
 
 form.addEventListener('change', () => {
-  const saveFooter = document.getElementsByClassName('save-footer');
-  saveFooter &&
-    saveFooter[0] &&
-    saveFooter[0].classList.add('sticky', 'bottom-0');
+  const saveFooter = document.getElementsByClassName('save-footer')[0];
+  if (saveFooter) {
+    saveFooter.classList.add('sticky', 'bottom-0');
+  }
 });

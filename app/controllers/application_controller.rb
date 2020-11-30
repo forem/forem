@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
   include ImageUploads
   include VerifySetupCompleted
   include DevelopmentDependencyChecks if Rails.env.development?
+  include EdgeCacheSafetyCheck unless Rails.env.production?
   include Devise::Controllers::Rememberable
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
@@ -77,6 +78,10 @@ class ApplicationController < ActionController::Base
       format.html { redirect_to sign_up_path }
       format.json { render json: { error: "Please sign in" }, status: :unauthorized }
     end
+  end
+
+  def redirect_permanently_to(location)
+    redirect_to location + internal_nav_param, status: :moved_permanently
   end
 
   def customize_params
@@ -176,5 +181,11 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[username name profile_image profile_image_url])
+  end
+
+  def internal_nav_param
+    return "" unless params[:i] == "i"
+
+    "?i=i"
   end
 end

@@ -1,6 +1,6 @@
 <%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <h3>Join An Organization</h3>
   <%= form_tag "/users/join_org" do %>
     <div class="crayons-field mb-6">
@@ -15,7 +15,7 @@
 
 <p class="align-center fs-small color-base-60 mb-6 fw-bold">OR</p>
 
-<div class="crayons-card grid gap-6 p-6 mb-6">
+<div class="crayons-card crayons-card--content-rows">
   <header>
     <h3 class="mb-2">Create An Organization</h3>
     <p>Starred fields are required</p>

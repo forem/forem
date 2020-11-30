@@ -16,7 +16,7 @@
 
 <div class="mt-8 pages__override_defaults">
   <div class="my-6">
-    <% if !@code_of_conduct || !@privacy || !@terms%>
+    <% if !@code_of_conduct || !@privacy || !@terms %>
       <h2 class="mb-4 crayons-title">Override defaults</h2>
       <div class="crayons-notice mb-4 crayons-notice--warning">
         <strong>Note: Proceed with caution. When you edit any of the following pages, it will diverge from the original Forem version and you will no longer receive updates. You will see your updated version in the section above.</strong>
@@ -31,7 +31,7 @@
         <% if !@privacy %>
           <div class="flex py-2 items-center">
               <%= link_to "Privacy Policy", privacy_path %>
-              <%= link_to "Override", new_admin_page_path(slug: "privacy"), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--danger"  %>
+              <%= link_to "Override", new_admin_page_path(slug: "privacy"), class: "ml-auto crayons-btn crayons-btn--s crayons-btn--danger" %>
           </div>
         <% end %>
         <% if !@terms %>
@@ -47,6 +47,4 @@
       </div>
     <% end %>
   </div>
-
-
 </div>

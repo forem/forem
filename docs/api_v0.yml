@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.1"
+  version: "0.9.3"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -169,6 +169,7 @@ components:
         - url
         - canonical_url
         - comments_count
+        - positive_reactions_count
         - public_reactions_count
         - created_at
         - edited_at
@@ -214,6 +215,9 @@ components:
           type: string
           format: url
         comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
           type: integer
           format: int32
         public_reactions_count:
@@ -264,6 +268,7 @@ components:
         - url
         - canonical_url
         - comments_count
+        - positive_reactions_count
         - public_reactions_count
         - created_at
         - edited_at
@@ -311,6 +316,9 @@ components:
           type: string
           format: url
         comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
           type: integer
           format: int32
         public_reactions_count:
@@ -494,6 +502,7 @@ components:
         - url
         - canonical_url
         - comments_count
+        - positive_reactions_count
         - public_reactions_count
         - page_views_count
         - published_timestamp
@@ -534,6 +543,9 @@ components:
           type: string
           format: url
         comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
           type: integer
           format: int32
         public_reactions_count:
@@ -579,6 +591,7 @@ components:
         - title
         - user_id
         - video_duration_in_minutes
+        - video_source_url
         - user
       properties:
         type_of:
@@ -603,6 +616,9 @@ components:
 
             If the video duration is below 1 hour, the format will be `mm:ss`,
             if it's 1 hour or above the format will be `h:mm:ss`.
+          type: string
+        video_source_url:
+          format: url
           type: string
         user:
           type: object
@@ -1104,6 +1120,49 @@ components:
           type: string
           description: Profile image (90x90)
 
+    Organization:
+      description: Organization
+      type: object
+      properties:
+        type_of:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        summary:
+          type: string
+          nullable: true
+        twitter_username:
+          type: string
+          nullable: true
+        github_username:
+          type: string
+          nullable: true
+        url:
+          type: string
+          format: url
+        location:
+          type: string
+          nullable: true
+        tech_stack:
+          type: string
+          nullable: true
+        tag_line:
+          type: string
+          nullable: true
+        story:
+          type: string
+          nullable: true
+        joined_at:
+          description: Date of joining
+          type: string
+          format: date-time
+        profile_image:
+          type: string
+          description: Profile image (640x640)
+          format: url
+
   examples:
     ErrorBadRequest:
       value:
@@ -1155,6 +1214,7 @@ components:
           url: https://dev.to/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
           canonical_url: https://dev.to/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
           comments_count: 37
+          positive_reactions_count: 12
           public_reactions_count: 142
           collection_id:
           created_at: '2019-10-24T13:41:29Z'
@@ -1198,6 +1258,7 @@ components:
         url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         comments_count: 21
+        positive_reactions_count: 122
         public_reactions_count: 322
         collection_id: 1693
         created_at: "2019-07-31T11:15:06Z"
@@ -1273,6 +1334,7 @@ components:
           title: 'BaseCS: Depth First Search Implementing'
           user_id: 2882
           video_duration_in_minutes: '11:47'
+          video_source_url: 'https://dw71fyauz7yz9.cloudfront.net/123/123.m3u8'
           user:
             name: Vaidehi Joshi
 
@@ -1635,6 +1697,20 @@ components:
         joined_at: Jan 1, 2017
         profile_image: https://res.cloudinary.com/...jpeg
 
+    Users:
+      value:
+        - type_of: user
+          id: 1234
+          username: bob
+          name: bob
+          summary: Hello, world
+          twitter_username: bob
+          github_username: bob
+          website_url:
+          location: New York
+          joined_at: Jan 1, 2017
+          profile_image: https://res.cloudinary.com/...jpeg
+
     WebhookCreate:
       value:
         webhook_endpoint:
@@ -1667,6 +1743,22 @@ components:
         profile_image: https://res.cloudinary.com/...jpeg
         profile_image_90: https://res.cloudinary.com/...jpeg
 
+    Organization:
+      value:
+        type_of: organization
+        username: ecorp
+        name: E Corp
+        summary: Together we can change the world, with E Corp
+        twitter_username: ecorp
+        github_username: ecorp
+        url: https://ecorp.internet
+        location: New York
+        joined_at: '2019-10-24T13:41:29Z'
+        tech_stack: Ruby
+        tag_line:
+        story:
+        profile_image: https://res.cloudinary.com/...jpeg
+
 tags:
   - name: articles
     description: Articles are all the posts users create on DEV
@@ -1678,6 +1770,8 @@ tags:
     description: Users can follow other users on the website
   - name: listings
     description: Listings are classified ads
+  - name: organizations
+    description: Users can create and join organizations
   - name: podcast-episodes
     description: Podcast episodes
   - name: readinglist
@@ -2919,6 +3013,96 @@ paths:
           label: curl
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/readinglist
+
+  /organizations/{username}:
+    get:
+      operationId: getOrganization
+      summary: An organization
+      description: |
+        This endpoint allows the client to retrieve a single organization by their username
+      tags:
+        - organizations
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: |
+            Username of the organization
+          schema:
+            type: string
+          example: "ecorp"
+      responses:
+        "200":
+          description: An organization
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+              examples:
+                user-success:
+                  $ref: "#/components/examples/Organization"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                user-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/organizations/ecorp
+
+  /organizations/{username}/users:
+    get:
+      operationId: getOrgUsers
+      summary: Organization's users
+      description: |
+        This endpoint allows the client to retrieve a list of users belonging to the organization
+
+        It supports pagination, each page will contain `30` users by default.
+      tags:
+        - organizations
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: |
+            Username of the organization
+          schema:
+            type: string
+          example: "ecorp"
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
+      responses:
+        "200":
+          description: A list of users belonging to the organization
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              examples:
+                user-success:
+                  $ref: "#/components/examples/Users"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                user-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/organizations/ecorp/users
 
   /podcast_episodes:
     get:

@@ -1,17 +1,5 @@
 require "rails_helper"
 
-NON_DEFAULT_EXPERIMENTS = %i[
-  more_tag_weight_more_random_experiment
-  more_comments_experiment
-  more_experience_level_weight_experiment
-  more_tag_weight_randomized_at_end_experiment
-  more_experience_level_weight_randomized_at_end_experiment
-  more_comments_randomized_at_end_experiment
-  more_comments_medium_weight_randomized_at_end_experiment
-  more_comments_minimal_weight_randomized_at_end_experiment
-  mix_of_everything_experiment
-].freeze
-
 RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   let(:user) { create(:user) }
   let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
@@ -64,21 +52,18 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     let(:default_feed) { feed.default_home_feed_and_featured_story }
     let(:featured_story) { default_feed.first }
     let(:stories) { default_feed.second }
+    let!(:min_score_article) { create(:article, score: 0) }
 
-    before { article.update(published_at: 1.week.ago) }
+    before do
+      article.update(published_at: 1.week.ago)
+      allow(SiteConfig).to receive(:home_feed_minimum_score).and_return(0)
+    end
 
-    it "returns a featured article and array of other articles" do
-      expect(featured_story).to be_a(Article)
+    it "returns a featured article and correctly scored other articles", :aggregate_failures do
       expect(stories).to be_a(Array)
-      expect(stories.first).to be_a(Article)
-    end
-
-    it "chooses a featured story with a main image" do
       expect(featured_story).to eq hot_story
-    end
-
-    it "doesn't include low scoring stories" do
       expect(stories).not_to include(low_scoring_article)
+      expect(stories).to include(min_score_article)
     end
 
     context "when user logged in" do
@@ -143,33 +128,12 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
   end
 
-  describe "all non-default experiments" do
-    it "returns articles for all experiments" do
+  describe "more_comments_minimal_weight_randomized_at_end" do
+    it "returns articles" do
       new_story = create(:article, published_at: 10.minutes.ago, score: 10)
-      NON_DEFAULT_EXPERIMENTS.each do |method|
-        stories = feed.public_send(method)
-        expect(stories).to include(old_story)
-        expect(stories).to include(new_story)
-      end
-    end
-  end
-
-  describe "#more_comments_experiment" do
-    let(:article_with_one_comment) { create(:article) }
-    let(:article_with_five_comments) { create(:article) }
-    let(:stories) { feed.more_comments_experiment }
-
-    before do
-      create(:comment, user: user, commentable: article_with_one_comment)
-      create_list(:comment, 5, user: user, commentable: article_with_five_comments)
-      article_with_one_comment.update_score
-      article_with_five_comments.update_score
-      article_with_one_comment.reload
-      article_with_five_comments.reload
-    end
-
-    it "ranks articles with more comments higher" do
-      expect(stories[0]).to eq article_with_five_comments
+      stories = feed.more_comments_minimal_weight_randomized_at_end
+      expect(stories).to include(old_story)
+      expect(stories).to include(new_story)
     end
   end
 
@@ -273,7 +237,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       before do
         user.follow(tag)
         user.save
-        user.follows.last.update(points: 2)
+        user.follows.last.update(explicit_points: 2)
       end
 
       it "returns the followed tag point value" do
@@ -289,7 +253,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         user.follow(tag)
         user.follow(tag2)
         user.save
-        user.follows.each { |follow| follow.update(points: 2) }
+        user.follows.each { |follow| follow.update(explicit_points: 2) }
       end
 
       it "returns the sum of followed tag point values" do

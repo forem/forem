@@ -99,7 +99,6 @@
       '/embed/',               // Don't fetch for embeded content.
       '/enter',                // Don't run on registration.
       '/feed',                 // Skip the RSS feed
-      '/future',               // Skip for /future.
       '/i/',                   // Ignore locally stored image path
       '/images/',              // Ignore nginx proxy path
       '/internal',             // redirects
@@ -137,6 +136,27 @@
       // iOS seems to have issues.
       return;
     }
+
+    <% if Rails.env.production? %>
+      // We should generally not run this in development
+      // Because the assets will not have cache-busting fingerprints.
+      // Fetch and/or JS and CSS assets for better persistence than memory cache.
+      if (url.pathname.startsWith("/assets/") || url.pathname.startsWith("/packs/")) {
+        event.respondWith(
+          caches.open(staticCacheName).then(function (cache) {
+            return cache.match(event.request).then(function (response) {
+              return (
+                response ||
+                fetch(event.request).then(function (response) {
+                  cache.put(event.request, response.clone());
+                  return response;
+                })
+              );
+            });
+          })
+        );
+      }
+    <% end %>
 
     if (url.origin === location.origin) {
       if (event.clientId === "" && // Not fetched via AJAX after page load.
@@ -188,6 +208,22 @@
             "/shell_bottom",
           ]));
       }
+
+      // Periodically delete assets when they pile up
+      if (Math.random() > 0.97) {
+        caches.open(staticCacheName).then(function(cache) {
+          cache.keys().then(function(keys) {
+            if (keys.length > 100) {
+              keys.forEach(function(r) {
+                if (r.url.includes("/assets/") || r.url.includes("/packs/")) {
+                  cache.delete(r);
+                };
+              });
+            }
+          });
+        });
+      }
+
     }
   });
 <% end %>

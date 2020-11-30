@@ -10,8 +10,8 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
-  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
+  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
 
   # Meta
   field :admin_action_taken_at, type: :datetime, default: Time.current
@@ -27,6 +27,8 @@ class SiteConfig < RailsSettings::Base
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
   field :allow_email_password_login, type: :boolean, default: true
+  field :allowed_registration_email_domains, type: :array, default: %w[]
+  field :display_email_domain_allow_list_publicly, type: :boolean, default: false
   field :require_captcha_for_email_password_registration, type: :boolean, default: false
   field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
   field :invite_only_mode, type: :boolean, default: false
@@ -48,6 +50,7 @@ class SiteConfig < RailsSettings::Base
 
   # Community Content
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
+  field :community_emoji, type: :string, default: "🌱"
   field :collective_noun, type: :string, default: "Community"
   field :collective_noun_disabled, type: :boolean, default: false
   field :community_description, type: :string
@@ -63,14 +66,15 @@ class SiteConfig < RailsSettings::Base
   # Emails
   field :email_addresses, type: :hash, default: {
     default: ApplicationConfig["DEFAULT_EMAIL"],
+    contact: ApplicationConfig["DEFAULT_EMAIL"],
     business: ApplicationConfig["DEFAULT_EMAIL"],
     privacy: ApplicationConfig["DEFAULT_EMAIL"],
     members: ApplicationConfig["DEFAULT_EMAIL"]
   }
 
   # Email digest frequency
-  field :periodic_email_digest_max, type: :integer, default: 0
-  field :periodic_email_digest_min, type: :integer, default: 2
+  field :periodic_email_digest_max, type: :integer, default: 2
+  field :periodic_email_digest_min, type: :integer, default: 0
 
   # Jobs
   field :jobs_url, type: :string
@@ -84,9 +88,11 @@ class SiteConfig < RailsSettings::Base
   field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
   # Images
-  field :main_social_image, type: :string
+  field :main_social_image, type: :string, default: proc { URL.local_image("social-media-cover.png") }
+
   field :favicon_url, type: :string, default: "favicon.ico"
-  field :logo_png, type: :string
+  field :logo_png, type: :string, default: proc { URL.local_image("icon.png") }
+
   field :logo_svg, type: :string
   field :secondary_logo_url, type: :string
 
@@ -95,8 +101,8 @@ class SiteConfig < RailsSettings::Base
   field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
-  field :mascot_user_id, type: :integer, default: 1
-  field :mascot_image_url, type: :string
+  field :mascot_user_id, type: :integer, default: nil
+  field :mascot_image_url, type: :string, default: proc { URL.local_image("mascot.png") }
   field :mascot_image_description, type: :string, default: "The community mascot"
   field :mascot_footer_image_url, type: :string
   field :mascot_footer_image_width, type: :integer, default: 52
@@ -132,6 +138,7 @@ class SiteConfig < RailsSettings::Base
   field :onboarding_taskcard_image, type: :string
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
+  field :prefer_manual_suggested_users, type: :boolean, default: false
 
   # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500

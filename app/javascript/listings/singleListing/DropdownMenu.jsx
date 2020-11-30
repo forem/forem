@@ -64,7 +64,10 @@ class DropdownMenu extends Component {
     const reportUrl = `/report-abuse?url=https://dev.to/listings/${category}/${slug}`;
 
     return (
-      <div className="single-listing__dropdown absolute right-0 top-0" ref={this.componentRef}>
+      <div
+        className="single-listing__dropdown absolute right-0 top-0"
+        ref={this.componentRef}
+      >
         <Button
           variant="ghost"
           contentType="icon"

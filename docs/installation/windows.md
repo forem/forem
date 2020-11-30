@@ -151,7 +151,7 @@ password for PostgreSQL:
    PostgreSQL by executing the command `\quit`.
 
 For additional configuration options, check our
-[PostgreSQL setup guide](/installation/postgresql).
+[PostgreSQL setup guide](/docs/installation/postgresql).
 
 ### ImageMagick
 
@@ -170,7 +170,7 @@ To verify its installation, run `identify -version` command.
 
 ### Redis
 
-Forem requires Redis version 4.0 or higher.
+Forem requires Redis version 6.0 or higher.
 
 We recommend to follow
 [this guide](https://redislabs.com/blog/redis-on-windows-10/) to run Redis under
@@ -260,8 +260,9 @@ To install Elasticsearch perform the following steps:
      use and provides a fake default for any missing keys.
    - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
      variable to the remote computer's domain name.
-   - The [backend guide](/backend) will show you how to get free API keys for
-     additional services that may be required to run certain parts of the app.
+   - The [backend guide](/docs/backend) will show you how to get free API keys
+     for additional services that may be required to run certain parts of the
+     app.
    - For any key that you wish to enter/replace:
 
      1. Create `.env` by copying from the provided template (ie. with bash:
@@ -274,10 +275,6 @@ To install Elasticsearch perform the following steps:
      export GITHUB_SECRET="ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
-   - If you are missing `ENV` variables on bootup, the
-     [envied](https://rubygems.org/gems/envied) gem will alert you with messages
-     similar to
-     `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 

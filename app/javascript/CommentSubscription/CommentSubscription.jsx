@@ -139,7 +139,7 @@ export class CommentSubscription extends Component {
             aria-hidden={!showOptions}
             className={
               showOptions
-                ? `inline-block z-30 right-4 left-4 s:right-0 s:left-auto${
+                ? `inline-block right-4 left-4 s:right-0 s:left-auto${
                     positionType === 'relative' ? ' w-full' : ''
                   }`
                 : null

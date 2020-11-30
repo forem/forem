@@ -21,7 +21,7 @@ RSpec.describe "Comments", type: :request do
 
     it "displays full discussion text" do
       get comment.path
-      expect(response.body).to include("FULL DISCUSSION")
+      expect(response.body).to include("Full discussion")
     end
 
     it "renders user payment pointer if set" do
@@ -37,11 +37,6 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the comment is a root" do
-      it "does not display top of thread button" do
-        get comment.path
-        expect(response.body).not_to include("TOP OF THREAD")
-      end
-
       it "displays the comment hidden message if the comment is hidden" do
         comment.update(hidden_by_commentable_user: true)
         get comment.path
@@ -61,7 +56,6 @@ RSpec.describe "Comments", type: :request do
 
       it "displays proper button and text for child comment" do
         get child.path
-        expect(response.body).to include("TOP OF THREAD")
         expect(response.body).to include(CGI.escapeHTML(comment.title(150)))
         expect(response.body).to include(child.processed_html)
       end

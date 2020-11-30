@@ -5,7 +5,7 @@ module DataUpdateScripts
 
       # This statement deletes all draft articles in excess found to be duplicate over those three columns
       ActiveRecord::Base.connection.execute(
-        <<~SQL.squish,
+        <<-SQL,
           WITH duplicates_draft_articles AS
               (SELECT id
                FROM

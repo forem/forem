@@ -5,30 +5,23 @@ title: Deployment Guide
 # Deploying Forem
 
 Anyone with the ability to merge PRs on GitHub can deploy the application.
-Remember that this is a shared responsibility, so everyone should deploy code
-occasionally.
+**Whenever a PR is merged the code is deployed. When deploying complex code, be
+sure that other team members are around to help if something goes wrong.**
 
-If the application needs to be deployed when the code is merged, appending
-`[deploy]` to the merge commit's message will trigger a deploy.
-
-When deploying complex code, be sure that other team members are around to help
-if something goes wrong.
-
-Generally, it's a good idea to keep the SRE team in the loop on any deploys.
-However, deployments are our collective responsibility, so it's important to
-monitor your deploys. You can see deployment status on Travis-ci.com and in the
-#deployment-pipeline channel on Slack. Be prepared to rollback or push a fix for
-any deployment!
+Generally, it's a good idea to keep the SRE team in the loop on high risk
+deploys. However, deployments are our collective responsibility, so it's
+important to monitor your deploys. You can see deployment status on
+Travis-ci.com and in the #deployment-pipeline channel on Slack. Be prepared to
+rollback or push a fix for any deployment!
 
 # Deployment and CI/CD Process
 
 ## Overview
 
 Forem relies on GitHub and Travis to deploy continuously to Heroku. If a Pull
-Request is merged with a `[deploy]` in its title, it will be automatically
-deployed to production once the build steps complete successfully. The process
-currently takes about 20 minutes to complete and will need a few additional
-minutes before the change goes live.
+Request is merged it will automatically be deployed to production once the build
+steps complete successfully. The process currently takes about 20 minutes to
+complete and will need a few additional minutes before the change goes live.
 
 ## Travis Stages
 
@@ -38,8 +31,7 @@ The following stages can be explored in our
 process consists of 2 stages.
 
 1. Running our test suite in 3 parallel jobs.
-2. Deploying the application if we have merged with the master branch and the
-   `[deploy]` flag is present in the merge commit.
+2. Deploying the application.
 
 ### Stage 1: Running Tests
 
@@ -61,9 +53,9 @@ If all of the jobs pass then we move on to Stage 2 of the Travis CI process.
 ### Stage 2: Deploying
 
 If the build was kicked off from a pull request being created or updated this
-stage will do nothing. If the branch has been merged into master with the
-`[deploy]` flag, then this stage will kick off a deploy. The deploy will run in
-its own job deploying our application to Heroku.
+stage will do nothing. If the branch has been merged into master, then this
+stage will kick off a deploy. The deploy will run in its own job deploying our
+application to Heroku.
 
 Prior to deploying the code, Heroku will run database migrations, Elasticsearch
 updates, and do some final checks (more information on that below) to make sure

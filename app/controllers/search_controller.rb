@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  before_action :authenticate_user!, only: %i[tags chat_channels reactions]
+  before_action :authenticate_user!, only: %i[tags chat_channels reactions usernames]
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[listings reactions feed_content]
 
@@ -80,6 +80,14 @@ class SearchController < ApplicationController
 
   def users
     render json: { result: user_search }
+  end
+
+  def usernames
+    usernames = Search::User.search_usernames(params[:username])
+
+    render json: { result: usernames }
+  rescue Search::Errors::Transport::BadRequest
+    render json: { result: [] }
   end
 
   def feed_content
