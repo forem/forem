@@ -19,23 +19,25 @@ export const Options = ({
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name) => {
-      return (
-        <button
-          type="button"
-          name="series"
-          onClick={onConfigChange}
-          value={name}
-        >
-          {name}
-        </button>
-      );
+      return <option value={name}>{name}</option>;
     });
     existingSeries = (
-      <p className="crayons-field__description">
+      <div className="crayons-field__description">
         Existing series:
         {` `}
-        {seriesNames}
-      </p>
+        <select
+          value=""
+          name="series"
+          onInput={onConfigChange}
+          required
+          aria-label="Select one of the existing series"
+        >
+          <option value="" disabled>
+            Select...
+          </option>
+          {seriesNames}
+        </select>
+      </div>
     );
   }
 
