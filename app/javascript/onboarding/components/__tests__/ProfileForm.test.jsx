@@ -81,10 +81,10 @@ describe('ProfileForm', () => {
     document.head.innerHTML =
       '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
+    fetch.mockResponse(fakeGroupsResponse);
   });
 
   it('should have no a11y violations', async () => {
-    fetch.mockResponseOnce(fakeGroupsResponse);
     const { container } = renderProfileForm();
     const results = await axe(container);
 
@@ -114,19 +114,17 @@ describe('ProfileForm', () => {
     expect(img.getAttribute('src')).toEqual('mock_url_link');
   });
 
-  it.skip('should render the correct group headings', async () => {
-    fetch.mockResponse(fakeGroupsResponse);
+  it('should render the correct group headings', async () => {
     const { findByText } = renderProfileForm();
 
     const heading1 = await findByText(/Looking for work?/i);
-    const heading2 = await findByText(/Name/i);
+    const heading2 = await findByText('Name');
 
     expect(heading1).toBeInTheDocument();
     expect(heading2).toBeInTheDocument();
   });
 
   it('should render the correct fields', async () => {
-    fetch.mockResponse(fakeGroupsResponse);
     const { findByLabelText } = renderProfileForm();
 
     const field1 = await findByLabelText(/Looking for work?/i);
