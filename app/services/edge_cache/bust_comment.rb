@@ -21,12 +21,11 @@ module EdgeCache
     def self.bust_article_comment(commentable)
       bust("/") if Article.published.order(hotness_score: :desc).limit(3).ids.include?(commentable.id)
 
-      if commentable.decorate.cached_tag_list_array.include?("discuss") &&
-          commentable.featured_number.to_i > 35.hours.ago.to_i
-        bust("/")
-        bust("/?i=i")
-        bust("?i=i")
-      end
+      return unless commentable.decorate.discussion?
+
+      bust("/")
+      bust("/?i=i")
+      bust("?i=i")
     end
 
     private_class_method :bust_article_comment
