@@ -652,7 +652,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Comment"
-
+    ConfigUpsert:
+      type: object
+      properties:
+        site_config:
+          type: object
     FollowedTag:
       type: object
       required:
@@ -1812,6 +1816,61 @@ paths:
             application/json:
               schema:
                 type: object
+    post:
+      operationId: upsertConfig
+      summary: Update Site-wide Config
+      description: |
+        This endpoint allows admins to declare values or update values for "site config".
+      tags:
+        - admin-configuration
+      security:
+        - api_key: []
+        - oauth2: []
+      requestBody:
+        description: Config up upsert
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfigUpsert"
+      responses:
+        "201":
+          description: Newly updated config
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-bad-request:
+                  $ref: "#/components/examples/ErrorBadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unauthorized:
+                  $ref: "#/components/examples/ErrorUnauthorized"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-forbidden:
+                  $ref: "#/components/examples/ErrorForbidden"
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorUnprocessableEntity"
   /articles:
     get:
       operationId: getArticles

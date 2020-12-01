@@ -208,7 +208,7 @@ Rails.application.routes.draw do
         end
 
         namespace :admin do
-          resource :config, only: %i[show], defaults: { format: :json }
+          resource :config, only: %i[show create], defaults: { format: :json }
         end
       end
     end
