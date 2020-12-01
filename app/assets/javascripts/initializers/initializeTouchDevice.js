@@ -18,19 +18,19 @@ function blurHeaderMenu(event, elementId) {
   }, 10);
 }
 
-function toggleMenu() {
+function toggleHeaderMenu() {
   if (crayonsHeaderMenuClassList.contains('showing')) {
-      crayonsHeaderMenuClassList.remove('showing');
-      menuNavButton.setAttribute('aria-expanded', 'false');
-    } else {
-      crayonsHeaderMenuClassList.add('showing');
-      menuNavButton.setAttribute('aria-expanded', 'true');
+    crayonsHeaderMenuClassList.remove('showing');
+    menuNavButton.setAttribute('aria-expanded', 'false');
+  } else {
+    crayonsHeaderMenuClassList.add('showing');
+    menuNavButton.setAttribute('aria-expanded', 'true');
 
-      setTimeout(() => {
-        // focus first item on open
-        firstNavLink.focus();
-      }, 100);
-    }
+    setTimeout(() => {
+      // focus first item on open
+      firstNavLink.focus();
+    }, 100);
+  }
 }
 
 function initializeTouchDevice() {
@@ -44,18 +44,18 @@ function initializeTouchDevice() {
     closeHeaderMenu();
     if (isTouchDevice) {
       // Use a named function instead of anonymous so duplicate event handlers are discarded
-      menuNavButton.addEventListener('click', toggleMenu);
+      menuNavButton.addEventListener('click', toggleHeaderMenu);
     } else {
       crayonsHeaderMenuClassList.add('desktop');
       menuNavButton.addEventListener('click', (e) => {
-        toggleMenu();
+        toggleHeaderMenu();
       });
       crayonsHeaderMenu.addEventListener('keyup', (e) => {
         if (e.key === 'Escape' && crayonsHeaderMenuClassList.contains('showing')) {
           crayonsHeaderMenuClassList.remove('showing');
           menuNavButton.focus();
         }
-      })
+      });
       document.getElementById('last-nav-link').addEventListener('blur', (e) =>
         blurHeaderMenu(e, 'second-last-nav-link'),
       );
