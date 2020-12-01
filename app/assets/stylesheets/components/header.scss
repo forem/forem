@@ -100,11 +100,13 @@
 
   &__trigger {
     all: unset;
-    padding: var(--su-1);
+    padding: var(--su-0);
     margin: 0 var(--su-1);
     border-radius: 50%;
     color: var(--header-icons-color);
     cursor: pointer;
+    // hold space for interaction style
+    border: 2px solid transparent;
   }
 
   &__dropdown {
@@ -121,16 +123,22 @@
     visibility: var(--dropdown-visibility, hidden);
   }
   &.showing,
-  &.desktop:hover,
-  &.desktop:focus {
+  &.desktop:hover {
     --dropdown-transform: translateY(0) rotateX(0);
     --dropdown-delay: 0;
     --dropdown-opacity: 1;
     --dropdown-visibility: visible;
 
     .crayons-header__menu__trigger {
+      border: 2px solid var(--header-bg-hover);
       color: var(--header-icons-color-hover);
-      background: var(--header-bg-hover);
+    }
+  }
+  &.showing :focus,
+  :focus {
+    &.crayons-header__menu__trigger {
+      border: 2px solid var(--header-button-focus-color);
+      color: var(--header-button-focus-color);
     }
   }
 }
