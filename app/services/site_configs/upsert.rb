@@ -71,6 +71,7 @@ module SiteConfigs
 
     def self.update_enabled_auth_providers(value)
       enabled_providers = []
+      p value
       value.split(",").each do |entry|
         enabled_providers.push(entry) unless invalid_provider_entry(entry)
       end
