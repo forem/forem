@@ -90,6 +90,6 @@ class UserSubscription < ApplicationRecord
 
     return if source_active
 
-    errors.add(:base, "Source not found.")
+    errors.add(:base, "Source not found. Please make sure your #{user_subscription_sourceable_type} is active!")
   end
 end
