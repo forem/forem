@@ -42,7 +42,7 @@
   <tbody class="crayons-card">
     <% @tags.each do |tag| %>
       <tr>
-        <td><%= link_to tag.name, admin_tag_path(tag.id) %></td>
+        <td><%= link_to tag.name, edit_admin_tag_path(tag.id) %></td>
         <td><%= tag.id %></td>
         <td><%= tag.alias_for %></td>
         <td><%= tag.taggings_count %></td>

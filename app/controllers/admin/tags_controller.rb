@@ -2,7 +2,7 @@ module Admin
   class TagsController < Admin::ApplicationController
     layout "admin"
 
-    before_action :badges_for_options
+    before_action :badges_for_options, only: %i[new create edit update]
     after_action only: [:update] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
@@ -29,14 +29,14 @@ module Admin
 
       if @tag.save
         flash[:success] = "Tag has been created!"
-        redirect_to admin_tag_path(@tag)
+        redirect_to edit_admin_tag_path(@tag)
       else
         flash[:danger] = @tag.errors_as_sentence
         render :new
       end
     end
 
-    def show
+    def edit
       @tag = Tag.find(params[:id])
       @tag_moderators = User.with_role(:tag_moderator, @tag).select(:id, :username)
     end
@@ -48,7 +48,7 @@ module Admin
       else
         flash[:error] = "The tag update failed: #{@tag.errors_as_sentence}"
       end
-      redirect_to admin_tag_path(@tag.id)
+      redirect_to edit_admin_tag_path(@tag.id)
     end
 
     private
