@@ -798,13 +798,13 @@ RSpec.describe Article, type: :model do
         expect(Reaction.last.user_id).to eq(user.id)
       end
 
-      it "does not ban user if only single vomit" do
+      it "does not suspend user if only single vomit" do
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
         article.save
         expect(article.user.banned).to be false
       end
 
-      it "bans user with 3 comment vomits" do
+      it "suspends user with 3 comment vomits" do
         second_article = create(:article, user: article.user)
         third_article = create(:article, user: article.user)
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
@@ -815,7 +815,7 @@ RSpec.describe Article, type: :model do
         second_article.save
         third_article.save
         expect(article.user.banned).to be true
-        expect(Note.last.reason).to eq "automatic_ban"
+        expect(Note.last.reason).to eq "automatic_suspend"
       end
 
       it "does not create vomit reaction if does not have matching title" do

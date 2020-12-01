@@ -65,6 +65,7 @@ module.exports = {
       alias: {
         ...config.resolve.alias,
         '@crayons': path.resolve(__dirname, '../crayons'),
+        '@utilities': path.resolve(__dirname, '../utilities'),
       },
     };
 

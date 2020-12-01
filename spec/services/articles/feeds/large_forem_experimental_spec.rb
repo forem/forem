@@ -237,7 +237,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       before do
         user.follow(tag)
         user.save
-        user.follows.last.update(points: 2)
+        user.follows.last.update(explicit_points: 2)
       end
 
       it "returns the followed tag point value" do
@@ -253,7 +253,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         user.follow(tag)
         user.follow(tag2)
         user.save
-        user.follows.each { |follow| follow.update(points: 2) }
+        user.follows.each { |follow| follow.update(explicit_points: 2) }
       end
 
       it "returns the sum of followed tag point values" do

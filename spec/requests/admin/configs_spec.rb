@@ -218,16 +218,30 @@ RSpec.describe "/admin/config", type: :request do
       describe "Emails" do
         it "updates email_addresses" do
           expected_email_addresses = {
+            contact: "contact@example.com",
             business: "partners@example.com",
             privacy: "privacy@example.com",
             members: "members@example.com"
           }
-          post "/admin/config", params: { site_config: { email_addresses: expected_email_addresses },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@example.com")
+
+          post admin_config_path, params: {
+            site_config: { email_addresses: expected_email_addresses },
+            confirmation: confirmation_message
+          }
+
+          expect(SiteConfig.email_addresses[:contact]).to eq("contact@example.com")
           expect(SiteConfig.email_addresses[:business]).to eq("partners@example.com")
+          expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@example.com")
           expect(SiteConfig.email_addresses[:members]).to eq("members@example.com")
-          expect(SiteConfig.email_addresses[:default]).to eq(ApplicationConfig["DEFAULT_EMAIL"])
+        end
+
+        it "does not update the default email address" do
+          post admin_config_path, params: {
+            site_config: { email_addresses: { default: "random@example.com" } },
+            confirmation: confirmation_message
+          }
+
+          expect(SiteConfig.email_addresses[:default]).not_to eq("random@example.com")
         end
       end
 

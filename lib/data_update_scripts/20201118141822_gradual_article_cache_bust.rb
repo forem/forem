@@ -11,11 +11,13 @@ module DataUpdateScripts
 
       # It only busts the "?i=i" variant of the path which is the "internal nav" version, aka the page when swapped
       # with internal navigation, not the one landed on directly (which wouldn't have cache mismatches)
-      Article.published.order("hotness_score DESC").limit(1500).select(:path).each_with_index do |article, index|
+      relation = Article.published.order(hotness_score: :desc).select(:path)
+
+      relation.limit(1500).each_with_index do |article, index|
         n = index + 300 # + 300 gives the server time to boot up
         BustCachePathWorker.set(queue: :high_priority).perform_in(n.seconds, "#{article.path}?i=i")
       end
-      Article.published.order("hotness_score DESC").offset(1500).limit(3000).select(:path).each_with_index do |article, index|
+      relation.offset(1500).limit(3000).each_with_index do |article, index|
         n = (index * 3) + 450
         BustCachePathWorker.set(queue: :medium_priority).perform_in(n.seconds, "#{article.path}?i=i")
       end

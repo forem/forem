@@ -103,7 +103,7 @@ class ChatChannelsController < ApplicationController
       else
         render json: {
           status: "error",
-          message: "Ban failed. user with username '#{username}' not found in this channel."
+          message: "Suspend failed. user with username '#{username}' not found in this channel."
         }, status: :bad_request
       end
     when "/unban"
@@ -114,7 +114,7 @@ class ChatChannelsController < ApplicationController
       else
         render json: {
           status: "error",
-          message: "Unban failed. User with username '#{username}' not found in this channel."
+          message: "Unsuspend failed. User with username '#{username}' not found in this channel."
         }, status: :bad_request
       end
     when "/clearchannel"

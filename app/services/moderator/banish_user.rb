@@ -14,7 +14,7 @@ module Moderator
       BanishedUser.create(username: user.username, banished_by: admin)
       user.unsubscribe_from_newsletters if user.email?
       remove_profile_info
-      handle_user_status("Ban", "spam account")
+      handle_user_status("Suspend", "spam account")
       delete_user_activity
       delete_comments
       delete_articles

@@ -1,5 +1,13 @@
 @import '../config/import';
 
+#footer-container {
+  content-visibility: auto;
+  contain-intrinsic-size: 300px; // Chromium only. See our discussion here: https://github.com/forem/forem/pull/11560
+  @media (min-width: $breakpoint-l) {
+    contain-intrinsic-size: 260px;
+  }
+}
+
 .crayons-footer {
   --footer-padding: var(--su-5);
   background: var(--footer-bg);

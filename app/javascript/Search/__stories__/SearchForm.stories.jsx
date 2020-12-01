@@ -4,7 +4,6 @@ import { action } from '@storybook/addon-actions';
 import { SearchForm } from '..';
 
 const commonProps = {
-  searchBoxId: 'nav-search',
   onSearch: action('on preloading search'),
   onSubmitSearch: (e) => {
     e.preventDefault();
