@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { OrganizationPicker } from '../../organization/OrganizationPicker';
 
-export const PageTitle = ({organizations, organizationId, onToggle}) => {
+export const PageTitle = ({ organizations, organizationId, onToggle }) => {
   return (
     <div className="crayons-field__label flex items-center flex-1">
       <span className="hidden s:inline-block mr-2 whitespace-nowrap">

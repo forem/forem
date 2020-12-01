@@ -1,0 +1,58 @@
+<%= render partial: "response_templates" %>
+
+<div class="crayons-card crayons-card--content-rows">
+  <h2 class="crayons-subtitle-1">
+    Connect settings
+  </h2>
+  <%= form_for(@user, html: { id: nil, class: "grid gap-6" }) do |f| %>
+    <div class="crayons-field">
+      <%= f.label :inbox_type, "Inbox privacy", class: "crayons-field__label" %>
+      <p class="crayons-field__description">Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows.</p>
+      <%= f.select :inbox_type, [%w[Open open], %w[Private private]], {}, { class: "crayons-select" } %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :inbox_guidelines, "Open inbox guidelines/instructions", class: "crayons-field__label" %>
+      <p class="crayons-field__description">
+        Optional
+      </p>
+
+        <%= f.text_area :inbox_guidelines, maxlength: 200, class: "crayons-textfield", rows: 5, placeholder: "For example:
+    - Only contact me about consulting opportunities.
+    - I'm happy to help beginners with CSS.
+    - Allow for a few days to respond.
+    - etc.
+          " %>
+    </div>
+
+    <button type="submit" class="crayons-btn w-max">
+      Save Connect Settings
+    </button>
+  <% end %>
+</div>
+
+<%= render partial: "publishing_from_rss" %>
+
+<div class="crayons-card crayons-card--content-rows">
+  <header>
+    <h2 class="crayons-subtitle-1 flex gap-2 items-center">
+      Web monetization
+      <span class="crayons-indicator crayons-indicator--accent">beta</span>
+    </h2>
+    <p class="color-base-70">
+      Receive micropayments for time spent reading your posts directy. <a href="https://dev.to/hacksultan/web-monetization-like-i-m-5-1418">Learn more</a>
+      </p>
+    </p>
+  </header>
+  <%= form_for(@user, html: { id: nil, class: "grid gap-4" }) do |f| %>
+    <div class="crayons-field">
+      <%= f.label :payment_pointer, "Payment Pointer", class: "crayons-field__label" %>
+      <%= f.text_field :payment_pointer, class: "crayons-textfield", placeholder: "$pay.somethinglikethis.co/value" %>
+    </div>
+    <%= f.hidden_field :tab, value: @tab, id: nil %>
+    <div><button type="submit" class="crayons-btn">Save Web Monetization Settings</button></div>
+  <% end %>
+</div>
+
+<%= render partial: "integrations" %>
+<%= render partial: "users/integrations_github_repositories", locals: { show_integration: @github_repositories_show } %>

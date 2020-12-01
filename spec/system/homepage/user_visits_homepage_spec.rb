@@ -108,19 +108,8 @@ RSpec.describe "User visits a homepage", type: :system do
         find("body")["data-user"]
 
         within("#sidebar-nav-followed-tags") do
-          expect(all(".crayons-link--block").map(&:text)).to eq(%w[#javascript #go #ruby])
+          expect(all(".crayons-link--block").map(&:text).sort).to eq(%w[#javascript #go #ruby].sort)
         end
-      end
-    end
-
-    context "when user does not follow tags" do
-      before do
-        visit "/"
-      end
-
-      it "shows 'Explore Tags' and links to /tags", js: true do
-        expect(page).to have_text("Explore")
-        expect(page).to have_selector(:css, 'a[href="/tags"]')
       end
     end
 

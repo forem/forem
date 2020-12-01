@@ -317,7 +317,7 @@ seeder.create_if_none(Broadcast) do
     customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
       "your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
     customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
-      "Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!",
+      "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!",
     start_discussion: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
       "just click on 'Write a Post' in the sidebar of the tag page to get started!",

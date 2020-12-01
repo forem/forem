@@ -10,7 +10,9 @@ export const ItemListLoadMoreButton = ({ show, onClick }) => {
 
   return (
     <div>
-      <Button onClick={onClick} className="w-100" variant="secondary">Load more</Button>
+      <Button onClick={onClick} className="w-100" variant="secondary">
+        Load more
+      </Button>
     </div>
   );
 };

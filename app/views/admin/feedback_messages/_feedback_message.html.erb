@@ -224,9 +224,9 @@
    var alert = document.getElementById('email__alert__' + id);
    var sendEmailBtn = document.getElementById('send__email__btn__' + id);
    var userType = activeTab.dataset.usertype;
-   var emailToAddress = activeTab.querySelector("#" + userType + "__emailto__" + id).value;
-   var subjectLine = activeTab.querySelector("#" + userType + "__subject__" + id).value;
-   var emailBody = activeTab.querySelector("#" + userType + "__body__" + id).value;
+   var emailToAddress = document.getElementById(userType + "__emailto__" + id).value;
+   var subjectLine = document.getElementById(userType + "__subject__" + id).value;
+   var emailBody = document.getElementById(userType + "__body__" + id).value;
 
    alert.classList.add("d-none");
    alert.classList.remove("alert-warning");

@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.2"
+  version: "0.9.3"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -151,7 +151,6 @@ components:
         status:
           type: integer
           format: int32
-
     ArticleIndex:
       type: object
       required:
@@ -169,6 +168,7 @@ components:
         - url
         - canonical_url
         - comments_count
+        - positive_reactions_count
         - public_reactions_count
         - created_at
         - edited_at
@@ -214,6 +214,9 @@ components:
           type: string
           format: url
         comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
           type: integer
           format: int32
         public_reactions_count:
@@ -264,6 +267,7 @@ components:
         - url
         - canonical_url
         - comments_count
+        - positive_reactions_count
         - public_reactions_count
         - created_at
         - edited_at
@@ -311,6 +315,9 @@ components:
           type: string
           format: url
         comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
           type: integer
           format: int32
         public_reactions_count:
@@ -494,6 +501,7 @@ components:
         - url
         - canonical_url
         - comments_count
+        - positive_reactions_count
         - public_reactions_count
         - page_views_count
         - published_timestamp
@@ -534,6 +542,9 @@ components:
           type: string
           format: url
         comments_count:
+          type: integer
+          format: int32
+        positive_reactions_count:
           type: integer
           format: int32
         public_reactions_count:
@@ -579,6 +590,7 @@ components:
         - title
         - user_id
         - video_duration_in_minutes
+        - video_source_url
         - user
       properties:
         type_of:
@@ -603,6 +615,9 @@ components:
 
             If the video duration is below 1 hour, the format will be `mm:ss`,
             if it's 1 hour or above the format will be `h:mm:ss`.
+          type: string
+        video_source_url:
+          format: url
           type: string
         user:
           type: object
@@ -1198,6 +1213,7 @@ components:
           url: https://dev.to/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
           canonical_url: https://dev.to/devteam/there-s-a-new-dev-theme-in-town-for-all-you-10x-hackers-out-there-plus-one-actually-useful-new-feature-2kgk
           comments_count: 37
+          positive_reactions_count: 12
           public_reactions_count: 142
           collection_id:
           created_at: '2019-10-24T13:41:29Z'
@@ -1241,6 +1257,7 @@ components:
         url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         canonical_url: https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
         comments_count: 21
+        positive_reactions_count: 122
         public_reactions_count: 322
         collection_id: 1693
         created_at: "2019-07-31T11:15:06Z"
@@ -1316,6 +1333,7 @@ components:
           title: 'BaseCS: Depth First Search Implementing'
           user_id: 2882
           video_duration_in_minutes: '11:47'
+          video_source_url: 'https://dw71fyauz7yz9.cloudfront.net/123/123.m3u8'
           user:
             name: Vaidehi Joshi
 
@@ -1678,6 +1696,20 @@ components:
         joined_at: Jan 1, 2017
         profile_image: https://res.cloudinary.com/...jpeg
 
+    Users:
+      value:
+        - type_of: user
+          id: 1234
+          username: bob
+          name: bob
+          summary: Hello, world
+          twitter_username: bob
+          github_username: bob
+          website_url:
+          location: New York
+          joined_at: Jan 1, 2017
+          profile_image: https://res.cloudinary.com/...jpeg
+
     WebhookCreate:
       value:
         webhook_endpoint:
@@ -1722,11 +1754,13 @@ components:
         location: New York
         joined_at: '2019-10-24T13:41:29Z'
         tech_stack: Ruby
-        tag_line: 
+        tag_line:
         story:
         profile_image: https://res.cloudinary.com/...jpeg
 
 tags:
+  - name: admin-configuration
+    description: Site-wide configuration set by admins (requires super admin authorization)
   - name: articles
     description: Articles are all the posts users create on DEV
   - name: comments
@@ -1755,6 +1789,29 @@ tags:
     description: User or organization profile images
 
 paths:
+  /admin/config:
+    get:
+      operationId: getConfig
+      summary: Admin config
+      description: |
+        This endpoint returns the "site config" as set by admin.
+      tags:
+        - admin-configuration
+      security:
+        - api_key: []
+        - oauth2: []
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl -H "api-key: API_KEY" https://dev.to/api/admin/config
+      responses:
+        "200":
+          description: All site-wide config
+          content:
+            application/json:
+              schema:
+                type: object
   /articles:
     get:
       operationId: getArticles
@@ -2981,7 +3038,7 @@ paths:
           source: |
             curl -H "api-key: API_KEY" https://dev.to/api/readinglist
 
-  /organizations/{org_username}:
+  /organizations/{username}:
     get:
       operationId: getOrganization
       summary: An organization
@@ -2990,7 +3047,7 @@ paths:
       tags:
         - organizations
       parameters:
-        - name: org_username
+        - name: username
           in: path
           required: true
           description: |
@@ -3022,6 +3079,54 @@ paths:
           label: curl
           source: |
             curl https://dev.to/api/organizations/ecorp
+
+  /organizations/{username}/users:
+    get:
+      operationId: getOrgUsers
+      summary: Organization's users
+      description: |
+        This endpoint allows the client to retrieve a list of users belonging to the organization
+
+        It supports pagination, each page will contain `30` users by default.
+      tags:
+        - organizations
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: |
+            Username of the organization
+          schema:
+            type: string
+          example: "ecorp"
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
+      responses:
+        "200":
+          description: A list of users belonging to the organization
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+              examples:
+                user-success:
+                  $ref: "#/components/examples/Users"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                user-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/organizations/ecorp/users
 
   /podcast_episodes:
     get:

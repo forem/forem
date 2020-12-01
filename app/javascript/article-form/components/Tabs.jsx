@@ -26,7 +26,6 @@ export const Tabs = ({ onPreview, previewShowing }) => {
   );
 };
 
-
 Tabs.propTypes = {
   previewShowing: PropTypes.bool.isRequired,
   onPreview: PropTypes.func.isRequired,
