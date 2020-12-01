@@ -18,7 +18,7 @@ RSpec.describe "Profiles", type: :request do
         new_location = "New location, who dis?"
         expect do
           patch profile_path(profile), params: { profile: { location: new_location } }
-        end.to change { profile.reload.name }.to(new_location)
+        end.to change { profile.reload.location }.to(new_location)
       end
     end
   end
