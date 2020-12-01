@@ -4,20 +4,24 @@ module EdgeCache
       bust(path)
     end
 
-    def self.bust(path)
-      provider_class = determine_provider_class
+    class << self
+      protected
 
-      return unless provider_class
+      def bust(path)
+        provider_class = determine_provider_class
 
-      if provider_class.respond_to?(:call)
-        provider_class.call(path)
+        return unless provider_class
 
-        true
-      else
-        Rails.logger.warn("#{provider_class} cannot be used without a #call implementation!")
-        DatadogStatsClient.increment("edgecache_bust.invalid_provider_class",
-                                     tags: ["provider_class:#{provider_class}"])
-        false
+        if provider_class.respond_to?(:call)
+          provider_class.call(path)
+
+          true
+        else
+          Rails.logger.warn("#{provider_class} cannot be used without a #call implementation!")
+          DatadogStatsClient.increment("edgecache_bust.invalid_provider_class",
+                                       tags: ["provider_class:#{provider_class}"])
+          false
+        end
       end
     end
 
@@ -34,12 +38,18 @@ module EdgeCache
       const_get(provider.capitalize)
     end
 
+    private_class_method :determine_provider_class
+
     def self.fastly_enabled?
       ApplicationConfig["FASTLY_API_KEY"].present? && ApplicationConfig["FASTLY_SERVICE_ID"].present?
     end
 
+    private_class_method :fastly_enabled?
+
     def self.nginx_enabled?
       ApplicationConfig["OPENRESTY_URL"].present?
     end
+
+    private_class_method :nginx_enabled?
   end
 end

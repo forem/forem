@@ -28,5 +28,7 @@ module EdgeCache
         bust("?i=i")
       end
     end
+
+    private_class_method :bust_article_comment
   end
 end
