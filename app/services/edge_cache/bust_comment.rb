@@ -18,10 +18,10 @@ module EdgeCache
     end
 
     # bust commentable if it's an article
-    def self.bust_article_comment(commentable)
-      bust("/") if Article.published.order(hotness_score: :desc).limit(3).ids.include?(commentable.id)
+    def self.bust_article_comment(article)
+      bust("/") if Article.published.order(hotness_score: :desc).limit(3).ids.include?(article.id)
 
-      return unless commentable.decorate.discussion?
+      return unless article.decorate.discussion?
 
       bust("/")
       bust("/?i=i")
