@@ -1,0 +1,6 @@
+{
+  "title": "A test post again",
+  "description": "Testing article creation bug again",
+  "body_markdown": "## Some content",
+  "tags": ["javascript"]
+}
