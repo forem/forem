@@ -22,6 +22,7 @@ class ProfileValidator < ActiveModel::Validator
     ProfileField.all.each do |field|
       attribute = field.attribute_name
       next if attribute == SUMMARY_ATTRIBUTE # validated above
+      next unless record.respond_to?(attribute) # avoid caching issues
       next if __send__("#{field.input_type}_valid?", record, attribute)
 
       record.errors.add(attribute, ERRORS[field.input_type])
