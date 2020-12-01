@@ -3,23 +3,19 @@ var crayonsHeaderMenuClassList = crayonsHeaderMenu.classList;
 var menuNavButton = document.getElementById('navigation-butt');
 var firstNavLink = document.getElementById('first-nav-link');
 
-function blur(event, className) {
-  setTimeout(() => {
-    if (document.activeElement !== document.getElementById(className)) {
-      crayonsHeaderMenuClassList.remove('showing');
-    }
-  }, 10);
-}
-
-function removeShowingMenu() {
+function closeHeaderMenu() {
   menuNavButton.setAttribute('aria-expanded', 'false');
-  crayonsHeaderMenuClassList.remove('showing');
   setTimeout(() => {
     crayonsHeaderMenuClassList.remove('showing');
   }, 5);
+}
+
+function blurHeaderMenu(event, elementId) {
   setTimeout(() => {
-    crayonsHeaderMenuClassList.remove('showing');
-  }, 150);
+    if (document.activeElement !== document.getElementById(elementId)) {
+      closeHeaderMenu()
+    }
+  }, 10);
 }
 
 function toggleMenu() {
@@ -45,7 +41,7 @@ function initializeTouchDevice() {
     document.body.classList.add('dev-ios-native-body');
   }
   setTimeout(() => {
-    removeShowingMenu();
+    closeHeaderMenu();
     if (isTouchDevice) {
       // Use a named function instead of anonymous so duplicate event handlers are discarded
       menuNavButton.addEventListener('click', toggleMenu);
@@ -61,8 +57,14 @@ function initializeTouchDevice() {
         }
       })
       document.getElementById('last-nav-link').addEventListener('blur', (e) =>
-        blur(e, 'second-last-nav-link'),
+        blurHeaderMenu(e, 'second-last-nav-link'),
       );
+      document.addEventListener('click', (e) => {
+        // if clicking outside of the menu, close it
+        if (!crayonsHeaderMenu.contains(document.activeElement)) {
+          blurHeaderMenu(e, 'first-nav-link');
+        }
+      });
     }
   }, 10);
 }
