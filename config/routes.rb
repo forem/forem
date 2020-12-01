@@ -206,6 +206,10 @@ Rails.application.routes.draw do
         resources :organizations, only: [:show], param: :username do
           resources :users, only: [:index], to: "organizations#users"
         end
+
+        namespace :admin do
+          resource :config, only: %i[show], defaults: { format: :json }
+        end
       end
     end
 
