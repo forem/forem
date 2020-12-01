@@ -115,11 +115,7 @@ score.
 
 ### Consider accessibility in UI changes
 
-If the change you're proposing touches a user interface, include accessibility
-in your approach. This includes things like color contrast, keyboard
-accessibility, screen reader labels, and other common requirements. For more
-information, check out the
-[Forem Accessibility docs page](https://docs.forem.com/frontend/accessibility).
+If the change you're proposing touches a user interface, include accessibility in your approach. This includes things like color contrast, keyboard accessibility, screen reader labels, and other common requirements. For more information, check out the [Forem Accessibility docs page](https://docs.forem.com/frontend/accessibility).
 
 ### Please use inclusive language
 
