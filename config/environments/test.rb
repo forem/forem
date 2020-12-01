@@ -5,7 +5,6 @@ require "active_support/core_ext/integer/time"
 # your test database is "scratch space" for the test suite and is wiped
 # and recreated between test runs. Don't rely on the data there!
 
-# rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -74,20 +73,19 @@ Rails.application.configure do
   # config.action_view.annotate_rendered_view_with_filenames = true
 
   # enable Bullet in testing mode only if requested
-  config.after_initialize do
-    Bullet.enable = true
-    Bullet.raise = true
+  # Temporarily disable Bullet for Rails 6.1
+  # config.after_initialize do
+  #   Bullet.enable = true
+  #   Bullet.raise = true
 
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
-    # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
-    # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
-    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
-    # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
-    Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
-  end
+  #   Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
+  #   # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
+  #   Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+  #   # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
+  #   Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
+  #   Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+  #   # NOTE: @citizen428 Temporarily ignoring this while working out user - profile relationship
+  #   Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+  # end
 end
-# rubocop:enable Metrics/BlockLength
-
 Rails.application.routes.default_url_options = { host: "test.host" }

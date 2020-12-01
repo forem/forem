@@ -139,17 +139,16 @@ end
 
 group :development, :test do
   gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
-  gem "bullet", github: "flyerhzm/bullet" # help to kill N+1 queries and unused eager loading
+
+  # Temporarily disable Bullet for Rails 6.1
+  # gem "bullet", github: "flyerhzm/bullet" # help to kill N+1 queries and unused eager loading
+
   gem "capybara", "~> 3.35.3" # Capybara is an integration testing tool for rack based web applications
   gem "cypress-rails", "~> 0.4.2" # For end to end tests (E2E)
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.15" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
-<<<<<<< HEAD
-  gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.9", require: false # Automatic Ruby code style checking tool
-=======
 
   # gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   # Temporarily tracking for Rails 6.1
@@ -159,8 +158,7 @@ group :development, :test do
   gem "rspec-rails", github: "rspec/rspec-rails", branch: "rails-6-1-dev" # rspec-rails is a testing framework for Rails 3+
   gem "rspec-support", github: "rspec/rspec-support", branch: "main"
 
-  gem "rubocop", "~> 1.7", require: false # Automatic Ruby code style checking tool
->>>>>>> 07f5ded31 (Fix uploaders specs by tracking rspec-rails main repo)
+  gem "rubocop", "~> 1.9", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.9", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.9", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.2", require: false # Code style checking for RSpec files

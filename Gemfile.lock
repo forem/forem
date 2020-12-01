@@ -1,12 +1,4 @@
 GIT
-  remote: https://github.com/flyerhzm/bullet.git
-  revision: 25b5c455153a18fae8a196ba3362b3805c319ce3
-  specs:
-    bullet (6.1.2)
-      activesupport (>= 3.0.0)
-      uniform_notifier (~> 1.11)
-
-GIT
   remote: https://github.com/forem/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
@@ -821,8 +813,12 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
+<<<<<<< HEAD
     unicode-display_width (2.0.0)
     uniform_notifier (1.13.2)
+=======
+    unicode-display_width (1.7.0)
+>>>>>>> 125a6290c (Disable bullet temporarily)
     validate_url (1.0.13)
       activemodel (>= 3.0.0)
       public_suffix
@@ -891,7 +887,6 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   brakeman (~> 5.0)
   buffer (~> 0.1)
-  bullet!
   bundler-audit (~> 0.7)
   capybara (~> 3.35.3)
   carrierwave (~> 2.0)
