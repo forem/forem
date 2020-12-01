@@ -36,7 +36,6 @@ module Follows
       occurrences = tags.count(tag.name)
       bonus = inverse_popularity_bonus(tag)
       finalized_points(occurrences, bonus, user)
-      # Math.log(occurrences + bonus + 1) # +1 is purelt to avoid log(0) => -infinity
     end
 
     def adjust_other_tag_follows_of_user(user_id)
@@ -78,8 +77,8 @@ module Follows
         Math.log(occurrences + (bonus * 2) + 1)
       when "without_weighting_bonus"
         Math.log(occurrences + 1)
-      else # base
-        Math.log(occurrences + bonus + 1)
+      else # base - Our current "default" implementation
+        Math.log(occurrences + bonus + 1) # + 1 in all cases is to avoid log(0) => -infinity
       end
     end
 
