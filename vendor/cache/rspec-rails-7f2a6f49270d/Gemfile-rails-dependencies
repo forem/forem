@@ -1,0 +1,37 @@
+version_file = File.expand_path("../.rails-version", __FILE__)
+
+case version = ENV['RAILS_VERSION'] || (File.exist?(version_file) && File.read(version_file).chomp) || ''
+when /master/
+  gem "rails", :git => "https://github.com/rails/rails.git"
+  gem "arel", :git => "https://github.com/rails/arel.git"
+  gem "journey", :git => "https://github.com/rails/journey.git"
+  gem "activerecord-deprecated_finders", :git => "https://github.com/rails/activerecord-deprecated_finders.git"
+  gem "web-console", :git => "https://github.com/rails/web-console", :group => :development
+  gem 'coffee-rails', :git => "https://github.com/rails/coffee-rails.git"
+  gem 'rack', :git => 'https://github.com/rack/rack.git'
+  gem 'i18n', :git => 'https://github.com/svenfuchs/i18n.git', :branch => 'master'
+  gem 'sprockets', :git => 'https://github.com/rails/sprockets.git', :branch => 'master'
+  gem 'sprockets-rails', :git => 'https://github.com/rails/sprockets-rails.git', :branch => 'master'
+  gem 'puma', "3.12.1"
+  gem 'activerecord-jdbcsqlite3-adapter', git: 'https://github.com/jruby/activerecord-jdbc-adapter', platforms: [:jruby]
+  gem 'selenium-webdriver', require: false
+when /stable$/
+  gem_list = %w[rails railties actionmailer actionpack activerecord activesupport activejob actionview]
+  gem 'puma', "3.12.1" if version > '5-0-stable'
+  gem 'activerecord-jdbcsqlite3-adapter', git: 'https://github.com/jruby/activerecord-jdbc-adapter', platforms: [:jruby]
+
+  gem_list.each do |rails_gem|
+    gem rails_gem, :git => "https://github.com/rails/rails.git", :branch => version
+  end
+when nil, false, ""
+  gem "rails", "~> 6.0.0"
+  gem "puma"
+  gem 'activerecord-jdbcsqlite3-adapter', platforms: [:jruby]
+  gem 'selenium-webdriver', require: false
+else
+  gem "rails", version
+  gem "sprockets", '~> 3.0' if RUBY_VERSION < '2.5'
+  gem "puma" if version >= '5-1-stable'
+  gem 'activerecord-jdbcsqlite3-adapter', platforms: [:jruby]
+  gem 'selenium-webdriver', require: false if version >= '5'
+end

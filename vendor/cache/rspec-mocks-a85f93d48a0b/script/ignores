@@ -1,0 +1,55 @@
+# grep -v -f <this file> doesn't work properly when empty, so this line is here.
+
+# The `alias_method` calls below are only executed at file load time
+# (when the method cache will be busted by defining methods anyway).
+lib/rspec/mocks/argument_matchers.rb:      alias_method :hash_not_including, :hash_excluding
+lib/rspec/mocks/argument_matchers.rb:      alias_method :an_instance_of, :instance_of
+lib/rspec/mocks/argument_matchers.rb:      alias_method :a_kind_of, :kind_of
+lib/rspec/mocks/method_double.rb:      alias_method :save_original_method!, :original_method
+lib/rspec/mocks/test_double.rb:      alias_method :to_str, :to_s
+lib/rspec/mocks/error_generator.rb:    MockExpectationError = Class.new(Exception)
+lib/rspec/mocks/error_generator.rb:    ExpiredTestDoubleError = Class.new(MockExpectationError)
+lib/rspec/mocks/error_generator.rb:    OutsideOfExampleError = Class.new(StandardError)
+lib/rspec/mocks/error_generator.rb:    UnsupportedMatcherError  = Class.new(StandardError)
+lib/rspec/mocks/error_generator.rb:    NegationUnsupportedError = Class.new(StandardError)
+lib/rspec/mocks/message_expectation.rb:      CannotModifyFurtherError = Class.new(StandardError)
+lib/rspec/mocks/mutate_const.rb:      extend RecursiveConstMethods
+lib/rspec/mocks/mutate_const.rb:      extend RecursiveConstMethods
+
+# These calls are explicitly opt-in, probably at configuration time.
+lib/rspec/mocks/marshal_extension.rb:            alias_method :dump_without_rspec_mocks, :dump
+lib/rspec/mocks/marshal_extension.rb:            alias_method :dump, :dump_with_rspec_mocks
+lib/rspec/mocks/marshal_extension.rb:            alias_method :dump, :dump_without_rspec_mocks
+
+# False positives due to naming
+lib/rspec/mocks/any_instance/recorder.rb:        def build_alias_method_name(method_name)
+lib/rspec/mocks/any_instance/recorder.rb:          if public_protected_or_private_method_defined?(build_alias_method_name(method_name))
+lib/rspec/mocks/any_instance/recorder.rb:            alias_method_name = build_alias_method_name(method_name)
+lib/rspec/mocks/any_instance/recorder.rb:          alias_method_name = build_alias_method_name(method_name)
+lib/rspec/mocks/proxy.rb:            build_alias_method_name(message)
+
+# Instance method stashing needs to blow away method cache, no way around it.
+lib/rspec/mocks/any_instance/recorder.rb:              alias_method  method_name, alias_method_name
+lib/rspec/mocks/any_instance/recorder.rb:            alias_method alias_method_name, method_name
+lib/rspec/mocks/any_instance/recorder.rb:              remove_method method_name
+lib/rspec/mocks/any_instance/recorder.rb:              remove_method alias_method_name
+lib/rspec/mocks/any_instance/recorder.rb:            remove_method method_name
+lib/rspec/mocks/instance_method_stasher.rb:          @klass.__send__(:alias_method, stashed_method_name, @method)
+lib/rspec/mocks/instance_method_stasher.rb:          @klass.__send__(:alias_method, @method, stashed_method_name)
+lib/rspec/mocks/instance_method_stasher.rb:          @klass.__send__(:remove_method, stashed_method_name)
+
+# Constant stubbing needs to blow away method cache, no way around it.
+lib/rspec/mocks/method_double.rb:        object_singleton_class.__send__(:remove_method, @method_name)
+lib/rspec/mocks/mutate_const.rb:          @context.const_set(@const_name, @original_value)
+lib/rspec/mocks/mutate_const.rb:          @context.const_set(@const_name, @mutated_value)
+lib/rspec/mocks/mutate_const.rb:          @context.const_set(@const_name, @original_value)
+lib/rspec/mocks/mutate_const.rb:            @mutated_value.const_set(const, get_const_defined_on(original_value, const))
+lib/rspec/mocks/mutate_const.rb:            klass.const_set(name, Module.new)
+lib/rspec/mocks/mutate_const.rb:          context.const_set(@const_name, @mutated_value)
+lib/rspec/mocks/mutate_const.rb:          @context.__send__(:remove_const, @const_name)
+lib/rspec/mocks/mutate_const.rb:          @context.__send__(:remove_const, @const_name)
+lib/rspec/mocks/mutate_const.rb:          @context.__send__(:remove_const, @const_name)
+lib/rspec/mocks/mutate_const.rb:          @deepest_defined_const.__send__(:remove_const, @const_to_remove)
+
+# We provide our own wrapper around extend for others to use if they choose.
+lib/rspec/mocks/test_double.rb:        object.extend self

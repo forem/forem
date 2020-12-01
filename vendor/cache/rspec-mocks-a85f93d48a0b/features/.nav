@@ -1,0 +1,45 @@
+- basics:
+  - test_doubles.feature
+  - allowing_messages.feature
+  - expecting_messages.feature
+  - partial_test_doubles.feature
+  - null_object_doubles.feature
+  - spies.feature
+  - scope.feature
+- verifying_doubles:
+  - instance_doubles.feature
+  - class_doubles.feature
+  - object_doubles.feature
+  - dynamic_classes.feature
+  - partial_doubles.feature
+- configuring_responses:
+  - returning_a_value.feature
+  - raising_an_error.feature
+  - throwing.feature
+  - yielding.feature
+  - calling_the_original_implementation.feature
+  - wrapping_the_original_implementation.feature
+  - block_implementation.feature
+- setting_constraints:
+  - matching_arguments.feature
+  - receive_counts.feature
+  - message_order.feature
+- mutating_constants:
+  - stub_defined_constant.feature
+  - stub_undefined_constant.feature
+  - hide_defined_constant.feature
+  - hide_undefined_constant.feature
+- working_with_legacy_code:
+  - any_instance.feature
+  - message_chains.feature
+- old_syntax:
+  - stub.feature
+  - should_receive.feature
+  - any_instance.feature
+  - stub_chain.feature
+  - unstub.feature
+- outside_rspec:
+  - minitest.feature
+  - any_test_framework.feature
+  - standalone.feature
+- Changelog

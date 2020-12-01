@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+# Turn on verbose to make sure we not generating any ruby warning
+$VERBOSE = true
+
+# So our "did they run the rspec command?" detection logic thinks
+# that we run `rspec`.
+$0 = "rspec"
+
+# This is necessary for when `--standalone` is being used.
+$:.unshift File.expand_path '../../bundle', __FILE__
+
+# For the travis build we put the bundle directory up a directory
+# so it can be shared among the repos for faster bundle installs.
+$:.unshift File.expand_path '../../../bundle', __FILE__
+
+require 'bundler/setup'
+
+# To use simplecov while running rspec-core's test suite, we must
+# load simplecov _before_ loading any of rspec-core's files.
+# So, this executable exists purely as a wrapper script that
+# first loads simplecov, and then loads rspec.
+begin
+  # Simplecov emits some ruby warnings when loaded, so silence them.
+  old_verbose, $VERBOSE = $VERBOSE, false
+
+  unless ENV['NO_COVERAGE'] || RUBY_VERSION.to_f < 2.1
+    require 'simplecov'
+
+    SimpleCov.start do
+      add_filter "bundle/"
+      add_filter "tmp/"
+      add_filter "spec/"
+      minimum_coverage(100)
+    end
+  end
+rescue LoadError
+ensure
+  $VERBOSE = old_verbose
+end
+
+load File.expand_path("../../exe/rspec", __FILE__)

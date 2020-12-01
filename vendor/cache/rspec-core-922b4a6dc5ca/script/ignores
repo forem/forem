@@ -1,0 +1,72 @@
+# grep -v -f <this file> doesn't work properly when empty, so this line is here.
+
+# The `alias_method` calls below are only executed at file load time
+# (when the method cache will be busted by defining methods anyway).
+lib/rspec/core/configuration.rb:        alias_method alias_name, name
+lib/rspec/core/configuration.rb:        alias_method "#{alias_name}=", "#{name}="
+lib/rspec/core/configuration.rb:        names.each {|name| alias_method "#{name}?", name}
+lib/rspec/core/configuration.rb:      alias_method :formatter=, :add_formatter
+lib/rspec/core/configuration.rb:      alias_method :alias_it_should_behave_like_to, :alias_it_behaves_like_to
+lib/rspec/core/configuration.rb:      alias_method :filter_run, :filter_run_including
+lib/rspec/core/configuration.rb:      alias_method :filter=, :inclusion_filter=
+lib/rspec/core/configuration.rb:      alias_method :filter, :inclusion_filter
+lib/rspec/core/example.rb:      alias_method :pending?, :pending
+lib/rspec/core/example_group.rb:        alias_method :display_name, :description
+lib/rspec/core/example_group.rb:        alias_method :describes, :described_class
+lib/rspec/core/example_group.rb:        # Works like `alias_method :name, :example` with the added benefit of
+lib/rspec/core/example_group.rb:        # Works like `alias_method :name, :it_behaves_like` with the added
+lib/rspec/core/example_group.rb:        alias_method :context, :describe
+lib/rspec/core/hooks.rb:      alias_method :append_before, :before
+lib/rspec/core/hooks.rb:      alias_method :prepend_after, :after
+lib/rspec/core/shared_example_group.rb:      alias_method :shared_context,      :shared_examples
+lib/rspec/core/shared_example_group.rb:      alias_method :share_examples_for,  :shared_examples
+lib/rspec/core/shared_example_group.rb:      alias_method :shared_examples_for, :shared_examples
+lib/rspec/core/shared_example_group.rb:        alias_method :shared_context,      :shared_examples
+lib/rspec/core/shared_example_group.rb:        alias_method :share_examples_for,  :shared_examples
+lib/rspec/core/shared_example_group.rb:        alias_method :shared_examples_for, :shared_examples
+lib/rspec/core/example_group.rb:        alias_method :describe, :example_group
+lib/rspec/core/example_group.rb:        alias_method :context, :example_group
+
+# The `alias_method` calls below happen when users define a named let.
+# It happens at spec definition time, not spec run time.
+lib/rspec/core/memoized_helpers.rb:            alias_method :subject, name
+
+# These `const_set` calls happen at spec definition time,
+# not at spec run time, so they are OK.
+lib/rspec/core/example_group.rb:      const_scope.const_set(name, group)
+lib/rspec/core/memoized_helpers.rb:              example_group.const_set(:NamedSubjectPreventSuper, self)
+lib/rspec/core/memoized_helpers.rb:          example_group.const_set(:LetDefinitions, mod)
+
+# These mentions of `extend` get executed at spec definition time
+# (unless the user changes their RSpec config at spec run time, but
+# there's no way to work around that).
+lib/rspec/core/configuration.rb:      def extend(mod, \*filters)
+lib/rspec/core/configuration.rb:        include_or_extend_modules << \[:extend, mod, Metadata.build_hash_from(filters)\]
+lib/rspec/core/configuration.rb:          host.extend(mod) unless host.singleton_class < mod
+lib/rspec/core/configuration.rb:          host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
+lib/rspec/core/configuration.rb:          extend RSpec::SharedContext
+lib/rspec/core/dsl.rb:extend RSpec::Core::DSL
+lib/rspec/core/example_group.rb:      extend  Hooks
+lib/rspec/core/example_group.rb:      extend SharedExampleGroup
+lib/rspec/core/memoized_helpers.rb:        mod.extend(ClassMethods)
+lib/rspec/core/shared_example_group.rb:extend RSpec::Core::SharedExampleGroup::TopLevelDSL
+
+# This use of `extend` only happens on 1.8.7, when a shared example group
+# is defined (to provide the Proc#source_location method on the provided
+# block). It should only happen at spec definition time (unless users are
+# defining shared example groups at spec run time).
+lib/rspec/core/shared_example_group.rb:            block.extend Module.new {
+
+# This happens when an example group is defined, not at spec run time.
+lib/rspec/core/example_group.rb:        subclass = Class.new(parent)
+
+# This happens at file load time.
+lib/rspec/core/formatters/deprecation_formatter.rb:    DeprecationError = Class.new(StandardError)
+
+# This enables / disable monkey patching and only happens on demand
+lib/rspec/core/dsl.rb:          change_global_dsl { undef_method method_name }
+lib/rspec/core/shared_example_group.rb:            undef shared_examples
+lib/rspec/core/shared_example_group.rb:            undef shared_context
+lib/rspec/core/shared_example_group.rb:            undef share_examples_for
+lib/rspec/core/shared_example_group.rb:            undef shared_examples_for
+lib/rspec/core/shared_example_group.rb:            undef shared_example_groups

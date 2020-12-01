@@ -1,0 +1,33 @@
+inherit_from:
+  - .rubocop_rspec_base.yml
+
+Metrics/AbcSize:
+  Max: 28
+
+Metrics/BlockLength:
+  Max: 86
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+Security/MarshalLoad:
+  Exclude:
+    - 'lib/rspec/support/spec/in_sub_process.rb'
+
+Style/EvalWithLocation:
+  Exclude:
+    # eval is only used here to check syntax
+    - 'lib/rspec/support/ruby_features.rb'
+
+Lint/AssignmentInCondition:
+  Exclude:
+    # The pattern makes sense here
+    - 'lib/rspec/support/mutex.rb'
+
+# Over time we'd like to get this down, but this is what we're at now.
+Metrics/AbcSize:
+  Max: 22
+
+# Over time we'd like to get this down, but this is what we're at now.
+Metrics/PerceivedComplexity:
+  Max: 9

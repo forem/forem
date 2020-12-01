@@ -1,0 +1,12 @@
+#!/bin/bash
+
+CHROME_VERSION=$(google-chrome --version | grep -iE "[0-9.]{10,20}" | sed -E "s/.* ([0-9]+)\.[0-9]+\.[0-9]+\..*/\1/")
+echo $CHROME_VERSION
+
+LATEST=$(curl https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+echo $LATEST
+
+curl "https://chromedriver.storage.googleapis.com/$LATEST/chromedriver_linux64.zip" > chromedriver_linux64.zip
+
+unzip chromedriver_linux64.zip
+mv chromedriver ~/bin/chromedriver

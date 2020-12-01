@@ -1,0 +1,6 @@
+<%
+exclusions = []
+exclusions << ' --tags ~@no-jruby' if RUBY_PLATFORM == 'java'
+%>
+default: --require features --strict --format progress --tags ~@wip<%= exclusions.join %> features
+wip:     --require features --tags @wip:30 --wip features

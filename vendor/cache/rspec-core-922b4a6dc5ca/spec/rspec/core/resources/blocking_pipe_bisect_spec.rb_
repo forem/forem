@@ -1,0 +1,8 @@
+# Deliberately named *.rb_ to avoid being loaded except when specified
+
+RSpec.describe "1000 tests" do
+  puts "Try to saturate the pipe in Bisect command"
+  (0..1000).each do |t|
+    it { expect(t).to eq t }
+  end
+end

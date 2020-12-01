@@ -1,0 +1,66 @@
+#!/usr/bin/env ruby
+# Transparent helper to simply document code sections
+def require_file_stub(_name)
+  yield
+end
+
+ENV['RAILS_ENV'] ||= 'development'
+# Pick the frameworks you want:
+begin
+  require "active_storage"
+  require "active_storage/engine"
+rescue LoadError
+end
+
+require_file_stub 'config/environment' do
+  # Load the Rails application.
+  require_file_stub 'config/application' do
+    require_file_stub 'config/boot' do
+      # Set up gems listed in the Gemfile.
+      ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
+      require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE'])
+    end
+
+    # Pick the frameworks you want:
+    require "active_record/railtie"
+    require "action_controller/railtie"
+    require "action_mailer/railtie" unless ENV['NO_ACTION_MAILER']
+    require "action_view/railtie"
+
+    # Require the gems listed in Gemfile, including any gems
+    # you've limited to :test, :development, or :production.
+    Bundler.require(*Rails.groups)
+
+    module ExampleApp
+      class Application < Rails::Application
+        config.eager_load = false
+
+        # Don't care if the mailer can't send.
+        config.action_mailer.raise_delivery_errors = false unless ENV['NO_ACTION_MAILER']
+
+        if ENV['CUSTOM_PREVIEW_PATH']
+          config.action_mailer.preview_path = ENV['CUSTOM_PREVIEW_PATH']
+        end
+        if ENV['SHOW_PREVIEWS']
+          config.action_mailer.show_previews = (ENV['SHOW_PREVIEWS'] == 'true')
+        end
+      end
+    end
+
+    I18n.enforce_available_locales = true
+  end
+
+  # Initialize the Rails application.
+  Rails.application.initialize!
+end
+
+exit if ENV['NO_ACTION_MAILER']
+if ENV['DEFAULT_URL']
+  puts ActionMailer::Base.default_url_options[:host]
+elsif defined?(::ActionMailer::Preview)
+  puts Rails.application.config.action_mailer.preview_path
+end
+
+# This will force the loading of ActionMailer settings to ensure we do not
+# accicentally set something we should not
+ActionMailer::Base.smtp_settings

@@ -1,0 +1,10 @@
+<%
+def tags(tag)
+  tags = [tag]
+  tags << "~@ruby-1.9" if RUBY_VERSION.to_f < 1.9
+  tags.join(" --tags ")
+end
+%>
+
+default: --require features --tags <%= tags("~@wip") %> --format progress
+wip: --require features --tags @wip:3 --wip features

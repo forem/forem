@@ -1,0 +1,110 @@
+inherit_from:
+  - .rubocop_rspec_base.yml
+
+AllCops:
+  Exclude:
+    # This code was taken from the backports gem. We don't want to mess with it.
+    - lib/rspec/core/backport_random.rb
+
+# This should go down over time.
+Metrics/ClassLength:
+  Max: 330
+
+Encoding:
+  Exclude:
+    - lib/rspec/core/formatters/exception_presenter.rb
+
+# This should go down over time.
+Metrics/AbcSize:
+  Max: 40
+
+# This should go down over time.
+Metrics/LineLength:
+  Max: 130
+
+# This should go down over time.
+Metrics/MethodLength:
+  Max: 37
+
+# This should go down over time.
+Metrics/CyclomaticComplexity:
+  Max: 12
+
+Metrics/PerceivedComplexity:
+  Max: 15
+
+Lint/HandleExceptions:
+  Exclude:
+    - lib/rspec/core/example.rb
+    - lib/rspec/core/mocking_adapters/mocha.rb
+    - lib/rspec/core/runner.rb
+    - lib/rspec/core/test_unit_assertions_adapter.rb
+
+Lint/LiteralInInterpolation:
+  Enabled: false
+
+Lint/NonLocalExitFromIterator:
+  Enabled: false
+
+# We don't care about single vs double qoutes.
+Style/StringLiteralsInInterpolation:
+  Enabled: false
+
+Style/SymbolProc:
+  Enabled: false
+
+Layout/SpaceAroundOperators:
+  AllowForAlignment: true
+
+Layout/AccessModifierIndentation:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+# This could change depending of the style used
+Layout/MultilineOperationIndentation:
+  Enabled: false
+
+Style/BarePercentLiterals:
+  Enabled: false
+
+# Exclude the default spec_helper to make it easier to uncomment out
+# default settings (for both users and the Cucumber suite).
+Style/BlockComments:
+  Exclude:
+    - lib/rspec/core/project_initializer/spec/spec_helper.rb
+
+# Not sure what to do with this rule yet.
+Style/ClassAndModuleChildren:
+  Exclude:
+    - lib/rspec/core/formatters.rb
+    - lib/rspec/core/notifications.rb
+    - lib/rspec/core/option_parser.rb
+    - lib/rspec/core/reporter.rb
+
+Style/RaiseArgs:
+  Exclude:
+    - lib/rspec/core/configuration.rb
+    - lib/rspec/core/hooks.rb
+    - lib/rspec/core/option_parser.rb
+    - lib/rspec/core/pending.rb
+
+Performance/RedundantBlockCall:
+  Exclude:
+    - lib/rspec/core/rake_task.rb
+
+Lint/IneffectiveAccessModifier:
+  Exclude:
+    - lib/rspec/core/memoized_helpers.rb # Fixing this file was too much of a diff
+
+Performance/Caller:
+  Exclude:
+    # The suggested fix for this cop only works on more recent rubies. The
+    # speed up can be substantial (previous optimization work I've done on
+    # RSpec involved caller optimization) but I haven't benchmarked this
+    # particular case to see if it's worth introducing version branching.
+    - 'lib/rspec/core/example_group.rb'
+
+Metrics/BlockLength:
+  Max: 193

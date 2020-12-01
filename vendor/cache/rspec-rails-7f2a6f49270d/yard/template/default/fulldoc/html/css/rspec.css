@@ -1,0 +1,20 @@
+.notetag {
+  background-color: #FFE5E5;
+}
+
+code {
+  background-color: #F0F0F0;
+  padding: 0 2px 0 2px;
+}
+
+.deprecated code {
+  background-color: #FFA8A8;
+}
+
+.summary_desc code {
+  background-color: #F0F0F0;
+}
+
+.notetag code {
+  background-color: #FFA8A8;
+}

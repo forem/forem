@@ -1,0 +1,69 @@
+language: ruby
+
+sudo: required
+addons:
+  chrome: stable
+
+# We deviate from the rspec-dev cache setting here.
+#
+# Travis has special bundler support where it knows to run `bundle clean`
+# before backing up the bundle so it doesn't grow indefinitely.
+#
+# For the other repos we changed to specifying the directory specifically to
+# avoid the `bundle clean` travis was doing, because Myron found that, when
+# running one of the a build for one repo, the "run the rspec-core and
+# rspec-rails spec suites" parts would take a while because it would _always_
+# have to install fresh gems (they weren't in the cache). This was happening
+# because travis was running `bundle clean` (due to the previous `cache:
+# bundler` config) against one repo which was was pruning gems installed for
+# the other repos.
+#
+# In our case, we aren't running the spec suites for the other repos so the
+# original `cache: bundler` is a better option.
+cache: bundler
+
+bundler_args: "--binstubs --path ../bundle --retry=3 --jobs=3"
+
+before_install:
+  - script/install_chrome_driver
+  - script/update_rubygems_and_install_bundler
+  - script/clone_all_rspec_repos
+
+before_script:
+  # Rails 4+ complains with a bundler rails binstub in PROJECT_ROOT/bin/
+  - rm -f bin/rails
+  - bundle exec rails --version
+
+script: "script/run_build 2>&1"
+
+matrix:
+  include:
+    # Rails 6.1 builds >= 2.5
+    - jdk: oraclejdk11
+      env:
+        - RAILS_VERSION='master'
+        - JRUBY_OPT=--dev
+        - JAVA_OPTS="--add-opens java.base/sun.nio.ch=org.jruby.dist --add-opens java.base/java.io=org.jruby.dist --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.security.cert=ALL-UNNAMED --add-opens=java.base/java.util.zip=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.util.regex=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED  --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/javax.crypto=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED"
+
+    # Rails 6.0 builds >= 2.5.0
+    - rvm: jruby-head
+      jdk: oraclejdk11
+      env:
+        - RAILS_VERSION='~> 6.0.0'
+        - JRUBY_OPT=--dev
+        - JAVA_OPTS="--add-opens java.base/sun.nio.ch=org.jruby.dist --add-opens java.base/java.io=org.jruby.dist --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.security.cert=ALL-UNNAMED --add-opens=java.base/java.util.zip=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.util.regex=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED  --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/javax.crypto=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED"
+
+    - rvm: jruby-head
+      jdk: oraclejdk11
+      env:
+        - RAILS_VERSION='~> 5.2.0'
+        - JRUBY_OPT=--dev
+        - JAVA_OPTS="--add-opens java.base/sun.nio.ch=org.jruby.dist --add-opens java.base/java.io=org.jruby.dist --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.security=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.security.cert=ALL-UNNAMED --add-opens=java.base/java.util.zip=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.util.regex=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED  --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/javax.crypto=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED"
+
+  fast_finish: true
+
+branches:
+  only:
+    - master
+    - /^\d+-\d+-maintenance$/
+    - /^\d+-\d+-dev$/

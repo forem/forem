@@ -1,0 +1,9 @@
+# Deliberately named *.rb_ to avoid being loaded except when specified
+
+RSpec.describe "A group" do
+  puts "About to call misspelled method"
+  contex "misspelled" do
+    it "fails" do
+    end
+  end
+end

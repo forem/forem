@@ -1,0 +1,7 @@
+<% module_namespacing do -%>
+class <%= class_name %> < <%= options[:parent].try(:classify) || 'InMemory::Model' %>
+<% attributes.each do |attribute| -%>
+  attr_accessor :<%= attribute.name %>
+<% end -%>
+end
+<% end -%>

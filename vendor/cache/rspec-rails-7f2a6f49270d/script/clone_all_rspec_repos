@@ -1,0 +1,21 @@
+#!/bin/bash
+# This file was generated on 2019-12-18T14:01:39+00:00 from the rspec-dev repo.
+# DO NOT modify it by hand as your changes will get lost the next time it is generated.
+
+set -e
+source script/functions.sh
+
+if is_mri; then
+  pushd ..
+
+  clone_repo "rspec"
+  clone_repo "rspec-core"
+  clone_repo "rspec-expectations"
+  clone_repo "rspec-mocks"
+  clone_repo "rspec-rails"
+  clone_repo "rspec-support"
+
+  popd
+else
+  echo "Not cloning all repos since we are not on MRI and they are only needed for the MRI build"
+fi

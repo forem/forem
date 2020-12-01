@@ -15,6 +15,53 @@ GIT
       activerecord (>= 4.0)
 
 GIT
+  remote: https://github.com/rspec/rspec-core.git
+  revision: 922b4a6dc5ca397df19f5f282f2f6a2465b2e24a
+  branch: main
+  specs:
+    rspec-core (3.11.0.pre)
+      rspec-support (= 3.11.0.pre)
+
+GIT
+  remote: https://github.com/rspec/rspec-expectations.git
+  revision: 6fff2fc6e24643e1d703da359c38e3ff750e6137
+  branch: main
+  specs:
+    rspec-expectations (3.11.0.pre)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (= 3.11.0.pre)
+
+GIT
+  remote: https://github.com/rspec/rspec-mocks.git
+  revision: a85f93d48a0b29dafccbdebd60d372991eb3e38a
+  branch: main
+  specs:
+    rspec-mocks (3.11.0.pre)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (= 3.11.0.pre)
+
+GIT
+  remote: https://github.com/rspec/rspec-rails.git
+  revision: 7f2a6f49270dd68ee381cba82b738fe291b99f47
+  branch: rails-6-1-dev
+  specs:
+    rspec-rails (4.1.0.pre)
+      actionpack (>= 4.2)
+      activesupport (>= 4.2)
+      railties (>= 4.2)
+      rspec-core (= 3.11.0.pre)
+      rspec-expectations (= 3.11.0.pre)
+      rspec-mocks (= 3.11.0.pre)
+      rspec-support (= 3.11.0.pre)
+
+GIT
+  remote: https://github.com/rspec/rspec-support.git
+  revision: 40017e927958f4858dce7a35d5f66f7f86b947d8
+  branch: main
+  specs:
+    rspec-support (3.11.0.pre)
+
+GIT
   remote: https://github.com/thepracticaldev/erb-lint.git
   revision: 05596ea189ee00fb2ad3ea10a41489e2dba345c4
   branch: jess/remove-version-pinning
@@ -362,10 +409,6 @@ GEM
       guard (~> 2.8)
       guard-compat (~> 1.0)
       multi_json (~> 1.8)
-    guard-rspec (4.7.3)
-      guard (~> 2.1)
-      guard-compat (~> 1.1)
-      rspec (>= 2.99.0, < 4.0)
     hashdiff (1.0.1)
     hashie (4.1.0)
     heapy (0.2.0)
@@ -438,15 +481,7 @@ GEM
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
-<<<<<<< HEAD
     libhoney (1.17.0)
-=======
-<<<<<<< HEAD
-    libhoney (1.16.1)
-=======
-    libhoney (1.16.0)
->>>>>>> 300daaf87 (Track ransack branch with Rails 6.1 support)
->>>>>>> acb5fd0c0 (Track ransack branch with Rails 6.1 support)
       addressable (~> 2.0)
       http (>= 2.0, < 5.0)
     liquid (5.0.0)
@@ -600,7 +635,7 @@ GEM
       thor (~> 1.0)
     rainbow (3.0.0)
     rake (13.0.3)
-    ransack (2.4.0)
+    ransack (2.4.1)
       activerecord (>= 5.2.4)
       activesupport (>= 5.2.4)
       i18n
@@ -611,15 +646,15 @@ GEM
       json
     redcarpet (3.5.1)
     redis (4.2.5)
-    redis-actionpack (5.2.0)
-      actionpack (>= 5, < 7)
-      redis-rack (>= 2.1.0, < 3)
+    redis-actionpack (5.1.0)
+      actionpack (>= 4.0, < 7)
+      redis-rack (>= 1, < 3)
       redis-store (>= 1.1.0, < 2)
     redis-activesupport (5.2.0)
       activesupport (>= 3, < 7)
       redis-store (>= 1.3, < 2)
-    redis-rack (2.1.3)
-      rack (>= 2.0.8, < 3)
+    redis-rack (2.0.6)
+      rack (>= 1.5, < 3)
       redis-store (>= 1.2, < 2)
     redis-rails (5.0.2)
       redis-actionpack (>= 5.0, < 6)
@@ -643,30 +678,14 @@ GEM
     rexml (3.2.4)
     rolify (5.3.0)
     rouge (3.26.0)
-    rspec (3.10.0)
-      rspec-core (~> 3.10.0)
-      rspec-expectations (~> 3.10.0)
-      rspec-mocks (~> 3.10.0)
-    rspec-core (3.10.1)
-      rspec-support (~> 3.10.0)
-    rspec-expectations (3.10.1)
-      diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.10.0)
-    rspec-mocks (3.10.1)
-      diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.10.0)
-    rspec-rails (4.0.2)
-      actionpack (>= 4.2)
-      activesupport (>= 4.2)
-      railties (>= 4.2)
-      rspec-core (~> 3.10)
-      rspec-expectations (~> 3.10)
-      rspec-mocks (~> 3.10)
-      rspec-support (~> 3.10)
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
+<<<<<<< HEAD
     rspec-support (3.10.1)
     rubocop (1.9.1)
+=======
+    rubocop (1.7.0)
+>>>>>>> 07f5ded31 (Fix uploaders specs by tracking rspec-rails main repo)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -907,7 +926,6 @@ DEPENDENCIES
   gibbon (~> 3.3)
   guard (~> 2.16)
   guard-livereload (~> 2.5)
-  guard-rspec (~> 4.7)
   honeybadger (~> 4.7)
   honeycomb-beeline (~> 2.4.0)
   html_truncator (~> 0.4)
@@ -963,9 +981,17 @@ DEPENDENCIES
   reverse_markdown (~> 2.0)
   rolify (~> 5.3)
   rouge (~> 3.26)
-  rspec-rails (~> 4.0)
+  rspec-core!
+  rspec-expectations!
+  rspec-mocks!
+  rspec-rails!
   rspec-retry (~> 0.6)
+<<<<<<< HEAD
   rubocop (~> 1.9)
+=======
+  rspec-support!
+  rubocop (~> 1.7)
+>>>>>>> 07f5ded31 (Fix uploaders specs by tracking rspec-rails main repo)
   rubocop-performance (~> 1.9)
   rubocop-rails (~> 2.9)
   rubocop-rspec (~> 2.2)

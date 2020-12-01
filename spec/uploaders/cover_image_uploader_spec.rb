@@ -5,10 +5,10 @@ require "exifr/jpeg"
 describe CoverImageUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
-  let(:image_jpg) { fixture_file_upload("files/800x600.jpg", "image/jpeg") }
-  let(:image_png) { fixture_file_upload("files/800x600.png", "image/png") }
-  let(:image_webp) { fixture_file_upload("files/800x600.webp", "image/webp") }
-  let(:image_with_gps) { fixture_file_upload("files/image_gps_data.jpg", "image/jpeg") }
+  let(:image_jpg) { fixture_file_upload("800x600.jpg", "image/jpeg") }
+  let(:image_png) { fixture_file_upload("800x600.png", "image/png") }
+  let(:image_webp) { fixture_file_upload("800x600.webp", "image/webp") }
+  let(:image_with_gps) { fixture_file_upload("image_gps_data.jpg", "image/jpeg") }
 
   let(:event) { create(:event) }
 

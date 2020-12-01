@@ -1,0 +1,19 @@
+group :development do
+  gem 'interactive_rspec'
+  gem 'relish', '~> 0.6.0'
+  gem 'guard-rspec', '~> 1.2.1'
+  gem 'growl', '1.0.3'
+  gem 'spork', '0.9.0'
+
+  platform :mri do
+    gem 'rb-fsevent', '~> 0.9.0'
+    gem 'ruby-prof', '~> 0.10.0'
+
+    case RUBY_VERSION
+    when /^1.8/
+      gem 'ruby-debug'
+    when /^1.9/
+      gem 'debugger'
+    end
+  end
+end

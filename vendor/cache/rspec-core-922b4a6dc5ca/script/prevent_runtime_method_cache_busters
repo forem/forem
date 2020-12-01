@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+method_cache_busters = `script/list_method_cache_busters.sh`.split("\n").map(&:chomp)
+
+if method_cache_busters.any?
+  puts "=" * 80
+  puts "Found #{method_cache_busters.size} new constructs that bust the method cache."
+  puts "These should be eliminated or added to the `ignores` file."
+  puts
+  puts "For more information, see https://charlie.bz/blog/things-that-clear-rubys-method-cache"
+  puts
+  puts method_cache_busters.join("\n")
+  puts "=" * 80
+  exit(1)
+end
