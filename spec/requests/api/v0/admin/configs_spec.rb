@@ -7,6 +7,7 @@ RSpec.describe "Api::V0::Admin::Configs", type: :request do
   describe "GET /api/admin/config" do
     before do
       allow(SiteConfig).to receive(:community_name).and_return("ANYTHING")
+      allow(SiteConfig).to receive(:all).and_return([SiteConfig.new(var: "community_name", value: "ANYTHING")])
     end
 
     context "when user is super admin" do
