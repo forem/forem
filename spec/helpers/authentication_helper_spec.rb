@@ -38,6 +38,29 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
+  describe "#provider_keys_configured?(provider)" do
+    provider = "facebook"
+
+    it "returns true if provider key and secret both present" do
+      allow(SiteConfig).to receive(:"#{provider}_key").and_return("someKey")
+      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("someSecret")
+
+      expect(provider_keys_configured?(provider)).to be(true)
+    end
+
+    it "returns false if either provider key or secret is missing" do
+      allow(SiteConfig).to receive(:"#{provider}_key").and_return("someKey")
+      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("")
+
+      expect(provider_keys_configured?(provider)).to be(false)
+
+      allow(SiteConfig).to receive(:"#{provider}_key").and_return("")
+      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("someSecret")
+
+      expect(provider_keys_configured?(provider)).to be(false)
+    end
+  end
+
   describe "#recaptcha_configured_and_enabled?" do
     context "when recaptcha is enabled" do
       before do
