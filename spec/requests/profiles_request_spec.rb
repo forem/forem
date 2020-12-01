@@ -14,6 +14,13 @@ RSpec.describe "Profiles", type: :request do
     context "when signed in" do
       before { sign_in(profile.user) }
 
+      it "updates the user" do
+        new_name = "New name, who dis?"
+        expect do
+          patch profile_path(profile), params: { user: { name: new_name } }
+        end.to change { profile.user.reload.name }.to(new_name)
+      end
+
       it "updates the profile" do
         new_location = "New location, who dis?"
         expect do
