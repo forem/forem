@@ -1,3 +1,10 @@
+# This service encapsulates some logic related to reCAPTCHA.
+#
+# The `enabled?` and `disabled?` methods will tell if the reCAPTCHA is
+# necessary (enabled) or if it's not necessary (disabled) in the current
+# context. This is determined by the `current_user`, or the lack thereof.
+#
+# Example: ReCaptcha.call(current_user).enabled? => true/false
 class ReCaptcha
   include Devise::Controllers::Helpers
 
@@ -22,8 +29,10 @@ class ReCaptcha
     return false unless ReCaptcha.keys_configured?
     # recaptcha will always be enabled when not logged in
     return true if @current_user.nil?
-    # recaptcha will not be enabled if current_user is auditable (trusted/admin)
+    # recaptcha will not be enabled for trusted/admin/tag mod users
     return false if @current_user.auditable?
+    # recaptcha will be enabled if the user has been banned
+    return true if @current_user.banned
 
     # recaptcha will be enabled if the user has a vomit or is too recent
     @current_user.vomitted_on? || @current_user.created_at > 1.month.ago
