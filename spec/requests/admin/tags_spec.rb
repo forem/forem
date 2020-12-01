@@ -33,7 +33,7 @@ RSpec.describe "/admin/tags", type: :request do
 
   describe "GET /admin/tags/:id" do
     it "responds with 200 OK" do
-      get admin_tag_path(tag.id)
+      get edit_admin_tag_path(tag.id)
       expect(response.status).to eq 200
     end
   end
@@ -43,7 +43,7 @@ RSpec.describe "/admin/tags", type: :request do
       expect do
         post_resource
       end.to change { Tag.all.count }.by(1)
-      expect(response.body).to redirect_to admin_tag_path(Tag.last)
+      expect(response.body).to redirect_to edit_admin_tag_path(Tag.last)
     end
   end
 
