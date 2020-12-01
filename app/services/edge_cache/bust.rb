@@ -31,7 +31,7 @@ module EdgeCache
 
       return unless provider
 
-      "#{self}::#{provider.capitalize}".constantize
+      const_get(provider.capitalize)
     end
 
     def self.fastly_enabled?
