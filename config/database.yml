@@ -91,4 +91,4 @@ test:
 production:
   <<: *default
   url: <%= ENV.fetch("DATABASE_URL", "") %>
-  database: <%= ENV.fetch("DATABASE_NAME", "Forem_development") %>
+  database: <%= ENV.fetch("DATABASE_NAME", "Forem_production") %>
