@@ -5,8 +5,8 @@ module ReCaptcha
     end
 
     def call
-      # ReCaptcha::CheckEnabled.call without passing in a user as parameter will
-      # always return `true` if the SiteConfig keys are configured correctly
+      # ReCaptcha::CheckEnabled.call without a user parameter will return `true`
+      # if the ReCaptcha SiteConfig keys are configured, and `false` otherwise
       ReCaptcha::CheckEnabled.call && SiteConfig.require_captcha_for_email_password_registration
     end
   end
