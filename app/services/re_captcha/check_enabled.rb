@@ -6,26 +6,26 @@
 # Example use: ReCaptcha::CheckEnabled.call(current_user) => true/false
 module ReCaptcha
   class CheckEnabled
-    def self.call(current_user = nil)
-      new(current_user).call
+    def self.call(user = nil)
+      new(user).call
     end
 
-    def initialize(current_user)
-      @current_user = current_user
+    def initialize(user)
+      @user = user
     end
 
     def call
       # recaptcha will not be enabled if site key and secret key aren't set
       return false unless keys_configured?
       # recaptcha will always be enabled when not logged in
-      return true if @current_user.nil?
-      # recaptcha will not be enabled for trusted/admin/tag mod users
-      return false if @current_user.auditable?
+      return true if @user.nil?
+      # recaptcha will not be enabled for tag moderator/trusted/admin users
+      return false if @user.tag_moderator? || @user.trusted || @user.any_admin?
       # recaptcha will be enabled if the user has been banned
-      return true if @current_user.banned
+      return true if @user.banned
 
       # recaptcha will be enabled if the user has a vomit or is too recent
-      @current_user.vomitted_on? || @current_user.created_at.after?(1.month.ago)
+      @user.vomitted_on? || @user.created_at.after?(1.month.ago)
     end
 
     private
