@@ -29,7 +29,7 @@ module Articles
       cache_key = "article-social-img-#{article}-#{article.updated_at.rfc3339}-#{article.comments_count}"
 
       Rails.cache.fetch(cache_key, expires_in: 1.hour) do
-        src = GeneratedImage.new(article).social_image
+        src = Images::GenerateSocialImage.call(article)
         return src if src.start_with? "https://res.cloudinary.com/"
 
         Images::Optimizer.call(src, width: "1000", height: "500", crop: "imagga_scale")

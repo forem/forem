@@ -38,33 +38,6 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
-  describe "#recaptcha_configured_and_enabled?" do
-    context "when recaptcha is enabled" do
-      before do
-        allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
-      end
-
-      it "returns true if both site & secret keys present" do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
-
-        expect(recaptcha_configured_and_enabled?).to be(true)
-      end
-
-      it "returns false if site or secret key missing" do
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("")
-
-        expect(recaptcha_configured_and_enabled?).to be(false)
-      end
-    end
-
-    it "returns false if recaptcha disabled for email signup" do
-      allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(false)
-
-      expect(recaptcha_configured_and_enabled?).to be(false)
-    end
-  end
-
   describe "tooltip classes, attributes and content" do
     context "when invite-only-mode enabled and no enabled registration options" do
       before do
