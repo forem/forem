@@ -10,6 +10,7 @@ class ProfileForm extends Component {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleColorPickerChange = this.handleColorPickerChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.user = userData();
     this.state = {
@@ -67,6 +68,30 @@ class ProfileForm extends Component {
     this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
   }
 
+  handleColorPickerChange(e) {
+    const { formValues } = { ...this.state };
+    const currentFormState = formValues;
+
+    const field = e.target;
+    const { name, value } = field;
+
+    let sibling = '';
+    if (field.nextElementSibling) {
+      sibling = field.nextElementSibling;
+    } else {
+      sibling = field.previousElementSibling;
+    }
+    sibling.value = value;
+    currentFormState[name] = value;
+
+    // Once we've derived the new form values, check if the form is empty
+    // and use that value to set the `canSkip` property on the state.
+    const formIsEmpty =
+      Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
+
+    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+  }
+
   checkboxField(field) {
     return (
       <div class="crayons-field crayons-field--checkbox">
@@ -89,7 +114,7 @@ class ProfileForm extends Component {
 
   textField(field) {
     return (
-      <div>
+      <div class="crayons-field">
         <label class="crayons-field__label" htmlFor={field.attribute_name}>
           {field.label}
         </label>
@@ -115,20 +140,20 @@ class ProfileForm extends Component {
         </label>
         <div class="flex items-center w-100 m:w-50">
           <input
-            class="crayons-textfield js-color-field"
             placeholder={field['placeholder_text']}
+            class="crayons-textfield js-color-field"
+            type="text"
             name={field.attribute_name}
             id={field.attribute_name}
+            onChange={this.handleColorPickerChange}
           />
           <input
             class="crayons-color-selector js-color-field ml-2"
-            placeholder={field['placeholder_text']}
+            type="color"
             name={field.attribute_name}
             id={field.attribute_name}
+            onChange={this.handleColorPickerChange}
           />
-          {field.description && (
-            <p class="crayons-field__description">{field.description}</p>
-          )}
         </div>
       </div>
     );
