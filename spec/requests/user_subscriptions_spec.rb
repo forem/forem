@@ -89,7 +89,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to include("Source not found.")
+      expect(response.parsed_body["error"]).to include("Source not found. Please make sure your Article is active!")
     end
 
     it "returns an error for a source that doesn't have the UserSubscription liquid tag enabled" do
