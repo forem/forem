@@ -33,7 +33,8 @@ export const Feed = ({ timeFrame, renderFeed }) => {
 
         // Remove that first one from the array.
         const index = feedItems.indexOf(featuredStory);
-        feedItems.splice(index, 1);
+        const deleteCount = featuredStory ? 1 : 0;
+        feedItems.splice(index, deleteCount);
         const subStories = feedItems;
         const organizedFeedItems = [featuredStory, subStories].flat();
 
