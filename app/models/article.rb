@@ -370,7 +370,9 @@ class Article < ApplicationRecord
   def video_duration_in_minutes
     duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
 
-    duration = duration.reverse_merge(minutes: 0, hours: 0) # add default hours and minutes for the substitution below
+    # add default hours and minutes for the substitutions below
+    duration = duration.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+
     minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
     return minutes_and_seconds if duration[:hours] < 1
 
