@@ -50,6 +50,8 @@ class User < ApplicationRecord
     invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
+  PAYMENT_POINTER_REGEXP = /\$\b(?!\S*[\00-\31])/.freeze
+  CLEAN_PAYMENT_POINTER = /\$\b\S*/.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
@@ -182,6 +184,7 @@ class User < ApplicationRecord
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
   validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
   validates :welcome_notifications, inclusion: { in: [true, false] }
+  validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_nil: true
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -221,6 +224,7 @@ class User < ApplicationRecord
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :verify_email
   before_validation :set_username
+  before_save :clean_payment_pointer
   before_create :set_default_language
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
@@ -667,5 +671,11 @@ class User < ApplicationRecord
     return true if password == password_confirmation
 
     errors.add(:password, "doesn't match password confirmation")
+  end
+
+  def clean_payment_pointer
+    return unless payment_pointer
+
+    self.payment_pointer = payment_pointer.scan(CLEAN_PAYMENT_POINTER).first
   end
 end
