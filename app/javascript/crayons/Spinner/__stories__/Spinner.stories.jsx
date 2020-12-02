@@ -3,7 +3,7 @@ import { Spinner } from '../Spinner';
 
 export default {
   component: Spinner,
-  title: '3_Components/Spinner',
+  title: 'Components/Spinner',
 };
 
 export const Default = () => {

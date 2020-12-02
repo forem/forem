@@ -1,3 +1,9 @@
+import { h } from 'preact';
+import '../../storybook-utilities/designSystem.scss';
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Component Library" />
+
 # Components
 
 Forem is a Rails application. Most of what we build for views uses ERB templates
@@ -13,7 +19,7 @@ Preact.
 The entire design system uses the [BEM](http://getbem.com/naming) methodology
 for naming CSS classes. Even Preact components under the hood use it.
 
-### crayons-\*
+### `crayons-*`
 
 Crayons is the name of our design system. All Crayons components use the
 `crayons-` prefix. It's useful because we can easily identify what **IS** and
