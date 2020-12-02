@@ -1,7 +1,5 @@
 module SiteConfigs
   module Upsert
-    include AuthenticationHelper
-
     EMOJI_ONLY_FIELDS = %w[community_emoji].freeze
     IMAGE_FIELDS =
       %w[

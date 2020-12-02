@@ -1,6 +1,6 @@
 module Admin
   class ConfigsController < Admin::ApplicationController
-    include ConfigParams
+    include SiteConfigParams
 
     EMOJI_ONLY_FIELDS = %w[community_emoji].freeze
     IMAGE_FIELDS =
@@ -23,12 +23,16 @@ module Admin
     before_action :extra_authorization_and_confirmation, only: [:create]
     after_action :bust_content_change_caches, only: [:create]
 
+    after_action only: [:update] do
+      Audit::Logger.log(:internal, current_user, params.dup)
+    end
+
     def show
       @confirmation_text = confirmation_text
     end
 
     def create
-      result = SiteConfigs::Upsert.call(config_params)
+      result = SiteConfigs::Upsert.call(site_config_params)
       if result[:result] == "errors"
         redirect_to admin_config_path, alert: "😭 #{result[:errors]}"
         return
