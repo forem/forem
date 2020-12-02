@@ -411,7 +411,7 @@ RSpec.describe "UserSettings", type: :request do
         delete "/users/remove_identity", params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
 
-        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:contact]}"
         expect(flash[:error]).to eq(error)
       end
 
@@ -433,21 +433,21 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sets the proper flash error message" do
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
 
-        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:contact]}"
         expect(flash[:error]).to eq(error)
       end
 
       it "does not delete any identities" do
         expect do
-          delete "/users/remove_identity", params: { provider: provider }
+          delete users_remove_identity_path, params: { provider: provider }
         end.not_to change(user.identities, :count)
       end
 
-      it "redirects successfully to /settings/account" do
-        delete "/users/remove_identity", params: { provider: provider }
-        expect(response).to redirect_to("/settings/account")
+      it "redirects successfully to the Settings-Account page" do
+        delete users_remove_identity_path, params: { provider: provider }
+        expect(response).to redirect_to(user_settings_path(:account))
       end
     end
   end

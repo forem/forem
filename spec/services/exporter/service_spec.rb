@@ -92,9 +92,9 @@ RSpec.describe Exporter::Service, type: :service do
     end
 
     context "when emailing an admin" do
-      it "delivers one email to the default admin email" do
+      it "delivers one email to the contact admin email" do
         admin_email = "admin@example.com"
-        allow(SiteConfig).to receive(:email_addresses).and_return({ default: admin_email })
+        allow(SiteConfig).to receive(:email_addresses).and_return({ contact: admin_email })
         service = valid_instance(article.user)
         service.export(admin_email)
         expect(ActionMailer::Base.deliveries.last.to.first).to eq admin_email

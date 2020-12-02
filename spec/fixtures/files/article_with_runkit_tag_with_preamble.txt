@@ -1,0 +1,45 @@
+---
+title: Sample Article
+published: true
+description: this is a sample article
+tags: test
+---
+
+Suspendisse ac lobortis velit, a feugiat sapien. Aenean condimentum, nulla at fermentum sagittis, tellus nisi suscipit velit, vel sollicitudin odio ligula a odio. Integer eget efficitur massa, in sodales velit. Nunc fermentum consequat scelerisque. Morbi elementum tristique faucibus. Nulla vel lectus non justo euismod varius. Vivamus id nisl sit amet odio tincidunt fringilla. Pellentesque odio odio, vulputate in risus eu, lacinia porttitor lorem. Nunc posuere tempus est, imperdiet suscipit odio maximus id. Nam eget feugiat magna.
+
+{% runkit %}
+const node = data => next => callback => callback (data) (next)
+//           ----    ----    --------              ----   ----
+//             \       |        /                 /      /
+//           parameters are curried        -------------
+//                                       /    
+// closures make data and next available
+// to callback when it is finally called.
+
+// I can use bind to store my data and next values.
+const head = node ('data') (null)
+//                 ------   ----
+//                  /        /
+//           We can partially apply the arguments `data` and null.
+
+// Use a callback to read the values from head.
+head (data => next => {
+  return { data, next }
+})
+{% endrunkit %}
+
+
+{% runkit
+const V = a => b => c => c (a) (b)
+%}
+const node = V
+
+const leftRight = node ('Left') ('Right')
+
+// TODO: modify callback so the code returns 'Left'
+const callback = a => b => {}
+
+leftRight (callback) //=> 'Left'
+{% endrunkit %} 
+
+
