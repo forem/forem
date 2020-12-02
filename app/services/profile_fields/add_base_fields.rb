@@ -10,22 +10,22 @@ module ProfileFields
             :text_field,
             placeholder: "John Doe",
             display_area: "header",
-            onboarding: true
+            show_in_onboarding: true
       field "Website URL",
             :text_field,
             placeholder: "https://yoursite.com",
             display_area: "header",
-            onboarding: true
+            show_in_onboarding: true
       field "Summary",
             :text_area,
             placeholder: "A short bio...",
             display_area: "header",
-            onboarding: true
+            show_in_onboarding: true
       field "Location",
             :text_field,
             placeholder: "Halifax, Nova Scotia",
             display_area: "header",
-            onboarding: true
+            show_in_onboarding: true
     end
   end
 end
