@@ -155,6 +155,9 @@ class ProfileForm extends Component {
             onChange={this.handleColorPickerChange}
           />
         </div>
+        {field.description && (
+          <p class="crayons-field__description">{field.description}</p>
+        )}
       </div>
     );
   }
