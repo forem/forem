@@ -3,7 +3,7 @@ import '../../../storybook-utilities/designSystem.scss';
 import notes from './navigation-tab.md';
 
 export default {
-  title: '3_Components/Navigation/Tabs/HTML',
+  title: 'Components/Navigation/Tabs/HTML',
   parameters: { notes },
 };
 
