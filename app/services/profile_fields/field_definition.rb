@@ -20,14 +20,16 @@ module ProfileFields
 
       private
 
-      def field(label, input_type, placeholder: nil, description: nil, group: @group, display_area: "left_sidebar")
+      def field(label, input_type, placeholder: nil, description: nil, group: @group, display_area: "left_sidebar",
+                show_in_onboarding: false)
         fields << {
           label: label,
           input_type: input_type,
           placeholder_text: placeholder,
           description: description,
           profile_field_group: group,
-          display_area: display_area
+          display_area: display_area,
+          show_in_onboarding: show_in_onboarding
         }.compact
       end
     end
