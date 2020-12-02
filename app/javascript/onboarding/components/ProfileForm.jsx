@@ -130,6 +130,26 @@ class ProfileForm extends Component {
     );
   }
 
+  textAreaField(field) {
+    return (
+      <div class="crayons-field">
+        <label class="crayons-field__label" htmlFor={field.attribute_name}>
+          {field.label}
+        </label>
+        <textArea
+          class="crayons-textfield"
+          placeholder={field['placeholder_text']}
+          name={field.attribute_name}
+          id={field.attribute_name}
+          onChange={this.handleChange}
+        />
+        {field.description && (
+          <p class="crayons-field__description">{field.description}</p>
+        )}
+      </div>
+    );
+  }
+
   colorField(field) {
     return (
       <div>
@@ -185,6 +205,8 @@ class ProfileForm extends Component {
                   ? this.checkboxField(field)
                   : field.input_type === 'color_field'
                   ? this.colorField(field)
+                  : field.input_type === 'text_area'
+                  ? this.textAreaField(field)
                   : this.textField(field);
               })}
             </div>
