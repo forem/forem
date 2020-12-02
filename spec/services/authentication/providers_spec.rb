@@ -17,7 +17,7 @@ RSpec.describe Authentication::Providers, type: :service do
     end
 
     it "loads the correct provider class" do
-      allow(SiteConfig).to receive(:authentication_providers).and_return(%w[facebook github twitter])
+      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
 
       is_subclass_of = (
         described_class.get!(:twitter) < Authentication::Providers::Provider

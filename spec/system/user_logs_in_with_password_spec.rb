@@ -11,7 +11,7 @@ RSpec.describe "Authenticating with a password" do
   let!(:user) { create(:user, password: password, password_confirmation: password) }
 
   before do
-    allow(SiteConfig).to receive(:authentication_providers).and_return(%w[facebook github twitter])
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
     visit sign_up_path
   end
 

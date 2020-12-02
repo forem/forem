@@ -75,7 +75,7 @@ RSpec.describe "/admin/config", type: :request do
       describe "Authentication" do
         it "updates enabled authentication providers" do
           enabled = Authentication::Providers.available.first.to_s
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             site_config: {
               "#{enabled}_key": "someKey",
               "#{enabled}_secret": "someSecret",
@@ -89,7 +89,7 @@ RSpec.describe "/admin/config", type: :request do
         it "strips empty elements" do
           provider = Authentication::Providers.available.first.to_s
           enabled = "#{provider}, '', nil"
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             site_config: {
               "#{provider}_key": "someKey",
               "#{provider}_secret": "someSecret",
@@ -102,7 +102,7 @@ RSpec.describe "/admin/config", type: :request do
 
         it "does not update enabled authentication providers if any associated key missing" do
           enabled = Authentication::Providers.available.first.to_s
-          post "/admin/config", params: {
+          post admin_config_path, params: {
             site_config: {
               "#{enabled}_key": "someKey",
               "#{enabled}_secret": "",

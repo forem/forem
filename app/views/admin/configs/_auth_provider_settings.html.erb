@@ -1,8 +1,7 @@
 <fieldset class="config-authentication-form">
   <div
-    class="crayons-notice crayons-notice--warning <%= provider_keys_configured?(provider.provider_name) ? "hidden" : "" %>"
-    style="padding: var(--su-2);">
-      <strong>Warning:</strong> Provider will <strong>not</strong> be enabled if Key or Secret missing
+    class="crayons-notice crayons-notice--warning warning-padding <%= provider_keys_configured?(provider.provider_name) ? "hidden" : "" %>">
+      <strong>Note:</strong> This authentication provider will <strong>not</strong> be enabled if the key or secret are missing. Please make sure that you enter your key and secret correctly.
   </div>
   <div class="crayons-field">
     <%= admin_config_label :"#{provider.provider_name}_key" %>

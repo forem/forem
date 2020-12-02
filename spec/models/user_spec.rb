@@ -30,7 +30,7 @@ RSpec.describe User, type: :model do
 
   before do
     omniauth_mock_providers_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(%w[facebook github twitter])
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
   end
 
   describe "validations" do

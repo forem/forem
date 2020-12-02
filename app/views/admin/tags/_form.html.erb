@@ -1,57 +1,70 @@
-<div class="crayons-card crayons-card--content-rows">
-  <h4 class="mb-4">Edit details</h4>
-  <%= form_with model: [:admin, tag], data: { remote: false } do |f| %>
-  <div class="crayons-field crayons-field--checkbox">
+<%= form_with model: [:admin, tag], data: { remote: false } do |f| %>
+  <% if !tag.persisted? %>
+    <div class="crayons-field">
+      <%= f.label :name, class: "crayons-field__label" %>
+      <%= f.text_field :name, class: "crayons-textfield" %>
+    </div>
+  <% end %>
+  <div class="crayons-field crayons-field--checkbox mt-3">
     <%= f.check_box :supported, class: "crayons-checkbox" %>
     <label class="crayons-field__label" for="tag_supported">
       Supported
       <p class="crayons-field__description">Allows the tag to be a searchable result when writing a post or a listing</p>
     </label>
   </div>
-  <div class="crayons-field">
+  <div class="crayons-field mt-3">
     <%= f.label :badge_id, class: "crayons-field__label" %>
     <%= f.select(:badge_id, options_for_select(badges_for_options, tag.badge_id), { include_blank: true }, { class: "crayons-select" }) %>
   </div>
-  <div class="crayons-field">
+  <div class="crayons-field mt-3">
     <%= f.label :category, class: "crayons-field__label" %>
     <%= f.select(:category, options_for_select(Tag.valid_categories, tag.category), {}, { class: "crayons-select" }) %>
   </div>
-  <div class="crayons-field">
+  <div class="crayons-field mt-3">
     <%= f.label :social_preview_template, class: "crayons-field__label" %>
     <%= f.select(:social_preview_template, Tag.social_preview_templates, {}, { class: "crayons-select" }) %>
   </div>
-  <div class="crayons-field">
+  <div class="crayons-field mt-3">
     <%= f.label :alias_for, class: "crayons-field__label" %>
     <%= f.text_field :alias_for, value: tag.alias_for, class: "crayons-textfield" %>
   </div>
-  <div class="crayons-field">
+  <div class="crayons-field mt-3">
     <%= f.label :pretty_name, class: "crayons-field__label" %>
     <%= f.text_field :pretty_name, value: tag.pretty_name, class: "crayons-textfield" %>
   </div>
-  <div class="crayons-field">
+  <div class="crayons-field mt-3">
+    <%= f.label :requires_approval, class: "crayons-field__label" %>
+    <%= f.check_box :requires_approval %>
+  </div>
+  <div class="crayons-field mt-3">
     <%= f.label :short_summary, class: "crayons-field__label" %>
     <%= f.text_field :short_summary, value: tag.short_summary, class: "crayons-textfield" %>
   </div>
-  <div class="crayons-field">
+  <div class="crayons-field mt-3">
     <%= f.label :rules_markdown, class: "crayons-field__label" %>
-    <br>
     <%= f.text_area :rules_markdown, value: tag.rules_markdown, class: "crayons-textfield" %>
   </div>
-  <div class="crayons-field">
+  <div class="crayons-field mt-3">
+    <%= f.label :submission_template, class: "crayons-field__label" %>
+    <%= f.text_area :submission_template, class: "crayons-textfield" %>
+  </div>
+  <div class="crayons-field mt-3">
     <%= f.label :wiki_body_markdown, class: "crayons-field__label" %>
-    <br>
     <%= f.text_area :wiki_body_markdown, value: tag.wiki_body_markdown, class: "crayons-textfield" %>
   </div>
-  <%= f.label :bg_color_hex, class: "crayons-field__label" %>
-  <div class="flex items-center w-100 m:w-50">
-    <%= f.text_field :bg_color_hex, class: "crayons-textfield", value: tag.bg_color_hex.presence || "#000000", placeholder: "#000000" %>
-    <%= f.color_field :bg_color_hex, class: "crayons-color-selector ml-2", required: true, value: tag.bg_color_hex.presence || "#000000", placeholder: "#000000" %>
+  <div class="crayons-field mt-3">
+    <%= f.label :bg_color_hex, class: "crayons-field__label" %>
+    <div class="flex items-center w-100 m:w-50">
+      <%= f.text_field :bg_color_hex, class: "crayons-textfield", value: tag.bg_color_hex.presence || "#000000", placeholder: "#000000" %>
+      <%= f.color_field :bg_color_hex, class: "crayons-color-selector ml-2", required: true, value: tag.bg_color_hex.presence || "#000000", placeholder: "#000000" %>
+    </div>
   </div>
-  <%= f.label :text_color_hex, class: "crayons-field__label" %>
-  <div class="flex items-center w-100 m:w-50">
-    <%= f.text_field :text_color_hex, class: "crayons-textfield", value: tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff" %>
-    <%= f.color_field :text_color_hex, class: "crayons-color-selector ml-2", required: true, value: tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff" %>
+  <div class="crayons-field mt-3">
+    <%= f.label :text_color_hex, class: "crayons-field__label" %>
+    <div class="flex items-center w-100 m:w-50">
+      <%= f.text_field :text_color_hex, class: "crayons-textfield", value: tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff" %>
+      <%= f.color_field :text_color_hex, class: "crayons-color-selector ml-2", required: true, value: tag.text_color_hex.presence || "#ffffff", placeholder: "#ffffff" %>
+    </div>
   </div>
-  <%= f.submit class: "crayons-btn mt-2" %>
-  <% end %>
-</div>
+  <%= f.submit class: "crayons-btn mt-3" %>
+<% end %>

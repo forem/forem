@@ -5,7 +5,7 @@ RSpec.describe "Authenticating with Twitter" do
 
   before do
     omniauth_mock_twitter_payload
-    allow(SiteConfig).to receive(:authentication_providers).and_return(%w[facebook github twitter])
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
   end
 
   context "when a user is new" do
