@@ -369,6 +369,7 @@ RSpec.describe "UserSettings", type: :request do
 
       before do
         omniauth_mock_providers_payload
+        allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
         sign_in user
       end
 

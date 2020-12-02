@@ -3,7 +3,10 @@ require "rails_helper"
 RSpec.describe "Authenticating with Twitter" do
   let(:sign_in_link) { "Continue with Twitter" }
 
-  before { omniauth_mock_twitter_payload }
+  before do
+    omniauth_mock_twitter_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
 
   context "when a user is new" do
     context "when using valid credentials" do

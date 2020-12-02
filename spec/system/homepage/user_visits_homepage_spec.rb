@@ -8,7 +8,7 @@ RSpec.describe "User visits a homepage", type: :system do
   context "when user hasn't logged in" do
     it "shows the sign-in block" do
       visit "/"
-      within ".signin-cta-widget" do
+      within ".authentication-header__actions" do
         expect(page).to have_text("Log in")
         expect(page).to have_text("Create new account")
       end
