@@ -33,7 +33,7 @@ contributed to the documentation.
 
 Like Forem, this site is open source and the code is [hosted on GitHub][docs].
 If you find any incorrect information, or a even a typo, we'd love to see a pull
-request. Follow these steps to get the documentation site running locally.
+request.
 
 Forem's documentation is built with [GitDocs NodeJS library][gitdocs].
 
