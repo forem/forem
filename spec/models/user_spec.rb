@@ -184,6 +184,11 @@ RSpec.describe User, type: :model do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
+      it { is_expected.not_to allow_value("$example.com/value\10").for(:payment_pointer) }
+      it { is_expected.not_to allow_value("example.com/value").for(:payment_pointer) }
+      it { is_expected.to allow_value("$example.com/value").for(:payment_pointer) }
+      it { is_expected.to allow_value(nil).for(:payment_pointer) }
+
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
 
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
@@ -541,6 +546,17 @@ RSpec.describe User, type: :model do
         language_settings = { estimated_default_language: "en", preferred_languages: %w[en ru it] }
         user = build(:user, language_settings: language_settings)
         expect(user.preferred_languages_array).to eq(%w[en ru it])
+      end
+    end
+  end
+
+  context "when callbacks are triggered before save" do
+    describe "#clean_payment_pointer" do
+      let(:user) { build(:user) }
+
+      it "clean leading and trailing space in payment pointer" do
+        user.payment_pointer = " $example.com/value "
+        expect { user.save }.change(user, :payment_pointer).from(" $example.com/value ").to("$example.com/value")
       end
     end
   end
