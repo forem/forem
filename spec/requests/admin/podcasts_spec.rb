@@ -54,9 +54,9 @@ RSpec.describe "/admin/podcasts", type: :request do
         soundcloud_url: "https://soundcloud.example.com",
         website_url: "https://example.com",
         twitter_username: "@ThePracticalDev",
-        pattern_image: fixture_file_upload("files/800x600.png", "image/png"),
+        pattern_image: fixture_file_upload("800x600.png", "image/png"),
         main_color_hex: "ffffff",
-        image: fixture_file_upload("files/podcast.png", "image/png"),
+        image: fixture_file_upload("podcast.png", "image/png"),
         slug: "postcast-test-url",
         reachable: true,
         published: true

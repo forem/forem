@@ -16,7 +16,7 @@ RSpec.describe "Podcast Create", type: :request do
         title: Faker::Hipster.words(number: 2).join(", "),
         description: Faker::Hipster.paragraph(sentence_count: 1),
         twitter_username: "hello-pod",
-        image: fixture_file_upload("files/podcast.png", "image/png"),
+        image: fixture_file_upload("podcast.png", "image/png"),
         slug: "hello-pod",
         main_color_hex: "ffffff",
         website_url: Faker::Internet.url,
@@ -76,7 +76,7 @@ RSpec.describe "Podcast Create", type: :request do
     end
 
     it "returns error if image file name is too long" do
-      image = fixture_file_upload("files/podcast.png", "image/png")
+      image = fixture_file_upload("podcast.png", "image/png")
       allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
       valid_attributes[:image] = image
       post podcasts_path, params: { podcast: valid_attributes }
@@ -91,7 +91,7 @@ RSpec.describe "Podcast Create", type: :request do
     end
 
     it "returns error if pattern_image file name is too long" do
-      image = fixture_file_upload("files/podcast.png", "image/png")
+      image = fixture_file_upload("podcast.png", "image/png")
       allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
       valid_attributes[:pattern_image] = image
       post podcasts_path, params: { podcast: valid_attributes }

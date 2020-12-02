@@ -70,7 +70,7 @@ RSpec.describe "UserOrganization", type: :request do
   it "returns error if profile image file name is too long" do
     sign_in user
     org_params = build(:organization).attributes
-    image = fixture_file_upload("files/800x600.png", "image/png")
+    image = fixture_file_upload("800x600.png", "image/png")
     allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
     org_params["profile_image"] = image
     allow(Organization).to receive(:new).and_return(organization)
