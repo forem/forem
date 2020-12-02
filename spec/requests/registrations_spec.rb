@@ -337,6 +337,7 @@ RSpec.describe "Registrations", type: :request do
                     password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.first.has_role?(:super_admin)).to be true
         expect(User.first.has_role?(:single_resource_admin, Config)).to be true
+        expect(User.first.has_role?(:trusted)).to be true
       end
 
       it "creates mascot user" do
