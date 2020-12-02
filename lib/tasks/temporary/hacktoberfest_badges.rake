@@ -1,8 +1,14 @@
 # TODO: Will be removed my @mstruve once badges are rewarded for 2020
 task award_hacktoberfest_badges: :environment do
   badge_id = Badge.find_by(slug: "hacktoberfest-2020")&.id
+  user_ids = UserSubscription.where(
+    user_subscription_sourceable_id: 529_344,
+    created_at: 3.hours.ago,
+  ).pluck(:subscriber_id)
 
-  User.where.not(github_username: nil).includes(:identities).find_each do |user|
+  User.where(id: user_ids).includes(:identities).find_each do |user|
+    next if u.badges.exists?(id: badge_id)
+
     identity = user.identities.github.first
     next unless identity
 
