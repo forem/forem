@@ -23,14 +23,14 @@ RSpec.describe "Admin manages profile fields", type: :system do
   end
 
   it "adds a profile field" do
-    click_on "Add Field"
+    all(:button, "Add Field").last.click
     first("input#profile_field_label", visible: true).set("Example field")
     click_on "Create Profile field"
     expect(page).to have_text("Profile field Example field created")
   end
 
   it "deletes a profile_field_group" do
-    click_button "Delete Group"
+    all(:button, "Delete Group").last.click
     expect(page).to have_text("Group #{profile_field_group.name} deleted")
   end
 
