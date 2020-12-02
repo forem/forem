@@ -59,13 +59,10 @@ class ProfileForm extends Component {
     const { name, value } = e.target;
 
     currentFormState[name] = value;
-
-    // Once we've derived the new form values, check if the form is empty
-    // and use that value to set the `canSkip` property on the state.
-    const formIsEmpty =
-      Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
-
-    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+    this.setState({
+      formValues: currentFormState,
+      canSkip: this.formIsEmpty(currentFormState),
+    });
   }
 
   handleColorPickerChange(e) {
@@ -75,21 +72,22 @@ class ProfileForm extends Component {
     const field = e.target;
     const { name, value } = field;
 
-    let sibling = '';
-    if (field.nextElementSibling) {
-      sibling = field.nextElementSibling;
-    } else {
-      sibling = field.previousElementSibling;
-    }
+    let sibling = field.nextElementSibling
+      ? field.nextElementSibling
+      : field.previousElementSibling;
     sibling.value = value;
-    currentFormState[name] = value;
 
+    currentFormState[name] = value;
+    this.setState({
+      formValues: currentFormState,
+      canSkip: this.formIsEmpty(currentFormState),
+    });
+  }
+
+  formIsEmpty(currentFormState) {
     // Once we've derived the new form values, check if the form is empty
     // and use that value to set the `canSkip` property on the state.
-    const formIsEmpty =
-      Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
-
-    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+    Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
   }
 
   checkboxField(field) {
@@ -132,6 +130,26 @@ class ProfileForm extends Component {
     );
   }
 
+  textAreaField(field) {
+    return (
+      <div class="crayons-field">
+        <label class="crayons-field__label" htmlFor={field.attribute_name}>
+          {field.label}
+        </label>
+        <textArea
+          class="crayons-textfield"
+          placeholder={field['placeholder_text']}
+          name={field.attribute_name}
+          id={field.attribute_name}
+          onChange={this.handleChange}
+        />
+        {field.description && (
+          <p class="crayons-field__description">{field.description}</p>
+        )}
+      </div>
+    );
+  }
+
   colorField(field) {
     return (
       <div>
@@ -155,6 +173,9 @@ class ProfileForm extends Component {
             onChange={this.handleColorPickerChange}
           />
         </div>
+        {field.description && (
+          <p class="crayons-field__description">{field.description}</p>
+        )}
       </div>
     );
   }
@@ -184,6 +205,8 @@ class ProfileForm extends Component {
                   ? this.checkboxField(field)
                   : field.input_type === 'color_field'
                   ? this.colorField(field)
+                  : field.input_type === 'text_area'
+                  ? this.textAreaField(field)
                   : this.textField(field);
               })}
             </div>
