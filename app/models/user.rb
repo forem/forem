@@ -50,7 +50,7 @@ class User < ApplicationRecord
     invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
-  PAYMENT_POINTER_REGEXP = /\$\b(?!\S*[\00-\31])/.freeze
+  PAYMENT_POINTER_REGEXP = /\A.*\$\b(?!\S*[^[:print:]]).*\z/.freeze
   CLEAN_PAYMENT_POINTER = /\$\b\S*/.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
