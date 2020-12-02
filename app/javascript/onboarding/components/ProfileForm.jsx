@@ -59,13 +59,10 @@ class ProfileForm extends Component {
     const { name, value } = e.target;
 
     currentFormState[name] = value;
-
-    // Once we've derived the new form values, check if the form is empty
-    // and use that value to set the `canSkip` property on the state.
-    const formIsEmpty =
-      Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
-
-    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+    this.setState({
+      formValues: currentFormState,
+      canSkip: this.formIsEmpty(currentFormState),
+    });
   }
 
   handleColorPickerChange(e) {
@@ -75,21 +72,22 @@ class ProfileForm extends Component {
     const field = e.target;
     const { name, value } = field;
 
-    let sibling = '';
-    if (field.nextElementSibling) {
-      sibling = field.nextElementSibling;
-    } else {
-      sibling = field.previousElementSibling;
-    }
+    let sibling = field.nextElementSibling
+      ? field.nextElementSibling
+      : field.previousElementSibling;
     sibling.value = value;
-    currentFormState[name] = value;
 
+    currentFormState[name] = value;
+    this.setState({
+      formValues: currentFormState,
+      canSkip: this.formIsEmpty(currentFormState),
+    });
+  }
+
+  formIsEmpty(currentFormState) {
     // Once we've derived the new form values, check if the form is empty
     // and use that value to set the `canSkip` property on the state.
-    const formIsEmpty =
-      Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
-
-    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+    Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
   }
 
   checkboxField(field) {
