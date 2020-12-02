@@ -23,6 +23,11 @@ module AuthenticationHelper
     Authentication::Providers.available.map(&:to_s)
   end
 
+  def provider_keys_configured?(provider)
+    SiteConfig.public_send("#{provider}_key").present? &&
+      SiteConfig.public_send("#{provider}_secret").present?
+  end
+
   def forem_creator_flow_enabled?
     FeatureFlag.enabled?(:creator_onboarding) && waiting_on_first_user?
   end

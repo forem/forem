@@ -17,6 +17,8 @@ RSpec.describe Authentication::Providers, type: :service do
     end
 
     it "loads the correct provider class" do
+      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+
       is_subclass_of = (
         described_class.get!(:twitter) < Authentication::Providers::Provider
       )
@@ -32,10 +34,6 @@ RSpec.describe Authentication::Providers, type: :service do
   end
 
   describe ".enabled" do
-    it "lists all available providers" do
-      expect(described_class.available).to eq(described_class.enabled)
-    end
-
     context "when one of the available providers is disabled" do
       it "only lists those that remain enabled" do
         allow(SiteConfig).to receive(:authentication_providers).and_return(%w[github])

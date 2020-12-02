@@ -1,48 +1,52 @@
 <fieldset class="config-authentication-form">
-<div class="crayons-field">
-  <%= admin_config_label :"#{provider.provider_name}_key" %>
-  <p class="crayons-field__description">
-    <%= Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_key"][:description] %>
-  </p>
-  <%= f.text_field :"#{provider.provider_name}_key",
-                   class: "crayons-textfield",
-                   value: SiteConfig.public_send("#{provider.provider_name}_key"),
-                   placeholder: Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_key"][:placeholder] %>
-</div>
-<div class="crayons-field">
-  <%= admin_config_label :"#{provider.provider_name}_secret" %>
-  <p class="crayons-field__description">
-    <%= Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_secret"][:description] %>
-  <p>
-  <%= f.text_field :"#{provider.provider_name}_secret",
-                   class: "crayons-textfield",
-                   value: SiteConfig.public_send("#{provider.provider_name}_secret"),
-                   placeholder: Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_secret"][:placeholder] %>
-</div>
-<div class="flex gap-2">
-  <% if authentication_enabled_providers.include?(provider) %>
-    <button
-      class="crayons-btn crayons-btn--danger"
-      data-action="click->config#activateAuthProviderModal"
-      data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
-      data-auth-provider="<%= provider.provider_name %>"
-      data-auth-provider-official="<%= provider.official_name %>"
-      <%= disabled_attr_on_auth_provider_enablebtn %>>
-      Disable
-    </button>
-    <button
-      class="crayons-btn crayons-btn--secondary"
-      data-auth-provider="<%= provider.provider_name %>"
-      data-action="click->config#hideAuthProviderSettings">
-      Close
-    </button>
-  <% else %>
-    <button
-      class="crayons-btn crayons-btn--secondary"
-      data-auth-provider="<%= provider.provider_name %>"
-      data-action="click->config#disableAuthProvider">
-      Undo
-    </button>
-  <% end %>
-</div>
+  <div
+    class="crayons-notice crayons-notice--warning auth-warning <%= provider_keys_configured?(provider.provider_name) ? "hidden" : "" %>">
+      <strong>Note:</strong> This authentication provider will <strong>not</strong> be enabled if the key or secret are missing. Please make sure that you enter your key and secret correctly.
+  </div>
+  <div class="crayons-field">
+    <%= admin_config_label :"#{provider.provider_name}_key" %>
+    <p class="crayons-field__description">
+      <%= Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_key"][:description] %>
+    </p>
+    <%= f.text_field :"#{provider.provider_name}_key",
+                     class: "crayons-textfield",
+                     value: SiteConfig.public_send("#{provider.provider_name}_key"),
+                     placeholder: Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_key"][:placeholder] %>
+  </div>
+  <div class="crayons-field">
+    <%= admin_config_label :"#{provider.provider_name}_secret" %>
+    <p class="crayons-field__description">
+      <%= Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_secret"][:description] %>
+    <p>
+    <%= f.text_field :"#{provider.provider_name}_secret",
+                     class: "crayons-textfield",
+                     value: SiteConfig.public_send("#{provider.provider_name}_secret"),
+                     placeholder: Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_secret"][:placeholder] %>
+  </div>
+  <div class="flex gap-2">
+    <% if authentication_enabled_providers.include?(provider) %>
+      <button
+        class="crayons-btn crayons-btn--danger"
+        data-action="click->config#activateAuthProviderModal"
+        data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
+        data-auth-provider="<%= provider.provider_name %>"
+        data-auth-provider-official="<%= provider.official_name %>"
+        <%= disabled_attr_on_auth_provider_enablebtn %>>
+        Disable
+      </button>
+      <button
+        class="crayons-btn crayons-btn--secondary"
+        data-auth-provider="<%= provider.provider_name %>"
+        data-action="click->config#hideAuthProviderSettings">
+        Close
+      </button>
+    <% else %>
+      <button
+        class="crayons-btn crayons-btn--secondary"
+        data-auth-provider="<%= provider.provider_name %>"
+        data-action="click->config#disableAuthProvider">
+        Undo
+      </button>
+    <% end %>
+  </div>
 </fieldset>

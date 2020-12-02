@@ -28,7 +28,10 @@ RSpec.describe User, type: :model do
   let(:other_user) { create(:user) }
   let(:org) { create(:organization) }
 
-  before { omniauth_mock_providers_payload }
+  before do
+    omniauth_mock_providers_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
 
   describe "validations" do
     describe "builtin validations" do
