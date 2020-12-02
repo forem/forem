@@ -9,8 +9,8 @@ class FeedbackMessagesController < ApplicationController
     params = feedback_message_params.merge(reporter_id: current_user&.id)
     @feedback_message = FeedbackMessage.new(params)
 
-    recaptcha_disabled = ReCaptcha.call(current_user).disabled?
-    if (recaptcha_disabled || recaptcha_verified?) && @feedback_message.save
+    recaptcha_enabled = ReCaptcha::CheckEnabled.call(current_user)
+    if (!recaptcha_enabled || recaptcha_verified?) && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
         type: feedback_message_params[:feedback_type],

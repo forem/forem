@@ -87,7 +87,7 @@
       <% end %>
     <% end %>
 
-    <% if ReCaptcha.for_registration_enabled? %>
+    <% if ReCaptcha::CheckRegistrationEnabled.call %>
       <div class="recaptcha-tag-container mt-2">
         <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>
       </div>
