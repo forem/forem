@@ -3,11 +3,29 @@ module ProfileFields
     include FieldDefinition
 
     group "Basic" do
-      field "Display email on profile", :check_box, display_area: "settings_only"
-      field "Name", :text_field, placeholder: "John Doe", display_area: "header", onboarding: true
-      field "Website URL", :text_field, placeholder: "https://yoursite.com", display_area: "header", onboarding: true
-      field "Summary", :text_area, placeholder: "A short bio...", display_area: "header", onboarding: true
-      field "Location", :text_field, placeholder: "Halifax, Nova Scotia", display_area: "header", onboarding: true
+      field "Display email on profile",
+            :check_box,
+            display_area: "settings_only"
+      field "Name",
+            :text_field,
+            placeholder: "John Doe",
+            display_area: "header",
+            onboarding: true
+      field "Website URL",
+            :text_field,
+            placeholder: "https://yoursite.com",
+            display_area: "header",
+            onboarding: true
+      field "Summary",
+            :text_area,
+            placeholder: "A short bio...",
+            display_area: "header",
+            onboarding: true
+      field "Location",
+            :text_field,
+            placeholder: "Halifax, Nova Scotia",
+            display_area: "header",
+            onboarding: true
     end
   end
 end
