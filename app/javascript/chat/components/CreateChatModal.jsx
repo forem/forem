@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { createChannel } from '../actions/chat_channel_setting_actions';
 import { addSnackbarItem } from '../../Snackbar';
@@ -28,8 +28,9 @@ function CreateChatModal({
   toggleModalCreateChannel,
   handleCreateChannelSuccess,
 }) {
-  const [channelName, setchannelName] = useState(null);
-  const [userNames, setUserNames] = useState(null);
+  const [channelName, setchannelName] = useState(undefined);
+  const [userNames, setUserNames] = useState(undefined);
+  const [enabled, setEnabled] = useState(undefined);
 
   const handleCreateChannel = async (e) => {
     e.preventDefault();
@@ -41,6 +42,12 @@ function CreateChatModal({
       addSnackbarItem({ message: result.message });
     }
   };
+
+  useEffect(() => {
+    if (channelName && userNames) {
+      setEnabled(true);
+    }
+  }, [channelName, userNames]);
 
   return (
     <Modal title="Create A Channel" size="s" onClose={toggleModalCreateChannel}>
@@ -54,7 +61,7 @@ function CreateChatModal({
           className="crayons-textfield"
           placeholder="Enter name here..."
           value={channelName}
-          onChange={(e) => setchannelName(e.target.value)}
+          onInput={(e) => setchannelName(e.target.value)}
         />
         <label htmlFor="t2" className="crayons-field__label">
           Invite Users
@@ -65,14 +72,14 @@ function CreateChatModal({
           className="crayons-textfield"
           placeholder="Separate username with comma"
           value={userNames}
-          onChange={(e) => setUserNames(e.target.value)}
+          onInput={(e) => setUserNames(e.target.value)}
         />
 
         <Button
           className="crayons-btn"
           onClick={handleCreateChannel}
           style="margin-top:20px"
-          disabled={!channelName}
+          disabled={!enabled}
         >
           Create
         </Button>
