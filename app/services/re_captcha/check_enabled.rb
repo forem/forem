@@ -25,7 +25,7 @@ module ReCaptcha
       return true if @current_user.banned
 
       # recaptcha will be enabled if the user has a vomit or is too recent
-      @current_user.vomitted_on? || @current_user.created_at > 1.month.ago
+      @current_user.vomitted_on? || @current_user.created_at.after?(1.month.ago)
     end
 
     private
