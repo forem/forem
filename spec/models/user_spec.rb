@@ -184,9 +184,9 @@ RSpec.describe User, type: :model do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
-      it { is_expected.not_to allow_value("$example.com/value\10").for(:payment_pointer) }
+      it { is_expected.not_to allow_value("$example.com/value\x1F").for(:payment_pointer) }
       it { is_expected.not_to allow_value("example.com/value").for(:payment_pointer) }
-      it { is_expected.to allow_value("$example.com/value").for(:payment_pointer) }
+      it { is_expected.to allow_value(" $example.com/value ").for(:payment_pointer) }
       it { is_expected.to allow_value(nil).for(:payment_pointer) }
 
       it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
@@ -556,7 +556,7 @@ RSpec.describe User, type: :model do
 
       it "clean leading and trailing space in payment pointer" do
         user.payment_pointer = " $example.com/value "
-        expect { user.save }.change(user, :payment_pointer).from(" $example.com/value ").to("$example.com/value")
+        expect { user.save }.to change(user, :payment_pointer).from(" $example.com/value ").to("$example.com/value")
       end
     end
   end
