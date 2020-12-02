@@ -13,7 +13,7 @@ experiments:
     # Implemented here: app/workers/follows/update_points_worker.rb
     # Hypotheses: Weighting tags based on implied preference will lead
     # to more repeat engagement.
-    # Recommended duration: 4 weeks
+    # Recommended duration: 4 weeks (ending at start of January)
     variants:
       - base
       - no_implicit_score
