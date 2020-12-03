@@ -29,7 +29,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
   describe "POST /admin/profile_fields" do
     let(:new_profile_field) do
       {
-        label: "Location",
+        label: "Test Location",
         input_type: "text_field",
         description: "users' location",
         placeholder_text: "new york"
@@ -73,7 +73,7 @@ RSpec.describe "/admin/profile_fields", type: :request do
   end
 
   describe "DELETE /admin/profile_fields/:id" do
-    let(:profile_field) do
+    let!(:profile_field) do
       create(:profile_field).tap { Profile.refresh_attributes! }
     end
 
@@ -83,8 +83,9 @@ RSpec.describe "/admin/profile_fields", type: :request do
     end
 
     it "removes a profile field" do
-      delete "#{admin_profile_fields_path}/#{profile_field.id}"
-      expect(ProfileField.count).to eq(0)
+      expect do
+        delete "#{admin_profile_fields_path}/#{profile_field.id}"
+      end.to change(ProfileField, :count).by(-1)
     end
   end
 end

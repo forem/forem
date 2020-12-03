@@ -1,6 +1,6 @@
 <% @grouped_profile_fields.each do |group| %>
   <% group_name = group.name.gsub(/\s+/, "_") %>
-  <article class="row my-3">
+  <article id="profile-field-group-<%= group.id %>" class="row my-3">
     <div class="card w-100">
       <div class="card-header">
         <div class="card-header__information">
@@ -27,7 +27,7 @@
           <div> There are no profile fields configured for this group. </div>
         <% else %>
           <% group.profile_fields.each do |field| %>
-            <div class="card mt-3">
+            <div id="profile-field-<%= field.id %>" class="card mt-3">
               <%= render partial: "admin/shared/card_header",
                          locals: {
                            header: field.label,
