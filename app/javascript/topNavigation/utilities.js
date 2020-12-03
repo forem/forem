@@ -8,6 +8,28 @@ const pageLinkMapper = Object.freeze({
 
 const defaultPageEntries = Object.entries(pageLinkMapper);
 
+function toggleBurgerMenu() {
+  document.body.classList.toggle('hamburger-open');
+}
+
+function showMoreMenu({ target }) {
+  target.nextElementSibling.classList.remove('hidden');
+  target.classList.add('hidden');
+}
+
+/**
+ * Initializes the hamburger menu for mobile navigation
+ */
+export function initializeMobileMenu(menus, moreMenus) {
+  menus.forEach((trigger) => {
+    trigger.addEventListener('click', toggleBurgerMenu);
+  });
+
+  moreMenus.forEach((trigger) => {
+    trigger.addEventListener('click', showMoreMenu);
+  });
+}
+
 /**
  * Sets the icon link visually for the current page if the current page
  * is one of the main icon links of the top navigation.
