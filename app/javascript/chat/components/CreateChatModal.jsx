@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { createChannel } from '../actions/chat_channel_setting_actions';
 import { addSnackbarItem } from '../../Snackbar';
@@ -30,7 +30,6 @@ function CreateChatModal({
 }) {
   const [channelName, setchannelName] = useState(undefined);
   const [userNames, setUserNames] = useState(undefined);
-  const [enabled, setEnabled] = useState(undefined);
 
   const handleCreateChannel = async (e) => {
     e.preventDefault();
@@ -42,12 +41,6 @@ function CreateChatModal({
       addSnackbarItem({ message: result.message });
     }
   };
-
-  useEffect(() => {
-    if (channelName && userNames) {
-      setEnabled(true);
-    }
-  }, [channelName, userNames]);
 
   return (
     <Modal title="Create A Channel" size="s" onClose={toggleModalCreateChannel}>
@@ -79,7 +72,7 @@ function CreateChatModal({
           className="crayons-btn"
           onClick={handleCreateChannel}
           style="margin-top:20px"
-          disabled={!enabled}
+          disabled={!channelName}
         >
           Create
         </Button>
