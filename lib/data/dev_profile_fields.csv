@@ -1,18 +1,18 @@
 Display email on profile,check_box,,,Basic,settings_only
-Website URL,text_field,https://yoursite.com,,Basic,header
+Website URL,text_field,https://yoursite.com,,Basic,settings_only
 Summary,text_area,A short bio...,,Basic,header
 Location,text_field,"Halifax, Nova Scotia",,Basic,header
-Facebook URL,text_field,https://facebook.com/...,,Links,header
-Youtube URL,text_field,https://www.youtube.com/channel/...,,Links,header
-StackOverflow URL,text_field,https://stackoverflow.com/users/...,,Links,header
-LinkedIn URL,text_field,https://www.linkedin.com/in/...,,Links,header
-Behance URL,text_field,https://www.behance.net/...,,Links,header
-Dribbble URL,text_field,https://dribbble.com/...,,Links,header
-Medium URL,text_field,https://medium.com/@...,,Links,header
-GitLab URL,text_field,https://gitlab.com/...,,Links,header
-Instagram URL,text_field,https://www.instagram.com/...,,Links,header
-Mastodon URL,text_field,https://...,,Links,header
-Twitch URL,text_field,https://www.twitch.tv/...,,Links,header
+Facebook URL,text_field,https://facebook.com/...,,Links,settings_only
+Youtube URL,text_field,https://www.youtube.com/channel/...,,Links,settings_only
+StackOverflow URL,text_field,https://stackoverflow.com/users/...,,Links,settings_only
+LinkedIn URL,text_field,https://www.linkedin.com/in/...,,Links,settings_only
+Behance URL,text_field,https://www.behance.net/...,,Links,settings_only
+Dribbble URL,text_field,https://dribbble.com/...,,Links,settings_only
+Medium URL,text_field,https://medium.com/@...,,Links,settings_only
+GitLab URL,text_field,https://gitlab.com/...,,Links,settings_only
+Instagram URL,text_field,https://www.instagram.com/...,,Links,settings_only
+Mastodon URL,text_field,https://...,,Links,settings_only
+Twitch URL,text_field,https://www.twitch.tv/...,,Links,settings_only
 Education,text_field,,,Work,header
 Employer name,text_field,Acme Inc.,,Work,header
 Employer URL,text_field,https://dev.com,,Work,header
