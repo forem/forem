@@ -7,7 +7,7 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
     let(:worker) { subject }
 
     before do
-      allow(EdgeCache::Commentable::Bust).to receive(:call)
+      allow(EdgeCache::BustCommentable).to receive(:call)
     end
 
     context "with comment" do
@@ -25,7 +25,7 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
       it "calls the service" do
         worker.perform(comment_id)
 
-        expect(EdgeCache::Commentable::Bust).to have_received(:call).with(comment.commentable).once
+        expect(EdgeCache::BustCommentable).to have_received(:call).with(comment.commentable).once
       end
 
       it "does not call purge on comment when commentable is not available" do
@@ -50,7 +50,7 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
 
         worker.perform(comment_id)
 
-        expect(EdgeCache::Commentable::Bust).not_to have_received(:call)
+        expect(EdgeCache::BustCommentable).not_to have_received(:call)
       end
     end
 
@@ -62,7 +62,7 @@ RSpec.describe Comments::BustCacheWorker, type: :worker do
       it "doesn't call the service" do
         worker.perform(nil)
 
-        expect(EdgeCache::Commentable::Bust).not_to have_received(:call)
+        expect(EdgeCache::BustCommentable).not_to have_received(:call)
       end
     end
   end

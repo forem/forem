@@ -6,13 +6,14 @@ RSpec.describe "ProfileFieldGroups", type: :request do
   describe "GET /profile_field_groups" do
     let!(:group1) { create(:profile_field_group) }
     let!(:group2) { create(:profile_field_group) }
-    let!(:field1) { create(:profile_field, :onboarding, label: "Field 1", profile_field_group: group1) }
 
     before do
-      sign_in user
-
+      create(:profile_field, :onboarding, label: "Field 1", profile_field_group: group1)
       create(:profile_field, label: "Field 2", profile_field_group: group1)
       create(:profile_field, label: "Field 3", profile_field_group: group2)
+      Profile.refresh_attributes!
+
+      sign_in user
     end
 
     it "returns a successful response" do
@@ -37,6 +38,7 @@ RSpec.describe "ProfileFieldGroups", type: :request do
       json_response = JSON.parse(response.body, symbolize_names: true)
       group = json_response[:profile_field_groups].first
       expect(group[:profile_fields].size).to eq 1
+      field1 = ProfileField.find_by(label: "Field 1")
       expect(group[:profile_fields].first[:id]).to eq field1.id
     end
   end

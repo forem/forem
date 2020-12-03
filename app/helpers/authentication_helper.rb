@@ -23,10 +23,9 @@ module AuthenticationHelper
     Authentication::Providers.available.map(&:to_s)
   end
 
-  def recaptcha_configured_and_enabled?
-    SiteConfig.recaptcha_secret_key.present? &&
-      SiteConfig.recaptcha_site_key.present? &&
-      SiteConfig.require_captcha_for_email_password_registration
+  def provider_keys_configured?(provider)
+    SiteConfig.public_send("#{provider}_key").present? &&
+      SiteConfig.public_send("#{provider}_secret").present?
   end
 
   def forem_creator_flow_enabled?
