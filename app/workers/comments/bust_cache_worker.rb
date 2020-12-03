@@ -7,7 +7,7 @@ module Comments
       comment.purge
       comment.commentable.purge
 
-      EdgeCache::Commentable::Bust.call(comment.commentable)
+      EdgeCache::BustCommentable.call(comment.commentable)
     end
   end
 end

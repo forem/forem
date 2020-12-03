@@ -478,17 +478,7 @@ class StoriesController < ApplicationController
     [
       @user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
       @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
-      @user.mastodon_url,
-      @user.facebook_url,
-      @user.youtube_url,
-      @user.linkedin_url,
-      @user.behance_url,
-      @user.stackoverflow_url,
-      @user.dribbble_url,
-      @user.medium_url,
-      @user.gitlab_url,
-      @user.instagram_url,
-      @user.website_url,
+      @user.profile.try(:website_url),
     ].reject(&:blank?)
   end
 

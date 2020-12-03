@@ -4,7 +4,7 @@ import notes from '../../form-elements.md';
 import { FormField, RadioButton } from '@crayons';
 
 export default {
-  title: '3_Components/Form Components/Form Field',
+  title: 'Components/Form Components/Form Field',
   parameters: { notes },
 };
 

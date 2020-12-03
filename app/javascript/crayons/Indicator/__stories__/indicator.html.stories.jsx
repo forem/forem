@@ -3,7 +3,7 @@ import '../../storybook-utilities/designSystem.scss';
 import notes from './indicators.md';
 
 export default {
-  title: '3_Components/Indicators/HTML',
+  title: 'Components/Indicators/HTML',
   parameters: {
     notes,
   },

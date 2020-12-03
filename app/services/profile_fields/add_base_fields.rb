@@ -6,11 +6,6 @@ module ProfileFields
       field "Display email on profile",
             :check_box,
             display_area: "settings_only"
-      field "Name",
-            :text_field,
-            placeholder: "John Doe",
-            display_area: "header",
-            show_in_onboarding: true
       field "Website URL",
             :text_field,
             placeholder: "https://yoursite.com",

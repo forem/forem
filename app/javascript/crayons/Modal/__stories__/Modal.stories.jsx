@@ -6,7 +6,7 @@ import { Modal, Button } from '@crayons';
 import '../../storybook-utilities/designSystem.scss';
 
 export default {
-  title: '3_Components/Modals',
+  title: 'Components/Modals',
   decorator: [withKnobs],
   parameters: { notes },
 };

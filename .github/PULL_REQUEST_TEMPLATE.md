@@ -44,7 +44,8 @@ _If your PR includes UI changes, please replace this line with details on how ac
 
 ## Added to documentation?
 
-- [ ] [Developer Docs](https://docs.forem.com) and/or [Admin Guide](https://forem.gitbook.io/forem-admin-guide/)
+- [ ] [Developer Docs](https://docs.forem.com) and/or
+      [Admin Guide](https://forem.gitbook.io/forem-admin-guide/)
 - [ ] README
 - [ ] No documentation needed
 

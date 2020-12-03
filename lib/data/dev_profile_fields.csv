@@ -1,5 +1,4 @@
 Display email on profile,check_box,,,Basic,settings_only,false
-Name,text_field,John Doe,,Basic,header,true
 Website URL,text_field,https://yoursite.com,,Basic,header,true
 Summary,text_area,A short bio...,,Basic,header,true
 Location,text_field,"Halifax, Nova Scotia",,Basic,header,true
