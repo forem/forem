@@ -244,4 +244,36 @@ export default class ConfigController extends Controller {
     }
   }
   // AUTH PROVIDERS FUNCTIONS END
+
+  missingKeysOnEnabledAuthProvider() {
+    return true;
+  }
+
+  missingKeysModalTitle() {
+    return '';
+  }
+
+  missingKeysModalBody() {
+    return '';
+  }
+
+  activateMissingKeysModal() {
+    this.configModalAnchorTarget.innerHTML = adminModal(
+      this.missingKeysModalTitle(),
+      this.missingKeysModalBody(),
+      'Confirm disable',
+      'disableAuthProviderFromModal',
+      'Cancel',
+      'closeAdminConfigModal',
+      'auth-provider',
+      'provider',
+    );
+  }
+
+  preventConfigUpdate(event) {
+    if (this.missingKeysOnEnabledAuthProvider) {
+      event.preventDefault();
+      this.activateMissingKeysModal();
+    }
+  }
 }
