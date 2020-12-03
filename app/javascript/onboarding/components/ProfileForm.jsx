@@ -2,12 +2,13 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
+
 import Navigation from './Navigation';
 import ColorPicker from './ColorPicker';
 import TextArea from './TextArea';
 import TextInput from './TextInput';
+import CheckBox from './CheckBox';
 
-import { FormField } from '@crayons';
 import { request } from '@utilities/http';
 
 /* eslint-disable camelcase */
@@ -15,7 +16,7 @@ class ProfileForm extends Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleFieldChange = this.handleFieldChange.bind(this);
     this.handleColorPickerChange = this.handleColorPickerChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.user = userData();
@@ -68,7 +69,7 @@ class ProfileForm extends Component {
     });
   }
 
-  handleChange(e) {
+  handleFieldChange(e) {
     const { formValues } = { ...this.state };
     const currentFormState = formValues;
     const { name, value } = e.target;
@@ -105,26 +106,6 @@ class ProfileForm extends Component {
     Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
   }
 
-  checkboxField(field) {
-    return (
-      <FormField variant="checkbox">
-        <input
-          class="crayons-checkbox"
-          type="checkbox"
-          name={field.attribute_name}
-          id={field.attribute_name}
-          onChange={this.handleChange}
-        />
-        <label class="crayons-field__label" htmlFor={field.attribute_name}>
-          {field.label}
-        </label>
-        {field.description && (
-          <p class="crayons-field__description">{field.description}</p>
-        )}
-      </FormField>
-    );
-  }
-
   render() {
     const {
       prev,
@@ -153,16 +134,25 @@ class ProfileForm extends Component {
           <div>
             {group.profile_fields.map((field) => {
               return field.input_type === 'check_box' ? (
-                this.checkboxField(field)
+                <CheckBox
+                  field={field}
+                  onFieldChange={this.handleFieldChange}
+                />
               ) : field.input_type === 'color_field' ? (
                 <ColorPicker
                   field={field}
                   onColorChange={this.handleColorPickerChange}
                 />
               ) : field.input_type === 'text_area' ? (
-                <TextArea field={field} onFieldChange={this.handleChange} />
+                <TextArea
+                  field={field}
+                  onFieldChange={this.handleFieldChange}
+                />
               ) : (
-                <TextInput field={field} onFieldChange={this.handleChange} />
+                <TextInput
+                  field={field}
+                  onFieldChange={this.handleFieldChange}
+                />
               );
             })}
           </div>
