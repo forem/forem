@@ -17,7 +17,9 @@ bin/startup
 (This just runs `foreman start -f Procfile.dev`, for notes on how to install
 Foreman, please see [Other Tools](/installation/others/))
 
-Then point your browser to http://localhost:3000/ to view the site.
+Then point your browser to http://localhost:3000/ to view the site. To log in
+use the admin account created by default (see
+[Database](/getting-started/db/#default-admin-user))
 
 If you run into issues while trying to run `bin/setup` and the error message
 isn't helpful, try running `bin/rails s -p 3000`. For example, you may need to
