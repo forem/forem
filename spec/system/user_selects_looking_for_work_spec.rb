@@ -5,8 +5,6 @@ RSpec.describe "Looking For Work", type: :system do
 
   before do
     user.follow(create(:tag, name: "hiring"))
-    create(:profile_field, label: "Looking for work", input_type: :check_box)
-    Profile.refresh_attributes!
   end
 
   it "user selects looking for work and autofollows hiring tag", js: true do

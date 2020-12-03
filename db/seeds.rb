@@ -9,6 +9,13 @@ class Seeder
     @counter = 0
   end
 
+  # Used when the block is idempotent by itself and needs no further checks.
+  def create(message)
+    @counter += 1
+    puts "  #{@counter}. #{message}."
+    yield
+  end
+
   def create_if_none(klass, count = nil)
     @counter += 1
     plural = klass.name.pluralize
@@ -74,6 +81,16 @@ seeder.create_if_none(Organization) do
 end
 
 ##############################################################################
+
+# NOTE: @citizen428 For the time being we want all current DEV profile fields.
+# The CSV import is idempotent by itself, since it uses find_or_create_by.
+seeder.create("Creating DEV profile fields") do
+  dev_fields_csv = Rails.root.join("lib/data/dev_profile_fields.csv")
+  ProfileFields::ImportFromCsv.call(dev_fields_csv)
+end
+
+##############################################################################
+
 
 num_users = 10 * SEEDS_MULTIPLIER
 
@@ -311,7 +328,7 @@ seeder.create_if_none(Broadcast) do
       "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
       "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
     facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
-      "Consider <a href='/settings'>connecting it</a>.",
+    "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \
       "Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
     customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing " \
@@ -320,7 +337,7 @@ seeder.create_if_none(Broadcast) do
       "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!",
     start_discussion: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; " \
-      "just click on 'Write a Post' in the sidebar of the tag page to get started!",
+    "just click on 'Write a Post' in the sidebar of the tag page to get started!",
     ask_question: "Sloan here! 👋 I noticed that you haven't " \
       "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; " \
       "just click on 'Write a Post' in the sidebar of the tag page to get started!",
@@ -561,17 +578,6 @@ seeder.create_if_none(Page) do
       template: %w[contained full_within_layout].sample,
     )
   end
-end
-
-##############################################################################
-
-seeder.create_if_none(ProfileField) do
-  ProfileFields::AddBaseFields.call
-  ProfileFields::AddLinkFields.call
-  ProfileFields::AddWorkFields.call
-  coding_fields_csv = Rails.root.join("lib/data/coding_profile_fields.csv")
-  ProfileFields::ImportFromCsv.call(coding_fields_csv)
-  ProfileFields::AddBrandingFields.call
 end
 
 ##############################################################################

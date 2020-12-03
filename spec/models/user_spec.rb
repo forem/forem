@@ -443,18 +443,6 @@ RSpec.describe User, type: :model do
         expect(user.old_username).to eq(new_username)
         expect(user.old_old_username).to eq(old_username)
       end
-
-      it "enforces summary length validation if previous summary was valid" do
-        user.summary = "0" * 999
-        user.save(validate: false)
-        user.summary = "0" * 999
-        expect(user).to be_valid
-      end
-
-      it "does not enforce summary validation if previous summary was invalid" do
-        user = build(:user, summary: "0" * 999)
-        expect(user).not_to be_valid
-      end
     end
   end
 
@@ -588,98 +576,6 @@ RSpec.describe User, type: :model do
 
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(website_url: "http://example.com")
-        end
-      end
-    end
-
-    describe "#conditionally_resave_articles" do
-      let!(:user) { create(:user) }
-
-      it "enqueues resave articles job when changing username" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.username = "#{user.username} changed"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing name" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.name = "#{user.name} changed"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing summary" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.summary = "#{user.summary} changed"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing bg_color_hex" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.bg_color_hex = "#12345F"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing text_color_hex" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.text_color_hex = "#FA345E"
-          user.save
-        end
-      end
-
-      it "enqueues resave articles job when changing profile_image" do
-        sidekiq_assert_enqueued_with(
-          job: Users::ResaveArticlesWorker,
-          args: [user.id],
-          queue: "medium_priority",
-        ) do
-          user.profile_image = "https://fakeimg.pl/300/"
-          user.save
-        end
-      end
-
-      Authentication::Providers.username_fields.each do |username_field|
-        it "enqueues resave articles job when changing #{username_field}" do
-          sidekiq_assert_enqueued_with(
-            job: Users::ResaveArticlesWorker,
-            args: [user.id],
-            queue: "medium_priority",
-          ) do
-            user.assign_attributes(username_field => "greatnewusername")
-            user.save
-          end
-        end
-
-        it "doesn't enqueue resave articles job when changing #{username_field} for a banned user" do
-          banned_user = create(:user, :banned)
-
-          expect do
-            banned_user.assign_attributes(username_field => "greatnewusername")
-            banned_user.save
-          end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
         end
       end
     end
@@ -1059,12 +955,6 @@ RSpec.describe User, type: :model do
   end
 
   describe "profiles" do
-    before do
-      create(:profile_field, label: "Available for")
-      create(:profile_field, label: "Brand Color 1")
-      Profile.refresh_attributes!
-    end
-
     it "automatically creates a profile for new users", :aggregate_failures do
       user = create(:user)
       expect(user.profile).to be_present
