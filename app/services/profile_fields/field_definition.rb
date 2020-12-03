@@ -20,16 +20,16 @@ module ProfileFields
 
       private
 
-      def field(label, input_type, placeholder: nil, description: nil, group: @group, display_area: "left_sidebar",
-                show_in_onboarding: false)
+      def field(label, input_type, **attributes)
+        attributes = attributes.reverse_merge(group: @group, display_area: "left_sidebar")
         fields << {
           label: label,
           input_type: input_type,
-          placeholder_text: placeholder,
-          description: description,
-          profile_field_group: group,
-          display_area: display_area,
-          show_in_onboarding: show_in_onboarding
+          placeholder_text: attributes["placeholder"],
+          description: attributes["description"],
+          profile_field_group: attributes["group"],
+          display_area: attributes["display_area"],
+          show_in_onboarding: attributes["show_in_onboarding"]
         }.compact
       end
     end
