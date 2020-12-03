@@ -8,6 +8,22 @@ function showMoreMenu({ target }) {
 }
 
 /**
+ * Gets a reference to InstantClick
+ *
+ * @returns {Promise<object>} The global instance of InstantClick.
+ */
+export async function getInstantClick() {
+  return new Promise((resolve) => {
+    const timer = setInterval(() => {
+      if (InstantClick) {
+        clearInterval(timer);
+        resolve(InstantClick);
+      }
+    });
+  });
+}
+
+/**
  * Initializes the hamburger menu for mobile navigation
  *
  * @param {HTMLElement[]} menus
