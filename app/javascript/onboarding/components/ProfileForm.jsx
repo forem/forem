@@ -199,8 +199,7 @@ class ProfileForm extends Component {
       communityConfig,
     } = this.props;
     const { profile_image_90, username, name } = this.user;
-    const { canSkip, groups, error, errorMessage } = this.state;
-    let sections = [];
+    const { canSkip, groups = [], error, errorMessage } = this.state;
 
     if (error) {
       return (
@@ -210,29 +209,27 @@ class ProfileForm extends Component {
       );
     }
 
-    if (groups) {
-      sections = groups.map((group) => {
-        return (
-          <div class="onboarding-profile-sub-section">
-            <h2>{group.name}</h2>
-            {group.description && (
-              <div class="color-base-60">{group.description})</div>
-            )}
-            <div>
-              {group.profile_fields.map((field) => {
-                return field.input_type === 'check_box'
-                  ? this.checkboxField(field)
-                  : field.input_type === 'color_field'
-                  ? this.colorField(field)
-                  : field.input_type === 'text_area'
-                  ? this.textAreaField(field)
-                  : this.textField(field);
-              })}
-            </div>
+    const sections = groups.map((group) => {
+      return (
+        <div class="onboarding-profile-sub-section">
+          <h2>{group.name}</h2>
+          {group.description && (
+            <div class="color-base-60">{group.description})</div>
+          )}
+          <div>
+            {group.profile_fields.map((field) => {
+              return field.input_type === 'check_box'
+                ? this.checkboxField(field)
+                : field.input_type === 'color_field'
+                ? this.colorField(field)
+                : field.input_type === 'text_area'
+                ? this.textAreaField(field)
+                : this.textField(field);
+            })}
           </div>
-        );
-      });
-    }
+        </div>
+      );
+    });
 
     return (
       <div
