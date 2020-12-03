@@ -10,12 +10,21 @@ function showMoreMenu({ target }) {
 /**
  * Gets a reference to InstantClick
  *
+ * @param {number} [waitTime=2000] The amount of time to wait
+ * until giving up waiting for InstantClick to exist
+ *
  * @returns {Promise<object>} The global instance of InstantClick.
  */
-export async function getInstantClick() {
-  return new Promise((resolve) => {
+export async function getInstantClick(waitTime = 2000) {
+  return new Promise((resolve, reject) => {
+    const failTimer = setTimeout(() => {
+      clearInterval(timer);
+      reject(new Error('Unable to resolve InstantClick'));
+    }, waitTime);
+
     const timer = setInterval(() => {
-      if (InstantClick) {
+      if (typeof InstantClick !== 'undefined') {
+        clearTimeout(failTimer);
         clearInterval(timer);
         resolve(InstantClick);
       }
