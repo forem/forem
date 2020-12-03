@@ -2,7 +2,7 @@
   <% if notification.json_data["aggregated_siblings"].length == 1 %>
     <% first_notification = notification.json_data["aggregated_siblings"].first %>
     <% cache "activity-profile-pic-#{first_notification['id']}-#{first_notification['profile_image_90']}" do %>
-      <a href="<%= first_notification["path"] %>" class="crayons-avatar crayons-avatar--l <% if notification.json_data["aggregated_siblings"].length == 1 %>m:crayons-avatar--xl<% end %> shrink-0">
+      <a href="<%= first_notification["path"] %>" class="crayons-avatar crayons-avatar--l <% if notification.json_data["aggregated_siblings"].length == 1 %>m:crayons-avatar--xl<% end %> shrink-0" tabindex="-1" aria-hidden="true">
         <img src="<%= first_notification["profile_image_90"] %>" class="crayons-avatar__image" alt="link to <%= first_notification["username"] %>'s profile" width="48" height="48">
       </a>
     <% end %>
@@ -18,7 +18,7 @@
     <% json_data_array = notification["json_data"]["aggregated_siblings"] %>
     <div class="flex mb-3">
       <% notification.json_data["aggregated_siblings"][0..10].each do |sibling| %>
-        <a href="<%= sibling["path"] %>" class="crayons-avatar crayons-avatar--l shrink-0 mx-1">
+        <a href="<%= sibling["path"] %>" class="crayons-avatar crayons-avatar--l shrink-0 mx-1" <% if sibling["id"] == json_data_array.first["id"] %> tabindex="-1" aria-hidden="true"<% end %>>
           <img src="<%= sibling["profile_image_90"] %>" class="crayons-avatar__image" alt="link to <%= sibling["name"] %>'s profile" width="32" height="32">
         </a>
       <% end %>
