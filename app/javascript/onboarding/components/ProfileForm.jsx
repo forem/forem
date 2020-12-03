@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
 import ColorField from './ColorField';
+import TextArea from './TextArea';
 
 import { FormField } from '@crayons';
 import { request } from '@utilities/http';
@@ -143,26 +144,6 @@ class ProfileForm extends Component {
     );
   }
 
-  textAreaField(field) {
-    return (
-      <FormField>
-        <label class="crayons-field__label" htmlFor={field.attribute_name}>
-          {field.label}
-        </label>
-        <textArea
-          class="crayons-textfield"
-          placeholder={field['placeholder_text']}
-          name={field.attribute_name}
-          id={field.attribute_name}
-          onChange={this.handleChange}
-        />
-        {field.description && (
-          <p class="crayons-field__description">{field.description}</p>
-        )}
-      </FormField>
-    );
-  }
-
   render() {
     const {
       prev,
@@ -198,7 +179,7 @@ class ProfileForm extends Component {
                   onColorChange={this.handleColorPickerChange}
                 />
               ) : field.input_type === 'text_area' ? (
-                this.textAreaField(field)
+                <TextArea field={field} onFieldChange={this.handleChange} />
               ) : (
                 this.textField(field)
               );
