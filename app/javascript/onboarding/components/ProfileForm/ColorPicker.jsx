@@ -4,13 +4,14 @@ import { FormField } from '@crayons';
 
 export default class ColorPicker extends Component {
   render() {
+    const { onColorChange } = this.props;
     const {
       attribute_name,
       placeholder_text,
       description,
       label,
-      onColorChange,
     } = this.props.field;
+
     return (
       <FormField>
         <label class="crayons-field__label" htmlFor={attribute_name}>

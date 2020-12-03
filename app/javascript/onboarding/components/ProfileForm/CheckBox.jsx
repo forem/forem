@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
 const CheckBox = (props) => {
-  const { attribute_name, description, label, onFieldChange } = props.field;
+  const { onFieldChange } = props;
+  const { attribute_name, description, label } = props.field;
 
   return (
     <FormField variant="checkbox">

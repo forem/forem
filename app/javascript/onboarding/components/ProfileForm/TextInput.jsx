@@ -3,13 +3,8 @@ import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
 const TextInput = (props) => {
-  const {
-    attribute_name,
-    placeholder_text,
-    description,
-    label,
-    onFieldChange,
-  } = props.field;
+  const { onFieldChange } = props;
+  const { attribute_name, placeholder_text, description, label } = props.field;
 
   return (
     <FormField>
