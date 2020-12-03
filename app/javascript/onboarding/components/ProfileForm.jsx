@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 
 import Navigation from './Navigation';
-import ColorPicker from './ColorPicker';
-import TextArea from './TextArea';
-import TextInput from './TextInput';
-import CheckBox from './CheckBox';
+import ColorPicker from './ProfileForm/ColorPicker';
+import TextArea from './ProfileForm/TextArea';
+import TextInput from './ProfileForm/TextInput';
+import CheckBox from './ProfileForm/CheckBox';
 
 import { request } from '@utilities/http';
 
