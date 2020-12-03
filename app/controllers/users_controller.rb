@@ -167,10 +167,7 @@ class UsersController < ApplicationController
 
     current_user.saw_onboarding = true
     authorize User
-    if current_user.save
-      success = true
-    end
-    render_update_response(success)
+    render_update_response(current_user.save)
   end
 
   def join_org
