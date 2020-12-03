@@ -146,21 +146,15 @@ class UsersController < ApplicationController
       sanitize_user_params
       current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
       current_user.profile_updated_at = Time.current
-      if current_user.save
-        success = true
-      end
     end
 
-    if params[:profile] && success == true
-      update_result = Profiles::Update.call(current_user, { profile: params[:profile].permit(Profile.attributes!) })
-
-      if update_result.success?
-        success = true
-      end
+    if current_user.save && params[:profile]
+      update_result = Profiles::Update.call(current_user, { profile: profile_params })
     end
+
     current_user.saw_onboarding = true
     authorize User
-    render_update_response(success)
+    render_update_response(update_result.success?)
   end
 
   def onboarding_checkbox_update
@@ -343,5 +337,9 @@ class UsersController < ApplicationController
     worker = FeatureFlag.enabled?(:feeds_import) ? Feeds::ImportArticlesWorker : RssReaderFetchUserWorker
 
     worker.perform_async(user.id)
+  end
+
+  def profile_params
+    params[:profile].permit(Profile.attributes)
   end
 end
