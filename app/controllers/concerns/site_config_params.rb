@@ -1,11 +1,10 @@
 module SiteConfigParams
-  extend ActiveSupport::Concern
   SPECIAL_PARAMS_TO_ADD = %w[authentication_providers email_addresses meta_keywords credit_prices_in_cents].freeze
   SPECIAL_PARAMS_TO_REMOVE = %w[auth_providers_to_enable].freeze
   def config_params
     has_emails = params.dig(:site_config, :email_addresses).present?
     params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if has_emails
-    params&.require(:site_config)&.permit(
+    params.require(:site_config)&.permit(
       (SiteConfig.keys - SPECIAL_PARAMS_TO_REMOVE + SPECIAL_PARAMS_TO_ADD).map(&:to_sym),
       authentication_providers: [],
       social_media_handles: SiteConfig.social_media_handles.keys,

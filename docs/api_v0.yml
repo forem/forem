@@ -652,7 +652,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Comment"
-    ConfigUpsert:
+    SiteConfig:
       type: object
       properties:
         site_config:
@@ -1831,7 +1831,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ConfigUpsert"
+              $ref: "#/components/schemas/SiteConfig"
       responses:
         "201":
           description: Newly updated config
