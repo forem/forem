@@ -172,7 +172,7 @@ class FollowUsers extends Component {
               className="onboarding-modal-scroll-container"
             >
               {users.map((user) => {
-                const seleted = selectedUsers.includes(user);
+                const selected = selectedUsers.includes(user);
                 return (
                   <li key={user.id}>
                     <button
@@ -180,7 +180,7 @@ class FollowUsers extends Component {
                       type="button"
                       onClick={() => this.handleClick(user)}
                       className={
-                        seleted
+                        selected
                           ? 'user content-row selected'
                           : 'user content-row unselected'
                       }
@@ -202,9 +202,10 @@ class FollowUsers extends Component {
                         data-testid="onboarding-user-following-status"
                         type="button"
                         className="user-following-status"
-                        aria-pressed={seleted}
+                        aria-pressed={selected}
+                        aria-label={`Follow ${user.name}`}
                       >
-                        {seleted ? 'Following' : 'Follow'}
+                        {selected ? 'Following' : 'Follow'}
                       </button>
                     </button>
                   </li>
