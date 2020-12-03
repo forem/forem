@@ -67,7 +67,7 @@
     <%= f.text_area :message, class: "crayons-textfield", placeholder: "...", value: @previous_message, required: true %>
   </div>
 
-  <% if ReCaptcha.call(current_user).enabled? %>
+  <% if ReCaptcha::CheckEnabled.call(current_user) %>
     <div class="recaptcha-tag-container">
       <%= recaptcha_tags site_key: SiteConfig.recaptcha_site_key %>
     </div>

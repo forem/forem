@@ -17,7 +17,7 @@ class RegistrationsController < Devise::RegistrationsController
     not_authorized if SiteConfig.waiting_on_first_user && ENV["FOREM_OWNER_SECRET"].present? &&
       ENV["FOREM_OWNER_SECRET"] != params[:user][:forem_owner_secret]
 
-    if ReCaptcha.for_registration_disabled? || recaptcha_verified?
+    if !ReCaptcha::CheckRegistrationEnabled.call || recaptcha_verified?
       build_resource(sign_up_params)
       resource.saw_onboarding = false
       resource.registered = true

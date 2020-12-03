@@ -9,6 +9,7 @@ module ProfileFields
         row[:profile_field_group] = ProfileFieldGroup.find_or_create_by(name: group)
         ProfileField.find_or_create_by(row)
       end
+      Profile.refresh_attributes!
     end
   end
 end

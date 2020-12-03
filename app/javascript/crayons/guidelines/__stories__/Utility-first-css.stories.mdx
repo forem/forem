@@ -1,0 +1,43 @@
+import { h } from 'preact';
+import '../../storybook-utilities/designSystem.scss';
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Utility-First CSS" />
+
+# Utility-First CSS
+
+Utility-First CSS makes it easier for developers to rapidly build and prototype
+front-end designs without touching actual CSS too much (or at all!).
+
+Imagine you have to create a container that has background color, border radius
+etc. Normally, you would write a piece of HTML and then create SCSS file for
+that and define all the styles. With Utility-First Classes/ the intention is to
+skip writing CSS. Instead you write only HTML that contains several class names,
+like this:
+
+```
+<div class="radius-default bg-accent-brand p-6 mb-4">Hello world!</div>
+```
+
+This element has several classes applied. Each responsible for different part of
+styling:
+
+|**Utility Class**|True CSS|
+|---|---|
+|**`radius-default`**|`border-radius: 5px;`|
+|**`bg-accent-brand`**|`background-color: #3b49df;`|
+|**`p-6`**|`padding: 24px;`|
+|**`mb-4`**|`margin-bottom: 16px;`|
+
+Wait, how does `p-6` equate to `24px`? Under the hood, we use lots of
+variables like this:
+
+--su-1: 4px; // `su` stands for _spacing unit_ --su-2: 8px; --su-3: 12px; ...
+--su-6: 24px; // that's our example: p-6 is literally `padding: var(--su-6);`
+...
+
+(btw. we have much more variables)
+
+In other words, our Utility-First Classes/ take into consideration all the UI
+patterns and guidelines we have established for Forem (font sizes, colors,
+spacing units, etc.) and thanks to this Forem provides more consistent UI.
