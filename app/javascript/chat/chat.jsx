@@ -1402,7 +1402,7 @@ export default class Chat extends Component {
       searchType: '',
       paginationNumber: 0,
     };
-    getChannels(searchParams, 'all', this.loadChannels);
+    getChannels(searchParams, {}, this.loadChannels);
   };
 
   handleMessageScroll = () => {
