@@ -106,6 +106,30 @@ class ProfileForm extends Component {
     Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
   }
 
+  renderAppropriateFieldType(field) {
+    switch (field.input_type) {
+      case 'check_box':
+        return (
+          <CheckBox field={field} onFieldChange={this.handleFieldChange} />
+        );
+      case 'color_field':
+        return (
+          <ColorPicker
+            field={field}
+            onColorChange={this.handleColorPickerChange}
+          />
+        );
+      case 'text_area':
+        return (
+          <TextArea field={field} onFieldChange={this.handleFieldChange} />
+        );
+      default:
+        return (
+          <TextInput field={field} onFieldChange={this.handleFieldChange} />
+        );
+    }
+  }
+
   render() {
     const {
       prev,
@@ -133,27 +157,7 @@ class ProfileForm extends Component {
           )}
           <div>
             {group.profile_fields.map((field) => {
-              return field.input_type === 'check_box' ? (
-                <CheckBox
-                  field={field}
-                  onFieldChange={this.handleFieldChange}
-                />
-              ) : field.input_type === 'color_field' ? (
-                <ColorPicker
-                  field={field}
-                  onColorChange={this.handleColorPickerChange}
-                />
-              ) : field.input_type === 'text_area' ? (
-                <TextArea
-                  field={field}
-                  onFieldChange={this.handleFieldChange}
-                />
-              ) : (
-                <TextInput
-                  field={field}
-                  onFieldChange={this.handleFieldChange}
-                />
-              );
+              return this.renderAppropriateFieldType(field);
             })}
           </div>
         </div>
