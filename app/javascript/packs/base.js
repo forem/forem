@@ -15,7 +15,7 @@ const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
 
 InstantClick.on('change', function () {
   const { currentPage } = document.getElementById('page-content').dataset;
-  setCurrentPageIconLink(currentPage);
+  setCurrentPageIconLink(currentPage, pageEntries);
 });
 
 const { currentPage } = document.getElementById('page-content').dataset;
