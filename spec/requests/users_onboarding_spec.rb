@@ -12,7 +12,7 @@ RSpec.describe "UsersOnboarding", type: :request do
         expect(user.saw_onboarding).to eq(true)
       end
 
-      it "updates the attributes on the user" do
+      it "updates the user's last_onboarding_page attribute" do
         params = { user: { last_onboarding_page: "v2: personal info form" } }
         expect do
           patch "/onboarding_update.json", params: params
