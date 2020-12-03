@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////
 //
 // All --base-* and --accent-* color variables will be used to generate
-// utility-first classes (see config/import.scss & base/colors.scss for
+// Utility-First Classes/ (see config/import.scss & base/colors.scss for
 // reference). Other color variables are more functional and define usage
 // of particular colors in components and views.
 
@@ -99,7 +99,7 @@
 
   // Footer
   --footer-bg: var(--base-20);
-  --footer-color: var(--base-60);
+  --footer-color: var(--base-70);
   --footer-link-color: var(--base-80);
   --footer-link-color-hover: var(--base-100);
 

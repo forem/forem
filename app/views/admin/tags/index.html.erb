@@ -1,26 +1,28 @@
 <div class="flex items-center mb-6">
-  <ul class="nav nav-pills">
-    <li class="nav-item">
-      <a href="/admin/tags" class="nav-link <%= "active" if params[:state].blank? %>">All</a>
-    </li>
-    <li class="nav-item">
-      <a href="/admin/tags?state=supported" class="nav-link <%= "active" if params[:state] == "supported" %>">Supported</a>
-    </li>
-    <li class="nav-item">
-      <a href="/admin/tags?state=unsupported" class="nav-link <%= "active" if params[:state] == "unsupported" %>">Unsupported</a>
-    </li>
-  </ul>
+  <div class="crayons-tabs">
+    <div class="nav-item">
+      <a href="/admin/tags" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:state].blank? %>">All</a>
+    </div>
+    <div class="nav-item">
+      <a href="/admin/tags?state=supported" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:state] == "supported" %>">Supported</a>
+    </div>
+    <div class="nav-item">
+      <a href="/admin/tags?state=unsupported" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:state] == "unsupported" %>">Unsupported</a>
+    </div>
+  </div>
 
-  <div class="ml-auto">
-    <%= form_tag(admin_tags_path, method: "get") do %>
-      <div class="form-group">
-        <%= text_field_tag(:search, params[:search], aria: { label: "Search" }) %>
-        <% if params[:state].present? %>
-          <%= hidden_field_tag(:state, params[:state]) %>
-        <% end %>
-        <%= submit_tag("Search") %>
-      </div>
+  <div class="m-auto">
+    <%= form_tag(admin_tags_path, method: "get", class: "inline-flex") do %>
+      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-textfield") %>
+      <% if params[:state].present? %>
+        <%= hidden_field_tag(:state, params[:state]) %>
+      <% end %>
+      <%= submit_tag("Search", class: "crayons-btn ml-2") %>
     <% end %>
+  </div>
+
+  <div class="justify-content-end ml-auto">
+    <%= link_to "Make A Tag", new_admin_tag_path, class: "crayons-btn" %>
   </div>
 </div>
 
@@ -40,7 +42,7 @@
   <tbody class="crayons-card">
     <% @tags.each do |tag| %>
       <tr>
-        <td><%= link_to tag.name, admin_tag_path(tag.id) %></td>
+        <td><%= link_to tag.name, edit_admin_tag_path(tag.id) %></td>
         <td><%= tag.id %></td>
         <td><%= tag.alias_for %></td>
         <td><%= tag.taggings_count %></td>

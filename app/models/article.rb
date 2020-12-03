@@ -379,6 +379,10 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
+  def co_author_ids_list=(list_of_co_author_ids)
+    self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
+  end
+
   private
 
   def search_score
@@ -423,7 +427,7 @@ class Article < ApplicationRecord
 
     self.description = processed_description if description.blank?
   rescue StandardError => e
-    errors[:base] << ErrorMessageCleaner.new(e.message).clean
+    errors[:base] << ErrorMessages::Clean.call(e.message)
   end
 
   def set_tag_list(tags)
@@ -695,8 +699,8 @@ class Article < ApplicationRecord
       author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
-      reason: "automatic_ban",
-      content: "User banned for too many spammy articles, triggered by autovomit.",
+      reason: "automatic_suspend",
+      content: "User suspended for too many spammy articles, triggered by autovomit.",
     )
   end
 

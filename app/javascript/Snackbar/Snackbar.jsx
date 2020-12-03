@@ -170,7 +170,7 @@ Snackbar.defaultProps = {
   pollingTime: 300,
 };
 
-Snackbar.displayName = 'SnackbarPoller';
+Snackbar.displayName = 'Snackbar';
 
 Snackbar.propTypes = {
   lifespan: PropTypes.number,

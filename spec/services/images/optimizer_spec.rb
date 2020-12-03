@@ -16,6 +16,10 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class.call(relative_asset_path)).to eq relative_asset_path
     end
 
+    it "does nothing when given nil" do
+      expect(described_class.call(nil)).to eq nil
+    end
+
     it "calls cloudinary if imgproxy is not enabled" do
       allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
       described_class.call(image_url)

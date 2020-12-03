@@ -4,7 +4,7 @@ import { Button, ButtonGroup } from '@crayons';
 import '../../storybook-utilities/designSystem.scss';
 
 export default {
-  title: '3_Components/ButtonGroup',
+  title: 'Components/ButtonGroup',
 };
 
 export const Default = () => {

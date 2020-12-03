@@ -89,7 +89,7 @@ function generateUtilityClassStories(cssProperty, cssRules) {
     import '../../crayons/storybook-utilities/designSystem.scss';
 
     export default {
-      title: '5_CSS Utility classes/${cssProperty}',
+      title: 'Utility-First Classes/${cssProperty}',
     };`,
   ];
 

@@ -66,6 +66,20 @@ RSpec.describe "Search", type: :request, proper_status: true do
     end
   end
 
+  describe "GET /search/usernames" do
+    let(:authorized_user) { create(:user) }
+    let(:names) { ["username"] }
+
+    it "returns json" do
+      sign_in authorized_user
+      allow(Search::User).to receive(:search_usernames).and_return(
+        names,
+      )
+      get "/search/usernames"
+      expect(response.parsed_body).to eq("result" => names)
+    end
+  end
+
   describe "GET /search/feed_content" do
     let(:mock_documents) { [{ "title" => "article1" }] }
 

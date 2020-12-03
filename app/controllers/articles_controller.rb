@@ -88,7 +88,7 @@ class ArticlesController < ApplicationController
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
-      @article.errors[:base] << ErrorMessageCleaner.new(e.message).clean
+      @article.errors[:base] << ErrorMessages::Clean.call(e.message)
     end
 
     respond_to do |format|

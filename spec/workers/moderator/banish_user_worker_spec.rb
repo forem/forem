@@ -33,7 +33,7 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
     end
 
     it "reassigns profile info" do
-      expect(user.currently_hacking_on).to eq("")
+      expect(user.currently_hacking_on).to be_blank
     end
 
     it "creates an entry in the BanishedUsers table" do
