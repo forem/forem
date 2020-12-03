@@ -27,7 +27,7 @@
     <% if @podcast.owners.present? %>
       <ul class="list-group list-group-flush mb-3">
         <% @podcast.owners.each do |owner| %>
-          <%= form_for @podcast, url: remove_admin_admin_podcast_path(@podcast.id), html: { method: :delete, class: "form-inline" } do |f| %>
+          <%= form_for @podcast, url: remove_owner_admin_podcast_path(@podcast.id), html: { method: :delete, class: "form-inline" } do |f| %>
             <li class="list-group-item w-100">
               <%= link_to "@#{owner.username}", "/#{owner.username}" %>
               <%= f.hidden_field :user_id, value: owner.id %>
@@ -44,7 +44,7 @@
       <p>Created by <%= link_to "@#{@podcast.creator.username}", "/#{@podcast.creator.username}" %></p>
     <% end %>
 
-    <%= form_for @podcast, url: add_admin_admin_podcast_path(@podcast.id), html: { method: :post } do |f| %>
+    <%= form_for @podcast, url: add_owner_admin_podcast_path(@podcast.id), html: { method: :post } do |f| %>
       <div class="form-group">
         <%= f.label "Add Owner (by user_id)", for: "podcast_user_id" %>
         <%= f.text_field :user_id, value: "", class: "form-control" %>
