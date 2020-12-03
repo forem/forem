@@ -125,15 +125,17 @@ export default class ConfigController extends Controller {
     const enabledIndicator = document.getElementById(
       `${provider}-enabled-indicator`,
     );
+
+    document
+      .getElementById(`${provider}-auth-settings`)
+      .classList.remove('hidden');
+    event.target.classList.add('hidden');
+
     if (event.target.dataset.buttonText === 'enable') {
       enabledIndicator.classList.add('visible');
       event.target.setAttribute('data-enable-auth', 'true');
       this.listAuthToBeEnabled();
     }
-    document
-      .getElementById(`${provider}-auth-settings`)
-      .classList.remove('hidden');
-    event.target.classList.add('hidden');
   }
 
   disableAuthProvider(event) {

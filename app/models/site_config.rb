@@ -30,7 +30,7 @@ class SiteConfig < RailsSettings::Base
   field :allowed_registration_email_domains, type: :array, default: %w[]
   field :display_email_domain_allow_list_publicly, type: :boolean, default: false
   field :require_captcha_for_email_password_registration, type: :boolean, default: false
-  field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
+  field :authentication_providers, type: :array, default: %w[]
   field :invite_only_mode, type: :boolean, default: false
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]

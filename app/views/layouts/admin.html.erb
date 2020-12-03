@@ -72,7 +72,7 @@
       <% end %>
       <%= yield %>
       <% if @help_url %>
-        <a class="admin-help-button crayons-btn crayons-btn--icon-rounded crayons-btn--s" href="<%= @help_url %>" target="_blank" rel="noopener noreferer" >
+        <a class="admin-help-button crayons-btn crayons-btn--icon-rounded crayons-btn--s" href="<%= @help_url %>" target="_blank" rel="noopener noreferer">
           <%= inline_svg_tag("circle-question.svg", aria: true, title: "Forem Admin Guide") %>
         </a>
       <% end %>

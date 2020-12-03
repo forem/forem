@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe Authentication::Authenticator, type: :service do
-  before { omniauth_mock_providers_payload }
+  before do
+    omniauth_mock_providers_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
 
   context "when authenticating through an unknown provider" do
     it "raises ProviderNotFound" do

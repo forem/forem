@@ -4,12 +4,6 @@ body {
 
   // This should be Storybook's root element.
   #root {
-    display: grid;
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr;
     padding: 2rem;
-    justify-items: center;
-    align-items: center;
-    height: 100vh;
   }
 }
