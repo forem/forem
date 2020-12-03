@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
+import { FormField } from '@crayons';
 
 /* eslint-disable camelcase */
 class ProfileForm extends Component {
@@ -92,7 +93,7 @@ class ProfileForm extends Component {
 
   checkboxField(field) {
     return (
-      <div class="crayons-field crayons-field--checkbox">
+      <FormField variant="checkbox">
         <input
           class="crayons-checkbox"
           type="checkbox"
@@ -106,13 +107,13 @@ class ProfileForm extends Component {
         {field.description && (
           <p class="crayons-field__description">{field.description}</p>
         )}
-      </div>
+      </FormField>
     );
   }
 
   textField(field) {
     return (
-      <div class="crayons-field">
+      <FormField>
         <label class="crayons-field__label" htmlFor={field.attribute_name}>
           {field.label}
         </label>
@@ -126,13 +127,13 @@ class ProfileForm extends Component {
         {field.description && (
           <p class="crayons-field__description">{field.description}</p>
         )}
-      </div>
+      </FormField>
     );
   }
 
   textAreaField(field) {
     return (
-      <div class="crayons-field">
+      <FormField>
         <label class="crayons-field__label" htmlFor={field.attribute_name}>
           {field.label}
         </label>
@@ -146,13 +147,13 @@ class ProfileForm extends Component {
         {field.description && (
           <p class="crayons-field__description">{field.description}</p>
         )}
-      </div>
+      </FormField>
     );
   }
 
   colorField(field) {
     return (
-      <div>
+      <FormField>
         <label class="crayons-field__label" htmlFor={field.attribute_name}>
           {field.label}
         </label>
@@ -176,7 +177,7 @@ class ProfileForm extends Component {
         {field.description && (
           <p class="crayons-field__description">{field.description}</p>
         )}
-      </div>
+      </FormField>
     );
   }
 
