@@ -47,6 +47,10 @@ class Podcast < ApplicationRecord
     User.with_role(:podcast_admin, self)
   end
 
+  def owners
+    User.with_role(:podcast_owner, self)
+  end
+
   def image_90
     Images::Profile.call(profile_image_url, length: 90)
   end

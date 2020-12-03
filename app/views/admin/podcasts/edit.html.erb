@@ -23,21 +23,21 @@
     <% end %>
   </div>
   <div class="crayons-card p-6">
-    <h4 class="mb-4">Manage Admins</h4>
-    <% if @podcast.admins.present? %>
+    <h4 class="mb-4">Manage Owners</h4>
+    <% if @podcast.owners.present? %>
       <ul class="list-group list-group-flush mb-3">
-        <% @podcast.admins.each do |admin| %>
+        <% @podcast.owners.each do |owner| %>
           <%= form_for @podcast, url: remove_admin_admin_podcast_path(@podcast.id), html: { method: :delete, class: "form-inline" } do |f| %>
             <li class="list-group-item w-100">
-              <%= link_to "@#{admin.username}", "/#{admin.username}" %>
-              <%= f.hidden_field :user_id, value: admin.id %>
+              <%= link_to "@#{owner.username}", "/#{owner.username}" %>
+              <%= f.hidden_field :user_id, value: owner.id %>
               <%= f.submit "Remove", class: "btn btn-danger btn-sm float-right" %>
             </li>
           <% end %>
         <% end %>
       </ul>
     <% else %>
-      <p>There are no admins for this podcast.</p>
+      <p>There are no owners for this podcast.</p>
     <% end %>
 
     <% if @podcast.creator.present? %>
@@ -46,10 +46,10 @@
 
     <%= form_for @podcast, url: add_admin_admin_podcast_path(@podcast.id), html: { method: :post } do |f| %>
       <div class="form-group">
-        <%= f.label "Add Admin (by user_id)", for: "podcast_user_id" %>
+        <%= f.label "Add Owner (by user_id)", for: "podcast_user_id" %>
         <%= f.text_field :user_id, value: "", class: "form-control" %>
       </div>
-      <%= f.submit "Add Admin", class: "btn btn-primary" %>
+      <%= f.submit "Add Owner", class: "btn btn-primary" %>
     <% end %>
   </div>
 
