@@ -100,7 +100,7 @@
 
   &__trigger {
     all: unset;
-    padding: var(--su-0);
+    padding: calc(var(--su-1) / 2);
     margin: 0 var(--su-1);
     border-radius: 50%;
     color: var(--header-icons-color);
