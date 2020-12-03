@@ -14,7 +14,7 @@ RSpec.describe "/admin/podcasts", type: :request do
 
     before do
       create(:podcast_episode, podcast: podcast)
-      user.add_role(:podcast_admin, Podcast.order(Arel.sql("RANDOM()")).first)
+      user.add_role(:podcast_owner, Podcast.order(Arel.sql("RANDOM()")).first)
     end
 
     it "renders success" do
@@ -29,32 +29,32 @@ RSpec.describe "/admin/podcasts", type: :request do
     end
   end
 
-  describe "Adding admin" do
-    it "adds an admin" do
+  describe "Adding owner" do
+    it "adds an owner" do
       expect do
-        post add_admin_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
+        post add_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
       end.to change(Role, :count).by(1)
       user.reload
-      expect(user.has_role?(:podcast_admin, podcast)).to be true
+      expect(user.has_role?(:podcast_owner, podcast)).to be true
     end
 
-    it "does nothing when adding an admin for non-existent user" do
-      post add_admin_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
+    it "does nothing when adding an owner for non-existent user" do
+      post add_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
       expect(response).to redirect_to(edit_admin_podcast_path(podcast))
     end
   end
 
-  describe "Removing admin" do
-    it "removes an admin" do
-      user.add_role(:podcast_admin, podcast)
+  describe "Removing owner" do
+    it "removes an owner" do
+      user.add_role(:podcast_owner, podcast)
       expect do
-        delete remove_admin_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
+        delete remove_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
       end.to change(Role, :count).by(-1)
-      expect(user.has_role?(:podcast_admin, podcast)).to be false
+      expect(user.has_role?(:podcast_owner, podcast)).to be false
     end
 
-    it "does nothing when removing an admin for non-existent user" do
-      delete remove_admin_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
+    it "does nothing when removing an owner for non-existent user" do
+      delete remove_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
       expect(response).to redirect_to(edit_admin_podcast_path(podcast))
     end
   end

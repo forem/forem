@@ -2,8 +2,8 @@ module Admin
   class PodcastsController < Admin::ApplicationController
     layout "admin"
 
-    before_action :find_podcast, only: %i[edit update fetch remove_admin add_admin]
-    before_action :find_user, only: %i[remove_admin add_admin]
+    before_action :find_podcast, only: %i[edit update fetch remove_owner add_owner]
+    before_action :find_user, only: %i[remove_owner add_owner]
 
     def index
       @podcasts = Podcast.left_outer_joins(:podcast_episodes)
@@ -34,19 +34,19 @@ module Admin
       redirect_to admin_podcasts_path
     end
 
-    def remove_admin
-      removed_roles = @user.remove_role(:podcast_admin, @podcast)
+    def remove_owner
+      removed_roles = @user.remove_role(:podcast_owner, @podcast)
       if removed_roles.empty?
         redirect_to edit_admin_podcast_path(@podcast), notice: "Error"
       else
-        redirect_to admin_podcasts_path, notice: "Removed admin"
+        redirect_to admin_podcasts_path, notice: "Removed owner"
       end
     end
 
-    def add_admin
-      role = @user.add_role(:podcast_admin, @podcast)
+    def add_owner
+      role = @user.add_role(:podcast_owner, @podcast)
       if role.persisted?
-        redirect_to admin_podcasts_path, notice: "Added admin"
+        redirect_to admin_podcasts_path, notice: "Added owner"
       else
         redirect_to edit_admin_podcast_path(@podcast), notice: "Error"
       end

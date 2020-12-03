@@ -78,8 +78,8 @@ Rails.application.routes.draw do
       resources :podcasts, only: %i[index edit update destroy] do
         member do
           post :fetch
-          post :add_admin
-          delete :remove_admin
+          post :add_owner
+          delete :remove_owner
         end
       end
 
