@@ -84,62 +84,62 @@
                 </a>
               <% end %>
               <% if SiteConfig.dev_to? %>
-                <% if @user.mastodon_url %>
+                <% if @user.mastodon_url.present? %>
                   <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("mastodon.svg", class: "crayons-icon", aria: true, title: "Mastodon logo") %>
                   </a>
                 <% end %>
-                <% if @user.facebook_url %>
+                <% if @user.facebook_url.present? %>
                   <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Facebook logo") %>
                   </a>
                 <% end %>
-                <% if @user.youtube_url %>
+                <% if @user.youtube_url.present? %>
                   <a href="<%= @user.youtube_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("youtube.svg", class: "crayons-icon", aria: true, title: "Youtube logo") %>
                   </a>
                 <% end %>
-                <% if @user.linkedin_url %>
+                <% if @user.linkedin_url.present? %>
                   <a href="<%= @user.linkedin_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("linkedin.svg", class: "crayons-icon", aria: true, title: "LinkedIn logo") %>
                   </a>
                 <% end %>
-                <% if @user.behance_url %>
+                <% if @user.behance_url.present? %>
                   <a href="<%= @user.behance_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("behance.svg", class: "crayons-icon", aria: true, title: "Behance logo") %>
                   </a>
                 <% end %>
-                <% if @user.stackoverflow_url %>
+                <% if @user.stackoverflow_url.present? %>
                   <a href="<%= @user.stackoverflow_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("stackoverflow.svg", class: "crayons-icon", aria: true, title: "StackOverflow logo") %>
                   </a>
                 <% end %>
-                <% if @user.dribbble_url %>
+                <% if @user.dribbble_url.present? %>
                   <a href="<%= @user.dribbble_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("dribbble.svg", class: "crayons-icon", aria: true, title: "Dribbble logo") %>
                   </a>
                 <% end %>
-                <% if @user.medium_url %>
+                <% if @user.medium_url.present? %>
                   <a href="<%= @user.medium_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("medium.svg", class: "crayons-icon", aria: true, title: "Medium logo") %>
                   </a>
                 <% end %>
-                <% if @user.gitlab_url %>
+                <% if @user.gitlab_url.present? %>
                   <a href="<%= @user.gitlab_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("gitlab.svg", class: "crayons-icon", aria: true, title: "GitLab logo") %>
                   </a>
                 <% end %>
-                <% if @user.instagram_url %>
+                <% if @user.instagram_url.present? %>
                   <a href="<%= @user.instagram_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("instagram.svg", class: "crayons-icon", aria: true, title: "Instagram logo") %>
                   </a>
                 <% end %>
-                <% if @user.twitch_url %>
+                <% if @user.twitch_url.present? %>
                   <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("twitch.svg", class: "crayons-icon", aria: true, title: "Twitch logo") %>
                   </a>
                 <% end %>
-                <% if @user.website_url %>
+                <% if @user.website_url.present? %>
                   <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
                     <%= inline_svg_tag("external.svg", class: "crayons-icon", aria: true, title: "External link icon") %>
                   </a>
