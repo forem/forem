@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
-const TextArea = (props) => {
+const TextInput = (props) => {
   const {
     attribute_name,
     placeholder_text,
@@ -16,7 +16,7 @@ const TextArea = (props) => {
       <label class="crayons-field__label" htmlFor={attribute_name}>
         {label}
       </label>
-      <textArea
+      <input
         class="crayons-textfield"
         placeholder={placeholder_text}
         name={attribute_name}
@@ -28,7 +28,7 @@ const TextArea = (props) => {
   );
 };
 
-TextArea.propTypes = {
+TextInput.propTypes = {
   field: PropTypes.shape({
     attribute_name: PropTypes.string.isRequired,
     placeholder_text: PropTypes.string.isRequired,
@@ -38,4 +38,4 @@ TextArea.propTypes = {
   }).isRequired,
 };
 
-export default TextArea;
+export default TextInput;

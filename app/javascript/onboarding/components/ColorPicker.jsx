@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
-export default class ColorField extends Component {
+export default class ColorPicker extends Component {
   render() {
     const {
       attribute_name,
@@ -39,7 +39,7 @@ export default class ColorField extends Component {
   }
 }
 
-ColorField.propTypes = {
+ColorPicker.propTypes = {
   field: PropTypes.shape({
     attribute_name: PropTypes.string.isRequired,
     placeholder_text: PropTypes.string.isRequired,
