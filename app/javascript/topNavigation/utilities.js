@@ -31,12 +31,15 @@ export function initializeMobileMenu(menus, moreMenus) {
  * @param {[string, HTMLElement][]} pageEntries
  */
 export function setCurrentPageIconLink(currentPage, pageEntries) {
-  pageEntries.forEach(([page, iconLink]) => {
-    if (currentPage === page) {
-      iconLink.blur();
-      iconLink.classList.add('crayons-header__link--current');
-    } else {
-      iconLink.classList.remove('crayons-header__link--current');
-    }
-  });
+  pageEntries
+    // Filter out nulls (means the user is logged out so most icons are not in the logged out view)
+    .filter(([, iconLink]) => iconLink)
+    .forEach(([page, iconLink]) => {
+      if (currentPage === page) {
+        iconLink.blur();
+        iconLink.classList.add('crayons-header__link--current');
+      } else {
+        iconLink.classList.remove('crayons-header__link--current');
+      }
+    });
 }
