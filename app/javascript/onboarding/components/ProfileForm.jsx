@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
 import { FormField } from '@crayons';
+import { request } from '@utilities/http';
 
 /* eslint-disable camelcase */
 class ProfileForm extends Component {
@@ -23,13 +24,22 @@ class ProfileForm extends Component {
   }
 
   componentDidMount() {
-    fetch('/profile_field_groups?onboarding=true')
-      .then((response) => response.json())
-      .then((data) => {
-        this.setState({ groups: data.profile_field_groups });
-      });
-
+    this.getProfielFieldGroups();
     updateOnboarding('v2: personal info form');
+  }
+
+  async getProfielFieldGroups() {
+    try {
+      const response = await request(`/profile_field_groups?onboarding=true`);
+      if (response.ok) {
+        const data = await response.json();
+        this.setState({ groups: data.profile_field_groups });
+      } else {
+        throw new Error(response.statusText);
+      }
+    } catch (error) {
+      this.setState({ error: true, errorMessage: error.toString() });
+    }
   }
 
   onSubmit() {
@@ -189,8 +199,16 @@ class ProfileForm extends Component {
       communityConfig,
     } = this.props;
     const { profile_image_90, username, name } = this.user;
-    const { canSkip, groups } = this.state;
+    const { canSkip, groups, error, errorMessage } = this.state;
     let sections = [];
+
+    if (error) {
+      return (
+        <div class="crayons-notice crayons-notice--danger">
+          An error occurred: {errorMessage}
+        </div>
+      );
+    }
 
     if (groups) {
       sections = groups.map((group) => {
