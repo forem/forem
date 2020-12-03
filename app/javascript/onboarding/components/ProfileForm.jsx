@@ -163,36 +163,6 @@ class ProfileForm extends Component {
     );
   }
 
-  colorField(field) {
-    return (
-      <FormField>
-        <label class="crayons-field__label" htmlFor={field.attribute_name}>
-          {field.label}
-        </label>
-        <div class="flex items-center w-100 m:w-50">
-          <input
-            placeholder={field['placeholder_text']}
-            class="crayons-textfield js-color-field"
-            type="text"
-            name={field.attribute_name}
-            id={field.attribute_name}
-            onChange={this.handleColorPickerChange}
-          />
-          <input
-            class="crayons-color-selector js-color-field ml-2"
-            type="color"
-            name={field.attribute_name}
-            id={field.attribute_name}
-            onChange={this.handleColorPickerChange}
-          />
-        </div>
-        {field.description && (
-          <p class="crayons-field__description">{field.description}</p>
-        )}
-      </FormField>
-    );
-  }
-
   render() {
     const {
       prev,
