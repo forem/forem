@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
+  ALLOWED_USER_PARAMS = %i[last_onboarding_page].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -143,8 +144,7 @@ class UsersController < ApplicationController
   def onboarding_update
     if params[:user]
       sanitize_user_params
-      permitted_user_params = %i[last_onboarding_page]
-      current_user.assign_attributes(params[:user].permit(permitted_user_params))
+      current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
       current_user.profile_updated_at = Time.current
       if current_user.save
         success = true
