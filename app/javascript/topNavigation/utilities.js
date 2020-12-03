@@ -1,13 +1,3 @@
-// The mapping here will never change for the duration of the current page life cycle.
-const pageLinkMapper = Object.freeze({
-  'notifications-index': document.getElementById('notifications-link'),
-  'chat_channels-index': document.getElementById('connect-link'),
-  'moderations-index': document.getElementById('moderation-link'),
-  'stories-search': document.getElementById('search-link'),
-});
-
-const defaultPageEntries = Object.entries(pageLinkMapper);
-
 function toggleBurgerMenu() {
   document.body.classList.toggle('hamburger-open');
 }
@@ -19,6 +9,9 @@ function showMoreMenu({ target }) {
 
 /**
  * Initializes the hamburger menu for mobile navigation
+ *
+ * @param {HTMLElement[]} menus
+ * @param {HTMLElement[]} moreMenus
  */
 export function initializeMobileMenu(menus, moreMenus) {
   menus.forEach((trigger) => {
@@ -33,11 +26,11 @@ export function initializeMobileMenu(menus, moreMenus) {
 /**
  * Sets the icon link visually for the current page if the current page
  * is one of the main icon links of the top navigation.
+ *
+ * @param {string} currentPage
+ * @param {[string, HTMLElement][]} pageEntries
  */
-export function setCurrentPageIconLink(
-  currentPage,
-  pageEntries = defaultPageEntries,
-) {
+export function setCurrentPageIconLink(currentPage, pageEntries) {
   pageEntries.forEach(([page, iconLink]) => {
     if (currentPage === page) {
       iconLink.blur();
