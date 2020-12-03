@@ -25,11 +25,11 @@ module ProfileFields
         fields << {
           label: label,
           input_type: input_type,
-          placeholder_text: attributes["placeholder"],
-          description: attributes["description"],
-          profile_field_group: attributes["group"],
-          display_area: attributes["display_area"],
-          show_in_onboarding: attributes["show_in_onboarding"]
+          placeholder_text: attributes[:placeholder],
+          description: attributes[:description],
+          profile_field_group: attributes[:group],
+          display_area: attributes[:display_area],
+          show_in_onboarding: attributes[:show_in_onboarding]
         }.compact
       end
     end
