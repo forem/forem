@@ -154,7 +154,7 @@ class UsersController < ApplicationController
 
     current_user.saw_onboarding = true
     authorize User
-    render_update_response(update_result.success?)
+    render_update_response(update_result&.success?)
   end
 
   def onboarding_checkbox_update
