@@ -8,6 +8,8 @@ class UserSubscriptionTag < LiquidTagBase
   ].freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze
+    const subscribeBtn = document.getElementById('subscribe-btn');
+
     function isUserSignedIn() {
       return document.head.querySelector('meta[name="user-signed-in"][content="true"]') !== null;
     }
@@ -91,7 +93,6 @@ class UserSubscriptionTag < LiquidTagBase
 
         if (noticeType === 'danger') {
           // Allow users to try resubscribing if they see an error message.
-          const subscribeBtn = document.getElementById('subscribe-btn');
           subscribeBtn.textContent = "Submit";
           subscribeBtn.disabled = false;
         }
@@ -182,7 +183,6 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function addConfirmationModalClickHandlers() {
-      const subscribeBtn = document.getElementById('subscribe-btn');
       if (subscribeBtn) {
         subscribeBtn.addEventListener('click', function(e) {
           showConfirmationModal();
@@ -217,7 +217,6 @@ class UserSubscriptionTag < LiquidTagBase
       // Hide any error messages previously rendered.
       hideResponseMessage();
 
-      const subscribeBtn = document.getElementById('subscribe-btn');
       subscribeBtn.textContent = "Submitting...";
       subscribeBtn.disabled = true;
 
