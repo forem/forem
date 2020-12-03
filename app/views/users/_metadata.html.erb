@@ -3,10 +3,10 @@
     <% header_fields.each do |title, value| %>
       <div class="crayons-definition">
         <strong class="crayons-definition__title">
-          <%= sanitized_sidebar title.titleize.to_s %>
+          <%= sanitized_sidebar title.titleize %>
         </strong>
         <p class="crayons-definition__value">
-          <%= sanitized_sidebar value.to_s %>
+          <%= sanitized_sidebar value %>
         </p>
       </div>
     <% end %>
