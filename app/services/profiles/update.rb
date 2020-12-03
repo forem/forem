@@ -23,10 +23,6 @@ module Profiles
       if update_successful?
         @success = true
         @user.touch(:profile_updated_at)
-        # TODO: @citizen428 Preserving a DEV specific feature for now, we should
-        # probably remove this sooner than later as it may not make much sense
-        # for other communities.
-        follow_hiring_tag if SiteConfig.dev_to?
         conditionally_resave_articles
       else
         errors.concat(@profile.errors.full_messages)
@@ -98,15 +94,6 @@ module Profiles
       @profile.data.slice!(*Profile.attributes)
 
       @profile.save!
-    end
-
-    def follow_hiring_tag
-      return unless @user.looking_for_work
-
-      hiring_tag = Tag.find_by(name: "hiring")
-      return unless hiring_tag && @user.following?(hiring_tag)
-
-      Users::FollowWorker.perform_async(@user.id, hiring_tag.id, "Tag")
     end
 
     def conditionally_resave_articles
