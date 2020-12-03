@@ -134,8 +134,8 @@
       color: var(--header-icons-color-hover);
     }
   }
-  &.showing :focus,
-  :focus {
+  &.showing .focus-visible:focus,
+  .focus-visible:focus {
     &.crayons-header__menu__trigger {
       border: 2px solid var(--header-button-focus-color);
       color: var(--header-button-focus-color);
