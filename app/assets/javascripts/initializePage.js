@@ -12,7 +12,7 @@
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
   initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
-  initializeTopBarIcons, initializeColorPicker
+  initializeColorPicker
 */
 
 function callInitializers() {
@@ -38,7 +38,6 @@ function callInitializers() {
     }
   }, 1);
 
-  initializeTopBarIcons();
   initializeBaseTracking();
   initializePaymentPointers();
   initializeTouchDevice();
