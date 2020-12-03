@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 import Navigation from './Navigation';
+import ColorField from './ColorField';
+
 import { FormField } from '@crayons';
 import { request } from '@utilities/http';
 
@@ -218,13 +220,18 @@ class ProfileForm extends Component {
           )}
           <div>
             {group.profile_fields.map((field) => {
-              return field.input_type === 'check_box'
-                ? this.checkboxField(field)
-                : field.input_type === 'color_field'
-                ? this.colorField(field)
-                : field.input_type === 'text_area'
-                ? this.textAreaField(field)
-                : this.textField(field);
+              return field.input_type === 'check_box' ? (
+                this.checkboxField(field)
+              ) : field.input_type === 'color_field' ? (
+                <ColorField
+                  field={field}
+                  onColorChange={this.handleColorPickerChange}
+                />
+              ) : field.input_type === 'text_area' ? (
+                this.textAreaField(field)
+              ) : (
+                this.textField(field)
+              );
             })}
           </div>
         </div>
