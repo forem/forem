@@ -19,7 +19,7 @@ RSpec.describe "UsersOnboarding", type: :request do
         end.to change(user, :last_onboarding_page)
       end
 
-      it "does not update attributes if params are empty" do
+      it "does not update the user's last_onboarding_page if it is empty" do
         params = { user: { last_onboarding_page: "" } }
         expect do
           patch "/onboarding_update.json", params: params
