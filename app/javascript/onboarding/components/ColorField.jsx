@@ -10,7 +10,7 @@ export default class ColorField extends Component {
       description,
       label,
       onColorChange,
-    } = this.props;
+    } = this.props.field;
     return (
       <FormField>
         <label class="crayons-field__label" htmlFor={attribute_name}>
