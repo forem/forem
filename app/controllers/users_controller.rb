@@ -273,7 +273,7 @@ class UsersController < ApplicationController
   end
 
   def render_update_response(success)
-    outcome = success == true ? "updated successfully" : "update failed"
+    outcome = success ? "updated successfully" : "update failed"
 
     respond_to do |format|
       format.json { render json: { outcome: outcome } }
