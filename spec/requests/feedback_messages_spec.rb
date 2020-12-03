@@ -10,6 +10,11 @@ RSpec.describe "feedback_messages", type: :request do
       # rubocop:enable RSpec/AnyInstance
     end
 
+    def mock_recaptcha_config_enabled
+      allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+      allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
+    end
+
     valid_abuse_report_params = {
       feedback_message: {
         feedback_type: "abuse-reports",
@@ -74,123 +79,122 @@ RSpec.describe "feedback_messages", type: :request do
       end
     end
 
-    describe "detailed scenarios where recaptcha is enabled" do
+    context "with valid params but recaptcha not passed" do
+      before { mock_recaptcha_config_enabled }
+
+      it "rerenders page" do
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        expect(response.body).to include("Make sure the forms are filled")
+      end
+
+      it "doesn't queues a slack message" do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
+          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+        end
+      end
+    end
+
+    context "when a user qualifies to bypass the recaptcha submits a report" do
+      let(:user) { create(:user, created_at: 3.months.ago) }
+
       before do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
+        mock_recaptcha_config_enabled
+        sign_in user
       end
 
-      context "with valid params but recaptcha not passed" do
-        it "rerenders page" do
+      it "creates a feedback message reported by the user without recaptcha" do
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
+      end
+
+      it "queues a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-          expect(response.body).to include("Make sure the forms are filled")
-        end
-
-        it "doesn't queues a slack message" do
-          sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
-            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-          end
         end
       end
+    end
 
-      context "when a user qualifies to bypass the recaptcha submits a report" do
-        let(:user) { create(:user, created_at: 3.months.ago) }
+    context "when a user doesn't qualify to bypass the recaptcha submits a report" do
+      let(:user) do
+        user = create(:user, created_at: 2.months.ago)
+        create(:reaction,
+               category: "vomit",
+               reactable: user,
+               user: create(:user, :trusted),
+               status: "confirmed")
+        user
+      end
 
-        before do
-          sign_in user
-        end
+      before do
+        mock_recaptcha_config_enabled
+        sign_in user
+      end
 
-        it "creates a feedback message reported by the user without recaptcha" do
+      it "fails to create a feedback message reported without recaptcha" do
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(false)
+      end
+
+      it "doesn't queue a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(0, only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-
-          expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
-        end
-
-        it "queues a slack message to be sent" do
-          sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-          end
         end
       end
+    end
 
-      context "when a user doesn't qualify to bypass the recaptcha submits a report" do
-        let(:user) do
-          user = create(:user, created_at: 2.months.ago)
-          create(:reaction,
-                 category: "vomit",
-                 reactable: user,
-                 user: create(:user, :trusted),
-                 status: "confirmed")
-          user
-        end
+    context "when a moderator submits a report" do
+      let(:user) { create(:user, :tag_moderator) }
 
-        before do
-          sign_in user
-        end
+      before do
+        mock_recaptcha_config_enabled
+        sign_in user
+      end
 
-        it "fails to create a feedback message reported without recaptcha" do
+      it "creates a feedback message reported by the moderator without recaptcha" do
+        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
+      end
+
+      it "queues a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-
-          expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(false)
-        end
-
-        it "doesn't queue a slack message to be sent" do
-          sidekiq_assert_enqueued_jobs(0, only: Slack::Messengers::Worker) do
-            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-          end
         end
       end
+    end
 
-      context "when a moderator submits a report" do
-        let(:user) { create(:user, :tag_moderator) }
+    context "when an anonymous user submits a report" do
+      before do
+        mock_recaptcha_config_enabled
+        mock_recaptcha_verification
+      end
 
-        before do
-          sign_in user
-        end
+      it "does not add any user as the reporter" do
+        post "/feedback_messages", params: valid_abuse_report_params, headers: headers
 
-        it "creates a feedback message reported by the moderator without recaptcha" do
+        expect(FeedbackMessage.last.reporter).to be(nil)
+      end
+
+      it "queues a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-
-          expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
-        end
-
-        it "queues a slack message to be sent" do
-          sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-          end
         end
       end
 
-      context "when an anonymous user submits a report" do
-        before do
-          mock_recaptcha_verification
-        end
+      it "redirects to the index page" do
+        post "/feedback_messages", params: valid_abuse_report_params, headers: headers
 
-        it "does not add any user as the reporter" do
-          post "/feedback_messages", params: valid_abuse_report_params, headers: headers
+        expect(response).to redirect_to(feedback_messages_path)
+      end
 
-          expect(FeedbackMessage.last.reporter).to be(nil)
-        end
+      it "redirects and continues to the index page with the correct message" do
+        post "/feedback_messages", params: valid_abuse_report_params, headers: headers
 
-        it "queues a slack message to be sent" do
-          sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-          end
-        end
+        follow_redirect!
 
-        it "redirects to the index page" do
-          post "/feedback_messages", params: valid_abuse_report_params, headers: headers
-
-          expect(response).to redirect_to(feedback_messages_path)
-        end
-
-        it "redirects and continues to the index page with the correct message" do
-          post "/feedback_messages", params: valid_abuse_report_params, headers: headers
-
-          follow_redirect!
-
-          expect(response.body).to include("Thank you for your report.")
-        end
+        expect(response.body).to include("Thank you for your report.")
       end
     end
   end
