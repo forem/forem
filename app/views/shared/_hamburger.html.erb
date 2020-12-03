@@ -10,34 +10,7 @@
 
     <div class="p-2">
       <%= render partial: "shared/auth_widget" unless user_signed_in? %>
-
-      <nav class="mb-6 <% unless user_signed_in? %>mt-4<% end %>" id="sidebar-nav" aria-label="Primary sidebar nav">
-        <a href="<%= root_path %>" class="crayons-link crayons-link--block">
-          <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
-          Home
-        </a>
-        <% unless user_signed_in? %>
-          <a href="<%= sign_up_path %>" class="crayons-link crayons-link--block fw-bold">
-            <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
-            Sign In/Up
-          </a>
-        <% end %>
-        <div class="sidebar-navigation-links">
-          <% NavigationLink.all.ordered[0..4].each do |link| %>
-            <%= render "layouts/sidebar_nav_link", link: link %>
-          <% end %>
-
-          <% if NavigationLink.all.length > 5 %>
-            <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s js-nav-more-trigger">More...</a>
-
-            <div class="hidden js-nav-more">
-              <% NavigationLink.all.ordered[5..].each do |link| %>
-                <%= render "layouts/sidebar_nav_link", link: link %>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-      </nav>
+      <%= render partial: "layouts/main_nav" %>
     </div>
   </div>
   <div class="hamburger__overlay js-hamburger-trigger"></div>
