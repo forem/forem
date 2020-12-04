@@ -48,6 +48,7 @@ RSpec.shared_examples "UserSubscriptionSourceable" do
       it "increments user_subscriptions_count" do
         expect do
           create(:user_subscription, user_subscription_sourceable: source)
+          UserSubscriptions::UpdateCounterCache.new.perform
         end.to change { source.reload.user_subscriptions_count }.by(1)
       end
     end
@@ -55,8 +56,10 @@ RSpec.shared_examples "UserSubscriptionSourceable" do
     context "when a UserSubscription is destroyed" do
       it "decrements user_subscriptions_count" do
         user_subscription = create(:user_subscription, user_subscription_sourceable: source)
+        UserSubscriptions::UpdateCounterCache.new.perform
         expect do
           user_subscription.destroy
+          UserSubscriptions::UpdateCounterCache.new.perform
         end.to change { source.reload.user_subscriptions_count }.by(-1)
       end
     end
