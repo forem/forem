@@ -174,6 +174,7 @@ class User < ApplicationRecord
   validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
+  validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_nil: true
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :sign_in_count, presence: true
@@ -184,7 +185,6 @@ class User < ApplicationRecord
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
   validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
   validates :welcome_notifications, inclusion: { in: [true, false] }
-  validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_nil: true
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -224,7 +224,7 @@ class User < ApplicationRecord
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :verify_email
   before_validation :set_username
-  before_save :clean_payment_pointer
+  before_validation :strip_payment_pointer
   before_create :set_default_language
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
@@ -673,9 +673,7 @@ class User < ApplicationRecord
     errors.add(:password, "doesn't match password confirmation")
   end
 
-  def clean_payment_pointer
-    return unless payment_pointer
-
-    self.payment_pointer = payment_pointer.strip
+  def strip_payment_pointer
+    self.payment_pointer = payment_pointer.strip if payment_pointer
   end
 end
