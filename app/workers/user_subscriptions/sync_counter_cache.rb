@@ -5,7 +5,7 @@ module UserSubscriptions
     sidekiq_options queue: :default, retry: 10
 
     def perform
-      UserSubscription.counter_culture_fix_counts only: %i[subscriber user_subscription_sourceable]
+      UserSubscription.counter_culture_fix_counts
     end
   end
 end

@@ -10,7 +10,6 @@ RSpec.describe UserSubscriptions::SyncCounterCache, type: :worker do
       allow(UserSubscription).to receive(:counter_culture_fix_counts)
       worker.perform
       expect(UserSubscription).to have_received(:counter_culture_fix_counts)
-        .with(only: %i[subscriber user_subscription_sourceable])
     end
   end
 end
