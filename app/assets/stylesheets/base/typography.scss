@@ -95,9 +95,10 @@ body {
   h5,
   h6 {
     font-family: var(--ff-sans-serif);
-    margin: 0 0 calc(var(--content-rhythm) / 2) 0;
+    margin: calc(var(--content-rhythm) / 2) 0;
     padding: 0;
     font-weight: var(--fw-bold);
+    line-height: var(--lh-tight);
   }
 
   h1 {
