@@ -1,6 +1,6 @@
 Display email on profile,check_box,,,Basic,settings_only
 Website URL,text_field,https://yoursite.com,,Basic,settings_only
-Summary,text_area,A short bio...,,Basic,header
+Summary,text_area,A short bio...,,Basic,settings_only
 Location,text_field,"Halifax, Nova Scotia",,Basic,header
 Facebook URL,text_field,https://facebook.com/...,,Links,settings_only
 Youtube URL,text_field,https://www.youtube.com/channel/...,,Links,settings_only
