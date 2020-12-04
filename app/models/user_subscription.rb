@@ -15,7 +15,7 @@ class UserSubscription < ApplicationRecord
   counter_culture :user_subscription_sourceable,
                   column_name: nil,
                   column_names: {
-                    true => "user_subscription_sourceable_count"
+                    true => "user_subscriptions_count"
                   }
 
   validates :author_id, presence: true
