@@ -20,6 +20,8 @@ module.exports = {
     // or eslint configuration files.
     '!app/javascript/**/*PropTypes.js',
     '!./**/.eslintrc.js',
+    // Ignore Storybook configuration files
+    '!app/javascript/.storybook/**/*.{js,jsx}',
   ],
   coverageThreshold: {
     global: {
