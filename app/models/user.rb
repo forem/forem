@@ -50,8 +50,14 @@ class User < ApplicationRecord
     invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
-  PAYMENT_POINTER_REGEXP = /\A.*\$\b(?!\S*[^[:print:]]).*\z/.freeze
-  CLEAN_PAYMENT_POINTER = /\$\b\S*/.freeze
+  # follow the synax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
+  PAYMENT_POINTER_REGEXP = %r{
+    \A                # start
+    \$                # starts with a dollar sign
+    ([a-zA-Z0-9\-.])+ # matches the hostname (ex ilp.uphold.com)
+    (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
+    \z                # end
+  }x.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
