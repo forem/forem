@@ -49,7 +49,9 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "shows the correct count of links" do
         visit "/"
-        within(".spec-sidebar-navigation-links") do
+        expect(page).to have_selector(".spec-sidebar-navigation-links", count: 2)
+
+        within(".spec-sidebar-navigation-links", match: :first) do
           expect(page).to have_selector(".sidebar-navigation-link", count: 1)
         end
       end
@@ -142,13 +144,13 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the correct count of links" do
-        within(".spec-sidebar-navigation-links") do
+        within(".spec-sidebar-navigation-links", match: :first) do
           expect(page).to have_selector(".sidebar-navigation-link", count: 3)
         end
       end
 
       it "shows the correct navigation_links" do
-        within(".spec-sidebar-navigation-links") do
+        within(".spec-sidebar-navigation-links", match: :first) do
           expect(page).to have_text(navigation_link_1.name)
           expect(page).to have_text(navigation_link_2.name)
           expect(page).to have_text(navigation_link_3.name)
@@ -156,7 +158,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the correct urls" do
-        within(".spec-sidebar-navigation-links") do
+        within(".spec-sidebar-navigation-links", match: :first) do
           expect(page).to have_link(href: navigation_link_1.url)
           expect(page).to have_link(href: navigation_link_2.url)
           expect(page).to have_link(href: navigation_link_3.url)
@@ -164,7 +166,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the correct order of the links" do
-        within(".spec-sidebar-navigation-links") do
+        within(".spec-sidebar-navigation-links", match: :first) do
           sidebar_navigation_link1 = page.find(".sidebar-navigation-link:nth-child(1)")
           expect(sidebar_navigation_link1).to have_text(navigation_link_1.name)
 
@@ -177,7 +179,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the count when the url /readinglist is added" do
-        within(".spec-sidebar-navigation-links") do
+        within(".spec-sidebar-navigation-links", match: :first) do
           within(".sidebar-navigation-link:nth-child(1)") do
             expect(page).to have_selector("#reading-list-count")
           end
