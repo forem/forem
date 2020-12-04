@@ -25,12 +25,13 @@ class Profile < ApplicationRecord
 
   # Generates typed accessors for all currently defined profile fields.
   def self.refresh_attributes!
-    return if ENV["ENV_AVAILABLE"] == "false"
     return unless Database.table_exists?("profiles")
 
     ProfileField.find_each do |field|
       store_attribute :data, field.attribute_name.to_sym, field.type
     end
+  rescue PG::ConnectionBad
+    puts "No database connections available. Assumed to be running assets:precompile."
   end
 
   # Returns an array of all currently defined `store_attribute`s on `data`.
