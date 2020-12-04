@@ -45,7 +45,7 @@ export default class ConfigController extends Controller {
     }
   }
 
-  closeAdminConfigModal() {
+  closeAdminModal() {
     this.configModalAnchorTarget.innerHTML = '';
     document.body.style.height = 'inherit';
     document.body.style.overflowY = 'inherit';
@@ -95,7 +95,7 @@ export default class ConfigController extends Controller {
       'Confirm disable',
       'disableEmailAuthFromModal',
       'Cancel',
-      'closeAdminConfigModal',
+      'closeAdminModal',
     );
     this.positionModalOnPage();
   }
@@ -103,7 +103,7 @@ export default class ConfigController extends Controller {
   disableEmailAuthFromModal(event) {
     event.preventDefault();
     this.disableEmailAuth(event);
-    this.closeAdminConfigModal(event);
+    this.closeAdminModal(event);
   }
 
   disableEmailAuth(event) {
@@ -171,7 +171,7 @@ export default class ConfigController extends Controller {
       'Confirm disable',
       'disableAuthProviderFromModal',
       'Cancel',
-      'closeAdminConfigModal',
+      'closeAdminModal',
       'auth-provider',
       provider,
     );
@@ -192,7 +192,7 @@ export default class ConfigController extends Controller {
     this.checkForAndGuardSoleAuthProvider();
     enabledIndicator.classList.remove('visible');
     this.hideAuthProviderSettings(event);
-    this.closeAdminConfigModal(event);
+    this.closeAdminModal(event);
   }
 
   checkForAndGuardSoleAuthProvider() {
@@ -245,35 +245,66 @@ export default class ConfigController extends Controller {
   }
   // AUTH PROVIDERS FUNCTIONS END
 
-  missingKeysOnEnabledAuthProvider() {
-    return true;
+  enabledProvidersWithMissingKeys() {
+    // gather all enabled auth providers
+    // for each, check if any of their keys is missing
+    // if yes, send auth provider name into array
+    // return array
+    const providersWithMissingKeys = [];
+    document
+      .querySelectorAll('[data-enable-auth="true"]')
+      .forEach((provider) => {
+        const providerName = provider.dataset.authProviderEnable;
+        const officialName = provider.dataset.authProviderOfficial;
+        if (
+          document.getElementById(`site_config_${providerName}_key`).value
+            .length === 0 ||
+          document.getElementById(`site_config_${providerName}_secret`).value
+            .length === 0
+        ) {
+          providersWithMissingKeys.push(officialName);
+        }
+      });
+
+    return providersWithMissingKeys;
+  }
+
+  generateProvidersList(providers) {
+    let list = '';
+    for (let i = 0; i < providers.length; i++) {
+      list += `<li>${providers[i]}</li>`;
+    }
+    return list;
   }
 
   missingKeysModalTitle() {
-    return '';
+    return 'Setup not complete';
   }
 
-  missingKeysModalBody() {
-    return '';
+  missingKeysModalBody(providers) {
+    return `<p>You haven't filled out all of the required fields properly to save these settings, specifically for: <ul>${this.generateProvidersList(
+      providers,
+    )}</ul></p>`;
   }
 
-  activateMissingKeysModal() {
+  activateMissingKeysModal(providers) {
     this.configModalAnchorTarget.innerHTML = adminModal(
       this.missingKeysModalTitle(),
-      this.missingKeysModalBody(),
-      'Confirm disable',
-      'disableAuthProviderFromModal',
-      'Cancel',
-      'closeAdminConfigModal',
-      'auth-provider',
-      'provider',
+      this.missingKeysModalBody(providers),
+      'Continue editing',
+      'closeAdminModal',
+      'Save anyway',
+      '', // this will be the function that Updates Configuration
+      'crayons-btn',
     );
   }
 
-  preventConfigUpdate(event) {
-    if (this.missingKeysOnEnabledAuthProvider) {
+  configUpdatePrecheck(event) {
+    if (this.enabledProvidersWithMissingKeys().length > 0) {
       event.preventDefault();
-      this.activateMissingKeysModal();
+      this.activateMissingKeysModal(this.enabledProvidersWithMissingKeys());
+    } else {
+      // function that carries on with normal Update Configuration
     }
   }
 }
