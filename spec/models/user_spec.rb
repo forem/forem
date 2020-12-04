@@ -550,17 +550,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context "when callbacks are triggered before save" do
-    describe "#clean_payment_pointer" do
-      let(:user) { build(:user) }
-
-      it "clean leading and trailing space in payment pointer" do
-        user.payment_pointer = " $example.com/value "
-        expect { user.save }.to change(user, :payment_pointer).from(" $example.com/value ").to("$example.com/value")
-      end
-    end
-  end
-
   context "when callbacks are triggered after save" do
     describe "subscribing to mailchimp newsletter" do
       let(:user) { build(:user) }
