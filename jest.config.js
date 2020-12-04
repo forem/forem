@@ -38,10 +38,10 @@ module.exports = {
   // picked up by jest if this folder is not excluded causing a false negative of a test suite failing.
   testPathIgnorePatterns: [
     '/node_modules/',
-    './config/webpack',
+    '<root_dir>/config/webpack',
     // Allows developers to add utility modules that jest won't run as test suites.
     '/__tests__/utilities/',
-    './app/javascript/storybook-static',
+    '<root_dir>/app/javascript/storybook-static',
   ],
   watchPlugins: [
     'jest-watch-typeahead/filename',
