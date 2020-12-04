@@ -194,7 +194,7 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "shows some in the 'More' section" do
         visit "/"
-        within(".spec-nav-more") do
+        within(".spec-nav-more", match: :first) do
           expect(page).to have_selector(".sidebar-navigation-link", count: 2)
         end
       end
