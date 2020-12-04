@@ -32,4 +32,17 @@ RSpec.describe Images::GenerateSocialImage, type: :labor do
       expect(described_class.call(article).include?(article.title)).to eq(true)
     end
   end
+
+  it "creates optimized images" do
+    allow(SiteConfig).to receive(:app_domain).and_return("example.com")
+    allow(Images::Optimizer).to receive(:call)
+
+    described_class.call(user)
+
+    expected_url = 
+      "http://example.com/social_previews/user/#{user.id}?bust=#{user.profile_image_url}"
+    
+    expect(Images::Optimizer).to \
+      have_received(:call).with(expected_url, Images::GenerateSocialImage::OPTIMIZER_OPTIONS)
+  end
 end
