@@ -103,6 +103,7 @@ RSpec.describe UserSubscription, type: :model do
       it "increments subscribed_to_user_subscriptions_count on user" do
         expect do
           create(:user_subscription, subscriber: user)
+          UserSubscriptions::UpdateCounterCache.new.perform
         end.to change { user.reload.subscribed_to_user_subscriptions_count }.by(1)
       end
     end
@@ -112,6 +113,7 @@ RSpec.describe UserSubscription, type: :model do
         user_subscription = create(:user_subscription, subscriber: user)
         expect do
           user_subscription.destroy
+          UserSubscriptions::UpdateCounterCache.new.perform
         end.to change { user.reload.subscribed_to_user_subscriptions_count }.by(-1)
       end
     end

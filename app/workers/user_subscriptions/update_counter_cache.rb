@@ -7,22 +7,20 @@ module UserSubscriptions
     def perform
       user_subscriptions = UserSubscription
         .where(created_at: 2.hours.ago..Time.current)
-        .select(:author_id, :user_subscription_sourceable_id)
-        .pluck(:author_id, :user_subscription_sourceable_id)
+        .select(:subscriber_id, :user_subscription_sourceable_id)
+        .pluck(:subscriber_id, :user_subscription_sourceable_id)
 
-      author_ids = Set.new(user_subscriptions.map(&:first))
+      subscriber_ids = Set.new(user_subscriptions.map(&:first))
       article_ids = Set.new(user_subscriptions.map(&:last))
 
-      author_ids.each do |id|
-        author = User.find(id)
-        author.subscribed_to_user_subscriptions_count = user.subscribers.count
-        author.save
+      subscriber_ids.each do |id|
+        subscriber = User.find(id)
+        subscriber.update!(subscribed_to_user_subscriptions_count: subscriber.subscribed_to_user_subscriptions.count)
       end
 
       article_ids.each do |id|
         article = Article.find(id)
-        article.user_subscriptions_count = artice.user_subscriptions.count
-        article.save
+        article.update(user_subscriptions_count: article.user_subscriptions.count)
       end
     end
   end
