@@ -16,6 +16,10 @@ module.exports = {
     '!**/__tests__/**',
     '!**/__stories__/**',
     '!app/javascript/storybook-static/**/*.js',
+    // We do not need code coverage on files that are prop types
+    // or eslint configuration files.
+    '!app/javascript/**/*PropTypes.js',
+    '!./**/.eslintrc.js',
   ],
   coverageThreshold: {
     global: {
