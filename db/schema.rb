@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_19_153512) do
+ActiveRecord::Schema.define(version: 2020_12_03_063435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -715,7 +715,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
-    t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
