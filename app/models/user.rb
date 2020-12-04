@@ -56,7 +56,7 @@ class User < ApplicationRecord
     \$                # starts with a dollar sign
     ([a-zA-Z0-9\-.])+ # matches the hostname (ex ilp.uphold.com)
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
-    \z                # end
+    \z
   }x.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
