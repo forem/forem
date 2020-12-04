@@ -50,7 +50,7 @@ class User < ApplicationRecord
     invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
-  # follow the synax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
+  # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
   PAYMENT_POINTER_REGEXP = %r{
     \A                # start
     \$                # starts with a dollar sign
