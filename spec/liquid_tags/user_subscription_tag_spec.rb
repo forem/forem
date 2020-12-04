@@ -63,7 +63,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
       expect(page).to have_css("#user-subscription-confirmation-modal", visible: :visible)
     end
 
-    it "displays a sucess mesage when a subscription is created" do
+    it "displays a sucess message when a subscription is created" do
       expect(page).to have_css("#subscription-signed-out", visible: :hidden)
       expect(page).to have_css("#subscriber-apple-auth", visible: :hidden)
       expect(page).to have_css("#response-message", visible: :hidden)
@@ -94,7 +94,9 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
       expect(page).to have_css("#subscription-signed-in", visible: :visible)
       click_button("Subscribe", id: "subscribe-btn")
       click_button("Confirm subscription", id: "confirmation-btn")
-      expect(page).to have_css("#subscription-signed-in", visible: :hidden)
+
+      # User should be able see the error and should be able to resubscribe.
+      expect(page).to have_css("#subscription-signed-in", visible: :visible)
       expect(page).to have_css("#response-message.crayons-notice--danger", visible: :visible)
 
       within "#response-message" do

@@ -19,9 +19,9 @@ RSpec.describe "User edits their extensions", type: :system, js: true do
       .to_return(status: 200, body: github_response_body.to_json, headers: { "Content-Type" => "application/json" })
   end
 
-  describe "via visiting /settings" do
+  describe "Stackbit" do
     before do
-      visit "/settings"
+      visit user_settings_path
     end
 
     it "has connect-to-stackbit prompt" do
@@ -35,6 +35,22 @@ RSpec.describe "User edits their extensions", type: :system, js: true do
 
       click_link "Extensions"
       expect(page).to have_text("Connected to Stackbit")
+    end
+  end
+
+  describe "Feed" do
+    before do
+      visit user_settings_path(:extensions)
+    end
+
+    it "fails if the feed URL is invalid" do
+      stub_request(:get, "https://medium.com/feed/alkdmksadksa")
+        .to_return(status: 200, body: "not an xml feed")
+
+      fill_in "user[feed_url]", with: "https://medium.com/feed/alkdmksadksa"
+      click_on "Submit Feed Settings"
+
+      expect(page).to have_text("Feed url is not a valid RSS/Atom feed")
     end
   end
 end

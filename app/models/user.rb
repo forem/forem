@@ -5,6 +5,42 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  # @citizen428 Preparing to drop profile columns from the users table
+  PROFILE_COLUMNS = %w[
+    available_for
+    behance_url
+    bg_color_hex
+    contact_consent
+    currently_hacking_on
+    currently_learning
+    currently_streaming_on
+    dribbble_url
+    education
+    email_public
+    employer_name
+    employer_url
+    employment_title
+    facebook_url
+    gitlab_url
+    instagram_url
+    linkedin_url
+    location
+    looking_for_work
+    looking_for_work_publicly
+    mastodon_url
+    medium_url
+    mostly_work_with
+    stackoverflow_url
+    summary
+    text_color_hex
+    twitch_url
+    twitch_username
+    website_url
+    youtube_url
+  ].freeze
+
+  self.ignored_columns = PROFILE_COLUMNS
+
   # NOTE: @citizen428 This is temporary code during profile migration and will
   # be removed.
   concerning :ProfileMigration do
@@ -15,24 +51,21 @@ class User < ApplicationRecord
       # instead. See `spec/factories/profiles.rb` for an example.
       attr_accessor :_skip_creating_profile
 
-      # NOTE: used for not sync-ing back data to profiles when the profile got
-      # updated first. This will eventually be removed:
-      attr_accessor :_skip_profile_sync
-
       # All new users should automatically have a profile
-      after_create_commit -> { Profile.create(user: self, data: Profiles::ExtractData.call(self)) },
-                          unless: :_skip_creating_profile
+      after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
 
-      # Keep saving changes locally for the time being, but propagate them to profiles.
-      after_update_commit :sync_profile
-
-      def sync_profile
-        return if _skip_profile_sync
-        return unless previous_changes.keys.any? { |attribute| attribute.in?(Profile.mapped_attributes) }
-
-        profile.update(data: Profiles::ExtractData.call(self))
+      # Getters and setters for unmapped profile attributes
+      (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
+        delegate column, "#{column}=", to: :profile, allow_nil: true
       end
-      private :sync_profile
+
+      # Getters and setters for mapped profile attributes
+      Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
+        define_method(user_attribute) { profile&.public_send(profile_attribute) }
+        define_method("#{user_attribute}=") do |value|
+          profile&.public_send("#{profile_attribute}=", value)
+        end
+      end
     end
   end
 
@@ -195,11 +228,9 @@ class User < ApplicationRecord
     validates username_field, uniqueness: { allow_nil: true }, if: :"#{username_field}_changed?"
   end
 
-  validate :conditionally_validate_summary
   validate :non_banished_username, :username_changed?
   validate :unique_including_orgs_and_podcasts, if: :username_changed?
   validate :validate_feed_url, if: :feed_url_changed?
-  validate :validate_mastodon_url
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -224,9 +255,11 @@ class User < ApplicationRecord
   before_create :set_default_language
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
+
+  # NOTE: @citizen428 Temporary while migrating to generalized profiles
+  after_save { |user| user.profile&.save if user.profile&.changed? }
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
-  after_save :conditionally_resave_articles
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
@@ -573,29 +606,8 @@ class User < ApplicationRecord
     end
   end
 
-  def conditionally_resave_articles
-    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !banned
-  end
-
   def bust_cache
     Users::BustCacheWorker.perform_async(id)
-  end
-
-  def core_profile_details_changed?
-    saved_change_to_username? ||
-      saved_change_to_name? ||
-      saved_change_to_summary? ||
-      saved_change_to_bg_color_hex? ||
-      saved_change_to_text_color_hex? ||
-      saved_change_to_profile_image? ||
-      Authentication::Providers.username_fields.any? { |f| public_send("saved_change_to_#{f}?") }
-  end
-
-  def conditionally_validate_summary
-    # Grandfather people who had a too long summary before.
-    return if summary_was && summary_was.size > 200
-
-    errors.add(:summary, "is too long.") if summary.present? && summary.size > 200
   end
 
   def validate_feed_url
@@ -610,17 +622,6 @@ class User < ApplicationRecord
     errors.add(:feed_url, "is not a valid RSS/Atom feed") unless valid
   rescue StandardError => e
     errors.add(:feed_url, e.message)
-  end
-
-  def validate_mastodon_url
-    return if mastodon_url.blank?
-
-    uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::Mastodon::ALLOWED_INSTANCES)
-
-    errors.add(:mastodon_url, "is not an allowed Mastodon instance")
-  rescue URI::InvalidURIError
-    errors.add(:mastodon_url, "is not a valid URL")
   end
 
   def tag_keywords_for_search

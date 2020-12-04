@@ -19,6 +19,12 @@
 
   <div class="crayons-card crayons-card--content-rows">
     <h2>User</h2>
+
+    <div class="crayons-field">
+      <%= f.label :name, class: "crayons-field__label" %>
+      <%= f.text_field "user[name]", maxlength: 30, class: "crayons-textfield", placeholder: "John Doe", value: @user.name %>
+    </div>
+
     <div class="crayons-field">
       <%= f.label :email, class: "crayons-field__label" %>
       <%= f.text_field "user[email]", class: "crayons-textfield", placeholder: "john.doe@example.com", value: @user.email %>

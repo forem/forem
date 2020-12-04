@@ -5,7 +5,7 @@
   </div>
 
   <div class="ml-auto">
-    <a href="/t/<%= @tag.name %>">View</a>
+    <a href="<%= tag_path(@tag.name) %>" class="crayons-btn crayons-btn--outlined" target="_blank" rel="noopener noreferer">View</a>
   </div>
 </header>
 
@@ -18,8 +18,8 @@
       <% if @tag_moderators.exists? %>
         <ul class="list-none">
           <% @tag_moderators.each do |user| %>
-              <li class="flex justify-between">
-                <a href="/<%= URL.user(user) %>">@<%= user.username %></a>
+              <li class="flex justify-between mb-2">
+                <a href="<%= URL.user(user) %>" target="_blank" rel="noopener noreferer">@<%= user.username %></a>
                 <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :delete, data: { remote: false } do |f| %>
                   <%= f.hidden_field :user_id, value: user.id %>
                   <%= f.submit "Remove", class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
@@ -41,5 +41,9 @@
       <% end %>
     </div>
   </div>
-  <%= render "form", tag: @tag, badges_for_options: @badges_for_options %>
+
+  <div class="crayons-card crayons-card--content-rows">
+    <h4>Edit details</h4>
+    <%= render "form", tag: @tag, badges_for_options: @badges_for_options %>
+  </div>
 </div>

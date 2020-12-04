@@ -3,7 +3,7 @@ import '../../storybook-utilities/designSystem.scss';
 import notes from './dropdowns.md';
 
 export default {
-  title: '3_Components/Dropdowns/HTML',
+  title: 'Components/Dropdowns/HTML',
   parameters: { notes },
 };
 
