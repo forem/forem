@@ -6,7 +6,17 @@ class UserSubscription < ApplicationRecord
 
   belongs_to :author, class_name: "User", inverse_of: :source_authored_user_subscriptions
   belongs_to :subscriber, class_name: "User", inverse_of: :subscribed_to_user_subscriptions
+  counter_culture :subscriber,
+                  column_name: nil,
+                  column_names: {
+                    true => "subscribed_to_user_subscriptions_count"
+                  }
   belongs_to :user_subscription_sourceable, polymorphic: true, optional: true
+  counter_culture :user_subscription_sourceable,
+                  column_name: nil,
+                  column_names: {
+                    true => "user_subscription_sourceable_count"
+                  }
 
   validates :author_id, presence: true
 
