@@ -23,6 +23,24 @@ RSpec.describe "Errors", type: :request do
 
       expect(response).to have_http_status(:internal_server_error)
     end
+
+    it "does not include the prompt to report on Forem GitHub" do
+      allow(SiteConfig).to receive(:app_domain).and_return("example.com")
+
+      get errors_internal_server_error_path
+
+      expect(response).to have_http_status(:internal_server_error)
+      expect(response.body).not_to include("github.com/forem/forem/issues")
+    end
+
+    it "includes the prompt to report on Forem GitHub for DEV" do
+      allow(SiteConfig).to receive(:app_domain).and_return("dev.to")
+
+      get errors_internal_server_error_path
+
+      expect(response).to have_http_status(:internal_server_error)
+      expect(response.body).to include("github.com/forem/forem/issues")
+    end
   end
 
   describe "GET /503" do

@@ -1,4 +1,7 @@
 class ErrorsController < ApplicationController
+  GITHUB_BUG_REPORT_DOMAINS = ["dev.to", "forem.dev"].freeze
+  GITHUB_BUG_REPORT_URL = "https://github.com/forem/forem/issues/new?template=bug_report.md".freeze
+
   # HTTP 404 - Not Found - https://httpstatuses.com/400
   def not_found
     render status: :not_found
@@ -11,6 +14,9 @@ class ErrorsController < ApplicationController
 
   # HTTP 500 - Internal Server Error - https://httpstatuses.com/500
   def internal_server_error
+    @github_bug_report_url = GITHUB_BUG_REPORT_URL
+    @display_github_bug_report_url = SiteConfig.app_domain.in?(GITHUB_BUG_REPORT_DOMAINS)
+
     render status: :internal_server_error
   end
 
