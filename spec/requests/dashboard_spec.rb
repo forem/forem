@@ -49,7 +49,7 @@ RSpec.describe "Dashboards", type: :request do
                subscriber_email: second_user.email,
                author_id: article_with_user_subscription_tag.user_id,
                user_subscription_sourceable: article_with_user_subscription_tag)
-        UserSubscriptions::UpdateCounterCache.new.perform
+        UserSubscriptions::SyncCounterCache.new.perform
         get "/dashboard"
         expect(response.body).to include "Subscriptions"
       end

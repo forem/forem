@@ -1,5 +1,5 @@
 module UserSubscriptions
-  class UpdateCounterCache
+  class SyncCounterCache
     include Sidekiq::Worker
 
     sidekiq_options queue: :default, retry: 10
