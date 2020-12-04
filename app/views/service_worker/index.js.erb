@@ -54,10 +54,10 @@
             const endFetch = Promise.resolve(cachedShellBottom);
             const middleFetch = fetch(url).then(response => {
               if (!response.ok && response.status === 404) {
-                return caches.match('/404.html');
+                return caches.match('/404');
               }
               if (!response.ok && response.status != 404) {
-                return caches.match('/500.html');
+                return caches.match('/500');
               }
               return response;
             }).catch(err => caches.match('/offline.html'));
