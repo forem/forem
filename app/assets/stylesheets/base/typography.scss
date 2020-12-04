@@ -2,17 +2,16 @@
 @import '../config/import';
 
 :root {
-  --content-rhythm: var(--su-2);
   --content-font-size: var(--fs-l);
   --content-secondary-font-size: var(--fs-base);
   --content-tertiary-font-size: var(--fs-base);
+  --content-rhythm: var(--content-font-size);
 
   @media (min-width: $breakpoint-s) {
     --content-secondary-font-size: var(--fs-l);
   }
 
   @media (min-width: $breakpoint-m) {
-    --content-rhythm: var(--su-4);
     --content-font-size: var(--fs-xl);
   }
 }
@@ -96,39 +95,51 @@ body {
   h5,
   h6 {
     font-family: var(--ff-sans-serif);
-    margin: var(--content-rhythm) 0;
-    margin-top: calc(var(--content-rhythm) * 2);
+    margin: 0 0 calc(var(--content-rhythm) / 2) 0;
     padding: 0;
     font-weight: var(--fw-bold);
   }
 
   h1 {
-    font-size: 1.85em;
+    font-size: 2em;
   }
 
   h2 {
-    font-size: 1.7em;
+    font-size: 1.8em;
   }
 
   h3 {
-    font-size: 1.32em;
+    font-size: 1.6em;
+  }
+
+  h4 {
+    font-size: 1.4em;
+  }
+
+  h5 {
+    font-size: 1.2em;
+  }
+
+  h6 {
+    font-size: 1em;
   }
 
   hr {
     width: 25%;
     opacity: 0.1;
+    border-radius: var(--radius);
     border: 1px solid var(--body-color);
-    margin: 1.3em auto 1.5em;
+    margin: calc(var(--content-rhythm) * 2) auto;
   }
 
   p {
-    margin: var(--content-rhythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
   }
 
   ul,
   ol {
     padding-left: var(--su-6);
-    margin: var(--content-rhythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
     br {
       line-height: 0;
       margin: 0;
@@ -154,10 +165,6 @@ body {
     }
   }
 
-  li {
-    margin: var(--su-2) 0;
-  }
-
   figure {
     margin: 0;
   }
@@ -177,13 +184,9 @@ body {
   }
 
   blockquote {
-    border-left: 4px solid var(--base-50);
-    padding: 0 var(--su-4);
-    margin: var(--content-rhythm) 0;
-
-    p:first-child {
-      margin: var(--su-2) 0;
-    }
+    border-left: 4px solid var(--base-20);
+    padding: 0 0 0 var(--content-rhythm);
+    margin: 0 0 var(--content-rhythm) 0;
 
     &.twitter-tweet {
       font-family: var(--ff-sans-serif);
@@ -226,14 +229,13 @@ body {
 
   pre:not(.highlight),
   div.highlight {
-    margin: var(--content-rhythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
   }
 
   img {
     height: auto;
-    position: relative;
     display: block;
-    margin: auto;
+    margin: 0 auto var(--content-rhythm) auto;
     max-width: 100%;
     max-height: calc(50vh + 180px);
     border-radius: var(--radius);
@@ -246,11 +248,11 @@ body {
   iframe {
     width: 100%;
     border: 0;
-    margin: var(--content-rhythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
   }
 
   .fluidvids {
-    margin: var(--content-rhythm) 0;
+    margin: 0 0 var(--content-rhythm) 0;
 
     iframe {
       margin: 0;
@@ -266,7 +268,7 @@ body {
   table {
     border-collapse: collapse;
     font-size: 0.78em;
-    margin: 0.8em auto 1.2em;
+    margin: 0 0 var(--content-rhythm) 0;
     table-layout: fixed;
 
     th {
@@ -283,6 +285,6 @@ body {
   }
 
   .twitter-tweet {
-    margin: auto;
+    margin: 0 0 var(--content-rhythm) 0;
   }
 }
