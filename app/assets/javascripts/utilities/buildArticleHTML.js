@@ -289,11 +289,11 @@ function buildArticleHTML(article) {
               ${meta}
             </div>\
             <div class="crayons-story__indention">
-              <h2 class="crayons-story__title">
+              <h3 class="crayons-story__title">
                 <a href="${article.path}" id="article-link-${article.id}">
                   ${filterXSS(article.title)}
                 </a>
-              </h2>\
+              </h3>\
               <div class="crayons-story__tags">
                 ${tagString}
               </div>\
