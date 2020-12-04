@@ -676,6 +676,6 @@ class User < ApplicationRecord
   def clean_payment_pointer
     return unless payment_pointer
 
-    self.payment_pointer = payment_pointer.scan(CLEAN_PAYMENT_POINTER).first
+    self.payment_pointer = payment_pointer.strip
   end
 end
