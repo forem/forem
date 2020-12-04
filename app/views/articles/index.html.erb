@@ -36,7 +36,8 @@
 
     <%# BEGIN Feed menu bar %>
     <main class="articles-list crayons-layout__content" id="articles-list" role="main">
-      <h1 class="visually-hidden-header">Articles</h1>
+      <h1 class="visually-hidden-header"><%= community_name %></h1>
+
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
