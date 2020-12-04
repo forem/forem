@@ -30,7 +30,7 @@ class Profile < ApplicationRecord
     ProfileField.find_each do |field|
       store_attribute :data, field.attribute_name.to_sym, field.type
     end
-  rescue PG::ConnectionBad
+  rescue PG::ConnectionBad # This method may run before the database is available.
     puts "No database connections available. Assumed to be running assets:precompile."
   end
 
