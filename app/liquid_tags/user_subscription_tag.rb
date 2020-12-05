@@ -8,20 +8,16 @@ class UserSubscriptionTag < LiquidTagBase
   ].freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze
-    const subscribeBtn = document.getElementById('subscribe-btn');
-
     function isUserSignedIn() {
       return document.head.querySelector('meta[name="user-signed-in"][content="true"]') !== null;
     }
 
     // Hiding/showing elements
-    // If clearSubscribeButton is false, we will not clear out the subscription-signed-in area,
-    // which will allow users to re-submit their subscription if they see any error messages.
     // ***************************************
-    function clearSubscriptionArea({ clearSubscribeButton = true } = {}) {
-      if (!clearSubscribeButton) {
-        // Allow users to try submitting again if they see an error.
-        hideSubscriptionSignedIn();
+    function clearSubscriptionArea() {
+      const subscriptionSignedIn = document.getElementById('subscription-signed-in');
+      if (subscriptionSignedIn) {
+        subscriptionSignedIn.classList.add("hidden");
       }
 
       const subscriptionSignedOut = document.getElementById('subscription-signed-out');
@@ -29,7 +25,10 @@ class UserSubscriptionTag < LiquidTagBase
         subscriptionSignedOut.classList.add("hidden");
       }
 
-      hideResponseMessage();
+      const responseMessage = document.getElementById('response-message');
+      if (responseMessage) {
+        responseMessage.classList.add("hidden");
+      }
 
       const subscriberAppleAuth = document.getElementById('subscriber-apple-auth');
       if (subscriberAppleAuth) {
@@ -37,15 +36,6 @@ class UserSubscriptionTag < LiquidTagBase
       }
 
       hideConfirmationModal();
-    }
-
-    // Hides the response message (which displays success/error messages) if it exists.
-    // ***************************************
-    function hideResponseMessage() {
-      const responseMessage = document.getElementById('response-message');
-      if (responseMessage) {
-        responseMessage.classList.add("hidden");
-      }
     }
 
     function showSignedIn() {
@@ -83,19 +73,12 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function showResponseMessage(noticeType, msg) {
-      clearSubscriptionArea(clearSubscribeButton = false);
-
+      clearSubscriptionArea();
       const responseMessage = document.getElementById('response-message');
       if (responseMessage) {
         responseMessage.classList.remove("hidden");
         responseMessage.classList.add(`crayons-notice--${noticeType}`);
         responseMessage.textContent = msg;
-
-        if (noticeType === 'danger') {
-          // Allow users to try resubscribing if they see an error message.
-          subscribeBtn.textContent = "Submit";
-          subscribeBtn.disabled = false;
-        }
       }
     }
 
@@ -113,7 +96,6 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function showSubscribed() {
-      hideSubscriptionSignedIn();
       updateSubscriberData();
       const authorUsername = document.getElementById('user-subscription-tag')?.dataset.authorUsername;
       const alreadySubscribedMsg = `You are already subscribed.`;
@@ -162,13 +144,6 @@ class UserSubscriptionTag < LiquidTagBase
       });
     }
 
-    function hideSubscriptionSignedIn() {
-      const subscriptionSignedIn = document.getElementById('subscription-signed-in');
-      if (subscriptionSignedIn) {
-        subscriptionSignedIn.classList.add("hidden");
-      }
-    }
-
     // Adding event listeners for 'click'
     // ***************************************
     function addSignInClickHandler() {
@@ -183,6 +158,7 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function addConfirmationModalClickHandlers() {
+      const subscribeBtn = document.getElementById('subscribe-btn');
       if (subscribeBtn) {
         subscribeBtn.addEventListener('click', function(e) {
           showConfirmationModal();
@@ -214,12 +190,6 @@ class UserSubscriptionTag < LiquidTagBase
     // API calls
     // ***************************************
     function submitSubscription() {
-      // Hide any error messages previously rendered.
-      hideResponseMessage();
-
-      subscribeBtn.textContent = "Submitting...";
-      subscribeBtn.disabled = true;
-
       const headers = {
         Accept: 'application/json',
         'X-CSRF-Token': window.csrfToken,
@@ -281,15 +251,12 @@ class UserSubscriptionTag < LiquidTagBase
     // Handle API responses
     // ***************************************
     function handleSubscription() {
-      hideConfirmationModal(); // Close the modal once the user has confirmed.
-
       submitSubscription().then(function(response) {
         if (response.success) {
           const userSubscriptionTag = document.getElementById('user-subscription-tag');
           const authorUsername = (userSubscriptionTag ? userSubscriptionTag.dataset.authorUsername : null);
           const successMsg = `You are now subscribed and may receive emails from ${authorUsername}`;
           showResponseMessage('success', successMsg);
-          hideSubscriptionSignedIn();
         } else {
           showResponseMessage('danger', response.error);
         }
