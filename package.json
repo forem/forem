@@ -124,7 +124,7 @@
     "jsdom": "^16.4.0",
     "lint-staged": "^10.5.3",
     "markdown-loader": "^6.0.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^5.0.0",
     "prettier": "^2.2.1",
     "redoc-cli": "0.10.1",
     "sass-loader": "^10.1.0",
