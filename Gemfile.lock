@@ -571,9 +571,8 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.3.0)
       loofah (~> 2.3)
-    rails-settings-cached (2.3.5)
+    rails-settings-cached (2.4.0)
       rails (>= 4.2.0)
-      request_store
     railties (6.0.3.4)
       actionpack (= 6.0.3.4)
       activesupport (= 6.0.3.4)
