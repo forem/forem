@@ -96,7 +96,7 @@
     "@storybook/addons": "^6.1.5",
     "@storybook/preact": "^6.1.9",
     "@testing-library/jest-dom": "^5.11.6",
-    "@testing-library/preact": "^2.0.0",
+    "@testing-library/preact": "^2.0.1",
     "@testing-library/preact-hooks": "^1.1.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
