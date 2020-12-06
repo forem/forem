@@ -2,20 +2,22 @@ import { Controller } from 'stimulus';
 
 export default class ImageUploadController extends Controller {
   static targets = ['fileField', 'imageResult'];
+  static values = { url: String };
 
   onFormSubmit(event) {
     event.preventDefault();
-    let token = document.getElementsByName('authenticity_token')[0].value;
-    let image = this.fileFieldTarget.files[0];
+
+    const token = document.getElementsByName('authenticity_token')[0].value;
+    const image = this.fileFieldTarget.files[0];
     let formData = new FormData();
 
     formData.append('authenticity_token', token);
     formData.append('image', image);
 
-    fetch('/image_uploads', {
+    fetch(this.urlValue, {
       method: 'POST',
       headers: {
-        'X-CSRF_Token': window.csrfToken,
+        'X-CSRF-Token': window.csrfToken,
       },
       body: formData,
       credentials: 'same-origin',
