@@ -213,7 +213,7 @@ class User < ApplicationRecord
   validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
-  validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_nil: true
+  validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_blank: true
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :sign_in_count, presence: true
