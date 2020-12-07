@@ -1,3 +1,26 @@
+/**
+ * A text area field with a label that reacts to an onFieldChange event.
+ *
+ * @example
+ * field = {
+ *  "id": 140,
+ *  "attribute_name": "summary",
+ *  "description": null,
+ *  "input_type": "text_area",
+ *  "label": "Summary",
+ *  "placeholder_text": "A short bio..."
+ *}
+ *
+ * @example
+ * <TextArea
+   key={field.id}
+   field={field}
+   onFieldChange={this.handleFieldChange} />
+
+ * Note:
+ * field is an json object that will contain the following attributes: attribute_name, placeholder_text, description, label.
+ */
+
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { FormField } from '@crayons';

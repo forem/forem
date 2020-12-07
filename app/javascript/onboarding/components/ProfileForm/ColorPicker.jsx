@@ -1,3 +1,24 @@
+/**
+ * A color input and a text input that reacts to an onColorChange change event.
+ *
+ * @example
+ * field = {
+ *  "id": 164,
+ *  "attribute_name": "brand_color1",
+ *  "description": "Used for backgrounds, borders etc.",
+ *  "input_type": "color_field",
+ *  "label": "Brand color 1",
+ *  "placeholder_text": "#000000"
+ * }
+ * <ColorPicker
+   key={field.id}
+   field={field}
+   onColorChange={this.handleColorPickerChange}/>
+
+ * Note:
+ * field is an json object that will contain the following attributes: attribute_name, placeholder_text, description, label.
+ */
+
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
