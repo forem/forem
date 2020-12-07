@@ -50,7 +50,7 @@ RSpec.describe "admin/users", type: :request do
         email = create(:email_message, user: user, to: user.email)
         get admin_user_path(user.id)
 
-        preview_url = "/admin/users/#{user.id}/email_messages/#{email.id}"
+        preview_url = "/admin/users/#{user.id}/email_message/#{email.id}"
         expect(response.body).to include(preview_url)
       end
     end
