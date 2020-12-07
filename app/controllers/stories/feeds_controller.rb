@@ -9,9 +9,9 @@ module Stories
     private
 
     def assign_feed_stories
-      stories = if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
+      stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
-                elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
+                elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
                   latest_feed
                 elsif user_signed_in?
                   signed_in_base_feed

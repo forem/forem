@@ -271,9 +271,9 @@ class StoriesController < ApplicationController
 
   def assign_feed_stories
     feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
-    if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
+    if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
-    elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
+    elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
       @stories = feed.latest_feed
     else
       @default_home_feed = true
@@ -343,7 +343,7 @@ class StoriesController < ApplicationController
 
   def stories_by_timeframe
     if %w[week month year infinity].include?(params[:timeframe])
-      @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime)
+      @stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
         .order(public_reactions_count: :desc)
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order(published_at: :desc)
