@@ -50,10 +50,6 @@ module Stories
 
     def optimized_signed_in_feed
       feed = Articles::Feeds::LargeForemExperimental.new(user: current_user, page: @page, tag: params[:tag])
-      # continue to track conversions even in the absence of an experiment so we
-      # can develop a baseline to compare to
-      field_test(:user_home_feed, participant: current_user)
-
       feed.more_comments_minimal_weight_randomized_at_end
     end
   end
