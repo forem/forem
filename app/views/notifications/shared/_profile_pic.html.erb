@@ -1,10 +1,10 @@
 <div class="relative self-start">
   <% if json_data["organization"] %>
-    <a class="crayons-logo crayons-logo--l m:crayons-logo--xl" href="<%= json_data["organization"]["path"] %>">
+    <a class="crayons-logo crayons-logo--l m:crayons-logo--xl" href="<%= json_data["organization"]["path"] %>" tabindex="-1" aria-hidden="true">
       <img alt="<%= json_data["organization"]["name"] %> logo" class="crayons-logo__image" src="<%= json_data["organization"]["profile_image_90"] %>" width="48" height="48">
     </a>
   <% end %>
-  <a href="<%= json_data["user"]["path"] %>" class="crayons-avatar <% if json_data["organization"] %> crayons-avatar--l absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted <% else %> crayons-avatar--l m:crayons-avatar--xl <% end %>">
+  <a href="<%= json_data["user"]["path"] %>" class="crayons-avatar <% if json_data["organization"] %> crayons-avatar--l absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted <% else %> crayons-avatar--l m:crayons-avatar--xl <% end %>" tabindex="-1" aria-hidden="true">
     <img src="<%= json_data["user"]["profile_image_90"] %>" class="crayons-avatar__image" alt="link to <%= json_data["user"]["username"] %>'s profile" width="48" height="48">
   </a>
 </div>
