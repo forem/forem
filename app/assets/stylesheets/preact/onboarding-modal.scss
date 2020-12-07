@@ -28,10 +28,10 @@
 // modal inner content spacing
 .onboarding-content {
   box-sizing: border-box;
-  flex: 1 auto;
   padding: var(--su-4);
   width: 100%;
-  max-height: calc(100vh - 70px);
+  height: 800px;
+  max-height: 90vh;
   overflow: auto;
 
   @media screen and (min-width: $breakpoint-s) {
@@ -201,41 +201,6 @@
   }
 }
 
-// modal selection status
-.onboarding-selection-status {
-  align-self: flex-end;
-  flex-shrink: 0;
-  width: 100%;
-  line-height: 100%;
-  height: 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  .selection-status-content {
-    display: block;
-    text-align: center;
-
-    .follow-count {
-      font-size: var(--su-4);
-      font-weight: var(--fw-medium);
-      line-height: var(--lh-base);
-
-      &--active {
-        font-weight: var(--fw-bold);
-      }
-    }
-
-    button {
-      background: none;
-      border: none;
-      padding: 0px;
-      color: var(--accent-brand);
-      font-size: var(--fs-s);
-    }
-  }
-}
-
 // override crayons notice
 .onboarding-body {
   .crayons-notice {
@@ -348,6 +313,7 @@
     flex-direction: column;
     justify-content: start;
     padding: var(--su-8);
+    height: auto;
 
     @media screen and (min-width: $breakpoint-s) {
       justify-content: center;
