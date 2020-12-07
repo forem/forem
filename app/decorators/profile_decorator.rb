@@ -9,6 +9,6 @@ class ProfileDecorator < ApplicationDecorator
     if SiteConfig.dev_to?
       names -= DEV_HEADER_FIELDS
     end
-    data.slice(*names).reject { |_, v| v.blank? }
+    data.slice(*names).select { |_, v| v.present? }
   end
 end
