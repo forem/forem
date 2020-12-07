@@ -83,6 +83,14 @@ class User < ApplicationRecord
     invalid_editor_version: "%<value>s must be either v1 or v2",
     reserved_username: "username is reserved"
   }.freeze
+  # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
+  PAYMENT_POINTER_REGEXP = %r{
+    \A                # start
+    \$                # starts with a dollar sign
+    ([a-zA-Z0-9\-.])+ # matches the hostname (ex ilp.uphold.com)
+    (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
+    \z
+  }x.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
@@ -205,6 +213,7 @@ class User < ApplicationRecord
   validates :inbox_type, inclusion: { in: INBOXES }
   validates :name, length: { in: 1..100 }
   validates :password, length: { in: 8..100 }, allow_nil: true
+  validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_nil: true
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :sign_in_count, presence: true
@@ -252,6 +261,7 @@ class User < ApplicationRecord
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :verify_email
   before_validation :set_username
+  before_validation :strip_payment_pointer
   before_create :set_default_language
   before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
@@ -668,5 +678,9 @@ class User < ApplicationRecord
     return true if password == password_confirmation
 
     errors.add(:password, "doesn't match password confirmation")
+  end
+
+  def strip_payment_pointer
+    self.payment_pointer = payment_pointer.strip if payment_pointer
   end
 end

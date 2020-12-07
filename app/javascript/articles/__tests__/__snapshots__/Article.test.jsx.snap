@@ -82,7 +82,7 @@ Object {
             <div
               class="crayons-story__indention"
             >
-              <h2
+              <h3
                 class="crayons-story__title"
               >
                 <a
@@ -93,7 +93,7 @@ Object {
                     Unbranded Home Loan Account
                   </span>
                 </a>
-              </h2>
+              </h3>
               <div
                 class="crayons-story__tags"
               >
@@ -294,7 +294,7 @@ Object {
           <div
             class="crayons-story__indention"
           >
-            <h2
+            <h3
               class="crayons-story__title"
             >
               <a
@@ -305,7 +305,7 @@ Object {
                   Unbranded Home Loan Account
                 </span>
               </a>
-            </h2>
+            </h3>
             <div
               class="crayons-story__tags"
             >
