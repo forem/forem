@@ -13,8 +13,12 @@
           <td><%= @email.to %></td>
         </tr>
         <tr>
-          <td>Feedback Message</td>
-          <td><%= @email.feedback_message_id.present? ? @email.feedback_message_id.present : "N/A" %></td>
+          <td>Abuse Report (Feedback Message)</td>
+          <% if @email.feedback_message_id.present? %>
+            <td><%= link_to "See report", admin_report_path(id: @email.feedback_message_id) %></td>
+          <% else %>
+            <td>N/A</td>
+          <% end %>
         </tr>
         <tr>
           <td>Sent at</td>
