@@ -213,7 +213,7 @@ class ProfileForm extends Component {
               <h3>{name}</h3>
               <p>{username}</p>
             </div>
-            <div>{groups && groups.length > 0 && sections}</div>
+            <div>{sections}</div>
           </div>
         </div>
       </div>
