@@ -1922,18 +1922,18 @@
     regenerator-runtime "^0.13.7"
     ts-dedent "^2.0.0"
 
-"@storybook/addon-storysource@^6.1.5":
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.1.5.tgz#f75c8798b2f2ec73d13ee07c21b3f80eaefdcc35"
-  integrity sha512-WEhL5NnKr/L1U5ceroOxSHFepLRDFxLhXXQy6nChU3cc+OPNBKBZmDBkZLK1jpaQW1JdoEo2M6vxjny354NAPw==
+"@storybook/addon-storysource@^6.1.10":
+  version "6.1.10"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-storysource/-/addon-storysource-6.1.10.tgz#a89ea1b14fb1d87da6582a627e3fec2f34f6370c"
+  integrity sha512-aNiUYUhhmg4EFaVl2PrmLH8PmqpSM6VdXbA9GrJjMr2wahLJyF1pGymF33Obb3NGCUTWYygW06GBYCq2SK5CrQ==
   dependencies:
-    "@storybook/addons" "6.1.5"
-    "@storybook/api" "6.1.5"
-    "@storybook/client-logger" "6.1.5"
-    "@storybook/components" "6.1.5"
-    "@storybook/router" "6.1.5"
-    "@storybook/source-loader" "6.1.5"
-    "@storybook/theming" "6.1.5"
+    "@storybook/addons" "6.1.10"
+    "@storybook/api" "6.1.10"
+    "@storybook/client-logger" "6.1.10"
+    "@storybook/components" "6.1.10"
+    "@storybook/router" "6.1.10"
+    "@storybook/source-loader" "6.1.10"
+    "@storybook/theming" "6.1.10"
     core-js "^3.0.1"
     estraverse "^4.2.0"
     loader-utils "^2.0.0"
@@ -2837,13 +2837,13 @@
     core-js "^3.6.5"
     find-up "^4.1.0"
 
-"@storybook/source-loader@6.1.5":
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/@storybook/source-loader/-/source-loader-6.1.5.tgz#e397010ffb28df41fe9fa6fdbb910838730b8735"
-  integrity sha512-cT3NvR79J7B1Hi11Ieyupt+OcqTcZ+evCNdH4rlHn+PsTgZeI2C/qnhKGWq8p91gDfFsNf91AY0kiqwOE1Vzpg==
+"@storybook/source-loader@6.1.10":
+  version "6.1.10"
+  resolved "https://registry.yarnpkg.com/@storybook/source-loader/-/source-loader-6.1.10.tgz#984bfe77dfecb989dbba2c0bf0a40d0b90013489"
+  integrity sha512-ovQa5hoM/AdIblSlPXa5RokEy3DIq/H+JZAOA8zIN6gn4ZrdROEhbztK0MB1jcMsVARrORRVSEg8us/AiMTfwQ==
   dependencies:
-    "@storybook/addons" "6.1.5"
-    "@storybook/client-logger" "6.1.5"
+    "@storybook/addons" "6.1.10"
+    "@storybook/client-logger" "6.1.10"
     "@storybook/csf" "0.0.1"
     core-js "^3.0.1"
     estraverse "^4.2.0"
@@ -9891,10 +9891,10 @@ human-signals@^1.1.1:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-1.1.1.tgz#c5b1cd14f50aeae09ab6c59fe63ba3395fe4dfa3"
   integrity sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==
 
-husky@^4.3.4:
-  version "4.3.4"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-4.3.4.tgz#676275a10ec5be2e893bd6ff71113bb829cc1f5b"
-  integrity sha512-wykHsss5kQtmbFrjQv0R7YyW1uFd7fv7gT1sA54potoDYmOTENJtBC/X1/AyoSAi1obp8CiGODOIdOGnPxSmFg==
+husky@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-4.3.0.tgz#0b2ec1d66424e9219d359e26a51c58ec5278f0de"
+  integrity sha512-tTMeLCLqSBqnflBZnlVDhpaIMucSGaYyX6855jM4AguGeWCeSzNdb1mfyWduTZ3pe3SJVvVWGL0jO1iKZVPfTA==
   dependencies:
     chalk "^4.0.0"
     ci-info "^2.0.0"

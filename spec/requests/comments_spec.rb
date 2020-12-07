@@ -318,7 +318,7 @@ RSpec.describe "Comments", type: :request do
       it "converts field test" do
         post "/comments", params: base_comment_params
 
-        expected_args = [user.id, :user_home_feed, "user_creates_comment"]
+        expected_args = [user.id, :follow_implicit_points, "user_creates_comment"]
         expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(*expected_args)
       end
     end

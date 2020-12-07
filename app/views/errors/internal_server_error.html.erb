@@ -62,7 +62,6 @@
 </head>
 
 <body>
-  <!-- This file lives in public/500.html -->
   <div class="unhandled-error-page base-background-color">
     <div class="dialog">
       <div>
@@ -70,7 +69,18 @@
         <h1>Ooooops...</h1>
         <h2>You have encountered an error.</h2>
       </div>
-      <p style="margin: 10%">Our team has been notified. Please feel welcome to also submit a public <a href="https://github.com/thepracticaldev/dev.to/issues/new?template=bug_report.md">bug report</a>. <br><br/>We apologize for any inconvenience.</p>
+
+      <p style="margin: 10%">
+        Our team has been notified.
+
+        <% if @display_github_bug_report_url %>
+          Please feel welcome to also submit a public
+          <a href="<%= @github_bug_report_url %>" target="_blank" rel="noopener noreferer">bug report</a>.
+        <% end %>
+
+        <br><br />
+        We apologize for any inconvenience.
+      </p>
     </div>
   </div>
 </body>

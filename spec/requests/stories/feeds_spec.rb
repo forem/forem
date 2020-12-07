@@ -127,23 +127,6 @@ RSpec.describe "Stories::Feeds", type: :request do
         sign_in user
       end
 
-      it "sets a field test when feed_strategy is optimized" do
-        allow(SiteConfig).to receive(:feed_strategy).and_return("optimized")
-        expect do
-          get "/stories/feed"
-        end.to change(user.field_test_memberships, :count).by(1)
-
-        ftm = user.field_test_memberships.last
-        expect(ftm.experiment).to eq("user_home_feed")
-      end
-
-      it "does not set a field test when feed_strategy is basic" do
-        allow(SiteConfig).to receive(:feed_strategy).and_return("basic")
-        expect do
-          get "/stories/feed"
-        end.not_to change(user.field_test_memberships, :count)
-      end
-
       it "returns feed when feed_strategy is basic" do
         allow(SiteConfig).to receive(:feed_strategy).and_return("basic")
         get "/stories/feed"
@@ -190,20 +173,6 @@ RSpec.describe "Stories::Feeds", type: :request do
 
         expect(response_article["top_comments"]).not_to be_nil
         expect(response_article["top_comments"].first["username"]).not_to be_nil
-      end
-    end
-
-    context "when user is signed in but there's no field_test" do
-      before do
-        sign_in user
-      end
-
-      it "does not set a field test" do
-        allow_any_instance_of(Stories::FeedsController).to receive(:field_test) # rubocop:disable RSpec/AnyInstance
-
-        expect do
-          get "/stories/feed"
-        end.not_to change(user.field_test_memberships, :count)
       end
     end
   end
