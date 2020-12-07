@@ -110,22 +110,35 @@ class ProfileForm extends Component {
     switch (field.input_type) {
       case 'check_box':
         return (
-          <CheckBox field={field} onFieldChange={this.handleFieldChange} />
+          <CheckBox
+            key={field.id}
+            field={field}
+            onFieldChange={this.handleFieldChange}
+          />
         );
       case 'color_field':
         return (
           <ColorPicker
+            key={field.id}
             field={field}
             onColorChange={this.handleColorPickerChange}
           />
         );
       case 'text_area':
         return (
-          <TextArea field={field} onFieldChange={this.handleFieldChange} />
+          <TextArea
+            key={field.id}
+            field={field}
+            onFieldChange={this.handleFieldChange}
+          />
         );
       default:
         return (
-          <TextInput field={field} onFieldChange={this.handleFieldChange} />
+          <TextInput
+            key={field.id}
+            field={field}
+            onFieldChange={this.handleFieldChange}
+          />
         );
     }
   }
@@ -150,7 +163,7 @@ class ProfileForm extends Component {
 
     const sections = groups.map((group) => {
       return (
-        <div class="onboarding-profile-sub-section">
+        <div key={group.id} class="onboarding-profile-sub-section">
           <h2>{group.name}</h2>
           {group.description && (
             <div class="color-base-60">{group.description})</div>
