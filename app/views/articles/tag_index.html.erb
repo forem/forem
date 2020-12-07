@@ -8,7 +8,7 @@
     <header class="tag-header crayons-card branded-4" style="border-top-color: <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>">
       <div class="flex gap-4">
         <% if @tag_model.badge_id && @tag_model.badge %>
-            <img src="<%= optimized_image_url(@tag_model.badge.badge_image_url, width: 64) %>" class="" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg); width: 64px; height: 64px;" />
+            <img src="<%= optimized_image_url(@tag_model.badge.badge_image_url, width: 64) %>" alt="" class="" style="transform: rotate(<%= -25 + (@tag_model.id.digits.first * 5) %>deg); width: 64px; height: 64px;" />
         <% end %>
         <div class="flex flex-col w-100 justify-center">
           <div class="flex justify-between items-center">
