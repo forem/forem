@@ -1,4 +1,4 @@
-name: Approve PR for running Buildkite  pipelines
+name: Approve PR for running Buildkite pipelines
 
 on:
   issue_comment:
@@ -15,6 +15,7 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           labels: ci
+
   build_containers:
     name: "Run Buildkite forem/build-containers pipeline"
     if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/ci') && github.event.comment.author_association == 'MEMBER'
