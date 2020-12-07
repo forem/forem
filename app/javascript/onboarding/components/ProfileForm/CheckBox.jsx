@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
-const CheckBox = (props) => {
+function CheckBox(props) {
   const { onFieldChange } = props;
   const { attribute_name, description, label } = props.field;
 
@@ -21,7 +21,7 @@ const CheckBox = (props) => {
       {description && <p class="crayons-field__description">{description}</p>}
     </FormField>
   );
-};
+}
 
 CheckBox.propTypes = {
   field: PropTypes.shape({

@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { FormField } from '@crayons';
 
-const TextArea = (props) => {
+function TextArea(props) {
   const { onFieldChange } = props;
   const { attribute_name, placeholder_text, description, label } = props.field;
 
@@ -21,7 +21,7 @@ const TextArea = (props) => {
       {description && <p class="crayons-field__description">{description}</p>}
     </FormField>
   );
-};
+}
 
 TextArea.propTypes = {
   field: PropTypes.shape({
