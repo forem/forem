@@ -36,17 +36,14 @@
 
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
-    padding: var(--su-7) var(--su-8) var(--su-8);
+    padding: var(--su-7) var(--su-8);
   }
-}
-
-.toggle-bottom {
-  padding-bottom: var(--su-4);
 }
 
 // terms and conditions view
 .terms-and-conditions-wrapper {
   $content-height: 358px;
+  height: auto;
 
   button {
     @extend .crayons-btn;
@@ -339,19 +336,24 @@
   }
 
   .introduction-title {
-    font-size: var(--fs-3xl);
+    font-size: var(--fs-2xl);
     font-weight: var(--fw-heavy);
     line-height: var(--lh-tight);
+    margin-bottom: var(--su-1);
 
     @media (min-width: $breakpoint-s) {
-      font-size: var(--fs-5xl);
+      font-size: var(--fs-4xl);
     }
   }
 
   .introduction-subtitle {
-    font-size: var(--fs-2xl);
+    font-size: var(--fs-l);
     font-weight: var(--fw-normal);
     line-height: var(--lh-base);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-xl);
+    }
   }
 
   .navigation-content {
