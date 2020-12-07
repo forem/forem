@@ -4,6 +4,10 @@ RSpec.describe EdgeCache::Bust, type: :service do
   let(:user) { create(:user) }
   let(:path) { "/#{user.username}" }
 
+  it "defines TIMEFRAMES" do
+    expect(described_class.const_defined?(:TIMEFRAMES)).to be true
+  end
+
   describe "#bust_fastly_cache" do
     let(:fastly_provider_class) { EdgeCache::Bust::Fastly }
 
