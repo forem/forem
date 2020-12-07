@@ -98,6 +98,8 @@ Rails.application.routes.draw do
         resource :moderator, only: %i[create destroy], module: "tags"
       end
       resources :users, only: %i[index show edit update] do
+        get "email_message/:id", to: "users#email_message"
+
         member do
           post "banish"
           post "export_data"

@@ -66,6 +66,11 @@ module Admin
       redirect_to edit_admin_user_path(user.id)
     end
 
+    def email_message
+      @user = User.find(params[:user_id])
+      @email = EmailMessage.find(params[:id])
+    end
+
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
       flash[:success] = "This user is being banished in the background. The job will complete soon."
