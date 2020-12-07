@@ -67,8 +67,8 @@ module PracticalDeveloper
     # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.
     config.action_dispatch.use_cookies_with_metadata = false
 
-    # After-initialize checker to add routes to reserved words
     config.after_initialize do
+      # Add routes to reserved words
       Rails.application.reload_routes!
       top_routes = []
       Rails.application.routes.routes.each do |route|
@@ -80,6 +80,9 @@ module PracticalDeveloper
         top_routes << route
       end
       ReservedWords.all = [ReservedWords::BASE_WORDS + top_routes].flatten.compact.uniq
+
+      # Set up all profile attributes when the app starts
+      Profile.refresh_attributes!
     end
   end
 end
