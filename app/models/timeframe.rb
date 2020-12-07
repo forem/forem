@@ -1,8 +1,14 @@
-class Timeframer
-  attr_accessor :timeframe
-
+class Timeframe
   LATEST_TIMEFRAME = "latest".freeze
   FILTER_TIMEFRAMES = %w[infinity year month week].freeze
+
+  def self.datetime(timeframe)
+    new(timeframe).datetime
+  end
+
+  def self.datetime_iso8601
+    new(timeframe).datetime&.iso8601
+  end
 
   def initialize(timeframe)
     @timeframe = timeframe
@@ -13,6 +19,8 @@ class Timeframer
   end
 
   private
+
+  attr_accessor :timeframe
 
   def datetimes
     @datetimes ||= {
