@@ -155,7 +155,7 @@ class ProfileForm extends Component {
 
     if (error) {
       return (
-        <div class="crayons-notice crayons-notice--danger">
+        <div role="alert" class="crayons-notice crayons-notice--danger">
           An error occurred: {errorMessage}
         </div>
       );
