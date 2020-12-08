@@ -2387,32 +2387,6 @@
     react-textarea-autosize "^8.1.1"
     ts-dedent "^2.0.0"
 
-"@storybook/components@6.1.5":
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/@storybook/components/-/components-6.1.5.tgz#4b5c6fc23dbc6ef24db94dbb15fc2df5e024dd53"
-  integrity sha512-j6Syr6NEzuzRp65C7NpWgMeMW4793c0D3v+YuUFFuAWnFf8Sw7/JrO6Kx6IN1VrC5zWh65DuY8CKWdza8Z+R0w==
-  dependencies:
-    "@popperjs/core" "^2.4.4"
-    "@storybook/client-logger" "6.1.5"
-    "@storybook/csf" "0.0.1"
-    "@storybook/theming" "6.1.5"
-    "@types/overlayscrollbars" "^1.9.0"
-    "@types/react-color" "^3.0.1"
-    "@types/react-syntax-highlighter" "11.0.4"
-    core-js "^3.0.1"
-    fast-deep-equal "^3.1.1"
-    global "^4.3.2"
-    lodash "^4.17.15"
-    markdown-to-jsx "^6.11.4"
-    memoizerific "^1.11.3"
-    overlayscrollbars "^1.10.2"
-    polished "^3.4.4"
-    react-color "^2.17.0"
-    react-popper-tooltip "^3.1.0"
-    react-syntax-highlighter "^13.5.0"
-    react-textarea-autosize "^8.1.1"
-    ts-dedent "^2.0.0"
-
 "@storybook/components@6.1.8":
   version "6.1.8"
   resolved "https://registry.yarnpkg.com/@storybook/components/-/components-6.1.8.tgz#bb4393a19480523583ae1a2629e32dab91ca6e15"
