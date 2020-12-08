@@ -30,7 +30,7 @@
       data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
       data-tag=""
       data-feed="<%= params[:timeframe] || "base-feed" %>"
-      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
+      data-articles-since="<%= Timeframe.datetime(params[:timeframe]) %>">
 
     <%= render "articles/sidebar" %>
 
