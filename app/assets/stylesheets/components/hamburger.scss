@@ -1,0 +1,49 @@
+@import '../config/import';
+
+.hamburger {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: none;
+
+  &__content {
+    background: var(--card-bg);
+    max-width: var(--layout-drawer-width);
+    width: 90%;
+    z-index: 1000;
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    &__header {
+      min-height: var(--header-height);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--su-1) 0 var(--su-4);
+      justify-content: space-between;
+      border-bottom: 1px solid var(--base-a10);
+    }
+  }
+
+  &__overlay {
+    background: var(--base-100);
+    opacity: 0.5;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 999;
+  }
+
+  .hamburger-open & {
+    display: block;
+    @media (min-width: $breakpoint-m) {
+      display: none;
+    }
+  }
+}

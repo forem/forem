@@ -2,6 +2,9 @@
 <header class="crayons-header print-hidden" role="banner">
   <a href="#articles-list" class="skip-content-link">Skip to content</a>
   <div class="crayons-header__container">
+    <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded js-hamburger-trigger inline-block m:hidden mx-2">
+      <%= inline_svg_tag("hamburger.svg", aria: true, class: "crayons-icon", title: "Navigation menu") %>
+    </button>
     <%= render "layouts/logo" %>
 
     <div id="pwa-nav-buttons" class="pwa-nav-buttons">
@@ -16,48 +19,48 @@
       </button>
     </div>
 
-    <div class="crayons-header--search" id="header-search">
-      <form acceptCharset="UTF-8" method="get" action="/search">
-        <input class="crayons-header--search-input crayons-textfield" type="text" name="q" id="nav-search" placeholder="Search..." autoComplete="off" />
+    <div class="crayons-header--search js-search-form" id="header-search">
+      <form accept-charset="UTF-8" method="get" action="<%= search_path %>">
+        <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="Search..." autocomplete="off" />
       </form>
     </div>
 
-    <div class="crayons-header__links">
+    <div class="flex items-center h-100 ml-auto">
+      <a class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded m:hidden <% unless user_signed_in? %>mx-2<% end %>" id="search-link" aria-label="Search" href="<%= search_path %>">
+        <%= inline_svg_tag("search.svg", aria: true, class: "crayons-icon", title: "Search") %>
+      </a>
       <% if user_signed_in? %>
-        <a href="/new" class="crayons-btn hidden mr-2 whitespace-nowrap s:block">Write a post</a>
+        <a href="<%= new_path %>" class="crayons-btn hidden mr-2 whitespace-nowrap m:block ml-auto">Write a post</a>
 
-        <a id="moderation-link" class="crayons-header__link trusted-visible-block" aria-label="Moderation" href="<%= mod_path %>">
+        <a id="moderation-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded hidden m:flex" aria-label="Moderation" href="<%= mod_path %>">
           <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
         </a>
 
-        <a href="/connect" id="connect-link" class="crayons-header__link" aria-label="Connect">
+        <a href="<%= connect_path %>" id="connect-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Connect">
           <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Connect") %>
           <span class="crayons-indicator crayons-indicator--accent hidden" id="connect-number"></span>
         </a>
 
-        <a href="/notifications" id="notifications-link" class="crayons-header__link" aria-label="Notifications">
+        <a href="<%= notifications_path %>" id="notifications-link" class="crayons-header__link crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Notifications">
           <%= inline_svg_tag("bell.svg", aria: true, class: "crayons-icon", title: "Notifications") %>
           <span class="crayons-indicator crayons-indicator--critical hidden" id="notifications-number"></span>
         </a>
+
+        <div class="crayons-header__menu" id="crayons-header__menu">
+          <button type="button" class="crayons-header__menu__trigger navigation-butt" id="navigation-butt" aria-label="Navigation menu">
+            <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" /></span>
+          </button>
+          <%= render "layouts/nav_menu" %>
+        </div>
       <% else %>
-        <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand hidden mr-2 whitespace-nowrap s:block" data-no-instant>
+        <a href="<%= sign_up_path %>" class="crayons-btn crayons-btn--ghost-brand mr-2 hidden m:block whitespace-nowrap ml-auto" data-no-instant>
           Log in
         </a>
 
-        <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn hidden mr-2 whitespace-nowrap s:block" data-no-instant>
+        <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn mr-2 whitespace-nowrap" data-no-instant>
           Create account
         </a>
       <% end %>
-      <div class="crayons-header__menu <% unless user_signed_in? %>s:hidden<% end %>" id="crayons-header__menu">
-        <button type="button" class="crayons-header__menu__trigger" id="navigation-butt" aria-label="Navigation menu">
-          <% if user_signed_in? %>
-            <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" width="32" height="32" /></span>
-          <% else %>
-            <%= inline_svg_tag("hamburger.svg", aria: true, class: "crayons-icon", title: "Navigation menu") %>
-          <% end %>
-        </button>
-        <%= render "layouts/nav_menu" %>
-      </div>
     </div>
   </div>
   <% if user_signed_in? %>
@@ -110,3 +113,5 @@
     </script>
   <% end %>
 </header>
+
+<%= render "shared/hamburger" %>

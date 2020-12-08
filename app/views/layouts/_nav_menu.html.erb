@@ -1,47 +1,22 @@
-<div class="crayons-dropdown left-2 right-2 s:left-auto p-0 crayons-header__menu__dropdown inline-block">
-  <% if user_signed_in? %>
-    <div id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">
-      <a id="first-nav-link" class="crayons-link crayons-link--block">
-        <div>
-          <span class="fw-medium block">...</span>
-          <small class="fs-s color-base-50"></small>
-        </div>
-      </a>
-    </div>
-
-    <div class="border-0 border-b-1 border-solid border-base-20 p-1">
-      <a href="<%= admin_path %>" class="crayons-link crayons-link--block js-header-menu-admin-link hidden" data-no-instant>Admin</a>
-      <a href="<%= dashboard_path %>" class="crayons-link crayons-link--block">Dashboard</a>
-      <a href="<%= new_path %>" class="crayons-link crayons-link--block">Write a Post</a>
-      <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a>
-      <a href="<%= user_settings_path %>" class="crayons-link crayons-link--block">Settings</a>
-    </div>
-    <div class="p-1">
-      <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
-    </div>
-
-  <% else %>
-    <div class="authentication-header__container border-0 border-b-1 border-solid border-base-20">
-      <figure class="authentication-header__image-container">
-        <img class="authentication-header__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
-              alt="Secondary <%= community_name %> logo" />
-      </figure>
-      <div class="authentication-header__content">
-        <h2 class="authentication-header__title">
-          <%= render "shared/authentication_title" %>
-        </h2>
-        <p class="authentication-header__description">
-          <%= render "shared/authentication_description" %>
-        </p>
-        <div class="authentication-header__actions">
-          <%= render "shared/authentication_actions" %>
-        </div>
+<div class="crayons-dropdown left-2 right-2 s:right-4 s:left-auto p-0 crayons-header__menu__dropdown inline-block">
+  <div id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">
+    <a id="first-nav-link" class="crayons-link crayons-link--block">
+      <div>
+        <span class="fw-medium block">...</span>
+        <small class="fs-s color-base-50"></small>
       </div>
-    </div>
-    <div class="border-0 border-b-1 border-solid border-base-20 p-1">
-      <a href="<%= about_path %>" class="crayons-link crayons-link--block" id="last-nav-link">
-        About <%= community_name %>
-      </a>
-    </div>
-  <% end %>
+    </a>
+  </div>
+
+  <div class="border-0 border-b-1 border-solid border-base-20 p-1">
+    <a href="<%= admin_path %>" class="crayons-link crayons-link--block js-header-menu-admin-link hidden" data-no-instant>Admin</a>
+    <a href="<%= dashboard_path %>" class="crayons-link crayons-link--block">Dashboard</a>
+    <a href="<%= new_path %>" class="crayons-link crayons-link--block">Write a Post</a>
+    <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a>
+    <a href="<%= user_settings_path %>" class="crayons-link crayons-link--block">Settings</a>
+  </div>
+  
+  <div class="p-1">
+    <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
+  </div>
 </div>
