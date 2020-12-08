@@ -188,7 +188,6 @@ RSpec.describe "StoriesShow", type: :request do
 
     it "handles invalid slug characters" do
       allow(Article).to receive(:find_by).and_raise(ArgumentError)
-      allow(Article).to receive(:where).and_raise(ArgumentError)
       get article.path
 
       expect(response.status).to be(400)

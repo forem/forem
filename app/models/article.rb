@@ -285,9 +285,9 @@ class Article < ApplicationRecord
   end
 
   def username
-    return organization.slug if organization
+    return organization.slug.downcase if organization
 
-    user.username
+    user.username.downcase
   end
 
   def current_state_path

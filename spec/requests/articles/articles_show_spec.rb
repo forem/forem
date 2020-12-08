@@ -18,18 +18,6 @@ RSpec.describe "ArticlesShow", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "returns a 200 status with a case insensitive check" do
-      # Creates an article and then capitalizes its path
-      bad_article = create(:article, user: user, published: true)
-      new_path = bad_article.path.titleize.split(" ").join("-")
-      bad_article.update_columns(path: new_path)
-
-      get bad_article.path
-      expect(response).to have_http_status(:ok)
-      get bad_article.path.downcase
-      expect(response).to have_http_status(:ok)
-    end
-
     # rubocop:disable RSpec/ExampleLength
     it "renders the proper JSON-LD for an article" do
       expect(response_json).to include(
