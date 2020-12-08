@@ -6,7 +6,7 @@ on:
 jobs:
   pull_request_comment:
     name: Comment on PR if coming from a forked repository
-    if: github.repository != 'forem/forem'
+    if: github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Add comment to PR if coming from third-party fork
