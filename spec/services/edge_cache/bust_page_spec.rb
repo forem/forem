@@ -13,7 +13,7 @@ RSpec.describe EdgeCache::BustPage, type: :service do
 
   before do
     paths.each do |path|
-      allow(described_class).to receive(:bust).with(path)
+      allow(described_class).to receive(:bust).with(path).once
     end
   end
 
