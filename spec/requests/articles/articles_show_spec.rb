@@ -18,13 +18,13 @@ RSpec.describe "ArticlesShow", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "returns a 200 status even if path does not match the case" do
-      article = create(:article, user: user, published: true, organization: organization)
-      article.path = "#{user.username.titleize}/#{article.slug.upcase}"
-      article.save
-      get article.path
-      # expect(response).to have_http_status(:ok)
-      # get article.path.upcase
+    it "returns a 200 status with a case insensitive check" do
+      test_slug = "test-slug-1234567"
+      test_path = "/#{user.username.titleize}/#{test_slug}"
+      create(:article, user: user, published: true, slug: test_slug, path: test_path)
+      get test_path
+      expect(response).to have_http_status(:ok)
+      get test_path.downcase
       expect(response).to have_http_status(:ok)
     end
 
