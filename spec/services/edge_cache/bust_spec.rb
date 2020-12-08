@@ -8,6 +8,15 @@ RSpec.describe EdgeCache::Bust, type: :service do
     expect(described_class.const_defined?(:TIMEFRAMES)).to be true
   end
 
+  it "adjusts TIMEFRAMES according to the current time" do
+    current_year = Time.current.year
+
+    Timecop.freeze(3.years.ago) do
+      timestamp, _interval = described_class::TIMEFRAMES.first
+      expect(timestamp.call.year).to be <= current_year - 3
+    end
+  end
+
   describe "#bust_fastly_cache" do
     let(:fastly_provider_class) { EdgeCache::Bust::Fastly }
 
