@@ -13,6 +13,7 @@
   background: var(--card-bg);
   font-size: var(--fs-base); // Todo: remove when ready.
   box-shadow: 0 0 0 1px var(--card-border);
+  margin-bottom: var(--su-2);
   position: relative;
 
   &:focus-within {
@@ -23,12 +24,13 @@
 
   @media (min-width: $breakpoint-m) {
     border-radius: var(--radius);
-    margin-bottom: var(
-      --su-2
-    ); // This is basically spacing between each feed card.
   }
 
-  --story-padding: var(--su-3) var(--su-2) var(--su-2);
+  @media (min-width: $breakpoint-l) {
+    margin-bottom: var(--su-3);
+  }
+
+  --story-padding: var(--su-3) var(--su-3) var(--su-2);
   --title-font-size: var(--fs-xl);
 
   @media (min-width: $breakpoint-s) {
@@ -87,16 +89,20 @@
   }
 
   &__indention {
-    padding-left: calc(
-      var(--su-7) + var(--su-2)
-    ); // avatar_width + avatar_margin
+    @media (min-width: $breakpoint-m) {
+      padding-left: calc(var(--su-7) + var(--su-2));
+    }
   }
 
   &__top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: var(--su-2);
+    margin-bottom: var(--su-3);
+
+    @media (min-width: $breakpoint-m) {
+      margin-bottom: var(--su-2);
+    }
   }
 
   &__overflow {
@@ -135,10 +141,14 @@
   &__title {
     color: var(--card-color);
     line-height: var(--lh-tight);
-    margin-bottom: var(--su-2);
     font-size: var(--title-font-size);
     overflow-wrap: anywhere;
     word-break: break-word;
+    margin-bottom: var(--su-1);
+
+    @media (min-width: $breakpoint-m) {
+      margin-bottom: var(--su-2);
+    }
 
     a {
       color: inherit;

@@ -1,6 +1,7 @@
 # A/B testing
 
-We use the [Field Test](https://github.com/ankane/field_test) gem for conducting simple A/B tests.
+We use the [Field Test](https://github.com/ankane/field_test) gem for conducting
+simple A/B tests.
 
 If you want to propose an A/B test of a feature, you may make a pull request
 which defines the hypotheses and what admins should look for to declare a winner.

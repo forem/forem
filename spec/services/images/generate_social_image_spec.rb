@@ -39,9 +39,9 @@ RSpec.describe Images::GenerateSocialImage, type: :labor do
 
     described_class.call(user)
 
-    expected_url = 
+    expected_url =
       "http://example.com/social_previews/user/#{user.id}?bust=#{user.profile_image_url}"
-    
+
     expect(Images::Optimizer).to \
       have_received(:call).with(expected_url, Images::GenerateSocialImage::OPTIMIZER_OPTIONS)
   end

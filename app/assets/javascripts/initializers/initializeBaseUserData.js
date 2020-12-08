@@ -1,27 +1,8 @@
 /* global filterXSS */
-
-function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile--avatar').src =
-    user.profile_image_90;
-  document.getElementById('sidebar-profile--avatar').alt = user.username;
-
-  document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
-    user.name,
-  );
-  document.getElementById('sidebar-profile--username').innerHTML =
-    '@' + user.username;
-  document.getElementById('sidebar-profile').href = '/' + user.username;
-}
-
 function initializeProfileImage(user) {
   if (!document.getElementById('comment-primary-user-profile--avatar')) return;
   document.getElementById('comment-primary-user-profile--avatar').src =
     user.profile_image_90;
-}
-
-function initializeUserSidebar(user) {
-  if (!document.getElementById('sidebar-nav')) return;
-  initializeUserProfileContent(user);
 }
 
 function addRelevantButtonsToArticle(user) {
@@ -112,7 +93,6 @@ function setCurrentUserToNavBar(user) {
 function initializeBaseUserData() {
   const user = userData();
   setCurrentUserToNavBar(user);
-  initializeUserSidebar(user);
   initializeProfileImage(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);

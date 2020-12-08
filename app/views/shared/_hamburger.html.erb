@@ -1,0 +1,17 @@
+<div class="hamburger">
+  <div class="hamburger__content">
+    <header class="hamburger__content__header">
+      <h2 class="fs-l fw-bold flex-1 break-word lh-tight"><%= community_qualified_name.to_s %></h2>
+
+      <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded js-hamburger-trigger shrink-0">
+        <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Close") %>
+      </button>
+    </header>
+
+    <div class="p-2">
+      <%= render partial: "shared/auth_widget" unless user_signed_in? %>
+      <%= render partial: "layouts/main_nav" %>
+    </div>
+  </div>
+  <div class="hamburger__overlay js-hamburger-trigger"></div>
+</div>
