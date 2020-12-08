@@ -11,13 +11,14 @@ name: Automatic Rebase
 jobs:
   rebase:
     name: Rebase
-    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/rebase') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER')
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout the latest code
+      uses: actions/checkout@v2
       with:
         fetch-depth: 0
     - name: Automatic Rebase
-      uses: cirrus-actions/rebase@1.3.1
+      uses: cirrus-actions/rebase@1.4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
