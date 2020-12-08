@@ -2,7 +2,7 @@
   <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
     <div class="sidebar-bg" id="sidebar-bg-right"></div>
     <div class="side-bar sidebar-additional showing" id="sidebar-additional">
-      <% active_threads = Article.active_threads([@tag, "discuss"], Timeframer.new(params[:timeframe]).datetime) %>
+      <% active_threads = Article.active_threads([@tag, "discuss"], Timeframe.datetime(params[:timeframe])) %>
       <% if active_threads.present? %>
         <div class="widget">
           <header>
@@ -23,7 +23,7 @@
         </div>
       <% else %>
         <% cache("seo-boostable-posts-for-tag-#{@tag}-#{params[:timeframe]}", expires_in: 18.hours) do %>
-          <% boostable_posts = Article.seo_boostable(@tag, Timeframer.new(params[:timeframe]).datetime) %>
+          <% boostable_posts = Article.seo_boostable(@tag, Timeframe.datetime(params[:timeframe])) %>
           <% if boostable_posts.present? %>
             <div class="widget">
               <header>
