@@ -1,5 +1,12 @@
 module EdgeCache
   class Bust
+    TIMEFRAMES = [
+      [-> { 1.week.ago }, "week"],
+      [-> { 1.month.ago }, "month"],
+      [-> { 1.year.ago }, "year"],
+      [-> { 5.years.ago }, "infinity"],
+    ].freeze
+
     def self.call(path)
       bust(path)
     end
