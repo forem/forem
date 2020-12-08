@@ -3,6 +3,7 @@ class ChatChannelMembershipsController < ApplicationController
   after_action :verify_authorized, except: %w[join_channel request_details]
 
   include MessagesHelper
+  include ChatChannelMembershipsHelper
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -38,16 +39,11 @@ class ChatChannelMembershipsController < ApplicationController
   def create_membership_request
     chat_channel = ChatChannel.find_by(id: channel_membership_params[:chat_channel_id])
     authorize chat_channel, :update?
-    usernames = channel_membership_params[:invitation_usernames].split(",").map do |username|
-      username.strip.delete("@")
-    end
-    users = User.where(username: usernames)
-    invitations_sent = chat_channel.invite_users(users: users, membership_role: "member", inviter: current_user)
-    message = if invitations_sent.zero?
-                "No invitations sent. Check for username typos."
-              else
-                "#{invitations_sent} #{'invitation'.pluralize(invitations_sent)} sent."
-              end
+    message = ChatChannels::SendInvitation.call(
+      channel_membership_params[:invitation_usernames],
+      current_user,
+      chat_channel,
+    )
 
     render json: { success: true, message: message, data: {} }, status: :ok
   end
@@ -138,7 +134,7 @@ class ChatChannelMembershipsController < ApplicationController
     user_chat_channels = ChatChannel.includes(:chat_channel_memberships).where(
       chat_channel_memberships: { user_id: current_user.id, role: "mod", status: "active" },
     )
-    @memberships = user_chat_channels.map(&:requested_memberships).flatten
+    @memberships = user_chat_channels.flat_map(&:requested_memberships)
     @user_invitations = ChatChannelMembership.where(
       user_id: current_user.id,
       status: %w[pending],
@@ -256,7 +252,7 @@ class ChatChannelMembershipsController < ApplicationController
       notice = "Invitation rejected."
     end
 
-    membership_user = helpers.format_membership(@chat_channel_membership)
+    membership_user = format_membership(@chat_channel_membership)
     flash[:settings_notice] = notice
 
     respond_to do |format|
@@ -273,7 +269,7 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def send_chat_action_message(message, user, channel_id, action)
-    temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
+    temp_message_id = SecureRandom.hex(20)
     message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id,
                              "chat_action" => action)
     pusher_message_created(false, message, temp_message_id) unless message.left_channel?

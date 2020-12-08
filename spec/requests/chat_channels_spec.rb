@@ -433,4 +433,29 @@ RSpec.describe "ChatChannels", type: :request do
       end
     end
   end
+
+  describe "POST /create_channel" do
+    it "create channel by mod users only" do
+      user.add_role(:tag_moderator)
+      post "/create_channel", params: {
+        chat_channel: {
+          channel_name: "dummy test",
+          invitation_usernames: ""
+        }
+      }
+      expect(response.status).to eq(200)
+      expect(response.parsed_body["success"]).to eq(true)
+    end
+
+    it "when non mod user logged in" do
+      expect do
+        post "/create_channel", params: {
+          chat_channel: {
+            channel_name: "dummy test",
+            invitation_usernames: ""
+          }
+        }
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
 end
