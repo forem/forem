@@ -17,7 +17,7 @@ jobs:
             For all pull requests coming from third-party forks we will need to
             review the PR before we can process it through our CI pipelines.
 
-            A Forem Team member will review this contribution and get back with
+            A Forem Team member will review this contribution and get back to
             you as soon as possible!
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
