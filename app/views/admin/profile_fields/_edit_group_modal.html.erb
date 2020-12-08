@@ -1,9 +1,9 @@
-<span data-controller="modal" class="mx-1">
+<span data-controller="modal" class="mx-1" data-modal-hidden-class="hidden">
   <button data-action="modal#toggleModal" class="crayons-btn crayons-btn--secondary">
     Edit group
   </button>
 
-  <div id="edit-group-<%= group_name %>-modal" class="hidden" data-target="modal.toggle">
+  <div id="edit-group-<%= group_name %>-modal" class="hidden" data-modal-target="toggle">
     <div class="crayons-modal crayons-modal--s">
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header">

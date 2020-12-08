@@ -18,28 +18,40 @@
   <div class="col-12">
     <ul class="nav nav-tabs nav-fill">
       <li class="nav-item">
-        <a href="/admin/articles" class="nav-link <%= "active" if params[:state].blank? %>">Hot</a>
+        <a href="<%= admin_articles_path %>" class="nav-link <%= "active" if params[:state].blank? %>">Hot</a>
       </li>
       <li class="nav-item">
-        <a href="/admin/articles?state=chronological" class="nav-link <%= "active" if params[:state] == "chronological" %>">Chronological</a>
+        <a
+          href="<%= admin_articles_path(state: :chronological) %>"
+          class="nav-link <%= "active" if params[:state] == "chronological" %>">Chronological</a>
       </li>
       <li class="nav-item">
-        <a href="/admin/articles?state=satellite" class="nav-link <%= "active" if params[:state] == "satellite" %>">Satellite</a>
+        <a
+          href="<%= admin_articles_path(state: :satellite) %>"
+          class="nav-link <%= "active" if params[:state] == "satellite" %>">Satellite</a>
       </li>
       <li class="nav-item">
         <span class="nav-link disabled">Not Buffered:</span>
       </li>
       <li class="nav-item">
-        <a href="/admin/articles?state=not-buffered-0.25" class="nav-link <%= "active" if params[:state] == "not-buffered-0.25" %>">6hr</a>
+        <a
+          href="<%= admin_articles_path(state: "not-buffered-0.25") %>"
+          class="nav-link <%= "active" if params[:state] == "not-buffered-0.25" %>">6hr</a>
       </li>
       <li class="nav-item">
-        <a href="/admin/articles?state=not-buffered-1" class="nav-link <%= "active" if params[:state] == "not-buffered-1" %>">1d</a>
+        <a
+          href="<%= admin_articles_path(state: "not-buffered-1") %>"
+          class="nav-link <%= "active" if params[:state] == "not-buffered-1" %>">1d</a>
       </li>
       <li class="nav-item">
-        <a href="/admin/articles?state=not-buffered-7" class="nav-link <%= "active" if params[:state] == "not-buffered-7" %>">7d</a>
+        <a
+          href="<%= admin_articles_path(state: "not-buffered-7") %>"
+          class="nav-link <%= "active" if params[:state] == "not-buffered-7" %>">7d</a>
       </li>
       <li class="nav-item">
-        <a href="/admin/articles?state=satellite-not-buffered" class="nav-link <%= "active" if params[:state] == "satellite-not-buffered" %>">Satellite</a>
+        <a
+          href="href="<%= admin_articles_path(state: "satellite-not-buffered") %>""
+          class="nav-link <%= "active" if params[:state] == "satellite-not-buffered" %>">Satellite</a>
       </li>
     </ul>
     <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
@@ -54,31 +66,53 @@
         <summary style="font-size: 1.3em; cursor: pointer;">Suggested Tweets (<%= @pending_buffer_updates.size %>)</summary>
         <% @pending_buffer_updates.each do |buffer_update| %>
           <% next unless buffer_update.article %>
-          <div class="card my-3" id="suggested-tweet-<%= buffer_update.id %>" data-controller="buffer" data-action="load@window->buffer#autosizeBodyText">
+          <div
+            class="card my-3"
+            id="suggested-tweet-<%= buffer_update.id %>"
+            data-controller="buffer"
+            data-action="load@window->buffer#autosizeBodyText"
+            data-buffer-bg-highlighted-class="bg-highlighted"
+            data-buffer-border-highlighted-class="border-highlighted">
             <div class="card-header">
-              <h2 class="my-0" data-target="buffer.header"><%= buffer_update.article.title %></h2>
+              <h2 class="my-0" data-buffer-target="header"><%= buffer_update.article.title %></h2>
             </div>
             <div class="card-body">
               <h4>Score: <%= buffer_update.article.score %></h4>
               <div class="blockquote">
-                <%= HTML_Truncator.truncate(buffer_update.article.processed_html, 50, ellipsis: "<a class=\"comment-read-more\" href=\"#{buffer_update.article.path}\">... Read Entire Post</a>").html_safe %>
+                <%= HTML_Truncator.truncate(
+                      buffer_update.article.processed_html,
+                      50,
+                      ellipsis: "<a class=\"comment-read-more\" href=\"#{buffer_update.article.path}\">... Read Entire Post</a>",
+                    ).html_safe %>
               </div>
               <hr />
 
               <code><b><%= Tag.find_by(id: buffer_update.tag_id)&.name || buffer_update.social_service_name %>:</b></code>
 
-              <%= form_with url: admin_buffer_update_path(buffer_update.id), class: "buffer-form buffer-confirm", html: { data: { action: "submit->buffer#highlightElement" } } do |f| %>
+              <%= form_with(
+                    url: admin_buffer_update_path(buffer_update.id),
+                    class: "buffer-form buffer-confirm",
+                    html: { data: { action: "submit->buffer#highlightElement" } },
+                  ) do |f| %>
                 <div class="form-group">
                   <input name="utf8" type="hidden" value="✓">
                   <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
                   <input type="hidden" name="_method" value="patch" />
                   <input type="hidden" name="status" value="confirmed" />
-                  <textarea class="w-100 suggested-tweet-body-text" name="body_text" class="form-control" data-target="buffer.bodyText"><%= buffer_update.body_text %></textarea>
+                  <textarea
+                    class="w-100 suggested-tweet-body-text"
+                    name="body_text"
+                    class="form-control"
+                    data-buffer-target="bodyText"><%= buffer_update.body_text %></textarea>
                 </div>
                 <button value="confirmed" name="status" class="btn btn-success" data-action="buffer#tagBufferUpdateConfirmed">Confirm</button>
               <% end %>
 
-              <%= form_with url: admin_buffer_update_path(buffer_update.id), class: "buffer-form buffer-dismiss", html: { data: { action: "submit->buffer#highlightElement" } } do |f| %>
+              <%= form_with(
+                    url: admin_buffer_update_path(buffer_update.id),
+                    class: "buffer-form buffer-dismiss",
+                    html: { data: { action: "submit->buffer#highlightElement" } },
+                  ) do |f| %>
                 <div class="form-group">
                   <input name="utf8" type="hidden" value="✓">
                   <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />

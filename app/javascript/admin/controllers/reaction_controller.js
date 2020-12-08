@@ -1,13 +1,16 @@
-/* eslint-disable no-alert */
 import { Controller } from 'stimulus';
 
 export default class ReactionController extends Controller {
   static targets = ['invalid', 'confirmed'];
+  static values = {
+    id: Number,
+    url: String,
+  };
 
-  // eslint-disable-next-line class-methods-use-this
-  /* eslint no-alert: "error" */
-  updateReaction(id, status) {
-    fetch(`/admin/reactions/${id}`, {
+  updateReaction(status) {
+    const id = this.idValue;
+
+    fetch(this.urlValue, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',
@@ -28,44 +31,43 @@ export default class ReactionController extends Controller {
             this.element.remove();
             document.getElementById(`js__reaction__div__hr__${id}`).remove();
           } else {
-            alert(json.error);
+            window.alert(json.error);
           }
         })
         .catch((error) => {
-          alert(error);
+          window.alert(error);
         }),
     );
   }
 
   updateReactionInvalid() {
-    this.updateReaction(this.reactionId, this.invalidStatus);
+    this.updateReaction(this.invalidStatus);
   }
 
   updateReactionConfirmed() {
-    this.updateReaction(this.reactionId, this.confirmedStatus);
+    this.updateReaction(this.confirmedStatus);
   }
 
   reactableUserCheck() {
     if (this.reactableType === 'user') {
-      // eslint-disable-next-line no-restricted-globals
-      if (confirm('You are confirming a User vomit reaction; are you sure?')) {
-        this.updateReaction(this.reactionId, this.confirmedStatus);
+      if (
+        window.confirm(
+          'You are confirming a User vomit reaction; are you sure?',
+        )
+      ) {
+        this.updateReaction(this.confirmedStatus);
       }
     } else {
-      this.updateReaction(this.reactionId, this.confirmedStatus);
+      this.updateReaction(this.confirmedStatus);
     }
-  }
-
-  get reactionId() {
-    return parseInt(this.data.get('id'), 10);
-  }
-
-  get confirmedStatus() {
-    return this.confirmedTarget.dataset.status;
   }
 
   get reactableType() {
     return this.confirmedTarget.dataset.reactable;
+  }
+
+  get confirmedStatus() {
+    return this.confirmedTarget.dataset.status;
   }
 
   get invalidStatus() {

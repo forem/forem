@@ -164,7 +164,7 @@
     "prop-types": "^15.7.2",
     "pusher-js": "^7.0.2",
     "rails-erb-loader": "^5.5.2",
-    "stimulus": "^1.1.1",
+    "stimulus": "^2.0.0",
     "twilio-video": "^2.9.0",
     "web-share-wrapper": "^0.2.1"
   },
