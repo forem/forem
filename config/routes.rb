@@ -287,6 +287,7 @@ Rails.application.routes.draw do
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
+    resources :podcast_episode_appearances, only: %i[index show new create edit update destroy]
     resources :article_approvals, only: %i[create]
     resources :video_chats, only: %i[show]
     resources :user_subscriptions, only: %i[create] do

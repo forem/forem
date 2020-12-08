@@ -5,14 +5,6 @@ RSpec.describe PodcastEpisodeAppearancePolicy, type: :policy do
 
   let(:podcast_episode_appearance) { create(:podcast_episode_appearance, podcast_episode: create(:podcast_episode)) }
 
-  let(:valid_attributes_for_create) do
-    %i[body_markdown commentable_id commentable_type parent_id]
-  end
-
-  let(:valid_attributes_for_update) do
-    %i[body_markdown receive_notifications]
-  end
-
   context "when user is not signed-in" do
     let(:user) { nil }
     let(:podcast_episode_appearance) { build_stubbed(:podcast_episode_appearance) }
