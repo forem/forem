@@ -35,20 +35,18 @@ module Admin
     end
 
     def remove_owner
-      removed_roles = @user.remove_role(:podcast_owner, @podcast)
-      if removed_roles.empty?
-        redirect_to edit_admin_podcast_path(@podcast), notice: "Error"
-      else
-        redirect_to admin_podcasts_path, notice: "Removed owner"
-      end
+      @podcast_ownership = PodcastOwnership.find(params[:id])
+      @podcast_ownership.destroy
     end
 
     def add_owner
-      role = @user.add_role(:podcast_owner, @podcast)
-      if role.persisted?
-        redirect_to admin_podcasts_path, notice: "Added owner"
+      @podcast_ownership = PodcastOwnership.new(podcast_ownership_params)
+
+      if @podcast_ownership.save
+        flash[:success] = "Owner created successfully"
       else
-        redirect_to edit_admin_podcast_path(@podcast), notice: "Error"
+        flash[:error] = "User is already an owner"
+        format.html { render :index }
       end
     end
 
