@@ -3,12 +3,15 @@ import ArticleController from '../../controllers/article_controller';
 
 describe('ArticleController', () => {
   beforeEach(() => {
-    document.body.innerHTML = `<div data-controller="article">
-      <div class="card-body">
+    document.body.innerHTML = `
+    <div data-controller="article"
+         data-article-bg-highlighted-class="bg-highlighted"
+         data-article-border-highlighted-class="border-highlighted">
+      <div class="card-body" data-article-target="cardBody">
         <button data-action="article#increaseFeaturedNumber"></button>
         <button data-action="article#decreaseFeaturedNumber"></button>
         <button data-action="article#highlightElement"></button>
-        <input data-target="article.featuredNumber"></input>
+        <input data-article-target="featuredNumber"></input>
       </div>
     </div>`;
 
@@ -23,7 +26,7 @@ describe('ArticleController', () => {
     it('increases the featured number input', () => {
       const button = document.getElementsByTagName('button')[0];
       const input = document.querySelector(
-        "[data-target='article.featuredNumber']",
+        "[data-article-target='featuredNumber']",
       );
 
       input.value = initialValue;
@@ -37,7 +40,7 @@ describe('ArticleController', () => {
     it('increases the featured number input', () => {
       const button = document.getElementsByTagName('button')[1];
       const input = document.querySelector(
-        "[data-target='article.featuredNumber']",
+        "[data-article-target='featuredNumber']",
       );
 
       input.value = initialValue;

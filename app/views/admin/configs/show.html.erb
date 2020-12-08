@@ -135,7 +135,9 @@
                 <h3 class="crayons-subtitle-3 mb-3">
                   General settings
                 </h3>
-                <div class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : "" %>" data-tooltip="Unchecking this will enable Email Registration">
+                <div
+                  class="crayons-field crayons-field--checkbox <%= invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : "" %>"
+                  data-tooltip="Unchecking this will enable Email Registration">
                   <%= f.check_box :invite_only_mode,
                                   checked: invite_only_mode_or_no_enabled_auth_options,
                                   data: { action: "config#adjustAuthenticationOptions", target: "config.inviteOnlyMode" },
@@ -171,7 +173,7 @@
                         </p>
                         <div
                           class="enabled-indicator <%= SiteConfig.allow_email_password_registration ? "visible" : "" %>"
-                          data-target="config.enabledIndicator">
+                          data-config-target="enabledIndicator">
                           <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                           <small class="crayons-field__description ml-1">Enabled</small>
                         </div>
@@ -181,7 +183,7 @@
                         class="crayons-btn crayons-btn--secondary"
                         id="email-auth-enable-edit-btn"
                         data-button-text="<%= SiteConfig.allow_email_password_registration ? "edit" : "enable" %>"
-                        data-target="config.emailAuthSettingsBtn"
+                        data-config-target="emailAuthSettingsBtn"
                         data-action="click->config#enableOrEditEmailAuthSettings"
                         <%= disabled_attr_on_auth_provider_enablebtn %>>
                         <%= SiteConfig.allow_email_password_registration ? "Edit" : "Enable" %>
@@ -217,7 +219,10 @@
                         <div class="crayons-field--checkbox">
                           <%= f.check_box :require_captcha_for_email_password_registration,
                                           checked: SiteConfig.require_captcha_for_email_password_registration,
-                                          data: { action: "config#toggleGoogleRecaptchaFields", target: "config.requireCaptchaForEmailPasswordRegistration" },
+                                          data: {
+                                            action: "config#toggleGoogleRecaptchaFields",
+                                            "config-target": "requireCaptchaForEmailPasswordRegistration"
+                                          },
                                           class: "crayons-checkbox mt-2" %>
                           <div>
                             <%= admin_config_label :require_captcha_for_email_password_registration, "Enable Google reCAPTCHA for email password registration" %>

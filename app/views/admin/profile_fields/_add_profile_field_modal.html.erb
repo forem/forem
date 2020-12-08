@@ -1,9 +1,9 @@
-<span data-controller="modal" class="mx-1">
+<span data-controller="modal" class="mx-1" data-modal-hidden-class="hidden">
   <button data-action="modal#toggleModal" class="crayons-btn">
     Add Field
   </button>
 
-  <div id="add-<%= group_name %>-profile-field-modal" class="hidden" data-target="modal.toggle">
+  <div id="add-<%= group_name %>-profile-field-modal" class="hidden" data-modal-target="toggle">
     <div class="crayons-modal crayons-modal--s">
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header">
