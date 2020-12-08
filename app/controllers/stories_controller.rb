@@ -253,7 +253,7 @@ class StoriesController < ApplicationController
 
   def redirect_if_view_param
     redirect_to "/admin/users/#{@user.id}" if params[:view] == "moderate"
-    redirect_to "/resource_admin/users/#{@user.id}/edit" if params[:view] == "admin"
+    redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
   end
 
   def redirect_if_show_view_param

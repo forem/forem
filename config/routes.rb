@@ -43,15 +43,6 @@ Rails.application.routes.draw do
       mount FieldTest::Engine, at: "abtests"
     end
 
-    namespace :resource_admin do
-      # Check administrate gem docs
-      DashboardManifest::DASHBOARDS.each do |dashboard_resource|
-        resources dashboard_resource
-      end
-
-      root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
-    end
-
     namespace :admin do
       get "/" => "admin_portals#index"
 
@@ -113,6 +104,8 @@ Rails.application.routes.draw do
         resource :moderator, only: %i[create destroy], module: "tags"
       end
       resources :users, only: %i[index show edit update] do
+        resources :email_messages, only: :show
+
         member do
           post "banish"
           post "export_data"

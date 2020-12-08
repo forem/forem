@@ -31,7 +31,7 @@ class TagsController < ApplicationController
   def admin
     tag = Tag.find_by!(name: params[:tag])
     authorize tag
-    redirect_to "/resource_admin/tags/#{tag.id}/edit"
+    redirect_to "/admin/tags/#{tag.id}/edit"
   end
 
   def onboarding

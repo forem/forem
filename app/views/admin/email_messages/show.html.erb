@@ -1,0 +1,50 @@
+<div class="grid gap-6">
+  <div class="crayons-card p-6">
+    <h2>Email message</h2>
+
+    <table class="crayons-table mt-5" width="100%">
+      <tbody>
+        <tr>
+          <td>Subject</td>
+          <td><%= @email.subject %></td>
+        </tr>
+        <tr>
+          <td>To</td>
+          <td><%= @email.to %></td>
+        </tr>
+        <tr>
+          <td>Abuse Report (Feedback Message)</td>
+          <% if @email.feedback_message_id.present? %>
+            <td><%= link_to "See report", admin_report_path(id: @email.feedback_message_id) %></td>
+          <% else %>
+            <td>N/A</td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>Sent at</td>
+          <td><%= @email.sent_at&.strftime("%b %e '%y") %></td>
+        </tr>
+        <tr>
+          <td>Opened At</td>
+          <td><%= @email.opened_at&.strftime("%b %e '%y") %></td>
+        </tr>
+        <tr>
+          <td>UTM Campaign</td>
+          <td><%= @email.utm_campaign %></td>
+        </tr>
+        <tr>
+          <td>Mailer</td>
+          <td><%= @email.mailer %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="crayons-card p-6">
+    <h2>Email content</h2>
+    <p><em>The content is previewed below without formatting</em></p>
+    <div class="crayons-card my-5 p-5">
+      <%= @email.body_html_content.html_safe %>
+    </div>
+  </div>
+</div>
