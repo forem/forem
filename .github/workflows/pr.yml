@@ -4,8 +4,9 @@ on:
   pull_request_target:
 
 jobs:
-  if: github.repository != 'forem/forem'
   pull_request_comment:
+    name: Comment on PR if coming from a forked repository
+    if: github.repository != 'forem/forem'
     runs-on: ubuntu-latest
     steps:
       - name: Add comment to PR if coming from third-party fork
