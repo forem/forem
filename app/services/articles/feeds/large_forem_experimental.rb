@@ -36,9 +36,9 @@ module Articles
         articles
       end
 
-      # Timeframe values from Timeframer::DATETIMES
+      # Timeframe values from Timeframe::DATETIMES
       def top_articles_by_timeframe(timeframe:)
-        published_articles_by_tag.where("published_at > ?", Timeframer.new(timeframe).datetime)
+        published_articles_by_tag.where("published_at > ?", Timeframe.datetime(timeframe))
           .order(score: :desc).page(@page).per(@number_of_articles)
       end
 
