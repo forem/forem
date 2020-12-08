@@ -28,25 +28,22 @@
 // modal inner content spacing
 .onboarding-content {
   box-sizing: border-box;
-  flex: 1 0 auto;
   padding: var(--su-4);
   width: 100%;
-  max-height: calc(100vh - 70px);
+  height: 800px;
+  max-height: 90vh;
   overflow: auto;
 
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
-    padding: var(--su-7) var(--su-8) var(--su-8);
+    padding: var(--su-7) var(--su-8);
   }
-}
-
-.toggle-bottom {
-  padding-bottom: var(--su-4);
 }
 
 // terms and conditions view
 .terms-and-conditions-wrapper {
   $content-height: 358px;
+  height: auto;
 
   button {
     @extend .crayons-btn;
@@ -201,41 +198,6 @@
   }
 }
 
-// modal selection status
-.onboarding-selection-status {
-  align-self: flex-end;
-  flex-shrink: 0;
-  width: 100%;
-  line-height: 100%;
-  height: 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  .selection-status-content {
-    display: block;
-    text-align: center;
-
-    .follow-count {
-      font-size: var(--su-4);
-      font-weight: var(--fw-medium);
-      line-height: var(--lh-base);
-
-      &--active {
-        font-weight: var(--fw-bold);
-      }
-    }
-
-    button {
-      background: none;
-      border: none;
-      padding: 0px;
-      color: var(--accent-brand);
-      font-size: var(--fs-s);
-    }
-  }
-}
-
 // override crayons notice
 .onboarding-body {
   .crayons-notice {
@@ -348,6 +310,7 @@
     flex-direction: column;
     justify-content: start;
     padding: var(--su-8);
+    height: auto;
 
     @media screen and (min-width: $breakpoint-s) {
       justify-content: center;
@@ -373,19 +336,24 @@
   }
 
   .introduction-title {
-    font-size: var(--fs-3xl);
+    font-size: var(--fs-2xl);
     font-weight: var(--fw-heavy);
     line-height: var(--lh-tight);
+    margin-bottom: var(--su-1);
 
     @media (min-width: $breakpoint-s) {
-      font-size: var(--fs-5xl);
+      font-size: var(--fs-4xl);
     }
   }
 
   .introduction-subtitle {
-    font-size: var(--fs-2xl);
+    font-size: var(--fs-l);
     font-weight: var(--fw-normal);
     line-height: var(--lh-base);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-xl);
+    }
   }
 
   .navigation-content {
@@ -640,7 +608,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   label {
     @extend .crayons-field;
     @extend .crayons-field__label;
-    margin-bottom: var(--su-4);
 
     &:last-child {
       margin-bottom: 0;
@@ -653,6 +620,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     .checkbox-form {
       padding-bottom: var(--su-6);
     }
+  }
+
+  .crayons-field--checkbox {
+    align-items: center;
   }
 
   // Checkboxes
@@ -688,6 +659,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
         margin-right: var(--su-2) !important;
       }
     }
+  }
+
+  .onboarding-profile-sub-section {
+    margin-bottom: var(--su-6);
   }
 
   @media screen and (max-height: 790px) {

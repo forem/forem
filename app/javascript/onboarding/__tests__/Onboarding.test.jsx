@@ -34,6 +34,8 @@ describe('<Onboarding />', () => {
     document.head.innerHTML =
       '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
+    const csrfToken = 'this-is-a-csrf-token';
+    global.getCsrfToken = async () => csrfToken;
   });
 
   it('should have no a11y violations', async () => {

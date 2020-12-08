@@ -135,6 +135,7 @@ class IntroSlide extends Component {
                     <label
                       data-testid="checked-code-of-conduct"
                       htmlFor="checked_code_of_conduct"
+                      className="lh-base py-1"
                     >
                       <input
                         type="checkbox"
@@ -159,6 +160,7 @@ class IntroSlide extends Component {
                     <label
                       data-testid="checked-terms-and-conditions"
                       htmlFor="checked_terms_and_conditions"
+                      className="lh-base py-1"
                     >
                       <input
                         type="checkbox"
