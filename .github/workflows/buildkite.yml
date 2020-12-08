@@ -1,0 +1,35 @@
+name: Approve PR for running Buildkite pipelines
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  add_ci_label:
+    name: "Add CI label to PR"
+    if: github.event.issue.pull_request != '' &&
+      startsWith(github.event.comment.body, '/ci') &&
+      (github.event.comment.author_association == 'MEMBER' ||
+      github.event.comment.author_association == 'OWNER')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          labels: ci
+
+  build_containers:
+    name: "Run Buildkite forem/build-containers pipeline"
+    if: github.event.issue.pull_request != '' &&
+      startsWith(github.event.comment.body, '/ci') &&
+      (github.event.comment.author_association == 'MEMBER' ||
+      github.event.comment.author_association == 'OWNER')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jdoss/trigger-pipeline-action@c1c77c83b3c16b03b474bc2e1ce6eb36dbde7f3d
+        env:
+          BUILDKITE_API_ACCESS_TOKEN: ${{ secrets.buildkite_api_access_token }}
+          PIPELINE: "forem/build-containers"
+          PULL_REQUEST_ID: ${{github.event.issue.number}
