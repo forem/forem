@@ -20,7 +20,7 @@ module EdgeCache
 
       return unless article.collection_id
 
-      article.collection&.articles&.find_each do |collection_article|
+      article.collection.articles.find_each do |collection_article|
         bust(collection_article.path)
       end
     end
