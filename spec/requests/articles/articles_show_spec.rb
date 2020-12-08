@@ -19,12 +19,14 @@ RSpec.describe "ArticlesShow", type: :request do
     end
 
     it "returns a 200 status with a case insensitive check" do
-      test_slug = "test-slug-1234567"
-      test_path = "/#{user.username.titleize}/#{test_slug}"
-      create(:article, user: user, published: true, slug: test_slug, path: test_path)
-      get test_path
+      # Creates an article and then capitalizes its path
+      bad_article = create(:article, user: user, published: true)
+      new_path = bad_article.path.titleize.split(" ").join("-")
+      bad_article.update_columns(path: new_path)
+
+      get bad_article.path
       expect(response).to have_http_status(:ok)
-      get test_path.downcase
+      get bad_article.path.downcase
       expect(response).to have_http_status(:ok)
     end
 
