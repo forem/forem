@@ -18,6 +18,16 @@ RSpec.describe "ArticlesShow", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    it "returns a 200 status even if path does not match the case" do
+      article = create(:article, user: user, published: true, organization: organization)
+      article.path = "#{user.username.titleize}/#{article.slug.upcase}"
+      article.save
+      get article.path
+      # expect(response).to have_http_status(:ok)
+      # get article.path.upcase
+      expect(response).to have_http_status(:ok)
+    end
+
     # rubocop:disable RSpec/ExampleLength
     it "renders the proper JSON-LD for an article" do
       expect(response_json).to include(

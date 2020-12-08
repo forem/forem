@@ -40,7 +40,8 @@ class StoriesController < ApplicationController
 
   def show
     @story_show = true
-    if (@article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate)
+    downcased_path = "/#{params[:username]}/#{params[:slug]}".downcase
+    if (@article = Article.where("lower(path) = ?", downcased_path).first&.decorate)
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
