@@ -12,6 +12,11 @@
      - ✅ Provide tests for your changes.
      - 📝 Use descriptive commit messages.
      - 📗 Update any related documentation and include any relevant screenshots.
+
+     NOTE: Pull Requests from forked repositories will need to be reviewed by
+     a Forem Team member before any CI builds will run. Once your PR is approved
+     with a `/ci` reply to the PR, it will be allowed to run subsequent builds without
+     manual approval.
 -->
 
 ## What type of PR is this? (check all applicable)

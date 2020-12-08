@@ -1,0 +1,23 @@
+name: Comment on PR
+
+on:
+  pull_request_target:
+
+jobs:
+  if: github.repository != 'forem/forem'
+  pull_request_comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add comment to PR if coming from third-party fork
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            Thank you for opening this PR! We appreciate you!
+
+            For all pull requests coming from third-party forks we will need to
+            review the PR before we can process it through our CI pipelines.
+
+            A Forem Team member will review this contribution and get back to
+            you as soon as possible!
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
