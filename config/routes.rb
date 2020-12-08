@@ -355,6 +355,7 @@ Rails.application.routes.draw do
 
     # Chat channel
     patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"
+    post "/create_channel" => "chat_channels#create_channel"
 
     # Chat Channel Membership json response
     get "/chat_channel_memberships/chat_channel_info/:id" => "chat_channel_memberships#chat_channel_info"
