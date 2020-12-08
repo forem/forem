@@ -34,14 +34,60 @@ describe('ProfileForm', () => {
       username: 'username',
     });
 
+  const fakeGroupsResponse = JSON.stringify({
+    profile_field_groups: [
+      {
+        id: 3,
+        name: 'Work',
+        description: null,
+        profile_fields: [
+          {
+            id: 36,
+            attribute_name: 'looking_for_work',
+            description: '',
+            input_type: 'check_box',
+            label: 'Looking for work?',
+            placeholder_text: '',
+          },
+        ],
+      },
+      {
+        id: 1,
+        name: 'Basic',
+        description: null,
+        profile_fields: [
+          {
+            id: 31,
+            attribute_name: 'name',
+            description: '',
+            input_type: 'text_field',
+            label: 'Name',
+            placeholder_text: 'John Doe',
+          },
+          {
+            id: 32,
+            attribute_name: 'website_url',
+            description: '',
+            input_type: 'text_field',
+            label: 'Website URL',
+            placeholder_text: 'https://yoursite.com',
+          },
+        ],
+      },
+    ],
+  });
+
   beforeAll(() => {
     document.head.innerHTML =
       '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
+    fetch.mockResponse(fakeGroupsResponse);
+    const csrfToken = 'this-is-a-csrf-token';
+    global.getCsrfToken = async () => csrfToken;
   });
 
   it('should have no a11y violations', async () => {
-    const { container } = render(renderProfileForm());
+    const { container } = renderProfileForm();
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
@@ -70,34 +116,28 @@ describe('ProfileForm', () => {
     expect(img.getAttribute('src')).toEqual('mock_url_link');
   });
 
-  it('shows the correct input with a label', () => {
-    const { getByLabelText } = renderProfileForm();
+  it('should render the correct group headings', async () => {
+    const { findByText } = renderProfileForm();
 
-    const bioInput = getByLabelText(/Bio/i);
-    expect(bioInput.getAttribute('placeholder')).toEqual(
-      'Tell us about yourself',
-    );
+    const heading1 = await findByText(/Looking for work?/i);
+    const heading2 = await findByText('Name');
 
-    const locationInput = getByLabelText(/Where are you located/i);
-    expect(locationInput.getAttribute('type')).toEqual('text');
-    expect(locationInput.getAttribute('placeholder')).toEqual(
-      'e.g. New York, NY',
-    );
-    expect(locationInput.getAttribute('maxLength')).toEqual('60');
+    expect(heading1).toBeInTheDocument();
+    expect(heading2).toBeInTheDocument();
+  });
 
-    const employmentInput = getByLabelText(/What is your title/i);
-    expect(employmentInput.getAttribute('type')).toEqual('text');
-    expect(employmentInput.getAttribute('placeholder')).toEqual(
-      'e.g. Software Engineer',
-    );
-    expect(employmentInput.getAttribute('maxLength')).toEqual('60');
+  it('should render the correct fields', async () => {
+    const { findByLabelText } = renderProfileForm();
 
-    const employerName = getByLabelText(/Where do you work/i);
-    expect(employerName.getAttribute('type')).toEqual('text');
-    expect(employerName.getAttribute('placeholder')).toEqual(
-      'e.g. Company name, self-employed, etc.',
-    );
-    expect(employerName.getAttribute('maxLength')).toEqual('60');
+    const field1 = await findByLabelText(/Looking for work?/i);
+    const field2 = await findByLabelText(/Name/i);
+    const field3 = await findByLabelText(/Website URL/i);
+
+    expect(field1).toBeInTheDocument();
+    expect(field2).toBeInTheDocument();
+    expect(field2.getAttribute('placeholder')).toEqual('John Doe');
+    expect(field3).toBeInTheDocument();
+    expect(field3.getAttribute('placeholder')).toEqual('https://yoursite.com');
   });
 
   it('should render a stepper', () => {
@@ -122,33 +162,33 @@ describe('ProfileForm', () => {
     } = renderProfileForm();
 
     // input the bio
-    const bioInput = getByLabelText(/Bio/i);
-    expect(bioInput.value).toEqual('');
+    const field2 = await findByLabelText(/Name/i);
+    expect(field2.value).toEqual('');
     getByText(/skip for now/i);
     expect(queryByText(/continue/i)).toBeNull();
 
-    fireEvent.keyDown(bioInput, {
+    fireEvent.keyDown(field2, {
       key: 'Enter',
       keyCode: 13,
       which: 13,
-      target: { value: 'Some biography' },
+      target: { value: 'Hong Kong Fuey' },
     });
-    expect(bioInput.value).toEqual('Some biography');
+    expect(field2.value).toEqual('Hong Kong Fuey');
 
     // input the location too (since we're using firevent and it doesn't call the focus events
     // that will trigger the continue )
-    let locationInput = getByLabelText(/Where are you located/i);
-    expect(locationInput.value).toEqual('');
-    fireEvent.keyDown(locationInput, {
+    let field3 = getByLabelText(/Website URL/i);
+    expect(field3.value).toEqual('');
+    fireEvent.keyDown(field3, {
       key: 'Enter',
       keyCode: 13,
       which: 13,
-      target: { value: 'Some location' },
+      target: { value: 'www.website.com' },
     });
 
-    locationInput = await findByLabelText(/Where are you located/i);
+    field3 = await findByLabelText(/Website URL/i);
 
-    expect(locationInput.value).toEqual('Some location');
+    expect(field3.value).toEqual('www.website.com');
 
     findByText(/continue/i);
   });
