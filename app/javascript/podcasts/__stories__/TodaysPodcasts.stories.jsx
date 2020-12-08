@@ -14,7 +14,7 @@ const episodes = [
 ];
 
 export default {
-  title: `4_App Components/Podcasts/Today's Episodes`,
+  title: `App Components/Podcasts/Today's Episodes`,
 };
 
 export const Standard = () => (

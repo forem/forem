@@ -44,7 +44,7 @@ class RssReader
         rss_reader_info: {
           username: user.username,
           feed_url: user.feed_url,
-          item_count: get_item_count_error(feed),
+          item_count: item_count_error(feed),
           error: "RssReaderError: occurred while creating article #{item.url}"
         },
       )
@@ -57,19 +57,11 @@ class RssReader
       rss_reader_info: {
         username: user.username,
         feed_url: user.feed_url,
-        item_count: get_item_count_error(feed),
+        item_count: item_count_error(feed),
         error_message: "RssReaderError: occurred while fetching feed"
       },
     )
     []
-  end
-
-  def get_item_count_error(feed)
-    if feed
-      feed.entries ? feed.entries.length : "no count"
-    else
-      "NIL FEED, INVALID URL"
-    end
   end
 
   def fetch_rss(url)
@@ -78,7 +70,7 @@ class RssReader
   end
 
   def make_from_rss_item(item, user, feed)
-    return if medium_reply?(item) || article_exists?(user, item)
+    return if Feeds::CheckItemMediumReply.call(item) || Feeds::CheckItemPreviouslyImported.call(item, user)
 
     feed_source_url = item.url.strip.split("?source=")[0]
     article = Article.create!(
@@ -95,34 +87,14 @@ class RssReader
     article
   end
 
-  def get_host_without_www(url)
-    url = "http://#{url}" if URI.parse(url).scheme.nil?
-    host = URI.parse(url).host.downcase
-    host.start_with?("www.") ? host[4..] : host
-  end
-
-  def medium_reply?(item)
-    get_host_without_www(item.url.strip) == "medium.com" &&
-      !item[:categories] &&
-      content_is_not_the_title?(item)
-  end
-
-  def content_is_not_the_title?(item)
-    # [[:space:]] removes all whitespace, including unicode ones.
-    content = item.content.gsub(/[[:space:]]/, " ")
-    title = item.title.delete("…")
-    content.include?(title)
-  end
-
-  def article_exists?(user, item)
-    title = item.title.strip.gsub('"', '\"')
-    feed_source_url = item.url.strip.split("?source=")[0]
-    relation = user.articles
-    relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
-  end
-
   def report_error(error, metadata)
     Honeybadger.context(metadata)
     Honeybadger.notify(error)
+  end
+
+  def item_count_error(feed)
+    return "NIL FEED, INVALID URL" unless feed
+
+    feed.entries ? feed.entries.length : "no count"
   end
 end

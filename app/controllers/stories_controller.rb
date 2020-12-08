@@ -78,7 +78,7 @@ class StoriesController < ApplicationController
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
-      redirect_to user_or_org.path, status: :moved_permanently
+      redirect_permanently_to(user_or_org.path)
     else
       not_found
     end
@@ -88,10 +88,10 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path, status: :moved_permanently
+      redirect_permanently_to(URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
     elsif (@organization = @article.organization)
-      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path, status: :moved_permanently
+      redirect_permanently_to(URI.parse("/#{@organization.slug}/#{params[:slug]}").path)
       return
     end
     not_found
@@ -126,7 +126,7 @@ class StoriesController < ApplicationController
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
-      redirect_to "/t/#{@tag_model.alias_for}", status: :moved_permanently
+      redirect_permanently_to("/t/#{@tag_model.alias_for}")
       return
     end
 
@@ -271,9 +271,9 @@ class StoriesController < ApplicationController
 
   def assign_feed_stories
     feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
-    if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
+    if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
-    elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
+    elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
       @stories = feed.latest_feed
     else
       @default_home_feed = true
@@ -343,7 +343,7 @@ class StoriesController < ApplicationController
 
   def stories_by_timeframe
     if %w[week month year infinity].include?(params[:timeframe])
-      @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime)
+      @stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
         .order(public_reactions_count: :desc)
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order(published_at: :desc)
@@ -369,7 +369,7 @@ class StoriesController < ApplicationController
   def redirect_to_lowercase_username
     return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
 
-    redirect_to "/#{params[:username].downcase}", status: :moved_permanently
+    redirect_permanently_to("/#{params[:username].downcase}")
   end
 
   def set_user_json_ld
@@ -478,17 +478,7 @@ class StoriesController < ApplicationController
     [
       @user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
       @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
-      @user.mastodon_url,
-      @user.facebook_url,
-      @user.youtube_url,
-      @user.linkedin_url,
-      @user.behance_url,
-      @user.stackoverflow_url,
-      @user.dribbble_url,
-      @user.medium_url,
-      @user.gitlab_url,
-      @user.instagram_url,
-      @user.website_url,
+      @user.profile.try(:website_url),
     ].reject(&:blank?)
   end
 

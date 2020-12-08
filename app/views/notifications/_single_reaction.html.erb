@@ -12,7 +12,7 @@
     with
     <span>
       <% category = notification.json_data["reaction"]["category"] %>
-      <%= inline_svg_tag(ReactionImage.new(category).path, class: "crayons-icon reaction-image mx-1 reaction-icon--#{category}", title: category.to_s.humanize) %>
+      <%= inline_svg_tag(reaction_image(category), class: "crayons-icon reaction-image mx-1 reaction-icon--#{category}", title: category.to_s.humanize) %>
     </span>
   </div>
 </div>

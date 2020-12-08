@@ -38,7 +38,8 @@ module Notifications
       end
 
       def json_data
-        { article: Notifications.article_data(article), gif_id: RandomGif.random_id }
+        gif_id = Constants::RandomGifs::IDS.sample
+        { article: Notifications.article_data(article), gif_id: gif_id }
       end
 
       def article_published_behind_time?

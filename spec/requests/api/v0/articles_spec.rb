@@ -631,6 +631,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.parsed_body["error"]).to be_present
       end
 
+      it "fails if params are unwrapped" do
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        post api_articles_path, params: { body_markdown: "Body", "title": "Title" }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
+
       it "creates an article belonging to the user" do
         post_article(title: Faker::Book.title)
         expect(response).to have_http_status(:created)

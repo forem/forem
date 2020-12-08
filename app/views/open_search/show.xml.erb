@@ -3,7 +3,6 @@
  <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
    <ShortName><%= helper.community_name %> Search</ShortName>
    <Description>Find posts from the <%= helper.community_qualified_name %>.</Description>
-   <Contact><%= SiteConfig.email_addresses[:default] %></Contact>
-   <Url type="text/html" 
-     template="<%= URL.url("search") %>?q={searchTerms}"/>
+   <Contact><%= SiteConfig.email_addresses[:contact] %></Contact>
+   <Url type="text/html" template="<%= URL.url("search") %>?q={searchTerms}" />
  </OpenSearchDescription>

@@ -12,7 +12,8 @@ RSpec.describe "Following/Unfollowing", type: :request do
   describe "PUT follows/:id" do
     it "updates follow points" do
       user.follow(tag)
-      put "/follows/#{Follow.last.id}", params: { follow: { points: 3.0 } }
+      put "/follows/#{Follow.last.id}", params: { follow: { explicit_points: 3.0 } }
+      expect(Follow.last.explicit_points).to eq(3.0)
       expect(Follow.last.points).to eq(3.0)
     end
 

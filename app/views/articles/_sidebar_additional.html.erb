@@ -65,7 +65,7 @@
                 <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
               <% end %>
             <% else %>
-              <% Article.active_threads([tag], Timeframer.new(params[:timeframe]).datetime, 5).each do |plucked_article| %>
+              <% Article.active_threads([tag], Timeframe.datetime(params[:timeframe]), 5).each do |plucked_article| %>
                 <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
               <% end %>
             <% end %>
@@ -75,7 +75,7 @@
     <% end %>
     <% unless user_signed_in? %>
       <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}", expires_in: 18.hours) do %>
-        <% boostable_posts = Article.seo_boostable(nil, Timeframer.new(params[:timeframe]).datetime) %>
+        <% boostable_posts = Article.seo_boostable(nil, Timeframe.datetime(params[:timeframe])) %>
         <% if boostable_posts.present? %>
           <section class="widget">
             <header>

@@ -130,11 +130,8 @@ RSpec.describe "Moderations", type: :request do
       get "#{article.path}/actions_panel"
     end
 
-    it "shows the admin add tag option if the article has room for a tag" do
+    it "shows the admin tag options", :aggregate_failures do
       expect(response.body).to include "admin-add-tag"
-    end
-
-    it "shows the option to remove tags" do
       expect(response.body).to include "circle centered-icon adjustment-icon subtract"
     end
   end

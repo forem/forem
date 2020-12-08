@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_14_151157) do
+ActiveRecord::Schema.define(version: 2020_12_03_063435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -560,10 +560,12 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
   create_table "follows", force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
+    t.float "explicit_points", default: 1.0
     t.bigint "followable_id", null: false
     t.string "followable_type", null: false
     t.bigint "follower_id", null: false
     t.string "follower_type", null: false
+    t.float "implicit_points", default: 0.0
     t.float "points", default: 1.0
     t.string "subscription_status", default: "all_articles", null: false
     t.datetime "updated_at"
@@ -713,7 +715,6 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
-    t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
@@ -846,6 +847,17 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
     t.index ["slug"], name: "index_pages_on_slug", unique: true
   end
 
+  create_table "podcast_episode_appearances", force: :cascade do |t|
+    t.boolean "approved", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "featured_on_user_profile", default: false, null: false
+    t.bigint "podcast_episode_id", null: false
+    t.string "role", default: "guest", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["podcast_episode_id", "user_id"], name: "index_pod_episode_appearances_on_podcast_episode_id_and_user_id", unique: true
+  end
+
   create_table "podcast_episodes", force: :cascade do |t|
     t.boolean "any_comments_hidden", default: false
     t.text "body"
@@ -876,6 +888,14 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
     t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
     t.index ["title"], name: "index_podcast_episodes_on_title"
     t.index ["website_url"], name: "index_podcast_episodes_on_website_url"
+  end
+
+  create_table "podcast_ownerships", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "podcast_id", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["podcast_id", "user_id"], name: "index_podcast_ownerships_on_podcast_id_and_user_id", unique: true
   end
 
   create_table "podcasts", force: :cascade do |t|
@@ -1426,7 +1446,11 @@ ActiveRecord::Schema.define(version: 2020_11_14_151157) do
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "page_views", "users", on_delete: :nullify
+  add_foreign_key "podcast_episode_appearances", "podcast_episodes"
+  add_foreign_key "podcast_episode_appearances", "users"
   add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade
+  add_foreign_key "podcast_ownerships", "podcasts"
+  add_foreign_key "podcast_ownerships", "users"
   add_foreign_key "podcasts", "users", column: "creator_id"
   add_foreign_key "poll_options", "polls", on_delete: :cascade
   add_foreign_key "poll_skips", "polls", on_delete: :cascade

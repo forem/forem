@@ -1,6 +1,6 @@
 module ProfileFields
   class ImportFromCsv
-    HEADERS = %i[label input_type placeholder_text description group display_area].freeze
+    HEADERS = %i[label input_type placeholder_text description group display_area show_in_onboarding].freeze
 
     def self.call(file)
       CSV.foreach(file, headers: HEADERS, skip_blanks: true) do |row|
@@ -9,6 +9,7 @@ module ProfileFields
         row[:profile_field_group] = ProfileFieldGroup.find_or_create_by(name: group)
         ProfileField.find_or_create_by(row)
       end
+      Profile.refresh_attributes!
     end
   end
 end

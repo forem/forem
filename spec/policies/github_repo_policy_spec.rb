@@ -23,6 +23,7 @@ RSpec.describe GithubRepoPolicy, type: :policy do
 
     before do
       omniauth_mock_github_payload
+      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
     end
 
     it { is_expected.to permit_actions(%i[index update_or_create]) }

@@ -17,18 +17,6 @@ RSpec.describe CacheBuster, type: :labor do
     it "returns nil if no edge caching service is configured" do
       expect(cache_buster.bust(path)).to eq(nil)
     end
-
-    it "returns an EdgeCache::Bust if an edge caching service is configured" do
-      allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return("fake-key")
-      allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("fake-service-id")
-
-      edge_cache_bust_service = cache_buster.bust(path)
-
-      expect(edge_cache_bust_service.path).to eq(path)
-      expect(edge_cache_bust_service.provider).to eq("fastly")
-      expect(edge_cache_bust_service.class).to eq(EdgeCache::Bust)
-      expect(edge_cache_bust_service.response).not_to be(nil)
-    end
   end
 
   describe "#bust_comment" do

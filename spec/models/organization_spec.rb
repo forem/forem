@@ -81,7 +81,9 @@ RSpec.describe Organization, type: :model do
       expect(article.elasticsearch_doc.dig("_source", "organization", "name")).to eq(new_org_name)
     end
 
-    it "on destroy removes data from elasticsearch" do
+    # TODO: This will be fixed by @mstruve
+    # https://github.com/forem/forem/pull/10707#pullrequestreview-538071192
+    xit "on destroy removes data from elasticsearch" do
       article = create(:article, organization: organization)
       sidekiq_perform_enqueued_jobs
       expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(organization.id)

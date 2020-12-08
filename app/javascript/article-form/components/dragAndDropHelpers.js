@@ -48,9 +48,7 @@ export function handleImageDrop(handleImageSuccess, handleImageFailure) {
  */
 export function onDragOver(event) {
   event.preventDefault();
-  event.currentTarget
-    .closest('.drop-area')
-    .classList.add('drop-area--active');
+  event.currentTarget.closest('.drop-area').classList.add('drop-area--active');
 }
 
 /**

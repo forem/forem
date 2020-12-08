@@ -3,6 +3,7 @@ class Profile < ApplicationRecord
 
   validates :data, presence: true
   validates :user_id, uniqueness: true
+  validates_with ProfileValidator
 
   has_many :custom_profile_fields, dependent: :destroy
 
@@ -23,7 +24,12 @@ class Profile < ApplicationRecord
   }.with_indifferent_access.freeze
 
   # Generates typed accessors for all currently defined profile fields.
+  # This is also used in config/application.rb to initialize profiles on app
+  # boot in the after_initialize hook.
   def self.refresh_attributes!
+    return if ENV["ENV_AVAILABLE"] == "false"
+    return unless Database.table_exists?("profiles")
+
     ProfileField.find_each do |field|
       store_attribute :data, field.attribute_name.to_sym, field.type
     end
@@ -33,25 +39,6 @@ class Profile < ApplicationRecord
   def self.attributes
     (stored_attributes[:data] || []).map(&:to_s)
   end
-
-  # Forces a reload before returning attributes
-  def self.attributes!
-    refresh_attributes!
-    attributes
-  end
-
-  # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
-  # profile migration/generalization work.
-  def self.mapped_attributes
-    attributes!.map { |attribute| MAPPED_ATTRIBUTES.fetch(attribute, attribute).to_s }
-  end
-
-  # NOTE: @citizen428 We want to have a current list of profile attributes the
-  # moment the application loads. However, doing this unconditionally fails if
-  # the profiles table doesn't exist yet (e.g. when running bin/setup in a new
-  # clone). I wish Rails had a hook for code to run after the app started, but
-  # for now this is the best I can come up with.
-  refresh_attributes! if ApplicationRecord.connection.table_exists?("profiles")
 
   def custom_profile_attributes
     custom_profile_fields.pluck(:attribute_name)
