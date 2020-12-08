@@ -37,7 +37,7 @@ module EdgeCache
       end
 
       TIMEFRAMES.each do |timestamp, interval|
-        next unless Article.published.where("published_at > ?", timestamp)
+        next unless Article.published.where("published_at > ?", timestamp.call)
           .order(public_reactions_count: :desc).limit(3).ids.include?(article.id)
 
         bust("/top/#{interval}")
@@ -65,7 +65,7 @@ module EdgeCache
         end
 
         TIMEFRAMES.each do |timestamp, interval|
-          next unless Article.published.where("published_at > ?", timestamp).tagged_with(tag)
+          next unless Article.published.where("published_at > ?", timestamp.call).tagged_with(tag)
             .order(public_reactions_count: :desc).limit(3).ids.include?(article.id)
 
           bust("/top/#{interval}")
