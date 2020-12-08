@@ -18,8 +18,8 @@
         "/shell_top",                 // head, top bar, inline styles
         "/shell_bottom",              // footer
         "/async_info/shell_version",  // For comparing changes in the shell. Should be incremented with style changes.
-        "/404",                       // Not found page
-        "/500",                       // Error page
+        "/not_found.html",            // 404 etc.
+        "/error.html",                // 500 etc.
         "/offline.html"               // Offline page
       ]))
     );
@@ -54,10 +54,10 @@
             const endFetch = Promise.resolve(cachedShellBottom);
             const middleFetch = fetch(url).then(response => {
               if (!response.ok && response.status === 404) {
-                return caches.match('/404');
+                return caches.match('/not_found.html');
               }
               if (!response.ok && response.status != 404) {
-                return caches.match('/500');
+                return caches.match('/error.html');
               }
               return response;
             }).catch(err => caches.match('/offline.html'));
