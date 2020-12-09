@@ -32,52 +32,68 @@
   <% end %>
 
   <% cache "user-profile-sidebar-profile-details-#{@user.id}-#{@user.profile_updated_at}", expires_in: 10.days do %>
-    <% if @user.mostly_work_with.present? %>
-      <div class="crayons-card crayons-card--secondary">
-        <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-3">Skills/languages</h3>
-        </header>
+    <% if FeatureFlag.enabled?(:profile_admin) %>
+      <% @profile.ui_attributes_for(area: :left_sidebar).each do |title, value| %>
+        <div class="crayons-card crayons-card--secondary">
+          <header class="crayons-card__header">
+            <h3 class="crayons-subtitle-3">
+              <%= sanitized_sidebar title.titleize %>
+            </h3>
+          </header>
 
-        <div class="crayons-card__body">
-          <%= sanitized_sidebar @user.mostly_work_with %>
+          <div class="crayons-card__body">
+            <%= sanitized_sidebar value %>
+          </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
+    <% else %>
+      <% if @user.mostly_work_with.present? %>
+        <div class="crayons-card crayons-card--secondary">
+          <header class="crayons-card__header">
+            <h3 class="crayons-subtitle-3">Skills/languages</h3>
+          </header>
 
-    <% if @user.currently_learning.present? %>
-      <div class="crayons-card crayons-card--secondary">
-        <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-3">Learning/trying</h3>
-        </header>
-
-        <div class="crayons-card__body">
-          <%= sanitized_sidebar @user.currently_learning %>
+          <div class="crayons-card__body">
+            <%= sanitized_sidebar @user.mostly_work_with %>
+          </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
 
-    <% if @user.currently_hacking_on.present? %>
-      <div class="crayons-card crayons-card--secondary">
-        <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-3">Projects</h3>
-        </header>
+      <% if @user.currently_learning.present? %>
+        <div class="crayons-card crayons-card--secondary">
+          <header class="crayons-card__header">
+            <h3 class="crayons-subtitle-3">Learning/trying</h3>
+          </header>
 
-        <div class="crayons-card__body">
-          <%= sanitized_sidebar @user.currently_hacking_on %>
+          <div class="crayons-card__body">
+            <%= sanitized_sidebar @user.currently_learning %>
+          </div>
         </div>
-      </div>
-    <% end %>
+      <% end %>
 
-    <% if @user.available_for.present? %>
-      <div class="crayons-card crayons-card--secondary">
-        <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-3">Available for...</h3>
-        </header>
+      <% if @user.currently_hacking_on.present? %>
+        <div class="crayons-card crayons-card--secondary">
+          <header class="crayons-card__header">
+            <h3 class="crayons-subtitle-3">Projects</h3>
+          </header>
 
-        <div class="crayons-card__body">
-          <%= sanitized_sidebar @user.available_for %>
+          <div class="crayons-card__body">
+            <%= sanitized_sidebar @user.currently_hacking_on %>
+          </div>
         </div>
-      </div>
+      <% end %>
+
+      <% if @user.available_for.present? %>
+        <div class="crayons-card crayons-card--secondary">
+          <header class="crayons-card__header">
+            <h3 class="crayons-subtitle-3">Available for...</h3>
+          </header>
+
+          <div class="crayons-card__body">
+            <%= sanitized_sidebar @user.available_for %>
+          </div>
+        </div>
+      <% end %>
     <% end %>
   <% end %>
 
