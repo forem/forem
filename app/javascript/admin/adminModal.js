@@ -20,8 +20,8 @@ const adminModal = (
   firstBtnAction,
   secondBtnText,
   secondBtnAction,
-  firstBtnClasses = 'crayons-btn crayons-btn--danger',
-  secondBtnClasses = 'crayons-btn crayons-btn--secondary',
+  firstBtnClasses,
+  secondBtnClasses,
   customAttr = null,
   customAttrValue = null,
 ) => `

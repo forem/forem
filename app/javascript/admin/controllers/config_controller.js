@@ -19,6 +19,7 @@ const emailAuthModalBody = `
 export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
+    'authSectionForm',
     'collectiveNoun',
     'configModalAnchor',
     'emailAuthSettingsBtn',
@@ -48,9 +49,17 @@ export default class ConfigController extends Controller {
   }
 
   closeAdminModal() {
+    const authSectionUpdateConfigBtn = this.authSectionFormTarget.querySelector(
+      'input[type="submit"]',
+    );
+
     this.configModalAnchorTarget.innerHTML = '';
     document.body.style.height = 'inherit';
     document.body.style.overflowY = 'inherit';
+
+    if (authSectionUpdateConfigBtn.hasAttribute('disabled')) {
+      authSectionUpdateConfigBtn.removeAttribute('disabled');
+    }
   }
 
   positionModalOnPage() {
@@ -98,6 +107,8 @@ export default class ConfigController extends Controller {
       'disableEmailAuthFromModal',
       'Cancel',
       'closeAdminModal',
+      'crayons-btn crayons-btn--danger',
+      'crayons-btn crayons-btn--secondary',
     );
     this.positionModalOnPage();
   }
@@ -174,6 +185,8 @@ export default class ConfigController extends Controller {
       'disableAuthProviderFromModal',
       'Cancel',
       'closeAdminModal',
+      'crayons-btn crayons-btn--danger',
+      'crayons-btn crayons-btn--secondary',
       'auth-provider',
       provider,
     );
@@ -289,6 +302,10 @@ export default class ConfigController extends Controller {
     )}</ul></p>`;
   }
 
+  submitForm() {
+    this.authSectionFormTarget.submit();
+  }
+
   activateMissingKeysModal(providers) {
     this.configModalAnchorTarget.innerHTML = adminModal(
       this.missingKeysModalTitle(),
@@ -296,7 +313,7 @@ export default class ConfigController extends Controller {
       'Continue editing',
       'closeAdminModal',
       'Save anyway',
-      '', // this will be the function that Updates Configuration
+      'submitForm',
       'crayons-btn',
     );
   }
@@ -307,6 +324,7 @@ export default class ConfigController extends Controller {
       this.activateMissingKeysModal(this.enabledProvidersWithMissingKeys());
     } else {
       // function that carries on with normal Update Configuration
+      event.target.submit();
     }
   }
 }

@@ -121,7 +121,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -1320,5 +1320,5 @@
       </div>
     </div>
   </div>
-  <div data-target="config.configModalAnchor"></div>
+  <div data-config-target="configModalAnchor"></div>
 </div>
