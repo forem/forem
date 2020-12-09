@@ -123,6 +123,14 @@ export const ImageUploader = () => {
     });
   }
 
+  function checkNativeBridge(e) {
+    e.preventDefault();
+    if(Runtime.isNativeIOS('imageUpload')) {
+      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'placeholder' });
+      return
+    }
+  }
+
   return (
     <div className="flex items-center">
       {uploadingImage ? (
@@ -139,9 +147,10 @@ export const ImageUploader = () => {
         >
           Upload image
           <input
-            type="file"
+            type={ Runtime.isNativeIOS('imageUpload') ? "placeholder" : "file" }
             id="image-upload-field"
             onChange={handleInsertionImageUpload}
+            onClick={checkNativeBridge}
             className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
             multiple
             accept="image/*"

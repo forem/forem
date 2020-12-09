@@ -1,3 +1,5 @@
+/* global Runtime */
+
 import { h, Component, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { addSnackbarItem } from '../../Snackbar';
@@ -48,6 +50,14 @@ export class ArticleCoverImage extends Component {
       uploadErrorMessage: error.message,
     });
   };
+
+  checkNativeBridge = (e) => {
+    e.preventDefault();
+    if(Runtime.isNativeIOS('imageUpload')) {
+      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'placeholder' });
+      return
+    }
+  }
 
   triggerMainImageRemoval = (e) => {
     e.preventDefault();
@@ -103,8 +113,9 @@ export class ArticleCoverImage extends Component {
                   <label htmlFor="cover-image-input">{uploadLabel}</label>
                   <input
                     id="cover-image-input"
-                    type="file"
+                    type={ Runtime.isNativeIOS('imageUpload') ? "placeholder" : "file" }
                     onChange={this.handleMainImageUpload}
+                    onClick={this.checkNativeBridge}
                     accept="image/*"
                     className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
                     data-max-file-size-mb="25"
