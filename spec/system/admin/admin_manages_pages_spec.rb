@@ -54,6 +54,18 @@ RSpec.describe "Admin manages pages", type: :system do
       end
     end
 
+    it "has client-side validation" do
+      expect(page).to have_content("Test Page")
+      click_on("Edit")
+      fill_in "page_description", with: ""
+      click_on("Update Page")
+      expect(page).not_to have_current_path(admin_pages_path)
+      fill_in "page_description", with: "Walk without rhythm"
+      fill_in "page_slug", with: "不"
+      click_on("Update Page")
+      expect(page).not_to have_current_path(admin_pages_path)
+    end
+
     it "allows a page to be deleted" do
       expect(page).to have_content("Test Page")
       click_on("Edit")

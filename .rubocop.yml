@@ -664,6 +664,9 @@ Rails/SkipsModelValidations:
   Reference: 'https://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: false
 
+Rails/SquishedSQLHeredocs:
+  Enabled: false
+
 Rails/WhereExists:
   Description: 'Prefer `exists?(...)` over `where(...).exists?`.'
   Enabled: true

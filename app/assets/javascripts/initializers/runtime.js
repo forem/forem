@@ -17,7 +17,7 @@ class Runtime {
    */
   static isNativeIOS(namespace = null) {
     const nativeCheck =
-      /DEV-Native-ios|forem-native-ios/i.test(navigator.userAgent) &&
+      /DEV-Native-ios|ForemWebView/i.test(navigator.userAgent) &&
       window &&
       window.webkit &&
       window.webkit.messageHandlers;
@@ -40,7 +40,7 @@ class Runtime {
    */
   static isNativeAndroid(namespace = null) {
     const nativeCheck =
-      /DEV-Native-android|forem-native-android/i.test(navigator.userAgent) &&
+      /DEV-Native-android|ForemWebView/i.test(navigator.userAgent) &&
       AndroidBridge != undefined;
 
     let namespaceCheck = true;

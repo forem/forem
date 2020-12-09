@@ -11,10 +11,6 @@
   box-sizing: border-box;
 }
 
-.container > * + * {
-  margin-top: 32px !important;
-}
-
 .container > pre {
   padding: 24px;
   width: 100%;

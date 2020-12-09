@@ -64,6 +64,54 @@
         <%= f.label :feed_url, for: "podcast_feed_url" %>
         <%= f.text_field :feed_url, class: "form-control" %>
       </div>
+      <div class="form-group">
+        <%= f.label :description, for: "description" %>
+        <%= f.text_area :description, size: "45x10", required: true, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :itunes_url, for: "itunes_url" %>
+        <%= f.text_field :itunes_url, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :overcast_url, for: "overcast_url" %>
+        <%= f.text_field :overcast_url, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :android_url, for: "android_url" %>
+        <%= f.text_field :android_url, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :soundcloud_url, for: "soundcloud_url" %>
+        <%= f.text_field :soundcloud_url, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :website_url, for: "website_url" %>
+        <%= f.text_field :website_url, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :twitter_username, for: "twitter_username" %>
+        <%= f.text_field :twitter_username, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :pattern_image, for: "pattern_image" %>
+        <%= f.file_field :pattern_image, accept: "image/*", class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :main_color_hex, for: "main_color_hex" %>
+        <%= f.text_field :main_color_hex, placeholder: "FF00FF", class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :slug, for: "slug" %>
+        <%= f.text_field :slug, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :image, for: "image" %>
+        <%= f.file_field :image, accept: "image/*", class: "form-control" %>
+      </div>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :reachable, class: "crayons-checkbox" %>
+        <%= f.label :reachable, "Podcast is reachable", class: "crayons-field__label" %>
+      </div>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box "published", class: "crayons-checkbox" %>
         <label class="crayons-field__label" for="published">

@@ -1,0 +1,70 @@
+import { h } from 'preact';
+import '../../storybook-utilities/designSystem.scss';
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Introduction" />
+
+# Introduction to Crayons 🖍
+
+Crayons is the design system of Forem. Defining our design language and
+front-end approach, Crayons provides you everything you need to quickly design,
+build, and ship coherent experience and style across Forem.
+
+Crayons consists of libraries of:
+
+- **Components** to create reusable features and views, such as buttons, form
+  elements, tabs, and more.
+
+- **Utility-first CSS classes** to let developers write front-end code almost
+  without touching a single CSS file.
+
+---
+
+### **How can I use Crayons?**
+
+There are a few scenarios how you can incorporate Crayons into your workflow.
+Depending on the scenario, you'll build the front-end using components,
+utility-first CSS classes, or both.
+
+#### 1. I want to use existing components.
+
+A designer hands you a mockup featuring UI components that already exist. You
+can find the documented component here, copy and paste the code that renders the
+specific component, and call it a day.
+
+#### 2. I want to use an existing component, but customize it a bit.
+
+A designer hands you a mockup featuring existing UI components with a small
+change to them; the padding is slightly different, the background color is
+different. There are two things you can do in this scenario:
+
+1. Implement the existing `component` and customize it with _utility-first
+   classes_. It makes sense if you need to make small changes like increase
+   padding, make border thicker etc...
+
+2. Consider extending existing `component` to support your case. This is more
+   time-consuming solution because you should make sure it's context-agnostic -
+   so it should work in any context, not only for your feature.
+
+#### 3. I want to implement a view, but no existing components exist to help me build it.
+
+If this is the case, you will have to build everything from scratch. There are
+two ways you can do this:
+
+1. Build the view using `utility-first CSS classes`. This lets you avoid having
+   to create or work in any existing CSS files, and you can do anything from
+   applying simple padding styles to styling entire views.
+
+2. Build some of the view using both `utility-first CSS classes` and existing
+   `components. This will allow you to move more quickly.
+
+#### 4. I want to an entire view from scratch (whoa!).
+
+Think you have to write tons of custom CSS and import your .scss file somewhere?
+Think again.
+
+As mentioned earlier, `utility-first CSS classes` let you create even the most
+complex components without writing a single line of CSS. **We recommend choosing
+to write code using utility-first CSS over creating a new SCSS each time.**
+Every additional line of CSS you write translates to more CSS that we have to
+maintain, more CSS for our users to download, and more bytes for us to host.

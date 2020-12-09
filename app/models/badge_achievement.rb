@@ -6,6 +6,10 @@ class BadgeAchievement < ApplicationRecord
   belongs_to :badge
   belongs_to :rewarder, class_name: "User", optional: true
 
+  delegate :slug, to: :badge, prefix: true
+  delegate :title, to: :badge, prefix: true
+  delegate :badge_image_url, to: :badge, prefix: false
+
   counter_culture :user, column_name: "badge_achievements_count"
 
   validates :badge_id, uniqueness: { scope: :user_id }

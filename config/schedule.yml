@@ -4,9 +4,6 @@ fetch_all_rss:
 log_worker_queue_stats:
   cron: "*/10 * * * *" # every 10 minutes
   class: "Metrics::RecordBackgroundQueueStatsWorker"
-prune_old_field_tests:
-  cron: "0 13 * * *" # daily at 1 pm UTC
-  class: "FieldTests::PruneOldExperimentsWorker"
 record_daily_usage:
   cron: "0 11 * * *" # daily at 11:00 UTC
   class: "Metrics::RecordDailyUsageWorker"
@@ -16,6 +13,9 @@ record_daily_notifications:
 record_data_counts:
   cron: "10 * * * *" # every hour, 10 min after the hour
   class: "Metrics::RecordDataCountsWorker"
+check_data_update_script_statuses:
+  cron: "30 * * * *" # 30 min after every hour
+  class: "Metrics::CheckDataUpdateScriptStatuses"
 award_yearly_club_badges:
   cron: "0 0 * * *" # daily at 12 am UTC
   class: "BadgeAchievements::BadgeAwardWorker"

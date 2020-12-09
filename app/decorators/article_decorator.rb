@@ -96,4 +96,10 @@ class ArticleDecorator < ApplicationDecorator
       "<b><a href=\"#{user.path}\">#{user.name}</a></b>"
     end.to_sentence
   end
+
+  # Used in determining when to bust additional routes for an Article's comments
+  def discussion?
+    cached_tag_list_array.include?("discuss") &&
+      featured_number.to_i > 35.hours.ago.to_i
+  end
 end

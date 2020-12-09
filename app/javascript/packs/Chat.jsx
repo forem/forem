@@ -1,4 +1,3 @@
-
 import { h, render } from 'preact';
 import Chat from '../chat/chat';
 import { Snackbar } from '../Snackbar/Snackbar';

@@ -12,15 +12,6 @@ const frontPageFeedPathNames = new Map([
   ['/latest', 'latest'],
 ]);
 
-const mainNavMoreTrigger = document.getElementById('main-nav-more-trigger');
-function toggleMainNavMore() {
-  document.getElementById('main-nav-more').classList.remove('hidden');
-  mainNavMoreTrigger.classList.add('hidden');
-}
-if (mainNavMoreTrigger) {
-  mainNavMoreTrigger.addEventListener('click', toggleMainNavMore);
-}
-
 /**
  * Renders tags followed in the left side bar of the homepage.
  *
@@ -89,7 +80,12 @@ if (!document.getElementById('featured-story-marker')) {
           renderFeed(changedFeedTimeFrame);
         });
       });
-      renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
+
+      const tagsFollowedContainer = document.getElementById(
+        'sidebar-nav-followed-tags',
+      );
+
+      if (tagsFollowedContainer) renderTagsFollowed(tagsFollowedContainer);
     }
   }, 2);
 }
@@ -100,8 +96,8 @@ InstantClick.on('change', () => {
     return false;
   }
 
-  const tagsFollowedContainer = document.body.querySelector(
-    '#sidebar-nav-followed-tags',
+  const tagsFollowedContainer = document.getElementById(
+    'sidebar-nav-followed-tags',
   );
 
   if (!tagsFollowedContainer) {

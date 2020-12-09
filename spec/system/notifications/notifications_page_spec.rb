@@ -35,10 +35,10 @@ RSpec.describe "Notifications page", type: :system, js: true do
 
     visit "/notifications"
 
-    expect(page).to have_css("div.single-notification")
+    expect(page).to have_css("div.spec-notification")
     click_button("heart")
 
-    expect(page).to have_css("img.reacted-emoji")
+    expect(page).to have_css(".reacted")
 
     click_link("Reply")
 
@@ -49,7 +49,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
     follow = leslie.follow(alex)
     Notification.send_new_follower_notification_without_delay(follow, is_read: true)
     visit "/notifications"
-    expect(page).to have_css("div.single-notification")
+    expect(page).to have_css("div.spec-notification")
     click_button("Follow back")
     expect(page).to have_text("Following")
   end
@@ -64,9 +64,9 @@ RSpec.describe "Notifications page", type: :system, js: true do
     def interact_with_each_emojis
       %w[heart thumbsdown vomit].each do |emoji|
         click_button(emoji)
-        expect(page).to have_css("img.reacted-emoji")
+        expect(page).to have_css(".reacted")
         click_button(emoji)
-        expect(page).not_to have_css("img.reacted-emoji")
+        expect(page).not_to have_css(".reacted")
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
       sidekiq_perform_enqueued_jobs
 
       visit "/notifications"
-      expect(page).to have_css("div.single-notification")
+      expect(page).to have_css("div.spec-notification")
 
       interact_with_each_emojis
       click_link("Reply")

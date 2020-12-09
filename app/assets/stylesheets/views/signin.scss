@@ -166,7 +166,6 @@
       position: absolute;
       top: 50%;
       width: 100%;
-      z-index: 0;
       border-radius: var(--radius);
     }
   }
@@ -177,7 +176,7 @@
     color: var(--card-color-secondary);
     background: var(--card-bg);
     padding: 0 var(--su-2);
-    z-index: 1;
+    z-index: var(--z-elevate);
     display: inline-block;
     max-width: 75%;
   }

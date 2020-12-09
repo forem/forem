@@ -1,0 +1,8 @@
+require "rails_helper"
+require Rails.root.join(
+  "<%= script_path %>",
+)
+
+describe DataUpdateScripts::<%= class_name %> do
+  pending "add some examples to (or delete) #{__FILE__}"
+end

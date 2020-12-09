@@ -80,14 +80,14 @@
       <span class="location"><%= event.location_url %></span>
       <span class="alarm_reminder">15</span>
       <span class="description">
-        <%= event.description_html.html_safe %>
+        <%= event.description_html&.html_safe %>
         ------
         Link to attend - <%= event.location_url %>
       </span>
     </div>
   </div>
   <div class="event-description">
-    <%= event.description_html.html_safe %>
+    <%= event.description_html&.html_safe %>
   </div>
 </div>
 

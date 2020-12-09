@@ -5,7 +5,7 @@ const renderer = new marked.Renderer();
 const prettierConfig = require('../../../.prettierrc.json');
 
 module.exports = {
-  stories: ['../**/__stories__/*.stories.jsx'],
+  stories: ['../**/__stories__/*.stories.(mdx|jsx)'],
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
@@ -16,6 +16,14 @@ module.exports = {
       name: '@storybook/addon-storysource',
       loaderOptions: {
         prettierConfig,
+      },
+    },
+    {
+      name: '@storybook/addon-docs',
+      options: {
+        configureJSX: true,
+        babelOptions: {},
+        sourceLoaderOptions: null,
       },
     },
   ],
@@ -57,6 +65,7 @@ module.exports = {
       alias: {
         ...config.resolve.alias,
         '@crayons': path.resolve(__dirname, '../crayons'),
+        '@utilities': path.resolve(__dirname, '../utilities'),
       },
     };
 

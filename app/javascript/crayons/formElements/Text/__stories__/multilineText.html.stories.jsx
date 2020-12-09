@@ -3,7 +3,7 @@ import { h } from 'preact';
 import '../../../storybook-utilities/designSystem.scss';
 
 export default {
-  title: '3_Components/Form Components/Multiline Text Field/HTML',
+  title: 'Components/Form Components/Multiline Text Field/HTML',
 };
 
 export const Default = () => (

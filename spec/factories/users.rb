@@ -13,8 +13,6 @@ FactoryBot.define do
     profile_image                { Rack::Test::UploadedFile.new(image_path, "image/jpeg") }
     twitter_username             { generate :twitter_username }
     github_username              { generate :github_username }
-    summary                      { Faker::Lorem.paragraph[0..rand(190)] }
-    website_url                  { Faker::Internet.url }
     confirmed_at                 { Time.current }
     saw_onboarding               { true }
     checked_code_of_conduct      { true }
@@ -23,8 +21,6 @@ FactoryBot.define do
     registered_at                { Time.current }
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
-    bg_color_hex                 { Faker::Color.hex_color }
-    text_color_hex               { Faker::Color.hex_color }
 
     trait :with_identity do
       transient { identities { Authentication::Providers.available } }
@@ -144,26 +140,6 @@ FactoryBot.define do
         tag = create(:tag)
         user.add_role :tag_moderator, tag
       end
-    end
-
-    trait :with_all_info do
-      education { "DEV University" }
-      employment_title { "Software Engineer" }
-      employer_name { "DEV" }
-      employer_url { "http://dev.to" }
-      currently_learning { "Preact" }
-      mostly_work_with { "Ruby" }
-      currently_hacking_on { "JSON-LD" }
-      mastodon_url { "https://mastodon.social/@test" }
-      facebook_url { "www.facebook.com/example" }
-      linkedin_url { "www.linkedin.com/company/example" }
-      youtube_url { "https://youtube.com/example" }
-      behance_url { "www.behance.net/#{username}" }
-      stackoverflow_url { "www.stackoverflow.com/example" }
-      dribbble_url { "www.dribbble.com/example" }
-      medium_url { "www.medium.com/example" }
-      gitlab_url { "www.gitlab.com/example" }
-      instagram_url { "www.instagram.com/example" }
     end
 
     trait :without_profile do

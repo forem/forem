@@ -23,14 +23,25 @@ module Admin
 
     def update
       @page = Page.find(params[:id])
-      @page.update!(page_params)
-      redirect_to "/admin/pages"
+      @page.assign_attributes(page_params)
+      if @page.valid?
+        @page.update!(page_params)
+        redirect_to admin_pages_path
+      else
+        flash.now[:error] = @page.errors_as_sentence
+        render :edit
+      end
     end
 
     def create
       @page = Page.new(page_params)
-      @page.save!
-      redirect_to "/admin/pages"
+      if @page.valid?
+        @page.save!
+        redirect_to admin_pages_path
+      else
+        flash.now[:error] = @page.errors_as_sentence
+        render :new
+      end
     end
 
     def destroy
@@ -48,7 +59,8 @@ module Admin
     end
 
     def prepopulate_new_form(slug)
-      if slug == "code-of-conduct"
+      case slug
+      when "code-of-conduct"
         html = view_context.render partial: "pages/coc_text",
                                    locals: {
                                      community_name: view_context.community_name,
@@ -62,7 +74,8 @@ module Admin
           description: "A page that describes how to behave on this platform",
           is_top_level_path: true,
         )
-      elsif slug == "privacy"
+
+      when "privacy"
         html = view_context.render partial: "pages/privacy_text",
                                    locals: {
                                      community_name: view_context.community_name,
@@ -75,7 +88,7 @@ module Admin
           description: "A page that describes the privacy policy",
           is_top_level_path: true,
         )
-      elsif slug == "terms"
+      when "terms"
         html = view_context.render partial: "pages/terms_text",
                                    locals: {
                                      community_name: view_context.community_name,

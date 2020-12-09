@@ -4,7 +4,7 @@ module Api
       before_action :set_cache_control_headers, only: %i[index]
 
       INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id video path title video_thumbnail_url user_id video_duration_in_seconds
+        id video path title video_thumbnail_url user_id video_duration_in_seconds video_source_url
       ].freeze
       private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 

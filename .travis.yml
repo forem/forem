@@ -5,7 +5,7 @@ cache:
     - node_modules
     - $HOME/.nvm
 rvm:
-  - 2.7.1
+  - 2.7.2
 addons:
   postgresql: '10' # Travis does not work out of the box with Postgres 11 yet
   chrome: 'stable'
@@ -83,6 +83,7 @@ notifications:
 jobs:
   include:
     - stage: Deploy
+      name: Deploy DEV
       if: type != pull_request
       script: skip
       after_script: skip
@@ -91,5 +92,13 @@ jobs:
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
           master: practicaldev
-        on:
-          condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]
+    - stage: Deploy
+      name: Deploy BenHalpern
+      if: type != pull_request
+      script: skip
+      after_script: skip
+      deploy:
+        provider: heroku
+        api_key: '$HEROKU_AUTH_TOKEN'
+        app:
+          master: benhalpern-community

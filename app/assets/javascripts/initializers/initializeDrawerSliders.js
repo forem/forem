@@ -32,7 +32,7 @@ function initializeDrawerSliders() {
       };
     }
     InstantClick.on('change', (_event) => {
-      document.getElementsByTagName('body')[0].classList.remove('modal-open');
+      document.body.classList.remove('modal-open');
       slideSidebar('right', 'outOfView');
       slideSidebar('left', 'outOfView');
     });

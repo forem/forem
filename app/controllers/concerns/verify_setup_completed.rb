@@ -7,13 +7,6 @@ module VerifySetupCompleted
     community_name
     community_description
 
-    main_social_image
-    logo_png
-    logo_svg
-
-    mascot_user_id
-    mascot_image_url
-
     suggested_tags
     suggested_users
   ].freeze

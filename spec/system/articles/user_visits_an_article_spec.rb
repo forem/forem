@@ -33,7 +33,7 @@ RSpec.describe "Views an article", type: :system do
     # here
     it "shows the readable publish date" do
       visit article.path
-      expect(page).to have_selector("article time", text: article.readable_publish_date)
+      expect(page).to have_selector("article time", text: article.readable_publish_date.gsub("  ", " "))
     end
 
     it "embeds the published timestamp" do
@@ -61,11 +61,13 @@ RSpec.describe "Views an article", type: :system do
       # here
       it "shows the identical readable publish dates in each page" do
         visit first_article.path
-        expect(page).to have_selector("article time", text: first_article.readable_publish_date)
-        expect(page).to have_selector(".crayons-card--secondary time", text: first_article.readable_publish_date)
+        expect(page).to have_selector("article time", text: first_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_selector(".crayons-card--secondary time",
+                                      text: first_article.readable_publish_date.gsub("  ", " "))
         visit second_article.path
-        expect(page).to have_selector("article time", text: second_article.readable_publish_date)
-        expect(page).to have_selector(".crayons-card--secondary time", text: second_article.readable_publish_date)
+        expect(page).to have_selector("article time", text: second_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_selector(".crayons-card--secondary time",
+                                      text: second_article.readable_publish_date.gsub("  ", " "))
       end
     end
   end
@@ -133,9 +135,9 @@ RSpec.describe "Views an article", type: :system do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "shows the article edit link" do
+      it "shows the article edit link", js: true do
         visit article_path
-        expect(page).to have_link(link_text, href: href)
+        expect(page.body).to include('display: inline-block;">Click to edit</a>')
       end
     end
 
@@ -145,7 +147,7 @@ RSpec.describe "Views an article", type: :system do
 
       it "does not the article edit link" do
         visit article_path
-        expect(page).not_to have_link(link_text, href: href)
+        expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
       end
     end
 
@@ -156,7 +158,7 @@ RSpec.describe "Views an article", type: :system do
       it "does not the article edit link" do
         sign_out user
         visit article_path
-        expect(page).not_to have_link(link_text, href: href)
+        expect(page.body).not_to include('display: inline-block;">Click to edit</a>')
       end
     end
 

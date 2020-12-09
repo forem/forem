@@ -67,6 +67,7 @@
   align-items: center;
   padding: var(--su-3);
   border-radius: var(--radius);
+  transition: background var(--transition-props), color var(--transition-props);
 
   &:hover:not(.crayons-link--current) {
     background: var(--link-bg-hover);

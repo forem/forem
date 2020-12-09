@@ -55,7 +55,6 @@ article {
 
   &.article {
     position: relative;
-    z-index: 5;
   }
 
   .title {
@@ -227,7 +226,6 @@ article {
     line-height: 32px;
     background: var(--card-bg);
     position: relative;
-    z-index: 5;
     padding: 5px 0px;
     overflow-wrap: break-word;
 

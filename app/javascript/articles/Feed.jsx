@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
@@ -26,13 +27,18 @@ export const Feed = ({ timeFrame, renderFeed }) => {
         const feedItems = await getFeedItems(timeFrame);
 
         // Ensure first article is one with a main_image
+        // This is important because the featuredStory will
+        // appear at the top of the feed, with a larger
+        // main_image than any of the stories or feed elements.
         const featuredStory = feedItems.find(
           (story) => story.main_image !== null,
         );
 
-        // Remove that first one from the array.
+        // Remove that first story from the array to
+        // prevent it from rendering twice in the feed.
         const index = feedItems.indexOf(featuredStory);
-        feedItems.splice(index, 1);
+        const deleteCount = featuredStory ? 1 : 0;
+        feedItems.splice(index, deleteCount);
         const subStories = feedItems;
         const organizedFeedItems = [featuredStory, subStories].flat();
 
@@ -130,6 +136,12 @@ export const Feed = ({ timeFrame, renderFeed }) => {
       setBookmarkedFeedItems(updatedBookmarkedFeedItems);
     }
   }
+
+  useListNavigation(
+    'article.crayons-story',
+    'a.crayons-story__hidden-navigation-link',
+    'div.paged-stories',
+  );
 
   useKeyboardShortcuts({
     b: (event) => {

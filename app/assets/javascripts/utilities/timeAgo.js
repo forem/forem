@@ -38,7 +38,7 @@ function secondsToHumanUnitAgo(seconds) {
  */
 function timeAgo({
   oldTimeInSeconds,
-  formatter = humanTime =>
+  formatter = (humanTime) =>
     `<span class="time-ago-indicator">(${humanTime})</span>`,
   maxDisplayedAge = 60 * 60 * 24 - 1,
 }) {

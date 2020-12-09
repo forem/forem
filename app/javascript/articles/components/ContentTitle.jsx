@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
 
 export const ContentTitle = ({ article }) => (
-  <h2 className="crayons-story__title">
+  <h3 className="crayons-story__title">
     <a href={article.path} id={`article-link-${article.id}`}>
       {article.class_name === 'PodcastEpisode' && (
         <span className="crayons-story__flare-tag">podcast</span>
@@ -18,7 +18,7 @@ export const ContentTitle = ({ article }) => (
       {/* eslint-disable-next-line react/no-danger */}
       <span dangerouslySetInnerHTML={{ __html: filterXSS(article.title) }} />
     </a>
-  </h2>
+  </h3>
 );
 
 ContentTitle.propTypes = {

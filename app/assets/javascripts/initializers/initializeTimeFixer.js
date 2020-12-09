@@ -57,12 +57,12 @@ function initializeTimeFixer() {
   updateLocalDateTime(
     utcTime,
     convertUtcTime,
-    element => element.dataset.datetime,
+    (element) => element.dataset.datetime,
   );
   updateLocalDateTime(
     utcDate,
     convertUtcDate,
-    element => element.dataset.datetime,
+    (element) => element.dataset.datetime,
   );
-  updateLocalDateTime(utc, convertCalEvent, element => element.innerHTML);
+  updateLocalDateTime(utc, convertCalEvent, (element) => element.innerHTML);
 }
