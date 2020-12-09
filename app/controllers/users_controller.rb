@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
+  ALLOWED_USER_PARAMS = %i[last_onboarding_page].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -143,13 +144,17 @@ class UsersController < ApplicationController
   def onboarding_update
     if params[:user]
       sanitize_user_params
-      permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
-      current_user.assign_attributes(params[:user].permit(permitted_params))
+      current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
       current_user.profile_updated_at = Time.current
     end
+
+    if current_user.save && params[:profile]
+      update_result = Profiles::Update.call(current_user, { profile: profile_params })
+    end
+
     current_user.saw_onboarding = true
     authorize User
-    render_update_response
+    render_update_response(update_result&.success?)
   end
 
   def onboarding_checkbox_update
@@ -162,7 +167,7 @@ class UsersController < ApplicationController
 
     current_user.saw_onboarding = true
     authorize User
-    render_update_response
+    render_update_response(current_user.save)
   end
 
   def join_org
@@ -267,8 +272,8 @@ class UsersController < ApplicationController
     recent_suggestions.presence || default_suggested_users
   end
 
-  def render_update_response
-    outcome = current_user.save ? "updated successfully" : "update failed"
+  def render_update_response(success)
+    outcome = success ? "updated successfully" : "update failed"
 
     respond_to do |format|
       format.json { render json: { outcome: outcome } }
@@ -329,5 +334,9 @@ class UsersController < ApplicationController
     worker = FeatureFlag.enabled?(:feeds_import) ? Feeds::ImportArticlesWorker : RssReaderFetchUserWorker
 
     worker.perform_async(user.id)
+  end
+
+  def profile_params
+    params[:profile].permit(Profile.attributes)
   end
 end

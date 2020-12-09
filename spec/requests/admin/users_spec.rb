@@ -46,11 +46,12 @@ RSpec.describe "admin/users", type: :request do
     end
 
     context "when a user has been sent an email" do
-      it "renders a link to the user email on the Resource Admin" do
+      it "renders a link to the user email preview" do
         email = create(:email_message, user: user, to: user.email)
         get admin_user_path(user.id)
 
-        expect(response.body).to include(resource_admin_email_message_path(email.id))
+        preview_path = admin_user_email_message_path(user, email)
+        expect(response.body).to include(preview_path)
       end
     end
   end

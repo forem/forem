@@ -24,6 +24,8 @@ class Profile < ApplicationRecord
   }.with_indifferent_access.freeze
 
   # Generates typed accessors for all currently defined profile fields.
+  # This is also used in config/application.rb to initialize profiles on app
+  # boot in the after_initialize hook.
   def self.refresh_attributes!
     return if ENV["ENV_AVAILABLE"] == "false"
     return unless Database.table_exists?("profiles")
@@ -45,9 +47,4 @@ class Profile < ApplicationRecord
   def clear!
     update(data: {})
   end
-
-  # NOTE: @citizen428 We want to have a current list of profile attributes the
-  # moment the application loads. I wish Rails had a hook for code to run after
-  # the app started...
-  refresh_attributes!
 end

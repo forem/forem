@@ -1,7 +1,8 @@
 import { Controller } from 'stimulus';
 
 export default class ArticleController extends Controller {
-  static targets = ['featuredNumber'];
+  static classes = ['bgHighlighted', 'borderHighlighted'];
+  static targets = ['featuredNumber', 'cardBody'];
 
   increaseFeaturedNumber() {
     // Increases the article's chances of being seen
@@ -16,18 +17,12 @@ export default class ArticleController extends Controller {
   }
 
   highlightElement() {
-    const card = this.element.getElementsByClassName('card-body')[0];
-    card.classList.add('bg-highlighted', 'border-highlighted');
+    const card = this.cardBodyTarget;
+
+    card.classList.add(this.bgHighlightedClass, this.borderHighlightedClass);
+
     setTimeout(() => {
-      card.classList.remove('bg-highlighted');
+      card.classList.remove(this.bgHighlightedClass);
     }, 350);
-  }
-
-  get articleId() {
-    return parseInt(this.data.get('id'), 10);
-  }
-
-  set articleId(value) {
-    this.data.set('id', value);
   }
 }

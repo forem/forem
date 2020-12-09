@@ -12,6 +12,11 @@
      - ✅ Provide tests for your changes.
      - 📝 Use descriptive commit messages.
      - 📗 Update any related documentation and include any relevant screenshots.
+
+     NOTE: Pull Requests from forked repositories will need to be reviewed by
+     a Forem Team member before any CI builds will run. Once your PR is approved
+     with a `/ci` reply to the PR, it will be allowed to run subsequent builds without
+     manual approval.
 -->
 
 ## What type of PR is this? (check all applicable)
@@ -33,7 +38,9 @@ as any relevant images for UI changes._
 
 ### UI accessibility concerns?
 
-_If your PR includes UI changes, please replace this line with details on how accessibility is impacted and tested. For more info, check out the [Forem Accessibility Docs](https://docs.forem.com/frontend/accessibility)._
+_If your PR includes UI changes, please replace this line with details on how
+accessibility is impacted and tested. For more info, check out the
+[Forem Accessibility Docs](https://docs.forem.com/frontend/accessibility)._
 
 ## Added tests?
 

@@ -11,8 +11,10 @@ const emailAuthSettingsSection = document.getElementById(
 const emailAuthModalTitle = 'Disable Email address registration';
 // TODO: Remove the sentence "You must update site config to save this action!"
 // once we build more robust flow for Admin/Config
-const emailAuthModalBody =
-  '<p>If you disable Email address as a registration option, people cannot create an account with their email address.</p><p>However, people who have already created an account using their email address can continue to login.</p><p><strong>You must confirm and update site config to save below this action.</strong></p>';
+const emailAuthModalBody = `
+  <p>If you disable Email address as a registration option, people cannot create an account with their email address.</p>
+  <p>However, people who have already created an account using their email address can continue to login.</p>
+  <p><strong>You must confirm and update site config to save below this action.</strong></p>`;
 
 export default class ConfigController extends Controller {
   static targets = [

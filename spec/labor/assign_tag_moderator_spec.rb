@@ -63,8 +63,8 @@ RSpec.describe AssignTagModerator, type: :labor do
     end
 
     # Regression test for https://github.com/forem/forem/pull/11047
-    it "doesn't raise a NoMethodError error" do
-      expect { add_tag_moderators }.not_to raise_error(NoMethodError)
+    it "doesn't raise an error" do
+      expect { add_tag_moderators }.not_to raise_error
     end
   end
 

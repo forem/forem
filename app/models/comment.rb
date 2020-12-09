@@ -75,7 +75,7 @@ class Comment < ApplicationRecord
   def path
     "/#{user.username}/comment/#{id_code_generated}"
   rescue StandardError
-    "/404.html"
+    "/404"
   end
 
   def parent_or_root_article
@@ -304,7 +304,8 @@ class Comment < ApplicationRecord
   end
 
   def record_field_test_event
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_comment")
+    Users::RecordFieldTestEventWorker
+      .perform_async(user_id, :follow_implicit_points, "user_creates_comment")
   end
 
   def notify_slack_channel_about_warned_users
