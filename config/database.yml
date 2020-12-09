@@ -65,7 +65,7 @@ development:
 test:
   <<: *default
   url: <%= ENV.fetch("DATABASE_URL_TEST", "postgres:///Forem_test") %>
-  database: <%= ENV.fetch("DATABASE_NAME_TEST", "Forem_test") %><%= ENV.fetch("TEST_ENV_NUMBER", "") %>
+  database: <%= ENV.fetch("DATABASE_NAME_TEST", "Forem_test") %><%= ENV["TEST_ENV_NUMBER"] %>
   variables:
       statement_timeout: <%= ENV.fetch("STATEMENT_TIMEOUT", 10_000).to_i %>
 
@@ -91,4 +91,4 @@ test:
 production:
   <<: *default
   url: <%= ENV.fetch("DATABASE_URL", "") %>
-  database: <%= ENV.fetch("DATABASE_NAME", "Forem_production") %>
+  database: <%= ENV["DATABASE_NAME"] %>
