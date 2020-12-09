@@ -64,7 +64,6 @@ module Admin
         html = view_context.render partial: "pages/coc_text",
                                    locals: {
                                      community_name: view_context.community_name,
-                                     community_qualified_name: view_context.community_qualified_name,
                                      email_link: view_context.email_link
                                    }
         @page = Page.new(

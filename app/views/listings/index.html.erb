@@ -7,7 +7,7 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= app_url(request.path) %>" />
-  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+  <meta property="og:site_name" content="<%= community_name %>" />
   <% if @displayed_listing %>
     <meta property="og:title" content="<%= truncate @displayed_listing.title, length: 54 %>">
     <meta property="og:description" content="<%= community_name %> Listing" />

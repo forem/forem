@@ -64,7 +64,7 @@
     <meta property="og:url" content="<%= article_url(@article) %>" />
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
-    <meta property="og:site_name" content="<%= community_qualified_name %>" />
+    <meta property="og:site_name" content="<%= community_name %>" />
     <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
