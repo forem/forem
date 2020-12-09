@@ -41,6 +41,8 @@ module Api
 
         @listings = @organization.listings.published
           .select(LISTINGS_FOR_SERIALIZATION).page(page).per(num)
+          .includes(:taggings, :listing_category)
+          .order(bumped_at: :desc)
       end
 
       private
