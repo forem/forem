@@ -24,7 +24,8 @@
     "pretest": "npm run lint:frontend",
     "test": "jest app/javascript/ bin/ --coverage",
     "test:watch": "jest app/javascript/ bin/ --watch",
-    "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log"
+    "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
+    "e2e": "cypress open"
   },
   "husky": {
     "hooks": {
@@ -105,11 +106,13 @@
     "babel-loader": "^8.2.2",
     "css-loader": "^5.0.1",
     "cssom": "^0.4.4",
+    "cypress": "^6.1.0",
     "eslint": "^7.14.0",
     "eslint-config-preact": "^1.1.3",
     "eslint-config-prettier": "^6.13.0",
     "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-cypress": "^2.11.2",
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.3.1",
