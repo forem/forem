@@ -16,4 +16,11 @@ RSpec.describe EdgeCache::BustOrganization, type: :service do
     expect(described_class).to have_received(:bust).with("/#{slug}").once
     expect(described_class).to have_received(:bust).with(article.path).once
   end
+
+  it "logs an error" do
+    allow(described_class).to receive(:bust).with("/5").once
+    allow(Rails.logger).to receive(:error)
+    described_class.call(4, 5)
+    expect(Rails.logger).to have_received(:error).once
+  end
 end
