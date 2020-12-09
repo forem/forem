@@ -39,35 +39,35 @@ class User < ApplicationRecord
     youtube_url
   ].freeze
 
-  self.ignored_columns = PROFILE_COLUMNS
+  # self.ignored_columns = PROFILE_COLUMNS
 
-  # NOTE: @citizen428 This is temporary code during profile migration and will
-  # be removed.
-  concerning :ProfileMigration do
-    included do
-      # NOTE: There are rare cases were we want to skip this callback, primarily
-      # in tests. `skip_callback` modifies global state, which is not thread-safe
-      # and can cause hard to track down bugs. We use an instance-level attribute
-      # instead. See `spec/factories/profiles.rb` for an example.
-      attr_accessor :_skip_creating_profile
+  # # NOTE: @citizen428 This is temporary code during profile migration and will
+  # # be removed.
+  # concerning :ProfileMigration do
+  #   included do
+  #     # NOTE: There are rare cases were we want to skip this callback, primarily
+  #     # in tests. `skip_callback` modifies global state, which is not thread-safe
+  #     # and can cause hard to track down bugs. We use an instance-level attribute
+  #     # instead. See `spec/factories/profiles.rb` for an example.
+  #     attr_accessor :_skip_creating_profile
 
-      # All new users should automatically have a profile
-      after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
+  #     # All new users should automatically have a profile
+  #     after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
 
-      # Getters and setters for unmapped profile attributes
-      (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
-        delegate column, "#{column}=", to: :profile, allow_nil: true
-      end
+  #     # Getters and setters for unmapped profile attributes
+  #     (PROFILE_COLUMNS - Profile::MAPPED_ATTRIBUTES.values).each do |column|
+  #       delegate column, "#{column}=", to: :profile, allow_nil: true
+  #     end
 
-      # Getters and setters for mapped profile attributes
-      Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
-        define_method(user_attribute) { profile&.public_send(profile_attribute) }
-        define_method("#{user_attribute}=") do |value|
-          profile&.public_send("#{profile_attribute}=", value)
-        end
-      end
-    end
-  end
+  #     # Getters and setters for mapped profile attributes
+  #     Profile::MAPPED_ATTRIBUTES.each do |profile_attribute, user_attribute|
+  #       define_method(user_attribute) { profile&.public_send(profile_attribute) }
+  #       define_method("#{user_attribute}=") do |value|
+  #         profile&.public_send("#{profile_attribute}=", value)
+  #       end
+  #     end
+  #   end
+  # end
 
   EDITORS = %w[v1 v2].freeze
   FONTS = %w[serif sans_serif monospace comic_sans open_dyslexic].freeze
