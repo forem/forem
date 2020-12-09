@@ -193,13 +193,6 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.community_name).to eq(name_magoo)
         end
 
-        it "updates the collective_noun" do
-          collective_noun = "Rhumba"
-          post "/admin/config", params: { site_config: { collective_noun: collective_noun },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.collective_noun).to eq(collective_noun)
-        end
-
         it "updates the community_member_label" do
           name = "developer"
           post "/admin/config", params: { site_config: { community_member_label: name },

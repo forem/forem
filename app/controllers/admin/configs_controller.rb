@@ -15,8 +15,6 @@ module Admin
       %i[
         community_name
         community_emoji
-        collective_noun
-        collective_noun_disabled
         community_description
         community_member_label
         community_copyright_start_year
