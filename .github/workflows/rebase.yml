@@ -1,18 +1,13 @@
-# This workflow allows an organization member or owner to kickoff an automated
-# rebase by commenting on a pull request with "/rebase". In order for the
-# workflow to run, organization membership must be set to public!
+name: Rebase
 
-# https://github.com/marketplace/actions/automatic-rebase (https://github.com/cirrus-actions/rebase)
-
-name: Automatic Rebase
 on:
   issue_comment:
     types: [created]
 
 jobs:
   rebase:
-    name: Rebase
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '/rebase') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER')
+    name: Automatic Rebase
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/rebase') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'CONTRIBUTOR')
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the latest code
@@ -20,17 +15,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
-
-    - name: Dump github.event.pull_request
-      env:
-        GITHUB_EVENT_PULL_REQUEST: ${{ toJson(github.event.issue.pull_request) }}
-      run: echo "$GITHUB_EVENT_PULL_REQUEST"
-
-    - name: Automatic Rebase
+    - name: Run cirrus-actions/rebase
       uses: cirrus-actions/rebase@1.4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
