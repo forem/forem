@@ -7,7 +7,7 @@ RSpec.describe "Looking For Work", type: :system do
     user.follow(create(:tag, name: "hiring"))
   end
 
-  it "user selects looking for work and autofollows hiring tag", js: true do
+  xit "user selects looking for work and autofollows hiring tag", js: true do
     allow(SiteConfig).to receive(:dev_to?).and_return(true)
 
     sign_in(user)

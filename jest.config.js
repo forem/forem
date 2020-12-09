@@ -16,13 +16,19 @@ module.exports = {
     '!**/__tests__/**',
     '!**/__stories__/**',
     '!app/javascript/storybook-static/**/*.js',
+    // We do not need code coverage on files that are prop types
+    // or eslint configuration files.
+    '!app/javascript/**/*PropTypes.js',
+    '!./**/.eslintrc.js',
+    // Ignore Storybook configuration files
+    '!app/javascript/.storybook/**/*.{js,jsx}',
   ],
   coverageThreshold: {
     global: {
-      statements: 42,
-      branches: 38,
+      statements: 43,
+      branches: 39,
       functions: 41,
-      lines: 42,
+      lines: 43,
     },
   },
   moduleNameMapper: {
@@ -34,10 +40,10 @@ module.exports = {
   // picked up by jest if this folder is not excluded causing a false negative of a test suite failing.
   testPathIgnorePatterns: [
     '/node_modules/',
-    './config/webpack',
+    '<rootDir>/config/webpack',
     // Allows developers to add utility modules that jest won't run as test suites.
     '/__tests__/utilities/',
-    './app/javascript/storybook-static',
+    '<rootDir>/app/javascript/storybook-static',
   ],
   watchPlugins: [
     'jest-watch-typeahead/filename',

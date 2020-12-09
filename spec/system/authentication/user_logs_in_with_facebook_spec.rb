@@ -112,7 +112,6 @@ RSpec.describe "Authenticating with Facebook" do
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_link(sign_in_link)
-        expect(page).to have_link("About #{ApplicationConfig['COMMUNITY_NAME']}")
       end
 
       it "notifies Datadog about a callback error" do

@@ -11,8 +11,8 @@
   initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast,
-  initializeDateHelpers, initializeColorPicker
+  initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
+  initializeColorPicker
 */
 
 function callInitializers() {
@@ -38,7 +38,6 @@ function callInitializers() {
     }
   }, 1);
 
-  initializeSpecialNavigationFunctionality();
   initializeBaseTracking();
   initializePaymentPointers();
   initializeTouchDevice();

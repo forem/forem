@@ -1,28 +1,28 @@
-Display email on profile,check_box,,,Basic,settings_only
-Website URL,text_field,https://yoursite.com,,Basic,header
-Summary,text_area,A short bio...,,Basic,header
-Location,text_field,"Halifax, Nova Scotia",,Basic,header
-Facebook URL,text_field,https://facebook.com/...,,Links,header
-Youtube URL,text_field,https://www.youtube.com/channel/...,,Links,header
-StackOverflow URL,text_field,https://stackoverflow.com/users/...,,Links,header
-LinkedIn URL,text_field,https://www.linkedin.com/in/...,,Links,header
-Behance URL,text_field,https://www.behance.net/...,,Links,header
-Dribbble URL,text_field,https://dribbble.com/...,,Links,header
-Medium URL,text_field,https://medium.com/@...,,Links,header
-GitLab URL,text_field,https://gitlab.com/...,,Links,header
-Instagram URL,text_field,https://www.instagram.com/...,,Links,header
-Mastodon URL,text_field,https://...,,Links,header
-Twitch URL,text_field,https://www.twitch.tv/...,,Links,header
-Education,text_field,,,Work,header
-Employer name,text_field,Acme Inc.,,Work,header
-Employer URL,text_field,https://dev.com,,Work,header
-Employment title,text_field,Junior Frontend Engineer,,Work,header
-Looking for work,check_box,,,Work,settings_only
-"Display ""looking for work"" on profile",check_box,,,Work,settings_only
-Recruiters can contact me about job opportunities,check_box,,,Work,settings_only
-Skills/Languages,text_area,,What tools and languages are you most experienced with? Are you specialized or more of a generalist?,Coding,left_sidebar
-Currently learning,text_area,,"What are you learning right now? What are the new tools and languages you're picking up right now?",Coding,left_sidebar
-Currently hacking on,text_area,,What projects are currently occupying most of your time?,Coding,left_sidebar
-Available for,text_area,,"What kinds of collaborations or discussions are you available for? What's a good reason to say Hey! to you these days?",Coding,left_sidebar
-Brand color 1,color_field,#000000,"Used for backgrounds, borders etc.",Branding,settings_only
-Brand color 2,color_field,#000000,Used for texts (usually put on Brand color 1).,Branding,settings_only
+Display email on profile,check_box,,,Basic,settings_only,false
+Website URL,text_field,https://yoursite.com,,Basic,header,true
+Summary,text_area,A short bio...,,Basic,header,true
+Location,text_field,"Halifax, Nova Scotia",,Basic,header,true
+Facebook URL,text_field,https://facebook.com/...,,Links,header,false
+Youtube URL,text_field,https://www.youtube.com/channel/...,,Links,header,false
+StackOverflow URL,text_field,https://stackoverflow.com/users/...,,Links,header,false
+LinkedIn URL,text_field,https://www.linkedin.com/in/...,,Links,header,false
+Behance URL,text_field,https://www.behance.net/...,,Links,header,false
+Dribbble URL,text_field,https://dribbble.com/...,,Links,header,false
+Medium URL,text_field,https://medium.com/@...,,Links,header,false
+GitLab URL,text_field,https://gitlab.com/...,,Links,header,false
+Instagram URL,text_field,https://www.instagram.com/...,,Links,header,false
+Mastodon URL,text_field,https://...,,Links,header,false
+Twitch URL,text_field,https://www.twitch.tv/...,,Links,header,false
+Education,text_field,,,Work,header,false
+Employer name,text_field,Acme Inc.,,Work,header,false
+Employer URL,text_field,https://dev.com,,Work,header,false
+Employment title,text_field,Junior Frontend Engineer,,Work,header,false
+Looking for work,check_box,,,Work,settings_only,false
+"Display ""looking for work"" on profile",check_box,,,Work,settings_only,false
+Recruiters can contact me about job opportunities,check_box,,,Work,settings_only,false
+Skills/Languages,text_area,,What tools and languages are you most experienced with? Are you specialized or more of a generalist?,Coding,left_sidebar,false
+Currently learning,text_area,,"What are you learning right now? What are the new tools and languages you're picking up right now?",Coding,left_sidebar,false
+Currently hacking on,text_area,,What projects are currently occupying most of your time?,Coding,left_sidebar,false
+Available for,text_area,,"What kinds of collaborations or discussions are you available for? What's a good reason to say Hey! to you these days?",Coding,left_sidebar,false
+Brand color 1,color_field,#000000,"Used for backgrounds, borders etc.",Branding,settings_only,false
+Brand color 2,color_field,#000000,Used for texts (usually put on Brand color 1).,Branding,settings_only,false

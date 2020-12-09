@@ -2,31 +2,49 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
+
 import Navigation from './Navigation';
+import ColorPicker from './ProfileForm/ColorPicker';
+import TextArea from './ProfileForm/TextArea';
+import TextInput from './ProfileForm/TextInput';
+import CheckBox from './ProfileForm/CheckBox';
+
+import { request } from '@utilities/http';
 
 /* eslint-disable camelcase */
 class ProfileForm extends Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleFieldChange = this.handleFieldChange.bind(this);
+    this.handleColorPickerChange = this.handleColorPickerChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.user = userData();
-
     this.state = {
-      formValues: {
-        summary: '',
-        location: '',
-        employment_title: '',
-        employer_name: '',
-      },
-      last_onboarding_page: 'v2: personal info form',
+      groups: [],
+      formValues: {},
       canSkip: true,
+      last_onboarding_page: 'v2: personal info form',
     };
   }
 
   componentDidMount() {
+    this.getProfielFieldGroups();
     updateOnboarding('v2: personal info form');
+  }
+
+  async getProfielFieldGroups() {
+    try {
+      const response = await request(`/profile_field_groups?onboarding=true`);
+      if (response.ok) {
+        const data = await response.json();
+        this.setState({ groups: data.profile_field_groups });
+      } else {
+        throw new Error(response.statusText);
+      }
+    } catch (error) {
+      this.setState({ error: true, errorMessage: error.toString() });
+    }
   }
 
   onSubmit() {
@@ -38,7 +56,10 @@ class ProfileForm extends Component {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { ...formValues, last_onboarding_page } }),
+      body: JSON.stringify({
+        user: { last_onboarding_page },
+        profile: { ...formValues },
+      }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {
@@ -48,19 +69,78 @@ class ProfileForm extends Component {
     });
   }
 
-  handleChange(e) {
+  handleFieldChange(e) {
     const { formValues } = { ...this.state };
     const currentFormState = formValues;
     const { name, value } = e.target;
 
     currentFormState[name] = value;
+    this.setState({
+      formValues: currentFormState,
+      canSkip: this.formIsEmpty(currentFormState),
+    });
+  }
 
+  handleColorPickerChange(e) {
+    const { formValues } = { ...this.state };
+    const currentFormState = formValues;
+
+    const field = e.target;
+    const { name, value } = field;
+
+    let sibling = field.nextElementSibling
+      ? field.nextElementSibling
+      : field.previousElementSibling;
+    sibling.value = value;
+
+    currentFormState[name] = value;
+    this.setState({
+      formValues: currentFormState,
+      canSkip: this.formIsEmpty(currentFormState),
+    });
+  }
+
+  formIsEmpty(currentFormState) {
     // Once we've derived the new form values, check if the form is empty
     // and use that value to set the `canSkip` property on the state.
-    const formIsEmpty =
-      Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
+    Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
+  }
 
-    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+  renderAppropriateFieldType(field) {
+    switch (field.input_type) {
+      case 'check_box':
+        return (
+          <CheckBox
+            key={field.id}
+            field={field}
+            onFieldChange={this.handleFieldChange}
+          />
+        );
+      case 'color_field':
+        return (
+          <ColorPicker
+            key={field.id}
+            field={field}
+            onColorChange={this.handleColorPickerChange}
+          />
+        );
+      case 'text_area':
+        return (
+          <TextArea
+            key={field.id}
+            field={field}
+            onFieldChange={this.handleFieldChange}
+          />
+        );
+      default:
+        return (
+          <TextInput
+            key={field.id}
+            field={field}
+            onFieldChange={this.handleFieldChange}
+          />
+        );
+    }
   }
 
   render() {
@@ -71,7 +151,31 @@ class ProfileForm extends Component {
       communityConfig,
     } = this.props;
     const { profile_image_90, username, name } = this.user;
-    const { canSkip } = this.state;
+    const { canSkip, groups = [], error, errorMessage } = this.state;
+
+    if (error) {
+      return (
+        <div role="alert" class="crayons-notice crayons-notice--danger">
+          An error occurred: {errorMessage}
+        </div>
+      );
+    }
+
+    const sections = groups.map((group) => {
+      return (
+        <div key={group.id} class="onboarding-profile-sub-section">
+          <h2>{group.name}</h2>
+          {group.description && (
+            <div class="color-base-60">{group.description})</div>
+          )}
+          <div>
+            {group.profile_fields.map((field) => {
+              return this.renderAppropriateFieldType(field);
+            })}
+          </div>
+        </div>
+      );
+    });
 
     return (
       <div
@@ -109,52 +213,7 @@ class ProfileForm extends Component {
               <h3>{name}</h3>
               <p>{username}</p>
             </div>
-            <form>
-              <label htmlFor="summary">
-                Bio
-                <textarea
-                  name="summary"
-                  id="summary"
-                  placeholder="Tell us about yourself"
-                  onChange={this.handleChange}
-                  maxLength="120"
-                />
-              </label>
-              <label htmlFor="location">
-                Where are you located?
-                <input
-                  type="text"
-                  name="location"
-                  id="location"
-                  placeholder="e.g. New York, NY"
-                  onChange={this.handleChange}
-                  maxLength="60"
-                />
-              </label>
-              <label htmlFor="employment_title">
-                What is your title?
-                <input
-                  type="text"
-                  name="employment_title"
-                  id="employment_title"
-                  placeholder="e.g. Software Engineer"
-                  onChange={this.handleChange}
-                  maxLength="60"
-                />
-              </label>
-              <label htmlFor="employer_name">
-                Where do you work?
-                <input
-                  type="text"
-                  name="employer_name"
-                  id="employer_name"
-                  placeholder="e.g. Company name, self-employed, etc."
-                  onChange={this.handleChange}
-                  maxLength="60"
-                  className="onboarding-form-input--last"
-                />
-              </label>
-            </form>
+            <div>{sections}</div>
           </div>
         </div>
       </div>
@@ -169,7 +228,6 @@ ProfileForm.propTypes = {
   currentSlideIndex: PropTypes.func.isRequired,
   communityConfig: PropTypes.shape({
     communityName: PropTypes.string.isRequired,
-    communityDescription: PropTypes.string.isRequired,
   }),
 };
 

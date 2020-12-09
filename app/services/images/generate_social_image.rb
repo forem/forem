@@ -1,5 +1,16 @@
 module Images
   class GenerateSocialImage
+    OPTIMIZER_OPTIONS = {
+      height: 400,
+      width: 800,
+      gravity: "north",
+      crop: "fill",
+      type: "url2png",
+      flags: nil,
+      quality: nil,
+      fetch_format: nil
+    }.freeze
+
     def self.call(resource)
       new(resource).call
     end
@@ -34,18 +45,7 @@ module Images
     end
 
     def optimize_image(path)
-      options = {
-        height: 400,
-        width: 800,
-        gravity: "north",
-        crop: "fill",
-        type: "url2png",
-        flags: nil,
-        quality: nil,
-        fetch_format: nil
-      }
-
-      Images::Optimizer.call("https://dev.to/social_previews#{path}", options)
+      Images::Optimizer.call("#{URL.url}/social_previews#{path}", OPTIMIZER_OPTIONS)
     end
   end
 end
