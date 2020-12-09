@@ -1,4 +1,4 @@
-name: Approve PR for running Buildkite pipelines
+name: Buildkite
 
 on:
   issue_comment:
@@ -6,44 +6,22 @@ on:
 
 jobs:
   add_ci_label:
-    name: "Add CI label to PR"
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '/ci') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER')
+    name: "Add CI label to pull request"
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/ci') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'CONTRIBUTOR')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
-      - name: Dump github.event.issue.pull_request
-        env:
-          GITHUB_EVENT_PULL_REQUEST: ${{ toJson(github.event.issue.pull_request) }}
-        run: echo "$GITHUB_EVENT_PULL_REQUEST"
-
       - uses: actions-ecosystem/action-add-labels@v1
         with:
           github_token: ${{ secrets.github_token }}
           labels: ci
 
   build_containers:
-    name: "Run Buildkite forem/build-containers pipeline"
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '/ci') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER')
+    name: "Run forem/build-containers pipeline"
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/ci') && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'CONTRIBUTOR')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
-      - name: Dump github.event.issue.pull_request
-        env:
-          GITHUB_EVENT_PULL_REQUEST: ${{ toJson(github.event.issue.pull_request) }}
-        run: echo "$GITHUB_EVENT_PULL_REQUEST"
-
       - uses: jdoss/trigger-pipeline-action@c1c77c83b3c16b03b474bc2e1ce6eb36dbde7f3d
         env:
           BUILDKITE_API_ACCESS_TOKEN: ${{ secrets.buildkite_api_access_token }}
