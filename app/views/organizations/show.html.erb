@@ -7,7 +7,7 @@
 <div class="home sub-home" id="index-container"
      data-params="<%= params.merge(sort_by: "published_at", sort_direction: "desc", organization_id: @organization.id).to_json(only: %i[tag organization_id username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
      data-feed="<%= params[:timeframe] || "base-feed" %>"
-     data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
+     data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
   <%= render "organizations/sidebar" %>
   <div class="articles-list" id="articles-list">
     <div class="substories" id="substories">

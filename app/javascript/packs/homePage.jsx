@@ -12,15 +12,6 @@ const frontPageFeedPathNames = new Map([
   ['/latest', 'latest'],
 ]);
 
-const mainNavMoreTrigger = document.getElementById('main-nav-more-trigger');
-function toggleMainNavMore() {
-  document.getElementById('main-nav-more').classList.remove('hidden');
-  mainNavMoreTrigger.classList.add('hidden');
-}
-if (mainNavMoreTrigger) {
-  mainNavMoreTrigger.addEventListener('click', toggleMainNavMore);
-}
-
 /**
  * Renders tags followed in the left side bar of the homepage.
  *

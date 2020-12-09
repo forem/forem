@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The page you were looking for doesn't exist (404)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    .not-found-page {
+      height: 100vh;
+      min-height: 500px;
+    }
+    .tv__outer {
+      display: table;
+      position: absolute;
+      height: 98%;
+      width: 98%;
+    }
+
+    .tv__middle {
+      display: table-cell;
+      vertical-align: middle;
+      position: relative;
+    }
+
+    .tv__inner {
+      margin-left: auto;
+      margin-right: auto;
+      display: table;
+    }
+
+    .tv__inner--special {
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin: auto;
+      -webkit-animation-name: fade;
+      -webkit-animation-iteration-count: infinite;
+      -webkit-animation-duration: 2s;
+      animation-name: fade;
+      animation-iteration-count: infinite;
+      animation-duration: 2s;
+    }
+
+    .tv__inner--text {
+      margin-left: auto;
+      margin-right: auto;
+      display: table;
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    .tv__inner--special, .tv__inner {
+      max-width: 85%;
+      width: 300px;
+      border: 25px solid rgb(54, 55, 124);
+      border-radius: 36px;
+    }
+    .tv__inner--text {
+      text-align: center;
+      max-width: 90%;
+    }
+
+    @-webkit-keyframes fade {
+      0% {opacity: 1;}
+      10% {opacity: 1;}
+      20% {opacity: 0;}
+      25% {opacity: 0;}
+      28% {opacity: 0;}
+      30% {opacity: 0;}
+      33% {opacity: 1;}
+      45% {opacity: 1;}
+      53% {opacity: 0;}
+      100% {opacity: 0;}
+    }
+
+    @keyframes fade {
+      0% {opacity: 1;}
+      10% {opacity: 1;}
+      20% {opacity: 0;}
+      25% {opacity: 0;}
+      28% {opacity: 0;}
+      30% {opacity: 0;}
+      33% {opacity: 1;}
+      45% {opacity: 1;}
+      53% {opacity: 0;}
+      100% {opacity: 0;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="not-found-page base-background-color">
+    <div class="tv__outer">
+        <div class="tv__middle">
+          <img class="tv__inner" src="https://i.imgur.com/AdvTDlI.jpg" alt="404 not found">
+          <br>
+          <p class="tv__inner--text">This page does not exist <br><br> <a href="/">Return to Home Page</a></p>
+        </div>
+      </div>
+  </div>
+</body>
+</html>

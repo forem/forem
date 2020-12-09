@@ -78,6 +78,7 @@ function getRootData() {
     }),
     githubToken: 'somegithubtoken',
     pusherKey: 'somepusherkey',
+    tagModerator: JSON.stringify({ isTagModerator: true }),
   };
 }
 
@@ -176,15 +177,12 @@ describe('<Chat />', () => {
 
   it('should render expanded', () => {
     fetch.mockResponse(getMockResponse());
-    const { getByTestId, getByText, getByLabelText, getByRole } = render(
+    const { getByTestId, getByText, getByRole } = render(
       <Chat {...getRootData()} />,
     );
     const chat = getByTestId('chat');
 
     expect(chat.getAttribute('aria-expanded')).toEqual('true');
-
-    // renderChatChannels
-    getByLabelText('Toggle channel search');
 
     // chat filtering
     getByText('all', { selector: 'button' });
@@ -196,15 +194,15 @@ describe('<Chat />', () => {
 
     expect(activeChat).not.toBeNull();
 
-    getByText('Scroll to Bottom', { selector: '[role="button"]' });
+    getByText('Scroll to Bottom', { selector: '[type="button"]' });
 
     // Delete modal should be visible
     getByRole('dialog', {
       selector: '[aria-hidden="false"]',
     });
     getByText('Are you sure, you want to delete this message?');
-    getByText('Cancel', { selector: '[role="button"]' });
-    getByText('Delete', { selector: '[role="button"]' });
+    getByText('Cancel', { selector: '[type="button"]' });
+    getByText('Delete', { selector: '[type="button"]' });
   });
 
   it('should collapse and expand chat channels properly', async () => {

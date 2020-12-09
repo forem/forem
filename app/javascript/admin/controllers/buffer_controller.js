@@ -1,26 +1,33 @@
 import { Controller } from 'stimulus';
 
+const CONFIRM_BADGE_HTML =
+  '<span class="ml-2 badge badge-success">Confirm</span>';
+const DISMISS_BADGE_HTML =
+  '<span class="ml-2 badge badge-danger">Dismiss</span>';
+
 export default class BufferController extends Controller {
+  static classes = ['bgHighlighted', 'borderHighlighted'];
   static targets = ['header', 'bodyText'];
 
   tagBufferUpdateConfirmed() {
     this.clearPreviousBadge();
 
-    this.headerTarget.innerHTML +=
-      '<span class="ml-2 badge badge-success">Confirm</span>';
+    this.headerTarget.innerHTML += CONFIRM_BADGE_HTML;
   }
 
   tagBufferUpdateDismissed() {
     this.clearPreviousBadge();
 
-    this.headerTarget.innerHTML +=
-      '<span class="ml-2 badge badge-danger">Dismiss</span>';
+    this.headerTarget.innerHTML += DISMISS_BADGE_HTML;
   }
 
   highlightElement() {
-    this.element.classList.add('bg-highlighted', 'border-highlighted');
+    this.element.classList.add(
+      this.bgHighlightedClass,
+      this.borderHighlightedClass,
+    );
     setTimeout(() => {
-      this.element.classList.remove('bg-highlighted');
+      this.element.classList.remove(this.bgHighlightedClass);
     }, 350);
   }
 
@@ -35,13 +42,5 @@ export default class BufferController extends Controller {
     if (badge) {
       badge.remove();
     }
-  }
-
-  get bufferUpdateId() {
-    return parseInt(this.data.get('id'), 10);
-  }
-
-  set bufferUpdateId(value) {
-    this.data.set('id', value);
   }
 }

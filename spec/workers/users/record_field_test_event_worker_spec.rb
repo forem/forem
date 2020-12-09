@@ -11,17 +11,17 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
 
     context "with user who is part of field test" do
       before do
-        field_test(:user_home_feed, participant: user)
+        field_test(:follow_implicit_points, participant: user)
       end
 
       it "records user_creates_reaction field test conversion" do
-        worker.perform(user.id, "user_home_feed", "user_creates_reaction")
+        worker.perform(user.id, "follow_implicit_points", "user_creates_reaction")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
         expect(FieldTest::Event.last.name).to eq("user_creates_reaction")
       end
 
       it "records user_creates_comment field test conversion" do
-        worker.perform(user.id, "user_home_feed", "user_creates_comment")
+        worker.perform(user.id, "follow_implicit_points", "user_creates_comment")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
         expect(FieldTest::Event.last.name).to eq("user_creates_comment")
       end
@@ -30,7 +30,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
-        worker.perform(user.id, "user_home_feed", "user_views_article_four_days_in_week")
+        worker.perform(user.id, "follow_implicit_points", "user_views_article_four_days_in_week")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
         expect(FieldTest::Event.last.name).to eq("user_views_article_four_days_in_week")
       end
@@ -39,7 +39,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         2.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
-        worker.perform(user.id, "user_home_feed", "user_views_article_four_days_in_week")
+        worker.perform(user.id, "follow_implicit_points", "user_views_article_four_days_in_week")
         expect(FieldTest::Event.all.size).to be(0)
       end
 
@@ -47,7 +47,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
-        worker.perform(user.id, "user_home_feed", "user_views_article_four_hours_in_day")
+        worker.perform(user.id, "follow_implicit_points", "user_views_article_four_hours_in_day")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
         expect(FieldTest::Event.last.name).to eq("user_views_article_four_hours_in_day")
       end
@@ -56,19 +56,19 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         2.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
-        worker.perform(user.id, "user_home_feed", "user_views_article_four_hours_in_day")
+        worker.perform(user.id, "follow_implicit_points", "user_views_article_four_hours_in_day")
         expect(FieldTest::Event.all.size).to be(0)
       end
     end
 
     context "with user who is not part of field test" do
       it "records user_creates_reaction field test conversion" do
-        worker.perform(user.id, "user_home_feed", "user_creates_reaction")
+        worker.perform(user.id, "follow_implicit_points", "user_creates_reaction")
         expect(FieldTest::Event.all.size).to be(0)
       end
 
       it "records user_creates_comment field test conversion" do
-        worker.perform(user.id, "user_home_feed", "user_creates_comment")
+        worker.perform(user.id, "follow_implicit_points", "user_creates_comment")
         expect(FieldTest::Event.all.size).to be(0)
       end
 
@@ -83,7 +83,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
     context "without a user" do
       it "does not raise an error" do
         expect do
-          worker.perform(user.id + 1000, "user_home_feed", "user_creates_reaction")
+          worker.perform(user.id + 1000, "follow_implicit_points", "user_creates_reaction")
         end.not_to raise_error
       end
     end

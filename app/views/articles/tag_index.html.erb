@@ -41,7 +41,7 @@
       data-tag="<%= @tag %>"
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-requires-approval="<%= @tag_model.requires_approval %>"
-      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
+      data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
     <%= render "articles/tags/sidebar" %>
     <div class="articles-list" id="articles-list">
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
@@ -65,7 +65,7 @@
             </nav>
 
             <select class="crayons-select s:hidden ml-2 s:ml-auto w-auto" id="feed-filter-select" aria-label="feed-filter-select">
-              <option value="<%= list_path %>" <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %> selected<% end %>>Feed</option>
+              <option value="<%= list_path %>/" <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %> selected<% end %>>Feed</option>
               <option value="<%= list_path %>/top/week" <% if timeframe_check("week") %> selected<% end %>>Week</option>
               <option value="<%= list_path %>/top/month" <% if timeframe_check("month") %> selected<% end %>>Month</option>
               <option value="<%= list_path %>/top/year" <% if timeframe_check("year") %> selected<% end %>>Year</option>

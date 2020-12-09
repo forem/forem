@@ -139,7 +139,8 @@ class Reaction < ApplicationRecord
   end
 
   def record_field_test_event
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_reaction")
+    Users::RecordFieldTestEventWorker
+      .perform_async(user_id, :follow_implicit_points, "user_creates_reaction")
   end
 
   def notify_slack_channel_about_vomit_reaction

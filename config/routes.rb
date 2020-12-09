@@ -1,6 +1,12 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
+  # errors routes
+  match "/404", to: "errors#not_found", via: :all, as: :errors_not_found
+  match "/422", to: "errors#unprocessable_entity", via: :all, as: :errors_unprocessable_entity
+  match "/500", to: "errors#internal_server_error", via: :all, as: :errors_internal_server_error
+  match "/503", to: "errors#service_unavailable", via: :all, as: :errors_service_unavailable
+
   use_doorkeeper do
     controllers tokens: "oauth/tokens"
   end
@@ -35,15 +41,6 @@ Rails.application.routes.draw do
       end
       mount Sidekiq::Web => "/sidekiq"
       mount FieldTest::Engine, at: "abtests"
-    end
-
-    namespace :resource_admin do
-      # Check administrate gem docs
-      DashboardManifest::DASHBOARDS.each do |dashboard_resource|
-        resources dashboard_resource
-      end
-
-      root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
     end
 
     namespace :admin do
@@ -107,6 +104,8 @@ Rails.application.routes.draw do
         resource :moderator, only: %i[create destroy], module: "tags"
       end
       resources :users, only: %i[index show edit update] do
+        resources :email_messages, only: :show
+
         member do
           post "banish"
           post "export_data"
@@ -349,6 +348,7 @@ Rails.application.routes.draw do
 
     # Chat channel
     patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"
+    post "/create_channel" => "chat_channels#create_channel"
 
     # Chat Channel Membership json response
     get "/chat_channel_memberships/chat_channel_info/:id" => "chat_channel_memberships#chat_channel_info"
