@@ -745,6 +745,20 @@ RSpec.describe Article, type: :model do
   end
 
   context "when callbacks are triggered after save" do
+    describe "article path sanitizing" do
+      it "returns a downcased username when user has uppercase characters" do
+        upcased_user = create(:user, username: "UpcasedUserName")
+        upcased_article = create(:article, user: upcased_user)
+        expect(upcased_article.path).not_to match(/[AZ]+/)
+      end
+
+      it "returns a downcased username when an org slug has uppercase characters" do
+        upcased_org = create(:organization, slug: "UpcasedSlug")
+        upcased_article = create(:article, organization: upcased_org)
+        expect(upcased_article.path).not_to match(/[AZ]+/)
+      end
+    end
+
     describe "main image background color" do
       let(:article) { build(:article, user: user) }
 
