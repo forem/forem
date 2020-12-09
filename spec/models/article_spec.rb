@@ -528,6 +528,18 @@ RSpec.describe Article, type: :model do
       article.organization = build(:organization)
       expect(article.username).to eq(article.organization.slug)
     end
+
+    it "returns a downcased username when user has uppercase characters" do
+      upcased_user = create(:user, username: "UpcasedUserName")
+      article = create(:article, user: upcased_user)
+      expect(article.username).not_to match(/[AZ]+/)
+    end
+
+    it "returns a downcased username when an org slug has uppercase characters" do
+      upcased_org = create(:organization, slug: "UpcasedUserName")
+      article = create(:article, organization: upcased_org)
+      expect(article.username).not_to match(/[AZ]+/)
+    end
   end
 
   describe "#has_frontmatter?" do

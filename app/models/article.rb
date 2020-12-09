@@ -285,9 +285,9 @@ class Article < ApplicationRecord
   end
 
   def username
-    return organization.slug.downcase if organization
+    return organization.slug if organization
 
-    user.username.downcase
+    user.username
   end
 
   def current_state_path
@@ -409,7 +409,7 @@ class Article < ApplicationRecord
 
     self.cached_user_name = user_name
     self.cached_user_username = user_username
-    self.path = calculated_path
+    self.path = calculated_path.downcase
   end
 
   def evaluate_markdown
