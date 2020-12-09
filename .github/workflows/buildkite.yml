@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: jdoss/trigger-pipeline-action@c1c77c83b3c16b03b474bc2e1ce6eb36dbde7f3d
+      - uses: jdoss/trigger-pipeline-action@master
         env:
           BUILDKITE_API_ACCESS_TOKEN: ${{ secrets.buildkite_api_access_token }}
           PIPELINE: "forem/build-containers"
