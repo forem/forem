@@ -4,6 +4,7 @@ RSpec.describe "/admin/podcasts", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let(:podcast) { create(:podcast, published: false) }
   let(:user) { create(:user) }
+  let(:podcast_ownership) { create(:podcast_ownership) }
 
   before do
     sign_in admin
@@ -14,7 +15,6 @@ RSpec.describe "/admin/podcasts", type: :request do
 
     before do
       create(:podcast_episode, podcast: podcast)
-      user.add_role(:podcast_owner, Podcast.order(Arel.sql("RANDOM()")).first)
     end
 
     it "renders success" do
@@ -32,30 +32,16 @@ RSpec.describe "/admin/podcasts", type: :request do
   describe "Adding owner" do
     it "adds an owner" do
       expect do
-        post add_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
-      end.to change(Role, :count).by(1)
-      user.reload
-      expect(user.has_role?(:podcast_owner, podcast)).to be true
-    end
-
-    it "does nothing when adding an owner for non-existent user" do
-      post add_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
-      expect(response).to redirect_to(edit_admin_podcast_path(podcast))
+        post add_owner_admin_podcast_path(podcast_ownership.id), params: { podcast_ownership: { user_id: user.id } }
+      end.to change(PodcastOwnership, :count).by(1)
     end
   end
 
   describe "Removing owner" do
     it "removes an owner" do
-      user.add_role(:podcast_owner, podcast)
       expect do
-        delete remove_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
-      end.to change(Role, :count).by(-1)
-      expect(user.has_role?(:podcast_owner, podcast)).to be false
-    end
-
-    it "does nothing when removing an owner for non-existent user" do
-      delete remove_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
-      expect(response).to redirect_to(edit_admin_podcast_path(podcast))
+        delete remove_owner_admin_podcast_path(podcast_ownership.id), params: { podcast_ownership: { user_id: user.id } }
+      end.to change(PodcastOwnership, :count).by(-1)
     end
   end
 

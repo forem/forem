@@ -81,5 +81,12 @@ module Admin
       ]
       params.require(:podcast).permit(allowed_params)
     end
+
+    def podcast_ownership_params
+      allowed_params = %i[
+        podcast_id owner_id
+      ]
+      params.require(:podcast_ownership).permit(allowed_params)
+    end
   end
 end
