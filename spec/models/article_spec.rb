@@ -745,7 +745,7 @@ RSpec.describe Article, type: :model do
   end
 
   context "when callbacks are triggered after save" do
-    describe "article path sanitazing" do
+    describe "article path sanitizing" do
       it "returns a downcased username when user has uppercase characters" do
         upcased_user = create(:user, username: "UpcasedUserName")
         upcased_article = create(:article, user: upcased_user)
