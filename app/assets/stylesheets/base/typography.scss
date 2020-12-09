@@ -77,6 +77,10 @@ body {
     font-size: var(--content-tertiary-font-size);
   }
 
+  > :last-child {
+    margin-bottom: 0;
+  }
+
   a {
     &.anchor {
       padding-top: 0;
@@ -141,6 +145,7 @@ body {
   ol {
     padding-left: var(--su-6);
     margin: 0 0 var(--content-rhythm) 0;
+
     br {
       line-height: 0;
       margin: 0;
@@ -157,7 +162,7 @@ body {
     }
 
     ul {
-      margin: 0 0.7em 0 1.9em;
+      margin: 0 0 0 var(--content-rhythm);
       list-style-type: square;
 
       ul {
