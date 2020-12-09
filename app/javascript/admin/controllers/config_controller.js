@@ -261,10 +261,6 @@ export default class ConfigController extends Controller {
   // AUTH PROVIDERS FUNCTIONS END
 
   enabledProvidersWithMissingKeys() {
-    // gather all enabled auth providers
-    // for each, check if any of their keys is missing
-    // if yes, send auth provider name into array
-    // return array
     const providersWithMissingKeys = [];
     document
       .querySelectorAll('[data-enable-auth="true"]')
@@ -315,6 +311,7 @@ export default class ConfigController extends Controller {
       'Save anyway',
       'submitForm',
       'crayons-btn',
+      'crayons-btn crayons-btn--secondary',
     );
   }
 
@@ -323,7 +320,6 @@ export default class ConfigController extends Controller {
       event.preventDefault();
       this.activateMissingKeysModal(this.enabledProvidersWithMissingKeys());
     } else {
-      // function that carries on with normal Update Configuration
       event.target.submit();
     }
   }
