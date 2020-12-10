@@ -1,4 +1,4 @@
-<%= form_for(User.new, as: :user, url: session_path(:user)) do |f| %>
+<%= form_for(User.new, as: :user, url: session_path(:user), data: { testid: "login-form" }) do |f| %>
   <div class="crayons-field mb-3">
     <%= f.label :email, class: "crayons-field__label" %>
     <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
@@ -15,7 +15,7 @@
   </div>
 
   <div class="actions pt-3">
-    <%= f.submit "Continue", class: "crayons-btn crayons-btn--l w-100" %>
+    <%= f.button "Continue", class: "crayons-btn crayons-btn--l w-100" %>
   </div>
 <% end %>
 <p class="pt-6 fs-s align-center">
