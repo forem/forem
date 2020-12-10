@@ -759,37 +759,6 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe "main image background color" do
-      let(:article) { build(:article, user: user) }
-
-      it "enqueues a job to update the main image background if #dddddd" do
-        article.main_image_background_hex_color = "#dddddd"
-        allow(article).to receive(:update_main_image_background_hex).and_call_original
-        sidekiq_assert_enqueued_with(job: Articles::UpdateMainImageBackgroundHexWorker) do
-          article.save
-        end
-        expect(article).to have_received(:update_main_image_background_hex)
-      end
-
-      it "does not enqueue a job to update the main image background if not #dddddd" do
-        article.main_image_background_hex_color = "#fff000"
-        allow(article).to receive(:update_main_image_background_hex).and_call_original
-        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
-          article.save
-        end
-        expect(article).to have_received(:update_main_image_background_hex)
-      end
-
-      it "does not enqueue a job if main_image has not changed" do
-        article.save
-        allow(article).to receive(:update_main_image_background_hex).and_call_original
-        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
-          article.save
-        end
-        expect(article).to have_received(:update_main_image_background_hex)
-      end
-    end
-
     describe "spam" do
       before do
         allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
