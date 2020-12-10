@@ -3,15 +3,14 @@
 module.exports = {
   parser: 'babel-eslint',
   extends: [
-    'plugin:cypress/recommended',
     'eslint:recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
-    'preact',
+    'plugin:cypress/recommended',
     'prettier',
   ],
   parserOptions: {
-    ecmaVersion: 'es2021',
+    sourceType: 'module',
   },
   plugins: ['cypress'],
   rules: {
