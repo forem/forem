@@ -62,7 +62,7 @@ module Constants
         placeholder: "user"
       },
       community_name: {
-        description: "Used as the primary name, e.g. DEV, DEV Community, etc.",
+        description: "Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.",
         placeholder: "New Forem"
       },
       credit_prices_in_cents: {
