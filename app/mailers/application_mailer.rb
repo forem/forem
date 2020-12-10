@@ -14,8 +14,8 @@ class ApplicationMailer < ActionMailer::Base
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
   )
 
-  def email_from(topic)
-    "#{SiteConfig.community_name} #{topic} <#{SiteConfig.email_addresses[:default]}>"
+  def email_from(_)
+    "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
   end
 
   def generate_unsubscribe_token(id, email_type)
