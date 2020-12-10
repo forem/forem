@@ -44,6 +44,7 @@ module.exports = {
     // Allows developers to add utility modules that jest won't run as test suites.
     '/__tests__/utilities/',
     '<rootDir>/app/javascript/storybook-static',
+    '<rootDir>/cypress',
   ],
   watchPlugins: [
     'jest-watch-typeahead/filename',
