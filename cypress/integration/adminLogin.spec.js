@@ -22,5 +22,8 @@ describe('Administrator login', () => {
 
     // Submit the form
     cy.get('@loginForm').findByText('Continue').click();
+
+    // User should be redirected to the home page
+    cy.url().should('include', '/?signin=true');
   });
 });
