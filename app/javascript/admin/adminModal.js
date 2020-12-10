@@ -4,24 +4,24 @@
  * @function adminModal
  * @param {string} title The title of the modal.
  * @param {string} body The modal's content. May use HTML tags for styling.
- * @param {string} firstBtnText The text for the modal's first button.
- * @param {string} firstBtnAction The function that fires when first button is clicked.
- * @param {string} secondBtnText The text for the modal's second button.
- * @param {string} secondBtnAction The function that fires when second button is clicked.
- * @param {string} firstBtnClasses Classes applied to first button.
- * @param {string} secondBtnClasses Classes applied to second button.
+ * @param {string} leftBtnText The text for the modal's left button.
+ * @param {string} leftBtnAction The function that fires when left button is clicked.
+ * @param {string} rightBtnText The text for the modal's right button.
+ * @param {string} rightBtnAction The function that fires when right button is clicked.
+ * @param {string} leftBtnClasses Classes applied to left button.
+ * @param {string} rightBtnClasses Classes applied to right button.
  * @param {string} customAttr A custom data attribute name. Will be apprended to the "data-" part.
  * @param {string} customAttrValue The value of the custom attribute "customAttr".
  */
 const adminModal = (
   title,
   body,
-  firstBtnText,
-  firstBtnAction,
-  secondBtnText,
-  secondBtnAction,
-  firstBtnClasses,
-  secondBtnClasses,
+  leftBtnText,
+  leftBtnAction,
+  rightBtnText,
+  rightBtnAction,
+  leftBtnClasses,
+  rightBtnClasses,
   customAttr = null,
   customAttrValue = null,
 ) => `
@@ -39,15 +39,15 @@ const adminModal = (
         ${body}
         <div class="flex gap-2">
           <button
-            class="${firstBtnClasses}"
-            data-action="click->config#${firstBtnAction}"
+            class="${leftBtnClasses}"
+            data-action="click->config#${leftBtnAction}"
             data-${customAttr}="${customAttrValue}">
-            ${firstBtnText}
+            ${leftBtnText}
           </button>
           <button
-            class="${secondBtnClasses}"
-            data-action="click->config#${secondBtnAction}">
-            ${secondBtnText}
+            class="${rightBtnClasses}"
+            data-action="click->config#${rightBtnAction}">
+            ${rightBtnText}
           </button>
         </div>
       </div>

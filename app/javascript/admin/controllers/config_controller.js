@@ -268,10 +268,8 @@ export default class ConfigController extends Controller {
         const providerName = provider.dataset.authProviderEnable;
         const officialName = provider.dataset.authProviderOfficial;
         if (
-          document.getElementById(`site_config_${providerName}_key`).value
-            .length === 0 ||
-          document.getElementById(`site_config_${providerName}_secret`).value
-            .length === 0
+          !document.getElementById(`site_config_${providerName}_key`).value ||
+          !document.getElementById(`site_config_${providerName}_secret`).value
         ) {
           providersWithMissingKeys.push(officialName);
         }
@@ -282,14 +280,10 @@ export default class ConfigController extends Controller {
 
   generateProvidersList(providers) {
     let list = '';
-    for (let i = 0; i < providers.length; i++) {
-      list += `<li>${providers[i]}</li>`;
-    }
+    providers.forEach((provider) => {
+      list += `<li>${provider}</li>`;
+    });
     return list;
-  }
-
-  missingKeysModalTitle() {
-    return 'Setup not complete';
   }
 
   missingKeysModalBody(providers) {
@@ -304,7 +298,7 @@ export default class ConfigController extends Controller {
 
   activateMissingKeysModal(providers) {
     this.configModalAnchorTarget.innerHTML = adminModal(
-      this.missingKeysModalTitle(),
+      'Setup not complete',
       this.missingKeysModalBody(providers),
       'Continue editing',
       'closeAdminModal',
