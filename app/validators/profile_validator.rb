@@ -32,7 +32,8 @@ class ProfileValidator < ActiveModel::Validator
   private
 
   def summary_too_long?(record)
-    # During onboarding, the attribute is not yet available
+    # Calling the summary attribute method on record during onboarding
+    # throws a NoMethodError
     return unless record.respond_to?(SUMMARY_ATTRIBUTE)
 
     return unless ProfileField.exists?(attribute_name: SUMMARY_ATTRIBUTE)
