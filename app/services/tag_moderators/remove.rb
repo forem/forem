@@ -9,7 +9,6 @@ module TagModerators
       MailchimpBot.new(user).manage_tag_moderator_list
     end
 
-
     def self.tag_mod_newsletter_enabled?
       SiteConfig.mailchimp_api_key.present? &&
         SiteConfig.mailchimp_tag_moderators_id.present?
