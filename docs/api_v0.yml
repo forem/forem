@@ -1816,7 +1816,7 @@ paths:
             application/json:
               schema:
                 type: object
-    post:
+    put:
       operationId: upsertConfig
       summary: Update Site-wide Config
       description: |

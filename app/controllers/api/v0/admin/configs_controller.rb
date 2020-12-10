@@ -16,7 +16,7 @@ module Api
           @site_configs = SiteConfig.all
         end
 
-        def create
+        def update
           result = SiteConfigs::Upsert.call(site_config_params)
           if result[:result] == "errors"
             render json: { error: result[:errors], status: 422 }, status: :unprocessable_entity
