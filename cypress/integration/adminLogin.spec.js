@@ -7,7 +7,7 @@ describe('Administrator login', () => {
     // Go to home page
     cy.visit('/');
 
-    // Click on the logion button in the top header
+    // Click on the login button in the top header
     cy.findAllByText('Log in').first().click();
 
     // Ensure we are redirected to the login page
