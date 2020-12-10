@@ -103,6 +103,29 @@ export const ImageUploader = () => {
     });
   }
 
+  function handleNativeImageInjected(e) {
+    dispatch({
+      type: 'uploading_image',
+    });
+
+    fetch(e.target.value)
+      .then(res => res.blob())
+      .then(blob => {
+        // TODO: Find a better way to generate a random file name?
+        // Maybe we already have a UUID or Hex generator?
+        const randomFileName = [...Array(16)].map(i=>(~~(Math.random()*36)).toString(36)).join('');
+        const file = new File([blob], randomFileName, { type: "image/png" });
+
+        // Trigger actual upload
+        generateMainImage({ 'image': file}, handleInsertImageUploadSuccess, onUploadError);
+      })
+      .catch(e => {
+        dispatch({
+          type: 'upload_error',
+        });
+      });
+  }
+
   function handleInsertionImageUpload(e) {
     const { files } = e.target;
 
@@ -124,10 +147,9 @@ export const ImageUploader = () => {
   }
 
   function checkNativeBridge(e) {
-    e.preventDefault();
     if(Runtime.isNativeIOS('imageUpload')) {
-      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'placeholder' });
-      return
+      e.preventDefault();
+      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'image-upload-field-base64' });
     }
   }
 
@@ -157,6 +179,7 @@ export const ImageUploader = () => {
             data-max-file-size-mb="25"
             aria-label="Upload an image"
           />
+        <input type="hidden" id="image-upload-field-base64" value="" onChange={handleNativeImageInjected}/>
         </Button>
       )}
 
