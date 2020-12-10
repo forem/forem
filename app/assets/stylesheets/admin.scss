@@ -147,6 +147,10 @@ label {
   gap: var(--su-4);
   padding-top: var(--su-6);
   padding-bottom: var(--su-2);
+
+  .auth-warning {
+    padding: var(--su-2); // Override default crayons notice padding
+  }
 }
 
 .admin-config-checkmark {

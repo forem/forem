@@ -1,5 +1,8 @@
 module Moderator
   class BanishUser < ManageActivityAndRoles
+    DEFAULT_PROFILE_IMAGE =
+      "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png".freeze
+
     attr_reader :user, :admin
 
     def self.call(admin:, user:)
@@ -39,21 +42,7 @@ module Moderator
 
     def remove_profile_info
       user.profile.clear!
-
-      # TODO: @forem/oss Remove this block once we drop the columns from users.
-      user._skip_profile_sync = true
-      user.update_columns(
-        twitter_username: nil, github_username: nil, website_url: "", summary: "",
-        location: "", education: "", employer_name: "", employer_url: "", employment_title: "",
-        mostly_work_with: "", currently_learning: "", currently_hacking_on: "", available_for: "",
-        email_public: false, facebook_url: nil, youtube_url: nil, dribbble_url: nil,
-        medium_url: nil, stackoverflow_url: nil,
-        behance_url: nil, linkedin_url: nil, gitlab_url: nil, instagram_url: nil, mastodon_url: nil,
-        twitch_url: nil, feed_url: nil
-      )
-      user._skip_profile_sync = false
-
-      user.update_columns(profile_image: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")
+      user.update_columns(profile_image: DEFAULT_PROFILE_IMAGE)
     end
 
     def delete_vomit_reactions

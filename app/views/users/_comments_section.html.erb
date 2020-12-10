@@ -3,13 +3,13 @@
     <% if @comments.present? %>
       <% if params[:view] == "comments" %>
         <div class="crayons-card__header">
-          <h4 class="crayons-subtitle-2">
+          <h3 class="crayons-subtitle-2">
             <% if @user.comments_count > 250 %>
               Last 250 comments
             <% else %>
               All <%= @user.comments_count %> comments
             <% end %>
-          </h4>
+          </h3>
           <div class="crayons-card__actions">
             <a href="<%= @user.path %>" class="crayons-link--branded fs-base">
               View all activity
@@ -18,18 +18,18 @@
         </div>
       <% else %>
         <div class="crayons-card__header">
-          <h4 class="crayons-subtitle-2">
+          <h3 class="crayons-subtitle-2">
             Recent comments
-          </h4>
+          </h3>
         </div>
       <% end %>
     <% end %>
     <% @comments.each do |comment| %>
       <% if comment.commentable.present? && comment.commentable.published && !comment.deleted %>
         <a href="<%= comment.path %>" class="profile-comment-row ">
-          <h5 class="fw-bold fs-base m-0 mb-1">
+          <h4 class="fw-bold fs-base m-0 mb-1">
             <%= comment.commentable.title %>
-          </h5>
+          </h4>
           <div class="inline-flex items-center fs-s gap-2">
             <p class="color-base-80">
               <%= truncate(strip_tags(comment.processed_html), length: 64).html_safe %>

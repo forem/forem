@@ -234,6 +234,7 @@ class StoriesController < ApplicationController
     #   - Let's say it's `4`. On mobile it would display two rows: 1st with 3 badges and
     # 2nd with 1 badge (!) <-- and that would look off.
     @badges_limit = 6
+    @profile = @user.profile.decorate
 
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
@@ -253,7 +254,7 @@ class StoriesController < ApplicationController
 
   def redirect_if_view_param
     redirect_to "/admin/users/#{@user.id}" if params[:view] == "moderate"
-    redirect_to "/resource_admin/users/#{@user.id}/edit" if params[:view] == "admin"
+    redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
   end
 
   def redirect_if_show_view_param
@@ -271,9 +272,9 @@ class StoriesController < ApplicationController
 
   def assign_feed_stories
     feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
-    if params[:timeframe].in?(Timeframer::FILTER_TIMEFRAMES)
+    if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = feed.top_articles_by_timeframe(timeframe: params[:timeframe])
-    elsif params[:timeframe] == Timeframer::LATEST_TIMEFRAME
+    elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
       @stories = feed.latest_feed
     else
       @default_home_feed = true
@@ -343,7 +344,7 @@ class StoriesController < ApplicationController
 
   def stories_by_timeframe
     if %w[week month year infinity].include?(params[:timeframe])
-      @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime)
+      @stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
         .order(public_reactions_count: :desc)
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order(published_at: :desc)
@@ -478,17 +479,7 @@ class StoriesController < ApplicationController
     [
       @user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
       @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
-      @user.mastodon_url,
-      @user.facebook_url,
-      @user.youtube_url,
-      @user.linkedin_url,
-      @user.behance_url,
-      @user.stackoverflow_url,
-      @user.dribbble_url,
-      @user.medium_url,
-      @user.gitlab_url,
-      @user.instagram_url,
-      @user.website_url,
+      @user.profile.try(:website_url),
     ].reject(&:blank?)
   end
 

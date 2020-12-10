@@ -1,6 +1,6 @@
 #Adopted from https://gist.github.com/filipkis/fab89a09f54ffdd8e70c063755e7ce7f
 
-name: Update vendor/cache After Dependabot
+name: Dependabot
 
 on:
   push:
@@ -11,24 +11,30 @@ on:
 
 jobs:
   update-gems:
+    name: Update gems on Dependabot pull requests
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
       - uses: actions/checkout@v2
-      - name: Set up Ruby 2.7
+
+      - name: Set up Ruby 2.7.2
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7.2
+
       - name: Installing additional dependencies
         run: |
           sudo apt-get update
           sudo apt-get install postgresql-client libpq-dev libcurl4-openssl-dev
-      - name: Bundle install
+
+      - name: Run bundle install
         run: |
           gem install bundler
           bundle config set cache_all true
           bundle config cache_all_platforms true
           bundle install
+
       - name: Commit and push
         run: |
           git config --local user.email `git show -s --format='%ae'`

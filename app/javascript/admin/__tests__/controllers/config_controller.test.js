@@ -3,11 +3,12 @@ import ConfigController from '../../controllers/config_controller';
 
 describe('ConfigController', () => {
   beforeEach(() => {
-    document.body.innerHTML = `<div data-controller="config">
+    document.body.innerHTML = `
+    <div data-controller="config">
       <button data-action="click->config#activateEmailAuthModal">
         Disable
       </button>
-      <div data-target="config.configModalAnchor"></div>
+      <div data-config-target="configModalAnchor"></div>
     </div>`;
 
     global.scrollTo = jest.fn();
@@ -20,7 +21,7 @@ describe('ConfigController', () => {
     it('builds and adds a Modal to the page', () => {
       const button = document.getElementsByTagName('button')[0];
       const modalAnchor = document.querySelector(
-        '[data-target="config.configModalAnchor"]',
+        '[data-config-target="configModalAnchor"]',
       );
 
       button.click();

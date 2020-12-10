@@ -75,17 +75,42 @@ RSpec.describe "/admin/config", type: :request do
       describe "Authentication" do
         it "updates enabled authentication providers" do
           enabled = Authentication::Providers.available.first.to_s
-          post "/admin/config", params: { site_config: { auth_providers_to_enable: enabled },
-                                          confirmation: confirmation_message }
+          post admin_config_path, params: {
+            site_config: {
+              "#{enabled}_key": "someKey",
+              "#{enabled}_secret": "someSecret",
+              auth_providers_to_enable: enabled
+            },
+            confirmation: confirmation_message
+          }
           expect(SiteConfig.authentication_providers).to eq([enabled])
         end
 
         it "strips empty elements" do
           provider = Authentication::Providers.available.first.to_s
           enabled = "#{provider}, '', nil"
-          post "/admin/config", params: { site_config: { auth_providers_to_enable: enabled },
-                                          confirmation: confirmation_message }
+          post admin_config_path, params: {
+            site_config: {
+              "#{provider}_key": "someKey",
+              "#{provider}_secret": "someSecret",
+              auth_providers_to_enable: enabled
+            },
+            confirmation: confirmation_message
+          }
           expect(SiteConfig.authentication_providers).to eq([provider])
+        end
+
+        it "does not update enabled authentication providers if any associated key missing" do
+          enabled = Authentication::Providers.available.first.to_s
+          post admin_config_path, params: {
+            site_config: {
+              "#{enabled}_key": "someKey",
+              "#{enabled}_secret": "",
+              auth_providers_to_enable: enabled
+            },
+            confirmation: confirmation_message
+          }
+          expect(SiteConfig.authentication_providers).to eq([])
         end
 
         it "enables proper domains to allow list" do

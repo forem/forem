@@ -3,7 +3,7 @@ import '../../storybook-utilities/designSystem.scss';
 import notes from './buttons.md';
 
 export default {
-  title: '3_Components/Buttons/HTML',
+  title: 'Components/Buttons/HTML',
   parameters: {
     notes,
   },

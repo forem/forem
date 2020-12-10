@@ -6,7 +6,7 @@ import './typography.scss';
 import notes from './accented-typography.md';
 
 export default {
-  title: '2_Base/Typography/2_Accent',
+  title: 'Fundamentals/Typography/2_Accent',
   parameters: {
     notes,
   },

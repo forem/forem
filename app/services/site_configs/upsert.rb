@@ -81,8 +81,14 @@ module SiteConfigs
     end
 
     def self.invalid_provider_entry(entry)
-      entry.blank? || Authentication::Providers.available.map(&:to_s).exclude?(entry)
+      entry.blank? || Authentication::Providers.available.map(&:to_s).exclude?(entry) ||
+        provider_keys_missing(entry)
     end
+
+    def self.provider_keys_missing(entry)
+      SiteConfig.public_send("#{entry}_key").blank? || SiteConfig.public_send("#{entry}_secret").blank?
+    end
+
 
     # Validations
     def self.brand_contrast_too_low
