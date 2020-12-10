@@ -286,10 +286,12 @@ export default class ConfigController extends Controller {
     return list;
   }
 
-  missingKeysModalBody(providers) {
-    return `<p>You haven't filled out all of the required fields properly to save these settings, specifically for: <ul>${this.generateProvidersList(
-      providers,
-    )}</ul></p>`;
+  missingAuthKeysModalBody(providers) {
+    return `
+      <p>You haven't filled out all of the required fields to  enable the following authentication providers:</p>
+      <ul>${this.generateProvidersList(providers)}</ul>
+      <p>If you save your configuration now, these authorization providers will not be enabled.</p>
+    `;
   }
 
   submitForm() {
@@ -299,7 +301,7 @@ export default class ConfigController extends Controller {
   activateMissingKeysModal(providers) {
     this.configModalAnchorTarget.innerHTML = adminModal(
       'Setup not complete',
-      this.missingKeysModalBody(providers),
+      this.missingAuthKeysModalBody(providers),
       'Continue editing',
       'closeAdminModal',
       'Save anyway',
