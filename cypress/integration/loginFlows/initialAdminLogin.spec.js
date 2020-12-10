@@ -1,5 +1,3 @@
-import '@testing-library/cypress/add-commands';
-
 describe('Administrator login', () => {
   it('should login the initial administrator user from the home page', () => {
     cy.fixture('logins/initialAdmin.json').as('admin');
