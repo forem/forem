@@ -409,7 +409,7 @@ class Article < ApplicationRecord
 
     self.cached_user_name = user_name
     self.cached_user_username = user_username
-    self.path = calculated_path
+    self.path = calculated_path.downcase
   end
 
   def evaluate_markdown
