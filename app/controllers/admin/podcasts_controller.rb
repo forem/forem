@@ -2,8 +2,7 @@ module Admin
   class PodcastsController < Admin::ApplicationController
     layout "admin"
 
-    before_action :find_podcast, only: %i[edit update fetch remove_owner add_owner]
-    before_action :find_user, only: %i[remove_owner add_owner]
+    before_action :find_podcast, only: %i[edit update fetch]
 
     def index
       @podcasts = Podcast.left_outer_joins(:podcast_episodes)
@@ -46,7 +45,7 @@ module Admin
         flash[:success] = "Owner created successfully"
       else
         flash[:error] = "User is already an owner"
-        format.html { render :index }
+        render json: { error: "User is already an owner" }, status: :bad_request
       end
     end
 
@@ -84,7 +83,7 @@ module Admin
 
     def podcast_ownership_params
       allowed_params = %i[
-        podcast_id owner_id
+        podcast_id user_id
       ]
       params.require(:podcast_ownership).permit(allowed_params)
     end
