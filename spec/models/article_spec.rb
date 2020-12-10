@@ -745,6 +745,20 @@ RSpec.describe Article, type: :model do
   end
 
   context "when callbacks are triggered after save" do
+    describe "article path sanitizing" do
+      it "returns a downcased username when user has uppercase characters" do
+        upcased_user = create(:user, username: "UpcasedUserName")
+        upcased_article = create(:article, user: upcased_user)
+        expect(upcased_article.path).not_to match(/[AZ]+/)
+      end
+
+      it "returns a downcased username when an org slug has uppercase characters" do
+        upcased_org = create(:organization, slug: "UpcasedSlug")
+        upcased_article = create(:article, organization: upcased_org)
+        expect(upcased_article.path).not_to match(/[AZ]+/)
+      end
+    end
+
     describe "main image background color" do
       let(:article) { build(:article, user: user) }
 
@@ -798,13 +812,13 @@ RSpec.describe Article, type: :model do
         expect(Reaction.last.user_id).to eq(user.id)
       end
 
-      it "does not ban user if only single vomit" do
+      it "does not suspend user if only single vomit" do
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
         article.save
         expect(article.user.banned).to be false
       end
 
-      it "bans user with 3 comment vomits" do
+      it "suspends user with 3 comment vomits" do
         second_article = create(:article, user: article.user)
         third_article = create(:article, user: article.user)
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
@@ -815,7 +829,7 @@ RSpec.describe Article, type: :model do
         second_article.save
         third_article.save
         expect(article.user.banned).to be true
-        expect(Note.last.reason).to eq "automatic_ban"
+        expect(Note.last.reason).to eq "automatic_suspend"
       end
 
       it "does not create vomit reaction if does not have matching title" do

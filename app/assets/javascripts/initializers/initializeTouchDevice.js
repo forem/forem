@@ -40,31 +40,33 @@ function initializeTouchDevice() {
   if (navigator.userAgent === 'DEV-Native-ios') {
     document.body.classList.add('dev-ios-native-body');
   }
-  setTimeout(() => {
-    closeHeaderMenu();
-    if (isTouchDevice) {
-      // Use a named function instead of anonymous so duplicate event handlers are discarded
-      menuNavButton.addEventListener('click', toggleHeaderMenu);
-    } else {
-      crayonsHeaderMenuClassList.add('desktop');
-      menuNavButton.addEventListener('click', (e) => {
-        toggleHeaderMenu();
-      });
-      crayonsHeaderMenu.addEventListener('keyup', (e) => {
-        if (e.key === 'Escape' && crayonsHeaderMenuClassList.contains('showing')) {
-          crayonsHeaderMenuClassList.remove('showing');
-          menuNavButton.focus();
-        }
-      });
-      document.getElementById('last-nav-link').addEventListener('blur', (e) =>
-        blurHeaderMenu(e, 'second-last-nav-link'),
-      );
-      document.addEventListener('click', (e) => {
-        // if clicking outside of the menu, close it
-        if (!crayonsHeaderMenu.contains(document.activeElement)) {
-          blurHeaderMenu(e, 'first-nav-link');
-        }
-      });
-    }
-  }, 10);
+  if (crayonsHeaderMenu) {
+    setTimeout(() => {
+      closeHeaderMenu();
+      if (isTouchDevice) {
+        // Use a named function instead of anonymous so duplicate event handlers are discarded
+        menuNavButton.addEventListener('click', toggleHeaderMenu);
+      } else {
+        crayonsHeaderMenuClassList.add('desktop');
+        menuNavButton.addEventListener('click', (e) => {
+          toggleHeaderMenu();
+        });
+        crayonsHeaderMenu.addEventListener('keyup', (e) => {
+          if (e.key === 'Escape' && crayonsHeaderMenuClassList.contains('showing')) {
+            crayonsHeaderMenuClassList.remove('showing');
+            menuNavButton.focus();
+          }
+        });
+        document.getElementById('last-nav-link').addEventListener('blur', (e) =>
+          blurHeaderMenu(e, 'second-last-nav-link'),
+        );
+        document.addEventListener('click', (e) => {
+          // if clicking outside of the menu, close it
+          if (!crayonsHeaderMenu.contains(document.activeElement)) {
+            blurHeaderMenu(e, 'first-nav-link');
+          }
+        });
+      }
+    }, 10);
+  }
 }

@@ -20,7 +20,7 @@ const commonProps = {
 };
 
 export default {
-  title: '3_Components/Buttons',
+  title: 'Components/Buttons',
   decorator: [withKnobs],
   parameters: {
     notes,

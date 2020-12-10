@@ -1,27 +1,6 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
-    <% unless user_signed_in? || !any_enabled_auth_providers? %>
-      <section class="crayons-card crayons-card--secondary signin-cta-widget">
-        <div class="authentication-widget__container">
-          <figure class="authentication-widget__image-container">
-            <img class="authentication-widget__image" src="<%= optimized_image_url(safe_logo_url(SiteConfig.secondary_logo_url), width: 190) %>"
-                  alt="Secondary <%= community_name %> logo" />
-          </figure>
-          <div class="authentication-widget__content">
-            <h3 class="authentication-widget__title">
-              <%= render "shared/authentication_title" %>
-            </h3>
-            <p class="authentication-widget__description">
-              <%= render "shared/authentication_description" %>
-            </p>
-            <div class="authentication-widget__actions">
-              <%= render "shared/authentication_actions" %>
-            </div>
-          </div>
-        </div>
-      </section>
-    <% end %>
     <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
       <% @sidebar_ad = DisplayAd.for_display("sidebar_right") %>
       <% if @sidebar_ad %>
@@ -65,7 +44,7 @@
                 <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
               <% end %>
             <% else %>
-              <% Article.active_threads([tag], Timeframer.new(params[:timeframe]).datetime, 5).each do |plucked_article| %>
+              <% Article.active_threads([tag], Timeframe.datetime(params[:timeframe]), 5).each do |plucked_article| %>
                 <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
               <% end %>
             <% end %>
@@ -75,7 +54,7 @@
     <% end %>
     <% unless user_signed_in? %>
       <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}", expires_in: 18.hours) do %>
-        <% boostable_posts = Article.seo_boostable(nil, Timeframer.new(params[:timeframe]).datetime) %>
+        <% boostable_posts = Article.seo_boostable(nil, Timeframe.datetime(params[:timeframe])) %>
         <% if boostable_posts.present? %>
           <section class="widget">
             <header>

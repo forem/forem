@@ -15,7 +15,11 @@ export const ItemListTags = ({ availableTags, selectedTags, onClick }) => {
       {`#${tag}`}
     </a>
   ));
-  return <nav className="crayons-layout__sidebar-left" data-testid="tags">{tagsHTML}</nav>;
+  return (
+    <nav className="crayons-layout__sidebar-left" data-testid="tags">
+      {tagsHTML}
+    </nav>
+  );
 };
 
 ItemListTags.propTypes = {

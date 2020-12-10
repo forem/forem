@@ -7,13 +7,7 @@ import { submitArticle, previewArticle } from './actions';
 
 /* global activateRunkitTags */
 
-import {
-  EditorActions,
-  Form,
-  Header,
-  Help,
-  Preview,
-} from './components';
+import { EditorActions, Form, Header, Help, Preview } from './components';
 
 /*
   Although the state fields: id, description, canonicalUrl, series, allSeries and
@@ -361,9 +355,11 @@ export default class ArticleForm extends Component {
           submitting={submitting}
         />
 
-        <KeyboardShortcuts shortcuts={{
-          "ctrl+shift+KeyP": this.fetchPreview,
-        }} />
+        <KeyboardShortcuts
+          shortcuts={{
+            'ctrl+shift+KeyP': this.fetchPreview,
+          }}
+        />
       </form>
     );
   }

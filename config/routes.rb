@@ -1,6 +1,12 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
+  # errors routes
+  match "/404", to: "errors#not_found", via: :all, as: :errors_not_found
+  match "/422", to: "errors#unprocessable_entity", via: :all, as: :errors_unprocessable_entity
+  match "/500", to: "errors#internal_server_error", via: :all, as: :errors_internal_server_error
+  match "/503", to: "errors#service_unavailable", via: :all, as: :errors_service_unavailable
+
   use_doorkeeper do
     controllers tokens: "oauth/tokens"
   end
@@ -35,15 +41,6 @@ Rails.application.routes.draw do
       end
       mount Sidekiq::Web => "/sidekiq"
       mount FieldTest::Engine, at: "abtests"
-    end
-
-    namespace :resource_admin do
-      # Check administrate gem docs
-      DashboardManifest::DASHBOARDS.each do |dashboard_resource|
-        resources dashboard_resource
-      end
-
-      root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
     end
 
     namespace :admin do
@@ -103,10 +100,12 @@ Rails.application.routes.draw do
           post "save_status"
         end
       end
-      resources :tags, only: %i[index update show] do
+      resources :tags, only: %i[index new create update edit] do
         resource :moderator, only: %i[create destroy], module: "tags"
       end
       resources :users, only: %i[index show edit update] do
+        resources :email_messages, only: :show
+
         member do
           post "banish"
           post "export_data"
@@ -203,10 +202,12 @@ Rails.application.routes.draw do
         end
 
         resources :profile_images, only: %i[show], param: :username
-        resources :organizations, only: [] do
-          collection do
-            get "/:org_username", to: "organizations#show"
-          end
+        resources :organizations, only: [:show], param: :username do
+          resources :users, only: [:index], to: "organizations#users"
+        end
+
+        namespace :admin do
+          resource :config, only: %i[show], defaults: { format: :json }
         end
       end
     end
@@ -347,6 +348,7 @@ Rails.application.routes.draw do
 
     # Chat channel
     patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"
+    post "/create_channel" => "chat_channels#create_channel"
 
     # Chat Channel Membership json response
     get "/chat_channel_memberships/chat_channel_info/:id" => "chat_channel_memberships#chat_channel_info"
@@ -369,7 +371,6 @@ Rails.application.routes.draw do
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
     # Settings
-    post "users/update_language_settings" => "users#update_language_settings"
     post "users/join_org" => "users#join_org"
     post "users/leave_org/:organization_id" => "users#leave_org", :as => :users_leave_org
     post "users/add_org_admin" => "users#add_org_admin"
@@ -438,6 +439,12 @@ Rails.application.routes.draw do
         get action, action: action, controller: "pages"
       end
     end
+
+    # Redirect previous settings changed after https://github.com/forem/forem/pull/11347
+    get "/settings/integrations", to: redirect("/settings/extensions")
+    get "/settings/misc", to: redirect("/settings")
+    get "/settings/publishing-from-rss", to: redirect("/settings/extensions")
+    get "/settings/ux", to: redirect("/settings/customization")
 
     get "/settings/(:tab)" => "users#edit", :as => :user_settings
     get "/settings/:tab/:org_id" => "users#edit", :constraints => { tab: /organization/ }

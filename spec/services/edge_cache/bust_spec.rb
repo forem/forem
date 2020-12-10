@@ -4,6 +4,19 @@ RSpec.describe EdgeCache::Bust, type: :service do
   let(:user) { create(:user) }
   let(:path) { "/#{user.username}" }
 
+  it "defines TIMEFRAMES" do
+    expect(described_class.const_defined?(:TIMEFRAMES)).to be true
+  end
+
+  it "adjusts TIMEFRAMES according to the current time" do
+    current_year = Time.current.year
+
+    Timecop.freeze(3.years.ago) do
+      timestamp, _interval = described_class::TIMEFRAMES.first
+      expect(timestamp.call.year).to be <= current_year - 3
+    end
+  end
+
   describe "#bust_fastly_cache" do
     let(:fastly_provider_class) { EdgeCache::Bust::Fastly }
 
@@ -13,13 +26,10 @@ RSpec.describe EdgeCache::Bust, type: :service do
         stub_nginx
       end
 
-      let(:cache_bust_service) { described_class.new(path) }
-
       it "does not bust a fastly cache" do
         allow(fastly_provider_class).to receive(:call)
 
-        cache_bust_service.call
-        expect(cache_bust_service.provider).to be(nil)
+        described_class.call(path)
         expect(fastly_provider_class).not_to have_received(:call)
       end
     end
@@ -30,21 +40,11 @@ RSpec.describe EdgeCache::Bust, type: :service do
         stub_nginx
       end
 
-      let(:cache_bust_service) { described_class.new(path) }
-
       it "can bust a fastly cache" do
         allow(fastly_provider_class).to receive(:call)
 
-        cache_bust_service.call
-        expect(cache_bust_service.provider).to eq("fastly")
+        described_class.call(path)
         expect(fastly_provider_class).to have_received(:call)
-      end
-
-      it "returns cache bust response" do
-        allow(fastly_provider_class).to receive(:call).and_return("success")
-
-        cache_bust_service.call
-        expect(cache_bust_service.response).to eq("success")
       end
     end
   end
@@ -63,13 +63,10 @@ RSpec.describe EdgeCache::Bust, type: :service do
         stub_nginx
       end
 
-      let(:cache_bust_service) { described_class.new(path) }
-
       it "does not bust an nginx cache" do
         allow(nginx_provider_class).to receive(:call)
 
-        cache_bust_service.call
-        expect(cache_bust_service.provider).to eq(nil)
+        described_class.call(path)
         expect(nginx_provider_class).not_to have_received(:call)
       end
     end
@@ -84,8 +81,7 @@ RSpec.describe EdgeCache::Bust, type: :service do
       it "can bust an nginx cache" do
         allow(nginx_provider_class).to receive(:call)
 
-        cache_bust_service.call
-        expect(cache_bust_service.provider).to eq("nginx")
+        described_class.call(path)
         expect(nginx_provider_class).to have_received(:call)
       end
     end

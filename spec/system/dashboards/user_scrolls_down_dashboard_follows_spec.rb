@@ -45,12 +45,12 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
     it "updates a tag point value" do
       last_div = page.all('div[id^="follows"]').last
       within last_div do
-        fill_in "follow_points", with: 10.0
+        fill_in "follow_explicit_points", with: 10.0
         click_button "commit"
       end
       first_div = page.find('div[id^="follows"]', match: :first)
       within first_div do
-        expect(page).to have_field("follow_points", with: 10.0)
+        expect(page).to have_field("follow_explicit_points", with: 10.0)
       end
     end
   end

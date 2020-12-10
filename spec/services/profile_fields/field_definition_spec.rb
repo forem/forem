@@ -17,9 +17,11 @@ RSpec.describe ProfileFields::FieldDefinition, type: :service do
         test_class.call
       end.to change(ProfileField, :count).by(2)
 
-      expect(ProfileField.pluck(:label)).to match_array(["Test 1", "Test 2"])
+      labels = ProfileField.pluck(:label)
+      expect(labels).to include("Test 1")
+      expect(labels).to include("Test 2")
       group = ProfileFieldGroup.find_by(name: "DSL Test")
-      expect(ProfileField.pluck(:profile_field_group_id)).to match_array([group.id, group.id])
+      expect(ProfileField.pluck(:profile_field_group_id).count(group.id)).to eq(2)
     end
   end
 end

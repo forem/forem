@@ -1,8 +1,9 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left crayons-layout__sidebar-left">
-  <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <aside class="side-bar" aria-label="Primary sidebar">
     <% cache(release_adjusted_cache_key("main-sidebar-nav--#{user_signed_in?}"), expires_in: 15.minutes) do %>
-      <%= render "articles/sidebar_nav" %>
+      <%= render "shared/auth_widget" unless user_signed_in? %>
+      <%= render "layouts/main_nav" %>
+      <%= render "layouts/sidebar_tags" %>
       <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
       <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
       <% if @sponsorships.present? %>

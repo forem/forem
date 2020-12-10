@@ -35,6 +35,7 @@ class ChatChannel < ApplicationRecord
   validates :status, presence: true, inclusion: { in: STATUSES }
   validates :slug, uniqueness: true, presence: true
   validates :description, length: { maximum: 200 }, allow_blank: true
+  validates :channel_name, presence: true
 
   def open?
     channel_type == "open"

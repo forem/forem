@@ -55,7 +55,7 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html do
         "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
-        "Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!"
+        "Try changing <a href='settings/customization'>your font and theme</a> and find the best style for you!"
       end
     end
 

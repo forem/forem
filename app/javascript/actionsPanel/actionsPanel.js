@@ -116,15 +116,22 @@ function clearExpLevels() {
   });
 }
 
-async function updateExperienceLevel(currentUserId, articleId, rating, group) {
+export async function updateExperienceLevel(
+  currentUserId,
+  articleId,
+  rating,
+  group,
+) {
   try {
     const response = await request('/rating_votes', {
       method: 'POST',
       body: JSON.stringify({
-        user_id: currentUserId,
-        article_id: articleId,
-        rating,
-        group,
+        rating_vote: {
+          user_id: currentUserId,
+          article_id: articleId,
+          rating,
+          group,
+        },
       }),
     });
 

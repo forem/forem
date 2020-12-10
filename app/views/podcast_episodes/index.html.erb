@@ -17,7 +17,7 @@
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
      data-tag=""
      data-feed="<%= params[:timeframe] || "base-feed" %>"
-     data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
+     data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
   <%= render "podcast_episodes/sidebar" %>
   <div class="articles-list" id="articles-list">
     <div class="substories" id="substories">

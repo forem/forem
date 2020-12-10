@@ -409,7 +409,7 @@ class Article < ApplicationRecord
 
     self.cached_user_name = user_name
     self.cached_user_username = user_username
-    self.path = calculated_path
+    self.path = calculated_path.downcase
   end
 
   def evaluate_markdown
@@ -427,7 +427,7 @@ class Article < ApplicationRecord
 
     self.description = processed_description if description.blank?
   rescue StandardError => e
-    errors[:base] << ErrorMessageCleaner.new(e.message).clean
+    errors[:base] << ErrorMessages::Clean.call(e.message)
   end
 
   def set_tag_list(tags)
@@ -699,8 +699,8 @@ class Article < ApplicationRecord
       author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
-      reason: "automatic_ban",
-      content: "User banned for too many spammy articles, triggered by autovomit.",
+      reason: "automatic_suspend",
+      content: "User suspended for too many spammy articles, triggered by autovomit.",
     )
   end
 
