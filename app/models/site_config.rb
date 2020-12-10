@@ -90,7 +90,7 @@ class SiteConfig < RailsSettings::Base
   # Images
   field :main_social_image, type: :string, default: proc { URL.local_image("social-media-cover.png") }
 
-  field :favicon_url, type: :string, default: "favicon.ico"
+  field :favicon_url, type: :string, default: proc { URL.local_image("favicon.ico") }
   field :logo_png, type: :string, default: proc { URL.local_image("icon.png") }
 
   field :logo_svg, type: :string
