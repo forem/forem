@@ -10,11 +10,11 @@ class ApplicationMailer < ActionMailer::Base
   before_action :use_custom_host
 
   default(
-    from: -> { email_from("Community") },
+    from: -> { email_from },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
   )
 
-  def email_from(_)
+  def email_from
     "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
   end
 
