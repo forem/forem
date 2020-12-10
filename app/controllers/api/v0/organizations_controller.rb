@@ -36,13 +36,15 @@ module Api
 
       def listings
         per_page = (params[:per_page] || 30).to_i
-        num = [per_page, 100].min
+        num = [per_page, 1000].min
         page = params[:page] || 1
 
         @listings = @organization.listings.published
           .select(LISTINGS_FOR_SERIALIZATION).page(page).per(num)
-          .includes(:taggings, :listing_category)
+          .includes(:user, :taggings, :listing_category)
           .order(bumped_at: :desc)
+
+        @listings = @listings.in_category(params[:category]) if params[:category].present?
       end
 
       private

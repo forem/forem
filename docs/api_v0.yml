@@ -99,6 +99,15 @@ components:
         minimum: 1
         maximum: 1000
         default: 80
+    listingCategoryParam:
+      name: category
+      in: query
+      description: |
+        Using this parameter will return listings belonging to the
+        requested category.
+      schema:
+        type: string
+      example: cfp
 
   securitySchemes:
     api_key:
@@ -740,7 +749,7 @@ components:
         organization:
           $ref: "#/components/schemas/SharedOrganization"
 
-    ListingOnly:
+    ListingByOrganization:
       type: object
       required:
         - type_of
@@ -753,6 +762,8 @@ components:
         - category
         - processed_html
         - published
+        - user
+        - organization
       properties:
         type_of:
           type: string
@@ -777,6 +788,10 @@ components:
           type: string
         published:
           type: boolean
+        user:
+          $ref: "#/components/schemas/SharedUser"
+        organization:
+          $ref: "#/components/schemas/SharedOrganization"
 
     ListingCategory:
       type: string
@@ -1618,6 +1633,39 @@ components:
             website_url:
             profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--ggU5WPaT--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
             profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--CjladMBD--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+    ListingsByOrganization:
+      value:
+        - type_of: listing
+          id: 1157
+          title: TestBash Detroit
+          slug: testbash-detroit-50gb
+          body_markdown: "Do you want to learn about automation? Maybe you're interested in
+            AI-driven testing? Security testing? We have a selection of talks, workshops and
+            training courses to help you in a wide variety of areas in software testing. Join
+            us for our very first trip to Detroit MI! \n\nhttps://bit.ly/TBDetroit"
+          tag_list: events
+          tags:
+            - events
+          category: cfp
+          processed_html: |
+            <p>Do you want to learn about automation? Maybe you're interested in AI-driven testing? Security testing? We have a selection of talks, workshops and training courses to help you in a wide variety of areas in software testing. Join us for our very first trip to Detroit MI! </p>
+
+            <p><a href="https://bit.ly/TBDetroit">https://bit.ly/TBDetroit</a></p>
+          published: true
+          user:
+            name: Heather
+            username: heatherr
+            twitter_username:
+            github_username: Heather-R
+            website_url:
+            profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--ggU5WPaT--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+            profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--CjladMBD--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+          organization:
+            name: E Corp
+            username: ecorp
+            slug: ecorp
+            profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--ggU5WPaT--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
+            profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--CjladMBD--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
     Listing:
       value:
         type_of: listing
@@ -1645,26 +1693,6 @@ components:
           website_url:
           profile_image: https://res.cloudinary.com/practicaldev/image/fetch/s--ggU5WPaT--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
           profile_image_90: https://res.cloudinary.com/practicaldev/image/fetch/s--CjladMBD--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/136256/11cced64-afd2-4421-91e1-c5f7b216d49b.jpeg
-    ListingsOnly:
-      value:
-        - type_of: listing
-          id: 1157
-          title: TestBash Detroit
-          slug: testbash-detroit-50gb
-          body_markdown: "Do you want to learn about automation? Maybe you're interested in
-            AI-driven testing? Security testing? We have a selection of talks, workshops and
-            training courses to help you in a wide variety of areas in software testing. Join
-            us for our very first trip to Detroit MI! \n\nhttps://bit.ly/TBDetroit"
-          tag_list: events
-          tags:
-            - events
-          category: cfp
-          processed_html: |
-            <p>Do you want to learn about automation? Maybe you're interested in AI-driven testing? Security testing? We have a selection of talks, workshops and training courses to help you in a wide variety of areas in software testing. Join us for our very first trip to Detroit MI! </p>
-
-            <p><a href="https://bit.ly/TBDetroit">https://bit.ly/TBDetroit</a></p>
-          published: true
-
     ListingCreate:
       value:
         listing:
@@ -2732,14 +2760,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/pageParam'
         - $ref: '#/components/parameters/perPageParam30to1000'
-        - name: category
-          in: query
-          description: |
-            Using this parameter will return listings belonging to the
-            requested category.
-          schema:
-            type: string
-          example: cfp
+        - $ref: '#/components/parameters/listingCategoryParam'
       responses:
         "200":
           description: A list of listings
@@ -3206,7 +3227,8 @@ paths:
             type: string
           example: "ecorp"
         - $ref: '#/components/parameters/pageParam'
-        - $ref: '#/components/parameters/perPageParam30to100'
+        - $ref: '#/components/parameters/perPageParam30to1000'
+        - $ref: '#/components/parameters/listingCategoryParam'
       responses:
         "200":
           description: A list of listings belonging to the organization
@@ -3215,10 +3237,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ListingOnly"
+                  $ref: "#/components/schemas/ListingByOrganization"
               examples:
                 user-success:
-                  $ref: "#/components/examples/ListingsOnly"
+                  $ref: "#/components/examples/ListingsByOrganization"
         "404":
           description: Resource not found
           content:
