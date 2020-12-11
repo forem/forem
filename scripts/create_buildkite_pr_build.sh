@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Adopted parts of this script from the following open source projects:
+# Adapted parts of this script from the following open source projects:
 #   https://github.com/buildkite/trigger-pipeline-action/blob/master/entrypoint.sh
 #   MIT License Copyright (c) 2019 Buildkite
 #
