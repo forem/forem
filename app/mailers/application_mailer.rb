@@ -15,11 +15,9 @@ class ApplicationMailer < ActionMailer::Base
   )
 
   def email_from(topic = "")
-    if topic.present?
-      "#{SiteConfig.community_name} #{topic} <#{SiteConfig.email_addresses[:default]}>"
-    else
-      "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
-    end
+    community_name = topic.present? ? "#{SiteConfig.community_name} #{topic}" : SiteConfig.community_name
+
+    "#{community_name} <#{SiteConfig.email_addresses[:default]}>"
   end
 
   def generate_unsubscribe_token(id, email_type)
