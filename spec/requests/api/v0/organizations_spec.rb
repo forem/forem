@@ -91,20 +91,23 @@ RSpec.describe "Api::V0::Organizations", type: :request do
 
     it "returns the correct json representation of the organizations listings", :aggregate_failures do
       get api_organization_listings_path(organization.username)
-
       response_listing = response.parsed_body.first
-
       expect(response_listing["type_of"]).to eq("listing")
 
-      %w[
-        id title slug body_markdown category processed_html published
-        listing_category_id
-      ].each do |attr|
+      %w[id title slug body_markdown category processed_html published listing_category_id].each do |attr|
         expect(response_listing[attr]).to eq(listing.public_send(attr))
       end
 
       expect(response_listing["tag_list"]).to eq(listing.cached_tag_list)
       expect(response_listing["tags"]).to match_array(listing.tag_list)
+
+      %w[name username twitter_username github_username website_url].each do |attr|
+        expect(response_listing["user"][attr]).to eq(org_user.public_send(attr))
+      end
+
+      %w[name username slug].each do |attr|
+        expect(response_listing["organization"][attr]).to eq(organization.public_send(attr))
+      end
     end
   end
 end

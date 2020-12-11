@@ -749,50 +749,6 @@ components:
         organization:
           $ref: "#/components/schemas/SharedOrganization"
 
-    ListingByOrganization:
-      type: object
-      required:
-        - type_of
-        - id
-        - title
-        - slug
-        - body_markdown
-        - tag_list
-        - tags
-        - category
-        - processed_html
-        - published
-        - user
-        - organization
-      properties:
-        type_of:
-          type: string
-        id:
-          type: integer
-          format: int64
-        title:
-          type: string
-        slug:
-          type: string
-        body_markdown:
-          type: string
-        tag_list:
-          type: string
-        tags:
-          type: array
-          items:
-            type: string
-        category:
-          $ref: "#/components/schemas/ListingCategory"
-        processed_html:
-          type: string
-        published:
-          type: boolean
-        user:
-          $ref: "#/components/schemas/SharedUser"
-        organization:
-          $ref: "#/components/schemas/SharedOrganization"
-
     ListingCategory:
       type: string
       enum: [cfp, forhire, collabs, education, jobs, mentors, products, mentees, forsale, events, misc]
@@ -3237,7 +3193,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ListingByOrganization"
+                  allOf:
+                    - $ref: "#/components/schemas/Listing"
+                    - required:
+                      - organization
               examples:
                 user-success:
                   $ref: "#/components/examples/ListingsByOrganization"
