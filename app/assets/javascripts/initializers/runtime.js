@@ -39,9 +39,12 @@ class Runtime {
    * @returns {boolean} true if current environment support native features
    */
   static isNativeAndroid(namespace = null) {
-    const nativeCheck =
-      /DEV-Native-android|ForemWebView/i.test(navigator.userAgent) &&
-      AndroidBridge != undefined;
+    let nativeCheck = /DEV-Native-android|ForemWebView/i.test(navigator.userAgent);
+    try {
+      nativeCheck = nativeCheck && AndroidBridge != undefined;
+    } catch (e) {
+      nativeCheck = false;
+    }
 
     let namespaceCheck = true;
     if (nativeCheck && namespace) {

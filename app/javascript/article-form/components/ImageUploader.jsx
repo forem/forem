@@ -103,29 +103,6 @@ export const ImageUploader = () => {
     });
   }
 
-  function handleNativeImageInjected(e) {
-    dispatch({
-      type: 'uploading_image',
-    });
-
-    fetch(e.target.value)
-      .then(res => res.blob())
-      .then(blob => {
-        // TODO: Find a better way to generate a random file name?
-        // Maybe we already have a UUID or Hex generator?
-        const randomFileName = [...Array(16)].map(i=>(~~(Math.random()*36)).toString(36)).join('');
-        const file = new File([blob], randomFileName, { type: "image/png" });
-
-        // Trigger actual upload
-        generateMainImage({ 'image': file}, handleInsertImageUploadSuccess, onUploadError);
-      })
-      .catch(e => {
-        dispatch({
-          type: 'upload_error',
-        });
-      });
-  }
-
   function handleInsertionImageUpload(e) {
     const { files } = e.target;
 
@@ -146,10 +123,40 @@ export const ImageUploader = () => {
     });
   }
 
+  function handleNativeMessage(e) {
+    var message = {};
+    try {
+      message = JSON.parse(e.target.value);
+    } catch (e) {
+      console.log(e); // eslint-disable-line no-console
+      return;
+    }
+
+    switch(message.action) {
+      case 'uploading':
+        dispatch({
+          type: 'uploading_image',
+        });
+        break;
+      case 'error':
+        dispatch({
+          type: 'upload_error',
+          payload: { errorMessage: message.error },
+        });
+        break;
+      case 'success':
+        dispatch({
+          type: 'upload_image_success',
+          payload: { insertionImageUrls: [message.link] },
+        });
+        break;
+    }
+  }
+
   function checkNativeBridge(e) {
     if(Runtime.isNativeIOS('imageUpload')) {
       e.preventDefault();
-      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'image-upload-field-base64' });
+      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'native-image-upload-message' });
     }
   }
 
@@ -179,9 +186,10 @@ export const ImageUploader = () => {
             data-max-file-size-mb="25"
             aria-label="Upload an image"
           />
-        <input type="hidden" id="image-upload-field-base64" value="" onChange={handleNativeImageInjected}/>
         </Button>
       )}
+
+      <input type="hidden" id="native-image-upload-message" value="" onChange={handleNativeMessage}/>
 
       {insertionImageUrls.length > 0 && (
         <ClipboardButton
