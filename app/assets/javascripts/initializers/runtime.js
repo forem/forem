@@ -41,7 +41,7 @@ class Runtime {
   static isNativeAndroid(namespace = null) {
     let nativeCheck = /DEV-Native-android|ForemWebView/i.test(navigator.userAgent);
     try {
-      nativeCheck = nativeCheck && AndroidBridge != undefined;
+      nativeCheck = nativeCheck && (AndroidBridge != undefined);
     } catch (e) {
       nativeCheck = false;
     }

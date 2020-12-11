@@ -52,10 +52,37 @@ export class ArticleCoverImage extends Component {
   };
 
   checkNativeBridge = (e) => {
-    e.preventDefault();
     if(Runtime.isNativeIOS('imageUpload')) {
-      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'placeholder' });
-      return
+      e.preventDefault();
+      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'native-cover-image-upload-message' });
+    }
+  }
+
+  handleNativeMessage = (e) => {
+    var message = {};
+    try {
+      message = JSON.parse(e.target.value);
+    } catch (e) {
+      console.log(e); // eslint-disable-line no-console
+      return;
+    }
+
+    switch(message.action) {
+      case 'uploading':
+        this.setState({ uploadingImage: true });
+        this.clearUploadError();
+        break;
+      case 'error':
+        this.setState({
+          uploadingImage: false,
+          uploadError: true,
+          uploadErrorMessage: message.error,
+        });
+        break;
+      case 'success':
+        this.props.onMainImageUrlChange({ links: [message.link]});
+        this.setState({ uploadingImage: false });
+        break;
     }
   }
 
@@ -131,6 +158,7 @@ export class ArticleCoverImage extends Component {
                 )}
               </Fragment>
             )}
+            <input type="hidden" id="native-cover-image-upload-message" value="" onChange={this.handleNativeMessage}/>
           </div>
           {uploadError && (
             <p className="articleform__uploaderror">{uploadErrorMessage}</p>
