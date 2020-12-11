@@ -24,3 +24,4 @@ jobs:
         env:
           BUILDKITE_API_ACCESS_TOKEN: ${{ secrets.buildkite_api_access_token }}
           PIPELINE: "forem/build-containers"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
