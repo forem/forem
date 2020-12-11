@@ -1,4 +1,6 @@
-describe('Administrator login', () => {
+describe('First time for first administrator login', () => {
+  // Note if you are running these tests locallly, this test will fail
+  // if the first admin has already gone through the onboarding process.
   it('should login the initial administrator user from the home page', () => {
     cy.fixture('logins/initialAdmin.json').as('admin');
 
@@ -21,7 +23,8 @@ describe('Administrator login', () => {
     // Submit the form
     cy.get('@loginForm').findByText('Continue').click();
 
-    // User should be redirected to the home page
-    cy.url().should('include', '/?signin=true');
+    // User should be redirected to onboarding
+    const { baseUrl } = Cypress.config();
+    cy.url().should('include', `/onboarding?referrer=${baseUrl}/?signin=true`);
   });
 });
