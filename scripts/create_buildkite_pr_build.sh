@@ -28,11 +28,11 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
 fi
 
 # Check if PULL_REQUEST_ID is empty or null and try to set it
-if [[ -z "${PULL_REQUEST_ID}" || "${PULL_REQUEST_ID}" == "null" ]]; then
-  PULL_REQUEST_ID=$(jq -r .event.issue.number "${GITHUB_EVENT_PATH}")
-elif [[ -z "${PULL_REQUEST_ID}" || "${PULL_REQUEST_ID}" == "null" ]]; then
-  PULL_REQUEST_ID=$(jq -r .event.number "${GITHUB_EVENT_PATH}")
-elif [[ -z "${PULL_REQUEST_ID}" || "${PULL_REQUEST_ID}" == "null" ]]; then
+if [[ -z "${PULL_REQUEST_ID:-}" || "${PULL_REQUEST_ID}" == "null" ]]; then
+  PULL_REQUEST_ID=$(jq -r .issue.number "${GITHUB_EVENT_PATH}")
+elif [[ -z "${PULL_REQUEST_ID:-}" || "${PULL_REQUEST_ID}" == "null" ]]; then
+  PULL_REQUEST_ID=$(jq -r ".pull_request.number" "$GITHUB_EVENT_PATH")
+elif [[ -z "${PULL_REQUEST_ID:-}" || "${PULL_REQUEST_ID}" == "null" ]]; then
   echo "Failed to determine PR Number."
   exit 1
 fi
@@ -71,11 +71,11 @@ if [[ "${PULL_REQUEST_USER_EMAIL}" == "null" ]]; then
 fi
 
 # Set Buildkite pipeline variables
-COMMENT_USER_LOGIN=$(jq -r ".event.comment.user.login" "${GITHUB_EVENT_PATH}")
+COMMENT_USER_LOGIN=$(jq -r ".comment.user.login" "${GITHUB_EVENT_PATH}")
 ORG_SLUG=$(echo "${PIPELINE}" | cut -d'/' -f1)
 PIPELINE_SLUG=$(echo "${PIPELINE}" | cut -d'/' -f2)
-MESSAGE_URL=$(jq -r ".event.issue.html_url" "${GITHUB_EVENT_PATH}")
-MESSAGE="Build triggered from GitHub Action by ${COMMENT_USER_LOGIN} on ${MESSAGE_URL} for ${PULL_REQUEST_USER_LOGIN}"
+COMMENT_URL=$(jq -r ".comment.html_url" "${GITHUB_EVENT_PATH}")
+MESSAGE="Build triggered from GitHub Action by ${COMMENT_USER_LOGIN} on ${COMMENT_URL} for ${PULL_REQUEST_USER_LOGIN}"
 
 # Build JSON payload
 JSON=$(
