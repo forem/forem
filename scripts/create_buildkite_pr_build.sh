@@ -29,7 +29,7 @@ fi
 
 # Check if PULL_REQUEST_ID is empty or null and try to set it
 if [[ -z "${PULL_REQUEST_ID:-}" || "${PULL_REQUEST_ID}" == "null" ]]; then
-  PULL_REQUEST_ID=$(jq -r .issue.number "${GITHUB_EVENT_PATH}")
+  PULL_REQUEST_ID=$(jq -r ".issue.number" "${GITHUB_EVENT_PATH}")
 elif [[ -z "${PULL_REQUEST_ID:-}" || "${PULL_REQUEST_ID}" == "null" ]]; then
   PULL_REQUEST_ID=$(jq -r ".pull_request.number" "$GITHUB_EVENT_PATH")
 elif [[ -z "${PULL_REQUEST_ID:-}" || "${PULL_REQUEST_ID}" == "null" ]]; then
@@ -47,15 +47,15 @@ AUTH_HEADER="Authorization: token $GITHUB_TOKEN"
 PULL_REQUEST_INFO=$(curl -X GET -s -H "${AUTH_HEADER}" -H "${API_HEADER}" \
           "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_ID}")
 
-PULL_REQUEST_BASE_REPO=$(echo "${PULL_REQUEST_INFO}" | jq -r .base.repo.full_name)
-PULL_REQUEST_BASE_BRANCH=$(echo "${PULL_REQUEST_INFO}" | jq -r .base.ref)
+PULL_REQUEST_BASE_REPO=$(echo "${PULL_REQUEST_INFO}" | jq -r ".base.repo.full_name")
+PULL_REQUEST_BASE_BRANCH=$(echo "${PULL_REQUEST_INFO}" | jq -r ".base.ref")
 
-PULL_REQUEST_HEAD_REPO=$(echo "${PULL_REQUEST_INFO}" | jq -r .head.repo.full_name)
-PULL_REQUEST_HEAD_BRANCH=$(echo "${PULL_REQUEST_INFO}" | jq -r .head.ref)
-PULL_REQUEST_HEAD_SHA=$(echo "${PULL_REQUEST_INFO}" | jq -r .head.sha)
+PULL_REQUEST_HEAD_REPO=$(echo "${PULL_REQUEST_INFO}" | jq -r ".head.repo.full_name")
+PULL_REQUEST_HEAD_BRANCH=$(echo "${PULL_REQUEST_INFO}" | jq -r ".head.ref")
+PULL_REQUEST_HEAD_SHA=$(echo "${PULL_REQUEST_INFO}" | jq -r ".head.sha")
 
 # Gather information about the pull request user
-PULL_REQUEST_USER_LOGIN=$(echo "${PULL_REQUEST_INFO}" | jq -r .user.login)
+PULL_REQUEST_USER_LOGIN=$(echo "${PULL_REQUEST_INFO}" | jq -r ".user.login")
 PULL_REQUEST_USER_INFO=$(curl -X GET -s -H "${AUTH_HEADER}" -H "${API_HEADER}" \
             "${URI}/users/${PULL_REQUEST_USER_LOGIN}")
 
