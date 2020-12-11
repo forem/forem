@@ -1,9 +1,7 @@
 name: Buildkite
-
 on:
   issue_comment:
     types: [created]
-
 jobs:
   add_ci_label:
     name: "Add CI label to pull request"
@@ -22,8 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: jdoss/trigger-pipeline-action@master
+      - run: ./scripts/create_buildkite_pr_build.sh
         env:
           BUILDKITE_API_ACCESS_TOKEN: ${{ secrets.buildkite_api_access_token }}
           PIPELINE: "forem/build-containers"
-          PULL_REQUEST_ID: ${{github.event.issue.number}}
