@@ -25,7 +25,12 @@
     "test": "jest app/javascript/ bin/ --coverage",
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
-    "e2e": "cypress open"
+    "e2e": "cypress open",
+    "e2e:runner": "cypress run",
+    "poste2e:runner": "ps -ef | grep sidekiq | grep -v grep | awk '{print $2}' | xargs kill -9",
+    "pree2e:server": "bin/setup",
+    "e2e:server": "bin/rails s -p 3000 -b 0.0.0.0",
+    "e2e:ci": "bundle exec sidekiq & start-server-and-test e2e:server http://localhost:3000 e2e:runner"
   },
   "husky": {
     "hooks": {
