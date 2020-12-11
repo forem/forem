@@ -27,11 +27,11 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
   exit 1
 fi
 
-# Get the pull request ID
-PULL_REQUEST_ID=${{ github.event.issue.number }}
-
+# Check if PULL_REQUEST_ID is empty or null and try to set it
 if [[ -z "${PULL_REQUEST_ID}" || "${PULL_REQUEST_ID}" == "null" ]]; then
-  PULL_REQUEST_ID=${{ github.event.number }}
+  PULL_REQUEST_ID=$(jq -r .event.issue.number "${GITHUB_EVENT_PATH}")
+elif [[ -z "${PULL_REQUEST_ID}" || "${PULL_REQUEST_ID}" == "null" ]]; then
+  PULL_REQUEST_ID=$(jq -r .event.number "${GITHUB_EVENT_PATH}")
 elif [[ -z "${PULL_REQUEST_ID}" || "${PULL_REQUEST_ID}" == "null" ]]; then
   echo "Failed to determine PR Number."
   exit 1
