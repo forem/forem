@@ -1,4 +1,4 @@
-#Adopted from https://gist.github.com/filipkis/fab89a09f54ffdd8e70c063755e7ce7f
+# adapted from https://gist.github.com/filipkis/fab89a09f54ffdd8e70c063755e7ce7f
 
 name: Dependabot
 
@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout code
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Set up Ruby 2.7.2
         uses: ruby/setup-ruby@v1
