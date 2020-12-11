@@ -1,0 +1,37 @@
+#!/bin/bash
+# This file was generated on 2021-01-22T18:13:36+00:00 from the rspec-dev repo.
+# DO NOT modify it by hand as your changes will get lost the next time it is generated.
+
+set -e
+source script/functions.sh
+
+# Allow repos to override the default functions and add their own
+if [ -f script/custom_build_functions.sh ]; then
+  source script/custom_build_functions.sh
+fi
+
+fold "binstub check" check_binstubs
+
+fold "specs" run_specs_and_record_done
+
+if additional_specs_available; then
+  fold "additional specs" run_additional_specs
+fi
+
+fold "cukes" run_cukes
+
+if documentation_enforced; then
+  fold "doc check" check_documentation_coverage
+fi
+
+if style_and_lint_enforced; then
+  fold "rubocop" check_style_and_lint
+fi
+
+if supports_cross_build_checks; then
+  fold "one-by-one specs" run_specs_one_by_one
+  export NO_COVERAGE=true
+  run_all_spec_suites
+else
+  echo "Skipping the rest of the build on non-MRI rubies"
+fi
