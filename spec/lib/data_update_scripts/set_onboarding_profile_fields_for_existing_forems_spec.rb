@@ -6,9 +6,9 @@ require Rails.root.join(
 describe DataUpdateScripts::SetOnboardingProfileFieldsForExistingForems do
   before do
     ProfileField.destroy_all
+    create(:user)
   end
 
-  let!(:user) { create(:user) }
   let!(:profile_field1) { create(:profile_field, label: "summary") }
   let!(:profile_field2) { create(:profile_field, label: "random") }
   let(:profile_field3) { create(:profile_field, label: "location") }
