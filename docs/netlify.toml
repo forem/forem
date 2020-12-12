@@ -8,9 +8,6 @@
 [build]
   command = "make"
 
-[build.environment]
-  NETLIFY_USE_YARN = "true"
-
 # See <https://docs.netlify.com/routing/redirects/redirect-options/> for more options
 [[redirects]]
 from = "http://docs.dev.to"
