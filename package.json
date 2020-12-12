@@ -96,6 +96,7 @@
     "@storybook/addon-storysource": "^6.1.10",
     "@storybook/addons": "^6.1.5",
     "@storybook/preact": "^6.1.9",
+    "@testing-library/cypress": "^7.0.2",
     "@testing-library/dom": "^7.28.1",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/preact": "^2.0.1",
