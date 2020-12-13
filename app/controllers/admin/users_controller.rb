@@ -79,7 +79,7 @@ module Admin
         link = helpers.link_to("the page", admin_users_gdpr_delete_requests_path, "data-no-instant" => true)
         # rubocop:disable Rails/OutputSafety
         message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
-          "has been fully deleted." \
+          "has been fully deleted. " \
           "If this is a GDPR delete, delete them from Mailchimp & Google Analytics " \
           " and confirm on #{link}.".html_safe
         # rubocop:enable Rails/OutputSafety
