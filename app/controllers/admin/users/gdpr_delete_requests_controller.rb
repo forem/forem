@@ -13,7 +13,7 @@ module Admin
 
         AuditLog.create(
           user: current_user,
-          category: "admin.gdpr_delete.confirm".freeze,
+          category: "admin.gdpr_delete.confirm",
           roles: current_user.roles_name,
           slug: "gdpr_delete_confirm",
           data: {
