@@ -81,9 +81,6 @@ module PracticalDeveloper
         top_routes << route
       end
       ReservedWords.all = [ReservedWords::BASE_WORDS + top_routes].flatten.compact.uniq
-
-      # Set up all profile attributes when the app starts
-      Profile.refresh_attributes!
     end
   end
 end
