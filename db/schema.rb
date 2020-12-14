@@ -1361,6 +1361,14 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "users_gdpr_delete_requests", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.string "email"
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_id"
+    t.string "username"
+  end
+
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "role_id"
     t.bigint "user_id"

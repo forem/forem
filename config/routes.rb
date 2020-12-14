@@ -55,6 +55,10 @@ Rails.application.routes.draw do
         mount flipper_ui, at: "feature_flags"
       end
 
+      namespace :users do
+        resources :gdpr_delete_requests, only: %i[index destroy]
+      end
+
       resources :articles, only: %i[index show update]
       resources :broadcasts
       resources :buffer_updates, only: %i[create update]
