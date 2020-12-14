@@ -67,10 +67,6 @@ module PracticalDeveloper
     # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.
     config.action_dispatch.use_cookies_with_metadata = false
 
-    # Sets the exceptions application invoked by the ShowException middleware when an exception happens
-    # Defaults to ActionDispatch::PublicExceptions.new(Rails.public_path)
-    config.exceptions_app = routes # use ErrorsController to handle error pages
-
     # After-initialize checker to add routes to reserved words
     config.after_initialize do
       # Add routes to reserved words
