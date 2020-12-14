@@ -71,6 +71,7 @@ script:
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
   - yarn e2e:ci
   # Dropping and recreating the database for Capybara/rspecs
+  - export FOREM_OWNER_SECRET="secret"
   - bundle exec rails db:drop
   - bundle exec rails db:create
   - bundle exec rails db:schema:load
