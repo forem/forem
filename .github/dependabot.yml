@@ -1,8 +1,24 @@
-# Set update schedule for GitHub Actions
-# https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/keeping-your-actions-up-to-date-with-dependabot
+# Update dependencies with Dependabot
+
 version: 2
 updates:
+  # Set update schedule for Ruby Bundler
+  - package-ecosystem: "bundler"
+    # Raise pull requests to update vendored dependencies that are checked in to the repository
+    vendor: true
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  # Set update schedule for Yarn/NPM
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  # Set update schedule for GitHub Actions
+  # https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/keeping-your-actions-up-to-date-with-dependabot
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
