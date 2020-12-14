@@ -1,29 +1,28 @@
-#Adopted from https://gist.github.com/filipkis/fab89a09f54ffdd8e70c063755e7ce7f
+# Adapted from https://gist.github.com/filipkis/fab89a09f54ffdd8e70c063755e7ce7f
 
-name: Update vendor/cache After Dependabot
-
+name: Dependabot
 on:
   push:
     branches:
       - 'dependabot/bundler/**'
     paths:
       - 'Gemfile.lock'
-
 jobs:
   update-gems:
+    name: Update gems on Dependabot pull requests
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Ruby 2.7
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Ruby 2.7.2
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7.1
+          ruby-version: 2.7.2
       - name: Installing additional dependencies
         run: |
           sudo apt-get update
           sudo apt-get install postgresql-client libpq-dev libcurl4-openssl-dev
-      - name: Bundle install
+      - name: Run bundle install
         run: |
           gem install bundler
           bundle config set cache_all true

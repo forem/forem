@@ -6,6 +6,7 @@ items:
   - containers.md
   - gitpod.md
   - postgresql.md
+  - imgproxy.md
   - vault.md
   - others.md
 ---

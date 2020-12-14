@@ -1,9 +1,13 @@
 <% title "Confirm Signout - #{community_name}" %>
 <div class="signout_confirm-wrapper">
 
-  <h1>Are you sure you want to sign out?</h1>
+  <h1 class="fs-2xl mb-2">
+  Are you sure you want to sign out?
+  </h1>
   <%= form_tag destroy_user_session_path, method: :delete do %>
-    <button class="cta">Yes. Sign out.</button>
+    <button class="crayons-btn crayons-btn--l">
+      Yes, sign out
+    </button>
   <% end %>
 
 </div>

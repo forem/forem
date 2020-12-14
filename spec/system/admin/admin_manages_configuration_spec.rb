@@ -8,9 +8,7 @@ RSpec.describe "Admin manages configuration", type: :system do
     visit admin_config_path
   end
 
-  # Note: The :meta_keywords are handled slightly differently in the view, so we
-  # can't check them the same way as the rest.
-  (VerifySetupCompleted::MANDATORY_CONFIGS - [:meta_keywords]).each do |option|
+  VerifySetupCompleted::MANDATORY_CONFIGS.each do |option|
     it "marks #{option} as required" do
       selector = "label[for='site_config_#{option}']"
       expect(first(selector).text).to include("Required")
@@ -33,9 +31,8 @@ RSpec.describe "Admin manages configuration", type: :system do
       allow(SiteConfig).to receive(:tagline).and_return(nil)
       allow(SiteConfig).to receive(:suggested_users).and_return(nil)
       allow(SiteConfig).to receive(:suggested_tags).and_return(nil)
-      allow(SiteConfig).to receive(:community_action).and_return(nil)
       visit root_path
-      expect(page.body).to match(/Setup not completed yet, missing(.*)community action(.*), and others/)
+      expect(page.body).to include("Setup not completed yet, missing suggested tags and suggested users.")
     end
   end
 end

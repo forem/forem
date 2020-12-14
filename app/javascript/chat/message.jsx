@@ -27,13 +27,19 @@ const Message = ({
     return <ErrorMessage message={message} />;
   }
 
-  const messageArea = (
-    <span
-      className="chatmessagebody__message"
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{ __html: message }}
-    />
-  );
+  const MessageArea = () => {
+    if (userID === currentUserId) {
+      message = message.replace(`@${user}`, `<mark>@${user}</mark>`);
+    }
+
+    return (
+      <span
+        className="chatmessagebody__message"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: message }}
+      />
+    );
+  };
 
   const dropdown = (
     <div className="message__actions">
@@ -115,7 +121,9 @@ const Message = ({
           </div>
           {userID === currentUserId ? dropdown : ' '}
         </div>
-        <div className="chatmessage__bodytext">{messageArea}</div>
+        <div className="chatmessage__bodytext">
+          <MessageArea />
+        </div>
       </div>
     </div>
   );

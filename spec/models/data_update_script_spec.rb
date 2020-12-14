@@ -3,7 +3,16 @@ require "rails_helper"
 RSpec.describe DataUpdateScript do
   let(:test_directory) { Rails.root.join("spec/support/fixtures/data_update_scripts") }
 
-  it { is_expected.to validate_uniqueness_of(:file_name) }
+  describe "validations" do
+    describe "builtin validations" do
+      subject { create(:data_update_script) }
+
+      it { is_expected.to validate_presence_of(:file_name) }
+      it { is_expected.to validate_presence_of(:status) }
+
+      it { is_expected.to validate_uniqueness_of(:file_name) }
+    end
+  end
 
   describe ".scripts_to_run" do
     before { stub_const "#{described_class}::DIRECTORY", test_directory }

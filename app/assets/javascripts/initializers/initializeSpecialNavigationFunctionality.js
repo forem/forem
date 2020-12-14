@@ -6,24 +6,21 @@ function initializeSpecialNavigationFunctionality() {
   if (connectLink) {
     if (document.getElementById('notifications-container')) {
       notificationsLink.blur();
-      notificationsLink.classList.add('top-bar__link--current');
-      document.querySelector('body').dataset.currentPage =
-        'notifications-index';
+      notificationsLink.classList.add('crayons-header__link--current');
     } else {
-      notificationsLink.classList.remove('top-bar__link--current');
-      delete document.querySelector('body').dataset.currentPage;
+      notificationsLink.classList.remove('crayons-header__link--current');
     }
     if (document.getElementById('chat')) {
       connectLink.blur();
-      connectLink.classList.add('top-bar__link--current');
+      connectLink.classList.add('crayons-header__link--current');
     } else {
-      connectLink.classList.remove('top-bar__link--current');
+      connectLink.classList.remove('crayons-header__link--current');
     }
     if (document.getElementById('moderation-page')) {
       moderationLink.blur();
-      moderationLink.classList.add('top-bar__link--current');
+      moderationLink.classList.add('crayons-header__link--current');
     } else {
-      moderationLink.classList.remove('top-bar__link--current');
+      moderationLink.classList.remove('crayons-header__link--current');
     }
   }
 }

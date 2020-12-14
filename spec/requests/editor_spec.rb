@@ -7,6 +7,18 @@ RSpec.describe "Editor", type: :request do
         get new_path
 
         expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "when email login is allowed in /admin/config" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_login).and_return(true)
+      end
+
+      it "asks the non logged in user to sign in, with email signin enabled" do
+        get new_path
+
+        expect(response.body).to include("Email")
         expect(response.body).to include("Password")
       end
     end

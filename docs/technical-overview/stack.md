@@ -11,7 +11,9 @@ For the Forem tech stack we use:
 - [_Redis_](https://redis.io/) to store cached data
 - [_Fastly_](https://www.fastly.com/) for
   [edge caching](https://dev.to/ben/making-devto-insanely-fast)
-- [_Cloudinary_](https://cloudinary.com/) for image manipulation/serving
+- [_Cloudinary_](https://cloudinary.com/) and/or
+  [_Imgproxy_](https://github.com/imgproxy/imgproxy) for image
+  manipulation/serving
 - [_Honeybadger_](https://www.honeybadger.io/) for error monitoring
 - [_Timber_](https://timber.io/) for logging
 - [_Sidekiq_](https://github.com/mperham/sidekiq) and

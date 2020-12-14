@@ -1,4 +1,4 @@
-<% title "[Moderate] " + @moderatable.title %>
+<% title "[Moderate] #{@moderatable.title}" %>
 
 <%= javascript_packs_with_chunks_tag "commentModPage", defer: true %>
 
@@ -24,10 +24,10 @@
       <%= hidden_field_tag(:id, @moderatable.id) %>
       <% if @moderatable.approved %>
         <%= hidden_field_tag(:approved, false) %>
-        <button class="cta approval-button approval-removal">Remove approval</button>
+        <button class="crayons-btn crayons-btn--secondary approval-button approval-removal">Remove approval</button>
       <% else %>
         <%= hidden_field_tag(:approved, true) %>
-        <button class="cta approval-button">Mark as approved</button>
+        <button class="crayons-btn approval-button">Mark as approved</button>
       <% end %>
     <% end %>
     <hr />
@@ -189,7 +189,7 @@
         value="<%= rating_level %>"
         name="rating_vote_<%= rating_level %>"
         id="js__rating__vote__<%= rating_level %>"
-        class="level-rating-button article-mod-page <%= "selected" if @rating_vote&.rating == rating_level.to_f %>"
+        class="level-rating-button article-mod-page <%= "selected" if @rating_vote&.rating.to_d == rating_level.to_d %>"
         data-user-id="<%= current_user.id %>"
         data-article-id="<%= @moderatable.id %>"
         data-group="experience_level"

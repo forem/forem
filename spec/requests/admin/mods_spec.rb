@@ -35,6 +35,13 @@ RSpec.describe "/admin/mods", type: :request do
       end
     end
 
+    context "when the are no matching mods" do
+      it "displays an warning" do
+        get "/admin/mods?search=no-results&state=tag_moderator"
+        expect(response.body).to include("There are no mods matching your search criteria")
+      end
+    end
+
     it "displays mod user" do
       get "/admin/mods"
       expect(response.body).to include(moderator.username)

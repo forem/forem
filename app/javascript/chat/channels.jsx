@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/overflow-horizontal.svg';
-import ChannelButton from './components/channelButton';
+import ChannelButton from './components/ChannelButton';
 import { channelSorter } from './util';
 
 const Channels = ({
@@ -67,7 +67,7 @@ const Channels = ({
           👋
         </span>{' '}
         Welcome to
-        <b> DEV Connect</b>! You may message anyone you mutually follow.
+        <b> Connect</b>! You may message anyone you mutually follow.
       </div>
     );
   }
@@ -86,7 +86,7 @@ const Channels = ({
         <img alt="configration" src={ConfigImage} style={{ height: '18px' }} />
         <div className="chatchannels__configmenu" role="menu">
           <a href="/settings" role="menuitem">
-            DEV Settings
+            Settings
           </a>
           <a href="/report-abuse" role="menuitem">
             Report Abuse

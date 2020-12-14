@@ -79,11 +79,6 @@
         );
       }
     }
-    .suggest-podcast {
-      color: var(--card-color-tertiary);
-      text-decoration: underline;
-      padding: 0 5px;
-    }
   }
   hr {
     opacity: 0.2;
@@ -296,6 +291,13 @@
 .sidebar-nav-element {
   display: block;
   position: relative;
+
+  a {
+    display: block;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+  }
+
   @media screen and (min-width: $breakpoint-m) {
     .sidebar-nav-link-follow {
       display: none;

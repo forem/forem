@@ -21,7 +21,7 @@ blindly, so if you're in doubt regarding a suggestion on your PR please start a
 conversation in the PR comments.
 
 Generally speaking, if you're looking for opportunities to contribute to the
-project, but you don't have an issue you're interested in solving. Improving the
+project, but you don't have an issue you're interested in solving, improving the
 Code Climate metrics is a good place to start. We're happy to see PRs that
 refactor existing code to reduce duplication and increase readability, given
 that those refactors are well tested.

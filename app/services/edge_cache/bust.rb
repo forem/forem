@@ -1,113 +1,62 @@
 module EdgeCache
   class Bust
-    PROVIDERS = %w[fastly nginx].freeze
+    TIMEFRAMES = [
+      [-> { 1.week.ago }, "week"],
+      [-> { 1.month.ago }, "month"],
+      [-> { 1.year.ago }, "year"],
+      [-> { 5.years.ago }, "infinity"],
+    ].freeze
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(path)
+      bust(path)
     end
 
-    def initialize(path)
-      # TODO: (Vaidehi Joshi) - Right now, we are checking that nginx is
-      # available on every purge request/call to this bust service. If we are going
-      # to bust multiple paths, we should be able to check that nginx is
-      # available just once, and persist it on the class with @provider_available?.
-      # Then, we could allow for an array of @paths = [] to be passed in,
-      # and on single bust instance could bust multiple paths in order.
+    class << self
+      protected
 
-      @path = path
-      @provider = determine_provider
-    end
+      def bust(path)
+        provider_class = determine_provider_class
 
-    def call
-      return unless PROVIDERS.include?(provider)
+        return unless provider_class
 
-      bust_method = "bust_#{provider}_cache"
-      if respond_to?(bust_method, true)
-        __send__(bust_method)
-      else
-        # We theoretically should never hit this unless someone adds a provider
-        # but doesn't add the implementation for it into the #call method.
-        Rails.logger.warn("EdgeCache::Bust was called with an invalid provider: #{provider}")
-        DatadogStatsClient.increment("edgecache_bust.invalid_provider", tags: ["provider:#{provider}"])
-      end
+        if provider_class.respond_to?(:call)
+          provider_class.call(path)
 
-      self
-    end
-
-    attr_reader :provider, :path
-
-    private
-
-    def determine_provider
-      if fastly_enabled?
-        "fastly"
-      elsif nginx_enabled? && nginx_available?
-        "nginx"
+          true
+        else
+          Rails.logger.warn("#{provider_class} cannot be used without a #call implementation!")
+          DatadogStatsClient.increment("edgecache_bust.invalid_provider_class",
+                                       tags: ["provider_class:#{provider_class}"])
+          false
+        end
       end
     end
 
-    def bust_fastly_cache
-      # TODO: (Alex Smith) - It would be "nice to have" the ability to use the
-      # Fastly gem here instead of custom API calls.
+    def self.determine_provider_class
+      provider =
+        if fastly_enabled?
+          "fastly"
+        elsif nginx_enabled?
+          "nginx"
+        end
 
-      # @forem/systems Fastly-enabled forems don't need "flexible" domains.
-      HTTParty.post(
-        "https://api.fastly.com/purge/https://#{URL.domain}#{path}",
-        headers: {
-          "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
-        },
-      )
-      HTTParty.post(
-        "https://api.fastly.com/purge/https://#{URL.domain}#{path}?i=i",
-        headers: {
-          "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"]
-        },
-      )
+      return unless provider
+
+      const_get(provider.capitalize)
     end
 
-    def bust_nginx_cache
-      uri = URI.parse("#{openresty_path}#{path}")
-      http = Net::HTTP.new(uri.host, uri.port)
-      response = http.request Net::HTTP::NginxPurge.new(uri.request_uri)
+    private_class_method :determine_provider_class
 
-      raise StandardError, "NginxPurge request failed: #{response.body}" unless response.is_a?(Net::HTTPSuccess)
-
-      response.body
-    end
-
-    def fastly_enabled?
+    def self.fastly_enabled?
       ApplicationConfig["FASTLY_API_KEY"].present? && ApplicationConfig["FASTLY_SERVICE_ID"].present?
     end
 
-    def nginx_enabled?
-      ApplicationConfig["OPENRESTY_PROTOCOL"].present? && ApplicationConfig["OPENRESTY_DOMAIN"].present?
+    private_class_method :fastly_enabled?
+
+    def self.nginx_enabled?
+      ApplicationConfig["OPENRESTY_URL"].present?
     end
 
-    def openresty_path
-      "#{ApplicationConfig['OPENRESTY_PROTOCOL']}#{ApplicationConfig['OPENRESTY_DOMAIN']}"
-    end
-
-    def nginx_available?
-      uri = URI.parse(openresty_path)
-      http = Net::HTTP.new(uri.host, uri.port)
-      response = http.get(uri.request_uri)
-
-      return true if response.is_a?(Net::HTTPSuccess)
-    rescue StandardError
-      # If we can't connect to Openresty, alert ourselves that
-      # it is unavailable and return false.
-      Rails.logger.error("Could not connect to Openresty via #{openresty_path}!")
-      DatadogStatsClient.increment("edgecache_bust.service_unavailable", tags: ["path:#{openresty_path}"])
-      false
-    end
+    private_class_method :nginx_enabled?
   end
-end
-
-# Creates our own purge method for an HTTP request,
-# which is used by Nginx to bust a cache.
-# See Net::HTTPGenericRequest for attributes/methods.
-class Net::HTTP::NginxPurge < Net::HTTPRequest # rubocop:disable Style/ClassAndModuleChildren
-  METHOD = "PURGE".freeze
-  REQUEST_HAS_BODY = false
-  RESPONSE_HAS_BODY = true
 end

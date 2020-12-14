@@ -19,7 +19,7 @@ RSpec.describe Bufferizer, type: :labor do
   end
 
   it "sends to buffer sattelite twitter" do
-    SiteConfig.twitter_hashtag = "#DEVCommunity"
+    allow(SiteConfig).to receive(:twitter_hashtag).and_return("#DEVCommunity")
     tweet = "test tweet #{SiteConfig.twitter_hashtag}"
     described_class.new("article", article, tweet).satellite_tweet!
     expect(article.last_buffered.utc.to_i).to be > 2.minutes.ago.to_i

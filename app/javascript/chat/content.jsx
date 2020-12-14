@@ -4,6 +4,7 @@ import Article from './article';
 import ChannelRequest from './channelRequest';
 import RequestManager from './RequestManager/RequestManager';
 import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
+import Draw from './draw';
 
 const smartSvgIcon = (content, d) => (
   <svg
@@ -27,6 +28,7 @@ export default class Content extends Component {
       handleRequestApproval: PropTypes.func,
       handleJoiningRequest: PropTypes.func,
       activeMembershipId: PropTypes.func,
+      sendCanvasImage: PropTypes.func,
     }).isRequired,
     fullscreen: PropTypes.bool.isRequired,
     onTriggerContent: PropTypes.func.isRequired,
@@ -90,6 +92,8 @@ const Display = ({ resource }) => {
       return <div className="loading-user" title="Loading user" />;
     case 'article':
       return <Article resource={resource} />;
+    case 'draw':
+      return <Draw sendCanvasImage={resource.sendCanvasImage} />;
     case 'channel-request':
       return (
         <ChannelRequest

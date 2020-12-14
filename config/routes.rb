@@ -1,6 +1,12 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
+  # errors routes
+  match "/404", to: "errors#not_found", via: :all, as: :errors_not_found
+  match "/422", to: "errors#unprocessable_entity", via: :all, as: :errors_unprocessable_entity
+  match "/500", to: "errors#internal_server_error", via: :all, as: :errors_internal_server_error
+  match "/503", to: "errors#service_unavailable", via: :all, as: :errors_service_unavailable
+
   use_doorkeeper do
     controllers tokens: "oauth/tokens"
   end
@@ -37,19 +43,10 @@ Rails.application.routes.draw do
       mount FieldTest::Engine, at: "abtests"
     end
 
-    namespace :resource_admin do
-      # Check administrate gem docs
-      DashboardManifest::DASHBOARDS.each do |dashboard_resource|
-        resources dashboard_resource
-      end
-
-      root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
-    end
-
     namespace :admin do
-      get "/", to: redirect("/admin/articles")
+      get "/" => "admin_portals#index"
 
-      authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
+      authenticate :user, ->(user) { user.tech_admin? } do
         mount Blazer::Engine, at: "blazer"
 
         flipper_ui = Flipper::UI.app(Flipper,
@@ -62,13 +59,17 @@ Rails.application.routes.draw do
       resources :broadcasts
       resources :buffer_updates, only: %i[create update]
       resources :listings, only: %i[index edit update destroy]
+      resources :listing_categories, only: %i[index edit update new create
+                                              destroy], path: "listings/categories"
+
       resources :comments, only: [:index]
-      resources :events, only: %i[index create update]
+      resources :events, only: %i[index create update new edit]
       resources :feedback_messages, only: %i[index show]
-      resources :invitations, only: %i[index new create]
+      resources :invitations, only: %i[index new create destroy]
       resources :pages, only: %i[index new create edit update destroy]
       resources :mods, only: %i[index update]
       resources :moderator_actions, only: %i[index]
+      resources :navigation_links, only: %i[index update create destroy]
       resources :privileged_reactions, only: %i[index]
       resources :permissions, only: %i[index]
       resources :podcasts, only: %i[index edit update destroy] do
@@ -79,8 +80,12 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :profile_field_groups, only: %i[update create destroy]
-      resources :profile_fields, only: %i[index update create destroy]
+      # NOTE: @citizen428 The next two resources have a temporary constraint
+      # while profile generalization is still WIP
+      constraints(->(_request) { FeatureFlag.enabled?(:profile_admin) }) do
+        resources :profile_field_groups, only: %i[update create destroy]
+        resources :profile_fields, only: %i[index update create destroy]
+      end
       resources :reactions, only: [:update]
       resources :response_templates, only: %i[index new edit create update destroy]
       resources :chat_channels, only: %i[index create update destroy] do
@@ -95,10 +100,15 @@ Rails.application.routes.draw do
           post "save_status"
         end
       end
-      resources :tags, only: %i[index update show]
+      resources :tags, only: %i[index new create update edit] do
+        resource :moderator, only: %i[create destroy], module: "tags"
+      end
       resources :users, only: %i[index show edit update] do
+        resources :email_messages, only: :show
+
         member do
           post "banish"
+          post "export_data"
           post "full_delete"
           patch "user_status"
           post "merge"
@@ -126,6 +136,8 @@ Rails.application.routes.draw do
       resource :config
       resources :badges, only: %i[index edit update new create]
       resources :display_ads, only: %i[index edit update new create destroy]
+
+      resources :html_variants, only: %i[index edit update new create show destroy]
       # These redirects serve as a safegaurd to prevent 404s for any Admins
       # who have the old badge_achievement URLs bookmarked.
       get "/badges/badge_achievements", to: redirect("/admin/badge_achievements")
@@ -170,6 +182,7 @@ Rails.application.routes.draw do
           get :users
           get :organizations
         end
+        resources :readinglist, only: [:index]
         resources :webhooks, only: %i[index create show destroy]
 
         resources :listings, only: %i[index show create update]
@@ -186,6 +199,15 @@ Rails.application.routes.draw do
             get :database
             get :cache
           end
+        end
+
+        resources :profile_images, only: %i[show], param: :username
+        resources :organizations, only: [:show], param: :username do
+          resources :users, only: [:index], to: "organizations#users"
+        end
+
+        namespace :admin do
+          resource :config, only: %i[show], defaults: { format: :json }
         end
       end
     end
@@ -217,10 +239,7 @@ Rails.application.routes.draw do
     end
     resources :comment_mutes, only: %i[update]
     resources :users, only: %i[index], defaults: { format: :json } # internal API
-    resources :users, only: %i[update] do
-      resource :twitch_stream_updates, only: %i[show create]
-    end
-    resources :twitch_live_streams, only: :show, param: :username
+    resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
@@ -244,12 +263,10 @@ Rails.application.routes.draw do
         post "/update_or_create", to: "github_repos#update_or_create"
       end
     end
-    resources :buffered_articles, only: [:index]
     resources :events, only: %i[index show]
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
-    resources :html_variants, only: %i[index new create show edit update]
     resources :html_variant_trials, only: [:create]
     resources :html_variant_successes, only: [:create]
     resources :tag_adjustments, only: %i[create destroy]
@@ -294,6 +311,7 @@ Rails.application.routes.draw do
     get "/search/chat_channels" => "search#chat_channels"
     get "/search/listings" => "search#listings"
     get "/search/users" => "search#users"
+    get "/search/usernames" => "search#usernames"
     get "/search/feed_content" => "search#feed_content"
     get "/search/reactions" => "search#reactions"
     get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
@@ -323,7 +341,6 @@ Rails.application.routes.draw do
     post "/join_chat_channel" => "chat_channel_memberships#join_channel"
     delete "/messages/:id" => "messages#destroy"
     patch "/messages/:id" => "messages#update"
-    get "/live/:username" => "twitch_live_streams#show"
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
 
@@ -331,6 +348,7 @@ Rails.application.routes.draw do
 
     # Chat channel
     patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"
+    post "/create_channel" => "chat_channels#create_channel"
 
     # Chat Channel Membership json response
     get "/chat_channel_memberships/chat_channel_info/:id" => "chat_channel_memberships#chat_channel_info"
@@ -352,12 +370,7 @@ Rails.application.routes.draw do
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
     get "/async_info/shell_version", controller: "async_info#shell_version", defaults: { format: :json }
 
-    get "/future", to: redirect("devteam/the-future-of-dev-160n")
-    get "/forem", to: redirect("devteam/for-empowering-community-2k6h")
-
     # Settings
-    post "users/update_language_settings" => "users#update_language_settings"
-    post "users/update_twitch_username" => "users#update_twitch_username"
     post "users/join_org" => "users#join_org"
     post "users/leave_org/:organization_id" => "users#leave_org", :as => :users_leave_org
     post "users/add_org_admin" => "users#add_org_admin"
@@ -385,7 +398,7 @@ Rails.application.routes.draw do
     get "/welcome" => "pages#welcome"
     get "/challenge" => "pages#challenge"
     get "/checkin" => "pages#checkin"
-    get "/badge" => "pages#badge"
+    get "/badge" => "pages#badge", :as => :pages_badge
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
     get "/events" => "events#index"
@@ -394,7 +407,6 @@ Rails.application.routes.draw do
     get "/search" => "stories#search"
     post "articles/preview" => "articles#preview"
     post "comments/preview" => "comments#preview"
-    get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
     get "/about" => "pages#about"
@@ -417,12 +429,22 @@ Rails.application.routes.draw do
 
     get "/page/:slug" => "pages#show"
 
+    # TODO: [forem/teamsmash] removed the /p/information view and added a redirect for SEO purposes.
+    # We need to remove this route in 2 months (11 January 2021).
+    get "/p/information", to: redirect("/about")
+
     scope "p" do
-      pages_actions = %w[welcome editor_guide publishing_from_rss_guide information markdown_basics badges].freeze
+      pages_actions = %w[welcome editor_guide publishing_from_rss_guide markdown_basics badges].freeze
       pages_actions.each do |action|
         get action, action: action, controller: "pages"
       end
     end
+
+    # Redirect previous settings changed after https://github.com/forem/forem/pull/11347
+    get "/settings/integrations", to: redirect("/settings/extensions")
+    get "/settings/misc", to: redirect("/settings")
+    get "/settings/publishing-from-rss", to: redirect("/settings/extensions")
+    get "/settings/ux", to: redirect("/settings/customization")
 
     get "/settings/(:tab)" => "users#edit", :as => :user_settings
     get "/settings/:tab/:org_id" => "users#edit", :constraints => { tab: /organization/ }
@@ -486,7 +508,7 @@ Rails.application.routes.draw do
     get "/t/:tag/:timeframe" => "stories#index",
         :constraints => { timeframe: /latest/ }
 
-    get "/badge/:slug" => "badges#show"
+    get "/badge/:slug" => "badges#show", :as => :badge
 
     get "/top/:timeframe" => "stories#index"
 

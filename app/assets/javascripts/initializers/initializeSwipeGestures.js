@@ -62,9 +62,7 @@ function initializeSwipeGestures() {
   setTimeout(function () {
     // window.onload=function(){
     slideContent(document);
-    var h = function (e) {
-      console.log(e.type, e);
-    };
+    var h = function (e) {};
     document.body.addEventListener(
       'swl',
       (e) => {

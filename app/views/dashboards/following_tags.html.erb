@@ -4,7 +4,7 @@
     data-params="<%= params.to_json(only: %i[action per_page]) %>"
     data-which="following">
   <header class="crayons-layout">
-    <h1 class="p-2 pb-0 m:p-0">Dashboard &raquo; Following tags</h1>
+    <h1 class="p-2 pb-0 m:p-0 crayons-title">Dashboard &raquo; Following tags</h1>
     <%= render "actions_mobile" %>
   </header>
 
@@ -13,12 +13,11 @@
       <%= render "actions" %>
     </aside>
 
-    <div class="crayons-layout__content" id="user-dashboard">
+    <div class="crayons-layout__content mb-5" id="user-dashboard">
       <% if @followed_tags.any? %>
-        <div class="crayons-card crayons-card--secondary p-4 px-6 fs-s mb-2 mx-2 m:mx-0">
-          <i>
-            Adjust <strong>Follow Weight</strong> to make a tag show up less or more in your feed (default 1.0). Raising the number will make it so that a tag appears more in your feed, while lowering the number will make a tag less followed. Note that you can even make the follow weight negative for tags that you want to avoid seeing.
-          </i>
+        <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0">
+            Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
+            <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
         </div>
         <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
           <% negative_follow_shown_once = false %>
@@ -26,12 +25,12 @@
             <% tag = follow.followable %>
             <% if tag %>
               <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-              <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
+              <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.explicit_points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
                 <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
                   <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
                     <span class="crayons-tag__prefix">#</span><%= tag.name %>
                   </a>
-                  <% if follow.points < 0 %>
+                  <% if follow.explicit_points < 0 %>
                     <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>
                   <% end %>
                 </h3>
@@ -40,10 +39,9 @@
                   <%= strip_tags(tag.short_summary) %>
                 </p>
 
-                <%= form_for(follow, html: { class: "flex items-center flex-nowrap" }) do |f| %>
-                  <%= f.label(:points, "Follow weight:", class: "fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap") %>
-                  <%= f.number_field(:points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", style: "max-width:90px") %>
-                  <button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s" name="commit">Save</button>
+                <%= form_for(follow, html: { class: "flex items-right w-100" }) do |f| %>
+                  <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield grow-1 fs-s inline-block w-75") %>
+                  <button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s inline-block ml-2" name="commit" style="min-width:60px;">Save</button>
                 <% end %>
               </div>
             <% end %>

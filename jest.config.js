@@ -1,7 +1,7 @@
 // Consistent timezone for testing.
 // This does not work on windows, see https://github.com/nodejs/node/issues/4230
 
-/* global process, module */
+/* eslint-env node */
 
 process.env.TZ = 'UTC';
 
@@ -16,13 +16,19 @@ module.exports = {
     '!**/__tests__/**',
     '!**/__stories__/**',
     '!app/javascript/storybook-static/**/*.js',
+    // We do not need code coverage on files that are prop types
+    // or eslint configuration files.
+    '!app/javascript/**/*PropTypes.js',
+    '!./**/.eslintrc.js',
+    // Ignore Storybook configuration files
+    '!app/javascript/.storybook/**/*.{js,jsx}',
   ],
   coverageThreshold: {
     global: {
-      statements: 41,
-      branches: 35,
-      functions: 39,
-      lines: 41,
+      statements: 43,
+      branches: 39,
+      functions: 41,
+      lines: 43,
     },
   },
   moduleNameMapper: {
@@ -34,10 +40,11 @@ module.exports = {
   // picked up by jest if this folder is not excluded causing a false negative of a test suite failing.
   testPathIgnorePatterns: [
     '/node_modules/',
-    './config/webpack',
+    '<rootDir>/config/webpack',
     // Allows developers to add utility modules that jest won't run as test suites.
     '/__tests__/utilities/',
-    './app/javascript/storybook-static',
+    '<rootDir>/app/javascript/storybook-static',
+    '<rootDir>/cypress',
   ],
   watchPlugins: [
     'jest-watch-typeahead/filename',

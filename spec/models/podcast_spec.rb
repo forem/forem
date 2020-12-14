@@ -22,7 +22,10 @@ RSpec.describe Podcast, type: :model do
       subject { podcast }
 
       it { is_expected.to belong_to(:creator).class_name("User").inverse_of(:created_podcasts).optional }
+
+      it { is_expected.to have_many(:owners).through(:podcast_ownerships) }
       it { is_expected.to have_many(:podcast_episodes).dependent(:destroy) }
+      it { is_expected.to have_many(:podcast_ownerships).dependent(:destroy) }
 
       it { is_expected.to validate_presence_of(:feed_url) }
       it { is_expected.to validate_presence_of(:image) }

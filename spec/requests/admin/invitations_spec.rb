@@ -8,7 +8,7 @@ RSpec.describe "/admin/invitations", type: :request do
     sign_in(admin)
   end
 
-  describe "GETS /admin/invitations" do
+  describe "GET /admin/invitations" do
     it "renders to appropriate page" do
       user.update_column(:registered, false)
       get "/admin/invitations"
@@ -16,7 +16,7 @@ RSpec.describe "/admin/invitations", type: :request do
     end
   end
 
-  describe "GETS /admin/invitations/new" do
+  describe "GET /admin/invitations/new" do
     it "renders to appropriate page" do
       get "/admin/invitations/new"
       expect(response.body).to include("Email:")
@@ -28,6 +28,21 @@ RSpec.describe "/admin/invitations", type: :request do
       post "/admin/invitations",
            params: { user: { email: "hey#{rand(1000)}@email.co", name: "Roger #{rand(1000)}" } }
       expect(User.last.registered).to be false
+    end
+  end
+
+  describe "DELETE /admin/invitations" do
+    let!(:invitation) { create(:user, registered: false) }
+
+    before do
+      sign_in admin
+    end
+
+    it "deletes the invitation" do
+      expect do
+        delete "/admin/invitations/#{invitation.id}"
+      end.to change { User.all.count }.by(-1)
+      expect(response.body).to redirect_to "/admin/invitations"
     end
   end
 end

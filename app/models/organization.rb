@@ -23,9 +23,11 @@ class Organization < ApplicationRecord
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :users, through: :organization_memberships
 
+  validates :articles_count, presence: true
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :company_size, format: { with: INTEGER_REGEXP, message: MESSAGES[:integer_only], allow_blank: true }
   validates :company_size, length: { maximum: 7 }, allow_nil: true
+  validates :credits_count, presence: true
   validates :cta_body_markdown, length: { maximum: 256 }
   validates :cta_button_text, length: { maximum: 20 }
   validates :cta_button_url, length: { maximum: 150 }, url: { allow_blank: true, no_local: true }
@@ -39,11 +41,13 @@ class Organization < ApplicationRecord
   validates :slug, exclusion: { in: ReservedWords.all, message: MESSAGES[:reserved_word] }
   validates :slug, format: { with: SLUG_REGEXP }, length: { in: 2..18 }
   validates :slug, presence: true, uniqueness: { case_sensitive: false }
+  validates :spent_credits_count, presence: true
   validates :summary, length: { maximum: 250 }
   validates :tag_line, length: { maximum: 60 }
   validates :tech_stack, :story, length: { maximum: 640 }
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :twitter_username, length: { maximum: 15 }
+  validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?

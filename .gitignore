@@ -82,8 +82,8 @@ db_data
 es_data
 gem_cache
 
-# Ignore self signed SSL certificates
-*.pem
+# Compose generated files
+bundle_finished
 
 # Auto-generated Storybook stories
 app/javascript/generated_stories/

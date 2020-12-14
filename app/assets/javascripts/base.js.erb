@@ -125,11 +125,13 @@ var instantClick
     if (newUrl) {
       history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
 
-      var hashIndex = newUrl.indexOf('#')
-        , hashElem = hashIndex > -1
-                     && document.getElementById(newUrl.substr(hashIndex + 1))
-        , offset = 0,
-        samePage = newUrl.indexOf("samepage=true") > -1
+      var hashIndex = newUrl.indexOf('#'),
+          hashElem = hashIndex > -1 && (
+            document.getElementById(newUrl.substr(hashIndex + 1)) ||
+            document.querySelector(`[name=${newUrl.substr(hashIndex + 1)}].anchor`)
+          ),
+          offset = 0,
+          samePage = newUrl.indexOf("samepage=true") > -1;
 
       if (hashElem) {
         while (hashElem.offsetParent) {
@@ -240,6 +242,26 @@ var instantClick
       a.removeEventListener('mouseover', mouseoverListener)
     }
     preload(a.href);
+    getImageForLink(a);
+  }
+
+  // If a link is focused, it is preloaded just like on mousover.
+  // It also covers the issue where a user needs to press <return>
+  // twice in order to follow a focused link.
+  function focusListener(e) {
+    var a = getLinkTarget(e.target)
+
+    if (!a || !isPreloadable(a)) {
+      return
+    }
+
+    if (!$delayBeforePreload) {
+      preload(a.href)
+    }
+    else {
+      $urlToPreload = a.href
+      $preloadTimer = setTimeout(preload, $delayBeforePreload)
+    }
     getImageForLink(a);
   }
 
@@ -366,10 +388,10 @@ var instantClick
     var docBody = document.body;
     if (docBody) {
       document.body.addEventListener('touchstart', touchstartListener, true)
+      document.body.addEventListener('focus', focusListener, true)
       if ($preloadOnMousedown) {
         document.body.addEventListener('mousedown', mousedownListener, true)
-      }
-      else {
+      } else {
         document.body.addEventListener('mouseover', mouseoverListener, true)
       }
       document.body.addEventListener('click', clickListener, true)

@@ -74,8 +74,8 @@ Rails.application.configure do
   # DEV uses the RedisCloud Heroku Add-On which comes with the predefined env variable REDISCLOUD_URL
   redis_url = ENV["REDISCLOUD_URL"]
   redis_url ||= ENV["REDIS_URL"]
-  DEFAULT_EXPIRATION = 24.hours.to_i.freeze
-  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: DEFAULT_EXPIRATION }
+  default_expiration = 24.hours.to_i
+  config.cache_store = :redis_cache_store, { url: redis_url, expires_in: default_expiration }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
@@ -123,14 +123,13 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
-  sendgrid_api_key_present = ENV["SENDGRID_API_KEY"].present?
   config.action_mailer.default_url_options = { host: protocol + ENV["APP_DOMAIN"].to_s }
   ActionMailer::Base.smtp_settings = {
     address: "smtp.sendgrid.net",
     port: "587",
     authentication: :plain,
-    user_name: sendgrid_api_key_present ? "apikey" : ENV["SENDGRID_USERNAME_ACCEL"],
-    password: sendgrid_api_key_present ? ENV["SENDGRID_API_KEY"] : ENV["SENDGRID_PASSWORD_ACCEL"],
+    user_name: "apikey",
+    password: ENV["SENDGRID_API_KEY"],
     domain: ENV["APP_DOMAIN"],
     enable_starttls_auto: true
   }

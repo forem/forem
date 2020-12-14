@@ -9,6 +9,7 @@ RSpec.describe "Admin::Users", type: :request do
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
   let(:organization) { create(:organization) }
+  let(:rewarder) { create(:user) }
 
   before do
     sign_in super_admin
@@ -112,19 +113,19 @@ RSpec.describe "Admin::Users", type: :request do
   end
 
   context "when managing activity and roles" do
-    it "adds comment ban role" do
-      params = { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+    it "adds comment suspend role" do
+      params = { user: { user_status: "Comment Suspend", note_for_current_role: "comment suspend this user" } }
       patch "/admin/users/#{user.id}/user_status", params: params
 
       expect(user.roles.first.name).to eq("comment_banned")
-      expect(Note.first.content).to eq("comment ban this user")
+      expect(Note.first.content).to eq("comment suspend this user")
     end
 
     it "selects new role for user" do
       user.add_role :trusted
       user.reload
 
-      params = { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+      params = { user: { user_status: "Comment Suspend", note_for_current_role: "comment suspend this user" } }
       patch "/admin/users/#{user.id}/user_status", params: params
 
       expect(user.roles.count).to eq(1)
@@ -187,7 +188,7 @@ RSpec.describe "Admin::Users", type: :request do
     before do
       create_mutual_follows
       create_mention
-      create(:badge_achievement, rewarder_id: 1, rewarding_context_message: "yay", user_id: user.id)
+      create(:badge_achievement, rewarder: rewarder, rewarding_context_message: "yay", user: user)
     end
 
     it "raises a 'record not found' error after deletion" do

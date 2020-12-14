@@ -3,7 +3,10 @@ require "rails_helper"
 RSpec.describe "Authenticating with Facebook" do
   let(:sign_in_link) { "Continue with Facebook" }
 
-  before { omniauth_mock_facebook_payload }
+  before do
+    omniauth_mock_facebook_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
 
   context "when a user is new" do
     context "when using valid credentials" do
@@ -109,7 +112,6 @@ RSpec.describe "Authenticating with Facebook" do
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_link(sign_in_link)
-        expect(page).to have_link("About #{ApplicationConfig['COMMUNITY_NAME']}")
       end
 
       it "notifies Datadog about a callback error" do
@@ -218,6 +220,18 @@ RSpec.describe "Authenticating with Facebook" do
 
         expect(page).to have_current_path("/?signin=true")
       end
+    end
+  end
+
+  context "when community is in invite only mode" do
+    before do
+      allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
+    end
+
+    it "doesn't present the authentication option" do
+      visit sign_up_path(state: "new-user")
+      expect(page).not_to have_text(sign_in_link)
+      expect(page).to have_text("invite only")
     end
   end
 end

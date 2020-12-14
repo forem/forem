@@ -5,6 +5,8 @@ class ArticleApiIndexService
   def initialize(params)
     @page = params[:page]
     @tag = params[:tag]
+    @tags = params[:tags]
+    @tags_exclude = params[:tags_exclude]
     @username = params[:username]
     @state = params[:state]
     @top = params[:top]
@@ -15,6 +17,8 @@ class ArticleApiIndexService
   def get
     if tag.present?
       tag_articles
+    elsif tags.present? || tags_exclude.present?
+      tagged_articles
     elsif username.present?
       username_articles
     elsif state.present?
@@ -30,7 +34,7 @@ class ArticleApiIndexService
 
   private
 
-  attr_reader :tag, :username, :page, :state, :top, :collection_id, :per_page
+  attr_reader :tag, :tags, :tags_exclude, :username, :page, :state, :top, :collection_id, :per_page
 
   def username_articles
     num = if @state == "all"
@@ -69,6 +73,16 @@ class ArticleApiIndexService
                end
 
     articles.page(page).per(per_page || DEFAULT_PER_PAGE)
+  end
+
+  def tagged_articles
+    articles = Article.published.includes(:user, :organization)
+    articles = articles.tagged_with(tags, any: true) if tags
+    articles = articles.tagged_with(tags_exclude, exclude: true) if tags_exclude
+
+    articles
+      .order(public_reactions_count: :desc)
+      .page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
   def top_articles

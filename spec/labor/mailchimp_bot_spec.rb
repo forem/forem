@@ -22,7 +22,7 @@ class FakeGibbonRequest < Gibbon::Request
 end
 
 RSpec.describe MailchimpBot, type: :labor do
-  let(:user) { create(:user, :ignore_mailchimp_subscribe_callback) }
+  let(:user) { create(:user, :with_newsletters, :ignore_mailchimp_subscribe_callback) }
   let(:article) { create(:article, user_id: user.id) }
   let(:my_gibbon_client) { instance_double(FakeGibbonRequest) }
   let(:tag) do

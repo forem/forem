@@ -1,4 +1,3 @@
-
 /* global checkUserLoggedIn */
 
 function removeExistingCSRF() {

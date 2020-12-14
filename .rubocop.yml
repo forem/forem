@@ -82,6 +82,7 @@ Layout/LineLength:
   Exclude:
     - docs/Gemfile
     - Gemfile
+    - app/lib/constants/site_config.rb
 
 # Layout/MultilineArrayLineBreaks:
 #   Description: >-
@@ -661,6 +662,9 @@ Rails/SkipsModelValidations:
                  Use methods that skips model validations with caution.
                  See reference for more information.
   Reference: 'https://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
+  Enabled: false
+
+Rails/SquishedSQLHeredocs:
   Enabled: false
 
 Rails/WhereExists:

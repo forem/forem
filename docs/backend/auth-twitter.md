@@ -84,10 +84,10 @@ application.
 
    ![twitter-7](https://user-images.githubusercontent.com/22895284/51078803-9a9a2700-16bb-11e9-8f27-dbfe04b52031.png)
 
-10. From the same dashboard access the **Keys and tokens** and change them
-    accordingly (name of Twitter key -> name of our `ENV` variable). Be sure to
-    copy the _access token_ and _access token secret_ right away because it will
-    be hidden from you in the future.
+10. From the same dashboard access the **Keys and tokens** and add them to your
+    `.env` file accordingly (name of Twitter key -> name of our `ENV` variable).
+    Be sure to copy the _access token_ and _access token secret_ right away
+    because it will be hidden from you in the future.
 
     ```text
     API key -> TWITTER_KEY

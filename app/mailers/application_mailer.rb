@@ -7,6 +7,8 @@ class ApplicationMailer < ActionMailer::Base
   helper ApplicationHelper
   helper AuthenticationHelper
 
+  before_action :use_custom_host
+
   default(
     from: -> { email_from("Community") },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
@@ -22,5 +24,9 @@ class ApplicationMailer < ActionMailer::Base
       email_type: email_type.to_sym,
       expires_at: 31.days.from_now,
     )
+  end
+
+  def use_custom_host
+    ActionMailer::Base.default_url_options[:host] = SiteConfig.app_domain
   end
 end

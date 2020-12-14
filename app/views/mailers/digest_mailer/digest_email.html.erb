@@ -21,12 +21,12 @@
   <em>
     <% if @user.experience_level == nil %>
       <b>
-        You can now add your <%= SiteConfig.community_action %> experience level to your account in order to receive more relevant content.
+        You can now add your experience level to your account in order to receive more relevant content.
       </b>
       <br /><br />
       Visit <b><a href="<%= app_url(user_settings_path(:misc)) %>" style="text-decoration: none;">your settings</a></b> to enter your experience level on a scale of 1-10.
       <br /><br />
-      You can change it any time in the future. Happy <%= SiteConfig.community_action %>!
+      You can change it any time in the future.
     <% elsif @user.following_users_count == 0 %>
       <b>
         <%= community_name %> Digest is a new periodic email featuring the best posts from our community of <%= community_members_label %>.

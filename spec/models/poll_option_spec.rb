@@ -11,6 +11,9 @@ RSpec.describe PollOption, type: :model do
 
       it { is_expected.to belong_to(:poll) }
       it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+
+      it { is_expected.to validate_presence_of(:markdown) }
+      it { is_expected.to validate_presence_of(:poll_votes_count) }
     end
 
     it "allows up to 128 markdown characters" do

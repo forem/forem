@@ -13,7 +13,6 @@ class ModerationsController < ApplicationController
     return unless current_user&.trusted
 
     articles = Article.published
-      .where("score > -5 AND score < 5")
       .order(published_at: :desc).limit(70)
     articles = articles.cached_tagged_with(params[:tag]) if params[:tag].present?
     if params[:state] == "new-authors"
@@ -62,7 +61,7 @@ class ModerationsController < ApplicationController
     @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
     @adjustments = TagAdjustment.where(article_id: @moderatable.id)
     @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
-    @allowed_to_adjust = @moderatable.class.name == "Article" && (
+    @allowed_to_adjust = @moderatable.instance_of?(Article) && (
       current_user.has_role?(:super_admin) || @tag_moderator_tags.any?)
     @hidden_comments = @moderatable.comments.where(hidden_by_commentable_user: true)
   end

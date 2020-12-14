@@ -9,7 +9,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let!(:twitter_connect_broadcast)  { create(:twitter_connect_broadcast) }
   let!(:github_connect_broadcast)   { create(:github_connect_broadcast) }
   let!(:facebook_connect_broadcast) { create(:facebook_connect_broadcast) }
-  let!(:apple_connect_broadcast)   { create(:apple_connect_broadcast) }
+  let!(:apple_connect_broadcast)    { create(:apple_connect_broadcast) }
   let!(:customize_feed_broadcast)   { create(:customize_feed_broadcast) }
   let!(:discuss_and_ask_broadcast)  { create(:discuss_and_ask_broadcast) }
   let!(:customize_ux_broadcast)     { create(:customize_ux_broadcast) }
@@ -20,6 +20,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     allow(Notification).to receive(:send_welcome_notification).and_call_original
     allow(User).to receive(:mascot_account).and_return(mascot_account)
     allow(SiteConfig).to receive(:staff_user_id).and_return(mascot_account.id)
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
   end
 
   it "requires a valid user id" do
@@ -61,7 +62,11 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
           described_class.call(user.id)
         end
       end.to change(user.notifications, :count).by(1)
-      not_github = [facebook_connect_broadcast, twitter_connect_broadcast, apple_connect_broadcast].include?(user.notifications.last.notifiable)
+      not_github = [
+        facebook_connect_broadcast,
+        twitter_connect_broadcast,
+        apple_connect_broadcast
+      ].include?(user.notifications.last.notifiable)
       expect(not_github).to be(true)
 
       Timecop.travel(1.day.from_now)
@@ -152,14 +157,14 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       it "does not send duplicate notifications for #{provider_name}" do
         user = create(:user, :with_identity, identities: [provider_name], created_at: 1.day.ago)
         2.times do
-          sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_authentication_notification) }
+          sidekiq_perform_enqueued_jobs { described_class.new(user.id).__send__(:send_authentication_notification) }
         end
         expect(user.notifications.count).to eq(1)
       end
 
       it "generates and sends the appropriate broadcast for a #{provider_name} identity" do
         user = create(:user, :with_identity, identities: [provider_name], created_at: 1.day.ago)
-        sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_authentication_notification) }
+        sidekiq_perform_enqueued_jobs { described_class.new(user.id).__send__(:send_authentication_notification) }
         expect(user.notifications.first.notifiable).not_to eq(public_send("#{provider_name}_connect_broadcast"))
       end
     end

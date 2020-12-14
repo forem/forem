@@ -52,7 +52,7 @@ describe('<ItemListItem />', () => {
   it('renders a profile_image', () => {
     const { getByAltText } = render(<ItemListItem item={getItem()} />);
 
-    expect(getByAltText(/Profile Pic/i).getAttribute('src')).toBe(
+    expect(getByAltText(/Bob/i).getAttribute('src')).toBe(
       'https://dummyimage.com/90x90',
     );
   });

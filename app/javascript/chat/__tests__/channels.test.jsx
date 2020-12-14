@@ -108,8 +108,8 @@ describe('<Channels />', () => {
 
       // configFooter should exist
       getByRole('menu');
-      const devSettings = getByText('DEV Settings');
-      expect(devSettings.getAttribute('href')).toEqual('/settings');
+      const settings = getByText('Settings');
+      expect(settings.getAttribute('href')).toEqual('/settings');
 
       const reportAbuse = getByText('Report Abuse');
       expect(reportAbuse.getAttribute('href')).toEqual('/report-abuse');
@@ -118,12 +118,12 @@ describe('<Channels />', () => {
     it('should render without chat channels', () => {
       const { getByText, getByRole } = render(getChannels(true, []));
 
-      // should show "Welcome to DEV Connect message....."
+      // should show "Welcome to Connect message....."
       getByRole('alert');
 
       getByRole('menu');
-      const devSettings = getByText('DEV Settings');
-      expect(devSettings.getAttribute('href')).toEqual('/settings');
+      const settings = getByText('Settings');
+      expect(settings.getAttribute('href')).toEqual('/settings');
 
       const reportAbuse = getByText('Report Abuse');
       expect(reportAbuse.getAttribute('href')).toEqual('/report-abuse');

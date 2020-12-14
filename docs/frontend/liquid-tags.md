@@ -40,11 +40,13 @@ Here is a bunch of liquid tags supported on Forem:
 {% github forem/forem %}
 {% youtube dQw4w9WgXcQ %}
 {% vimeo 193110695 %}
+{% twitch ClumsyPrettiestOilLitFam %}
 {% slideshare rdOzN9kr1yK5eE %}
 {% codepen https://codepen.io/twhite96/pen/XKqrJX %}
 {% stackblitz ball-demo %}
 {% codesandbox ppxnl191zx %}
 {% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}
+{% dotnetfiddle https://dotnetfiddle.net/PmoDip %}
 {% replit @WigWog/PositiveFineOpensource %}
 {% stackery deeheber lambda-layer-example layer-resource %}
 {% nexttech https://nt.dev/s/6ba1fffbd09e %}

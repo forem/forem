@@ -1,9 +1,9 @@
 import { h, render } from 'preact';
-import { Search } from '../Search';
 import 'focus-visible';
+import { SearchFormSync } from '../Search/SearchFormSync';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('top-bar--search');
+  const root = document.getElementById('header-search');
 
-  render(<Search />, root);
+  render(<SearchFormSync />, root);
 });

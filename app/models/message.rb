@@ -23,6 +23,10 @@ class Message < ApplicationRecord
     chat_channel.users.where.not(id: user.id).first
   end
 
+  def left_channel?
+    chat_action == "removed_from_channel" || chat_action == "left_channel"
+  end
+
   private
 
   def update_chat_channel_last_message_at
@@ -31,6 +35,8 @@ class Message < ApplicationRecord
   end
 
   def update_all_has_unopened_messages_statuses
+    return if left_channel?
+
     chat_channel
       .chat_channel_memberships
       .where("last_opened_at < ?", 10.seconds.ago)

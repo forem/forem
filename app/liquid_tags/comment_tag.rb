@@ -14,9 +14,7 @@ class CommentTag < LiquidTagBase
   end
 
   def find_comment(id_code)
-    Comment.find(id_code.to_i(26))
-  rescue ActiveRecord::RecordNotFound
-    raise StandardError, "Invalid comment ID or comment does not exist"
+    Comment.find_by(id_code: id_code)
   end
 end
 

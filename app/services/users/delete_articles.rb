@@ -7,7 +7,7 @@ module Users
 
       virtual_articles = user.articles.map { |article| Article.new(article.attributes) }
       user.articles.find_each do |article|
-        remove_reactions(article)
+        article.reactions.delete_all
         article.buffer_updates.delete_all
         article.comments.includes(:user).find_each do |comment|
           comment.reactions.delete_all
@@ -22,14 +22,6 @@ module Users
       end
       virtual_articles.each do |article|
         cache_buster.bust_article(article)
-      end
-    end
-
-    def remove_reactions(article)
-      readinglist_ids = article.reactions.readinglist.ids
-      article.reactions.delete_all
-      readinglist_ids.each do |id|
-        Search::RemoveFromIndexWorker.perform_async("Search::Reaction", id)
       end
     end
   end

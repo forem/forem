@@ -13,6 +13,9 @@ class BlackBox
       if usable_date < 4.days.ago
         reaction_points /= 2 # Older posts should fade
       end
+      if usable_date < 7.days.ago
+        reaction_points /= 4 # Older posts should fade
+      end
       if article.decorate.cached_tag_list_array.include?("watercooler")
         reaction_points = (reaction_points * 0.8).to_i # watercooler posts shouldn't get as much love in feed
       end

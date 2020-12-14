@@ -33,8 +33,10 @@ Stimulus is a modest frontend framework; its primary purpose is manipulating
 HTML. It does not provide templating features.
 
 In the Forem application, [Webpacker](/frontend/webpacker/) is used to load
-Stimulus controllers. Ideally, controllers serve as an abstraction for shared
-functionality between views.
+Stimulus controllers via the `app/javascript/packs/admin.js`
+[pack file](https://github.com/rails/webpacker/blob/master/docs/folder-structure.md#packs-aka-webpack-entries).
+Ideally, controllers serve as an abstraction for shared functionality between
+views.
 
 New controllers can be added in `/app/javascript/admin/controllers`. Unit tests
 should exist for each controller in the adjacent

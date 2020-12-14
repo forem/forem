@@ -1,0 +1,29 @@
+<div class="form-group">
+  <%= label_tag :name, "Name" %>
+  <%= text_field_tag :name, @listing_category.name, class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :cost, "Cost" %>
+  <%= number_field_tag :cost, @listing_category.cost, class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :rules, "Rules" %>
+  <%= text_field_tag :rules, @listing_category.rules, class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :slug, "Slug" %>
+  <%= text_field_tag :slug, @listing_category.slug, class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :social_preview_color, "Color hex" %>
+  <%= text_field_tag :social_preview_color, @listing_category.social_preview_color, class: "form-control" %>
+</div>
+
+<div class="form-group">
+  <%= label_tag :social_preview_description, "Description" %>
+  <%= text_area_tag :social_preview_description, @listing_category.social_preview_description, size: "100x10", class: "form-control" %>
+</div>
