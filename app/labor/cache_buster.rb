@@ -48,10 +48,6 @@ module CacheBuster
   end
 
   def self.bust_home_pages(article)
-    if article.featured_number.to_i > Time.current.to_i
-      bust("/")
-      bust("?i=i")
-    end
     if article.video.present? && article.featured_number.to_i > 10.days.ago.to_i
       bust("/videos")
       bust("/videos?i=i")
@@ -68,7 +64,11 @@ module CacheBuster
       bust("/latest")
       bust("/latest?i=i")
     end
-    bust("/") if Article.published.order(hotness_score: :desc).limit(4).ids.include?(article.id)
+
+    return unless Article.published.order(hotness_score: :desc).limit(4).ids.include?(article.id)
+
+    bust("/")
+    EdgeCache::BustSidebar.call
   end
 
   def self.bust_tag_pages(article)

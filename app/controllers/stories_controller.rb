@@ -171,7 +171,6 @@ class StoriesController < ApplicationController
     assign_feed_stories
     assign_hero_html
     assign_podcasts
-    assign_listings
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
     @article_index = true
     @featured_story = (featured_story || Article.new)&.decorate
@@ -234,6 +233,7 @@ class StoriesController < ApplicationController
     #   - Let's say it's `4`. On mobile it would display two rows: 1st with 3 badges and
     # 2nd with 1 badge (!) <-- and that would look off.
     @badges_limit = 6
+    @profile = @user.profile.decorate
 
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
@@ -360,10 +360,6 @@ class StoriesController < ApplicationController
       .order(published_at: :desc)
       .where("published_at > ?", 24.hours.ago)
       .select(:slug, :title, :podcast_id, :image)
-  end
-
-  def assign_listings
-    @listings = Listing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
   end
 
   def redirect_to_lowercase_username

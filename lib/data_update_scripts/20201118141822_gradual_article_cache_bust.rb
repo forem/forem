@@ -17,9 +17,8 @@ module DataUpdateScripts
         n = index + 300 # + 300 gives the server time to boot up
         BustCachePathWorker.set(queue: :high_priority).perform_in(n.seconds, "#{article.path}?i=i")
       end
-      
-      relation.offset(1500).limit(3000).each_with_index do |article, index|
 
+      relation.offset(1500).limit(3000).each_with_index do |article, index|
         n = (index * 3) + 450
         BustCachePathWorker.set(queue: :medium_priority).perform_in(n.seconds, "#{article.path}?i=i")
       end
