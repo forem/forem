@@ -1,3 +1,5 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right">
-  <%= render "sidebars/homepage_content" %>
+  <% unless user_signed_in? %>
+    <%= render "sidebars/homepage_content" %>
+  <% end %>
 </div>
