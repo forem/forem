@@ -1758,10 +1758,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.3.2.tgz#96e591496b72fde0f0cdae01a61d64f065bd9ede"
   integrity sha512-lyIc6JUlUA8Ve5ELywPC8I2Sdnh1zc1zmbYgVarhXIp9YeAB0ReeqmGEOWNtlHkbP2DAA1AL65Wfn2ncjK/jtQ==
 
-"@stoplight/spectral@5.7.1", "@stoplight/spectral@^5.5.0":
-  version "5.7.1"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.7.1.tgz#d5d2e89d1f68cfdb4e4adc7f5b6873c8e2b3f16a"
-  integrity sha512-YsoSzKX2F07cEm8xTGKUo8CEvK0mO+3laVpJfP6QnBTNPz4Ym7GoRarbCbRJXkd6scoVGANlFDKQnnD1GvdEuw==
+"@stoplight/spectral@5.7.2", "@stoplight/spectral@^5.5.0":
+  version "5.7.2"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.7.2.tgz#0177f5322d09f7e4f3eddee818513104bb1dd841"
+  integrity sha512-AeqhEup2kIA/Ib2QduHMYuRxGGwrJK05U8YsGXRg7vSnSoH2iOKUXBY0QXB2cezTvz0rYrFsT+0+clxRwBDinQ==
   dependencies:
     "@stoplight/better-ajv-errors" "0.0.3"
     "@stoplight/json" "3.9.0"
@@ -2037,7 +2037,7 @@
     global "^4.3.2"
     regenerator-runtime "^0.13.7"
 
-"@storybook/addons@6.1.11", "@storybook/addons@^6.1.5":
+"@storybook/addons@6.1.11", "@storybook/addons@^6.1.11":
   version "6.1.11"
   resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-6.1.11.tgz#cb4578411ca00ccb206b484df5a171ccaca34719"
   integrity sha512-OZXsdmn60dVe482l9zWxzOqqJApD2jggk/8QJKn3/Ub9posmqdqg712bW6v71BBe0UXXG/QfkZA7gcyiyEENbw==
@@ -2093,21 +2093,6 @@
     "@storybook/core-events" "6.1.9"
     "@storybook/router" "6.1.9"
     "@storybook/theming" "6.1.9"
-    core-js "^3.0.1"
-    global "^4.3.2"
-    regenerator-runtime "^0.13.7"
-
-"@storybook/addons@^6.1.11":
-  version "6.1.11"
-  resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-6.1.11.tgz#cb4578411ca00ccb206b484df5a171ccaca34719"
-  integrity sha512-OZXsdmn60dVe482l9zWxzOqqJApD2jggk/8QJKn3/Ub9posmqdqg712bW6v71BBe0UXXG/QfkZA7gcyiyEENbw==
-  dependencies:
-    "@storybook/api" "6.1.11"
-    "@storybook/channels" "6.1.11"
-    "@storybook/client-logger" "6.1.11"
-    "@storybook/core-events" "6.1.11"
-    "@storybook/router" "6.1.11"
-    "@storybook/theming" "6.1.11"
     core-js "^3.0.1"
     global "^4.3.2"
     regenerator-runtime "^0.13.7"
