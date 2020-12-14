@@ -1,30 +1,34 @@
-describe('First time for first administrator login', () => {
+describe('Initial admin signup', () => {
   // Note if you are running these tests locallly, this test will fail
   // if the first admin has already gone through the onboarding process.
-  it('should login the initial administrator user from the home page', () => {
+  it('should load the signup page', () => {
     cy.fixture('logins/initialAdmin.json').as('admin');
 
-    // Go to home page
+    // Go to home page which redirects to the registration form.
     cy.visit('/');
 
-    // Click on the login button in the top header
-    cy.findAllByText('Log in').first().click();
-
-    // Ensure we are redirected to the login page
-    cy.url().should('contains', '/enter');
-
-    cy.findByTestId('login-form').as('loginForm');
+    cy.findByTestId('registration-form').as('registrationForm');
     cy.get('@admin').then((admin) => {
       // Enter credentials for the initial administrator user
-      cy.get('@loginForm').findByText('Email').type(admin.user);
-      cy.get('@loginForm').findByText('Password').type(admin.password);
+      cy.get('@registrationForm')
+        .findByLabelText(/^Name$/i)
+        .type(admin.name);
+      cy.get('@registrationForm')
+        .findByLabelText(/Username/i)
+        .type(admin.username);
+      cy.get('@registrationForm').findByLabelText(/Email/i).type(admin.email);
+      cy.get('@registrationForm')
+        .findByLabelText('Password')
+        .type(admin.password);
+      cy.get('@registrationForm')
+        .findByLabelText(/Password Confirmation/i)
+        .type(admin.password);
+      cy.get('@registrationForm')
+        .findByLabelText(/New Forem Secret/i)
+        .type(admin.foremSecret);
     });
 
     // Submit the form
-    cy.get('@loginForm').findByText('Continue').click();
-
-    // User should be redirected to onboarding
-    const { baseUrl } = Cypress.config();
-    cy.url().should('include', `/onboarding?referrer=${baseUrl}/?signin=true`);
+    // cy.get('@registrationForm').findByText('Sign up').click();
   });
 });
