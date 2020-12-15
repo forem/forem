@@ -78,6 +78,18 @@ RSpec.describe "Articles", type: :request do
       end
     end
 
+    context "when query string is q=latest" do
+      let!(:featured_article) { create(:article, featured: true) }
+      let!(:not_featured_article) { create(:article, featured: false) }
+
+      before { get "/feed?q=latest" }
+
+      it "returns last published articles" do
+        expect(response.body).to include(featured_article.title)
+        expect(response.body).to include(not_featured_article.title)
+      end
+    end
+
     shared_context "when user/organization articles exist" do
       let(:user) { create(:user) }
       let(:organization) { create(:organization) }
