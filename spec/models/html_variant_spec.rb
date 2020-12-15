@@ -57,14 +57,17 @@ RSpec.describe HtmlVariant, type: :model do
   end
 
   it "does not add prefix if it already starts with cloudinary" do
-    html = "<div><img src='https://res.cloudinary.com/image.jpg' /></div>"
+    allow(Images::Optimizer).to receive(:call)
+    html = %(<img src="https://res.cloudinary.com/image.jpg">)
     html_variant.update(approved: false, html: html)
-    expect(html_variant.html).to include("https://res.cloudinary.com/image.jpg")
+    expect(Images::Optimizer).not_to have_received(:call)
   end
 
   it "does not add prefix if already on site root" do
-    html = "<div><img src='https://#{SiteConfig.app_domain}/image.jpg' /></div>"
+    allow(Images::Optimizer).to receive(:call)
+    html = "<img src=\"#{Images::Optimizer.get_imgproxy_endpoint}/image.jpg\">"
     html_variant.update(approved: false, html: html)
-    expect(html_variant.html).to include("https://#{SiteConfig.app_domain}/image.jpg")
+    html_variant.save
+    expect(Images::Optimizer).not_to have_received(:call)
   end
 end
