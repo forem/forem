@@ -56,7 +56,7 @@ RSpec.describe HtmlVariant, type: :model do
     expect(html_variant.html).to include(cloudinary_string)
   end
 
-  it "does not add prefix if cloudinary already start" do
+  it "does not add prefix if it already starts with cloudinary" do
     html = "<div><img src='https://res.cloudinary.com/image.jpg' /></div>"
     html_variant.update(approved: false, html: html)
     expect(html_variant.html).to include("https://res.cloudinary.com/image.jpg")
