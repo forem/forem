@@ -870,7 +870,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   brakeman (~> 5.0)
   buffer (~> 0.1)
-  bullet!
+  bullet (~> 6.1)
   bundler-audit (~> 0.7)
   capybara (~> 3.35.3)
   carrierwave (~> 2.0)
