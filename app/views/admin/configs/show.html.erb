@@ -332,39 +332,6 @@
 
               <%= render "form_submission", f: f %>
             </div>
-
-            <div class="form-group">
-              <%= admin_config_label :apple_client_id %>
-              <%= f.text_field :apple_client_id,
-                               class: "form-control",
-                               value: SiteConfig.apple_client_id,
-                               placeholder: Constants::SiteConfig::DETAILS[:apple_client_id][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:apple_client_id][:description] %></div>
-            </div>
-            <div class="form-group">
-              <%= admin_config_label :apple_team_id %>
-              <%= f.text_field :apple_team_id,
-                               class: "form-control",
-                               value: SiteConfig.apple_team_id,
-                               placeholder: Constants::SiteConfig::DETAILS[:apple_team_id][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:apple_team_id][:description] %></div>
-            </div>
-            <div class="form-group">
-              <%= admin_config_label :apple_key_id %>
-              <%= f.text_field :apple_key_id,
-                               class: "form-control",
-                               value: SiteConfig.apple_key_id,
-                               placeholder: Constants::SiteConfig::DETAILS[:apple_key_id][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:apple_key_id][:description] %></div>
-            </div>
-            <div class="form-group">
-              <%= admin_config_label :apple_pem %>
-              <%= f.text_field :apple_pem,
-                               class: "form-control",
-                               value: SiteConfig.apple_pem,
-                               placeholder: Constants::SiteConfig::DETAILS[:apple_pem][:placeholder] %>
-              <div class="alert alert-info"><%= Constants::SiteConfig::DETAILS[:apple_pem][:description] %></div>
-            </div>
           </div>
         <% end %>
 
