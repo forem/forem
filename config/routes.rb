@@ -1,12 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
-  # errors routes
-  match "/404", to: "errors#not_found", via: :all, as: :errors_not_found
-  match "/422", to: "errors#unprocessable_entity", via: :all, as: :errors_unprocessable_entity
-  match "/500", to: "errors#internal_server_error", via: :all, as: :errors_internal_server_error
-  match "/503", to: "errors#service_unavailable", via: :all, as: :errors_service_unavailable
-
   use_doorkeeper do
     controllers tokens: "oauth/tokens"
   end
@@ -53,6 +47,10 @@ Rails.application.routes.draw do
                                      { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
+      end
+
+      namespace :users do
+        resources :gdpr_delete_requests, only: %i[index destroy]
       end
 
       resources :articles, only: %i[index show update]
@@ -288,6 +286,7 @@ Rails.application.routes.draw do
     resources :podcasts, only: %i[new create]
     resources :article_approvals, only: %i[create]
     resources :video_chats, only: %i[show]
+    resources :sidebars, only: %i[show]
     resources :user_subscriptions, only: %i[create] do
       collection do
         get "/subscribed", action: "subscribed"
