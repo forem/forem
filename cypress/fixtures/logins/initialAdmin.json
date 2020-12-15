@@ -3,5 +3,5 @@
   "email": "admin@forem.local",
   "username": "Admin_McAdmin",
   "password": "password",
-  "foremSecret": "1234"
+  "foremSecret": "secret"
 }
