@@ -8,12 +8,12 @@ import { Button } from '@crayons';
 /**
  * Render the channel button
  * @param {object} props
- * 
+ *
  * @component
- * 
+ *
  * @example
- * 
- * <ChannelButton 
+ *
+ * <ChannelButton
  *  channel={channel}
     newMessagesIndicator={newMessagesIndicator}
     otherClassname={otherClassname}
