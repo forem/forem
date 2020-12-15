@@ -1835,17 +1835,17 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-actions@^6.1.8":
-  version "6.1.8"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-6.1.8.tgz#b1a74710daaac8846df539590ff1152d7a18cdb8"
-  integrity sha512-G2dhFdJ3xzhmduI3UJDwsJ0hg565Axm7Yux8zzPjqk+o61PPVUtvwdOalYA2XPSn5LN0S9McYBn4uq4SqaxgMw==
+"@storybook/addon-actions@^6.1.11":
+  version "6.1.11"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-6.1.11.tgz#73e91cc95c45ea477cfd4f3603f6b95f5829eab6"
+  integrity sha512-J44XLx2G732OG7Az79Cpk5UlI5SyXHeQqdykwT/4IEQXSBXAYWSTIJJjpJdcjR/D+zpklab1QDSiWxCrKbe81A==
   dependencies:
-    "@storybook/addons" "6.1.8"
-    "@storybook/api" "6.1.8"
-    "@storybook/client-api" "6.1.8"
-    "@storybook/components" "6.1.8"
-    "@storybook/core-events" "6.1.8"
-    "@storybook/theming" "6.1.8"
+    "@storybook/addons" "6.1.11"
+    "@storybook/api" "6.1.11"
+    "@storybook/client-api" "6.1.11"
+    "@storybook/components" "6.1.11"
+    "@storybook/core-events" "6.1.11"
+    "@storybook/theming" "6.1.11"
     core-js "^3.0.1"
     fast-deep-equal "^3.1.1"
     global "^4.3.2"
@@ -2037,7 +2037,7 @@
     global "^4.3.2"
     regenerator-runtime "^0.13.7"
 
-"@storybook/addons@6.1.11", "@storybook/addons@^6.1.5":
+"@storybook/addons@6.1.11", "@storybook/addons@^6.1.11":
   version "6.1.11"
   resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-6.1.11.tgz#cb4578411ca00ccb206b484df5a171ccaca34719"
   integrity sha512-OZXsdmn60dVe482l9zWxzOqqJApD2jggk/8QJKn3/Ub9posmqdqg712bW6v71BBe0UXXG/QfkZA7gcyiyEENbw==
@@ -2093,21 +2093,6 @@
     "@storybook/core-events" "6.1.9"
     "@storybook/router" "6.1.9"
     "@storybook/theming" "6.1.9"
-    core-js "^3.0.1"
-    global "^4.3.2"
-    regenerator-runtime "^0.13.7"
-
-"@storybook/addons@^6.1.11":
-  version "6.1.11"
-  resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-6.1.11.tgz#cb4578411ca00ccb206b484df5a171ccaca34719"
-  integrity sha512-OZXsdmn60dVe482l9zWxzOqqJApD2jggk/8QJKn3/Ub9posmqdqg712bW6v71BBe0UXXG/QfkZA7gcyiyEENbw==
-  dependencies:
-    "@storybook/api" "6.1.11"
-    "@storybook/channels" "6.1.11"
-    "@storybook/client-logger" "6.1.11"
-    "@storybook/core-events" "6.1.11"
-    "@storybook/router" "6.1.11"
-    "@storybook/theming" "6.1.11"
     core-js "^3.0.1"
     global "^4.3.2"
     regenerator-runtime "^0.13.7"
