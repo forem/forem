@@ -16,19 +16,21 @@ module Authentication
         # Apple sends `first_name` and `last_name` as separate fields
         name = "#{info.first_name} #{info.last_name}"
         timestamp = raw_info.auth_time || raw_info.id_info.auth_time
-        image_url = if Rails.env.test?
-                      SiteConfig.mascot_image_url
-                    else
-                      Users::ProfileImageGenerator.call
-                    end
 
-        {
+        user_data = {
           email: info.email,
           apple_created_at: Time.zone.at(timestamp),
           apple_username: user_nickname,
-          name: name,
-          remote_profile_image_url: image_url
+          name: name
         }
+
+        if Rails.env.test?
+          user_data[:profile_image] = SiteConfig.mascot_image_url
+        else
+          user_data[:remote_profile_image_url] = Users::ProfileImageGenerator.call
+        end
+
+        user_data
       end
 
       def existing_user_data

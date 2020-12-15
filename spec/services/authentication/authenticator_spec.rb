@@ -40,7 +40,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
         expect(user.email).to eq(info.email)
         expect(user.name).to eq("#{info.first_name} #{info.last_name}")
-        expect(user.remote_profile_image_url).to eq(SiteConfig.mascot_image_url)
+        expect(user.profile_image).not_to be_nil
         expect(user.apple_created_at.to_i).to eq(raw_info.auth_time)
         expect(user.apple_username).to match(/#{info.first_name.downcase}_\w+/)
       end
