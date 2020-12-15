@@ -1,7 +1,9 @@
+// Note if you are running these tests locallly, this test will fail
+// if the first admin has already gone through the onboarding process.
+
 describe('Initial admin signup', () => {
-  // Note if you are running these tests locallly, this test will fail
-  // if the first admin has already gone through the onboarding process.
   it('should sign up the initial Forem instance administrator', () => {
+    // This is the happy path.
     cy.fixture('logins/initialAdmin.json').as('admin');
 
     cy.log('baseUrl', Cypress.config().baseUrl);
@@ -40,6 +42,7 @@ describe('Initial admin signup', () => {
     cy.log('Submitting signup form');
     cy.url().should('eq', Cypress.config().baseUrl + '/users');
 
+    // We want to ensure that the form submitted without errors
     cy.findByTestId('signup-errors').should('not.exist');
   });
 });
