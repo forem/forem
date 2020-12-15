@@ -4,6 +4,8 @@ describe('Initial admin signup', () => {
   it('should sign up the initial Forem instance administrator', () => {
     cy.fixture('logins/initialAdmin.json').as('admin');
 
+    cy.log('baseUrl', Cypress.config().baseUrl);
+
     // Go to home page which redirects to the registration form.
     cy.visit('/');
 
@@ -35,7 +37,7 @@ describe('Initial admin signup', () => {
 
     // Submit the form
     cy.get('@registrationForm').findByText('Sign up').click();
-
+    cy.log('Submitting signup form');
     cy.url().should('eq', Cypress.config().baseUrl + '/users');
 
     cy.findByTestId('signup-errors').should('not.exist');
