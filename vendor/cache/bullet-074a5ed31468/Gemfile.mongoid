@@ -1,0 +1,12 @@
+source "https://rubygems.org"
+
+gemspec
+
+gem 'rails'
+gem 'sqlite3', platforms: [:ruby]
+gem 'activerecord-jdbcsqlite3-adapter', platforms: [:jruby]
+gem 'mongoid', github: 'mongoid/mongoid'
+
+gem "rspec"
+
+gem 'coveralls', require: false

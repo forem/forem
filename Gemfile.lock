@@ -804,6 +804,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.7)
     unicode-display_width (2.0.0)
+    uniform_notifier (1.13.0)
     validate_url (1.0.13)
       activemodel (>= 3.0.0)
       public_suffix
@@ -869,6 +870,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   brakeman (~> 5.0)
   buffer (~> 0.1)
+  bullet!
   bundler-audit (~> 0.7)
   capybara (~> 3.35.3)
   carrierwave (~> 2.0)
