@@ -75,6 +75,6 @@ class HtmlVariant < ApplicationRecord
   end
 
   def allowed_image_host?(src)
-    src.start_with?("https://res.cloudinary.com/") || src.start_with?("https://#{SiteConfig.app_domain}/")
+    src.start_with?("https://res.cloudinary.com/") || src.start_with?(URL.url)
   end
 end
