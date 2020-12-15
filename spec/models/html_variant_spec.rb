@@ -55,4 +55,16 @@ RSpec.describe HtmlVariant, type: :model do
     cloudinary_string = "/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_420/https://devimages.com/image.jpg"
     expect(html_variant.html).to include(cloudinary_string)
   end
+
+  it "does not add prefix if cloudinary already start" do
+    html = "<div><img src='https://res.cloudinary.com/image.jpg' /></div>"
+    html_variant.update(approved: false, html: html)
+    expect(html_variant.html).to include("https://res.cloudinary.com/image.jpg")
+  end
+
+  it "does not add prefix if already on site root" do
+    html = "<div><img src='https://#{SiteConfig.app_domain}/image.jpg' /></div>"
+    html_variant.update(approved: false, html: html)
+    expect(html_variant.html).to include("https://#{SiteConfig.app_domain}/image.jpg")
+  end
 end
