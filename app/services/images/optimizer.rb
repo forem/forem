@@ -66,7 +66,7 @@ module Images
         # On other environments, rely on ApplicationConfig for a
         # more flexible configuration
         # ie. default imgproxy endpoint is localhost:8080
-        ApplicationConfig["IMGPROXY_ENDPOINT"]
+        ApplicationConfig["IMGPROXY_ENDPOINT"] || "http://localhost:8080"
       end
     end
   end

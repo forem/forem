@@ -5,7 +5,8 @@ const renderer = new marked.Renderer();
 const prettierConfig = require('../../../.prettierrc.json');
 
 module.exports = {
-  stories: ['../**/__stories__/*.stories.(mdx|jsx)'],
+  // https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#correct-globs-in-mainjs
+  stories: ['../**/__stories__/*.stories.@(mdx|jsx)'],
   addons: [
     '@storybook/addon-knobs',
     '@storybook/addon-actions',

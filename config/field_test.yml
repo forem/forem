@@ -1,14 +1,4 @@
 experiments:
-  user_home_feed: # Home feed collection for logged in user
-    variants:
-      - more_comments_minimal_weight_randomized_at_end
-    weights:
-      - 100
-    goals:
-      - user_creates_comment
-      - user_creates_reaction
-      - user_views_article_four_days_in_week
-      - user_views_article_four_hours_in_day
   follow_implicit_points: # Points given for implicit tag weights
     # Implemented here: app/workers/follows/update_points_worker.rb
     # Hypotheses: Weighting tags based on implied preference will lead

@@ -37,15 +37,6 @@ Rails.application.routes.draw do
       mount FieldTest::Engine, at: "abtests"
     end
 
-    namespace :resource_admin do
-      # Check administrate gem docs
-      DashboardManifest::DASHBOARDS.each do |dashboard_resource|
-        resources dashboard_resource
-      end
-
-      root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
-    end
-
     namespace :admin do
       get "/" => "admin_portals#index"
 
@@ -56,6 +47,10 @@ Rails.application.routes.draw do
                                      { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
+      end
+
+      namespace :users do
+        resources :gdpr_delete_requests, only: %i[index destroy]
       end
 
       resources :articles, only: %i[index show update]
@@ -107,6 +102,8 @@ Rails.application.routes.draw do
         resource :moderator, only: %i[create destroy], module: "tags"
       end
       resources :users, only: %i[index show edit update] do
+        resources :email_messages, only: :show
+
         member do
           post "banish"
           post "export_data"
@@ -289,6 +286,7 @@ Rails.application.routes.draw do
     resources :podcasts, only: %i[new create]
     resources :article_approvals, only: %i[create]
     resources :video_chats, only: %i[show]
+    resources :sidebars, only: %i[show]
     resources :user_subscriptions, only: %i[create] do
       collection do
         get "/subscribed", action: "subscribed"
@@ -349,6 +347,7 @@ Rails.application.routes.draw do
 
     # Chat channel
     patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"
+    post "/create_channel" => "chat_channels#create_channel"
 
     # Chat Channel Membership json response
     get "/chat_channel_memberships/chat_channel_info/:id" => "chat_channel_memberships#chat_channel_info"

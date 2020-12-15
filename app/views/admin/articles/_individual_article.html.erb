@@ -4,19 +4,29 @@
   }
 </style>
 
-<div class="card my-3" data-controller="article" data-article-id="<%= article.id %>">
+<div class="card my-3"
+     data-controller="article"
+     data-article-bg-highlighted-class="bg-highlighted"
+     data-article-border-highlighted-class="border-highlighted">
+
   <div class="card-header">
     <h2>
       <a href="<%= article.path %>" target="_blank" rel="noopener">
         <%= article.title %>
       </a>
     </h2>
+
     <div>
       <a href="<%= article.path %>/edit" target="_blank" rel="noopener"><span class="btn btn-sm btn-primary">Edit</span></a>
+
       <button class="btn btn-sm btn-success" data-action="article#increaseFeaturedNumber">Boost</button>
-      <a class="btn btn-sm btn-secondary" href="/admin/users/<%= article.user_id %>" target="_blank" rel="noopener">Manage User</a>
-      <a href="/admin/users/<%= article.user_id %>" class="badge badge-light">@<%= article.user&.username %></a>
+
+      <a class="btn btn-sm btn-secondary" href="<%= admin_user_path(article.user_id) %>" target="_blank" rel="noopener">Manage User</a>
+
+      <a href="<%= admin_user_path(article.user_id) %>" class="badge badge-light">@<%= article.user&.username %></a>
+
       <span class="badge badge-light">❤️ <%= article.public_reactions_count %> 💬 <%= article.comments_count %></span>
+
       <span class="badge badge-light">
         <% if article.published_from_feed? && !article.published? %>
           RSS Import <%= article.created_at.strftime("%b %d, %Y") %>
@@ -28,10 +38,10 @@
           <%= article.published_at&.strftime("%b %d, %Y") %>
         <% end %>
       </span>
-      <% article.decorate.cached_tag_list_array.each do |tag| %>
-        <a class="badge badge-secondary" href='/t/<%= tag %>'>#<%= tag %></a>
-      <% end %>
 
+      <% article.decorate.cached_tag_list_array.each do |tag| %>
+        <a class="badge badge-secondary" href='<%= tag_path(tag) %>'>#<%= tag %></a>
+      <% end %>
     </div>
   </div>
 
@@ -40,6 +50,7 @@
   <% background_color = approved %>
 
   <div
+    data-article-target="cardBody"
     class="card-body <%= background_color %> <%= "bg-danger" if !article.published? && article.published_from_feed? && !article.user&.feed_admin_publish_permission? %>">
 
     <% if article.video %>
@@ -60,7 +71,7 @@
         <%= note.author_id ? User.find(note.author_id).username : "No Author" %></em> - <%= note.content %>
     </p>
     <% end %>
-    <p><a href="/admin/users/<%= article.user_id %>">View All</a></p>
+    <p><a href="<%= admin_user_path(article.user_id) %>">View All</a></p>
     <% end %>
     <% end %>
     <% if article.main_image.present? %>
@@ -77,8 +88,11 @@
     <div class="row">
       <div class="form-group col">
         <label for="featured_number_<%= article.id %>">Featured Number:</label>
-        <input id="featured_number_<%= article.id %>" class="form-control" name="article[featured_number]"
-          value="<%= article.featured_number %>" data-target="article.featuredNumber">
+        <input id="featured_number_<%= article.id %>"
+               class="form-control"
+               name="article[featured_number]"
+               value="<%= article.featured_number %>"
+               data-article-target="featuredNumber">
       </div>
       <div class="form-group col">
         <label for="author_id_<%= article.id %>">Author ID:</label>
