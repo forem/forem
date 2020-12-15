@@ -8,6 +8,11 @@ describe('Initial admin signup', () => {
     cy.visit('/');
 
     cy.findByTestId('registration-form').as('registrationForm');
+
+    cy.get('@registrationForm')
+      .findByLabelText(/Profile image/i)
+      .attachFile('images/admin-image.png');
+
     cy.get('@admin').then((admin) => {
       // Enter credentials for the initial administrator user
       cy.get('@registrationForm')
@@ -29,6 +34,8 @@ describe('Initial admin signup', () => {
     });
 
     // Submit the form
-    // cy.get('@registrationForm').findByText('Sign up').click();
+    cy.get('@registrationForm').findByText('Sign up').click();
+
+    cy.url().should('eq', Cypress.config().baseUrl + '/users');
   });
 });
