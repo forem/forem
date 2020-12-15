@@ -1,6 +1,6 @@
 <div class="registration__actions-providers">
   <% authentication_enabled_providers.each do |provider| %>
-    <% if !provider.beta_access? || params[:state] == "beta_providers_enabled" %>
+    <% unless provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
       <a
         href="<%= provider.sign_in_path(state: "navbar_basic") %>"
         class="crayons-btn crayons-btn--l crayons-btn--brand-<%= provider.provider_name %> crayons-btn--icon-left whitespace-nowrap"

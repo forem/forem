@@ -11,13 +11,6 @@ module Authentication
         @raw_info = auth_payload.extra.raw_info
       end
 
-      # Flag that marks providers as `beta`. New providers that haven't been
-      # thoroughly tested in production environments will be hidden behind the
-      # parameter `state=beta_providers_enabled`
-      def self.beta_access?
-        false
-      end
-
       # Extract data for a brand new user
       def new_user_data
         raise SubclassResponsibility

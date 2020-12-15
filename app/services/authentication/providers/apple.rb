@@ -7,11 +7,6 @@ module Authentication
       TRUSTED_CALLBACK_ORIGIN = "https://appleid.apple.com".freeze
       CALLBACK_PATH = "/users/auth/apple/callback".freeze
 
-      # Currently `beta` state until thoroughly tested in production level env
-      def self.beta_access?
-        !Flipper.enabled?(:apple_auth)
-      end
-
       def new_user_data
         # Apple sends `first_name` and `last_name` as separate fields
         name = "#{info.first_name} #{info.last_name}"
