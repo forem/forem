@@ -213,4 +213,15 @@ class SiteConfig < RailsSettings::Base
   def self.dev_to?
     app_domain == "dev.to"
   end
+
+  # Apple uses different keys than the usual `PROVIDER_NAME_key` or
+  # `PROVIDER_NAME_secret` so these will help the generalized authentication
+  # code to work, i.e. https://github.com/forem/forem/blob/master/app/helpers/authentication_helper.rb#L26-L29
+  def self.apple_key
+    return unless apple_client_id.present? && apple_key_id.present? &&
+      apple_pem.present? && apple_team_id.present?
+
+    "present"
+  end
+  singleton_class.__send__(:alias_method, :apple_secret, :apple_key)
 end

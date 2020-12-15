@@ -2,6 +2,7 @@ module Authentication
   module Providers
     # Apple authentication provider, uses omniauth-apple as backend
     class Apple < Provider
+      OFFICIAL_NAME = "Apple".freeze
       SETTINGS_URL = "https://appleid.apple.com/account/manage".freeze
       TRUSTED_CALLBACK_ORIGIN = "https://appleid.apple.com".freeze
       CALLBACK_PATH = "/users/auth/apple/callback".freeze
@@ -55,6 +56,10 @@ module Authentication
           info.last_name&.downcase,
           Digest::SHA512.hexdigest(info.email),
         ].join("_")[0...25]
+      end
+
+      def self.official_name
+        OFFICIAL_NAME
       end
 
       def self.settings_url
