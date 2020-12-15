@@ -37,7 +37,7 @@ gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
 gem "flipper", "~> 0.19.1" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.19.0" # Store Flipper flags in ActiveRecord
+gem "flipper-active_record", "~> 0.19.1" # Store Flipper flags in ActiveRecord
 gem "flipper-ui", "~> 0.19.1"
 gem "fog-aws", "~> 3.7" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
@@ -67,7 +67,7 @@ gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.20" # Run any kind of code in parallel processes
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with Elasticsearch to support http keep-alive connections
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
-gem "puma", "~> 5.1.0" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
+gem "puma", "~> 5.1.1" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.4" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.3" # Pusher Push Notifications Ruby server SDK
