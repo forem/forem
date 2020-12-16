@@ -475,7 +475,7 @@ GEM
     omniauth (1.9.1)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
-    omniauth-apple (1.0.0)
+    omniauth-apple (1.0.1)
       jwt
       omniauth-oauth2
     omniauth-facebook (8.0.0)
