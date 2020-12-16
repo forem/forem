@@ -14,6 +14,8 @@ addons:
     paths:
       - $(ls tmp/screenshots/*.png | tr "\n" ":")
       - $(ls tmp/csvs/*.csv | tr "\n" ":")
+      - $(ls cypress/screenshots/*.* | tr "\n" ":")
+      - $(ls cypress/videos/*.* | tr "\n" ":")
     debug: true
 services:
   - redis
@@ -67,6 +69,12 @@ script:
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
+  - yarn e2e:ci
+  # Dropping and recreating the database for Capybara/rspecs
+  - export FOREM_OWNER_SECRET="secret"
+  - bundle exec rails db:drop
+  - bundle exec rails db:create
+  - bundle exec rails db:schema:load
   - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 after_script:

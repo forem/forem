@@ -15,6 +15,7 @@
 
 // For Testing Library APIs https://github.com/testing-library/cypress-testing-library
 import '@testing-library/cypress/add-commands';
+import 'cypress-file-upload';
 
 // Import commands.js using ES2015 syntax:
 import './commands';

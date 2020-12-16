@@ -1,30 +1,48 @@
-describe('First time for first administrator login', () => {
-  // Note if you are running these tests locallly, this test will fail
-  // if the first admin has already gone through the onboarding process.
-  it('should login the initial administrator user from the home page', () => {
+// Note if you are running these tests locallly, this test will fail
+// if the first admin has already gone through the onboarding process.
+
+describe('Initial admin signup', () => {
+  it('should sign up the initial Forem instance administrator', () => {
+    // This is the happy path.
     cy.fixture('logins/initialAdmin.json').as('admin');
 
-    // Go to home page
+    cy.log('baseUrl', Cypress.config().baseUrl);
+
+    // Go to home page which redirects to the registration form.
     cy.visit('/');
 
-    // Click on the login button in the top header
-    cy.findAllByText('Log in').first().click();
+    cy.findByTestId('registration-form').as('registrationForm');
 
-    // Ensure we are redirected to the login page
-    cy.url().should('contains', '/enter');
+    cy.get('@registrationForm')
+      .findByLabelText(/Profile image/i)
+      .attachFile('images/admin-image.png');
 
-    cy.findByTestId('login-form').as('loginForm');
     cy.get('@admin').then((admin) => {
       // Enter credentials for the initial administrator user
-      cy.get('@loginForm').findByText('Email').type(admin.user);
-      cy.get('@loginForm').findByText('Password').type(admin.password);
+      cy.get('@registrationForm')
+        .findByLabelText(/^Name$/i)
+        .type(admin.name);
+      cy.get('@registrationForm')
+        .findByLabelText(/Username/i)
+        .type(admin.username);
+      cy.get('@registrationForm').findByLabelText(/Email/i).type(admin.email);
+      cy.get('@registrationForm')
+        .findByLabelText('Password')
+        .type(admin.password);
+      cy.get('@registrationForm')
+        .findByLabelText(/Password Confirmation/i)
+        .type(admin.password);
+      cy.get('@registrationForm')
+        .findByLabelText(/New Forem Secret/i)
+        .type(admin.foremSecret);
     });
 
     // Submit the form
-    cy.get('@loginForm').findByText('Continue').click();
+    cy.get('@registrationForm').findByText('Sign up').click();
+    cy.log('Submitting signup form');
+    cy.url().should('eq', Cypress.config().baseUrl + '/users');
 
-    // User should be redirected to onboarding
-    const { baseUrl } = Cypress.config();
-    cy.url().should('include', `/onboarding?referrer=${baseUrl}/?signin=true`);
+    // We want to ensure that the form submitted without errors
+    cy.findByTestId('signup-errors').should('not.exist');
   });
 });
