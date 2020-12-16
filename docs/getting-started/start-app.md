@@ -53,7 +53,7 @@ advanced setup to start the application by using [Overmind][overmind].
 The prerequisite is to install [Overmind][overmind], a process manager which
 takes advantage of [tmux][tmux].
 
-This will allow you to launch everything in the same terminal, navigate the logs
+This will allow you to launch all your app's processes in the same terminal, navigate the logs
 of each service separately, restart each service separately and have a better
 debugging experience.
 
