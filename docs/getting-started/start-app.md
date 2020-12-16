@@ -105,9 +105,11 @@ overmind c sidekiq
 
 This will open a `tmux` console, which will allow you to browse _only_ the Sidekiq's logs.
 
-The shortcut `C-b [` (_Control-b-open square bracket_) will activate "scroll
-mode" allowing you to use the arrows up and down and inspect the logs, `q` will
-deactivate "scroll mode".
+There are also some handy `tmux` shortcuts that you may find useful.
+
+* The shortcut `C-b [` (_Control-b-open square bracket_) activates "scroll
+mode", which allows you to use the arrows up and down and inspect the logs.
+* The shortcut `q` will deactivate "scroll mode".
 
 please refer to [tmux][tmux] documentation for configuration and for additional
 shortcuts.
