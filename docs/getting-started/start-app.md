@@ -103,7 +103,7 @@ separate terminal window to look at those logs specifically:
 overmind c sidekiq
 ```
 
-this will open a `tmux` console allowing you to browse its logs.
+This will open a `tmux` console, which will allow you to browse _only_ the Sidekiq's logs.
 
 The shortcut `C-b [` (_Control-b-open square bracket_) will activate "scroll
 mode" allowing you to use the arrows up and down and inspect the logs, `q` will
