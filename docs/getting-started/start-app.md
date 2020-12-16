@@ -77,9 +77,7 @@ overmind c web
 ```
 
 This will open up a [tmux][tmux] window pane at the debugging statement
-position.
-
-An example:
+position, which will look something like this:
 
 ```ruby
 pry(#<Admin::AdminPortalsController>)> whereami
