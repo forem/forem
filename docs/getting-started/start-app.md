@@ -103,7 +103,7 @@ separate terminal window to look at those logs specifically:
 overmind c sidekiq
 ```
 
-This will open a `tmux` console, which will allow you to browse _only_ the Sidekiq's logs.
+This will open a `tmux` console, which will allow you to browse _only_ the Sidekiq logs.
 
 There are also some handy `tmux` shortcuts that you may find useful.
 
