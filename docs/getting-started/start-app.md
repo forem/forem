@@ -116,8 +116,8 @@ shortcuts.
 
 ## Resources
 
-Other than the official documentation on [Overmind][overmind] and [tmux][tmux]
-you can find the following resources useful:
+Other than the official [Overmind][overmind] and [tmux][tmux]
+documentation, you may find the following resources useful:
 
 - [Rails quick tips #6: tmux, tmuxinator and Overmind](https://dev.to/citizen428/rails-quick-tips-6-tmux-tmuxinator-and-overmind-4850)
 - [Give Your Terminal Super Powers: tmux Cheatsheet!](https://dev.to/jacobherrington/give-your-terminal-super-powers-tmux-cheatsheet-1p6p)
