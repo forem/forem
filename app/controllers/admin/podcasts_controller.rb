@@ -2,7 +2,7 @@ module Admin
   class PodcastsController < Admin::ApplicationController
     layout "admin"
 
-    before_action :find_podcast, only: %i[edit update fetch]
+    before_action :find_podcast, only: %i[edit update fetch add_owner]
 
     def index
       @podcasts = Podcast.left_outer_joins(:podcast_episodes)
@@ -36,8 +36,7 @@ module Admin
     end
 
     def add_owner
-      @podcast_ownership = PodcastOwnership.new(podcast_id: params["id"], user_id: params["podcast"]["user_id"])
-
+      @podcast_ownership = @podcast.podcast_ownerships.build(user_id: params["podcast"]["user_id"])
       if @podcast_ownership.save
         flash[:success] = "Owner created successfully"
       else
@@ -76,13 +75,6 @@ module Admin
         published
       ]
       params.require(:podcast).permit(allowed_params)
-    end
-
-    def podcast_ownership_params
-      allowed_params = %i[
-        podcast_id user_id
-      ]
-      params.require(:podcast_ownership).permit(allowed_params)
     end
   end
 end

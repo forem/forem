@@ -32,7 +32,7 @@ RSpec.describe "/admin/podcasts", type: :request do
   describe "Adding owner" do
     it "adds an owner" do
       expect do
-        post add_owner_admin_podcast_path(podcast_ownership.id), params: { podcast_ownership: { user_id: user.id } }
+        post add_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
       end.to change(PodcastOwnership, :count).by(1)
     end
   end
