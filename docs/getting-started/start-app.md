@@ -111,7 +111,7 @@ There are also some handy `tmux` shortcuts that you may find useful.
 mode", which allows you to use the arrows up and down and inspect the logs.
 * The shortcut `q` will deactivate "scroll mode".
 
-please refer to [tmux][tmux] documentation for configuration and for additional
+Please refer to [tmux][tmux] documentation for more information around `tmux` configuration and for additional
 shortcuts.
 
 ## Resources
