@@ -109,12 +109,15 @@ export async function reportAbuse(
   const response = await request('/feedback_messages', {
     method: 'POST',
     body: {
-      message: feedback_message,
-      feedback_type,
-      category,
-      offender_id,
+      feedback_message: {
+        message: feedback_message,
+        feedback_type,
+        category,
+        offender_id,
+      },
     },
   });
+
   return response.json();
 }
 

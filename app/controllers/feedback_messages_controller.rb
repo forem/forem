@@ -41,13 +41,17 @@ class FeedbackMessagesController < ApplicationController
 
   private
 
+  def recaptcha_disabled?
+    SiteConfig.recaptcha_site_key.blank? && SiteConfig.recaptcha_secret_key.blank?
+  end
+
   def recaptcha_verified?
     recaptcha_params = { secret_key: SiteConfig.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
   end
 
   def connect_feedback?
-    params[:feedback_type] == "connect"
+    feedback_message_params[:feedback_type] == "connect"
   end
 
   def feedback_message_params
