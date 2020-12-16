@@ -68,9 +68,9 @@ overmind s -f Procfile.dev
 [Overmind][overmind] lets you easily step through the Rails application in a
 debugging session.
 
-If you use `binding.pry` to set a breakpoint in the method you're trying to
-debug the application will then halt its execution there. You can then connect
-to the web server by opening a separate terminal window and by typing:
+Using the `pry` gem, you can add a `binding.pry` to set a breakpoint in the method you're trying to
+debug; the application will halt its execution there. You can then connect
+to the web server by opening a separate terminal window and typing:
 
 ```shell
 overmind c web
