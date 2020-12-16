@@ -25,7 +25,10 @@
     "test": "jest app/javascript/ bin/ --coverage",
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
-    "e2e": "cypress open"
+    "e2e": "cypress open",
+    "e2e:runner": "knapsack-pro-cypress",
+    "e2e:server": "bin/rails s -p 3000 -b 0.0.0.0",
+    "e2e:ci": "start-server-and-test e2e:server http://localhost:3000 e2e:runner"
   },
   "husky": {
     "hooks": {
@@ -85,6 +88,7 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
+    "@knapsack-pro/cypress": "^4.2.0",
     "@stoplight/spectral": "5.7.2",
     "@storybook/addon-a11y": "^6.1.10",
     "@storybook/addon-actions": "^6.1.11",
@@ -108,6 +112,7 @@
     "css-loader": "^5.0.1",
     "cssom": "^0.4.4",
     "cypress": "^6.1.0",
+    "cypress-file-upload": "^4.1.1",
     "eslint": "^7.14.0",
     "eslint-config-preact": "^1.1.3",
     "eslint-config-prettier": "^7.0.0",
@@ -133,6 +138,7 @@
     "redoc-cli": "0.10.1",
     "sass": "1.30.0",
     "sass-loader": "^10.1.0",
+    "start-server-and-test": "^1.11.6",
     "style-loader": "^2.0.0",
     "svgo": "1.3.2",
     "webpack-dev-server": "^3.11.0"
