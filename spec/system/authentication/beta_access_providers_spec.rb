@@ -4,6 +4,10 @@ RSpec.describe "Beta provider access", type: :system do
   let(:providers) { %w[Facebook GitHub Twitter] }
   let(:beta_providers) { ["Apple"] }
 
+  before do
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
+
   context "when a user tries to sign_up" do
     it "doesn't render beta providers by default" do
       visit sign_up_path
@@ -18,7 +22,8 @@ RSpec.describe "Beta provider access", type: :system do
     end
 
     it "renders beta providers when passed in the correct state param" do
-      visit sign_up_path(state: "beta_providers_enabled")
+      Flipper.enable(:apple_auth)
+      visit sign_up_path
 
       providers.each do |name|
         expect(page).to have_link("Continue with #{name}")

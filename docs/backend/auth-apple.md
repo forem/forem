@@ -15,13 +15,11 @@ Rails application.
 #### Beta support
 
 This authentication provider is currently marked as beta. This means it will be
-available but hidden from public access until more thoroughly tested. Once fully
-configured you will only be able to see provider button by adding a custom state
-parameter to the registration path `/enter?state=beta_providers_enabled`.
+available but hidden from public access until more thoroughly tested.
 
 If you want to make this feature publicly available (without the state
-parameter) you can enable the feature flag from the Rails console with
-`Flipper.enable(:apple_auth)`
+parameter) you can enable the `apple_auth` feature flag from the Flipper
+dashboard or the Rails console with `Flipper.enable(:apple_auth)`.
 
 # Apple Developer Portal Configuration
 
