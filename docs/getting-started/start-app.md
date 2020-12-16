@@ -47,7 +47,7 @@ worked out.
 
 # Starting the application (advanced)
 
-To have additional control on the local environment you might prefer using an
+To have additional control in your local environment, you might prefer using an
 advanced setup to start the application.
 
 The prerequisite is to install [Overmind][overmind], a process manager which
