@@ -40,5 +40,17 @@ RSpec.describe "/admin/articles", type: :request do
         patch "/admin/articles/#{article.id}", params: { article: { featured: true } }
       end.to change { article.reload.featured }.to(true)
     end
+
+    it "allows an Admin to update the published at datetime for an article" do
+      updated_published_at = article.published_at - 5.hours
+      expect do
+        patch "/admin/articles/#{article.id}", params: { article: { "published_at(1i)": updated_published_at.year,
+                                                                    "published_at(2i)": updated_published_at.month,
+                                                                    "published_at(3i)": updated_published_at.day,
+                                                                    "published_at(4i)": updated_published_at.hour,
+                                                                    "published_at(5i)": updated_published_at.min,
+                                                                    "published_at(6i)": updated_published_at.sec } }
+      end.to change { article.reload.published_at }.to(DateTime.parse(updated_published_at.to_s))
+    end
   end
 end

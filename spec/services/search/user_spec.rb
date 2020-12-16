@@ -57,4 +57,34 @@ RSpec.describe Search::User, type: :service do
       end
     end
   end
+
+  describe "::search_usernames", elasticsearch: "User" do
+    let(:user1) { create(:user, username: "star_wars_is_the_best") }
+    let(:user2) { create(:user, username: "star_trek_is_the_best") }
+
+    before do
+      index_documents([user1, user2])
+    end
+
+    it "searches with username" do
+      usernames = described_class.search_usernames(user1.username)
+      expect(usernames.count).to eq(1)
+      expect(usernames).to match([user1.username])
+    end
+
+    it "analyzes wildcards" do
+      user3 = create(:user, username: "does_not_start_with_a_star")
+      index_documents([user3])
+
+      usernames = described_class.search_usernames("star*")
+      expect(usernames).to match(
+        [user1.username, user2.username],
+      )
+      expect(usernames).not_to include(user3.username)
+    end
+
+    it "does not allow leading wildcards" do
+      expect { described_class.search_usernames("*star") }.to raise_error(Search::Errors::Transport::BadRequest)
+    end
+  end
 end

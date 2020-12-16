@@ -1,10 +1,12 @@
-<div
-  class="comments-container comments-dedicated-page-container"
-  id="comments-container"
-  data-commentable-id="<%= @comment.commentable_id %>"
-  data-commentable-type="<%= @comment.commentable_type %>">
-  <h1 class="mb-6">Editing comment</h1>
-  <%= render "form",
-             commentable: @commentable,
-             commentable_type: @comment.commentable_type %>
+<div class="crayons-layout crayons-layout--limited-l gap-0">
+    <div
+    class="comments-container crayons-card text-padding"
+    id="comments-container"
+    data-commentable-id="<%= @comment.commentable_id %>"
+    data-commentable-type="<%= @comment.commentable_type %>">
+    <h1 class="crayons-title mb-6">Editing comment</h1>
+    <%= render "form",
+               commentable: @commentable,
+               commentable_type: @comment.commentable_type %>
+  </div>
 </div>

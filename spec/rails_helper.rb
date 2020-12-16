@@ -90,6 +90,12 @@ RSpec.configure do |config|
     ENV["TZ"] = Time.zone.tzinfo.name
 
     Search::Cluster.recreate_indexes
+
+    # NOTE: @citizen428 needed while we delegate from User to Profile to keep
+    # spec changes limited for the time being.
+    csv = Rails.root.join("lib/data/dev_profile_fields.csv")
+    ProfileFields::ImportFromCsv.call(csv)
+    Profile.refresh_attributes!
   end
 
   config.before do

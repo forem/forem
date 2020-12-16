@@ -18,6 +18,7 @@ import { Button } from '@crayons';
  */
 function Draw({ sendCanvasImage }) {
   const canvasRef = useRef(null);
+  const canvasWidth = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [drawColor, setDrawColor] = useState('#F58F8E');
   const [coordinates, setCoordinates] = useState({});
@@ -72,7 +73,6 @@ function Draw({ sendCanvasImage }) {
 
   const handleDragHover = (e) => {
     e.preventDefault();
-
     canvasRef.current.classList.add('opacity-25');
   };
 
@@ -99,10 +99,13 @@ function Draw({ sendCanvasImage }) {
   };
 
   useEffect(() => {
+    canvasRef.current.width = canvasWidth.current.clientWidth;
+  }, [canvasWidth]);
+
+  useEffect(() => {
     if (!canvasRef.current) {
       return;
     }
-
     const context = canvasRef.current.getContext('2d');
 
     if (isDrawing) {
@@ -135,6 +138,7 @@ function Draw({ sendCanvasImage }) {
       <div
         aria-hidden
         className="connect-draw__draw-area"
+        ref={canvasWidth}
         onMouseUp={handleMouseUp}
       >
         <canvas
@@ -146,7 +150,6 @@ function Draw({ sendCanvasImage }) {
           onDragOver={handleDragHover}
           onDragExit={handleDragExit}
           height="600"
-          width="400"
         />
         <div className="connect-draw__actions">
           <Button

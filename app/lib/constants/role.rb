@@ -1,8 +1,8 @@
 module Constants
   module Role
     BASE_ROLES = ["Warn",
-                  "Comment Ban",
-                  "Ban",
+                  "Comment Suspend",
+                  "Suspend",
                   "Regular Member",
                   "Trusted",
                   "Pro"].freeze

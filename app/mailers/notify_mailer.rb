@@ -135,7 +135,7 @@ class NotifyMailer < ApplicationMailer
   def trusted_role_email
     @user = params[:user]
 
-    subject = "You've been upgraded to #{SiteConfig.community_name} Community mod status!"
+    subject = "Congrats! You're now a \"trusted\" user on #{SiteConfig.community_name}!"
     mail(to: @user.email, subject: subject)
   end
 

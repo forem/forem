@@ -48,6 +48,9 @@
 <% end %>
 
 <% if internal_navigation? %>
+  <!-- If you have service workers turned on, you may be seeing the canonical URL in the body for human inspection -->
+  <!-- However, the crawled version of the page has the canonical in the head. -->
+  <!-- This is confirmed by the canonical url inspector. See https://github.com/forem/forem/issues/9509#issuecomment-732259221. -->
   <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
   <meta name="description" content="<%= @article.description_and_tags %>">
   <%= meta_keywords_article(@article.cached_tag_list) %>

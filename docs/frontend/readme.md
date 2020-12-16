@@ -1,5 +1,4 @@
 ---
-title: Frontend Guide
 items:
   - plain-js.md
   - webpacker.md
@@ -11,6 +10,7 @@ items:
   - liquid-tags.md
   - debugging.md
   - tracking.md
+  - accessibility.md
   - tips.md
 ---
 

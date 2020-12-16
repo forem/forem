@@ -1,4 +1,4 @@
-<div id="response-templates-data"></div>
+<div id="response-templates-data" class="hidden"></div>
 <%= javascript_packs_with_chunks_tag "validateFileInputs", "responseTemplates", defer: true %>
 
 <% if @comment.errors.any? %>
@@ -28,8 +28,8 @@
     <%= f.hidden_field :parent_id, value: @parent_comment.id if @parent_comment %>
   <% end %>
 
-  <span class="crayons-avatar crayons-avatar--l mr-2 shrink-0">
-    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image" id="comment-primary-user-profile--avatar">
+  <span class="crayons-avatar m:crayons-avatar--l mr-2 shrink-0">
+    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 256) %>" width="32" height="32" alt="pic" class="crayons-avatar__image overflow-hidden" id="comment-primary-user-profile--avatar">
   </span>
   <div class="comment-form__inner">
     <div class="comment-form__field">

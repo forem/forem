@@ -130,8 +130,21 @@ export class ReadingList extends Component {
             value="Your reading list is empty"
           />
           <p class="color-base-60 pt-2">
-            Hit the <span class="fw-bold">Save</span> button to start your
-            Collection.
+            Click the{' '}
+            <span class="fw-bold">
+              bookmark reaction
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                className="crayons-icon mx-1"
+                xmlns="http://www.w3.org/2000/svg"
+                role="img"
+              >
+                <path d="M5 2h14a1 1 0 011 1v19.143a.5.5 0 01-.766.424L12 18.03l-7.234 4.536A.5.5 0 014 22.143V3a1 1 0 011-1zm13 2H6v15.432l6-3.761 6 3.761V4z" />
+              </svg>
+            </span>
+            when viewing a post to add it to your reading list.
           </p>
         </div>
       );

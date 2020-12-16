@@ -1,5 +1,7 @@
 <div class="crayons-card crayons-card--content-rows">
-  <h3>Billing Details</h3>
+  <h2 class="crayons-subtitle-1">
+    Billing
+  </h2>
 
   <% if current_user.stripe_id_code.blank? %>
     <%= form_tag stripe_active_cards_path, id: "credit-card-form", method: :post do %>

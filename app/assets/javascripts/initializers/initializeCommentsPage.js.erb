@@ -1,3 +1,5 @@
+var iconSmallThread = `<svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 13l-5 6-5-6h3.125c0-3.314 2.798-6 6.25-6 .17 0 .34.006.506.02-1.787.904-3.006 2.705-3.006 4.78V13H17z" /></svg>`;
+
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
@@ -28,12 +30,22 @@ function initializeCommentsPage() {
               for (var i = 0; i < publicReactionCounts.length; i++) {
                 var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
                 if (buttForComment) {
+                  var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
+                  var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
                   if (publicReactionCounts[i].count > 0) {
-                    if (!document.getElementById('reactions-count-' + publicReactionCounts[i].id)) {
-                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
+                    
+                    if (publicReactionCounts[i].count > 1) {
+                      reactionsLabelWrapper.innerHTML = "&nbsp;likes";
                     } else {
-                      document.getElementById('reactions-count-' + publicReactionCounts[i].id).innerHTML = publicReactionCounts[i].count;
+                      reactionsLabelWrapper.innerHTML = "&nbsp;like";
                     }
+
+                    reactionsCountWrapper.id = 'reactions-count-' + publicReactionCounts[i].id;
+                    reactionsCountWrapper.innerHTML = publicReactionCounts[i].count;
+                    reactionsCountWrapper.classList.remove("hidden");
+                  } else {
+                    reactionsCountWrapper.classList.add("hidden");
+                    reactionsCountWrapper.innerHTML = '0';
                   }
                 }
               }
@@ -41,14 +53,13 @@ function initializeCommentsPage() {
               for (var i = 0; i < allNodes.length; i++) {
                 if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
                   allNodes[i].dataset.currentUserComment = "true";
-                  var userActionsEl = allNodes[i].children[0].children[2].children[0];
+                  var path = allNodes[i].dataset.path;
+                  var userActionsEl = allNodes[i].querySelector('.current-user-actions');
                   var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
                   if (userActionsEl && buttEl) {
-                    userActionsEl.className = 'current-user-actions';
-                    userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">Delete</a>\
-                                                <a href="' + userActionsEl.parentNode.dataset.path + '/edit">Edit</a>'
-                    userActionsEl.style.display = 'inline-block';
-                    document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
+                    userActionsEl.innerHTML = `<li><a href="${ path }/edit" class="crayons-link crayons-link--block" aria-label="Edit this comment">Edit</a></li>
+                                              <li><a data-no-instant href="${ path }/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Delete</a></li>`
+                    userActionsEl.classList.remove('hidden');
                   }
                 }
               }
@@ -78,16 +89,27 @@ function initializeCommentsPage() {
         thisButt.disabled = true;
 
         function successCb(response) {
-          var reactionCountSpan = thisButt.children[2];
+          var reactionCount = thisButt.querySelector('.reactions-count');
+          var reactionLabel = thisButt.querySelector('.reactions-label');
           if (response.result === 'create') {
             thisButt.classList.add('reacted');
-            if (reactionCountSpan) {
-              reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) + 1;
+            if (reactionCount) {
+              reactionCount.innerHTML = parseInt(reactionCount.innerHTML) + 1;
+              reactionCount.classList.remove("hidden");
+              if(parseInt(reactionCount.innerHTML) == 1) {
+                reactionLabel.innerHTML = "&nbsp;like"
+              } else if(parseInt(reactionCount.innerHTML) > 1) {
+                reactionLabel.innerHTML = "&nbsp;likes"
+              }
             }
           } else {
             thisButt.classList.remove('reacted');
-            if (reactionCountSpan) {
-              reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) - 1;
+            if (reactionCount) {
+              reactionCount.innerHTML = parseInt(reactionCount.innerHTML) - 1;
+              if(parseInt(reactionCount.innerHTML) == 0) {
+                reactionCount.classList.add("hidden");
+                reactionLabel.innerHTML = "Like"
+              }
             }
           }
         }
@@ -117,13 +139,12 @@ function initializeCommentsPage() {
             showModal('reply-to-comment');
             return;
           }
-          var actionNode = event.target.parentNode;
-          var parentId = actionNode.dataset.commentId;
+          var parentId = event.target.closest('.comment').dataset.commentId;
           var waitingOnCSRF = setInterval(function () {
             var metaTag = document.querySelector("meta[name='csrf-token']");
             if (metaTag) {
               clearInterval(waitingOnCSRF);
-              commentWrapper = event.target.closest('.inner-comment');
+              commentWrapper = event.target.closest('.comment__details');
               commentWrapper.classList.add("replying");
               commentWrapper.innerHTML += buildCommentFormHTML(commentableId, commentableType, parentId);
               initializeCommentsPage();
@@ -137,14 +158,7 @@ function initializeCommentsPage() {
         return false;
       }
     }
-    var editButts = document.getElementsByClassName('edit-butt');
-    for (var i = 0; i < editButts.length; i++) {
-      var butt = editButts[i];
-      butt.onclick = function () {
-        // event.preventDefault();
-        // alert("edit clicked!")
-      };
-    }
+
     if (document.getElementById('new_comment')) {
       document.getElementById('new_comment').addEventListener('submit', handleCommentSubmit);
     }
@@ -163,16 +177,6 @@ function toggleCodeOfConduct() {
     checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
                                   <label for="checked_code_of_conduct">I\'ve read the <a href="/code-of-conduct">code of conduct</a></label>'
   }
-}
-
-function replaceActionButts(el) {
-  var loggedInActionButts = "";
-  var wrapper = el.getElementsByClassName("actions")[0]
-  if (el.dataset.currentUserComment == "true") {
-    loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">Delete</a>\
-                            <a href="' + el.parentNode.parentNode.dataset.path + '/edit">Edit</a>'
-  }
-  wrapper.innerHTML = '<span class="current-user-actions">' + loggedInActionButts + '</span><a href="#" class="toggle-reply-form">Reply</a>';
 }
 
 function handleCommentSubmit(event) {
@@ -219,10 +223,13 @@ function handleCommentSubmit(event) {
           var mainCommentsForm = document.getElementById("new_comment");
           if (parentComment) {
             handleFormClose(event);
-            if (newComment.depth > 2) {
-              parentComment.getElementsByClassName("toggle-reply-form")[0].innerHTML = ""
+            if (newComment.depth > 3) {
+              var replyTrigger = parentComment.getElementsByClassName("toggle-reply-form")[0];
+              var threadIndicator = `<span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">${ iconSmallThread }Thread</span>`;
+              replyTrigger.classList.replace("inline-flex", "hidden");
+              replyTrigger.parentNode.innerHTML += threadIndicator;
             }
-            var actionsNode = parentComment.getElementsByClassName("inner-comment")[0];
+            var actionsNode = parentComment.getElementsByClassName("comment__inner")[0];
             actionsNode.parentNode.insertBefore(newNode, actionsNode.nextSibling);
           }
 
@@ -496,19 +503,19 @@ function handleImageUpload(event, randomIdNumber) {
 }
 
 function listenForDetailsToggle() {
-  var detailItems = document.getElementsByTagName("DETAILS");
+  var detailItems = document.querySelectorAll(".js-comment-wrapper");
   for (var i = 0; i < detailItems.length; i++) {
     detailItems[i].addEventListener("toggle", event => {
-      var item = event.target
-      var itemSummaryContent = item.getElementsByTagName("SPAN")[0]
-      var usernames = item.getElementsByClassName("comment-username")
+      var item = event.target;
+      var itemSummaryContent = item.getElementsByClassName("js-collapse-comment-content")[0];
+      var usernames = item.getElementsByClassName("js-comment-username");
       var number = "";
       if (usernames.length > 1) {
         number = " + " + (usernames.length - 1) + " replies"
       }
       var itemUsername = usernames[0].textContent + number
       if (item.open) {
-        itemSummaryContent.innerHTML = "&nbsp;"
+        itemSummaryContent.innerHTML = "";
       } else {
         itemSummaryContent.innerHTML = itemUsername;
       }

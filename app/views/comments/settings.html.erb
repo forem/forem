@@ -1,47 +1,36 @@
 <% title "Comment Settings" %>
 
-<div class="crayons-layout crayons-layout--limited">
+<div class="crayons-layout crayons-layout--limited-m gap-0">
   <div class="crayons-card text-padding">
-    <h1 class="pb-4">
-      Comment Settings
-    </h1>
+    <h1 class="crayons-title mb-4">Comment Settings</h1>
 
-    <div class="comments-settings__row">
-      <% if @notification_subscription.persisted? %>
-        <div class="grid">
-          <h4 class="comments-settings__row--title">
-            Showing thread notifications
-          </h4>
-          <p class="comments-settings__row--subtitle">
-            You will receive all notifications for this comment and any of your comments in this chain.
-          </p>
-        </div>
-      <% else %>
-        <div class="grid">
-          <h4 class="comments-settings__row--title">
-            Muting thread notifications
-          </h4>
-          <p class="comments-settings__row--subtitle">
-            All notifications for this comment and any of your comments in the thread are currently muted.
-          </p>
-        </div>
+    <div class="flex">
+      <div class="pr-4 m:pr-8 flex-1">
+        <% if @notification_subscription.persisted? %>
+          <p class="fw-bold">Showing thread notifications</p>
+          <p class="fs-s color-base-60">You will receive all notifications for this comment and any of your comments in this chain.</p>
+        <% else %>
+          <p class="fw-bold">Muting thread notifications</p>
+          <p class="fs-s color-base-60">All notifications for this comment and any of your comments in the thread are currently muted.</p>
+        <% end %>
+      </div>
+      <%= form_for(@notification_subscription, url: "/notification_subscriptions/Comment/#{@comment.id}", method: "post", html: { class: "mute-form shrink-0" }) do |f| %>
+        <input type="hidden" name="config" value="<%= @notification_subscription.persisted? ? "not_subscribed" : "all_comments" %>">
+        <%= f.submit @notification_subscription.persisted? ? "Mute notifications" : "Unmute notifications", class: "crayons-btn crayons-btn--secondary #{@notification_subscription.persisted? ? 'mute' : 'unmute'}" %>
       <% end %>
-
-
-    <%= form_for(@notification_subscription, url: "/notification_subscriptions/Comment/#{@comment.id}", method: "post", html: { class: "mute-form" }) do |f| %>
-      <input type="hidden" name="config" value="<%= @notification_subscription.persisted? ? "not_subscribed" : "all_comments" %>">
-      <%= f.submit @notification_subscription.persisted? ? "Mute notifications" : "Unmute notifications", class: "crayons-btn #{@notification_subscription.persisted? ? 'mute' : 'unmute'}" %>
-    <% end %>
-  </div>
+    </div>
 
     <% if NotificationSubscription.where(user_id: current_user, notifiable_type: "Article", notifiable_id: @comment.commentable_id, config: "all_comments").any? %>
-      <p>
-        You are still subscribed to all comments in the broader thread, which will mean you will still receive notifications for replies to this comment.
-      </p>
-      <%= form_for(@notification_subscription, url: "/notification_subscriptions/Article/#{@comment.commentable_id}", method: "post", html: { class: "mute-form" }) do |f| %>
-        <input type="hidden" name="config" value="not_subscribed">
-        <%= f.submit "Unsubscribe from parent post", class: "crayons-btn crayons-btn--secondary" %>
-      <% end %>
+      <div class="flex pt-6">
+        <div class="pr-4 m:pr-8 flex-1">
+          <p class="fw-bold">Subscription</p>
+          <p class="fs-s color-base-60">You are still subscribed to all comments in the broader thread, which will mean you will still receive notifications for replies to this comment.</p>
+        </div>
+        <%= form_for(@notification_subscription, url: "/notification_subscriptions/Article/#{@comment.commentable_id}", method: "post", html: { class: "mute-form" }) do |f| %>
+          <input type="hidden" name="config" value="not_subscribed">
+          <%= f.submit "Unsubscribe from parent post", class: "crayons-btn crayons-btn--secondary" %>
+        <% end %>
+      </div>
     <% end %>
   </div>
 </div>

@@ -1,0 +1,30 @@
+<footer class="comment__footer">
+  <button
+    class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button"
+    id="button-for-comment-<%= comment.id %>"
+    data-comment-id="<%= comment.id %>"
+    title="heart">
+    <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Favorite heart outline button") %>
+    <%= inline_svg_tag("small-heart-filled.svg", aria: true, class: "crayons-icon reaction-icon--like reaction-icon reacted", title: "Favorite heart outline button") %>
+    <span class="reactions-count hidden"></span>
+    <span class="reactions-label hidden m:inline-block">Like</span>
+  </button>
+
+  <% if comment.depth < 2 || is_childless %>
+    <a
+      class="actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
+      href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>"
+      data-comment-id="<%= comment.id %>"
+      data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>"
+      rel="nofollow">
+      <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon reaction-icon not-reacted", title: "Comment button") %>
+      <span class="hidden m:inline-block">Reply</span>
+    </a>
+  <% else %>
+    <span class="fs-s inline-flex items-center fs-italic color-base-50 pl-1">
+      <%= inline_svg_tag("small-thread.svg", aria: true, class: "crayons-icon", title: "Thread") %>
+      Thread
+    </span>
+  <% end %>
+
+</footer>

@@ -410,13 +410,13 @@ RSpec.describe Comment, type: :model do
       expect(Reaction.last.user_id).to eq(user.id)
     end
 
-    it "does not ban user if only single vomit" do
+    it "does no suspend user if only single vomit" do
       comment.body_markdown = "This post is about Yahoomagoo gogo"
       comment.save
       expect(comment.user.banned).to be false
     end
 
-    it "bans user with 3 comment vomits" do
+    it "suspends user with 3 comment vomits" do
       comment.body_markdown = "This post is about Yahoomagoo gogo"
       second_comment = create(:comment, user: comment.user, body_markdown: "This post is about Yahoomagoo gogo")
       third_comment = create(:comment, user: comment.user, body_markdown: "This post is about Yahoomagoo gogo")
@@ -425,7 +425,7 @@ RSpec.describe Comment, type: :model do
       second_comment.save
       third_comment.save
       expect(comment.user.banned).to be true
-      expect(Note.last.reason).to eq "automatic_ban"
+      expect(Note.last.reason).to eq "automatic_suspend"
     end
 
     it "does not create vomit reaction if user is established in this context" do

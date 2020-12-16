@@ -19,6 +19,11 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).to include "Pinned"
     end
 
+    it "calls user by their username in the 'more info' area" do
+      get "/#{user.username}"
+      expect(response.body).to include "More info about @#{user.username}"
+    end
+
     it "does not render pins if they don't exist" do
       get "/#{user.username}"
       expect(response.body).not_to include "Pinned"
@@ -187,7 +192,7 @@ RSpec.describe "UserProfiles", type: :request do
     it "redirects to admin" do
       user = create(:user)
       get "/#{user.username}/admin"
-      expect(response.body).to redirect_to "/resource_admin/users/#{user.id}/edit"
+      expect(response.body).to redirect_to "/admin/users/#{user.id}/edit"
     end
 
     it "redirects to moderate" do

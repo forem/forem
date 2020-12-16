@@ -469,7 +469,7 @@ RSpec.describe NotifyMailer, type: :mailer do
     let(:email) { described_class.with(user: user).trusted_role_email }
 
     it "renders proper subject" do
-      expected_subject = "You've been upgraded to #{SiteConfig.community_name} Community mod status!"
+      expected_subject = "Congrats! You're now a \"trusted\" user on #{SiteConfig.community_name}!"
       expect(email.subject).to eq(expected_subject)
     end
 

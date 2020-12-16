@@ -91,7 +91,7 @@ class Reaction < ApplicationRecord
   private
 
   def update_reactable
-    Reactions::UpdateReactableWorker.perform_async(id)
+    Reactions::UpdateRelevantScoresWorker.perform_async(id)
   end
 
   def bust_reactable_cache
@@ -107,7 +107,7 @@ class Reaction < ApplicationRecord
   end
 
   def update_reactable_without_delay
-    Reactions::UpdateReactableWorker.new.perform(id)
+    Reactions::UpdateRelevantScoresWorker.new.perform(id)
   end
 
   def reading_time
@@ -139,7 +139,8 @@ class Reaction < ApplicationRecord
   end
 
   def record_field_test_event
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_reaction")
+    Users::RecordFieldTestEventWorker
+      .perform_async(user_id, :follow_implicit_points, "user_creates_reaction")
   end
 
   def notify_slack_channel_about_vomit_reaction

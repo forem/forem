@@ -9,9 +9,9 @@ RSpec.describe "Admin bans user", type: :system do
     visit edit_admin_user_path(user.id)
   end
 
-  def ban_user
+  def suspend_user
     visit "/admin/users/#{user.id}/edit"
-    select("Ban", from: "user_user_status")
+    select("Suspend", from: "user_user_status")
     fill_in("user_note_for_current_role", with: "something")
     click_button("Update User Status")
     expect(page).to have_content("User has been updated")
@@ -30,7 +30,7 @@ RSpec.describe "Admin bans user", type: :system do
     user.add_role :tag_moderator, tag
   end
 
-  def unban_user
+  def unsuspend_user
     visit "/admin/users/#{user.id}/edit"
     select("Regular Member", from: "user_user_status")
     fill_in("user_note_for_current_role", with: "good user")
@@ -49,16 +49,16 @@ RSpec.describe "Admin bans user", type: :system do
   end
 
   # to-do: add spec for invalid bans
-  it "checks that the user is banned and has note" do
-    ban_user
+  it "checks that the user is suspended and has note" do
+    suspend_user
     expect(user.banned).to eq(true)
-    expect(Note.last.reason).to eq "Ban"
+    expect(Note.last.reason).to eq "Suspend"
   end
 
-  it "removes other roles if user is banned" do
+  it "removes other roles if user is suspended" do
     user.add_role :trusted
     add_tag_moderator_role
-    ban_user
+    suspend_user
 
     expect(user.banned).to eq(true)
     expect(user.trusted).to eq(false)
@@ -68,7 +68,7 @@ RSpec.describe "Admin bans user", type: :system do
 
   it "unbans user" do
     user.add_role :banned
-    unban_user
+    unsuspend_user
 
     expect(user.has_role?(:banned)).to eq(false)
   end

@@ -3,7 +3,7 @@ import '../../../storybook-utilities/designSystem.scss';
 import notes from '../../avatars-and-logos.md';
 
 export default {
-  title: '3_Components/Avatars & Logos/Avatars/HTML',
+  title: 'Components/Avatars & Logos/Avatars/HTML',
   parameters: {
     notes,
   },

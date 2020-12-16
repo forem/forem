@@ -18,7 +18,7 @@ module Admin
           flash[:error] = "Error: User ID ##{tag_params[:user_id]} was not found,
           or their account has errors: #{user&.errors_as_sentence}"
         end
-        redirect_to admin_tag_path(params[:tag_id])
+        redirect_to edit_admin_tag_path(params[:tag_id])
       end
 
       def destroy
@@ -31,7 +31,7 @@ module Admin
           flash[:error] = "Error: User ID ##{tag_params[:user_id]} was not found,
           or their account has errors: #{user&.errors_as_sentence}"
         end
-        redirect_to admin_tag_path(tag.id)
+        redirect_to edit_admin_tag_path(tag.id)
       end
 
       private

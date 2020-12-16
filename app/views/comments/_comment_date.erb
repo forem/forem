@@ -1,7 +1,6 @@
-<div class="comment-date">
-  <a href="<%= decorated_comment.path %>">
-    <time datetime="<%= decorated_comment.published_timestamp %>">
-      <%= decorated_comment.readable_publish_date %>
-    </time>
-  </a>
-</div>
+<span class="color-base-30 px-2" role="presentation">&bull;</span>
+<a href="<%= URL.comment(decorated_comment) %>" class="comment-date crayons-link crayons-link--secondary fs-s">
+  <time datetime="<%= decorated_comment.published_timestamp %>">
+    <%= decorated_comment.readable_publish_date %>
+  </time>
+</a>
