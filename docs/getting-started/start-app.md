@@ -48,7 +48,7 @@ worked out.
 # Starting the application (advanced)
 
 To have additional control in your local environment, you might prefer using an
-advanced setup to start the application.
+advanced setup to start the application by using [Overmind][overmind].
 
 The prerequisite is to install [Overmind][overmind], a process manager which
 takes advantage of [tmux][tmux].
