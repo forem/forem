@@ -10,7 +10,7 @@ module Authentication
       def new_user_data
         # Apple sends `first_name` and `last_name` as separate fields
         name = "#{info.first_name} #{info.last_name}"
-        timestamp = raw_info.auth_time || raw_info.id_info.auth_time
+        timestamp = raw_info.id_info.auth_time
 
         user_data = {
           email: info.email,
@@ -29,16 +29,8 @@ module Authentication
       end
 
       def existing_user_data
-        # Apple by default will send nil `first_name` and `last_name` after
-        # the first login. To cover the case where a user disconnects their
-        # Apple authorization, signs in again and then changes their name,
-        # we update the username only if the name is not nil
-        apple_username = info.first_name.present? ? info.first_name.downcase : nil
-        timestamp = raw_info.auth_time || raw_info.id_info.auth_time
-
-        data = { apple_created_at: Time.zone.at(timestamp) }
-        data[:apple_username] = apple_username if apple_username
-        data
+        timestamp = raw_info.id_info.auth_time
+        { apple_created_at: Time.zone.at(timestamp) }
       end
 
       # For Apple we override this method because the `info` payload doesn't
@@ -48,11 +40,19 @@ module Authentication
       # always be the same on each login so we use the email hash as suffix to
       # avoid collisions with other registrations with the same first_name
       def user_nickname
-        [
-          info.first_name&.downcase,
-          info.last_name&.downcase,
-          Digest::SHA512.hexdigest(info.email),
-        ].join("_")[0...25]
+        if info.first_name.present? || info.last_name.present?
+          # We sometimes get `info.first_name` and `info.last_name`
+          [
+            info.first_name&.downcase,
+            info.last_name&.downcase,
+            Digest::SHA512.hexdigest(info.email),
+          ].join("_")[0...25]
+        else
+          # This covers an edge case where the Apple Id has already given
+          # permissions to the forem auth and we don't have anything else
+          # to work with other than the email
+          ["user", Digest::SHA512.hexdigest(info.email)].join("_")[0...15]
+        end
       end
 
       def self.official_name
