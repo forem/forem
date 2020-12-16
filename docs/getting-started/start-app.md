@@ -57,8 +57,7 @@ This will allow you to launch all your app's processes in the same terminal, nav
 of each service separately, restart each service separately and have a better
 debugging experience.
 
-After installing [Overmind][overmind] all you have to do to start the
-application is launch:
+After installing [Overmind][overmind], launch the application:
 
 ```shell
 overmind s -f Procfile.dev
