@@ -76,7 +76,7 @@ to the web server by opening a separate terminal window and typing:
 overmind c web
 ```
 
-this will open up a [tmux][tmux] window pane at the debugging statement
+This will open up a [tmux][tmux] window pane at the debugging statement
 position.
 
 An example:
