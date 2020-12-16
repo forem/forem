@@ -96,8 +96,8 @@ Overmind launches the various services required for our local setup: `web` (the
 Rails web server), `webpacker` (the server managing JavaScript) and `sidekiq`
 (the server managing the asynchronous queue).
 
-If, for example, you want to inspect the Sidekiq logs, proceed by opening a
-separate terminal window and typing:
+If, for example, you want to inspect just the Sidekiq logs, you can open a
+separate terminal window to look at those logs specifically:
 
 ```shell
 overmind c sidekiq
