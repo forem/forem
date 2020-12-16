@@ -7,7 +7,7 @@ module Users
 
       user.comments.find_each do |comment|
         comment.reactions.delete_all
-        cache_buster.bust_comment(comment.commentable)
+        EdgeCache::BustComment.call(comment.commentable)
         comment.remove_notifications
         comment.remove_from_elasticsearch
         comment.delete
