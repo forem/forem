@@ -36,7 +36,7 @@ module Admin
     end
 
     def add_owner
-      @podcast_ownership = PodcastOwnership.new(podcast_ownership_params)
+      @podcast_ownership = PodcastOwnership.new(podcast_id: params["id"], user_id: params["podcast"]["user_id"])
 
       if @podcast_ownership.save
         flash[:success] = "Owner created successfully"
