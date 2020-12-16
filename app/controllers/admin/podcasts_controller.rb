@@ -15,7 +15,9 @@ module Admin
       @podcasts = @podcasts.where("podcasts.title ILIKE :search", search: "%#{params[:search]}%")
     end
 
-    def edit; end
+    def edit
+      @podcast_ownership = Podcast.find(params[:id])
+    end
 
     def update
       if @podcast.update(podcast_params)
@@ -31,11 +33,6 @@ module Admin
       Podcasts::GetEpisodesWorker.perform_async(podcast_id: @podcast.id, limit: limit, force: force)
       flash[:notice] = "Podcast's episodes fetching was scheduled (#{@podcast.title}, ##{@podcast.id})"
       redirect_to admin_podcasts_path
-    end
-
-    def remove_owner
-      @podcast_ownership = PodcastOwnership.find(params[:id])
-      @podcast_ownership.destroy
     end
 
     def add_owner

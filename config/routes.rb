@@ -79,7 +79,6 @@ Rails.application.routes.draw do
         member do
           post :fetch
           post :add_owner
-          delete :remove_owner
         end
       end
 

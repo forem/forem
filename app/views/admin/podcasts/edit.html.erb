@@ -23,7 +23,7 @@
     <% end %>
   </div>
   <div class="crayons-card p-6">
-    <h4 class="mb-4">Manage Admins</h4>
+    <h4 class="mb-4">Manage Owners</h4>
     <% if @podcast.admins.present? %>
       <ul class="list-group list-group-flush mb-3">
         <% @podcast.admins.each do |admin| %>
@@ -44,12 +44,12 @@
       <p>Created by <%= link_to "@#{@podcast.creator.username}", "/#{@podcast.creator.username}" %></p>
     <% end %>
 
-    <%= form_for @podcast, url: add_admin_admin_podcast_path(@podcast.id), html: { method: :post } do |f| %>
+    <%= form_for @podcast, url: add_owner_admin_podcast_path(@podcast.id), html: { method: :post } do |f| %>
       <div class="form-group">
-        <%= f.label "Add Admin (by user_id)", for: "podcast_user_id" %>
+        <%= f.label "Add Owner (by user_id)", for: "podcast_user_id" %>
         <%= f.text_field :user_id, value: "", class: "form-control" %>
       </div>
-      <%= f.submit "Add Admin", class: "btn btn-primary" %>
+      <%= f.submit "Add Owner", class: "btn btn-primary" %>
     <% end %>
   </div>
 

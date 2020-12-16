@@ -37,15 +37,6 @@ RSpec.describe "/admin/podcasts", type: :request do
     end
   end
 
-  describe "Removing owner" do
-    it "removes an owner" do
-      podcast_ownership_id = podcast_ownership.id
-      expect do
-        delete remove_owner_admin_podcast_path(podcast_ownership_id)
-      end.to change(PodcastOwnership, :count).by(-1)
-    end
-  end
-
   describe "Updating" do
     let(:update_params) do
       {
