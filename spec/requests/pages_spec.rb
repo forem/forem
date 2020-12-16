@@ -126,10 +126,9 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /welcome" do
-    let(:user) { create(:user, id: 1) }
+    let(:user) { create(:user, :admin, id: 1) }
 
     it "redirects to the latest welcome thread" do
-      user.add_role(:admin)
       earlier_welcome_thread = create(:article, user: user, tags: "welcome")
       earlier_welcome_thread.update(published_at: Time.current - 1.week)
       latest_welcome_thread = create(:article, user: user, tags: "welcome")
@@ -159,7 +158,7 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /challenge" do
-    let(:user) { create(:user, id: 1) }
+    let(:user) { create(:user, :admin, id: 1) }
 
     it "redirects to the latest challenge thread" do
       earlier_challenge_thread = create(:article, user: user, tags: "challenge")

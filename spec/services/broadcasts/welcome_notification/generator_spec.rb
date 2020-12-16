@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
-  let(:mascot_account)  { create(:user) }
+  let(:mascot_account)  { create(:user, :admin) }
   let!(:welcome_thread) { create(:article, user: mascot_account, published: true, tags: "welcome") }
 
   # welcome_broadcast is explicitly not readonly so that we can test against an inactive broadcast
