@@ -135,7 +135,7 @@
     "lint-staged": "^10.5.3",
     "markdown-loader": "^6.0.0",
     "prettier": "^2.2.1",
-    "redoc-cli": "0.10.1",
+    "redoc-cli": "0.10.2",
     "sass": "1.30.0",
     "sass-loader": "^10.1.0",
     "start-server-and-test": "^1.11.6",
