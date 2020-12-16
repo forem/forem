@@ -6,7 +6,7 @@ import './typography.scss';
 import notes from './typography.md';
 
 export default {
-  title: '2_Base/Typography/1_Main',
+  title: 'Fundamentals/Typography/1_Main',
   parameters: { notes },
 };
 

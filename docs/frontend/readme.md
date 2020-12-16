@@ -1,5 +1,4 @@
 ---
-title: Frontend Guide
 items:
   - plain-js.md
   - webpacker.md
@@ -13,5 +12,6 @@ items:
   - tracking.md
   - accessibility.md
   - tips.md
+---
 
 # Frontend Guide

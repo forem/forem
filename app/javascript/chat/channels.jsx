@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/overflow-horizontal.svg';
-import ChannelButton from './components/channelButton';
+import ChannelButton from './components/ChannelButton';
 import { channelSorter } from './util';
 
 const Channels = ({

@@ -247,8 +247,13 @@ module Admin
       config[:credit_prices_in_cents]&.transform_values!(&:to_i)
     end
 
+    def provider_keys_missing(entry)
+      SiteConfig.public_send("#{entry}_key").blank? || SiteConfig.public_send("#{entry}_secret").blank?
+    end
+
     def invalid_provider_entry(entry)
-      entry.blank? || helpers.available_providers_array.exclude?(entry)
+      entry.blank? || helpers.available_providers_array.exclude?(entry) ||
+        provider_keys_missing(entry)
     end
 
     def email_login_disabled_with_one_or_less_auth_providers(enabled_providers)

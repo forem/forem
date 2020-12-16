@@ -2,9 +2,16 @@ require "rails_helper"
 
 RSpec.describe "Users", type: :request do
   describe "GET /users" do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, username: "Sloan") }
     let!(:suggested_users_list) { %w[eeyore] }
-    let!(:suggested_user) { create(:user, name: "Eeyore", username: "eeyore", summary: "I am always sad :(") }
+    let!(:suggested_user_profile) do
+      create(
+        :profile,
+        user: create(:user, :without_profile, username: "eeyore", name: "Eeyore"),
+        summary: "I am always sad",
+      )
+    end
+    let!(:suggested_user) { suggested_user_profile.user }
 
     before do
       allow(SiteConfig).to receive(:suggested_users).and_return(suggested_users_list)

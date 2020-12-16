@@ -1,5 +1,8 @@
 /* eslint-env node */
 import 'jest-axe/extend-expect';
-import filterXss from './app/assets/javascripts/lib/xss';
+import './app/assets/javascripts/lib/xss';
 
-global.filterXss = filterXss;
+process.on('unhandledRejection', (error) => {
+  // Errors thrown here are typically fetch responses that have not been mocked.
+  throw error;
+});

@@ -45,6 +45,7 @@
     <nav class="hidden m:block">
       <% Constants::Settings::TAB_LIST.each do |possible_tab| %>
         <a class="crayons-link crayons-link--block <% if @tab == possible_tab.downcase.tr(' ', '-') %>crayons-link--current<% end %>" href="/settings/<%= possible_tab.downcase.tr(" ", "-") %>">
+          <%= inline_svg_tag("twemoji/#{possible_tab.downcase.tr(' ', '-')}", aria: true, class: "crayons-icon crayons-icon--default", title: possible_tab) %>
           <%= possible_tab %>
         </a>
       <% end %>

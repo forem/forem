@@ -5,7 +5,7 @@ import notes from './dropdowns.md';
 import { Dropdown } from '@crayons';
 
 export default {
-  title: '3_Components/Dropdowns',
+  title: 'Components/Dropdowns',
   decorators: [withKnobs],
   parameters: { notes },
 };

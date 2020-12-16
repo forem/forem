@@ -1,9 +1,11 @@
 
 <header class="flex items-center mb-6">
   <h2 class="crayons-title mb-4">Listings</h2>
-  <a href="/admin/listings/categories"
-  aria-label="Listing Categories"
-  class="ml-auto crayons-btn">
+
+  <a
+    href="<%= admin_listing_categories_path %>"
+    aria-label="Listing Categories"
+    class="ml-auto crayons-btn">
     Listing Categories
   </a>
 </header>
@@ -57,8 +59,19 @@
         <td><%= listing.bumped_at ? "#{time_ago_in_words(listing.bumped_at)} ago" : "Draft" %></td>
       </tr>
       <tr>
-        <td class="buffer-cell border-0" colspan="7" data-controller="buffer" data-action="load@window->buffer#autosizeBodyText">
-          <button class="btn btn-secondary" data-toggle="collapse" data-target="#buffering-area-for-listing-<%= listing.id %>" aria-expanded="false" aria-controls="buffering-area-for-listing-<%= listing.id %>">
+        <td
+          class="buffer-cell border-0"
+          colspan="7"
+          data-controller="buffer"
+          data-action="load@window->buffer#autosizeBodyText"
+          data-buffer-bg-highlighted-class="bg-highlighted"
+          data-buffer-border-highlighted-class="border-highlighted">
+          <button
+            class="btn btn-secondary"
+            data-toggle="collapse"
+            data-target="#buffering-area-for-listing-<%= listing.id %>"
+            aria-expanded="false"
+            aria-controls="buffering-area-for-listing-<%= listing.id %>">
             Share to Buffer
           </button>
 
@@ -73,7 +86,7 @@
             <%= form_with url: admin_buffer_updates_path, html: { data: { action: "submit->buffer#highlightElement" } } do %>
               <input type="hidden" name="social_channel" value="listings_twitter" />
               <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-              <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">
+              <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-buffer-target="bodyText">
               📋 New <%= community_name %> Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013
                 <% if listing.user.twitter_username? %>
                 Posted by @<%= listing.user.twitter_username %>

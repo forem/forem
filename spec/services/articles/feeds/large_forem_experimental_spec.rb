@@ -1,14 +1,5 @@
 require "rails_helper"
 
-NON_DEFAULT_EXPERIMENTS = %i[
-  more_comments_experiment
-  more_tag_weight_randomized_at_end_experiment
-  more_comments_randomized_at_end_experiment
-  more_comments_medium_weight_randomized_at_end_experiment
-  more_comments_minimal_weight_randomized_at_end_experiment
-  mix_of_everything_experiment
-].freeze
-
 RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   let(:user) { create(:user) }
   let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
@@ -137,33 +128,12 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
   end
 
-  describe "all non-default experiments" do
-    it "returns articles for all experiments" do
+  describe "more_comments_minimal_weight_randomized_at_end" do
+    it "returns articles" do
       new_story = create(:article, published_at: 10.minutes.ago, score: 10)
-      NON_DEFAULT_EXPERIMENTS.each do |method|
-        stories = feed.public_send(method)
-        expect(stories).to include(old_story)
-        expect(stories).to include(new_story)
-      end
-    end
-  end
-
-  describe "#more_comments_experiment" do
-    let(:article_with_one_comment) { create(:article) }
-    let(:article_with_five_comments) { create(:article) }
-    let(:stories) { feed.more_comments_experiment }
-
-    before do
-      create(:comment, user: user, commentable: article_with_one_comment)
-      create_list(:comment, 5, user: user, commentable: article_with_five_comments)
-      article_with_one_comment.update_score
-      article_with_five_comments.update_score
-      article_with_one_comment.reload
-      article_with_five_comments.reload
-    end
-
-    it "ranks articles with more comments higher" do
-      expect(stories[0]).to eq article_with_five_comments
+      stories = feed.more_comments_minimal_weight_randomized_at_end
+      expect(stories).to include(old_story)
+      expect(stories).to include(new_story)
     end
   end
 
@@ -267,7 +237,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       before do
         user.follow(tag)
         user.save
-        user.follows.last.update(points: 2)
+        user.follows.last.update(explicit_points: 2)
       end
 
       it "returns the followed tag point value" do
@@ -283,7 +253,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         user.follow(tag)
         user.follow(tag2)
         user.save
-        user.follows.each { |follow| follow.update(points: 2) }
+        user.follows.each { |follow| follow.update(explicit_points: 2) }
       end
 
       it "returns the sum of followed tag point values" do

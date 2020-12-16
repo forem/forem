@@ -1,5 +1,4 @@
 # This workflow posts an automated comment on every new issue
-
 # https://github.com/marketplace/actions/create-or-update-comment (https://github.com/peter-evans/create-or-update-comment)
 
 name: Automatic Comment

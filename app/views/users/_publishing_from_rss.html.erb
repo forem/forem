@@ -1,6 +1,8 @@
 <div class="crayons-card crayons-card--content-rows">
   <div class="grid gap-4">
-    <h3>Publishing to <%= community_name %> from RSS</h3>
+    <h2 class="crayons-subtitle-1">
+      Publishing to <%= community_name %> from RSS
+    </h2>
     <% if @user.feed_url.present? %>
       <%= form_for(@user) do |f| %>
         <%= f.hidden_field :feed_url, value: @user.feed_url %>
@@ -49,7 +51,7 @@
     </div>
 
     <%= f.hidden_field :tab, value: @tab %>
-    <% button_text = @user.feed_url.present? ? "Save" : "Submit" %>
+    <% button_text = @user.feed_url.present? ? "Save Feed Settings" : "Submit Feed Settings" %>
     <div><button class="crayons-btn" type="submit"><%= button_text %></button></div>
   <% end %>
 
