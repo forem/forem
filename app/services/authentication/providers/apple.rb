@@ -29,8 +29,16 @@ module Authentication
       end
 
       def existing_user_data
+        # Apple by default will send nil `first_name` and `last_name` after
+        # the first login. To cover the case where a user disconnects their
+        # Apple authorization, signs in again and then changes their name,
+        # we update the username only if the name is not nil
+        apple_username = info.first_name.present? ? info.first_name.downcase : nil
         timestamp = raw_info.id_info.auth_time
-        { apple_created_at: Time.zone.at(timestamp) }
+
+        data = { apple_created_at: Time.zone.at(timestamp) }
+        data[:apple_username] = apple_username if apple_username
+        data
       end
 
       # For Apple we override this method because the `info` payload doesn't
