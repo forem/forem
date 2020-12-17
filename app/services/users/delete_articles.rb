@@ -21,7 +21,7 @@ module Users
         article.purge
       end
       virtual_articles.each do |article|
-        cache_buster.bust_article(article)
+        EdgeCache::BustArticle.call(article)
       end
     end
   end
