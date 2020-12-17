@@ -26,7 +26,7 @@
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
     "e2e": "cypress open",
-    "e2e:runner": "knapsack-pro-cypress",
+    "e2e:runner": "bin/e2e",
     "e2e:server": "bin/rails s -p 3000 -b 0.0.0.0",
     "e2e:ci": "start-server-and-test e2e:server http://localhost:3000 e2e:runner"
   },
