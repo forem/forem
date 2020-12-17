@@ -30,7 +30,7 @@ RSpec.describe "Articles", type: :request do
       create(:article, featured: true)
 
       get feed_path
-      expect(response.body).to not_include("<image>")
+      expect(response.body).not_to include("<image>")
     end
 
     context "with caching headers" do
@@ -198,7 +198,7 @@ RSpec.describe "Articles", type: :request do
       it "does not contain image tag" do
         get tag_feed_path(tag.name)
 
-        expect(response.body).to not_include("<image>")
+        expect(response.body).not_to include("<image>")
       end
     end
 
