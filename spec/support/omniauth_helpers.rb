@@ -74,6 +74,7 @@ module OmniauthHelpers
       info: {
         sub: "001551.6fb185533f63469196d61e2ae126febf.1523",
         email: "hynnu385xiabcdef@privaterelay.appleid.com",
+        auth_time: 1_589_472_002,
         first_name: "fname",
         last_name: "lname"
       },
