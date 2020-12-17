@@ -13,11 +13,11 @@ RSpec.describe "Beta provider access", type: :system do
       visit sign_up_path
 
       providers.each do |name|
-        expect(page).to have_link("Continue with #{name}")
+        expect(page).to have_button("Continue with #{name}")
       end
 
       beta_providers.each do |name|
-        expect(page).not_to have_link("Continue with #{name}")
+        expect(page).not_to have_button("Continue with #{name}")
       end
     end
 
@@ -26,11 +26,11 @@ RSpec.describe "Beta provider access", type: :system do
       visit sign_up_path
 
       providers.each do |name|
-        expect(page).to have_link("Continue with #{name}")
+        expect(page).to have_button("Continue with #{name}")
       end
 
       beta_providers.each do |name|
-        expect(page).to have_link("Continue with #{name}")
+        expect(page).to have_button("Continue with #{name}")
       end
     end
   end

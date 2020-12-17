@@ -23,7 +23,8 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
     allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
     visit sign_up_path
     Authentication::Providers.available.each do |provider_name|
-      provider_auth_url = find("a.crayons-btn--brand-#{provider_name}")["href"]
+      provider_auth_button = find("button.crayons-btn--brand-#{provider_name}")
+      provider_auth_url = provider_auth_button.find(:xpath, "..")["action"]
       expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
     end
 
@@ -32,7 +33,8 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
 
     # After an update the callback_url should now match SiteConfig.app_domain
     Authentication::Providers.available.each do |provider_name|
-      provider_auth_url = find("a.crayons-btn--brand-#{provider_name}")["href"]
+      provider_auth_button = find("button.crayons-btn--brand-#{provider_name}")
+      provider_auth_url = provider_auth_button.find(:xpath, "..")["action"]
       expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
     end
   end
