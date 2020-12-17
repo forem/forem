@@ -101,12 +101,11 @@ RSpec.describe "Articles", type: :request do
       end
 
       it "contains a user composite profile image tag" do
-        expect(response.body).to include("
-          <image>
-            <url>#{user.profile_image_90}</url>
-            <title>#{user.name} profile image</title>
-            <link>#{URL.user(user)}</link>
-          </image>")
+        expect(response.body).to include("<image>")
+        expect(response.body).to include("<url>#{user.profile_image_90}</url>")
+        expect(response.body).to include("<title>#{user.name} profile image</title>")
+        expect(response.body).to include("<link>#{URL.user(user)}</link>")
+        expect(response.body).to include("</image>")
       end
     end
 
@@ -128,12 +127,11 @@ RSpec.describe "Articles", type: :request do
       end
 
       it "contains an organization composite profile image tag" do
-        expect(response.body).to include("
-          <image>
-            <url>#{organization.profile_image_90}</url>
-            <title>#{organization.name} profile image</title>
-            <link>#{URL.user(organization)}</link>
-          </image>")
+        expect(response.body).to include("<image>")
+        expect(response.body).to include("<url>#{organization.profile_image_90}</url>")
+        expect(response.body).to include("<title>#{organization.name} profile image</title>")
+        expect(response.body).to include("<link>#{URL.user(organization)}</link>")
+        expect(response.body).to include("</image>")
       end
     end
 
