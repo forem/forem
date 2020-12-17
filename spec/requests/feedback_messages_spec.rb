@@ -55,7 +55,7 @@ RSpec.describe "feedback_messages", type: :request do
       before do
         sign_in user
         post "/feedback_messages", params: {
-          feedback_messages: {
+          feedback_message: {
             message: "Test Message",
             feedback_type: "connect",
             category: "rude or vulgar",
