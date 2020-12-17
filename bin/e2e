@@ -1,0 +1,9 @@
+#!/bin/bash
+if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS" = "" ]; then
+  KNAPSACK_PRO_ENDPOINT=https://api-disabled-for-fork.knapsackpro.com \
+    KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
+    KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS=disabled-for-fork \
+    npx cypress run # run without parallelization
+else
+  npx knapsack-pro-cypress # parallelization is available
+fi
