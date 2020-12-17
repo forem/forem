@@ -104,7 +104,7 @@ RSpec.describe "Articles", type: :request do
         expect(response.body).to include("
           <image>
             <url>#{user.profile_image_90}</url>
-            <title>#{user.name} profile image</url>
+            <title>#{user.name} profile image</title>
             <link>#{URL.user(user)}</link>
           </image>")
       end
@@ -131,7 +131,7 @@ RSpec.describe "Articles", type: :request do
         expect(response.body).to include("
           <image>
             <url>#{organization.profile_image_90}</url>
-            <title>#{organization.name} profile image</url>
+            <title>#{organization.name} profile image</title>
             <link>#{URL.user(organization)}</link>
           </image>")
       end
