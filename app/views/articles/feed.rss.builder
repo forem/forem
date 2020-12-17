@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# rubocop:disable Metrics/BlockLength
 
 xml.instruct! :xml, version: "1.0"
 xml.rss version: "2.0" do
@@ -11,7 +12,7 @@ xml.rss version: "2.0" do
     if user
       xml.image do
         xml.url user.profile_image_90
-        xml.title user.name
+        xml.title "#{user.name} profile image"
         xml.link app_url(user.path)
       end
     end
