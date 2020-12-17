@@ -38,7 +38,7 @@ You can install ImageMagick with `brew install imagemagick`.
 
 ### Redis
 
-Forem requires Redis version 4.0 or higher to run.
+Forem requires Redis version 6.0 or higher to run.
 
 We recommend using [Homebrew](https://brew.sh):
 

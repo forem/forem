@@ -49,7 +49,6 @@ export const Article = ({
       }`}
       id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
       data-content-user-id={article.user_id}
-      data-testid={isFeatured ? 'featured-article' : `article-${article.id}`}
     >
       <a
         href={article.path}

@@ -7,7 +7,7 @@ RSpec.describe "admin sidebar", type: :request do
 
   describe "profile admin feature flag" do
     it "shows the option in the sidebar when the feature flag is enabled" do
-      allow(Flipper).to receive(:enabled?).with(:profile_admin).and_return(true)
+      allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
 
       get admin_articles_path
 
@@ -15,7 +15,7 @@ RSpec.describe "admin sidebar", type: :request do
     end
 
     it "does not show the option in the sidebar when the feature flag is disabled" do
-      allow(Flipper).to receive(:enabled?).with(:profile_admin).and_return(false)
+      allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(false)
 
       get admin_articles_path
 

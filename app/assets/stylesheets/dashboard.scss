@@ -77,65 +77,6 @@
       }
     }
 
-    & div.ellipsis-menu {
-      float: right;
-      position: relative;
-
-      & button.ellipsis-menu-btn {
-        display: block;
-        float: right;
-        margin-top: 0.3em;
-        margin-right: -0.6em;
-        border: 0px;
-        background: transparent;
-        img {
-          width: 20px;
-        }
-
-        &:hover {
-          background-color: #eee;
-        }
-      }
-
-      & ul.ellipsis-menu {
-        position: absolute;
-        right: 0;
-        display: block;
-        background-color: white;
-        padding-left: 0;
-        border-style: solid;
-        border-color: #ccc;
-        border-radius: 3px;
-        border-width: 1px;
-        margin-top: 1.75em;
-        margin-right: -0.6em;
-
-        &.hidden {
-          display: none;
-        }
-
-        & hr {
-          margin: 0;
-          color: #ccc;
-          background-color: #ccc;
-          height: 1px;
-          border: 0;
-        }
-
-        & li.ellipsis-menu-item {
-          list-style: none;
-
-          & form * {
-            background-color: transparent;
-          }
-
-          &:hover {
-            background-color: #eee;
-          }
-        }
-      }
-    }
-
     .dashboard-collection-org-details {
       .dashboard-top-pill {
         @include themeable(

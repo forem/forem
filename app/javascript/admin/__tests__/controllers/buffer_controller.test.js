@@ -3,8 +3,11 @@ import BufferController from '../../controllers/buffer_controller';
 
 describe('BufferController', () => {
   beforeEach(() => {
-    document.body.innerHTML = `<div data-controller="buffer">
-      <h2 data-target="buffer.header"></h2>
+    document.body.innerHTML = `
+    <div data-controller="buffer"
+         data-buffer-bg-highlighted-class="bg-highlighted"
+         data-buffer-border-highlighted-class="border-highlighted">
+      <h2 data-buffer-target="header"></h2>
       <button data-action="buffer#tagBufferUpdateConfirmed"></button>
       <button data-action="buffer#tagBufferUpdateDismissed"></button>
       <button data-action="buffer#highlightElement"></button>
@@ -16,8 +19,8 @@ describe('BufferController', () => {
 
   describe('#tagBufferUpdateConfirmed', () => {
     it('adds a badge to the header', () => {
-      const button = document.querySelectorAll('button')[0];
-      const header = document.querySelector('h2');
+      const button = document.getElementsByTagName('button')[0];
+      const header = document.getElementsByTagName('h2')[0];
 
       button.click();
 
@@ -27,8 +30,8 @@ describe('BufferController', () => {
 
   describe('#tagBufferUpdateDismissed', () => {
     it('adds a badge to the header', () => {
-      const button = document.querySelectorAll('button')[1];
-      const header = document.querySelector('h2');
+      const button = document.getElementsByTagName('button')[1];
+      const header = document.getElementsByTagName('h2')[0];
 
       button.click();
 
@@ -38,7 +41,7 @@ describe('BufferController', () => {
 
   describe('#highlightElement', () => {
     it('adds a class to the controller element', () => {
-      const button = document.querySelectorAll('button')[2];
+      const button = document.getElementsByTagName('button')[2];
       const element = document.querySelector("[data-controller='buffer']");
 
       button.click();

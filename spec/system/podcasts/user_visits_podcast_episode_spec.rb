@@ -86,8 +86,8 @@ RSpec.describe "User visits podcast show page", type: :system, js: true do
     it "sees the comments", js: true do
       visit podcast_episode.path.to_s
 
-      expect(page).to have_selector(".comment-deep-0#comment-node-#{comment.id}", visible: :visible, count: 1)
-      expect(page).to have_selector(".comment-deep-1#comment-node-#{comment2.id}", visible: :visible, count: 1)
+      expect(page).to have_selector(".comment--deep-0#comment-node-#{comment.id}", visible: :visible, count: 1)
+      expect(page).to have_selector(".comment--deep-1#comment-node-#{comment2.id}", visible: :visible, count: 1)
     end
   end
 end

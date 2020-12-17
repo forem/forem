@@ -9,6 +9,10 @@ module Constants
           they're creating a new account in your community",
         placeholder: ""
       },
+      allowed_registration_email_domains: {
+        description: "Restrict registration to only certain emails? (comma-separated list)",
+        placeholder: "dev.to, forem.com, codenewbie.org"
+      },
       authentication_providers: {
         description: "How can users sign in?",
         placeholder: ""
@@ -53,6 +57,10 @@ module Constants
         description: "Used in meta description tags etc.",
         placeholder: "A fabulous community of kind and welcoming people."
       },
+      community_emoji: {
+        description: "Used in the title tags across the site alongside the community name",
+        placeholder: ""
+      },
       community_member_label: {
         description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
         placeholder: "user"
@@ -81,6 +89,9 @@ module Constants
       },
       default_font: {
         description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
+      },
+      display_email_domain_allow_list_publicly: {
+        description: "Do you want to display the list of allowed domains, or keep it private?"
       },
       display_jobs_banner: {
         description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
@@ -159,7 +170,7 @@ module Constants
         placeholder: SVG_PLACEHOLDER
       },
       logo_png: {
-        description: "Minimum 1024px, used for PWA etc.",
+        description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
         placeholder: IMAGE_PLACEHOLDER
       },
       logo_svg: {
@@ -167,7 +178,7 @@ module Constants
         placeholder: SVG_PLACEHOLDER
       },
       main_social_image: {
-        description: "Used as the main image in social networks and OpenGraph",
+        description: "Used as the main image in social networks and OpenGraph. Recommended aspect ratio of 16:9 (600x337px,1200x675px)",
         placeholder: IMAGE_PLACEHOLDER
       },
       mailchimp_api_key: {

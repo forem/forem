@@ -11,14 +11,15 @@
     <%= @user_json_ld.to_json.html_safe %>
   </script>
 <% end %>
-<% cache "main-user-profile-header-area-#{@user.id}-#{@user.profile_updated_at}-#{user_signed_in?}", expires_in: 10.days do %>
+
+<% cache "user-profile-header-area-#{@user.id}-#{@user.profile_updated_at}-#{user_signed_in?}", expires_in: 10.days do %>
   <style>
     :root {
       --profile-brand-color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
     }
   </style>
   <div class="brand-bg">
-    <div class="crayons-layout pt-7 m:pt-9">
+    <div class="crayons-layout crayons-layout--limited-l pt-7 m:pt-9">
       <header class="profile-header crayons-card mt-2">
         <div class="relative profile-header__top">
           <span class="crayons-avatar crayons-avatar--3xl">
@@ -83,71 +84,77 @@
                   <%= inline_svg_tag("github.svg", class: "crayons-icon", aria: true, title: "GitHub logo") %>
                 </a>
               <% end %>
-              <% if @user.mastodon_url? %>
-                <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("mastodon.svg", class: "crayons-icon", aria: true, title: "Mastodon logo") %>
-                </a>
-              <% end %>
-              <% if @user.facebook_url? %>
-                <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Facebook logo") %>
-                </a>
-              <% end %>
-              <% if @user.youtube_url? %>
-                <a href="<%= @user.youtube_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("youtube.svg", class: "crayons-icon", aria: true, title: "Youtube logo") %>
-                </a>
-              <% end %>
-              <% if @user.linkedin_url? %>
-                <a href="<%= @user.linkedin_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("linkedin.svg", class: "crayons-icon", aria: true, title: "LinkedIn logo") %>
-                </a>
-              <% end %>
-              <% if @user.behance_url? %>
-                <a href="<%= @user.behance_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("behance.svg", class: "crayons-icon", aria: true, title: "Behance logo") %>
-                </a>
-              <% end %>
-              <% if @user.stackoverflow_url? %>
-                <a href="<%= @user.stackoverflow_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("stackoverflow.svg", class: "crayons-icon", aria: true, title: "StackOverflow logo") %>
-                </a>
-              <% end %>
-              <% if @user.dribbble_url? %>
-                <a href="<%= @user.dribbble_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("dribbble.svg", class: "crayons-icon", aria: true, title: "Dribbble logo") %>
-                </a>
-              <% end %>
-              <% if @user.medium_url? %>
-                <a href="<%= @user.medium_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("medium.svg", class: "crayons-icon", aria: true, title: "Medium logo") %>
-                </a>
-              <% end %>
-              <% if @user.gitlab_url? %>
-                <a href="<%= @user.gitlab_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("gitlab.svg", class: "crayons-icon", aria: true, title: "GitLab logo") %>
-                </a>
-              <% end %>
-              <% if @user.instagram_url? %>
-                <a href="<%= @user.instagram_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("instagram.svg", class: "crayons-icon", aria: true, title: "Instagram logo") %>
-                </a>
-              <% end %>
-              <% if @user.twitch_url? %>
-                <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("twitch.svg", class: "crayons-icon", aria: true, title: "Twitch logo") %>
-                </a>
-              <% end %>
-              <% if @user.website_url? %>
-                <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
-                  <%= inline_svg_tag("external.svg", class: "crayons-icon", aria: true, title: "External link icon") %>
-                </a>
+              <% if SiteConfig.dev_to? %>
+                <% if @user.mastodon_url.present? %>
+                  <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("mastodon.svg", class: "crayons-icon", aria: true, title: "Mastodon logo") %>
+                  </a>
+                <% end %>
+                <% if @user.facebook_url.present? %>
+                  <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("facebook.svg", class: "crayons-icon", aria: true, title: "Facebook logo") %>
+                  </a>
+                <% end %>
+                <% if @user.youtube_url.present? %>
+                  <a href="<%= @user.youtube_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("youtube.svg", class: "crayons-icon", aria: true, title: "Youtube logo") %>
+                  </a>
+                <% end %>
+                <% if @user.linkedin_url.present? %>
+                  <a href="<%= @user.linkedin_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("linkedin.svg", class: "crayons-icon", aria: true, title: "LinkedIn logo") %>
+                  </a>
+                <% end %>
+                <% if @user.behance_url.present? %>
+                  <a href="<%= @user.behance_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("behance.svg", class: "crayons-icon", aria: true, title: "Behance logo") %>
+                  </a>
+                <% end %>
+                <% if @user.stackoverflow_url.present? %>
+                  <a href="<%= @user.stackoverflow_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("stackoverflow.svg", class: "crayons-icon", aria: true, title: "StackOverflow logo") %>
+                  </a>
+                <% end %>
+                <% if @user.dribbble_url.present? %>
+                  <a href="<%= @user.dribbble_url %>" target="_blank" rel="noopener me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("dribbble.svg", class: "crayons-icon", aria: true, title: "Dribbble logo") %>
+                  </a>
+                <% end %>
+                <% if @user.medium_url.present? %>
+                  <a href="<%= @user.medium_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("medium.svg", class: "crayons-icon", aria: true, title: "Medium logo") %>
+                  </a>
+                <% end %>
+                <% if @user.gitlab_url.present? %>
+                  <a href="<%= @user.gitlab_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("gitlab.svg", class: "crayons-icon", aria: true, title: "GitLab logo") %>
+                  </a>
+                <% end %>
+                <% if @user.instagram_url.present? %>
+                  <a href="<%= @user.instagram_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("instagram.svg", class: "crayons-icon", aria: true, title: "Instagram logo") %>
+                  </a>
+                <% end %>
+                <% if @user.twitch_url.present? %>
+                  <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("twitch.svg", class: "crayons-icon", aria: true, title: "Twitch logo") %>
+                  </a>
+                <% end %>
+                <% if @user.website_url.present? %>
+                  <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
+                    <%= inline_svg_tag("external.svg", class: "crayons-icon", aria: true, title: "External link icon") %>
+                  </a>
+                <% end %>
               <% end %>
             </span>
           </div>
         </div>
 
         <%= render "users/metadata" %>
+
+        <div class="p-3 pt-0 block m:hidden js-user-info-trigger-wrapper">
+          <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger">More info about @<%= @user.username %></button>
+        </div>
 
         <div class="crayons-modal align-left hidden">
           <div class="crayons-modal__box">
@@ -177,23 +184,19 @@
   </div>
 <% end %>
 
-<div class="home sub-home" id="index-container"
-     data-params="<%= params.merge(user_id: @user.id, class_name: "Article", sort_by: "published_at", sort_direction: "desc").to_json(only: %i[tag user_id q class_name sort_by sort_direction]) %>" data-which="<%= @list_of %>"
-     data-tag=""
-     data-feed="<%= params[:timeframe] || "base-feed" %>"
-     data-articles-since="0">
-  <%= render "users/sidebar" %>
-  <div class="articles-list" id="articles-list">
-    <div class="on-page-nav-controls user-nav-controls" id="on-page-nav-controls">
-      <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-        <div class="crayons-icon nav-icon">
-          <%= SiteConfig.left_navbar_svg_icon.html_safe %>
-        </div>
-      </button>
-      <button class="on-page-nav-butt on-page-nav-butt-right" style="margin-top:-1px;" id="on-page-nav-butt-right" aria-label="nav-button-right">
-        <img style="height:28px;width:28px;" src="<%= asset_path "ribbon.svg" %>" alt="right-sidebar-nav">
-      </button>
-    </div>
+<div
+  class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols crayons-layout--2-cols--1-2 pt-4 m:pt-0"
+  id="index-container"
+  data-params="<%= params.merge(user_id: @user.id, class_name: "Article", sort_by: "published_at", sort_direction: "desc").to_json(only: %i[tag user_id q class_name sort_by sort_direction]) %>" data-which="<%= @list_of %>"
+  data-tag=""
+  data-feed="<%= params[:timeframe] || "base-feed" %>"
+  data-articles-since="0">
+
+  <div class="crayons-layout__sidebar-left">
+    <%= render partial: "users/sidebar", locals: { repositories: @github_repositories } %>
+  </div>
+
+  <main class="crayons-layout__content articles-list" id="articles-list">
     <div class="substories" id="substories">
       <% if params[:view] == "comments" %>
         <%= render "users/comments_section" %>
@@ -204,10 +207,7 @@
     <div class="loading-articles" id="loading-articles">
       loading...
     </div>
-  </div>
-  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
-    <%= render partial: "users/sidebar_additional", locals: { repositories: @github_repositories } %>
-  <% end %>
+  </main>
 </div>
 
 <%= render "stories/stories_list_script" %>

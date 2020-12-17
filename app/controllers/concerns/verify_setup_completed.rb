@@ -7,8 +7,6 @@ module VerifySetupCompleted
     community_name
     community_description
 
-    mascot_user_id
-
     suggested_tags
     suggested_users
   ].freeze

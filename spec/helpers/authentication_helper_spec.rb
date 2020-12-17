@@ -38,80 +38,49 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
-  describe "#recaptcha_configured_and_enabled?" do
-    context "when recaptcha is enabled" do
-      before do
-        allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
-      end
+  describe "#provider_keys_configured?(provider)" do
+    let(:provider) { "facebook" }
 
-      it "returns true if both site & secret keys present" do
-        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
+    it "returns true if provider key and secret both present" do
+      allow(SiteConfig).to receive(:"#{provider}_key").and_return("someKey")
+      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("someSecret")
 
-        expect(recaptcha_configured_and_enabled?).to be(true)
-      end
-
-      it "returns false if site or secret key missing" do
-        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("")
-
-        expect(recaptcha_configured_and_enabled?).to be(false)
-      end
+      expect(provider_keys_configured?(provider)).to be(true)
     end
 
-    it "returns false if recaptcha disabled for email signup" do
-      allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(false)
+    it "returns false if either provider key or secret is missing" do
+      allow(SiteConfig).to receive(:"#{provider}_key").and_return("someKey")
+      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("")
 
-      expect(recaptcha_configured_and_enabled?).to be(false)
+      expect(provider_keys_configured?(provider)).to be(false)
+
+      allow(SiteConfig).to receive(:"#{provider}_key").and_return("")
+      allow(SiteConfig).to receive(:"#{provider}_secret").and_return("someSecret")
+
+      expect(provider_keys_configured?(provider)).to be(false)
     end
   end
 
   describe "tooltip classes, attributes and content" do
-    context "when invite-only-mode enabled and no enabled auth providers" do
+    context "when invite-only-mode enabled and no enabled registration options" do
       before do
         allow(SiteConfig).to receive(:invite_only_mode).and_return(true)
         allow(SiteConfig).to receive(:authentication_providers).and_return([])
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(false)
       end
 
       it "returns 'crayons-tooltip' class for relevant helpers" do
         expect(tooltip_class_on_auth_provider_enablebtn).to eq("crayons-tooltip")
-        expect(tooltip_class_on_email_auth_disablebtn).to eq("crayons-tooltip")
       end
 
       it "returns 'disabled' attribute for relevant helper" do
         expect(disabled_attr_on_auth_provider_enablebtn).to eq("disabled")
-        expect(disabled_attr_on_email_auth_disablebtn).to eq("disabled")
       end
 
       it "returns appropriate text for 'tooltip_text_email_or_auth_provider_btns' helper" do
-        invite_only_mode_warning = "You cannot do this until you disable Invite Only Mode"
-        only_one_auth_method_warning = "You cannot do this until you enable at least one other registration option"
+        tooltip_text = "You cannot do this until you disable Invite Only Mode"
 
-        expect(tooltip_text_email_or_auth_provider_btns).to eq(invite_only_mode_warning)
-
-        allow(SiteConfig).to receive(:invite_only_mode).and_return(false)
-
-        expect(tooltip_text_email_or_auth_provider_btns).to eq(only_one_auth_method_warning)
-      end
-    end
-
-    context "when email login enabled and one enabled auth provider" do
-      before do
-        allow(SiteConfig).to receive(:allow_email_password_login).and_return(false)
-        allow(SiteConfig).to receive(:authentication_providers).and_return(["facebook"])
-      end
-
-      it "returns 'crayons-tooltip' class for relevant helpers" do
-        expect(tooltip_class_on_auth_provider_disablebtn).to eq("crayons-tooltip")
-      end
-
-      it "returns 'disabled' attribute for relevant helper" do
-        expect(disabled_attr_on_auth_rpovider_disablebtn).to eq("disabled")
-      end
-
-      it "returns appropriate text for 'tooltip_text_email_or_auth_provider_btns' helper" do
-        only_one_auth_method_warning = "You cannot do this until you enable at least one other registration option"
-
-        expect(tooltip_text_email_or_auth_provider_btns).to eq(only_one_auth_method_warning)
+        expect(tooltip_text_email_or_auth_provider_btns).to eq(tooltip_text)
       end
     end
   end

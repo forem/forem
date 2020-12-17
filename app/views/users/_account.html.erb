@@ -47,7 +47,32 @@
 </div>
 
 <div class="crayons-card crayons-card--content-rows">
-  <h2 class="color-accent-danger">Danger Zone</h2>
+  <h2 class="crayons-subtitle-1">
+    Export content
+  </h2>
+
+  <% if @user.export_requested? %>
+    <div class="crayons-notice crayons-notice--warning">
+      <p>You have recently requested an export of your content. Please check your email.</p>
+    </div>
+  <% else %>
+    <p class="-mt-2">You can request an export of all your content. Currently we only support the export of your posts and comments. They will be emailed to your inbox.</p>
+
+    <%= form_for(@user, html: { id: nil }) do |f| %>
+      <div class="crayons-field crayons-field--checkbox mb-6">
+        <%= f.check_box :export_requested, class: "crayons-checkbox" %>
+        <%= f.label :export_requested, "Request an export of your content", class: "crayons-field__label" %>
+      </div>
+      <%= f.hidden_field :tab, value: @tab, id: nil %>
+      <div><button type="submit" class="crayons-btn">Submit Data Request</button></div>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="crayons-card crayons-card--content-rows">
+  <h2 class="crayons-subtitle-1 color-accent-danger">
+    Danger Zone
+  </h2>
 
   <% if @user.identities.enabled.size > 1 %>
     <div class="grid gap-2">
@@ -80,13 +105,13 @@
   <% end %>
 
   <div class="grid gap-2">
-    <h3>Delete Account</h3>
+    <h3>Delete account</h3>
 
     <% if current_user.email? %>
       <%= form_tag user_request_destroy_path, method: :post, autocomplete: "off", id: "delete__account", class: "grid gap-2" do %>
         <p>Deleting your account will:</p>
         <ul class="list-disc pl-6">
-          <li>delete your profile, along with your authentication associations.
+          <li>Delete your profile, along with your authentication associations.
 
             This does not include applications permissions. You will have to remove them yourself:
 
@@ -94,8 +119,8 @@
           </li>
 
           <%# TODO: expand the delete messaging later %>
-          <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
-          <li>allow your username to become available to anyone.</li>
+          <li>Delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
+          <li>Allow your username to become available to anyone.</li>
         </ul>
         <div><button class="crayons-btn crayons-btn--danger" id="delete__account__btn" type="submit">Delete Account</button></div>
       <% end %>

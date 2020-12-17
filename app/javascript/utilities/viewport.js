@@ -2,7 +2,7 @@
  * Checks if an element is visible in the viewport
  *
  * @example
- * const element = document.querySelector('#element');
+ * const element = document.getElementById('element');
  * isInViewport(element); // true or false
  *
  * @param {object} element - The HTML element to check

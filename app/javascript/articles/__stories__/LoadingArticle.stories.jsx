@@ -3,7 +3,7 @@ import { LoadingArticle } from '..';
 import '../../../assets/stylesheets/articles.scss';
 
 export default {
-  title: '4_App Components/Article Loading',
+  title: 'App Components/Article Loading',
   component: LoadingArticle,
   // Using an arbitrary width here. This is roughly the size of articles in Storybook
   decorators: [(story) => <div style={{ minWidth: '509px' }}>{story()}</div>],

@@ -3,7 +3,7 @@ import '../../storybook-utilities/designSystem.scss';
 import notes from './modals.md';
 
 export default {
-  title: '3_Components/Modals/HTML',
+  title: 'Components/Modals/HTML',
   parameters: { notes },
 };
 

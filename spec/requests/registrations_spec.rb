@@ -89,6 +89,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "when email registration allowed and captcha required" do
       before do
+        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
         allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
       end
@@ -111,12 +113,8 @@ RSpec.describe "Registrations", type: :request do
 
     context "with the creator_onboarding feature flag" do
       before do
-        Flipper.enable(:creator_onboarding)
+        allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
         allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
-      end
-
-      after do
-        Flipper.disable(:creator_onboarding)
       end
 
       it "renders the creator onboarding form" do
@@ -176,7 +174,7 @@ RSpec.describe "Registrations", type: :request do
       end
 
       it "does not raise disallowed if community is set to allow email" do
-        expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
+        expect { post "/users" }.not_to raise_error
       end
 
       it "does not create user with invalid params" do
@@ -226,8 +224,54 @@ RSpec.describe "Registrations", type: :request do
       end
     end
 
+    context "when email registration allowed and email allow list empty" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
+        allow(SiteConfig).to receive(:allowed_registration_email_domains).and_return([])
+      end
+
+      it "creates user when email in allow list" do
+        post "/users", params:
+        { user: { name: "royal #{rand(10)}",
+                  username: "magoo_#{rand(10)}",
+                  email: "queenelizabeth@dev.to",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+    end
+
+    context "when email registration allowed and email allow list present" do
+      before do
+        allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
+        allow(SiteConfig).to receive(:allowed_registration_email_domains).and_return(["dev.to", "forem.com"])
+      end
+
+      it "does not create user when email not in allow list" do
+        post "/users", params:
+        { user: { name: "ronald #{rand(10)}",
+                  username: "mcdonald_#{rand(10)}",
+                  email: "ronald@mcdonald.com",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 0
+      end
+
+      it "creates user when email in allow list" do
+        post "/users", params:
+        { user: { name: "royal #{rand(10)}",
+                  username: "magoo_#{rand(10)}",
+                  email: "queenelizabeth@dev.to",
+                  password: "PaSSw0rd_yo000",
+                  password_confirmation: "PaSSw0rd_yo000" } }
+        expect(User.all.size).to be 1
+      end
+    end
+
     context "when site configured to accept email registration AND require captcha" do
       before do
+        allow(SiteConfig).to receive(:recaptcha_secret_key).and_return("someSecretKey")
+        allow(SiteConfig).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(SiteConfig).to receive(:allow_email_password_registration).and_return(true)
         allow(SiteConfig).to receive(:require_captcha_for_email_password_registration).and_return(true)
       end
@@ -269,17 +313,19 @@ RSpec.describe "Registrations", type: :request do
       end
 
       it "does not raise disallowed" do
-        expect { post "/users" }.not_to raise_error Pundit::NotAuthorizedError
+        expect { post "/users" }.not_to raise_error
       end
 
       it "creates user with valid params passed" do
+        user_email = "yoooo#{rand(100)}@yo.co"
         post "/users", params:
           { user: { name: "test #{rand(10)}",
                     username: "haha_#{rand(10)}",
-                    email: "yoooo#{rand(100)}@yo.co",
+                    email: user_email,
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.all.size).to be 1
+        expect(User.all.size).to be 2
+        expect(User.first.email).to eq user_email
       end
 
       it "makes user super admin and config admin" do
@@ -291,6 +337,22 @@ RSpec.describe "Registrations", type: :request do
                     password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.first.has_role?(:super_admin)).to be true
         expect(User.first.has_role?(:single_resource_admin, Config)).to be true
+        expect(User.first.has_role?(:trusted)).to be true
+      end
+
+      it "creates mascot user" do
+        expect(SiteConfig.mascot_user_id).to be_nil
+        post "/users", params:
+          { user: { name: "test #{rand(10)}",
+                    username: "haha_#{rand(10)}",
+                    email: "yoooo#{rand(100)}@yo.co",
+                    password: "PaSSw0rd_yo000",
+                    password_confirmation: "PaSSw0rd_yo000" } }
+        expect(SiteConfig.mascot_user_id).to eq User.last.id
+
+        mascot_account = User.mascot_account
+        expect(mascot_account.username).to eq Users::CreateMascotAccount::MASCOT_PARAMS[:username]
+        expect(mascot_account.email).to eq Users::CreateMascotAccount::MASCOT_PARAMS[:email]
       end
 
       it "creates super admin with valid params in FOREM_OWNER_SECRET scenario" do
@@ -323,22 +385,21 @@ RSpec.describe "Registrations", type: :request do
 
     context "with the creator_onboarding feature flag" do
       before do
-        Flipper.enable(:creator_onboarding)
+        allow(FeatureFlag).to receive(:enabled?).with(:creator_onboarding).and_return(true)
         allow(SiteConfig).to receive(:waiting_on_first_user).and_return(true)
       end
 
-      after do
-        Flipper.disable(:creator_onboarding)
-      end
-
       it "creates user with valid params passed" do
+        user_email = "yoooo#{rand(100)}@yo.co"
+
         post "/users", params:
           { user: { name: "test #{rand(10)}",
                     username: "haha_#{rand(10)}",
-                    email: "yoooo#{rand(100)}@yo.co",
+                    email: user_email,
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.all.size).to be 1
+        expect(User.all.size).to be 2
+        expect(User.first.email).to eq user_email
       end
 
       it "makes user super admin and config admin" do

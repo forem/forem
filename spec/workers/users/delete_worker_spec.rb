@@ -60,6 +60,12 @@ RSpec.describe Users::DeleteWorker, type: :worker do
         worker.perform(user.id, true)
         expect(slack_messenger_class).not_to have_received(:call)
       end
+
+      it "creates a gdpr-delete record" do
+        expect do
+          worker.perform(user.id, true)
+        end.to change(Users::GdprDeleteRequest, :count).by(1)
+      end
     end
 
     context "when user is not found" do

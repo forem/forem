@@ -10,7 +10,7 @@ RSpec.describe Users::DeleteComments, type: :service do
   before do
     create_list(:comment, 2, commentable: article, user: user)
 
-    allow(buster).to receive(:bust_comment)
+    allow(EdgeCache::BustComment).to receive(:call)
     allow(buster).to receive(:bust_user)
   end
 
@@ -30,7 +30,7 @@ RSpec.describe Users::DeleteComments, type: :service do
 
   it "busts cache" do
     described_class.call(user, buster)
-    expect(buster).to have_received(:bust_comment).with(article).at_least(:once)
+    expect(EdgeCache::BustComment).to have_received(:call).with(article).at_least(:once)
     expect(buster).to have_received(:bust_user).with(user)
   end
 

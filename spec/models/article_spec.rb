@@ -745,34 +745,17 @@ RSpec.describe Article, type: :model do
   end
 
   context "when callbacks are triggered after save" do
-    describe "main image background color" do
-      let(:article) { build(:article, user: user) }
-
-      it "enqueues a job to update the main image background if #dddddd" do
-        article.main_image_background_hex_color = "#dddddd"
-        allow(article).to receive(:update_main_image_background_hex).and_call_original
-        sidekiq_assert_enqueued_with(job: Articles::UpdateMainImageBackgroundHexWorker) do
-          article.save
-        end
-        expect(article).to have_received(:update_main_image_background_hex)
+    describe "article path sanitizing" do
+      it "returns a downcased username when user has uppercase characters" do
+        upcased_user = create(:user, username: "UpcasedUserName")
+        upcased_article = create(:article, user: upcased_user)
+        expect(upcased_article.path).not_to match(/[AZ]+/)
       end
 
-      it "does not enqueue a job to update the main image background if not #dddddd" do
-        article.main_image_background_hex_color = "#fff000"
-        allow(article).to receive(:update_main_image_background_hex).and_call_original
-        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
-          article.save
-        end
-        expect(article).to have_received(:update_main_image_background_hex)
-      end
-
-      it "does not enqueue a job if main_image has not changed" do
-        article.save
-        allow(article).to receive(:update_main_image_background_hex).and_call_original
-        sidekiq_assert_no_enqueued_jobs(only: Articles::UpdateMainImageBackgroundHexWorker) do
-          article.save
-        end
-        expect(article).to have_received(:update_main_image_background_hex)
+      it "returns a downcased username when an org slug has uppercase characters" do
+        upcased_org = create(:organization, slug: "UpcasedSlug")
+        upcased_article = create(:article, organization: upcased_org)
+        expect(upcased_article.path).not_to match(/[AZ]+/)
       end
     end
 
@@ -798,13 +781,13 @@ RSpec.describe Article, type: :model do
         expect(Reaction.last.user_id).to eq(user.id)
       end
 
-      it "does not ban user if only single vomit" do
+      it "does not suspend user if only single vomit" do
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
         article.save
         expect(article.user.banned).to be false
       end
 
-      it "bans user with 3 comment vomits" do
+      it "suspends user with 3 comment vomits" do
         second_article = create(:article, user: article.user)
         third_article = create(:article, user: article.user)
         article.body_markdown = article.body_markdown.gsub(article.title, "This post is about Yahoomagoo gogo")
@@ -815,7 +798,7 @@ RSpec.describe Article, type: :model do
         second_article.save
         third_article.save
         expect(article.user.banned).to be true
-        expect(Note.last.reason).to eq "automatic_ban"
+        expect(Note.last.reason).to eq "automatic_suspend"
       end
 
       it "does not create vomit reaction if does not have matching title" do
@@ -959,6 +942,15 @@ RSpec.describe Article, type: :model do
       sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, article.id]) do
         article.touch_by_reaction
       end
+    end
+  end
+
+  describe "co_author_ids_list=" do
+    it "correctly sets co author ids from a comma separated list of ids" do
+      co_author1 = create(:user)
+      co_author2 = create(:user)
+      article.co_author_ids_list = "#{co_author1.id}, #{co_author2.id}"
+      expect(article.co_author_ids).to match_array([co_author1.id, co_author2.id])
     end
   end
 end

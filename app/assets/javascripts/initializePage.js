@@ -7,12 +7,12 @@
   initializeCommentPreview,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
   initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
-  initializeUserProfilePage, initializePodcastPlayback,
-  initializeVideoPlayback, initializeDrawerSliders,
+  initializeUserProfilePage, initializeProfileInfoToggle, initializePodcastPlayback,
+  initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast,
-  initializeDateHelpers
+  initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
+  initializeColorPicker
 */
 
 function callInitializers() {
@@ -38,7 +38,6 @@ function callInitializers() {
     }
   }, 1);
 
-  initializeSpecialNavigationFunctionality();
   initializeBaseTracking();
   initializePaymentPointers();
   initializeTouchDevice();
@@ -57,12 +56,15 @@ function callInitializers() {
   initializeArchivedPostFilter();
   initializeCreditsPage();
   initializeUserProfilePage();
+  initializeProfileInfoToggle();
+  initializeProfileBadgesToggle();
   initializePodcastPlayback();
   initializeVideoPlayback();
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
   initializeDateHelpers();
+  initializeColorPicker();
 
   function freezeScrolling(event) {
     event.preventDefault();

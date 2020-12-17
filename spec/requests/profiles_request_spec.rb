@@ -12,24 +12,20 @@ RSpec.describe "Profiles", type: :request do
     end
 
     context "when signed in" do
-      before do
-        create(:profile_field, label: "Name")
-        Profile.refresh_attributes!
-        sign_in(profile.user)
+      before { sign_in(profile.user) }
+
+      it "updates the user" do
+        new_name = "New name, who dis?"
+        expect do
+          patch profile_path(profile), params: { user: { name: new_name } }
+        end.to change { profile.user.reload.name }.to(new_name)
       end
 
       it "updates the profile" do
-        new_name = "New name, who dis?"
+        new_location = "New location, who dis?"
         expect do
-          patch profile_path(profile), params: { profile: { name: new_name } }
-        end.to change { profile.reload.name }.to(new_name)
-      end
-
-      it "syncs the changes back to the user" do
-        new_name = "New name, who dis?"
-        expect do
-          patch profile_path(profile), params: { profile: { name: new_name } }
-        end.to change { profile.user.reload.name }.to(new_name)
+          patch profile_path(profile), params: { profile: { location: new_location } }
+        end.to change { profile.reload.location }.to(new_location)
       end
     end
   end

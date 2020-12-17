@@ -44,6 +44,16 @@ RSpec.describe "admin/users", type: :request do
         expect(response.body).to include("Current Roles")
       end
     end
+
+    context "when a user has been sent an email" do
+      it "renders a link to the user email preview" do
+        email = create(:email_message, user: user, to: user.email)
+        get admin_user_path(user.id)
+
+        preview_path = admin_user_email_message_path(user, email)
+        expect(response.body).to include(preview_path)
+      end
+    end
   end
 
   describe "GET /admin/users/:id/edit" do

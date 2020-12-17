@@ -55,7 +55,7 @@ module Admin
       user = User.find(params[:id])
       send_to_admin = params[:send_to_admin].to_boolean
       if send_to_admin
-        email = SiteConfig.email_addresses[:default]
+        email = SiteConfig.email_addresses[:contact]
         receiver = "admin"
       else
         email = user.email
@@ -76,10 +76,12 @@ module Admin
       @user = User.find(params[:id])
       begin
         Moderator::DeleteUser.call(user: @user)
+        link = helpers.tag.a("the page", href: admin_users_gdpr_delete_requests_path, data: { "no-instant" => true })
         message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
-          "has been fully deleted." \
-          "If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
-        flash[:success] = message
+          "has been fully deleted. " \
+          "If this is a GDPR delete, delete them from Mailchimp & Google Analytics " \
+          " and confirm on "
+        flash[:success] = helpers.safe_join([message, link, "."])
       rescue StandardError => e
         flash[:danger] = e.message
       end

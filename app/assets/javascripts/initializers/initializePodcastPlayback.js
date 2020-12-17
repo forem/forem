@@ -44,7 +44,7 @@ function initializePodcastPlayback() {
       window.name = Math.random();
     }
     return {
-      html: document.getElementById('audiocontent').innerHTML,
+      html: getById('audiocontent').innerHTML,
       currentTime: 0,
       playing: false,
       muted: false,
@@ -160,7 +160,7 @@ function initializePodcastPlayback() {
     if (Runtime.podcastMessage) {
       Runtime.podcastMessage({
         action: 'load',
-        url: audio.querySelector('source').src,
+        url: audio.getElementsByTagName('source')[0].src,
       });
     } else {
       audio.load();
@@ -233,9 +233,9 @@ function initializePodcastPlayback() {
       }
     } else if (
       message === 'initializing...' &&
-      document.querySelector('.status-message')
+      getByClass('status-message')[0]
     ) {
-      document.querySelector('.status-message').innerHTML = message;
+      getByClass('status-message')[0].innerHTML = message;
     }
   }
 
@@ -256,7 +256,7 @@ function initializePodcastPlayback() {
       if (Runtime.podcastMessage) {
         Runtime.podcastMessage({
           action: 'play',
-          url: audio.querySelector('source').src,
+          url: audio.getElementsByTagName('source')[0].src,
           seconds: currentState.currentTime.toString(),
         });
         setPlaying(true);

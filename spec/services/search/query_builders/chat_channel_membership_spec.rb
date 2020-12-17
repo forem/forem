@@ -66,11 +66,13 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
     end
 
     it "always applies channel discoverable and status params" do
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(2)
+
       params = { user_id: SiteConfig.mascot_user_id }
       filter = described_class.new(params: params)
       expected_filters = [
         { "terms" => { "status" => %w[active joining_request] } },
-        { "terms" => { "viewable_by" => 1 } },
+        { "terms" => { "viewable_by" => SiteConfig.mascot_user_id } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
