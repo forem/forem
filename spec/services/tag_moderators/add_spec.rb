@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AssignTagModerator, type: :labor do
+RSpec.describe TagModerators::Add, type: :service do
   let(:user_one) { create(:user) }
   let(:user_two) { create(:user) }
   let(:mod_relator) { create(:user) }
@@ -17,7 +17,7 @@ RSpec.describe AssignTagModerator, type: :labor do
     mod_relator.add_role(:mod_relations_admin)
     user_ids = [user_one.id, user_two.id]
     tag_ids = [tag_one.id, tag_two.id]
-    described_class.add_tag_moderators(user_ids, tag_ids)
+    described_class.call(user_ids, tag_ids)
   end
 
   def destroy_tag_moderator_channel
@@ -51,7 +51,7 @@ RSpec.describe AssignTagModerator, type: :labor do
 
     it "adds user to channel when tag already has channel" do
       user_three = create(:user)
-      described_class.add_tag_moderators([user_three.id], [tag_one.id])
+      described_class.call([user_three.id], [tag_one.id])
       channel = ChatChannel.find_by(channel_name: "##{tag_one.name} mods")
       expect(channel.active_users).to include(user_three)
     end
