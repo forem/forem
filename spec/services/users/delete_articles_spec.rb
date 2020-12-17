@@ -26,7 +26,7 @@ RSpec.describe Users::DeleteArticles, type: :service do
     let(:buster) { double }
 
     before do
-      allow(buster).to receive(:bust_comment)
+      allow(EdgeCache::BustComment).to receive(:call)
       allow(buster).to receive(:bust_article)
       allow(buster).to receive(:bust_user)
 
@@ -48,7 +48,7 @@ RSpec.describe Users::DeleteArticles, type: :service do
 
     it "busts cache" do
       described_class.call(user, buster)
-      expect(buster).to have_received(:bust_comment).with(article).twice
+      expect(EdgeCache::BustComment).to have_received(:call).with(article).twice
       expect(buster).to have_received(:bust_user).with(user2).at_least(:once)
       expect(buster).to have_received(:bust_article).with(article)
     end

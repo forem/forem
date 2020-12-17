@@ -5,7 +5,7 @@ import { number } from '@storybook/addon-knobs';
 import { Snackbar, addSnackbarItem } from '..';
 
 export default {
-  title: '4_App Components/Snackbar/Snackbar',
+  title: 'App Components/Snackbar/Snackbar',
 };
 
 export const SimulateAddingSnackbarItems = () => {

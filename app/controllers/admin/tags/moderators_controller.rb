@@ -12,26 +12,26 @@ module Admin
       def create
         user = User.find_by(id: tag_params[:user_id])
         if user&.update(email_tag_mod_newsletter: true)
-          AssignTagModerator.add_tag_moderators([user.id], [params[:tag_id]])
+          TagModerators::Add.call([user.id], [params[:tag_id]])
           flash[:success] = "#{user.username} was added as a tag moderator!"
         else
           flash[:error] = "Error: User ID ##{tag_params[:user_id]} was not found,
           or their account has errors: #{user&.errors_as_sentence}"
         end
-        redirect_to admin_tag_path(params[:tag_id])
+        redirect_to edit_admin_tag_path(params[:tag_id])
       end
 
       def destroy
         user = User.find_by(id: tag_params[:user_id])
         tag = Tag.find_by(id: params[:tag_id])
         if user&.update(email_tag_mod_newsletter: false)
-          AssignTagModerator.remove_tag_moderator(user, tag)
+          TagModerators::Remove.call(user, tag)
           flash[:success] = "@#{user.username} - ID ##{user.id} was removed as a tag moderator."
         else
           flash[:error] = "Error: User ID ##{tag_params[:user_id]} was not found,
           or their account has errors: #{user&.errors_as_sentence}"
         end
-        redirect_to admin_tag_path(tag.id)
+        redirect_to edit_admin_tag_path(tag.id)
       end
 
       private

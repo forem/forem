@@ -51,7 +51,7 @@
     </div>
 
     <%= f.hidden_field :tab, value: @tab %>
-    <% button_text = @user.feed_url.present? ? "Save" : "Submit" %>
+    <% button_text = @user.feed_url.present? ? "Save Feed Settings" : "Submit Feed Settings" %>
     <div><button class="crayons-btn" type="submit"><%= button_text %></button></div>
   <% end %>
 

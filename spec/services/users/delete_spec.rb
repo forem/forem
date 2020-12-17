@@ -1,7 +1,10 @@
 require "rails_helper"
 
 RSpec.describe Users::Delete, type: :service do
-  before { omniauth_mock_github_payload }
+  before do
+    omniauth_mock_github_payload
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+  end
 
   let(:user) { create(:user, :trusted, :with_identity, identities: ["github"]) }
 

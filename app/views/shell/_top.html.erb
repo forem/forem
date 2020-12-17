@@ -26,11 +26,11 @@
         }
       </style>
       <% unless user_signed_in? %>
-        <%= javascript_packs_with_chunks_tag "Search", defer: true %>
+        <%= javascript_packs_with_chunks_tag "base", "Search", defer: true %>
       <% end %>
       <%= javascript_include_tag "base", defer: true %>
       <% if user_signed_in? %>
-        <%= javascript_packs_with_chunks_tag "Search", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
+        <%= javascript_packs_with_chunks_tag "base", "Search", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% end %>
       <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">

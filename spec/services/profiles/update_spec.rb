@@ -1,28 +1,23 @@
 require "rails_helper"
 
 RSpec.describe Profiles::Update, type: :service do
+  def sidekiq_assert_resave_article_worker(user, &block)
+    sidekiq_assert_enqueued_with(
+      job: Users::ResaveArticlesWorker,
+      args: [user.id],
+      queue: "medium_priority",
+      &block
+    )
+  end
+
   let(:profile) do
-    create(:profile, data: { name: "Sloan Doe", looking_for_work: true, removed: "Bla" })
+    create(:profile, data: { looking_for_work: true, removed: "Bla" })
   end
   let(:user) { profile.user }
 
-  before do
-    create(:profile_field, label: "Name", input_type: :text_field)
-    create(:profile_field, label: "Looking for work", input_type: :check_box)
-    Profile.refresh_attributes!
-  end
-
-  it "only tries to sync changes to User if the profile update succeeds" do
-    service = described_class.new(user, profile: {}, user: {})
-    allow(service).to receive(:update_profile).and_return(false)
-
-    expect(service).not_to receive(:sync_to_user) # rubocop:disable RSpec/MessageSpies
-    service.call
-  end
-
   it "correctly typecasts new attributes", :aggregate_failures do
-    described_class.call(user, profile: { name: 123, looking_for_work: "false" })
-    expect(profile.name).to eq "123"
+    described_class.call(user, profile: { location: 123, looking_for_work: "false" })
+    expect(user.location).to eq "123"
     expect(profile.looking_for_work).to be false
   end
 
@@ -35,8 +30,7 @@ RSpec.describe Profiles::Update, type: :service do
   it "propagates changes to user", :agregate_failures do
     new_name = "Sloan Doe"
     described_class.call(user, profile: {}, user: { name: new_name })
-    expect(profile.name).to eq new_name
-    expect(profile.user[:name]).to eq new_name
+    expect(profile.user.name).to eq new_name
   end
 
   it "sets custom attributes for the user" do
@@ -49,7 +43,7 @@ RSpec.describe Profiles::Update, type: :service do
 
   it "updates the profile_updated_at column" do
     expect do
-      described_class.call(user, profile: { name: 123, looking_for_work: "false" })
+      described_class.call(user, profile: { looking_for_work: "false" })
     end.to change { user.reload.profile_updated_at }
   end
 
@@ -58,7 +52,7 @@ RSpec.describe Profiles::Update, type: :service do
     service = described_class.call(user, profile: {}, user: { profile_image: profile_image })
 
     expect(service.success?).to be false
-    expect(service.error_message).to eq "Profile image File size should be less than 2 MB"
+    expect(service.errors_as_sentence).to eq "Profile image File size should be less than 2 MB"
   end
 
   it "returns an error if Profile image is not a file" do
@@ -66,7 +60,7 @@ RSpec.describe Profiles::Update, type: :service do
     service = described_class.call(user, profile: {}, user: { profile_image: profile_image })
 
     expect(service.success?).to be false
-    expect(service.error_message).to eq "invalid file type. Please upload a valid image."
+    expect(service.errors_as_sentence).to eq "invalid file type. Please upload a valid image."
   end
 
   it "returns an error if Profile image file name is too long" do
@@ -75,15 +69,62 @@ RSpec.describe Profiles::Update, type: :service do
     service = described_class.call(user, profile: {}, user: { profile_image: profile_image })
 
     expect(service.success?).to be false
-    expect(service.error_message).to eq "filename too long - the max is 250 characters."
+    expect(service.errors_as_sentence).to eq "filename too long - the max is 250 characters."
   end
 
-  it "works correctly if a profile field does not exist for the User model" do
-    profile_field = create(:profile_field, label: "No User Test")
-    Profile.refresh_attributes!
+  context "when conditionally resaving articles" do
+    it "enqueues resave articles job when changing username" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, user: { username: "#{user.username}_changed" })
+      end
+    end
 
-    expect do
-      described_class.call(user, profile: { profile_field.attribute_name => "Test" }, user: {})
-    end.to change { profile.reload.public_send(profile_field.attribute_name) }
+    it "enqueues resave articles job when changing profile_image" do
+      profile_image = fixture_file_upload("files/800x600.jpg")
+
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, user: { profile_image: profile_image })
+      end
+    end
+
+    it "enqueues resave articles job when changing name" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, user: { name: "#{user.name} changed" })
+      end
+    end
+
+    it "enqueues resave articles job when changing summary" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, profile: { summary: "#{user.summary} changed" })
+      end
+    end
+
+    it "enqueues resave articles job when changing bg_color_hex" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, profile: { brand_color1: "#12345F" })
+      end
+    end
+
+    it "enqueues resave articles job when changing text_color_hex" do
+      sidekiq_assert_resave_article_worker(user) do
+        described_class.call(user, profile: { brand_color2: "#12345F" })
+      end
+    end
+
+    Authentication::Providers.username_fields.each do |username_field|
+      it "enqueues resave articles job when changing #{username_field}" do
+        sidekiq_assert_resave_article_worker(user) do
+          described_class.call(user, user: { username_field => "greatnewusername" })
+        end
+      end
+
+      it "doesn't enqueue resave articles job when changing #{username_field} for a banned user" do
+        banned_user = create(:user, :banned)
+
+        expect do
+          described_class.call(banned_user, user: { username_field => "greatnewusername" })
+        end.not_to change(Users::ResaveArticlesWorker.jobs, :size)
+      end
+    end
   end
 end

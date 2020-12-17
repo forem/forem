@@ -26,7 +26,7 @@ RSpec.describe UserSubscription, type: :model do
                                                                                    published: false)
       user_subscription = described_class.build(source: unpublished_source, subscriber: subscriber)
       expect(user_subscription).not_to be_valid
-      expect(user_subscription.errors[:base]).to include "Source not found."
+      expect(user_subscription.errors[:base]).to include "Source not found. Please make sure your Article is active!"
     end
 
     it "validates the tag is enabled in the source" do
