@@ -38,9 +38,9 @@ module Admin
     def add_owner
       @podcast_ownership = @podcast.podcast_ownerships.build(user_id: params["podcast"]["user_id"])
       if @podcast_ownership.save
-        redirect_to admin_podcasts_path, notice: "Added owner"
+        redirect_to admin_podcasts_path, notice: "New owner added!"
       else
-        redirect_to edit_admin_podcast_path(@podcast), notice: "Error"
+        redirect_to edit_admin_podcast_path(@podcast), notice: @podcast_ownership.errors_as_sentence
       end
     end
 
