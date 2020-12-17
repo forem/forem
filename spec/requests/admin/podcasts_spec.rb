@@ -35,6 +35,11 @@ RSpec.describe "/admin/podcasts", type: :request do
         post add_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
       end.to change(PodcastOwnership, :count).by(1)
     end
+
+    it "does nothing when adding a non-existent user as owner" do
+      post add_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
+      expect(response).to redirect_to(edit_admin_podcast_path(podcast))
+    end
   end
 
   describe "Updating" do
