@@ -261,7 +261,7 @@ export default class Chat extends Component {
           activeChannel ||
           this.filterForActiveChannel(channels, activeChannelId),
       });
-      this.setupChannel(activeChannelId);
+      this.setupChannel(activeChannelId, activeChannel);
     } else if (activeChannelId) {
       this.setState({
         scrolled: false,
@@ -273,7 +273,7 @@ export default class Chat extends Component {
           activeChannel ||
           this.filterForActiveChannel(channels, activeChannelId),
       });
-      this.setupChannel(activeChannelId);
+      this.setupChannel(activeChannelId, activeChannel);
     } else if (channels.length > 0) {
       this.setState({
         chatChannels: channels,
@@ -288,6 +288,7 @@ export default class Chat extends Component {
         channels[0].channel_modified_slug,
         channels,
       );
+      this.setupChannels(channels);
     } else {
       this.setState({ channelsLoaded: true });
     }
@@ -323,9 +324,10 @@ export default class Chat extends Component {
   };
 
   setupChannels = (channels) => {
+    const { activeChannel } = this.state;
     channels.forEach((channel, index) => {
       if (index < 3) {
-        this.setupChannel(channel.chat_channel_id);
+        this.setupChannel(channel.chat_channel_id, activeChannel);
       }
     });
   };
@@ -353,8 +355,8 @@ export default class Chat extends Component {
     });
   };
 
-  setupChannel = (channelId) => {
-    const { messages, messageOffset, activeChannel, appDomain } = this.state;
+  setupChannel = (channelId, activeChannel) => {
+    const { messages, messageOffset, appDomain } = this.state;
     if (
       !messages[channelId] ||
       messages[channelId].length === 0 ||
@@ -362,7 +364,11 @@ export default class Chat extends Component {
     ) {
       getAllMessages(channelId, messageOffset, this.receiveAllMessages);
     }
-    if (activeChannel && activeChannel.channel_type !== 'direct') {
+    if (
+      activeChannel &&
+      activeChannel.channel_type !== 'direct' &&
+      activeChannel.chat_channel_id === channelId
+    ) {
       getContent(
         `/chat_channels/${channelId}/channel_info`,
         this.setOpenChannelUsers,
@@ -822,21 +828,26 @@ export default class Chat extends Component {
     if (index > -1) {
       newUnopenedChannelIds.splice(index, 1);
     }
+
+    let updatedActiveChannel = this.filterForActiveChannel(
+      channelList,
+      id,
+      currentUserId,
+    );
+
     this.setState({
-      activeChannel: this.filterForActiveChannel(
-        channelList,
-        id,
-        currentUserId,
-      ),
+      activeChannel: updatedActiveChannel,
       activeChannelId: parseInt(id, 10),
       scrolled: false,
       showAlert: false,
       allMessagesLoaded: false,
+      showMemberlist: false,
       unopenedChannelIds: unopenedChannelIds.filter(
         (unopenedId) => unopenedId !== id,
       ),
     });
-    this.setupChannel(id);
+
+    this.setupChannel(id, updatedActiveChannel);
     const params = new URLSearchParams(window.location.search);
 
     if (params.get('ref') === 'group_invite') {
@@ -1634,6 +1645,10 @@ export default class Chat extends Component {
     const { activeChannel } = this.state;
     const mention = e.keyCode === 64;
     if (mention && activeChannel.channel_type !== 'direct') {
+      const memberListElemt = document.getElementById('mentionList');
+      memberListElemt.focus();
+      // console.log('Hello')
+      // document.getElementById('messageform').blur();
       this.setState({ showMemberlist: true });
     }
   };
@@ -1687,6 +1702,7 @@ export default class Chat extends Component {
     el.value = `${before + name} ${after}`;
     el.selectionStart = start + name.length + 1;
     el.selectionEnd = start + name.length + 1;
+    el.dispatchEvent(new Event('input'));
     el.focus();
     this.setState({ showMemberlist: false });
   };
@@ -1745,7 +1761,9 @@ export default class Chat extends Component {
       channelUsers,
       memberFilterQuery,
     } = this.state;
+
     const filterRegx = new RegExp(memberFilterQuery, 'gi');
+
     return (
       <div
         className={
