@@ -38,10 +38,9 @@ module Admin
     def add_owner
       @podcast_ownership = @podcast.podcast_ownerships.build(user_id: params["podcast"]["user_id"])
       if @podcast_ownership.save
-        flash[:success] = "Owner created successfully"
+        redirect_to admin_podcasts_path, notice: "Added owner"
       else
-        flash[:error] = "User is already an owner"
-        render json: { error: "User is already an owner" }, status: :bad_request
+        redirect_to edit_admin_podcast_path(@podcast), notice: "Error"
       end
     end
 
