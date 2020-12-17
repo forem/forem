@@ -78,7 +78,7 @@ RSpec.describe "Authenticating with GitHub" do
         click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_in")
-        expect(page).to have_link(sign_in_link)
+        expect(page).to have_button(sign_in_link)
       end
 
       it "notifies Datadog about a callback error" do

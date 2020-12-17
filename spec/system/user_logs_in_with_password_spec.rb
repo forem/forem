@@ -59,7 +59,7 @@ RSpec.describe "Authenticating with a password" do
       user.lock_access!
 
       visit sign_up_path
-      click_link("Continue with GitHub", match: :first)
+      click_on("Continue with GitHub", match: :first)
 
       expect(page).to have_current_path("/?signin=true")
       expect(page).not_to have_text("Your account is locked.")
