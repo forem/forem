@@ -11,10 +11,12 @@ RSpec.describe "Feedback report by chat channel messages", type: :system do
     it "feedback messahe should increase by one", js: true do
       expect do
         post "/feedback_messages", params: {
-          message: "Test Message",
-          feedback_type: "connect",
-          category: "rude or vulgar",
-          offender_id: user.id
+          feedback_message: {
+            message: "Test Message",
+            feedback_type: "connect",
+            category: "rude or vulgar",
+            offender_id: user.id
+          }
         }, as: :json
       end.to change(FeedbackMessage, :count).by(1)
     end
