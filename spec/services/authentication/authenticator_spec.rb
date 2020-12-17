@@ -41,7 +41,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.email).to eq(info.email)
         expect(user.name).to eq("#{info.first_name} #{info.last_name}")
         expect(user.profile_image).not_to be_nil
-        expect(user.apple_created_at.to_i).to eq(raw_info.auth_time)
+        expect(user.apple_created_at.to_i).to eq(raw_info.id_info.auth_time)
         expect(user.apple_username).to match(/#{info.first_name.downcase}_\w+/)
       end
 
@@ -75,7 +75,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
-        auth_payload.extra.raw_info.auth_time = 1.minute.ago.to_i
+        auth_payload.extra.raw_info.id_info.auth_time = 1.minute.ago.to_i
 
         sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           described_class.call(auth_payload)
@@ -130,13 +130,13 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
       it "updates the proper data from the auth payload" do
         # simulate changing apple data
-        auth_payload.extra.raw_info.auth_time = 10.days.ago.to_i
+        auth_payload.extra.raw_info.id_info.auth_time = 10.days.ago.to_i
 
         user = described_class.call(auth_payload)
 
         raw_info = auth_payload.extra.raw_info
 
-        expect(user.apple_created_at.to_i).to eq(raw_info.auth_time)
+        expect(user.apple_created_at.to_i).to eq(raw_info.id_info.auth_time)
       end
 
       it "sets remember_me for the existing user" do

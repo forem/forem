@@ -40,6 +40,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     super
   end
 
+  def passthru
+    redirect_to root_path(signin: "true")
+  end
+
   private
 
   def callback_for(provider)

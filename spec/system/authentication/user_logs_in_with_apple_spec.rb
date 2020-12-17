@@ -14,13 +14,13 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       it "creates a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
       end
 
       it "logs in and redirects to the onboarding" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
@@ -28,7 +28,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
       it "remembers the user" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         user = User.last
 
@@ -45,7 +45,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
@@ -71,7 +71,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       it "does not create a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
@@ -83,7 +83,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
         omniauth_setup_authentication_error(error)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "apple", "{}")
         expect(DatadogStatsClient).to have_received(:increment).with(
@@ -99,7 +99,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
         omniauth_setup_authentication_error(error)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "apple", "{}")
         expect(DatadogStatsClient).to have_received(:increment).with(
@@ -112,7 +112,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
         omniauth_setup_authentication_error(error)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "apple", "{}")
         expect(DatadogStatsClient).to have_received(:increment).with(
@@ -130,13 +130,13 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       it "does not create a new user" do
         expect do
           visit sign_up_path
-          click_link(sign_in_link, match: :first)
+          click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
       end
 
       it "redirects to the registration page" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_up")
       end
@@ -145,7 +145,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
         allow(Honeybadger).to receive(:notify)
 
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(Honeybadger).to have_received(:notify).once
       end
@@ -169,7 +169,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
     context "when using valid credentials" do
       it "logs in" do
         visit sign_up_path
-        click_link(sign_in_link, match: :first)
+        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/?signin=true")
       end
