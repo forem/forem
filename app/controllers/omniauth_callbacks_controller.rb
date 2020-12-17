@@ -7,7 +7,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # trusted origins (i.e. Apple OAuth) so `protect_from_forgery` is skipped
   # ONLY when it's safe to do so (i.e. ORIGIN == 'https://appleid.apple.com').
   # The hardcoded CSRF check can be found in the method `valid_request_origin?`:
-  # https://github.com/rails/rails/blob/master/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L453-L463
+  # https://github.com/rails/rails/blob/901f12212c488f6edfcf6f8ad3230bce6b3d5792/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L449-L459
   protect_from_forgery unless: -> { safe_apple_callback_request? }
 
   # Each available authentication method needs a related action that will be called
