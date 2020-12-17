@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/thepracticaldev/acts_as_follower.git
+  remote: https://github.com/forem/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
   specs:
