@@ -2,8 +2,7 @@ module Admin
   class PodcastsController < Admin::ApplicationController
     layout "admin"
 
-    before_action :find_podcast, only: %i[edit update fetch remove_admin add_admin]
-    before_action :find_user, only: %i[remove_admin add_admin]
+    before_action :find_podcast, only: %i[edit update fetch add_owner]
 
     def index
       @podcasts = Podcast.left_outer_joins(:podcast_episodes)
@@ -16,7 +15,9 @@ module Admin
       @podcasts = @podcasts.where("podcasts.title ILIKE :search", search: "%#{params[:search]}%")
     end
 
-    def edit; end
+    def edit
+      @podcast_ownership = Podcast.find(params[:id])
+    end
 
     def update
       if @podcast.update(podcast_params)
@@ -34,21 +35,12 @@ module Admin
       redirect_to admin_podcasts_path
     end
 
-    def remove_admin
-      removed_roles = @user.remove_role(:podcast_admin, @podcast)
-      if removed_roles.empty?
-        redirect_to edit_admin_podcast_path(@podcast), notice: "Error"
+    def add_owner
+      @podcast_ownership = @podcast.podcast_ownerships.build(user_id: params["podcast"]["user_id"])
+      if @podcast_ownership.save
+        redirect_to admin_podcasts_path, notice: "New owner added!"
       else
-        redirect_to admin_podcasts_path, notice: "Removed admin"
-      end
-    end
-
-    def add_admin
-      role = @user.add_role(:podcast_admin, @podcast)
-      if role.persisted?
-        redirect_to admin_podcasts_path, notice: "Added admin"
-      else
-        redirect_to edit_admin_podcast_path(@podcast), notice: "Error"
+        redirect_to edit_admin_podcast_path(@podcast), notice: @podcast_ownership.errors_as_sentence
       end
     end
 
