@@ -1,4 +1,5 @@
 # encoding: UTF-8
+
 # rubocop:disable Metrics/BlockLength
 
 xml.instruct! :xml, version: "1.0"
@@ -31,3 +32,4 @@ xml.rss version: "2.0" do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
