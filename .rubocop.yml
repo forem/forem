@@ -328,6 +328,10 @@ Style/CaseLikeIf:
   StyleGuide: '#case-vs-if-else'
   Enabled: true
 
+Style/CollectionCompact:
+  Description: 'Use `{Array,Hash}#{compact,compact!}` instead of custom logic to reject nils.'
+  Enabled: true
+
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
   StyleGuide: '#map-find-select-reduce-include-size'
