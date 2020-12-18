@@ -61,6 +61,7 @@ gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.19" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.10" # JSON parser and object serializer
 gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider authentication
+gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 8.0" # OmniAuth strategy for Facebook
 gem "omniauth-github", "~> 1.3" # OmniAuth strategy for GitHub
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter

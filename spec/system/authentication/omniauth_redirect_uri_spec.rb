@@ -6,6 +6,9 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
   # Avoid messing with other tests by resetting back SiteConfig.app_domain
   after { SiteConfig.app_domain = test_app_domain }
 
+  # Apple auth is in Beta so we need to enable the Feature Flag to test it
+  before { Flipper.enable(:apple_auth) }
+
   def provider_redirect_regex(provider_name)
     # URL encoding translates the query params (i.e. colons/slashes/etc)
     %r{
@@ -20,7 +23,8 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
     allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
     visit sign_up_path
     Authentication::Providers.available.each do |provider_name|
-      provider_auth_url = find("a.crayons-btn--brand-#{provider_name}")["href"]
+      provider_auth_button = find("button.crayons-btn--brand-#{provider_name}")
+      provider_auth_url = provider_auth_button.find(:xpath, "..")["action"]
       expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
     end
 
@@ -29,7 +33,8 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
 
     # After an update the callback_url should now match SiteConfig.app_domain
     Authentication::Providers.available.each do |provider_name|
-      provider_auth_url = find("a.crayons-btn--brand-#{provider_name}")["href"]
+      provider_auth_button = find("button.crayons-btn--brand-#{provider_name}")
+      provider_auth_url = provider_auth_button.find(:xpath, "..")["action"]
       expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
     end
   end

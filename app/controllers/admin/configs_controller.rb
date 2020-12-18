@@ -113,6 +113,10 @@ module Admin
         github_secret
         facebook_key
         facebook_secret
+        apple_client_id
+        apple_key_id
+        apple_pem
+        apple_team_id
         auth_providers_to_enable
         invite_only_mode
         allow_email_password_registration

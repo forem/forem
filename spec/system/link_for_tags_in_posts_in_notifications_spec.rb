@@ -16,6 +16,7 @@ RSpec.describe "Link on tags for post in notifications", type: :system do
     it "shows the sign-with page", js: true do
       Authentication::Providers.enabled.each do |provider_name|
         provider = Authentication::Providers.get!(provider_name)
+        next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth)
 
         expect(page).to have_content("Continue with #{provider.official_name}")
       end

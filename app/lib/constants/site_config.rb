@@ -120,6 +120,26 @@ module Constants
           "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
         placeholder: ""
       },
+      apple_client_id: {
+        description:
+          "The \"App Bundle\" code for the Authentication Service configured in the Apple Developer Portal",
+        placeholder: "com.example.app"
+      },
+      apple_team_id: {
+        description:
+          "The \"Team ID\" of your Apple Developer Account",
+        placeholder: ""
+      },
+      apple_key_id: {
+        description:
+          "The \"Key ID\" from the Authentication Service configured in the Apple Developer Portal",
+        placeholder: ""
+      },
+      apple_pem: {
+        description:
+          "The \"PEM\" key from the Authentication Service configured in the Apple Developer Portal",
+        placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
+      },
       favicon_url: {
         description: "Used as the site favicon",
         placeholder: IMAGE_PLACEHOLDER
