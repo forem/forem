@@ -73,6 +73,7 @@ script:
   - rake data_updates:run # required for at least creating the first admin user in e2e tests.
   - yarn e2e:ci
   # Dropping and recreating the database for Capybara/rspecs
+  - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting eleastic search post e2e tests
   - bundle exec rails db:drop
   - bundle exec rails db:create
   - bundle exec rails db:schema:load
