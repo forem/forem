@@ -201,6 +201,7 @@ Rails.application.routes.draw do
         resources :profile_images, only: %i[show], param: :username
         resources :organizations, only: [:show], param: :username do
           resources :users, only: [:index], to: "organizations#users"
+          resources :listings, only: [:index], to: "organizations#listings"
         end
 
         namespace :admin do
