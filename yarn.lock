@@ -12330,10 +12330,10 @@ logform@^2.2.0:
     ms "^2.1.1"
     triple-beam "^1.3.0"
 
-loglevel@^1.6.8:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.7.0.tgz#728166855a740d59d38db01cf46f042caa041bb0"
-  integrity sha512-i2sY04nal5jDcagM3FMfG++T69GEEM8CYuOfeOIvmXzOIcwE9a/CJPR0MFM97pYMj/u10lzz7/zd7+qwhrBTqQ==
+loglevel@^1.6.8, loglevel@^1.7.0:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.7.1.tgz#005fde2f5e6e47068f935ff28573e125ef72f197"
+  integrity sha512-Hesni4s5UkWkwCGJMQGAh71PaLUmKFM60dHvq0zi/vDhhrzuk+4GgNbTXJ12YYQJn6ZKBDNIjYcuQGKudvqrIw==
 
 loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.2.0, loose-envify@^1.3.1, loose-envify@^1.4.0:
   version "1.4.0"
@@ -18692,13 +18692,14 @@ tweetnacl@^1.0.3:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
-twilio-video@^2.9.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-2.9.0.tgz#5d63f71be5685e5c888e721745ff3b1e771e4fd1"
-  integrity sha512-7UJjUmHQGjXxuFwYEMfFBg7t8AZ2vUsV1H/Bl6ulZ0taQO0e0XiiIq8pIpbBx9P8wrycApkc3ru9bbXnTEd44g==
+twilio-video@^2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-2.10.0.tgz#f5d6f7495f7ff94bde35996d7b596cf4c3645159"
+  integrity sha512-XRVztAp9NefECW8Zg6sg5dGxtrwvJZQ6DLCCBL3nmNgviYmE9tKOErSzlH9MmAUUvyu6YArcuTTmfIL4AcHAsw==
   dependencies:
     "@twilio/webrtc" "4.3.2"
     backoff "^2.5.0"
+    loglevel "^1.7.0"
     ws "^3.3.1"
     xmlhttprequest "^1.8.0"
 

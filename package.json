@@ -176,7 +176,7 @@
     "pusher-js": "^7.0.2",
     "rails-erb-loader": "^5.5.2",
     "stimulus": "^2.0.0",
-    "twilio-video": "^2.9.0",
+    "twilio-video": "^2.10.0",
     "web-share-wrapper": "^0.2.1"
   },
   "resolutions": {
