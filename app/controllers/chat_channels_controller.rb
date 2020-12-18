@@ -163,7 +163,7 @@ class ChatChannelsController < ApplicationController
     render json: { status: "success", message: "chat channel blocked" }, status: :ok
   end
 
-  # Note: this is part of an effort of moving some things from the external to
+  # NOTE: this is part of an effort of moving some things from the external to
   # the internal API. No behavior was changes as part of this refactoring, so
   # this action is a bit unusual.
   def channel_info

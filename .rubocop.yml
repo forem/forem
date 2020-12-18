@@ -148,6 +148,10 @@ Lint/DeprecatedOpenSSLConstant:
   Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
   Enabled: true
 
+Lint/DuplicateBranch:
+  Description: Checks that there are no repeated bodies within `if/unless`, `case-when` and `rescue` constructs.
+  Enabled: false
+
 Lint/DuplicateElsifCondition:
   Description: 'Do not repeat conditions used in if `elsif`.'
   Enabled: true
@@ -166,6 +170,10 @@ Lint/EmptyConditionalBody:
 
 Lint/EmptyBlock:
   Description: 'This cop checks for blocks without a body.'
+  Enabled: true
+
+Lint/EmptyClass:
+  Description: 'Checks for classes and metaclasses without a body.'
   Enabled: true
 
 Lint/FloatComparison:
@@ -487,6 +495,10 @@ Style/OptionHash:
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
   StyleGuide: '#no-nested-conditionals'
+  Enabled: true
+
+Style/NilLambda:
+  Description: 'Prefer `-> {}` to `-> { nil }`.'
   Enabled: true
 
 Style/RedundantAssignment:
