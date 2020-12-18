@@ -1,0 +1,6 @@
+# frozen_string_literal: true
+
+eval_gemfile "../Gemfile"
+
+gem "rubocop", "< 0.87"
+gem "rubocop-ast", "< 0.4.0"

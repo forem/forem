@@ -6,6 +6,20 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
+GIT
+  remote: https://github.com/splitwise/erb-lint.git
+  revision: 05596ea189ee00fb2ad3ea10a41489e2dba345c4
+  branch: jess/remove-version-pinning
+  specs:
+    erb_lint (0.0.35)
+      activesupport
+      better_html (~> 1.0.7)
+      html_tokenizer
+      parser (>= 2.7.1.4)
+      rainbow
+      rubocop
+      smart_properties
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -242,14 +256,6 @@ GEM
     emoji_regex (3.2.1)
     environs (1.1.0)
     equalizer (0.0.11)
-    erb_lint (0.0.35)
-      activesupport
-      better_html (~> 1.0.7)
-      html_tokenizer
-      parser (>= 2.7.1.4)
-      rainbow
-      rubocop (~> 0.79)
-      smart_properties
     errbase (0.2.0)
     erubi (1.10.0)
     et-orbi (1.2.4)
@@ -850,7 +856,7 @@ DEPENDENCIES
   elasticsearch (~> 7.10)
   email_validator (~> 2.2)
   emoji_regex (~> 3.2)
-  erb_lint (~> 0.0.34)
+  erb_lint!
   exifr (>= 1.3.6)
   factory_bot_rails (~> 6.1)
   faker (~> 2.15)
