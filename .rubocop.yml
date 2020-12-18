@@ -328,6 +328,12 @@ Style/CaseLikeIf:
   StyleGuide: '#case-vs-if-else'
   Enabled: true
 
+Style/ClassAndModuleChildren:
+  Description: 'Checks style of children classes and modules.'
+  StyleGuide: '#namespace-definition'
+  Enabled: true
+  SafeAutoCorrect: true
+
 Style/CollectionCompact:
   Description: 'Use `{Array,Hash}#{compact,compact!}` instead of custom logic to reject nils.'
   Enabled: true
@@ -354,10 +360,6 @@ Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: false
 
-Style/Encoding:
-  Description: 'Use UTF-8 as the source file encoding.'
-  Enabled: false
-
 Style/DocumentDynamicEvalDefinition:
   Description: >-
                 When using `class_eval` (or other `eval`) with string interpolation,
@@ -372,11 +374,20 @@ Style/ExplicitBlockArgument:
   StyleGuide: '#block-argument'
   Enabled: true
 
+Style/Encoding:
+  Description: 'Use UTF-8 as the source file encoding.'
+  Enabled: false
+
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
   StyleGuide: '#exponential-notation'
   Enabled: true
   EnforcedStyle: scientific
+
+Style/FormatStringToken:
+  Description: 'Use a consistent style for format string tokens.'
+  Exclude:
+    - 'config/routes.rb'
 
 Style/FrozenStringLiteralComment:
   Description: >-
@@ -458,16 +469,11 @@ Style/IfUnlessModifier:
 #   StyleGuide: '#single-line-blocks'
 #   Enabled: false
 
-Style/ClassAndModuleChildren:
-  Description: 'Checks style of children classes and modules.'
-  StyleGuide: '#namespace-definition'
+Style/NegatedIfElseCondition:
+  Description: >-
+                This cop checks for uses of `if-else` and ternary operators with a negated condition
+                which can be simplified by inverting condition and swapping branches.
   Enabled: true
-  SafeAutoCorrect: true
-
-Style/FormatStringToken:
-  Description: 'Use a consistent style for format string tokens.'
-  Exclude:
-    - 'config/routes.rb'
 
 Style/OptionalBooleanParameter:
   Description: 'Use keyword arguments when defining method with boolean argument.'
