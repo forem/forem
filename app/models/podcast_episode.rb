@@ -45,7 +45,9 @@ class PodcastEpisode < ApplicationRecord
   scope :for_user, lambda { |user|
     joins(:podcast).where(podcasts: { creator_id: user.id })
   }
+  # rubocop:disable Lint/EmptyBlock
   scope :eager_load_serialized_data, -> {}
+  # rubocop:enable Lint/EmptyBlock
 
   def search_id
     "podcast_episode_#{id}"

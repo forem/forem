@@ -152,12 +152,20 @@ Lint/DuplicateElsifCondition:
   Description: 'Do not repeat conditions used in if `elsif`.'
   Enabled: true
 
+Lint/DuplicateRegexpCharacterClassElement:
+  Description: 'Checks for duplicate elements in Regexp character classes.'
+  Enabled: true
+
 Lint/DuplicateRescueException:
   Description: 'Checks that there are no repeated exceptions used in `rescue` expressions.'
   Enabled: true
 
 Lint/EmptyConditionalBody:
   Description: 'This cop checks for the presence of `if`, `elsif` and `unless` branches without a body.'
+  Enabled: true
+
+Lint/EmptyBlock:
+  Description: 'This cop checks for blocks without a body.'
   Enabled: true
 
 Lint/FloatComparison:
@@ -202,8 +210,16 @@ Lint/StructNewOverride:
   Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
   Enabled: true
 
+Lint/ToEnumArguments:
+  Description: 'This cop ensures that `to_enum`/`enum_for`, called for the current method, has correct arguments.'
+  Enabled: true
+
 Lint/TopLevelReturnWithArgument:
   Description: 'This cop detects top level return statements with argument.'
+  Enabled: true
+
+Lint/UnmodifiedReduceAccumulator:
+  Description: Checks for `reduce` or `inject` blocks that do not update the accumulator each iteration.
   Enabled: true
 
 Lint/UnreachableLoop:
@@ -285,6 +301,11 @@ Style/AccessorGrouping:
   Description: 'Checks for grouping of accessors in `class` and `module` bodies.'
   Enabled: true
 
+Style/ArgumentsForwarding:
+  Description: 'Use arguments forwarding.'
+  StyleGuide: '#arguments-forwarding'
+  Enabled: false
+
 Style/ArrayCoercion:
   Description: >-
                   Use Array() instead of explicit Array check or [*var], when dealing
@@ -332,6 +353,13 @@ Style/Documentation:
 Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   Enabled: false
+
+Style/DocumentDynamicEvalDefinition:
+  Description: >-
+                When using `class_eval` (or other `eval`) with string interpolation,
+                add a comment block showing its appearance if interpolated.
+  StyleGuide: '#eval-comment-docs'
+  Enabled: true
 
 Style/ExplicitBlockArgument:
   Description: >-
@@ -509,6 +537,11 @@ Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
   ConsistentQuotesInMultiline: true
+
+Style/SwapValues:
+  Description: 'This cop enforces the use of shorthand-style swapping of 2 variables.'
+  StyleGuide: '#values-swapping'
+  Enabled: true
 
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
