@@ -302,6 +302,11 @@ Naming/PredicateName:
   Exclude:
     - spec/**/*
 
+Naming/VariableNumber:
+  Description: 'Use the configured style when numbering symbols, methods and variables.'
+  StyleGuide: '#snake-case-symbols-methods-vars-with-numbers'
+  Enabled: false
+
 #################### Style ###############################
 
 Style/AsciiComments:
