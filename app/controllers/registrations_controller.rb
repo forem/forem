@@ -17,7 +17,7 @@ class RegistrationsController < Devise::RegistrationsController
     not_authorized if SiteConfig.waiting_on_first_user && ENV["FOREM_OWNER_SECRET"].present? &&
       ENV["FOREM_OWNER_SECRET"] != params[:user][:forem_owner_secret]
 
-    resolve_profile_field_issues if SiteConfig.waiting_on_first_user
+    resolve_profile_field_issues
     if !ReCaptcha::CheckRegistrationEnabled.call || recaptcha_verified?
       build_resource(sign_up_params)
       resource.saw_onboarding = false
@@ -68,6 +68,8 @@ class RegistrationsController < Devise::RegistrationsController
     # Run this data update script when in a state of "first user" in the event
     # that we are in a state where this was not already run.
     # This is likely only temporarily needed.
+    return unless SiteConfig.waiting_on_first_user
+
     csv = Rails.root.join("lib/data/dev_profile_fields.csv")
     ProfileFields::ImportFromCsv.call(csv)
   end
