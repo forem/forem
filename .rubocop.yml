@@ -226,6 +226,10 @@ Lint/TopLevelReturnWithArgument:
   Description: 'This cop detects top level return statements with argument.'
   Enabled: true
 
+Lint/UnexpectedBlockArity:
+  Description: 'Looks for blocks that have fewer arguments that the calling method expects.'
+  Enabled: true
+
 Lint/UnmodifiedReduceAccumulator:
   Description: Checks for `reduce` or `inject` blocks that do not update the accumulator each iteration.
   Enabled: true
