@@ -181,7 +181,7 @@ class ChatChannelsController < ApplicationController
 
   def create_channel
     chat_channel_params = params[:chat_channel]
-    chat_channel_name = chat_channel_params[:channel_name].split(" ").join("-")
+    chat_channel_name = chat_channel_params[:channel_name].split.join("-")
     chat_channel = ChatChannel.new(
       channel_type: "invite_only",
       channel_name: chat_channel_params[:channel_name],

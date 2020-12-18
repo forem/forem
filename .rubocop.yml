@@ -501,6 +501,10 @@ Style/NilLambda:
   Description: 'Prefer `-> {}` to `-> { nil }`.'
   Enabled: true
 
+Style/RedundantArgument:
+  Description: 'Check for a redundant argument passed to certain methods.'
+  Enabled: true
+
 Style/RedundantAssignment:
   Description: 'Checks for redundant assignment before returning.'
   Enabled: true
