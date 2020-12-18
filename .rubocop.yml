@@ -682,11 +682,21 @@ RSpec/DescribeClass:
     - 'spec/system/**/*'
     - 'spec/tasks/**/*'
 
+RSpec/DescribedClassModuleWrapping:
+  Description: Avoid opening modules and defining specs within them.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribedClassModuleWrapping
+
 RSpec/ExampleLength:
   Description: Checks for long examples.
   Enabled: true
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+
+RSpec/MessageExpectation:
+  Description: Checks for consistent message expectation style.
+  Enabled: true
+  EnforcedStyle: allow
 
 RSpec/MultipleMemoizedHelpers:
   Description: Checks if example groups contain too many `let` and `subject` calls.
