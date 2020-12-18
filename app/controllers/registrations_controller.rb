@@ -44,7 +44,6 @@ class RegistrationsController < Devise::RegistrationsController
     return unless SiteConfig.waiting_on_first_user
 
     resource.add_role(:super_admin)
-    resource.add_role(:single_resource_admin, Config)
     resource.add_role(:trusted)
     SiteConfig.waiting_on_first_user = false
     Users::CreateMascotAccount.call
