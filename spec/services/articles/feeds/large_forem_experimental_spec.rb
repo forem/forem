@@ -15,6 +15,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     let(:tagged_article) { create(:article, tags: tag) }
 
     it "returns published articles" do
+
       result = feed.published_articles_by_tag
       expect(result).to include article
       expect(result).not_to include unpublished_article
@@ -124,6 +125,12 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       it "includes stories " do
         expect(stories).to include(old_story)
         expect(stories).to include(new_story)
+      end
+
+      it "works with every variant" do
+        # TODO, finish this.
+        create(:field_test_membership,
+               experiment: :follow_implicit_points, variant: "no_implicit_score", participant_id: user.id)
       end
     end
   end
