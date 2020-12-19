@@ -26,8 +26,6 @@ class ArticlesController < ApplicationController
                   handle_user_or_organization_feed
                 elsif params[:tag]
                   handle_tag_feed
-                elsif params[:q] == "latest"
-                  @articles.includes(:user)
                 else
                   @articles.where(featured: true).includes(:user)
                 end

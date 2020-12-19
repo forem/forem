@@ -78,18 +78,6 @@ RSpec.describe "Articles", type: :request do
       end
     end
 
-    context "when query string is q=latest" do
-      let!(:featured_article) { create(:article, featured: true) }
-      let!(:not_featured_article) { create(:article, featured: false) }
-
-      before { get "/feed?q=latest" }
-
-      it "returns last published articles" do
-        expect(response.body).to include(featured_article.title)
-        expect(response.body).to include(not_featured_article.title)
-      end
-    end
-
     shared_context "when user/organization articles exist" do
       let(:user) { create(:user) }
       let(:organization) { create(:organization) }
@@ -168,6 +156,27 @@ RSpec.describe "Articles", type: :request do
 
       rss_feed = Feedjira.parse(response.body)
       expect(rss_feed.entries.first.categories).to match_array(article.tag_list)
+    end
+  end
+
+  describe "GET /feed/latest" do
+    let!(:last_article) { create(:article, featured: true) }
+    let!(:not_last_article) { create(:article, featured: true, published_at: last_article.published_at - 1.day) }
+    let!(:not_featured_article) { create(:article, featured: false) }
+
+    before { get "/feed/latest" }
+
+    it "contains last published articles" do
+      expect(response.body).to include(last_article.title)
+      expect(response.body).to include(not_last_article.title)
+      expect(response.body).not_to include(not_featured_article.title)
+    end
+
+    it "contains ordered articles by their published_at value" do
+      rss_feed = Feedjira.parse(response.body)
+      titles = rss_feed.entries.map(&:title)
+
+      expect(titles).to eq [last_article.title, not_last_article.title]
     end
   end
 
