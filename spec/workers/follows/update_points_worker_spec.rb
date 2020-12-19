@@ -82,36 +82,5 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
 
       expect(follow.reload.points).to be > original_points # should be higher because tag is now less popular
     end
-
-    context "with field tests in place" do
-      # regressions testing a few field test scenarios
-      it "returns zero if no_implicit_score field test" do
-        create(:field_test_membership,
-               experiment: :follow_implicit_points, variant: "no_implicit_score", participant_id: user.id)
-        follow = Follow.last
-        follow.update_column(:explicit_points, 2.2)
-        worker.perform(reaction.reactable_id, reaction.user_id)
-        follow.reload
-        expect(follow.implicit_points).to eq 0
-      end
-
-      it "returns double if double_weight_after_log field test" do
-        create(:field_test_membership,
-               experiment: :follow_implicit_points, variant: "double_weight_after_log", participant_id: user.id)
-        follow = Follow.last
-        worker.perform(reaction.reactable_id, reaction.user_id)
-        follow.reload
-        expect(follow.implicit_points).to be_within(0.9).of(2)
-      end
-
-      it "returns double if half_weight_after_log field test" do
-        create(:field_test_membership,
-               experiment: :follow_implicit_points, variant: "half_weight_after_log", participant_id: user.id)
-        follow = Follow.last
-        worker.perform(reaction.reactable_id, reaction.user_id)
-        follow.reload
-        expect(follow.implicit_points).to be_within(0.7).of(0.5)
-      end
-    end
   end
 end
