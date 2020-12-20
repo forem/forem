@@ -60,7 +60,7 @@
             <% end %>
           <% end %>
 
-          <% if current_user.has_role?(:single_resource_admin, Config) %>
+          <% if current_user.has_role?(:super_admin) %>
             <div class="crayons-notice p-4 mt-4">
               <div class="crayons-field">
                 <%= label_tag :confirmation_update, "Confirmation update", class: "crayons-field__label" %>
@@ -282,6 +282,7 @@
                                      readonly: true %>
                   </div>
                   <% authentication_available_providers.each do |provider| %>
+                  <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
                     <section class="config-authentication__item mb-0">
                       <figure class="config-authentication__item--icon">
                         <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
@@ -313,7 +314,8 @@
                           </button>
                         </div>
                         <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
-                          <%= render partial: "auth_provider_settings",
+                          <% auth_partial = provider.provider_name == :apple ? "apple_auth_provider_settings" : "auth_provider_settings" %>
+                          <%= render partial: auth_partial,
                                      locals: {
                                        f: f,
                                        provider: provider

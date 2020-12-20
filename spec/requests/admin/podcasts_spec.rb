@@ -4,6 +4,7 @@ RSpec.describe "/admin/podcasts", type: :request do
   let(:admin) { create(:user, :super_admin) }
   let(:podcast) { create(:podcast, published: false) }
   let(:user) { create(:user) }
+  let(:podcast_ownership) { create(:podcast_ownership) }
 
   before do
     sign_in admin
@@ -14,7 +15,6 @@ RSpec.describe "/admin/podcasts", type: :request do
 
     before do
       create(:podcast_episode, podcast: podcast)
-      user.add_role(:podcast_admin, Podcast.order(Arel.sql("RANDOM()")).first)
     end
 
     it "renders success" do
@@ -29,32 +29,15 @@ RSpec.describe "/admin/podcasts", type: :request do
     end
   end
 
-  describe "Adding admin" do
-    it "adds an admin" do
+  describe "Adding owner" do
+    it "adds an owner" do
       expect do
-        post add_admin_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
-      end.to change(Role, :count).by(1)
-      user.reload
-      expect(user.has_role?(:podcast_admin, podcast)).to be true
+        post add_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
+      end.to change(PodcastOwnership, :count).by(1)
     end
 
-    it "does nothing when adding an admin for non-existent user" do
-      post add_admin_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
-      expect(response).to redirect_to(edit_admin_podcast_path(podcast))
-    end
-  end
-
-  describe "Removing admin" do
-    it "removes an admin" do
-      user.add_role(:podcast_admin, podcast)
-      expect do
-        delete remove_admin_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
-      end.to change(Role, :count).by(-1)
-      expect(user.has_role?(:podcast_admin, podcast)).to be false
-    end
-
-    it "does nothing when removing an admin for non-existent user" do
-      delete remove_admin_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
+    it "does nothing when adding a non-existent user as owner" do
+      post add_owner_admin_podcast_path(podcast.id), params: { podcast: { user_id: user.id + 1 } }
       expect(response).to redirect_to(edit_admin_podcast_path(podcast))
     end
   end

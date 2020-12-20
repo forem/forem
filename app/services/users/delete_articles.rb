@@ -11,7 +11,7 @@ module Users
         article.buffer_updates.delete_all
         article.comments.includes(:user).find_each do |comment|
           comment.reactions.delete_all
-          cache_buster.bust_comment(comment.commentable)
+          EdgeCache::BustComment.call(comment.commentable)
           cache_buster.bust_user(comment.user)
           comment.remove_from_elasticsearch
           comment.delete
@@ -21,7 +21,7 @@ module Users
         article.purge
       end
       virtual_articles.each do |article|
-        cache_buster.bust_article(article)
+        EdgeCache::BustArticle.call(article)
       end
     end
   end

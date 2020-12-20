@@ -15,6 +15,15 @@ FACEBOOK_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:token_params][:parse] = :json
 end
 
+APPLE_OMNIAUTH_SETUP = lambda do |env|
+  env["omniauth.strategy"].options[:client_id] = SiteConfig.apple_client_id
+  env["omniauth.strategy"].options[:scope] = "email name"
+  env["omniauth.strategy"].options[:key_id] = SiteConfig.apple_key_id
+  env["omniauth.strategy"].options[:pem] = SiteConfig.apple_pem
+  env["omniauth.strategy"].options[:provider_ignores_state] = true
+  env["omniauth.strategy"].options[:team_id] = SiteConfig.apple_team_id
+end
+
 Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
@@ -304,6 +313,7 @@ Devise.setup do |config|
   config.omniauth :facebook, setup: FACEBOOK_OMNIAUTH_SETUP
   config.omniauth :github, setup: GITHUB_OMNIUATH_SETUP
   config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
+  config.omniauth :apple, setup: APPLE_OMNIAUTH_SETUP
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

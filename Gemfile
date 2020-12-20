@@ -5,14 +5,14 @@ source "https://rubygems.org"
 ruby File.read(File.join(File.dirname(__FILE__), ".ruby-version")).strip
 
 group :production do
-  gem "hypershield", "~> 0.2.0" # Allow admins to query data via internal
+  gem "hypershield", "~> 0.2.2" # Allow admins to query data via internal
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
   gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
 
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
 gem "acts-as-taggable-on", "~> 6.5" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
-gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master" # Allow any model to follow any other model
+gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.1" # Tracking analytics for Rails
@@ -61,6 +61,7 @@ gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.19" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.10" # JSON parser and object serializer
 gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider authentication
+gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 8.0" # OmniAuth strategy for Facebook
 gem "omniauth-github", "~> 1.3" # OmniAuth strategy for GitHub
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
@@ -140,7 +141,7 @@ group :development, :test do
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.93.1", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.9", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.8", require: false # Automatic Rails code style checking tool
+  gem "rubocop-rails", "~> 2.9", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.44", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring

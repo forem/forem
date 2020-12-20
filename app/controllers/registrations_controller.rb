@@ -17,6 +17,7 @@ class RegistrationsController < Devise::RegistrationsController
     not_authorized if SiteConfig.waiting_on_first_user && ENV["FOREM_OWNER_SECRET"].present? &&
       ENV["FOREM_OWNER_SECRET"] != params[:user][:forem_owner_secret]
 
+    resolve_profile_field_issues
     if !ReCaptcha::CheckRegistrationEnabled.call || recaptcha_verified?
       build_resource(sign_up_params)
       resource.saw_onboarding = false
@@ -44,7 +45,6 @@ class RegistrationsController < Devise::RegistrationsController
     return unless SiteConfig.waiting_on_first_user
 
     resource.add_role(:super_admin)
-    resource.add_role(:single_resource_admin, Config)
     resource.add_role(:trusted)
     SiteConfig.waiting_on_first_user = false
     Users::CreateMascotAccount.call
@@ -62,5 +62,15 @@ class RegistrationsController < Devise::RegistrationsController
 
     resource.email = nil
     resource.errors.add(:email, "is not included in allowed domains.")
+  end
+
+  def resolve_profile_field_issues
+    # Run this data update script when in a state of "first user" in the event
+    # that we are in a state where this was not already run.
+    # This is likely only temporarily needed.
+    return unless SiteConfig.waiting_on_first_user
+
+    csv = Rails.root.join("lib/data/dev_profile_fields.csv")
+    ProfileFields::ImportFromCsv.call(csv)
   end
 end

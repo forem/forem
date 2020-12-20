@@ -9,7 +9,7 @@
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= app_url(@podcast.slug) %>" />
     <meta property="og:title" content="<%= @podcast.title %>" />
-    <meta property="og:image" content="https://res.cloudinary.com/practicaldev/image/fetch/c_scale,h_300,w_300,r_max/u_listennow_kjml1x,y_45/<%= optimized_image_url(@podcast.image_url, width: 300) %>">
+    <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
 
     <meta property="og:description" content="<%= @podcast.description %>" />
     <meta property="og:site_name" content="<%= community_qualified_name %>" />
@@ -19,7 +19,7 @@
     <meta name="twitter:creator" content="@<%= @podcast.twitter_username %>">
     <meta name="twitter:title" content="<%= @podcast.title %>">
     <meta name="twitter:description" content="<%= @podcast.description %>" />
-    <meta name="twitter:image:src" content="https://res.cloudinary.com/practicaldev/image/fetch/c_scale,h_300,w_300,r_max/u_listennow_kjml1x,y_45/<%= optimized_image_url(@podcast.image_url, width: 300) %>">
+    <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <% end %>
 <% else %>
   <% title "Podcasts" %>
