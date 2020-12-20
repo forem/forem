@@ -7,7 +7,7 @@ GIT
       activerecord (>= 4.0)
 
 GIT
-  remote: https://github.com/splitwise/erb-lint.git
+  remote: https://github.com/thepracticaldev/erb-lint.git
   revision: 05596ea189ee00fb2ad3ea10a41489e2dba345c4
   branch: jess/remove-version-pinning
   specs:
