@@ -149,7 +149,7 @@ module Articles
       # Disable complexity cop to allow for variant-driven method
       # rubocop:disable Metrics/CyclomaticComplexity
       def experimentalal_hot_story_grab
-        test_variant = "testing"#field_test(:follow_implicit_points, participant: user)	
+        test_variant = field_test(:feed_top_articles_query, participant: user)	
 
         case test_variant
         when "base" # equivalent to current base
@@ -195,6 +195,12 @@ module Articles
             .page(@page).per(@number_of_articles)
             .order(score: :desc)
           articles = articles.tagged_with(followed_tags, any: true) if followed_tags.size > 4
+        else # same as base
+          articles = Article.published.limited_column_select
+            .includes(top_comments: :user)
+            .page(@page).per(@number_of_articles)
+            .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
+            .order(hotness_score: :desc)
         end
         articles
       end
