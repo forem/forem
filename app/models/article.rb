@@ -6,6 +6,9 @@ class Article < ApplicationRecord
   include Searchable
   include UserSubscriptionSourceable
 
+  include PgSearch::Model
+  multisearchable against: %i[title body_text] # spike, limited attributes
+
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
   DATA_SYNC_CLASS = DataSync::Elasticsearch::Article

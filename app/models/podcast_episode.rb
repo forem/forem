@@ -3,6 +3,9 @@ class PodcastEpisode < ApplicationRecord
     duration_in_seconds
   ]
 
+  include PgSearch::Model
+  multisearchable against: %i[title body_text] # spike, limited attributes
+
   include Searchable
   SEARCH_SERIALIZER = Search::PodcastEpisodeSerializer
   SEARCH_CLASS = Search::FeedContent
