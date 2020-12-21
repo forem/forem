@@ -1,4 +1,6 @@
 /// <reference types="cypress" />
+/* eslint-env node */
+
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
 //
@@ -15,7 +17,34 @@
 /**
  * @type {Cypress.PluginConfig}
  */
-module.exports = (_on, _config) => {
+module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+
+  on('task', {
+    resetData() {
+      // Check the console where Cypress is running for the specific error.
+      // The actual error will not appear in the Cypress test runner.
+      const { spawnSync } = require('child_process');
+      const { status: curlStatus, stderr: curlError } = spawnSync('curl', [
+        '-XDELETE',
+        `${config.env.ELASTICSEARCH_URL}/\\*`,
+      ]);
+
+      if (curlStatus !== 0) {
+        throw curlError;
+      }
+
+      const { status, stderr } = spawnSync('bundle', [
+        'exec',
+        'rails db:truncate_all',
+      ]);
+
+      if (status !== 0) {
+        throw stderr.toString('utf8');
+      }
+
+      return status;
+    },
+  });
 };
