@@ -28,7 +28,7 @@ module ValidRequest
     when %r{\A([a-z][a-z\d\-+.]*:|//).*}i
       options
     when String
-      "#{(URL.protocol || request.protocol)}#{request.host_with_port}#{options}"
+      "#{URL.protocol || request.protocol}#{request.host_with_port}#{options}"
     when Proc
       _compute_redirect_to_location request, instance_eval(&options)
     else

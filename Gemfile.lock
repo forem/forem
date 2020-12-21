@@ -6,6 +6,20 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
+GIT
+  remote: https://github.com/thepracticaldev/erb-lint.git
+  revision: 05596ea189ee00fb2ad3ea10a41489e2dba345c4
+  branch: jess/remove-version-pinning
+  specs:
+    erb_lint (0.0.35)
+      activesupport
+      better_html (~> 1.0.7)
+      html_tokenizer
+      parser (>= 2.7.1.4)
+      rainbow
+      rubocop
+      smart_properties
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -242,14 +256,6 @@ GEM
     emoji_regex (3.2.1)
     environs (1.1.0)
     equalizer (0.0.11)
-    erb_lint (0.0.35)
-      activesupport
-      better_html (~> 1.0.7)
-      html_tokenizer
-      parser (>= 2.7.1.4)
-      rainbow
-      rubocop (~> 0.79)
-      smart_properties
     errbase (0.2.0)
     erubi (1.10.0)
     et-orbi (1.2.4)
@@ -633,13 +639,13 @@ GEM
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
     rspec-support (3.9.3)
-    rubocop (0.93.1)
+    rubocop (1.6.1)
       parallel (~> 1.10)
       parser (>= 2.7.1.5)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8)
+      regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 0.6.0)
+      rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (1.3.0)
@@ -651,9 +657,9 @@ GEM
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 0.90.0, < 2.0)
-    rubocop-rspec (1.44.1)
-      rubocop (~> 0.87)
-      rubocop-ast (>= 0.7.1)
+    rubocop-rspec (2.1.0)
+      rubocop (~> 1.0)
+      rubocop-ast (>= 1.1.0)
     ruby-prof (1.4.2)
     ruby-progressbar (1.10.1)
     ruby-statistics (2.1.2)
@@ -853,7 +859,7 @@ DEPENDENCIES
   elasticsearch (~> 7.10)
   email_validator (~> 2.2)
   emoji_regex (~> 3.2)
-  erb_lint (~> 0.0.34)
+  erb_lint!
   exifr (>= 1.3.6)
   factory_bot_rails (~> 6.1)
   faker (~> 2.15)
@@ -927,10 +933,10 @@ DEPENDENCIES
   rouge (~> 3.26)
   rspec-rails (~> 4.0)
   rspec-retry (~> 0.6)
-  rubocop (~> 0.93.1)
+  rubocop (~> 1.6)
   rubocop-performance (~> 1.9)
   rubocop-rails (~> 2.9)
-  rubocop-rspec (~> 1.44)
+  rubocop-rspec (~> 2.1)
   ruby-prof (~> 1.4)
   rubyzip (~> 2.3)
   s3_direct_upload (~> 0.1)
