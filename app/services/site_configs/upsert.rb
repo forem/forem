@@ -35,6 +35,7 @@ module SiteConfigs
 
       return { result: "errors", errors: @errors.to_sentence } if @errors.flatten.any?
 
+      @success = true
       @configs.each do |key, value|
         if key == "auth_providers_to_enable"
           update_enabled_auth_providers(value) unless value.class.name != "String"
@@ -46,6 +47,10 @@ module SiteConfigs
           SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
         end
       end
+    end
+
+    def success?
+      @success
     end
 
     def clean_up_params

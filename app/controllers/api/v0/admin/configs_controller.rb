@@ -13,14 +13,14 @@ module Api
 
         def update
           result = SiteConfigs::Upsert.call(site_config_params)
-          if result[:result] == "errors"
+          if result.success?
+            @site_configs = SiteConfig.all
+            Audit::Logger.log(:internal, @user, params.dup)
+            bust_content_change_caches
+            render "show"
+          else
             render json: { error: result[:errors], status: 422 }, status: :unprocessable_entity
-            return
           end
-          @site_configs = SiteConfig.all
-          Audit::Logger.log(:internal, @user, params.dup)
-          bust_content_change_caches
-          render "show"
         end
       end
     end

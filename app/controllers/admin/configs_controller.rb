@@ -28,14 +28,13 @@ module Admin
 
     def create
       result = SiteConfigs::Upsert.call(site_config_params)
-      if result[:result] == "errors"
+      if result.success?
+        Audit::Logger.log(:internal, current_user, params.dup)
+        bust_content_change_caches
+        redirect_to admin_config_path, notice: "Site configuration was successfully updated."
+      else
         redirect_to admin_config_path, alert: "😭 #{result[:errors]}"
-        return
       end
-      Audit::Logger.log(:internal, current_user, params.dup)
-      bust_content_change_caches
-      redirect_to admin_config_path, notice: "Site configuration was successfully updated."
-    end
 
     private
 
