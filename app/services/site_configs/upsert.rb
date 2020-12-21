@@ -16,6 +16,8 @@ module SiteConfigs
 
     VALID_URL = %r{\A(http|https)://([/|.|\w|\s|-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
 
+    VALID_DOMAIN = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.freeze
+
     def self.call(configs)
       new(configs).call
     end
@@ -113,7 +115,7 @@ module SiteConfigs
 
       domains_array = domains.delete(" ").split(",")
       valid_domains = domains_array
-        .select { |d| d.match?(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/) }
+        .select { |d| d.match?(VALID_DOMAIN) }
       valid_domains.size != domains_array.size
     end
 
