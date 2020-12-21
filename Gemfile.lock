@@ -198,6 +198,8 @@ GEM
       activesupport (>= 4.2)
     crack (0.4.4)
     crass (1.0.6)
+    cypress-on-rails (1.8.0)
+      rack
     dante (0.2.0)
     database_cleaner (1.8.5)
     database_cleaner-active_record (1.8.0)
@@ -849,6 +851,7 @@ DEPENDENCIES
   cld (~> 0.8)
   cloudinary (~> 1.18)
   counter_culture (~> 2.7)
+  cypress-on-rails (~> 1.0)
   database_cleaner-active_record (~> 1.8.0)
   ddtrace (~> 0.43.0)
   derailed_benchmarks (~> 1.8)
