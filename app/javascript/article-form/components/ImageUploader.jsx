@@ -195,12 +195,14 @@ export const ImageUploader = () => {
         </Button>
       )}
 
-      <input
-        type="hidden"
-        id="native-image-upload-message"
-        value=""
-        onChange={handleNativeMessage}
-      />
+      {useNativeUpload && (
+        <input
+          type="hidden"
+          id="native-image-upload-message"
+          value=""
+          onChange={handleNativeMessage}
+        />
+      )}
 
       {insertionImageUrls.length > 0 && (
         <ClipboardButton

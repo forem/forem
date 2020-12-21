@@ -173,12 +173,14 @@ export class ArticleCoverImage extends Component {
                 )}
               </Fragment>
             )}
-            <input
-              type="hidden"
-              id="native-cover-image-upload-message"
-              value=""
-              onChange={this.handleNativeMessage}
-            />
+            {this.useNativeUpload() && (
+              <input
+                type="hidden"
+                id="native-cover-image-upload-message"
+                value=""
+                onChange={this.handleNativeMessage}
+              />
+            )}
           </div>
           {uploadError && (
             <p className="articleform__uploaderror">{uploadErrorMessage}</p>
