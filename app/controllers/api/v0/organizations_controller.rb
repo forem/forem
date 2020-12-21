@@ -4,7 +4,7 @@ module Api
       before_action :find_organization, only: %i[users listings]
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        username name summary twitter_username github_username url
+        id username name summary twitter_username github_username url
         location created_at profile_image tech_stack tag_line story
       ].freeze
       private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
