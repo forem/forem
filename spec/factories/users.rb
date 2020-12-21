@@ -88,7 +88,9 @@ FactoryBot.define do
 
     trait :ignore_mailchimp_subscribe_callback do
       after(:build) do |user|
+        # rubocop:disable Lint/EmptyBlock
         user.define_singleton_method(:subscribe_to_mailchimp_newsletter) {}
+        # rubocop:enable Lint/EmptyBlock
         # user.class.skip_callback(:validates, :after_create)
       end
     end
