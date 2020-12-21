@@ -19,7 +19,7 @@ module Api
             bust_content_change_caches
             render "show"
           else
-            render json: { error: result[:errors], status: 422 }, status: :unprocessable_entity
+            render json: { error: result.errors.to_sentence, status: 422 }, status: :unprocessable_entity
           end
         end
       end
