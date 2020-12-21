@@ -1,6 +1,6 @@
 // Serviceworkers file. This code gets installed in users browsers and runs code before the request is made.
 <% unless Rails.env.test? || ENV["SKIP_SERVICEWORKERS"] == "true" %>
-  const staticCacheName = 'static-1.3';
+  const staticCacheName = 'static-1.4';
   const expectedCaches = [
     staticCacheName
   ];
@@ -15,12 +15,12 @@
     event.waitUntil(
       caches.open(staticCacheName)
       .then(cache => cache.addAll([
-        "/shell_top",                 // head, top bar, inline styles
-        "/shell_bottom",              // footer
-        "/async_info/shell_version",  // For comparing changes in the shell. Should be incremented with style changes.
-        "/not_found.html",            // 404 etc.
-        "/error.html",                // 500 etc.
-        "/offline.html"               // Offline page
+        "/shell_top",                // head, top bar, inline styles
+        "/shell_bottom",             // footer
+        "/async_info/shell_version", // For comparing changes in the shell. Should be incremented with style changes.
+        "/404.html",                 // Not found page
+        "/500.html",                 // Error page
+        "/offline.html"              //Offline page
       ]))
     );
   });
@@ -54,10 +54,10 @@
             const endFetch = Promise.resolve(cachedShellBottom);
             const middleFetch = fetch(url).then(response => {
               if (!response.ok && response.status === 404) {
-                return caches.match('/not_found.html');
+                return caches.match('/404.html');
               }
               if (!response.ok && response.status != 404) {
-                return caches.match('/error.html');
+                return caches.match('/500.html');
               }
               return response;
             }).catch(err => caches.match('/offline.html'));

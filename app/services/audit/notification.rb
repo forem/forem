@@ -24,7 +24,7 @@ module Audit
       # end
 
       def notify(listener, &block)
-        return unless block_given?
+        return unless block
 
         ActiveSupport::Notifications.instrument(instrument_name(listener), Audit::Event::Payload.new(&block))
       end

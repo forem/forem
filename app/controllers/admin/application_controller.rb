@@ -22,7 +22,7 @@ module Admin
     private
 
     def authorization_resource
-      self.class.name.demodulize.sub("Controller", "").singularize.constantize
+      self.class.name.sub("Admin::", "").sub("Controller", "").singularize.constantize
     end
 
     def authorize_admin
