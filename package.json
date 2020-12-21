@@ -163,7 +163,7 @@
     "focus-visible": "^5.2.0",
     "he": "^1.2.0",
     "honeybadger-js": "2.3.0",
-    "intersection-observer": "^0.11.0",
+    "intersection-observer": "^0.12.0",
     "linkstate": "^2.0.0",
     "lodash.debounce": "4.0.8",
     "postcss-cli": "^7.1.1",
