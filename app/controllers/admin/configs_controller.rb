@@ -9,6 +9,7 @@ module Admin
         campaign_sidebar_image
         campaign_url
         campaign_articles_require_approval
+        campaign_articles_expiry_time
       ].freeze
 
     COMMUNITY_PARAMS =

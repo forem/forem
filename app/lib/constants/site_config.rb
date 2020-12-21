@@ -21,6 +21,10 @@ module Constants
         description: "",
         placeholder: "Campaign stories show up on sidebar with approval?"
       },
+      campaign_articles_expiry_time: {
+        description: "Sets the expiry time for articles (in weeks) to be displayed in campaign sidebar",
+        placeholder: ""
+      },
       campaign_call_to_action: {
         description: "This text populates the call to action button on the campaign sidebar",
         placeholder: "Share your project"
