@@ -32,7 +32,7 @@ module SiteConfigs
       validate_image_urls
 
       return { result: "errors", errors: @errors.to_sentence } if @errors.flatten.any?
-      p @configs
+
       @configs.each do |key, value|
         if key == "auth_providers_to_enable"
           update_enabled_auth_providers(value) unless value.class.name != "String"

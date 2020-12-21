@@ -1,5 +1,5 @@
 module SiteConfigParams
-  SPECIAL_PARAMS_TO_ADD = 
+  SPECIAL_PARAMS_TO_ADD =
     %w[authentication_providers email_addresses meta_keywords credit_prices_in_cents auth_providers_to_enable].freeze
   def site_config_params
     has_emails = params.dig(:site_config, :email_addresses).present?
