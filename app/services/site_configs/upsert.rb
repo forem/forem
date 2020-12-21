@@ -36,18 +36,18 @@ module SiteConfigs
       validate_emoji
       validate_image_urls
 
-      unless @errors.flatten.any?
-        @success = true
-        @configs.each do |key, value|
-          if key == "auth_providers_to_enable"
-            update_enabled_auth_providers(value) unless value.class.name != "String"
-          elsif value.is_a?(Array)
-            SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
-          elsif value.respond_to?(:to_h)
-            SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
-          else
-            SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
-          end
+      return self if @errors.flatten.any?
+
+      @success = true
+      @configs.each do |key, value|
+        if key == "auth_providers_to_enable"
+          update_enabled_auth_providers(value) unless value.class.name != "String"
+        elsif value.is_a?(Array)
+          SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
+        elsif value.respond_to?(:to_h)
+          SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
+        else
+          SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
         end
       end
       self
