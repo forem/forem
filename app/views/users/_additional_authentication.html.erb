@@ -1,19 +1,14 @@
 <% unless @user.authenticated_with_all_providers? %>
   <div class="crayons-card crayons-card--content-rows block">
     <% authentication_enabled_providers.each do |provider| %>
+      <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
       <% unless @user.authenticated_through?(provider.provider_name) %>
-        <a
-          href="<%= provider.sign_in_path(state: "profile") %>"
-          class="crayons-btn crayons-btn--icon-left crayons-btn--brand-<%= provider.provider_name %> m-1"
-          data-no-instant>
-          <%= inline_svg_tag(
-                "#{provider.provider_name}.svg",
-                aria: true,
-                class: "crayons-icon",
-                title: provider.official_name,
-              ) %>
-          Connect <%= provider.official_name %> Account
-        </a>
+        <%= form_with url: provider.sign_in_path(state: "profile"), class: "flex w-100", local: true do |f| %>
+          <%= f.button type: :submit, class: "crayons-btn crayons-btn--icon-left crayons-btn--brand-#{provider.provider_name} m-1" do %>
+            <%= inline_svg_tag("#{provider.provider_name}.svg", aria: true, class: "crayons-icon", title: provider.provider_name) %>
+            Connect <%= provider.official_name %> Account
+          <% end %>
+        <% end %>
       <% end %>
     <% end %>
   </div>

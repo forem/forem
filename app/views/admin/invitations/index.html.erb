@@ -1,13 +1,4 @@
-<div class="mb-6">
-  <ul class="nav nav-pills">
-    <li class="nav-item">
-      <%= link_to "Registered Users", admin_users_path, class: "nav-link" %>
-    </li>
-    <li class="nav-item">
-      <%= link_to "New", new_admin_invitation_path, class: "nav-link" %>
-    </li>
-  </ul>
-</div>
+<%= render "admin/users/menu" %>
 
 <table class="crayons-table" width="100%">
   <thead>
@@ -20,15 +11,15 @@
   </thead>
   <tbody class="crayons-card">
     <% @invitations.each do |user| %>
-    <tr>
-      <td><%= link_to user.username, admin_user_path(user) %></td>
-      <td><%= user.id %></td>
-      <td><%= user.name %></td>
-      <td><%= user.email %></td>
-       <h5>
-        <td><%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure you want to delete this pending invite?" }, class: "btn btn-danger" %></td>
-      </h5>
-    </tr>
+      <tr>
+        <td><%= link_to user.username, admin_user_path(user) %></td>
+        <td><%= user.id %></td>
+        <td><%= user.name %></td>
+        <td><%= user.email %></td>
+        <h5>
+          <td><%= link_to "Delete", url_for(action: :destroy, id: user.id), method: :delete, data: { confirm: "Are you sure you want to delete this pending invite?" }, class: "btn btn-danger" %></td>
+        </h5>
+      </tr>
     <% end %>
   </tbody>
 </table>

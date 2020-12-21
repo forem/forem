@@ -75,6 +75,6 @@ class HtmlVariant < ApplicationRecord
   end
 
   def allowed_image_host?(src)
-    src.start_with?("https://res.cloudinary.com/")
+    src.start_with?("https://res.cloudinary.com/") || src.start_with?(Images::Optimizer.get_imgproxy_endpoint)
   end
 end
