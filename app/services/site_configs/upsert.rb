@@ -1,5 +1,5 @@
 module SiteConfigs
-  module Upsert
+  class Upsert
     EMOJI_ONLY_FIELDS = %w[community_emoji].freeze
     IMAGE_FIELDS =
       %w[
