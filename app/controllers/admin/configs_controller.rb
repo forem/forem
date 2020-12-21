@@ -21,7 +21,6 @@ module Admin
     layout "admin"
 
     before_action :extra_authorization_and_confirmation, only: [:create]
-    after_action :bust_content_change_caches, only: [:create]
 
     def show
       @confirmation_text = confirmation_text
@@ -34,6 +33,7 @@ module Admin
         return
       end
       Audit::Logger.log(:internal, current_user, params.dup)
+      bust_content_change_caches
       redirect_to admin_config_path, notice: "Site configuration was successfully updated."
     end
 
