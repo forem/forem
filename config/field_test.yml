@@ -16,6 +16,7 @@ experiments:
       - 16
     goals:
       - user_creates_comment
+      - user_creates_comment_four_days_in_week
       - user_views_article_four_days_in_week
       - user_views_article_four_hours_in_day
       - user_views_article_nine_days_in_two_week
