@@ -35,6 +35,8 @@ env:
     - KNAPSACK_PRO_LOG_LEVEL=info
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
+    - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
+    - ELASTICSEARCH_URL="http://localhost:9200"
   jobs:
     - KNAPSACK_PRO_CI_NODE_INDEX=0
     - KNAPSACK_PRO_CI_NODE_INDEX=1
@@ -55,7 +57,7 @@ script:
   - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-0.7.0-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
   - bin/ci-bundle
@@ -69,9 +71,10 @@ script:
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
-  - export FOREM_OWNER_SECRET="secret"
+  - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
   - yarn e2e:ci
   # Dropping and recreating the database for Capybara/rspecs
+  - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
   - bundle exec rails db:drop
   - bundle exec rails db:create
   - bundle exec rails db:schema:load

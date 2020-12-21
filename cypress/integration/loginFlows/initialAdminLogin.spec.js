@@ -25,24 +25,38 @@ describe('Initial admin signup', () => {
       cy.get('@registrationForm')
         .findByLabelText(/Username/i)
         .type(admin.username);
-      cy.get('@registrationForm').findByLabelText(/Email/i).type(admin.email);
+      cy.get('@registrationForm')
+        .findByLabelText(/^Email$/i)
+        .type(admin.email);
       cy.get('@registrationForm')
         .findByLabelText('Password')
         .type(admin.password);
       cy.get('@registrationForm')
-        .findByLabelText(/Password Confirmation/i)
+        .findByLabelText(/^Password Confirmation$/i)
         .type(admin.password);
       cy.get('@registrationForm')
         .findByLabelText(/New Forem Secret/i)
         .type(admin.foremSecret);
+
+      // Submit the form
+      cy.get('@registrationForm')
+        .findByText(/^Sign up$/)
+        .click();
+      cy.log('Submitting signup form');
+
+      // The initial administrator user was create and is redirected to the confirm email screen.
+      cy.url().should(
+        'eq',
+        Cypress.config().baseUrl + '/confirm-email?email=' + admin.email,
+      );
+
+      cy.findByTestId('resend-confirmation-form').as('confirmationForm');
+      cy.get('@confirmationForm')
+        .findByLabelText(/^Confirmation email address$/i)
+        .should('have.value', admin.email);
+      cy.get('@confirmationForm').findByText(
+        /^Resend confirmation instructions$/i,
+      );
     });
-
-    // Submit the form
-    cy.get('@registrationForm').findByText('Sign up').click();
-    cy.log('Submitting signup form');
-    cy.url().should('eq', Cypress.config().baseUrl + '/users');
-
-    // We want to ensure that the form submitted without errors
-    cy.findByTestId('signup-errors').should('not.exist');
   });
 });
