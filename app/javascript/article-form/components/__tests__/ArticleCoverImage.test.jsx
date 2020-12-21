@@ -12,6 +12,14 @@ import { ArticleCoverImage } from '../ArticleCoverImage';
 global.fetch = fetch;
 
 describe('<ArticleCoverImage />', () => {
+  beforeEach(() => {
+    global.Runtime = {
+      isNativeIOS: jest.fn(() => {
+        return false;
+      }),
+    };
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(
       <ArticleCoverImage
@@ -29,6 +37,44 @@ describe('<ArticleCoverImage />', () => {
     );
     const uploadInput = getByLabelText(/add a cover image/i);
     expect(uploadInput.getAttribute('type')).toEqual('file');
+  });
+
+  it('does not display the file input when isNativeIOS', async () => {
+    global.Runtime = {
+      isNativeIOS: jest.fn(() => {
+        return true;
+      }),
+    };
+
+    const { queryByText } = render(
+      <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
+    );
+    expect(queryByText(/Upload an image/i)).not.toBeInTheDocument();
+  });
+
+  it('triggers a webkit messageHandler call when isNativeIOS', async () => {
+    global.Runtime = {
+      isNativeIOS: jest.fn(() => {
+        return true;
+      }),
+    };
+
+    global.window.webkit = {
+      messageHandlers: {
+        imageUpload: {
+          postMessage: jest.fn(),
+        },
+      },
+    };
+
+    const { queryByLabelText } = render(
+      <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
+    );
+    const uploadButton = queryByLabelText(/Upload cover image/i);
+    uploadButton.click();
+    expect(
+      window.webkit.messageHandlers.imageUpload.postMessage,
+    ).toHaveBeenCalledTimes(1);
   });
 
   describe('when an image is uploaded', () => {

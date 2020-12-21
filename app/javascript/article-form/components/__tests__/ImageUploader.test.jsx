@@ -12,6 +12,14 @@ import '@testing-library/jest-dom';
 global.fetch = fetch;
 
 describe('<ImageUploader />', () => {
+  beforeEach(() => {
+    global.Runtime = {
+      isNativeIOS: jest.fn(() => {
+        return false;
+      }),
+    };
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(<ImageUploader />);
     const results = await axe(container);
@@ -23,6 +31,40 @@ describe('<ImageUploader />', () => {
     const uploadInput = getByLabelText(/Upload an image/i);
 
     expect(uploadInput.getAttribute('type')).toEqual('file');
+  });
+
+  it('does not display the file input when isNativeIOS', async () => {
+    global.Runtime = {
+      isNativeIOS: jest.fn(() => {
+        return true;
+      }),
+    };
+
+    const { queryByText } = render(<ImageUploader />);
+    expect(queryByText(/Upload an image/i)).not.toBeInTheDocument();
+  });
+
+  it('triggers a webkit messageHandler call when isNativeIOS', async () => {
+    global.Runtime = {
+      isNativeIOS: jest.fn(() => {
+        return true;
+      }),
+    };
+
+    global.window.webkit = {
+      messageHandlers: {
+        imageUpload: {
+          postMessage: jest.fn(),
+        },
+      },
+    };
+
+    const { queryByLabelText } = render(<ImageUploader />);
+    const uploadButton = queryByLabelText(/Upload an image/i);
+    uploadButton.click();
+    expect(
+      window.webkit.messageHandlers.imageUpload.postMessage,
+    ).toHaveBeenCalledTimes(1);
   });
 
   it('displays the upload spinner during upload', async () => {

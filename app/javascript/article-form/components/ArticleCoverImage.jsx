@@ -51,15 +51,19 @@ export class ArticleCoverImage extends Component {
     });
   };
 
-  checkNativeBridge = (e) => {
-    if(Runtime.isNativeIOS('imageUpload')) {
-      e.preventDefault();
-      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'native-cover-image-upload-message' });
-    }
-  }
+  useNativeUpload = () => {
+    return Runtime.isNativeIOS('imageUpload');
+  };
+
+  initNativeImagePicker = (e) => {
+    e.preventDefault();
+    window.webkit.messageHandlers.imageUpload.postMessage({
+      id: 'native-cover-image-upload-message',
+    });
+  };
 
   handleNativeMessage = (e) => {
-    var message = {};
+    let message = {};
     try {
       message = JSON.parse(e.target.value);
     } catch (e) {
@@ -67,7 +71,7 @@ export class ArticleCoverImage extends Component {
       return;
     }
 
-    switch(message.action) {
+    switch (message.action) {
       case 'uploading':
         this.setState({ uploadingImage: true });
         this.clearUploadError();
@@ -80,11 +84,11 @@ export class ArticleCoverImage extends Component {
         });
         break;
       case 'success':
-        this.props.onMainImageUrlChange({ links: [message.link]});
+        this.props.onMainImageUrlChange({ links: [message.link] });
         this.setState({ uploadingImage: false });
         break;
     }
-  }
+  };
 
   triggerMainImageRemoval = (e) => {
     e.preventDefault();
@@ -112,6 +116,12 @@ export class ArticleCoverImage extends Component {
     const { mainImage } = this.props;
     const { uploadError, uploadErrorMessage, uploadingImage } = this.state;
     const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
+    const extraProps = this.useNativeUpload()
+      ? {
+          onClick: this.initNativeImagePicker,
+          'aria-label': 'Upload cover image',
+        }
+      : {};
 
     return (
       <DragAndDropZone
@@ -136,17 +146,22 @@ export class ArticleCoverImage extends Component {
               </span>
             ) : (
               <Fragment>
-                <Button variant="outlined" className="mr-2 whitespace-nowrap">
+                <Button
+                  variant="outlined"
+                  className="mr-2 whitespace-nowrap"
+                  {...extraProps}
+                >
                   <label htmlFor="cover-image-input">{uploadLabel}</label>
-                  <input
-                    id="cover-image-input"
-                    type={ Runtime.isNativeIOS('imageUpload') ? "placeholder" : "file" }
-                    onChange={this.handleMainImageUpload}
-                    onClick={this.checkNativeBridge}
-                    accept="image/*"
-                    className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
-                    data-max-file-size-mb="25"
-                  />
+                  {!this.useNativeUpload() && (
+                    <input
+                      id="cover-image-input"
+                      type="file"
+                      onChange={this.handleMainImageUpload}
+                      accept="image/*"
+                      className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
+                      data-max-file-size-mb="25"
+                    />
+                  )}
                 </Button>
                 {mainImage && (
                   <Button
@@ -158,7 +173,12 @@ export class ArticleCoverImage extends Component {
                 )}
               </Fragment>
             )}
-            <input type="hidden" id="native-cover-image-upload-message" value="" onChange={this.handleNativeMessage}/>
+            <input
+              type="hidden"
+              id="native-cover-image-upload-message"
+              value=""
+              onChange={this.handleNativeMessage}
+            />
           </div>
           {uploadError && (
             <p className="articleform__uploaderror">{uploadErrorMessage}</p>

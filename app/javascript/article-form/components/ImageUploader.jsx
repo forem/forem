@@ -124,7 +124,7 @@ export const ImageUploader = () => {
   }
 
   function handleNativeMessage(e) {
-    var message = {};
+    let message = {};
     try {
       message = JSON.parse(e.target.value);
     } catch (e) {
@@ -132,7 +132,7 @@ export const ImageUploader = () => {
       return;
     }
 
-    switch(message.action) {
+    switch (message.action) {
       case 'uploading':
         dispatch({
           type: 'uploading_image',
@@ -153,12 +153,17 @@ export const ImageUploader = () => {
     }
   }
 
-  function checkNativeBridge(e) {
-    if(Runtime.isNativeIOS('imageUpload')) {
-      e.preventDefault();
-      window.webkit.messageHandlers.imageUpload.postMessage({ 'id': 'native-image-upload-message' });
-    }
+  function initNativeImagePicker(e) {
+    e.preventDefault();
+    window.webkit.messageHandlers.imageUpload.postMessage({
+      id: 'native-image-upload-message',
+    });
   }
+
+  const useNativeUpload = Runtime.isNativeIOS('imageUpload');
+  const extraProps = useNativeUpload
+    ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }
+    : { tabIndex: -1 };
 
   return (
     <div className="flex items-center">
@@ -172,24 +177,30 @@ export const ImageUploader = () => {
           variant="ghost"
           contentType="icon-left"
           icon={ImageIcon}
-          tabIndex="-1"
+          {...extraProps}
         >
           Upload image
-          <input
-            type={ Runtime.isNativeIOS('imageUpload') ? "placeholder" : "file" }
-            id="image-upload-field"
-            onChange={handleInsertionImageUpload}
-            onClick={checkNativeBridge}
-            className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
-            multiple
-            accept="image/*"
-            data-max-file-size-mb="25"
-            aria-label="Upload an image"
-          />
+          {!useNativeUpload && (
+            <input
+              type="file"
+              id="image-upload-field"
+              onChange={handleInsertionImageUpload}
+              className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
+              multiple
+              accept="image/*"
+              data-max-file-size-mb="25"
+              aria-label="Upload an image"
+            />
+          )}
         </Button>
       )}
 
-      <input type="hidden" id="native-image-upload-message" value="" onChange={handleNativeMessage}/>
+      <input
+        type="hidden"
+        id="native-image-upload-message"
+        value=""
+        onChange={handleNativeMessage}
+      />
 
       {insertionImageUrls.length > 0 && (
         <ClipboardButton
