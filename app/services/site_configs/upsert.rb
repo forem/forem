@@ -96,7 +96,6 @@ module SiteConfigs
       SiteConfig.public_send("#{entry}_key").blank? || SiteConfig.public_send("#{entry}_secret").blank?
     end
 
-
     # Validations
     def brand_contrast_too_low
       hex = @configs[:primary_brand_color_hex]

@@ -6,11 +6,7 @@ module Api
 
         before_action :authenticate_with_api_key_or_current_user!
         before_action :authorize_super_admin
-        after_action :bust_content_change_caches, only: [:create]
-
-        after_action only: [:update] do
-          Audit::Logger.log(:internal, @user, params.dup)
-        end
+        after_action :bust_content_change_caches, only: [:update]
 
         def show
           @site_configs = SiteConfig.all
@@ -23,6 +19,7 @@ module Api
             return
           end
           @site_configs = SiteConfig.all
+          Audit::Logger.log(:internal, @user, params.dup)
           render "show"
         end
       end
