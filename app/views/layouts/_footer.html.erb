@@ -20,9 +20,9 @@
     <p class="fs-s crayons-footer__description"><a href="/" aria-label="<%= community_name %> Home" class="crayons-link"><%= community_qualified_name %></a> – <%= SiteConfig.community_description %></p>
     <div class="m:-mb-4 crayons-footer__description">
       <%# The following copy is necessary for compatability with the Forem AGPL licence which requires instances to link back to the source. %>
-      <p class="fs-s">Built on <a href="https://www.forem.com" class="crayons-link" target="_blank">Forem</a> — the <a href="https://dev.to/t/opensource" class="crayons-link">open source</a> software that powers <a href="https://dev.to" class="crayons-link">DEV</a> and other inclusive communities.</p>
-      <p class="fs-s">Made with love and <a href="https://dev.to/t/rails" class="crayons-link">Ruby on Rails</a>. <%= community_qualified_name %> <span title="copyright">&copy;</span> <%= copyright_notice %>.</p>
-      <div><a href="https://www.forem.com" target="_blank" class="inline-block mt-4"><%= inline_svg_tag("logo-forem.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Forem logo") %></a></div>
+      <p class="fs-s">Built on <a href="https://www.forem.com" class="crayons-link" target="_blank" rel="noopener">Forem</a> — the <a href="https://dev.to/t/opensource" target="_blank" rel="noopener" class="crayons-link">open source</a> software that powers <a href="https://dev.to" target="_blank" rel="noopener" class="crayons-link">DEV</a> and other inclusive communities.</p>
+      <p class="fs-s">Made with love and <a href="https://dev.to/t/rails" target="_blank" rel="noopener" class="crayons-link">Ruby on Rails</a>. <%= community_qualified_name %> <span title="copyright">&copy;</span> <%= copyright_notice %>.</p>
+      <div><a href="https://www.forem.com" target="_blank" rel="noopener" class="inline-block mt-4"><%= inline_svg_tag("logo-forem.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Forem logo") %></a></div>
     </div>
   </div>
   <% if SiteConfig.mascot_footer_image_url.present? %>

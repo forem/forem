@@ -1,0 +1,34 @@
+<%= render "admin/users/menu" %>
+<div class="crayons-notice crayons-notice--info">
+  <strong>These users' accounts were deleted. Please, destroy GDPR data from external services (GA, Maichimp) for them.</strong>
+</div>
+<table class="crayons-table" width="100%">
+  <thead>
+    <tr>
+      <th scope="col">User destroyed at</th>
+      <th scope="col">ID</th>
+      <th scope="col">Username</th>
+      <th scope="col">Email</th>
+      <th scope="col">Done</th>
+    </tr>
+  </thead>
+  <tbody class="crayons-card">
+    <% @gdpr_delete_requests.each do |r| %>
+      <tr>
+        <td><%= r.created_at.strftime("%m-%d-%Y %H:%m") %></td>
+        <td><%= r.user_id %></td>
+        <td><%= r.username %></td>
+        <td><%= r.email %></td>
+        <td>
+          <%= link_to "Done!",
+                      url_for(action: :destroy, id: r.id),
+                      method: :delete,
+                      data: { confirm: "Have you destroyed data from external services? (GA, Mailchimp)" },
+                      class: "btn btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @gdpr_delete_requests, theme: "internal" %>

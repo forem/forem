@@ -282,16 +282,16 @@ module ApplicationHelper
     estimated_user_count > LARGE_USERBASE_THRESHOLD
   end
 
-  # rubocop:disable Rails/OutputSafety
   def admin_config_label(method, content = nil)
-    content ||= raw("<span>#{method.to_s.humanize}</span>")
+    content ||= tag.span(method.to_s.humanize)
+
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-      content = safe_join([content, raw("<span class='crayons-indicator crayons-indicator--critical'>Required</span>")])
+      required = tag.span("Required", class: "crayons-indicator crayons-indicator--critical")
+      content = safe_join([content, required])
     end
 
     tag.label(content, class: "site-config__label crayons-field__label", for: "site_config_#{method}")
   end
-  # rubocop:enable Rails/OutputSafety
 
   def admin_config_description(content)
     tag.p(content, class: "crayons-field__description") unless content.empty?

@@ -5,8 +5,6 @@ RSpec.describe Users::DeleteWorker, type: :worker do
   let(:mailer_class) { NotifyMailer }
   let(:mailer) { double }
   let(:message_delivery) { double }
-  let(:slack_messenger_class) { Slack::Messengers::UserDeleted }
-  let(:slack_messenger) { double }
 
   describe "#perform" do
     let!(:user) { create(:user) }
@@ -49,16 +47,10 @@ RSpec.describe Users::DeleteWorker, type: :worker do
         expect(message_delivery).to have_received(:deliver_now)
       end
 
-      it "sends the gdpr notification" do
-        allow(slack_messenger_class).to receive(:call)
-        worker.perform(user.id)
-        expect(slack_messenger_class).to have_received(:call).with(name: user.name, user_url: URL.user(user))
-      end
-
-      it "doesn't send the gdpr notification for admin triggered deletion" do
-        allow(slack_messenger_class).to receive(:call)
-        worker.perform(user.id, true)
-        expect(slack_messenger_class).not_to have_received(:call)
+      it "creates a gdpr-delete record" do
+        expect do
+          worker.perform(user.id, true)
+        end.to change(Users::GdprDeleteRequest, :count).by(1)
       end
     end
 

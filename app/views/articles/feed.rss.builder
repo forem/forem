@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+# rubocop:disable Metrics/BlockLength
+
 xml.instruct! :xml, version: "1.0"
 xml.rss version: "2.0" do
   xml.channel do
@@ -8,7 +10,13 @@ xml.rss version: "2.0" do
     xml.description user ? user.summary : SiteConfig.community_description
     xml.link user ? app_url(user.path) : app_url
     xml.language "en"
-
+    if user
+      xml.image do
+        xml.url user.profile_image_90
+        xml.title "#{user.name} profile image"
+        xml.link app_url(user.path)
+      end
+    end
     articles.each do |article|
       xml.item do
         xml.title article.title
@@ -24,3 +32,4 @@ xml.rss version: "2.0" do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

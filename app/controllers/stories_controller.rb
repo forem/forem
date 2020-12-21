@@ -171,7 +171,6 @@ class StoriesController < ApplicationController
     assign_feed_stories
     assign_hero_html
     assign_podcasts
-    assign_listings
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
     @article_index = true
     @featured_story = (featured_story || Article.new)&.decorate
@@ -361,10 +360,6 @@ class StoriesController < ApplicationController
       .order(published_at: :desc)
       .where("published_at > ?", 24.hours.ago)
       .select(:slug, :title, :podcast_id, :image)
-  end
-
-  def assign_listings
-    @listings = Listing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
   end
 
   def redirect_to_lowercase_username

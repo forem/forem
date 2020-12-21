@@ -12,6 +12,9 @@ Rails.application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
 
+  # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
+  config.action_view.cache_template_loading = true
+
   # NOTE: [Rails 6] this is the default store in testing,
   # as we haven't enabled Rails 6.0 defaults in config/application.rb,
   # we need to keep this explicit, for now

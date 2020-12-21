@@ -375,31 +375,31 @@ RSpec.describe "UserSettings", type: :request do
 
       it "removes the correct identity" do
         expect do
-          delete "/users/remove_identity", params: { provider: provider }
+          delete users_remove_identity_path, params: { provider: provider }
         end.to change(user.identities, :count).by(-1)
 
         expect(user.identities.map(&:provider)).not_to include(provider)
       end
 
       it "empties their associated username" do
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
 
         expect(user.public_send("#{provider}_username")).to be(nil)
       end
 
       it "updates the profile_updated_at timestamp" do
         original_profile_updated_at = user.profile_updated_at
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
         expect(user.profile_updated_at.to_i).to be > original_profile_updated_at.to_i
       end
 
       it "redirects successfully to /settings/account" do
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
       end
 
       it "renders a successful response message" do
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
         auth_provider = Authentication::Providers.get!(provider)
 
         expected_notice = "Your #{auth_provider.official_name} account was successfully removed."
@@ -409,7 +409,7 @@ RSpec.describe "UserSettings", type: :request do
       it "redirects the user with an error if the corresponding provider has been since disabled" do
         providers = Authentication::Providers.available - [provider]
         allow(Authentication::Providers).to receive(:enabled).and_return(providers)
-        delete "/users/remove_identity", params: { provider: provider }
+        delete users_remove_identity_path, params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
 
         error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:contact]}"
@@ -420,8 +420,26 @@ RSpec.describe "UserSettings", type: :request do
         providers = Authentication::Providers.available.first(2)
         allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
 
-        delete "/users/remove_identity", params: { provider: providers.first }
+        delete users_remove_identity_path, params: { provider: providers.first }
         expect(response.body).not_to include("Remove OAuth Associations")
+      end
+
+      it "does not remove GitHub repositories if the removed identity is not GitHub" do
+        create(:github_repo, user: user)
+
+        expect do
+          delete users_remove_identity_path, params: { provider: :twitter }
+        end.not_to change(user.github_repos, :count)
+      end
+
+      it "removes GitHub repositories if the removed identity is GitHub" do
+        repo = create(:github_repo, user: user)
+
+        expect do
+          delete users_remove_identity_path, params: { provider: :github }
+        end.to change(user.github_repos, :count).by(-1)
+
+        expect(GithubRepo.exists?(id: repo.id)).to be(false)
       end
     end
 
