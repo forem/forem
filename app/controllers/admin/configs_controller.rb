@@ -35,6 +35,7 @@ module Admin
       else
         redirect_to admin_config_path, alert: "😭 #{result[:errors]}"
       end
+    end
 
     private
 
