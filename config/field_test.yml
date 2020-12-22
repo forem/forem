@@ -1,5 +1,14 @@
 experiments:
-  feed_top_articles_query: # Points given for implicit tag weights
+  feed_top_articles_query:
+    # This tests how we fetch "globally hot articles" — Testing some variants of
+    # more focus on the particpant's tags, some other alternatives which take more into account
+    # when the particpant was last on the site and viewed a post.
+    # -> Recommended experiment duration: 2 weeks.
+    # This experiment has new goals measuring consistently of coming back and clocking a page view
+    # and two weeks should be enough to see results.
+    # Hypotheses. This will be more impactful than past experiments which were too modest.
+    # We'll get more info on bigger levers on experiments, and should be able to pit the winner
+    # against some more variation.
     variants:
       - base
       - base_with_more_articles
@@ -7,7 +16,7 @@ experiments:
       - top_articles_since_last_pageview_3_days_max
       - top_articles_since_last_pageview_7_days_max
       - combination_only_tags_followed_and_top_max_7_days
-    weights: # "base" (what we currently implement) and "no_implicit_score" are what we want the most data on.
+    weights: # "base" gets a few more rolls of the dice
       - 20
       - 16
       - 16

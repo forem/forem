@@ -163,19 +163,19 @@ module Articles
             .order(hotness_score: :desc)
           articles = articles.tagged_with(followed_tags, any: true) if followed_tags.size > 4
         when "top_articles_since_last_pageview_3_days_max" # Top articles since last page view (max 3 days)
-          start_time = [(@user.page_views.last&.created_at || Time.current) - 3.hours, 3.days.ago].max
+          start_time = [(@user.page_views.last&.created_at || Time.current) - 12.hours, 3.days.ago].max
           articles = Article.published.limited_column_select.includes(top_comments: :user)
             .where("published_at > ?", start_time)
             .page(@page).per(@number_of_articles)
             .order(score: :desc)
         when "top_articles_since_last_pageview_7_days_max" # Top articles since last page view (max 3 days)
-          start_time = [(@user.page_views.last&.created_at || Time.current) - 4.hours, 7.days.ago].max
+          start_time = [(@user.page_views.last&.created_at || Time.current) - 12.hours, 7.days.ago].max
           articles = Article.published.limited_column_select.includes(top_comments: :user)
             .where("published_at > ?", start_time)
             .page(@page).per(@number_of_articles)
             .order(score: :desc)
         when "combination_only_tags_followed_and_top_max_7_days" # Top articles since last page view (max 3 days)
-          start_time = [(@user.page_views.last&.created_at || Time.current) - 4.hours, 7.days.ago].max
+          start_time = [(@user.page_views.last&.created_at || Time.current) - 12.hours, 7.days.ago].max
           followed_tags = @user.cached_followed_tag_names
           articles = Article.published.limited_column_select.includes(top_comments: :user)
             .where("published_at > ?", start_time)
