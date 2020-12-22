@@ -654,6 +654,8 @@ class User < ApplicationRecord
     return unless persisted?
 
     index_to_elasticsearch_inline
+  rescue => e
+    Honeybadger.notify(e, context: { user_id: id })
   end
 
   def can_send_confirmation_email

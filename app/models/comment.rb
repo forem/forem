@@ -75,7 +75,7 @@ class Comment < ApplicationRecord
   def path
     "/#{user.username}/comment/#{id_code_generated}"
   rescue StandardError
-    "/404"
+    "/404.html"
   end
 
   def parent_or_root_article

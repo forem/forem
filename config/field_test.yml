@@ -1,9 +1,22 @@
 experiments:
   follow_implicit_points: # Points given for implicit tag weights
-    # Implemented here: app/workers/follows/update_points_worker.rb
+    # TEST FINISHED
     # Hypotheses: Weighting tags based on implied preference will lead
     # to more repeat engagement.
     # Recommended duration: 4 weeks (ending at start of January)
+
+    # OUTCOME:
+    # It was observed that "base" has been consistently ahead in comments and
+    # "four hours of article reads in day" by 10% to 20% over no_implicit_score
+    # but over time this began regressing towards the mean and seeming more random.
+    # In inspecting the ways we are measuring goals here, anything with a low barrier
+    # will eventually be reached (aka leave one reaction) by most users, so over time
+    # these goals demonstrate less value.
+    # So this test is being cut off on the observation of a clear winner early on
+    # with the note that we need tests which can map better to the duration of the test.
+
+    # This experiment is no longer running in production, but can remain configured here
+    # while there are no other experiments running.
     variants:
       - base
       - no_implicit_score
