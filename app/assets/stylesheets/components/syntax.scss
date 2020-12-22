@@ -79,6 +79,8 @@ div.highlight {
   display: none;
   cursor: pointer;
   color: var(--base-inverted);
+  width: var(--su-5);
+  height: var(--su-5);
 }
 
 .highlight-action--fullscreen-on {
