@@ -18,10 +18,10 @@
   <% else %>
     <meta property="og:title" content="Listings" />
     <meta property="og:description" content="<%= SiteConfig.community_description %>" />
-    <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/sa3xjflbtvt9zw0xpan5.png">
+    <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
     <meta name="twitter:title" content="Listings">
     <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
-    <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/sa3xjflbtvt9zw0xpan5.png">
+    <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <% end %>
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:card" content="summary_large_image">

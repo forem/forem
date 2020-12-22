@@ -23,11 +23,15 @@
     </div>
     <div class="crayons-field">
       <%= f.label :starts_at, class: "crayons-field__label" %>
+      <fieldset>
       <%= f.datetime_select :starts_at, required: true, include_blank: true, start_year: Time.current.year, end_year: Time.current.year + 2, class: "crayons-select" %> UTC Time Only (4 hours ahead of eastern time)
+      </fieldset>
     </div>
     <div class="crayons-field">
       <%= f.label :ends_at, class: "crayons-field__label" %>
+      <fieldset>
       <%= f.datetime_select :ends_at, required: true, include_blank: true, start_year: Time.current.year, end_year: Time.current.year + 2, class: "crayons-select" %> UTC Time Only (4 hours ahead of eastern time)
+      </fieldset>
     </div>
     <div class="crayons-field">
       <%= f.label :location_name, class: "crayons-field__label" %>

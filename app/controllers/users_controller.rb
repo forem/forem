@@ -133,6 +133,11 @@ class UsersController < ApplicationController
         :profile_updated_at => Time.current,
       )
 
+      # GitHub repositories are tied with the existence of the GitHub identity
+      # as we use the user's GitHub token to fetch them from the API.
+      # We should delete them when a user unlinks their GitHub account.
+      @user.github_repos.destroy_all if provider.provider_name == :github
+
       flash[:settings_notice] = "Your #{provider.official_name} account was successfully removed."
     else
       flash[:error] = error_message

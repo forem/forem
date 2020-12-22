@@ -114,6 +114,17 @@ RSpec.describe "Authenticating with Email" do
     end
   end
 
+  context "when requesting a password reset mail" do
+    it "does not let malicious users enumerate email addresses" do
+      visit new_user_session_path
+      click_link "I forgot my password"
+      fill_in "Email", with: "doesnotexist@example.com"
+      click_button "Send me reset password instructions"
+
+      expect(page).not_to have_text("Email not found")
+    end
+  end
+
   def fill_in_user(user)
     attach_file("user_profile_image", "spec/fixtures/files/podcast.png")
     fill_in("user_name", with: user.name)
