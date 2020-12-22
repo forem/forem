@@ -1,8 +1,6 @@
 /// <reference types="cypress" />
 /* eslint-env node */
 
-// const { promisify } = require('util');
-// const spawn = promisify(require('child_process').spawn);
 const { spawn } = require('child_process');
 const fetch = require('node-fetch');
 
@@ -35,6 +33,7 @@ module.exports = (on, config) => {
       });
 
       const truncateDB = new Promise((resolve, _reject) => {
+        // Clear the DB for the next test run.
         const child = spawn('bundle', ['exec', 'rails db:truncate_all']);
 
         child.on('error', (error) => {
@@ -51,7 +50,7 @@ module.exports = (on, config) => {
         truncateDB,
       ]);
 
-      const { acknowledged } = await clearSearchIndicesResponse.json();
+      const { acknowledged = false } = await clearSearchIndicesResponse.json();
 
       if (!acknowledged || !clearedDB) {
         throw 'Unable to reset data';
