@@ -30,7 +30,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
-        worker.perform(user.id, "user_views_article_four_days_in_week")
+        worker.perform(user.id, "user_creates_pageview")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
         expect(FieldTest::Event.last.name).to eq("user_views_article_four_days_in_week")
       end
@@ -39,7 +39,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         2.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
-        worker.perform(user.id, "user_views_article_four_days_in_week")
+        worker.perform(user.id, "user_creates_pageview")
         expect(FieldTest::Event.all.size).to be(0)
       end
 
@@ -47,7 +47,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
-        worker.perform(user.id, "user_views_article_four_hours_in_day")
+        worker.perform(user.id, "user_creates_pageview")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
         expect(FieldTest::Event.last.name).to eq("user_views_article_four_hours_in_day")
       end
@@ -56,7 +56,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         2.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
-        worker.perform(user.id, "user_views_article_four_hours_in_day")
+        worker.perform(user.id, "user_creates_pageview")
         expect(FieldTest::Event.all.size).to be(0)
       end
     end
