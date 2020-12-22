@@ -124,13 +124,7 @@ export const ImageUploader = () => {
   }
 
   function handleNativeMessage(e) {
-    let message = {};
-    try {
-      message = JSON.parse(e.target.value);
-    } catch (e) {
-      console.log(e); // eslint-disable-line no-console
-      return;
-    }
+    const message = JSON.parse(e.target.value);
 
     switch (message.action) {
       case 'uploading':
@@ -160,6 +154,10 @@ export const ImageUploader = () => {
     });
   }
 
+  // When the component is rendered in an environment that supports a native
+  // image picker for image upload we want to add the aria-label attr and the
+  // onClick event to the UI button. This event will kick off the native UX.
+  // The props are unwrapped (using spread operator) in the button below
   const useNativeUpload = Runtime.isNativeIOS('imageUpload');
   const extraProps = useNativeUpload
     ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }

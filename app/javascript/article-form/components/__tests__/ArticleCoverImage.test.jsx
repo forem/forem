@@ -39,42 +39,57 @@ describe('<ArticleCoverImage />', () => {
     expect(uploadInput.getAttribute('type')).toEqual('file');
   });
 
-  it('does not display the file input when isNativeIOS', async () => {
-    global.Runtime = {
-      isNativeIOS: jest.fn(() => {
-        return true;
-      }),
-    };
+  describe('when rendered in native iOS with imageUpload support', () => {
+    beforeEach(() => {
+      global.Runtime = {
+        isNativeIOS: jest.fn((namespace) => {
+          return namespace === 'imageUpload';
+        }),
+      };
+    });
 
-    const { queryByText } = render(
-      <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
-    );
-    expect(queryByText(/Upload an image/i)).not.toBeInTheDocument();
-  });
+    it('does not display the file input', async () => {
+      const { queryByText } = render(
+        <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
+      );
+      expect(queryByText(/Upload an image/i)).not.toBeInTheDocument();
+    });
 
-  it('triggers a webkit messageHandler call when isNativeIOS', async () => {
-    global.Runtime = {
-      isNativeIOS: jest.fn(() => {
-        return true;
-      }),
-    };
-
-    global.window.webkit = {
-      messageHandlers: {
-        imageUpload: {
-          postMessage: jest.fn(),
+    it('triggers a webkit messageHandler call when isNativeIOS', async () => {
+      global.window.webkit = {
+        messageHandlers: {
+          imageUpload: {
+            postMessage: jest.fn(),
+          },
         },
-      },
-    };
+      };
 
-    const { queryByLabelText } = render(
-      <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
-    );
-    const uploadButton = queryByLabelText(/Upload cover image/i);
-    uploadButton.click();
-    expect(
-      window.webkit.messageHandlers.imageUpload.postMessage,
-    ).toHaveBeenCalledTimes(1);
+      const { queryByLabelText } = render(<ArticleCoverImage mainImage="" />);
+      const uploadButton = queryByLabelText(/Upload cover image/i);
+      uploadButton.click();
+      expect(
+        window.webkit.messageHandlers.imageUpload.postMessage,
+      ).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles a native bridge message correctly', async () => {
+      const onMainImageUrlChange = jest.fn();
+      const { container } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={onMainImageUrlChange}
+        />,
+      );
+      const nativeInput = container.querySelector(
+        '#native-cover-image-upload-message',
+      );
+
+      // Fire a change event in the hidden input with JSON payload for success
+      const fakeSuccessMessage = `{ "action": "success", "link": "/some-fake-image.jpg" }`;
+      fireEvent.change(nativeInput, { target: { value: fakeSuccessMessage } });
+
+      expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('when an image is uploaded', () => {
