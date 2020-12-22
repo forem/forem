@@ -146,7 +146,7 @@ module Admin
         onboarding_taskcard_image
       ].freeze
 
-    VALID_URL = %r{\A(http|https)://([/|.|\w|\s|-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
+    VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
 
     layout "admin"
 

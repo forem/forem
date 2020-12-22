@@ -36,9 +36,9 @@ gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Un
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
-gem "flipper", "~> 0.19.1" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.19.1" # Store Flipper flags in ActiveRecord
-gem "flipper-ui", "~> 0.19.1"
+gem "flipper", "~> 0.20.0" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.20.0" # Store Flipper flags in ActiveRecord
+gem "flipper-ui", "~> 0.20.0"
 gem "fog-aws", "~> 3.7" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
@@ -115,7 +115,7 @@ group :development do
   gem "brakeman", "~> 4.10", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.7" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.8", require: false # A series of things you can use to benchmark a Rails or Ruby app
-  gem "erb_lint", "~> 0.0.34", require: false # ERB Linter tool
+  gem "erb_lint", github: "thepracticaldev/erb-lint", branch: "jess/remove-version-pinning", require: false # ERB Linter tool
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
@@ -139,10 +139,10 @@ group :development, :test do
   gem "knapsack_pro", "~> 2.10.1" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.93.1", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.6", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.9", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.9", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 1.44", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 2.1", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
@@ -164,6 +164,6 @@ group :test do
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 4.4" # Run Selenium tests more easily with install and updates for all supported webdrivers
-  gem "webmock", "~> 3.10", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
+  gem "webmock", "~> 3.11", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
