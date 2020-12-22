@@ -160,19 +160,27 @@ RSpec.describe "Articles", type: :request do
   end
 
   describe "GET /feed/latest" do
-    let!(:last_article) { create(:article, featured: true) }
     let!(:not_last_article) { create(:article, featured: true, published_at: last_article.published_at - 1.day) }
     let!(:not_featured_article) { create(:article, featured: false) }
+    let!(:last_article) { create(:article, featured: true) }
 
-    before { get "/feed/latest" }
+    let(:my_instance) { instance_double(Articles::Feeds::LargeForemExperimental) }
 
-    it "contains last published articles" do
+    before do
+      allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(my_instance)
+      articles_on_latest = Article.where(id: [last_article.id, not_last_article.id])
+      allow(my_instance).to receive(:latest_feed).and_return(articles_on_latest)
+
+      get "/feed/latest"
+    end
+
+    it "contains latest articles" do
       expect(response.body).to include(last_article.title)
       expect(response.body).to include(not_last_article.title)
       expect(response.body).not_to include(not_featured_article.title)
     end
 
-    it "contains ordered articles by their published_at value" do
+    it "contains articles ordered" do
       rss_feed = Feedjira.parse(response.body)
       titles = rss_feed.entries.map(&:title)
 
