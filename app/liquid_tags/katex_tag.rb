@@ -31,7 +31,7 @@ class KatexTag < Liquid::Block
   private
 
   def inline?
-    @inline ||= @markup.split(" ").include?("inline")
+    @inline ||= @markup.split.include?("inline")
   end
 end
 

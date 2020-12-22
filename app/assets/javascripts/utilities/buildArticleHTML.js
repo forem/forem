@@ -273,7 +273,7 @@ function buildArticleHTML(article) {
         aria-labelledby="article-link-${article.id}"
         class="crayons-story__hidden-navigation-link"
       >
-        ${article.title}
+        ${filterXSS(article.title)}
       </a>
     `;
 

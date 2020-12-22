@@ -10,7 +10,7 @@ describe DataUpdateScripts::TouchArticlesWithCapitalizedPaths do
 
     # Create 1 article with a capitalized path
     bad_article = create(:article, published: true)
-    new_path = bad_article.path.titleize.split(" ").join("-")
+    new_path = bad_article.path.titleize.split.join("-")
     bad_article.update_columns(path: new_path) # bypass callback fix
 
     # Check to make sure the query only catches the article with a bad path

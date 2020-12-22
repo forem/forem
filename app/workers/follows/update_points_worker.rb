@@ -35,7 +35,7 @@ module Follows
       tags = articles.pluck(:cached_tag_list).compact.flat_map { |list| list.split(", ") }
       occurrences = tags.count(tag.name)
       bonus = inverse_popularity_bonus(tag)
-      finalized_points(occurrences, bonus, user)
+      finalized_points(occurrences, bonus)
     end
 
     def adjust_other_tag_follows_of_user(user_id)
@@ -64,22 +64,8 @@ module Follows
       top_100_tag_names.index(tag.name) || (top_100_tag_names.size * 1.5)
     end
 
-    def finalized_points(occurrences, bonus, user)
-      test_variant = field_test(:follow_implicit_points, participant: user)
-      case test_variant
-      when "no_implicit_score"
-        0
-      when "half_weight_after_log"
-        Math.log(occurrences + bonus + 1) * 0.5
-      when "double_weight_after_log"
-        Math.log(occurrences + bonus + 1) * 2.0
-      when "double_bonus_before_log"
-        Math.log(occurrences + (bonus * 2) + 1)
-      when "without_weighting_bonus"
-        Math.log(occurrences + 1)
-      else # base - Our current "default" implementation
-        Math.log(occurrences + bonus + 1) # + 1 in all cases is to avoid log(0) => -infinity
-      end
+    def finalized_points(occurrences, bonus)
+      Math.log(occurrences + bonus + 1) # + 1 in all cases is to avoid log(0) => -infinity
     end
 
     def cached_app_wide_top_tag_names
