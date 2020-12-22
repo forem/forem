@@ -102,9 +102,17 @@ module Admin
     def remove_identity
       identity = Identity.find(user_params[:identity_id])
       @user = identity.user
+
       begin
-        identity.delete
+        identity.destroy
+
         @user.update("#{identity.provider}_username" => nil)
+
+        # GitHub repositories are tied with the existence of the GitHub identity
+        # as we use the user's GitHub token to fetch them from the API.
+        # We should delete them when a user unlinks their GitHub account.
+        @user.github_repos.destroy_all if identity.provider.to_sym == :github
+
         flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
       rescue StandardError => e
         flash[:danger] = e.message

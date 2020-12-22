@@ -35,7 +35,7 @@ class GithubTag
     def parse_input(input)
       sanitized_input = sanitize_input(input)
 
-      path, *options = sanitized_input.split(" ")
+      path, *options = sanitized_input.split
 
       validate_options!(*options)
 

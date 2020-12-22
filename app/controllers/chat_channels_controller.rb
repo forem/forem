@@ -163,7 +163,7 @@ class ChatChannelsController < ApplicationController
     render json: { status: "success", message: "chat channel blocked" }, status: :ok
   end
 
-  # Note: this is part of an effort of moving some things from the external to
+  # NOTE: this is part of an effort of moving some things from the external to
   # the internal API. No behavior was changes as part of this refactoring, so
   # this action is a bit unusual.
   def channel_info
@@ -181,7 +181,7 @@ class ChatChannelsController < ApplicationController
 
   def create_channel
     chat_channel_params = params[:chat_channel]
-    chat_channel_name = chat_channel_params[:channel_name].split(" ").join("-")
+    chat_channel_name = chat_channel_params[:channel_name].split.join("-")
     chat_channel = ChatChannel.new(
       channel_type: "invite_only",
       channel_name: chat_channel_params[:channel_name],

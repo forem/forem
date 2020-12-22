@@ -1,0 +1,12 @@
+# Gem files
+*.gem
+
+# DS_Store
+.DS_Store
+
+# Bundle configs
+.bundle
+
+.rubocop-https---shopify-github-io-ruby-style-guide-rubocop-yml
+
+gemfiles/Gemfile*.lock
