@@ -23,21 +23,23 @@ const fetch = require('node-fetch');
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+  config.env = {
+    ...config.env,
+    ...process.env,
+  };
 
   on('task', {
     async resetData() {
-      // Check the console where Cypress is running for the specific error.
-      // The actual error will not appear in the Cypress test runner.
       const clearSearchIndices = fetch(`${config.env.ELASTICSEARCH_URL}/*`, {
         method: 'DELETE',
       });
 
-      const truncateDB = new Promise((resolve, _reject) => {
+      const truncateDB = new Promise((resolve, reject) => {
         // Clear the DB for the next test run.
         const child = spawn('bundle', ['exec', 'rails db:truncate_all']);
 
         child.on('error', (error) => {
-          throw error;
+          reject(error);
         });
 
         child.on('exit', (status, _code) => {
@@ -49,11 +51,12 @@ module.exports = (on, config) => {
         clearSearchIndices,
         truncateDB,
       ]);
-
       const { acknowledged = false } = await clearSearchIndicesResponse.json();
 
       if (!acknowledged || !clearedDB) {
-        throw 'Unable to reset data';
+        throw new Error(`Unable to reset data. Possible issues:
+  - Elastic Search was unable to reset indices
+  - The database did not truncate successfully`);
       }
 
       // Nothing to do, we're all good.
@@ -61,4 +64,6 @@ module.exports = (on, config) => {
       return null;
     },
   });
+
+  return config;
 };

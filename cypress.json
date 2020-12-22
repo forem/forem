@@ -1,7 +1,3 @@
 {
-  "baseUrl": "http://localhost:3000",
-  "env": {
-    "FOREM_OWNER_SECRET": "secret",
-    "ELASTICSEARCH_URL": "http://localhost:9200"
-  }
+  "baseUrl": "http://localhost:3000"
 }
