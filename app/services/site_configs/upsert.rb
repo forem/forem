@@ -18,6 +18,8 @@ module SiteConfigs
 
     VALID_DOMAIN = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.freeze
 
+    PARAMS_TO_BE_CLEANED = %i[sidebar_tags suggested_tags suggested_users].freeze
+
     attr_reader :errors
 
     def self.call(configs)
@@ -39,6 +41,15 @@ module SiteConfigs
       return self if @errors.flatten.any?
 
       @success = true
+      upsert_configs
+      self
+    end
+
+    def success?
+      @success
+    end
+
+    def upsert_configs
       @configs.each do |key, value|
         if key == "auth_providers_to_enable"
           update_enabled_auth_providers(value) unless value.class.name != "String"
@@ -50,15 +61,10 @@ module SiteConfigs
           SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
         end
       end
-      self
-    end
-
-    def success?
-      @success
     end
 
     def clean_up_params
-      %i[sidebar_tags suggested_tags suggested_users].each do |param|
+      PARAMS_TO_BE_CLEANED.each do |param|
         @configs[param] = @configs[param]&.downcase&.delete(" ") if @configs[param]
       end
       @configs[:credit_prices_in_cents]&.transform_values!(&:to_i)
@@ -86,9 +92,8 @@ module SiteConfigs
     end
 
     def update_enabled_auth_providers(value)
-      enabled_providers = []
-      value.split(",").each do |entry|
-        enabled_providers.push(entry) unless invalid_provider_entry(entry)
+      enabled_providers = value.split(",").filter_map do |entry|
+        entry unless invalid_provider_entry(entry)
       end
       SiteConfig.public_send("authentication_providers=", enabled_providers) unless
         email_login_disabled_with_one_or_less_auth_providers(enabled_providers)

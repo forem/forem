@@ -6,6 +6,7 @@ module Api
 
         before_action :authenticate_with_api_key_or_current_user!
         before_action :authorize_super_admin
+        skip_before_action :verify_authenticity_token, only: %i[update]
 
         def show
           @site_configs = SiteConfig.all
