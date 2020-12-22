@@ -7,7 +7,7 @@ module Users
 
     def perform(user_id, goal)
       @user = User.find_by(id: user_id)
-      return unless user
+      return unless @user
 
       @experiment = :feed_top_articles_query # Current experiment running
       case goal
