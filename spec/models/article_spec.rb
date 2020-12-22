@@ -54,8 +54,15 @@ RSpec.describe Article, type: :model do
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
     describe "::admin_published_with" do
-      it "includes mascot published articles" do
-        user = create(:user, id: 1)
+      it "includes mascot-published articles" do
+        allow(SiteConfig).to receive(:mascot_user_id).and_return(3)
+        user = create(:user, id: 3)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "includes staff-user-published articles" do
+        allow(SiteConfig).to receive(:staff_user_id).and_return(3)
         create(:article, user: user, tags: "challenge")
         expect(described_class.admin_published_with("challenge").count).to eq(1)
       end

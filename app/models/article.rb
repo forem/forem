@@ -114,7 +114,7 @@ class Article < ApplicationRecord
     published
       .where(user_id: User.with_role(:super_admin)
                           .union(User.with_role(:admin))
-                          .union(id: SiteConfig.staff_user_id)
+                          .union(id: [SiteConfig.staff_user_id, SiteConfig.mascot_user_id].compact)
                           .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
