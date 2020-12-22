@@ -164,12 +164,12 @@ RSpec.describe "Articles", type: :request do
     let!(:not_featured_article) { create(:article, featured: false) }
     let!(:last_article) { create(:article, featured: true) }
 
-    let(:my_instance) { instance_double(Articles::Feeds::LargeForemExperimental) }
+    let(:double) { instance_double(Articles::Feeds::LargeForemExperimental) }
 
     before do
-      allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(my_instance)
+      allow(Articles::Feeds::LargeForemExperimental).to receive(:new).and_return(double)
       articles_on_latest = Article.where(id: [last_article.id, not_last_article.id])
-      allow(my_instance).to receive(:latest_feed).and_return(articles_on_latest)
+      allow(double).to receive(:latest_feed).and_return(articles_on_latest)
 
       get "/feed/latest"
     end
