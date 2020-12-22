@@ -27,20 +27,6 @@ RSpec.describe "Authenticating with a password" do
       expect(page).to have_text("Invalid Email or password.")
     end
 
-    it "displays a message on the last login attempt" do
-      allow(User).to receive(:maximum_attempts).and_return(2)
-
-      submit_login_form(user.email, "wr0ng")
-      expect(page).to have_text("You have one more attempt before your account is locked.")
-    end
-
-    it "displays a message when the user got locked out" do
-      allow(User).to receive(:maximum_attempts).and_return(1)
-
-      submit_login_form(user.email, "wr0ng")
-      expect(page).to have_text("Your account is locked.")
-    end
-
     it "sends an email with the unlock link if the uset gets locked out" do
       allow(User).to receive(:maximum_attempts).and_return(1)
 
