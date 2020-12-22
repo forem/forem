@@ -1,6 +1,11 @@
 /// <reference types="cypress" />
 /* eslint-env node */
 
+// const { promisify } = require('util');
+// const spawn = promisify(require('child_process').spawn);
+const { spawn } = require('child_process');
+const fetch = require('node-fetch');
+
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
 //
@@ -22,29 +27,39 @@ module.exports = (on, config) => {
   // `config` is the resolved Cypress config
 
   on('task', {
-    resetData() {
+    async resetData() {
       // Check the console where Cypress is running for the specific error.
       // The actual error will not appear in the Cypress test runner.
-      const { spawnSync } = require('child_process');
-      const { status: curlStatus, stderr: curlError } = spawnSync('curl', [
-        '-XDELETE',
-        `${config.env.ELASTICSEARCH_URL}/\\*`,
+      const clearSearchIndices = fetch(`${config.env.ELASTICSEARCH_URL}/*`, {
+        method: 'DELETE',
+      });
+
+      const truncateDB = new Promise((resolve, _reject) => {
+        const child = spawn('bundle', ['exec', 'rails db:truncate_all']);
+
+        child.on('error', (error) => {
+          throw error;
+        });
+
+        child.on('exit', (status, _code) => {
+          resolve(status === 0);
+        });
+      });
+
+      const [clearSearchIndicesResponse, clearedDB] = await Promise.all([
+        clearSearchIndices,
+        truncateDB,
       ]);
 
-      if (curlStatus !== 0) {
-        throw curlError;
+      const { acknowledged } = await clearSearchIndicesResponse.json();
+
+      if (!acknowledged || !clearedDB) {
+        throw 'Unable to reset data';
       }
 
-      const { status, stderr } = spawnSync('bundle', [
-        'exec',
-        'rails db:truncate_all',
-      ]);
-
-      if (status !== 0) {
-        throw stderr.toString('utf8');
-      }
-
-      return status;
+      // Nothing to do, we're all good.
+      // Cypress tasks require a return value, so returning null.
+      return null;
     },
   });
 };
