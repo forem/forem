@@ -1242,6 +1242,7 @@ export default class Chat extends Component {
     <Button
       data-channel-type={type}
       onClick={this.triggerChannelTypeFilter}
+      data-testid={name}
       className={`chat__channeltypefilterbutton crayons-indicator crayons-indicator--${
         type === active ? 'accent' : ''
       }`}
@@ -1770,6 +1771,7 @@ export default class Chat extends Component {
           showMemberlist ? 'mention__list mention__visible' : 'mention__list'
         }
         id="mentionList"
+        data-testid="mentionList"
       >
         {showMemberlist
           ? Object.values(channelUsers[activeChannelId])
