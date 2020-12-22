@@ -135,7 +135,6 @@ module Articles
           hot_stories = hot_stories.to_a + new_stories.to_a
         else
           hot_stories = Article.published.limited_column_select
-            .includes(top_comments: :user)
             .page(@page).per(@number_of_articles)
             .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
             .order(hotness_score: :desc)
@@ -151,11 +150,6 @@ module Articles
       def experimentalal_hot_story_grab
         test_variant = @user ? field_test(:feed_top_articles_query, participant: @user) : "base"
         case test_variant
-        when "base" # equivalent to current base
-          articles = Article.published.limited_column_select.includes(top_comments: :user)
-            .page(@page).per(@number_of_articles)
-            .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
-            .order(hotness_score: :desc)
         when "base_with_more_articles" # equivalent to current base but with higher "number of articles"
           articles = Article.published.limited_column_select.includes(top_comments: :user)
             .page(@page).per(75)
@@ -188,7 +182,7 @@ module Articles
             .page(@page).per(@number_of_articles)
             .order(score: :desc)
           articles = articles.tagged_with(followed_tags, any: true) if followed_tags.size > 4
-        else # same as base
+        else # "base"
           articles = Article.published.limited_column_select.includes(top_comments: :user)
             .page(@page).per(@number_of_articles)
             .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)

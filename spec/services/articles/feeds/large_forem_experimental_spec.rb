@@ -126,11 +126,22 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         expect(stories).to include(old_story)
         expect(stories).to include(new_story)
       end
+    end
 
+    context "when experiment is running" do
       it "works with every variant" do
-        # TODO, finish this.
-        create(:field_test_membership,
-               experiment: :follow_implicit_points, variant: "no_implicit_score", participant_id: user.id)
+        # Basic test to see that these all work.
+        %i[base
+           base_with_more_articles
+           only_followed_tags
+           top_articles_since_last_pageview_3_days_max
+           top_articles_since_last_pageview_7_days_max
+           combination_only_tags_followed_and_top_max_7_days].each do |experiment|
+          create(:field_test_membership,
+                 experiment: experiment, variant: "base", participant_id: user.id)
+          stories = feed.default_home_feed(user_signed_in: true)
+          expect(stories.size).to be > 0
+        end
       end
     end
   end
