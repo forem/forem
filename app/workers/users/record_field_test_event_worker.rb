@@ -17,7 +17,7 @@ module Users
         pageview_goal(14.days.ago, "DATE(created_at)", 9, "user_views_article_nine_days_in_two_week")
         pageview_goal(5.days.ago, "DATE_PART('hour', created_at)", 12, "user_views_article_twelve_hours_in_five_days")
       else # comments goal. Only page views and comments are currently active.
-        field_test_converted(experiment, participant: @user, goal: goal) # base single comment goal.
+        field_test_converted(@experiment, participant: @user, goal: goal) # base single comment goal.
         comment_goal(7.days.ago, "DATE(created_at)", 4, "user_creates_comment_four_days_in_week")
       end
     end
