@@ -32,5 +32,16 @@ RSpec.describe "Search::Multisearch" do
       search_result = Search::Multisearch.call("pinata")
       expect(search_result.count).to eq 1
     end
+
+    it "supports prefix searches", :aggregate_failures do
+      search_result = Search::Multisearch.call("searchpod")
+      expect(search_result.count).to eq 1
+      expect(search_result.first.searchable).to be_a PodcastEpisode
+    end
+
+    it "combines search terms with 'or', not 'and'" do
+      search_result = Search::Multisearch.call("searcharticle searchpod")
+      expect(search_result.count).to eq 2
+    end
   end
 end
