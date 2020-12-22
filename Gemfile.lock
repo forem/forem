@@ -573,7 +573,7 @@ GEM
       thor (>= 0.20.3, < 2.0)
     rainbow (3.0.0)
     rake (13.0.1)
-    ransack (2.4.0)
+    ransack (2.4.1)
       activerecord (>= 5.2.4)
       activesupport (>= 5.2.4)
       i18n
