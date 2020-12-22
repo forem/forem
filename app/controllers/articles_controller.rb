@@ -222,7 +222,8 @@ class ArticlesController < ApplicationController
   end
 
   def handle_latest_feed
-    ids_of_articles_on_latest = Articles::Feeds::LargeForemExperimental.new
+    page = params[:page].try(:to_i) || 1
+    ids_of_articles_on_latest = Articles::Feeds::LargeForemExperimental.new(page: page, number_of_articles: 12)
       .latest_feed.includes([:user])
       .includes(:taggings).map(&:id)
     Article.find(ids_of_articles_on_latest)
