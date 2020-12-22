@@ -846,6 +846,7 @@ ActiveRecord::Schema.define(version: 2021_01_21_102114) do
     t.bigint "searchable_id"
     t.string "searchable_type"
     t.datetime "updated_at", precision: 6, null: false
+    t.index "to_tsvector('simple'::regconfig, COALESCE(content, ''::text))", name: "index_pg_search_documents_on_content", using: :gin
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id"
   end
 
