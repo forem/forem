@@ -51,7 +51,18 @@ module.exports = (on, config) => {
         clearSearchIndices,
         truncateDB,
       ]);
-      const { acknowledged = false } = await clearSearchIndicesResponse.json();
+      const {
+        acknowledged = false,
+        error,
+      } = await clearSearchIndicesResponse.json();
+
+      if (!acknowledged || error) {
+        throw new Error(
+          `There was an error clearing indices in Elastic Search:\n${
+            error ? JSON.stringify(error, null, '\t') : ''
+          }`,
+        );
+      }
 
       if (!acknowledged || !clearedDB) {
         throw new Error(`Unable to reset data. Possible issues:
