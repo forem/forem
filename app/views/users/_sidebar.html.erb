@@ -33,6 +33,7 @@
 
   <% cache "user-profile-sidebar-profile-details-#{@user.id}-#{@user.profile_updated_at}", expires_in: 10.days do %>
     <% @profile.ui_attributes_for(area: :left_sidebar).each do |title, value| %>
+      <% next if Profile.special_attributes.include?(title) %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-3">

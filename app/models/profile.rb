@@ -9,6 +9,34 @@ class Profile < ApplicationRecord
 
   store_attribute :data, :custom_attributes, :json, default: {}
 
+  SPECIAL_FUNCTIONALITY_ATTRIBUTES = %w[
+    summary
+    employment_title
+    employer_name
+    employer_url
+    email_public
+    location
+    display_looking_for_work_on_profile
+    brand_color1
+    brand_color2
+    looking_for_work].freeze
+
+  SPECIAL_SOCIAL_LINK_ATTRIBUTES = %w[
+    twitter_url
+    github_url
+    facebook_url
+    linkedin_url
+    youtube_url
+    instagram_url
+    behance_url
+    medium_url
+    stackoverflow_url
+    gitlab_url
+    twitch_url
+    mastodon_url
+    website_url
+  ].freeze
+
   # NOTE: @citizen428 This is a temporary mapping so we don't break DEV during
   # profile migration/generalization work.
   MAPPED_ATTRIBUTES = {
@@ -41,6 +69,14 @@ class Profile < ApplicationRecord
   # Returns an array of all currently defined `store_attribute`s on `data`.
   def self.attributes
     (stored_attributes[:data] || []).map(&:to_s)
+  end
+
+  def self.special_attributes
+    SPECIAL_FUNCTIONALITY_ATTRIBUTES + SPECIAL_SOCIAL_LINK_ATTRIBUTES
+  end
+
+  def self.special_social_link_attributes
+    SPECIAL_SOCIAL_LINK_ATTRIBUTES.freeze
   end
 
   def custom_profile_attributes
