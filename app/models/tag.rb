@@ -1,6 +1,12 @@
 require_relative "../lib/acts_as_taggable_on/tag"
 
 class Tag < ActsAsTaggableOn::Tag
+  include PgSearch::Model
+  pg_search_scope :search_by_name,
+                  against: :name,
+                  using: { tsearch: { prefix: true } },
+                  ranked_by: "tags.hotness_score"
+
   attr_accessor :points, :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
