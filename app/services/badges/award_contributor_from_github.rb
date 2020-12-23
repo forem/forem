@@ -5,8 +5,8 @@ module Badges
     REPOSITORIES = [
       "forem/forem",
       "forem/forem-browser-extension",
-      "thepracticaldev/DEV-Android",
-      "thepracticaldev/DEV-ios",
+      "forem/DEV-Android",
+      "forem/DEV-ios",
     ].freeze
 
     def self.call(since = 1.day.ago, msg = "Thank you so much for your contributions!")
