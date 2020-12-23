@@ -16,8 +16,8 @@ module Badges
     end
 
     def call
-      badge_id = Badge.find_by(slug: "#{weeks}-week-streak")&.id
-      return unless badge_id
+      badge_slug = "#{weeks}-week-streak"
+      return unless (badge_id = Badge.id_for_slug(badge_slug))
 
       users = User.where(id: article_user_ids).where("articles_count >= ?", weeks)
 

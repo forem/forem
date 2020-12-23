@@ -1,8 +1,7 @@
 module Badges
   class Award
     def self.call(user_relation, slug, message_markdown)
-      badge_id = Badge.find_by(slug: slug)&.id
-      return unless badge_id
+      return unless (badge_id = Badge.id_for_slug(slug))
 
       user_relation.find_each do |user|
         achievement = user.badge_achievements.create(

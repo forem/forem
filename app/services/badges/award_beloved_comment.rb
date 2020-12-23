@@ -11,8 +11,7 @@ module Badges
     end
 
     def call
-      badge_id = Badge.find_by(slug: BADGE_SLUG)&.id
-      return unless badge_id
+      return unless (badge_id = Badge.id_for_slug(BADGE_SLUG))
 
       Comment.includes(:user).where(public_reactions_count: comment_count..).find_each do |comment|
         achievement = BadgeAchievement.create(
