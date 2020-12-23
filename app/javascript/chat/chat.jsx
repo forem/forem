@@ -1646,10 +1646,8 @@ export default class Chat extends Component {
     const { activeChannel } = this.state;
     const mention = e.keyCode === 64;
     if (mention && activeChannel.channel_type !== 'direct') {
-      const memberListElemt = document.getElementById('mentionList');
-      memberListElemt.focus();
-      // console.log('Hello')
-      // document.getElementById('messageform').blur();
+      const memberListElement = document.getElementById('mentionList');
+      memberListElement.focus();
       this.setState({ showMemberlist: true });
     }
   };
