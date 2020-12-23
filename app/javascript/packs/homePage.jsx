@@ -104,8 +104,8 @@ if (!document.getElementById('featured-story-marker')) {
         });
       });
 
-      renderTagsFollowed();    
-      renderSidebar();    
+      renderTagsFollowed();
+      renderSidebar();
     }
   }, 2);
 }
