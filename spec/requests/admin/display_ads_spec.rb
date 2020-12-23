@@ -52,6 +52,7 @@ RSpec.describe "/admin/display_ads", type: :request do
       end
 
       it "busts sidebar" do
+        allow(EdgeCache::BustSidebar).to receive(:call)
         post_resource
         expect(EdgeCache::BustSidebar).to have_received(:call).once
       end
