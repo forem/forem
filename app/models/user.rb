@@ -654,7 +654,7 @@ class User < ApplicationRecord
     return unless persisted?
 
     index_to_elasticsearch_inline
-  rescue => e
+  rescue StandardError => e
     Honeybadger.notify(e, context: { user_id: id })
   end
 
