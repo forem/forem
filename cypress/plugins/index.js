@@ -42,14 +42,24 @@ module.exports = (on, config) => {
           reject(error);
         });
 
-        child.on('exit', (status, _code) => {
+        child.on('exit', (status, code) => {
+          if (status !== 0) {
+            reject(
+              new Error(
+                `bundle exec rails db:truncate_all exited with status ${status} and code ${code}.`,
+              ),
+            );
+          }
+
           resolve(status === 0);
         });
       });
 
       const [clearSearchIndicesResponse, clearedDB] = await Promise.all([
         clearSearchIndices,
-        truncateDB,
+        truncateDB.catch((error) => {
+          throw new Error(error);
+        }),
       ]);
       const {
         acknowledged = false,
@@ -64,10 +74,8 @@ module.exports = (on, config) => {
         );
       }
 
-      if (!acknowledged || !clearedDB) {
-        throw new Error(`Unable to reset data. Possible issues:
-  - Elastic Search was unable to reset indices
-  - The database did not truncate successfully`);
+      if (!clearedDB) {
+        throw new Error(`The database did not truncate successfully`);
       }
 
       // Nothing to do, we're all good.
