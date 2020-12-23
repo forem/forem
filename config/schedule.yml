@@ -21,49 +21,49 @@ award_yearly_club_badges:
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
-    - award_yearly_club_badges
+    - award_yearly_club
     - ""
 award_beloved_comment_badges:
   cron: "5 */12 * * *" # 5 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
-    - award_beloved_comment_badges
+    - award_beloved_comment
     - ""
 award_four_week_streak_badge:
   cron: "10 */12 * * *" # 10 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
-    - award_four_week_streak_badge
+    - award_four_week_streak
     - ""
 award_eight_week_streak_badge:
   cron: "15 */12 * * *" # 15 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
-    - award_eight_week_streak_badge
+    - award_eight_week_streak
     - ""
 award_sixteen_week_streak_badge:
   cron: "20 */12 * * *" # 20 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
-    - award_sixteen_week_streak_badge
+    - award_sixteen_week_streak
     - ""
 award_weekly_tag_badges:
   cron: "0 11 * * 4" # 11 am UTC every Thursday
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
-    - award_tag_badges
+    - award_tag
     - ""
 award_contributor_badges_from_github:
   cron: "20 * * * *" # every hour, 20 min after the hour
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""
-    - award_contributor_badges_from_github
+    - award_contributor_from_github
     - ""
 remove_old_html_variant_data:
   cron: "10 * * * *" # every hour, 10 min after the hour
