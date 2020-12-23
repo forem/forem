@@ -13,13 +13,13 @@ RSpec.describe Badges::AwardStreak, type: :service do
   it "awards badge to users with four straight weeks of articles" do
     create(:article, user: user, published: true, published_at: 12.days.ago)
     expect do
-      described_class.call(4)
+      described_class.call(weeks: 4)
     end.to change { user.reload.badges.size }.by(1)
   end
 
   it "does not award the badge to not qualified users" do
     expect do
-      described_class.call(4)
+      described_class.call(weeks: 4)
     end.not_to change { user.reload.badges.size }
   end
 end

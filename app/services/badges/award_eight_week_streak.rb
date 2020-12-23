@@ -1,7 +1,7 @@
 module Badges
   class AwardEightWeekStreak
     def self.call
-      ::Badges::AwardStreak.call(8)
+      ::Badges::AwardStreak.call(weeks: 8)
     end
   end
 end

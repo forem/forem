@@ -11,11 +11,11 @@ module Badges
       "Congrats on achieving this streak! Consistent writing is hard. " \
       "The next streak badge you can get is the %<weeks>d Week Badge. 😉".freeze
 
-    def self.call(weeks)
-      new(weeks).call
+    def self.call(weeks:)
+      new(weeks: weeks).call
     end
 
-    def initialize(weeks)
+    def initialize(weeks:)
       @weeks = weeks
     end
 
