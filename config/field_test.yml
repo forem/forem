@@ -9,6 +9,7 @@ experiments:
     # Hypotheses. This will be more impactful than past experiments which were too modest.
     # We'll get more info on bigger levers on experiments, and should be able to pit the winner
     # against some more variation.
+    # combination_only_tags_followed_and_top_max_7_days will be interesting to observe I think.
     variants:
       - base
       - base_with_more_articles
