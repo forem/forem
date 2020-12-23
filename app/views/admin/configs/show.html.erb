@@ -1151,6 +1151,41 @@
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
+                         header: "Push Notifications",
+                         state: "collapse",
+                         target: "pushNotificationsBodyContainer",
+                         expanded: "false"
+                       } %>
+            <div id="pushNotificationsBodyContainer" class="card-body collapse hide" aria-labelledby="pushNotificationsBodyContainer">
+              <fieldset class="flex flex-column gap-4">
+                <div class="crayons-field">
+                  <%= admin_config_label :push_notifications_identifier %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:push_notifications_identifier][:description] %>
+                  <%= f.text_field :push_notifications_identifier,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.push_notifications_identifier,
+                                   placeholder: Constants::SiteConfig::DETAILS[:push_notifications_identifier][:placeholder] %>
+                </div>
+
+                <div class="crayons-field">
+                  <%= admin_config_label :push_notifications_secret %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:push_notifications_secret][:description] %>
+                  <%= f.text_field :push_notifications_secret,
+                                   class: "crayons-textfield",
+                                   value: SiteConfig.push_notifications_secret,
+                                   placeholder: Constants::SiteConfig::DETAILS[:push_notifications_secret][:placeholder] %>
+                </div>
+
+                <%= render "form_submission", f: f %>
+              </fieldset>
+            </div>
+          </div>
+        <% end %>
+
+        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+          <div class="card mt-3">
+            <%= render partial: "admin/shared/card_header",
+                       locals: {
                          header: "Social Media",
                          state: "collapse",
                          target: "socialMediaBodyContainer",

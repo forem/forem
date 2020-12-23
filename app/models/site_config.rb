@@ -203,6 +203,13 @@ class SiteConfig < RailsSettings::Base
     xlarge: 250
   }
 
+  # Push Notifications
+  # The identifier is publicly available in the DOM for clients to register for
+  # PN delivery. The secret is used to send PN to devices via Pusher Beams. The
+  # names are intented to be implementation agnostic (currently Pusher Beams).
+  field :push_notifications_identifier, type: :string, default: ApplicationConfig["PUSHER_BEAMS_ID"]
+  field :push_notifications_secret, type: :string, default: ApplicationConfig["PUSHER_BEAMS_KEY"]
+
   # Returns true if we are operating on a local installation, false otherwise
   def self.local?
     app_domain.include?("localhost")

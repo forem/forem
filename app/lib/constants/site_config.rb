@@ -274,6 +274,14 @@ module Constants
         description: "Determines the mininum for the periodic email digest",
         placeholder: 2
       },
+      push_notifications_identifier: {
+        description: "The public ID used to register for Push Notifications delivery (Instance ID in Pusher Beams)",
+        placeholder: "cdaf9857-fad0-4bfb-b360-64c1b2693ef3"
+      },
+      push_notifications_secret: {
+        description: "The Secret Key used to send Push Notifications to users (Primary Key in Pusher Beams)",
+        placeholder: "ABCD123ASDF456QWERTY7890"
+      },
       recaptcha_site_key: {
         description: "Add the site key for Google reCAPTCHA, which is used for reporting abuse",
         placeholder: "What is the Google reCAPTCHA site key?"

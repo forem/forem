@@ -9,7 +9,7 @@ if ApplicationConfig["PUSHER_APP_ID"].present?
   Pusher.encrypted = true
 
   Pusher::PushNotifications.configure do |config|
-    config.instance_id = ApplicationConfig["PUSHER_BEAMS_ID"]
-    config.secret_key = ApplicationConfig["PUSHER_BEAMS_KEY"]
+    config.instance_id = SiteConfig.push_notifications_identifier
+    config.secret_key = SiteConfig.push_notifications_secret
   end
 end
