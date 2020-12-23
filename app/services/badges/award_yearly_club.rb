@@ -10,6 +10,10 @@ module Badges
       7 => "seven"
     }.freeze
 
+    MESSAGE_TEMPLATE =
+      "Happy #{SiteConfig.community_name} birthday! " \
+      "Can you believe it's been %<years>d %<noun>s already?!".freeze
+
     def self.call
       new.call
     end
@@ -28,8 +32,7 @@ module Badges
     private
 
     def generate_message(years)
-      "Happy #{SiteConfig.community_name} birthday! " \
-        "Can you believe it's been #{years} #{'year'.pluralize(years)} already?!"
+      format(MESSAGE_TEMPLATE, years: years, noun: "year".pluralize(years))
     end
   end
 end

@@ -2,6 +2,10 @@ module Badges
   class AwardBelovedComment
     BADGE_SLUG = "beloved-comment".freeze
 
+    MESSAGE_TEMPLATE =
+      "You're famous! " \
+      "[This is the comment](%<comment>s) for which you're being recognized. 😄".freeze
+
     def self.call(comment_count = 25)
       new(comment_count).call
     end
@@ -28,8 +32,7 @@ module Badges
     attr_reader :comment_count
 
     def generate_message(comment)
-      "You're famous! " \
-        "[This is the comment](#{URL.comment(comment)}) for which you are being recognized. 😄"
+      format(MESSAGE_TEMPLATE, comment: URL.comment(comment))
     end
   end
 end

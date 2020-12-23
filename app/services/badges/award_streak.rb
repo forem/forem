@@ -7,6 +7,10 @@ module Badges
 
     MINIMUM_QUALITY = -25
 
+    MESSAGE_TEMPLATE =
+      "Congrats on achieving this streak! Consistent writing is hard. " \
+      "The next streak badge you can get is the %<weeks>d Week Badge. 😉".freeze
+
     def self.call(weeks)
       new(weeks).call
     end
@@ -51,8 +55,7 @@ module Badges
     def generate_message
       return LONGEST_STREAK_MESSAGE if weeks == LONGEST_STREAK_WEEKS
 
-      "Congrats on achieving this streak! Consistent writing is hard. " \
-        "The next streak badge you can get is the #{weeks * 2} Week Badge. 😉"
+      format(MESSAGE_TEMPLATE, weeks: weeks * 2)
     end
   end
 end
