@@ -1065,15 +1065,15 @@
   background: var(--card-bg);
   display: none;
   z-index: 1;
-  border-top: 1px solid #dbdbdb;
-  bottom: 60px;
-  width: 100%;
+  border: 1px solid #dbdbdb;
+  bottom: 80px;
+  width: 70%;
   max-height: 280px;
   overflow-x: scroll;
+  border-radius: 4px;
 }
 .mention__list .mention__user {
   padding: 5px 10px;
-  border-bottom: 1px solid #dbdbdb;
   cursor: pointer;
 }
 .compose__outer__container {

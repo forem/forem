@@ -1747,9 +1747,11 @@ export default class Chat extends Component {
     } = this.state;
     const filterRegx = new RegExp(memberFilterQuery, 'gi');
     return (
-      <div
+      <ul
         className={
-          showMemberlist ? 'mention__list mention__visible' : 'mention__list'
+          showMemberlist
+            ? 'mention__list mention__visible ml-4'
+            : 'mention__list ml-4'
         }
         id="mentionList"
       >
@@ -1757,37 +1759,34 @@ export default class Chat extends Component {
           ? Object.values(channelUsers[activeChannelId])
               .filter((user) => user.username.match(filterRegx))
               .map((user) => (
-                <div
-                  key={user.username}
-                  className="mention__user"
-                  role="button"
-                  onClick={this.addUserName}
-                  tabIndex="0"
-                  data-content={user.username}
-                  onKeyUp={(e) => {
-                    if (e.keyCode === 13) this.addUserName();
-                  }}
-                >
-                  <img
-                    className="mention__user__image"
-                    src={user.profile_image}
-                    alt={user.name}
-                    style={!user.profile_image ? { display: 'none' } : ' '}
-                  />
-                  <span
-                    style={{
-                      padding: '3px 0px',
-                      'font-size': '16px',
+                <li>
+                  <Button
+                    key={user.username}
+                    className="mention__user align-left w-100"
+                    variant="ghost"
+                    size="xl"
+                    onClick={this.addUserName}
+                    data-content={user.username}
+                    onKeyUp={(e) => {
+                      if (e.keyCode === 13) this.addUserName();
                     }}
                   >
-                    {'@'}
-                    {user.username}
-                    <p>{user.name}</p>
-                  </span>
-                </div>
+                    <img
+                      className="mention__user__image"
+                      src={user.profile_image}
+                      alt={user.name}
+                      style={!user.profile_image ? { display: 'none' } : ' '}
+                    />
+                    <div className="fs-base">
+                      {'@'}
+                      {user.username}
+                      <p>{user.name}</p>
+                    </div>
+                  </Button>
+                </li>
               ))
-          : ' '}
-      </div>
+          : null}
+      </ul>
     );
   };
 
