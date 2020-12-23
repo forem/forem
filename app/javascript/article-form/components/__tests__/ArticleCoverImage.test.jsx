@@ -48,6 +48,17 @@ describe('<ArticleCoverImage />', () => {
       };
     });
 
+    it('should have no a11y violations when native iOS imageUpload support is available', async () => {
+      const { container } = render(
+        <ArticleCoverImage
+          mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
+          onMainImageUrlChange={jest.fn()}
+        />,
+      );
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
     it('does not display the file input', async () => {
       const { queryByText } = render(
         <ArticleCoverImage mainImage="" onMainImageUrlChange={jest.fn()} />,
