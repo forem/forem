@@ -37,6 +37,13 @@ module.exports = (on, config) => {
       const truncateDB = new Promise((resolve, reject) => {
         // Clear the DB for the next test run.
         const child = spawn('bundle', ['exec', 'rails db:truncate_all']);
+        const logChunks = [];
+        const errorChunks = [];
+
+        child.stdout.on('data', (chunk) => logChunks.push(Buffer.from(chunk)));
+        child.stderr.on('data', (chunk) =>
+          errorChunks.push(Buffer.from(chunk)),
+        );
 
         child.on('error', (error) => {
           reject(error);
@@ -44,9 +51,12 @@ module.exports = (on, config) => {
 
         child.on('exit', (status, code) => {
           if (status !== 0) {
+            const errorMessage = Buffer.concat(errorChunks).toString('UTF-8');
+            const logMessage = Buffer.concat(logChunks).toString('UTF-8');
+
             reject(
               new Error(
-                `bundle exec rails db:truncate_all exited with status ${status} and code ${code}.`,
+                `bundle exec rails db:truncate_all exited with status ${status} and code ${code}.\nThe log was:\n${logMessage}\nThe error was:\n${errorMessage}`,
               ),
             );
           }
