@@ -7,6 +7,14 @@ let bodyMarkdown;
 let mainImage;
 
 describe('<Form />', () => {
+  beforeEach(() => {
+    global.Runtime = {
+      isNativeIOS: jest.fn(() => {
+        return false;
+      }),
+    };
+  });
+
   describe('v1', () => {
     beforeEach(() => {
       bodyMarkdown =
