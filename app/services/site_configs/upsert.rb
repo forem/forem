@@ -120,6 +120,8 @@ module SiteConfigs
     def create_tags_if_not_created
       # Bulk create tags if they should exist.
       # This is an acts-as-taggable-on as used on saving of an Article, etc.
+      return unless (@configs.keys & %w[suggested_tags sidebar_tags]).any?
+
       Tag.find_or_create_all_with_like_by_name(SiteConfig.suggested_tags + SiteConfig.sidebar_tags)
     end
 
