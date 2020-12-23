@@ -39,7 +39,7 @@
   }
   .ltag__wikipedia--btn--container {
     padding: 0.1em 0 1.15em;
-    z-index: 100;
+    z-index: var(--z-elevate);
     text-align: center;
     position: relative;
     box-shadow: 0px 0px 60px 42px #fff;

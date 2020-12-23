@@ -3,8 +3,31 @@
     padding-top: 0 !important;
   }
 
-  .crayons-footer,
-  .crayons-header {
+  /* This weirdness below has a reason: https://github.com/forem/forem/pull/11701#issuecomment-737319289 */
+
+  .crayons-header,
+  .crayons-header * {
+    visibility: hidden;
+    position: absolute;
+    left: -9999em;
+    top: -9999em;
+    pointer-events: none;
+    opacity: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .crayons-header .site-logo,
+  .crayons-header .site-logo * {
+    visibility: visible;
+    position: static;
+    pointer-events: auto;
+    opacity: 1;
+    clip: auto;
+    overflow: visible;
+  }
+
+  .crayons-footer {
     display: none;
   }
 

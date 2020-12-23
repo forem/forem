@@ -151,8 +151,9 @@ module Feeds
     end
 
     def report_error(error, metadata)
-      Rails.logger.error("feeds::import::error::#{error.class}::#{metadata}")
-      Rails.logger.error(error)
+      Rails.logger.error(
+        "feeds::import::error::#{error.class}::#{metadata.merge(error_message: error.message)}",
+      )
     end
 
     def item_count_error(feed)

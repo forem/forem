@@ -17,7 +17,7 @@
       <th scope="col">Reach</th>
       <th scope="col">Pub</th>
       <th scope="col">Status Notice</th>
-      <th scope="col">Admin</th>
+      <th scope="col">Owners</th>
     </tr>
   </thead>
   <tbody class="crayons-card">
@@ -31,8 +31,8 @@
         <td><%= podcast.published %></td>
         <td><%= podcast.status_notice %></td>
         <td>
-          <% podcast.admins.pluck(:username).each do |username| %>
-            <%= link_to "@#{username}", "/#{username}" %>
+          <% podcast.owners.select(:username).each do |user| %>
++            <p><%= link_to "@#{user.username}", user_url(user), target: "_blank", rel: :noopener %></p>
           <% end %>
         </td>
       </tr>

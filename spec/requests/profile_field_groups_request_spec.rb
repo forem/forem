@@ -27,16 +27,19 @@ RSpec.describe "ProfileFieldGroups", type: :request do
       expect(json_response[:profile_field_groups].size).to eq ProfileFieldGroup.all.size
     end
 
-    it "returns only groups with onboarding fields when onboarding=true" do
+    it "returns only groups with onboarding fields when onboarding=true", :aggregate_failures do
       get profile_field_groups_path, params: { onboarding: true }
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:profile_field_groups].size).to eq 1
+      groups = json_response[:profile_field_groups]
+      expect(groups.any? { |g| g[:name] == group1.name }).to be true
+      expect(groups.any? { |g| g[:name] == group2.name }).to be false
     end
 
     it "only returns the onboarding fields in the group", :aggregate_failures do
       get profile_field_groups_path, params: { onboarding: true }
       json_response = JSON.parse(response.body, symbolize_names: true)
-      group = json_response[:profile_field_groups].first
+      groups = json_response[:profile_field_groups]
+      group = groups.detect { |g| g[:name] == group1.name }
       expect(group[:profile_fields].size).to eq 1
       field1 = ProfileField.find_by(label: "Field 1")
       expect(group[:profile_fields].first[:id]).to eq field1.id

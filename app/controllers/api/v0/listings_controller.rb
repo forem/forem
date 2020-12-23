@@ -14,7 +14,7 @@ module Api
       skip_before_action :verify_authenticity_token, only: %i[create update]
       # rubocop:enable Rails/LexicallyScopedActionFilter
 
-      # Note: since this is used for selecting from the DB, we need to use the
+      # NOTE: since this is used for selecting from the DB, we need to use the
       # actual column name for the listing category, prefixed with classified_.
       ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id title slug body_markdown cached_tag_list
@@ -89,7 +89,7 @@ module Api
         render "show", status: :ok
       end
 
-      # Note: when doing the big listings refactoring we decided not to break
+      # NOTE: when doing the big listings refactoring we decided not to break
       # this API. Since other code assumes the params will be under listing,
       # we're copying them over.
       def listing_params

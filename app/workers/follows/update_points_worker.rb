@@ -1,6 +1,7 @@
 module Follows
   class UpdatePointsWorker
     include Sidekiq::Worker
+    include FieldTest::Helpers
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform(article_id, user_id)
@@ -34,7 +35,7 @@ module Follows
       tags = articles.pluck(:cached_tag_list).compact.flat_map { |list| list.split(", ") }
       occurrences = tags.count(tag.name)
       bonus = inverse_popularity_bonus(tag)
-      Math.log(occurrences + bonus + 1) # +1 is purely to avoid log(0) => -infinity
+      finalized_points(occurrences, bonus)
     end
 
     def adjust_other_tag_follows_of_user(user_id)
@@ -61,6 +62,10 @@ module Follows
       # The bonus will be applied to the logarithmic scale, as to blunt any outsized impact.
       top_100_tag_names = cached_app_wide_top_tag_names
       top_100_tag_names.index(tag.name) || (top_100_tag_names.size * 1.5)
+    end
+
+    def finalized_points(occurrences, bonus)
+      Math.log(occurrences + bonus + 1) # + 1 in all cases is to avoid log(0) => -infinity
     end
 
     def cached_app_wide_top_tag_names

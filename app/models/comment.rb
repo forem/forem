@@ -304,7 +304,8 @@ class Comment < ApplicationRecord
   end
 
   def record_field_test_event
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_comment")
+    Users::RecordFieldTestEventWorker
+      .perform_async(user_id, :follow_implicit_points, "user_creates_comment")
   end
 
   def notify_slack_channel_about_warned_users

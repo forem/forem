@@ -87,3 +87,7 @@ bundle_finished
 
 # Auto-generated Storybook stories
 app/javascript/generated_stories/
+
+# Cypress test run artifacts
+cypress/videos
+cypress/screenshots

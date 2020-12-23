@@ -6,10 +6,9 @@ module Admin
 
     def index
       @q = Reaction
-        .includes(:user,
-                  :reactable)
-        .where("category IN (?)", PRIVILEGED_REACTION_CATEGORIES)
-        .order("reactions.created_at" => :desc)
+        .includes(:user, :reactable)
+        .where(category: PRIVILEGED_REACTION_CATEGORIES)
+        .order(created_at: :desc)
         .ransack(params[:q])
       @privileged_reactions = @q.result.page(params[:page] || 1).per(25)
     end
