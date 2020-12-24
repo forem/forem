@@ -23,7 +23,7 @@
     "lint:frontend": "eslint app/assets/javascripts/**/*.js app/javascript/**/*.jsx app/javascript/**/*.js",
     "pretest": "yarn run lint:frontend",
     "test": "jest app/javascript/ bin/ --coverage",
-    "test:ci": "jest --colors --changedSince=origin/master --maxWorkers=4",
+    "test:ci": "jest --colors --changedSince=origin/master --maxWorkers=4 --ci",
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
     "e2e": "cypress open",
