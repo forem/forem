@@ -53,7 +53,7 @@ module.exports = (on, config) => {
 
             reject(
               new Error(
-                `bundle exec rails db:truncate_all exited with status ${status}.\nThe error was:\n${errorMessage}`,
+                `There was an error running "bundle exec rails db:truncate_all". The status was ${status} with the following error:\n${errorMessage}`,
               ),
             );
           }
