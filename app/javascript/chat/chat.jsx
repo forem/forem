@@ -1644,7 +1644,7 @@ export default class Chat extends Component {
 
   handleMention = (e) => {
     const { activeChannel } = this.state;
-    const mention = e.keyCode === 63;
+    const mention = e.keyCode === 64;
     if (mention && activeChannel.channel_type !== 'direct') {
       const memberListElement = document.getElementById('mentionList');
       memberListElement.focus();
