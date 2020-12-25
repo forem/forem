@@ -27,7 +27,9 @@ class ArticlesController < ApplicationController
                 elsif params[:tag]
                   handle_tag_feed
                 elsif request.path == latest_feed_path
-                  handle_latest_feed
+                  @articles.where(featured: true)
+                    .where("score > ?", Articles::Feeds::LargeForemExperimental::MINIMUM_SCORE_LATEST_FEED)
+                    .includes(:user)
                 else
                   @articles.where(featured: true).includes(:user)
                 end
@@ -219,14 +221,6 @@ class ArticlesController < ApplicationController
       Honeycomb.add_field("articles_route", "org")
       @articles = @articles.where(organization_id: @user.id).includes(:user)
     end
-  end
-
-  def handle_latest_feed
-    page = params[:page].try(:to_i) || 1
-    ids_of_articles_on_latest = Articles::Feeds::LargeForemExperimental.new(page: page, number_of_articles: 12)
-      .latest_feed.includes([:user])
-      .includes(:taggings).map(&:id)
-    Article.find(ids_of_articles_on_latest)
   end
 
   def handle_tag_feed
