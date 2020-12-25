@@ -12,6 +12,14 @@ import '@testing-library/jest-dom';
 global.fetch = fetch;
 
 describe('<ImageUploader />', () => {
+  beforeEach(() => {
+    global.Runtime = {
+      isNativeIOS: jest.fn(() => {
+        return false;
+      }),
+    };
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(<ImageUploader />);
     const results = await axe(container);
@@ -23,6 +31,51 @@ describe('<ImageUploader />', () => {
     const uploadInput = getByLabelText(/Upload an image/i);
 
     expect(uploadInput.getAttribute('type')).toEqual('file');
+  });
+
+  describe('when rendered in native iOS with imageUpload support', () => {
+    beforeEach(() => {
+      global.Runtime = {
+        isNativeIOS: jest.fn((namespace) => {
+          return namespace === 'imageUpload';
+        }),
+      };
+    });
+
+    it('does not display the file input', async () => {
+      const { queryByText } = render(<ImageUploader />);
+      expect(queryByText(/Upload an image/i)).not.toBeInTheDocument();
+    });
+
+    it('triggers a webkit messageHandler call when isNativeIOS', async () => {
+      global.window.webkit = {
+        messageHandlers: {
+          imageUpload: {
+            postMessage: jest.fn(),
+          },
+        },
+      };
+
+      const { queryByLabelText } = render(<ImageUploader />);
+      const uploadButton = queryByLabelText(/Upload an image/i);
+      uploadButton.click();
+      expect(
+        window.webkit.messageHandlers.imageUpload.postMessage,
+      ).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles a native bridge message correctly', async () => {
+      const { container, findByTitle } = render(<ImageUploader />);
+      const nativeInput = container.querySelector(
+        '#native-image-upload-message',
+      );
+
+      // Fire a change event in the hidden input with JSON payload for success
+      const fakeSuccessMessage = `{ "action": "success", "link": "/some-fake-image.jpg" }`;
+      fireEvent.change(nativeInput, { target: { value: fakeSuccessMessage } });
+
+      expect(await findByTitle(/copy markdown for image/i)).toBeDefined();
+    });
   });
 
   it('displays the upload spinner during upload', async () => {

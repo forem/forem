@@ -53,6 +53,34 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
+    describe "::admin_published_with" do
+      it "includes mascot-published articles" do
+        allow(SiteConfig).to receive(:mascot_user_id).and_return(3)
+        user = create(:user, id: 3)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "includes staff-user-published articles" do
+        allow(SiteConfig).to receive(:staff_user_id).and_return(3)
+        user = create(:user, id: 3)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "includes admin published articles" do
+        user = create(:user, :admin)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(1)
+      end
+
+      it "does not include regular user published articles" do
+        user = create(:user)
+        create(:article, user: user, tags: "challenge")
+        expect(described_class.admin_published_with("challenge").count).to eq(0)
+      end
+    end
+
     describe "#body_markdown" do
       it "is unique scoped for user_id and title" do
         art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
