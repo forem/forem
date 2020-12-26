@@ -149,7 +149,7 @@ end
 
 group :test do
   gem "approvals", "~> 0.0" # A library to make it easier to do golden-master style testing in Ruby
-  gem "database_cleaner-active_record", "~> 1.8.0"
+  gem "database_cleaner-active_record", "~> 1.8.0", require: false # Strategies for cleaning databases using ActiveRecord. Can be used to ensure a clean state for testing.
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
   gem "factory_bot_rails", "~> 6.1" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.

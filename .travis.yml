@@ -64,7 +64,7 @@ script:
   - yarn install --frozen-lockfile
   - bundle exec rails db:create
   - bundle exec rails db:schema:load
-  - bundle exec rails webpacker:compile
+  - bundle exec rails assets:precompile
   - './cc-test-reporter before-build'
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
