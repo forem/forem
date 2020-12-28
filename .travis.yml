@@ -1,8 +1,8 @@
 language: ruby
 cache:
+  bundler: true
+  npm: true
   directories:
-    - vendor/bundle
-    - node_modules
     - $HOME/.nvm
     - ~/.cache # cache folder with Cypress binary
 rvm:
