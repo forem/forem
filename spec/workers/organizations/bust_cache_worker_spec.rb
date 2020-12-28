@@ -17,6 +17,13 @@ RSpec.describe Organizations::BustCacheWorker, type: :worker do
       end
     end
 
+    describe "when no slug is found" do
+      it "doest not call the service" do
+        worker.perform(organization.id, nil)
+        expect(EdgeCache::BustOrganization).not_to have_received(:call)
+      end
+    end
+
     it "busts cache" do
       worker.perform(organization.id, "SlUg")
       expect(EdgeCache::BustOrganization).to have_received(:call).with(organization, "SlUg")
