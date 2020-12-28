@@ -1,5 +1,5 @@
 module DataUpdateScripts
-  class AppendCollectiveNounToCommunityName
+  class AppendCommunityToCommunityName
     def run
       # return unless SiteConfig.collective_noun_disabled
 
