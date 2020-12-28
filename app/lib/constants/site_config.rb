@@ -45,10 +45,6 @@ module Constants
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
       },
-      collective_noun: {
-        description: "Used to describe your collective identity.",
-        placeholder: "Herd"
-      },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
@@ -66,7 +62,7 @@ module Constants
         placeholder: "user"
       },
       community_name: {
-        description: "Primary name... e.g. DEV",
+        description: "Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.",
         placeholder: "New Forem"
       },
       credit_prices_in_cents: {

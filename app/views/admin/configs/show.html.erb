@@ -438,19 +438,6 @@
                 </div>
 
                 <div class="crayons-field">
-                  <%= admin_config_label :collective_noun %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:collective_noun][:description] %>
-                  <%= f.text_field :collective_noun,
-                                   class: "crayons-textfield",
-                                   value: SiteConfig.collective_noun,
-                                   placeholder: Constants::SiteConfig::DETAILS[:collective_noun][:placeholder],
-                                   disabled: SiteConfig.collective_noun_disabled,
-                                   data: { target: "config.collectiveNoun" } %>
-                  <%= admin_config_label :collective_noun_disabled %>
-                  <%= f.check_box :collective_noun_disabled, checked: SiteConfig.collective_noun_disabled, data: { action: "config#disableTargetField", disable_target: "collectiveNoun" }, class: "crayons-checkbox" %>
-                </div>
-
-                <div class="crayons-field">
                   <%= admin_config_label :community_emoji %>
                   <%= admin_config_description Constants::SiteConfig::DETAILS[:community_emoji][:description] %>
                   <%= f.text_field :community_emoji,

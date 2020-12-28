@@ -21,7 +21,7 @@ RSpec.describe "ServiceWorker", type: :request do
   describe "GET /manifest.json" do
     it "renders file with proper text" do
       get "/manifest.json"
-      expect(response.body).to include("\"name\": \"#{SiteConfig.community_name} #{SiteConfig.collective_noun}\"")
+      expect(response.body).to include("\"name\": \"#{SiteConfig.community_name}\"")
     end
 
     it "renders json file" do
