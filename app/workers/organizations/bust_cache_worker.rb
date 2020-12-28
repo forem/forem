@@ -3,9 +3,9 @@ module Organizations
     def perform(organization_id, slug)
       organization = Organization.find_by(id: organization_id)
 
-      return unless organization
+      return unless organization && slug
 
-      CacheBuster.bust_organization(organization, slug)
+      EdgeCache::BustOrganization.call(organization, slug)
     end
   end
 end

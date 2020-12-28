@@ -8,7 +8,7 @@ module DataUpdateScripts
       end
 
       Organization.find_each do |organization|
-        CacheBuster.bust_organization(organization, organization.slug)
+        EdgeCache::BustOrganization.call(organization, organization.slug)
       end
 
       Article.find_each(&:save)
