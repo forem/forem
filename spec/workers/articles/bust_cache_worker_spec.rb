@@ -1,9 +1,5 @@
 require "rails_helper"
 
-class NewBuster
-  def self.bust_article(*); end
-end
-
 RSpec.describe Articles::BustCacheWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "high_priority", 1
 
@@ -16,30 +12,27 @@ RSpec.describe Articles::BustCacheWorker, type: :worker do
 
       before do
         allow(Article).to receive(:find_by).with(id: article_id).and_return(article)
+        allow(EdgeCache::BustArticle).to receive(:call).with(article)
       end
 
-      it "with cache buster defined busts cache with defined buster" do
-        allow(NewBuster).to receive(:bust_article)
-        worker.perform(article_id, "NewBuster")
-        expect(NewBuster).to have_received(:bust_article).with(article)
-      end
-
-      it "without cache buster defined busts cache with default" do
-        allow(CacheBuster).to receive(:bust_article)
+      it "busts the cache" do
         worker.perform(article_id)
-        expect(CacheBuster).to have_received(:bust_article).with(article)
+        expect(EdgeCache::BustArticle).to have_received(:call).with(article)
       end
     end
 
     context "without article" do
+      before do
+        allow(EdgeCache::BustArticle).to receive(:call)
+      end
+
       it "does not error" do
-        expect { worker.perform(nil, "CacheBuster") }.not_to raise_error
+        expect { worker.perform(nil) }.not_to raise_error
       end
 
       it "does not bust cache" do
-        allow(CacheBuster).to receive(:bust_article)
         worker.perform(nil)
-        expect(CacheBuster).not_to have_received(:bust_article)
+        expect(EdgeCache::BustArticle).not_to have_received(:call)
       end
     end
   end

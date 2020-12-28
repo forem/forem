@@ -37,7 +37,7 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
   config.public_file_server.headers = {
-    "Cache-Control" => "public, s-maxage=#{30.days.to_i}, max-age=#{30.days.to_i}"
+    "Cache-Control" => "public, s-maxage=#{30.days.to_i}, max-age=#{3000.days.to_i}"
   }
 
   # Compress JavaScripts and CSS.

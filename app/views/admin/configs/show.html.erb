@@ -60,7 +60,7 @@
             <% end %>
           <% end %>
 
-          <% if current_user.has_role?(:single_resource_admin, Config) %>
+          <% if current_user.has_role?(:super_admin) %>
             <div class="crayons-notice p-4 mt-4">
               <div class="crayons-field">
                 <%= label_tag :confirmation_update, "Confirmation update", class: "crayons-field__label" %>
@@ -282,6 +282,7 @@
                                      readonly: true %>
                   </div>
                   <% authentication_available_providers.each do |provider| %>
+                  <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
                     <section class="config-authentication__item mb-0">
                       <figure class="config-authentication__item--icon">
                         <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
@@ -313,7 +314,8 @@
                           </button>
                         </div>
                         <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
-                          <%= render partial: "auth_provider_settings",
+                          <% auth_partial = provider.provider_name == :apple ? "apple_auth_provider_settings" : "auth_provider_settings" %>
+                          <%= render partial: auth_partial,
                                      locals: {
                                        f: f,
                                        provider: provider
@@ -714,7 +716,7 @@
                                    value: SiteConfig.main_social_image,
                                    placeholder: Constants::SiteConfig::DETAILS[:main_social_image][:placeholder] %>
                   <% if SiteConfig.main_social_image.present? %>
-                    <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
+                    <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" width="600px" height="337px" />
                   <% end %>
                 </div>
 
@@ -725,7 +727,7 @@
                                    class: "form-control",
                                    value: SiteConfig.favicon_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:favicon_url][:placeholder] %>
-                  <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" />
+                  <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(SiteConfig.favicon_url, width: 32) %>" width="32px" height="32px" />
                 </div>
 
                 <div class="crayons-field">
@@ -736,7 +738,7 @@
                                    value: SiteConfig.logo_png,
                                    placeholder: Constants::SiteConfig::DETAILS[:logo_png][:placeholder] %>
                   <% if SiteConfig.logo_png.present? %>
-                    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 256) %>" width="128" height="128" />
+                    <img src="<%= Images::Optimizer.call(SiteConfig.logo_png, width: 128) %>" width="128px" height="128px" />
                   <% end %>
                 </div>
 
@@ -763,7 +765,7 @@
                                    value: SiteConfig.secondary_logo_url,
                                    placeholder: Constants::SiteConfig::DETAILS[:secondary_logo_url][:placeholder] %>
                   <% if SiteConfig.secondary_logo_url.present? %>
-                    <img alt="secondary logo image" class="img-fluid" src="<%= Images::Optimizer.call(SiteConfig.secondary_logo_url, width: 256) %>" />
+                    <img alt="secondary logo image" class="img-fluid" src="<%= Images::Optimizer.call(SiteConfig.secondary_logo_url, width: 256) %>" width="128px" height="128px" />
                   <% end %>
                 </div>
 
@@ -1035,7 +1037,7 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:onboarding_logo_image][:placeholder] %>
                   <div class="row mt-2">
                     <div class="col-12">
-                      <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" />
+                      <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" width="600px" height="337px" />
                     </div>
                   </div>
                 </div>

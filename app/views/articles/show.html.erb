@@ -225,7 +225,8 @@
   <% if has_vid?(@article) %>
     <%= render "articles/fitvids" %>
   <% end %>
-  <% if @article.processed_html.include? 'class="twitter-tweet"' %>
+  <% if @article.processed_html.include?('class="twitter-tweet"') ||
+       @article.processed_html.include?("ltag_twitter_timeline-liquid-tag") %>
     <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
   <% end %>
   <% if @article.processed_html.include? "instagram-media" %>
@@ -248,5 +249,4 @@
     <%== TweetTag.script %>
     <%== UserSubscriptionTag.script %>
   </script>
-  <%== TwitterTimelineTag.script %>
 <% end %>

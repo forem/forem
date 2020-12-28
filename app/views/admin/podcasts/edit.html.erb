@@ -23,33 +23,34 @@
     <% end %>
   </div>
   <div class="crayons-card p-6">
-    <h4 class="mb-4">Manage Admins</h4>
-    <% if @podcast.admins.present? %>
+    <h4 class="mb-4">Manage Owners</h4>
+
+    <% if @podcast.owners.present? %>
       <ul class="list-group list-group-flush mb-3">
-        <% @podcast.admins.each do |admin| %>
-          <%= form_for @podcast, url: remove_admin_admin_podcast_path(@podcast.id), html: { method: :delete, class: "form-inline" } do |f| %>
+        <% @podcast.owners.select(:id, :username).each do |owner| %>
+          <%= form_for @podcast, url: "#", html: { method: :delete, class: "form-inline" } do |f| %>
             <li class="list-group-item w-100">
-              <%= link_to "@#{admin.username}", "/#{admin.username}" %>
-              <%= f.hidden_field :user_id, value: admin.id %>
-              <%= f.submit "Remove", class: "btn btn-danger btn-sm float-right" %>
+              <%= link_to "@#{owner.username}", user_url(owner), target: "_blank", rel: :noopener %>
+              <%# f.hidden_field :user_id, value: owner.id %>
+              <%# f.submit "Remove", class: "btn btn-danger btn-sm float-right" %>
             </li>
           <% end %>
         <% end %>
       </ul>
     <% else %>
-      <p>There are no admins for this podcast.</p>
+      <p>There are no owners for this podcast.</p>
     <% end %>
 
     <% if @podcast.creator.present? %>
       <p>Created by <%= link_to "@#{@podcast.creator.username}", "/#{@podcast.creator.username}" %></p>
     <% end %>
 
-    <%= form_for @podcast, url: add_admin_admin_podcast_path(@podcast.id), html: { method: :post } do |f| %>
+    <%= form_for @podcast, url: add_owner_admin_podcast_path(@podcast.id), html: { method: :post } do |f| %>
       <div class="form-group">
-        <%= f.label "Add Admin (by user_id)", for: "podcast_user_id" %>
+        <%= f.label "Add Owner (by user_id)", for: "podcast_user_id" %>
         <%= f.text_field :user_id, value: "", class: "form-control" %>
       </div>
-      <%= f.submit "Add Admin", class: "btn btn-primary" %>
+      <%= f.submit "Add Owner", class: "btn btn-primary" %>
     <% end %>
   </div>
 

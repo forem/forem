@@ -20,7 +20,7 @@ class StackeryTag < LiquidTagBase
   private
 
   def get_data(input)
-    items = input.split(" ")
+    items = input.split
     owner = items.first
     repo = items.second
     ref = items.third || "master"

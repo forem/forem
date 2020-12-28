@@ -74,7 +74,7 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Authentication" do
         it "updates enabled authentication providers" do
-          enabled = Authentication::Providers.available.first.to_s
+          enabled = Authentication::Providers.available.last.to_s
           post admin_config_path, params: {
             site_config: {
               "#{enabled}_key": "someKey",
@@ -87,7 +87,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "strips empty elements" do
-          provider = Authentication::Providers.available.first.to_s
+          provider = Authentication::Providers.available.last.to_s
           enabled = "#{provider}, '', nil"
           post admin_config_path, params: {
             site_config: {

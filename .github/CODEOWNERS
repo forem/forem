@@ -3,12 +3,10 @@
 # for further details
 
 /*.md                                               @forem/oss
-/app/controllers/articles_controller.rb             @forem/hells-bells
+/app/assets/                                        @forem/frontend
 /app/controllers/async_info_controller.rb           @forem/sre
-/app/controllers/stories_controller.rb              @forem/hells-bells
+/app/javascript/                                    @forem/frontend
 /app/services/search/                               @forem/sre
-/app/views/articles/                                @forem/hells-bells
-/app/views/stories/                                 @forem/hells-bells
 /app/workers/                                       @forem/sre
 /config/                                            @forem/sre
 /db/                                                @forem/sre
@@ -24,7 +22,7 @@ docker-compose.yml                                  @forem/systems
 Dockerfile                                          @forem/systems
 Gemfile                                             @forem/sre    @forem/oss
 Gemfile.lock                                        @forem/sre    @forem/oss
-package.json                                        @forem/oss    @nickytonline
+package.json                                        @forem/oss    @forem/frontend
 podman-compose.yml                                  @forem/systems
 scripts/                                            @forem/systems
-yarn.lock                                           @forem/oss    @nickytonline
+yarn.lock                                           @forem/oss    @forem/frontend
