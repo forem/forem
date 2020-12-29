@@ -801,6 +801,12 @@ RSpec.describe "/admin/config", type: :request do
                                           confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
         end
+
+        it "creates tags if they do not exist" do
+          post "/admin/config", params: { site_config: { sidebar_tags: "bobofogololo, spla, bla" },
+                                          confirmation: confirmation_message }
+          expect(Tag.find_by(name: "bobofogololo")).to be_valid
+        end
       end
 
       describe "User Experience" do
