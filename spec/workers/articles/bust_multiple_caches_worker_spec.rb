@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Articles::BustMultipleCachesWorker, type: :worker do
   describe "#perform" do
     # Explicitly create article before the test is invoked, since
-    # creating an article will invoke CacheBuster#bust in a callback.
+    # creating an article will invoke EdgeCache::Bust#call in a callback.
     let!(:article) { create(:article) }
     let(:path) { article.path }
     let(:worker) { subject }
