@@ -665,9 +665,9 @@ class Article < ApplicationRecord
   end
 
   def bust_cache
-    CacheBuster.bust(path)
-    CacheBuster.bust("#{path}?i=i")
-    CacheBuster.bust("#{path}?preview=#{password}")
+    EdgeCache::Bust.call(path)
+    EdgeCache::Bust.call("#{path}?i=i")
+    EdgeCache::Bust.call("#{path}?preview=#{password}")
     async_bust
   end
 

@@ -36,13 +36,13 @@ RSpec.describe GithubRepo, type: :model do
       end
 
       it "busts the correct caches" do
-        allow(CacheBuster).to receive(:bust)
+        allow(EdgeCache::Bust).to receive(:call)
 
         repo.save
 
-        expect(CacheBuster).to have_received(:bust).with(user.path)
-        expect(CacheBuster).to have_received(:bust).with("#{user.path}?i=i")
-        expect(CacheBuster).to have_received(:bust).with("#{user.path}/?i=i")
+        expect(EdgeCache::Bust).to have_received(:call).with(user.path)
+        expect(EdgeCache::Bust).to have_received(:call).with("#{user.path}?i=i")
+        expect(EdgeCache::Bust).to have_received(:call).with("#{user.path}/?i=i")
       end
     end
   end

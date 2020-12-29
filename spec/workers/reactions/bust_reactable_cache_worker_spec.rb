@@ -10,20 +10,20 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
     let(:worker) { subject }
 
     before do
-      allow(CacheBuster).to receive(:bust)
+      allow(EdgeCache::Bust).to receive(:call)
     end
 
     it "busts the reactable article cache" do
       worker.perform(reaction.id)
-      expect(CacheBuster).to have_received(:bust).with(user.path).once
-      expect(CacheBuster).to have_received(:bust).with("/reactions?article_id=#{article.id}").once
+      expect(EdgeCache::Bust).to have_received(:call).with(user.path).once
+      expect(EdgeCache::Bust).to have_received(:call).with("/reactions?article_id=#{article.id}").once
     end
 
     it "busts the reactable comment cache" do
       worker.perform(comment_reaction.id)
-      expect(CacheBuster).to have_received(:bust).with(user.path).once
+      expect(EdgeCache::Bust).to have_received(:call).with(user.path).once
       param = "/reactions?commentable_id=#{article.id}&commentable_type=Article"
-      expect(CacheBuster).to have_received(:bust).with(param).once
+      expect(EdgeCache::Bust).to have_received(:call).with(param).once
     end
 
     it "doesn't fail if a reaction doesn't exist" do

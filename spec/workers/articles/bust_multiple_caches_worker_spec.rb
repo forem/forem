@@ -9,12 +9,12 @@ RSpec.describe Articles::BustMultipleCachesWorker, type: :worker do
     let(:worker) { subject }
 
     it "busts cache" do
-      allow(CacheBuster).to receive(:bust)
+      allow(EdgeCache::Bust).to receive(:call)
 
       worker.perform([article.id])
 
-      expect(CacheBuster).to have_received(:bust).with(path).once
-      expect(CacheBuster).to have_received(:bust).with("#{path}?i=i").once
+      expect(EdgeCache::Bust).to have_received(:call).with(path).once
+      expect(EdgeCache::Bust).to have_received(:call).with("#{path}?i=i").once
     end
   end
 end
