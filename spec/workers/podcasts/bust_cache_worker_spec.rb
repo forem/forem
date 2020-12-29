@@ -2,15 +2,16 @@ require "rails_helper"
 
 RSpec.describe Podcasts::BustCacheWorker, type: :worker do
   let(:worker) { subject }
+  let(:path) { "path" }
 
   before do
-    allow(CacheBuster).to receive(:bust_podcast)
+    allow(EdgeCache::BustPodcast).to receive(:call).with(path)
   end
 
   describe "#perform" do
     it "busts cache" do
-      worker.perform("path")
-      expect(CacheBuster).to have_received(:bust_podcast).with("path")
+      worker.perform(path)
+      expect(EdgeCache::BustPodcast).to have_received(:call).with(path)
     end
   end
 end
