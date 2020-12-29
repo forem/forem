@@ -5,7 +5,7 @@ RSpec.describe "/admin/listings", type: :request do
   let!(:listing) { create(:listing, user_id: admin.id) }
 
   before do
-    allow(CacheBuster).to receive(:bust_listings)
+    allow(EdgeCache::BustListings).to receive(:call)
     sign_in admin
   end
 
@@ -15,7 +15,7 @@ RSpec.describe "/admin/listings", type: :request do
         listing: { title: "updated" }
       }
       sidekiq_perform_enqueued_jobs
-      expect(CacheBuster).to have_received(:bust_listings)
+      expect(EdgeCache::BustListings).to have_received(:call)
     end
 
     describe "GET /admin/listings" do
