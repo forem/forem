@@ -147,7 +147,7 @@ module Articles
 
       # Disable complexity cop to allow for variant-driven method
       # rubocop:disable Metrics/CyclomaticComplexity
-      def experimentalal_hot_story_grab
+      def experimental_hot_story_grab
         test_variant = @user ? field_test(:feed_top_articles_query, participant: @user) : "base"
         case test_variant
         when "base_with_more_articles" # equivalent to current base but with higher "number of articles"
