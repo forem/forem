@@ -6,9 +6,10 @@ require Rails.root.join(
 describe DataUpdateScripts::AppendCollectiveNounToCommunityName do
   context "when collective_noun_disabled is false" do
     it "appends the collective_noun to the community_name" do
+      SiteConfig.collective_noun = "Club"
       described_class.new.run
       expect(SiteConfig.collective_noun_disabled).to eq(false)
-      expect(SiteConfig.community_name).to eq("DEV(local) Community")
+      expect(SiteConfig.community_name).to eq("DEV(local) Club")
     end
   end
 
