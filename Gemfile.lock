@@ -124,7 +124,7 @@ GEM
       parser (>= 2.4)
       smart_properties
     bindex (0.8.1)
-    binding_of_caller (0.8.0)
+    binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
     blazer (2.4.0)
       activerecord (>= 5)
@@ -205,7 +205,7 @@ GEM
       database_cleaner (~> 1.8.0)
     ddtrace (0.43.0)
       msgpack
-    debug_inspector (0.0.3)
+    debug_inspector (1.0.0)
     derailed_benchmarks (1.8.1)
       benchmark-ips (~> 2)
       get_process_mem (~> 0)
@@ -836,7 +836,7 @@ DEPENDENCIES
   ancestry (~> 3.2)
   approvals (~> 0.0)
   better_errors (~> 2.9)
-  binding_of_caller (~> 0.8)
+  binding_of_caller (~> 1.0)
   blazer (~> 2.4.0)
   bootsnap (>= 1.1.0)
   brakeman (~> 4.10)
