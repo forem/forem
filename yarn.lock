@@ -10039,13 +10039,13 @@ husky@^4.3.6:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-ibm-openapi-validator@0.31.1:
-  version "0.31.1"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.31.1.tgz#7af65847beff6c8e383b302ea2e2d1b06d989fab"
-  integrity sha512-SabMdHEtGXmV4t5WTI+ZQkZ7EP5Iup1aqaCuD7TrNEw3u0gduSp61quRN0otiietyxmFoI2NFJQtLf6La5ZAVQ==
+ibm-openapi-validator@0.32.0:
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.32.0.tgz#8952f3f2df143f23069464806185ed91894854ed"
+  integrity sha512-Rc89EJa++CEDqIzRNUNPA+tvHRbnBF1/6+KkTn3n+G063NSJZZ5pdNeIC+6/d6yhxdM5KgIc7ljRX7L/t+Vwgg==
   dependencies:
     "@stoplight/spectral" "^5.5.0"
-    chalk "^2.4.1"
+    chalk "^4.1.0"
     commander "^2.17.1"
     deepmerge "^2.1.1"
     find-up "^3.0.0"
