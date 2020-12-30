@@ -13,7 +13,7 @@ class EmailDigest
         # Temporary
         # @sre:mstruve This is temporary until we have an efficient way to handle this job
         # for our large DEV community. Smaller Forems should be able to handle it no problem
-        if SiteConfig.community_name == "DEV"
+        if SiteConfig.community_name == "DEV Community"
           Emails::SendUserDigestWorker.new.perform(user.id)
         else
           Emails::SendUserDigestWorker.perform_async(user.id)
