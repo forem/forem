@@ -10,7 +10,7 @@ RSpec.describe EmailDigest, type: :service do
     end
 
     it "performs job inline if community is DEV" do
-      allow(SiteConfig).to receive(:community_name).and_return("DEV Community")
+      allow(SiteConfig).to receive(:dev_to?).and_return(true)
       user = create(:user, email_digest_periodic: true)
       worker = Emails::SendUserDigestWorker.new
       allow(worker).to receive(:perform)
