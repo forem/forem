@@ -1,16 +1,10 @@
 require "rails_helper"
 
-# rubocop:disable Rails/DynamicFindBy
-
-RSpec.describe EmojiConverter, type: :labor do
-  def convert_emoji(html)
-    EmojiConverter.call(html)
-  end
-
-  describe "#convert" do
+RSpec.describe EmojiConverter, type: :service do
+  describe "#call" do
     it "converts emoji names wrapped in colons into unicode" do
-      joy_emoji_unicode = Emoji.find_by_alias("joy").raw
-      expect(convert_emoji(":joy:")).to include(joy_emoji_unicode)
+      joy_emoji_unicode = Emoji.find_by(alias: "joy").raw
+      expect(described_class.call(":joy:")).to include(joy_emoji_unicode)
     end
 
     it "converts disability emojis as well", :aggregate_failures do
@@ -21,16 +15,14 @@ RSpec.describe EmojiConverter, type: :labor do
         motorized_wheelchair wheelchair
       ]
       disability_emojis.each do |emoji|
-        unicode = Emoji.find_by_alias(emoji).raw
-        expect(convert_emoji(":#{emoji}:")).to include(unicode)
+        unicode = Emoji.find_by(alias: emoji).raw
+        expect(described_class.call(":#{emoji}:")).to include(unicode)
       end
     end
 
     it "leaves original text between colons when no emoji is found" do
       emoji_text = ":no_one_will_ever_create_an_emoji_with_this_alias:"
-      expect(convert_emoji(emoji_text)).to include(emoji_text)
+      expect(described_class.call(emoji_text)).to include(emoji_text)
     end
   end
 end
-
-# rubocop:enable Rails/DynamicFindBy
