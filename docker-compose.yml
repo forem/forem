@@ -56,7 +56,7 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - .:/opt/apps/forem:delegated
-    command: yarn install --dev
+    command: ["bash", "-c", "./scripts/entrypoint.sh yarn install --dev"]
 
   webpacker:
     image: quay.io/forem/forem:development
