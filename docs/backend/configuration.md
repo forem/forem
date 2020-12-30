@@ -20,8 +20,8 @@ environments. Examples:
 - `STRIPE_SECRET_KEY`
 
 Settings managed via your ENV can be found in
-[Configuring Environment Variables](../getting-started/config-env.md)) and
-viewed at `/admin/config` (see [the Admin guide](/admin)):
+[Configuring Environment Variables](/getting-started/config-env)) and viewed at
+`/admin/config` (see [the Admin guide](/admin)):
 
 ![Screenshot of env variable admin interface](https://user-images.githubusercontent.com/47985/73627243-67d41f80-467e-11ea-9121-221275ff8a89.png)
 

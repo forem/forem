@@ -1,6 +1,6 @@
 <%= content_for :page_meta do %>
   <% title_with_timeframe(
-       page_title: "#{community_qualified_name} #{community_emoji}",
+       page_title: "#{community_name} #{community_emoji}",
        timeframe: params[:timeframe],
        content_for: true,
      ) %>
@@ -11,13 +11,13 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= app_url(request.path) %>" />
-  <meta property="og:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>" />
+  <meta property="og:title" content="<%= title_with_timeframe(page_title: community_name, timeframe: params[:timeframe]) %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
   <meta property="og:description" content="<%= SiteConfig.community_description %>" />
-  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+  <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>">
+  <meta name="twitter:title" content="<%= title_with_timeframe(page_title: community_name, timeframe: params[:timeframe]) %>">
   <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">

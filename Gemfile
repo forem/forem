@@ -58,7 +58,7 @@ gem "katex", "~> 0.6.0" # This rubygem enables you to render TeX math to HTML us
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "mini_racer", "~> 0.3.1" # Minimal embedded v8
 gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
-gem "octokit", "~> 4.19" # Simple wrapper for the GitHub API
+gem "octokit", "~> 4.20" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.10" # JSON parser and object serializer
 gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
@@ -81,6 +81,13 @@ gem "ransack", "~> 2.4" # Searching and sorting
 gem "recaptcha", "~> 5.6", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.2.5" # Redis ruby client
+
+# NOTE: [@rhymes]: sign in doesn't work with the redis-rack 2.1.0+ or with redis-actionpack 5.2.0+
+# We need to investigate why exactly, in the meantime we are hardcoding these two transitive dependencies
+# (added by redis-rails) to keep them at the latest working version
+gem "redis-actionpack", "5.1.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
+gem "redis-rack", "2.0.6" # Redis Store for Rack applications
+
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
@@ -111,7 +118,7 @@ gem "webpacker", "~> 5.2.1" # Use webpack to manage app-like JavaScript modules 
 
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
-  gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
+  gem "binding_of_caller", "~> 1.0" # Retrieve the binding of a method's caller
   gem "brakeman", "~> 4.10", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.7" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.8", require: false # A series of things you can use to benchmark a Rails or Ruby app
@@ -125,7 +132,7 @@ group :development do
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "web-console", "~> 4.1" # Rails Console on the Browser
-  gem "yard", "~> 0.9.25" # YARD is a documentation generation tool for the Ruby programming language
+  gem "yard", "~> 0.9.26" # YARD is a documentation generation tool for the Ruby programming language
   gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
   gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
 end
@@ -139,7 +146,7 @@ group :development, :test do
   gem "knapsack_pro", "~> 2.10.1" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 1.6", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.7", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.9", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.9", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.1", require: false # Code style checking for RSpec files
@@ -149,7 +156,7 @@ end
 
 group :test do
   gem "approvals", "~> 0.0" # A library to make it easier to do golden-master style testing in Ruby
-  gem "database_cleaner-active_record", "~> 1.8.0"
+  gem "database_cleaner-active_record", "~> 1.8.0", require: false # Strategies for cleaning databases using ActiveRecord. Can be used to ensure a clean state for testing.
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
   gem "factory_bot_rails", "~> 6.1" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
@@ -157,7 +164,7 @@ group :test do
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "~> 4.4.1", require: false # Simple one-liner tests for common Rails functionality
-  gem "simplecov", "0.17.1", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
+  gem "simplecov", "~> 0.20.0", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 3.0", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.12" # Ruby Tests Profiling Toolbox

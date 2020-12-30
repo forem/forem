@@ -1,8 +1,8 @@
 language: ruby
 cache:
+  bundler: true
+  npm: true
   directories:
-    - vendor/bundle
-    - node_modules
     - $HOME/.nvm
     - ~/.cache # cache folder with Cypress binary
 rvm:
@@ -57,14 +57,14 @@ script:
   - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-0.7.0-linux-amd64 > ./cc-test-reporter
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
   - bin/ci-bundle
   - yarn install --frozen-lockfile
   - bundle exec rails db:create
   - bundle exec rails db:schema:load
-  - bundle exec rails webpacker:compile
+  - bundle exec rails assets:precompile
   - './cc-test-reporter before-build'
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi

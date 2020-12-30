@@ -96,6 +96,15 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
 
         expect(Rails.logger).to have_received(:error).at_least(:once)
       end
+
+      it "logs the error message" do
+        allow(Feedjira).to receive(:parse).and_raise("this is an error")
+        allow(Rails.logger).to receive(:error)
+
+        described_class.call
+
+        expect(Rails.logger).to have_received(:error).at_least(:once).with(/error_message=>"this is an error"/)
+      end
     end
 
     context "with an explicit set of users", vcr: { cassette_name: "feeds_import" } do

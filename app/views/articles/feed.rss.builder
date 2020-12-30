@@ -5,8 +5,8 @@
 xml.instruct! :xml, version: "1.0"
 xml.rss version: "2.0" do
   xml.channel do
-    xml.title user ? user.name : community_qualified_name
-    xml.author user ? user.name : community_qualified_name
+    xml.title user ? user.name : community_name
+    xml.author user ? user.name : community_name
     xml.description user ? user.summary : SiteConfig.community_description
     xml.link user ? app_url(user.path) : app_url
     xml.language "en"

@@ -8,21 +8,21 @@ RSpec.describe Reactions::BustHomepageCacheWorker, type: :worker do
 
     it "busts the homepage cache when reactable is an Article" do
       reaction = create(:reaction, reactable: article, user: user)
-      allow(CacheBuster).to receive(:bust)
+      allow(EdgeCache::Bust).to receive(:call)
 
       worker.perform(reaction.id)
 
-      expect(CacheBuster).to have_received(:bust).exactly(4)
+      expect(EdgeCache::Bust).to have_received(:call).exactly(4)
     end
 
     it "doesn't bust the homepage cache when reactable is a Comment" do
       comment = create(:comment, commentable: article)
       comment_reaction = create(:reaction, reactable: comment, user: user)
-      allow(CacheBuster).to receive(:bust)
+      allow(EdgeCache::Bust).to receive(:call)
 
       worker.perform(comment_reaction.id)
 
-      expect(CacheBuster).not_to have_received(:bust)
+      expect(EdgeCache::Bust).not_to have_received(:call)
     end
 
     it "doesn't fail if a reaction doesn't exist" do
