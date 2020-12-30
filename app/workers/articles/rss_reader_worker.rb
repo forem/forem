@@ -8,7 +8,7 @@ module Articles
       # Temporary
       # @sre:mstruve This is temporary until we have an efficient way to handle this job
       # for our large DEV community. Smaller Forems should be able to handle it no problem
-      return if SiteConfig.community_name == "DEV Community"
+      return if SiteConfig.dev_to?
 
       if FeatureFlag.enabled?(:feeds_import)
         ::Feeds::ImportArticlesWorker.perform_async
