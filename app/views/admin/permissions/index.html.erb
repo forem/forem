@@ -13,7 +13,7 @@
   <tbody class="crayons-card">
     <% @users.each do |user| %>
       <tr>
-        <td class="align-top"><%= user.id %></td>
+        <td class="align-top whitespace-nowrap"><%= user.id %></td>
         <td class="align-top"><%= link_to "@#{user.username}", user.path %></td>
         <td>
           <ul>

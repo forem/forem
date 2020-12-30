@@ -29,7 +29,7 @@
   <tbody class="crayons-card">
    <% @badge_achievements.each do |badge_achievement| %>
     <tr>
-      <td><%= badge_achievement.user.id %></td>
+      <td class="whitespace-nowrap"><%= badge_achievement.user.id %></td>
       <td><%= badge_achievement.user.username %></td>
       <td><%= badge_achievement.badge.title %></td>
       <h5>
