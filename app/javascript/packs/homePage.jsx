@@ -58,7 +58,7 @@ function renderSidebar() {
   );
 
   // If the screen's width is less than 1024px we don't need this extra data.
-  if (sidebarContainer && screen.width > 1023) {
+  if (sidebarContainer && screen.width > 1023 && window.location.pathname === '/') {
     window.fetch('/sidebars/home')
     .then(res => res.text())
     .then(response => {

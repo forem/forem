@@ -2,6 +2,10 @@
 // if the first admin has already gone through the onboarding process.
 
 describe('Initial admin signup', () => {
+  beforeEach(() => {
+    cy.task('resetData');
+  });
+
   it('should sign up the initial Forem instance administrator', () => {
     // This is the happy path.
     cy.fixture('logins/initialAdmin.json').as('admin');
@@ -36,7 +40,7 @@ describe('Initial admin signup', () => {
         .type(admin.password);
       cy.get('@registrationForm')
         .findByLabelText(/New Forem Secret/i)
-        .type(admin.foremSecret);
+        .type(Cypress.env('FOREM_OWNER_SECRET'));
 
       // Submit the form
       cy.get('@registrationForm')

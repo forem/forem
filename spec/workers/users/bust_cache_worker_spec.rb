@@ -6,10 +6,10 @@ RSpec.describe Users::BustCacheWorker, type: :worker do
     let(:worker) { subject }
 
     it "busts cache" do
-      allow(CacheBuster).to receive(:bust_user)
+      allow(EdgeCache::BustUser).to receive(:call).with(user)
 
       worker.perform(user.id)
-      expect(CacheBuster).to have_received(:bust_user).with(user)
+      expect(EdgeCache::BustUser).to have_received(:call).with(user)
     end
   end
 end

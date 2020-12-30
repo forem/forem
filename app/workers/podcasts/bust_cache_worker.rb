@@ -1,7 +1,7 @@
 module Podcasts
   class BustCacheWorker < BustCacheBaseWorker
     def perform(path)
-      CacheBuster.bust_podcast(path)
+      EdgeCache::BustPodcast.call(path)
     end
   end
 end

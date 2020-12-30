@@ -35,19 +35,19 @@ RSpec.describe Badge, type: :model do
 
     describe "cache busting" do
       before do
-        allow(CacheBuster).to receive(:bust)
+        allow(EdgeCache::Bust).to receive(:bust)
       end
 
       it "calls the cache buster with the path" do
         badge.save
 
-        expect(CacheBuster).to have_received(:bust).with(badge.path)
+        expect(EdgeCache::Bust).to have_received(:bust).with(badge.path)
       end
 
       it "calls the cache buster with the internal path" do
         badge.save
 
-        expect(CacheBuster).to have_received(:bust).with("#{badge.path}?i=i")
+        expect(EdgeCache::Bust).to have_received(:bust).with("#{badge.path}?i=i")
       end
     end
   end
