@@ -86,9 +86,21 @@ RSpec.describe Images::Optimizer, type: :service do
   end
 
   describe "#translate_cloudinary_options" do
-    it "Set resizing_type to fill if crop: fill is provided" do
+    it "sets resizing_type to fill if crop: fill is provided" do
       options = { width: 100, height: 100, crop: "fill" }
       expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fill")
+    end
+
+    it "sets format to nil if fetch_format is auto" do
+      options = { width: 100, height: 100, fetch_format: "auto" }
+      expect(described_class.translate_cloudinary_options(options)).to include(format: nil)
+    end
+
+    it "sets format to format if fetch_format is given specific format" do
+      options = { width: 100, height: 100, fetch_format: "webp" }
+      expect(described_class.translate_cloudinary_options(options)).to include(format: "webp")
+      options = { width: 100, height: 100, fetch_format: "jpg" }
+      expect(described_class.translate_cloudinary_options(options)).to include(format: "jpg")
     end
   end
 end
