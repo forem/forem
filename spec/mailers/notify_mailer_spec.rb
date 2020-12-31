@@ -16,7 +16,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -46,7 +46,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -75,7 +75,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -103,7 +103,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -131,7 +131,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -170,7 +170,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -284,7 +284,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -327,7 +327,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -355,7 +355,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -383,7 +383,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -411,7 +411,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -445,7 +445,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -469,13 +469,13 @@ RSpec.describe NotifyMailer, type: :mailer do
     let(:email) { described_class.with(user: user).trusted_role_email }
 
     it "renders proper subject" do
-      expected_subject = "You've been upgraded to #{SiteConfig.community_name} Community mod status!"
+      expected_subject = "Congrats! You're now a \"trusted\" user on #{SiteConfig.community_name}!"
       expect(email.subject).to eq(expected_subject)
     end
 
     it "renders proper sender" do
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
@@ -509,7 +509,7 @@ RSpec.describe NotifyMailer, type: :mailer do
     end
 
     it "renders proper sender" do
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
 
       expect(moderator_email.from).to eq([SiteConfig.email_addresses[:default]])
       expect(moderator_email["from"].value).to eq(expected_from)

@@ -9,6 +9,9 @@ RSpec.describe "DisplayAdEvents", type: :request do
     context "when user signed in" do
       before do
         sign_in user
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(DisplayAdEventsController).to receive(:skip_ad_update?).and_return(false)
+        # rubocop:enable RSpec/AnyInstance
       end
 
       it "creates a display ad click event" do

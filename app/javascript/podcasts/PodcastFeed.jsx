@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 export const PodcastFeed = ({ podcastItems }) => {
-  const podcastItemDivs = podcastItems.map(ep => (
+  const podcastItemDivs = podcastItems.map((ep) => (
     <a
       className="individual-podcast-link"
       href={`/${ep.podcast.slug}/${ep.slug}`}

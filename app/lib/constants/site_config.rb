@@ -4,18 +4,14 @@ module Constants
     SVG_PLACEHOLDER = "<svg ...></svg>".freeze
 
     DETAILS = {
-      allow_email_password_registration: {
-        description: "People can sign up using their email and password",
-        placeholder: ""
-      },
-      allow_email_password_login: {
-        description: "People can login using their email and password",
-        placeholder: ""
-      },
       require_captcha_for_email_password_registration: {
         description: "People will be required to fill out a captcha when
           they're creating a new account in your community",
         placeholder: ""
+      },
+      allowed_registration_email_domains: {
+        description: "Restrict registration to only certain emails? (comma-separated list)",
+        placeholder: "dev.to, forem.com, codenewbie.org"
       },
       authentication_providers: {
         description: "How can users sign in?",
@@ -49,10 +45,6 @@ module Constants
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
       },
-      collective_noun: {
-        description: "Used to describe your collective identity.",
-        placeholder: "Herd"
-      },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
@@ -61,12 +53,16 @@ module Constants
         description: "Used in meta description tags etc.",
         placeholder: "A fabulous community of kind and welcoming people."
       },
+      community_emoji: {
+        description: "Used in the title tags across the site alongside the community name",
+        placeholder: ""
+      },
       community_member_label: {
         description: "Used to determine what a member will be called e.g developer, hobbyist etc.",
         placeholder: "user"
       },
       community_name: {
-        description: "Primary name... e.g. DEV",
+        description: "Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.",
         placeholder: "New Forem"
       },
       credit_prices_in_cents: {
@@ -89,6 +85,9 @@ module Constants
       },
       default_font: {
         description: "Determines the default Base Reading Font (registered users can change this in their UX settings)"
+      },
+      display_email_domain_allow_list_publicly: {
+        description: "Do you want to display the list of allowed domains, or keep it private?"
       },
       display_jobs_banner: {
         description: "Display a jobs banner that points users to the jobs page when they type 'job'" \
@@ -116,6 +115,26 @@ module Constants
         description:
           "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
         placeholder: ""
+      },
+      apple_client_id: {
+        description:
+          "The \"App Bundle\" code for the Authentication Service configured in the Apple Developer Portal",
+        placeholder: "com.example.app"
+      },
+      apple_team_id: {
+        description:
+          "The \"Team ID\" of your Apple Developer Account",
+        placeholder: ""
+      },
+      apple_key_id: {
+        description:
+          "The \"Key ID\" from the Authentication Service configured in the Apple Developer Portal",
+        placeholder: ""
+      },
+      apple_pem: {
+        description:
+          "The \"PEM\" key from the Authentication Service configured in the Apple Developer Portal",
+        placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
       },
       favicon_url: {
         description: "Used as the site favicon",
@@ -167,7 +186,7 @@ module Constants
         placeholder: SVG_PLACEHOLDER
       },
       logo_png: {
-        description: "Minimum 1024px, used for PWA etc.",
+        description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
         placeholder: IMAGE_PLACEHOLDER
       },
       logo_svg: {
@@ -175,7 +194,7 @@ module Constants
         placeholder: SVG_PLACEHOLDER
       },
       main_social_image: {
-        description: "Used as the main image in social networks and OpenGraph",
+        description: "Used as the main image in social networks and OpenGraph. Recommended aspect ratio of 16:9 (600x337px,1200x675px)",
         placeholder: IMAGE_PLACEHOLDER
       },
       mailchimp_api_key: {
@@ -269,7 +288,7 @@ module Constants
       },
       spam_trigger_terms: {
         description: "Individual (case insensitive) phrases that trigger spam alerts, comma separated.",
-        placeholder: "used cares near you, pokemon go hack"
+        placeholder: "used cars near you, pokemon go hack"
       },
       shop_url: {
         description: "Used as the shop url of the community",
@@ -303,10 +322,14 @@ module Constants
         placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin"
       },
       suggested_users: {
-        description: "Determines which users are suggested to follow to new users during onboarding (comma" \
-        "separated, letters only). Please note that these users will be shown as a fallback if no" \
+        description: "Determines which users are suggested to follow to new users during onboarding (comma " \
+        "separated, letters only). Please note that these users will be shown as a fallback if no " \
         "recently-active commenters or producers can be suggested",
         placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
+      },
+      prefer_manual_suggested_users: {
+        description: "Always show suggested users as suggested people to follow even when " \
+        "auto-suggestion is available"
       },
       tag_feed_minimum_score: {
         description: "Minimum score needed for a post to show up on default tag page.",

@@ -3,6 +3,7 @@ title: Backend Guide
 items:
   - audit-log.md
   - authentication.md
+  - auth-apple.md
   - auth-facebook.md
   - auth-twitter.md
   - auth-github.md
@@ -20,6 +21,7 @@ items:
   - scheduled-jobs.md
   - metrics.md
   - tracking.md
+  - service-objects.md
 ---
 
 # Backend Guide

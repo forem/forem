@@ -246,7 +246,7 @@
     left: 0;
     right: 0;
     top: calc(100% + var(--su-4));
-    z-index: 100;
+    z-index: var(--z-dropdown);
     padding: var(--su-1);
 
     @media (min-width: $breakpoint-s) {

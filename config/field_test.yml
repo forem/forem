@@ -1,25 +1,34 @@
 experiments:
-  user_home_feed: # Home feed collection for logged in user
+  follow_implicit_points: # Points given for implicit tag weights
+    # TEST FINISHED
+    # Hypotheses: Weighting tags based on implied preference will lead
+    # to more repeat engagement.
+    # Recommended duration: 4 weeks (ending at start of January)
+
+    # OUTCOME:
+    # It was observed that "base" has been consistently ahead in comments and
+    # "four hours of article reads in day" by 10% to 20% over no_implicit_score
+    # but over time this began regressing towards the mean and seeming more random.
+    # In inspecting the ways we are measuring goals here, anything with a low barrier
+    # will eventually be reached (aka leave one reaction) by most users, so over time
+    # these goals demonstrate less value.
+    # So this test is being cut off on the observation of a clear winner early on
+    # with the note that we need tests which can map better to the duration of the test.
+
+    # This experiment is no longer running in production, but can remain configured here
+    # while there are no other experiments running.
     variants:
       - base
-      - more_tag_weight_more_random_experiment
-      - more_comments_experiment
-      - more_experience_level_weight_experiment
-      - mix_of_everything_experiment
-      - more_tag_weight_randomized_at_end_experiment
-      - more_experience_level_weight_randomized_at_end_experiment
-      - more_comments_randomized_at_end_experiment
-      - more_comments_medium_weight_randomized_at_end_experiment
-      - more_comments_minimal_weight_randomized_at_end_experiment
-    weights:
-      - 5
-      - 5
+      - no_implicit_score
+      - half_weight_after_log
+      - double_weight_after_log
+      - double_bonus_before_log
+      - without_weighting_bonus
+    weights: # "base" (what we currently implement) and "no_implicit_score" are what we want the most data on.
+      - 30
+      - 30
       - 10
       - 10
-      - 10
-      - 10
-      - 10
-      - 20
       - 10
       - 10
     goals:

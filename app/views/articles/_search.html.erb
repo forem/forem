@@ -69,7 +69,7 @@
   function initializeFilters(query, filters) {
     var filterButts = document.getElementsByClassName("query-filter-button");
     for (var i = 0; i < filterButts.length; i++) {
-      if (filters == filterButts[i].dataset.filter) {
+      if (filters === filterButts[i].dataset.filter) {
         filterButts[i].classList.add("crayons-link--current");
       }
       filterButts[i].onclick = function (e) {
@@ -88,7 +88,7 @@
         for (var i = 0; i < filterButts.length; i++) {
           filterButts[i].classList.remove("crayons-link--current");
         }
-        if (className.indexOf("crayons-link--current") == -1) {
+        if (className.indexOf("crayons-link--current") === -1) {
           e.target.classList.add("crayons-link--current");
           window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
           search(query, filters, sortBy, sortDirection);
@@ -180,17 +180,17 @@
         initializeAllFollowButts();
         initializeUserFollowButts();
         document.getElementById("substories").classList.add("search-results-loaded");
-        if (content.result.length == 0) {
+        if (content.result.length === 0) {
           document.getElementById("substories").innerHTML = '<div class="p-9 align-center crayons-card">No results match that query</div>'
         }
       });
   }
 
   var waitingOnSearch = setInterval(function () {
-    if (typeof search == 'function' && typeof filterXSS == 'function' && typeof buildArticleHTML == 'function') {
+    if (typeof search === 'function' && typeof filterXSS === 'function' && typeof buildArticleHTML === 'function') {
       clearInterval(waitingOnSearch);
       const substories = document.getElementById("substories");
-      if (document.querySelectorAll('.search-results-loaded').length == 0 && substories) {
+      if (substories && document.getElementsByClassName('search-results-loaded').length === 0) {
         searchMain(substories);
       }
     }

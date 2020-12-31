@@ -26,7 +26,7 @@ class CodesandboxTag < LiquidTagBase
   private
 
   def parse_id(input)
-    id = input.split(" ").first
+    id = input.split.first
     raise StandardError, "CodeSandbox Error: Invalid ID" unless valid_id?(id)
 
     id
@@ -37,7 +37,7 @@ class CodesandboxTag < LiquidTagBase
   end
 
   def parse_options(input)
-    _, *options = input.split(" ")
+    _, *options = input.split
 
     options.map { |option| valid_option(option) }.reject(&:nil?)
 

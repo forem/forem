@@ -8,6 +8,9 @@ RSpec.describe "Creating an article with the editor", type: :system do
   let!(:template_with_runkit_tag) do
     file_fixture("article_with_runkit_tag.txt").read
   end
+  let!(:template_with_runkit_tag_with_preamble) do
+    file_fixture("article_with_runkit_tag_with_preamble.txt").read
+  end
 
   before do
     sign_in user
@@ -42,6 +45,15 @@ RSpec.describe "Creating an article with the editor", type: :system do
       click_button "Save changes"
 
       expect_runkit_tag_to_be_active
+    end
+
+    it "creates a new article with a Runkit tag with complex preamble" do
+      visit new_path
+      fill_in "article_body_markdown", with: ""
+      fill_in "article_body_markdown", with: template_with_runkit_tag_with_preamble
+      click_button "Save changes"
+
+      expect_runkit_tag_to_be_active(count: 2)
     end
 
     # TODO: [@forem/sre] figure out why this fails intermittently :-|

@@ -48,7 +48,8 @@ function resizeMasonryItem(item) {
   );
   const rowHeight = 0;
   const rowSpan = Math.ceil(
-    (item.querySelector('.listing-content').getBoundingClientRect().height +
+    (item.getElementsByClassName('listing-content')[0].getBoundingClientRect()
+      .height +
       rowGap) /
       (rowHeight + rowGap),
   );

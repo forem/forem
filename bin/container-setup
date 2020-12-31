@@ -64,25 +64,12 @@ else
 
 fi
 
-echo "Building the Forem container image!"
-
-if [ "${CONTAINER_RUNTIME}" = "docker" ]; then
-  echo "This will take a while if you are building the container for the first time."
-
-  docker-compose build
-
-elif [ "${CONTAINER_RUNTIME}" = "podman" ]; then
-
-  podman-compose -f container-compose.yml build
-
-fi
-
 echo "Starting the Forem container stack..."
 
 if [ "${CONTAINER_RUNTIME}" = "docker" ]; then
 
-  if [[ ! -d .gems/ || ! "$(ls -A .gems)" ]]; then
-    echo "The .gems directory is empty or does not exist."
+  if [[ ! -d vendor/bundle || ! "$(ls -A vendor/bundle)" ]]; then
+    echo "The vendor/bundle directory is empty or does not exist."
     echo "This will cause bundle install to run which takes a long time with ${CONTAINER_RUNTIME}."
     echo "Depending on your hardware specs, the initial setup can take"
     echo "30 to 45 minutes. Please stand by..."

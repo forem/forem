@@ -1,4 +1,4 @@
-<div class="crayons-card p-6 grid gap-6">
+<div class="crayons-card p-6 grid gap-6" id="user-email-tools">
   <h2>Email Tools</h2>
 
   <div>
@@ -25,7 +25,10 @@
     <h3>Recent Emails</h3>
     <div class="list-group-flush">
       <% @user.email_messages.order(sent_at: :desc).limit(50).each do |email| %>
-        <a href="/admin/email_messages/<%= email.id %>" class="list-group-item list-group-item-action">
+        <a href="<%= admin_user_email_message_path(@user, email) %>"
+           class="list-group-item list-group-item-action"
+           rel="noopener noreferer"
+           target="_blank">
           <%= email.subject %>
           <em> - <%= email.sent_at&.strftime("%b %e '%y") %></em>
         </a>

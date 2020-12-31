@@ -1,4 +1,5 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
+import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { Options } from './Options';
 import { Button } from '@crayons';
@@ -18,102 +19,90 @@ const Icon = () => (
   </svg>
 );
 
-export class EditorActions extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      moreConfigShowing: false,
-    };
-  }
+export const EditorActions = ({
+  onSaveDraft,
+  onPublish,
+  onClearChanges,
+  published,
+  edited,
+  version,
+  passedData,
+  onConfigChange,
+  submitting,
+}) => {
+  const [moreConfigShowing, setMoreConfig] = useState(false);
 
-  setCommonProps = ({ moreConfigShowing = false }) => {
-    return {
-      moreConfigShowing,
-    };
-  };
+  const isVersion1 = version === 'v1';
+  const isVersion2 = version === 'v2';
 
-  toggleMoreConfig = (e) => {
-    const { moreConfigShowing } = this.state;
+  const toggleMoreConfig = (e) => {
     e.preventDefault();
-    this.setState({
-      ...this.setCommonProps({ moreConfigShowing: !moreConfigShowing }),
-    });
+    setMoreConfig(!moreConfigShowing);
   };
 
-  render() {
-    const {
-      onSaveDraft,
-      onPublish,
-      onClearChanges,
-      published,
-      edited,
-      version,
-      passedData,
-      onConfigChange,
-      submitting,
-    } = this.props;
-
-    const { moreConfigShowing } = this.state;
-
-    return submitting ? (
+  if (submitting) {
+    return (
       <div className="crayons-article-form__footer">
         <Button className="mr-2 whitespace-nowrap" onClick={onPublish} disabled>
-          {published && version === 'v2'
+          {published && isVersion2
             ? 'Publishing...'
-            : `Saving ${version === 'v2' ? 'draft' : ''}...`}
+            : `Saving ${isVersion2 ? 'draft' : ''}...`}
         </Button>
-      </div>
-    ) : (
-      <div className="crayons-article-form__footer">
-        <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
-          {published || version === 'v1' ? 'Save changes' : 'Publish'}
-        </Button>
-
-        {published || version === 'v1' ? (
-          ''
-        ) : (
-          <Button
-            variant="secondary"
-            className="mr-2 whitespace-nowrap"
-            onClick={onSaveDraft}
-          >
-            Save <span className="hidden s:inline">draft</span>
-          </Button>
-        )}
-        {version === 'v2' && (
-          <div className="s:relative">
-            <Button
-              variant="ghost"
-              contentType="icon"
-              icon={Icon}
-              title="Post options"
-              onClick={this.toggleMoreConfig}
-            />
-            {moreConfigShowing && (
-              <Options
-                passedData={passedData}
-                onConfigChange={onConfigChange}
-                onSaveDraft={onSaveDraft}
-                moreConfigShowing={moreConfigShowing}
-                toggleMoreConfig={this.toggleMoreConfig}
-              />
-            )}
-          </div>
-        )}
-        {edited && (
-          <Button
-            variant="ghost"
-            onClick={onClearChanges}
-            className="whitespace-nowrap fw-normal"
-            size="s"
-          >
-            Revert <span className="hidden s:inline">new changes</span>
-          </Button>
-        )}
       </div>
     );
   }
-}
+
+  return (
+    <div className="crayons-article-form__footer">
+      <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
+        {published || isVersion1 ? 'Save changes' : 'Publish'}
+      </Button>
+
+      {!(published || isVersion1) && (
+        <Button
+          variant="secondary"
+          className="mr-2 whitespace-nowrap"
+          onClick={onSaveDraft}
+        >
+          Save <span className="hidden s:inline">draft</span>
+        </Button>
+      )}
+
+      {isVersion2 && (
+        <div className="s:relative">
+          <Button
+            variant="ghost"
+            contentType="icon"
+            icon={Icon}
+            title="Post options"
+            onClick={toggleMoreConfig}
+          />
+
+          {moreConfigShowing && (
+            <Options
+              passedData={passedData}
+              onConfigChange={onConfigChange}
+              onSaveDraft={onSaveDraft}
+              moreConfigShowing={moreConfigShowing}
+              toggleMoreConfig={toggleMoreConfig}
+            />
+          )}
+        </div>
+      )}
+
+      {edited && (
+        <Button
+          variant="ghost"
+          onClick={onClearChanges}
+          className="whitespace-nowrap fw-normal"
+          size="s"
+        >
+          Revert <span className="hidden s:inline">new changes</span>
+        </Button>
+      )}
+    </div>
+  );
+};
 
 EditorActions.propTypes = {
   onSaveDraft: PropTypes.func.isRequired,

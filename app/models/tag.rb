@@ -89,6 +89,10 @@ class Tag < ActsAsTaggableOn::Tag
     errors.add(:name, "contains non-ASCII characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
   end
 
+  def errors_as_sentence
+    errors.full_messages.to_sentence
+  end
+
   private
 
   def evaluate_markdown
@@ -99,10 +103,9 @@ class Tag < ActsAsTaggableOn::Tag
   def calculate_hotness_score
     self.hotness_score = Article.tagged_with(name)
       .where("articles.featured_number > ?", 7.days.ago.to_i)
-      .map do |article|
+      .sum do |article|
         (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
       end
-      .sum
   end
 
   def bust_cache

@@ -9,6 +9,7 @@ json.array! @video_articles do |video_article|
     :title,
     :user_id,
     :video_duration_in_minutes,
+    :video_source_url,
   )
 
   json.user do

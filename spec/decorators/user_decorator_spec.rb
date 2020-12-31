@@ -47,7 +47,7 @@ RSpec.describe UserDecorator, type: :decorator do
 
     it "returns adjusted points for tag" do
       follow = saved_user.follow(tag1)
-      follow.update(points: 0.1)
+      follow.update(explicit_points: 0.1)
       expect(saved_user.decorate.cached_followed_tags.first.points).to eq(0.1)
     end
   end
