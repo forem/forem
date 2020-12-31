@@ -118,6 +118,13 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
+  describe "GET /contact" do
+    it "has proper headline" do
+      get "/contact"
+      expect(response.body).to include("Contact")
+    end
+  end
+
   describe "GET /welcome" do
     let(:user) { create(:user, id: 1) }
 

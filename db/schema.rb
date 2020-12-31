@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_09_040438) do
+ActiveRecord::Schema.define(version: 2020_12_03_063435) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -560,10 +560,12 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
   create_table "follows", force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
+    t.float "explicit_points", default: 1.0
     t.bigint "followable_id", null: false
     t.string "followable_type", null: false
     t.bigint "follower_id", null: false
     t.string "follower_type", null: false
+    t.float "implicit_points", default: 0.0
     t.float "points", default: 1.0
     t.string "subscription_status", default: "all_articles", null: false
     t.datetime "updated_at"
@@ -713,7 +715,6 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
-    t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
@@ -846,6 +847,17 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
     t.index ["slug"], name: "index_pages_on_slug", unique: true
   end
 
+  create_table "podcast_episode_appearances", force: :cascade do |t|
+    t.boolean "approved", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "featured_on_user_profile", default: false, null: false
+    t.bigint "podcast_episode_id", null: false
+    t.string "role", default: "guest", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["podcast_episode_id", "user_id"], name: "index_pod_episode_appearances_on_podcast_episode_id_and_user_id", unique: true
+  end
+
   create_table "podcast_episodes", force: :cascade do |t|
     t.boolean "any_comments_hidden", default: false
     t.text "body"
@@ -876,6 +888,14 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
     t.index ["podcast_id"], name: "index_podcast_episodes_on_podcast_id"
     t.index ["title"], name: "index_podcast_episodes_on_title"
     t.index ["website_url"], name: "index_podcast_episodes_on_website_url"
+  end
+
+  create_table "podcast_ownerships", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "podcast_id", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["podcast_id", "user_id"], name: "index_podcast_ownerships_on_podcast_id_and_user_id", unique: true
   end
 
   create_table "podcasts", force: :cascade do |t|
@@ -1184,6 +1204,8 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.datetime "apple_created_at"
+    t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
@@ -1217,11 +1239,11 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
     t.boolean "email_comment_notifications", default: true
     t.boolean "email_community_mod_newsletter", default: false
     t.boolean "email_connect_messages", default: true
-    t.boolean "email_digest_periodic", default: true, null: false
+    t.boolean "email_digest_periodic", default: false, null: false
     t.boolean "email_follower_notifications", default: true
     t.boolean "email_membership_newsletter", default: false
     t.boolean "email_mention_notifications", default: true
-    t.boolean "email_newsletter", default: true
+    t.boolean "email_newsletter", default: false
     t.boolean "email_public", default: false
     t.boolean "email_tag_mod_newsletter", default: false
     t.boolean "email_unread_notifications", default: true
@@ -1266,6 +1288,7 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
+    t.datetime "last_reacted_at"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
     t.string "linkedin_url"
@@ -1323,10 +1346,12 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
+    t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
+    t.index ["feed_url"], name: "index_users_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"
@@ -1337,6 +1362,14 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+  end
+
+  create_table "users_gdpr_delete_requests", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.string "email"
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_id"
+    t.string "username"
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
@@ -1424,7 +1457,11 @@ ActiveRecord::Schema.define(version: 2020_10_09_040438) do
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "page_views", "users", on_delete: :nullify
+  add_foreign_key "podcast_episode_appearances", "podcast_episodes"
+  add_foreign_key "podcast_episode_appearances", "users"
   add_foreign_key "podcast_episodes", "podcasts", on_delete: :cascade
+  add_foreign_key "podcast_ownerships", "podcasts"
+  add_foreign_key "podcast_ownerships", "users"
   add_foreign_key "podcasts", "users", column: "creator_id"
   add_foreign_key "poll_options", "polls", on_delete: :cascade
   add_foreign_key "poll_skips", "polls", on_delete: :cascade

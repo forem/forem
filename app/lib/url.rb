@@ -7,7 +7,11 @@ module URL
   end
 
   def self.domain
-    Rails.application&.initialized? ? SiteConfig.app_domain : ApplicationConfig["APP_DOMAIN"]
+    if Rails.application&.initialized? && SiteConfig.respond_to?(:app_domain)
+      SiteConfig.app_domain
+    else
+      ApplicationConfig["APP_DOMAIN"]
+    end
   end
 
   def self.url(uri = nil)
@@ -54,6 +58,15 @@ module URL
     url(user.username)
   rescue URI::InvalidURIError # invalid username containing spaces will result in an error
     nil
+  end
+
+  # Creates an Image URL - a shortcut for the .image_url helper
+  #
+  # @param image_name [String] the image file name
+  # @param host [String] (optional) the host for the image URL you'd like to use
+  def self.local_image(image_name, host: nil)
+    host ||= ActionController::Base.asset_host || url(nil)
+    ActionController::Base.helpers.image_url(image_name, host: host)
   end
 
   def self.organization(organization)

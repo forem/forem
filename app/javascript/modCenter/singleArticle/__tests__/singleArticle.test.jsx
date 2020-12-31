@@ -46,6 +46,22 @@ describe('<SingleArticle />', () => {
     expect(queryByText(getTestArticle().title)).toBeDefined();
   });
 
+  it('renders the new clickable article title', () => {
+    const { container } = render(
+      <Fragment>
+        <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
+        <div
+          data-testid="flag-user-modal"
+          class="flag-user-modal-container hidden"
+        />
+      </Fragment>,
+    );
+    const text = getNodeText(
+      container.getElementsByClassName('article-title-link')[0],
+    );
+    expect(text).toContain(getTestArticle().title);
+  });
+
   it('renders the tags', () => {
     const { queryByText } = render(
       <Fragment>
@@ -85,7 +101,9 @@ describe('<SingleArticle />', () => {
         />
       </Fragment>,
     );
-    const text = getNodeText(container.querySelector('.article-title'));
+    const text = getNodeText(
+      container.getElementsByClassName('article-title')[0],
+    );
     expect(text).not.toContain('#');
   });
 
@@ -99,7 +117,9 @@ describe('<SingleArticle />', () => {
         />
       </Fragment>,
     );
-    const text = getNodeText(container.querySelector('.article-author'));
+    const text = getNodeText(
+      container.getElementsByClassName('article-author')[0],
+    );
     expect(text).toContain(getTestArticle().user.name);
   });
 
@@ -113,7 +133,9 @@ describe('<SingleArticle />', () => {
         />
       </Fragment>,
     );
-    const text = getNodeText(container.querySelector('.article-author'));
+    const text = getNodeText(
+      container.getElementsByClassName('article-author')[0],
+    );
     expect(text).toContain('👋');
   });
 
@@ -150,9 +172,9 @@ describe('<SingleArticle />', () => {
       .toLocaleTimeString('en-US', { hour12: true })
       .replace(/:\d{2}\s/, ' '); // looks like 8:05 PM
 
-    expect(document.querySelector('time').getAttribute('datetime')).toEqual(
-      '2020-07-08T16:11:27.000Z',
-    );
+    expect(
+      document.getElementsByTagName('time')[0].getAttribute('datetime'),
+    ).toEqual('2020-07-08T16:11:27.000Z');
 
     expect(readableTime).toEqual('4:11 PM');
   });

@@ -11,7 +11,7 @@
   <% end %>
 </div>
 
-<div class="crayons-card p-6">
+<div class="crayons-card p-6 mb-6">
   <h2 class="crayons-title mb-4">Bust Cache For Specific Content</h2>
   <p class="mb-6">This clears both the Rails cache & the Fastly cache.</p>
     <%= form_tag bust_cache_admin_tools_path do %>
@@ -29,3 +29,5 @@
       </div>
     <% end %>
 </div>
+
+<%= render "admin/shared/image_uploader" %>

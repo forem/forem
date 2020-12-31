@@ -1,26 +1,7 @@
 <%# missing cache key %>
 <% siblings = notification.json_data["reaction"]["aggregated_siblings"].select { |n| n["created_at"] > 24.hours.ago } %>
 <% if siblings.length == 0 %>
-  <% cache "activity-profile-pic-#{notification.json_data['user']['id']}-#{notification.json_data['user']['profile_image_90']}" do %>
-    <a href="<%= notification.json_data["user"]["path"] %>" class="small-pic-link-wrapper">
-      <div class="small-pic">
-        <img src="<%= notification.json_data["user"]["profile_image_90"] %>" alt="link to <%= notification.json_data["user"]["username"] %> profile">
-      </div>
-    </a>
-  <% end %>
-  <div class="content notification-content reaction-content">
-    <a href="<%= notification.json_data["user"]["path"] %>"><strong><%= notification.json_data["user"]["name"] %></strong></a> reacted to
-    <strong>
-      <a href="<%= notification.json_data["reaction"]["reactable"]["path"] %>" class="notification-comment-reacted-link">
-        <%# title is blank when it's a comment with only an image, for example %>
-        <%= notification.json_data["reaction"]["reactable"]["title"].blank? ? "your #{notification.json_data['reaction']['reactable_type'].downcase}" : sanitize(notification.json_data["reaction"]["reactable"]["title"]) %>
-      </a>
-    </strong>
-    <span class="reaction-images">
-        <% category = notification.json_data["reaction"]["category"] %>
-        with <%= image_tag(ReactionImage.new(category).path, class: "reaction-image", alt: "a #{category.humanize}") %>
-      </span>
-  </div>
+  <%= render "single_reaction", notification: notification %>
 <% else %>
   <%= render "aggregated_reactions", notification: notification, siblings: siblings %>
 <% end %>

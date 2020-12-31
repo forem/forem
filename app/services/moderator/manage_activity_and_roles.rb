@@ -57,12 +57,12 @@ module Moderator
 
     def handle_user_status(role, note)
       case role
-      when "Ban" || "Spammer"
+      when "Suspend" || "Spammer"
         user.add_role :banned
         remove_privileges
       when "Warn"
         warned
-      when "Comment Ban"
+      when "Comment Suspend"
         comment_banned
       when "Regular Member"
         regular_member

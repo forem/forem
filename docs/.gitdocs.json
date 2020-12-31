@@ -18,13 +18,13 @@
     },
     {
       "title": "Ruby doc",
-      "href": "http://docs.forem.com/ruby-doc",
+      "href": "https://docs.forem.com/ruby-doc",
       "target": "_blank",
       "rel": "noopener noreferrer nofollow"
     },
     {
       "title": "API doc",
-      "href": "http://docs.forem.com/api",
+      "href": "https://docs.forem.com/api",
       "target": "_blank",
       "rel": "noopener noreferrer nofollow"
     }

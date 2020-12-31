@@ -1,6 +1,7 @@
 module Admin
   class UsersController < Admin::ApplicationController
     layout "admin"
+    using StringToBoolean
 
     after_action only: %i[update user_status banish full_delete merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
@@ -50,6 +51,21 @@ module Admin
       redirect_to "/admin/users/#{@user.id}/edit"
     end
 
+    def export_data
+      user = User.find(params[:id])
+      send_to_admin = params[:send_to_admin].to_boolean
+      if send_to_admin
+        email = SiteConfig.email_addresses[:contact]
+        receiver = "admin"
+      else
+        email = user.email
+        receiver = "user"
+      end
+      ExportContentWorker.perform_async(user.id, email)
+      flash[:success] = "Data exported to the #{receiver}. The job will complete momentarily."
+      redirect_to edit_admin_user_path(user.id)
+    end
+
     def banish
       Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
       flash[:success] = "This user is being banished in the background. The job will complete soon."
@@ -60,10 +76,12 @@ module Admin
       @user = User.find(params[:id])
       begin
         Moderator::DeleteUser.call(user: @user)
+        link = helpers.tag.a("the page", href: admin_users_gdpr_delete_requests_path, data: { "no-instant" => true })
         message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
-          "has been fully deleted." \
-          "If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
-        flash[:success] = message
+          "has been fully deleted. " \
+          "If this is a GDPR delete, delete them from Mailchimp & Google Analytics " \
+          " and confirm on "
+        flash[:success] = helpers.safe_join([message, link, "."])
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -84,9 +102,17 @@ module Admin
     def remove_identity
       identity = Identity.find(user_params[:identity_id])
       @user = identity.user
+
       begin
-        identity.delete
+        identity.destroy
+
         @user.update("#{identity.provider}_username" => nil)
+
+        # GitHub repositories are tied with the existence of the GitHub identity
+        # as we use the user's GitHub token to fetch them from the API.
+        # We should delete them when a user unlinks their GitHub account.
+        @user.github_repos.destroy_all if identity.provider.to_sym == :github
+
         flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
       rescue StandardError => e
         flash[:danger] = e.message

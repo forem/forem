@@ -11,7 +11,7 @@ RSpec.describe "Authenticating with a password" do
   let!(:user) { create(:user, password: password, password_confirmation: password) }
 
   before do
-    allow(SiteConfig).to receive(:allow_email_password_login).and_return(true)
+    allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
     visit sign_up_path
   end
 
@@ -25,20 +25,6 @@ RSpec.describe "Authenticating with a password" do
     it "displays an error when the password is wrong" do
       submit_login_form(user.email, "wr0ng")
       expect(page).to have_text("Invalid Email or password.")
-    end
-
-    it "displays a message on the last login attempt" do
-      allow(User).to receive(:maximum_attempts).and_return(2)
-
-      submit_login_form(user.email, "wr0ng")
-      expect(page).to have_text("You have one more attempt before your account is locked.")
-    end
-
-    it "displays a message when the user got locked out" do
-      allow(User).to receive(:maximum_attempts).and_return(1)
-
-      submit_login_form(user.email, "wr0ng")
-      expect(page).to have_text("Your account is locked.")
     end
 
     it "sends an email with the unlock link if the uset gets locked out" do
@@ -59,7 +45,7 @@ RSpec.describe "Authenticating with a password" do
       user.lock_access!
 
       visit sign_up_path
-      click_link("Continue with GitHub", match: :first)
+      click_on("Continue with GitHub", match: :first)
 
       expect(page).to have_current_path("/?signin=true")
       expect(page).not_to have_text("Your account is locked.")

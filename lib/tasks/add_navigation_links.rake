@@ -11,8 +11,6 @@ namespace :navigation_links do
     smart_icon = File.read(Rails.root.join("app/assets/images/twemoji/smart.svg")).freeze
     look_icon = File.read(Rails.root.join("app/assets/images/twemoji/look.svg")).freeze
     contact_icon = File.read(Rails.root.join("app/assets/images/twemoji/contact.svg")).freeze
-
-    # we can probably remove these icons once they in the database
     listing_icon = File.read(Rails.root.join("app/assets/images/twemoji/listing.svg")).freeze
     mic_icon = File.read(Rails.root.join("app/assets/images/twemoji/mic.svg")).freeze
     camera_icon = File.read(Rails.root.join("app/assets/images/twemoji/camera.svg")).freeze

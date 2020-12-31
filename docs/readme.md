@@ -33,7 +33,7 @@ contributed to the documentation.
 
 Like Forem, this site is open source and the code is [hosted on GitHub][docs].
 If you find any incorrect information, or a even a typo, we'd love to see a pull
-request. Follow these steps to get the documentation site running locally.
+request.
 
 Forem's documentation is built with [GitDocs NodeJS library][gitdocs].
 
@@ -55,8 +55,8 @@ for those changes to take effect.
 If you're looking for more information on contributing, check out the
 [Contributing guide][contributing].
 
-[installation]: /installation/
-[architecture]: /technical-overview/architecture/
-[contributing]: /contributing/
+[installation]: /docs/installation/
+[architecture]: /docs/technical-overview/architecture/
+[contributing]: /docs/contributing/
 [docs]: https://github.com/forem/forem/tree/master/docs/
 [gitdocs]: https://www.npmjs.com/package/gitdocs/

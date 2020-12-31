@@ -31,7 +31,7 @@ const Header = ({ listing, currentUserId, onTitleClick, onAddTag }) => {
         </a>
       </h2>
       <DateTime dateTime={listingDate} className="single-listing__date" />
-      <TagLinks tags={listing.tags} onClick={onAddTag} />
+      <TagLinks tags={listing.tags || listing.tag_list} onClick={onAddTag} />
 
       <DropdownMenu listing={listing} isOwner={currentUserId === userId} />
     </header>

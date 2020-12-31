@@ -17,7 +17,7 @@ module DataUpdateScripts
                            display_only_when_signed_in: false, position: 1).first_or_create
       NavigationLink.where(name: "Privacy Policy", url: "#{BASE_URL}/privacy", icon: SMART_ICON,
                            display_only_when_signed_in: false, position: 2).first_or_create
-      NavigationLink.where(name: "Terms of use", url: "#{BASE_URL}/terms", icon: LOOK_ICON,
+      NavigationLink.where(name: "Terms of Use", url: "#{BASE_URL}/terms", icon: LOOK_ICON,
                            display_only_when_signed_in: false, position: 3).first_or_create
       NavigationLink.where(name: "Contact", url: "#{BASE_URL}/contact", icon: CONTACT_ICON,
                            display_only_when_signed_in: false, position: 4).first_or_create

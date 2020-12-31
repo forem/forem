@@ -1,74 +1,88 @@
 module RateLimitCheckerHelper
   CONFIGURABLE_RATES = {
-    rate_limit_article_update: {
-      min: 1,
-      placeholder: 30,
-      description: "The number of article updates a user can make in 30 seconds. Please update API docs when changed."
-    },
-    rate_limit_user_update: {
-      min: 1,
-      placeholder: 5,
-      description: "The number of user updates a user can make in 30 seconds"
-    },
-    rate_limit_feedback_message_creation: {
-      min: 1,
-      placeholder: 5,
-      description: "The number of times a user can submit feedback in a 5 minute period"
-    },
-    rate_limit_follow_count_daily: {
-      min: 0,
-      placeholder: 500,
-      description: "The number of users a person can follow daily"
-    },
-    rate_limit_comment_creation: {
-      min: 0,
-      placeholder: 9,
-      description: "The number of comments a user can create within 30 seconds"
-    },
-    rate_limit_listing_creation: {
-      min: 1,
-      placeholder: 1,
-      description: "The number of listings a user can create in 1 minute"
-    },
     rate_limit_published_article_creation: {
       min: 0,
       placeholder: 9,
-      description: "The number of articles that a user can create within 30 seconds"
+      title: "Limit number of posts created",
+      description: "How many posts can someone create within any 30 second period?"
     },
     rate_limit_published_article_antispam_creation: {
       min: 0,
       placeholder: 1,
-      description: "The number of articles that a 3-day-old user can create within 5 minutes"
+      title: "Limit number of posts created by a new member",
+      description: "How many posts can a 3-day-old member create within any 5 minute period?"
+    },
+    rate_limit_article_update: {
+      min: 1,
+      placeholder: 30,
+      title: "Limit number of updates to a post",
+      description: "How many updates can someone make within any 30 second period? Update API docs when changed."
     },
     rate_limit_image_upload: {
       min: 0,
       placeholder: 9,
-      description: "The number of images a user can upload within 30 seconds"
+      title: "Limit number of images uploaded",
+      description: "How many images can someone upload within any 30 second period?"
     },
-    rate_limit_email_recipient: {
-      min: 0,
-      placeholder: 5,
-      description: "The number of emails we send to a user within 2 minutes"
-    },
-    rate_limit_organization_creation: {
+    rate_limit_user_update: {
       min: 1,
-      placeholder: 1,
-      description: "The number of organizations a user can create within a 5 minute period"
+      placeholder: 5,
+      title: "Limit number of changes someone can make to their account",
+      description: "How many changes can someone make to their user account within any 30 second period?"
+    },
+    rate_limit_follow_count_daily: {
+      min: 0,
+      placeholder: 500,
+      title: "Limit number of followers someone can follow daily",
+      description: "How many people can someone follow in a day?"
     },
     rate_limit_reaction_creation: {
       min: 1,
       placeholder: 10,
-      description: "The number of times a user can react in a 30 second period"
+      title: "Limit number of reactions to a post or comment",
+      description: "How many times can someone react to a post or comment within any 30 second period?"
     },
-    rate_limit_send_email_confirmation: {
+    rate_limit_feedback_message_creation: {
       min: 1,
-      placeholder: 2,
-      description: "The number of times we will send a confirmation email to a user in a 2 minute period"
+      placeholder: 5,
+      title: "Limit number of times someone can report abuse",
+      description: "How many times can someone report abuse within any 5 minute period?"
+    },
+    rate_limit_comment_creation: {
+      min: 0,
+      placeholder: 9,
+      title: "Limit number of comments created",
+      description: "How many comments can someone create within any 30 second period?"
+    },
+    rate_limit_listing_creation: {
+      min: 1,
+      placeholder: 1,
+      title: "Limit number of listings created",
+      description: "How many listings can someone create within any 1 minute period?"
+    },
+    rate_limit_organization_creation: {
+      min: 1,
+      placeholder: 1,
+      title: "Limit number of organizations created",
+      description: "How many organizations can someone create within any 5 minute period?"
     },
     rate_limit_user_subscription_creation: {
       min: 0,
       placeholder: 3,
-      description: "The number of user subscriptions a user can submit within 30 seconds"
+      title: "Limit number of times someone can subscribe to mailing list liquid tag",
+      description: "How many times can someone subscribe to a mailing list within any 30 second period?"
+    },
+    rate_limit_email_recipient: {
+      min: 0,
+      placeholder: 5,
+      title: "Limit number of general emails we send",
+      description: "How many emails can we send to someone within any 2 minute period?"
+    },
+    rate_limit_send_email_confirmation: {
+      min: 1,
+      placeholder: 2,
+      title: "Limit number of confirmation emails we send",
+      description: "How many times can we send a confirmation email to someone within a 2 minute period?"
     }
   }.freeze
 

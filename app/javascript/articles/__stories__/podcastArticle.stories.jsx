@@ -21,7 +21,7 @@ const commonProps = {
 };
 
 export default {
-  title: '4_App Components/Article/Podcast',
+  title: 'App Components/Article/Podcast',
   decorators: [withKnobs],
 };
 

@@ -2,15 +2,12 @@ module Constants
   module Settings
     TAB_LIST = %w[
       Profile
-      UX
-      Integrations
+      Customization
       Notifications
-      Publishing\ from\ RSS
-      Organization
-      Response\ Templates
-      Billing
       Account
-      Misc
+      Billing
+      Organization
+      Extensions
     ].freeze
   end
 end

@@ -238,7 +238,7 @@ class Comment < ApplicationRecord
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     user.touch(:last_comment_at)
-    CacheBuster.bust(commentable.path.to_s) if commentable
+    EdgeCache::Bust.call(commentable.path.to_s) if commentable
     expire_root_fragment
   end
 
@@ -272,8 +272,8 @@ class Comment < ApplicationRecord
       author_id: SiteConfig.mascot_user_id,
       noteable_id: user_id,
       noteable_type: "User",
-      reason: "automatic_ban",
-      content: "User banned for too many spammy articles, triggered by autovomit.",
+      reason: "automatic_suspend",
+      content: "User suspended for too many spammy articles, triggered by autovomit.",
     )
   end
 
@@ -304,7 +304,8 @@ class Comment < ApplicationRecord
   end
 
   def record_field_test_event
-    Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_comment")
+    Users::RecordFieldTestEventWorker
+      .perform_async(user_id, :follow_implicit_points, "user_creates_comment")
   end
 
   def notify_slack_channel_about_warned_users

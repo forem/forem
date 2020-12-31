@@ -36,5 +36,4 @@ warning message in your logs when you try to access that variable
 Only certain features require "real" keys, so you may be able to add them as you
 work on different areas of the application.
 
-[backend_guide]: /backend
-[envied]: https://rubygems.org/gems/envied
+[backend_guide]: /docs/backend

@@ -10,8 +10,11 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
-  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
+  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
+
+  # Meta
+  field :admin_action_taken_at, type: :datetime, default: Time.current
 
   # Core setup
   field :waiting_on_first_user, type: :boolean, default: !User.exists?
@@ -24,7 +27,10 @@ class SiteConfig < RailsSettings::Base
   # Authentication
   field :allow_email_password_registration, type: :boolean, default: false
   field :allow_email_password_login, type: :boolean, default: true
-  field :authentication_providers, type: :array, default: proc { Authentication::Providers.available }
+  field :allowed_registration_email_domains, type: :array, default: %w[]
+  field :display_email_domain_allow_list_publicly, type: :boolean, default: false
+  field :require_captcha_for_email_password_registration, type: :boolean, default: false
+  field :authentication_providers, type: :array, default: %w[]
   field :invite_only_mode, type: :boolean, default: false
   field :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
   field :twitter_secret, type: :string, default: ApplicationConfig["TWITTER_SECRET"]
@@ -32,8 +38,13 @@ class SiteConfig < RailsSettings::Base
   field :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
   field :facebook_key, type: :string
   field :facebook_secret, type: :string
+  field :apple_client_id, type: :string
+  field :apple_key_id, type: :string
+  field :apple_pem, type: :string
+  field :apple_team_id, type: :string
 
   # Campaign
+  field :campaign_call_to_action, type: :string, default: "Share your project"
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
@@ -43,6 +54,11 @@ class SiteConfig < RailsSettings::Base
 
   # Community Content
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
+  field :community_emoji, type: :string, default: "🌱"
+  # collective_noun and collective_noun_disabled have been added back temporarily for
+  # a data_update script, but will be removed in a future PR!
+  field :collective_noun, type: :string, default: "Community"
+  field :collective_noun_disabled, type: :boolean, default: false
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
   field :tagline, type: :string
@@ -50,18 +66,21 @@ class SiteConfig < RailsSettings::Base
                                          default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
                                            Time.zone.today.year
   field :staff_user_id, type: :integer, default: 1
+  field :experience_low, type: :string, default: "Total Newbies"
+  field :experience_high, type: :string, default: "Experienced Users"
 
   # Emails
   field :email_addresses, type: :hash, default: {
     default: ApplicationConfig["DEFAULT_EMAIL"],
+    contact: ApplicationConfig["DEFAULT_EMAIL"],
     business: ApplicationConfig["DEFAULT_EMAIL"],
     privacy: ApplicationConfig["DEFAULT_EMAIL"],
     members: ApplicationConfig["DEFAULT_EMAIL"]
   }
 
   # Email digest frequency
-  field :periodic_email_digest_max, type: :integer, default: 0
-  field :periodic_email_digest_min, type: :integer, default: 2
+  field :periodic_email_digest_max, type: :integer, default: 2
+  field :periodic_email_digest_min, type: :integer, default: 0
 
   # Jobs
   field :jobs_url, type: :string
@@ -75,18 +94,21 @@ class SiteConfig < RailsSettings::Base
   field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
   # Images
-  field :main_social_image, type: :string
-  field :favicon_url, type: :string, default: "favicon.ico"
-  field :logo_png, type: :string
+  field :main_social_image, type: :string, default: proc { URL.local_image("social-media-cover.png") }
+
+  field :favicon_url, type: :string, default: proc { URL.local_image("favicon.ico") }
+  field :logo_png, type: :string, default: proc { URL.local_image("icon.png") }
+
   field :logo_svg, type: :string
   field :secondary_logo_url, type: :string
 
   field :left_navbar_svg_icon, type: :string, default: STACK_ICON
   field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
+  field :enable_video_upload, type: :boolean, default: false
 
   # Mascot
-  field :mascot_user_id, type: :integer, default: 1
-  field :mascot_image_url, type: :string
+  field :mascot_user_id, type: :integer, default: nil
+  field :mascot_image_url, type: :string, default: proc { URL.local_image("mascot.png") }
   field :mascot_image_description, type: :string, default: "The community mascot"
   field :mascot_footer_image_url, type: :string
   field :mascot_footer_image_width, type: :integer, default: 52
@@ -122,6 +144,7 @@ class SiteConfig < RailsSettings::Base
   field :onboarding_taskcard_image, type: :string
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
+  field :prefer_manual_suggested_users, type: :boolean, default: false
 
   # Rate limits and spam prevention
   field :rate_limit_follow_count_daily, type: :integer, default: 500
@@ -168,6 +191,8 @@ class SiteConfig < RailsSettings::Base
   field :default_font, type: :string, default: "sans_serif"
   field :primary_brand_color_hex, type: :string, default: "#3b49df"
   field :feed_strategy, type: :string, default: "basic"
+  field :tag_feed_minimum_score, type: :integer, default: 0
+  field :home_feed_minimum_score, type: :integer, default: 0
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
@@ -190,4 +215,15 @@ class SiteConfig < RailsSettings::Base
   def self.dev_to?
     app_domain == "dev.to"
   end
+
+  # Apple uses different keys than the usual `PROVIDER_NAME_key` or
+  # `PROVIDER_NAME_secret` so these will help the generalized authentication
+  # code to work, i.e. https://github.com/forem/forem/blob/master/app/helpers/authentication_helper.rb#L26-L29
+  def self.apple_key
+    return unless apple_client_id.present? && apple_key_id.present? &&
+      apple_pem.present? && apple_team_id.present?
+
+    "present"
+  end
+  singleton_class.__send__(:alias_method, :apple_secret, :apple_key)
 end

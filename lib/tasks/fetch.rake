@@ -1,9 +1,16 @@
 desc "This task is called by the Heroku scheduler add-on"
 
 task fetch_all_rss: :environment do
-  Rails.application.eager_load!
+  if FeatureFlag.enabled?(:feeds_import)
+    Feeds::Import.call
+  else
+    # don't force fetch. Fetch "random" subset instead of all of them.
+    RssReader.get_all_articles(force: false)
+  end
+end
 
-  RssReader.get_all_articles(force: false) # don't force fetch. Fetch "random" subset instead of all of them.
+task fetch_feeds_import: :environment do
+  Feeds::Import.call
 end
 
 # Temporary

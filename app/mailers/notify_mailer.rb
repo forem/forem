@@ -116,12 +116,11 @@ class NotifyMailer < ApplicationMailer
   end
 
   def export_email
-    @user = params[:user]
     attachment = params[:attachment]
 
     export_filename = "devto-export-#{Date.current.iso8601}.zip"
     attachments[export_filename] = attachment
-    mail(to: @user.email, subject: "The export of your content is ready")
+    mail(to: params[:email], subject: "The export of your content is ready")
   end
 
   def tag_moderator_confirmation_email
@@ -136,7 +135,7 @@ class NotifyMailer < ApplicationMailer
   def trusted_role_email
     @user = params[:user]
 
-    subject = "You've been upgraded to #{SiteConfig.community_name} Community mod status!"
+    subject = "Congrats! You're now a \"trusted\" user on #{SiteConfig.community_name}!"
     mail(to: @user.email, subject: subject)
   end
 

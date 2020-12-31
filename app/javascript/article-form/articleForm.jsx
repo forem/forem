@@ -2,18 +2,12 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
+import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { submitArticle, previewArticle } from './actions';
 
 /* global activateRunkitTags */
 
-import {
-  EditorActions,
-  Form,
-  Header,
-  Help,
-  Preview,
-  KeyboardShortcutsHandler,
-} from './components';
+import { EditorActions, Form, Header, Help, Preview } from './components';
 
 /*
   Although the state fields: id, description, canonicalUrl, series, allSeries and
@@ -361,7 +355,11 @@ export default class ArticleForm extends Component {
           submitting={submitting}
         />
 
-        <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />
+        <KeyboardShortcuts
+          shortcuts={{
+            'ctrl+shift+KeyP': this.fetchPreview,
+          }}
+        />
       </form>
     );
   }

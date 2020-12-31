@@ -44,7 +44,7 @@ function initializePodcastPlayback() {
       window.name = Math.random();
     }
     return {
-      html: document.getElementById('audiocontent').innerHTML,
+      html: getById('audiocontent').innerHTML,
       currentTime: 0,
       playing: false,
       muted: false,
@@ -160,7 +160,7 @@ function initializePodcastPlayback() {
     if (Runtime.podcastMessage) {
       Runtime.podcastMessage({
         action: 'load',
-        url: audio.querySelector('source').src,
+        url: audio.getElementsByTagName('source')[0].src,
       });
     } else {
       audio.load();
@@ -233,9 +233,9 @@ function initializePodcastPlayback() {
       }
     } else if (
       message === 'initializing...' &&
-      document.querySelector('.status-message')
+      getByClass('status-message')[0]
     ) {
-      document.querySelector('.status-message').innerHTML = message;
+      getByClass('status-message')[0].innerHTML = message;
     }
   }
 
@@ -256,7 +256,7 @@ function initializePodcastPlayback() {
       if (Runtime.podcastMessage) {
         Runtime.podcastMessage({
           action: 'play',
-          url: audio.querySelector('source').src,
+          url: audio.getElementsByTagName('source')[0].src,
           seconds: currentState.currentTime.toString(),
         });
         setPlaying(true);
@@ -330,26 +330,30 @@ function initializePodcastPlayback() {
     pausePodcastBar();
   }
 
-  function playPause(audio) {
+  function ahoyMessage(action) {
     window.activeEpisode = audio.getAttribute('data-episode');
     window.activePodcast = audio.getAttribute('data-podcast');
 
-    var currentState = currentAudioState();
     var properties = {
+      action: action,
       episode: window.activeEpisode,
       podcast: window.activePodcast,
       deviceType: deviceType,
     };
+    ahoy.track('Podcast Player Streaming', properties);
+  }
+
+  function playPause(audio) {
+    var currentState = currentAudioState();
     if (!currentState.playing) {
-      properties.action = 'play';
+      ahoyMessage('play');
       changeStatusMessage('initializing...');
       startAudioPlayback(audio);
     } else {
-      properties.action = 'pause';
+      ahoyMessage('pause');
       pauseAudioPlayback(audio);
       changeStatusMessage(null);
     }
-    ahoy.track('Podcast Player Streaming', properties);
   }
 
   function muteUnmute(audio) {
@@ -478,16 +482,20 @@ function initializePodcastPlayback() {
     }
 
     var currentState = currentAudioState();
-    if (message.action === 'tick') {
-      currentState.currentTime = message.currentTime;
-      currentState.duration = message.duration;
-      updateProgress(currentState.currentTime, currentState.duration, 100);
-    } else if (message.action === 'init') {
-      getById('time').innerHTML = 'initializing...';
-      currentState.currentTime = 0;
-    } else {
-      console.log('Unrecognized podcast message: ', message); // eslint-disable-line no-console
+    switch (message.action) {
+      case 'init':
+        getById('time').innerHTML = 'initializing...';
+        currentState.currentTime = 0;
+        break;
+      case 'tick':
+        currentState.currentTime = message.currentTime;
+        currentState.duration = message.duration;
+        updateProgress(currentState.currentTime, currentState.duration, 100);
+        break;
+      default:
+        console.log('Unrecognized podcast message: ', message); // eslint-disable-line no-console
     }
+
     saveMediaState(currentState);
   }
 

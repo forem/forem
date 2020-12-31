@@ -13,7 +13,7 @@ RSpec.describe "Shells", type: :request do
     end
 
     it "renders normal response even if site config is private" do
-      SiteConfig.public = false
+      allow(SiteConfig).to receive(:public).and_return(false)
       get "/shell_top"
       expect(response.body).to include("user-signed-in")
     end
@@ -31,7 +31,7 @@ RSpec.describe "Shells", type: :request do
     end
 
     it "renders normal response even if site config is private" do
-      SiteConfig.public = false
+      allow(SiteConfig).to receive(:public).and_return(false)
       get "/shell_bottom"
       expect(response.body).to include("footer-container")
     end

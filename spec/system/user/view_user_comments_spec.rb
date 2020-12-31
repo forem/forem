@@ -16,8 +16,8 @@ RSpec.describe "User comments", type: :system do
     end
 
     it "shows user's comments", js: true, stub_elasticsearch: true do
-      within("#substories div.index-comments") do
-        expect(page).to have_content("All 2 Comments")
+      within("#substories div.profile-comment-card") do
+        expect(page).to have_content("All 2 comments")
         expect(page).to have_link(nil, href: comment.path)
         expect(page).to have_link(nil, href: comment2.path)
       end

@@ -40,6 +40,12 @@ class PagesController < ApplicationController
     set_surrogate_key_header "community_moderation_page"
   end
 
+  def contact
+    @page = Page.find_by(slug: "contact")
+    render :show if @page
+    set_surrogate_key_header "contact"
+  end
+
   def faq
     @page = Page.find_by(slug: "faq")
     render :show if @page

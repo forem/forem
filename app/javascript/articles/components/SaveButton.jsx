@@ -37,6 +37,7 @@ export class SaveButton extends Component {
       return (
         <button
           type="button"
+          id={`article-save-button-${article.id}`}
           className={`crayons-btn crayons-btn--s ${
             isBookmarked ? 'crayons-btn--ghost' : 'crayons-btn--secondary'
           }`}

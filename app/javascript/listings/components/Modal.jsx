@@ -34,6 +34,7 @@ const Modal = ({
     <div
       role="dialog"
       aria-modal="true"
+      aria-label="listing modal"
       id="single-listing-container__inner"
       className="single-listing-container__inner crayons-modal__box"
     >

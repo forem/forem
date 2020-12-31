@@ -1,11 +1,12 @@
 language: ruby
 cache:
+  bundler: true
+  npm: true
   directories:
-    - vendor/bundle
-    - node_modules
     - $HOME/.nvm
+    - ~/.cache # cache folder with Cypress binary
 rvm:
-  - 2.7.1
+  - 2.7.2
 addons:
   postgresql: '10' # Travis does not work out of the box with Postgres 11 yet
   chrome: 'stable'
@@ -13,6 +14,8 @@ addons:
     paths:
       - $(ls tmp/screenshots/*.png | tr "\n" ":")
       - $(ls tmp/csvs/*.csv | tr "\n" ":")
+      - $(ls cypress/screenshots/*.* | tr "\n" ":")
+      - $(ls cypress/videos/*.* | tr "\n" ":")
     debug: true
 services:
   - redis
@@ -32,6 +35,8 @@ env:
     - KNAPSACK_PRO_LOG_LEVEL=info
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
+    - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
+    - ELASTICSEARCH_URL="http://localhost:9200"
   jobs:
     - KNAPSACK_PRO_CI_NODE_INDEX=0
     - KNAPSACK_PRO_CI_NODE_INDEX=1
@@ -58,14 +63,21 @@ script:
   - bin/ci-bundle
   - yarn install --frozen-lockfile
   - bundle exec rails db:create
-  - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
+  - bundle exec rails assets:precompile
   - './cc-test-reporter before-build'
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
+  - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
+  - yarn e2e:ci
+  # Dropping and recreating the database for Capybara/rspecs
+  - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
+  - bundle exec rails db:drop
+  - bundle exec rails db:create
+  - bundle exec rails db:schema:load
   - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 after_script:
@@ -83,6 +95,7 @@ notifications:
 jobs:
   include:
     - stage: Deploy
+      name: Deploy DEV
       if: type != pull_request
       script: skip
       after_script: skip
@@ -91,5 +104,13 @@ jobs:
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
           master: practicaldev
-        on:
-          condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]
+    - stage: Deploy
+      name: Deploy BenHalpern
+      if: type != pull_request
+      script: skip
+      after_script: skip
+      deploy:
+        provider: heroku
+        api_key: '$HEROKU_AUTH_TOKEN'
+        app:
+          master: benhalpern-community

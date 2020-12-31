@@ -15,10 +15,21 @@ module Admin
       User.invite!(email: email,
                    name: name,
                    username: username,
-                   remote_profile_image_url: Users::ProfileImageGenerator.call,
+                   remote_profile_image_url: ::Users::ProfileImageGenerator.call,
                    saw_onboarding: false,
                    editor_version: :v2,
                    registered: false)
+      flash[:success] = "The invite has been sent to the user's email."
+      redirect_to admin_invitations_path
+    end
+
+    def destroy
+      @invitation = User.where(registered: false).find(params[:id])
+      if @invitation.destroy
+        flash[:success] = "The invitation has been deleted."
+      else
+        flash[:danger] = @invitation.errors_as_sentence
+      end
       redirect_to admin_invitations_path
     end
   end

@@ -245,6 +245,26 @@ var instantClick
     getImageForLink(a);
   }
 
+  // If a link is focused, it is preloaded just like on mousover.
+  // It also covers the issue where a user needs to press <return>
+  // twice in order to follow a focused link.
+  function focusListener(e) {
+    var a = getLinkTarget(e.target)
+
+    if (!a || !isPreloadable(a)) {
+      return
+    }
+
+    if (!$delayBeforePreload) {
+      preload(a.href)
+    }
+    else {
+      $urlToPreload = a.href
+      $preloadTimer = setTimeout(preload, $delayBeforePreload)
+    }
+    getImageForLink(a);
+  }
+
   function clickListener(e) {
     try{
       var a = getLinkTarget(e.target)
@@ -368,10 +388,10 @@ var instantClick
     var docBody = document.body;
     if (docBody) {
       document.body.addEventListener('touchstart', touchstartListener, true)
+      document.body.addEventListener('focus', focusListener, true)
       if ($preloadOnMousedown) {
         document.body.addEventListener('mousedown', mousedownListener, true)
-      }
-      else {
+      } else {
         document.body.addEventListener('mouseover', mouseoverListener, true)
       }
       document.body.addEventListener('click', clickListener, true)

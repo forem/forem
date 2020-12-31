@@ -15,12 +15,12 @@ RSpec.describe ExportContentWorker, type: :worker do
     end
 
     it "calls the service" do
-      worker.perform(user.id)
+      worker.perform(user.id, user.email)
       expect(exporter_service).to have_received(:export).once
     end
 
     it "doesn't call the service if non existent user ID is given" do
-      worker.perform(9999)
+      worker.perform(9999, user.email)
       expect(exporter_service).not_to have_received(:export)
     end
   end

@@ -26,6 +26,13 @@ RSpec.describe "Articles", type: :request do
       expect { get "/feed/#{tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    it "does not contain image tag" do
+      create(:article, featured: true)
+
+      get feed_path
+      expect(response.body).not_to include("<image>")
+    end
+
     context "with caching headers" do
       before do
         create(:article, featured: true)
@@ -92,6 +99,14 @@ RSpec.describe "Articles", type: :request do
       it "contains the full user URL" do
         expect(response.body).to include("<link>#{URL.user(user)}</link>")
       end
+
+      it "contains a user composite profile image tag" do
+        expect(response.body).to include("<image>")
+        expect(response.body).to include("<url>#{user.profile_image_90}</url>")
+        expect(response.body).to include("<title>#{user.name} profile image</title>")
+        expect(response.body).to include("<link>#{URL.user(user)}</link>")
+        expect(response.body).to include("</image>")
+      end
     end
 
     context "when :username param is given and belongs to an organization" do
@@ -109,6 +124,14 @@ RSpec.describe "Articles", type: :request do
 
       it "contains the full organization URL" do
         expect(response.body).to include("<link>#{URL.organization(organization)}</link>")
+      end
+
+      it "contains an organization composite profile image tag" do
+        expect(response.body).to include("<image>")
+        expect(response.body).to include("<url>#{organization.profile_image_90}</url>")
+        expect(response.body).to include("<title>#{organization.name} profile image</title>")
+        expect(response.body).to include("<link>#{URL.user(organization)}</link>")
+        expect(response.body).to include("</image>")
       end
     end
 
@@ -168,6 +191,12 @@ RSpec.describe "Articles", type: :request do
         get tag_feed_path(tag.name)
 
         expect(response.body).to include("<link>#{URL.url}</link>")
+      end
+
+      it "does not contain image tag" do
+        get tag_feed_path(tag.name)
+
+        expect(response.body).not_to include("<image>")
       end
     end
 

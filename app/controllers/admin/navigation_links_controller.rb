@@ -1,5 +1,6 @@
 module Admin
   class NavigationLinksController < Admin::ApplicationController
+    after_action :bust_content_change_caches, only: %i[create update destroy]
     ALLOWED_PARAMS = %i[
       name url icon display_only_when_signed_in position
     ].freeze

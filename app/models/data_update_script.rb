@@ -12,7 +12,7 @@ class DataUpdateScript < ApplicationRecord
     def scripts_to_run
       insert_new_scripts
 
-      enqueued.where(id: ids).order(file_name: :asc)
+      enqueued.order(file_name: :asc)
     end
 
     # true if there are more files on disk or any scripts to run, false otherwise
@@ -29,7 +29,7 @@ class DataUpdateScript < ApplicationRecord
 
     def filenames
       Dir.glob("*.rb", base: DIRECTORY).map do |f|
-        Pathname.new(f).basename(".rb").to_s
+        File.basename(f, ".rb")
       end
     end
 

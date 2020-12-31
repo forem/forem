@@ -2,7 +2,7 @@
 
 .crayons-snackbar {
   position: fixed;
-  z-index: 9999; // todo: make z-index a variable..
+  z-index: var(--z-popover);
   left: var(--su-2);
   right: var(--su-2);
   bottom: var(--su-2);

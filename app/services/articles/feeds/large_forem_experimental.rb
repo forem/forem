@@ -36,10 +36,15 @@ module Articles
         articles
       end
 
-      # Timeframe values from Timeframer::DATETIMES
+      # Timeframe values from Timeframe::DATETIMES
       def top_articles_by_timeframe(timeframe:)
-        published_articles_by_tag.where("published_at > ?", Timeframer.new(timeframe).datetime)
+        published_articles_by_tag.where("published_at > ?", Timeframe.datetime(timeframe))
           .order(score: :desc).page(@page).per(@number_of_articles)
+      end
+
+      def default_home_feed(user_signed_in: false)
+        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
+        stories
       end
 
       def latest_feed
@@ -54,132 +59,15 @@ module Articles
         [featured_story, hot_stories]
       end
 
-      # Test variation: Base
-      def default_home_feed(user_signed_in: false)
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: user_signed_in, ranking: true)
-        stories
-      end
-
-      # Test variation: More random
-      def default_home_feed_with_more_randomness_experiment
-        @randomness = 7
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
-      end
-
-      # Test variation: tags make bigger impact
-      def more_tag_weight_experiment
-        @tag_weight = 2
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
-      end
-
-      def more_tag_weight_more_random_experiment
-        @tag_weight = 2
-        @randomness = 7
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
-      end
-
-      # Test variation: Base half the time, more random other half. Varies on impressions.
-      def mix_default_and_more_random_experiment
-        if rand(2) == 1
-          default_home_feed(user_signed_in: true)
-        else
-          default_home_feed_with_more_randomness_experiment
-        end
-      end
-
-      # Test variation: the more comments a post has, the higher it's rated!
-      def more_comments_experiment
-        @comment_weight = 2
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
-      end
-
-      # Test variation: the more comments a post has, the higher it's rated!
-      def more_comments_medium_weight_experiment
-        @comment_weight = 0.5
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
-      end
-
-      # Test variation: the more comments a post has, the higher it's rated!
-      def more_comments_minimal_weight_experiment
+      def more_comments_minimal_weight
         @comment_weight = 0.2
         _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
         stories
       end
 
-      def more_experience_level_weight_experiment
-        @experience_level_weight = 3
-        _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
-        stories
-      end
-
-      def mix_of_everything_experiment
-        case rand(12)
-        when 0
-          default_home_feed(user_signed_in: true)
-        when 1
-          default_home_feed_with_more_randomness_experiment
-        when 2
-          mix_default_and_more_random_experiment
-        when 3
-          more_tag_weight_experiment
-        when 4
-          more_tag_weight_more_random_experiment
-        when 5
-          more_comments_experiment
-        when 6
-          more_experience_level_weight_experiment
-        when 7
-          more_tag_weight_randomized_at_end_experiment
-        when 8
-          more_experience_level_weight_randomized_at_end_experiment
-        when 9
-          more_comments_randomized_at_end_experiment
-        when 10
-          more_comments_medium_weight_randomized_at_end_experiment
-        when 11
-          more_comments_minimal_weight_randomized_at_end_experiment
-        else
-          default_home_feed(user_signed_in: true)
-        end
-      end
-
-      # Randomized at end group for next three experiments
-      # Rather than randomizing *during* the ranking, rank solely by quality/match
-      # and randomize the top half of the ranked results.
-      # Resulting in more relevance and still more freshness.
-
-      def more_tag_weight_randomized_at_end_experiment
+      def more_comments_minimal_weight_randomized_at_end
         @randomness = 0
-        results = more_tag_weight_experiment
-        first_half(results).shuffle + last_half(results)
-      end
-
-      def more_experience_level_weight_randomized_at_end_experiment
-        @randomness = 0
-        results = more_experience_level_weight_experiment
-        first_half(results).shuffle + last_half(results)
-      end
-
-      def more_comments_randomized_at_end_experiment
-        @randomness = 0
-        results = more_comments_experiment
-        first_half(results).shuffle + last_half(results)
-      end
-
-      def more_comments_medium_weight_randomized_at_end_experiment
-        @randomness = 0
-        results = more_comments_medium_weight_experiment
-        first_half(results).shuffle + last_half(results)
-      end
-
-      def more_comments_minimal_weight_randomized_at_end_experiment
-        @randomness = 0
-        results = more_comments_minimal_weight_experiment
+        results = more_comments_minimal_weight
         first_half(results).shuffle + last_half(results)
       end
 
@@ -239,7 +127,7 @@ module Articles
 
       def globally_hot_articles(user_signed_in)
         hot_stories = published_articles_by_tag
-          .where("score > ? OR featured = ?", 7, true)
+          .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
           .order(hotness_score: :desc)
         featured_story = hot_stories.where.not(main_image: nil).first
         if user_signed_in

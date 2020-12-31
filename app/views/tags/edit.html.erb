@@ -1,7 +1,5 @@
 <% title "Edit #{@tag.name}" %>
 
-<%= javascript_packs_with_chunks_tag "colorPicker", defer: true %>
-
 <style>
   .widget header {
     color: <%= HexComparer.new([@tag.bg_color_hex || "#0000000", @tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
@@ -56,14 +54,12 @@
     <div class="tag-form-field">
       <%= label_tag :bg_color_hex %>
       <br>
-      <%= text_field_tag "tag[bg_color_hex]", @tag.bg_color_hex, placeholder: "Click for color picker", class: "tag-form-text-field color-picker" %>
-      <div class="color-palette"></div>
+      <%= color_field_tag "tag[bg_color_hex]", @tag.bg_color_hex, placeholder: "Click for color picker", class: "tag-form-text-field" %>
     </div>
     <div class="tag-form-field">
       <%= label_tag :text_color_hex %>
       <br>
-      <%= text_field_tag "tag[text_color_hex]", @tag.text_color_hex, placeholder: "Click for color picker", class: "tag-form-text-field color-picker" %>
-      <div class="color-palette"></div>
+      <%= color_field_tag "tag[text_color_hex]", @tag.text_color_hex, placeholder: "Click for color picker", class: "tag-form-text-field" %>
     </div>
     <div class="tag-form-field">
       <%= label_tag :short_summary %>
