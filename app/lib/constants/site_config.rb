@@ -45,10 +45,6 @@ module Constants
         description: "https://url.com/lander",
         placeholder: "URL campaign sidebar image will link to"
       },
-      collective_noun: {
-        description: "Used to describe your collective identity.",
-        placeholder: "Herd"
-      },
       community_copyright_start_year: {
         description: "Used to mark the year this forem was started.",
         placeholder: Time.zone.today.year.to_s
@@ -66,7 +62,7 @@ module Constants
         placeholder: "user"
       },
       community_name: {
-        description: "Primary name... e.g. DEV",
+        description: "Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.",
         placeholder: "New Forem"
       },
       credit_prices_in_cents: {
@@ -119,6 +115,26 @@ module Constants
         description:
           "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
         placeholder: ""
+      },
+      apple_client_id: {
+        description:
+          "The \"App Bundle\" code for the Authentication Service configured in the Apple Developer Portal",
+        placeholder: "com.example.app"
+      },
+      apple_team_id: {
+        description:
+          "The \"Team ID\" of your Apple Developer Account",
+        placeholder: ""
+      },
+      apple_key_id: {
+        description:
+          "The \"Key ID\" from the Authentication Service configured in the Apple Developer Portal",
+        placeholder: ""
+      },
+      apple_pem: {
+        description:
+          "The \"PEM\" key from the Authentication Service configured in the Apple Developer Portal",
+        placeholder: "-----BEGIN PRIVATE KEY-----\nMIGTAQrux...QPe8Yb\n-----END PRIVATE KEY-----\\n"
       },
       favicon_url: {
         description: "Used as the site favicon",

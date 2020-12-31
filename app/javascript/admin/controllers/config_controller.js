@@ -19,7 +19,6 @@ const emailAuthModalBody = `
 export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
-    'collectiveNoun',
     'configModalAnchor',
     'emailAuthSettingsBtn',
     'enabledIndicator',
