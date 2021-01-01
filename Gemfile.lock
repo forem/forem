@@ -80,8 +80,8 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
-    acts-as-taggable-on (6.5.0)
-      activerecord (>= 5.0, < 6.1)
+    acts-as-taggable-on (7.0.0)
+      activerecord (>= 5.0, < 6.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     ahoy_email (1.1.0)
@@ -827,7 +827,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_record_union (~> 1.3)
-  acts-as-taggable-on (~> 6.5)
+  acts-as-taggable-on (~> 7.0)
   acts_as_follower!
   addressable (~> 2.7)
   ahoy_email (~> 1.1)
