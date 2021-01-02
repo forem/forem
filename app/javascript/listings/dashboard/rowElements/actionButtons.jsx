@@ -6,27 +6,14 @@ const ActionButtons = ({ isDraft, editUrl, deleteConfirmUrl }) => {
   return (
     <div className="listing-row-actions">
       {isDraft && (
-        <Button
-          tagName="a"
-          url={editUrl}
-          className="dashboard-listing-edit-button"
-        >
+        <Button tagName="a" url={editUrl}>
           View draft
         </Button>
       )}
-      <Button
-        tagName="a"
-        url={editUrl}
-        className="dashboard-listing-edit-button"
-      >
+      <Button tagName="a" url={editUrl}>
         Edit
       </Button>
-      <Button
-        variant="danger"
-        tagName="a"
-        url={deleteConfirmUrl}
-        className="dashboard-listing-delete-button"
-      >
+      <Button variant="danger" tagName="a" url={deleteConfirmUrl}>
         Delete
       </Button>
     </div>
