@@ -30,6 +30,10 @@ Bundler/OrderedGems:
 
 #################### Layout ###########################
 
+Lint/AmbiguousAssignment:
+  Description: 'Checks for mistyped shorthand assignments.'
+  Enabled: true
+
 Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
   StyleGuide: '#consistent-classes'
@@ -123,6 +127,11 @@ Layout/MultilineMethodCallIndentation:
 
 Layout/SpaceAroundMethodCallOperator:
   Description: 'Checks method call operators to not have spaces around them.'
+  Enabled: true
+
+Layout/SpaceBeforeBrackets:
+  Description: 'Checks for receiver with a space before the opening brackets.'
+  StyleGuide: '#space-in-brackets-access'
   Enabled: true
 
 #################### Lint ##################################
@@ -394,6 +403,12 @@ Style/ExplicitBlockArgument:
 Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   Enabled: false
+
+Style/HashExcept:
+  Description: >-
+                 Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
+                 that can be replaced with `Hash#except` method.
+  Enabled: true
 
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
