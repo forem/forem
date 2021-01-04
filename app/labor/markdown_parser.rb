@@ -33,7 +33,7 @@ class MarkdownParser
       html = e.message
     end
     html = Html::RemoveNestedLinebreakInList.call(html)
-    html = prefix_all_images(html)
+    html = Html::PrefixAllImages.call(html)
     html = wrap_all_images_in_links(html)
     html = add_control_class_to_codeblock(html)
     html = add_control_panel_to_codeblock(html)
