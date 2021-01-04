@@ -19,7 +19,8 @@ class Profile < ApplicationRecord
     display_looking_for_work_on_profile
     brand_color1
     brand_color2
-    looking_for_work].freeze
+    looking_for_work
+  ].freeze
 
   SPECIAL_SOCIAL_LINK_ATTRIBUTES = %w[
     twitter_url
