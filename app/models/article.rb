@@ -610,13 +610,8 @@ class Article < ApplicationRecord
   end
 
   def update_cached_user
-    if organization
-      self.cached_organization = Articles::CachedEntity.from_object(organization)
-    end
-
-    return unless user
-
-    self.cached_user = Articles::CachedEntity.from_object(user)
+    self.cached_organization = organization ? Articles::CachedEntity.from_object(organization) : nil
+    self.cached_user = user ? Articles::CachedEntity.from_object(user) : nil
   end
 
   def set_all_dates
