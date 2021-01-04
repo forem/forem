@@ -165,7 +165,8 @@
   right: 0;
   bottom: 0;
   transform: translateX(0);
-  transition: transform 0.35s linear;
+  transition: transform 0.22s linear;
+  z-index: var(--z-elevate);
 
   @media screen and (min-width: $breakpoint-m) {
     position: inherit;
@@ -174,6 +175,7 @@
 
 .chat__activechat--hidden {
   transform: translateX(100%);
+  transition: transform 0.18s linear;
 
   @media screen and (min-width: $breakpoint-m) {
     transform: translateX(0);
