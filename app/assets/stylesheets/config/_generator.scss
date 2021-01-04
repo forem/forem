@@ -728,5 +728,12 @@
     ),
     (),
     true
+  ),
+  (
+    'resize',
+    'resize',
+    ('x': horizontal, 'y': vertical, 'none': none),
+    (),
+    false
   )
 );
