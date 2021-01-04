@@ -32,7 +32,7 @@ class MarkdownParser
     rescue Liquid::SyntaxError => e
       html = e.message
     end
-    html = remove_nested_linebreak_in_list(html)
+    html = Html::RemoveNestedLinebreakInList.call(html)
     html = prefix_all_images(html)
     html = wrap_all_images_in_links(html)
     html = add_control_class_to_codeblock(html)
