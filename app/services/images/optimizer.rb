@@ -34,6 +34,7 @@ module Images
     DEFAULT_IMGPROXY_OPTIONS = {
       height: nil,
       width: nil,
+      max_bytes: 500_000, # Keep everything under half of one MB.
       resizing_type: nil
     }.freeze
 
