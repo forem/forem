@@ -42,6 +42,7 @@ module SiteConfigs
 
       @success = true
       upsert_configs
+      after_upsert_tasks
       self
     end
 
@@ -61,6 +62,10 @@ module SiteConfigs
           SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
         end
       end
+    end
+
+    def after_upsert_tasks
+      create_tags_if_not_created
     end
 
     def clean_up_params
@@ -110,6 +115,14 @@ module SiteConfigs
 
     def provider_keys_missing(entry)
       SiteConfig.public_send("#{entry}_key").blank? || SiteConfig.public_send("#{entry}_secret").blank?
+    end
+
+    def create_tags_if_not_created
+      # Bulk create tags if they should exist.
+      # This is an acts-as-taggable-on as used on saving of an Article, etc.
+      return unless (@configs.keys & %w[suggested_tags sidebar_tags]).any?
+
+      Tag.find_or_create_all_with_like_by_name(SiteConfig.suggested_tags + SiteConfig.sidebar_tags)
     end
 
     # Validations

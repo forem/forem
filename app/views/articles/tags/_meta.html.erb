@@ -12,7 +12,7 @@
 <meta property="og:url" content="<%= tag_url(@tag_model, @page) %>" />
 <meta property="og:title" content="<%= title_with_timeframe(page_title: @tag.capitalize, timeframe: params[:timeframe]) %>" />
 <meta property="og:description" content="<%= @tag.capitalize %> content on <%= community_name %>" />
-<meta property="og:site_name" content="<%= community_qualified_name %>" />
+<meta property="og:site_name" content="<%= community_name %>" />
 
 <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
 <meta name="twitter:creator" content="@<%= @tag.capitalize %>">

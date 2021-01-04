@@ -4,11 +4,11 @@ module DataUpdateScripts
       return unless ENV["FOREM_CONTEXT"] == "forem_cloud"
 
       User.find_each do |user|
-        CacheBuster.bust_user(user)
+        EdgeCache::BustUser.call(user)
       end
 
       Organization.find_each do |organization|
-        CacheBuster.bust_organization(organization, organization.slug)
+        EdgeCache::BustOrganization.call(organization, organization.slug)
       end
 
       Article.find_each(&:save)
