@@ -169,7 +169,7 @@ module Articles
             .where("published_at > ?", start_time)
             .page(@page).per(@number_of_articles)
             .order(score: :desc)
-        when "top_articles_since_last_pageview_7_days_max" # Top articles since last page view (max 3 days)
+        when "top_articles_since_last_pageview_7_days_max" # Top articles since last page view (max 7 days)
           start_time = [(@user.page_views.last&.created_at || Time.current) - 12.hours, 7.days.ago].max
           articles = Article.published.limited_column_select.includes(top_comments: :user)
             .where("published_at > ?", start_time)
