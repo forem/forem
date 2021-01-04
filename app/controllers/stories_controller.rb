@@ -404,7 +404,7 @@ class StoriesController < ApplicationController
       "publisher": {
         "@context": "http://schema.org",
         "@type": "Organization",
-        "name": "#{SiteConfig.community_name} Community",
+        "name": SiteConfig.community_name.to_s,
         "logo": {
           "@context": "http://schema.org",
           "@type": "ImageObject",

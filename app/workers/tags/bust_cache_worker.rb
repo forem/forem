@@ -4,7 +4,7 @@ module Tags
       tag = Tag.find_by(name: tag_name)
       return unless tag
 
-      CacheBuster.bust_tag(tag)
+      EdgeCache::BustTag.call(tag)
     end
   end
 end

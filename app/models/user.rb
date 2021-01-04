@@ -489,8 +489,8 @@ class User < ApplicationRecord
   def resave_articles
     articles.find_each do |article|
       if article.path
-        CacheBuster.bust(article.path)
-        CacheBuster.bust("#{article.path}?i=i")
+        EdgeCache::Bust.call(article.path)
+        EdgeCache::Bust.call("#{article.path}?i=i")
       end
       article.save
     end
@@ -654,7 +654,7 @@ class User < ApplicationRecord
     return unless persisted?
 
     index_to_elasticsearch_inline
-  rescue => e
+  rescue StandardError => e
     Honeybadger.notify(e, context: { user_id: id })
   end
 

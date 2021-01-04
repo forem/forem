@@ -9,13 +9,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    ignore:
-      # Ignoring simplecov 0.18+ temporarily, until CodeClimate's test reporter is
-      # upgraded to work with it
-      # see <https://github.com/codeclimate/test-reporter/issues/413>
-      # and <https://rubygems.org/gems/simplecov>
-      - dependency-name: "simplecov"
-        versions: [">= 0.18"]
 
   # Set update schedule for Yarn/NPM
   - package-ecosystem: "npm"

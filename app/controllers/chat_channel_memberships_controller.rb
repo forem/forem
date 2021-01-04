@@ -174,7 +174,7 @@ class ChatChannelMembershipsController < ApplicationController
     invite_cache_key = "chat-channel-invite-#{@chat_channel.id}"
     invitation_slug = Rails.cache.read(invite_cache_key)
     existing_membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: @chat_channel.id)
-    redirect_to "/connect/#{@chat_channel.slug}" if existing_membership && existing_membership.status == "active"
+    redirect_to URI.parse("/connect/#{@chat_channel.slug}").path if existing_membership&.status == "active"
     @link_expired = true if invitation_slug != params[:invitation_slug]
   end
 

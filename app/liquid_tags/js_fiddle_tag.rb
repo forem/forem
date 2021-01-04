@@ -28,7 +28,7 @@ class JsFiddleTag < LiquidTagBase
 
   def parse_options(input)
     stripped_link = ActionController::Base.helpers.strip_tags(input)
-    _, *options = stripped_link.split(" ")
+    _, *options = stripped_link.split
 
     # Validation
     validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
@@ -39,7 +39,7 @@ class JsFiddleTag < LiquidTagBase
 
   def parse_link(link)
     stripped_link = ActionController::Base.helpers.strip_tags(link)
-    the_link = stripped_link.split(" ").first
+    the_link = stripped_link.split.first
     raise StandardError, "Invalid JSFiddle URL" unless valid_link?(the_link)
 
     the_link
