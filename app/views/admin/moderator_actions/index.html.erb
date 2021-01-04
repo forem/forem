@@ -23,10 +23,10 @@
   <tbody class="crayons-card">
     <% @moderator_actions.each do |action| %>
       <tr>
-        <td><%= action.id %></td>
+        <td class="whitespace-nowrap"><%= action.id %></td>
         <td><%= link_to(action.user.username, admin_user_path(action.user_id)) if action.user %></td>
         <td><%= "#{action.data['action'].humanize} #{action.data['controller'].humanize.singularize.titleize}" if action.data.present? %></td>
-        <td><%= action.data %></td>
+        <td class="mod-actions__data"><%= action.data %></td>
         <td><%= action.created_at %></td>
       </tr>
     <% end %>
