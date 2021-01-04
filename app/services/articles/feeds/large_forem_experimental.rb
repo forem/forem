@@ -127,7 +127,7 @@ module Articles
 
       def globally_hot_articles(user_signed_in)
         if user_signed_in
-          hot_stories = experimentalal_hot_story_grab
+          hot_stories = experimental_hot_story_grab
           featured_story = hot_stories.where.not(main_image: nil).first
           new_stories = Article.published
             .where("score > ?", -15)
@@ -147,7 +147,7 @@ module Articles
 
       # Disable complexity cop to allow for variant-driven method
       # rubocop:disable Metrics/CyclomaticComplexity
-      def experimentalal_hot_story_grab
+      def experimental_hot_story_grab
         test_variant = @user ? field_test(:feed_top_articles_query, participant: @user) : "base"
         case test_variant
         when "base_with_more_articles" # equivalent to current base but with higher "number of articles"
@@ -169,13 +169,13 @@ module Articles
             .where("published_at > ?", start_time)
             .page(@page).per(@number_of_articles)
             .order(score: :desc)
-        when "top_articles_since_last_pageview_7_days_max" # Top articles since last page view (max 3 days)
+        when "top_articles_since_last_pageview_7_days_max" # Top articles since last page view (max 7 days)
           start_time = [(@user.page_views.last&.created_at || 7.days.ago) - 12.hours, 7.days.ago].max
           articles = Article.published.limited_column_select.includes(top_comments: :user)
             .where("published_at > ?", start_time)
             .page(@page).per(@number_of_articles)
             .order(score: :desc)
-        when "combination_only_tags_followed_and_top_max_7_days" # Top articles since last page view (max 3 days)
+        when "combination_only_tags_followed_and_top_max_7_days" # Top articles since last page view (max 7 days)
           start_time = [(@user.page_views.last&.created_at || 7.days.ago) - 12.hours, 7.days.ago].max
           followed_tags = @user.cached_followed_tag_names
           articles = Article.published.limited_column_select.includes(top_comments: :user)
