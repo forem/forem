@@ -2,7 +2,7 @@ require "rails_helper"
 
 # rubocop:disable Rails/DynamicFindBy
 
-RSpec.describe EmojiConverter, type: :service do
+RSpec.describe Html::ParseEmoji, type: :service do
   describe "#call" do
     it "converts emoji names wrapped in colons into unicode" do
       joy_emoji_unicode = Emoji.find_by_alias("joy").raw
