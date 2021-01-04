@@ -86,6 +86,9 @@ module Authentication
     end
 
     def proper_user(identity)
+      Rails.logger.debug "PROPER USER: #{current_user.inspect}"
+      Rails.logger.debug "IDENTITY: #{identity.inspect}"
+      Rails.logger.debug "--------" * 10
       if current_user
         current_user
       elsif identity.user
