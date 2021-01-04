@@ -1,4 +1,4 @@
-FROM quay.io/forem/ruby:2.7.2 as builder
+FROM quay.io/forem/ruby:3.0.0 as builder
 
 USER root
 
@@ -125,4 +125,3 @@ RUN bundle config --local build.sassc --disable-march-tune-native && \
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
-
