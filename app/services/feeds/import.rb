@@ -1,12 +1,13 @@
 module Feeds
   class Import
-    def self.call(users: nil)
-      new(users: users).call
+    def self.call(users: nil, earlier_than: nil)
+      new(users: users, earlier_than: earlier_than).call
     end
 
-    def initialize(users: nil)
+    def initialize(users: nil, earlier_than: nil)
       # using nil here to avoid an unnecessary table count to check presence
       @users = users || User.with_feed
+      @earlier_than = earlier_than
 
       # NOTE: should these be configurable? Currently they are the result of empiric
       # tests trying to find a balance between memory occupation and speed
@@ -40,6 +41,9 @@ module Feeds
         total_articles_count += articles.length
 
         articles.each { |article| Slack::Messengers::ArticleFetchedFeed.call(article: article) }
+
+        # we use `feed_fetched_at` to mark the last time a particular user's feed has been fetched, parsed and imported
+        batch_of_users.update_all(feed_fetched_at: Time.current)
       end
 
       DatadogStatsClient.count("feeds::import::articles.count", total_articles_count)
@@ -48,7 +52,15 @@ module Feeds
 
     private
 
-    attr_reader :users, :users_batch_size, :num_fetchers, :num_parsers
+    attr_reader :earlier_than, :users_batch_size, :num_fetchers, :num_parsers
+
+    def users
+      return @users unless earlier_than
+
+      # Filtering users whose feed hasn't been processed in the last `earlier_than` time span.
+      # New users + any user whose feed was processed earlier than the given time
+      @users.where(feed_fetched_at: nil).or(@users.where(feed_fetched_at: ..earlier_than))
+    end
 
     # TODO: put this in separate service object
     def fetch_feeds(batch_of_users)
@@ -78,8 +90,6 @@ module Feeds
 
         next
       end
-
-      batch_of_users.update_all(feed_fetched_at: Time.current)
 
       result.compact.to_h
     end
