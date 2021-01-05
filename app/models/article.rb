@@ -440,7 +440,7 @@ class Article < ApplicationRecord
   def detect_human_language
     return if language.present?
 
-    update_column(:language, LanguageDetector.new(self).detect)
+    update_column(:language, Articles::DetectLanguage.call(self))
   end
 
   def async_score_calc
