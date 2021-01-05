@@ -243,9 +243,10 @@ Rails.application.routes.draw do
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
     resources :followed_articles, only: [:index]
-    resources :follows, only: %i[show create update] do
+    resources :follows, only: %i[show create] do
       collection do
         get "/bulk_show", to: "follows#bulk_show"
+        patch "/bulk_update", to: "follows#bulk_update"
       end
     end
     resources :image_uploads, only: [:create]
