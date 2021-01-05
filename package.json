@@ -101,7 +101,7 @@
     "@storybook/addons": "^6.1.11",
     "@storybook/preact": "^6.1.11",
     "@testing-library/cypress": "^7.0.3",
-    "@testing-library/dom": "^7.29.0",
+    "@testing-library/dom": "^7.29.1",
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/preact": "^2.0.1",
     "@testing-library/preact-hooks": "^1.1.0",
