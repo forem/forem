@@ -89,7 +89,7 @@
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
     "@knapsack-pro/cypress": "^4.2.0",
-    "@stoplight/spectral": "5.7.2",
+    "@stoplight/spectral": "5.8.0",
     "@storybook/addon-a11y": "^6.1.11",
     "@storybook/addon-actions": "^6.1.11",
     "@storybook/addon-docs": "^6.1.11",
