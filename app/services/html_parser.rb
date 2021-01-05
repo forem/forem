@@ -1,16 +1,37 @@
-module CodeBlockParser
+class HtmlParser
+  # Each of the instance methods should return self to support chaining of
+  # methods
+  # For example:
+  #  HtmlParser.
+  #    new(html).
+  #    remove_nested_linebreak_in_list.
+  #    prefix_all_images.
+  #    wrap_all_images_in_links.
+  #    html
+
   include InlineSvg::ActionView::Helpers
   include ApplicationHelper
 
-  def remove_nested_linebreak_in_list(html)
-    html_doc = Nokogiri::HTML(html)
-    html_doc.xpath("//*[self::ul or self::ol or self::li]/br").each(&:remove)
-    html_doc.to_html
+  RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
+
+  attr_reader :html
+
+  def initialize(html)
+    @html = html
   end
 
-  def prefix_all_images(html, width = 880)
+  def remove_nested_linebreak_in_list
+    html_doc = Nokogiri::HTML(@html)
+    html_doc.xpath("//*[self::ul or self::ol or self::li]/br").each(&:remove)
+    @html = html_doc.to_html
+
+    self
+  end
+
+  def prefix_all_images(width = 880)
     # wrap with Cloudinary or allow if from giphy or githubusercontent.com
-    doc = Nokogiri::HTML.fragment(html)
+    doc = Nokogiri::HTML.fragment(@html)
+
     doc.css("img").each do |img|
       src = img.attr("src")
       next unless src
@@ -24,43 +45,58 @@ module CodeBlockParser
                      img_of_size(src, width)
                    end
     end
-    doc.to_html
+
+    @html = doc.to_html
+
+    self
   end
 
-  def wrap_all_images_in_links(html)
-    doc = Nokogiri::HTML.fragment(html)
+  def wrap_all_images_in_links
+    doc = Nokogiri::HTML.fragment(@html)
+
     doc.search("p img").each do |image|
       next if image.parent.name == "a"
 
       image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>")
     end
-    doc.to_html
+
+    @html = doc.to_html
+
+    self
   end
 
-  def add_control_class_to_codeblock(html)
-    doc = Nokogiri::HTML.fragment(html)
+  def add_control_class_to_codeblock
+    doc = Nokogiri::HTML.fragment(@html)
+
     doc.search("div.highlight").each do |codeblock|
       codeblock.add_class("js-code-highlight")
     end
-    doc.to_html
+
+    @html = doc.to_html
+
+    self
   end
 
-  def add_control_panel_to_codeblock(html)
-    doc = Nokogiri::HTML.fragment(html)
+  def add_control_panel_to_codeblock
+    doc = Nokogiri::HTML.fragment(@html)
+
     doc.search("div.highlight").each do |codeblock|
       codeblock.add_child('<div class="highlight__panel js-actions-panel"></div>')
     end
-    doc.to_html
+
+    @html = doc.to_html
+
+    self
   end
 
-  def add_fullscreen_button_to_panel(html)
+  def add_fullscreen_button_to_panel
     on_title = "Enter fullscreen mode"
     on_cls = "highlight-action highlight-action--fullscreen-on"
     icon_fullscreen_on = inline_svg_tag("fullscreen-on.svg", class: on_cls, title: on_title)
     off_title = "Exit fullscreen mode"
     off_cls = "highlight-action highlight-action--fullscreen-off"
     icon_fullscreen_off = inline_svg_tag("fullscreen-off.svg", class: off_cls, title: off_title)
-    doc = Nokogiri::HTML.fragment(html)
+    doc = Nokogiri::HTML.fragment(@html)
     doc.search("div.highlight__panel").each do |codeblock|
       fullscreen_action = <<~HTML
         <div class="highlight__panel-action js-fullscreen-code-action">
@@ -71,40 +107,59 @@ module CodeBlockParser
 
       codeblock.add_child(fullscreen_action)
     end
-    doc.to_html
+
+    @html = doc.to_html
+
+    self
   end
 
-  def wrap_all_tables(html)
-    doc = Nokogiri::HTML.fragment(html)
+  def wrap_all_tables
+    doc = Nokogiri::HTML.fragment(@html)
     doc.search("table").each { |table| table.swap("<div class='table-wrapper-paragraph'>#{table}</div>") }
-    doc.to_html
+    @html = doc.to_html
+
+    self
   end
 
-  def remove_empty_paragraphs(html)
-    doc = Nokogiri::HTML.fragment(html)
+  def remove_empty_paragraphs
+    doc = Nokogiri::HTML.fragment(@html)
     doc.css("p").select { |paragraph| all_children_are_blank?(paragraph) }.each(&:remove)
-    doc.to_html
+    @html = doc.to_html
+
+    self
   end
 
-  def escape_colon_emojis_in_codeblock(html)
-    html_doc = Nokogiri::HTML.fragment(html)
+  def escape_colon_emojis_in_codeblock
+    html_doc = Nokogiri::HTML.fragment(@html)
 
     html_doc.children.each do |el|
       next if el.name == "code"
 
       if el.search("code").empty?
+<<<<<<< HEAD:app/labor/code_block_parser.rb
         el.swap(Html::ParseEmoji.call(el.to_html)) if el.parent.present?
+=======
+        parsed_html = HtmlParser.new(el.to_html).parse_emojis.html
+        el.swap(parsed_html)
+>>>>>>> 3be00ea4b... Major refactor :):app/services/html_parser.rb
       else
-        el.children = escape_colon_emojis_in_codeblock(el.children.to_html)
+        el.children = self.class.new(el.children.to_html)
+          .escape_colon_emojis_in_codeblock
+          .html
       end
     end
-    html_doc.to_html
+
+    @html = html_doc.to_html
+
+    self
   end
 
-  def unescape_raw_tag_in_codeblocks(html)
-    html.gsub!("{----% raw %----}", "{% raw %}")
-    html.gsub!("{----% endraw %----}", "{% endraw %}")
-    html_doc = Nokogiri::HTML(html)
+  def unescape_raw_tag_in_codeblocks
+    return self if @html.blank?
+
+    @html.gsub!("{----% raw %----}", "{% raw %}")
+    @html.gsub!("{----% endraw %----}", "{% endraw %}")
+    html_doc = Nokogiri::HTML(@html)
     html_doc.xpath("//body/div/pre/code").each do |codeblock|
       next unless codeblock.content.include?("{----% raw %----}") || codeblock.content.include?("{----% endraw %----}")
 
@@ -116,15 +171,19 @@ module CodeBlockParser
         codeblock.children[i].content = codeblock.children[i].content.delete("----")
       end
     end
-    if html_doc.at_css("body")
-      html_doc.at_css("body").inner_html
-    else
-      html_doc.to_html
-    end
+
+    @html =
+      if html_doc.at_css("body")
+        html_doc.at_css("body").inner_html
+      else
+        html_doc.to_html
+      end
+
+    self
   end
 
-  def wrap_all_figures_with_tags(html)
-    html_doc = Nokogiri::HTML(html)
+  def wrap_all_figures_with_tags
+    html_doc = Nokogiri::HTML(@html)
 
     html_doc.xpath("//figcaption").each do |caption|
       next if caption.parent.name == "figure"
@@ -134,15 +193,19 @@ module CodeBlockParser
       prev = caption.previous_element
       prev.replace(fig) << prev << caption
     end
-    if html_doc.at_css("body")
-      html_doc.at_css("body").inner_html
-    else
-      html_doc.to_html
-    end
+
+    @html =
+      if html_doc.at_css("body")
+        html_doc.at_css("body").inner_html
+      else
+        html_doc.to_html
+      end
+
+    self
   end
 
-  def wrap_mentions_with_links!(html)
-    html_doc = Nokogiri::HTML(html)
+  def wrap_mentions_with_links
+    html_doc = Nokogiri::HTML(@html)
 
     # looks for nodes that isn't <code>, <a>, and contains "@"
     targets = html_doc.xpath('//html/body/*[not (self::code) and not(self::a) and contains(., "@")]').to_a
@@ -161,10 +224,58 @@ module CodeBlockParser
       targets.concat(children)
     end
 
-    if html_doc.at_css("body")
-      html_doc.at_css("body").inner_html
-    else
-      html_doc.to_html
+    @html =
+      if html_doc.at_css("body")
+        html_doc.at_css("body").inner_html
+      else
+        html_doc.to_html
+      end
+
+    self
+  end
+
+  def parse_emojis
+    return self if @html.blank?
+
+    @html.gsub!(/:([\w+-]+):/) do |match|
+      emoji = Emoji.find_by_alias(Regexp.last_match(1)) # rubocop:disable Rails/DynamicFindBy
+      emoji.present? ? emoji.raw : match
     end
+
+    self
+  end
+
+  private
+
+  def img_of_size(source, width = 880)
+    Images::Optimizer.call(source, width: width).gsub(",", "%2C")
+  end
+
+  def all_children_are_blank?(node)
+    node.children.all? { |child| blank?(child) }
+  end
+
+  def blank?(node)
+    (node.text? && node.content.strip == "") || (node.element? && node.name == "br")
+  end
+
+  def allowed_image_host?(src)
+    # GitHub camo image won't parse but should be safe to host direct
+    src.start_with?("https://camo.githubusercontent.com")
+  end
+
+  def user_link_if_exists(mention)
+    username = mention.delete("@").downcase
+    if User.find_by(username: username)
+      <<~HTML
+        <a class='comment-mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{SiteConfig.app_domain}/#{username}'>@#{username}</a>
+      HTML
+    else
+      mention
+    end
+  end
+
+  def possibly_raw_tag_syntax?(array)
+    (RAW_TAG_DELIMITERS & array).any?
   end
 end

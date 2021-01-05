@@ -1,15 +1,11 @@
 require "rails_helper"
 
-RSpec.describe MarkdownParser, type: :labor do
+RSpec.describe MarkdownParser, type: :service do
   let(:random_word) { Faker::Lorem.word }
   let(:basic_parsed_markdown) { described_class.new(random_word) }
 
   def generate_and_parse_markdown(raw_markdown)
     described_class.new(raw_markdown).finalize
-  end
-
-  it "has the correct raw tag delimiters" do
-    expect(described_class::RAW_TAG_DELIMITERS).to match_array(["{", "}", "raw", "endraw", "----"])
   end
 
   it "renders plain text as-is" do
@@ -132,7 +128,7 @@ RSpec.describe MarkdownParser, type: :labor do
       expect(result).to include "<a"
     end
 
-    it "works with undescore" do
+    it "works with underscore" do
       mention = "what was found here _@#{user.username}_ let see"
       result = generate_and_parse_markdown(mention)
       expect(result).to include "<a", "<em"
@@ -243,45 +239,6 @@ RSpec.describe MarkdownParser, type: :labor do
     end
   end
 
-  context "when using gifs from Giphy as images" do
-    let(:giphy_markdown_texts) do
-      %w(
-        ![source](https://media.giphy.com/media/3ow0TN2M8TH2aAn67F/giphy.gif)
-        ![social](https://media.giphy.com/media/3ow0TN2M8TH2aAn67F/giphy.gif)
-        ![small](https://media.giphy.com/media/3ow0TN2M8TH2aAn67F/200w_d.gif)
-      )
-    end
-
-    it "does not wrap giphy images with Cloudinary" do
-      giphy_markdown_texts.each do |body_markdown|
-        html = Nokogiri::HTML(generate_and_parse_markdown(body_markdown))
-        img_src = html.search("img")[0]["src"]
-        expect(img_src).not_to include("https://res.cloudinary.com")
-      end
-    end
-
-    it "uses the raw gif from i.giphy.com" do
-      giphy_markdown_texts.each do |body_markdown|
-        html = Nokogiri::HTML(generate_and_parse_markdown(body_markdown))
-        img_src = html.search("img")[0]["src"]
-        expect(img_src).to start_with("https://i.giphy.com")
-      end
-    end
-  end
-
-  context "when an image is used" do
-    let(:markdown_with_img) { "![](https://image.com/image.jpg)" }
-
-    it "wraps image in link" do
-      expect(generate_and_parse_markdown(markdown_with_img)).to include("<a")
-    end
-
-    it "wraps the image with Cloudinary" do
-      expect(generate_and_parse_markdown(markdown_with_img))
-        .to include("https://res.cloudinary.com")
-    end
-  end
-
   context "when a colon emoji is used" do
     it "doesn't change text in codeblock" do
       result = generate_and_parse_markdown("<span>:o:<code>:o:</code>:o:<code>:o:</code>:o:<span>:o:</span>:o:</span>")
@@ -310,11 +267,6 @@ RSpec.describe MarkdownParser, type: :labor do
     it "renders the inline code with the text properly" do
       result = generate_and_parse_markdown("`{{ 'something' }}`")
       expect(result).to include("{{ 'something' }}")
-    end
-
-    it "renders nested lists without linebreaks" do
-      result = generate_and_parse_markdown("- [A](#a)\n  - [B](#b)\n- [C](#c)")
-      expect(result).not_to include("<br>")
     end
 
     it "permits abbr and aside tags" do
