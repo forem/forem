@@ -1,21 +1,21 @@
-<% title "Contact #{community_qualified_name}" %>
+<% title "Contact #{community_name}" %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/contact") %>" />
-  <meta name="description" content="Contact #{community_qualified_name}">
+  <meta name="description" content="Contact #{community_name}">
   <%= meta_keywords_default %>
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/contact") %>" />
-  <meta property="og:title" content="Contact #{community_qualified_name}" />
+  <meta property="og:title" content="Contact #{community_name}" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
-  <meta property="og:description" content="<%= community_qualified_name %> is great!" />
-  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+  <meta property="og:description" content="<%= community_name %> is great!" />
+  <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="Contact #{community_qualified_name}">
-  <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
+  <meta name="twitter:title" content="Contact #{community_name}">
+  <meta name="twitter:description" content="<%= community_name %> is great!">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 
@@ -24,7 +24,7 @@
     <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Contacts</h1>
 
     <p>
-      <%= community_qualified_name %> would love to hear from you!
+      <%= community_name %> would love to hear from you!
     </p>
     <p>
       Email: <%= email_link %> 😁

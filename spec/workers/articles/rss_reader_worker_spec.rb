@@ -36,7 +36,7 @@ RSpec.describe Articles::RssReaderWorker, type: :worker do
     end
 
     it "short circuits if it's running on DEV" do
-      allow(SiteConfig).to receive(:community_name).and_return("DEV")
+      allow(SiteConfig).to receive(:dev_to?).and_return(true)
       allow(RssReader).to receive(:get_all_articles)
       allow(FeatureFlag).to receive(:enabled?)
 
