@@ -181,10 +181,6 @@ module Constants
         description: "URL of the website where open positions are posted",
         placeholder: "Jobs URL"
       },
-      left_navbar_svg_icon: {
-        description: "The SVG icon used to expand the left navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: SVG_PLACEHOLDER
-      },
       logo_png: {
         description: "Used as a fallback to the SVG. Recommended minimum of 512x512px for PWA support",
         placeholder: IMAGE_PLACEHOLDER
@@ -269,10 +265,6 @@ module Constants
       recaptcha_secret_key: {
         description: "Add the secret key for Google reCAPTCHA, which is used for reporting abuse",
         placeholder: "What is the Google reCAPTCHA secret key?"
-      },
-      right_navbar_svg_icon: {
-        description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
-        placeholder: SVG_PLACEHOLDER
       },
       secondary_logo_url: {
         description: "If you have an alternate logo, this is used in some areas such as onboarding. It's typically the more\"playful\" version of the logo",

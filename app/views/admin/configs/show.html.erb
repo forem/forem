@@ -769,28 +769,6 @@
                   <% end %>
                 </div>
 
-                <div class="crayons-field">
-                  <%= admin_config_label :left_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:description] %>
-                  <%= f.text_area :left_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.left_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:left_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.left_navbar_svg_icon.html_safe %>
-                </div>
-
-                <div class="crayons-field">
-                  <%= admin_config_label :right_navbar_svg_icon %>
-                  <%= admin_config_description Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:description] %>
-                  <%= f.text_area :right_navbar_svg_icon,
-                                  class: "crayons-textfield",
-                                  value: SiteConfig.right_navbar_svg_icon,
-                                  rows: 6,
-                                  placeholder: Constants::SiteConfig::DETAILS[:right_navbar_svg_icon][:placeholder] %>
-                  <%= SiteConfig.right_navbar_svg_icon.html_safe %>
-                </div>
-
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>

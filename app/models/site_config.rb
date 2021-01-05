@@ -102,8 +102,6 @@ class SiteConfig < RailsSettings::Base
   field :logo_svg, type: :string
   field :secondary_logo_url, type: :string
 
-  field :left_navbar_svg_icon, type: :string, default: STACK_ICON
-  field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
   field :enable_video_upload, type: :boolean, default: false
 
   # Mascot

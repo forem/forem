@@ -392,22 +392,6 @@ RSpec.describe "/admin/config", type: :request do
           end.not_to change(SiteConfig, :secondary_logo_url)
         end
 
-        it "updates left_navbar_svg_icon" do
-          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' " \
-            "stroke='black' stroke-width='3'/></svg>"
-          post "/admin/config", params: { site_config: { left_navbar_svg_icon: expected_svg },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.left_navbar_svg_icon).to eq(expected_svg)
-        end
-
-        it "updates right_navbar_svg_icon" do
-          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' " \
-            "stroke='black' stroke-width='1'/></svg>"
-          post "/admin/config", params: { site_config: { right_navbar_svg_icon: expected_svg },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.right_navbar_svg_icon).to eq(expected_svg)
-        end
-
         it "rejects update without proper confirmation" do
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
@@ -573,13 +557,6 @@ RSpec.describe "/admin/config", type: :request do
       end
 
       describe "Onboarding" do
-        it "updates onboarding_taskcard_image" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-          post "/admin/config", params: { site_config: { onboarding_taskcard_image: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
-        end
-
         it "updates onboarding_background_image" do
           expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { onboarding_background_image: expected_image_url },
