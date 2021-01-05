@@ -100,16 +100,16 @@ export default class ConfigController extends Controller {
 
   activateEmailAuthModal(event) {
     event.preventDefault();
-    this.configModalAnchorTarget.innerHTML = adminModal(
-      emailAuthModalTitle,
-      emailAuthModalBody,
-      'Confirm disable',
-      'disableEmailAuthFromModal',
-      'Cancel',
-      'closeAdminModal',
-      'crayons-btn crayons-btn--danger',
-      'crayons-btn crayons-btn--secondary',
-    );
+    this.configModalAnchorTarget.innerHTML = adminModal({
+      title: emailAuthModalTitle,
+      body: emailAuthModalBody,
+      leftBtnText: 'Confirm disable',
+      leftBtnAction: 'disableEmailAuthFromModal',
+      rightBtnText: 'Cancel',
+      rightBtnAction: 'closeAdminModal',
+      leftBtnClasses: 'crayons-btn crayons-btn--danger',
+      rightBtnClasses: 'crayons-btn crayons-btn--secondary',
+    });
     this.positionModalOnPage();
   }
 
@@ -178,18 +178,18 @@ export default class ConfigController extends Controller {
     event.preventDefault();
     const provider = event.target.dataset.authProvider;
     const official_provider = event.target.dataset.authProviderOfficial;
-    this.configModalAnchorTarget.innerHTML = adminModal(
-      this.authProviderModalTitle(official_provider),
-      this.authProviderModalBody(official_provider),
-      'Confirm disable',
-      'disableAuthProviderFromModal',
-      'Cancel',
-      'closeAdminModal',
-      'crayons-btn crayons-btn--danger',
-      'crayons-btn crayons-btn--secondary',
-      'auth-provider',
-      provider,
-    );
+    this.configModalAnchorTarget.innerHTML = adminModal({
+      title: this.authProviderModalTitle(official_provider),
+      body: this.authProviderModalBody(official_provider),
+      leftBtnText: 'Confirm disable',
+      leftBtnAction: 'disableAuthProviderFromModal',
+      rightBtnText: 'Cancel',
+      rightBtnAction: 'closeAdminModal',
+      leftBtnClasses: 'crayons-btn crayons-btn--danger',
+      rightBtnClasses: 'crayons-btn crayons-btn--secondary',
+      customAttr: 'auth-provider',
+      customAttrValue: provider,
+    });
     this.positionModalOnPage();
   }
 
@@ -299,16 +299,16 @@ export default class ConfigController extends Controller {
   }
 
   activateMissingKeysModal(providers) {
-    this.configModalAnchorTarget.innerHTML = adminModal(
-      'Setup not complete',
-      this.missingAuthKeysModalBody(providers),
-      'Continue editing',
-      'closeAdminModal',
-      'Save anyway',
-      'submitForm',
-      'crayons-btn',
-      'crayons-btn crayons-btn--secondary',
-    );
+    this.configModalAnchorTarget.innerHTML = adminModal({
+      title: 'Setup not complete',
+      body: this.missingAuthKeysModalBody(providers),
+      leftBtnText: 'Continue editing',
+      leftBtnAction: 'closeAdminModal',
+      rightBtnText: 'Save anyway',
+      rightBtnAction: 'submitForm',
+      leftBtnClasses: 'crayons-btn',
+      rightBtnClasses: 'crayons-btn crayons-btn--secondary',
+    });
   }
 
   configUpdatePrecheck(event) {
