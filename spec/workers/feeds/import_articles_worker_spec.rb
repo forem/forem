@@ -21,7 +21,19 @@ RSpec.describe Feeds::ImportArticlesWorker, type: :worker do
 
         worker.perform([user.id])
 
-        expect(Feeds::Import).to have_received(:call).with(users: User.where(id: [user.id]))
+        expect(Feeds::Import).to have_received(:call).with(users: User.where(id: [user.id]), earlier_than: nil)
+      end
+    end
+
+    context "with earlier_than time" do
+      it "calls Feeds::Import with the correct time if given" do
+        allow(Feeds::Import).to receive(:call)
+
+        Timecop.freeze(Time.current) do
+          worker.perform(nil, 4.hours.ago)
+
+          expect(Feeds::Import).to have_received(:call).with(users: nil, earlier_than: 4.hours.ago)
+        end
       end
     end
   end
