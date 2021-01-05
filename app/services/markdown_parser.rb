@@ -124,7 +124,7 @@ class MarkdownParser
   private
 
   def parse_html(html)
-    return if html.blank?
+    return html if html.blank?
 
     HtmlParser
       .new(html)
