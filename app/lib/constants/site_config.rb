@@ -249,14 +249,6 @@ module Constants
         description: "Background for onboarding splash page",
         placeholder: IMAGE_PLACEHOLDER
       },
-      onboarding_logo_image: {
-        description: "Main onboarding display logo image",
-        placeholder: IMAGE_PLACEHOLDER
-      },
-      onboarding_taskcard_image: {
-        description: "Used as the onboarding task-card image",
-        placeholder: IMAGE_PLACEHOLDER
-      },
       payment_pointer: {
         description: "Used for site-wide web monetization. " \
         "See: https://github.com/thepracticaldev/dev.to/pull/6345",
@@ -283,7 +275,7 @@ module Constants
         placeholder: SVG_PLACEHOLDER
       },
       secondary_logo_url: {
-        description: "Used as the secondary logo",
+        description: "If you have an alternate logo, this is used in some areas such as onboarding. It's typically the more\"playful\" version of the logo",
         placeholder: IMAGE_PLACEHOLDER
       },
       spam_trigger_terms: {

@@ -580,13 +580,6 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
         end
 
-        it "updates onboarding_logo_image" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-          post "/admin/config", params: { site_config: { onboarding_logo_image: expected_image_url },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.onboarding_logo_image).to eq(expected_image_url)
-        end
-
         it "updates onboarding_background_image" do
           expected_image_url = "https://dummyimage.com/300x300.png"
           post "/admin/config", params: { site_config: { onboarding_background_image: expected_image_url },
