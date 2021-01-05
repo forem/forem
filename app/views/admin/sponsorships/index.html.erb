@@ -32,7 +32,7 @@
     <% @sponsorships.each do |sponsorship| %>
       <tr>
         <td><%= link_to sponsorship.id, edit_admin_sponsorship_path(sponsorship) %></td>
-        <td><%= sponsorship.level %></td>
+        <td class="whitespace-nowrap"><%= sponsorship.level %></td>
         <td><%= sponsorship.status %></td>
         <td><%= sponsorship.expires_at&.strftime("%d %B %Y %H:%M UTC") %></td>
         <td>

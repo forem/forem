@@ -64,7 +64,7 @@ contributions from the community.
 
 We also have inconsistencies and issues with how we bust caching on the edge.
 Ideally, we could practice resource-based purging as described in the [Fastly
-Rails][fastly_rails] docs, but we bust specific URLs via `CacheBuster`.
+Rails][fastly_rails] docs, but we bust specific URLs via `EdgeCache::Bust#call`.
 
 ## The algorithm behind the feed
 
