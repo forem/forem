@@ -93,7 +93,7 @@ module CodeBlockParser
       next if el.name == "code"
 
       if el.search("code").empty?
-        el.swap(EmojiConverter.call(el.to_html))
+        el.swap(Html::ParseEmoji.call(el.to_html))
       else
         el.children = escape_colon_emojis_in_codeblock(el.children.to_html)
       end

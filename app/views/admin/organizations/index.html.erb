@@ -23,7 +23,7 @@
     <% @organizations.each do |organization| %>
       <tr>
         <td><%= link_to "@#{organization.name}", admin_organization_path(organization.id) %></td>
-        <td><%= organization.id %></td>
+        <td class="whitespace-nowrap"><%= organization.id %></td>
         <% if organization.twitter_username %>
           <td><%= link_to organization.twitter_username, "https://twitter.com/#{organization.twitter_username}" %></td>
         <% else %>

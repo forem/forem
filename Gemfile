@@ -11,7 +11,7 @@ group :production do
 end
 
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
-gem "acts-as-taggable-on", "~> 6.5" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
+gem "acts-as-taggable-on", "~> 7.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
@@ -36,7 +36,7 @@ gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Un
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.4" # A/B testing
-gem "flipper", "~> 0.20.0" # Feature flipping / flags for Ruby
+gem "flipper", "~> 0.20.1" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 0.20.0" # Store Flipper flags in ActiveRecord
 gem "flipper-ui", "~> 0.20.0"
 gem "fog-aws", "~> 3.7" # 'fog' gem to support Amazon Web Services
@@ -143,7 +143,7 @@ group :development, :test do
   gem "capybara", "~> 3.34" # Capybara is an integration testing tool for rack based web applications
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.15" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.10.1" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.7", require: false # Automatic Ruby code style checking tool
@@ -164,7 +164,7 @@ group :test do
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "~> 4.4.1", require: false # Simple one-liner tests for common Rails functionality
-  gem "simplecov", "~> 0.20.0", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
+  gem "simplecov", "~> 0.21.1", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 3.0", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.12" # Ruby Tests Profiling Toolbox
