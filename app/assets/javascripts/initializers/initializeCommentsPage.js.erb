@@ -236,6 +236,7 @@ function handleCommentSubmit(event) {
           else if (mainCommentsForm) {
             var mainCommentsForm = document.getElementById("new_comment");
             mainCommentsForm.classList.remove("submitting");
+            mainCommentsForm.classList.remove('preview-open');
             const textArea = form.getElementsByClassName("comment-textarea")[0];
             textArea.closest('.comment-form').classList.remove('comment-form--initiated');
             textArea.value = newComment.comment_template || "";
