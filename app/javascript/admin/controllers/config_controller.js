@@ -19,6 +19,8 @@ const emailAuthModalBody = `
 export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
+    'authSectionForm',
+    'collectiveNoun',
     'configModalAnchor',
     'emailAuthSettingsBtn',
     'enabledIndicator',
@@ -46,10 +48,18 @@ export default class ConfigController extends Controller {
     }
   }
 
-  closeAdminConfigModal() {
+  closeAdminModal() {
+    const authSectionUpdateConfigBtn = this.authSectionFormTarget.querySelector(
+      'input[type="submit"]',
+    );
+
     this.configModalAnchorTarget.innerHTML = '';
     document.body.style.height = 'inherit';
     document.body.style.overflowY = 'inherit';
+
+    if (authSectionUpdateConfigBtn.hasAttribute('disabled')) {
+      authSectionUpdateConfigBtn.removeAttribute('disabled');
+    }
   }
 
   positionModalOnPage() {
@@ -96,7 +106,9 @@ export default class ConfigController extends Controller {
       'Confirm disable',
       'disableEmailAuthFromModal',
       'Cancel',
-      'closeAdminConfigModal',
+      'closeAdminModal',
+      'crayons-btn crayons-btn--danger',
+      'crayons-btn crayons-btn--secondary',
     );
     this.positionModalOnPage();
   }
@@ -104,7 +116,7 @@ export default class ConfigController extends Controller {
   disableEmailAuthFromModal(event) {
     event.preventDefault();
     this.disableEmailAuth(event);
-    this.closeAdminConfigModal(event);
+    this.closeAdminModal(event);
   }
 
   disableEmailAuth(event) {
@@ -172,7 +184,9 @@ export default class ConfigController extends Controller {
       'Confirm disable',
       'disableAuthProviderFromModal',
       'Cancel',
-      'closeAdminConfigModal',
+      'closeAdminModal',
+      'crayons-btn crayons-btn--danger',
+      'crayons-btn crayons-btn--secondary',
       'auth-provider',
       provider,
     );
@@ -193,7 +207,7 @@ export default class ConfigController extends Controller {
     this.checkForAndGuardSoleAuthProvider();
     enabledIndicator.classList.remove('visible');
     this.hideAuthProviderSettings(event);
-    this.closeAdminConfigModal(event);
+    this.closeAdminModal(event);
   }
 
   checkForAndGuardSoleAuthProvider() {
@@ -245,4 +259,64 @@ export default class ConfigController extends Controller {
     }
   }
   // AUTH PROVIDERS FUNCTIONS END
+
+  enabledProvidersWithMissingKeys() {
+    const providersWithMissingKeys = [];
+    document
+      .querySelectorAll('[data-enable-auth="true"]')
+      .forEach((provider) => {
+        const providerName = provider.dataset.authProviderEnable;
+        const officialName = provider.dataset.authProviderOfficial;
+        if (
+          !document.getElementById(`site_config_${providerName}_key`).value ||
+          !document.getElementById(`site_config_${providerName}_secret`).value
+        ) {
+          providersWithMissingKeys.push(officialName);
+        }
+      });
+
+    return providersWithMissingKeys;
+  }
+
+  generateProvidersList(providers) {
+    let list = '';
+    providers.forEach((provider) => {
+      list += `<li>${provider}</li>`;
+    });
+    return list;
+  }
+
+  missingAuthKeysModalBody(providers) {
+    return `
+      <p>You haven't filled out all of the required fields to  enable the following authentication providers:</p>
+      <ul>${this.generateProvidersList(providers)}</ul>
+      <p>If you save your configuration now, these authorization providers will not be enabled.</p>
+    `;
+  }
+
+  submitForm() {
+    this.authSectionFormTarget.submit();
+  }
+
+  activateMissingKeysModal(providers) {
+    this.configModalAnchorTarget.innerHTML = adminModal(
+      'Setup not complete',
+      this.missingAuthKeysModalBody(providers),
+      'Continue editing',
+      'closeAdminModal',
+      'Save anyway',
+      'submitForm',
+      'crayons-btn',
+      'crayons-btn crayons-btn--secondary',
+    );
+  }
+
+  configUpdatePrecheck(event) {
+    if (this.enabledProvidersWithMissingKeys().length > 0) {
+      event.preventDefault();
+      this.activateMissingKeysModal(this.enabledProvidersWithMissingKeys());
+    } else {
+      event.target.submit();
+    }
+  }
 }
