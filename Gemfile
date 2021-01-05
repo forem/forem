@@ -143,7 +143,7 @@ group :development, :test do
   gem "capybara", "~> 3.34" # Capybara is an integration testing tool for rack based web applications
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.15" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.10.1" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.7", require: false # Automatic Ruby code style checking tool
@@ -164,7 +164,7 @@ group :test do
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "~> 4.4.1", require: false # Simple one-liner tests for common Rails functionality
-  gem "simplecov", "~> 0.21.0", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
+  gem "simplecov", "~> 0.21.1", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 3.0", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.12" # Ruby Tests Profiling Toolbox

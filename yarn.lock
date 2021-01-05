@@ -1814,10 +1814,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.3.2.tgz#96e591496b72fde0f0cdae01a61d64f065bd9ede"
   integrity sha512-lyIc6JUlUA8Ve5ELywPC8I2Sdnh1zc1zmbYgVarhXIp9YeAB0ReeqmGEOWNtlHkbP2DAA1AL65Wfn2ncjK/jtQ==
 
-"@stoplight/spectral@5.7.2", "@stoplight/spectral@^5.5.0":
-  version "5.7.2"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.7.2.tgz#0177f5322d09f7e4f3eddee818513104bb1dd841"
-  integrity sha512-AeqhEup2kIA/Ib2QduHMYuRxGGwrJK05U8YsGXRg7vSnSoH2iOKUXBY0QXB2cezTvz0rYrFsT+0+clxRwBDinQ==
+"@stoplight/spectral@5.8.0", "@stoplight/spectral@^5.5.0":
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.8.0.tgz#2ba242e74aaf521ab758e607e66dd938f6382bd2"
+  integrity sha512-KzcdC3qhxK9rKIipMJeviR+vlbVHBofCKqOnGEa73ZyYOpgn7YL5i9YEkVOMLO2vBfnLVGsRroTfa4KnRodjoA==
   dependencies:
     "@stoplight/better-ajv-errors" "0.0.3"
     "@stoplight/json" "3.9.0"
@@ -2877,10 +2877,10 @@
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^7.28.1"
 
-"@testing-library/dom@^7.16.2", "@testing-library/dom@^7.28.1", "@testing-library/dom@^7.29.0":
-  version "7.29.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.29.0.tgz#60b18065bab50a5cde21fe80275a47a43024d9cc"
-  integrity sha512-0hhuJSmw/zLc6ewR9cVm84TehuTd7tbqBX9pRNSp8znJ9gTmSgesdbiGZtt8R6dL+2rgaPFp9Yjr7IU1HWm49w==
+"@testing-library/dom@^7.16.2", "@testing-library/dom@^7.28.1", "@testing-library/dom@^7.29.1":
+  version "7.29.1"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.29.1.tgz#a08ebeb26b2ea859b1621ff9642d114c1f04fe3a"
+  integrity sha512-6BU7vAjKuMspCy9QQEtbWgmkuXi/yOSZo3ANdvZmNQW8N/WQGjO9cvlcA5EFJaPtp2hL1RAaPGpCXxumijUxCg==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"
@@ -6989,10 +6989,10 @@ cypress-file-upload@^4.1.1:
   dependencies:
     mime "^2.4.4"
 
-cypress@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-6.2.0.tgz#1a8a7dd5bd08db3064551a9f12072963cc9337bf"
-  integrity sha512-m/rkcogYM9MTy8rbsZgyS5wT2L/J+B5V2bY2ztkDNMyqhk/oZgUF4KTWVLzkW2I+scg0iAddca95tLlt7XnAtw==
+cypress@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-6.2.1.tgz#27d5fbcf008c698c390fdb0c03441804176d06c4"
+  integrity sha512-OYkSgzA4J4Q7eMjZvNf5qWpBLR4RXrkqjL3UZ1UzGGLAskO0nFTi/RomNTG6TKvL3Zp4tw4zFY1gp5MtmkCZrA==
   dependencies:
     "@cypress/listr-verbose-renderer" "^0.4.1"
     "@cypress/request" "^2.88.5"
@@ -10032,10 +10032,10 @@ husky@^4.3.6:
     slash "^3.0.0"
     which-pm-runs "^1.0.0"
 
-ibm-openapi-validator@0.33.0:
-  version "0.33.0"
-  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.33.0.tgz#c77805f24f5569bc19c4588c97794d76ec5ce431"
-  integrity sha512-JgixfOrkhK6JuXeF0+eSuscy0i1A8LEoH9X1yNT6W3bhidH7SGg8Ne6D0DTd1waIT7I3VjAFhHfwI/aXNyma/Q==
+ibm-openapi-validator@0.33.1:
+  version "0.33.1"
+  resolved "https://registry.yarnpkg.com/ibm-openapi-validator/-/ibm-openapi-validator-0.33.1.tgz#1486058fcc3a1521e1b79fd3a41da2d80bbae23e"
+  integrity sha512-F4HglWbueGnIoI6NRWZz66SnJpa6cR+JrWTwTbA5wK1Ijh3l4j9dVQz/JPR7jZgYRCAQs5Jf3SitiY0vccy4jw==
   dependencies:
     "@stoplight/spectral" "^5.5.0"
     chalk "^4.1.0"
