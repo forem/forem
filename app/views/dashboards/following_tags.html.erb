@@ -22,7 +22,7 @@
             <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
         </div>
 
-        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, id: "follows_update_form" do |f| %>
+        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-10 pt-3 pb-1 z-elevate", html: { style: "top: 55px;margin-left:-1px"}, id: "follows_update_form" do |f| %>
           <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit">Update Weights</button>
         <% end %>
         
@@ -42,7 +42,7 @@
                   <% end %>
                 </h3>
 
-                <p class="grid-cell__summary truncate-at-3 mb-4 fs-s">
+                <p class="grid-cell__summary truncate-at-2 mb-4 fs-m h-50">
                   <%= strip_tags(tag.short_summary) %>
                 </p>
 
