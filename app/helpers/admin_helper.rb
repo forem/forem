@@ -12,6 +12,7 @@ module AdminHelper
     { name: "chat_channels",         controller: "chat_channels" },
     { name: "comments",              controller: "comments" },
     { name: "config",                controller: "config" },
+    { name: "data_update_scripts",   controller: "data_update_scripts" },
     { name: "display_ads",           controller: "display_ads" },
     { name: "events",                controller: "events" },
     { name: "html_variants",         controller: "html_variants" },
