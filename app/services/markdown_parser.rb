@@ -126,7 +126,7 @@ class MarkdownParser
   def parse_html(html)
     return html if html.blank?
 
-    HtmlParser
+    Html::Parser
       .new(html)
       .remove_nested_linebreak_in_list
       .prefix_all_images

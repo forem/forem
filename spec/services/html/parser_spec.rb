@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe HtmlParser, type: :service do
+RSpec.describe Html::Parser, type: :service do
   it "has the correct raw tag delimiters" do
     expect(described_class::RAW_TAG_DELIMITERS).to match_array(["{", "}", "raw", "endraw", "----"])
   end
@@ -18,7 +18,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").remove_nested_linebreak_in_list
       expect(html_parser).to be_a described_class
     end
@@ -43,7 +43,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").prefix_all_images
       expect(html_parser).to be_a described_class
     end
@@ -86,7 +86,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").wrap_all_images_in_links
       expect(html_parser).to be_a described_class
     end
@@ -111,7 +111,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").add_control_class_to_codeblock
       expect(html_parser).to be_a described_class
     end
@@ -146,7 +146,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").add_control_panel_to_codeblock
       expect(html_parser).to be_a described_class
     end
@@ -181,7 +181,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").add_fullscreen_button_to_panel
       expect(html_parser).to be_a described_class
     end
@@ -206,7 +206,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").wrap_all_tables
       expect(html_parser).to be_a described_class
     end
@@ -231,7 +231,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").remove_empty_paragraphs
       expect(html_parser).to be_a described_class
     end
@@ -266,7 +266,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").escape_colon_emojis_in_codeblock
       expect(html_parser).to be_a described_class
     end
@@ -293,7 +293,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").unescape_raw_tag_in_codeblocks
       expect(html_parser).to be_a described_class
     end
@@ -342,7 +342,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").wrap_all_figures_with_tags
       expect(html_parser).to be_a described_class
     end
@@ -383,7 +383,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").wrap_mentions_with_links
       expect(html_parser).to be_a described_class
     end
@@ -408,7 +408,7 @@ RSpec.describe HtmlParser, type: :service do
       end
     end
 
-    it "returns an instance of HtmlParser" do
+    it "returns an instance of Html::Parser" do
       html_parser = described_class.new("<div>Hello World</div>").parse_emojis
       expect(html_parser).to be_a described_class
     end
