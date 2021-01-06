@@ -60,6 +60,12 @@ RSpec.describe "Comments", type: :request do
         get comment.path
         expect(response.body).not_to include('<meta name="googlebot" content="noindex">')
       end
+
+      it "displays noindex if comment has score of less than 0" do
+        comment.commentable.update_column(:score, -5)
+        get comment.path
+        expect(response.body).to include('<meta name="googlebot" content="noindex">')
+      end
     end
 
     context "when the comment is a child comment" do
