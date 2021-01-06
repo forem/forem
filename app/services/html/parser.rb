@@ -163,7 +163,7 @@ module Html
       @html.gsub!(END_RAW_TAG, "{% endraw %}")
       html_doc = Nokogiri::HTML(@html)
       html_doc.xpath("//body/div/pre/code").each do |codeblock|
-        next unless codeblock.content.include?(RAW_TAG) || content.include?(END_RAW_TAG)
+        next unless codeblock.content.include?(RAW_TAG) || codeblock.content.include?(END_RAW_TAG)
 
         children_content = codeblock.children.map(&:content)
         indices = children_content.size.times.select do |i|
