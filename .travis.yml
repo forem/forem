@@ -68,7 +68,7 @@ script:
   - './cc-test-reporter before-build'
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284 CVE-2020-26247; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
   - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
