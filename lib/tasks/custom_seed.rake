@@ -1,3 +1,4 @@
+# Thanks to https://stackoverflow.com/questions/19872271/adding-a-custom-seed-file/31815032#31815032
 namespace :db do
   namespace :seed do
     Dir[Rails.root.join("db/seeds/*.rb")].each do |filename|

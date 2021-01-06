@@ -5,7 +5,6 @@ const fetch = require('node-fetch');
 
 async function runBundleExec(command) {
   return new Promise((resolve, reject) => {
-    // Clear the DB for the next test run.
     const child = spawn('bundle', ['exec', command]);
     const errorChunks = [];
 
@@ -31,6 +30,13 @@ async function runBundleExec(command) {
   });
 }
 
+/**
+ * Seeds the database with the given data from the seed file.
+ *
+ * @param {string} seedName A seed data filename.
+ *
+ * @returns {Promise<boolean>} Returns null if successful, otherwise it throws.
+ */
 async function seedData(seedName) {
   const success = await runBundleExec(`rake db:seed:${seedName}`);
 
@@ -45,6 +51,11 @@ async function seedData(seedName) {
   return null;
 }
 
+/**
+ * Resets the data to a clean slate in the database.
+ *
+ * @returns {Promise<boolean>} Returns null if successful, otherwise it throws.
+ */
 function createResetDataTask(config) {
   return async function resetData() {
     const clearSearchIndices = fetch(`${config.env.ELASTICSEARCH_URL}/*`, {
