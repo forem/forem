@@ -14,6 +14,8 @@ module Html
     include ApplicationHelper
 
     RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
+    RAW_TAG = "{----% raw %----}".freeze
+    END_RAW_TAG = "{----% endraw %----}".freeze
 
     attr_accessor :html
     private :html=
@@ -157,11 +159,11 @@ module Html
     def unescape_raw_tag_in_codeblocks
       return self if @html.blank?
 
-      @html.gsub!("{----% raw %----}", "{% raw %}")
-      @html.gsub!("{----% endraw %----}", "{% endraw %}")
+      @html.gsub!(RAW_TAG, "{% raw %}")
+      @html.gsub!(END_RAW_TAG, "{% endraw %}")
       html_doc = Nokogiri::HTML(@html)
       html_doc.xpath("//body/div/pre/code").each do |codeblock|
-        next unless codeblock_includes_raw_tags?(codeblock.content)
+        next unless codeblock.content.include?(RAW_TAG) || content.include?(END_RAW_TAG)
 
         children_content = codeblock.children.map(&:content)
         indices = children_content.size.times.select do |i|
@@ -277,10 +279,6 @@ module Html
 
     def possibly_raw_tag_syntax?(array)
       (RAW_TAG_DELIMITERS & array).any?
-    end
-
-    def codeblock_includes_raw_tags?(content)
-      content.include?("{----% raw %----}") || content.include?("{----% endraw %----}")
     end
   end
 end
