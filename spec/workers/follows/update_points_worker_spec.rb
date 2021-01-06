@@ -21,8 +21,6 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
     end
 
     it "calculates scores" do
-      create(:field_test_membership,
-             experiment: :follow_implicit_points, variant: :base, participant_id: user.id)
       follow = Follow.last
       follow.update_column(:explicit_points, 2.2)
       worker.perform(reaction.reactable_id, reaction.user_id)
@@ -32,8 +30,6 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
     end
 
     it "has higher score with more long page views" do
-      create(:field_test_membership,
-             experiment: :follow_implicit_points, variant: :base, participant_id: user.id)
       follow = Follow.last
       worker.perform(reaction.reactable_id, reaction.user_id)
       follow.reload
@@ -47,8 +43,6 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
     end
 
     it "has higher score with more reactions" do
-      create(:field_test_membership,
-             experiment: :follow_implicit_points, variant: :base, participant_id: user.id)
       follow = Follow.last
       worker.perform(reaction.reactable_id, reaction.user_id)
       follow.reload
@@ -68,8 +62,6 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
     end
 
     it "applies inverse bonus to slightly penalize more popular tags" do
-      create(:field_test_membership,
-             experiment: :follow_implicit_points, variant: :base, participant_id: user.id)
       follow = Follow.last
       tag.update_column(:hotness_score, 1000)
       second_tag.update_column(:hotness_score, 100)
