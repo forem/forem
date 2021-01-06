@@ -1,6 +1,4 @@
-<% @stories.each_with_index do |story, i| %>
-  <%= render "articles/single_story", story: story, featured: false %>
-<% end %>
+<%= render partial: "articles/single_story", collection: @stories, as: :story, locals: { featured: false } %>
 <% if @stories.size > 1 %>
   <div class="placeholder-div"></div>
 <% end %>

@@ -10,9 +10,7 @@
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
-              <% active_threads.each do |plucked_article| %>
-                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-              <% end %>
+              <%= render partial: "articles/widget_list_item", collection: active_threads, as: :plucked_article, locals: { show_comment_count: true } %>
             </div>
           </div>
         </div>
@@ -31,9 +29,7 @@
               </header>
               <div class="widget-body">
                 <div class="widget-link-list">
-                  <% boostable_posts.each do |plucked_article| %>
-                    <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-                  <% end %>
+                  <%= render partial: "articles/widget_list_item", collection: boostable_posts, as: :plucked_article, locals: { show_comment_count: false } %>
                 </div>
               </div>
             </div>
@@ -46,9 +42,7 @@
               </header>
               <div class="widget-body">
                 <div class="widget-link-list">
-                  <% recent_preamble_optimized_posts.each do |plucked_article| %>
-                    <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-                  <% end %>
+                  <%= render partial: "articles/widget_list_item", collection: recent_preamble_optimized_posts, as: :plucked_article, locals: { show_comment_count: false } %>
                 </div>
               </div>
             </div>

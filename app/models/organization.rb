@@ -11,6 +11,17 @@ class Organization < ApplicationRecord
 
   acts_as_followable
 
+  before_validation :downcase_slug
+  before_validation :check_for_slug_change
+  before_validation :evaluate_markdown
+  before_save :update_articles
+  before_save :remove_at_from_usernames
+  before_save :generate_secret
+  # You have to put before_destroy callback BEFORE the dependent: :nullify
+  # to ensure they execute before the records are updated
+  # https://guides.rubyonrails.org/active_record_callbacks.html#destroying-an-object
+  before_destroy :cache_article_ids
+
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
   has_many :credits, dependent: :restrict_with_error
@@ -52,16 +63,10 @@ class Organization < ApplicationRecord
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
 
-  before_validation :downcase_slug
-  before_validation :check_for_slug_change
-  before_validation :evaluate_markdown
-  before_save :update_articles
-  before_save :remove_at_from_usernames
-  before_save :generate_secret
   after_save :bust_cache
 
-  after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
-  after_commit :bust_cache, on: :destroy
+  after_commit :sync_related_elasticsearch_docs, on: :update
+  after_commit :bust_cache, :article_sync, on: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -71,6 +76,12 @@ class Organization < ApplicationRecord
   alias_attribute :old_username, :old_slug
   alias_attribute :old_old_username, :old_old_slug
   alias_attribute :website_url, :url
+
+  attr_accessor :cached_article_ids
+
+  def cache_article_ids
+    self.cached_article_ids = articles.ids
+  end
 
   def check_for_slug_change
     return unless slug_changed?
@@ -150,5 +161,10 @@ class Organization < ApplicationRecord
 
   def sync_related_elasticsearch_docs
     DataSync::Elasticsearch::Organization.new(self).call
+  end
+
+  def article_sync
+    # Syncs article cached organization and updates Elasticsearch docs
+    Article.where(id: cached_article_ids).find_each(&:save)
   end
 end
