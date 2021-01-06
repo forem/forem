@@ -11,7 +11,7 @@ module Articles
       return if SiteConfig.dev_to?
 
       if FeatureFlag.enabled?(:feeds_import)
-        ::Feeds::ImportArticlesWorker.perform_async
+        ::Feeds::ImportArticlesWorker.perform_async(4.hours.ago)
       else
         # don't force fetch. Fetch "random" subset instead of all of them.
         ::RssReader.get_all_articles(force: false)
