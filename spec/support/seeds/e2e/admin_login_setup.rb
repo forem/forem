@@ -1,5 +1,3 @@
-# rubocop:disable Rails/Output
-
 return if Rails.env.production?
 
 # TODO: Pull this out so that it can be imported here and also imported for db:seed rake task.
@@ -41,7 +39,6 @@ end
 
 seeder = Seeder.new
 
-
 SiteConfig.waiting_on_first_user = false # The intial admin has been created
 SiteConfig.public = false
 puts "Seeding forem in starter mode to replicate new creator experience"
@@ -71,5 +68,3 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
   user.add_role(:super_admin)
   user.add_role(:single_resource_admin, Config)
 end
-
-# rubocop:enable Rails/Output
