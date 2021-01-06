@@ -15,7 +15,8 @@ module Html
 
     RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
 
-    attr_reader :html
+    attr_accessor :html
+    private :html=
 
     def initialize(html)
       @html = html
