@@ -41,7 +41,7 @@ async function runBundleExec(command) {
  * @returns {Promise<boolean>} Returns null if successful, otherwise it throws.
  */
 async function seedData(seedName) {
-  const success = await runBundleExec(`rake db:seed:${seedName}`);
+  const success = await runBundleExec(`rake db:seed:e2e[${seedName}]`);
 
   if (!success) {
     throw new Error(
