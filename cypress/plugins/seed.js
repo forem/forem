@@ -57,6 +57,8 @@ async function seedData(seedName) {
 /**
  * Resets the data to a clean slate in the database.
  *
+ * @param {object} config The Cypress configuration object.
+ *
  * @returns {Promise<boolean>} Returns null if successful, otherwise it throws.
  */
 function createResetDataTask(config) {
