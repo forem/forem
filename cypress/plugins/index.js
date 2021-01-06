@@ -4,6 +4,34 @@
 const { spawn } = require('child_process');
 const fetch = require('node-fetch');
 
+async function runBundleExec(command) {
+  return new Promise((resolve, reject) => {
+    // Clear the DB for the next test run.
+    const child = spawn('bundle', ['exec', command]);
+    const errorChunks = [];
+
+    child.stderr.on('data', (chunk) => errorChunks.push(Buffer.from(chunk)));
+
+    child.on('error', (error) => {
+      reject(error);
+    });
+
+    child.on('exit', (status, _code) => {
+      if (status !== 0) {
+        const errorMessage = Buffer.concat(errorChunks).toString('UTF-8');
+
+        reject(
+          new Error(
+            `There was an error running "bundle exec ${command}". The status was ${status} with the following error:\n${errorMessage}`,
+          ),
+        );
+      }
+
+      resolve(status === 0);
+    });
+  });
+}
+
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
 //
@@ -34,33 +62,7 @@ module.exports = (on, config) => {
         method: 'DELETE',
       });
 
-      const truncateDB = new Promise((resolve, reject) => {
-        // Clear the DB for the next test run.
-        const child = spawn('bundle', ['exec', 'rails db:truncate_all']);
-        const errorChunks = [];
-
-        child.stderr.on('data', (chunk) =>
-          errorChunks.push(Buffer.from(chunk)),
-        );
-
-        child.on('error', (error) => {
-          reject(error);
-        });
-
-        child.on('exit', (status, _code) => {
-          if (status !== 0) {
-            const errorMessage = Buffer.concat(errorChunks).toString('UTF-8');
-
-            reject(
-              new Error(
-                `There was an error running "bundle exec rails db:truncate_all". The status was ${status} with the following error:\n${errorMessage}`,
-              ),
-            );
-          }
-
-          resolve(status === 0);
-        });
-      });
+      const truncateDB = runBundleExec('rails db:truncate_all');
 
       const [clearSearchIndicesResponse, clearedDB = false] = await Promise.all(
         [
@@ -93,33 +95,7 @@ module.exports = (on, config) => {
     },
 
     async seedData(seedName) {
-      const success = await new Promise((resolve, reject) => {
-        // Clear the DB for the next test run.
-        const child = spawn('bundle', ['exec', `rake db:seed:${seedName}`]);
-        const errorChunks = [];
-
-        child.stderr.on('data', (chunk) =>
-          errorChunks.push(Buffer.from(chunk)),
-        );
-
-        child.on('error', (error) => {
-          reject(error);
-        });
-
-        child.on('exit', (status, _code) => {
-          if (status !== 0) {
-            const errorMessage = Buffer.concat(errorChunks).toString('UTF-8');
-
-            reject(
-              new Error(
-                `There was an error running "bundle exec rails db:seed:${seedName}". The status was ${status} with the following error:\n${errorMessage}`,
-              ),
-            );
-          }
-
-          resolve(status === 0);
-        });
-      });
+      const success = await runBundleExec(`rake db:seed:${seedName}`);
 
       if (!success) {
         throw new Error(

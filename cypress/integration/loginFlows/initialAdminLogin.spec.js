@@ -65,7 +65,7 @@ describe('Initial admin signup', () => {
   });
 
   it('should login the initial Forem instance administrator for the first time', () => {
-    cy.task('seedData', 'seed_admin_login');
+    cy.task('seedData', 'admin_login_setup');
     cy.fixture('logins/initialAdmin.json').as('admin');
 
     // Go to home page
