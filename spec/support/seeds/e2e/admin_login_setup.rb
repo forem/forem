@@ -1,5 +1,7 @@
 return if Rails.env.production?
 
+require Rails.root.join("app/models/site_config")
+
 # TODO: Pull this out so that it can be imported here and also imported for db:seed rake task.
 class Seeder
   def initialize
