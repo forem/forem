@@ -31,8 +31,6 @@ class PageView < ApplicationRecord
     return unless user_id
 
     Users::RecordFieldTestEventWorker
-      .perform_async(user_id, :follow_implicit_points, "user_views_article_four_days_in_week")
-    Users::RecordFieldTestEventWorker
-      .perform_async(user_id, :follow_implicit_points, "user_views_article_four_hours_in_day")
+      .perform_async(user_id, "user_creates_pageview")
   end
 end

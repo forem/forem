@@ -42,16 +42,16 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
 
-    it "updates a tag point value" do
-      last_div = page.all('div[id^="follows"]').last
-      within last_div do
-        fill_in "follow_explicit_points", with: 10.0
-        click_button "commit"
-      end
-      first_div = page.find('div[id^="follows"]', match: :first)
-      within first_div do
-        expect(page).to have_field("follow_explicit_points", with: 10.0)
-      end
+    it "updates two tag point values" do
+      last_divs = page.all('div[id^="follows"]').last(2)
+      within(last_divs[0]) { fill_in "follow_explicit_points", with: 5.0 }
+      within(last_divs[1]) { fill_in "follow_explicit_points", with: 10.0 }
+
+      click_button "commit"
+
+      first_divs = page.all('div[id^="follows"]').first(2)
+      within(first_divs[0]) { expect(page).to have_field("follow_explicit_points", with: 10.0) }
+      within(first_divs[1]) { expect(page).to have_field("follow_explicit_points", with: 5.0) }
     end
   end
 

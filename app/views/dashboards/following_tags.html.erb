@@ -15,10 +15,17 @@
 
     <div class="crayons-layout__content mb-5" id="user-dashboard">
       <% if @followed_tags.any? %>
+        <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
+
         <div class="crayons-notice p-4 px-6 mb-4 mx-2 m:mx-0">
             Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
             <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent ml-3">Default 1.0</span>
         </div>
+
+        <%= form_with url: bulk_update_follows_path, method: :patch, local: true, id: "follows_update_form" do |f| %>
+          <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit">Update Weights</button>
+        <% end %>
+        
         <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
           <% negative_follow_shown_once = false %>
           <% @followed_tags.each do |follow| %>
@@ -39,9 +46,9 @@
                   <%= strip_tags(tag.short_summary) %>
                 </p>
 
-                <%= form_for(follow, html: { class: "flex items-right w-100" }) do |f| %>
-                  <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield grow-1 fs-s inline-block w-75") %>
-                  <button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s inline-block ml-2" name="commit" style="min-width:60px;">Save</button>
+                <%= fields(follow) do |f| %>
+                  <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form") %>
+                  <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form") %>
                 <% end %>
               </div>
             <% end %>
