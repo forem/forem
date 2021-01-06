@@ -3,6 +3,9 @@
 const { spawn } = require('child_process');
 const fetch = require('node-fetch');
 
+// Cypress tasks have to return a value to be considered successful. undefined does not work, so null is returned instead.
+// to deem the task successful.
+
 async function runBundleExec(command) {
   return new Promise((resolve, reject) => {
     const child = spawn('bundle', ['exec', command]);
