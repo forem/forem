@@ -495,6 +495,7 @@ Rails.application.routes.draw do
 
     get "/feed" => "articles#feed", :as => "feed", :defaults => { format: "rss" }
     get "/feed/tag/:tag" => "articles#feed", :as => "tag_feed", :defaults => { format: "rss" }
+    get "/feed/latest" => "articles#feed", :as => "latest_feed", :defaults => { format: "rss" }
     get "/feed/:username" => "articles#feed", :as => "user_feed", :defaults => { format: "rss" }
     get "/rss" => "articles#feed", :defaults => { format: "rss" }
 
