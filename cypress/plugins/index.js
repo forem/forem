@@ -91,6 +91,46 @@ module.exports = (on, config) => {
       // Cypress tasks require a return value, so returning null.
       return null;
     },
+
+    async seedData(seedName) {
+      const success = await new Promise((resolve, reject) => {
+        // Clear the DB for the next test run.
+        const child = spawn('bundle', ['exec', `rake db:seed:${seedName}`]);
+        const errorChunks = [];
+
+        child.stderr.on('data', (chunk) =>
+          errorChunks.push(Buffer.from(chunk)),
+        );
+
+        child.on('error', (error) => {
+          reject(error);
+        });
+
+        child.on('exit', (status, _code) => {
+          if (status !== 0) {
+            const errorMessage = Buffer.concat(errorChunks).toString('UTF-8');
+
+            reject(
+              new Error(
+                `There was an error running "bundle exec rails db:seed:${seedName}". The status was ${status} with the following error:\n${errorMessage}`,
+              ),
+            );
+          }
+
+          resolve(status === 0);
+        });
+      });
+
+      if (!success) {
+        throw new Error(
+          `The database did not seed successfully for the seed ${seedName}`,
+        );
+      }
+
+      // Nothing to do, we're all good.
+      // Cypress tasks require a return value, so returning null.
+      return null;
+    },
   });
 
   return config;
