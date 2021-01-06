@@ -25,14 +25,16 @@ RSpec.describe Articles::RssReaderWorker, type: :worker do
     end
 
     it "enqueues Feeds::ImportArticlesWorker if the :feeds_import flag is enabled" do
+      allow(Feeds::ImportArticlesWorker).to receive(:perform_async)
       allow(RssReader).to receive(:get_all_articles)
       allow(FeatureFlag).to receive(:enabled?).with(:feeds_import).and_return(true)
 
-      sidekiq_assert_enqueued_jobs(1, only: Feeds::ImportArticlesWorker) do
+      Timecop.freeze(Time.current) do
         worker.perform
-      end
 
-      expect(RssReader).not_to have_received(:get_all_articles)
+        expect(RssReader).not_to have_received(:get_all_articles)
+        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(4.hours.ago)
+      end
     end
 
     it "short circuits if it's running on DEV" do
