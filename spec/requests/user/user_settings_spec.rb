@@ -309,7 +309,7 @@ RSpec.describe "UserSettings", type: :request do
       let(:user) { create(:user, feed_url: feed_url) }
 
       it "invokes RssReaderFetchUserWorker" do
-        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
+        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(nil, user.id)
         allow(RssReaderFetchUserWorker).to receive(:perform_async).with(user.id)
 
         put user_path(user.id), params: { user: { feed_url: feed_url } }
@@ -319,13 +319,13 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "invokes Feeds::ImportArticlesWorker if feeds_import feature flag is on" do
-        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(user.id)
+        allow(Feeds::ImportArticlesWorker).to receive(:perform_async).with(nil, user.id)
         allow(RssReaderFetchUserWorker).to receive(:perform_async).with(user.id)
         allow(FeatureFlag).to receive(:enabled?).with(:feeds_import).and_return(true)
 
         put user_path(user.id), params: { user: { feed_url: feed_url } }
 
-        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(user.id)
+        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(nil, user.id)
         expect(RssReaderFetchUserWorker).not_to have_received(:perform_async).with(user.id)
       end
     end

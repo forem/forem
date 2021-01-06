@@ -33,7 +33,7 @@ RSpec.describe Articles::RssReaderWorker, type: :worker do
         worker.perform
 
         expect(RssReader).not_to have_received(:get_all_articles)
-        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(nil, 4.hours.ago)
+        expect(Feeds::ImportArticlesWorker).to have_received(:perform_async).with(4.hours.ago)
       end
     end
 

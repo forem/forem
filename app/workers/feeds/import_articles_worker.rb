@@ -4,7 +4,7 @@ module Feeds
 
     sidekiq_options queue: :medium_priority, retry: 10
 
-    def perform(user_ids = [], earlier_than = nil)
+    def perform(earlier_than, user_ids = [])
       users = user_ids.present? ? User.where(id: user_ids) : nil
 
       ::Feeds::Import.call(users: users, earlier_than: earlier_than)
