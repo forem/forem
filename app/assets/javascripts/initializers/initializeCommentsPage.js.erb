@@ -260,11 +260,16 @@ function handleCommentSubmit(event) {
           activateRunkitTags();
         })
       } else {
+        form.classList.remove('submitting');
+        var responseStatus = response.status;
         response.json().then(function parseError(errorReponse) {
-          form.classList.remove('submitting');
-          showRateLimitModal('made a comment', 'making another comment')
-          return false;
+          if (responseStatus === 429) {
+            showRateLimitModal('made a comment', 'making another comment')
+          } else {
+            alert(errorReponse.error)
+          }
         });
+        return false;
       }
       return false;
     });
