@@ -159,7 +159,7 @@
     "babel-preset-preact": "^2.0.0",
     "canvas": "^2.6.1",
     "chart.js": "^2.9.4",
-    "clipboard-polyfill": "^3.0.1",
+    "clipboard-polyfill": "^3.0.2",
     "core-js": "3",
     "file-loader": "^6.2.0",
     "focus-visible": "^5.2.0",
