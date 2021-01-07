@@ -345,6 +345,7 @@ Rails.application.routes.draw do
     get "/internal/:path", to: redirect("/admin/%{path}")
 
     post "/pusher/auth" => "pusher#auth"
+    get "/pusher/beams_auth" => "pusher#beams_auth"
 
     # Chat channel
     patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"

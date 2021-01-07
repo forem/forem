@@ -24,4 +24,12 @@ class PusherController < ApplicationController
     channel = ChatChannel.find(id)
     channel.has_member?(current_user)
   end
+
+  def beams_auth
+    if user_signed_in? && current_user.id == params[:user_id].to_i
+      render json: { token: Pusher::PushNotifications.generate_token(params[:user_id]) }
+    else
+      render json: { error: "Unauthorized", status: 401 }, status: :unauthorized
+    end
+  end
 end
