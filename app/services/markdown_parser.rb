@@ -1,6 +1,5 @@
 class MarkdownParser
   include ApplicationHelper
-  include CodeBlockParser
 
   BAD_XSS_REGEX = [
     /src=["'](data|&)/i,
@@ -8,8 +7,6 @@ class MarkdownParser
   ].freeze
 
   WORDS_READ_PER_MINUTE = 275.0
-
-  RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
 
   def initialize(content, source: nil, user: nil)
     @content = content
@@ -32,18 +29,8 @@ class MarkdownParser
     rescue Liquid::SyntaxError => e
       html = e.message
     end
-    html = remove_nested_linebreak_in_list(html)
-    html = prefix_all_images(html)
-    html = wrap_all_images_in_links(html)
-    html = add_control_class_to_codeblock(html)
-    html = add_control_panel_to_codeblock(html)
-    html = add_fullscreen_button_to_panel(html)
-    html = wrap_all_tables(html)
-    html = remove_empty_paragraphs(html)
-    html = escape_colon_emojis_in_codeblock(html)
-    html = unescape_raw_tag_in_codeblocks(html)
-    html = wrap_all_figures_with_tags(html)
-    wrap_mentions_with_links!(html)
+
+    parse_html(html)
   end
 
   def calculate_reading_time
@@ -121,11 +108,6 @@ class MarkdownParser
     raise ArgumentError, "Invalid markdown detected"
   end
 
-  def allowed_image_host?(src)
-    # GitHub camo image won't parse but should be safe to host direct
-    src.start_with?("https://camo.githubusercontent.com")
-  end
-
   def escape_liquid_tags_in_codeblock(content)
     # Escape codeblocks, code spans, and inline code
     content.gsub(/[[:space:]]*`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
@@ -139,30 +121,25 @@ class MarkdownParser
     end
   end
 
-  def possibly_raw_tag_syntax?(array)
-    (RAW_TAG_DELIMITERS & array).any?
-  end
+  private
 
-  def user_link_if_exists(mention)
-    username = mention.delete("@").downcase
-    if User.find_by(username: username)
-      <<~HTML
-        <a class='comment-mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{SiteConfig.app_domain}/#{username}'>@#{username}</a>
-      HTML
-    else
-      mention
-    end
-  end
+  def parse_html(html)
+    return html if html.blank?
 
-  def img_of_size(source, width = 880)
-    Images::Optimizer.call(source, width: width).gsub(",", "%2C")
-  end
-
-  def all_children_are_blank?(node)
-    node.children.all? { |child| blank?(child) }
-  end
-
-  def blank?(node)
-    (node.text? && node.content.strip == "") || (node.element? && node.name == "br")
+    Html::Parser
+      .new(html)
+      .remove_nested_linebreak_in_list
+      .prefix_all_images
+      .wrap_all_images_in_links
+      .add_control_class_to_codeblock
+      .add_control_panel_to_codeblock
+      .add_fullscreen_button_to_panel
+      .wrap_all_tables
+      .remove_empty_paragraphs
+      .escape_colon_emojis_in_codeblock
+      .unescape_raw_tag_in_codeblocks
+      .wrap_all_figures_with_tags
+      .wrap_mentions_with_links
+      .html
   end
 end

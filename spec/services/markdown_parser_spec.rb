@@ -1,15 +1,11 @@
 require "rails_helper"
 
-RSpec.describe MarkdownParser, type: :labor do
+RSpec.describe MarkdownParser, type: :service do
   let(:random_word) { Faker::Lorem.word }
   let(:basic_parsed_markdown) { described_class.new(random_word) }
 
   def generate_and_parse_markdown(raw_markdown)
     described_class.new(raw_markdown).finalize
-  end
-
-  it "has the correct raw tag delimiters" do
-    expect(described_class::RAW_TAG_DELIMITERS).to match_array(["{", "}", "raw", "endraw", "----"])
   end
 
   it "renders plain text as-is" do
@@ -132,7 +128,7 @@ RSpec.describe MarkdownParser, type: :labor do
       expect(result).to include "<a"
     end
 
-    it "works with undescore" do
+    it "works with underscore" do
       mention = "what was found here _@#{user.username}_ let see"
       result = generate_and_parse_markdown(mention)
       expect(result).to include "<a", "<em"
