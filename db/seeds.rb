@@ -4,7 +4,7 @@ return if Rails.env.production?
 
 # NOTE: when adding new data, please use the Seeder class to ensure the seed tasks
 # stays idempotent.
-require_relative "seeds/seeder"
+require Rails.root.join("app/lib/seeder")
 
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data

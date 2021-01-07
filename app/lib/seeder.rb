@@ -1,3 +1,5 @@
+# rubocop:disable Rails/Output
+
 class Seeder
   def initialize
     @counter = 0
@@ -33,3 +35,5 @@ class Seeder
     end
   end
 end
+
+# rubocop:enable Rails/Output
