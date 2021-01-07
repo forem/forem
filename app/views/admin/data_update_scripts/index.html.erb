@@ -14,7 +14,11 @@
         <tr>
           <td class="whitespace-nowrap"><%= script.id %></td>
           <td><%= link_to script.file_name, admin_broadcast_path(script.id) %></td>
-          <td class="whitespace-nowrap"><%= script.status %></td>
+          <td class="whitespace-nowrap justify-content-center">
+            <%= script.status == "succeeded" ?
+                inline_svg_tag("twemoji/check_mark.svg", aria: true, class: "crayons-icon crayons-icon--default success-icon", title: "Success") : inline_svg_tag("twemoji/cross_mark.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Failed") %>
+          </td>
+
           <td><%= script.created_at %></td>
           <td><%= script.run_at %></td>
         </tr>
