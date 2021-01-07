@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 /* eslint-env node */
 
-const { createResetDataTask, seedData } = require('./seed.js');
+const { resetData, seedData } = require('./seed.js');
 
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
@@ -28,7 +28,7 @@ module.exports = (on, config) => {
   };
 
   on('task', {
-    resetData: createResetDataTask(config),
+    resetData,
     seedData,
   });
 

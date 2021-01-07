@@ -1,7 +1,6 @@
 /* eslint-env node */
 
 const { spawn } = require('child_process');
-const fetch = require('node-fetch');
 
 // Cypress tasks have to return a value to be considered successful. undefined does not work, so null is returned instead.
 // to deem the task successful.
@@ -57,45 +56,28 @@ async function seedData(seedName) {
 /**
  * Resets the data to a clean slate in the database.
  *
- * @param {object} config The Cypress configuration object.
- *
  * @returns {Promise<boolean>} Returns null if successful, otherwise it throws.
  */
-function createResetDataTask(config) {
-  return async function resetData() {
-    const clearSearchIndices = fetch(`${config.env.ELASTICSEARCH_URL}/*`, {
-      method: 'DELETE',
-    });
+async function resetData() {
+  const clearSearchIndices = runBundleExec('rake search:destroy');
+  const truncateDB = runBundleExec('rails db:truncate_all');
 
-    const truncateDB = runBundleExec('rails db:truncate_all');
+  const [
+    clearedSearchIndicesResponse = false,
+    clearedDB = false,
+  ] = await Promise.all([clearSearchIndices, truncateDB]);
 
-    const [clearSearchIndicesResponse, clearedDB = false] = await Promise.all([
-      clearSearchIndices,
-      truncateDB.catch((error) => {
-        throw new Error(error);
-      }),
-    ]);
-    const {
-      acknowledged = false,
-      error,
-    } = await clearSearchIndicesResponse.json();
+  if (!clearedSearchIndicesResponse) {
+    throw new Error('The search indices were not removed successfully.');
+  }
 
-    if (!acknowledged || error) {
-      throw new Error(
-        `There was an error clearing indices in Elastic Search:\n${
-          error ? JSON.stringify(error, null, '\t') : ''
-        }`,
-      );
-    }
+  if (!clearedDB) {
+    throw new Error('The database did not truncate successfully');
+  }
 
-    if (!clearedDB) {
-      throw new Error(`The database did not truncate successfully`);
-    }
-
-    // Nothing to do, we're all good.
-    // Cypress tasks require a return value, so returning null.
-    return null;
-  };
+  // Nothing to do, we're all good.
+  // Cypress tasks require a return value, so returning null.
+  return null;
 }
 
-module.exports = { createResetDataTask, seedData };
+module.exports = { resetData, seedData };
