@@ -1,12 +1,12 @@
 module Bufferizer
   class SatelliteTweet
-    def self.call(article, text, admin_id = nil)
-      return unless article && text
+    def self.call(article, tweet, admin_id = nil)
+      return unless article && tweet
 
       article.tags.find_each do |tag|
         next if tag.buffer_profile_id_code.blank?
 
-        text = twitter_buffer_text(text, article)
+        text = twitter_buffer_text(tweet, article)
 
         if text.length < 250 && SiteConfig.twitter_hashtag
           text = text.gsub(
@@ -27,8 +27,8 @@ module Bufferizer
       article.update(last_buffered: Time.current)
     end
 
-    def self.twitter_buffer_text(text, article)
-      "#{text} #{URL.article(article)}" if text.size <= 255
+    def self.twitter_buffer_text(tweet, article)
+      "#{tweet} #{URL.article(article)}" if tweet.size <= 255
     end
 
     private_class_method :twitter_buffer_text
