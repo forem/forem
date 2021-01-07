@@ -137,7 +137,7 @@
     "node-fetch": "^2.6.1",
     "prettier": "^2.2.1",
     "redoc-cli": "0.10.2",
-    "sass": "1.32.0",
+    "sass": "1.32.2",
     "sass-loader": "^10.1.0",
     "start-server-and-test": "^1.11.7",
     "style-loader": "^2.0.0",
