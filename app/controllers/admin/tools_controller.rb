@@ -43,10 +43,10 @@ module Admin
       if link.starts_with?(URL.url)
         link.sub!(URL.url, "")
       end
-      CacheBuster.bust(link)
-      CacheBuster.bust("#{link}/")
-      CacheBuster.bust("#{link}?i=i")
-      CacheBuster.bust("#{link}/?i=i")
+      EdgeCache::Bust.call(link)
+      EdgeCache::Bust.call("#{link}/")
+      EdgeCache::Bust.call("#{link}?i=i")
+      EdgeCache::Bust.call("#{link}/?i=i")
     end
   end
 end

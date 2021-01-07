@@ -262,10 +262,12 @@ describe('<ListingDashboard />', () => {
     // edit and delete buttons
     const editButton = getByText('Edit', listing1GetByTextOptions);
 
+    expect(editButton.nodeName).toEqual('A');
     expect(editButton.getAttribute('href')).toEqual('/listings/23/edit');
 
     const deleteButton = getByText('Delete', listing1GetByTextOptions);
 
+    expect(deleteButton.nodeName).toEqual('A');
     expect(deleteButton.getAttribute('href')).toEqual(
       '/listings/cfp/asdfasdf-2ea8/delete_confirm',
     );

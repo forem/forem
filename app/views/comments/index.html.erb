@@ -11,7 +11,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Discussion of <%= @commentable.title %>" />
   <meta property="og:description" content="<%= @commentable.description || "#{community_name} Comment" %>" />
-  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+  <meta property="og:site_name" content="<%= community_name %>" />
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
@@ -117,12 +117,12 @@
 
     <div class="comments" id="comment-trees-container">
       <% if @root_comment.present? %>
-        <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
+        <% cache["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
           <%= tree_for(@root_comment, @root_comment.subtree.includes(:user).arrange[@root_comment], @commentable) %>
         <% end %>
       <% else %>
         <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
-          <% cache ["comment_root_#{user_signed_in?}", comment] do %>
+          <% cache["comment_root_#{user_signed_in?}", comment] do %>
             <%= tree_for(comment, sub_comments, @commentable) %>
           <% end %>
         <% end %>

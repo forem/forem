@@ -45,7 +45,7 @@ module ApplicationHelper
     derived_title = if page_title.include?(community_name)
                       page_title
                     elsif user_signed_in?
-                      "#{page_title} - #{community_qualified_name} #{community_emoji}"
+                      "#{page_title} - #{community_name} #{community_emoji}"
                     else
                       "#{page_title} - #{community_name}"
                     end
@@ -171,12 +171,6 @@ module ApplicationHelper
 
   def community_emoji
     @community_emoji ||= SiteConfig.community_emoji
-  end
-
-  def community_qualified_name
-    return "#{community_name} #{SiteConfig.collective_noun}" unless SiteConfig.collective_noun_disabled
-
-    community_name
   end
 
   def release_adjusted_cache_key(path)

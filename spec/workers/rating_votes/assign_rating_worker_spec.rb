@@ -7,7 +7,7 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
   let(:worker) { subject }
 
   before do
-    allow(CacheBuster).to receive(:bust_podcast)
+    allow(EdgeCache::BustPodcast).to receive(:call)
     user.add_role(:trusted)
   end
 

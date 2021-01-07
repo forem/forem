@@ -9,6 +9,11 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    ignore:
+      # Ignoring binding_of_caller 1.0 temporarily until we find a solution for it breaking Docker
+      # see <https://github.com/forem/forem/issues/12068>
+      - dependency-name: "binding_of_caller"
+        versions: [">= 1.0"]
 
   # Set update schedule for Yarn/NPM
   - package-ecosystem: "npm"

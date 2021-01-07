@@ -178,12 +178,12 @@ class ApplicationController < ActionController::Base
   end
 
   def bust_content_change_caches
-    CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited.
-    CacheBuster.bust("/shell_top") # Cached at edge, sent to service worker.
-    CacheBuster.bust("/shell_bottom") # Cached at edge, sent to service worker.
-    CacheBuster.bust("/async_info/shell_version") # Checks if current users should be busted.
-    CacheBuster.bust("/onboarding") # Page is cached at edge.
-    CacheBuster.bust("/") # Page is cached at edge.
+    EdgeCache::Bust.call("/tags/onboarding") # Needs to change when suggested_tags is edited.
+    EdgeCache::Bust.call("/shell_top") # Cached at edge, sent to service worker.
+    EdgeCache::Bust.call("/shell_bottom") # Cached at edge, sent to service worker.
+    EdgeCache::Bust.call("/async_info/shell_version") # Checks if current users should be busted.
+    EdgeCache::Bust.call("/onboarding") # Page is cached at edge.
+    EdgeCache::Bust.call("/") # Page is cached at edge.
     SiteConfig.admin_action_taken_at = Time.current # Used as cache key
   end
 

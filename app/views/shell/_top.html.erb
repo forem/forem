@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <% title = yield(:title) %>
-    <title><%= title || community_qualified_name.to_s %></title>
+    <title><%= title || community_name.to_s %></title>
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
@@ -45,7 +45,7 @@
       <meta name="application-name" content="<%= SiteConfig.app_domain %>">
       <meta name="theme-color" content="#000000" />
       <link rel="manifest" href="/manifest.json" />
-      <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_qualified_name %>" />
+      <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_name %>" />
 
       <meta property="forem:name" content="<%= community_name %>" />
       <meta property="forem:logo" content="<%= optimized_image_url(SiteConfig.logo_png, width: 512, fetch_format: "png") %>" />

@@ -28,7 +28,7 @@ RSpec.describe "User visits a homepage", type: :system do
     describe "link tags" do
       it "contains the qualified community name in the search link" do
         visit "/"
-        selector = "link[rel='search'][title='#{community_qualified_name}']"
+        selector = "link[rel='search'][title='#{community_name}']"
         expect(page).to have_selector(selector, visible: :hidden)
       end
     end

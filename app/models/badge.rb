@@ -18,6 +18,10 @@ class Badge < ApplicationRecord
     "/badge/#{slug}"
   end
 
+  def self.id_for_slug(slug)
+    select(:id).find_by(slug: slug)&.id
+  end
+
   private
 
   def generate_slug
@@ -25,7 +29,7 @@ class Badge < ApplicationRecord
   end
 
   def bust_path
-    CacheBuster.bust(path)
-    CacheBuster.bust("#{path}?i=i")
+    EdgeCache::Bust.call(path)
+    EdgeCache::Bust.call("#{path}?i=i")
   end
 end

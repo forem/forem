@@ -53,25 +53,27 @@ function renderTagsFollowed(user = userData()) {
 }
 
 function renderSidebar() {
-  const sidebarContainer = document.getElementById(
-    'sidebar-wrapper-right',
-  );
+  const sidebarContainer = document.getElementById('sidebar-wrapper-right');
 
   // If the screen's width is less than 1024px we don't need this extra data.
-  if (sidebarContainer && screen.width > 1023) {
-    window.fetch('/sidebars/home')
-    .then(res => res.text())
-    .then(response => {
-      sidebarContainer.innerHTML = response;
-    });
+  if (
+    sidebarContainer &&
+    screen.width > 1023 &&
+    window.location.pathname === '/'
+  ) {
+    window
+      .fetch('/sidebars/home')
+      .then((res) => res.text())
+      .then((response) => {
+        sidebarContainer.innerHTML = response;
+      });
   }
 }
-
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
 
 if (!document.getElementById('featured-story-marker')) {
-  const waitingForDataLoad = setInterval(function dataLoadedCheck() {
+  const waitingForDataLoad = setInterval(() => {
     const { user = null, userStatus } = document.body.dataset;
     if (userStatus === 'logged-out') {
       return;
@@ -104,8 +106,8 @@ if (!document.getElementById('featured-story-marker')) {
         });
       });
 
-      renderTagsFollowed();    
-      renderSidebar();    
+      renderTagsFollowed();
+      renderSidebar();
     }
   }, 2);
 }

@@ -141,7 +141,6 @@ class User < ApplicationRecord
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
-  has_many :endorsements, dependent: :destroy, class_name: "ListingEndorsement"
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
@@ -489,8 +488,8 @@ class User < ApplicationRecord
   def resave_articles
     articles.find_each do |article|
       if article.path
-        CacheBuster.bust(article.path)
-        CacheBuster.bust("#{article.path}?i=i")
+        EdgeCache::Bust.call(article.path)
+        EdgeCache::Bust.call("#{article.path}?i=i")
       end
       article.save
     end
@@ -654,7 +653,7 @@ class User < ApplicationRecord
     return unless persisted?
 
     index_to_elasticsearch_inline
-  rescue => e
+  rescue StandardError => e
     Honeybadger.notify(e, context: { user_id: id })
   end
 

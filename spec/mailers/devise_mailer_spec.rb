@@ -11,7 +11,7 @@ RSpec.describe DeviseMailer, type: :mailer do
     end
 
     it "renders sender" do
-      expected_from = "#{SiteConfig.community_name} Community <#{SiteConfig.email_addresses[:default]}>"
+      expected_from = "#{SiteConfig.community_name} <#{SiteConfig.email_addresses[:default]}>"
       expect(email["from"].value).to eq(expected_from)
     end
 
