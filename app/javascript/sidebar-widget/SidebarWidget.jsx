@@ -7,10 +7,9 @@ const SidebarWidget = () => {
   const [suggestedUsers, setSuggestedUsers] = useState([]);
 
   useEffect(() => {
-    const tagInfo =
-      JSON.parse(
-        document.getElementById('sidebarWidget__pack').dataset.tagInfo,
-      ) || {};
+    const tagInfo = JSON.parse(
+      document.getElementById('sidebarWidget__pack').dataset.tagInfo,
+    );
 
     // Fetching suggested users
     fetch(`/users?state=sidebar_suggestions&tag=${tagInfo.name}`, {
