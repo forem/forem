@@ -1,5 +1,9 @@
 @import '../config/import';
 
+.comments-container {
+  overflow-x: auto;
+}
+
 .comment-form {
   --preview-display: none;
   --field-display: flex;
@@ -29,6 +33,7 @@
     display: flex;
     flex-flow: column;
     flex: 1 auto;
+    overflow-x: auto;
   }
 
   .comment-textarea {
