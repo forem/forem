@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useEffect, useState } from 'preact/hooks';
 import sendFollowUser from '../utilities/sendFollowUser';
 import SidebarUser from './sidebarUser';
 
@@ -30,26 +30,23 @@ const SidebarWidget = () => {
       });
   }, []);
 
-  const followUser = useCallback(
-    (user) => {
-      const updatedUser = user;
-      const updatedSuggestedUsers = suggestedUsers;
-      const userIndex = suggestedUsers.indexOf(user);
+  const followUser = (user) => {
+    const updatedUser = user;
+    const updatedSuggestedUsers = suggestedUsers;
+    const userIndex = suggestedUsers.indexOf(user);
 
-      const followBtn = document.getElementById(
-        `widget-list-item__follow-button-${updatedUser.username}`,
-      );
-      followBtn.innerText = updatedUser.following ? 'Follow' : 'Following';
+    const followBtn = document.getElementById(
+      `widget-list-item__follow-button-${updatedUser.username}`,
+    );
+    followBtn.innerText = updatedUser.following ? 'Follow' : 'Following';
 
-      const toggleFollowState = (newFollowState) => {
-        updatedUser.following = newFollowState === 'followed';
-        updatedSuggestedUsers[userIndex] = updatedUser;
-        setSuggestedUsers(updatedSuggestedUsers);
-      };
-      sendFollowUser(user, toggleFollowState);
-    },
-    [suggestedUsers, setSuggestedUsers],
-  );
+    const toggleFollowState = (newFollowState) => {
+      updatedUser.following = newFollowState === 'followed';
+      updatedSuggestedUsers[userIndex] = updatedUser;
+      setSuggestedUsers(updatedSuggestedUsers);
+    };
+    sendFollowUser(user, toggleFollowState);
+  };
 
   if (suggestedUsers.length === 0) {
     return null;
