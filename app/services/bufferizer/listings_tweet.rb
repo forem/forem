@@ -1,0 +1,22 @@
+module Bufferizer
+  class ListingsTweet
+    def self.call(listing, tweet, _admin_id = nil)
+      return unless listing && tweet
+
+      buffer_listings_id = ApplicationConfig["BUFFER_LISTINGS_PROFILE"]
+
+      BufferUpdate.send_to_buffer(
+        listings_twitter_text(tweet, listing),
+        buffer_listings_id,
+      )
+
+      listing.update(last_buffered: Time.current)
+    end
+
+    def self.listings_twitter_text(tweet, listing)
+      "#{tweet} #{URL.url(listing.path)}" if tweet.size <= 255
+    end
+
+    private_class_method :listings_twitter_text
+  end
+end
