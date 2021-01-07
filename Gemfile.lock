@@ -204,7 +204,7 @@ GEM
     database_cleaner-active_record (1.8.0)
       activerecord
       database_cleaner (~> 1.8.0)
-    ddtrace (0.43.0)
+    ddtrace (0.44.0)
       msgpack
     debug_inspector (0.0.3)
     derailed_benchmarks (1.8.1)
@@ -861,7 +861,7 @@ DEPENDENCIES
   cloudinary (~> 1.18)
   counter_culture (~> 2.7)
   database_cleaner-active_record (~> 1.8.0)
-  ddtrace (~> 0.43.0)
+  ddtrace (~> 0.44.0)
   derailed_benchmarks (~> 1.8)
   devise (~> 4.7)
   devise_invitable (~> 2.0.3)
