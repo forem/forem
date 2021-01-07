@@ -51,7 +51,7 @@ RSpec.describe "/admin/buffer_updates", type: :request do
     it "updates last facebook buffered at" do
       post "/admin/buffer_updates",
            params:
-           { social_channel: "facebook", article_id: article.id, tweet: "Hello this is a test" }
+           { social_channel: "facebook", article_id: article.id, fb_post: "Hello this is a test" }
       expect(article.reload.facebook_last_buffered).not_to eq(nil)
     end
   end
