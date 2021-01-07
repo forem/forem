@@ -1,4 +1,4 @@
-import { h, Fragment } from 'preact';
+import { h } from 'preact';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import sendFollowUser from '../utilities/sendFollowUser';
 import SidebarUser from './sidebarUser';
@@ -51,28 +51,29 @@ const SidebarWidget = () => {
     [suggestedUsers, setSuggestedUsers],
   );
 
-  if (suggestedUsers.length > 0) {
-    return (
-      <div className="widget" id="widget-00001">
-        <div className="widget-suggested-follows-container">
-          <header>
-            <h4>who to follow</h4>
-          </header>
-          <div className="widget-body">
-            {suggestedUsers.map((user, index) => (
-              <SidebarUser
-                key={user.id}
-                user={user}
-                followUser={followUser}
-                index={index}
-              />
-            ))}
-          </div>
+  if (suggestedUsers.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="widget" id="widget-00001">
+      <div className="widget-suggested-follows-container">
+        <header>
+          <h4>who to follow</h4>
+        </header>
+        <div className="widget-body">
+          {suggestedUsers.map((user, index) => (
+            <SidebarUser
+              key={user.id}
+              user={user}
+              followUser={followUser}
+              index={index}
+            />
+          ))}
         </div>
       </div>
-    );
-  }
-  return <Fragment />;
+    </div>
+  );
 };
 
 export default SidebarWidget;
