@@ -57,7 +57,7 @@ gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable
 gem "katex", "~> 0.6.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "mini_racer", "~> 0.3.1" # Minimal embedded v8
-gem "nokogiri", "~> 1.10" # HTML, XML, SAX, and Reader parser
+gem "nokogiri", "~> 1.11" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.20" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.10" # JSON parser and object serializer
 gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider authentication
@@ -105,7 +105,7 @@ gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "store_attribute", "~> 0.8.1" # ActiveRecord extension which adds typecasting to store accessors.
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.28" # Ruby library for the Stripe API
+gem "stripe", "~> 5.29" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.7" # Catch unsafe migrations
 gem "twilio-ruby", "~> 5.45" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
@@ -118,7 +118,10 @@ gem "webpacker", "~> 5.2.1" # Use webpack to manage app-like JavaScript modules 
 
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
-  gem "binding_of_caller", "~> 1.0" # Retrieve the binding of a method's caller
+
+  # NOTE: [@rhymes] binding_of_caller 1.0 breaks Docker Compose, see <https://github.com/forem/forem/issues/12068>
+  gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
+
   gem "brakeman", "~> 4.10", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.7" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.8", require: false # A series of things you can use to benchmark a Rails or Ruby app
@@ -143,7 +146,7 @@ group :development, :test do
   gem "capybara", "~> 3.34" # Capybara is an integration testing tool for rack based web applications
   gem "dotenv-rails", "~> 2.7.6" # For loading ENV variables locally
   gem "faker", "~> 2.15" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 2.10.1" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 2.11.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 1.7", require: false # Automatic Ruby code style checking tool
@@ -164,7 +167,7 @@ group :test do
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "~> 4.4.1", require: false # Simple one-liner tests for common Rails functionality
-  gem "simplecov", "~> 0.21.0", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
+  gem "simplecov", "~> 0.21.1", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 3.0", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.12" # Ruby Tests Profiling Toolbox
