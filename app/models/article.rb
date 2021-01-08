@@ -469,6 +469,7 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache
+    touch_actor_latest_article_updated_at(destroying: true)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
@@ -664,11 +665,20 @@ class Article < ApplicationRecord
     self.canonical_url = nil if canonical_url == ""
   end
 
+  def touch_actor_latest_article_updated_at(destroying: false)
+    updated_cached_values = saved_changes.keys.intersection(%w[title cached_tag_list]).present?
+    return unless destroying || updated_cached_values
+
+    user.touch(:latest_article_updated_at)
+    organization&.touch(:latest_article_updated_at)
+  end
+
   def bust_cache
     EdgeCache::Bust.call(path)
     EdgeCache::Bust.call("#{path}?i=i")
     EdgeCache::Bust.call("#{path}?preview=#{password}")
     async_bust
+    touch_actor_latest_article_updated_at
   end
 
   def calculate_base_scores
