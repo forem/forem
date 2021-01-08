@@ -1,7 +1,7 @@
 module Bufferizer
   class SatelliteTweet
-    def self.call(article, tweet, admin_id = nil)
-      return unless article && tweet
+    def self.call(article, tweet, admin_id)
+      return unless article && tweet && admin_id
 
       article.tags.find_each do |tag|
         next if tag.buffer_profile_id_code.blank?

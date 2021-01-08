@@ -8,14 +8,21 @@ RSpec.describe Bufferizer::FacebookPost, type: :service do
 
     context "when article is nil" do
       it "doesn't raise an error" do
-        tweet = "test tweet"
-        expect { described_class.call(nil, tweet) }.not_to raise_error
+        post = "test post"
+        expect { described_class.call(nil, post, user.id) }.not_to raise_error
       end
     end
 
     context "when post is nil" do
       it "doesn't raise an error" do
-        expect { described_class.call(article, nil) }.not_to raise_error
+        expect { described_class.call(article, nil, user.id) }.not_to raise_error
+      end
+    end
+
+    context "when admin_id is nil" do
+      it "doesn't raise an error" do
+        post = "test post"
+        expect { described_class.call(article, post, nil) }.not_to raise_error
       end
     end
 
@@ -27,7 +34,7 @@ RSpec.describe Bufferizer::FacebookPost, type: :service do
 
     it "adds linkedin social tags" do
       post = "test facebook post"
-      described_class.call(article, post)
+      described_class.call(article, post, user.id)
       expect(BufferUpdate.last.body_text).to include(" #programming")
       expect(BufferUpdate.last.body_text).to include(" ##{article.tag_list.first}")
     end

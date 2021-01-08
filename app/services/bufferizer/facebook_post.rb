@@ -1,7 +1,7 @@
 module Bufferizer
   class FacebookPost
-    def self.call(article, post, admin_id = nil)
-      return unless article && post
+    def self.call(article, post, admin_id)
+      return unless article && post && admin_id
 
       BufferUpdate.buff!(
         article.id,

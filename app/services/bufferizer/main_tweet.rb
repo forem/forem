@@ -1,7 +1,7 @@
 module Bufferizer
   class MainTweet
-    def self.call(article, tweet, admin_id = nil)
-      return unless article && tweet
+    def self.call(article, tweet, admin_id)
+      return unless article && tweet && admin_id
 
       BufferUpdate.buff!(
         article.id,

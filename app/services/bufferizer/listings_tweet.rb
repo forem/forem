@@ -1,6 +1,6 @@
 module Bufferizer
   class ListingsTweet
-    def self.call(listing, tweet, _admin_id = nil)
+    def self.call(listing, tweet)
       return unless listing && tweet
 
       buffer_listings_id = ApplicationConfig["BUFFER_LISTINGS_PROFILE"]
