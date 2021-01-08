@@ -25,7 +25,7 @@ RSpec.describe "/admin", type: :request do
 
   describe "Last deployed and Lastest Commit ID card" do
     it "shows 'Not Available' if the Last deployed time is missing" do
-      ENV["HEROKU_RELEASE_CREATED_AT"] = ""
+      stub_const("ENV", ENV.to_h.merge("HEROKU_RELEASE_CREATED_AT" => ""))
 
       get admin_path
 
@@ -33,7 +33,7 @@ RSpec.describe "/admin", type: :request do
     end
 
     it "shows the correct value if the Last deployed time is available" do
-      ENV["HEROKU_RELEASE_CREATED_AT"] = "Some date"
+      stub_const("ENV", ENV.to_h.merge("HEROKU_RELEASE_CREATED_AT" => "Some date"))
 
       get admin_path
 
