@@ -266,7 +266,7 @@ function handleCommentSubmit(event) {
           if (responseStatus === 429) {
             showRateLimitModal('made a comment', 'making another comment')
           } else {
-            alert(errorReponse.error)
+            showUserAlertModal('Error posting comment', 'Your comment could not be posted due to an error: ' + errorReponse.error, 'OK')
           }
         });
         return false;

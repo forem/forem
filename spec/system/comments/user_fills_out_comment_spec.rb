@@ -64,6 +64,24 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     end
   end
 
+  context "when there is an error posting a comment" do
+    let(:unconfigured_twitter_comment) { "{% twitter 733111952256335874 %}" }
+
+    before do
+      stub_request(:post, "https://api.twitter.com/oauth2/token")
+        .to_return(status: 400, body: '{"errors":[{"code":215,"message":"Bad Authentication data."}]}', headers: {})
+    end
+
+    it "displays a error modal" do
+      visit article.path.to_s
+      wait_for_javascript
+
+      fill_in "text-area", with: unconfigured_twitter_comment
+      click_button("Submit")
+      expect(page).to have_text("Error posting comment")
+    end
+  end
+
   context "with Runkit tags" do
     before do
       visit article.path.to_s
