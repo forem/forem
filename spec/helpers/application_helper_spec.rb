@@ -48,6 +48,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     it "includes SiteConfig.admin_action_taken_at" do
       Timecop.freeze do
         allow(SiteConfig).to receive(:admin_action_taken_at).and_return(5.minutes.ago)
+        allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("abc123")
         expect(helper.release_adjusted_cache_key("cache-me")).to include(SiteConfig.admin_action_taken_at.rfc3339)
       end
     end

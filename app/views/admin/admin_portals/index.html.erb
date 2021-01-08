@@ -1,3 +1,15 @@
+<div>
+  <div class="tag-card crayons-card p-4 m:p-6 m:pt-4 mb-4 flex flex-row relative">
+    <div class="mr-8">
+      <div class="crayons-field__description">Last deployed</div>
+      <div><%= ApplicationConfig["RELEASE_FOOTPRINT"].presence || ENV["HEROKU_RELEASE_CREATED_AT"].presence || "Not Available" %></div>
+    </div>
+    <div>
+      <div class="crayons-field__description">Latest Commit ID</div>
+      <div><%= ApplicationConfig["FOREM_BUILD_SHA"].presence || ENV["HEROKU_SLUG_COMMIT"].presence || "Not Available" %></div>
+    </div>
+  </div>
+
   <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
     <% admin_menu_items.each do |menu_item| %>
       <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative">
@@ -9,3 +21,4 @@
       </div>
     <% end %>
   </div>
+</div>
