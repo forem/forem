@@ -36,11 +36,7 @@
   </div>
 
   <% cache("article-sticky-nav-articles-0-#{@article.id}-#{@actor.last_article_at}", expires_in: 48.hours) do %>
-    <% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
-    <% @sticky_articles = @sticky_collection.suggested_stickies %>
-    <% @user_stickies = @sticky_collection.user_stickies %>
-
-    <% if @user_stickies.present? %>
+    <% if (user_stickies = Articles::GetUserStickies.call(@article, @actor)).present? %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
@@ -48,7 +44,7 @@
           </h3>
         </header>
         <div>
-          <% @user_stickies.each_with_index do |article, index| %>
+          <% user_stickies.each_with_index do |article, index| %>
             <a class="crayons-link crayons-link--contentful" href="<%= article.path %>">
               <%= article.title %>
               <div class="crayons-link__secondary -ml-1">
@@ -60,7 +56,7 @@
           <% end %>
         </div>
       </div>
-    <% elsif @sticky_articles.present? %>
+    <% elsif (sticky_articles = Articles::SuggestStickies.call(@article)).present? %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2">
@@ -69,7 +65,7 @@
           </h3>
         </header>
         <div>
-          <% @sticky_articles.each_with_index do |article, index| %>
+          <% sticky_articles.each_with_index do |article, index| %>
             <a class="crayons-link crayons-link--contentful flex" href="<%= article.path %>">
               <span class="crayons-avatar mr-2 shrink-0">
                 <img src="<%= Images::Profile.call(article.cached_user.profile_image_url, length: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.cached_user.name %> profile image">
