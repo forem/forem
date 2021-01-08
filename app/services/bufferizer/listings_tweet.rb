@@ -1,5 +1,7 @@
 module Bufferizer
   class ListingsTweet
+    TWEET_SIZE_LIMIT = 255
+
     def self.call(listing, tweet)
       return unless listing && tweet
 
@@ -14,7 +16,7 @@ module Bufferizer
     end
 
     def self.listings_twitter_text(tweet, listing)
-      "#{tweet} #{URL.url(listing.path)}" if tweet.size <= 255
+      "#{tweet} #{URL.url(listing.path)}" if tweet.size <= TWEET_SIZE_LIMIT
     end
 
     private_class_method :listings_twitter_text
