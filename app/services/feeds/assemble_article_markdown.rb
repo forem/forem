@@ -1,7 +1,7 @@
-class RssReader
-  class Assembler
+module Feeds
+  class AssembleArticleMarkdown
     def self.call(item, user, feed, feed_source_url)
-      new(item, user, feed, feed_source_url).assemble
+      new(item, user, feed, feed_source_url).call
     end
 
     def initialize(item, user, feed, feed_source_url)
@@ -13,7 +13,7 @@ class RssReader
       @feed_source_url = feed_source_url
     end
 
-    def assemble
+    def call
       body = <<~HEREDOC
         ---
         title: #{@title}
