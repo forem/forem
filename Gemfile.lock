@@ -358,7 +358,7 @@ GEM
     heapy (0.2.0)
       thor
     honeybadger (4.7.2)
-    honeycomb-beeline (2.3.0)
+    honeycomb-beeline (2.4.0)
       libhoney (~> 1.14, >= 1.14.2)
     html_tokenizer (0.0.7)
     html_truncator (0.4.2)
@@ -425,7 +425,7 @@ GEM
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
-    libhoney (1.16.1)
+    libhoney (1.17.0)
       addressable (~> 2.0)
       http (>= 2.0, < 5.0)
     libv8 (8.4.255.0)
@@ -890,7 +890,7 @@ DEPENDENCIES
   guard-livereload (~> 2.5)
   guard-rspec (~> 4.7)
   honeybadger (~> 4.7)
-  honeycomb-beeline (~> 2.3.0)
+  honeycomb-beeline (~> 2.4.0)
   html_truncator (~> 0.4)
   htmlentities (~> 4.3, >= 4.3.4)
   httparty (~> 0.18)
