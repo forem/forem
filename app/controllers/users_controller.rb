@@ -256,7 +256,7 @@ class UsersController < ApplicationController
     set_current_tab("account")
 
     if @user.update_with_password(password_params)
-      redirect_to "/settings/#{@tab}"
+      redirect_to user_settings_path(@tab)
     else
       Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
       Honeycomb.add_field("errored", true)
@@ -264,8 +264,8 @@ class UsersController < ApplicationController
       if @tab
         render :edit, status: :bad_request
       else
-        flash[:error] = @user.errors.full_messages.join(", ")
-        redirect_to "/settings"
+        flash[:error] = @user.errors_as_sentence
+        redirect_to user_settings_path
       end
     end
   end
