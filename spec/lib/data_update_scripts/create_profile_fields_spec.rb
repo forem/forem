@@ -15,7 +15,7 @@ describe DataUpdateScripts::CreateProfileFields do
     it "creates all profile fields and groups" do
       expect do
         described_class.new.run
-      end.to change { profile_field_and_group_count }.from([0, 0]).to([28, 5])
+      end.to change { profile_field_and_group_count }.from([0, 0]).to([26, 5])
     end
   end
 
@@ -29,7 +29,7 @@ describe DataUpdateScripts::CreateProfileFields do
       expect do
         described_class.new.run
       end.not_to change { profile_field_and_group_count }
-      expect(profile_field_and_group_count).to eq [28, 5]
+      expect(profile_field_and_group_count).to eq [26, 5]
     end
   end
 end
