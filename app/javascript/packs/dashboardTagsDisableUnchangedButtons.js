@@ -1,6 +1,4 @@
-document
-  .getElementById('follows_update_form')
-  .addEventListener('submit', checkChanged);
+document.getElementById('follows_update_form').addEventListener('submit', checkChanged);
 
 document.addEventListener('change', (event) => {
   if (event.target && event.target.name == 'follows[][explicit_points]') {
