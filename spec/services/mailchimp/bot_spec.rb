@@ -1,33 +1,15 @@
 require "rails_helper"
 
-# [@forem/oss]: this should be probably refactored using a class_double but for now we silence Rubocop's complaint
-class FakeGibbonRequest < Gibbon::Request
-  # rubocop:disable Lint/UselessMethodDefinition
-  def lists(*args)
-    super
-  end
-
-  def members(*args)
-    super
-  end
-
-  def tag_mods(*args)
-    super
-  end
-
-  def community_mods(*args)
-    super
-  end
-  # rubocop:enable Lint/UselessMethodDefinition
-end
-
 RSpec.describe Mailchimp::Bot, type: :service do
   let(:user) { create(:user, :with_newsletters, :ignore_mailchimp_subscribe_callback) }
   let(:article) { create(:article, user_id: user.id) }
-  let(:my_gibbon_client) { instance_double(FakeGibbonRequest) }
+  let(:my_gibbon_client) { class_double Gibbon::Request }
   let(:tag) do
-    create(:tag, name: "tagname", bg_color_hex: Faker::Color.hex_color, text_color_hex: Faker::Color.hex_color,
-                 supported: true)
+    create(:tag,
+           name: "tagname",
+           bg_color_hex: Faker::Color.hex_color,
+           text_color_hex: Faker::Color.hex_color,
+           supported: true)
   end
 
   before do
