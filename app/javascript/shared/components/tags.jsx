@@ -336,8 +336,7 @@ class Tags extends Component {
       // allows user to choose a tag when they've typed the partial or whole word
       this.setState({
         searchResults: response.result.filter((t) => 
-!this.selected.includes(t.name),
-        ),
+!this.selected.includes(t.name)),
       });
     });
   }
