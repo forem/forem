@@ -62,13 +62,13 @@ module ApplicationHelper
     content_for ? title(title_text) : title_text
   end
 
-  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto", random_fallback: true)
+  def optimized_image_url(url, width: 500, quality: 80, fetch_format: "auto", random_fallback: true, radius: nil)
     fallback_image = asset_path("#{rand(1..40)}.png") if random_fallback
 
     return unless (image_url = url.presence || fallback_image)
 
     normalized_url = Addressable::URI.parse(image_url).normalize.to_s
-    Images::Optimizer.call(normalized_url, width: width, quality: quality, fetch_format: fetch_format)
+    Images::Optimizer.call(normalized_url, width: width, quality: quality, fetch_format: fetch_format, radius: radius)
   end
 
   def optimized_image_tag(image_url, optimizer_options: {}, image_options: {})
