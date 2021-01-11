@@ -14,10 +14,8 @@ ActiveRecord::Schema.define(version: 2021_01_11_045049) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
-  enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-  enable_extension "unaccent"
 
   create_table "ahoy_events", force: :cascade do |t|
     t.string "name"
@@ -836,16 +834,6 @@ ActiveRecord::Schema.define(version: 2021_01_11_045049) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
-  end
-
-  create_table "pg_search_documents", force: :cascade do |t|
-    t.text "content"
-    t.datetime "created_at", precision: 6, null: false
-    t.bigint "searchable_id"
-    t.string "searchable_type"
-    t.datetime "updated_at", precision: 6, null: false
-    t.index "to_tsvector('simple'::regconfig, COALESCE(content, ''::text))", name: "index_pg_search_documents_on_content", using: :gin
-    t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id"
   end
 
   create_table "podcast_episode_appearances", force: :cascade do |t|
