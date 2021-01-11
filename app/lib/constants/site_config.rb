@@ -267,7 +267,7 @@ module Constants
         placeholder: "What is the Google reCAPTCHA secret key?"
       },
       secondary_logo_url: {
-        description: "If you have an alternate logo, this is used in some areas such as onboarding. It's typically the more\"playful\" version of the logo",
+        description: "A place for an alternate logo, if you have one. Used throughout member onboarding and in some sign in forms.",
         placeholder: IMAGE_PLACEHOLDER
       },
       spam_trigger_terms: {
