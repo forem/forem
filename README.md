@@ -54,7 +54,7 @@ Forem is open source software for building communities. Communities for your
 peers, customers, fanbases, families, friends, and any other time and space
 where people need to come together to be part of a collective.
 [See our announcement post](https://dev.to/devteam/for-empowering-community-2k6h)
-for a higher level overview of what Forem is.
+for a higher-level overview of what Forem is.
 
 [dev.to](https://dev.to) (or just DEV) is hosted by Forem. It is a community of
 software developers who write articles, take part in discussions, and build
@@ -157,12 +157,12 @@ A more complete overview of our stack is available in
 
 ## Vulnerability disclosure
 
-Forem is the open source software which powers [DEV](https://dev.to).
+Forem is the open-source software which powers [DEV](https://dev.to).
 
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
 
-## Acknowledgments
+## Acknowledgements
 
 Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the
 usage of their emojis.
@@ -175,7 +175,7 @@ Software Foundation, either version 3 of the License, or (at your option) any
 later version. Please see the [LICENSE](./LICENSE.md) file in our repository for
 the full text.
 
-Like many open source projects, we require that contributors provide us with a
+Like many open-source projects, we require that contributors provide us with a
 Contributor License Agreement (CLA). By submitting code to the Forem project,
 you are granting us a right to use that code under the terms of the CLA.
 
