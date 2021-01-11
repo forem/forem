@@ -32,6 +32,14 @@ RSpec.describe "Authenticating with Email" do
 
         expect(page).to have_current_path("/confirm-email", ignore_query: true)
       end
+
+      it "displays the properly decoded email" do
+        decoded_email = user.email.sub("@", "+something@")
+        user.email = decoded_email
+        sign_up_user
+
+        expect(page).to have_text(decoded_email)
+      end
     end
 
     context "when trying to register with an already existing email" do
