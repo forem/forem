@@ -17,7 +17,6 @@ Education,text_field,,,Work,header,false
 Employer name,text_field,Acme Inc.,,Work,header,false
 Employer URL,text_field,https://dev.com,,Work,header,false
 Employment title,text_field,Junior Frontend Engineer,,Work,header,false
-Recruiters can contact me about job opportunities,check_box,,,Work,settings_only,false
 Skills/Languages,text_area,,What tools and languages are you most experienced with? Are you specialized or more of a generalist?,Coding,left_sidebar,false
 Currently learning,text_area,,"What are you learning right now? What are the new tools and languages you're picking up right now?",Coding,left_sidebar,false
 Currently hacking on,text_area,,What projects are currently occupying most of your time?,Coding,left_sidebar,false
