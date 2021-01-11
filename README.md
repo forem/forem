@@ -79,7 +79,7 @@ within our community. ❤️
 - [License](#license)
 
 ## Community
-For a place to have open discussions on features, voice your ideas, or get help with general questions please visit our community at [Forem.dev](https://forem.dev/).
+For a place to have open discussions on features, voice your ideas, or get help with general questions please visit our community at [forem.dev](https://forem.dev/).
 
 ## Contributing
 
