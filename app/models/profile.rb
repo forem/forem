@@ -15,7 +15,6 @@ class Profile < ApplicationRecord
     brand_color1: :bg_color_hex,
     brand_color2: :text_color_hex,
     display_email_on_profile: :email_public,
-    display_looking_for_work_on_profile: :looking_for_work_publicly,
     education: :education,
     git_lab_url: :gitlab_url,
     linked_in_url: :linkedin_url,
