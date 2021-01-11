@@ -194,4 +194,4 @@ Any questions, please refer to our
   <strong>Happy Coding</strong> ❤️
 </p>
 
-[⬆ Back to Top](#Table-of-content)
+[⬆ Back to Top](#Table-of-contents)
