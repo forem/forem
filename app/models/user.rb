@@ -25,8 +25,6 @@ class User < ApplicationRecord
     instagram_url
     linkedin_url
     location
-    looking_for_work
-    looking_for_work_publicly
     mastodon_url
     medium_url
     mostly_work_with
