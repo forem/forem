@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_05_183127) do
+ActiveRecord::Schema.define(version: 2021_01_08_031718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1283,8 +1283,6 @@ ActiveRecord::Schema.define(version: 2021_01_05_183127) do
     t.string "linkedin_url"
     t.string "location"
     t.datetime "locked_at"
-    t.boolean "looking_for_work", default: false
-    t.boolean "looking_for_work_publicly", default: false
     t.string "mastodon_url"
     t.string "medium_url"
     t.boolean "mobile_comment_notifications", default: true

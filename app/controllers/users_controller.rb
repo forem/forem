@@ -336,11 +336,7 @@ class UsersController < ApplicationController
   def import_articles_from_feed(user)
     return if user.feed_url.blank?
 
-    if FeatureFlag.enabled?(:feeds_import)
-      Feeds::ImportArticlesWorker.perform_async(nil, user.id)
-    else
-      RssReaderFetchUserWorker.perform_async(user.id)
-    end
+    Feeds::ImportArticlesWorker.perform_async(nil, user.id)
   end
 
   def profile_params
