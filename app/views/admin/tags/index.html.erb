@@ -12,12 +12,10 @@
   </div>
 
   <div class="m-auto">
-    <%= form_tag(admin_tags_path, method: "get", class: "inline-flex") do %>
-      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-textfield") %>
-      <% if params[:state].present? %>
-        <%= hidden_field_tag(:state, params[:state]) %>
-      <% end %>
-      <%= submit_tag("Search", class: "crayons-btn ml-2") %>
+    <%= search_form_for(@q, url: admin_tags_path, class: "inline-flex") do |f| %>
+      <%= f.search_field(:name_cont, aria: { label: "Search" }, class: "crayons-textfield") %>
+      <%= f.hidden_field(:state, params[:state]) if params[:state].present? %>
+      <%= f.submit "Search", class: "crayons-btn ml-2" %>
     <% end %>
   </div>
 

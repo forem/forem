@@ -8,15 +8,16 @@ module Admin
     end
 
     def index
-      @tags = case params[:state]
-              when "supported"
-                Tag.where(supported: true).order(taggings_count: :desc).page(params[:page]).per(50)
-              when "unsupported"
-                Tag.where(supported: false).order(taggings_count: :desc).page(params[:page]).per(50)
-              else
-                Tag.order(taggings_count: :desc).page(params[:page]).per(50)
-              end
-      @tags = @tags.where("tags.name ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?
+      tags = case params[:state]
+             when "supported"
+               Tag.where(supported: true).order(taggings_count: :desc)
+             when "unsupported"
+               Tag.where(supported: false).order(taggings_count: :desc)
+             else
+               Tag.order(taggings_count: :desc)
+             end
+      @q = tags.ransack(params[:q])
+      @tags = @q.result.page(params[:page]).per(50)
     end
 
     def new
