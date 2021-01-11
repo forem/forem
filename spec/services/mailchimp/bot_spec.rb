@@ -21,7 +21,7 @@ class FakeGibbonRequest < Gibbon::Request
   # rubocop:enable Lint/UselessMethodDefinition
 end
 
-RSpec.describe MailchimpBot, type: :labor do
+RSpec.describe Mailchimp::Bot, type: :service do
   let(:user) { create(:user, :with_newsletters, :ignore_mailchimp_subscribe_callback) }
   let(:article) { create(:article, user_id: user.id) }
   let(:my_gibbon_client) { instance_double(FakeGibbonRequest) }
