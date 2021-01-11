@@ -7,5 +7,5 @@ json.array! @followed_tags do |follow|
 
   json.name         followable.name
   json.token        form_authenticity_token
-  json.color        HexComparer.new(colors).brightness(0.8)
+  json.color        Hex::Comparer.new(colors).brightness(0.8)
 end
