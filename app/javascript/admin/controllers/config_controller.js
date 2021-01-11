@@ -69,7 +69,12 @@ export default class ConfigController extends Controller {
   }
 
   closeAdminModal() {
-    const authSectionUpdateConfigBtn = this.authSectionFormTarget.querySelector(
+    // per forem/internalEngineering#336, need to short-circuit the
+    // "Update Site Configuration" button submit action; chose not to
+    // define Target on actual "Update" button (since it's a partial).
+    // The Target is defined on the Authentication form, and that section's
+    // "Update" button is queried.
+    const submitBtn = this.authSectionFormTarget.querySelector(
       'input[type="submit"]',
     );
 
@@ -77,8 +82,8 @@ export default class ConfigController extends Controller {
     document.body.style.height = 'inherit';
     document.body.style.overflowY = 'inherit';
 
-    if (authSectionUpdateConfigBtn.hasAttribute('disabled')) {
-      authSectionUpdateConfigBtn.removeAttribute('disabled');
+    if (submitBtn.hasAttribute('disabled')) {
+      submitBtn.removeAttribute('disabled');
     }
   }
 
@@ -127,8 +132,8 @@ export default class ConfigController extends Controller {
       leftBtnAction: 'disableEmailAuthFromModal',
       rightBtnText: 'Cancel',
       rightBtnAction: 'closeAdminModal',
-      leftBtnClasses: 'crayons-btn crayons-btn--danger',
-      rightBtnClasses: 'crayons-btn crayons-btn--secondary',
+      leftBtnClasses: 'crayons-btn--danger',
+      rightBtnClasses: 'crayons-btn--secondary',
     });
     this.positionModalOnPage();
   }
@@ -205,10 +210,9 @@ export default class ConfigController extends Controller {
       leftBtnAction: 'disableAuthProviderFromModal',
       rightBtnText: 'Cancel',
       rightBtnAction: 'closeAdminModal',
-      leftBtnClasses: 'crayons-btn crayons-btn--danger',
-      rightBtnClasses: 'crayons-btn crayons-btn--secondary',
-      customAttr: 'auth-provider',
-      customAttrValue: provider,
+      leftBtnClasses: 'crayons-btn--danger',
+      rightBtnClasses: 'crayons-btn--secondary',
+      leftCustomDataAttr: `data-auth-provider=${provider}`,
     });
     this.positionModalOnPage();
   }
@@ -299,17 +303,17 @@ export default class ConfigController extends Controller {
   }
 
   generateProvidersList(providers) {
-    let list = '';
-    providers.forEach((provider) => {
-      list += `<li>${provider}</li>`;
-    });
+    const list = providers.reduce((html, provider) => {
+      return `${html}<li>${provider}</li>`;
+    }, '');
+
     return list;
   }
 
   missingAuthKeysModalBody(providers) {
     return `
       <p>You haven't filled out all of the required fields to  enable the following authentication providers:</p>
-      <ul>${this.generateProvidersList(providers)}</ul>
+      <ul class="mb-0">${this.generateProvidersList(providers)}</ul>
       <p>If you save your configuration now, these authorization providers will not be enabled.</p>
     `;
   }
@@ -326,8 +330,7 @@ export default class ConfigController extends Controller {
       leftBtnAction: 'closeAdminModal',
       rightBtnText: 'Save anyway',
       rightBtnAction: 'submitForm',
-      leftBtnClasses: 'crayons-btn',
-      rightBtnClasses: 'crayons-btn crayons-btn--secondary',
+      rightBtnClasses: 'crayons-btn--secondary',
     });
   }
 

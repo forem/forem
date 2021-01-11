@@ -11,8 +11,8 @@
  * @param {string} modalProps.rightBtnAction The function that fires when right button is clicked.
  * @param {string} modalProps.leftBtnClasses Classes applied to left button.
  * @param {string} modalProps.rightBtnClasses Classes applied to right button.
- * @param {string} modalProps.customAttr A custom data attribute name. Will be apprended to the "data-" part.
- * @param {string} modalProps.customAttrValue The value of the custom attribute "customAttr".
+ * @param {string} modalProps.leftCustomDataAttr A custom data attribute for the left button.
+ * @param {string} modalProps.rightCustomDataAttr A custom data attribute for the right button.
  */
 const adminModal = function ({
   title,
@@ -23,8 +23,8 @@ const adminModal = function ({
   rightBtnAction,
   leftBtnClasses,
   rightBtnClasses,
-  customAttr = null,
-  customAttrValue = null,
+  leftCustomDataAttr = null,
+  rightCustomDataAttr = null,
 }) {
   return `
     <div class="crayons-modal crayons-modal--s">
@@ -41,14 +41,15 @@ const adminModal = function ({
           ${body}
           <div class="flex gap-2">
             <button
-              class="${leftBtnClasses}"
+              class="crayons-btn ${leftBtnClasses}"
               data-action="click->config#${leftBtnAction}"
-              data-${customAttr}="${customAttrValue}">
+              ${leftCustomDataAttr}>
               ${leftBtnText}
             </button>
             <button
-              class="${rightBtnClasses}"
-              data-action="click->config#${rightBtnAction}">
+              class="crayons-btn ${rightBtnClasses}"
+              data-action="click->config#${rightBtnAction}"
+              ${rightCustomDataAttr}>
               ${rightBtnText}
             </button>
           </div>
