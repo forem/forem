@@ -73,6 +73,10 @@ class PodcastEpisode < ApplicationRecord
     ActionView::Base.full_sanitizer.sanitize(processed_html)
   end
 
+  def score
+    1 # When it is expected that a "commentable" has a score, this is the fallback.
+  end
+
   def zero_method
     0
   end
