@@ -27,3 +27,4 @@ app/javascript/Snackbar/__stories__/
 app/javascript/utilities/__tests__/
 docs/
 spec/
+scripts/after_deploy.sh
