@@ -12,6 +12,6 @@ class PollOption < ApplicationRecord
   private
 
   def evaluate_markdown
-    self.processed_html = MarkdownParser.new(markdown).evaluate_inline_limited_markdown
+    self.processed_html = MarkdownProcessor::Parse.new(markdown).evaluate_inline_limited_markdown
   end
 end
