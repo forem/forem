@@ -51,13 +51,15 @@ describe('Initial admin signup', () => {
       // The initial administrator user was create and is redirected to the confirm email screen.
       cy.url().should(
         'eq',
-        Cypress.config().baseUrl + '/confirm-email?email=' + admin.email,
+        Cypress.config().baseUrl +
+          '/confirm-email?email=' +
+          encodeURIComponent(admin.email),
       );
 
       cy.findByTestId('resend-confirmation-form').as('confirmationForm');
       cy.get('@confirmationForm')
         .findByLabelText(/^Confirmation email address$/i)
-        .should('have.value', admin.email);
+        .should('have.value', encodeURIComponent(admin.email));
       cy.get('@confirmationForm').findByText(
         /^Resend confirmation instructions$/i,
       );
