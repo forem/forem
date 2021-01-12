@@ -2345,30 +2345,6 @@
     ts-dedent "^2.0.0"
     util-deprecate "^1.0.2"
 
-"@storybook/client-api@6.1.14":
-  version "6.1.14"
-  resolved "https://registry.yarnpkg.com/@storybook/client-api/-/client-api-6.1.14.tgz#6daf56743cc72e13f05fff3d2ac554897cc9f9fd"
-  integrity sha512-pIDSlS48bhJdtgNg7sXV1NmLJtB0ebRHJI9htIiqtL7EGQenb4+Bbwflhj1j51OEkuM+bQsAAZxq5deiUQEGVw==
-  dependencies:
-    "@storybook/addons" "6.1.14"
-    "@storybook/channel-postmessage" "6.1.14"
-    "@storybook/channels" "6.1.14"
-    "@storybook/client-logger" "6.1.14"
-    "@storybook/core-events" "6.1.14"
-    "@storybook/csf" "0.0.1"
-    "@types/qs" "^6.9.0"
-    "@types/webpack-env" "^1.15.3"
-    core-js "^3.0.1"
-    global "^4.3.2"
-    lodash "^4.17.15"
-    memoizerific "^1.11.3"
-    qs "^6.6.0"
-    regenerator-runtime "^0.13.7"
-    stable "^0.1.8"
-    store2 "^2.7.1"
-    ts-dedent "^2.0.0"
-    util-deprecate "^1.0.2"
-
 "@storybook/client-api@6.1.8":
   version "6.1.8"
   resolved "https://registry.yarnpkg.com/@storybook/client-api/-/client-api-6.1.8.tgz#15f958cefa3fc7e9e137f8adb6382449e70601e7"
@@ -3058,10 +3034,10 @@
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^7.28.1"
 
-"@testing-library/dom@^7.16.2", "@testing-library/dom@^7.28.1", "@testing-library/dom@^7.29.2":
-  version "7.29.2"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.29.2.tgz#6cba65d961d8b36d621a98caa8537444075fb42e"
-  integrity sha512-CBMELfyY1jKdtLcSRmEnZWRzRkCRVSNPTzhzrn8wY8OnzUo7Pe/W+HgLzt4TDnWIPYeusHBodf9wUjJF48kPmA==
+"@testing-library/dom@^7.16.2", "@testing-library/dom@^7.28.1", "@testing-library/dom@^7.29.4":
+  version "7.29.4"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.29.4.tgz#1647c2b478789621ead7a50614ad81ab5ae5b86c"
+  integrity sha512-CtrJRiSYEfbtNGtEsd78mk1n1v2TUbeABlNIcOCJdDfkN5/JTOwQEbbQpoSRxGqzcWPgStMvJ4mNolSuBRv1NA==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"
