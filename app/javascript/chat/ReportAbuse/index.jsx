@@ -70,7 +70,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
           <a href="/terms">terms and conditions</a>. We continue to try to make
           this environment a great one for everybody.
         </p>
-        <fieldset className="p-4 justify-between">
+        <fieldset className="report__abuse-options p-4 justify-between">
           <FormField variant="radio">
             <RadioButton
               id="rude_or_vulgar"
@@ -82,7 +82,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
             />
             <label
               htmlFor="rude_or_vulgar"
-              className="crayons-field__label mb-4"
+              className="crayons-field__label"
               aria-label="rude of vulgar"
             >
               Rude or vulgar
@@ -99,7 +99,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
             />
             <label
               htmlFor="harassment"
-              className="crayons-field__label mb-4"
+              className="crayons-field__label"
               aria-label="Harassment or hate speech"
             >
               Harassment or hate speech
@@ -116,7 +116,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
             />
             <label
               htmlFor="spam"
-              className="crayons-field__label mb-4"
+              className="crayons-field__label"
               aria-label="Spam or copyright issue"
             >
               Spam or copyright issue
@@ -133,7 +133,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
             />
             <label
               htmlFor="listings"
-              className="crayons-field__label mb-4"
+              className="crayons-field__label"
               aria-label="Inappropriate listings message/category"
             >
               Inappropriate listings message/category

@@ -1265,6 +1265,13 @@
     }
   }
 }
+
+.report__abuse-options {
+  .crayons-field + .crayons-field {
+    margin-top: var(--su-2);
+  }
+}
+
 .report__abuse__button {
   width: 135px;
 }
