@@ -26,8 +26,8 @@
 </head>
 <body class="admin default-header"
   data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
-  data-deployed-at="<%= ForemInstance.deployed_at %>"
-  data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
+  data-deployed-at="<%= ForemInstance::DEPLOYED_AT %>"
+  data-latest-commit-id="<%= ForemInstance::LATEST_COMMIT_ID %>"
   data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
   <header class="crayons-header" role="banner">
     <div class="crayons-header__container">

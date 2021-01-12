@@ -60,8 +60,8 @@
         data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
         data-app-domain="<%= ChatChannel.urlsafe_encoded_app_domain %>"
         data-honeybadger-key="<%= ApplicationConfig["HONEYBADGER_JS_API_KEY"] %>"
-        data-deployed-at="<%= ForemInstance.deployed_at %>"
-        data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
+        data-deployed-at="<%= ForemInstance::DEPLOYED_AT %>"
+        data-latest-commit-id="<%= ForemInstance::LATEST_COMMIT_ID %>"
         data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
         <div id="body-styles">
           <style>
