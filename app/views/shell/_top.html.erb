@@ -66,9 +66,9 @@
           <style>
             :root {
               --accent-brand: <%= SiteConfig.primary_brand_color_hex %>;
-              --accent-brand-darker: <%= HexComparer.new([SiteConfig.primary_brand_color_hex]).brightness(0.85) %>;
-              --accent-brand-lighter: <%= HexComparer.new([SiteConfig.primary_brand_color_hex]).brightness(1.1) %>;
-              --accent-brand-a10: <%= HexComparer.new([SiteConfig.primary_brand_color_hex]).opacity(0.1) %>;
+              --accent-brand-darker: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(0.85) %>;
+              --accent-brand-lighter: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).brightness(1.1) %>;
+              --accent-brand-a10: <%= Color::CompareHex.new([SiteConfig.primary_brand_color_hex]).opacity(0.1) %>;
             }
           </style>
         </div>

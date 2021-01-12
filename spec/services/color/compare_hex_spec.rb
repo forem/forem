@@ -1,6 +1,25 @@
 require "rails_helper"
 
-RSpec.describe HexComparer, type: :labor do
+RSpec.describe Color::CompareHex, type: :service do
+  describe "constant definitions" do
+    it "defines ACCENT_MODIFIERS" do
+      accent_modifiers = [1.14, 1.08, 1.06, 0.96, 0.9, 0.8, 0.7, 0.6]
+      expect(described_class::ACCENT_MODIFIERS).to eq accent_modifiers
+    end
+
+    it "defines BRIGHTNESS_FORMAT" do
+      expect(described_class::BRIGHTNESS_FORMAT).to eq "#%<r>02x%<g>02x%<b>02x"
+    end
+
+    it "defines OPACITY_FORMAT" do
+      expect(described_class::OPACITY_FORMAT).to eq "rgba(%<r>d, %<g>d, %<b>d, %<a>.2f)"
+    end
+
+    it "defines RGB_REGEX" do
+      expect(described_class::RGB_REGEX).to eq(/^#?(?<r>..)(?<g>..)(?<b>..)$/)
+    end
+  end
+
   it "returns biggest hex" do
     expect(described_class.new(["#ffffff", "#000000"]).biggest).to eq("#ffffff")
   end
