@@ -500,7 +500,7 @@ class User < ApplicationRecord
   def unsubscribe_from_newsletters
     return if email.blank?
 
-    MailchimpBot.new(self).unsubscribe_all_newsletters
+    Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end
 
   def auditable?
