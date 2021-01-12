@@ -78,6 +78,9 @@ within our community. ❤️
 - [Vulnerability disclosure](#vulnerability-disclosure)
 - [License](#license)
 
+## Community
+For a place to have open discussions on features, voice your ideas, or get help with general questions please visit our community at [forem.dev](https://forem.dev/).
+
 ## Contributing
 
 We encourage you to contribute to Forem! Please check out the
@@ -193,3 +196,5 @@ Any questions, please refer to our
   <br>
   <strong>Happy Coding</strong> ❤️
 </p>
+
+[⬆ Back to Top](#Table-of-contents)

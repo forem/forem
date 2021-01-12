@@ -31,7 +31,7 @@ Rails.application.routes.draw do
       Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
       Sidekiq::Web.set :sessions, Rails.application.config.session_options
       Sidekiq::Web.class_eval do
-        use Rack::Protection, origin_whitelist: [URL.url] # resolve Rack Protection HttpOrigin
+        use Rack::Protection, permitted_origins: [URL.url] # resolve Rack Protection HttpOrigin
       end
       mount Sidekiq::Web => "/sidekiq"
       mount FieldTest::Engine, at: "abtests"
@@ -47,6 +47,8 @@ Rails.application.routes.draw do
                                      { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
+
+        resources :data_update_scripts, only: [:index]
       end
 
       namespace :users do
@@ -243,9 +245,10 @@ Rails.application.routes.draw do
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
     resources :followed_articles, only: [:index]
-    resources :follows, only: %i[show create update] do
+    resources :follows, only: %i[show create] do
       collection do
         get "/bulk_show", to: "follows#bulk_show"
+        patch "/bulk_update", to: "follows#bulk_update"
       end
     end
     resources :image_uploads, only: [:create]
@@ -494,6 +497,7 @@ Rails.application.routes.draw do
 
     get "/feed" => "articles#feed", :as => "feed", :defaults => { format: "rss" }
     get "/feed/tag/:tag" => "articles#feed", :as => "tag_feed", :defaults => { format: "rss" }
+    get "/feed/latest" => "articles#feed", :as => "latest_feed", :defaults => { format: "rss" }
     get "/feed/:username" => "articles#feed", :as => "user_feed", :defaults => { format: "rss" }
     get "/rss" => "articles#feed", :defaults => { format: "rss" }
 

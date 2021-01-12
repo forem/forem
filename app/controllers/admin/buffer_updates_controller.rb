@@ -10,16 +10,16 @@ module Admin
       article&.update(featured: true)
       case params[:social_channel]
       when "main_twitter"
-        Bufferizer.new("article", article, tweet, current_user.id).main_tweet!
+        Bufferizer::MainTweet.call(article, tweet, current_user.id)
         render body: nil
       when "satellite_twitter"
-        Bufferizer.new("article", article, tweet, current_user.id).satellite_tweet!
+        Bufferizer::SatelliteTweet.call(article, tweet, current_user.id)
         render body: nil
       when "facebook"
-        Bufferizer.new("article", article, fb_post, current_user.id).facebook_post!
+        Bufferizer::FacebookPost.call(article, fb_post, current_user.id)
         render body: nil
       when "listings_twitter"
-        Bufferizer.new("listing", listing, tweet, current_user.id).listings_tweet!
+        Bufferizer::ListingsTweet.call(listing, tweet, current_user.id)
         render body: nil
       end
     end
