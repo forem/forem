@@ -128,7 +128,7 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "User", association: :profile)
 
     # Check if there are any data update scripts to run during startup
-    if %w[c console runner s server].include?(ENV["COMMAND"]) && DataUpdateScript.scripts_to_run?
+    if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?
       message = "Data update scripts need to be run before you can start the application. " \
         "Please run 'rails data_updates:run'"
       raise message

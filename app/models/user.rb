@@ -25,8 +25,6 @@ class User < ApplicationRecord
     instagram_url
     linkedin_url
     location
-    looking_for_work
-    looking_for_work_publicly
     mastodon_url
     medium_url
     mostly_work_with
@@ -622,11 +620,7 @@ class User < ApplicationRecord
   def validate_feed_url
     return if feed_url.blank?
 
-    valid = if FeatureFlag.enabled?(:feeds_import)
-              Feeds::ValidateUrl.call(feed_url)
-            else
-              RssReader.new.valid_feed_url?(feed_url)
-            end
+    valid = Feeds::ValidateUrl.call(feed_url)
 
     errors.add(:feed_url, "is not a valid RSS/Atom feed") unless valid
   rescue StandardError => e

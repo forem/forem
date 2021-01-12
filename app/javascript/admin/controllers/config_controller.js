@@ -1,3 +1,4 @@
+/* global jQuery */
 import { Controller } from 'stimulus';
 import adminModal from '../adminModal';
 
@@ -27,6 +28,25 @@ export default class ConfigController extends Controller {
   ];
 
   // GENERAL FUNCTIONS START
+
+  // This is a bit of hack because we have to deal with Bootstrap used inline, jQuery and Stimulus  :-/
+  // NOTE: it'd be best to rewrite this as a reusable "toggle" element in Stimulus without using jQuery + Bootstrap
+  toggleAccordionButtonLabel(event) {
+    const $target = jQuery(event.target);
+    const $container = $target.parent();
+
+    const text = $target.text();
+
+    if ($container) {
+      const show = $container.attr('aria-expanded') === 'true';
+
+      if (show) {
+        $target.text(text.replace(/Hide/i, 'Show'));
+      } else {
+        $target.text(text.replace(/Show/i, 'Hide'));
+      }
+    }
+  }
 
   disableTargetField(event) {
     const targetElementName = event.target.dataset.disableTarget;

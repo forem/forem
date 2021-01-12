@@ -25,6 +25,10 @@
     <meta name="twitter:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — <%= community_name %>">
     <meta property="og:image" content="<%= comment_social_image_url(@root_comment) %>" />
     <meta name="twitter:image" content="<%= comment_social_image_url(@root_comment) %>">
+    <% if @root_comment.score < 0 || @commentable.score < 0 %>
+      <meta name="googlebot" content="noindex">
+      <meta name="googlebot" content="nofollow">
+    <% end %>
   <% else %>
     <link rel="canonical" href="<%= app_url("#{@commentable.path}/comments") %>" />
     <meta property="og:url" content="<%= app_url("#{@commentable.path}/comments") %>" />

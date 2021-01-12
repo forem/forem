@@ -29,8 +29,8 @@ module Feeds
         # NOTE: doing this sequentially to avoid locking problems with the DB
         # and unnecessary conflicts
         articles = feedjira_objects.flat_map do |user_id, feed|
-          # TODO: replace `feed` with `feed.url` as `RssReader::Assembler`
-          # only actually needs feed.url
+          # TODO: replace `feed` with `feed.url` as `Feeds::AssembleArticleMarkdown`
+          # only actually uses feed.url
           user = batch_of_users.detect { |u| u.id == user_id }
 
           DatadogStatsClient.time("feeds::import::create_articles_from_user_feed", tags: ["user_id:#{user_id}"]) do
@@ -118,7 +118,7 @@ module Feeds
       result.compact.to_h
     end
 
-    # TODO: currently this is exactly as in RSSReader, but we might find
+    # TODO: currently this is exactly as it was in the RssReader, but we might find
     # avenues for optimization, like:
     # 1. why are we sending N exists query to the DB, one per each item, can we fetch them all?
     # 2. should we queue a batch of workers to create articles, but then, following issues ensue:
@@ -137,7 +137,7 @@ module Feeds
           user_id: user.id,
           published_from_feed: true,
           show_comments: true,
-          body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),
+          body_markdown: Feeds::AssembleArticleMarkdown.call(item, user, feed, feed_source_url),
           organization_id: nil,
         )
 
