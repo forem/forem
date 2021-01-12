@@ -31,7 +31,7 @@ describe('Initial admin signup', () => {
         .type(admin.username);
       cy.get('@registrationForm')
         .findByLabelText(/^Email$/i)
-        .type(encodeURIComponent(admin.email));
+        .type(admin.email);
       cy.get('@registrationForm')
         .findByLabelText('Password')
         .type(admin.password);
@@ -59,7 +59,7 @@ describe('Initial admin signup', () => {
       cy.findByTestId('resend-confirmation-form').as('confirmationForm');
       cy.get('@confirmationForm')
         .findByLabelText(/^Confirmation email address$/i)
-        .should('have.value', encodeURIComponent(admin.email));
+        .should('have.value', admin.email);
       cy.get('@confirmationForm').findByText(
         /^Resend confirmation instructions$/i,
       );
