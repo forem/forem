@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { useState } from 'preact/hooks';
 import { reportAbuse, blockUser } from '../actions/requestActions';
@@ -61,94 +61,96 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
   };
 
   return (
-    <div>
+    <Fragment>
       <section className="p-4 grid gap-2 crayons-card mb-4">
         <h1 className="lh-tight mb-4 mt-0">Report Abuse</h1>
         <p>
           Thank you for reporting any abuse that violates our{' '}
-          <a href="/code-of-conduct">code of conduct</a> or
-          <a href="/terms">terms and conditions</a>. We continue to try to make this
-          environment a great one for everybody.
+          <a href="/code-of-conduct">code of conduct</a> or{' '}
+          <a href="/terms">terms and conditions</a>. We continue to try to make
+          this environment a great one for everybody.
         </p>
-      </section>
-      <section className="crayons-card crayons-card--secondary p-4 justify-between">
-        <FormField variant="radio">
-          <RadioButton
-            id="rude_or_vulgar"
-            name="rude_or_vulgar"
-            value="rude or vulgar"
-            checked={category === 'rude or vulgar'}
-            onClick={handleChange}
-            data-testid="rude_or_vulgar"
-          />
-          <label
-            htmlFor="rude_or_vulgar"
-            className="crayons-field__label mb-4"
-            aria-label="rude of vulgar"
-          >
-            Rude or vulgar
-          </label>
-          <RadioButton
-            id="harassment"
-            name="harassment"
-            value="harassment"
-            checked={category === 'harassment'}
-            onClick={handleChange}
-            data-testid="harassment"
-          />
-          <label
-            htmlFor="harassment"
-            className="crayons-field__label mb-4"
-            aria-label="Harassment or hate speech"
-          >
-            Harassment or hate speech
-          </label>
-          <RadioButton
-            id="spam"
-            name="spam"
-            value="spam"
-            checked={category === 'spam'}
-            onClick={handleChange}
-            data-testid="spam"
-          />
-          <label
-            htmlFor="spam"
-            className="crayons-field__label mb-4"
-            aria-label="Spam or copyright issue"
-          >
-            Spam or copyright issue
-          </label>
-          <RadioButton
-            id="listings"
-            name="listings"
-            value="listings"
-            checked={category === 'listings'}
-            onClick={handleChange}
-            data-testid="listings"
-          />
-          <label
-            htmlFor="listings"
-            className="crayons-field__label mb-4"
-            aria-label="Inappropriate listings message/category"
-          >
-            Inappropriate listings message/category
-          </label>
-        </FormField>
-        <p className="reported__message__section"> Reported Message</p>
-        <div className="reported__message">
-          <span
-            className="chatmessagebody__message"
+        <fieldset className="p-4 justify-between">
+          <FormField variant="radio">
+            <RadioButton
+              id="rude_or_vulgar"
+              name="rude_or_vulgar"
+              value="rude or vulgar"
+              checked={category === 'rude or vulgar'}
+              onClick={handleChange}
+              data-testid="rude_or_vulgar"
+            />
+            <label
+              htmlFor="rude_or_vulgar"
+              className="crayons-field__label mb-4"
+              aria-label="rude of vulgar"
+            >
+              Rude or vulgar
+            </label>
+          </FormField>
+          <FormField variant="radio">
+            <RadioButton
+              id="harassment"
+              name="harassment"
+              value="harassment"
+              checked={category === 'harassment'}
+              onClick={handleChange}
+              data-testid="harassment"
+            />
+            <label
+              htmlFor="harassment"
+              className="crayons-field__label mb-4"
+              aria-label="Harassment or hate speech"
+            >
+              Harassment or hate speech
+            </label>
+          </FormField>
+          <FormField variant="radio">
+            <RadioButton
+              id="spam"
+              name="spam"
+              value="spam"
+              checked={category === 'spam'}
+              onClick={handleChange}
+              data-testid="spam"
+            />
+            <label
+              htmlFor="spam"
+              className="crayons-field__label mb-4"
+              aria-label="Spam or copyright issue"
+            >
+              Spam or copyright issue
+            </label>
+          </FormField>
+          <FormField variant="radio">
+            <RadioButton
+              id="listings"
+              name="listings"
+              value="listings"
+              checked={category === 'listings'}
+              onClick={handleChange}
+              data-testid="listings"
+            />
+            <label
+              htmlFor="listings"
+              className="crayons-field__label mb-4"
+              aria-label="Inappropriate listings message/category"
+            >
+              Inappropriate listings message/category
+            </label>
+          </FormField>
+          <h2>Reported Message</h2>
+          <div
+            className="reported__message p-2 mt-2 mb-3"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: data.message }}
           />
-        </div>
-        <div>
-          <Button className="m-2" size="s" onClick={handleSubmit}>
+          <Button disabled={category === null} size="s" onClick={handleSubmit}>
             Report Message
           </Button>
-        </div>
+        </fieldset>
       </section>
-    </div>
+    </Fragment>
   );
 }
 
