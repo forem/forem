@@ -157,7 +157,7 @@ A more complete overview of our stack is available in
 - [@cmgorton](https://dev.to/coffeecraftcode)
 - [@andygeorge](https://dev.to/andygeorge)
 - [@phannon716](https://dev.to/phannon716)
-
+- [@katiedavis](https://dev.to/katiedavis)
 ## Vulnerability disclosure
 
 Forem is the open source software which powers [DEV](https://dev.to).
