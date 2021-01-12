@@ -1,8 +1,10 @@
 module ApplicationHelper
   # rubocop:disable Performance/OpenStruct
+  USER_COLORS = ["#19063A", "#dce9f3"].freeze
+
   DELETED_USER = OpenStruct.new(
     id: nil,
-    darker_color: Hex::Comparer.new(["#19063A", "#dce9f3"]).brightness,
+    darker_color: Hex::Comparer.new(USER_COLORS).brightness,
     username: "[deleted user]",
     name: "[Deleted User]",
     summary: nil,
