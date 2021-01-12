@@ -141,7 +141,7 @@ export default class ConfigController extends Controller {
   disableEmailAuthFromModal(event) {
     event.preventDefault();
     this.disableEmailAuth(event);
-    this.closeAdminModal(event);
+    this.closeAdminModal();
   }
 
   disableEmailAuth(event) {
@@ -159,13 +159,13 @@ export default class ConfigController extends Controller {
 
   enableOrEditAuthProvider(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProviderEnable;
+    const providerName = event.target.dataset.providerName;
     const enabledIndicator = document.getElementById(
-      `${provider}-enabled-indicator`,
+      `${providerName}-enabled-indicator`,
     );
 
     document
-      .getElementById(`${provider}-auth-settings`)
+      .getElementById(`${providerName}-auth-settings`)
       .classList.remove('hidden');
     event.target.classList.add('hidden');
 
@@ -178,12 +178,12 @@ export default class ConfigController extends Controller {
 
   disableAuthProvider(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProvider;
+    const providerName = event.target.dataset.providerName;
     const enabledIndicator = document.getElementById(
-      `${provider}-enabled-indicator`,
+      `${providerName}-enabled-indicator`,
     );
-    const authEnableButton = document.querySelector(
-      `[data-auth-provider-enable="${provider}"]`,
+    const authEnableButton = document.getElementById(
+      `${providerName}-auth-btn`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
     enabledIndicator.classList.remove('visible');
@@ -201,37 +201,37 @@ export default class ConfigController extends Controller {
 
   activateAuthProviderModal(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProvider;
-    const official_provider = event.target.dataset.authProviderOfficial;
+    const providerName = event.target.dataset.providerName;
+    const providerOfficialName = event.target.dataset.providerOfficialName;
     this.configModalAnchorTarget.innerHTML = adminModal({
-      title: this.authProviderModalTitle(official_provider),
-      body: this.authProviderModalBody(official_provider),
+      title: this.authProviderModalTitle(providerOfficialName),
+      body: this.authProviderModalBody(providerOfficialName),
       leftBtnText: 'Confirm disable',
       leftBtnAction: 'disableAuthProviderFromModal',
       rightBtnText: 'Cancel',
       rightBtnAction: 'closeAdminModal',
       leftBtnClasses: 'crayons-btn--danger',
       rightBtnClasses: 'crayons-btn--secondary',
-      leftCustomDataAttr: `data-auth-provider=${provider}`,
+      leftCustomDataAttr: `data-provider-name=${providerName}`,
     });
     this.positionModalOnPage();
   }
 
   disableAuthProviderFromModal(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProvider;
-    const authEnableButton = document.querySelector(
-      `[data-auth-provider-enable="${provider}"]`,
+    const providerName = event.target.dataset.providerName;
+    const authEnableButton = document.getElementById(
+      `${providerName}-auth-btn`,
     );
     const enabledIndicator = document.getElementById(
-      `${provider}-enabled-indicator`,
+      `${providerName}-enabled-indicator`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
     this.listAuthToBeEnabled(event);
     this.checkForAndGuardSoleAuthProvider();
     enabledIndicator.classList.remove('visible');
     this.hideAuthProviderSettings(event);
-    this.closeAdminModal(event);
+    this.closeAdminModal();
   }
 
   checkForAndGuardSoleAuthProvider() {
@@ -255,11 +255,13 @@ export default class ConfigController extends Controller {
 
   hideAuthProviderSettings(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProvider;
+    const providerName = event.target.dataset.providerName;
     document
-      .getElementById(`${provider}-auth-settings`)
+      .getElementById(`${providerName}-auth-settings`)
       .classList.add('hidden');
-    document.getElementById(`${provider}-auth-btn`).classList.remove('hidden');
+    document
+      .getElementById(`${providerName}-auth-btn`)
+      .classList.remove('hidden');
   }
 
   listAuthToBeEnabled() {
@@ -267,7 +269,7 @@ export default class ConfigController extends Controller {
     document
       .querySelectorAll('[data-enable-auth="true"]')
       .forEach((provider) => {
-        enabledProviderArray.push(provider.dataset.authProviderEnable);
+        enabledProviderArray.push(provider.dataset.providerName);
       });
     document.getElementById(
       'auth_providers_to_enable',
@@ -289,13 +291,13 @@ export default class ConfigController extends Controller {
     document
       .querySelectorAll('[data-enable-auth="true"]')
       .forEach((provider) => {
-        const providerName = provider.dataset.authProviderEnable;
-        const officialName = provider.dataset.authProviderOfficial;
+        const providerName = provider.dataset;
+        const providerOfficialName = provider.dataset;
         if (
           !document.getElementById(`site_config_${providerName}_key`).value ||
           !document.getElementById(`site_config_${providerName}_secret`).value
         ) {
-          providersWithMissingKeys.push(officialName);
+          providersWithMissingKeys.push(providerOfficialName);
         }
       });
 

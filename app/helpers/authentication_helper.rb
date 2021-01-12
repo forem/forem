@@ -40,7 +40,7 @@ module AuthenticationHelper
     invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : ""
   end
 
-  def disabled_attr_on_auth_provider_enablebtn
+  def disabled_attr_on_auth_provider_enable_btn
     invite_only_mode_or_no_enabled_auth_options ? "disabled" : ""
   end
 

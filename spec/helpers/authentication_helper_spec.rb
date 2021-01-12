@@ -51,7 +51,7 @@ RSpec.describe AuthenticationHelper, type: :helper do
       end
 
       it "returns 'disabled' attribute for relevant helper" do
-        expect(disabled_attr_on_auth_provider_enablebtn).to eq("disabled")
+        expect(disabled_attr_on_auth_provider_enable_btn).to eq("disabled")
       end
 
       it "returns appropriate text for 'tooltip_text_email_or_auth_provider_btns' helper" do
