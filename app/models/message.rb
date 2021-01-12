@@ -14,7 +14,7 @@ class Message < ApplicationRecord
 
   def preferred_user_color
     color_options = [user.bg_color_hex || "#000000", user.text_color_hex || "#000000"]
-    HexComparer.new(color_options).brightness(0.9)
+    Color::CompareHex.new(color_options).brightness(0.9)
   end
 
   def direct_receiver

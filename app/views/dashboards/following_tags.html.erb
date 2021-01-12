@@ -25,13 +25,13 @@
         <%= form_with url: bulk_update_follows_path, method: :patch, local: true, id: "follows_update_form" do |f| %>
           <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit">Update Weights</button>
         <% end %>
-        
+
         <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
           <% negative_follow_shown_once = false %>
           <% @followed_tags.each do |follow| %>
             <% tag = follow.followable %>
             <% if tag %>
-              <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+              <% color = Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
               <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center <% if follow.explicit_points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
                 <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
                   <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">

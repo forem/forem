@@ -15,7 +15,7 @@
 <% cache "user-profile-header-area-#{@user.id}-#{@user.profile_updated_at}-#{user_signed_in?}", expires_in: 10.days do %>
   <style>
     :root {
-      --profile-brand-color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
+      --profile-brand-color: <%= Color::CompareHex.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
     }
   </style>
   <div class="brand-bg">
