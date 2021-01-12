@@ -64,7 +64,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
 
   return (
     <Fragment>
-      <section className="p-4 grid gap-2 crayons-card mb-4">
+      <section className="mt-7 p-4 grid gap-2 crayons-card mb-4">
         <h1 className="lh-tight mb-4 mt-0">Report Abuse</h1>
         <p>
           Thank you for reporting any abuse that violates our{' '}
