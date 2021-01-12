@@ -8,7 +8,7 @@ module MarkdownProcessor
         underscores_in_usernames
       ].freeze
 
-      # #call is implemented in MarkdownProcessor::Fixer::base
+      # #call is implemented in MarkdownProcessor::Fixer::Base
     end
   end
 end
