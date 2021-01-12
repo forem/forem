@@ -33,8 +33,6 @@ RSpec.describe "AsyncInfo", type: :request do
 
   describe "GET /async_info/shell_version" do
     it "returns shell_version" do
-      allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return("A deploy date")
-
       get "/async_info/shell_version"
       expect(response.body).to include("version")
     end
