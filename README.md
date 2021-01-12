@@ -79,7 +79,10 @@ within our community. ❤️
 - [License](#license)
 
 ## Community
-For a place to have open discussions on features, voice your ideas, or get help with general questions please visit our community at [forem.dev](https://forem.dev/).
+
+For a place to have open discussions on features, voice your ideas, or get help
+with general questions please visit our community at
+[forem.dev](https://forem.dev/).
 
 ## Contributing
 
@@ -157,6 +160,7 @@ A more complete overview of our stack is available in
 - [@cmgorton](https://dev.to/coffeecraftcode)
 - [@andygeorge](https://dev.to/andygeorge)
 - [@phannon716](https://dev.to/phannon716)
+- [@katiedavis](https://dev.to/katiedavis)
 
 ## Vulnerability disclosure
 
