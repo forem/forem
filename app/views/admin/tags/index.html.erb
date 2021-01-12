@@ -33,11 +33,11 @@
 <table class="crayons-table" width="100%">
   <thead>
     <tr>
-      <th scope="col">Tag</th>
-      <th scope="col">ID</th>
-      <th scope="col">Alias For</th>
-      <th scope="col">Taggings Count</th>
-      <th scope="col">Category</th>
+      <th scope="col"><%= sort_link(@q, :name) %></th>
+      <th scope="col"><%= sort_link(@q, :id) %></th>
+      <th scope="col"><%= sort_link(@q, :alias_for) %></th>
+      <th scope="col"><%= sort_link(@q, :taggings_count) %></th>
+      <th scope="col"><%= sort_link(@q, :category) %></th>
       <th scope="col">Is Moderated?</th>
     </tr>
   </thead>
