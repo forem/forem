@@ -80,13 +80,8 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
               value="rude or vulgar"
               checked={category === 'rude or vulgar'}
               onClick={handleChange}
-              data-testid="rude_or_vulgar"
             />
-            <label
-              htmlFor="rude_or_vulgar"
-              className="crayons-field__label"
-              aria-label="rude of vulgar"
-            >
+            <label htmlFor="rude_or_vulgar" className="crayons-field__label">
               Rude or vulgar
             </label>
           </FormField>
@@ -97,13 +92,8 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
               value="harassment"
               checked={category === 'harassment'}
               onClick={handleChange}
-              data-testid="harassment"
             />
-            <label
-              htmlFor="harassment"
-              className="crayons-field__label"
-              aria-label="Harassment or hate speech"
-            >
+            <label htmlFor="harassment" className="crayons-field__label">
               Harassment or hate speech
             </label>
           </FormField>
@@ -114,13 +104,8 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
               value="spam"
               checked={category === 'spam'}
               onClick={handleChange}
-              data-testid="spam"
             />
-            <label
-              htmlFor="spam"
-              className="crayons-field__label"
-              aria-label="Spam or copyright issue"
-            >
+            <label htmlFor="spam" className="crayons-field__label">
               Spam or copyright issue
             </label>
           </FormField>
@@ -131,13 +116,8 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
               value="listings"
               checked={category === 'listings'}
               onClick={handleChange}
-              data-testid="listings"
             />
-            <label
-              htmlFor="listings"
-              className="crayons-field__label"
-              aria-label="Inappropriate listings message/category"
-            >
+            <label htmlFor="listings" className="crayons-field__label">
               Inappropriate listings message/category
             </label>
           </FormField>

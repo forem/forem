@@ -19,24 +19,26 @@ describe('<ReportAbuse />', () => {
   });
 
   it('should render the component', () => {
-    const { queryByText, getByTestId } = render(
+    const { getByText, getByLabelText } = render(
       <ReportAbuse data={{ message: 'HI', user_id: 1 }} />,
     );
 
-    expect(queryByText('Report Abuse')).toBeDefined();
+    expect(getByText('Report Abuse')).toBeDefined();
 
-    const vulgarInput = getByTestId('rude_or_vulgar');
+    const vulgarInput = getByLabelText('Rude or vulgar');
     expect(vulgarInput.value).toEqual('rude or vulgar');
 
-    const harassmentInput = getByTestId('harassment');
+    const harassmentInput = getByLabelText('Harassment or hate speech');
     expect(harassmentInput.value).toEqual('harassment');
 
-    const listingsInput = getByTestId('listings');
+    const listingsInput = getByLabelText(
+      'Inappropriate listings message/category',
+    );
     expect(listingsInput.value).toEqual('listings');
 
-    const spamInput = getByTestId('spam');
+    const spamInput = getByLabelText('Spam or copyright issue');
     expect(spamInput.value).toEqual('spam');
 
-    expect(queryByText('Report Message')).toBeDefined();
+    expect(getByText('Report Message')).toBeDefined();
   });
 });
