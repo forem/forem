@@ -27,7 +27,7 @@ class Page < ApplicationRecord
 
   def evaluate_markdown
     if body_markdown.present?
-      parsed_markdown = MarkdownProcessor::Parse.new(body_markdown)
+      parsed_markdown = MarkdownProcessor::Parser.new(body_markdown)
       self.processed_html = parsed_markdown.finalize
     else
       self.processed_html = body_html
