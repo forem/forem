@@ -31,7 +31,7 @@ describe('Initial admin signup', () => {
         .type(admin.username);
       cy.get('@registrationForm')
         .findByLabelText(/^Email$/i)
-        .type(admin.email);
+        .type(encodeURI(admin.email));
       cy.get('@registrationForm')
         .findByLabelText('Password')
         .type(admin.password);
