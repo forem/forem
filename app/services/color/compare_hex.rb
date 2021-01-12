@@ -1,5 +1,5 @@
-module Hex
-  class Comparer
+module Color
+  class CompareHex
     ACCENT_MODIFIERS = [1.14, 1.08, 1.06, 0.96, 0.9, 0.8, 0.7, 0.6].freeze
     BRIGHTNESS_FORMAT = "#%<r>02x%<g>02x%<b>02x".freeze
     OPACITY_FORMAT = "rgba(%<r>d, %<g>d, %<b>d, %<a>.2f)".freeze

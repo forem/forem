@@ -4,7 +4,7 @@ module ApplicationHelper
 
   DELETED_USER = OpenStruct.new(
     id: nil,
-    darker_color: Hex::Comparer.new(USER_COLORS).brightness,
+    darker_color: Color::CompareHex.new(USER_COLORS).brightness,
     username: "[deleted user]",
     name: "[Deleted User]",
     summary: nil,

@@ -11,7 +11,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     it "defines DELETED_USER" do
       user = described_class::DELETED_USER
       expect(user).not_to be_nil
-      expect(user.darker_color).to eq Hex::Comparer.new(described_class::USER_COLORS).brightness
+      expect(user.darker_color).to eq Color::CompareHex.new(described_class::USER_COLORS).brightness
       expect(user.username).to eq "[deleted user]"
       expect(user.name).to eq "[Deleted User]"
       expect(user.summary).to be_nil

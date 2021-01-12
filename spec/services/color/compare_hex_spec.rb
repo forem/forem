@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Hex::Comparer, type: :service do
+RSpec.describe Color::CompareHex, type: :service do
   describe "constant definitions" do
     it "defines ACCENT_MODIFIERS" do
       accent_modifiers = [1.14, 1.08, 1.06, 0.96, 0.9, 0.8, 0.7, 0.6]
