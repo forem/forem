@@ -27,9 +27,6 @@ module MarkdownProcessor
       # This turns --- into ------- after the first two,
       # because --- messes with front matter
       def self.modify_hr_tags(markdown)
-        # markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
-        # front_matter.gsub(/^---/).with_index { |match, i| i > 1 ? "#{match}-----" : match }
-        # end
         markdown.gsub(/^---/).with_index { |match, i| i > 1 ? "#{match}-----" : match }
       end
 
