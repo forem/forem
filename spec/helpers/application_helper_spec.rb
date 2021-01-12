@@ -3,6 +3,39 @@ require "rails_helper"
 RSpec.describe ApplicationHelper, type: :helper do
   include CloudinaryHelper
 
+  describe "constant definitions" do
+    it "defines USER_COLORS" do
+      expect(described_class::USER_COLORS).to eq ["#19063A", "#dce9f3"]
+    end
+
+    it "defines DELETED_USER" do
+      user = described_class::DELETED_USER
+      expect(user).not_to be_nil
+      expect(user.darker_color).to eq Color::CompareHex.new(described_class::USER_COLORS).brightness
+      expect(user.username).to eq "[deleted user]"
+      expect(user.name).to eq "[Deleted User]"
+      expect(user.summary).to be_nil
+      expect(user.twitter_username).to be_nil
+      expect(user.github_username).to be_nil
+    end
+
+    it "defines LARGE_USERBASE_THRESHOLD" do
+      expect(described_class::LARGE_USERBASE_THRESHOLD).to eq 1000
+    end
+
+    it "defines SUBTITLES" do
+      subtitles = {
+        "week" => "Top posts this week",
+        "month" => "Top posts this month",
+        "year" => "Top posts this year",
+        "infinity" => "All posts",
+        "latest" => "Latest posts"
+      }
+
+      expect(described_class::SUBTITLES).to eq subtitles
+    end
+  end
+
   describe "#community_name" do
     it "equals to the community name" do
       allow(SiteConfig).to receive(:community_name).and_return("SLOAN")

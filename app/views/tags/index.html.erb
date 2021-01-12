@@ -26,7 +26,7 @@
 
   <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
     <% @tags.each do |tag| %>
-      <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+      <% color = Color::CompareHex.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
       <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative" style="border-top-color: <%= color %>; ">
         <h3 class="crayons-tag crayons-tag--l mb-2">
           <a href="/t/<%= tag.name %>" class="crayons-link">
