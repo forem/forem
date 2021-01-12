@@ -8,16 +8,9 @@ module Admin
     end
 
     def index
-      tags = case params[:state]
-             when "supported"
-               Tag.where(supported: true).order(taggings_count: :desc)
-             when "unsupported"
-               Tag.where(supported: false).order(taggings_count: :desc)
-             else
-               Tag.order(taggings_count: :desc)
-             end
-      @q = tags.ransack(params[:q])
-      @tags = @q.result.page(params[:page]).per(50)
+      params[:q] = { supported_not_null: "true" } if params[:q].blank?
+      @q = Tag.ransack(params[:q])
+      @tags = @q.result.order(taggings_count: :desc).page(params[:page]).per(50)
     end
 
     def new

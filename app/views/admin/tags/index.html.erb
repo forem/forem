@@ -1,20 +1,24 @@
 <div class="flex items-center mb-6">
   <div class="crayons-tabs">
     <div class="nav-item">
-      <a href="/admin/tags" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:state].blank? %>">All</a>
+      <a href="/admin/tags?q[supported_not_null]=true" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params.dig(:q, :supported_not_null) %>">All</a>
     </div>
     <div class="nav-item">
-      <a href="/admin/tags?state=supported" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:state] == "supported" %>">Supported</a>
+      <a href="/admin/tags?q[supported_eq]=true" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params.dig(:q, :supported_eq) == "true" %>">Supported</a>
     </div>
     <div class="nav-item">
-      <a href="/admin/tags?state=unsupported" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:state] == "unsupported" %>">Unsupported</a>
+      <a href="/admin/tags?q[supported_eq]=false" class="crayons-tabs__item <%= "crayons-tabs__item--current" if params.dig(:q, :supported_eq) == "false" %>">Unsupported</a>
     </div>
   </div>
 
   <div class="m-auto">
     <%= search_form_for(@q, url: admin_tags_path, class: "inline-flex") do |f| %>
       <%= f.search_field(:name_cont, aria: { label: "Search" }, class: "crayons-textfield") %>
-      <%= f.hidden_field(:state, params[:state]) if params[:state].present? %>
+      <% if params.dig(:q, :supported_eq) %>
+        <%= f.hidden_field(:supported_eq) %>
+      <% else %>
+        <%= f.hidden_field(:supported_not_null) %>
+      <% end %>
       <%= f.submit "Search", class: "crayons-btn ml-2" %>
     <% end %>
   </div>
