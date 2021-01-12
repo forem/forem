@@ -1,7 +1,9 @@
 module Hex
   class Comparer
-    RGB_REGEX = /^#?(?<r>..)(?<g>..)(?<b>..)$/.freeze
     ACCENT_MODIFIERS = [1.14, 1.08, 1.06, 0.96, 0.9, 0.8, 0.7, 0.6].freeze
+    BRIGHTNESS_FORMAT = "#%<r>02x%<g>02x%<b>02x".freeze
+    OPACITY_FORMAT = "rgba(%<r>d, %<g>d, %<b>d, %<a>.2f)".freeze
+    RGB_REGEX = /^#?(?<r>..)(?<g>..)(?<b>..)$/.freeze
 
     def initialize(hexes)
       @hexes = hexes.sort
@@ -19,7 +21,7 @@ module Hex
       rgb = hex_to_rgb_hash(smallest).transform_values do |color|
         (color * amount).round
       end
-      format("#%<r>02x%<g>02x%<b>02x", rgb)
+      format(BRIGHTNESS_FORMAT, rgb)
     rescue StandardError
       smallest
     end
@@ -34,7 +36,7 @@ module Hex
 
     def opacity(value = 0.0)
       rgba = hex_to_rgb_hash(smallest).merge(a: value)
-      format("rgba(%<r>d, %<g>d, %<b>d, %<a>.2f)", rgba)
+      format(OPACITY_FORMAT, rgba)
     end
 
     private
