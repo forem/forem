@@ -39,16 +39,18 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
     const { success, message } = response;
     if (success) {
       const confirmBlock = window.confirm(
-        `Are you sure you want to block this person? This will:
+        `The message will be reported.\n\nWould you like to block this person as well?\n\nThis will:
       - prevent them from commenting on your posts
       - block all notifications from them
-      - prevent them from messaging you via DEV Connect`,
+      - prevent them from messaging you via chat`,
       );
+
       if (confirmBlock) {
         const response = await blockUser(data.user_id);
         if (response.result === 'blocked') {
           addSnackbarItem({
-            message: 'Your report has been submitted and User has been blocked',
+            message:
+              'Your report has been submitted and the user has been blocked',
           });
         }
       } else {
@@ -139,7 +141,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
               Inappropriate listings message/category
             </label>
           </FormField>
-          <h2>Reported Message</h2>
+          <h2>Message to Report</h2>
           <div
             className="reported__message p-2 mt-2 mb-3"
             // eslint-disable-next-line react/no-danger
