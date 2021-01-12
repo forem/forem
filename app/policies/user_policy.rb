@@ -7,7 +7,6 @@ class UserPolicy < ApplicationPolicy
     config_font
     config_theme
     config_navbar
-    contact_consent
     currently_hacking_on
     currently_learning
     display_announcements
