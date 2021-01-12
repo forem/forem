@@ -1869,19 +1869,19 @@
     "@stoplight/yaml-ast-parser" "0.0.48"
     tslib "^1.12.0"
 
-"@storybook/addon-a11y@^6.1.11":
-  version "6.1.11"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.1.11.tgz#13f1cbe02a6c6ab08cebe1851183e1813d86eb16"
-  integrity sha512-DJJeBoYlO/WjSKgQEE44fwaKg9KZE6yifPAXT6oJlEPU9sRNnIIY5cAJNeaRbJ61SZ8rDr51iF/4yJb0uvyNxw==
+"@storybook/addon-a11y@^6.1.14":
+  version "6.1.14"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-a11y/-/addon-a11y-6.1.14.tgz#17cc6864b1427e4a432727ceaa9cc72354977e66"
+  integrity sha512-FAiBMWvsLaBzfMRtlWnXeI/PeOs1akhjk3D+6a96poY0SCIuQ0RPfGqQhO00mLGBB3+DOsKzCf16y34/pdOUfQ==
   dependencies:
-    "@storybook/addons" "6.1.11"
-    "@storybook/api" "6.1.11"
-    "@storybook/channels" "6.1.11"
-    "@storybook/client-api" "6.1.11"
-    "@storybook/client-logger" "6.1.11"
-    "@storybook/components" "6.1.11"
-    "@storybook/core-events" "6.1.11"
-    "@storybook/theming" "6.1.11"
+    "@storybook/addons" "6.1.14"
+    "@storybook/api" "6.1.14"
+    "@storybook/channels" "6.1.14"
+    "@storybook/client-api" "6.1.14"
+    "@storybook/client-logger" "6.1.14"
+    "@storybook/components" "6.1.14"
+    "@storybook/core-events" "6.1.14"
+    "@storybook/theming" "6.1.14"
     axe-core "^4.0.1"
     core-js "^3.0.1"
     global "^4.3.2"
@@ -2108,7 +2108,7 @@
     global "^4.3.2"
     regenerator-runtime "^0.13.7"
 
-"@storybook/addons@6.1.14", "@storybook/addons@^6.1.11":
+"@storybook/addons@6.1.14", "@storybook/addons@^6.1.14":
   version "6.1.14"
   resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-6.1.14.tgz#2b81304bbe696923df95cdcf85cfc592d10f4065"
   integrity sha512-HlpmV7aejp/MeW8bo/WKME3i71gi0men9qcwoovjDjnSF6jXoNLT336a5udKXdHqYSZgzdyURlgLtilCWkWaJQ==
@@ -2134,21 +2134,6 @@
     "@storybook/core-events" "6.1.8"
     "@storybook/router" "6.1.8"
     "@storybook/theming" "6.1.8"
-    core-js "^3.0.1"
-    global "^4.3.2"
-    regenerator-runtime "^0.13.7"
-
-"@storybook/addons@^6.1.14":
-  version "6.1.14"
-  resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-6.1.14.tgz#2b81304bbe696923df95cdcf85cfc592d10f4065"
-  integrity sha512-HlpmV7aejp/MeW8bo/WKME3i71gi0men9qcwoovjDjnSF6jXoNLT336a5udKXdHqYSZgzdyURlgLtilCWkWaJQ==
-  dependencies:
-    "@storybook/api" "6.1.14"
-    "@storybook/channels" "6.1.14"
-    "@storybook/client-logger" "6.1.14"
-    "@storybook/core-events" "6.1.14"
-    "@storybook/router" "6.1.14"
-    "@storybook/theming" "6.1.14"
     core-js "^3.0.1"
     global "^4.3.2"
     regenerator-runtime "^0.13.7"
