@@ -59,7 +59,7 @@ gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aes
 gem "mini_racer", "~> 0.3.1" # Minimal embedded v8
 gem "nokogiri", "~> 1.11" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 4.20" # Simple wrapper for the GitHub API
-gem "oj", "~> 3.10" # JSON parser and object serializer
+gem "oj", "~> 3.11" # JSON parser and object serializer
 gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider authentication
 gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 8.0" # OmniAuth strategy for Facebook
