@@ -92,9 +92,11 @@ class UsersController < ApplicationController
   end
 
   def confirm_destroy
+    set_current_tab("account")
+
     unless @user
       flash[:settings_notice] = "You must be logged in to proceed with account deletion."
-      redirect_to user_settings_path("account")
+      redirect_to user_settings_path(@tab)
     end
 
     destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
@@ -102,8 +104,6 @@ class UsersController < ApplicationController
     raise UserDestroyToken::Errors::InvalidToken if destroy_token.blank?
 
     raise ActionController::RoutingError, "Not Found" unless destroy_token == params[:token]
-
-    set_current_tab("account")
   end
 
   def full_delete
