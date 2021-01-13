@@ -21,13 +21,7 @@ module Api
       ].freeze
       private_constant :LISTINGS_FOR_SERIALIZATION
 
-      ARTICLES_FOR_SERIALIZATION = %i[
-        id user_id organization_id collection_id
-        title description main_image published_at crossposted_at social_image
-        cached_tag_list slug path canonical_url comments_count
-        public_reactions_count created_at edited_at last_comment_at published
-        updated_at video_thumbnail_url
-      ].freeze
+      ARTICLES_FOR_SERIALIZATION = Api::V0::ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
       def show
         @organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
