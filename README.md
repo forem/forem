@@ -157,7 +157,7 @@ A more complete overview of our stack is available in
 
 ## Vulnerability disclosure
 
-Forem is the open-source software which powers [DEV](https://dev.to).
+Forem is the open source software which powers [DEV](https://dev.to).
 
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
