@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "User destroys their profile", type: :system, js: true do
   let(:user) { create(:user) }
   let(:token) { SecureRandom.hex(10) }
+  let(:mismatched_token) { SecureRandom.hex(10) }
 
   before do
     sign_in user
@@ -27,9 +28,9 @@ RSpec.describe "User destroys their profile", type: :system, js: true do
   it "raises a 'Not Found' error if there is a token mismatch" do
     visit "/settings/account"
     click_button "Delete Account"
-    allow(Rails.cache).to receive(:read).and_return(SecureRandom.hex(10))
+    allow(Rails.cache).to receive(:read).and_return(token)
     expect do
-      get user_confirm_destroy_path(token: token)
+      get user_confirm_destroy_path(token: mismatched_token)
     end.to raise_error(ActionController::RoutingError)
   end
 
