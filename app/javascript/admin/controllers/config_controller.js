@@ -187,7 +187,7 @@ export default class ConfigController extends Controller {
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
     enabledIndicator.classList.remove('visible');
-    this.listAuthToBeEnabled(event);
+    this.listAuthToBeEnabled();
     this.hideAuthProviderSettings(event);
   }
 
@@ -291,13 +291,12 @@ export default class ConfigController extends Controller {
     document
       .querySelectorAll('[data-enable-auth="true"]')
       .forEach((provider) => {
-        const providerName = provider.dataset;
-        const providerOfficialName = provider.dataset;
+        const providerName = provider.dataset.providerName;
         if (
           !document.getElementById(`site_config_${providerName}_key`).value ||
           !document.getElementById(`site_config_${providerName}_secret`).value
         ) {
-          providersWithMissingKeys.push(providerOfficialName);
+          providersWithMissingKeys.push(providerName);
         }
       });
 
@@ -306,7 +305,7 @@ export default class ConfigController extends Controller {
 
   generateProvidersList(providers) {
     const list = providers.reduce((html, provider) => {
-      return `${html}<li>${provider}</li>`;
+      return `${html}<li class="capitalize">${provider}</li>`;
     }, '');
 
     return list;
@@ -314,9 +313,9 @@ export default class ConfigController extends Controller {
 
   missingAuthKeysModalBody(providers) {
     return `
-      <p>You haven't filled out all of the required fields to  enable the following authentication providers:</p>
+      <p>You haven't filled out all of the required fields to enable the following authentication providers:</p>
       <ul class="mb-0">${this.generateProvidersList(providers)}</ul>
-      <p>If you save your configuration now, these authorization providers will not be enabled.</p>
+      <p class="mb-0">You may continue editing these authentication providers, or cancel.</p>
     `;
   }
 
@@ -330,8 +329,8 @@ export default class ConfigController extends Controller {
       body: this.missingAuthKeysModalBody(providers),
       leftBtnText: 'Continue editing',
       leftBtnAction: 'closeAdminModal',
-      rightBtnText: 'Save anyway',
-      rightBtnAction: 'submitForm',
+      rightBtnText: 'Cancel',
+      rightBtnAction: 'cancelAuthProviderEnable',
       rightBtnClasses: 'crayons-btn--secondary',
     });
   }
@@ -343,5 +342,28 @@ export default class ConfigController extends Controller {
     } else {
       event.target.submit();
     }
+  }
+
+  cancelAuthProviderEnable() {
+    const providers = this.enabledProvidersWithMissingKeys();
+
+    providers.forEach((provider) => {
+      const enabledIndicator = document.getElementById(
+        `${provider}-enabled-indicator`,
+      );
+      const authEnableButton = document.getElementById(`${provider}-auth-btn`);
+
+      authEnableButton.setAttribute('data-enable-auth', 'false');
+      enabledIndicator.classList.remove('visible');
+      this.listAuthToBeEnabled();
+      document
+        .getElementById(`${provider}-auth-settings`)
+        .classList.add('hidden');
+      document
+        .getElementById(`${provider}-auth-btn`)
+        .classList.remove('hidden');
+
+      this.closeAdminModal();
+    });
   }
 }
