@@ -97,11 +97,13 @@ module Html
       on_title = "Enter fullscreen mode"
       on_cls = "highlight-action crayons-icon highlight-action--fullscreen-on"
       icon_fullscreen_on = inline_svg_tag(
-        "fullscreen-on.svg", class: on_cls, title: on_title, width: "20px", height: "20px")
+        "fullscreen-on.svg", class: on_cls, title: on_title, width: "20px", height: "20px"
+      )
       off_title = "Exit fullscreen mode"
       off_cls = "highlight-action crayons-icon highlight-action--fullscreen-off"
       icon_fullscreen_off = inline_svg_tag(
-        "fullscreen-off.svg", class: off_cls, title: off_title, width: "20px", height: "20px")
+        "fullscreen-off.svg", class: off_cls, title: off_title, width: "20px", height: "20px"
+      )
       doc = Nokogiri::HTML.fragment(@html)
       doc.search("div.highlight__panel").each do |codeblock|
         fullscreen_action = <<~HTML
