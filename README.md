@@ -54,7 +54,7 @@ Forem is open source software for building communities. Communities for your
 peers, customers, fanbases, families, friends, and any other time and space
 where people need to come together to be part of a collective.
 [See our announcement post](https://dev.to/devteam/for-empowering-community-2k6h)
-for a higher level overview of what Forem is.
+for a high-level overview of what Forem is.
 
 [dev.to](https://dev.to) (or just DEV) is hosted by Forem. It is a community of
 software developers who write articles, take part in discussions, and build
