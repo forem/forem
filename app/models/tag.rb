@@ -96,8 +96,8 @@ class Tag < ActsAsTaggableOn::Tag
   private
 
   def evaluate_markdown
-    self.rules_html = MarkdownParser.new(rules_markdown).evaluate_markdown
-    self.wiki_body_html = MarkdownParser.new(wiki_body_markdown).evaluate_markdown
+    self.rules_html = MarkdownProcessor::Parser.new(rules_markdown).evaluate_markdown
+    self.wiki_body_html = MarkdownProcessor::Parser.new(wiki_body_markdown).evaluate_markdown
   end
 
   def calculate_hotness_score
