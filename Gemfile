@@ -54,7 +54,7 @@ gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.4" #  A gem to automate using jQuery with Rails
 gem "jsonapi-serializer", "~> 2.1" # Serializer for Ruby objects
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
-gem "katex", "~> 0.6.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
+gem "katex", "~> 0.6.1" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
 gem "mini_racer", "~> 0.3.1" # Minimal embedded v8
 gem "nokogiri", "~> 1.11" # HTML, XML, SAX, and Reader parser
