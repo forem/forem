@@ -174,7 +174,7 @@ module ApplicationHelper
   end
 
   def release_adjusted_cache_key(path)
-    release_footprint = ForemInstance::DEPLOYED_AT
+    release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
     "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"
