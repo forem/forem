@@ -13,7 +13,11 @@ module MarkdownProcessor
       def self.call(markdown)
         return unless markdown
 
-        self::METHODS.reduce(markdown) { |acc, elem| public_send(elem, acc) }
+        fix_methods.reduce(markdown) { |acc, elem| public_send(elem, acc) }
+      end
+
+      def self.fix_methods
+        self::METHODS
       end
 
       def self.add_quotes_to_title(markdown)
