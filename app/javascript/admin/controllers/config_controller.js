@@ -291,7 +291,7 @@ export default class ConfigController extends Controller {
     document
       .querySelectorAll('[data-enable-auth="true"]')
       .forEach((provider) => {
-        const providerName = provider.dataset.providerName;
+        const { providerName } = provider.dataset;
         if (
           !document.getElementById(`site_config_${providerName}_key`).value ||
           !document.getElementById(`site_config_${providerName}_secret`).value
