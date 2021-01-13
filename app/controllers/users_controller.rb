@@ -163,6 +163,10 @@ class UsersController < ApplicationController
   end
 
   def onboarding_checkbox_update
+    # TODO: mstruve will remove once debugging is done
+    Rails.logger.error("onboarding_checkbox_update_params:#{params}")
+    Rails.logger.error("onboarding_checkbox_update_user_params:#{params[:user]}")
+
     if params[:user]
       permitted_params = %i[
         checked_code_of_conduct checked_terms_and_conditions email_newsletter email_digest_periodic
