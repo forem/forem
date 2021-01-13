@@ -115,7 +115,7 @@ class Organization < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
-  def banned
+  def suspended
     false
   end
 

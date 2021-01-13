@@ -4,6 +4,6 @@ class ReactionPolicy < ApplicationPolicy
   end
 
   def create?
-    !user_is_banned?
+    !user_is_suspended?
   end
 end

@@ -56,13 +56,13 @@ RSpec.describe "UserProfiles", type: :request do
       expect { get "/#{user.username}" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "renders noindex meta if banned" do
-      user.add_role(:banned)
+    it "renders noindex meta if suspended" do
+      user.add_role(:suspended)
       get "/#{user.username}"
       expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
     end
 
-    it "does not render noindex meta if not banned" do
+    it "does not render noindex meta if not suspended" do
       get "/#{user.username}"
       expect(response.body).not_to include("<meta name=\"robots\" content=\"noindex\">")
     end

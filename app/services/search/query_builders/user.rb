@@ -21,8 +21,8 @@ module Search
 
         @params = params.deep_symbolize_keys
 
-        # default to excluding users who are banned
-        @params[:exclude_roles] = ["banned"]
+        # default to excluding users who are suspended
+        @params[:exclude_roles] = ["suspended"]
 
         build_body
       end

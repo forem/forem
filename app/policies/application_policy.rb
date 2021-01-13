@@ -71,8 +71,8 @@ class ApplicationPolicy
     user.has_role?(:support_admin)
   end
 
-  def user_is_banned?
-    user.banned
+  def user_is_suspended?
+    user.suspended
   end
 
   def user_is_trusted?

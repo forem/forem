@@ -4,7 +4,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def create?
-    !user_is_banned? && !user_is_comment_banned? && !user_is_blocked?
+    !user_is_suspended? && !user_is_comment_suspended? && !user_is_blocked?
   end
 
   def update?
@@ -65,8 +65,8 @@ class CommentPolicy < ApplicationPolicy
     user.moderator_for_tags.present?
   end
 
-  def user_is_comment_banned?
-    user.has_role? :comment_banned
+  def user_is_comment_suspended?
+    user.has_role? :comment_suspended
   end
 
   def user_is_author?
