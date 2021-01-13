@@ -21,6 +21,6 @@ json.array! @articles do |article|
 
   flare_tag = FlareTag.new(article).tag
   if flare_tag
-    json.partial! "api/v0/shared/flare_tag", flare_tag: flare_tag
+    json.partial! "flare_tag", flare_tag: flare_tag
   end
 end
