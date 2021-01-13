@@ -67,6 +67,8 @@ module Api
           .page(page)
           .per(num)
           .decorate
+
+        render "api/v0/articles/index.json.jbuilder"
       end
 
       private
