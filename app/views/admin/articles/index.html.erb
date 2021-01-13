@@ -130,18 +130,12 @@
   <div class="col-12">
     <% if @featured_articles.present? %>
       <h2>Manually Featured Articles</h2>
-      <% @featured_articles.each do |article| %>
-        <%= render "individual_article", article: article %>
-      <% end %>
+      <%= render partial: "individual_article", collection: @featured_articles, as: :article %>
     <% end %>
   </div>
   <div class="col-12">
     <%= paginate @articles %>
-
-    <% @articles.each do |article| %>
-      <%= render "individual_article", article: article %>
-    <% end %>
-
+    <%= render partial: "individual_article", collection: @articles, as: :article %>
     <%= paginate @articles %>
   </div>
 </main>
