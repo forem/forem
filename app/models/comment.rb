@@ -99,7 +99,7 @@ class Comment < ApplicationRecord
   end
 
   def custom_css
-    MarkdownParser.new(body_markdown).tags_used.map do |tag|
+    MarkdownProcessor::Parser.new(body_markdown).tags_used.map do |tag|
       Rails.application.assets["ltags/#{tag}.css"].to_s
     end.join
   end
@@ -163,7 +163,7 @@ class Comment < ApplicationRecord
 
   def evaluate_markdown
     fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
-    parsed_markdown = MarkdownParser.new(fixed_body_markdown, source: self, user: user)
+    parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: self, user: user)
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
