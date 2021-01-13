@@ -193,13 +193,6 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.community_name).to eq(name_magoo)
         end
 
-        it "updates the collective_noun" do
-          collective_noun = "Rhumba"
-          post "/admin/config", params: { site_config: { collective_noun: collective_noun },
-                                          confirmation: confirmation_message }
-          expect(SiteConfig.collective_noun).to eq(collective_noun)
-        end
-
         it "updates the community_member_label" do
           name = "developer"
           post "/admin/config", params: { site_config: { community_member_label: name },
@@ -807,6 +800,12 @@ RSpec.describe "/admin/config", type: :request do
           post "/admin/config", params: { site_config: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" },
                                           confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+
+        it "creates tags if they do not exist" do
+          post "/admin/config", params: { site_config: { sidebar_tags: "bobofogololo, spla, bla" },
+                                          confirmation: confirmation_message }
+          expect(Tag.find_by(name: "bobofogololo")).to be_valid
         end
       end
 

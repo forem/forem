@@ -238,7 +238,7 @@ class Comment < ApplicationRecord
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     user.touch(:last_comment_at)
-    CacheBuster.bust(commentable.path.to_s) if commentable
+    EdgeCache::Bust.call(commentable.path.to_s) if commentable
     expire_root_fragment
   end
 
@@ -305,7 +305,7 @@ class Comment < ApplicationRecord
 
   def record_field_test_event
     Users::RecordFieldTestEventWorker
-      .perform_async(user_id, :follow_implicit_points, "user_creates_comment")
+      .perform_async(user_id, "user_creates_comment")
   end
 
   def notify_slack_channel_about_warned_users

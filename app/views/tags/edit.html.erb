@@ -2,11 +2,11 @@
 
 <style>
   .widget header {
-    color: <%= HexComparer.new([@tag.bg_color_hex || "#0000000", @tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+    color: <%= Color::CompareHex.new([@tag.bg_color_hex || "#0000000", @tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
   }
 
   .slanty-accent {
-    background-color: <%= HexComparer.new([@tag.bg_color_hex || "#ffffff"]).accent %>
+    background-color: <%= Color::CompareHex.new([@tag.bg_color_hex || "#ffffff"]).accent %>
   }
 
   .tag-edit-tag {

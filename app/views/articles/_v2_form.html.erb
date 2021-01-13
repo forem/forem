@@ -83,35 +83,10 @@
             </button>
           </div>
           <div class="crayons-article-form__title">
-            <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px; "><%= article.title %></textarea>
-          </div>
-          <div class="crayons-article-form__tagsfield">
-            <input type="text" class="crayons-textfield crayons-textfield--ghost ff-monospace" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
+            <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off"><%= article.title %></textarea>
           </div>
         </div>
       <% end %>
-      <div class="crayons-article-form__body text-padding">
-        <div class="crayons-article-form__toolbar">
-          <button class="crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-left fw-normal" type="button">
-            <%= ("#{inline_svg_tag('image.svg', aria: true, class: 'crayons-icon', title: 'Image')}Upload image").delete!("\n").html_safe %>
-            <input type="file" id="image-upload-field" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" multiple accept="image/*" data-max-file-size-mb="25" />
-          </button>
-        </div>
-        <textarea class="crayons-article-form__body__field crayons-textfield crayons-textfield--ghost" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
-      </div>
-    </div>
-    <div class="crayons-article-form__aside"></div>
-
-    <div class="crayons-article-form__aside"></div>
-
-    <div class="crayons-article-form__footer">
-      <button class="crayons-btn mr-2" type="button">Publish</button>
-      <button class="crayons-btn crayons-btn--secondary mr-2" type="button">Save draft</button>
-      <div class="relative">
-        <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button" title="Post options">
-          <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Options") %>
-        </button>
-      </div>
     </div>
   </form>
 </div>

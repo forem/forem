@@ -78,6 +78,9 @@ within our community. ❤️
 - [Vulnerability disclosure](#vulnerability-disclosure)
 - [License](#license)
 
+## Community
+For a place to have open discussions on features, voice your ideas, or get help with general questions please visit our community at [forem.dev](https://forem.dev/).
+
 ## Contributing
 
 We encourage you to contribute to Forem! Please check out the
@@ -154,7 +157,7 @@ A more complete overview of our stack is available in
 - [@cmgorton](https://dev.to/coffeecraftcode)
 - [@andygeorge](https://dev.to/andygeorge)
 - [@phannon716](https://dev.to/phannon716)
-
+- [@katiedavis](https://dev.to/katiedavis)
 ## Vulnerability disclosure
 
 Forem is the open source software which powers [DEV](https://dev.to).
@@ -193,3 +196,5 @@ Any questions, please refer to our
   <br>
   <strong>Happy Coding</strong> ❤️
 </p>
+
+[⬆ Back to Top](#Table-of-contents)

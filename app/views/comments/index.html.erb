@@ -11,7 +11,7 @@
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Discussion of <%= @commentable.title %>" />
   <meta property="og:description" content="<%= @commentable.description || "#{community_name} Comment" %>" />
-  <meta property="og:site_name" content="<%= community_qualified_name %>" />
+  <meta property="og:site_name" content="<%= community_name %>" />
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
@@ -25,6 +25,10 @@
     <meta name="twitter:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — <%= community_name %>">
     <meta property="og:image" content="<%= comment_social_image_url(@root_comment) %>" />
     <meta name="twitter:image" content="<%= comment_social_image_url(@root_comment) %>">
+    <% if @root_comment.score < 0 || @commentable.score < 0 %>
+      <meta name="googlebot" content="noindex">
+      <meta name="googlebot" content="nofollow">
+    <% end %>
   <% else %>
     <link rel="canonical" href="<%= app_url("#{@commentable.path}/comments") %>" />
     <meta property="og:url" content="<%= app_url("#{@commentable.path}/comments") %>" />
