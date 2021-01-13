@@ -315,7 +315,7 @@ export default class ConfigController extends Controller {
     return `
       <p>You haven't filled out all of the required fields to enable the following authentication providers:</p>
       <ul class="mb-0">${this.generateProvidersList(providers)}</ul>
-      <p class="mb-0">You may continue editing these authentication providers, or cancel.</p>
+      <p class="mb-0">You may continue editing these authentication providers, or you may cancel.</p>
     `;
   }
 
