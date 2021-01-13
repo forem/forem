@@ -1,7 +1,13 @@
 <% unless @user.authenticated_with_all_providers? %>
   <div class="crayons-card crayons-card--content-rows block">
     <% authentication_enabled_providers.each do |provider| %>
-      <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
+      <!--
+        TODO: [@forem/oss] Only until we refactor our cookie configurations
+        we'll be able to connect existing accounts with SIWA. This should be
+        done when Apple Auth Provider is no longer in 'Beta':
+        https://github.com/forem/forem/pull/12114
+      -->
+      <% next if provider.provider_name == :apple %>
       <% unless @user.authenticated_through?(provider.provider_name) %>
         <%= form_with url: provider.sign_in_path(state: "profile"), class: "flex w-100", local: true do |f| %>
           <%= f.button type: :submit, class: "crayons-btn crayons-btn--icon-left crayons-btn--brand-#{provider.provider_name} m-1" do %>
