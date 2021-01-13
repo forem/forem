@@ -5,7 +5,7 @@
 <% end %>
 <style>
   :root {
-    --profile-brand-color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
+    --profile-brand-color: <%= Color::CompareHex.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
   }
 </style>
 <div class="brand-bg">

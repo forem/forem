@@ -36,7 +36,7 @@ RSpec.describe ListingDecorator, type: :decorator do
       color = category.social_preview_color
 
       expect(decorated_listing.social_preview_color(brightness: 0.8))
-        .to eq(HexComparer.new([color]).brightness(0.8))
+        .to eq(Color::CompareHex.new([color]).brightness(0.8))
     end
   end
 end
