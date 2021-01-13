@@ -54,21 +54,21 @@ requires a custom partial
         class="crayons-btn crayons-btn--danger"
         data-action="click->config#activateAuthProviderModal"
         data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
-        data-auth-provider="<%= provider.provider_name %>"
-        data-auth-provider-official="<%= provider.official_name %>"
-        <%= disabled_attr_on_auth_provider_enablebtn %>>
+        data-provider-name="<%= provider.provider_name %>"
+        data-provider-official-name="<%= provider.official_name %>"
+        <%= disabled_attr_on_auth_provider_enable_btn %>>
         Disable
       </button>
       <button
         class="crayons-btn crayons-btn--secondary"
-        data-auth-provider="<%= provider.provider_name %>"
+        data-provider-name="<%= provider.provider_name %>"
         data-action="click->config#hideAuthProviderSettings">
         Close
       </button>
     <% else %>
       <button
         class="crayons-btn crayons-btn--secondary"
-        data-auth-provider="<%= provider.provider_name %>"
+        data-provider-name="<%= provider.provider_name %>"
         data-action="click->config#disableAuthProvider">
         Undo
       </button>
