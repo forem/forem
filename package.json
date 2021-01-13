@@ -102,7 +102,7 @@
     "@storybook/preact": "^6.1.14",
     "@testing-library/cypress": "^7.0.3",
     "@testing-library/dom": "^7.29.4",
-    "@testing-library/jest-dom": "^5.11.8",
+    "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/preact": "^2.0.1",
     "@testing-library/preact-hooks": "^1.1.0",
     "babel-core": "^7.0.0-bridge.0",
