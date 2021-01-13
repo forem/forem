@@ -147,7 +147,7 @@
           </div>
         <% end %>
 
-        <%= form_for(SiteConfig.new, url: admin_config_path) do |f| %>
+        <%= form_for(SiteConfig.new, url: admin_config_path, html: { data: { action: "submit->config#configUpdatePrecheck", "config-target": "authSectionForm" } }) do |f| %>
           <div class="card mt-3">
             <%= render partial: "admin/shared/card_header",
                        locals: {
@@ -211,7 +211,7 @@
                         data-button-text="<%= SiteConfig.allow_email_password_registration ? "edit" : "enable" %>"
                         data-config-target="emailAuthSettingsBtn"
                         data-action="click->config#enableOrEditEmailAuthSettings"
-                        <%= disabled_attr_on_auth_provider_enablebtn %>>
+                        <%= disabled_attr_on_auth_provider_enable_btn %>>
                         <%= SiteConfig.allow_email_password_registration ? "Edit" : "Enable" %>
                       </button>
 
@@ -308,7 +308,7 @@
                                      readonly: true %>
                   </div>
                   <% authentication_available_providers.each do |provider| %>
-                  <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
+                    <% next if provider.provider_name == :apple && !Flipper.enabled?(:apple_auth) %>
                     <section class="config-authentication__item mb-0">
                       <figure class="config-authentication__item--icon">
                         <%= inline_svg_tag("#{provider.provider_name}.svg", class: "crayons-icon", aria: true, title: "#{provider.official_name} logo") %>
@@ -333,9 +333,10 @@
                             id="<%= provider.provider_name %>-auth-btn"
                             data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
                             data-action="click->config#enableOrEditAuthProvider"
-                            data-auth-provider-enable="<%= provider.provider_name %>"
+                            data-provider-name="<%= provider.provider_name %>"
+                            data-provider-official-name="<%= provider.official_name %>"
                             data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
-                            <%= disabled_attr_on_auth_provider_enablebtn %>>
+                            <%= disabled_attr_on_auth_provider_enable_btn %>>
                             <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>
@@ -1334,5 +1335,5 @@
       </div>
     </div>
   </div>
-  <div data-target="config.configModalAnchor"></div>
+  <div data-config-target="configModalAnchor"></div>
 </div>
