@@ -10,7 +10,6 @@ class User < ApplicationRecord
     available_for
     behance_url
     bg_color_hex
-    contact_consent
     currently_hacking_on
     currently_learning
     currently_streaming_on
