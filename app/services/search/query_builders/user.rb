@@ -31,7 +31,11 @@ module Search
 
       def build_queries
         @body[:query] = { bool: {} }
+
+        # The `must` clause *must* appear in the matching document and it contributes to scoring
         @body[:query][:bool][:must] = query_conditions if query_keys_present?
+
+        # The `must_not` clause *must not* appear in the matching document and it ignores scoring
         @body[:query][:bool][:must_not] = excluded_term_keys if excluded_term_keys_present?
       end
 

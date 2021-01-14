@@ -45,7 +45,11 @@ module Search
 
       def build_queries
         @body[:query] = { bool: {} }
+
+        # The `filter` clause must appear in the matching document but it does not affect scoring
         @body[:query][:bool][:filter] = filter_conditions
+
+        # The `must` clause *must* appear in the matching document and it contributes to scoring
         @body[:query][:bool][:must] = query_conditions if query_keys_present?
       end
 
@@ -54,9 +58,9 @@ module Search
 
         # term_keys are always present because we are setting a filter of
         # published: true by default
-        filter_conditions.concat term_keys
+        filter_conditions.concat(term_keys)
 
-        filter_conditions.concat range_keys if range_keys_present?
+        filter_conditions.concat(range_keys) if range_keys_present?
 
         filter_conditions
       end

@@ -5,9 +5,9 @@ module Search
       QUERY_KEYS = {
         search_fields: [
           "tags.keywords_for_search",
-          "tags.name^3",
-          "body_text^2",
-          "title^6",
+          "tags.name^3", # boost tag names by a factor of 3
+          "body_text^2", # boost body text by a factor of 2
+          "title^6", # boost title by a factor of 6
           "user.name",
           "user.username",
           "organization.name",
@@ -32,7 +32,7 @@ module Search
 
       DEFAULT_PARAMS = {
         sort: [
-          :_score,
+          :_score, # internal score given by ES for each returned document
           { score: "desc" },
           { hotness_score: "desc" },
           { comments_count: "desc" },
@@ -87,11 +87,10 @@ module Search
         @body[:sort] = { @params[:sort_by] => @params[:sort_direction] }
       end
 
+      # Highlights search results in HTML using `<mark>` returning 2 fragments on 75 chars each ordering them by score
       def add_highlight_fields
         highlight_fields = { encoder: "html", pre_tags: "<mark>", post_tags: "</mark>", fields: {} }
         HIGHLIGHT_FIELDS.each do |field_name|
-          # This hash can be filled with options to further customize our highlighting
-          # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
           highlight_fields[:fields][field_name] = { order: :score, number_of_fragments: 2, fragment_size: 75 }
         end
         @body[:highlight] = highlight_fields
@@ -103,12 +102,17 @@ module Search
 
       def build_queries
         @body[:query] = { bool: {} }
+
+        # The `filter` clause must appear in the matching document but it does not affect scoring
         @body[:query][:bool][:filter] = filter_conditions if filter_keys_present?
         return unless query_keys_present?
 
+        # The `must` clause *must* appear in the matching document and it contributes to scoring
         @body[:query][:bool][:must] = query_conditions
+
         # Boost the score of queries that match these conditions but if they dont match any,
         # minimum_should_match: 0, then that is OK
+        # https://www.elastic.co/guide/en/elasticsearch/reference/7.10/query-dsl-bool-query.html#bool-min-should-match
         @body[:query][:bool][:should] = match_phrase_conditions
         @body[:query][:bool][:minimum_should_match] = 0
       end
@@ -148,6 +152,8 @@ module Search
         end.compact
       end
 
+      # Search fields based on a range
+      # https://www.elastic.co/guide/en/elasticsearch/reference/7.10/query-dsl-range-query.html
       def range_keys
         RANGE_KEYS.filter_map do |range_key|
           next unless @params.key? range_key
@@ -156,18 +162,26 @@ module Search
         end
       end
 
+      # Builds the `simple_query_string` query
+      # This query uses a simple syntax to parse and split the provided query
+      # string into terms based on special operators. The query then analyzes
+      # each term independently before returning matching documents.
+      # https://www.elastic.co/guide/en/elasticsearch/reference/7.10/query-dsl-simple-query-string-query.html
       def query_hash(key, fields)
         {
           simple_query_string: {
             query: key.downcase,
             fields: fields,
-            lenient: true,
-            analyze_wildcard: true,
-            minimum_should_match: 2
+            lenient: true, # ignores format based errors
+            analyze_wildcard: true, # attempts to analyze wildcard terms in the query
+            minimum_should_match: 2 # at least two clauses must match for a document to be returned
           }
         }
       end
 
+      # Function scoring allows us to modify the score of the retrieved documents.
+      # In this instance we're going to use the `weight` function as a multiplying factor
+      # https://www.elastic.co/guide/en/elasticsearch/reference/7.10/query-dsl-function-score-query.html#function-weight
       def add_function_scoring
         @body[:query] = { function_score: { query: @body[:query] } }
         @body[:query][:function_score][:functions] = scoring_functions
@@ -175,9 +189,9 @@ module Search
 
       def scoring_functions
         [
-          scoring_filter(1000, 2.5),
-          scoring_filter(500, 2),
-          scoring_filter(100, 1.5),
+          scoring_filter(1000, 2.5), # for results with a score greater than 1000, boost by 2.5x
+          scoring_filter(500, 2), # for results with a score greater than 500, boost by 2x
+          scoring_filter(100, 1.5), # for results with a score greater than 100, boost by 1.5x
         ]
       end
 

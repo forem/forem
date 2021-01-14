@@ -37,7 +37,11 @@ module Search
 
       def build_queries
         @body[:query] = {}
+
+        # The `filter` clause must appear in the matching document but it does not affect scoring
         @body[:query][:bool] = { filter: filter_conditions }
+
+        # The `must` clause *must* appear in the matching document and it contributes to scoring
         @body[:query][:bool][:must] = query_conditions if query_keys_present?
       end
 
