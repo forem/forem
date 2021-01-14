@@ -1,6 +1,6 @@
 <div class="crayons-card crayons-card--secondary p-4">
   <h2 class="fs-l fw-bold mb-2">
-    <a href="<%= about_path %>"><%= community_name %></a> is a community of <%= number_with_delimiter User.registered.estimated_count %> amazing <%= community_members_label %>
+    <%= render "shared/authentication_title" %>
   </h2>
   <p class="color-base-70 mb-4">
     <% if SiteConfig.tagline.present? %>

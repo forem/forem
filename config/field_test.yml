@@ -1,41 +1,36 @@
 experiments:
-  follow_implicit_points: # Points given for implicit tag weights
-    # TEST FINISHED
-    # Hypotheses: Weighting tags based on implied preference will lead
-    # to more repeat engagement.
-    # Recommended duration: 4 weeks (ending at start of January)
-
-    # OUTCOME:
-    # It was observed that "base" has been consistently ahead in comments and
-    # "four hours of article reads in day" by 10% to 20% over no_implicit_score
-    # but over time this began regressing towards the mean and seeming more random.
-    # In inspecting the ways we are measuring goals here, anything with a low barrier
-    # will eventually be reached (aka leave one reaction) by most users, so over time
-    # these goals demonstrate less value.
-    # So this test is being cut off on the observation of a clear winner early on
-    # with the note that we need tests which can map better to the duration of the test.
-
-    # This experiment is no longer running in production, but can remain configured here
-    # while there are no other experiments running.
+  feed_top_articles_query:
+    # This tests how we fetch "globally hot articles" — Testing some variants of
+    # more focus on the particpant's tags, some other alternatives which take more into account
+    # when the particpant was last on the site and viewed a post.
+    # -> Recommended experiment duration: 2 weeks.
+    # This experiment has new goals measuring consistently of coming back and clocking a page view
+    # and two weeks should be enough to see results.
+    # Hypotheses. This will be more impactful than past experiments which were too modest.
+    # We'll get more info on bigger levers on experiments, and should be able to pit the winner
+    # against some more variation.
+    # combination_only_tags_followed_and_top_max_7_days will be interesting to observe I think.
     variants:
       - base
-      - no_implicit_score
-      - half_weight_after_log
-      - double_weight_after_log
-      - double_bonus_before_log
-      - without_weighting_bonus
-    weights: # "base" (what we currently implement) and "no_implicit_score" are what we want the most data on.
-      - 30
-      - 30
-      - 10
-      - 10
-      - 10
-      - 10
+      - base_with_more_articles
+      - only_followed_tags
+      - top_articles_since_last_pageview_3_days_max
+      - top_articles_since_last_pageview_7_days_max
+      - combination_only_tags_followed_and_top_max_7_days
+    weights: # "base" gets a few more rolls of the dice
+      - 20
+      - 16
+      - 16
+      - 16
+      - 16
+      - 16
     goals:
       - user_creates_comment
-      - user_creates_reaction
+      - user_creates_comment_four_days_in_week
       - user_views_article_four_days_in_week
       - user_views_article_four_hours_in_day
+      - user_views_article_nine_days_in_two_week
+      - user_views_article_twelve_hours_in_five_days
 exclude:
   bots: true
 

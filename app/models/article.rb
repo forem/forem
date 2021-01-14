@@ -416,7 +416,7 @@ class Article < ApplicationRecord
   def evaluate_markdown
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownParser.new(parsed.content, source: self, user: user)
+    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
 
@@ -440,7 +440,7 @@ class Article < ApplicationRecord
   def detect_human_language
     return if language.present?
 
-    update_column(:language, LanguageDetector.new(self).detect)
+    update_column(:language, Articles::DetectLanguage.call(self))
   end
 
   def async_score_calc
@@ -610,13 +610,8 @@ class Article < ApplicationRecord
   end
 
   def update_cached_user
-    if organization
-      self.cached_organization = Articles::CachedEntity.from_object(organization)
-    end
-
-    return unless user
-
-    self.cached_user = Articles::CachedEntity.from_object(user)
+    self.cached_organization = organization ? Articles::CachedEntity.from_object(organization) : nil
+    self.cached_user = user ? Articles::CachedEntity.from_object(user) : nil
   end
 
   def set_all_dates

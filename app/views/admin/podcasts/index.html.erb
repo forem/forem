@@ -23,7 +23,7 @@
   <tbody class="crayons-card">
     <% @podcasts.each do |podcast| %>
       <tr>
-        <td><%= podcast.id %></td>
+        <td class="whitespace-nowrap"><%= podcast.id %></td>
         <td><%= link_to podcast.title, edit_admin_podcast_path(podcast) %></td>
         <td><%= link_to podcast.feed_url, podcast.feed_url %></td>
         <td><%= podcast.episodes_count %></td>
