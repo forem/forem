@@ -79,7 +79,10 @@ within our community. ❤️
 - [License](#license)
 
 ## Community
-For a place to have open discussions on features, voice your ideas, or get help with general questions please visit our community at [forem.dev](https://forem.dev/).
+
+For a place to have open discussions on features, voice your ideas, or get help
+with general questions please visit our community at
+[forem.dev](https://forem.dev/).
 
 ## Contributing
 
@@ -158,6 +161,8 @@ A more complete overview of our stack is available in
 - [@andygeorge](https://dev.to/andygeorge)
 - [@phannon716](https://dev.to/phannon716)
 - [@katiedavis](https://dev.to/katiedavis)
+- [@s_aitchison](https://dev.to/s_aitchison)
+
 ## Vulnerability disclosure
 
 Forem is the open source software which powers [DEV](https://dev.to).
