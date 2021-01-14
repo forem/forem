@@ -431,6 +431,7 @@ GEM
     libv8 (8.4.255.0)
     libv8 (8.4.255.0-x86_64-darwin-19)
     libv8 (8.4.255.0-x86_64-darwin-20)
+    libv8 (8.4.255.0-x86_64-linux)
     liquid (4.0.3)
     listen (3.4.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -471,6 +472,8 @@ GEM
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     nokogiri (1.11.1-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.11.1-x86_64-linux)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
@@ -835,6 +838,7 @@ PLATFORMS
   ruby
   x86_64-darwin-19
   x86_64-darwin-20
+  x86_64-linux
 
 DEPENDENCIES
   active_record_union (~> 1.3)
