@@ -15,7 +15,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     let(:tagged_article) { create(:article, tags: tag) }
 
     it "returns published articles" do
-
       result = feed.published_articles_by_tag
       expect(result).to include article
       expect(result).not_to include unpublished_article
