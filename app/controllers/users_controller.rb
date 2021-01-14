@@ -148,7 +148,7 @@ class UsersController < ApplicationController
 
   def onboarding_update
     sanitize_user_params
-    current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
+    current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS)) if params[:user]
     current_user.profile_updated_at = Time.current
     current_user.attributes = permitted_attributes(current_user)
     current_user.saw_onboarding = true
