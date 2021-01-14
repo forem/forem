@@ -83,8 +83,8 @@
         @article.processed_html.exclude?("<code>")) ||
       @article.featured_number.to_i < 1500000000 ||
       @article.score < -1 %>
-      <meta name="googlebot" content="noindex">
-      <meta name="googlebot" content="nofollow">
+      <meta name="robots" content="noindex">
+      <meta name="robots" content="nofollow">
     <% end %>
   <% end %>
 <% end %>

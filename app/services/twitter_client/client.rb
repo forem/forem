@@ -57,8 +57,8 @@ module TwitterClient
 
       def target
         Twitter::REST::Client.new(
-          consumer_key: ApplicationConfig["TWITTER_KEY"],
-          consumer_secret: ApplicationConfig["TWITTER_SECRET"],
+          consumer_key: SiteConfig.twitter_key.presence || ApplicationConfig["TWITTER_KEY"],
+          consumer_secret: SiteConfig.twitter_secret.presence || ApplicationConfig["TWITTER_SECRET"],
           user_agent: "TwitterRubyGem/#{Twitter::Version} (#{URL.url})",
           timeouts: {
             connect: 5,

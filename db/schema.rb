@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_05_183127) do
+ActiveRecord::Schema.define(version: 2021_01_11_151630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1211,7 +1211,6 @@ ActiveRecord::Schema.define(version: 2021_01_05_183127) do
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
-    t.boolean "contact_consent", default: false
     t.datetime "created_at", null: false
     t.integer "credits_count", default: 0, null: false
     t.datetime "current_sign_in_at"
@@ -1283,8 +1282,6 @@ ActiveRecord::Schema.define(version: 2021_01_05_183127) do
     t.string "linkedin_url"
     t.string "location"
     t.datetime "locked_at"
-    t.boolean "looking_for_work", default: false
-    t.boolean "looking_for_work_publicly", default: false
     t.string "mastodon_url"
     t.string "medium_url"
     t.boolean "mobile_comment_notifications", default: true
@@ -1340,6 +1337,7 @@ ActiveRecord::Schema.define(version: 2021_01_05_183127) do
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
+    t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"
     t.index ["feed_url"], name: "index_users_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true

@@ -204,7 +204,7 @@ class CommentsController < ApplicationController
     begin
       permitted_body_markdown = permitted_attributes(Comment)[:body_markdown]
       fixed_body_markdown = MarkdownFixer.fix_for_preview(permitted_body_markdown)
-      parsed_markdown = MarkdownParser.new(fixed_body_markdown, source: Comment.new, user: current_user)
+      parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: Comment.new, user: current_user)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"

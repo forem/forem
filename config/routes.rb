@@ -32,7 +32,7 @@ Rails.application.routes.draw do
       Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
       Sidekiq::Web.set :sessions, Rails.application.config.session_options
       Sidekiq::Web.class_eval do
-        use Rack::Protection, origin_whitelist: [URL.url] # resolve Rack Protection HttpOrigin
+        use Rack::Protection, permitted_origins: [URL.url] # resolve Rack Protection HttpOrigin
       end
       mount Sidekiq::Web => "/sidekiq"
       mount FieldTest::Engine, at: "abtests"
@@ -205,6 +205,7 @@ Rails.application.routes.draw do
         resources :organizations, only: [:show], param: :username do
           resources :users, only: [:index], to: "organizations#users"
           resources :listings, only: [:index], to: "organizations#listings"
+          resources :articles, only: [:index], to: "organizations#articles"
         end
 
         namespace :admin do
