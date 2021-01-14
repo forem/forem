@@ -18,6 +18,7 @@ module Search
             query_string: {
               query: query_string,
               analyze_wildcard: true,
+              # NOTE: this is broken in ES 7.9.1, see <https://github.com/elastic/elasticsearch/pull/62300>
               allow_leading_wildcard: false
             }
           },
