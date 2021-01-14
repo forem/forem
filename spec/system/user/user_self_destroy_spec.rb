@@ -22,10 +22,7 @@ RSpec.describe "User destroys their profile", type: :system, js: true do
   end
 
   it "displays a detailed error message when the user's token is invalid" do
-    visit "/settings/account"
-    click_button "Delete Account"
-    allow(Rails.cache).to receive(:read).and_return(token)
-    get user_confirm_destroy_path(token: nil)
+    visit "/users/confirm_destroy/#{token}"
     # rubocop:disable Layout/LineLength
     expect(page).to have_text("Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated.")
     # rubocop:enable Layout/LineLength
