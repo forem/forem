@@ -36,7 +36,7 @@ RSpec.describe "User destroys their profile", type: :system, js: true do
     click_button "Delete Account"
     allow(Rails.cache).to receive(:read).and_return(token)
     expect do
-      get user_confirm_destroy_path(token: "mismatched token")
+      get user_confirm_destroy_path(token: SecureRandom.hex(10))
     end.to raise_error(ActionController::RoutingError)
   end
 
