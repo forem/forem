@@ -20,7 +20,7 @@ describe('Authentication Section', () => {
   // this context needs invite-only mode to be false and at least
   // email registration and Facebook auth to be enabled
   context('invite-only mode setting', () => {
-    it('should disable email registration and all authorization providers when invite-only mode enabled', () => {
+    it('should disable email registration and all authorization providers when enabled', () => {
       cy.findAllByText('Authentication').first().click();
       cy.get('#site_config_invite_only_mode').click();
       cy.get('#authenticationBodyContainer #confirmation').type(
@@ -57,7 +57,7 @@ describe('Authentication Section', () => {
   // this context needs Facebook auth provider to be disabled and
   // its keys to be blank
   context('authentication providers settings', () => {
-    it('should display modal warning if provider keys are missing', () => {
+    it('should display warning modal if provider keys are missing', () => {
       cy.findAllByText('Authentication').first().click();
       cy.get('#facebook-auth-btn').click();
       cy.get('#authenticationBodyContainer #confirmation').type(
@@ -73,7 +73,7 @@ describe('Authentication Section', () => {
         .should('be.visible');
     });
 
-    it('should not display modal warning if provider keys present', () => {
+    it('should not display warning modal if provider keys present', () => {
       cy.findAllByText('Authentication').first().click();
       cy.get('#facebook-auth-btn').click();
       cy.get('#site_config_facebook_key').type('randomkey');
