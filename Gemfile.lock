@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/citizen428/fix-db-schema-conflicts.git
+  revision: 6b1d2b127d870fc75249d7e216c9c728f8353a2d
+  ref: 6b1d2b1
+  specs:
+    fix-db-schema-conflicts (3.0.3)
+      rubocop (>= 0.38.0)
+
+GIT
   remote: https://github.com/forem/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
@@ -876,6 +884,7 @@ DEPENDENCIES
   fastly (~> 2.5)
   feedjira (~> 3.1)
   field_test (~> 0.4)
+  fix-db-schema-conflicts!
   flipper (~> 0.20.3)
   flipper-active_record (~> 0.20.3)
   flipper-ui (~> 0.20.3)

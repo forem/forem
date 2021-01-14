@@ -1,0 +1,35 @@
+# Configuration for Rubocop >= 0.38.0, < 0.49.0
+
+Style/ExtraSpacing:
+  # When true, allows most uses of extra spacing if the intent is to align
+  # things with the previous or next line, not counting empty lines or comment
+  # lines.
+  AllowForAlignment: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/SpaceBeforeFirstArg:
+  Enabled: true
+
+Metrics/BlockNesting:
+  Max: 2
+
+Style/AlignHash:
+  EnforcedColonStyle: 'key'
+  EnforcedHashRocketStyle: 'key'
+
+Style/WordArray:
+  Enabled: false
+
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: 'comma'
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: 'comma'
+
+Style/HashSyntax:
+  EnforcedStyle: 'ruby19'
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
