@@ -57,8 +57,7 @@ class ProfileForm extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user: { last_onboarding_page },
-        profile: { ...formValues },
+        user: { ...formValues, last_onboarding_page },
       }),
       credentials: 'same-origin',
     }).then((response) => {

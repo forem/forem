@@ -151,15 +151,12 @@ class UsersController < ApplicationController
       sanitize_user_params
       current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
       current_user.profile_updated_at = Time.current
+      current_user.attributes = permitted_attributes(current_user)
+      current_user.saw_onboarding = true
     end
-
-    if current_user.save && params[:profile]
-      update_result = Profiles::Update.call(current_user, { profile: profile_params })
-    end
-
-    current_user.saw_onboarding = true
+    current_user.save
     authorize User
-    render_update_response(update_result&.success?)
+    render_update_response(current_user.valid?)
   end
 
   def onboarding_checkbox_update
