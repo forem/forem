@@ -58,6 +58,7 @@ class UserPolicy < ApplicationPolicy
     twitch_url
     username
     website_url
+    last_onboarding_page
   ].freeze
 
   def edit?

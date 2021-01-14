@@ -261,7 +261,7 @@ class UsersController < ApplicationController
   private
 
   def sanitize_user_params
-    params[:user].delete_if { |_k, v| v.blank? }
+    params[:user]&.delete_if { |_k, v| v.blank? }
   end
 
   def set_suggested_users
