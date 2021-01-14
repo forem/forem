@@ -296,7 +296,7 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed.front_matter["title"].present?
@@ -414,7 +414,7 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
     parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
     self.reading_time = parsed_markdown.calculate_reading_time
