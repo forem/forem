@@ -17,7 +17,7 @@ info:
     Dates and date times, unless otherwise specified, must be in
     the [RFC 3339](https://tools.ietf.org/html/rfc3339) format.
 
-  version: "0.9.4"
+  version: "0.9.5"
   termsOfService: https://dev.to/terms
   contact:
     name: DEV Team
@@ -3274,6 +3274,53 @@ paths:
           source: |
             curl https://dev.to/api/organizations/ecorp/listings
 
+  /organizations/{username}/articles:
+    get:
+      operationId: getOrgArticles
+      summary: Organization's Articles
+      description: |
+        This endpoint allows the client to retrieve a list of Articles belonging to the organization
+
+        It supports pagination, each page will contain `30` listing by default.
+      tags:
+        - organizations
+      parameters:
+        - name: username
+          in: path
+          required: true
+          description: |
+            Username of the organization
+          schema:
+            type: string
+          example: "ecorp"
+        - $ref: '#/components/parameters/pageParam'
+        - $ref: '#/components/parameters/perPageParam30to1000'
+      responses:
+        "200":
+          description: A list of users belonging to the organization
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ArticleIndex"
+              examples:
+                article-success:
+                  $ref: "#/components/examples/ArticlesIndex"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                user-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/api/organizations/ecorp/listings
 
   /podcast_episodes:
     get:

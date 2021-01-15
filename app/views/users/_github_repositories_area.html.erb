@@ -11,7 +11,7 @@
             <%= repo.name %>
           </p>
           <% if repo.description.present? %>
-            <p class="fs-s color-base-80 mb-1"><%= Html::ParseEmoji.call(repo.description) %></p>
+            <p class="fs-s color-base-80 mb-1"><%= Html::Parser.new(repo.description).parse_emojis.html %></p>
           <% end %>
           <p class="fs-s color-base-60 flex items-center">
             <% if repo.fork %>

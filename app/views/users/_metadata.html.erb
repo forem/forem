@@ -13,35 +13,27 @@
       <% end %>
       <%# As we migrate to more generalized profiles, we don't want to break DEV %>
       <% if SiteConfig.dev_to? %>
-        <% if @user.employment_title.present? || (@user.looking_for_work_publicly == true && @user.looking_for_work == true) %>
-          <% if @user.employment_title.present? %>
-            <div class="crayons-definition">
-              <strong class="crayons-definition__title">Work</strong>
-              <p class="crayons-definition__value">
-                <%= @user.employment_title %>
-                <% if @user.employer_name.present? %>
-                  <span class="opacity-50"> at </span>
-                  <% if @user.employer_url.present? %>
-                    <a href="<%= @user.employer_url %>" class="crayons-link crayons-link--brand" target="_blank" rel="noopener"><%= @user.employer_name %></a>
-                  <% else %>
-                    <%= @user.employer_name %>
-                  <% end %>
+        <% if @user.employment_title.present? %>
+          <div class="crayons-definition">
+            <strong class="crayons-definition__title">Work</strong>
+            <p class="crayons-definition__value">
+              <%= @user.employment_title %>
+              <% if @user.employer_name.present? %>
+                <span class="opacity-50"> at </span>
+                <% if @user.employer_url.present? %>
+                  <a href="<%= @user.employer_url %>" class="crayons-link crayons-link--brand" target="_blank" rel="noopener"><%= @user.employer_name %></a>
+                <% else %>
+                  <%= @user.employer_name %>
                 <% end %>
-              </p>
-            </div>
-          <% end %>
-          <% if @user.looking_for_work_publicly == true && @user.looking_for_work == true %>
-            <div class="crayons-definition">
-              <strong class="crayons-definition__title">Work status</strong>
-              <p class="crayons-definition__value">I'm looking for work!</p>
-            </div>
-          <% end %>
+              <% end %>
+            </p>
+          </div>
         <% end %>
       <% end %>
     </div>
   <% end %>
 <% else %>
-  <% if @user.employment_title.present? || (@user.looking_for_work_publicly == true && @user.looking_for_work == true) || @user.education.present? %>
+  <% if @user.employment_title.present? || @user.education.present? %>
     <div class="profile-header__bottom fs-base">
       <% if @user.education.present? %>
         <div class="crayons-definition">
@@ -64,13 +56,6 @@
               <% end %>
             <% end %>
           </p>
-        </div>
-      <% end %>
-
-      <% if @user.looking_for_work_publicly == true && @user.looking_for_work == true %>
-        <div class="crayons-definition">
-          <strong class="crayons-definition__title">Work status</strong>
-          <p class="crayons-definition__value">I'm looking for work!</p>
         </div>
       <% end %>
     </div>

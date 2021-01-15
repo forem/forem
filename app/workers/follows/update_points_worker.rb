@@ -1,7 +1,6 @@
 module Follows
   class UpdatePointsWorker
     include Sidekiq::Worker
-    include FieldTest::Helpers
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform(article_id, user_id)

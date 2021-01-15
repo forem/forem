@@ -35,7 +35,7 @@ Honeybadger.configure do |config|
   config.breadcrumbs.enabled = true
 
   config.before_notify do |notice|
-    notice.fingerprint = if notice.error_message&.include?("SIGTERM") && notice.component&.include?("fetch_all_rss")
+    notice.fingerprint = if notice.error_message&.include?("SIGTERM") && notice.component&.include?("feeds_import")
                            notice.error_message
                          elsif (msg_key = MESSAGE_FINGERPRINTS.keys.detect do |k, _v|
                                   notice.error_message&.include?(k)

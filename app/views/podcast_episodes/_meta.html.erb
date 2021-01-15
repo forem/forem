@@ -31,7 +31,7 @@
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= app_url(pod_path) %>" />
     <meta property="og:title" content="Podcasts on <%= community_name %>" />
-    <meta property="og:image" content="http://i.imgur.com/e5tJ9L9.png">
+    <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
 
     <meta property="og:description" content="Discover technical podcasts for <%= community_members_label %>" />
     <meta property="og:site_name" content="<%= community_name %>" />
@@ -41,6 +41,6 @@
     <meta name="twitter:creator" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
     <meta name="twitter:title" content="Podcasts on <%= community_name %>">
     <meta name="twitter:description" content="Discover technical podcasts for <%= community_members_label %>" />
-    <meta name="twitter:image:src" content="http://i.imgur.com/e5tJ9L9.png">
+    <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <% end %>
 <% end %>
