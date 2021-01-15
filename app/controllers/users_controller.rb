@@ -2,11 +2,12 @@ class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
   before_action :set_user, only: %i[update request_destroy full_delete remove_identity]
-  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
+  # rubocop:disable Layout/LineLength
+  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
+  # rubocop:enable Layout/LineLength
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
-  before_action :set_or_sign_in_user, only: %i[confirm_destroy]
 
   ALLOWED_USER_PARAMS = %i[last_onboarding_page].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
@@ -93,16 +94,25 @@ class UsersController < ApplicationController
   end
 
   def confirm_destroy
+    @user = current_user
+
+    if @user
+      authorize @user
+    else
+      flash[:alert] = "You must be logged in to proceed with account deletion."
+      redirect_to sign_up_path and return
+    end
+
     destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
 
     # rubocop:disable Layout/LineLength
     if destroy_token.blank?
       flash[:settings_notice] = "Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated."
-      redirect_to user_settings_path("account") and return
+      redirect_to user_settings_path("account")
+    else
+      raise ActionController::RoutingError, "Not Found" unless destroy_token == params[:token]
     end
     # rubocop:enable Layout/LineLength
-
-    raise ActionController::RoutingError, "Not Found" unless destroy_token == params[:token]
   end
 
   def full_delete
@@ -260,17 +270,6 @@ class UsersController < ApplicationController
   end
 
   private
-
-  def set_or_sign_in_user
-    @user = current_user
-
-    if @user
-      authorize @user
-    else
-      flash[:alert] = "You must be logged in to proceed with account deletion."
-      redirect_to new_user_session_path
-    end
-  end
 
   def sanitize_user_params
     params[:user].delete_if { |_k, v| v.blank? }
