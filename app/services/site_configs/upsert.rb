@@ -16,7 +16,7 @@ module SiteConfigs
 
     VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
 
-    VALID_DOMAIN = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.freeze
+    VALID_DOMAIN = /^[a-zA-Z0-9]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/.freeze
 
     PARAMS_TO_BE_CLEANED = %i[sidebar_tags suggested_tags suggested_users].freeze
 

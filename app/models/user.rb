@@ -530,7 +530,10 @@ class User < ApplicationRecord
   end
 
   def authenticated_with_all_providers?
-    identities_enabled.pluck(:provider).map(&:to_sym) == Authentication::Providers.enabled
+    # ga_providers refers to Generally Available (not in beta)
+    ga_providers = Authentication::Providers.enabled.reject { |sym| sym == :apple }
+    enabled_providers = identities.pluck(:provider).map(&:to_sym)
+    (ga_providers - enabled_providers).empty?
   end
 
   def rate_limiter

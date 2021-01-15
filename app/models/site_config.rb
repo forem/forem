@@ -159,7 +159,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_article_update, type: :integer, default: 30
   field :rate_limit_send_email_confirmation, type: :integer, default: 2
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
-  field :rate_limit_user_update, type: :integer, default: 5
+  field :rate_limit_user_update, type: :integer, default: 15
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
 
   field :spam_trigger_terms, type: :array, default: []

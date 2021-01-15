@@ -120,6 +120,13 @@ RSpec.describe "/admin/config", type: :request do
           expect(SiteConfig.allowed_registration_email_domains).to eq(%w[dev.to forem.com forem.dev])
         end
 
+        it "allows 2-character domains" do
+          proper_list = "dev.to, forem.com, 2u.com"
+          post "/admin/config", params: { site_config: { allowed_registration_email_domains: proper_list },
+                                          confirmation: confirmation_message }
+          expect(SiteConfig.allowed_registration_email_domains).to eq(%w[dev.to forem.com 2u.com])
+        end
+
         it "does not allow improper domain list" do
           impproper_list = "dev.to, foremcom, forem.dev"
           post "/admin/config", params: { site_config: { allowed_registration_email_domains: impproper_list },
@@ -705,7 +712,7 @@ RSpec.describe "/admin/config", type: :request do
           expect do
             post "/admin/config", params: { site_config: { rate_limit_user_update: 3 },
                                             confirmation: confirmation_message }
-          end.to change(SiteConfig, :rate_limit_user_update).from(5).to(3)
+          end.to change(SiteConfig, :rate_limit_user_update).to(3)
         end
 
         it "updates rate_limit_feedback_message_creation" do

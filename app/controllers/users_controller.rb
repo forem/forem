@@ -163,9 +163,6 @@ class UsersController < ApplicationController
   end
 
   def onboarding_checkbox_update
-    # TODO: mstruve will remove once debugging is done
-    Rails.logger.error("onboarding_checkbox_update_user_params:#{params[:user]}")
-
     if params[:user]
       permitted_params = %i[
         checked_code_of_conduct checked_terms_and_conditions email_newsletter email_digest_periodic
@@ -175,15 +172,7 @@ class UsersController < ApplicationController
 
     current_user.saw_onboarding = true
     authorize User
-
-    # TODO: mstruve will remove once debugging is done
-    result = current_user.save
-    unless result
-      errors = current_user.errors.full_messages.join(", ")
-      Rails.logger.error("onboarding_checkbox_update_errors:#{errors}")
-    end
-
-    render_update_response(result)
+    render_update_response(current_user.save)
   end
 
   def join_org
