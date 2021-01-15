@@ -1,7 +1,7 @@
 .dropdown-trigger-container {
   position: relative;
 
-  .dropdown-trigger:hover + div {
+  .dropdown-trigger + .active {
     display: block;
   }
 }
