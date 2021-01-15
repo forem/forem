@@ -13,24 +13,32 @@ RSpec.describe "Authenticating with Email" do
     let(:user) { build(:user, saw_onboarding: false) }
 
     context "when using valid credentials" do
-      it "creates a new user", js: true do
-        expect do
-          visit sign_up_path(state: "new-user")
-          click_link(sign_up_link, match: :first)
-
-          fill_in_user(user)
-          click_button("Sign up", match: :first)
-        end.to change(User, :count).by(1)
-      end
-
-      it "logs in and redirects to email confirmation" do
+      def sign_up_user
         visit sign_up_path(state: "new-user")
         click_link(sign_up_link, match: :first)
 
         fill_in_user(user)
         click_button("Sign up", match: :first)
+      end
+
+      it "creates a new user", js: true do
+        expect do
+          sign_up_user
+        end.to change(User, :count).by(1)
+      end
+
+      it "logs in and redirects to email confirmation" do
+        sign_up_user
 
         expect(page).to have_current_path("/confirm-email", ignore_query: true)
+      end
+
+      it "displays the properly decoded email" do
+        decoded_email = user.email.sub("@", "+something@")
+        user.email = decoded_email
+        sign_up_user
+
+        expect(page).to have_text(decoded_email)
       end
     end
 

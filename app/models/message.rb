@@ -45,7 +45,7 @@ class Message < ApplicationRecord
   end
 
   def evaluate_markdown
-    html = MarkdownParser.new(message_markdown).evaluate_markdown
+    html = MarkdownProcessor::Parser.new(message_markdown).evaluate_markdown
     html = target_blank_links(html)
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)
