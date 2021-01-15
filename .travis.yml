@@ -83,6 +83,8 @@ script:
 after_script:
   - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
   - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+after_deploy:
+  - bash scripts/after_deploy.sh
 notifications:
   slack:
     if: branch = master
@@ -110,6 +112,7 @@ jobs:
       if: type != pull_request
       script: skip
       after_script: skip
+      after_deploy: skip
       deploy:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'

@@ -29,6 +29,7 @@
     display: flex;
     flex-flow: column;
     flex: 1 auto;
+    min-width: 0;
   }
 
   .comment-textarea {

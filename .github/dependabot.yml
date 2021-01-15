@@ -14,12 +14,14 @@ updates:
       # see <https://github.com/forem/forem/issues/12068>
       - dependency-name: "binding_of_caller"
         versions: [">= 1.0"]
+    labels: []
 
   # Set update schedule for Yarn/NPM
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
+    labels: []
 
   # Set update schedule for GitHub Actions
   # https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/keeping-your-actions-up-to-date-with-dependabot
