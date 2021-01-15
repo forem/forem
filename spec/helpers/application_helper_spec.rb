@@ -62,10 +62,7 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#release_adjusted_cache_key" do
-    before do
-      stub_const("ENV", ENV.to_h.merge("HEROKU_RELEASE_CREATED_AT" => ""))
-      ForemInstance.instance_variable_set(:@deployed_at, nil)
-    end
+    after { ForemInstance.instance_variable_set(:@deployed_at, nil) }
 
     it "does nothing when RELEASE_FOOTPRINT is not set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return(nil)
