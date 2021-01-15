@@ -63,6 +63,7 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#release_adjusted_cache_key" do
     before do
+      stub_const("ENV", ENV.to_h.merge("HEROKU_RELEASE_CREATED_AT" => ""))
       ForemInstance.instance_variable_set(:@deployed_at, nil)
     end
 
