@@ -61,7 +61,7 @@
           <%= render "admin/shared/navbar", menu_items: admin_menu_items %>
           <% if current_user.tech_admin? %>
             <p class="crayons-field__description mt-4 mb-3">Tech Resources</p>
-            <%= render "admin/shared/navbar", menu_items: TECH_MENU_ITEMS %>
+            <%= render "admin/shared/navbar", menu_items: tech_admin_menu_items %>
           <% end %>
         </nav>
       </div>
