@@ -182,8 +182,8 @@ GEM
       activesupport (>= 3)
     chartkick (3.4.2)
     childprocess (3.0.0)
-    cld (0.8.0)
-      ffi
+    cld2-small (1.0.4)
+      ffi (= 1.12.0)
     cloudinary (1.18.1)
       aws_cf_signer
       rest-client
@@ -289,7 +289,7 @@ GEM
     feedjira (3.1.2)
       loofah (>= 2.3.1)
       sax-machine (>= 1.0)
-    ffi (1.14.2)
+    ffi (1.12.0)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -863,7 +863,7 @@ DEPENDENCIES
   capybara (~> 3.34)
   carrierwave (~> 2.0)
   carrierwave-bombshelter (~> 0.2)
-  cld (~> 0.8)
+  cld2-small (~> 1.0)
   cloudinary (~> 1.18)
   counter_culture (~> 2.7)
   database_cleaner-active_record (~> 1.8.0)
@@ -883,6 +883,7 @@ DEPENDENCIES
   faker (~> 2.15)
   fastly (~> 2.5)
   feedjira (~> 3.1)
+  ffi (= 1.12.0)
   field_test (~> 0.4)
   fix-db-schema-conflicts!
   flipper (~> 0.20.3)
