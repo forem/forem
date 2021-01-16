@@ -9,7 +9,7 @@ module Users
       @user = User.find_by(id: user_id)
       return unless @user
 
-      @experiment = :feed_top_articles_query # Current experiment running
+      @experiment = :feed_top_articles_query # Not currently running. Update this to current experiment.
       case goal
       # We have special conditional goals for some where we look for past events for commulative wins
       # Otherwise we convert the goal as given.
