@@ -39,7 +39,7 @@ module Notifications
       attr_reader :receiver_id, :welcome_broadcast
 
       def log_to_datadog
-        DatadogStatsClient.increment(
+        ForemStatsClient.increment(
           "notifications.welcome",
           tags: ["user_id:#{receiver_id}", "title:#{welcome_broadcast.title}"],
         )
