@@ -54,7 +54,7 @@ Forem is open source software for building communities. Communities for your
 peers, customers, fanbases, families, friends, and any other time and space
 where people need to come together to be part of a collective.
 [See our announcement post](https://dev.to/devteam/for-empowering-community-2k6h)
-for a higher level overview of what Forem is.
+for a high-level overview of what Forem is.
 
 [dev.to](https://dev.to) (or just DEV) is hosted by Forem. It is a community of
 software developers who write articles, take part in discussions, and build
@@ -67,6 +67,7 @@ within our community. ❤️
 
 - [What is Forem?](#what-is-forem)
 - [Table of Contents](#table-of-contents)
+- [Community](#community) 
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
@@ -79,7 +80,10 @@ within our community. ❤️
 - [License](#license)
 
 ## Community
-For a place to have open discussions on features, voice your ideas, or get help with general questions please visit our community at [forem.dev](https://forem.dev/).
+
+For a place to have open discussions on features, voice your ideas, or get help
+with general questions please visit our community at
+[forem.dev](https://forem.dev/).
 
 ## Contributing
 
@@ -158,6 +162,8 @@ A more complete overview of our stack is available in
 - [@andygeorge](https://dev.to/andygeorge)
 - [@phannon716](https://dev.to/phannon716)
 - [@katiedavis](https://dev.to/katiedavis)
+- [@s_aitchison](https://dev.to/s_aitchison)
+
 ## Vulnerability disclosure
 
 Forem is the open source software which powers [DEV](https://dev.to).

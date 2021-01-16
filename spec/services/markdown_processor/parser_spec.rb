@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarkdownParser, type: :service do
+RSpec.describe MarkdownProcessor::Parser, type: :service do
   let(:random_word) { Faker::Lorem.word }
   let(:basic_parsed_markdown) { described_class.new(random_word) }
 
