@@ -3,13 +3,16 @@ var iconSmallThread = `<svg width="24" height="24" class="crayons-icon" viewBox=
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
+    var userStatus = document.body.getAttribute('data-user-status');
     var commentableId = document.getElementById('comments-container').dataset.commentableId;
     var commentableType = document.getElementById('comments-container').dataset.commentableType;
     var hasRecentCommentActivity = document.getElementById('comments-container').dataset.hasRecentCommentActivity;
     commentableIdList = commentableId.split(",");
 
-    // We only need to fetch reaction numbers if there has been recent comment activity. Otherwise we don't need this much precision.
-    if (hasRecentCommentActivity !== "false") {
+    // When no logged in user only need to fetch reaction numbers if there has been recent comment activity.
+    // If no recent comments, we do not need the precision of fetching latest counts async. Static value is almost certainly good enough.
+    // Always fetch when user is logged in because we need state of whether the user has reacted.
+    if (hasRecentCommentActivity !== "false" || userStatus === 'logged-out') {
       var f = (function() {
         for (var i = 0; i < commentableIdList.length; i++) {
           (function(i){

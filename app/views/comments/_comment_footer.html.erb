@@ -10,13 +10,7 @@
       <%= comment.public_reactions_count if comment.public_reactions_count.positive?%>
     </span>
     <span class="reactions-label hidden m:inline-block">
-      <% if comment.public_reactions_count.zero? %>
-        Like
-      <% elsif comment.public_reactions_count == 1 %>
-        &nbsp;like
-      <% else %>
-        &nbsp;likes
-      <% end %>
+      <%= like_button_text(comment).html_safe %>
     </span>
   </button>
 

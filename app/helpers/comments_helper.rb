@@ -31,6 +31,16 @@ module CommentsHelper
     comment.hidden_by_commentable_user && comment != root_comment
   end
 
+  def like_button_text(comment)
+    if comment.public_reactions_count.zero?
+      "Like"
+    elsif comment.public_reactions_count == 1
+      "&nbsp;like"
+    else
+      "&nbsp;likes"
+    end
+  end
+
   private
 
   def nested_comments(tree:, commentable:, is_view_root: false)
