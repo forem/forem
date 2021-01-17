@@ -12,7 +12,7 @@ function initializeCommentsPage() {
     // When no logged in user only need to fetch reaction numbers if there has been recent comment activity.
     // If no recent comments, we do not need the precision of fetching latest counts async. Static value is almost certainly good enough.
     // Always fetch when user is logged in because we need state of whether the user has reacted.
-    if (hasRecentCommentActivity !== "false" || userStatus === 'logged-out') {
+    if (userStatus === 'logged-in' || hasRecentCommentActivity !== 'false') {
       var f = (function() {
         for (var i = 0; i < commentableIdList.length; i++) {
           (function(i){

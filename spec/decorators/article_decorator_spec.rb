@@ -50,8 +50,8 @@ RSpec.describe ArticleDecorator, type: :decorator do
     end
 
     it "returns false if less recent than passed in value" do
-      article.last_comment_at = 3.weeks.ago
-      expect(article.decorate.has_recent_comment_activity?(2.weeks.ago)).to eq(true)
+      article.last_comment_at = 4.weeks.ago
+      expect(article.decorate.has_recent_comment_activity?(2.weeks.ago)).to eq(false)
     end
   end
 
