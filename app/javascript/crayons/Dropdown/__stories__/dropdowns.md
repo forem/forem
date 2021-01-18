@@ -19,6 +19,6 @@ consider using an `aria-live` region to ensure the new content is announced to
 screen-reader users when the dropdown appears.
 
 A user should be able to open and close the dropdown by keyboard (e.g. using
-Enter and Escape), and appropriate `aria` (e.g. `aria-haspopup`) should be used
+Enter and Escape), and appropriate `aria` attributes (e.g. `aria-haspopup`) should be used
 to indicate the relationship between the activator button and the dropdown
 content.
