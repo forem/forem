@@ -42,8 +42,6 @@ class Identity < ApplicationRecord
   end
 
   def email
-    return auth_data_dump.info.email if auth_data_dump&.info&.email
-
-    format(NO_EMAIL_MSG, provider: provider)
+    auth_data_dump&.info&.email || format(NO_EMAIL_MSG, provider: provider)
   end
 end
