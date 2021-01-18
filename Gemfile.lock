@@ -1,18 +1,18 @@
 GIT
-  remote: https://github.com/citizen428/fix-db-schema-conflicts.git
-  revision: 6b1d2b127d870fc75249d7e216c9c728f8353a2d
-  ref: 6b1d2b1
-  specs:
-    fix-db-schema-conflicts (3.0.3)
-      rubocop (>= 0.38.0)
-
-GIT
   remote: https://github.com/forem/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
   specs:
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
+
+GIT
+  remote: https://github.com/forem/fix-db-schema-conflicts.git
+  revision: 0f00d111a0f0fe0a86e46a52d2cae10dc0eb0b99
+  ref: 0f00d11
+  specs:
+    fix-db-schema-conflicts (3.0.3)
+      rubocop (>= 0.38.0)
 
 GIT
   remote: https://github.com/thepracticaldev/erb-lint.git
