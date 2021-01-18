@@ -347,7 +347,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates logo_png" do
-          expected_default_image_url = SiteConfig.get_field(:logo_png).dig(:default)
+          expected_default_image_url = SiteConfig.get_default(:logo_png)
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post "/admin/config", params: { site_config: { logo_png: expected_image_url },
@@ -441,7 +441,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates mascot_image_url" do
-          expected_default_image_url = SiteConfig.get_field(:mascot_image_url).dig(:default)
+          expected_default_image_url = SiteConfig.get_default(:mascot_image_url)
           expected_image_url = "https://dummyimage.com/300x300.png"
           expect do
             post "/admin/config", params: { site_config: { mascot_image_url: expected_image_url },
@@ -457,7 +457,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates the mascot_footer_image_width" do
-          expected_default_mascot_footer_image_width = SiteConfig.get_field(:mascot_footer_image_width).dig(:default)
+          expected_default_mascot_footer_image_width = SiteConfig.get_default(:mascot_footer_image_width)
           expected_mascot_footer_image_width = 1002
 
           expect(SiteConfig.mascot_footer_image_width).to eq(expected_default_mascot_footer_image_width)
@@ -469,7 +469,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates the mascot_footer_image_height" do
-          expected_default_mascot_footer_image_height = SiteConfig.get_field(:mascot_footer_image_height).dig(:default)
+          expected_default_mascot_footer_image_height = SiteConfig.get_default(:mascot_footer_image_height)
           expected_mascot_footer_image_height = 3002
 
           expect(SiteConfig.mascot_footer_image_height).to eq(expected_default_mascot_footer_image_height)
@@ -646,7 +646,7 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Rate Limits and spam" do
         it "updates rate_limit_follow_count_daily" do
-          default_value = SiteConfig.get_field(:rate_limit_follow_count_daily).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_follow_count_daily)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_follow_count_daily: 3 },
                                             confirmation: confirmation_message }
@@ -654,7 +654,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_comment_creation" do
-          default_value = SiteConfig.get_field(:rate_limit_comment_creation).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_comment_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_comment_creation: 3 },
                                             confirmation: confirmation_message }
@@ -662,7 +662,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_published_article_creation" do
-          default_value = SiteConfig.get_field(:rate_limit_published_article_creation).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_published_article_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_published_article_creation: 3 },
                                             confirmation: confirmation_message }
@@ -670,7 +670,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_published_article_antispam_creation" do
-          default_value = SiteConfig.get_field(:rate_limit_published_article_antispam_creation).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_published_article_antispam_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_published_article_antispam_creation: 3 },
                                             confirmation: confirmation_message }
@@ -678,7 +678,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_organization_creation" do
-          default_value = SiteConfig.get_field(:rate_limit_organization_creation).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_organization_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_organization_creation: 3 },
                                             confirmation: confirmation_message }
@@ -686,7 +686,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_image_upload" do
-          default_value = SiteConfig.get_field(:rate_limit_image_upload).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_image_upload)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_image_upload: 3 },
                                             confirmation: confirmation_message }
@@ -694,7 +694,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_email_recipient" do
-          default_value = SiteConfig.get_field(:rate_limit_email_recipient).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_email_recipient)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_email_recipient: 3 },
                                             confirmation: confirmation_message }
@@ -702,7 +702,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_user_subscription_creation" do
-          default_value = SiteConfig.get_field(:rate_limit_user_subscription_creation).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_user_subscription_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_user_subscription_creation: 1 },
                                             confirmation: confirmation_message }
@@ -710,7 +710,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_article_update" do
-          default_value = SiteConfig.get_field(:rate_limit_article_update).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_article_update)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_article_update: 3 },
                                             confirmation: confirmation_message }
@@ -725,7 +725,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_feedback_message_creation" do
-          default_value = SiteConfig.get_field(:rate_limit_feedback_message_creation).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_feedback_message_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_feedback_message_creation: 3 },
                                             confirmation: confirmation_message }
@@ -733,7 +733,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_listing_creation" do
-          default_value = SiteConfig.get_field(:rate_limit_listing_creation).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_listing_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_listing_creation: 3 },
                                             confirmation: confirmation_message }
@@ -741,7 +741,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_reaction_creation" do
-          default_value = SiteConfig.get_field(:rate_limit_reaction_creation).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_reaction_creation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_reaction_creation: 3 },
                                             confirmation: confirmation_message }
@@ -749,7 +749,7 @@ RSpec.describe "/admin/config", type: :request do
         end
 
         it "updates rate_limit_send_email_confirmation" do
-          default_value = SiteConfig.get_field(:rate_limit_send_email_confirmation).dig(:default)
+          default_value = SiteConfig.get_default(:rate_limit_send_email_confirmation)
           expect do
             post "/admin/config", params: { site_config: { rate_limit_send_email_confirmation: 3 },
                                             confirmation: confirmation_message }
@@ -897,7 +897,7 @@ RSpec.describe "/admin/config", type: :request do
 
       describe "Credits" do
         it "updates the credit prices", :aggregate_failures do
-          original_prices = SiteConfig.get_field(:credit_prices_in_cents).dig(:default)
+          original_prices = SiteConfig.get_default(:credit_prices_in_cents)
           SiteConfig.credit_prices_in_cents = original_prices
 
           SiteConfig.credit_prices_in_cents.each_key do |size|

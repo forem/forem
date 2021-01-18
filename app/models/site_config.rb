@@ -226,4 +226,9 @@ class SiteConfig < RailsSettings::Base
     "present"
   end
   singleton_class.__send__(:alias_method, :apple_secret, :apple_key)
+
+  # To get default values
+  def self.get_default(field)
+    get_field(field).dig(:default)
+  end
 end
