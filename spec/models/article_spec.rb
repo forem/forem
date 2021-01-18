@@ -922,6 +922,20 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "#update_comments" do
+    it "works" do
+      Sidekiq::Testing.inline! do
+        article = create(:article)
+        comment = create(:comment, commentable: article)
+        comment2 = create(:comment, commentable: article)
+        expect do
+          article.update(body_markdown: article.body_markdown.gsub("published: true", "published: false"))
+        end.to change { comment.elasticsearch_doc["_source"]["published"] }.from(true).to(false)
+          .and change { comment2.elasticsearch_doc["_source"]["published"] }.from(true).to(false)
+      end
+    end
+  end
+
   describe "#top_comments" do
     context "when article has comments" do
       let(:root_comment) { create(:comment, commentable: article, score: 20) }
