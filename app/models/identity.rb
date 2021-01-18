@@ -39,6 +39,10 @@ class Identity < ApplicationRecord
   end
 
   def email
-    auth_data_dump.info.email
+    if auth_data_dump&.info&.email
+      auth_data_dump.info.email
+    else
+      "No email found. Please relink your #{provider} account to avoid errors."
+    end
   end
 end
