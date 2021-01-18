@@ -73,6 +73,7 @@ function ReportAbuse({ data, closeReportAbuseForm }) {
           this environment a great one for everybody.
         </p>
         <fieldset className="report__abuse-options p-4 justify-between">
+          <legend>Why is this content inappropriate?</legend>
           <FormField variant="radio">
             <RadioButton
               id="rude_or_vulgar"
