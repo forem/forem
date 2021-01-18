@@ -39,6 +39,10 @@ Layout/ClassStructure:
   StyleGuide: '#consistent-classes'
   Enabled: true
 
+Lint/DeprecatedConstants:
+  Description: 'Checks for deprecated constants.'
+  Enabled: true
+
 Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   StyleGuide: '#consistent-multi-line-chains'
@@ -124,6 +128,10 @@ Layout/MultilineMethodCallIndentation:
     that span more than one line.
   Enabled: true
   EnforcedStyle: indented
+
+Lint/RedundantDirGlobSort:
+  Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
+  Enabled: true
 
 Layout/SpaceAroundMethodCallOperator:
   Description: 'Checks method call operators to not have spaces around them.'
@@ -404,11 +412,10 @@ Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   Enabled: false
 
-Style/HashExcept:
-  Description: >-
-                 Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
-                 that can be replaced with `Hash#except` method.
-  Enabled: true
+Style/EndlessMethod:
+  Description: 'Avoid the use of multi-lined endless method definitions.'
+  StyleGuide: '#endless-methods'
+  Enabled: pending
 
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
@@ -444,6 +451,12 @@ Style/HashAsLastArrayItem:
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'
+  Enabled: true
+
+Style/HashExcept:
+  Description: >-
+                 Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
+                 that can be replaced with `Hash#except` method.
   Enabled: true
 
 Style/HashLikeCase:

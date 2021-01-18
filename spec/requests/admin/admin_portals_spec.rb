@@ -24,6 +24,10 @@ RSpec.describe "/admin", type: :request do
   end
 
   describe "Last deployed and Lastest Commit ID card" do
+    after do
+      ForemInstance.instance_variable_set(:@deployed_at, nil)
+    end
+
     it "shows 'Not Available' if the Last deployed time is missing" do
       stub_const("ENV", ENV.to_h.merge("HEROKU_RELEASE_CREATED_AT" => ""))
 
@@ -34,7 +38,6 @@ RSpec.describe "/admin", type: :request do
 
     it "shows the correct value if the Last deployed time is available" do
       stub_const("ENV", ENV.to_h.merge("HEROKU_RELEASE_CREATED_AT" => "Some date"))
-      ForemInstance.instance_variable_set(:@deployed_at, nil)
 
       get admin_path
 

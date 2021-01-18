@@ -25,7 +25,12 @@ module MarkdownProcessor
       sanitized_content = sanitize_rendered_markdown(html)
       begin
         liquid_tag_options = { source: @source, user: @user }
-        parsed_liquid = Liquid::Template.parse(sanitized_content, liquid_tag_options)
+
+        # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
+        # a String substitute, hence we force the conversion before passing it to Liquid::Template.
+        # See <https://github.com/Shopify/liquid/issues/1390>
+        parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, liquid_tag_options)
+
         html = markdown.render(parsed_liquid.render)
       rescue Liquid::SyntaxError => e
         html = e.message
