@@ -5,6 +5,19 @@ class User < ApplicationRecord
   include Searchable
   include Storext.model
 
+  include PgSearch::Model
+  pg_search_scope :search,
+                  # NOTE: we can't use the following `against` clause because some fields are in Profile
+                  # against: %i[available_for employer_name mostly_work_with name username],
+
+                  against: %i[name username],
+                  associated_against: { profile: %i[data] },
+                  using: { tsearch: { prefix: true } },
+                  # we can't use `tag_keywords_for_search.size` here as it depends on Profile
+                  # see `search_score` below
+                  ranked_by: "(articles_count + comments_count + reactions_count + badge_achievements_count) * 10 * reputation_modifier",
+                  order_within_rank: "users.badge_achievements_count DESC" # arbitrary choice for now
+
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
     available_for
