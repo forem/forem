@@ -43,7 +43,7 @@ env:
     - KNAPSACK_PRO_CI_NODE_INDEX=2
 branches:
   only:
-    - master
+    - main
 install: true
 script:
   - date --rfc-3339=seconds
@@ -87,7 +87,7 @@ after_deploy:
   - bash scripts/after_deploy.sh
 notifications:
   slack:
-    if: branch = master
+    if: branch = main
     on_pull_requests: false
     on_success: change
     on_failure: always
@@ -106,7 +106,7 @@ jobs:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
-          master: practicaldev
+          main: practicaldev
     - stage: Deploy
       name: Deploy BenHalpern
       if: type != pull_request
@@ -117,4 +117,4 @@ jobs:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
-          master: benhalpern-community
+          main: benhalpern-community

@@ -19,36 +19,36 @@ git remote add upstream https://github.com/forem/forem.git
 
 Do this prior to creating each branch for a PR:
 
-Make sure you are on the master branch:
+Make sure you are on the main branch:
 
 ```shell
 $ git status
-On branch master
-Your branch is up-to-date with 'origin/master'.
+On branch main
+Your branch is up-to-date with 'origin/main'.
 ```
 
-If you aren't on `master`, finish your work and checkout the `master` branch:
+If you aren't on `main`, finish your work and checkout the `main` branch:
 
 ```shell
-git checkout master
+git checkout main
 ```
 
 Do a pull with rebase against `upstream`:
 
 ```shell
-git pull --rebase upstream master
+git pull --rebase upstream main
 ```
 
-This will pull down all of the changes to the official `master` branch, without
+This will pull down all of the changes to the official `main` branch, without
 making an additional commit in your local repo.
 
-(Optional) Force push your updated `master` branch to your GitHub fork
+(Optional) Force push your updated `main` branch to your GitHub fork
 
 ```shell
-git push origin master --force
+git push origin main --force
 ```
 
-This will overwrite the `master` branch of your fork.
+This will overwrite the `main` branch of your fork.
 
 ## Keeping your branch up to date
 
@@ -58,15 +58,15 @@ carry out the following steps:
 Rebase from upstream once again:
 
 ```shell
-git checkout master
-git pull --rebase upstream master
+git checkout main
+git pull --rebase upstream main
 ```
 
-Checkout your feature branch locally and merge master back into your branch:
+Checkout your feature branch locally and merge main back into your branch:
 
 ```shell
 git checkout <feature-branch-name>
-git merge master
+git merge main
 ```
 
 Merge any conflicts in editor if necessary:

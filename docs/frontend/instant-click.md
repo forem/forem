@@ -14,7 +14,7 @@ Aside from prefetching pages, InstantClick also allows you to customize what
 happens when an InstantClick page changes.
 
 ```javascript
-// Found in https://github.com/forem/forem/blob/master/app/javascript/packs/githubRepos.jsx#L11)
+// Found in https://github.com/forem/forem/blob/main/app/javascript/packs/githubRepos.jsx#L11)
 window.InstantClick.on('change', () => {
   loadElement();
 });
@@ -24,7 +24,7 @@ You can also decide whether or not to reevaluate a script in an InstantClick
 loaded page via the `data-no-instant` attribute.
 
 ```javascript
-// Found in https://github.com/forem/forem/blob/master/app/assets/javascripts/utilities/buildCommentHTML.js.erb#L80
+// Found in https://github.com/forem/forem/blob/main/app/assets/javascripts/utilities/buildCommentHTML.js.erb#L80
 function actions(comment) {
   if (comment.newly_created) {
     return '<div class="actions" data-comment-id="'+comment.id+'" data-path="'+comment.url+'">\

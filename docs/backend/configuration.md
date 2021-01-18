@@ -35,7 +35,7 @@ Examples:
 - `suggested_tags`
 
 These settings can be accessed via the
-[`SiteConfig`](https://github.com/forem/forem/blob/master/app/models/site_config.rb)
+[`SiteConfig`](https://github.com/forem/forem/blob/main/app/models/site_config.rb)
 object and viewed / modified via `/admin/config` (see
 [the Admin guide](/admin)).
 

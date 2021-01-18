@@ -27,8 +27,8 @@ merge them into your current workspace.
 
 Use this:
 
-- to get commits from upsteam master into your branch
-- to sync with latest changes from upsteam master before continuing with a new
+- to get commits from upsteam main into your branch
+- to sync with latest changes from upsteam main before continuing with a new
   feature on your current branch
 
 After you've fetched new commits from upstream, run `./bin/setup`, and it will
@@ -41,7 +41,7 @@ Start the app by running `./bin/startup`, if it's not already running.
 Sometimes it is neccesarry to start over from the beginning or reset the current
 workspace to the state of the upstream branch. Use the helper
 `./scripts/clean_fork.sh` to set your fork to the exact same state as the
-upstream master branch.
+upstream main branch.
 
 Use this:
 

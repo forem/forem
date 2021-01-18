@@ -34,7 +34,7 @@ HTML. It does not provide templating features.
 
 In the Forem application, [Webpacker](/frontend/webpacker/) is used to load
 Stimulus controllers via the `app/javascript/packs/admin.js`
-[pack file](https://github.com/rails/webpacker/blob/master/docs/folder-structure.md#packs-aka-webpack-entries).
+[pack file](https://github.com/rails/webpacker/blob/main/docs/folder-structure.md#packs-aka-webpack-entries).
 Ideally, controllers serve as an abstraction for shared functionality between
 views.
 

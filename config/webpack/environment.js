@@ -43,7 +43,7 @@ if (process.env.HONEYBADGER_API_KEY && process.env.ASSETS_URL) {
       revision:
         process.env.RELEASE_FOOTPRINT ||
         process.env.HEROKU_SLUG_COMMIT ||
-        'master',
+        'main',
     }),
   );
 }

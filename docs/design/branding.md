@@ -28,7 +28,7 @@ Imagine a developer's face with the DEV heading above them. If we existed in the
 - We have a minimal approach to importing dependencies, so few if any custom
   fonts on-site for that reason.
 - Refer to the `variables.scss`
-  [file in our main repo](https://github.com/forem/forem/blob/master/app/assets/stylesheets/variables.scss)
+  [file in our main repo](https://github.com/forem/forem/blob/main/app/assets/stylesheets/variables.scss)
   to reference commonly-used colors and fonts.
 
 ## Design License Info
