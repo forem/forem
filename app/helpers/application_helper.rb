@@ -1,8 +1,10 @@
 module ApplicationHelper
   # rubocop:disable Performance/OpenStruct
+  USER_COLORS = ["#19063A", "#dce9f3"].freeze
+
   DELETED_USER = OpenStruct.new(
     id: nil,
-    darker_color: HexComparer.new(bg: "#19063A", text: "#dce9f3").brightness,
+    darker_color: Color::CompareHex.new(USER_COLORS).brightness,
     username: "[deleted user]",
     name: "[Deleted User]",
     summary: nil,
@@ -174,7 +176,7 @@ module ApplicationHelper
   end
 
   def release_adjusted_cache_key(path)
-    release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
+    release_footprint = ForemInstance.deployed_at
     return path if release_footprint.blank?
 
     "#{path}-#{params[:locale]}-#{release_footprint}-#{SiteConfig.admin_action_taken_at.rfc3339}"

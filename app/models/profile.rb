@@ -18,7 +18,6 @@ class Profile < ApplicationRecord
     education: :education,
     git_lab_url: :gitlab_url,
     linked_in_url: :linkedin_url,
-    recruiters_can_contact_me_about_job_opportunities: :contact_consent,
     skills_languages: :mostly_work_with,
     stack_overflow_url: :stackoverflow_url
   }.with_indifferent_access.freeze

@@ -204,6 +204,7 @@ Rails.application.routes.draw do
         resources :organizations, only: [:show], param: :username do
           resources :users, only: [:index], to: "organizations#users"
           resources :listings, only: [:index], to: "organizations#listings"
+          resources :articles, only: [:index], to: "organizations#articles"
         end
 
         namespace :admin do

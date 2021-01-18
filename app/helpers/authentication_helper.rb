@@ -23,11 +23,6 @@ module AuthenticationHelper
     Authentication::Providers.available.map(&:to_s)
   end
 
-  def provider_keys_configured?(provider)
-    SiteConfig.public_send("#{provider}_key").present? &&
-      SiteConfig.public_send("#{provider}_secret").present?
-  end
-
   def forem_creator_flow_enabled?
     FeatureFlag.enabled?(:creator_onboarding) && waiting_on_first_user?
   end
@@ -45,7 +40,7 @@ module AuthenticationHelper
     invite_only_mode_or_no_enabled_auth_options ? "crayons-tooltip" : ""
   end
 
-  def disabled_attr_on_auth_provider_enablebtn
+  def disabled_attr_on_auth_provider_enable_btn
     invite_only_mode_or_no_enabled_auth_options ? "disabled" : ""
   end
 
