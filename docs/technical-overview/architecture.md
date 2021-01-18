@@ -26,7 +26,7 @@ caching.
 
 In some situations we may want more precise content than in others. Often when
 we do not need a precise number, it offers an opportunity to either estimate
-the count or bust the cache less frequently.
+the content or bust the cache less frequently.
 
 ### Examples of this
 
