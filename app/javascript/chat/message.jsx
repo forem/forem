@@ -64,7 +64,7 @@ const Message = ({
   const dropdownReport = (
     <div className="message__actions">
       <span className="ellipsis__menubutton">
-        <img src={ThreeDotsIcon} alt="dropdown menu icon" />
+        <img src={ThreeDotsIcon} alt="message actions" />
       </span>
 
       <div className="messagebody__dropdownmenu report__abuse__button">
