@@ -168,13 +168,11 @@ class StoriesController < ApplicationController
 
   def handle_base_index
     @home_page = true
-    assign_feed_stories
+    assign_feed_stories unless user_signed_in? # Feed fetched async for signed-in users
     assign_hero_html
     assign_podcasts
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
     @article_index = true
-    @featured_story = (featured_story || Article.new)&.decorate
-    @stories = ArticleDecorator.decorate_collection(@stories)
     set_surrogate_key_header "main_app_home_page"
     set_cache_control_headers(600,
                               stale_while_revalidate: 30,
@@ -279,6 +277,8 @@ class StoriesController < ApplicationController
       @default_home_feed = true
       @featured_story, @stories = feed.default_home_feed_and_featured_story(user_signed_in: user_signed_in?)
     end
+    @featured_story = (featured_story || Article.new)&.decorate
+    @stories = ArticleDecorator.decorate_collection(@stories)
   end
 
   def assign_article_show_variables
