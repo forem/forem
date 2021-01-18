@@ -28,7 +28,7 @@ In some situations we may want more precise content than in others. Often when
 we do not need a precise number, it offers an opportunity to either estimate
 the content or bust the cache less frequently.
 
-### Examples of this
+### Examples
 
 - We use the `estimated_count` for a more efficient query of registered users on
 the home page. We have deemed that this is probably close enough.
