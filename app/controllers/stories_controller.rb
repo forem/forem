@@ -1,4 +1,6 @@
 class StoriesController < ApplicationController
+  include CommentsHelper
+
   DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION = {
     only: %i[
       title path id user_id comments_count public_reactions_count organization_id
@@ -318,7 +320,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_user_comments
-    comment_count = params[:view] == "comments" ? 250 : 8
+    comment_count = comments_to_render(params[:view])
     @comments = if @user.comments_count.positive?
                   @user.comments.where(deleted: false)
                     .order(created_at: :desc).includes(:commentable).limit(comment_count)
