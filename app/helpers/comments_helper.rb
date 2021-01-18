@@ -32,9 +32,10 @@ module CommentsHelper
   end
 
   def like_button_text(comment)
-    if comment.public_reactions_count.zero?
+    case comment.public_reactions_count
+    when 0
       "Like"
-    elsif comment.public_reactions_count == 1
+    when 1
       "&nbsp;like"
     else
       "&nbsp;likes"
