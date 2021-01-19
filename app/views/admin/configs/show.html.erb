@@ -438,6 +438,15 @@
                                    placeholder: Constants::SiteConfig::DETAILS[:campaign_call_to_action][:placeholder] %>
                 </div>
 
+                <div class="crayons-field">
+                  <%= admin_config_label :campaign_articles_expiry_time, "Campaign article expiry time" %>
+                  <%= admin_config_description Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:description] %>
+                  <%= f.number_field :campaign_articles_expiry_time,
+                                     class: "crayons-textfield",
+                                     value: SiteConfig.campaign_articles_expiry_time,
+                                     placeholder: Constants::SiteConfig::DETAILS[:campaign_articles_expiry_time][:placeholder] %>
+                </div>
+
                 <%= render "form_submission", f: f %>
               </fieldset>
             </div>

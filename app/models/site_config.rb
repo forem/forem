@@ -51,6 +51,7 @@ class SiteConfig < RailsSettings::Base
   field :campaign_sidebar_image, type: :string, default: nil
   field :campaign_url, type: :string, default: nil
   field :campaign_articles_require_approval, type: :boolean, default: 0
+  field :campaign_articles_expiry_time, type: :integer, default: 4
 
   # Community Content
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
