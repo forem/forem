@@ -5,9 +5,9 @@
     <h3 class="crayons-subtitle-2"><%= link_to "Stories (#{@campaign_articles_count})", "/t/#{campaign.main_tag}", class: "crayons-link" %></h3>
   </header>
   <div>
-    <% @latest_campaign_articles.each do |plucked_article| %>
-      <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-    <% end %>
+    <%= render partial: "articles/widget_list_item", collection: @latest_campaign_articles,
+               as: :plucked_article,
+               locals: { show_comment_count: false } %>
   </div>
   <div class="grid gap-2 p-4">
     <%= link_to Campaign.current.call_to_action, "/new/#{campaign.main_tag}", class: "crayons-btn" %>
