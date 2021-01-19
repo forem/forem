@@ -53,9 +53,7 @@ function renderTagsFollowed(user = userData()) {
 }
 
 function renderSidebar() {
-  const sidebarContainer = document.getElementById(
-    'sidebar-wrapper-right',
-  );
+  const sidebarContainer = document.getElementById('sidebar-wrapper-right');
 
   // If the screen's width is less than 1024px we don't need this extra data.
   if (sidebarContainer && screen.width > 1023 && window.location.pathname === '/') {
@@ -67,11 +65,10 @@ function renderSidebar() {
   }
 }
 
-
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
 
 if (!document.getElementById('featured-story-marker')) {
-  const waitingForDataLoad = setInterval(function dataLoadedCheck() {
+  const waitingForDataLoad = setInterval(() => {
     const { user = null, userStatus } = document.body.dataset;
     if (userStatus === 'logged-out') {
       return;

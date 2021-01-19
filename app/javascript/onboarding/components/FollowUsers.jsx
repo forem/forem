@@ -128,7 +128,11 @@ class FollowUsers extends Component {
     }
 
     return (
-      <button type="button" class="crayons-btn crayons-btn--ghost-brand -ml-2" onClick={() => this.handleSelectAll()}>
+      <button
+        type="button"
+        class="crayons-btn crayons-btn--ghost-brand -ml-2"
+        onClick={() => this.handleSelectAll()}
+      >
         {followText}
       </button>
     );
