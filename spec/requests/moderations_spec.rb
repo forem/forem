@@ -135,4 +135,54 @@ RSpec.describe "Moderations", type: :request do
       expect(response.body).to include "circle centered-icon adjustment-icon subtract"
     end
   end
+
+  describe "/mod" do
+    # rubocop:disable Layout/LineLength
+    coc_guides_copy = 'Check out our <a href="https://dev.to/code-of-conduct">Code of Conduct</a> and read through our <a href="https://dev.to/community-moderation">Trusted User Guide</a> and <a href="https://dev.to/tag-moderation">Tag Moderation Guide</a>.'
+    # rubocop:enable Layout/LineLength
+    become_mod_copy = "If you'd like to assist us as a trusted user or tag mod"
+    logged_out_copy = "P.S. You are not currently signed in."
+
+    context "when on dev.to" do
+      before do
+        allow(SiteConfig).to receive(:app_domain).and_return("dev.to")
+        allow(SiteConfig).to receive(:community_name).and_return("DEV Community")
+      end
+
+      dev_name_copy = "We periodically award some DEV Community members with heightened privileges"
+
+      it "indicates community name, codes of conduct/guides, and describes how to become a mod" do
+        user = create(:user)
+        sign_in user
+        get "/mod"
+
+        expect(response.body).to include dev_name_copy
+        expect(response.body).to include coc_guides_copy
+        expect(response.body).to include become_mod_copy
+        expect(response.body).not_to include logged_out_copy
+      end
+
+      it "warns that user is not signed in" do
+        get "/mod"
+
+        expect(response.body).to include logged_out_copy
+      end
+    end
+
+    context "when on other forem" do
+      before do
+        allow(SiteConfig).to receive(:app_domain).and_return("forem.com")
+        allow(SiteConfig).to receive(:community_name).and_return("Forem")
+      end
+
+      other_name_copy = "We periodically award some Forem members with heightened privileges"
+
+      it "indicates correct community name and omits codes of conduct/guides" do
+        get "/mod"
+
+        expect(response.body).to include other_name_copy
+        expect(response.body).not_to include coc_guides_copy
+      end
+    end
+  end
 end
