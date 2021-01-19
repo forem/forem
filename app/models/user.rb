@@ -259,7 +259,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :set_default_language
-  before_destroy :unsubscribe_from_newsletters, prepend: true, if: -> { SiteConfig.mailchimp_newsletter_enabled? }
+  before_destroy :unsubscribe_from_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
@@ -497,7 +497,7 @@ class User < ApplicationRecord
   end
 
   def unsubscribe_from_newsletters
-    return if email.blank?
+    return if email.blank? || (SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?)
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end

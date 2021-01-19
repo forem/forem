@@ -227,10 +227,6 @@ class SiteConfig < RailsSettings::Base
   end
   singleton_class.__send__(:alias_method, :apple_secret, :apple_key)
 
-  def self.mailchimp_newsletter_enabled?
-    mailchimp_api_key.present? && mailchimp_newsletter_id.present?
-  end
-
   # To get default values
   def self.get_default(field)
     get_field(field)[:default]

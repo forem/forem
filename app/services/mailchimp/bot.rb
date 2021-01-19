@@ -65,7 +65,7 @@ module Mailchimp
     end
 
     def manage_community_moderator_list
-      return false unless user.has_role?(:trusted) || SiteConfig.mailchimp_community_moderators_id.blank?
+      return false unless SiteConfig.mailchimp_community_moderators_id.blank? || user.has_role?(:trusted)
 
       success = false
       status = user.email_community_mod_newsletter ? "subscribed" : "unsubscribed"
@@ -91,7 +91,7 @@ module Mailchimp
     end
 
     def manage_tag_moderator_list
-      return false unless user.tag_moderator? || SiteConfig.mailchimp_tag_moderators_id.blank?
+      return false unless SiteConfig.mailchimp_tag_moderators_id.blank? || user.tag_moderator?
 
       success = false
 
