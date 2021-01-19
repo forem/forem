@@ -308,7 +308,12 @@ export default class ChatChannelSettings extends Component {
     const { currentMembership } = this.state;
     if (actionStatus) {
       const response = await leaveChatChannelMembership(currentMembership.id);
+      const { message } = response;
       if (response.success) {
+        this.setState({
+          successMessages: message,
+          errorMessages: null,
+        });
         this.props.handleLeavingChannel(currentMembership.id);
       } else {
         this.setState({
@@ -316,6 +321,7 @@ export default class ChatChannelSettings extends Component {
           errorMessages: response.message,
         });
       }
+      addSnackbarItem({ message });
     }
   };
 

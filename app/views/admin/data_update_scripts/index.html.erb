@@ -1,0 +1,26 @@
+<div class="crayons-card p-6 grid gap-6">
+  <table class="crayons-table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Filename</th>
+        <th scope="col" class="whitespace-nowrap">Status</th>
+        <th scope="col">Created at</th>
+        <th scope="col">Run at</th>
+      </tr>
+    </thead>
+    <tbody class="crayons-card">
+      <% @data_update_scripts.each do |script| %>
+        <tr>
+          <td class="whitespace-nowrap"><%= script.id %></td>
+          <td><%= script.file_name %></td>
+          <td class="whitespace-nowrap justify-content-center">
+            <%= script.status %>
+          </td>
+          <td><%= script.created_at %></td>
+          <td><%= script.run_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</main>

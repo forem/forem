@@ -1,3 +1,4 @@
+/* global jQuery */
 import { Controller } from 'stimulus';
 import adminModal from '../adminModal';
 
@@ -19,6 +20,8 @@ const emailAuthModalBody = `
 export default class ConfigController extends Controller {
   static targets = [
     'authenticationProviders',
+    'authSectionForm',
+    'collectiveNoun',
     'configModalAnchor',
     'emailAuthSettingsBtn',
     'enabledIndicator',
@@ -27,6 +30,25 @@ export default class ConfigController extends Controller {
   ];
 
   // GENERAL FUNCTIONS START
+
+  // This is a bit of hack because we have to deal with Bootstrap used inline, jQuery and Stimulus  :-/
+  // NOTE: it'd be best to rewrite this as a reusable "toggle" element in Stimulus without using jQuery + Bootstrap
+  toggleAccordionButtonLabel(event) {
+    const $target = jQuery(event.target);
+    const $container = $target.parent();
+
+    const text = $target.text();
+
+    if ($container) {
+      const show = $container.attr('aria-expanded') === 'true';
+
+      if (show) {
+        $target.text(text.replace(/Hide/i, 'Show'));
+      } else {
+        $target.text(text.replace(/Show/i, 'Hide'));
+      }
+    }
+  }
 
   disableTargetField(event) {
     const targetElementName = event.target.dataset.disableTarget;
@@ -46,10 +68,23 @@ export default class ConfigController extends Controller {
     }
   }
 
-  closeAdminConfigModal() {
+  closeAdminModal() {
+    // per forem/internalEngineering#336, need to short-circuit the
+    // "Update Site Configuration" button submit action; chose not to
+    // define Target on actual "Update" button (since it's a partial).
+    // The Target is defined on the Authentication form, and that section's
+    // "Update" button is queried.
+    const submitBtn = this.authSectionFormTarget.querySelector(
+      'input[type="submit"]',
+    );
+
     this.configModalAnchorTarget.innerHTML = '';
     document.body.style.height = 'inherit';
     document.body.style.overflowY = 'inherit';
+
+    if (submitBtn.hasAttribute('disabled')) {
+      submitBtn.removeAttribute('disabled');
+    }
   }
 
   positionModalOnPage() {
@@ -90,21 +125,23 @@ export default class ConfigController extends Controller {
 
   activateEmailAuthModal(event) {
     event.preventDefault();
-    this.configModalAnchorTarget.innerHTML = adminModal(
-      emailAuthModalTitle,
-      emailAuthModalBody,
-      'Confirm disable',
-      'disableEmailAuthFromModal',
-      'Cancel',
-      'closeAdminConfigModal',
-    );
+    this.configModalAnchorTarget.innerHTML = adminModal({
+      title: emailAuthModalTitle,
+      body: emailAuthModalBody,
+      leftBtnText: 'Confirm disable',
+      leftBtnAction: 'disableEmailAuthFromModal',
+      rightBtnText: 'Cancel',
+      rightBtnAction: 'closeAdminModal',
+      leftBtnClasses: 'crayons-btn--danger',
+      rightBtnClasses: 'crayons-btn--secondary',
+    });
     this.positionModalOnPage();
   }
 
   disableEmailAuthFromModal(event) {
     event.preventDefault();
     this.disableEmailAuth(event);
-    this.closeAdminConfigModal(event);
+    this.closeAdminModal();
   }
 
   disableEmailAuth(event) {
@@ -122,13 +159,13 @@ export default class ConfigController extends Controller {
 
   enableOrEditAuthProvider(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProviderEnable;
+    const providerName = event.target.dataset.providerName;
     const enabledIndicator = document.getElementById(
-      `${provider}-enabled-indicator`,
+      `${providerName}-enabled-indicator`,
     );
 
     document
-      .getElementById(`${provider}-auth-settings`)
+      .getElementById(`${providerName}-auth-settings`)
       .classList.remove('hidden');
     event.target.classList.add('hidden');
 
@@ -141,16 +178,16 @@ export default class ConfigController extends Controller {
 
   disableAuthProvider(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProvider;
+    const providerName = event.target.dataset.providerName;
     const enabledIndicator = document.getElementById(
-      `${provider}-enabled-indicator`,
+      `${providerName}-enabled-indicator`,
     );
-    const authEnableButton = document.querySelector(
-      `[data-auth-provider-enable="${provider}"]`,
+    const authEnableButton = document.getElementById(
+      `${providerName}-auth-btn`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
     enabledIndicator.classList.remove('visible');
-    this.listAuthToBeEnabled(event);
+    this.listAuthToBeEnabled();
     this.hideAuthProviderSettings(event);
   }
 
@@ -164,36 +201,37 @@ export default class ConfigController extends Controller {
 
   activateAuthProviderModal(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProvider;
-    const official_provider = event.target.dataset.authProviderOfficial;
-    this.configModalAnchorTarget.innerHTML = adminModal(
-      this.authProviderModalTitle(official_provider),
-      this.authProviderModalBody(official_provider),
-      'Confirm disable',
-      'disableAuthProviderFromModal',
-      'Cancel',
-      'closeAdminConfigModal',
-      'auth-provider',
-      provider,
-    );
+    const providerName = event.target.dataset.providerName;
+    const providerOfficialName = event.target.dataset.providerOfficialName;
+    this.configModalAnchorTarget.innerHTML = adminModal({
+      title: this.authProviderModalTitle(providerOfficialName),
+      body: this.authProviderModalBody(providerOfficialName),
+      leftBtnText: 'Confirm disable',
+      leftBtnAction: 'disableAuthProviderFromModal',
+      rightBtnText: 'Cancel',
+      rightBtnAction: 'closeAdminModal',
+      leftBtnClasses: 'crayons-btn--danger',
+      rightBtnClasses: 'crayons-btn--secondary',
+      leftCustomDataAttr: `data-provider-name=${providerName}`,
+    });
     this.positionModalOnPage();
   }
 
   disableAuthProviderFromModal(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProvider;
-    const authEnableButton = document.querySelector(
-      `[data-auth-provider-enable="${provider}"]`,
+    const providerName = event.target.dataset.providerName;
+    const authEnableButton = document.getElementById(
+      `${providerName}-auth-btn`,
     );
     const enabledIndicator = document.getElementById(
-      `${provider}-enabled-indicator`,
+      `${providerName}-enabled-indicator`,
     );
     authEnableButton.setAttribute('data-enable-auth', 'false');
     this.listAuthToBeEnabled(event);
     this.checkForAndGuardSoleAuthProvider();
     enabledIndicator.classList.remove('visible');
     this.hideAuthProviderSettings(event);
-    this.closeAdminConfigModal(event);
+    this.closeAdminModal();
   }
 
   checkForAndGuardSoleAuthProvider() {
@@ -217,11 +255,13 @@ export default class ConfigController extends Controller {
 
   hideAuthProviderSettings(event) {
     event.preventDefault();
-    const provider = event.target.dataset.authProvider;
+    const providerName = event.target.dataset.providerName;
     document
-      .getElementById(`${provider}-auth-settings`)
+      .getElementById(`${providerName}-auth-settings`)
       .classList.add('hidden');
-    document.getElementById(`${provider}-auth-btn`).classList.remove('hidden');
+    document
+      .getElementById(`${providerName}-auth-btn`)
+      .classList.remove('hidden');
   }
 
   listAuthToBeEnabled() {
@@ -229,7 +269,7 @@ export default class ConfigController extends Controller {
     document
       .querySelectorAll('[data-enable-auth="true"]')
       .forEach((provider) => {
-        enabledProviderArray.push(provider.dataset.authProviderEnable);
+        enabledProviderArray.push(provider.dataset.providerName);
       });
     document.getElementById(
       'auth_providers_to_enable',
@@ -245,4 +285,85 @@ export default class ConfigController extends Controller {
     }
   }
   // AUTH PROVIDERS FUNCTIONS END
+
+  enabledProvidersWithMissingKeys() {
+    const providersWithMissingKeys = [];
+    document
+      .querySelectorAll('[data-enable-auth="true"]')
+      .forEach((provider) => {
+        const { providerName } = provider.dataset;
+        if (
+          !document.getElementById(`site_config_${providerName}_key`).value ||
+          !document.getElementById(`site_config_${providerName}_secret`).value
+        ) {
+          providersWithMissingKeys.push(providerName);
+        }
+      });
+
+    return providersWithMissingKeys;
+  }
+
+  generateProvidersList(providers) {
+    const list = providers.reduce((html, provider) => {
+      return `${html}<li class="capitalize">${provider}</li>`;
+    }, '');
+
+    return list;
+  }
+
+  missingAuthKeysModalBody(providers) {
+    return `
+      <p>You haven't filled out all of the required fields to enable the following authentication providers:</p>
+      <ul class="mb-0">${this.generateProvidersList(providers)}</ul>
+      <p class="mb-0">You may continue editing these authentication providers, or you may cancel.</p>
+    `;
+  }
+
+  submitForm() {
+    this.authSectionFormTarget.submit();
+  }
+
+  activateMissingKeysModal(providers) {
+    this.configModalAnchorTarget.innerHTML = adminModal({
+      title: 'Setup not complete',
+      body: this.missingAuthKeysModalBody(providers),
+      leftBtnText: 'Continue editing',
+      leftBtnAction: 'closeAdminModal',
+      rightBtnText: 'Cancel',
+      rightBtnAction: 'cancelAuthProviderEnable',
+      rightBtnClasses: 'crayons-btn--secondary',
+    });
+  }
+
+  configUpdatePrecheck(event) {
+    if (this.enabledProvidersWithMissingKeys().length > 0) {
+      event.preventDefault();
+      this.activateMissingKeysModal(this.enabledProvidersWithMissingKeys());
+    } else {
+      event.target.submit();
+    }
+  }
+
+  cancelAuthProviderEnable() {
+    const providers = this.enabledProvidersWithMissingKeys();
+
+    providers.forEach((provider) => {
+      const enabledIndicator = document.getElementById(
+        `${provider}-enabled-indicator`,
+      );
+      const authEnableButton = document.getElementById(`${provider}-auth-btn`);
+
+      authEnableButton.setAttribute('data-enable-auth', 'false');
+      enabledIndicator.classList.remove('visible');
+      this.listAuthToBeEnabled();
+      document
+        .getElementById(`${provider}-auth-settings`)
+        .classList.add('hidden');
+      document
+        .getElementById(`${provider}-auth-btn`)
+        .classList.remove('hidden');
+
+      this.closeAdminModal();
+    });
+  }
 }

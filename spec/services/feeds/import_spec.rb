@@ -44,25 +44,6 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
       end
     end
 
-    it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
-      user = User.find_by(feed_url: nonpermanent_link)
-
-      Timecop.freeze(Time.current) do
-        user.update_columns(feed_fetched_at: Time.current)
-
-        fetched_at_time = user.reload.feed_fetched_at
-
-        # travel a few seconds in the future to simulate a new time
-        3.times do |i|
-          Timecop.travel((i + 5).seconds.from_now) do
-            described_class.call
-          end
-        end
-
-        expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
-      end
-    end
-
     it "queues as many slack messages as there are articles", vcr: { cassette_name: "feeds_import" } do
       old_count = Slack::Messengers::Worker.jobs.count
       num_articles = described_class.call
@@ -123,8 +104,61 @@ RSpec.describe Feeds::Import, type: :service, vcr: true, db_strategy: :truncatio
     end
   end
 
+  context "when refetching" do
+    before do
+      [link, nonmedium_link, nonpermanent_link].each do |feed_url|
+        create(:user, feed_url: feed_url)
+      end
+    end
+
+    it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
+      user = User.find_by(feed_url: nonpermanent_link)
+
+      Timecop.freeze(Time.current) do
+        user.update_columns(feed_fetched_at: Time.current)
+
+        fetched_at_time = user.reload.feed_fetched_at
+
+        # travel a few seconds in the future to simulate a new time
+        3.times do |i|
+          Timecop.travel((i + 5).seconds.from_now) do
+            described_class.call
+          end
+        end
+
+        expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
+      end
+    end
+
+    it "does not refetch recently fetched users if earlier_than is given", vcr: { cassette_name: "feeds_import" } do
+      time = 30.minutes.ago
+
+      Timecop.freeze(time) do
+        described_class.call
+      end
+
+      # we delete the articles to make sure it won't trigger the duplicate check
+      Article.delete_all
+
+      expect { described_class.call(earlier_than: 1.hour.ago) }.not_to change(Article, :count)
+    end
+
+    it "refetches recently fetched users if earlier_than is now", vcr: { cassette_name: "feeds_import_twice" } do
+      time = 30.minutes.ago
+
+      Timecop.freeze(time) do
+        described_class.call
+      end
+
+      # we delete the articles to make sure it won't trigger the duplicate check
+      Article.delete_all
+
+      expect { described_class.call(earlier_than: Time.current) }.to change(Article, :count)
+    end
+  end
+
   context "when feed_referential_link is false" do
-    it "does not self-reference links for user" do
+    it "does not self-reference links for user", vcr: { cassette_name: "feeds_import_non_referential" } do
       # Article.find_by is used by find_and_replace_possible_links!
       # checking its invocation is a shortcut to testing the functionality.
       allow(Article).to receive(:find_by).and_call_original

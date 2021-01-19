@@ -1,7 +1,15 @@
 .dropdown-trigger-container {
   position: relative;
 
-  .dropdown-trigger:hover + div {
+  .dropdown-trigger + .active {
     display: block;
+  }
+
+  a:focus {
+    outline: -webkit-focus-ring-color auto 1px;
+  }
+
+  a:focus:not(:focus-visible) {
+    outline: none;
   }
 }

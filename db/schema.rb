@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_03_063435) do
+ActiveRecord::Schema.define(version: 2021_01_11_151630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -335,17 +335,6 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_classified_listing_categories_on_name", unique: true
     t.index ["slug"], name: "index_classified_listing_categories_on_slug", unique: true
-  end
-
-  create_table "classified_listing_endorsements", force: :cascade do |t|
-    t.boolean "approved", default: false
-    t.bigint "classified_listing_id"
-    t.string "content"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
-    t.index ["classified_listing_id"], name: "index_classified_listing_endorsements_on_classified_listing_id"
-    t.index ["user_id"], name: "index_classified_listing_endorsements_on_user_id"
   end
 
   create_table "classified_listings", force: :cascade do |t|
@@ -1222,7 +1211,6 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
-    t.boolean "contact_consent", default: false
     t.datetime "created_at", null: false
     t.integer "credits_count", default: 0, null: false
     t.datetime "current_sign_in_at"
@@ -1294,8 +1282,6 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.string "linkedin_url"
     t.string "location"
     t.datetime "locked_at"
-    t.boolean "looking_for_work", default: false
-    t.boolean "looking_for_work_publicly", default: false
     t.string "mastodon_url"
     t.string "medium_url"
     t.boolean "mobile_comment_notifications", default: true
@@ -1351,6 +1337,7 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
+    t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"
     t.index ["feed_url"], name: "index_users_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -1417,8 +1404,6 @@ ActiveRecord::Schema.define(version: 2020_12_03_063435) do
   add_foreign_key "buffer_updates", "users", column: "composer_user_id", on_delete: :nullify
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
-  add_foreign_key "classified_listing_endorsements", "classified_listings"
-  add_foreign_key "classified_listing_endorsements", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
