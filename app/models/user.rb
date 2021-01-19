@@ -435,10 +435,6 @@ class User < ApplicationRecord
 
   def block; end
 
-  def all_blocking
-    UserBlock.where(blocker_id: id)
-  end
-
   def all_blocked_by
     UserBlock.where(blocked_id: id)
   end
