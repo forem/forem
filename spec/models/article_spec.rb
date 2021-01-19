@@ -922,7 +922,7 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#update_comments" do
+  describe "#reindex_comments_to_elasticsearch" do
     it "works" do
       Sidekiq::Testing.inline! do
         article = create(:article)
