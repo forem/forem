@@ -125,7 +125,7 @@ module Mailchimp
     def unsub_sustaining_member
       return unless user.tag_moderator?
 
-      gibbon.lists(SiteConfig.mailchimp_tag_moderators_id).members(target_md5_email).update(
+      gibbon.lists(SiteConfig.mailchimp_sustaining_members_id).members(target_md5_email).update(
         body: {
           status: "unsubscribed"
         },
@@ -145,7 +145,7 @@ module Mailchimp
     def unsub_tag_mod
       return unless a_sustaining_member?
 
-      gibbon.lists(SiteConfig.mailchimp_sustaining_members_id).members(target_md5_email).update(
+      gibbon.lists(SiteConfig.mailchimp_tag_moderators_id).members(target_md5_email).update(
         body: {
           status: "unsubscribed"
         },
