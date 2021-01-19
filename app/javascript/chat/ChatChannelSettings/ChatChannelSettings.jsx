@@ -311,7 +311,7 @@ export default class ChatChannelSettings extends Component {
       const { message } = response;
       if (response.success) {
         this.setState({
-          successMessages: response.message,
+          successMessages: message,
           errorMessages: null,
         });
         this.props.handleLeavingChannel(currentMembership.id);
