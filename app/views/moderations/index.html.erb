@@ -34,9 +34,7 @@
     <h1 class="pt-5" style="text-align: center"><%= community_name %> Mods</h1>
     <div class="body">
       <p>We periodically award some <%= community_name %> members with heightened privileges to help moderate the community.</p>
-      <% if SiteConfig.dev_to? %>
-        <p>Check out our <a href="https://dev.to/code-of-conduct">Code of Conduct</a> and read through our <a href="https://dev.to/community-moderation">Trusted User Guide</a> and <a href="https://dev.to/tag-moderation">Tag Moderation Guide</a>.</p>
-      <% end %>
+      <p>Check out our <%= link_to "Code of Conduct", code_of_conduct_path %> and read through our <%= link_to "Trusted User Guide", community_moderation_path %> and <%= link_to "Tag Moderation Guide", tag_moderation_path %>.</p>
       <p>If you'd like to assist us as a trusted user or tag mod, please email us at <%= mail_to email_link, email_link %> and let us know which role you're interested in and why. If it's tag moderation, please tell us what tags you'd like to moderate for.</p>
       <% unless user_signed_in? %>
         <p><em>P.S. You are not currently signed in.</em></p>
