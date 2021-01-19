@@ -85,10 +85,10 @@ RSpec.describe "Moderations", type: :request do
   describe "actions_panel" do
     context "when the user is a tag moderator" do
       it "shows the option to remove the tag when the article has the tag" do
-        tag_mod = create(:user, :tag_moderator)
+        let(:tag_mod) { create(:user, :tag_moderator) }
         tag_mod.add_role :trusted
-        tag = tag_mod.roles.find_by(name: "tag_moderator").resource
-        article = create(:article, tags: tag)
+        let(:tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
+        let(:article) { create(:article, tags: tag) }
         sign_in tag_mod
 
         get "#{article.path}/actions_panel"
@@ -97,9 +97,9 @@ RSpec.describe "Moderations", type: :request do
     end
 
     it "shows the option to add the tag when the article has the tag" do
-      tag_mod = create(:user, :tag_moderator)
+      let(:tag_mod) { create(:user, :tag_moderator) }
       tag_mod.add_role :trusted
-      article = create(:article, tags: "javascript, cool, beans")
+      let(:article) { create(:article, tags: "javascript, cool, beans") }
       sign_in tag_mod
 
       get "#{article.path}/actions_panel"
@@ -124,9 +124,9 @@ RSpec.describe "Moderations", type: :request do
 
   context "when the user is an admin" do
     before do
-      admin = create(:user, :admin)
+      let(:admin) { create(:user, :admin) }
       sign_in admin
-      article = create(:article, tags: "javascript, cool, beans")
+      let(:article) { create(:article, tags: "javascript, cool, beans") }
       get "#{article.path}/actions_panel"
     end
 
