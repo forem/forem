@@ -84,26 +84,26 @@ RSpec.describe "Moderations", type: :request do
 
   describe "actions_panel" do
     context "when the user is a tag moderator" do
+      let(:tag_mod) { create(:user, :tag_moderator) }
+      let(:tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
+      let(:article1) { create(:article, tags: tag) }
+      let(:article2) { create(:article, tags: "javascript, cool, beans") }
+
       it "shows the option to remove the tag when the article has the tag" do
-        let(:tag_mod) { create(:user, :tag_moderator) }
         tag_mod.add_role :trusted
-        let(:tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
-        let(:article) { create(:article, tags: tag) }
         sign_in tag_mod
 
-        get "#{article.path}/actions_panel"
+        get "#{article1.path}/actions_panel"
         expect(response.body).to include "circle centered-icon adjustment-icon subtract"
       end
-    end
 
-    it "shows the option to add the tag when the article has the tag" do
-      let(:tag_mod) { create(:user, :tag_moderator) }
-      tag_mod.add_role :trusted
-      let(:article) { create(:article, tags: "javascript, cool, beans") }
-      sign_in tag_mod
+      it "shows the option to add the tag when the article has the tag" do
+        tag_mod.add_role :trusted
+        sign_in tag_mod
 
-      get "#{article.path}/actions_panel"
-      expect(response.body).to include "circle centered-icon adjustment-icon plus"
+        get "#{article2.path}/actions_panel"
+        expect(response.body).to include "circle centered-icon adjustment-icon plus"
+      end
     end
   end
 
@@ -123,10 +123,11 @@ RSpec.describe "Moderations", type: :request do
   end
 
   context "when the user is an admin" do
+    let(:admin) { create(:user, :admin) }
+    let(:article) { create(:article, tags: "javascript, cool, beans") }
+
     before do
-      let(:admin) { create(:user, :admin) }
       sign_in admin
-      let(:article) { create(:article, tags: "javascript, cool, beans") }
       get "#{article.path}/actions_panel"
     end
 
