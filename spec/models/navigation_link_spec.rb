@@ -36,10 +36,17 @@ RSpec.describe NavigationLink, type: :model do
       expect(navigation_link.url).to eq "/test"
     end
 
-    it "persists relative URLs as-is" do
+    it "persists relative URLs unchanged" do
       navigation_link.url = "/test"
       navigation_link.save
       expect(navigation_link.url).to eq "/test"
+    end
+
+    it "persists external URLs unchanged" do
+      url = "https://example.com/test"
+      navigation_link.url = url
+      navigation_link.save
+      expect(navigation_link.url).to eq url
     end
   end
 end
