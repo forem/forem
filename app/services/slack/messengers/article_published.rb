@@ -10,8 +10,8 @@ module Slack
         @article = article
       end
 
-      def self.call(*args)
-        new(*args).call
+      def self.call(**args)
+        new(**args).call
       end
 
       def call
