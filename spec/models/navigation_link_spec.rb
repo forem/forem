@@ -29,9 +29,12 @@ RSpec.describe NavigationLink, type: :model do
   end
 
   describe "callbacks" do
+    let(:base_url) { "https://testforem.com" }
+
+    before { allow(URL).to receive(:url).and_return(base_url) }
+
     it "normalizes local URLs to relative URLs on save" do
-      expect(URL.url).to be_present
-      navigation_link.url = "#{URL.url}/test"
+      navigation_link.url = "#{base_url}/test"
       navigation_link.save
       expect(navigation_link.url).to eq "/test"
     end
