@@ -96,7 +96,7 @@ export async function updateMembership(membershipId, userAction) {
 /**
  *
  * @param {string} feedback_message
- * @param {string}  type_of_feedback
+ * @param {string} type_of_feedback
  * @param {string} category
  * @param {string} reported_url
  */
