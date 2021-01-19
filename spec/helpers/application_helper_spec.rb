@@ -62,6 +62,8 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#release_adjusted_cache_key" do
+    after { ForemInstance.instance_variable_set(:@deployed_at, nil) }
+
     it "does nothing when RELEASE_FOOTPRINT is not set" do
       allow(ApplicationConfig).to receive(:[]).with("RELEASE_FOOTPRINT").and_return(nil)
       expect(helper.release_adjusted_cache_key("cache-me")).to include("cache-me")

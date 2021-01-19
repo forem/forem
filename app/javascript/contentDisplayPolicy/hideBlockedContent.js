@@ -13,7 +13,7 @@ export default function hideBlockedContent() {
   });
 
   divsToHide.forEach((div) => {
-    if (div.className.includes('single-article')) {
+    if (div.className.includes('crayons-story')) {
       div.style.display = 'none';
     } else if (div.className.includes('single-comment-node')) {
       const divInnerComment = div.getElementsByClassName('inner-comment')[0];

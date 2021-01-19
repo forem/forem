@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MarkdownFixer, type: :labor do
+RSpec.describe MarkdownProcessor::Fixer::Base, type: :service do
   let(:sample_text) { Faker::Book.title }
 
   def front_matter(title: "", description: "")
@@ -109,33 +109,6 @@ RSpec.describe MarkdownFixer, type: :labor do
     end
   end
 
-  describe "::fix_all" do
-    it "escapes title and description" do
-      result = described_class
-        .fix_all(front_matter(title: sample_text, description: sample_text))
-      expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
-      expect(result).to eq(expected_result)
-    end
-
-    context "when description is empty" do
-      it "escapes title and description" do
-        result = described_class
-          .fix_all("---\ntitle: #{sample_text}\ndescription:\ntags: \n---\n")
-        expected_result = "---\ntitle: \"#{sample_text}\"\ndescription: \"\"\ntags: \n---\n"
-        expect(result).to eq(expected_result)
-      end
-    end
-  end
-
-  describe "::fix_for_preview" do
-    it "escapes title and description" do
-      result = described_class
-        .fix_for_preview(front_matter(title: sample_text, description: sample_text))
-      expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
-      expect(result).to eq(expected_result)
-    end
-  end
-
   describe "::underscores_in_usernames" do
     it "escapes underscores in a username" do
       test_string1 = "@_xy_"
@@ -168,6 +141,22 @@ RSpec.describe MarkdownFixer, type: :labor do
 
       expect(result).to include("@\\_dev\\_")
       expect(result).to include("@_no_escape_codeblock", "@_no_escape_code")
+    end
+  end
+
+  describe "::modify_hr_tags" do
+    it "modifies hr tags" do
+      markdown =
+        <<~HEREDOC
+          #{front_matter(title: sample_text)}
+          ---
+          These hr tags should be converted to more dashes
+          ---
+        HEREDOC
+
+      result = described_class.modify_hr_tags(markdown)
+      expect(result).to include("-------").twice
+      expect(result).to include("---").at_least(:twice)
     end
   end
 end
