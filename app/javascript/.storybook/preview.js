@@ -67,6 +67,7 @@ const themeSwitcherDecorator = (storyFn) => {
 };
 
 addDecorator(themeSwitcherDecorator);
+addDecorator((Story) => <Story />);
 
 addParameters({
   options: {
