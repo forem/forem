@@ -65,7 +65,7 @@ module Mailchimp
     end
 
     def manage_community_moderator_list
-      return false unless SiteConfig.mailchimp_community_moderators_id.blank? || user.has_role?(:trusted)
+      return false unless SiteConfig.mailchimp_community_moderators_id.present? && user.has_role?(:trusted)
 
       success = false
       status = user.email_community_mod_newsletter ? "subscribed" : "unsubscribed"
@@ -91,7 +91,7 @@ module Mailchimp
     end
 
     def manage_tag_moderator_list
-      return false unless SiteConfig.mailchimp_tag_moderators_id.blank? || user.tag_moderator?
+      return false unless SiteConfig.mailchimp_tag_moderators_id.present? && user.tag_moderator?
 
       success = false
 
@@ -123,7 +123,7 @@ module Mailchimp
     end
 
     def unsub_sustaining_member
-      return unless SiteConfig.mailchimp_sustaining_members_id && a_sustaining_member?
+      return unless SiteConfig.mailchimp_sustaining_members_id.present? && a_sustaining_member?
 
       gibbon.lists(SiteConfig.mailchimp_sustaining_members_id).members(target_md5_email).update(
         body: {
