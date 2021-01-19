@@ -133,7 +133,7 @@ module Mailchimp
     end
 
     def unsub_community_mod
-      return unless SiteConfig.mailchimp_community_moderators_ids.present? && user.trusted
+      return unless SiteConfig.mailchimp_community_moderators_id.present? && user.trusted
 
       gibbon.lists(SiteConfig.mailchimp_community_moderators_id).members(target_md5_email).update(
         body: {
