@@ -8,6 +8,7 @@ class Article < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
   acts_as_taggable_on :tags
   resourcify
@@ -100,11 +101,10 @@ class Article < ApplicationRecord
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
-  after_update_commit :reindex_comments_to_elasticsearch, if: proc { |article|
-                                                                article.saved_changes[:published].present?
-                                                              }
+
   after_commit :async_score_calc, :touch_collection, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   serialize :cached_user
@@ -468,10 +468,6 @@ class Article < ApplicationRecord
 
   def update_notifications
     Notification.update_notifications(self, "Published")
-  end
-
-  def reindex_comments_to_elasticsearch
-    comments.each(&:index_to_elasticsearch)
   end
 
   def before_destroy_actions
