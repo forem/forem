@@ -10,11 +10,7 @@ module DataSync
         title
       ].freeze
 
-      private
-
-      def comments
-        updated_record.comments
-      end
+      delegate :comments, to: :@updated_record
     end
   end
 end

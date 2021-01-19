@@ -139,6 +139,12 @@ RSpec.describe Article, type: :model do
           article.destroy
         end
       end
+
+      it "on update syncs elasticsearch data" do
+        allow(article).to receive(:sync_related_elasticsearch_docs)
+        article.save
+        expect(article).to have_received(:sync_related_elasticsearch_docs)
+      end
     end
 
     context "when published" do
@@ -919,20 +925,6 @@ RSpec.describe Article, type: :model do
 
       fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list]
       expect(feed_article.attributes.keys).to match_array(fields)
-    end
-  end
-
-  describe "#reindex_comments_to_elasticsearch" do
-    it "works" do
-      Sidekiq::Testing.inline! do
-        article = create(:article)
-        comment = create(:comment, commentable: article)
-        comment2 = create(:comment, commentable: article)
-        expect do
-          article.update(body_markdown: article.body_markdown.gsub("published: true", "published: false"))
-        end.to change { comment.elasticsearch_doc["_source"]["published"] }.from(true).to(false)
-          .and change { comment2.elasticsearch_doc["_source"]["published"] }.from(true).to(false)
-      end
     end
   end
 
