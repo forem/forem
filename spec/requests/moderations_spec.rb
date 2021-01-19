@@ -138,10 +138,10 @@ RSpec.describe "Moderations", type: :request do
 
   describe "/mod" do
     # rubocop:disable Layout/LineLength
-    coc_guides_copy = 'Check out our <a href="https://dev.to/code-of-conduct">Code of Conduct</a> and read through our <a href="https://dev.to/community-moderation">Trusted User Guide</a> and <a href="https://dev.to/tag-moderation">Tag Moderation Guide</a>.'
+    let(:coc_guides_copy) { 'Check out our <a href="https://dev.to/code-of-conduct">Code of Conduct</a> and read through our <a href="https://dev.to/community-moderation">Trusted User Guide</a> and <a href="https://dev.to/tag-moderation">Tag Moderation Guide</a>.' }
     # rubocop:enable Layout/LineLength
-    become_mod_copy = "If you'd like to assist us as a trusted user or tag mod"
-    logged_out_copy = "P.S. You are not currently signed in."
+    let(:become_mod_copy) { "If you'd like to assist us as a trusted user or tag mod" }
+    let(:logged_out_copy) { "P.S. You are not currently signed in." }
 
     context "when on dev.to" do
       before do
@@ -149,10 +149,10 @@ RSpec.describe "Moderations", type: :request do
         allow(SiteConfig).to receive(:community_name).and_return("DEV Community")
       end
 
-      dev_name_copy = "We periodically award some DEV Community members with heightened privileges"
+      let(:dev_name_copy) { "We periodically award some DEV Community members with heightened privileges" }
+      let(:user) { create(:user) }
 
       it "indicates community name, codes of conduct/guides, and describes how to become a mod" do
-        user = create(:user)
         sign_in user
         get "/mod"
 
@@ -175,7 +175,7 @@ RSpec.describe "Moderations", type: :request do
         allow(SiteConfig).to receive(:community_name).and_return("Forem")
       end
 
-      other_name_copy = "We periodically award some Forem members with heightened privileges"
+      let(:other_name_copy) { "We periodically award some Forem members with heightened privileges" }
 
       it "indicates correct community name and omits codes of conduct/guides" do
         get "/mod"
