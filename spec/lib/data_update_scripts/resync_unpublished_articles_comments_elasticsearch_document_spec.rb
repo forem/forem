@@ -5,6 +5,13 @@ require Rails.root.join(
 
 describe DataUpdateScripts::ResyncUnpublishedArticlesCommentsElasticsearchDocument do
   it "works" do
-    sidekiq_perform_enqueued_jobs { described_class.new.run }
+    article = create(:article)
+    comment = create(:comment, commentable: article)
+    sidekiq_perform_enqueued_jobs
+    article.update_column(:published, false)
+
+    sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Comment", comment.id]) do
+      described_class.new.run
+    end
   end
 end
