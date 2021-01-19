@@ -259,7 +259,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :set_default_language
-  before_destroy :unsubscribe_from_newsletters, prepend: true
+  before_destroy :unsubscribe_from_newsletters, prepend: true, if: -> { SiteConfig.mailchimp_newsletter_enabled? }
   before_destroy :destroy_follows, prepend: true
 
   # NOTE: @citizen428 Temporary while migrating to generalized profiles
