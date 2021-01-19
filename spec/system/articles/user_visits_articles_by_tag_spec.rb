@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "User visits articles by tag", type: :system do
-  let(:js_tag) { create(:tag, name: "javascript") }
+  let!(:js_tag) { create(:tag, name: "javascript", bg_color_hex: "#ab1775", text_color_hex: "#b7b101") }
   let(:iot_tag) { create(:tag, name: "IoT") }
   let!(:func_tag) { create(:tag, name: "functional") }
 
@@ -12,6 +12,14 @@ RSpec.describe "User visits articles by tag", type: :system do
     create(:article, tags: "functional, javascript", user: author, published_at: 2.weeks.ago, score: 5)
   end
 
+  def hex_to_rgb(hexadecinal_value)
+    rgb_values = hexadecinal_value.match(/#(..)(..)(..)/)
+    r = rgb_values[1].hex
+    g = rgb_values[2].hex
+    b = rgb_values[3].hex
+    "rgb(#{r}, #{g}, #{b})"
+  end
+
   context "when user hasn't logged in" do
     context "when 2 articles" do
       before do
@@ -20,6 +28,12 @@ RSpec.describe "User visits articles by tag", type: :system do
 
       it "shows the header", js: true, stub_elasticsearch: true do
         within("h1") { expect(page).to have_text("javascript") }
+
+        bg_color_hex = hex_to_rgb(js_tag.bg_color_hex)
+        text_color_hex = hex_to_rgb(js_tag.text_color_hex)
+
+        expect(page.find("span.crayons-tag")["style"])
+          .to eq("background: #{bg_color_hex}; color: #{text_color_hex};")
       end
 
       it "shows the follow button", js: true, stub_elasticsearch: true do
