@@ -7,6 +7,7 @@ module DataSync
 
       SHARED_FIELDS = %i[
         published
+        title
       ].freeze
 
       private
