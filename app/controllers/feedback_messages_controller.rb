@@ -10,7 +10,7 @@ class FeedbackMessagesController < ApplicationController
     @feedback_message = FeedbackMessage.new(params)
 
     recaptcha_enabled = ReCaptcha::CheckEnabled.call(current_user)
-    if (!recaptcha_enabled || recaptcha_verified?) && @feedback_message.save
+    if (!recaptcha_enabled || recaptcha_verified? || connect_feedback?) && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
         type: feedback_message_params[:feedback_type],
@@ -20,12 +20,24 @@ class FeedbackMessagesController < ApplicationController
       )
       rate_limiter.track_limit_by_action(:feedback_message_creation)
 
-      redirect_to feedback_messages_path
+      respond_to do |format|
+        format.html { redirect_to feedback_messages_path }
+        format.json { render json: { success: true, message: "Your report is submitted" } }
+      end
     else
       @previous_message = feedback_message_params[:message]
-
       flash[:notice] = "Make sure the forms are filled 🤖"
-      render "pages/report_abuse"
+
+      respond_to do |format|
+        format.html { render "pages/report_abuse" }
+        format.json do
+          render json: {
+            success: false,
+            message: @feedback_message.errors_as_sentence,
+            status: :bad_request
+          }
+        end
+      end
     end
   end
 
@@ -36,8 +48,12 @@ class FeedbackMessagesController < ApplicationController
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
   end
 
+  def connect_feedback?
+    feedback_message_params[:feedback_type] == "connect"
+  end
+
   def feedback_message_params
-    allowed_params = %i[message feedback_type category reported_url]
+    allowed_params = %i[message feedback_type category reported_url offender_id]
     params.require(:feedback_message).permit(allowed_params)
   end
 end
