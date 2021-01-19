@@ -1266,6 +1266,21 @@
   }
 }
 
+.report__abuse-options {
+  .crayons-field + .crayons-field {
+    margin-top: var(--su-2);
+  }
+}
+
+.report__abuse__button {
+  width: 135px;
+}
+.reported__message {
+  border: 1px solid;
+  max-height: 300px;
+  overflow: scroll;
+}
+
 .membership-section {
   position: relative;
 
