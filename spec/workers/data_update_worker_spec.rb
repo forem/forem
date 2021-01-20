@@ -55,4 +55,8 @@ RSpec.describe DataUpdateWorker, type: :worker do
       expect(DatadogStatsClient).to have_received(:increment).once.with(*expected_args)
     end
   end
+
+  xit "saves an error to the database" do
+    allow(worker).to receive(:perform).and_raise(StandardError.new("error"))
+  end
 end
