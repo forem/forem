@@ -63,6 +63,10 @@ class DataUpdateScript < ApplicationRecord
     "#{self.class::NAMESPACE}::#{parsed_file_name.camelcase}".safe_constantize
   end
 
+  def save_error!(error)
+    update!(error: error)
+  end
+
   private
 
   def parsed_file_name
