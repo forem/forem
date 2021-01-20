@@ -1,5 +1,5 @@
 module DataUpdateScripts
-  class ErroneousDataUpdateTestScript
+  class FailingDataUpdateTestScript
     def run
       some_error.to_s
     end
