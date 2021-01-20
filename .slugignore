@@ -1,8 +1,8 @@
-**/*.test.js
-**/*.test.jsx
-**/.eslintrc.js
-**/.storybook/
-**/__stories__/
+app/**/*.test.js
+app/**/*.test.jsx
+app/**/.eslintrc.js
+app/**/.storybook/
+app/**/__stories__/
 .buildkite/
 .codeclimate.yml
 .dockerignore
