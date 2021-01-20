@@ -6470,9 +6470,9 @@ core-js-pure@^3.0.0, core-js-pure@^3.0.1:
   integrity sha512-EZD2ckZysv8MMt4J6HSvS9K2GdtlZtdBncKAmF9lr2n0c9dJUaUN88PSTjvgwCgQPWKTkERXITgS6JJRAnljtg==
 
 core-js@3, core-js@^3.0.1, core-js@^3.0.4, core-js@^3.2.1, core-js@^3.6.5:
-  version "3.8.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.8.2.tgz#0a1fd6709246da9ca8eff5bb0cbd15fba9ac7044"
-  integrity sha512-FfApuSRgrR6G5s58casCBd9M2k+4ikuu4wbW6pJyYU7bd9zvFc9qf7vr5xmrZOhT9nn+8uwlH1oRR9jTnFoA3A==
+  version "3.8.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.8.3.tgz#c21906e1f14f3689f93abcc6e26883550dd92dd0"
+  integrity sha512-KPYXeVZYemC2TkNEkX/01I+7yd+nX3KddKwZ1Ww7SKWdI2wQprSgLmrTddT8nw92AjEklTsPBoSdQBhbI1bQ6Q==
 
 core-js@^2.4.0, core-js@^2.5.0:
   version "2.6.11"
@@ -6989,10 +6989,10 @@ cypress-file-upload@^5.0.0:
   dependencies:
     mime "^2.5.0"
 
-cypress@^6.2.1:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-6.2.1.tgz#27d5fbcf008c698c390fdb0c03441804176d06c4"
-  integrity sha512-OYkSgzA4J4Q7eMjZvNf5qWpBLR4RXrkqjL3UZ1UzGGLAskO0nFTi/RomNTG6TKvL3Zp4tw4zFY1gp5MtmkCZrA==
+cypress@^6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-6.3.0.tgz#e27bba01d7e493265700e1e85333dca0b0127ede"
+  integrity sha512-Ec6TAFOxdSB2HPINNJ1f7z75pENXcfCaQkz+A9j0eGSvusFJ2NNErq650DexCbNJAnCQkPqXB4XPH9kXnSQnUA==
   dependencies:
     "@cypress/listr-verbose-renderer" "^0.4.1"
     "@cypress/request" "^2.88.5"
@@ -16790,10 +16790,10 @@ sass-loader@^8.0.2:
     schema-utils "^2.6.1"
     semver "^6.3.0"
 
-sass@1.32.4:
-  version "1.32.4"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.4.tgz#308bf29dd7f53d44ae4f06580e9a910ad9aa411e"
-  integrity sha512-N0BT0PI/t3+gD8jKa83zJJUb7ssfQnRRfqN+GIErokW6U4guBpfYl8qYB+OFLEho+QvnV5ZH1R9qhUC/Z2Ch9w==
+sass@1.32.5:
+  version "1.32.5"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.5.tgz#2882d22ad5748c05fa9bff6c3b0ffbc4f4b9e1dc"
+  integrity sha512-kU1yJ5zUAmPxr7f3q0YXTAd1oZjSR1g3tYyv+xu0HZSl5JiNOaE987eiz7wCUvbm4I9fGWGU2TgApTtcP4GMNQ==
   dependencies:
     chokidar ">=2.0.0 <4.0.0"
 
