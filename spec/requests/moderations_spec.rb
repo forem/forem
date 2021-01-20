@@ -138,6 +138,7 @@ RSpec.describe "Moderations", type: :request do
   end
 
   describe "/mod" do
+    let(:dev_name_copy) { "We periodically award some DEV members with heightened privileges" }
     # rubocop:disable Layout/LineLength
     let(:coc_guides_copy) do
       'Check out our <a href="/code-of-conduct">Code of Conduct</a> and read through our <a href="/community-moderation">Trusted User Guide</a> and <a href="/tag-moderation">Tag Moderation Guide</a>.'
@@ -145,15 +146,13 @@ RSpec.describe "Moderations", type: :request do
     # rubocop:enable Layout/LineLength
     let(:become_mod_copy) { "If you'd like to assist us as a trusted user or tag mod" }
     let(:logged_out_copy) { "P.S. You are not currently signed in." }
+    let(:user) { create(:user) }
 
-    context "when on dev.to" do
-      before do
-        allow(SiteConfig).to receive(:community_name).and_return("DEV")
-      end
+    before do
+      allow(SiteConfig).to receive(:community_name).and_return("DEV")
+    end
 
-      let(:dev_name_copy) { "We periodically award some DEV members with heightened privileges" }
-      let(:user) { create(:user) }
-
+    context "when user logged in" do
       it "indicates community name, codes of conduct/guides, and describes how to become a mod" do
         sign_in user
         get "/mod"
@@ -163,26 +162,13 @@ RSpec.describe "Moderations", type: :request do
         expect(response.body).to include become_mod_copy
         expect(response.body).not_to include logged_out_copy
       end
+    end
 
+    context "when user logged out" do
       it "warns that user is not signed in" do
         get "/mod"
 
         expect(response.body).to include logged_out_copy
-      end
-    end
-
-    context "when on other forem" do
-      before do
-        allow(SiteConfig).to receive(:community_name).and_return("Forem")
-      end
-
-      let(:other_name_copy) { "We periodically award some Forem members with heightened privileges" }
-
-      it "indicates correct community name and omits codes of conduct/guides" do
-        get "/mod"
-
-        expect(response.body).to include other_name_copy
-        expect(response.body).to include coc_guides_copy
       end
     end
   end
