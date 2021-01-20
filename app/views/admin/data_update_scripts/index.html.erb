@@ -16,7 +16,7 @@
           <td><%= script.file_name %></td>
           <td class="justify-content-center">
             <%= script.status %>
-            <% if script.error %>
+            <% if script.error.present? %>
               <div class="fs-xs"><%= script.error %></div>
             <% end %>
           </td>
