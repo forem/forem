@@ -111,6 +111,9 @@ class UsersController < ApplicationController
       redirect_to user_settings_path("account")
     else
       raise ActionController::RoutingError, "Not Found" unless destroy_token == params[:token]
+
+      Honeycomb.add_field("destroy_token", destroy_token)
+      Honeycomb.add_field("token", params[:token])
     end
     # rubocop:enable Layout/LineLength
   end
