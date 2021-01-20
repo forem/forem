@@ -91,7 +91,6 @@ end
 
 ##############################################################################
 
-
 num_users = 10 * SEEDS_MULTIPLIER
 
 users_in_random_order = seeder.create_if_none(User, num_users) do
@@ -557,15 +556,6 @@ seeder.create_if_none(Listing) do
   end
 end
 
-seeder.create_if_none(ListingEndorsement) do
-  5.times do
-    ListingEndorsement.create!(
-      content: Faker::Lorem.sentence,
-      user: User.order(Arel.sql("RANDOM()")).first,
-      listing: Listing.order(Arel.sql("RANDOM()")).first,
-    )
-  end
-end
 ##############################################################################
 
 seeder.create_if_none(Page) do

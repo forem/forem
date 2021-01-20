@@ -1,12 +1,15 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
-  before_action :set_user, only: %i[update confirm_destroy request_destroy full_delete remove_identity]
-  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
+  before_action :set_user, only: %i[update request_destroy full_delete remove_identity]
+  # rubocop:disable Layout/LineLength
+  after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
+  # rubocop:enable Layout/LineLength
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
+  ALLOWED_USER_PARAMS = %i[last_onboarding_page].freeze
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -91,10 +94,25 @@ class UsersController < ApplicationController
   end
 
   def confirm_destroy
-    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
-    raise ActionController::RoutingError, "Not Found" unless destroy_token.present? && destroy_token == params[:token]
+    @user = current_user
 
-    set_current_tab("account")
+    if @user
+      authorize @user
+    else
+      flash[:alert] = "You must be logged in to proceed with account deletion."
+      redirect_to sign_up_path and return
+    end
+
+    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
+
+    # rubocop:disable Layout/LineLength
+    if destroy_token.blank?
+      flash[:settings_notice] = "Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated."
+      redirect_to user_settings_path("account")
+    else
+      raise ActionController::RoutingError, "Not Found" unless destroy_token == params[:token]
+    end
+    # rubocop:enable Layout/LineLength
   end
 
   def full_delete
@@ -132,6 +150,11 @@ class UsersController < ApplicationController
         :profile_updated_at => Time.current,
       )
 
+      # GitHub repositories are tied with the existence of the GitHub identity
+      # as we use the user's GitHub token to fetch them from the API.
+      # We should delete them when a user unlinks their GitHub account.
+      @user.github_repos.destroy_all if provider.provider_name == :github
+
       flash[:settings_notice] = "Your #{provider.official_name} account was successfully removed."
     else
       flash[:error] = error_message
@@ -143,13 +166,17 @@ class UsersController < ApplicationController
   def onboarding_update
     if params[:user]
       sanitize_user_params
-      permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
-      current_user.assign_attributes(params[:user].permit(permitted_params))
+      current_user.assign_attributes(params[:user].permit(ALLOWED_USER_PARAMS))
       current_user.profile_updated_at = Time.current
     end
+
+    if current_user.save && params[:profile]
+      update_result = Profiles::Update.call(current_user, { profile: profile_params })
+    end
+
     current_user.saw_onboarding = true
     authorize User
-    render_update_response
+    render_update_response(update_result&.success?)
   end
 
   def onboarding_checkbox_update
@@ -162,7 +189,7 @@ class UsersController < ApplicationController
 
     current_user.saw_onboarding = true
     authorize User
-    render_update_response
+    render_update_response(current_user.save)
   end
 
   def join_org
@@ -267,8 +294,8 @@ class UsersController < ApplicationController
     recent_suggestions.presence || default_suggested_users
   end
 
-  def render_update_response
-    outcome = current_user.save ? "updated successfully" : "update failed"
+  def render_update_response(success)
+    outcome = success ? "updated successfully" : "update failed"
 
     respond_to do |format|
       format.json { render json: { outcome: outcome } }
@@ -326,8 +353,10 @@ class UsersController < ApplicationController
   def import_articles_from_feed(user)
     return if user.feed_url.blank?
 
-    worker = FeatureFlag.enabled?(:feeds_import) ? Feeds::ImportArticlesWorker : RssReaderFetchUserWorker
+    Feeds::ImportArticlesWorker.perform_async(nil, user.id)
+  end
 
-    worker.perform_async(user.id)
+  def profile_params
+    params[:profile].permit(Profile.attributes)
   end
 end

@@ -101,14 +101,14 @@ class FollowUsers extends Component {
     } else if (selectedUsers.length === 1) {
       followingStatus = "You're following 1 person";
     } else if (selectedUsers.length === users.length) {
-      followingStatus = `You're following ${selectedUsers.length} people (everyone)`;
+      followingStatus = `You're following ${selectedUsers.length} people (everyone) -`;
     } else {
-      followingStatus = `You're following ${selectedUsers.length} people`;
+      followingStatus = `You're following ${selectedUsers.length} people -`;
     }
     const klassName =
       selectedUsers.length > 0
-        ? 'follow-count--active'
-        : 'follow-count-message';
+        ? 'fw-bold color-base-60 inline-block fs-base'
+        : 'color-base-60 inline-block fs-base';
 
     return <p className={klassName}>{followingStatus}</p>;
   }
@@ -128,7 +128,11 @@ class FollowUsers extends Component {
     }
 
     return (
-      <button type="button" onClick={() => this.handleSelectAll()}>
+      <button
+        type="button"
+        class="crayons-btn crayons-btn--ghost-brand -ml-2"
+        onClick={() => this.handleSelectAll()}
+      >
         {followText}
       </button>
     );
@@ -212,12 +216,6 @@ class FollowUsers extends Component {
                 );
               })}
             </ul>
-          </div>
-          <div className="onboarding-selection-status">
-            <div className="selection-status-content">
-              {this.renderFollowCount()}
-              {this.renderFollowToggle()}
-            </div>
           </div>
         </div>
       </div>

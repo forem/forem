@@ -90,7 +90,9 @@ class FollowTags extends Component {
     }
 
     const classStyle =
-      selectedTags.length > 0 ? 'follow-count--active' : 'follow-count-message';
+      selectedTags.length > 0
+        ? 'fw-bold color-base-60 fs-base'
+        : 'color-base-60 fs-base';
     return <p className={classStyle}>{followingStatus}</p>;
   }
 

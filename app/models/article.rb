@@ -100,7 +100,7 @@ class Article < ApplicationRecord
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
-  after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection, on: %i[create update]
+  after_commit :async_score_calc, :touch_collection, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
@@ -112,9 +112,10 @@ class Article < ApplicationRecord
 
   scope :admin_published_with, lambda { |tag_name|
     published
-      .where(user_id: SiteConfig.staff_user_id)
-      .order(published_at: :desc)
-      .tagged_with(tag_name)
+      .where(user_id: User.with_role(:super_admin)
+                          .union(User.with_role(:admin))
+                          .union(id: [SiteConfig.staff_user_id, SiteConfig.mascot_user_id].compact)
+                          .select(:id)).order(published_at: :desc).tagged_with(tag_name)
   }
 
   scope :user_published_with, lambda { |user_id, tag_name|
@@ -295,7 +296,7 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed.front_matter["title"].present?
@@ -409,13 +410,13 @@ class Article < ApplicationRecord
 
     self.cached_user_name = user_name
     self.cached_user_username = user_username
-    self.path = calculated_path
+    self.path = calculated_path.downcase
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownParser.new(parsed.content, source: self, user: user)
+    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
 
@@ -436,17 +437,10 @@ class Article < ApplicationRecord
     self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
   end
 
-  def update_main_image_background_hex
-    return unless saved_changes.key?("main_image")
-    return if main_image.blank? || main_image_background_hex_color != "#dddddd"
-
-    Articles::UpdateMainImageBackgroundHexWorker.perform_async(id)
-  end
-
   def detect_human_language
     return if language.present?
 
-    update_column(:language, LanguageDetector.new(self).detect)
+    update_column(:language, Articles::DetectLanguage.call(self))
   end
 
   def async_score_calc
@@ -475,6 +469,7 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache
+    touch_actor_latest_article_updated_at(destroying: true)
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)
@@ -616,13 +611,8 @@ class Article < ApplicationRecord
   end
 
   def update_cached_user
-    if organization
-      self.cached_organization = Articles::CachedEntity.from_object(organization)
-    end
-
-    return unless user
-
-    self.cached_user = Articles::CachedEntity.from_object(user)
+    self.cached_organization = organization ? Articles::CachedEntity.from_object(organization) : nil
+    self.cached_user = user ? Articles::CachedEntity.from_object(user) : nil
   end
 
   def set_all_dates
@@ -670,11 +660,19 @@ class Article < ApplicationRecord
     self.canonical_url = nil if canonical_url == ""
   end
 
+  def touch_actor_latest_article_updated_at(destroying: false)
+    return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
+
+    user.touch(:latest_article_updated_at)
+    organization&.touch(:latest_article_updated_at)
+  end
+
   def bust_cache
-    CacheBuster.bust(path)
-    CacheBuster.bust("#{path}?i=i")
-    CacheBuster.bust("#{path}?preview=#{password}")
+    EdgeCache::Bust.call(path)
+    EdgeCache::Bust.call("#{path}?i=i")
+    EdgeCache::Bust.call("#{path}?preview=#{password}")
     async_bust
+    touch_actor_latest_article_updated_at
   end
 
   def calculate_base_scores

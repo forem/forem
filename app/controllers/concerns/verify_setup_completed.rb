@@ -35,10 +35,11 @@ module VerifySetupCompleted
   def verify_setup_completed
     return if config_path? || setup_completed? || SiteConfig.waiting_on_first_user
 
-    link = helpers.link_to("the configuration page", admin_config_path, "data-no-instant" => true)
-    # rubocop:disable Rails/OutputSafety
-    flash[:global_notice] = "Setup not completed yet, missing #{missing_configs_text}. Please visit #{link}.".html_safe
-    # rubocop:enable Rails/OutputSafety
+    link = helpers.tag.a("the configuration page", href: admin_config_path, data: { "no-instant" => true })
+
+    flash[:global_notice] = helpers.safe_join(["Setup not completed yet, missing ",
+                                               missing_configs_text,
+                                               ". Please visit ", link, "."])
   end
 
   def config_path?

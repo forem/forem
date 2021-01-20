@@ -17,16 +17,12 @@
 
   &__container {
     max-width: var(--site-width);
-    padding-left: var(--su-2);
-    padding-right: var(--layout-padding);
+    padding: 0 var(--layout-padding);
     margin: auto;
     display: flex;
     align-items: center;
     position: relative;
-
-    @media (min-width: $breakpoint-m) {
-      padding-left: var(--layout-padding);
-    }
+    height: var(--header-height);
   }
 
   .crayons-indicator {
@@ -42,48 +38,33 @@
   max-width: 420px;
   flex: 1 auto;
   margin: 0 var(--su-2);
+  display: none;
 
-  @media (min-width: $breakpoint-s) {
+  @media (min-width: $breakpoint-m) {
     margin: 0 var(--su-4);
+    display: block;
   }
 }
 
-// Actions on right side...
-.crayons-header {
-  &__links {
-    height: var(--header-height);
-    display: flex;
-    align-items: center;
-    margin-left: auto;
+.crayons-header__link {
+  margin: 0 var(--su-1);
+
+  &:hover,
+  &:focus {
+    --indicator-outline: var(--header-bg-hover);
+
+    color: var(--header-icons-color-hover);
+    background: var(--header-bg-hover);
   }
 
-  &__link {
-    position: relative;
-    display: flex;
-    padding: var(--su-2);
-    margin: 0 var(--su-1);
-    border-radius: 50%;
-    align-items: center;
-    color: var(--header-icons-color);
-    outline: 0;
-    transition: background var(--transition-props);
+  &--current {
+    --indicator-outline: var(--header-bg-current);
 
-    &:hover,
-    &:focus {
-      --indicator-outline: var(--header-bg-hover);
+    color: var(--header-icons-color-hover);
+    background: var(--header-bg-current) !important;
 
-      color: var(--header-icons-color-hover);
-      background: var(--header-bg-hover);
-    }
-
-    &--current {
-      --indicator-outline: var(--header-bg-current);
-
-      color: var(--header-icons-color-hover);
-      background: var(--header-bg-current) !important;
-      .crayons-indicator {
-        display: none;
-      }
+    .crayons-indicator {
+      display: none;
     }
   }
 }
@@ -101,7 +82,7 @@
   &__trigger {
     all: unset;
     padding: var(--su-1);
-    margin: 0 var(--su-1);
+    margin: 0 var(--su-2);
     border-radius: 50%;
     color: var(--header-icons-color);
     cursor: pointer;

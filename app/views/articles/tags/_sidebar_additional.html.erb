@@ -2,7 +2,7 @@
   <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
     <div class="sidebar-bg" id="sidebar-bg-right"></div>
     <div class="side-bar sidebar-additional showing" id="sidebar-additional">
-      <% active_threads = Article.active_threads([@tag, "discuss"], Timeframer.new(params[:timeframe]).datetime) %>
+      <% active_threads = Article.active_threads([@tag, "discuss"], Timeframe.datetime(params[:timeframe])) %>
       <% if active_threads.present? %>
         <div class="widget">
           <header>
@@ -10,9 +10,7 @@
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
-              <% active_threads.each do |plucked_article| %>
-                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-              <% end %>
+              <%= render partial: "articles/widget_list_item", collection: active_threads, as: :plucked_article, locals: { show_comment_count: true } %>
             </div>
           </div>
         </div>
@@ -23,7 +21,7 @@
         </div>
       <% else %>
         <% cache("seo-boostable-posts-for-tag-#{@tag}-#{params[:timeframe]}", expires_in: 18.hours) do %>
-          <% boostable_posts = Article.seo_boostable(@tag, Timeframer.new(params[:timeframe]).datetime) %>
+          <% boostable_posts = Article.seo_boostable(@tag, Timeframe.datetime(params[:timeframe])) %>
           <% if boostable_posts.present? %>
             <div class="widget">
               <header>
@@ -31,9 +29,7 @@
               </header>
               <div class="widget-body">
                 <div class="widget-link-list">
-                  <% boostable_posts.each do |plucked_article| %>
-                    <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-                  <% end %>
+                  <%= render partial: "articles/widget_list_item", collection: boostable_posts, as: :plucked_article, locals: { show_comment_count: false } %>
                 </div>
               </div>
             </div>
@@ -46,9 +42,7 @@
               </header>
               <div class="widget-body">
                 <div class="widget-link-list">
-                  <% recent_preamble_optimized_posts.each do |plucked_article| %>
-                    <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-                  <% end %>
+                  <%= render partial: "articles/widget_list_item", collection: recent_preamble_optimized_posts, as: :plucked_article, locals: { show_comment_count: false } %>
                 </div>
               </div>
             </div>

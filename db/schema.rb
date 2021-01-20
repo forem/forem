@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_19_153512) do
+ActiveRecord::Schema.define(version: 2021_01_11_151630) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -335,17 +335,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_classified_listing_categories_on_name", unique: true
     t.index ["slug"], name: "index_classified_listing_categories_on_slug", unique: true
-  end
-
-  create_table "classified_listing_endorsements", force: :cascade do |t|
-    t.boolean "approved", default: false
-    t.bigint "classified_listing_id"
-    t.string "content"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
-    t.index ["classified_listing_id"], name: "index_classified_listing_endorsements_on_classified_listing_id"
-    t.index ["user_id"], name: "index_classified_listing_endorsements_on_user_id"
   end
 
   create_table "classified_listings", force: :cascade do |t|
@@ -715,7 +704,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["created_at"], name: "index_notifications_on_created_at"
-    t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
@@ -812,6 +800,7 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
+    t.datetime "latest_article_updated_at"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
@@ -1205,6 +1194,8 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.datetime "apple_created_at"
+    t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
@@ -1221,7 +1212,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
-    t.boolean "contact_consent", default: false
     t.datetime "created_at", null: false
     t.integer "credits_count", default: 0, null: false
     t.datetime "current_sign_in_at"
@@ -1293,8 +1283,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.string "linkedin_url"
     t.string "location"
     t.datetime "locked_at"
-    t.boolean "looking_for_work", default: false
-    t.boolean "looking_for_work_publicly", default: false
     t.string "mastodon_url"
     t.string "medium_url"
     t.boolean "mobile_comment_notifications", default: true
@@ -1345,10 +1333,13 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
+    t.datetime "latest_article_updated_at"
+    t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
+    t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"
     t.index ["feed_url"], name: "index_users_on_feed_url", where: "((COALESCE(feed_url, ''::character varying))::text <> ''::text)"
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
@@ -1360,6 +1351,14 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
+  end
+
+  create_table "users_gdpr_delete_requests", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.string "email"
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_id"
+    t.string "username"
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
@@ -1407,8 +1406,6 @@ ActiveRecord::Schema.define(version: 2020_11_19_153512) do
   add_foreign_key "buffer_updates", "users", column: "composer_user_id", on_delete: :nullify
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
-  add_foreign_key "classified_listing_endorsements", "classified_listings"
-  add_foreign_key "classified_listing_endorsements", "users"
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade

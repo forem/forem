@@ -26,6 +26,20 @@ RSpec.describe "Views an article", type: :system do
     expect { visit("/#{user.username}/#{article.slug}/mod") }.to raise_error(Pundit::NotAuthorizedError)
   end
 
+  describe "sticky nav sidebar" do
+    it "suggests articles by other users if the author has no other articles" do
+      create(:article, user: create(:user))
+      visit article.path
+      expect(page).to have_text("Trending on #{SiteConfig.community_name}")
+    end
+
+    it "suggests more articles by the author if there are any" do
+      create(:article, user: user)
+      visit article.path
+      expect(page).to have_text("More from #{user.name}")
+    end
+  end
+
   describe "when showing the date" do
     # TODO: @sre ideally this spec should have js:true enabled since we use
     # js helpers to ensure the datetime is locale. However, testing locale

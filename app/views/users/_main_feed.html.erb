@@ -7,21 +7,17 @@
       </h3>
     </header>
     <div class="p-4 pb-2 pt-3">
-      <% @pinned_stories.each do |story| %>
-        <%= render "articles/single_story", story: story, featured: false %>
-      <% end %>
+      <%= render partial: "articles/single_story", collection: @pinned_stories, as: :story, locals: { featured: false } %>
     </div>
   </div>
 <% end %>
-<% @stories.each_with_index do |story, i| %>
-  <%= render "articles/single_story", story: story, featured: false %>
-  <% if i == 0 && @comments.present? %>
+<% if @stories.present? %>
+  <%= render "articles/single_story", story: @stories.first, featured: false %>
+  <% if @comments.present? %>
     <%= render "users/comments_section" %>
   <% end %>
-<% end %>
-<% if @stories.none? && @comments.present? %>
-  <%= render "users/comments_section" %>
-<% end %>
-<% if @stories.size > 1 %>
+  <%= render partial: "articles/single_story", collection: @stories[1, @stories.size], as: :story, locals: { featured: false } %>
   <div class="placeholder-div"></div>
+<% elsif @comments.present? %>
+  <%= render "users/comments_section" %>
 <% end %>

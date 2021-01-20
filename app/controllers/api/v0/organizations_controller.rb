@@ -1,10 +1,10 @@
 module Api
   module V0
     class OrganizationsController < ApiController
-      before_action :find_organization, only: %i[users]
+      before_action :find_organization, only: %i[users listings articles]
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
-        username name summary twitter_username github_username url
+        id username name summary twitter_username github_username url
         location created_at profile_image tech_stack tag_line story
       ].freeze
       private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
@@ -14,6 +14,14 @@ module Api
         profile_image website_url location summary created_at
       ].freeze
       private_constant :USERS_FOR_SERIALIZATION
+
+      LISTINGS_FOR_SERIALIZATION = %i[
+        id user_id organization_id title slug body_markdown cached_tag_list
+        classified_listing_category_id processed_html published
+      ].freeze
+      private_constant :LISTINGS_FOR_SERIALIZATION
+
+      ARTICLES_FOR_SERIALIZATION = Api::V0::ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
       def show
         @organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
@@ -26,6 +34,35 @@ module Api
         page = params[:page] || 1
 
         @users = @organization.users.select(USERS_FOR_SERIALIZATION).page(page).per(num)
+      end
+
+      def listings
+        per_page = (params[:per_page] || 30).to_i
+        num = [per_page, 1000].min
+        page = params[:page] || 1
+
+        @listings = @organization.listings.published
+          .select(LISTINGS_FOR_SERIALIZATION).page(page).per(num)
+          .includes(:user, :taggings, :listing_category)
+          .order(bumped_at: :desc)
+
+        @listings = @listings.in_category(params[:category]) if params[:category].present?
+      end
+
+      def articles
+        per_page = (params[:per_page] || 30).to_i
+        num = [per_page, 1000].min
+        page = params[:page] || 1
+
+        @articles = @organization.articles.published
+          .select(ARTICLES_FOR_SERIALIZATION)
+          .includes(:user)
+          .order(published_at: :desc)
+          .page(page)
+          .per(num)
+          .decorate
+
+        render "api/v0/articles/index.json.jbuilder"
       end
 
       private

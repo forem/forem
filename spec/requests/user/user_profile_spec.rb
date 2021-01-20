@@ -59,12 +59,12 @@ RSpec.describe "UserProfiles", type: :request do
     it "renders noindex meta if banned" do
       user.add_role(:banned)
       get "/#{user.username}"
-      expect(response.body).to include("<meta name=\"googlebot\" content=\"noindex\">")
+      expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
     end
 
     it "does not render noindex meta if not banned" do
       get "/#{user.username}"
-      expect(response.body).not_to include("<meta name=\"googlebot\" content=\"noindex\">")
+      expect(response.body).not_to include("<meta name=\"robots\" content=\"noindex\">")
     end
 
     it "renders rss feed link if any stories" do
@@ -192,7 +192,7 @@ RSpec.describe "UserProfiles", type: :request do
     it "redirects to admin" do
       user = create(:user)
       get "/#{user.username}/admin"
-      expect(response.body).to redirect_to "/resource_admin/users/#{user.id}/edit"
+      expect(response.body).to redirect_to "/admin/users/#{user.id}/edit"
     end
 
     it "redirects to moderate" do
