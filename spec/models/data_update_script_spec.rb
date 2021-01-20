@@ -95,8 +95,9 @@ RSpec.describe DataUpdateScript do
       test_script = create(:data_update_script)
       expect(test_script.finished_at).to be_nil
       expect(test_script).to be_enqueued
-      test_script.mark_as_failed!
+      test_script.mark_as_failed!(StandardError.new("error"))
       expect(test_script).to be_failed
+      expect(test_script.error).to eq("StandardError: error")
       expect(test_script.finished_at).not_to be_nil
     end
   end
@@ -108,18 +109,6 @@ RSpec.describe DataUpdateScript do
           require script.file_path
         end.not_to raise_error
       end
-    end
-  end
-
-  describe "#save_error!" do
-    it "saves the error when a script fails" do
-      test_script = create(:data_update_script)
-      expect(test_script.finished_at).to be_nil
-      expect(test_script).to be_enqueued
-      test_script.mark_as_failed!
-      expect(test_script).to be_failed
-      test_script.save_error!("some error")
-      expect(test_script.error).to eq("some error")
     end
   end
 end

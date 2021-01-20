@@ -51,8 +51,12 @@ class DataUpdateScript < ApplicationRecord
     update!(finished_at: Time.current, status: :succeeded)
   end
 
-  def mark_as_failed!
-    update!(finished_at: Time.current, status: :failed)
+  def mark_as_failed!(err)
+    update!(
+      finished_at: Time.current,
+      status: :failed,
+      error: "#{err.class}: #{err.message}",
+    )
   end
 
   def file_path
@@ -61,10 +65,6 @@ class DataUpdateScript < ApplicationRecord
 
   def file_class
     "#{self.class::NAMESPACE}::#{parsed_file_name.camelcase}".safe_constantize
-  end
-
-  def save_error!(error)
-    update!(error: error)
   end
 
   private
