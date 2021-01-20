@@ -10,8 +10,11 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
+  HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/.freeze
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
+  VALID_URL = %r{\A(http|https)://([/|.\w\s-])*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?\z}.freeze
+  URL_MESSAGE = "must be a valid URL".freeze
 
   # Meta
   field :admin_action_taken_at, type: :datetime, default: Time.current
@@ -48,7 +51,9 @@ class SiteConfig < RailsSettings::Base
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
-  field :campaign_sidebar_image, type: :string, default: nil
+  field :campaign_sidebar_image, type: :string, default: nil, validates: {
+    format: { with: VALID_URL, message: URL_MESSAGE }
+  }
   field :campaign_url, type: :string, default: nil
   field :campaign_articles_require_approval, type: :boolean, default: 0
   field :campaign_articles_expiry_time, type: :integer, default: 4
@@ -63,9 +68,9 @@ class SiteConfig < RailsSettings::Base
   field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
   field :tagline, type: :string
-  field :community_copyright_start_year, type: :integer,
-                                         default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] ||
-                                           Time.zone.today.year
+  field :community_copyright_start_year,
+        type: :integer,
+        default: ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"] || Time.zone.today.year
   field :staff_user_id, type: :integer, default: 1
   field :experience_low, type: :string, default: "Total Newbies"
   field :experience_high, type: :string, default: "Experienced Users"
@@ -95,13 +100,21 @@ class SiteConfig < RailsSettings::Base
   field :recaptcha_secret_key, type: :string, default: ApplicationConfig["RECAPTCHA_SECRET"]
 
   # Images
-  field :main_social_image, type: :string, default: proc { URL.local_image("social-media-cover.png") }
+  field :main_social_image,
+        type: :string,
+        default: proc { URL.local_image("social-media-cover.png") },
+        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
 
   field :favicon_url, type: :string, default: proc { URL.local_image("favicon.ico") }
-  field :logo_png, type: :string, default: proc { URL.local_image("icon.png") }
+  field :logo_png,
+        type: :string,
+        default: proc { URL.local_image("icon.png") },
+        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
 
   field :logo_svg, type: :string
-  field :secondary_logo_url, type: :string
+  field :secondary_logo_url, type: :string, validates: {
+    format: { with: VALID_URL, message: URL_MESSAGE }
+  }
 
   field :left_navbar_svg_icon, type: :string, default: STACK_ICON
   field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
@@ -109,9 +122,14 @@ class SiteConfig < RailsSettings::Base
 
   # Mascot
   field :mascot_user_id, type: :integer, default: nil
-  field :mascot_image_url, type: :string, default: proc { URL.local_image("mascot.png") }
+  field :mascot_image_url,
+        type: :string,
+        default: proc { URL.local_image("mascot.png") },
+        validates: { format: { with: VALID_URL, message: URL_MESSAGE } }
   field :mascot_image_description, type: :string, default: "The community mascot"
-  field :mascot_footer_image_url, type: :string
+  field :mascot_footer_image_url, type: :string, validates: {
+    format: { with: VALID_URL, message: URL_MESSAGE }
+  }
   field :mascot_footer_image_width, type: :integer, default: 52
   field :mascot_footer_image_height, type: :integer, default: 120
 
@@ -140,9 +158,15 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
-  field :onboarding_logo_image, type: :string
-  field :onboarding_background_image, type: :string
-  field :onboarding_taskcard_image, type: :string
+  field :onboarding_logo_image, type: :string, validates: {
+    format: { with: VALID_URL, message: URL_MESSAGE }
+  }
+  field :onboarding_background_image, type: :string, validates: {
+    format: { with: VALID_URL, message: URL_MESSAGE }
+  }
+  field :onboarding_taskcard_image, type: :string, validates: {
+    format: { with: VALID_URL, message: URL_MESSAGE }
+  }
   field :suggested_tags, type: :array, default: %w[]
   field :suggested_users, type: :array, default: %w[]
   field :prefer_manual_suggested_users, type: :boolean, default: false
@@ -190,7 +214,12 @@ class SiteConfig < RailsSettings::Base
   field :public, type: :boolean, default: 0
   # The default font for all users that have not chosen a custom font yet
   field :default_font, type: :string, default: "sans_serif"
-  field :primary_brand_color_hex, type: :string, default: "#3b49df"
+  field :primary_brand_color_hex, type: :string, default: "#3b49df", validates: {
+    format: {
+      with: HEX_COLOR_REGEX,
+      message: "must be be a 3 or 6 character hex (starting with #)"
+    }
+  }
   field :feed_strategy, type: :string, default: "basic"
   field :tag_feed_minimum_score, type: :integer, default: 0
   field :home_feed_minimum_score, type: :integer, default: 0
@@ -230,6 +259,6 @@ class SiteConfig < RailsSettings::Base
 
   # To get default values
   def self.get_default(field)
-    get_field(field).dig(:default)
+    get_field(field)[:default]
   end
 end
