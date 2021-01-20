@@ -31,7 +31,7 @@ class DataUpdateWorker
     status = script.status
     file_name = script.file_name
 
-    logger_destination = status == :failed ? :error : :info
+    logger_destination = status.to_sym == :failed ? :error : :info
     Rails.logger.public_send(
       logger_destination,
       "time=#{Time.current.rfc3339}, script=#{file_name}, status=#{status}",
