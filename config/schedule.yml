@@ -1,22 +1,29 @@
 feeds_import:
+  description: "Imports feed items as articles (runs hourly on the 20th minute after the hour)"
   cron: "20 * * * *" # every hour, 20 min after the hour
   class: "Feeds::ImportArticlesWorker"
 log_worker_queue_stats:
+  description: "Records Sidekiq stats in Datadog (runs every 10 minutes)"
   cron: "*/10 * * * *" # every 10 minutes
   class: "Metrics::RecordBackgroundQueueStatsWorker"
 record_daily_usage:
+  description: "Records daily usage stats (runs daily at 11:00 UTC)"
   cron: "0 11 * * *" # daily at 11:00 UTC
   class: "Metrics::RecordDailyUsageWorker"
 record_daily_notifications:
+  description: "Records daily notifications stats (runs daily at 11:00 UTC)"
   cron: "0 11 * * *" # daily at 11:00 UTC
   class: "Metrics::RecordDailyNotificationsWorker"
 record_data_counts:
+  description: "Records the size of the most import database tables (runs hourly on the 10th minute after the hour)"
   cron: "10 * * * *" # every hour, 10 min after the hour
   class: "Metrics::RecordDataCountsWorker"
 check_data_update_script_statuses:
+  description: "Records the statuses of data update scripts (runs hourly on the 30th minute after the hour)"
   cron: "30 * * * *" # 30 min after every hour
   class: "Metrics::CheckDataUpdateScriptStatuses"
 award_yearly_club_badges:
+  description: "Awards 'yearly club' badges to users (runs daily at 00:00 UTC)"
   cron: "0 0 * * *" # daily at 12 am UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
@@ -24,6 +31,7 @@ award_yearly_club_badges:
     - award_yearly_club
     - ""
 award_beloved_comment_badges:
+  description: "Awards 'beloved comment' badges to users (runs every 12 hours on the 5th minute after the hour)"
   cron: "5 */12 * * *" # 5 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
@@ -31,6 +39,7 @@ award_beloved_comment_badges:
     - award_beloved_comment
     - ""
 award_four_week_streak_badge:
+  description: "Awards 'four week publishing streak' badges to users (runs every 12 hours on the 10th minute after the hour)"
   cron: "10 */12 * * *" # 10 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
@@ -38,6 +47,7 @@ award_four_week_streak_badge:
     - award_four_week_streak
     - ""
 award_eight_week_streak_badge:
+  description: "Awards 'eigth week publishing streak' badges to users (runs every 12 hours on the 15th minute after the hour)"
   cron: "15 */12 * * *" # 15 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
@@ -45,6 +55,7 @@ award_eight_week_streak_badge:
     - award_eight_week_streak
     - ""
 award_sixteen_week_streak_badge:
+  description: "Awards 'sixteen week publishing streak' badges to users (runs every 12 hours on the 20th minute after the hour)"
   cron: "20 */12 * * *" # 20 min past every 12th hour UTC
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
@@ -52,6 +63,7 @@ award_sixteen_week_streak_badge:
     - award_sixteen_week_streak
     - ""
 award_weekly_tag_badges:
+  description: "Awards 'weekly beloved article for a tag' badges to users (runs at 11:00 UTC on Thursday)"
   cron: "0 11 * * 4" # 11 am UTC every Thursday
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
@@ -59,6 +71,7 @@ award_weekly_tag_badges:
     - award_tag
     - ""
 award_contributor_badges_from_github:
+  description: "Awards 'GitHub contributor' badges to users (runs hourly on the 20th minute after the hour)"
   cron: "20 * * * *" # every hour, 20 min after the hour
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
@@ -66,48 +79,61 @@ award_contributor_badges_from_github:
     - award_contributor_from_github
     - ""
 remove_old_html_variant_data:
+  description: "Deletes old HTML variants (runs hourly on the 10th minute after the hour)"
   cron: "10 * * * *" # every hour, 10 min after the hour
   class: "HtmlVariants::RemoveOldDataWorker"
 resave_supported_tags:
+  description: "Resaves supported tags to recalculate scores (runs daily at 00:25 UTC)"
   cron: "25 0 * * *" # daily at 12:25 am UTC
   class: "Tags::ResaveSupportedTagsWorker"
 expire_old_listings:
+  description: "Expires old listings (runs daily at 00:30 UTC)"
   cron: "30 0 * * *" # daily at 12:30 am UTC
   class: "Listings::ExpireOldListingsWorker"
 send_welcome_notifications:
+  description: "Sends welcome notifications to new users (runs daily at 16:30 UTC)"
   cron: "0 16 * * *" # daily at 4 pm UTC
   class: "Broadcasts::SendWelcomeNotificationsWorker"
 sitemap_refresh:
+  description: "Regenerates the sitemap and pings search engines (runs hourly on the 30th minute after the hour)"
   cron: "30 * * * *" # every hour, 30 min after the hour
   class: "SitemapRefreshWorker"
 hourly_feed_cache_bust:
+  description: "Busts the edge cache of the feed (runs hourly on the hour)"
   cron: "0 * * * *" # hourly on the hour
   class: "BustCachePathWorker"
   args:
     - "/feed.xml"
 hourly_badge_cache_bust:
+  description: "Busts the edge cache of badges (runs hourly on the hour)"
   cron: "0 * * * *" # hourly on the hour
   class: "BustCachePathWorker"
   args:
     - "/badge"
 daily_home_cache_bust:
+  description: "Busts the edge cache of the homepage (runs hourly on the hour)"
   cron: "0 0 * * *" # daily at 12 am UTC
   class: "BustCachePathWorker"
   args:
     - "/"
 send_email_digest:
-  cron: "30 11 * * 3,4,5,6" # 11:30 am UTC Wed, Thurs, Fri, Sat, Sun
+  description: "Sends the email digest to users (runs at 11:30 UTC on Wednesday, Thursday, Friday, and Saturday)"
+  cron: "30 11 * * 3,4,5,6" # 11:30 am UTC Wed, Thurs, Fri, Sat
   class: "Emails::EnqueueDigestWorker"
 remove_old_notifications:
+  description: "Deletes old notifications from the database (runs daily at 05:00 UTC)"
   cron: "0 5 * * *" # daily at 5 am UTC
   class: "Notifications::RemoveOldNotificationsWorker"
 sync_credits_counter_cache:
+  description: "Sychronizes counter caches for credits (runs daily at 16:00 UTC)"
   cron: "0 16 * * *" # daily at 4 pm UTC
   class: "Credits::SyncCounterCache"
 get_podcast_episodes:
+  description: "Fetches podcast episodes asynchronously (runs hourly on the 5th minute after the hour)"
   cron: "5 * * * *" # every hour, 5 min after the hour
   class: "Podcasts::EnqueueGetEpisodesWorker"
 update_latest_github_repos:
+  description: "Fetches the latest info about stored GitHub repositories (runs daily at 16:30 UTC)"
   cron: "30 16 * * *" # daily at 4:30 pm UTC
   class: "GithubRepos::UpdateLatestWorker"
 
