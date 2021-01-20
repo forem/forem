@@ -10,7 +10,7 @@
 /app/workers/                                       @forem/sre
 /config/                                            @forem/sre
 /db/                                                @forem/sre @forem/backend
-/docs/                                              @forem/oss    @jacobherrington
+/docs/                                              @jacobherrington
 /lib/data_update_scripts/                           @forem/sre
 /lib/sidekiq/                                       @forem/sre
 /spec/rails_helper.rb                               @forem/sre @forem/backend
