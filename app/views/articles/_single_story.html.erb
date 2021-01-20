@@ -65,7 +65,15 @@
              tags_to_display = tags_to_display.reject { |tag| tag == flare_tag.name }
            end %>
         <% tags_to_display.each do |tag| %>
-        <a href="/t/<%= tag %>" class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+          <% if tag === @tag_model.name %>
+            <a href="/t/<%= tag %>" class="crayons-tag" style="background:<%= @tag_model.bg_color_hex %>;color:<%= @tag_model.text_color_hex %>">
+              <span class="crayons-tag__prefix">#</span><%= tag %>
+            </a>
+          <% else %>
+            <a href="/t/<%= tag %>" class="crayons-tag">
+              <span class="crayons-tag__prefix">#</span><%= tag %>
+            </a>
+          <% end %>
         <% end %>
       </div>
       <div class="crayons-story__bottom">

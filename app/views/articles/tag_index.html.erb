@@ -13,14 +13,12 @@
         <div class="flex flex-col w-100 justify-center">
           <div class="flex justify-between items-center">
             <h1 class="crayons-title">
-              <span class="crayons-tag crayons-tag--2xl" id="crayons-tag" style="background:<%= @tag_model.bg_color_hex %>;color:<%= @tag_model.text_color_hex %>;">
-                <% if @tag_model && @tag_model.pretty_name.present? %>
-                  <%= @tag_model.pretty_name %>
-                <% else %>
-                  <span class="opacity-10">#</span>
-                  <%= @tag %>
-                <% end %>
-              </span>
+              <% if @tag_model && @tag_model.pretty_name.present? %>
+                <%= @tag_model.pretty_name %>
+              <% else %>
+                <span class="opacity-50">#</span>
+                <%= @tag %>
+              <% end %>
             </h1>
             <% if @tag_model %>
               <button id="user-follow-butt" class="crayons-btn follow-action-button" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>Follow</button>
