@@ -36,17 +36,17 @@ module Admin
     def handle_article_cache
       article = Article.find(params[:bust_article].to_i)
       article.touch(:last_commented_at)
-      CacheBuster.bust_article(article)
+      EdgeCache::BustArticle.call(article)
     end
 
     def bust_link(link)
       if link.starts_with?(URL.url)
         link.sub!(URL.url, "")
       end
-      CacheBuster.bust(link)
-      CacheBuster.bust("#{link}/")
-      CacheBuster.bust("#{link}?i=i")
-      CacheBuster.bust("#{link}/?i=i")
+      EdgeCache::Bust.call(link)
+      EdgeCache::Bust.call("#{link}/")
+      EdgeCache::Bust.call("#{link}?i=i")
+      EdgeCache::Bust.call("#{link}/?i=i")
     end
   end
 end

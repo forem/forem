@@ -31,7 +31,7 @@ class ProfilePinsController < ApplicationController
   end
 
   def bust_user_profile
-    CacheBuster.bust(current_user.path)
-    CacheBuster.bust("#{current_user.path}?i=i")
+    EdgeCache::Bust.call(current_user.path)
+    EdgeCache::Bust.call("#{current_user.path}?i=i")
   end
 end

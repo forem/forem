@@ -203,8 +203,8 @@ class CommentsController < ApplicationController
     skip_authorization
     begin
       permitted_body_markdown = permitted_attributes(Comment)[:body_markdown]
-      fixed_body_markdown = MarkdownFixer.fix_for_preview(permitted_body_markdown)
-      parsed_markdown = MarkdownParser.new(fixed_body_markdown, source: Comment.new, user: current_user)
+      fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(permitted_body_markdown)
+      parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: Comment.new, user: current_user)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"
@@ -263,7 +263,7 @@ class CommentsController < ApplicationController
       redirect_url = @comment.commentable&.path
       if redirect_url
         flash[:success] = "Comment was successfully deleted."
-        redirect_to redirect_url
+        redirect_to URI.parse(redirect_url).path
       else
         redirect_to_comment_path
       end

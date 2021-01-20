@@ -38,6 +38,10 @@ class SiteConfig < RailsSettings::Base
   field :github_secret, type: :string, default: ApplicationConfig["GITHUB_SECRET"]
   field :facebook_key, type: :string
   field :facebook_secret, type: :string
+  field :apple_client_id, type: :string
+  field :apple_key_id, type: :string
+  field :apple_pem, type: :string
+  field :apple_team_id, type: :string
 
   # Campaign
   field :campaign_call_to_action, type: :string, default: "Share your project"
@@ -47,10 +51,13 @@ class SiteConfig < RailsSettings::Base
   field :campaign_sidebar_image, type: :string, default: nil
   field :campaign_url, type: :string, default: nil
   field :campaign_articles_require_approval, type: :boolean, default: 0
+  field :campaign_articles_expiry_time, type: :integer, default: 4
 
   # Community Content
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
   field :community_emoji, type: :string, default: "🌱"
+  # collective_noun and collective_noun_disabled have been added back temporarily for
+  # a data_update script, but will be removed in a future PR!
   field :collective_noun, type: :string, default: "Community"
   field :collective_noun_disabled, type: :boolean, default: false
   field :community_description, type: :string
@@ -153,7 +160,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_article_update, type: :integer, default: 30
   field :rate_limit_send_email_confirmation, type: :integer, default: 2
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
-  field :rate_limit_user_update, type: :integer, default: 5
+  field :rate_limit_user_update, type: :integer, default: 15
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
 
   field :spam_trigger_terms, type: :array, default: []
@@ -208,5 +215,21 @@ class SiteConfig < RailsSettings::Base
   # expose them to other communities.
   def self.dev_to?
     app_domain == "dev.to"
+  end
+
+  # Apple uses different keys than the usual `PROVIDER_NAME_key` or
+  # `PROVIDER_NAME_secret` so these will help the generalized authentication
+  # code to work, i.e. https://github.com/forem/forem/blob/master/app/helpers/authentication_helper.rb#L26-L29
+  def self.apple_key
+    return unless apple_client_id.present? && apple_key_id.present? &&
+      apple_pem.present? && apple_team_id.present?
+
+    "present"
+  end
+  singleton_class.__send__(:alias_method, :apple_secret, :apple_key)
+
+  # To get default values
+  def self.get_default(field)
+    get_field(field).dig(:default)
   end
 end

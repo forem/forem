@@ -36,7 +36,7 @@ parameters, you'll need to update Fastly.
 
 The reason we have a safe list of parameters in Fastly this way is so we don't
 have to consider junk parameters when busting the caches. Check out our
-[`CacheBuster`](https://github.com/forem/forem/blob/master/app/labor/cache_buster.rb)
+[`EdgeCache` services](https://github.com/forem/forem/tree/master/app/services/edge_cache)
 to see examples of this.
 
 Previously this was a manual process done by an internal team member. Now we do

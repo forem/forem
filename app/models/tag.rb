@@ -96,17 +96,16 @@ class Tag < ActsAsTaggableOn::Tag
   private
 
   def evaluate_markdown
-    self.rules_html = MarkdownParser.new(rules_markdown).evaluate_markdown
-    self.wiki_body_html = MarkdownParser.new(wiki_body_markdown).evaluate_markdown
+    self.rules_html = MarkdownProcessor::Parser.new(rules_markdown).evaluate_markdown
+    self.wiki_body_html = MarkdownProcessor::Parser.new(wiki_body_markdown).evaluate_markdown
   end
 
   def calculate_hotness_score
     self.hotness_score = Article.tagged_with(name)
       .where("articles.featured_number > ?", 7.days.ago.to_i)
-      .map do |article|
+      .sum do |article|
         (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
       end
-      .sum
   end
 
   def bust_cache

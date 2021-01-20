@@ -7,7 +7,6 @@ class UserPolicy < ApplicationPolicy
     config_font
     config_theme
     config_navbar
-    contact_consent
     currently_hacking_on
     currently_learning
     display_announcements
@@ -41,8 +40,6 @@ class UserPolicy < ApplicationPolicy
     instagram_url
     linkedin_url
     location
-    looking_for_work
-    looking_for_work_publicly
     mastodon_url
     medium_url
     mobile_comment_notifications

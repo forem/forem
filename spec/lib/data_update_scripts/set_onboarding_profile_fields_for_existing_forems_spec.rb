@@ -6,9 +6,9 @@ require Rails.root.join(
 describe DataUpdateScripts::SetOnboardingProfileFieldsForExistingForems do
   before do
     ProfileField.destroy_all
+    create(:user)
   end
 
-  let!(:user) { create(:user) }
   let!(:profile_field1) { create(:profile_field, label: "summary") }
   let!(:profile_field2) { create(:profile_field, label: "random") }
   let(:profile_field3) { create(:profile_field, label: "location") }
@@ -21,7 +21,7 @@ describe DataUpdateScripts::SetOnboardingProfileFieldsForExistingForems do
   end
 
   it "updates the labels for specific profile fields" do
-    # note: we update the label manually here because when
+    # NOTE: we update the label manually here because when
     # we create the profile field the attribute_name is a
     # underscored version of the label.
     profile_field3.update(label: "Where are you located?")

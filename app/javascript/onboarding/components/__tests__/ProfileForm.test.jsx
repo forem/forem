@@ -43,10 +43,10 @@ describe('ProfileForm', () => {
         profile_fields: [
           {
             id: 36,
-            attribute_name: 'looking_for_work',
+            attribute_name: 'education',
             description: '',
-            input_type: 'check_box',
-            label: 'Looking for work?',
+            input_type: 'text_field',
+            label: 'Education',
             placeholder_text: '',
           },
         ],
@@ -119,7 +119,7 @@ describe('ProfileForm', () => {
   it('should render the correct group headings', async () => {
     const { findByText } = renderProfileForm();
 
-    const heading1 = await findByText(/Looking for work?/i);
+    const heading1 = await findByText('Education');
     const heading2 = await findByText('Name');
 
     expect(heading1).toBeInTheDocument();
@@ -129,7 +129,7 @@ describe('ProfileForm', () => {
   it('should render the correct fields', async () => {
     const { findByLabelText } = renderProfileForm();
 
-    const field1 = await findByLabelText(/Looking for work?/i);
+    const field1 = await findByLabelText(/Education/i);
     const field2 = await findByLabelText(/Name/i);
     const field3 = await findByLabelText(/Website URL/i);
 

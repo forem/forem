@@ -15,7 +15,7 @@ module Admin
       User.invite!(email: email,
                    name: name,
                    username: username,
-                   remote_profile_image_url: Users::ProfileImageGenerator.call,
+                   remote_profile_image_url: ::Users::ProfileImageGenerator.call,
                    saw_onboarding: false,
                    editor_version: :v2,
                    registered: false)

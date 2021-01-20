@@ -51,7 +51,7 @@ RSpec.describe "StoriesShow", type: :request do
       sign_in user
       get article.path
 
-      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} #{community_emoji}</title>"
+      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_name} #{community_emoji}</title>"
       expect(response.body).to include(title)
     end
 
@@ -77,7 +77,7 @@ RSpec.describe "StoriesShow", type: :request do
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
 
-      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} #{community_emoji}</title>"
+      title = "<title>#{CGI.escapeHTML(article.title)} - #{community_name} #{community_emoji}</title>"
       expect(response.body).to include(title)
     end
 

@@ -2,21 +2,15 @@ module Admin
   class TagsController < Admin::ApplicationController
     layout "admin"
 
+    before_action :set_default_options, only: %i[index]
     before_action :badges_for_options, only: %i[new create edit update]
     after_action only: [:update] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
     def index
-      @tags = case params[:state]
-              when "supported"
-                Tag.where(supported: true).order(taggings_count: :desc).page(params[:page]).per(50)
-              when "unsupported"
-                Tag.where(supported: false).order(taggings_count: :desc).page(params[:page]).per(50)
-              else
-                Tag.order(taggings_count: :desc).page(params[:page]).per(50)
-              end
-      @tags = @tags.where("tags.name ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?
+      @q = Tag.ransack(params[:q])
+      @tags = @q.result.page(params[:page]).per(50)
     end
 
     def new
@@ -52,6 +46,11 @@ module Admin
     end
 
     private
+
+    def set_default_options
+      params[:q] = { supported_not_null: "true" } if params[:q].blank?
+      params[:q][:s] = "taggings_count desc" if params[:q][:s].blank?
+    end
 
     def badges_for_options
       @badges_for_options = Badge.pluck(:title, :id)

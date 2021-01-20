@@ -123,6 +123,46 @@ export const ImageUploader = () => {
     });
   }
 
+  function handleNativeMessage(e) {
+    const message = JSON.parse(e.target.value);
+
+    switch (message.action) {
+      case 'uploading':
+        dispatch({
+          type: 'uploading_image',
+        });
+        break;
+      case 'error':
+        dispatch({
+          type: 'upload_error',
+          payload: { errorMessage: message.error },
+        });
+        break;
+      case 'success':
+        dispatch({
+          type: 'upload_image_success',
+          payload: { insertionImageUrls: [message.link] },
+        });
+        break;
+    }
+  }
+
+  function initNativeImagePicker(e) {
+    e.preventDefault();
+    window.webkit.messageHandlers.imageUpload.postMessage({
+      id: 'native-image-upload-message',
+    });
+  }
+
+  // When the component is rendered in an environment that supports a native
+  // image picker for image upload we want to add the aria-label attr and the
+  // onClick event to the UI button. This event will kick off the native UX.
+  // The props are unwrapped (using spread operator) in the button below
+  const useNativeUpload = Runtime.isNativeIOS('imageUpload');
+  const extraProps = useNativeUpload
+    ? { onClick: initNativeImagePicker, 'aria-label': 'Upload an image' }
+    : { tabIndex: -1 };
+
   return (
     <div className="flex items-center">
       {uploadingImage ? (
@@ -135,20 +175,31 @@ export const ImageUploader = () => {
           variant="ghost"
           contentType="icon-left"
           icon={ImageIcon}
-          tabIndex="-1"
+          {...extraProps}
         >
           Upload image
-          <input
-            type="file"
-            id="image-upload-field"
-            onChange={handleInsertionImageUpload}
-            className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
-            multiple
-            accept="image/*"
-            data-max-file-size-mb="25"
-            aria-label="Upload an image"
-          />
+          {!useNativeUpload && (
+            <input
+              type="file"
+              id="image-upload-field"
+              onChange={handleInsertionImageUpload}
+              className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
+              multiple
+              accept="image/*"
+              data-max-file-size-mb="25"
+              aria-label="Upload an image"
+            />
+          )}
         </Button>
+      )}
+
+      {useNativeUpload && (
+        <input
+          type="hidden"
+          id="native-image-upload-message"
+          value=""
+          onChange={handleNativeMessage}
+        />
       )}
 
       {insertionImageUrls.length > 0 && (

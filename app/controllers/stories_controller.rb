@@ -63,7 +63,7 @@ class StoriesController < ApplicationController
 
   def get_latest_campaign_articles
     campaign_articles_scope = Article.tagged_with(Campaign.current.featured_tags, any: true)
-      .where("published_at > ? AND score > ?", 4.weeks.ago, 0)
+      .where("published_at > ? AND score > ?", SiteConfig.campaign_articles_expiry_time.weeks.ago, 0)
       .order(hotness_score: :desc)
 
     requires_approval = Campaign.current.articles_require_approval?
@@ -168,14 +168,11 @@ class StoriesController < ApplicationController
 
   def handle_base_index
     @home_page = true
-    assign_feed_stories
+    assign_feed_stories unless user_signed_in? # Feed fetched async for signed-in users
     assign_hero_html
     assign_podcasts
-    assign_listings
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
     @article_index = true
-    @featured_story = (featured_story || Article.new)&.decorate
-    @stories = ArticleDecorator.decorate_collection(@stories)
     set_surrogate_key_header "main_app_home_page"
     set_cache_control_headers(600,
                               stale_while_revalidate: 30,
@@ -280,6 +277,8 @@ class StoriesController < ApplicationController
       @default_home_feed = true
       @featured_story, @stories = feed.default_home_feed_and_featured_story(user_signed_in: user_signed_in?)
     end
+    @featured_story = (featured_story || Article.new)&.decorate
+    @stories = ArticleDecorator.decorate_collection(@stories)
   end
 
   def assign_article_show_variables
@@ -363,10 +362,6 @@ class StoriesController < ApplicationController
       .select(:slug, :title, :podcast_id, :image)
   end
 
-  def assign_listings
-    @listings = Listing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
-  end
-
   def redirect_to_lowercase_username
     return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
 
@@ -409,7 +404,7 @@ class StoriesController < ApplicationController
       "publisher": {
         "@context": "http://schema.org",
         "@type": "Organization",
-        "name": "#{SiteConfig.community_name} Community",
+        "name": SiteConfig.community_name.to_s,
         "logo": {
           "@context": "http://schema.org",
           "@type": "ImageObject",

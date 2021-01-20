@@ -3,7 +3,7 @@ module Events
     sidekiq_options queue: :low_priority
 
     def perform
-      CacheBuster.bust_events
+      EdgeCache::BustEvents.call
     end
   end
 end

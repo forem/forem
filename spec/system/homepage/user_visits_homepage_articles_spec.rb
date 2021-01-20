@@ -57,17 +57,17 @@ RSpec.describe "User visits a homepage", type: :system do
       before { visit "/" }
 
       it "contains the qualified community name in og:title" do
-        selector = "meta[property='og:title'][content='#{community_qualified_name}']"
+        selector = "meta[property='og:title'][content='#{community_name}']"
         expect(page).to have_selector(selector, visible: :hidden)
       end
 
       it "contains the qualified community name in og:site_name" do
-        selector = "meta[property='og:site_name'][content='#{community_qualified_name}']"
+        selector = "meta[property='og:site_name'][content='#{community_name}']"
         expect(page).to have_selector(selector, visible: :hidden)
       end
 
       it "contains the qualified community name in twitter:title" do
-        selector = "meta[name='twitter:title'][content='#{community_qualified_name}']"
+        selector = "meta[name='twitter:title'][content='#{community_name}']"
         expect(page).to have_selector(selector, visible: :hidden)
       end
     end
