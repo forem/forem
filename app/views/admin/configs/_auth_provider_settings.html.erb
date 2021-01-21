@@ -1,8 +1,4 @@
 <fieldset class="config-authentication-form">
-  <div
-    class="crayons-notice crayons-notice--warning auth-warning <%= provider_keys_configured?(provider.provider_name) ? "hidden" : "" %>">
-      <strong>Note:</strong> This authentication provider will <strong>not</strong> be enabled if the key or secret are missing. Please make sure that you enter your key and secret correctly.
-  </div>
   <div class="crayons-field">
     <%= admin_config_label :"#{provider.provider_name}_key" %>
     <p class="crayons-field__description">
@@ -29,21 +25,21 @@
         class="crayons-btn crayons-btn--danger"
         data-action="click->config#activateAuthProviderModal"
         data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>"
-        data-auth-provider="<%= provider.provider_name %>"
-        data-auth-provider-official="<%= provider.official_name %>"
-        <%= disabled_attr_on_auth_provider_enablebtn %>>
+        data-provider-name="<%= provider.provider_name %>"
+        data-provider-official-name="<%= provider.official_name %>"
+        <%= disabled_attr_on_auth_provider_enable_btn %>>
         Disable
       </button>
       <button
         class="crayons-btn crayons-btn--secondary"
-        data-auth-provider="<%= provider.provider_name %>"
+        data-provider-name="<%= provider.provider_name %>"
         data-action="click->config#hideAuthProviderSettings">
         Close
       </button>
     <% else %>
       <button
         class="crayons-btn crayons-btn--secondary"
-        data-auth-provider="<%= provider.provider_name %>"
+        data-provider-name="<%= provider.provider_name %>"
         data-action="click->config#disableAuthProvider">
         Undo
       </button>

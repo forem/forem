@@ -10,7 +10,8 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     registrations: "registrations",
-    invitations: "invitations"
+    invitations: "invitations",
+    passwords: "passwords"
   }
 
   devise_scope :user do
@@ -31,7 +32,7 @@ Rails.application.routes.draw do
       Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
       Sidekiq::Web.set :sessions, Rails.application.config.session_options
       Sidekiq::Web.class_eval do
-        use Rack::Protection, origin_whitelist: [URL.url] # resolve Rack Protection HttpOrigin
+        use Rack::Protection, permitted_origins: [URL.url] # resolve Rack Protection HttpOrigin
       end
       mount Sidekiq::Web => "/sidekiq"
       mount FieldTest::Engine, at: "abtests"
@@ -47,6 +48,8 @@ Rails.application.routes.draw do
                                      { rack_protection: { except: %i[authenticity_token form_token json_csrf
                                                                      remote_token http_origin session_hijacking] } })
         mount flipper_ui, at: "feature_flags"
+
+        resources :data_update_scripts, only: [:index]
       end
 
       namespace :users do
@@ -202,6 +205,7 @@ Rails.application.routes.draw do
         resources :organizations, only: [:show], param: :username do
           resources :users, only: [:index], to: "organizations#users"
           resources :listings, only: [:index], to: "organizations#listings"
+          resources :articles, only: [:index], to: "organizations#articles"
         end
 
         namespace :admin do
@@ -383,6 +387,7 @@ Rails.application.routes.draw do
     post "organizations/generate_new_secret" => "organizations#generate_new_secret"
     post "users/api_secrets" => "api_secrets#create", :as => :users_api_secrets
     delete "users/api_secrets/:id" => "api_secrets#destroy", :as => :users_api_secret
+    post "users/update_password", to: "users#update_password", as: :user_update_password
 
     # The priority is based upon order of creation: first created -> highest priority.
     # See how all your routes lay out with "rake routes".

@@ -69,7 +69,7 @@ class Listing < ApplicationRecord
   private
 
   def evaluate_markdown
-    self.processed_html = MarkdownParser.new(body_markdown).evaluate_listings_markdown
+    self.processed_html = MarkdownProcessor::Parser.new(body_markdown).evaluate_listings_markdown
   end
 
   def modify_inputs

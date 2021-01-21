@@ -51,6 +51,7 @@ class SiteConfig < RailsSettings::Base
   field :campaign_sidebar_image, type: :string, default: nil
   field :campaign_url, type: :string, default: nil
   field :campaign_articles_require_approval, type: :boolean, default: 0
+  field :campaign_articles_expiry_time, type: :integer, default: 4
 
   # Community Content
   field :community_name, type: :string, default: ApplicationConfig["COMMUNITY_NAME"] || "New Forem"
@@ -159,7 +160,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_article_update, type: :integer, default: 30
   field :rate_limit_send_email_confirmation, type: :integer, default: 2
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
-  field :rate_limit_user_update, type: :integer, default: 5
+  field :rate_limit_user_update, type: :integer, default: 15
   field :rate_limit_user_subscription_creation, type: :integer, default: 3
 
   field :spam_trigger_terms, type: :array, default: []
@@ -226,4 +227,9 @@ class SiteConfig < RailsSettings::Base
     "present"
   end
   singleton_class.__send__(:alias_method, :apple_secret, :apple_key)
+
+  # To get default values
+  def self.get_default(field)
+    get_field(field)[:default]
+  end
 end
