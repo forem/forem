@@ -20,7 +20,7 @@ RSpec.describe DataUpdateScript do
     it "creates new DataUpdateScripts from files" do
       expect do
         described_class.scripts_to_run
-      end.to change(described_class, :count).by(1)
+      end.to change(described_class, :count).by(2)
     end
 
     it "returns scripts that need to be run" do
@@ -52,9 +52,9 @@ RSpec.describe DataUpdateScript do
       expect(described_class.scripts_to_run?).to be(true)
     end
 
-    it "returns false if there are only working scripts" do
+    it "returns true if there are multiple files on disk" do
       create(:data_update_script, status: :working)
-      expect(described_class.scripts_to_run?).to be(false)
+      expect(described_class.scripts_to_run?).to be(true)
     end
 
     it "returns false if there are only succeeded scripts" do
