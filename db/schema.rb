@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_18_162031) do
+ActiveRecord::Schema.define(version: 2021_01_21_102114) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -433,7 +433,7 @@ ActiveRecord::Schema.define(version: 2021_01_18_162031) do
 
   create_table "data_update_scripts", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "error"
+    t.text "error"
     t.string "file_name"
     t.datetime "finished_at"
     t.datetime "run_at"
