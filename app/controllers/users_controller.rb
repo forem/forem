@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  before_action :raise_suspended, only: %i[update]
-  before_action :set_user, only: %i[update request_destroy full_delete remove_identity]
+  before_action :raise_suspended, only: %i[update update_password]
+  before_action :set_user,
+                only: %i[update update_password request_destroy full_delete remove_identity]
   # rubocop:disable Layout/LineLength
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
   # rubocop:enable Layout/LineLength
@@ -42,8 +43,7 @@ class UsersController < ApplicationController
 
     # preferred_languages is handled manually
     @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
-
-    @user.attributes = permitted_attributes(@user)
+    @user.assign_attributes(permitted_attributes(@user))
 
     if @user.save
       # NOTE: [@rhymes] this queues a job to fetch the feed each time the profile is updated, regardless if the user
@@ -269,6 +269,24 @@ class UsersController < ApplicationController
     end
   end
 
+  def update_password
+    set_current_tab("account")
+
+    if @user.update_with_password(password_params)
+      redirect_to user_settings_path(@tab)
+    else
+      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("errored", true)
+
+      if @tab
+        render :edit, status: :bad_request
+      else
+        flash[:error] = @user.errors_as_sentence
+        redirect_to user_settings_path
+      end
+    end
+  end
+
   private
 
   def sanitize_user_params
@@ -358,5 +376,9 @@ class UsersController < ApplicationController
 
   def profile_params
     params[:profile].permit(Profile.attributes)
+  end
+
+  def password_params
+    params.permit(:current_password, :password, :password_confirmation)
   end
 end
