@@ -146,16 +146,12 @@ describe('top navigation utilitities', () => {
     const initialMenuHTML = `
       <div class="crayons-header__menu" id="crayons-header__menu" data-testid="menu-dropdown">
         <button type="button" class="crayons-header__menu__trigger" id="member-menu-button" aria-label="Navigation menu">
-          <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" src="/uploads/user/profile_image/11/ed0d597d-35a0-4e69-8a19-f5690a62b24b.png"></span>
+          <span class="crayons-avatar crayons-avatar--l"><img class="crayons-avatar__image" alt="" id="nav-profile-image" src=""></span>
         </button>
         <div class="crayons-dropdown left-2 right-2 s:right-4 s:left-auto p-0 crayons-header__menu__dropdown inline-block">
           <ul class="p-0" id="crayons-header__menu__dropdown__list">
             <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">
-              <a id="first-nav-link" class="crayons-link crayons-link--block" href="/admin_mcadmin">
-                <div>
-                  <span class="fw-medium block">Admin McAdmin</span>
-                  <small class="fs-s color-base-50">@admin_mcadmin</small>
-                </div>
+              <a id="first-nav-link" class="crayons-link crayons-link--block" href="">
               </a>
             </li>
             <li class="px-1 py-1">
