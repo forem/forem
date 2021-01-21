@@ -1,8 +1,3 @@
-app/**/*.test.js
-app/**/*.test.jsx
-app/**/.eslintrc.js
-app/**/.storybook/
-app/**/__stories__/
 .buildkite/
 .codeclimate.yml
 .dockerignore
@@ -34,6 +29,11 @@ Guardfile
 LICENSE.md
 README.md
 SECURITY.md
+app/**/*.test.js
+app/**/*.test.jsx
+app/**/.eslintrc.js
+app/**/.storybook/
+app/**/__stories__/
 app/javascript/netlify.toml
 container-compose.yml
 cypress.dev.json
