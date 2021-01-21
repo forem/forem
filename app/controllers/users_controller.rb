@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update update_password]
   before_action :set_user,
-                only: %i[update update_password confirm_destroy request_destroy full_delete remove_identity]
+                only: %i[update update_password request_destroy full_delete remove_identity]
   # rubocop:disable Layout/LineLength
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
   # rubocop:enable Layout/LineLength
