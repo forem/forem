@@ -10,19 +10,6 @@ class ForemStatsDriver
     @driver = self.class.select_driver.new
   end
 
-  def increment(*args)
-    @driver.increment(*args)
-  end
-
-  def count(*args)
-    @driver.increment(*args)
-  end
-
-  def time(*args)
-    @driver.time(*args)
-  end
-
-  def gauge(*args)
-    @driver.gauge(*args)
-  end
+  delegate :increment, :time, :gauge, to: @driver
+  alias count increment
 end
