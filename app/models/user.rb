@@ -7,16 +7,21 @@ class User < ApplicationRecord
 
   include PgSearch::Model
   pg_search_scope :search,
-                  # NOTE: we can't use the following `against` clause because some fields are in Profile
-                  # against: %i[available_for employer_name mostly_work_with name username],
-
                   against: %i[name username],
+                  # NOTE: [@rhymes] we can't use the following `against` clause because some fields are in Profile,
+                  # thus we search in data. This might be an issue if data contains private info!!
                   associated_against: { profile: %i[data] },
                   using: { tsearch: { prefix: true } },
                   # we can't use `tag_keywords_for_search.size` here as it depends on Profile
-                  # see `search_score` below
+                  # see `hotness_score`/`search_score` below
+                  # rubocop:disable Layout/LineLength
                   ranked_by: "(articles_count + comments_count + reactions_count + badge_achievements_count) * 10 * reputation_modifier",
+                  # rubocop:enable Layout/LineLength
                   order_within_rank: "users.badge_achievements_count DESC" # arbitrary choice for now
+
+  pg_search_scope :search_by_username,
+                  against: :username,
+                  using: { tsearch: { prefix: true } }
 
   # @citizen428 Preparing to drop profile columns from the users table
   PROFILE_COLUMNS = %w[
