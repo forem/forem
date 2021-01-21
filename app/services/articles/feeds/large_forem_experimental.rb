@@ -9,7 +9,6 @@ module Articles
         @number_of_articles = number_of_articles
         @page = page
         @tag = tag
-        @randomness = 3 # default number for randomly adjusting feed
         @tag_weight = 1 # default weight tags play in rankings
         @comment_weight = 0 # default weight comments play in rankings
         @experience_level_weight = 1 # default weight for user experience level
@@ -66,9 +65,8 @@ module Articles
       end
 
       def more_comments_minimal_weight_randomized_at_end
-        @randomness = 0
         results = more_comments_minimal_weight
-        first_half(results).shuffle + last_half(results)
+        first_quarter(results).shuffle + last_three_quarters(results)
       end
 
       def rank_and_sort_articles(articles)
@@ -85,7 +83,6 @@ module Articles
         article_points += score_followed_user(article)
         article_points += score_followed_organization(article)
         article_points += score_followed_tags(article)
-        article_points += score_randomness
         article_points += score_language(article)
         article_points += score_experience_level(article)
         article_points += score_comments(article)
@@ -107,10 +104,6 @@ module Articles
 
       def score_followed_organization(article)
         user_following_org_ids.include?(article.organization_id) ? 1 : 0
-      end
-
-      def score_randomness
-        rand(3) * @randomness
       end
 
       def score_language(article)
@@ -146,10 +139,11 @@ module Articles
       private
 
       def experimental_hot_story_grab
+        start_time = [(@user.page_views.second_to_last&.created_at || 7.days.ago) - 18.hours, 7.days.ago].max
         Article.published.limited_column_select.includes(top_comments: :user)
-        .page(@page).per(@number_of_articles)
-        .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
-        .order(hotness_score: :desc)
+          .where("published_at > ?", start_time)
+          .page(@page).per(@number_of_articles)
+          .order(score: :desc)
       end
 
       def user_followed_tags
@@ -164,12 +158,12 @@ module Articles
         @user_following_users_ids ||= (@user&.cached_following_users_ids || [])
       end
 
-      def first_half(array)
-        array[0...(array.length / 2)]
+      def first_quarter(array)
+        array[0...(array.length / 4)]
       end
 
-      def last_half(array)
-        array[(array.length / 2)..array.length]
+      def last_three_quarters(array)
+        array[(array.length / 4)..array.length]
       end
     end
   end
