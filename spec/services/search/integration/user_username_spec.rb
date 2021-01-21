@@ -8,11 +8,11 @@ RSpec.describe "Compare ES search to PG search for UserUsername", type: :feature
     let(:user1) { create(:user, username: "star_wars_is_the_best") }
     let(:user2) { create(:user, username: "star_trek_is_the_best") }
 
-    # before do
-    #   user1.index_to_elasticsearch_inline
-    #   user2.index_to_elasticsearch_inline
-    #   es_described_class.refresh_index
-    # end
+    before do
+      user1.index_to_elasticsearch_inline
+      user2.index_to_elasticsearch_inline
+      es_described_class.refresh_index
+    end
 
     it "searches with username" do
       es_results = es_described_class.search_usernames(user1.username)
@@ -24,18 +24,18 @@ RSpec.describe "Compare ES search to PG search for UserUsername", type: :feature
       expect(es_results).to eq(pg_results)
     end
 
-    # it "analyzes wildcards" do
-    #   user3 = create(:user, username: "does_not_start_with_a_star")
-    #   user3.index_to_elasticsearch_inline
-    #   es_described_class.refresh_index
+    it "analyzes wildcards" do
+      user3 = create(:user, username: "does_not_start_with_a_star")
+      user3.index_to_elasticsearch_inline
+      es_described_class.refresh_index
 
-    #   es_results = es_described_class.search_usernames("star*")
-    #   pg_results = pg_described_class.search_documents("star*")
+      es_results = es_described_class.search_usernames("star*")
+      pg_results = pg_described_class.search_documents("star*")
 
-    #   expect(pg_results).to match([user1.username, user2.username])
-    #   expect(pg_results).not_to include(user3.username)
+      expect(pg_results).to match([user1.username, user2.username])
+      expect(pg_results).not_to include(user3.username)
 
-    #   expect(es_results).to eq(pg_results)
-    # end
+      expect(es_results).to eq(pg_results)
+    end
   end
 end
