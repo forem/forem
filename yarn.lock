@@ -6982,10 +6982,10 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cypress-file-upload@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-5.0.0.tgz#5e1d1d8a3b9b105f198f6cd9f1951450e76693c7"
-  integrity sha512-/Dj0WZKHn8M9bT6ar5GTAg37DqzTUhVFcq3xkacspXFfqoEi0dHqG+TiNriqRJ2w/V3uLA3SRDHiP1AIMBPzlQ==
+cypress-file-upload@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-5.0.1.tgz#ecdb1ed270427c618ccc2f8868086e40d6acf7e0"
+  integrity sha512-VZMAe2BjqS07NS4csSwXIxpPUp67t5BPo2Ar33w+MznAp8V5IjS40nC8BhzoFEQVsRFo8kp033lnQZGQ+7WaHw==
   dependencies:
     mime "^2.5.0"
 
