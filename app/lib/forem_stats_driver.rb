@@ -11,5 +11,5 @@ class ForemStatsDriver
   end
 
   delegate :increment, :time, :gauge, to: @driver
-  alias count increment
+  alias_method :count, :increment
 end
