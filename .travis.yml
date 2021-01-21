@@ -41,9 +41,6 @@ env:
     - KNAPSACK_PRO_CI_NODE_INDEX=0
     - KNAPSACK_PRO_CI_NODE_INDEX=1
     - KNAPSACK_PRO_CI_NODE_INDEX=2
-branches:
-  only:
-    - master
 install: true
 script:
   - date --rfc-3339=seconds
@@ -97,16 +94,6 @@ notifications:
 
 jobs:
   include:
-    - stage: Deploy
-      name: Deploy DEV
-      if: type != pull_request
-      script: skip
-      after_script: skip
-      deploy:
-        provider: heroku
-        api_key: '$HEROKU_AUTH_TOKEN'
-        app:
-          master: practicaldev
     - stage: Deploy
       name: Deploy BenHalpern
       if: type != pull_request
