@@ -13,7 +13,8 @@
       <div
         id="comments-container"
         data-commentable-id="<%= @article.id %>"
-        data-commentable-type="Article">
+        data-commentable-type="Article"
+        data-has-recent-comment-activity="<%= @article.has_recent_comment_activity? %>">
         <%= render "/comments/form", commentable: @article, commentable_type: "Article" %>
 
         <div class="comments" id="comment-trees-container">
