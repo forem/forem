@@ -57,6 +57,7 @@ script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
+  - bin/ci-bundle
   - yarn install --frozen-lockfile
   - bundle exec rails db:create
   - bundle exec rails db:schema:load
@@ -74,7 +75,6 @@ script:
   - bundle exec rails db:drop
   - bundle exec rails db:create
   - bundle exec rails db:schema:load
-  - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 after_script:
   - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
