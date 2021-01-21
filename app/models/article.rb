@@ -7,7 +7,9 @@ class Article < ApplicationRecord
   include UserSubscriptionSourceable
 
   include PgSearch::Model
-  multisearchable against: %i[title body_text] # spike, limited attributes
+  multisearchable against: %i[title body_text], # spike, limited attributes
+                  if: :published?,
+                  ranked_by: "score DESC, hotness_score DESC, comments_count DESC"
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent

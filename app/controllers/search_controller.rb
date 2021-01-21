@@ -17,7 +17,7 @@ class SearchController < ApplicationController
   REACTION_PARAMS = [
     :page,
     :per_page,
-    :category,
+    :category, # not used, as we only search `readinglist` reactions
     :search_fields,
     :tag_boolean_mode,
     {
