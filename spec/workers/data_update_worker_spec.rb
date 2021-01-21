@@ -13,7 +13,7 @@ RSpec.describe DataUpdateWorker, type: :worker do
   it "runs scripts that need running" do
     expect do
       worker.perform
-    end.to change(DataUpdateScript, :count).by(1)
+    end.to change(DataUpdateScript, :count).by(2)
   end
 
   it "will not run a script that has already been run" do
@@ -26,21 +26,28 @@ RSpec.describe DataUpdateWorker, type: :worker do
   it "updates DataUpdateScript model" do
     expect do
       worker.perform
-    end.to change(DataUpdateScript, :count).by(1)
+    end.to change(DataUpdateScript, :count).by(2)
 
-    dus = DataUpdateScript.last
-    expect(dus.finished_at).not_to be_nil
-    expect(dus).to be_succeeded
-    expect(dus.run_at).not_to be_nil
+    successsful_dus = DataUpdateScript.find_by(status: :succeeded)
+    expect(successsful_dus.finished_at).not_to be_nil
+    expect(successsful_dus.run_at).not_to be_nil
+    expect(successsful_dus.error).to be_nil
+
+    failed_dus = DataUpdateScript.find_by(status: :failed)
+    expect(failed_dus.finished_at).not_to be_nil
+    expect(failed_dus.run_at).not_to be_nil
+    expect(failed_dus.run_at).not_to be_nil
+    expect(failed_dus.error).not_to be_nil
   end
 
   it "logs data to stdout", :aggregate_failures do
     allow(Rails.logger).to receive(:info)
+    allow(Rails.logger).to receive(:error)
     worker.perform
 
-    statuses.each do |status|
-      expect(Rails.logger).to have_received(:info).once.with(/#{status}/)
-    end
+    expect(Rails.logger).to have_received(:info).twice.with(/working/)
+    expect(Rails.logger).to have_received(:info).once.with(/succeeded/)
+    expect(Rails.logger).to have_received(:error).once.with(/failed/)
   end
 
   it "logs data to Datadog", :aggregate_failures do
