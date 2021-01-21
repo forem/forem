@@ -37,7 +37,6 @@ RSpec.describe "User destroys their profile", type: :system, js: true do
     expect do
       get user_confirm_destroy_path(token: mismatch_token)
     end.to raise_error(ActionController::RoutingError)
-    expect(Honeycomb).to have_received(:add_field).with("user_id", user.id)
     expect(Honeycomb).to have_received(:add_field).with("destroy_token", token)
     expect(Honeycomb).to have_received(:add_field).with("token", mismatch_token)
   end

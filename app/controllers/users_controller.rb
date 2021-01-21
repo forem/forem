@@ -110,7 +110,6 @@ class UsersController < ApplicationController
       flash[:settings_notice] = "Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated."
       redirect_to user_settings_path("account")
     elsif destroy_token != params[:token]
-      Honeycomb.add_field("user_id", @user.id)
       Honeycomb.add_field("destroy_token", destroy_token)
       Honeycomb.add_field("token", params[:token])
 
