@@ -57,13 +57,19 @@ RSpec.describe DataUpdateScript do
       expect(described_class.scripts_to_run?).to be(true)
     end
 
+    it "returns false if there are only working scripts" do
+      create_list(:data_update_script, 2, status: :working)
+      expect(described_class.scripts_to_run?).to be(false)
+    end
+
     it "returns false if there are only succeeded scripts" do
-      create(:data_update_script, status: :succeeded)
+      create_list(:data_update_script, 2, status: :succeeded)
+
       expect(described_class.scripts_to_run?).to be(false)
     end
 
     it "returns false if there are only failed scripts" do
-      create(:data_update_script, status: :failed)
+      create_list(:data_update_script, 2, status: :failed)
       expect(described_class.scripts_to_run?).to be(false)
     end
   end
