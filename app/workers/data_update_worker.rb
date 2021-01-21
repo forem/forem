@@ -21,7 +21,7 @@ class DataUpdateWorker
     script.mark_as_finished!
     log_status(script)
   rescue StandardError => e
-    script.mark_as_failed!
+    script.mark_as_failed!(e)
     log_status(script)
 
     Honeybadger.notify(e, context: { script_id: script.id })
@@ -31,7 +31,7 @@ class DataUpdateWorker
     status = script.status
     file_name = script.file_name
 
-    logger_destination = status == :failed ? :error : :info
+    logger_destination = status.to_sym == :failed ? :error : :info
     Rails.logger.public_send(
       logger_destination,
       "time=#{Time.current.rfc3339}, script=#{file_name}, status=#{status}",
