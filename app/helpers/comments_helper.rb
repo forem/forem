@@ -1,6 +1,6 @@
 module CommentsHelper
-  MAX_NBR_OF_COMMENTS_TO_RENDER = 250
-  MIN_NBR_OF_COMMENTS_TO_RENDER = 8
+  MAX_COMMENTS_TO_RENDER = 250
+  MIN_COMMENTS_TO_RENDER = 8
 
   def comment_class(comment, is_view_root: false)
     if comment.root? || is_view_root
@@ -35,19 +35,19 @@ module CommentsHelper
   end
 
   def high_number_of_comments?(comments_number)
-    comments_number > MAX_NBR_OF_COMMENTS_TO_RENDER
+    comments_number > MAX_COMMENTS_TO_RENDER
   end
 
   def view_all_comments?(comments_number)
-    comments_number > MIN_NBR_OF_COMMENTS_TO_RENDER
+    comments_number > MIN_COMMENTS_TO_RENDER
   end
 
   def number_of_comments_to_render
-    MAX_NBR_OF_COMMENTS_TO_RENDER
+    MAX_COMMENTS_TO_RENDER
   end
 
-  def comments_to_render(view)
-    view == "comments" ? MAX_NBR_OF_COMMENTS_TO_RENDER : MIN_NBR_OF_COMMENTS_TO_RENDER
+  def comment_count(view)
+    view == "comments" ? MAX_COMMENTS_TO_RENDER : MIN_COMMENTS_TO_RENDER
   end
 
   private
