@@ -106,7 +106,12 @@ class IntroSlide extends Component {
         data-testid="onboarding-intro-slide"
         className="onboarding-main introduction crayons-modal crayons-modal--m"
       >
-        <div className="crayons-modal__box overflow-auto">
+        <div
+          className="crayons-modal__box overflow-auto"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
+        >
           <div className="onboarding-content">
             <figure>
               <img
@@ -116,13 +121,14 @@ class IntroSlide extends Component {
               />
             </figure>
             <h1
+              id="title"
               data-testid="onboarding-introduction-title"
               className="introduction-title"
             >
               {this.user.name}
               &mdash; welcome to {communityConfig.communityName}!
             </h1>
-            <h2 className="introduction-subtitle">
+            <h2 id="subtitle" className="introduction-subtitle">
               {communityConfig.communityDescription}
             </h2>
           </div>
