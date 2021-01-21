@@ -57,7 +57,6 @@ script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
-  - bin/ci-bundle
   - yarn install --frozen-lockfile
   - bundle exec rails db:create
   - bundle exec rails db:schema:load
@@ -104,4 +103,4 @@ jobs:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
-          master: benhalpern-community
+          mac/bug/reduce-slug-size: benhalpern-community
