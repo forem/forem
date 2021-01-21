@@ -606,9 +606,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 
   label {
-    @extend .crayons-field;
-    @extend .crayons-field__label;
-
     &:last-child {
       margin-bottom: 0;
     }
@@ -648,10 +645,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
       &:last-child {
         margin-bottom: 0;
-      }
-
-      a {
-        display: contents;
       }
 
       input[type='checkbox'] {
