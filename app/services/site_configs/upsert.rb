@@ -17,14 +17,13 @@ module SiteConfigs
     end
 
     def call
-      @errors = []
       clean_up_params
-      validate_emoji
 
-      return self if @errors.flatten.any?
+      @errors = []
+      upsert_configs
+      return self if @errors.any?
 
       @success = true
-      upsert_configs
       after_upsert_tasks
       self
     end
@@ -44,6 +43,9 @@ module SiteConfigs
         else
           SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
         end
+      rescue ActiveRecord::RecordInvalid => e
+        @errors << e.message
+        next
       end
     end
 
@@ -56,14 +58,6 @@ module SiteConfigs
         @configs[param] = @configs[param]&.downcase&.delete(" ") if @configs[param]
       end
       @configs[:credit_prices_in_cents]&.transform_values!(&:to_i)
-    end
-
-    def validate_emoji
-      emoji_params = @configs.slice(*EMOJI_ONLY_FIELDS).to_h
-      @errors << emoji_params.filter_map do |field, value|
-        non_emoji_characters = value.downcase.gsub(EmojiRegex::RGIEmoji, "")
-        "#{field} contains invalid emoji" if non_emoji_characters.present?
-      end
     end
 
     def update_enabled_auth_providers(value)
