@@ -18,7 +18,7 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
-  attr_accessor :publish_under_org, :search_highlight
+  attr_accessor :publish_under_org, :search_highlight, :search_rank
   attr_writer :series
 
   delegate :name, to: :user, prefix: true

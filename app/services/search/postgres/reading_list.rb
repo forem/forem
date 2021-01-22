@@ -16,6 +16,7 @@ module Search
         articles = if term.present?
                      results = Search::Multisearch.call(term)
                        .with_pg_search_highlight
+                       .with_pg_search_rank
                        .includes(searchable: %i[user tags])
                        .where(searchable_type: "Article", searchable_id: article_ids)
                        .page(page)
@@ -24,6 +25,7 @@ module Search
                      results.map do |doc|
                        article = doc.searchable
                        article.search_highlight = doc.pg_search_highlight
+                       article.search_rank = doc.pg_search_rank
                        article
                      end
                    else
@@ -58,6 +60,7 @@ module Search
 
               published_at_timestamp = Time.zone.parse(sa["published_at"] || "")
               sa.merge!({
+                          "_score" => article.search_rank,
                           "id" => sa["id"].split("_").last.to_i,
                           "flare_tag" => sa["flare_tag_hash"],
                           "highlight" => article.search_highlight,

@@ -23,6 +23,11 @@ RSpec.describe "Compare ES search to PG search for ReadingList", type: :feature 
       Search::FeedContent.refresh_index
     end
 
+    def cleanup_pg_result(doc)
+      doc["reactable"].delete("_score")
+      doc
+    end
+
     def cleanup_es_result(doc)
       doc["reactable"].delete("_score")
       # NOTE: for some reason this is 0 with ES, even though it should be 1
@@ -40,7 +45,7 @@ RSpec.describe "Compare ES search to PG search for ReadingList", type: :feature 
 
       expect(pg_results["total"]).to eq(es_results["total"])
 
-      expect(pg_results["reactions"].first).to eq(cleanup_es_result(es_results["reactions"].first))
+      expect(cleanup_pg_result(pg_results["reactions"].first)).to eq(cleanup_es_result(es_results["reactions"].first))
     end
 
     it "searches with a term", :aggregate_failures do
@@ -57,7 +62,7 @@ RSpec.describe "Compare ES search to PG search for ReadingList", type: :feature 
       # NOTE: temporarily excluding the comparison between `highlight` because ES is more sophisticated,
       # it can search against different fields separately, PG can't. I reckon we don't need this feature.
       expected_result = cleanup_es_result(es_results["reactions"].first).dup
-      result = pg_results["reactions"].first.except("highlight").dup
+      result = cleanup_pg_result(pg_results["reactions"].first).except("highlight").dup
       expected_result["reactable"]["highlight"] = result["reactable"]["highlight"] = nil
 
       expect(expected_result).to eq(result)
