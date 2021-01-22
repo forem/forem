@@ -23,3 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('testSetup', () => {
+  cy.request('/cypress_rails_reset_state');
+  cy.clearCookies();
+});
