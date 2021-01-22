@@ -5,7 +5,7 @@ namespace :db do
   namespace :seed do
     desc "Seed data for e2e tests"
     task :e2e, [:file] => :environment do |_t, args|
-      return if Rails.env.production?
+      raise "Attempting to seed production environment, aborting!" if Rails.env.production?
 
       filename = SEED_DIR.join("#{args[:file]}.rb")
       load(filename) if File.exist?(filename)
