@@ -1,12 +1,11 @@
 import { h } from 'preact';
-import { useCallback } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { userPropTypes } from '../common-prop-types';
 
 const SidebarUser = ({ followUser, user }) => {
-  const onClick = useCallback(() => {
+  const onClick = () => {
     followUser(user);
-  }, [followUser, user]);
+  };
 
   return (
     <div className="widget-list-item__suggestions">
