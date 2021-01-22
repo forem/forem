@@ -18,13 +18,6 @@
       <% end %>
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles" %>
-      <style>
-        .home {
-          position: relative;
-          margin: auto;
-          max-width: 1250px;
-        }
-      </style>
       <% unless user_signed_in? %>
         <%= javascript_packs_with_chunks_tag "base", "Search", defer: true %>
       <% end %>
@@ -63,6 +56,7 @@
         data-deployed-at="<%= ForemInstance.deployed_at %>"
         data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
         data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
+        <%= render "layouts/styles" %>
         <div id="body-styles">
           <style>
             :root {
