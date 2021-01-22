@@ -58,10 +58,6 @@ module SiteConfigs
       @configs[:credit_prices_in_cents]&.transform_values!(&:to_i)
     end
 
-    def validate_inputs
-      @errors << "Allowed emails must be list of domains." if allowed_domains_include_improper_format
-    end
-
     def validate_emoji
       emoji_params = @configs.slice(*EMOJI_ONLY_FIELDS).to_h
       @errors << emoji_params.filter_map do |field, value|
@@ -97,17 +93,6 @@ module SiteConfigs
       return unless (@configs.keys & %w[suggested_tags sidebar_tags]).any?
 
       Tag.find_or_create_all_with_like_by_name(SiteConfig.suggested_tags + SiteConfig.sidebar_tags)
-    end
-
-    # Validations
-    def allowed_domains_include_improper_format
-      domains = @configs[:allowed_registration_email_domains]
-      return unless domains
-
-      domains_array = domains.delete(" ").split(",")
-      valid_domains = domains_array
-        .select { |d| d.match?(VALID_DOMAIN) }
-      valid_domains.size != domains_array.size
     end
   end
 end
