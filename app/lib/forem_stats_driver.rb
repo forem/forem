@@ -10,6 +10,6 @@ class ForemStatsDriver
     @driver = self.class.select_driver.new
   end
 
-  delegate :increment, :time, :gauge, to: @driver
-  alias_method :count, :increment
+  delegate(:increment, :time, :gauge, to: :@driver)
+  alias count increment
 end
