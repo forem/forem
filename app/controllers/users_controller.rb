@@ -109,8 +109,11 @@ class UsersController < ApplicationController
     if destroy_token.blank?
       flash[:settings_notice] = "Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated."
       redirect_to user_settings_path("account")
-    else
-      raise ActionController::RoutingError, "Not Found" unless destroy_token == params[:token]
+    elsif destroy_token != params[:token]
+      Honeycomb.add_field("destroy_token", destroy_token)
+      Honeycomb.add_field("token", params[:token])
+
+      raise ActionController::RoutingError, "Not Found"
     end
     # rubocop:enable Layout/LineLength
   end

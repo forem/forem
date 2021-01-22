@@ -150,7 +150,7 @@ class IntroSlide extends Component {
                         checked={checked_code_of_conduct}
                         onChange={this.handleChange}
                       />
-                      You agree to uphold our{' '}
+                      You agree to uphold our&nbsp;
                       <a
                         href="/code-of-conduct"
                         data-no-instant
@@ -175,7 +175,7 @@ class IntroSlide extends Component {
                         checked={checked_terms_and_conditions}
                         onChange={this.handleChange}
                       />
-                      You agree to our{' '}
+                      You agree to our&nbsp;
                       <a
                         href="/terms"
                         data-no-instant
