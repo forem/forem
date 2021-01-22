@@ -60,12 +60,12 @@ export function initializeTouchDevice(memberTopMenu, menuNavButton) {
 
       if (isTouchDevice()) {
         // Use a named function instead of anonymous so duplicate event handlers are discarded
-        menuNavButton.addEventListener('click', function (_event) {
+        menuNavButton.addEventListener('click', (_event) => {
           toggleHeaderMenu(memberTopMenu, menuNavButton);
         });
       } else {
         crayonsHeaderMenuClassList.add('desktop');
-        menuNavButton.addEventListener('click', function (_event) {
+        menuNavButton.addEventListener('click', (_event) => {
           toggleHeaderMenu(memberTopMenu, menuNavButton);
         });
         memberTopMenu.addEventListener('keyup', (e) => {
@@ -79,14 +79,14 @@ export function initializeTouchDevice(memberTopMenu, menuNavButton) {
         });
         document
           .getElementById('last-nav-link')
-          .addEventListener('blur', function (_event) {
+          .addEventListener('blur', (_event) => {
             blurHeaderMenu(
               memberTopMenu,
               menuNavButton,
-              document.getElementById('seond-last-nav-link'),
+              document.getElementById('second-last-nav-link'),
             );
           });
-        document.addEventListener('click', function (_event) {
+        document.addEventListener('click', (_event) => {
           // if clicking outside of the menu, close it
           if (!memberTopMenu.contains(document.activeElement)) {
             blurHeaderMenu(
