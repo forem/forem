@@ -19,7 +19,6 @@ module SiteConfigs
     def call
       @errors = []
       clean_up_params
-      validate_inputs
       validate_emoji
 
       return self if @errors.flatten.any?
@@ -60,7 +59,6 @@ module SiteConfigs
     end
 
     def validate_inputs
-      @errors << "Brand color must be darker for accessibility." if brand_contrast_too_low
       @errors << "Allowed emails must be list of domains." if allowed_domains_include_improper_format
     end
 
@@ -102,11 +100,6 @@ module SiteConfigs
     end
 
     # Validations
-    def brand_contrast_too_low
-      hex = @configs[:primary_brand_color_hex]
-      hex.present? && Color::Accessibility.new(hex).low_contrast?
-    end
-
     def allowed_domains_include_improper_format
       domains = @configs[:allowed_registration_email_domains]
       return unless domains

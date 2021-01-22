@@ -218,7 +218,8 @@ class SiteConfig < RailsSettings::Base
     format: {
       with: HEX_COLOR_REGEX,
       message: "must be be a 3 or 6 character hex (starting with #)"
-    }
+    },
+    color_contrast: true
   }
   field :feed_strategy, type: :string, default: "basic"
   field :tag_feed_minimum_score, type: :integer, default: 0
