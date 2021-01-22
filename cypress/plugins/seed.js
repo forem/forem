@@ -7,7 +7,9 @@ const { spawn } = require('child_process');
 
 async function runBundleExec(command) {
   return new Promise((resolve, reject) => {
-    const child = spawn('bundle', ['exec', command]);
+    const child = spawn('bundle', ['exec', command], {
+      env: { ...process.env, RAILS_ENV: 'test' },
+    });
     const errorChunks = [];
 
     child.stderr.on('data', (chunk) => errorChunks.push(Buffer.from(chunk)));
