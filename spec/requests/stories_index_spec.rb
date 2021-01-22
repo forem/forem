@@ -12,6 +12,8 @@ end
 
 RSpec.describe "StoriesIndex", type: :request do
   describe "GET stories index" do
+    let(:user) { create(:user) }
+
     it "renders page with article list and proper attributes", :aggregate_failures do
       article = create(:article, featured: true)
       navigation_link = create(:navigation_link)
