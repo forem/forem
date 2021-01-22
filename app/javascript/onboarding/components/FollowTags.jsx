@@ -106,7 +106,12 @@ class FollowTags extends Component {
         data-testid="onboarding-follow-tags"
         className="onboarding-main crayons-modal"
       >
-        <div className="crayons-modal__box overflow-auto">
+        <div
+          className="crayons-modal__box overflow-auto"
+          role="dialog"
+          aria-labelledby="title"
+          aria-describedby="subtitle"
+        >
           <Navigation
             prev={prev}
             next={this.handleComplete}
@@ -116,8 +121,12 @@ class FollowTags extends Component {
           />
           <div className="onboarding-content toggle-bottom">
             <header className="onboarding-content-header">
-              <h1 className="title">What are you interested in?</h1>
-              <h2 className="subtitle">Follow tags to customize your feed</h2>
+              <h1 id="title" className="title">
+                What are you interested in?
+              </h1>
+              <h2 id="subtitle" className="subtitle">
+                Follow tags to customize your feed
+              </h2>
               {this.renderFollowCount()}
             </header>
             <div data-testid="onboarding-tags" className="onboarding-tags">

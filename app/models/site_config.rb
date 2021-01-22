@@ -230,6 +230,6 @@ class SiteConfig < RailsSettings::Base
 
   # To get default values
   def self.get_default(field)
-    get_field(field).dig(:default)
+    get_field(field)[:default]
   end
 end

@@ -1,6 +1,5 @@
 <% json_data = notification.json_data %>
 <div class="crayons-card notification notification--promoted grid gap-4">
-  <% cache "activity-badge-reward-#{json_data['badge_achievement']['badge_id']}" do %>
     <header class="mb-2 m:mb-4">
       <h3 class="fw-normal fs-l s:fs-xl m:fs-2xl">
       You received the <strong class="fw-bold"><%= sanitize(json_data["badge_achievement"]["badge"]["title"]) %></strong> badge
@@ -12,7 +11,6 @@
       <img class="w-100 max-w-50 l:max-w-25 h-auto inline-block mx-auto" src="<%= optimized_image_url(json_data["badge_achievement"]["badge"]["badge_image_url"], width: 250) %>" alt="<%= json_data["badge_achievement"]["badge"]["title"] %>">
       <p class="color-base-70"><em><%= json_data["badge_achievement"]["rewarding_context_message"].html_safe %></em></p>
     </div>
-  <% end %>
 
   <p><a href="<%= json_data["user"]["path"] %>" class="crayons-btn w-100 m:w-50">Visit your profile</a></p>
   <p class="max-w-75 mx-auto">You also get <a href="/credits" class="crayons-link crayons-link--brand fw-bold">5 new credits</a> to use for <a href="/listings">community listings</a> if you have anything you'd like to promote. 🎉</p>
