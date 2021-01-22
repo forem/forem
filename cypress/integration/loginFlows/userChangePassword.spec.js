@@ -1,6 +1,3 @@
-// Note if you are running these tests locallly, this test will fail
-// if the first admin has already gone through the onboarding process.
-
 describe('User Change Password', () => {
   beforeEach(() => {
     cy.testSetup();
