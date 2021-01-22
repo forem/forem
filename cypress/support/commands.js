@@ -26,5 +26,7 @@
 
 Cypress.Commands.add('testSetup', () => {
   cy.request('/cypress_rails_reset_state');
+
+  // Required for the moment because of https://github.com/cypress-io/cypress/issues/781
   cy.clearCookies();
 });
