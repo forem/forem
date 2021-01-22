@@ -14,12 +14,18 @@ module Search
 
         article_ids = reading_list_article_ids.map { |article_id, _reaction_id| article_id }
         articles = if term.present?
-                     Search::Multisearch.call(term)
+                     results = Search::Multisearch.call(term)
+                       .with_pg_search_highlight
                        .includes(searchable: %i[user tags])
                        .where(searchable_type: "Article", searchable_id: article_ids)
                        .page(page)
                        .per(per_page)
-                       .map(&:searchable)
+
+                     results.map do |doc|
+                       article = doc.searchable
+                       article.search_highlight = doc.pg_search_highlight
+                       article
+                     end
                    else
                      # TODO: [@rhymes] use .select() to avoid loading unnecessary fields
                      Article.published.where(id: article_ids).page(page).per(per_page)
@@ -32,10 +38,12 @@ module Search
         result = Jbuilder.new do |json|
           json.reactions do
             json.array!(reading_list_article_ids) do |article_id, reaction_id|
+              article = articles[article_id]
+              next unless article
+
               json.id reaction_id
               json.user_id user.id
 
-              article = articles[article_id]
               sa = Search::ArticleSerializer.new(article).serializable_hash
                 .dig(:data, :attributes)
                 .as_json
@@ -52,7 +60,7 @@ module Search
               sa.merge!({
                           "id" => sa["id"].split("_").last.to_i,
                           "flare_tag" => sa["flare_tag_hash"],
-                          "highlight" => nil,
+                          "highlight" => article.search_highlight,
                           "podcast" => { # unsure why we need this, see Search::FeedContent::parse_doc
                             "slug" => sa["slug"],
                             "image_url" => sa["main_image"],

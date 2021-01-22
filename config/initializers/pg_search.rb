@@ -6,7 +6,14 @@ PgSearch.multisearch_options = {
   using: {
     tsearch: {
       any_word: true, # combine search terms with 'or', not 'and'
-      prefix: true    # search for partial words
+      prefix: true,   # search for partial words
+      highlight: {    # https://github.com/Casecommons/pg_search#highlight
+        StartSel: "<mark>",
+        StopSel: "</mark>",
+        MaxFragments: 2,
+        MinWords: 5,
+        MaxWords: 10
+      }
     }
   },
   ignoring: :accents
