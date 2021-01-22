@@ -50,6 +50,17 @@ module CommentsHelper
     view == "comments" ? MAX_COMMENTS_TO_RENDER : MIN_COMMENTS_TO_RENDER
   end
 
+  def like_button_text(comment)
+    case comment.public_reactions_count
+    when 0
+      "Like"
+    when 1
+      "&nbsp;like"
+    else
+      "&nbsp;likes"
+    end
+  end
+
   private
 
   def nested_comments(tree:, commentable:, is_view_root: false)

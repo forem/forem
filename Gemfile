@@ -98,7 +98,7 @@ gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
 gem "sidekiq", "~> 6.1.2" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-cron", "~> 1.1" # Allows execution of scheduled cron jobs as specific times
-gem "sidekiq-unique-jobs", "~> 6.0.25" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 7.0.0" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
@@ -131,7 +131,7 @@ group :development do
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
   gem "listen", "~> 3.4", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
-  gem "memory_profiler", "~> 0.9", require: false # Memory profiling routines for Ruby 2.3+
+  gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
   gem "pry", "~> 0.13" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "web-console", "~> 4.1" # Rails Console on the Browser
@@ -173,7 +173,7 @@ group :test do
   gem "test-prof", "~> 0.12" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
-  gem "webdrivers", "~> 4.4" # Run Selenium tests more easily with install and updates for all supported webdrivers
+  gem "webdrivers", "~> 4.5" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.11", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
