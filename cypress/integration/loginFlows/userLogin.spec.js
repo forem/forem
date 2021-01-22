@@ -1,6 +1,6 @@
 describe('User Login', () => {
   beforeEach(() => {
-    cy.request('/cypress_rails_reset_state');
+    cy.testSetup();
   });
 
   it('should login a user', () => {
