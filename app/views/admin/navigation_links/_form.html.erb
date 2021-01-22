@@ -8,10 +8,21 @@
   <%= form.text_field :url, class: "form-control" %>
   <div class="alert alert-info">A full (external) or relative (internal) URL for the link</div>
 </div>
-<div class="form-group">
-  <%= form.label :icon %>
-  <%= form.text_area :icon, class: "form-control" %>
-  <div class="alert alert-info">An SVG icon should be pasted in the textarea</div>
+<div class="form-group" data-controller="svg-icon-upload">
+  <div nav-link-id="<%= form.object[:id] %>">
+    <%= form.label :icon %>
+    <div id="svg-icon-preview" class="<%= form.object[:id].nil? ? "" : "pb-3" %>" style="width: 24px;">
+      <%= form.object[:icon]&.html_safe %>
+    </div>
+    <%= form.hidden_field :icon, id: "svg-icon-content" %>
+
+    <input
+      type="file" accept="image/svg" class="form-control"
+      data-action="svg-icon-upload#selectSvgIcon" />
+
+    <div class="alert alert-info">An SVG icon should be uploaded</div>
+    <div id="svg-icon-message-validate"></div>
+  </div>
 </div>
 <div class="form-group">
   <%= form.label :position %>
