@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_11_151630) do
+ActiveRecord::Schema.define(version: 2021_01_22_032254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1218,6 +1218,8 @@ ActiveRecord::Schema.define(version: 2021_01_11_151630) do
     t.inet "current_sign_in_ip"
     t.string "currently_hacking_on"
     t.string "currently_learning"
+    t.datetime "discord_created_at"
+    t.string "discord_username"
     t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
@@ -1337,6 +1339,7 @@ ActiveRecord::Schema.define(version: 2021_01_11_151630) do
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
+    t.index ["discord_username"], name: "index_users_on_discord_username"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"
     t.index ["feed_fetched_at"], name: "index_users_on_feed_fetched_at"

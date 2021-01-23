@@ -42,6 +42,8 @@ class SiteConfig < RailsSettings::Base
   field :apple_key_id, type: :string
   field :apple_pem, type: :string
   field :apple_team_id, type: :string
+  field :discord_key, type: :string
+  field :discord_secret, type: :string
 
   # Campaign
   field :campaign_call_to_action, type: :string, default: "Share your project"

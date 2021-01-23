@@ -326,6 +326,8 @@ seeder.create_if_none(Broadcast) do
     twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? " \
       "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
       "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
+    discord_connect: "You're on a roll! 🎉  Do you have a Discord account? " \
+    "Consider <a href='/settings'>connecting it</a>.",
     facebook_connect: "You're on a roll! 🎉  Do you have a Facebook account? " \
     "Consider <a href='/settings'>connecting it</a>.",
     github_connect: "You're on a roll! 🎉  Do you have a GitHub account? " \

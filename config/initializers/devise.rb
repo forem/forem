@@ -24,6 +24,12 @@ APPLE_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:team_id] = SiteConfig.apple_team_id
 end
 
+DISCORD_OMNIAUTH_SETUP = lambda do |env|
+  env["omniauth.strategy"].options[:client_id] = SiteConfig.discord_key
+  env["omniauth.strategy"].options[:client_secret] = SiteConfig.discord_secret
+  env["omniauth.strategy"].options[:scope] = "email identify"
+end
+
 Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
@@ -310,6 +316,7 @@ Devise.setup do |config|
   # up on your models and hooks.
 
   # Fun fact, unless Twitter is last, it doesn't work for some reason.
+  config.omniauth :discord, setup: DISCORD_OMNIAUTH_SETUP
   config.omniauth :facebook, setup: FACEBOOK_OMNIAUTH_SETUP
   config.omniauth :github, setup: GITHUB_OMNIUATH_SETUP
   config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
