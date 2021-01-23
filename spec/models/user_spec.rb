@@ -10,8 +10,11 @@ def user_from_authorization_service(service_name, signed_in_resource = nil, cta_
 end
 
 def mock_username(provider_name, username)
-  if provider_name == :apple
+  case provider_name
+  when :apple
     OmniAuth.config.mock_auth[provider_name].info.first_name = username
+  when :discord
+    OmniAuth.config.mock_auth[provider_name].info.name = username
   else
     OmniAuth.config.mock_auth[provider_name].info.nickname = username
   end
@@ -603,6 +606,8 @@ RSpec.describe User, type: :model do
         case provider_name
         when :apple
           expect(new_user.username).to match(/valid_username_\w+/)
+        when :discord
+          expect(new_user.username).to match(/valid_username\d{4}/)
         when :facebook
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         else
@@ -622,6 +627,8 @@ RSpec.describe User, type: :model do
         case provider_name
         when :apple
           expect(new_user.username).to match(/invalidusername_\w+/)
+        when :discord
+          expect(new_user.username).to match(/invalidusername\d{4}/)
         when :facebook
           expect(new_user.username).to match(/fname_lname_\S*\z/)
         else

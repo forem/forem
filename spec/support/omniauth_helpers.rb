@@ -107,6 +107,38 @@ module OmniauthHelpers
     },
   ).freeze
 
+  OMNIAUTH_PAYLOAD_DISCORD = OmniAuth::AuthHash::InfoHash.new(
+    {
+      provider: "discord",
+      uid: SecureRandom.hex,
+      info: {
+        name: "username",
+        email: "me@email.com",
+        image: "https://dummyimage.com/400x400.jpg"
+      },
+      credentials: {
+        token: SecureRandom.hex,
+        refresh_token: SecureRandom.hex,
+        expires_at: 1_612_039_638,
+        expires: true
+      },
+      extra: {
+        raw_info: {
+          id: "802044276959433121",
+          username: "username",
+          avatar: "400x400",
+          discriminator: "4040",
+          public_flags: 0,
+          flags: 0,
+          email: "me@email.com",
+          verified: true,
+          locale: "en-US",
+          mfa_enabled: false
+        }
+      }
+    },
+  ).freeze
+
   def omniauth_setup_invalid_credentials(provider)
     OmniAuth.config.mock_auth[provider] = :invalid_credentials
   end
@@ -164,6 +196,10 @@ module OmniauthHelpers
 
   def omniauth_mock_apple_payload
     OmniAuth.config.mock_auth[:apple] = OMNIAUTH_PAYLOAD_APPLE.dup
+  end
+
+  def omniauth_mock_discord_payload
+    OmniAuth.config.mock_auth[:discord] = OMNIAUTH_PAYLOAD_DISCORD.dup
   end
 
   def omniauth_mock_github_payload

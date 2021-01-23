@@ -30,6 +30,15 @@ FactoryBot.define do
       end
     end
 
+    factory :discord_connect_broadcast do
+      title          { "Welcome Notification: discord_connect" }
+      type_of        { "Welcome" }
+      processed_html do
+        "You're on a roll! 🎉  Do you have a Discord account? Consider " \
+        "<a href='/settings'>connecting it</a>."
+      end
+    end
+
     factory :github_connect_broadcast do
       title          { "Welcome Notification: github_connect" }
       type_of        { "Welcome" }

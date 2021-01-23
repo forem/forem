@@ -120,6 +120,16 @@ module Constants
           "The \"App Secret\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",
         placeholder: ""
       },
+      discord_key: {
+        description:
+          "The \"Client ID\" for the application as listed in the Discord developer portal",
+        placeholder: ""
+      },
+      discord_secret: {
+        description:
+          "The \"Client Secret\" for the application as listed in the Discord developer portal",
+        placeholder: ""
+      },
       apple_client_id: {
         description:
           "The \"App Bundle\" code for the Authentication Service configured in the Apple Developer Portal",
