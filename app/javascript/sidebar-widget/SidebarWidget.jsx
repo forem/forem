@@ -58,13 +58,8 @@ const SidebarWidget = () => {
           <h4>who to follow</h4>
         </header>
         <div className="widget-body">
-          {suggestedUsers.map((user, index) => (
-            <SidebarUser
-              key={user.id}
-              user={user}
-              followUser={followUser}
-              index={index}
-            />
+          {suggestedUsers.map((user) => (
+            <SidebarUser key={user.id} user={user} followUser={followUser} />
           ))}
         </div>
       </div>
