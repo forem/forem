@@ -781,6 +781,7 @@ ActiveRecord::Schema.define(version: 2021_01_21_102114) do
     t.string "email"
     t.string "github_username"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
+    t.datetime "latest_article_updated_at"
     t.string "location"
     t.string "name"
     t.string "nav_image"
@@ -801,7 +802,6 @@ ActiveRecord::Schema.define(version: 2021_01_21_102114) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
-    t.datetime "latest_article_updated_at"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
@@ -1275,12 +1275,13 @@ ActiveRecord::Schema.define(version: 2021_01_21_102114) do
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
-    t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
+    t.datetime "last_moderation_notification", default: "2017-01-01 00:00:00"
     t.datetime "last_notification_activity"
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
+    t.datetime "latest_article_updated_at"
     t.string "linkedin_url"
     t.string "location"
     t.datetime "locked_at"
@@ -1334,7 +1335,6 @@ ActiveRecord::Schema.define(version: 2021_01_21_102114) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
-    t.datetime "latest_article_updated_at"
     t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
@@ -1356,9 +1356,9 @@ ActiveRecord::Schema.define(version: 2021_01_21_102114) do
 
   create_table "users_gdpr_delete_requests", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
-    t.string "email"
+    t.string "email", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id"
+    t.integer "user_id", null: false
     t.string "username"
   end
 
