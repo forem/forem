@@ -88,6 +88,16 @@
       padding: var(--modal-body-padding);
       max-height: 100%;
       overflow-y: auto;
+
+      .crayons-btn-group {
+        padding-top: var(--modal-body-padding);
+        .crayons-btn {
+          border-radius: var(--radius);
+        }
+        :first-child {
+          margin-right: var(--su-2);
+        }
+      }
     }
   }
 

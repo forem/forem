@@ -4,10 +4,10 @@ import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { submitArticle, previewArticle } from './actions';
+import { EditorActions, Form, Header, Help, Preview } from './components';
+import { Button, ButtonGroup, Modal } from '@crayons';
 
 /* global activateRunkitTags */
-
-import { EditorActions, Form, Header, Help, Preview } from './components';
 
 /*
   Although the state fields: id, description, canonicalUrl, series, allSeries and
@@ -246,6 +246,7 @@ export default class ArticleForm extends Component {
       edited: false,
       helpFor: null,
       helpPosition: 0,
+      showModal: false,
     });
   };
 
@@ -267,6 +268,16 @@ export default class ArticleForm extends Component {
     this.setState({
       edited: true,
     });
+  };
+
+  toggleModal = () => {
+    this.setState({
+      showModal: !this.state.showModal,
+    });
+  };
+
+  navigateHome = () => {
+    window.location.href = '/';
   };
 
   switchHelpContext = ({ target }) => {
@@ -312,6 +323,7 @@ export default class ArticleForm extends Component {
           organizationId={organizationId}
           onToggle={this.handleOrgIdChange}
           siteLogo={siteLogo}
+          displayModal={this.toggleModal}
         />
 
         {previewShowing ? (
@@ -343,6 +355,28 @@ export default class ArticleForm extends Component {
           helpPosition={helpPosition}
           version={version}
         />
+        {this.state.showModal && (
+          <Modal title="You have unsaved changes" onClose={this.toggleModal}>
+            <div>
+              <p>
+                You've made changes to your post. Do you want to navigate to
+                leave this page?
+              </p>
+              <ButtonGroup className="crayons-article-form__modal__button-group">
+                <Button variant="danger" onClick={this.navigateHome}>
+                  Yes, go back
+                </Button>
+                <Button
+                  aria-label="Cancel"
+                  variant="secondary"
+                  onClick={this.toggleModal}
+                >
+                  No, keep editing
+                </Button>
+              </ButtonGroup>
+            </div>
+          </Modal>
+        )}
 
         <EditorActions
           published={published}
