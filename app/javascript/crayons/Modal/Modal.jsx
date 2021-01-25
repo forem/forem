@@ -42,9 +42,7 @@ export const Modal = ({
   onClose,
 }) => {
   const shortcuts = {
-    escape: () => {
-      onClose();
-    },
+    escape: onClose,
   };
 
   return (
