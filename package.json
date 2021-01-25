@@ -26,7 +26,7 @@
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
     "e2e:setup": "RAILS_ENV=test bin/e2e-setup",
-    "e2e": "CYPRESS_RAILS_CYPRESS_OPTS=\"--config-file cypress.dev.json\" RAILS_ENV=test bundle exec rake cypress:open",
+    "e2e": "bin/e2e",
     "e2e:ci": "RAILS_ENV=test bin/e2e-ci"
   },
   "husky": {

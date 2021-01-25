@@ -1,0 +1,11 @@
+#!/bin/bash
+
+read -p "Do you need to set up you end to end testing database? Answer yes(y) if this is your first time running end to end tests or you need to recreate your end to end test database. (y/n) " -n 1 -r
+
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+  printf "\n\nSetting up the end to end test (E2E) database before running E2E tests...\n\n"
+  npm run e2e:setup
+fi
+
+CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.json" RAILS_ENV=test bundle exec rake cypress:open

@@ -1,6 +1,1 @@
-{
-  "env": {
-    "FOREM_OWNER_SECRET": "secret",
-    "ELASTICSEARCH_URL": "http://localhost:9200"
-  }
-}
+{}
