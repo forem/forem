@@ -1,5 +1,4 @@
 bundle exec rails db:drop;
 bundle exec rails db:create;
 bundle exec rails db:schema:load;
-bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
 bundle exec rails assets:precompile;
