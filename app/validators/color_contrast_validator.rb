@@ -6,6 +6,6 @@ class ColorContrastValidator < ActiveModel::EachValidator
 
     record.errors.add(attribute, (options[:message] || DEFAULT_MESSAGE))
   rescue WCAGColorContrast::InvalidColorError
-    # nothing to here, this should be picked up by the format validation
+    # nothing to do here, this should be picked up by the format validation
   end
 end
