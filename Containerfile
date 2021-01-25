@@ -2,7 +2,8 @@ FROM quay.io/forem/ruby:3.0.0 as builder
 
 USER root
 
-RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
+RUN curl -sL https://rpm.nodesource.com/setup_lts.x && \
+    curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
     dnf install --setopt install_weak_deps=false -y \
     ImageMagick iproute jemalloc less libcurl libcurl-devel \
     libffi-devel libxml2-devel libxslt-devel nodejs pcre-devel \
