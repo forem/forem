@@ -2,9 +2,10 @@ require "rails_helper"
 
 RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   let(:user) { create(:user) }
+  let(:second_user) { create(:user)}
   let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
   let!(:article) { create(:article) }
-  let!(:hot_story) { create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago) }
+  let!(:hot_story) { create(:article, hotness_score: 1000, score: 1000, published_at: 3.hours.ago, user_id: second_user.id) }
   let!(:old_story) { create(:article, published_at: 3.days.ago) }
   let!(:low_scoring_article) { create(:article, score: -1000) }
   let!(:month_old_story) { create(:article, published_at: 1.month.ago) }
@@ -75,6 +76,11 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         expect(stories).to include(old_story)
         expect(stories).to include(article)
         expect(stories).to include(hot_story)
+      end
+
+      it "does not load blocked articles" do
+        create(:user_block, blocker: user, blocked: second_user, config: "default")
+        expect(result).not_to include(hot_story)
       end
     end
 

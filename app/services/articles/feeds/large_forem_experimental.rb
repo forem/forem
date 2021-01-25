@@ -128,6 +128,7 @@ module Articles
       def globally_hot_articles(user_signed_in)
         if user_signed_in
           hot_stories = experimental_hot_story_grab
+          hot_stories = hot_stories.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
           featured_story = hot_stories.where.not(main_image: nil).first
           new_stories = Article.published
             .where("score > ?", -15)

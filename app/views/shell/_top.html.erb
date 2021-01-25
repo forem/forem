@@ -17,14 +17,7 @@
         <meta name="monetization" content="<%= SiteConfig.payment_pointer %>">
       <% end %>
       <meta name="environment" content="<%= Rails.env %>">
-      <%= render "layouts/styles" %>
-      <style>
-        .home {
-          position: relative;
-          margin: auto;
-          max-width: 1250px;
-        }
-      </style>
+      <%= render "layouts/styles", qualifier: "main" %>
       <% unless user_signed_in? %>
         <%= javascript_packs_with_chunks_tag "base", "Search", defer: true %>
       <% end %>
@@ -63,6 +56,8 @@
         data-deployed-at="<%= ForemInstance.deployed_at %>"
         data-latest-commit-id="<%= ForemInstance.latest_commit_id %>"
         data-ga-tracking="<%= SiteConfig.ga_tracking_id %>">
+        <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
+        <%= render "layouts/styles", qualifier: "secondary" %>
         <div id="body-styles">
           <style>
             :root {

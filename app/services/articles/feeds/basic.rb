@@ -16,6 +16,7 @@ module Articles
           .limited_column_select.includes(top_comments: :user)
         return articles unless @user
 
+        articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
         articles.sort_by.with_index do |article, index|
           article_tags = article.decorate.cached_tag_list_array
           tag_score = user_followed_tags.sum do |tag|

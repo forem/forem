@@ -17,7 +17,7 @@ const menus = [...document.getElementsByClassName('js-hamburger-trigger')];
 const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
 
 getInstantClick().then((spa) => {
-  spa.on('change', function () {
+  spa.on('change', () => {
     const { currentPage } = document.getElementById('page-content').dataset;
 
     setCurrentPageIconLink(currentPage, getPageEntries());
