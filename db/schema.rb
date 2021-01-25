@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_11_151630) do
+ActiveRecord::Schema.define(version: 2021_01_24_043948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -1319,7 +1319,9 @@ ActiveRecord::Schema.define(version: 2021_01_11_151630) do
     t.integer "subscribed_to_user_subscriptions_count", default: 0, null: false
     t.text "summary"
     t.string "text_color_hex"
+    t.datetime "twitch_created_at"
     t.string "twitch_url"
+    t.string "twitch_username"
     t.datetime "twitter_created_at"
     t.integer "twitter_followers_count"
     t.integer "twitter_following_count"
@@ -1349,6 +1351,7 @@ ActiveRecord::Schema.define(version: 2021_01_11_151630) do
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["twitch_username"], name: "index_users_on_twitch_username"
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end

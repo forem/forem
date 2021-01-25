@@ -42,6 +42,44 @@ module OmniauthHelpers
     }
   }.freeze
 
+  OMNIAUTH_PAYLOAD_TWITCH = OmniAuth::AuthHash::InfoHash.new(
+    {
+      provider: "twitch",
+      uid: SecureRandom.hex,
+      info: {
+        name: "My Name",
+        email: "my@email.com",
+        nickname: "myname",
+        description: "",
+        image: "https://dummyimage.com/400x400.jpg",
+        urls: {
+          Twitch: "http://www.twitch.tv/myname"
+        }
+      },
+      credentials: {
+        token: SecureRandom.hex,
+        refresh_token: SecureRandom.hex,
+        expires_at: 1_611_481_755,
+        expires: true
+      },
+      extra: {
+        raw_info: {
+          id: SecureRandom.hex,
+          login: "myname",
+          display_name: "My Name",
+          type: "",
+          broadcaster_type: "",
+          description: "",
+          profile_image_url: "https://dummyimage.com/400x400.jpg",
+          offline_image_url: "",
+          view_count: 1,
+          email: "my@email.com",
+          created_at: "2021-01-16T19:40:15.906667Z"
+        }
+      }
+    },
+  )
+
   OMNIAUTH_PAYLOAD_FACEBOOK = OmniAuth::AuthHash::InfoHash.new(
     {
       provider: "facebook",
@@ -156,6 +194,10 @@ module OmniauthHelpers
     Authentication::Providers.available.each do |provider_name|
       OmniAuth.config.mock_auth[provider_name] = nil
     end
+  end
+
+  def omniauth_mock_twitch_payload
+    OmniAuth.config.mock_auth[:twitch] = OMNIAUTH_PAYLOAD_TWITCH.dup
   end
 
   def omniauth_mock_facebook_payload

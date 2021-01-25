@@ -60,6 +60,38 @@ RSpec.describe Identity, type: :model do
       end
     end
 
+    context "with Twitch payload" do
+      let(:auth_payload) { OmniAuth.config.mock_auth[:twitch] }
+      let(:provider) { Authentication::Providers::Twitch.new(auth_payload) }
+
+      it "initializes a new identity from the auth payload" do
+        identity = described_class.build_from_omniauth(provider)
+
+        expect(identity.new_record?).to be(true)
+        expect(identity.provider).to eq("twitch")
+        expect(identity.uid).to eq(auth_payload.uid)
+        expect(identity.token).to eq(auth_payload.credentials.token)
+        expect(identity.secret).to eq(auth_payload.credentials.secret)
+        expect(identity.auth_data_dump).to eq(provider.payload)
+      end
+
+      it "finds an existing identity" do
+        payload = provider.payload
+
+        existing_identity = described_class.create!(
+          user: user,
+          provider: payload.provider,
+          uid: payload.uid,
+          token: payload.credentials.token,
+          secret: payload.credentials.secret,
+          auth_data_dump: payload,
+        )
+
+        identity = described_class.build_from_omniauth(provider)
+        expect(identity).to eq(existing_identity)
+      end
+    end
+
     context "with Github payload" do
       let(:auth_payload) { OmniAuth.config.mock_auth[:github] }
       let(:provider) { Authentication::Providers::Github.new(auth_payload) }

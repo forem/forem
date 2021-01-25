@@ -22,6 +22,15 @@ FactoryBot.define do
       end
     end
 
+    factory :twitch_connect_broadcast do
+      title          { "Welcome Notification: twitch_connect" }
+      type_of        { "Welcome" }
+      processed_html do
+        "You're on a roll! 🎉  Do you have a Twitch account? Consider " \
+        "<a href='/settings'>connecting it</a>."
+      end
+    end
+
     factory :apple_connect_broadcast do
       title          { "Welcome Notification: apple_connect" }
       type_of        { "Welcome" }

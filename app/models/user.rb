@@ -31,7 +31,6 @@ class User < ApplicationRecord
     summary
     text_color_hex
     twitch_url
-    twitch_username
     website_url
     youtube_url
   ].freeze

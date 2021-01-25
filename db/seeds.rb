@@ -323,6 +323,8 @@ seeder.create_if_none(Broadcast) do
       "Let's begin by <a href='/settings'>setting up your profile</a>!",
     welcome_thread: "Sloan here again! 👋 DEV is a friendly community. " \
       "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
+    twitch_connect: "You're on a roll! 🎉  Do you have a Twitch account? " \
+    "Consider <a href='/settings'>connecting it</a>.",
     twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? " \
       "Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post " \
       "via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",

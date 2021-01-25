@@ -110,6 +110,16 @@ module Constants
         description: "The label for the top of the experience level range of a post",
         placeholder: "Senior Devs"
       },
+      twitch_key: {
+        description:
+          "The \"Client ID\" for the application as listed in the Twitch developer portal",
+        placeholder: ""
+      },
+      twitch_secret: {
+        description:
+          "The \"Client Secret\" for the application as listed in the Twitch developer portal",
+        placeholder: ""
+      },
       facebook_key: {
         description:
           "The \"App ID\" portion of the Basic Settings section of the App page on the Facebook Developer Portal",

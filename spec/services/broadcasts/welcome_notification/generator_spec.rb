@@ -6,6 +6,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
   # welcome_broadcast is explicitly not readonly so that we can test against an inactive broadcast
   let!(:welcome_broadcast)          { create(:welcome_broadcast) }
+  let!(:twitch_connect_broadcast)   { create(:twitch_connect_broadcast) }
   let!(:twitter_connect_broadcast)  { create(:twitter_connect_broadcast) }
   let!(:github_connect_broadcast)   { create(:github_connect_broadcast) }
   let!(:facebook_connect_broadcast) { create(:facebook_connect_broadcast) }
@@ -64,6 +65,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end.to change(user.notifications, :count).by(1)
       not_github = [
         facebook_connect_broadcast,
+        twitch_connect_broadcast,
         twitter_connect_broadcast,
         apple_connect_broadcast,
       ].include?(user.notifications.last.notifiable)

@@ -10,6 +10,7 @@ and [OmniAuth](https://github.com/omniauth/omniauth).
 On Forem you can authenticate through Facebook, GitHub, or Twitter. Please check out
 the respective guides on how to authenticate:
 
+- [Twitch authentication](/backend/auth-twitch)
 - [Apple authentication](/backend/auth-apple)
 - [Facebook authentication](/backend/auth-facebook)
 - [Github authentication](/backend/auth-github)
