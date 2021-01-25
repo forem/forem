@@ -446,12 +446,13 @@ ActiveRecord::Schema.define(version: 2021_03_10_154630) do
   end
 
   create_table "devices", force: :cascade do |t|
+    t.string "app_bundle", null: false
     t.datetime "created_at", precision: 6, null: false
     t.string "platform", null: false
     t.string "token", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
-    t.index ["user_id", "token", "platform"], name: "index_devices_on_user_id_and_token_and_platform", unique: true
+    t.index ["user_id", "token", "platform", "app_bundle"], name: "index_devices_on_user_id_and_token_and_platform_and_app_bundle", unique: true
   end
 
   create_table "display_ad_events", force: :cascade do |t|
