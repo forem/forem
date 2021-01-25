@@ -158,12 +158,14 @@ module Articles
             .order(hotness_score: :desc)
         when "only_followed_tags" # equivalent to base but only on tags user follows (if user follows enough)
           followed_tags = @user.cached_followed_tag_names
-          articles = Article.published.limited_column_select.includes(top_comments: :user)
+          articles = Article.published.includes(top_comments: :user)
             .page(@page).per(@number_of_articles)
             .where("score >= ? OR featured = ?", SiteConfig.home_feed_minimum_score, true)
             .order(hotness_score: :desc)
           # We only want to limit the posts to tagged_with if the participant follows enough tags.
           articles = articles.tagged_with(followed_tags, any: true) if followed_tags.size > 4
+
+          articles = articles.unscope(:select).limited_column_select
         when "top_articles_since_last_pageview_3_days_max" # Top articles since last page view (max 3 days)
           start_time = [(@user.page_views.last&.created_at || 3.days.ago) - 12.hours, 3.days.ago].max
           articles = Article.published.limited_column_select.includes(top_comments: :user)
@@ -179,12 +181,14 @@ module Articles
         when "combination_only_tags_followed_and_top_max_7_days" # Top articles since last page view (max 7 days)
           start_time = [(@user.page_views.last&.created_at || 7.days.ago) - 12.hours, 7.days.ago].max
           followed_tags = @user.cached_followed_tag_names
-          articles = Article.published.limited_column_select.includes(top_comments: :user)
+          articles = Article.published.includes(top_comments: :user)
             .where("published_at > ?", start_time)
             .page(@page).per(@number_of_articles)
             .order(score: :desc)
           # We only want to limit the posts to tagged_with if the participant follows enough tags.
           articles = articles.tagged_with(followed_tags, any: true) if followed_tags.size > 4
+
+          articles = articles.unscope(:select).limited_column_select
         else # "base"
           articles = Article.published.limited_column_select.includes(top_comments: :user)
             .page(@page).per(@number_of_articles)

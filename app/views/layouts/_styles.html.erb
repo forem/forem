@@ -1,9 +1,3 @@
-<%# We used to inline a good majority of our CSS %>
-<%# We are currently testing a simpler method of just using "traditional" render-blocking CSS  %>
-<%# The trade-off is the potential to render without blocking the page %>
-<%# But if we in-line everything we lose the ability to cache assets for repeat visitors %>
-<%# This is a production test to see how this might affect UX and/or SEO %>
-
-<%= stylesheet_link_tag "crayons", media: "all", id: "main-crayons-stylesheet" %>
-<%= stylesheet_link_tag "views", media: "all", id: "main-views-stylesheet" %>
-<%= stylesheet_link_tag "minimal", media: "all", id: "main-minimal-stylesheet" %>
+<%= stylesheet_link_tag "crayons", media: "all", id: "#{qualifier}-crayons-stylesheet" %>
+<%= stylesheet_link_tag "views", media: "all", id: "#{qualifier}-views-stylesheet" %>
+<%= stylesheet_link_tag "minimal", media: "all", id: "#{qualifier}-minimal-stylesheet" %>
