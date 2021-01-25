@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_21_102114) do
+ActiveRecord::Schema.define(version: 2021_01_25_085442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 2021_01_21_102114) do
     t.string "utm_medium"
     t.string "utm_source"
     t.string "utm_term"
+    t.index ["feedback_message_id"], name: "index_ahoy_messages_on_feedback_message_id"
     t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
     t.index ["user_id", "mailer"], name: "index_ahoy_messages_on_user_id_and_mailer"
@@ -511,6 +512,7 @@ ActiveRecord::Schema.define(version: 2021_01_21_102114) do
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
     t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
+    t.index ["status"], name: "index_feedback_messages_on_status"
   end
 
   create_table "field_test_events", force: :cascade do |t|
