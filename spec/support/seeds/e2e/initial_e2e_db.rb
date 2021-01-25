@@ -88,19 +88,3 @@ seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") d
 end
 
 ##############################################################################
-
-seeder.create_if_none(Tag) do
-  tags = %w[beginners career computerscience git go
-            java javascript linux productivity python security webdev]
-
-  tags.each do |tag_name|
-    Tag.create!(
-      name: tag_name,
-      bg_color_hex: Faker::Color.hex_color,
-      text_color_hex: Faker::Color.hex_color,
-      supported: true,
-    )
-  end
-end
-
-##############################################################################
