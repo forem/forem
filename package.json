@@ -27,7 +27,7 @@
     "postcss": "postcss public/assets/*.css -d public/assets 2> postcss_error.log",
     "e2e:setup": "RAILS_ENV=test bin/e2e-setup",
     "e2e": "bin/e2e",
-    "e2e:ci": "RAILS_ENV=test bin/e2e-ci"
+    "e2e:ci": "bin/e2e-ci"
   },
   "husky": {
     "hooks": {
