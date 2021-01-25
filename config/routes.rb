@@ -347,6 +347,7 @@ Rails.application.routes.draw do
     patch "/messages/:id" => "messages#update"
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
+    get "/dl_redirect", to: "deep_links#index"
 
     post "/pusher/auth" => "pusher#auth"
 
