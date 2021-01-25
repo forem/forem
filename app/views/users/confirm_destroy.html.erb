@@ -14,20 +14,18 @@
             <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
             <li>allow your username to become available to anyone.</li>
           </ul>
-          <div class="field mb-4 w-50">
-            <label for="delete__account__username__field" class="crayons-field__label">
-              To delete your account:
-              <p class="crayons-field__description">type in your username</p>
-            </label>
-            <input type="text" name="delete__account__username__field" class="crayons-textfield " id="delete__account__username__field" placeholder="username">
-          </div>
-          <div class="field mb-4 w-50">
-            <label for="delete__account__verification__field" class="crayons-field__label">
-              For verification, type the words:
-              <p class="crayons-field__description"> delete my account</p>
-            </label>
-            <input type="text" name="delete__account__verification__field" class="crayons-textfield" id="delete__account__verification__field">
-          </div>
+        <div class="crayons-field m:w-50">
+          <label for="delete__account__username__field" class="crayons-field__label">
+            Type in your username
+          </label>
+          <input type="text" name="delete__account__username__field" class="crayons-textfield " id="delete__account__username__field" placeholder="username">
+        </div>
+        <div class="crayons-field m:w-50">
+          <label for="delete__account__verification__field" class="crayons-field__label">
+            For confirmaiton, type the words: <code>delete my account</code>
+          </label>
+          <input type="text" name="delete__account__verification__field" class="crayons-textfield" id="delete__account__verification__field">
+        </div>
         <div>
           <button class="crayons-btn crayons-btn--danger" id="delete__account__btn" type="submit" disabled="true">
             Delete account
