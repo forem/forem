@@ -1,8 +1,7 @@
 module ForemStatsDrivers
   class DatadogDriver
-    attr_reader :driver
-
-    def initialize
+    include ActsAsForemStatsDriver
+    setup_driver do
       Datadog.configure do |c|
         c.tracer env: Rails.env
         c.tracer enabled: ENV["DD_API_KEY"].present?
@@ -14,24 +13,7 @@ module ForemStatsDrivers
         c.use :rails
         c.use :http
       end
-
-      @driver = Datadog::Statsd.new
-    end
-
-    def increment(*args)
-      @driver.increment(*args)
-    end
-
-    def count(*args)
-      @driver.increment(*args)
-    end
-
-    def time(*args)
-      @driver.time(*args)
-    end
-
-    def gauge(*args)
-      @driver.gauge(*args)
+      Datadog::Statsd.new
     end
   end
 end
