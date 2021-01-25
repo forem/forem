@@ -20,7 +20,7 @@
                      placeholder: Constants::SiteConfig::DETAILS[:"#{provider.provider_name}_secret"][:placeholder] %>
   </div>
   <div class="flex gap-2">
-    <% if authentication_enabled_providers.include?(provider) %>
+    <% if authentication_provider_enabled?(provider) %>
       <button
         class="crayons-btn crayons-btn--danger"
         data-action="click->config#activateAuthProviderModal"

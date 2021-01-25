@@ -7,6 +7,7 @@ class UserPolicy < ApplicationPolicy
     config_font
     config_theme
     config_navbar
+    current_password
     currently_hacking_on
     currently_learning
     display_announcements
@@ -114,6 +115,10 @@ class UserPolicy < ApplicationPolicy
 
   def moderation_routes?
     (user.has_role?(:trusted) || minimal_admin?) && !user.banned
+  end
+
+  def update_password?
+    current_user?
   end
 
   def permitted_attributes

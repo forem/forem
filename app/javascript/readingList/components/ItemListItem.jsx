@@ -84,11 +84,6 @@ const readingListItemPropTypes = PropTypes.shape({
   },
 });
 
-ItemListItem.defaultProps = {
-  children: {},
-};
-
 ItemListItem.propTypes = {
   item: PropTypes.oneOfType([readingListItemPropTypes]).isRequired,
-  children: PropTypes.element,
 };
