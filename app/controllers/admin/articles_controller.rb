@@ -73,7 +73,7 @@ module Admin
     def articles_satellite
       Article.published.where(last_buffered: nil)
         .includes(:user, :buffer_updates)
-        .tagged_with(Tag.bufferized_tags, any: true)
+        .tagged_with(Tag.bufferized_tags, any: true).unscope(:select)
         .limited_columns_internal_select
         .order(hotness_score: :desc)
         .page(params[:page])
