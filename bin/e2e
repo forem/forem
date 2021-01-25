@@ -1,10 +1,4 @@
 #!/bin/bash
-RAILS_ENV=test bundle exec rake cypress:run # TODO: Fix parallelization
-# if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS" = "" ]; then
-#   KNAPSACK_PRO_ENDPOINT=https://api-disabled-for-fork.knapsackpro.com \
-#     KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
-#     KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS=disabled-for-fork \
-#     RAILS_ENV=test bundle exec rake cypress:run # run without parallelization
-# else
-#   npx knapsack-pro-cypress # parallelization is available
-# fi
+# As discussed in the engineering roundtable 2021/01/25, we wil lrevisit cypress-rails knapsack pro integration
+# and worry about re-enabling parallelization of e2e tests later.
+RAILS_ENV=test bundle exec rake cypress:runner
