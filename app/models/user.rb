@@ -90,7 +90,8 @@ class User < ApplicationRecord
   }x.freeze
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
+                :current_password
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
@@ -494,6 +495,7 @@ class User < ApplicationRecord
 
   def unsubscribe_from_newsletters
     return if email.blank?
+    return if SiteConfig.mailchimp_api_key.blank? && SiteConfig.mailchimp_newsletter_id.blank?
 
     Mailchimp::Bot.new(self).unsubscribe_all_newsletters
   end

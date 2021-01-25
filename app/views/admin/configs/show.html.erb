@@ -318,12 +318,12 @@
                           class="flex items-center justify-between <%= tooltip_class_on_auth_provider_enablebtn %>"
                           data-tooltip="<%= tooltip_text_email_or_auth_provider_btns %>">
                           <div class="config-authentication__item--label">
-                            <p class="crayons-field__label <%= authentication_enabled_providers.include?(provider) ? "pb-0" : "" %>">
+                            <p class="crayons-field__label <%= authentication_provider_enabled?(provider) ? "pb-0" : "" %>">
                               <%= provider.official_name %>
                             </p>
                             <div
                               id="<%= provider.provider_name %>-enabled-indicator"
-                              class="enabled-indicator <%= authentication_enabled_providers.include?(provider) ? "visible" : "" %>">
+                              class="enabled-indicator <%= authentication_provider_enabled?(provider) ? "visible" : "" %>">
                               <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon admin-config-checkmark", title: "Checkmark") %>
                               <small class="crayons-field__description ml-1">Enabled</small>
                             </div>
@@ -331,13 +331,13 @@
                           <button
                             class="crayons-btn crayons-btn--secondary"
                             id="<%= provider.provider_name %>-auth-btn"
-                            data-button-text="<%= authentication_enabled_providers.include?(provider) ? "edit" : "enable" %>"
+                            data-button-text="<%= authentication_provider_enabled?(provider) ? "edit" : "enable" %>"
                             data-action="click->config#enableOrEditAuthProvider"
                             data-provider-name="<%= provider.provider_name %>"
                             data-provider-official-name="<%= provider.official_name %>"
-                            data-enable-auth="<%= authentication_enabled_providers.include?(provider) ? "true" : "false" %>"
+                            data-enable-auth="<%= authentication_provider_enabled?(provider) ? "true" : "false" %>"
                             <%= disabled_attr_on_auth_provider_enable_btn %>>
-                            <%= authentication_enabled_providers.include?(provider) ? "Edit" : "Enable" %>
+                            <%= authentication_provider_enabled?(provider) ? "Edit" : "Enable" %>
                           </button>
                         </div>
                         <div id="<%= provider.provider_name %>-auth-settings" class="config-authentication__item--body hidden">
