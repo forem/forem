@@ -2,10 +2,6 @@ require "rails_helper"
 
 RSpec.describe SiteConfig, type: :model do
   describe "validations" do
-    describe "builtin validations" do
-      it { is_expected.to validate_presence_of(:var) }
-    end
-
     describe "validating URLs" do
       let(:url_fields) do
         %w[
