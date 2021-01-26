@@ -5,7 +5,7 @@ import postscribe from 'postscribe';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { submitArticle, previewArticle } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
-import { Button, ButtonGroup, Modal } from '@crayons';
+import { Button, Modal } from '@crayons';
 
 /* global activateRunkitTags */
 
@@ -276,10 +276,6 @@ export default class ArticleForm extends Component {
     });
   };
 
-  navigateHome = () => {
-    window.location.href = '/';
-  };
-
   switchHelpContext = ({ target }) => {
     this.setState({
       ...this.setCommonProps({
@@ -356,24 +352,26 @@ export default class ArticleForm extends Component {
           version={version}
         />
         {this.state.showModal && (
-          <Modal title="You have unsaved changes" onClose={this.toggleModal}>
-            <div>
-              <p>
-                You've made changes to your post. Do you want to navigate to
-                leave this page?
-              </p>
-              <ButtonGroup className="crayons-article-form__modal__button-group">
-                <Button variant="danger" onClick={this.navigateHome}>
-                  Yes, go back
-                </Button>
-                <Button
-                  aria-label="Cancel"
-                  variant="secondary"
-                  onClick={this.toggleModal}
-                >
-                  No, keep editing
-                </Button>
-              </ButtonGroup>
+          <Modal
+            size="s"
+            title="You have unsaved changes"
+            onClose={this.toggleModal}
+          >
+            <p>
+              You've made changes to your post. Do you want to navigate to leave
+              this page?
+            </p>
+            <div className="pt-4 flex gap-2">
+              <Button variant="danger" url="/" tagName="a">
+                Yes, go back
+              </Button>
+              <Button
+                aria-label="Cancel"
+                variant="secondary"
+                onClick={this.toggleModal}
+              >
+                No, keep editing
+              </Button>
             </div>
           </Modal>
         )}
