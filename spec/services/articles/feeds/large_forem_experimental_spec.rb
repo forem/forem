@@ -203,29 +203,6 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
   end
 
-  describe "#score_randomness" do
-    context "when random number is less than 0.6 but greater than 0.3" do
-      it "returns 6" do
-        allow(feed).to receive(:rand).and_return(2)
-        expect(feed.score_randomness).to eq 6
-      end
-    end
-
-    context "when random number is less than 0.3" do
-      it "returns 3" do
-        allow(feed).to receive(:rand).and_return(1)
-        expect(feed.score_randomness).to eq 3
-      end
-    end
-
-    context "when random number is greater than 0.6" do
-      it "returns 0" do
-        allow(feed).to receive(:rand).and_return(0)
-        expect(feed.score_randomness).to eq 0
-      end
-    end
-  end
-
   describe "#score_language" do
     context "when article is in a user's preferred language" do
       it "returns a score of 1" do
