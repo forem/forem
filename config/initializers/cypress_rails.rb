@@ -4,8 +4,9 @@ return unless Rails.env.test? && ENV["E2E"].present?
 
 CypressRails.hooks.before_server_start do
   # Called once, before either the transaction or the server is started
+  Rails.logger.info("Starting up server for end to end tests.")
   Rails.application.load_tasks
-  Rake::Task["db:seed:e2e"].invoke("initial_e2e_db")
+  Rake::Task["db:seed:e2e"].invoke
 end
 
 CypressRails.hooks.after_transaction_start do
@@ -18,4 +19,8 @@ end
 
 CypressRails.hooks.before_server_stop do
   # Called once, at_exit
+  Rails.logger.info("Cleaning up and stopping server for end to end tests.")
+  Rake::Task["search:destroy"].invoke
+  Rake::Task["db:truncate_all"].invoke
+  Rails.logger.info("The end to end test server has shutdown gracefully.")
 end
