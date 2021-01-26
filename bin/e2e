@@ -5,7 +5,7 @@ read -p "Do you need to set up your end to end (E2E) testing database? Answer ye
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
   printf "\n\nSetting up the E2E database before running E2E tests...\n\n"
-  npm run e2e:setup
+  RAILS_ENV=test bin/e2e-setup
 fi
 
 CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.json" RAILS_ENV=test bundle exec rake cypress:open
