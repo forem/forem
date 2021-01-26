@@ -90,7 +90,7 @@
   "devDependencies": {
     "@knapsack-pro/cypress": "^4.2.1",
     "@stoplight/spectral": "5.8.0",
-    "@storybook/addon-a11y": "^6.1.14",
+    "@storybook/addon-a11y": "^6.1.15",
     "@storybook/addon-actions": "^6.1.15",
     "@storybook/addon-docs": "^6.1.15",
     "@storybook/addon-knobs": "^6.1.15",
