@@ -1,4 +1,6 @@
-return unless Rails.env.test?
+# We want to check not only if we are in the test environment, but also if we are
+# running E2E tests. Otherwise this will run when system tests run.
+return unless Rails.env.test? && ENV["E2E"].present?
 
 CypressRails.hooks.before_server_start do
   # Called once, before either the transaction or the server is started

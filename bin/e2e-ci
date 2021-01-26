@@ -1,4 +1,4 @@
 #!/bin/bash
 # As discussed in the engineering roundtable 2021/01/25, we will revisit cypress-rails knapsack pro integration
 # for re-enabling parallelization of e2e tests later.
-RAILS_ENV=test bundle exec rake cypress:run
+RAILS_ENV=test bundle E2E=true exec rake cypress:run
