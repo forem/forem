@@ -1,55 +1,57 @@
-<div class="user-settings-page">
-  <h2> Destroy your account</h2>
-  <div class="settings-form">
-    <h4 style="font-weight:400;">
-      <%= form_tag user_full_delete_path, method: :delete, autocomplete: "off", id: "delete__account" do %>
-        Deleting your account will:
-        <ul class="delete__account">
-          <li>delete your profile, along with your Twitter and/or GitHub associations.
-            This does not include app permissions. You will have to remove them yourself on
-            <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
-            <a href="https://github.com/settings/applications">GitHub profile settings</a>.
-          </li>
-          <%# TODO: expand the delete messaging later %>
-          <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
-          <li>allow your username to become available to anyone.</li>
-        </ul>
-        <div class="field">
-          <label for="delete__account__username__field">
-            <b>To delete your account, type in your username:</b>
+<div class="user-settings-page crayons-layout crayons-layout--limited-l gap-0">
+  <div class="crayons-card min-w-0 text-padding">
+    <h2 class="crayons-title mb-4"> Destroy your account</h2>
+    <div class="settings-form">
+        <%= form_tag user_full_delete_path, method: :delete, autocomplete: "off", id: "delete__account", class: 'flex flex-col gap-4 mb-4' do %>
+          Deleting your account will:
+          <ul class="my-0 ml-6 list-disc">
+            <li>delete your profile, along with your Twitter and/or GitHub associations.
+              This does not include app permissions. You will have to remove them yourself on
+              <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
+              <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+            </li>
+            <%# TODO: expand the delete messaging later %>
+            <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
+            <li>allow your username to become available to anyone.</li>
+          </ul>
+          <h3>To delete your account:</h3>
+        <div class="crayons-field m:w-50">
+          <label for="delete__account__username__field" class="crayons-field__label">
+            Type in your username
           </label>
-          <input type="text" name="delete__account__username__field" id="delete__account__username__field">
+          <input type="text" name="delete__account__username__field" class="crayons-textfield " id="delete__account__username__field" placeholder="username">
         </div>
-        <div class="field">
-          <label for="delete__account__verification__field">
-            <b>For verification, type the words:</b><i> delete my account</i>
+        <div class="crayons-field m:w-50">
+          <label for="delete__account__verification__field" class="crayons-field__label">
+            For confirmaiton, type the words: <code>delete my account</code>
           </label>
-          <input type="text" name="delete__account__verification__field" id="delete__account__verification__field">
+          <input type="text" name="delete__account__verification__field" class="crayons-textfield" id="delete__account__verification__field">
         </div>
-        <button class="big-action danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
-          DELETE ACCOUNT
-        </button>
-      <% end %>
-    </h4>
-    <br>
-    <script>
-      const deleteAccountBtn = document.getElementById('delete__account__btn');
-      const deleteAccountUsernameInput = document.getElementById('delete__account__username__field');
-      const deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field');
-      function bothInputsVerified() {
-        return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account";
-      }
-      const disableDeleteAccountBtn = () => { deleteAccountBtn.disabled = !bothInputsVerified() };
-      deleteAccountUsernameInput.addEventListener('input', disableDeleteAccountBtn);
-      deleteAcccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
-    </script>
-    <p>
-      If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
-      please <%= email_link(text: "click here", additional_info: { subject: "Request Account Deletion", body: @email_body }) %>
-    </p>
+        <div>
+          <button class="crayons-btn crayons-btn--danger" id="delete__account__btn" type="submit" disabled="true">
+            Delete account
+          </button>
+        </div>
+        <% end %>
+      <script>
+        const deleteAccountBtn = document.getElementById('delete__account__btn');
+        const deleteAccountUsernameInput = document.getElementById('delete__account__username__field');
+        const deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field');
+        function bothInputsVerified() {
+          return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account";
+        }
+        const disableDeleteAccountBtn = () => { deleteAccountBtn.disabled = !bothInputsVerified() };
+        deleteAccountUsernameInput.addEventListener('input', disableDeleteAccountBtn);
+        deleteAcccountVerificationInput.addEventListener('input', disableDeleteAccountBtn);
+      </script>
+      <p>
+        If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
+        please <%= email_link(text: "click here", additional_info: { subject: "Request Account Deletion", body: @email_body }) %>
+      </p>
 
-    <p>
-      Feel free to contact <%= email_link %> with any questions.
-    </p>
+      <p>
+        Feel free to contact <%= email_link %> with any questions.
+      </p>
+    </div>
   </div>
 </div>
