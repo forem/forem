@@ -93,7 +93,6 @@ jobs:
       name: "Preact, storybook, bundle audit, console check"
       script:
         - yarn test --colors
-        - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json
         - bundle exec bundle-audit check --update --ignore CVE-2015-9284
         - bin/test-console-check
         - yarn build-storybook
