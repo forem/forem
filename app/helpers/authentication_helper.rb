@@ -15,6 +15,10 @@ module AuthenticationHelper
     end
   end
 
+  def authentication_provider_enabled?(provider_name)
+    authentication_enabled_providers.include?(provider_name)
+  end
+
   def authentication_enabled_providers_for_user(user = current_user)
     Authentication::Providers.enabled_for_user(user)
   end

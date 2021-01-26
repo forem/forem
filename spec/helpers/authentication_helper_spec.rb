@@ -38,6 +38,23 @@ RSpec.describe AuthenticationHelper, type: :helper do
     end
   end
 
+  describe "#authentication_provider_enabled?" do
+    before do
+      allow(SiteConfig).to receive(:invite_only_mode).and_return(false)
+      allow(SiteConfig).to receive(:authentication_providers).and_return(%i[twitter github])
+    end
+
+    it "returns true when a provider has been enabled" do
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Twitter)).to be true
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Github)).to be true
+    end
+
+    it "returns false when a provider has not yet been enabled" do
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Facebook)).to be false
+      expect(helper.authentication_provider_enabled?(Authentication::Providers::Apple)).to be false
+    end
+  end
+
   describe "tooltip classes, attributes and content" do
     context "when invite-only-mode enabled and no enabled registration options" do
       before do

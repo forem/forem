@@ -14,8 +14,11 @@
         <tr>
           <td class="whitespace-nowrap"><%= script.id %></td>
           <td><%= script.file_name %></td>
-          <td class="whitespace-nowrap justify-content-center">
+          <td class="justify-content-center">
             <%= script.status %>
+            <% if script.error.present? %>
+              <div class="fs-xs"><%= script.error %></div>
+            <% end %>
           </td>
           <td><%= script.created_at %></td>
           <td><%= script.run_at %></td>

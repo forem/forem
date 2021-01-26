@@ -202,6 +202,28 @@ RSpec.describe "UserSettings", type: :request do
     end
   end
 
+  describe "GET /settings/profile" do
+    before { sign_in user }
+
+    context "when user has profile image" do
+      it "displays profile image upload input" do
+        get user_settings_path(:profile)
+
+        expect(response.body).to include("user[profile_image]")
+      end
+    end
+
+    context "when user does not have a profile image" do
+      let(:user) { create(:user, profile_image: nil) }
+
+      it "displays profile image upload input" do
+        get user_settings_path(:profile)
+
+        expect(response.body).to include("user[profile_image]")
+      end
+    end
+  end
+
   describe "PUT /update/:id" do
     before { sign_in user }
 
