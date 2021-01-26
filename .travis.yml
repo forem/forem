@@ -80,7 +80,7 @@ jobs:
       name: "Node 2"
       env: KNAPSACK_PRO_CI_NODE_INDEX=2
     - stage: Test
-      name: "Preact, Storybook, bundle audit, console check, e2e"
+      name: "Front-end tests, Storybook, bundle audit, console check, e2e"
       script:
         - yarn test --colors
         - bundle exec rails db:create db:schema:load assets:precompile
