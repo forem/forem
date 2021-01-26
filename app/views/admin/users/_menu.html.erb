@@ -1,0 +1,48 @@
+<div class="flex mb-6 items-center">
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <%= link_to "All", admin_users_path, class: "nav-link #{'active' if params[:controller] == 'admin/users' && params[:role].blank?}" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Admins", admin_users_path(role: :admin), class: "nav-link #{'active' if params[:controller] == 'admin/users' && params[:role] == 'admin'}" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Super Admins", admin_users_path(role: :super_admin), class: "nav-link #{'active' if params[:controller] == 'admin/users' && params[:role] == 'super_admin'}" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Trusted", admin_users_path(role: :trusted), class: "nav-link #{'active' if params[:controller] == 'admin/users' && params[:role] == 'trusted'}" %>
+    </li>
+    <li class="nav-item">
+      <%= link_to "Tag Mods", admin_users_path(role: :tag_moderator), class: "nav-link #{'active' if params[:controller] == 'admin/users' && params[:role] == 'tag_moderator'}" %>
+    </li>
+  </ul>
+  <% if params[:controller] == "admin/users" %>
+    <%= form_with url: admin_users_path, method: :get, local: true, class: "form-inline ml-auto" do |f| %>
+      <div class="form-group">
+        <%= f.text_field :search, value: params[:search], class: "form-control mr-2" %>
+        <%= f.hidden_field :role, value: params[:role] if params[:role].present? %>
+      </div>
+      <%= f.submit "Search", class: "btn btn-light" %>
+    <% end %>
+  <% end %>
+</div>
+<div class="flex mb-6 items-center">
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <%= link_to "Invitations", admin_invitations_path, class: "nav-link #{'active' if params[:controller] == 'admin/invitations'}" %>
+    </li>
+    <% if params[:controller] == "admin/invitations" %>
+      <li class="nav-item">
+        <%= link_to "New", new_admin_invitation_path, class: "nav-link" %>
+      </li>
+    <% end %>
+    <li class="nav-item" style=";">
+      <%= link_to admin_users_gdpr_delete_requests_path, class: "nav-link #{'active' if params[:controller] == 'admin/users/gdpr_delete_requests'}" do %>
+        GDPR Delete Requests
+        <% if Users::GdprDeleteRequest.any? %>
+          &nbsp;<span class="crayons-indicator crayons-indicator--critical"><%= Users::GdprDeleteRequest.count %></span>
+        <% end %>
+      <% end %>
+    </li>
+  </ul>
+</div>

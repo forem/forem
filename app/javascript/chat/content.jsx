@@ -4,6 +4,8 @@ import Article from './article';
 import ChannelRequest from './channelRequest';
 import RequestManager from './RequestManager/RequestManager';
 import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
+import Draw from './draw';
+import ReportAbuse from './ReportAbuse';
 
 const smartSvgIcon = (content, d) => (
   <svg
@@ -27,17 +29,25 @@ export default class Content extends Component {
       handleRequestApproval: PropTypes.func,
       handleJoiningRequest: PropTypes.func,
       activeMembershipId: PropTypes.func,
+      sendCanvasImage: PropTypes.func,
     }).isRequired,
     fullscreen: PropTypes.bool.isRequired,
     onTriggerContent: PropTypes.func.isRequired,
     updateRequestCount: PropTypes.func.isRequired,
+    closeReportAbuseForm: PropTypes.func.isRequired,
   };
 
   render() {
-    const { onTriggerContent, fullscreen, resource } = this.props;
+    const {
+      onTriggerContent,
+      fullscreen,
+      resource,
+      closeReportAbuseForm,
+    } = this.props;
     if (!resource) {
       return '';
     }
+
     return (
       // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
       // TODO: These should have key click events as well.
@@ -78,18 +88,23 @@ export default class Content extends Component {
                 'M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z',
               )}
         </button>
-        <Display resource={resource} />
+        <Display
+          resource={resource}
+          closeReportAbuseForm={closeReportAbuseForm}
+        />
       </div>
     );
   }
 }
 
-const Display = ({ resource }) => {
+function Display({ resource, closeReportAbuseForm }) {
   switch (resource.type_of) {
     case 'loading-user':
       return <div className="loading-user" title="Loading user" />;
     case 'article':
       return <Article resource={resource} />;
+    case 'draw':
+      return <Draw sendCanvasImage={resource.sendCanvasImage} />;
     case 'channel-request':
       return (
         <ChannelRequest
@@ -112,7 +127,14 @@ const Display = ({ resource }) => {
           handleLeavingChannel={resource.handleLeavingChannel}
         />
       );
+    case 'message-report-abuse':
+      return (
+        <ReportAbuse
+          data={resource.data}
+          closeReportAbuseForm={closeReportAbuseForm}
+        />
+      );
     default:
       return null;
   }
-};
+}

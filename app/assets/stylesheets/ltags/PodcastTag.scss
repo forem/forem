@@ -165,6 +165,9 @@
       height: 130px;
       background: $black;
       margin: auto;
+      animation: var(--podcast-spinning-animation);
+      -webkit-backface-visibility: hidden;
+      animation-play-state: paused;
 
       @media screen and (min-width: 830px) {
         height: inherit;
@@ -188,17 +191,16 @@
   }
 
   .playing {
+    .podcastliquidtag__podcastimage {
+      animation-play-state: running;
+    }
+
     .play-butt {
       display: none;
     }
 
     .pause-butt {
       display: block;
-    }
-
-    .podcastliquidtag__podcastimage {
-      animation: spin 20s linear infinite;
-      -webkit-backface-visibility: hidden;
     }
   }
 }

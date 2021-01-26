@@ -9,7 +9,11 @@ class BufferUpdate < ApplicationRecord
 
   resourcify
 
+  belongs_to :approver_user, class_name: "User", optional: true
   belongs_to :article
+  belongs_to :composer_user, class_name: "User", optional: true
+  belongs_to :tag, optional: true
+
   validate :validate_body_text_recent_uniqueness, :validate_suggestion_limit
   validates :status, inclusion: { in: %w[pending sent_direct confirmed dismissed] }
 

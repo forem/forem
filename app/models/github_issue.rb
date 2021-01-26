@@ -31,17 +31,17 @@ class GithubIssue < ApplicationRecord
 
       if PATH_COMMENT_REGEXP.match?(url)
         repo, issue_id = comment_repo_and_issue_id(url)
-        issue.issue_serialized = Github::Client.issue_comment(repo, issue_id).to_h
+        issue.issue_serialized = Github::OauthClient.new.issue_comment(repo, issue_id).to_h
         issue.category = "issue_comment"
       else
         repo, issue_id = issue_or_pull_repo_and_issue_id(url)
-        issue.issue_serialized = Github::Client.issue(repo, issue_id).to_h
+        issue.issue_serialized = Github::OauthClient.new.issue(repo, issue_id).to_h
         issue.category = "issue"
       end
 
       # despite the counter intuitive name `.markdown` returns HTML rendered
       # from the original markdown
-      issue.processed_html = Github::Client.markdown(issue.issue_serialized[:body])
+      issue.processed_html = Github::OauthClient.new.markdown(issue.issue_serialized[:body])
 
       issue.save!
 

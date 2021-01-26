@@ -1,4 +1,4 @@
-/* global module */
+/* eslint-env node */
 
 module.exports = function (api) {
   var validEnv = ['development', 'test', 'production'];

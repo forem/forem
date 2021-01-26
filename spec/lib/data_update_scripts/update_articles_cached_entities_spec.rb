@@ -15,8 +15,9 @@ describe DataUpdateScripts::UpdateArticlesCachedEntities do
   end
 
   it "changes cached organizations from OpenStructs to Structs" do
-    cached_org = make_ostruct(create(:organization))
-    article = create(:article, cached_organization: cached_org)
+    org = create(:organization)
+    article = create(:article, organization: org)
+    article.update_column(:cached_organization, make_ostruct(org))
 
     expect do
       described_class.new.run

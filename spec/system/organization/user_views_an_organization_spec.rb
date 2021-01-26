@@ -14,7 +14,7 @@ RSpec.describe "Organization index", type: :system do
 
       it "shows the header", js: true, stub_elasticsearch: true do
         within("h1") { expect(page).to have_content(organization.name) }
-        within("div.profile-details") do
+        within("div.profile-header__actions") do
           expect(page).to have_button("Follow")
         end
       end
@@ -54,7 +54,7 @@ RSpec.describe "Organization index", type: :system do
     it "shows the correct button", js: true, stub_elasticsearch: true do
       visit "/#{organization.slug}"
 
-      within(".profile-details") do
+      within(".profile-header__actions") do
         expect(page).to have_button("Following")
       end
     end

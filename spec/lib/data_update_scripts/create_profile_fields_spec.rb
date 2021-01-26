@@ -6,11 +6,16 @@ def profile_field_and_group_count
 end
 
 describe DataUpdateScripts::CreateProfileFields do
+  before do
+    ProfileFieldGroup.destroy_all
+    ProfileField.destroy_all
+  end
+
   context "when no profile fields or groups exist" do
     it "creates all profile fields and groups" do
       expect do
         described_class.new.run
-      end.to change { profile_field_and_group_count }.from([0, 0]).to([29, 5])
+      end.to change { profile_field_and_group_count }.from([0, 0]).to([25, 5])
     end
   end
 
@@ -20,16 +25,11 @@ describe DataUpdateScripts::CreateProfileFields do
       ProfileFields::ImportFromCsv.call(csv)
     end
 
-    after do
-      ProfileFieldGroup.destroy_all
-      ProfileField.destroy_all
-    end
-
     it "works when profile fields or groups already exist", :aggregate_failures do
       expect do
         described_class.new.run
       end.not_to change { profile_field_and_group_count }
-      expect(profile_field_and_group_count).to eq [29, 5]
+      expect(profile_field_and_group_count).to eq [25, 5]
     end
   end
 end

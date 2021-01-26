@@ -30,7 +30,7 @@ RSpec.describe "BufferUpdates", type: :request do
     end
 
     it "creates buffer hashtag" do
-      SiteConfig.twitter_hashtag = "#DEVCommunity"
+      allow(SiteConfig).to receive(:twitter_hashtag).and_return("#DEVCommunity")
       post "/buffer_updates",
            params:
            { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }

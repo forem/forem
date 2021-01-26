@@ -9,7 +9,7 @@ module Authentication
         {
           name: @info.name,
           email: @info.email || "",
-          remote_profile_image_url: @info.image,
+          remote_profile_image_url: @info.image.gsub("http://", "https://"),
           facebook_username: user_nickname,
           facebook_created_at: Time.zone.now
         }

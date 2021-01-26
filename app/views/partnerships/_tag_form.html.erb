@@ -1,6 +1,6 @@
 <div class="partner-credits-explainer">
   <% sponsored_tags = org.sponsorships.unexpired.where(level: :tag).includes(:sponsorable).map { |sp| sp.sponsorable.name } %>
-  <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
+  <h3><img src="<%= Images::Profile.call(org.profile_image_url, length: 90) %>" />@<%= org.slug %></h3>
   <% if org.enough_credits?(Sponsorship::CREDITS[level]) %>
     <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
     <br />

@@ -58,7 +58,7 @@ class UserSubscription < ApplicationRecord
   end
 
   def liquid_tags_used
-    MarkdownParser.new(
+    MarkdownProcessor::Parser.new(
       user_subscription_sourceable.body_markdown,
       source: user_subscription_sourceable,
       user: user_subscription_sourceable.user,
@@ -90,6 +90,6 @@ class UserSubscription < ApplicationRecord
 
     return if source_active
 
-    errors.add(:base, "Source not found.")
+    errors.add(:base, "Source not found. Please make sure your #{user_subscription_sourceable_type} is active!")
   end
 end

@@ -24,7 +24,7 @@ export class ModerationArticles extends Component {
 
     if (
       id === prevSelectedArticleId &&
-      document.querySelectorAll('.opened').length > 0
+      document.getElementsByClassName('opened').length > 0
     ) {
       selectedArticle.classList.remove('opened');
       return;

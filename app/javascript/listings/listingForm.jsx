@@ -64,24 +64,28 @@ export default class ListingForm extends Component {
 
     const selectOrg =
       organizations && organizations.length > 0 ? (
-        <div className="field">
-          <label htmlFor="organizationId">Post under an organization:</label>
+        <div className="crayons-field">
+          <label htmlFor="organizationId" className="crayons-field__label">
+            Post under an organization
+          </label>
           <OrganizationPicker
             name="listing[organization_id]"
             id="listing_organization_id"
+            className="crayons-select m:max-w-50"
             organizations={organizations}
             organizationId={organizationId}
             onToggle={this.handleOrgIdChange}
           />
-          <p>
-            <em>Posting on behalf of org spends org credits.</em>
+          <p className="crayons-field__description">
+            Posting on behalf of an organization spends the organization's
+            credits.
           </p>
         </div>
       ) : null;
 
     if (id === null) {
       return (
-        <div>
+        <div className="grid gap-6">
           <Title defaultValue={title} onChange={linkState(this, 'title')} />
           <BodyMarkdown
             defaultValue={bodyMarkdown}
@@ -93,16 +97,19 @@ export default class ListingForm extends Component {
             onChange={linkState(this, 'category')}
             category={category}
           />
-          <Tags
-            defaultValue={tagList}
-            category={category}
-            onInput={linkState(this, 'tagList')}
-            classPrefix="listingform"
-            maxTags={8}
-            autocomplete="off"
-            listing
-            pattern={DEFAULT_TAG_FORMAT}
-          />
+          <div className="relative">
+            <Tags
+              defaultValue={tagList}
+              category={category}
+              onInput={linkState(this, 'tagList')}
+              classPrefix="listingform"
+              fieldClassName="crayons-textfield"
+              maxTags={8}
+              autocomplete="off"
+              listing
+              pattern={DEFAULT_TAG_FORMAT}
+            />
+          </div>
           <ExpireDate
             defaultValue={expireDate}
             onChange={linkState(this, 'expireDate')}

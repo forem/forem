@@ -4,8 +4,15 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
   let(:template) { file_fixture("article_published.txt").read }
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user, body_markdown: template) }
+  let(:svg_image) { file_fixture("300x100.svg").read }
 
   before do
+    allow(SiteConfig).to receive(:main_social_image).and_return("https://dummyimage.com/800x600.jpg")
+    allow(SiteConfig).to receive(:logo_png).and_return("https://dummyimage.com/800x600.png")
+    allow(SiteConfig).to receive(:mascot_image_url).and_return("https://dummyimage.com/800x600.jpg")
+    allow(SiteConfig).to receive(:suggested_tags).and_return("coding, beginners")
+    allow(SiteConfig).to receive(:suggested_users).and_return("romagueramica")
+    allow(SiteConfig).to receive(:logo_svg).and_return(svg_image)
     sign_in user
   end
 
@@ -25,7 +32,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
 
   it "user unpublishes their post" do
     visit "/#{user.username}/#{article.slug}/edit"
-    fill_in "article_body_markdown", with: template.gsub("true", "false")
+    fill_in("article_body_markdown", with: template.gsub("true", "false"), fill_options: { clear: :backspace })
     click_button("Save changes")
     expect(page).to have_text("Unpublished Post.")
   end

@@ -19,7 +19,7 @@
       <% end %>
     <% end %>
 
-    <% if policy(:video).new? %>
+    <% if policy(:video).new? && policy(:video).enabled? %>
       <option value="<%= new_video_path %>">Upload a video</option>
     <% end %>
   </select>

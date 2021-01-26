@@ -35,7 +35,7 @@ RSpec.describe "FollowingsController", type: :request do
         expect(response_following["name"]).to eq(followed.name)
         expect(response_following["path"]).to eq(followed.path)
         expect(response_following["username"]).to eq(followed.username)
-        expect(response_following["profile_image"]).to eq(ProfileImage.new(followed).get(width: 60))
+        expect(response_following["profile_image"]).to eq(Images::Profile.call(followed.profile_image_url, length: 60))
       end
     end
   end
@@ -111,7 +111,7 @@ RSpec.describe "FollowingsController", type: :request do
         expect(response_following["name"]).to eq(followed.name)
         expect(response_following["path"]).to eq(followed.path)
         expect(response_following["username"]).to eq(followed.username)
-        expect(response_following["profile_image"]).to eq(ProfileImage.new(followed).get(width: 60))
+        expect(response_following["profile_image"]).to eq(Images::Profile.call(followed.profile_image_url, length: 60))
       end
     end
   end
@@ -148,7 +148,7 @@ RSpec.describe "FollowingsController", type: :request do
         expect(response_following["name"]).to eq(followed.name)
         expect(response_following["path"]).to eq("/#{followed.path}")
         expect(response_following["username"]).to eq(followed.name)
-        expect(response_following["profile_image"]).to eq(ProfileImage.new(followed).get(width: 60))
+        expect(response_following["profile_image"]).to eq(Images::Profile.call(followed.profile_image_url, length: 60))
       end
     end
   end

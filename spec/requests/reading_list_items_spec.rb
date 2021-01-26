@@ -20,12 +20,16 @@ RSpec.describe "ReadingListItems", type: :request do
 
   describe "PUT reading_list_items/:id" do
     it "returns archives item if no param" do
-      put "/reading_list_items/#{reaction.id}"
+      expect do
+        put "/reading_list_items/#{reaction.id}"
+      end.to change { user.reload.last_reacted_at }
       expect(reaction.reload.status).to eq("archived")
     end
 
     it "unarchives an item if current_status is passed as archived" do
-      put "/reading_list_items/#{reaction.id}", params: { current_status: "archived" }
+      expect do
+        put "/reading_list_items/#{reaction.id}", params: { current_status: "archived" }
+      end.to change { user.reload.last_reacted_at }
       expect(reaction.reload.status).to eq("valid")
     end
 

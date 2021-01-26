@@ -19,26 +19,30 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to have_many(:unspent_credits).class_name("Credit") }
       it { is_expected.to have_many(:users).through(:organization_memberships) }
 
-      it { is_expected.to validate_presence_of(:name) }
-      it { is_expected.to validate_presence_of(:summary) }
-      it { is_expected.to validate_presence_of(:url) }
-      it { is_expected.to validate_presence_of(:profile_image) }
-      it { is_expected.to validate_presence_of(:slug) }
+      it { is_expected.to validate_length_of(:company_size).is_at_most(7) }
       it { is_expected.to validate_length_of(:cta_body_markdown).is_at_most(256) }
       it { is_expected.to validate_length_of(:cta_button_text).is_at_most(20) }
-      it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
-      it { is_expected.to validate_length_of(:name).is_at_most(50) }
-      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(18) }
-      it { is_expected.to validate_length_of(:twitter_username).is_at_most(15) }
-      it { is_expected.to validate_length_of(:github_username).is_at_most(50) }
-      it { is_expected.to validate_length_of(:url).is_at_most(200) }
-      it { is_expected.to validate_length_of(:tag_line).is_at_most(60) }
-      it { is_expected.to validate_length_of(:proof).is_at_most(1500) }
-      it { is_expected.to validate_length_of(:location).is_at_most(64) }
       it { is_expected.to validate_length_of(:email).is_at_most(64) }
-      it { is_expected.to validate_length_of(:company_size).is_at_most(7) }
+      it { is_expected.to validate_length_of(:github_username).is_at_most(50) }
+      it { is_expected.to validate_length_of(:location).is_at_most(64) }
+      it { is_expected.to validate_length_of(:name).is_at_most(50) }
+      it { is_expected.to validate_length_of(:proof).is_at_most(1500) }
+      it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
+      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(18) }
       it { is_expected.to validate_length_of(:story).is_at_most(640) }
+      it { is_expected.to validate_length_of(:tag_line).is_at_most(60) }
       it { is_expected.to validate_length_of(:tech_stack).is_at_most(640) }
+      it { is_expected.to validate_length_of(:twitter_username).is_at_most(15) }
+      it { is_expected.to validate_length_of(:url).is_at_most(200) }
+      it { is_expected.to validate_presence_of(:articles_count) }
+      it { is_expected.to validate_presence_of(:credits_count) }
+      it { is_expected.to validate_presence_of(:name) }
+      it { is_expected.to validate_presence_of(:profile_image) }
+      it { is_expected.to validate_presence_of(:slug) }
+      it { is_expected.to validate_presence_of(:spent_credits_count) }
+      it { is_expected.to validate_presence_of(:summary) }
+      it { is_expected.to validate_presence_of(:unspent_credits_count) }
+      it { is_expected.to validate_presence_of(:url) }
       it { is_expected.to validate_uniqueness_of(:secret).allow_nil }
       it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
 
@@ -77,13 +81,14 @@ RSpec.describe Organization, type: :model do
       expect(article.elasticsearch_doc.dig("_source", "organization", "name")).to eq(new_org_name)
     end
 
-    it "on destroy removes data from elasticsearch" do
+    it "on destroy updates related article data" do
       article = create(:article, organization: organization)
-      sidekiq_perform_enqueued_jobs
+      drain_all_sidekiq_jobs
       expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(organization.id)
       organization.destroy
       sidekiq_perform_enqueued_jobs
       expect(article.elasticsearch_doc.dig("_source", "organization")).to be_nil
+      expect(article.reload.cached_organization).to be_nil
     end
   end
 

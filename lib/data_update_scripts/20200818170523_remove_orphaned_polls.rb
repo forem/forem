@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       # Delete all Polls belonging to Articles that don't exist anymore
       ActiveRecord::Base.connection.execute(
-        <<~SQL,
+        <<~SQL.squish,
           DELETE FROM polls
           WHERE article_id NOT IN (SELECT id FROM articles);
         SQL

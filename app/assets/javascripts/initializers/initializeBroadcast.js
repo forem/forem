@@ -81,20 +81,27 @@ function renderBroadcast(broadcastElement, data) {
 
 /**
  * A function to determine if a broadcast should render.
- * Does not render a broadcast on the `/new` route or in an iframe.
+ * Does not render a broadcast in an iframe, or on `/connect` and `/new` routes.
  * Does not render a broadcast if the current user has opted-out,
  * if the broadcast has already been inserted, or if the key for
  * the broadcast's title exists in localStorage.
  *
- * If the broadcast exists in the DOM but was hidden by the articleForm,
- * the function will re-display it again by adding a class.
- *
  * @function initializeBroadcast
  */
 function initializeBroadcast() {
+  const shouldHideBroadcast = window.location.pathname.match(
+    /^(?:\/connect|\/new)/,
+  );
+
   // Iframes will attempt to re-render a broadcast, so we want to explicitly
   // avoid initializing one if we are within `window.frameElement`.
-  if (window.frameElement || window.location.pathname === '/new') {
+  if (window.frameElement || shouldHideBroadcast) {
+    const broadcast = document.getElementById('active-broadcast');
+
+    // Hide the broadcast if it exists and we are on a path where it should be hidden.
+    if (broadcast) {
+      broadcast.classList.remove('broadcast-visible');
+    }
     return;
   }
 

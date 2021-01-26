@@ -1,5 +1,5 @@
-<% accent_color = HexComparer.new([user_colors(@comment.user)[:bg], user_colors(@comment.user)[:text]]).biggest %>
-<% dark_color = HexComparer.new([user_colors(@comment.user)[:bg], user_colors(@comment.user)[:text]]).brightness(0.8) %>
+<% accent_color = Color::CompareHex.new([user_colors(@comment.user)[:bg], user_colors(@comment.user)[:text]]).biggest %>
+<% dark_color = Color::CompareHex.new([user_colors(@comment.user)[:bg], user_colors(@comment.user)[:text]]).brightness(0.8) %>
 <style>
   body {
     background: <%= accent_color %>;
@@ -120,7 +120,7 @@
       <h1 style="font-size:<%= font_size %>vw;"><%= @comment.title %></h1>
     </div>
     <div class="preview-user">
-      <img src="<%= ProfileImage.new(@comment.user).get(width: 90) %>" />
+      <img src="<%= Images::Profile.call(@comment.user.profile_image_url, length: 90) %>" />
       <%= truncate @comment.user.name, length: 28 %>・<%= @comment.readable_publish_date %>
     </div>
     <div class="badge-images">

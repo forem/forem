@@ -14,7 +14,12 @@ module ListingsToolkit
   def update_listing_details
     # [@forem/oss] Not entirely sure what the intention behind the
     # original code was, but at least this is more compact.
+
+    # [@forem/oss] Rails 6.1 adds `.compact` on ActionController::Parameters
+    # rubocop:disable Style/CollectionCompact
     filtered_params = listing_params.reject { |_k, v| v.nil? }
+    # rubocop:enable Style/CollectionCompact
+
     @listing.update(filtered_params)
   end
 
@@ -100,6 +105,7 @@ module ListingsToolkit
       # save the listing
       @listing.bumped_at = Time.current
       @listing.published = true
+      @listing.originally_published_at = Time.current
 
       # since we can't raise active record errors in this transaction
       # due to the fact that we need to display them in the :new view,

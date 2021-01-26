@@ -1,0 +1,7 @@
+<h2 class="fs-2xl s:fs-3xl mb-6">Make a new Listing Category:</h2>
+<div class="crayons-card p-6">
+  <%= form_for([:admin, @listing_category], method: :post) do %>
+    <%= render "form" %>
+    <%= submit_tag "Create Listing Category", class: "btn btn-primary" %>
+  <% end %>
+</div>

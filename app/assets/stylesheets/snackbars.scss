@@ -14,9 +14,9 @@
   );
   @include themeable(border, container-border, 2px solid $purple);
   padding: 12px 30px;
-  z-index: 20;
-  border-radius: 3px;
-  font-weight: bold;
+  z-index: var(--z-popover);
+  border-radius: var(--radius);
+  font-weight: var(--fw-bold);
   @media screen and (min-width: 430px) {
     right: auto;
     display: inline-block;

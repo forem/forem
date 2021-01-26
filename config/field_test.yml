@@ -1,38 +1,36 @@
 experiments:
-  user_home_feed: # Home feed collection for logged in user
+  feed_top_articles_query:
+    # This tests how we fetch "globally hot articles" — Testing some variants of
+    # more focus on the particpant's tags, some other alternatives which take more into account
+    # when the particpant was last on the site and viewed a post.
+    # -> Recommended experiment duration: 2 weeks.
+    # This experiment has new goals measuring consistently of coming back and clocking a page view
+    # and two weeks should be enough to see results.
+    # Hypotheses. This will be more impactful than past experiments which were too modest.
+    # We'll get more info on bigger levers on experiments, and should be able to pit the winner
+    # against some more variation.
+    # combination_only_tags_followed_and_top_max_7_days will be interesting to observe I think.
     variants:
       - base
-      - more_random_experiment
-      - more_tag_weight_experiment
-      - mix_base_more_random_experiment
-      - more_tag_weight_more_random_experiment
-      - more_comments_experiment
-      - more_experience_level_weight_experiment
-      - mix_of_everything_experiment
-      - more_tag_weight_randomized_at_end_experiment
-      - more_experience_level_weight_randomized_at_end_experiment
-      - more_comments_randomized_at_end_experiment
-      - more_comments_medium_weight_randomized_at_end_experiment
-      - more_comments_minimal_weight_randomized_at_end_experiment
-    weights:
-      - 5
-      - 5
-      - 5
-      - 10
-      - 5
-      - 5
-      - 5
-      - 10
-      - 10
-      - 5
-      - 25
-      - 5
-      - 5
+      - base_with_more_articles
+      - only_followed_tags
+      - top_articles_since_last_pageview_3_days_max
+      - top_articles_since_last_pageview_7_days_max
+      - combination_only_tags_followed_and_top_max_7_days
+    weights: # "base" gets a few more rolls of the dice
+      - 20
+      - 16
+      - 16
+      - 16
+      - 16
+      - 16
     goals:
       - user_creates_comment
-      - user_creates_reaction
+      - user_creates_comment_four_days_in_week
       - user_views_article_four_days_in_week
       - user_views_article_four_hours_in_day
+      - user_views_article_nine_days_in_two_week
+      - user_views_article_twelve_hours_in_five_days
 exclude:
   bots: true
 

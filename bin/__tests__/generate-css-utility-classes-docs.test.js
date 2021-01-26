@@ -23,6 +23,7 @@ function getStorybookFilePath(cssProperty) {
 
 describe('generateUtilityClassesDocumentation', () => {
   beforeEach(() => {
+    // eslint-disable-next-line no-console
     console.log = jest.fn();
   });
 
@@ -32,7 +33,7 @@ describe('generateUtilityClassesDocumentation', () => {
     import '../../crayons/storybook-utilities/designSystem.scss';
 
     export default {
-      title: '5_CSS Utility classes/color',
+      title: 'Utility-First Classes/color',
     };
     export const _color_some_utility_class = () => <div class="container">
       <p><code>.color-some-utility-class</code> utility class for the following CSS properties:</p>
@@ -83,7 +84,7 @@ ${'      '}
     import '../../crayons/storybook-utilities/designSystem.scss';
 
     export default {
-      title: '5_CSS Utility classes/color',
+      title: 'Utility-First Classes/color',
     };
     export const _color_some_utility_class = () => <div class="container">
       <p><code>.color-some-utility-class</code> utility class for the following CSS properties:</p>
@@ -143,7 +144,7 @@ ${'      '}
     import '../../crayons/storybook-utilities/designSystem.scss';
 
     export default {
-      title: '5_CSS Utility classes/color',
+      title: 'Utility-First Classes/color',
     };
     export const _color_some_utility_class = () => <div class="container">
       <p><code>.color-some-utility-class</code> utility class for the following CSS properties:</p>
@@ -194,7 +195,7 @@ ${'      '}
     import '../../crayons/storybook-utilities/designSystem.scss';
 
     export default {
-      title: '5_CSS Utility classes/color',
+      title: 'Utility-First Classes/color',
     };
     export const _color_some_utility_class = () => <div class="container">
       <p><code>.color-some-utility-class</code> utility class for the following CSS properties:</p>

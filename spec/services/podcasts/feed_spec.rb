@@ -96,7 +96,10 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
   end
 
   context "when creating" do
+    let(:cache_store) { ActiveSupport::Cache.lookup_store(:redis_cache_store) }
+
     before do
+      allow(Rails).to receive(:cache).and_return(cache_store)
       stub_request(:head, "https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3").to_return(status: 200)
       stub_request(:head, "https://traffic.libsyn.com/sedaily/IFTTT.mp3").to_return(status: 200)
     end

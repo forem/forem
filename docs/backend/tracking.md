@@ -40,7 +40,7 @@ an `Ahoy::Visit` for the event being tracked.
 
 Events can be tracked in a controller action on the backend, or with JavaScript
 on the frontend. Learn more about tracking events with JavaScript in our
-[frontend tracking guide](../frontend/tracking.md).
+[frontend tracking guide](/frontend/tracking).
 
 When an event is tracked, it should include a `name` and a `properties` hash.
 When adding new events, be sure that the name is unique per-event. The

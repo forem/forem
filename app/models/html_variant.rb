@@ -1,4 +1,6 @@
 class HtmlVariant < ApplicationRecord
+  resourcify
+
   GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign].freeze
 
   belongs_to :user, optional: true
@@ -73,6 +75,6 @@ class HtmlVariant < ApplicationRecord
   end
 
   def allowed_image_host?(src)
-    src.start_with?("https://res.cloudinary.com/")
+    src.start_with?("https://res.cloudinary.com/") || src.start_with?(Images::Optimizer.get_imgproxy_endpoint)
   end
 end

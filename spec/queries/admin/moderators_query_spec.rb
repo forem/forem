@@ -9,6 +9,7 @@ RSpec.describe Admin::ModeratorsQuery, type: :query do
   let!(:user4) { create(:user, :admin, name: "Susi", comments_count: 10) }
   let(:user5) { create(:user, :trusted, :admin, name: "Beth") }
   let(:user6) { create(:user, :admin, name: "Jean", comments_count: 5) }
+  let(:user7) { create(:user, :banned, name: "Harry") }
 
   describe ".call" do
     context "when no arguments are given" do
@@ -38,7 +39,7 @@ RSpec.describe Admin::ModeratorsQuery, type: :query do
     context "when state does not exist" do
       let(:options) { { state: "non_existent_role" } }
 
-      it { within_block_is_expected.to raise_error(ActiveRecord::RecordNotFound) }
+      it { is_expected.to match_array([]) }
     end
   end
 end

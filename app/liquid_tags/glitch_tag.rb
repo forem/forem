@@ -3,6 +3,7 @@ class GlitchTag < LiquidTagBase
 
   PARTIAL = "liquids/glitch".freeze
   ID_REGEXP = /\A[a-zA-Z0-9\-]{1,110}\z/.freeze
+  TILDE_PREFIX_REGEXP = /\A~/.freeze
   OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file=\w(\.\w)?)/.freeze
   OPTIONS_TO_QUERY_PAIR = {
     "app" => %w[previewSize 100],
@@ -35,7 +36,8 @@ class GlitchTag < LiquidTagBase
   end
 
   def parse_id(input)
-    id = input.split(" ").first
+    id = input.split.first
+    id.sub!(TILDE_PREFIX_REGEXP, "")
     raise StandardError, "Invalid Glitch ID" unless valid_id?(id)
 
     id
@@ -59,7 +61,7 @@ class GlitchTag < LiquidTagBase
   end
 
   def parse_options(input)
-    _, *options = input.split(" ")
+    _, *options = input.split
 
     # 'app' and 'code' should cancel each other out
     options -= %w[app code] if (options & %w[app code]) == %w[app code]

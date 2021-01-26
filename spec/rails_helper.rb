@@ -48,6 +48,7 @@ allowed_sites = [
   "selenium-release.storage.googleapis.com",
   "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
   "api.knapsackpro.com",
+  "elasticsearch",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
@@ -84,7 +85,17 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
+    # Set the TZ ENV variable with the current random timezone from zonebie
+    # which we can then use to properly set the browser time for Capybara specs
+    ENV["TZ"] = Time.zone.tzinfo.name
+
     Search::Cluster.recreate_indexes
+
+    # NOTE: @citizen428 needed while we delegate from User to Profile to keep
+    # spec changes limited for the time being.
+    csv = Rails.root.join("lib/data/dev_profile_fields.csv")
+    ProfileFields::ImportFromCsv.call(csv)
+    Profile.refresh_attributes!
   end
 
   config.before do
@@ -167,8 +178,8 @@ RSpec.configure do |config|
             }).to_return(status: 200, body: "", headers: {})
 
     allow(SiteConfig).to receive(:community_description).and_return("Some description")
-    SiteConfig.public = true
-    SiteConfig.waiting_on_first_user = false
+    allow(SiteConfig).to receive(:public).and_return(true)
+    allow(SiteConfig).to receive(:waiting_on_first_user).and_return(false)
   end
 
   config.after do

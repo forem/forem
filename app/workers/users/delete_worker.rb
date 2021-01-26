@@ -9,6 +9,9 @@ module Users
       return unless user
 
       Users::Delete.call(user)
+      # notify admins internally that they need to delete gdpr data
+      Users::GdprDeleteRequest.create(user_id: user.id, email: user.email, username: user.username)
+
       return if admin_delete || user.email.blank?
 
       # at this point the user object is already destroyed on the DB,

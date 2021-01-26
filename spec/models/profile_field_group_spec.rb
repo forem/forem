@@ -1,8 +1,13 @@
 require "rails_helper"
 
 RSpec.describe ProfileFieldGroup, type: :model do
-  let!(:group) { create(:profile_field_group) }
   subject { group }
+
+  before do
+    allow(FeatureFlag).to receive(:enabled?).with(:profile_admin).and_return(true)
+  end
+
+  let!(:group) { create(:profile_field_group) }
 
   it { is_expected.to have_many(:profile_fields).dependent(:nullify) }
   it { is_expected.to validate_presence_of(:name) }
@@ -10,8 +15,11 @@ RSpec.describe ProfileFieldGroup, type: :model do
 
   describe ".onboarding" do
     let!(:other_group) { create(:profile_field_group) }
-    let!(:profile_field1) { create(:profile_field, :onboarding, profile_field_group: group) }
-    let!(:profile_field2) { create(:profile_field, profile_field_group: other_group) }
+
+    before do
+      create(:profile_field, :onboarding, profile_field_group: group)
+      create(:profile_field, profile_field_group: other_group)
+    end
 
     it "only returns groups that have fields for onboarding" do
       groups = described_class.onboarding

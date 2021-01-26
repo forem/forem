@@ -26,8 +26,10 @@ RSpec.describe RateLimitChecker, type: :service do
       expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: no unique component present")
     end
 
-    # published_article_creation limit we check against the database rather than our cache
-    described_class::ACTION_LIMITERS.except(:published_article_creation).each do |action, _options|
+    # We check published_article_creation + :published_article_antispam_creation
+    # limit against database, rather than our cache.
+    described_class::ACTION_LIMITERS.except(:published_article_creation,
+                                            :published_article_antispam_creation).each do |action, _options|
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
           cache_key(action), raw: true
@@ -60,6 +62,12 @@ RSpec.describe RateLimitChecker, type: :service do
       end
     end
 
+    it "returns true if too many published articles at once and potentially spammy" do
+      allow(SiteConfig).to receive(:rate_limit_published_article_antispam_creation).and_return(1)
+      create_list(:article, 2, user_id: user.id, published: true)
+      expect(rate_limit_checker.limit_by_action("published_article_antispam_creation")).to be(true)
+    end
+
     it "returns true if too many published articles at once" do
       allow(SiteConfig).to receive(:rate_limit_published_article_creation).and_return(1)
       create_list(:article, 2, user_id: user.id, published: true)
@@ -88,6 +96,10 @@ RSpec.describe RateLimitChecker, type: :service do
         .and_return(SiteConfig.rate_limit_follow_count_daily)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to be(false)
+    end
+
+    it "returns false if published articles antispam limit has not been reached" do
+      expect(described_class.new(user).limit_by_action("published_article_antispam_creation")).to be(false)
     end
 
     it "returns false if published articles limit has not been reached" do

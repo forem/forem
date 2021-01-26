@@ -6,6 +6,10 @@ class BadgeAchievement < ApplicationRecord
   belongs_to :badge
   belongs_to :rewarder, class_name: "User", optional: true
 
+  delegate :slug, to: :badge, prefix: true
+  delegate :title, to: :badge, prefix: true
+  delegate :badge_image_url, to: :badge, prefix: false
+
   counter_culture :user, column_name: "badge_achievements_count"
 
   validates :badge_id, uniqueness: { scope: :user_id }
@@ -20,7 +24,7 @@ class BadgeAchievement < ApplicationRecord
   def render_rewarding_context_message_html
     return unless rewarding_context_message_markdown
 
-    parsed_markdown = MarkdownParser.new(rewarding_context_message_markdown)
+    parsed_markdown = MarkdownProcessor::Parser.new(rewarding_context_message_markdown)
     html = parsed_markdown.finalize
     final_html = ActionController::Base.helpers.sanitize(
       html,

@@ -2,7 +2,7 @@
 // Colors. /////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 //
-// List of colors to be used to generate utility-first classes,
+// List of colors to be used to generate Utility-First Classes/,
 // using generate-classes() function. See files from /base folder
 // for reference.
 //
@@ -84,6 +84,18 @@ $negative-spacing-units: (
   '8': calc(var(--su-8) * -1),
   '9': calc(var(--su-9) * -1),
   '10': calc(var(--su-10) * -1),
+);
+
+////////////////////////////////////////////////////////////////////////////////////
+
+$z-indexes: (
+  'negative': var(--z-negative),
+  'elevate': var(--z-elevate),
+  'sticky': var(--z-sticky),
+  'drawer': var(--z-drawer),
+  'modal': var(--z-modal),
+  'dropdown': var(--z-dropdown),
+  'popover': var(--z-popover),
 );
 
 ////////////////////////////////////////////////////////////////////////////////////

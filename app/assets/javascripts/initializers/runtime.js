@@ -17,8 +17,7 @@ class Runtime {
    */
   static isNativeIOS(namespace = null) {
     const nativeCheck =
-      /DEV-Native-ios|forem-native-ios/i.test(navigator.userAgent) &&
-      navigator.userAgent === '' &&
+      /DEV-Native-ios|ForemWebView/i.test(navigator.userAgent) &&
       window &&
       window.webkit &&
       window.webkit.messageHandlers;
@@ -41,8 +40,8 @@ class Runtime {
    */
   static isNativeAndroid(namespace = null) {
     const nativeCheck =
-      /DEV-Native-android|forem-native-android/i.test(navigator.userAgent) &&
-      AndroidBridge != undefined;
+      /DEV-Native-android|ForemWebView/i.test(navigator.userAgent) &&
+      typeof AndroidBridge !== 'undefined';
 
     let namespaceCheck = true;
     if (nativeCheck && namespace) {
@@ -50,5 +49,33 @@ class Runtime {
     }
 
     return nativeCheck && namespaceCheck;
+  }
+
+  /**
+   * This function copies text to clipboard taking in consideration all
+   * supported platforms.
+   *
+   * @param {string} text to be copied to the clipboard
+   *
+   * @returns {Promise} Resolves when succesful in copying to clipboard
+   */
+  static copyToClipboard(text) {
+    return new Promise((resolve, reject) => {
+      if (Runtime.isNativeAndroid('copyToClipboard')) {
+        AndroidBridge.copyToClipboard(text);
+        resolve();
+      } else if (navigator.clipboard != null) {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            resolve();
+          })
+          .catch((e) => {
+            reject(e);
+          });
+      } else {
+        reject('Unsupported device unable to copy to clipboard');
+      }
+    });
   }
 }

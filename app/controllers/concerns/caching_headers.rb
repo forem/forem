@@ -17,7 +17,11 @@ module CachingHeaders
     stale_while_revalidate: nil,
     stale_if_error: 26_400
   )
+    return unless SiteConfig.public # Only public forems should be edge-cached based on current functionality.
+
     request.session_options[:skip] = true # no cookies
+
+    RequestStore.store[:edge_caching_in_place] = true # To be observed downstream.
 
     response.headers["Cache-Control"] = "public, no-cache" # Used only by Fastly.
     response.headers["X-Accel-Expires"] = max_age.to_s # Used only by Nginx.

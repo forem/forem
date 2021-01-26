@@ -4,7 +4,6 @@ import { action } from '@storybook/addon-actions';
 import { SearchForm } from '..';
 
 const commonProps = {
-  searchBoxId: 'nav-search',
   onSearch: action('on preloading search'),
   onSubmitSearch: (e) => {
     e.preventDefault();
@@ -27,7 +26,7 @@ class FocusedForm extends Component {
 
 export default {
   component: SearchForm,
-  title: '4_App Components/Search/Search Form',
+  title: 'App Components/Search/Search Form',
 };
 
 export const NoSearchTerm = () => <SearchForm {...commonProps} searchTerm="" />;

@@ -1,8 +1,8 @@
 module Constants
   module Role
     BASE_ROLES = ["Warn",
-                  "Comment Ban",
-                  "Ban",
+                  "Comment Suspend",
+                  "Suspend",
                   "Regular Member",
                   "Trusted",
                   "Pro"].freeze
@@ -17,6 +17,9 @@ module Constants
                      "Resource Admin: FeedbackMessage",
                      "Resource Admin: Config",
                      "Resource Admin: Broadcast",
-                     "Resource Admin: DisplayAd"].freeze
+                     "Resource Admin: HtmlVariant",
+                     "Resource Admin: DisplayAd",
+                     "Resource Admin: ListingCategory",
+                     "Resource Admin: Tag"].freeze
   end
 end

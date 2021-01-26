@@ -9,7 +9,7 @@ RSpec.describe Listings::ExpireOldListingsWorker, type: :worker do
     it "expires only old listings" do
       Timecop.freeze do
         bumped_listing = create(:listing, bumped_at: 41.days.ago, published: true)
-        expired_listing = create(:listing, expires_at: 1.day.ago, published: true)
+        expired_listing = create(:listing, expires_at: 2.days.ago, published: true)
         valid_listing = create(:listing, expires_at: 1.week.from_now, published: true)
 
         worker.perform

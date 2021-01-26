@@ -3,12 +3,15 @@ import ArticleController from '../../controllers/article_controller';
 
 describe('ArticleController', () => {
   beforeEach(() => {
-    document.body.innerHTML = `<div data-controller="article">
-      <div class="card-body">
+    document.body.innerHTML = `
+    <div data-controller="article"
+         data-article-bg-highlighted-class="bg-highlighted"
+         data-article-border-highlighted-class="border-highlighted">
+      <div class="card-body" data-article-target="cardBody">
         <button data-action="article#increaseFeaturedNumber"></button>
         <button data-action="article#decreaseFeaturedNumber"></button>
         <button data-action="article#highlightElement"></button>
-        <input data-target="article.featuredNumber"></input>
+        <input data-article-target="featuredNumber"></input>
       </div>
     </div>`;
 
@@ -21,9 +24,9 @@ describe('ArticleController', () => {
 
   describe('#increaseFeaturedNumber', () => {
     it('increases the featured number input', () => {
-      const button = document.querySelectorAll('button')[0];
+      const button = document.getElementsByTagName('button')[0];
       const input = document.querySelector(
-        "[data-target='article.featuredNumber']",
+        "[data-article-target='featuredNumber']",
       );
 
       input.value = initialValue;
@@ -35,9 +38,9 @@ describe('ArticleController', () => {
 
   describe('#decreaseFeaturedNumber', () => {
     it('increases the featured number input', () => {
-      const button = document.querySelectorAll('button')[1];
+      const button = document.getElementsByTagName('button')[1];
       const input = document.querySelector(
-        "[data-target='article.featuredNumber']",
+        "[data-article-target='featuredNumber']",
       );
 
       input.value = initialValue;
@@ -49,8 +52,8 @@ describe('ArticleController', () => {
 
   describe('#highlightElement', () => {
     it('adds a class to the controller element', () => {
-      const button = document.querySelectorAll('button')[2];
-      const element = document.querySelector('.card-body');
+      const button = document.getElementsByTagName('button')[2];
+      const element = document.getElementsByClassName('card-body')[0];
 
       button.click();
 

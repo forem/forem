@@ -15,6 +15,7 @@ import { ItemListItem } from './components/ItemListItem';
 import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
 import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
 import { ItemListTags } from './components/ItemListTags';
+import { Button } from '@crayons';
 
 const STATUS_VIEW_VALID = 'valid,confirmed';
 const STATUS_VIEW_ARCHIVED = 'archived';
@@ -23,11 +24,11 @@ const READING_LIST_PATH = '/readinglist';
 
 const FilterText = ({ selectedTags, query, value }) => {
   return (
-    <h1>
+    <h2 className="fw-bold fs-l">
       {selectedTags.length === 0 && query.length === 0
         ? value
         : 'Nothing with this filter 🤔'}
-    </h1>
+    </h2>
   );
 };
 
@@ -35,8 +36,8 @@ export class ReadingList extends Component {
   constructor(props) {
     super(props);
 
-    const { availableTags, statusView } = this.props;
-    this.state = defaultState({ availableTags, archiving: false, statusView });
+    const { statusView } = this.props;
+    this.state = defaultState({ archiving: false, statusView });
 
     // bind and initialize all shared functions
     this.onSearchBoxType = debounceAction(onSearchBoxType.bind(this), {
@@ -122,34 +123,39 @@ export class ReadingList extends Component {
 
     if (itemsLoaded && this.statusViewValid()) {
       return (
-        <div className="items-empty">
+        <div className="align-center p-9 py-10 color-base-80">
           <FilterText
             selectedTags={selectedTags}
             query={query}
-            value="Your Reading List is Lonely"
+            value="Your reading list is empty"
           />
-          <h3>
-            Hit the
-            <span className="btn--highlight">SAVE</span>
-            or
-            <span className="btn--highlight">
-              Bookmark
-              <span role="img" aria-label="Bookmark">
-                🔖
-              </span>
+          <p class="color-base-60 pt-2">
+            Click the{' '}
+            <span class="fw-bold">
+              bookmark reaction
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                className="crayons-icon mx-1"
+                xmlns="http://www.w3.org/2000/svg"
+                role="img"
+              >
+                <path d="M5 2h14a1 1 0 011 1v19.143a.5.5 0 01-.766.424L12 18.03l-7.234 4.536A.5.5 0 014 22.143V3a1 1 0 011-1zm13 2H6v15.432l6-3.761 6 3.761V4z" />
+              </svg>
             </span>
-            to start your Collection
-          </h3>
+            when viewing a post to add it to your reading list.
+          </p>
         </div>
       );
     }
 
     return (
-      <div className="items-empty">
+      <div className="align-center p-9 py-10 color-base-80">
         <FilterText
           selectedTags={selectedTags}
           query={query}
-          value="Your Archive List is Lonely"
+          value="Your Archive is empty..."
         />
       </div>
     );
@@ -158,7 +164,6 @@ export class ReadingList extends Component {
   render() {
     const {
       items,
-      itemsLoaded,
       totalCount,
       availableTags,
       selectedTags,
@@ -168,7 +173,7 @@ export class ReadingList extends Component {
 
     const isStatusViewValid = this.statusViewValid();
 
-    const archiveButtonLabel = isStatusViewValid ? 'archive' : 'unarchive';
+    const archiveButtonLabel = isStatusViewValid ? 'Archive' : 'Unarchive';
     const itemsToRender = items.map((item) => {
       return (
         <ItemListItem item={item}>
@@ -188,67 +193,53 @@ export class ReadingList extends Component {
       ''
     );
     return (
-      <div className="home item-list">
-        <div className="side-bar">
-          <div className="widget filters">
+      <div>
+        <header className="crayons-layout flex justify-between items-center pb-0">
+          <h1 class="crayons-title">
+            {isStatusViewValid ? 'Reading list' : 'Archive'}
+            {` (${totalCount > 0 ? totalCount : '0'})`}
+          </h1>
+
+          <div class="flex items-center">
+            <Button
+              onClick={(e) => this.toggleStatusView(e)}
+              className="mr-2 whitespace-nowrap"
+              variant="outlined"
+              url={READING_LIST_ARCHIVE_PATH}
+              tagName="a"
+              data-no-instant
+            >
+              {isStatusViewValid ? 'View archive' : 'View reading list'}
+            </Button>
             <input
-              aria-label="Search your list"
+              aria-label="Search..."
               onKeyUp={this.onSearchBoxType}
-              placeHolder="search your list"
+              placeholder="Search..."
+              className="crayons-textfield"
             />
-            <div className="filters-header">
-              <h4 className="filters-header-text">my tags</h4>
-              {Boolean(selectedTags.length) && (
-                <a
-                  className="filters-header-action"
-                  href={
-                    isStatusViewValid
-                      ? READING_LIST_PATH
-                      : READING_LIST_ARCHIVE_PATH
-                  }
-                  onClick={this.clearSelectedTags}
-                  data-no-instant
-                >
-                  clear all
-                </a>
-              )}
-            </div>
-            <ItemListTags
-              availableTags={availableTags}
-              selectedTags={selectedTags}
-              onClick={this.toggleTag}
-            />
-
-            <div className="status-view-toggle">
-              <a
-                href={READING_LIST_ARCHIVE_PATH}
-                onClick={(e) => this.toggleStatusView(e)}
-                data-no-instant
-              >
-                {isStatusViewValid ? 'View Archive' : 'View Reading List'}
-              </a>
-            </div>
           </div>
-        </div>
+        </header>
 
-        <div className="items-container">
-          <div className={`results ${itemsLoaded ? 'results--loaded' : ''}`}>
-            <div className="results-header">
-              {isStatusViewValid ? 'Reading List' : 'Archive'}
-              {` (${totalCount > 0 ? totalCount : 'empty'})`}
-            </div>
-            <div>
+        <div className="crayons-layout crayons-layout--2-cols">
+          <ItemListTags
+            availableTags={availableTags}
+            selectedTags={selectedTags}
+            onClick={this.toggleTag}
+          />
+
+          <main className="crayons-layout__content">
+            <div className="crayons-card mb-4">
               {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
             </div>
-          </div>
 
-          <ItemListLoadMoreButton
-            show={showLoadMoreButton}
-            onClick={this.loadNextPage}
-          />
+            <ItemListLoadMoreButton
+              show={showLoadMoreButton}
+              onClick={this.loadNextPage}
+            />
+          </main>
+
+          {snackBar}
         </div>
-
-        {snackBar}
       </div>
     );
   }

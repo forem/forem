@@ -9,8 +9,8 @@ RSpec.describe ChatChannel, type: :model do
     describe "builtin validations" do
       subject { chat_channel }
 
-      it { is_expected.to have_many(:messages).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:messages).dependent(:destroy) }
       it { is_expected.to have_many(:users).through(:chat_channel_memberships) }
 
       it { is_expected.to validate_inclusion_of(:channel_type).in_array(%w[open invite_only direct]) }
@@ -19,6 +19,17 @@ RSpec.describe ChatChannel, type: :model do
       it { is_expected.to validate_presence_of(:channel_type) }
       it { is_expected.to validate_presence_of(:status) }
       it { is_expected.to validate_uniqueness_of(:slug) }
+
+      # rubocop:disable RSpec/NamedSubject
+      it do
+        expect(subject).to have_one(:mod_tag)
+          .class_name("Tag")
+          .inverse_of(:mod_chat_channel)
+          .with_foreign_key(:mod_chat_channel_id)
+          .dependent(:nullify)
+          .optional
+      end
+      # rubocop:enable RSpec/NamedSubject
     end
   end
 
@@ -67,6 +78,15 @@ RSpec.describe ChatChannel, type: :model do
     it "detects not private org channel if name does not match" do
       chat_channel.channel_name = "@org magoo"
       expect(chat_channel.private_org_channel?).to be(false)
+    end
+  end
+
+  describe "::urlsafe_encoded_app_domain" do
+    it "uses urlsafe base64 encoding" do
+      domain_name = "community.snyk.io"
+      allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return(domain_name)
+      encoded_domain_name = described_class.urlsafe_encoded_app_domain
+      expect(Base64.urlsafe_decode64(encoded_domain_name)).to eq(domain_name)
     end
   end
 end

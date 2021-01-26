@@ -15,7 +15,7 @@ class DisplayAdEventsController < ApplicationMetalController
   private
 
   def update_display_ads_data
-    return if Rails.env.production? && rand(20) != 1 # We need to do this operation only once in a while.
+    return if skip_ad_update?
 
     @display_ad = DisplayAd.find(display_ad_event_params[:display_ad_id])
 
@@ -32,5 +32,10 @@ class DisplayAdEventsController < ApplicationMetalController
 
   def display_ad_event_params
     params[:display_ad_event].slice(:context_type, :category, :display_ad_id)
+  end
+
+  def skip_ad_update?
+    # We need to do this operation only once in a while.
+    rand(20) != 1
   end
 end

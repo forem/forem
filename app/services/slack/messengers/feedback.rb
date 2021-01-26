@@ -16,7 +16,7 @@ module Slack
         email: <mailto:%<email>s|%<email>s>
       TEXT
 
-      def initialize(user: nil, type:, category:, reported_url:, message:)
+      def initialize(type:, category:, reported_url:, message:, user: nil)
         @user = user
         @type = type
         @category = category
