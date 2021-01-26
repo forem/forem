@@ -59,8 +59,6 @@ script:
   - bundle exec rails webpacker:compile
   - bin/knapsack_pro_rspec
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
-after_deploy:
-  - bash scripts/after_deploy.sh
 notifications:
   slack:
     if: branch = master
@@ -83,7 +81,7 @@ jobs:
       name: "Node 2"
       env: KNAPSACK_PRO_CI_NODE_INDEX=2
     - stage: Test
-      name: "Preact, storybook, bundle audit, console check"
+      name: "Preact, Storybook, bundle audit, console check, e2e"
       script:
         - yarn test --colors
         - bundle exec bundle-audit check --update --ignore CVE-2015-9284
@@ -108,13 +106,14 @@ jobs:
         api_key: '$HEROKU_AUTH_TOKEN'
         app:
           master: practicaldev
+      after_deploy:
+        - bash scripts/after_deploy.sh
     - stage: Deploy
       name: Deploy BenHalpern
       if: type != pull_request
       install: skip
       script: skip
       after_script: skip
-      after_deploy: skip
       deploy:
         provider: heroku
         api_key: '$HEROKU_AUTH_TOKEN'
