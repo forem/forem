@@ -1,3 +1,6 @@
+branches:
+  only:
+    - master
 language: ruby
 cache:
   directories:
@@ -36,15 +39,8 @@ env:
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
     - ELASTICSEARCH_URL="http://localhost:9200"
-  jobs:
-    - KNAPSACK_PRO_CI_NODE_INDEX=0
-    - KNAPSACK_PRO_CI_NODE_INDEX=1
-    - KNAPSACK_PRO_CI_NODE_INDEX=2
-branches:
-  only:
-    - master
 install: true
-script:
+before_script:
   - date --rfc-3339=seconds
   - nvm install
   - cp .env_sample .env
@@ -59,20 +55,19 @@ script:
   - bundle config set path 'vendor/bundle'
   - bin/ci-bundle
   - yarn install --frozen-lockfile
-  - bundle exec rails db:create
-  - bundle exec rails db:schema:load
+  - bundle exec rails db:create db:schema:load
   - bundle exec rails assets:precompile
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
   - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
-  - yarn e2e:ci
+  # - yarn e2e:ci
   # Dropping and recreating the database for Capybara/rspecs
-  - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
-  - bundle exec rails db:drop
-  - bundle exec rails db:create
-  - bundle exec rails db:schema:load
+  # - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
+  # - bundle exec rails db:drop
+  # - bundle exec rails db:create
+  # - bundle exec rails db:schema:load
   - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 after_deploy:
@@ -89,6 +84,33 @@ notifications:
 
 jobs:
   include:
+    - stage: Test
+      name: "Node 0"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=0
+      script: skip
+    - stage: Test
+      name: "Node 1"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=1
+      script: skip
+    - stage: Test
+      name: "Node 2"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=2
+      script: skip
+    - stage: Test
+      name: "Preact, storybook, bundle audit, console check"
+      before_script:
+        - date --rfc-3339=seconds
+        - nvm install
+        - bundle config set path 'vendor/bundle'
+        - bundle install --local --jobs=2
+        - yarn install --frozen-lockfile
+      script:
+        - yarn test --colors
+        - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json
+        - bundle exec bundle-audit check --update --ignore CVE-2015-9284
+        - bin/test-console-check
+        - yarn build-storybook
+
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request
