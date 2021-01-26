@@ -9,7 +9,7 @@ module Users
       @user = User.find_by(id: user_id)
       return unless @user
 
-      FieldTest.config["experiments"].keys.each do |key|
+      FieldTest.config["experiments"].each_key do |key|
         @experiment = key.to_sym # Not currently running. Update this to current experiment.
         case goal
         # We have special conditional goals for some where we look for past events for commulative wins
