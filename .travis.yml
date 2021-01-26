@@ -8,7 +8,6 @@ cache:
     - node_modules
     - $HOME/.nvm
     - ~/.cache # cache folder with Cypress binary
-    - ./elasticsearch-7.5.2-amd64.deb
 rvm:
   - 2.7.2
 addons:
@@ -44,7 +43,7 @@ install:
   - date --rfc-3339=seconds
   - nvm install
   - pkill -9 -f elasticsearch || true
-  - '[ -f elasticsearch-7.5.2-amd64.deb ] || curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb'
+  - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
   - sudo dpkg -i --force-confnew elasticsearch-7.5.2-amd64.deb
   - sudo sed -i.old 's/-Xms1g/-Xms128m/' /etc/elasticsearch/jvm.options
   - sudo sed -i.old 's/-Xmx1g/-Xmx128m/' /etc/elasticsearch/jvm.options
