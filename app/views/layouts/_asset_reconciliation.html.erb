@@ -20,30 +20,29 @@
   var pageCrayons = document.querySelector("meta[name='proper-stylesheet-crayons']");
   var pageViews = document.querySelector("meta[name='proper-stylesheet-views']");
   var pageMinimal = document.querySelector("meta[name='proper-stylesheet-minimal']");
-
   if (headCacheCheck && headCrayons && // If these elements exist, we can proceed.
     parseInt(pageCacheCheck.content) > parseInt(headCacheCheck.content) && // If page cached-at is larger than head cached-at
     (pageCrayons.content != headCrayons.href || // If the head-cached values do not match page-cached, we replace
       pageViews.content != headViews.href ||
       pageMinimal.content != headMinimal.href)
   ) {
-    var head = document.head;
+    var docBody = document.body;
     // Add new stylesheets if we deem we should.
     var link = document.createElement("link");
     link.type = "text/css";
     link.rel = "stylesheet";
     link.href = pageCrayons.content;
-    head.appendChild(link);
+    docBody.appendChild(link);
     var link = document.createElement("link");
     link.type = "text/css";
     link.rel = "stylesheet";
     link.href = pageViews.content;
-    head.appendChild(link);
+    docBody.appendChild(link);
     var link = document.createElement("link");
     link.type = "text/css";
     link.rel = "stylesheet";
     link.href = pageMinimal.content;
-    head.appendChild(link);
+    docBody.appendChild(link);
 
     // Take a breath and then remove the old ones.
     // If we call this immediately it could cause a flash of unstyled comments.
