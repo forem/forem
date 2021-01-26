@@ -91,9 +91,6 @@ jobs:
         - yarn e2e:ci
         # Dropping and recreating the database for Capybara/rspecs
         # - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
-        # - bundle exec rails db:drop
-        # - bundle exec rails db:create
-        # - bundle exec rails db:schema:load
 
     - stage: Deploy
       name: Deploy DEV
