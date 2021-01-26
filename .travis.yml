@@ -84,6 +84,8 @@ jobs:
       name: "Preact, Storybook, bundle audit, console check, e2e"
       script:
         - yarn test --colors
+        - bundle exec rails db:create db:schema:load
+        - bundle exec rails assets:precompile
         - bundle exec bundle-audit check --update --ignore CVE-2015-9284
         - bin/test-console-check
         - yarn build-storybook
