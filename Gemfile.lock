@@ -298,8 +298,6 @@ GEM
       browser (>= 2.0)
       distribution
       railties (>= 5)
-    fix-db-schema-conflicts (3.0.3)
-      rubocop (>= 0.38.0)
     flipper (0.20.3)
     flipper-active_record (0.20.3)
       activerecord (>= 5.0, < 7)
@@ -882,7 +880,6 @@ DEPENDENCIES
   fastly (~> 2.5)
   feedjira (~> 3.1)
   field_test (~> 0.4)
-  fix-db-schema-conflicts (~> 3.0)
   flipper (~> 0.20.3)
   flipper-active_record (~> 0.20.3)
   flipper-ui (~> 0.20.3)
