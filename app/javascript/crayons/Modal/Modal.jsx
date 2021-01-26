@@ -54,7 +54,7 @@ export const Modal = ({
         aria-label="modal"
         className="crayons-modal__box"
       >
-        {title.length > 0 && title && (
+        {title && title.length > 0 && (
           <div className="crayons-modal__box__header">
             <h2>{title}</h2>
             <Button

@@ -271,9 +271,14 @@ export default class ArticleForm extends Component {
   };
 
   toggleModal = () => {
-    this.setState({
-      showModal: !this.state.showModal,
-    });
+    if (this.state.edited) {
+      this.setState({
+        showModal: !this.state.showModal,
+      });
+    } else {
+      // If the user has not edited the body we send them home
+      window.location.href = '/';
+    }
   };
 
   switchHelpContext = ({ target }) => {
@@ -363,7 +368,7 @@ export default class ArticleForm extends Component {
             </p>
             <div className="pt-4 flex gap-2">
               <Button variant="danger" url="/" tagName="a">
-                Yes, go back
+                Yes, leave the page
               </Button>
               <Button
                 aria-label="Cancel"
