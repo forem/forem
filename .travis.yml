@@ -39,11 +39,9 @@ env:
     - COVERAGE_REPORTS_TOTAL=4
     - FOREM_OWNER_SECRET="secret" # test secret so e2e tests can run properly.
     - ELASTICSEARCH_URL="http://localhost:9200"
-install: true
-before_script:
+install:
   - date --rfc-3339=seconds
   - nvm install
-  - cp .env_sample .env
   - pkill -9 -f elasticsearch || true
   - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
   - sudo dpkg -i --force-confnew elasticsearch-7.5.2-amd64.deb
@@ -53,23 +51,21 @@ before_script:
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
   - bundle config set path 'vendor/bundle'
+  - cp .env_sample .env
   - bin/ci-bundle
   - yarn install --frozen-lockfile
+script:
   - bundle exec rails db:create db:schema:load
   - bundle exec rails assets:precompile
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bin/test-console-check; fi
-  - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
+  - 'bin/knapsack_pro_rspec'
+  - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
+  # - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
   # - yarn e2e:ci
   # Dropping and recreating the database for Capybara/rspecs
   # - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
   # - bundle exec rails db:drop
   # - bundle exec rails db:create
   # - bundle exec rails db:schema:load
-  - 'bin/knapsack_pro_rspec'
-  - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 after_deploy:
   - bash scripts/after_deploy.sh
 notifications:
@@ -87,23 +83,14 @@ jobs:
     - stage: Test
       name: "Node 0"
       env: KNAPSACK_PRO_CI_NODE_INDEX=0
-      script: skip
     - stage: Test
       name: "Node 1"
       env: KNAPSACK_PRO_CI_NODE_INDEX=1
-      script: skip
     - stage: Test
       name: "Node 2"
       env: KNAPSACK_PRO_CI_NODE_INDEX=2
-      script: skip
     - stage: Test
       name: "Preact, storybook, bundle audit, console check"
-      before_script:
-        - date --rfc-3339=seconds
-        - nvm install
-        - bundle config set path 'vendor/bundle'
-        - bundle install --local --jobs=2
-        - yarn install --frozen-lockfile
       script:
         - yarn test --colors
         - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json
@@ -114,6 +101,7 @@ jobs:
     - stage: Deploy
       name: Deploy DEV
       if: type != pull_request
+      install: skip
       script: skip
       after_script: skip
       deploy:
@@ -124,6 +112,7 @@ jobs:
     - stage: Deploy
       name: Deploy BenHalpern
       if: type != pull_request
+      install: skip
       script: skip
       after_script: skip
       after_deploy: skip
