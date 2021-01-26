@@ -150,7 +150,7 @@ describe('top navigation utilitities', () => {
         </button>
         <div class="crayons-dropdown left-2 right-2 s:right-4 s:left-auto p-0 crayons-header__menu__dropdown inline-block">
           <ul class="p-0" id="crayons-header__menu__dropdown__list">
-            <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">
+            <li id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1 mb-1">
               <a id="first-nav-link" class="crayons-link crayons-link--block" href="">
               </a>
             </li>

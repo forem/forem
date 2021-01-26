@@ -105,6 +105,7 @@
     opacity: var(--dropdown-opacity, 0);
     visibility: var(--dropdown-visibility, hidden);
   }
+
   &.showing,
   &.desktop:hover {
     --trigger-border-color: var(--header-bg-hover);
@@ -114,9 +115,8 @@
     --dropdown-opacity: 1;
     --dropdown-visibility: visible;
   }
-  &:focus-within,
-  &.showing,
-  &.desktop:hover:focus-within {
+
+  .focus-visible:focus {
     --trigger-border-color: var(--header-button-focus-color);
     --trigger-color: var(--header-button-focus-color);
   }
