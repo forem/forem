@@ -50,7 +50,7 @@ Rails.application.routes.draw do
         mount flipper_ui, at: "feature_flags"
 
         resources :data_update_scripts, only: [:index]
-        post "/run_data_update_scripts", to: "data_update_scripts#run_data_update_scripts"
+        post "/data_update_scripts/:id/force_run", to: "data_update_scripts#force_run"
       end
 
       namespace :users do

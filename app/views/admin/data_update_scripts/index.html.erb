@@ -47,7 +47,7 @@
     runAtColumn.innerHTML = "loading..";
     button.innerHTML = "loading..";
 
-    fetch('/admin/run_data_update_scripts', {
+    fetch(`/admin/data_update_scripts/${id}/force_run`, {
       method: 'POST',
       headers: {
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
