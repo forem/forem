@@ -56,16 +56,9 @@ install:
   - yarn install --frozen-lockfile
 script:
   - bundle exec rails db:create db:schema:load
-  - bundle exec rails assets:precompile
-  - 'bin/knapsack_pro_rspec'
+  - bundle exec rails webpacker:compile
+  - bin/knapsack_pro_rspec
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
-  # - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
-  # - yarn e2e:ci
-  # Dropping and recreating the database for Capybara/rspecs
-  # - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
-  # - bundle exec rails db:drop
-  # - bundle exec rails db:create
-  # - bundle exec rails db:schema:load
 after_deploy:
   - bash scripts/after_deploy.sh
 notifications:
@@ -96,6 +89,13 @@ jobs:
         - bundle exec bundle-audit check --update --ignore CVE-2015-9284
         - bin/test-console-check
         - yarn build-storybook
+        - bundle exec rake data_updates:run # required for at least creating the first admin user in e2e tests.
+        - yarn e2e:ci
+        # Dropping and recreating the database for Capybara/rspecs
+        # - curl -XDELETE "${ELASTICSEARCH_URL}/*" # resetting elastic search post e2e tests
+        # - bundle exec rails db:drop
+        # - bundle exec rails db:create
+        # - bundle exec rails db:schema:load
 
     - stage: Deploy
       name: Deploy DEV
