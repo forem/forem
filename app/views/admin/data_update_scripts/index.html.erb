@@ -1,4 +1,4 @@
-<div class="crayons-card p-6 grid gap-6">
+<div data-controller="data-update-script" class="crayons-card p-6 grid gap-6">
   <table class="crayons-table">
     <thead>
       <tr>
@@ -24,7 +24,7 @@
           <td id="data_update_script_<%= script.id %>_created_at"><%= script.created_at %></td>
           <td id="data_update_script_<%= script.id %>_run_at" class="whitespace-nowrap"><%= script.run_at %></td>
           <td id="data_update_script_<%= script.id %>_button" class="whitespace-nowrap">
-            <button onclick="forceRun(<%= script.id %>);return false;" type="button" className="crayons-btn crayons-btn--secondary">
+            <button data-action="click->data-update-script#forceRun" data-value="<%= script.id %>" type="button" className="crayons-btn crayons-btn--secondary">
               Re-run
             </button>
           </td>
@@ -33,40 +33,3 @@
     </tbody>
   </table>
 </main>
-
-<script>
-  function forceRun(id) {
-    let formData = new FormData();
-    formData.append('id', id);
-
-    let statusColumn = document.getElementById(`data_update_script_${id}_status`);
-    let runAtColumn = document.getElementById(`data_update_script_${id}_run_at`);
-    let button = document.getElementById(`data_update_script_${id}_button`);
-
-    statusColumn.innerHTML = "loading..";
-    runAtColumn.innerHTML = "loading..";
-    button.innerHTML = "loading..";
-
-    fetch(`/admin/data_update_scripts/${id}/force_run`, {
-      method: 'POST',
-      headers: {
-       'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
-      },
-      body: formData,
-      credentials: 'same-origin'
-    }).then(response => response.json()
-      .then(json => {
-
-        let updatedScript = json.response;
-        // escape out the <>
-        statusColumn.innerHTML = `${updatedScript.status}`;
-        if(updatedScript.error) {
-          statusColumn.innerHTML += `<div class='fs-xs'> ${updatedScript.error}</div>`
-        }
-
-        runAtColumn.innerHTML = updatedScript.run_at;
-        button.innerHTML = `<button onclick=forceRun(${updatedScript.id}); return false; type='button' classname='crayons-btn crayons-btn--secondary'>Re run</button>`
-      })
-    )
-  }
-</script>
