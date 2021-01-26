@@ -3,8 +3,7 @@ class ForemStatsDriver
     @driver = select_driver.new
   end
 
-  delegate(:increment, :time, :gauge, to: :@driver)
-  alias count increment
+  delegate(:count, :increment, :time, :gauge, to: :@driver)
 
   private
 

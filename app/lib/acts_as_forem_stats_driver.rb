@@ -10,7 +10,6 @@ module ActsAsForemStatsDriver
   end
 
   included do
-    delegate :increment, :time, :gauge, to: :@driver
-    alias_method :count, :increment
+    delegate :count, :increment, :time, :gauge, to: :@driver
   end
 end
