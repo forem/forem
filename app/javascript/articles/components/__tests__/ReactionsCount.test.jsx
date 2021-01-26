@@ -6,8 +6,6 @@ import {
   articleWithReactions,
   articleWithoutReactions,
 } from '../../__tests__/utilities/articleUtilities.js';
-import '../../../../assets/javascripts/lib/xss';
-import '../../../../assets/javascripts/utilities/timeAgo';
 
 describe('<ReactionsCount /> component', () => {
   it('should not display reactions data when there are no reactions', async () => {

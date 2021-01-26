@@ -15,26 +15,28 @@ export const ReactionsCount = ({ article }) => {
     </svg>
   );
 
-  if (totalReactions > 0) {
-    return (
-      <Button
-        variant="ghost"
-        size="s"
-        contentType="icon-left"
-        url={article.path}
-        icon={reactionsSVG}
-        tagName="a"
-      >
-        <span title="Number of reactions">
-          {totalReactions}
-          <span className="hidden s:inline">
-            &nbsp;
-            {`${totalReactions == 1 ? 'reaction' : 'reactions'}`}
-          </span>
-        </span>
-      </Button>
-    );
+  if (totalReactions === 0) {
+    return;
   }
+
+  return (
+    <Button
+      variant="ghost"
+      size="s"
+      contentType="icon-left"
+      url={article.path}
+      icon={reactionsSVG}
+      tagName="a"
+    >
+      <span title="Number of reactions">
+        {totalReactions}
+        <span className="hidden s:inline">
+          &nbsp;
+          {`${totalReactions == 1 ? 'reaction' : 'reactions'}`}
+        </span>
+      </span>
+    </Button>
+  );
 };
 
 ReactionsCount.propTypes = {
