@@ -2,9 +2,11 @@
 # running E2E tests. Otherwise this will run when system tests run.
 return unless Rails.env.test? && ENV["E2E"].present?
 
+# rubocop:disable Rails/Output
+
 CypressRails.hooks.before_server_start do
   # Called once, before either the transaction or the server is started
-  Rails.logger.info("Starting up server for end to end tests.")
+  puts "Starting up server for end to end tests."
   Rails.application.load_tasks
   Rake::Task["db:seed:e2e"].invoke
 end
@@ -19,8 +21,10 @@ end
 
 CypressRails.hooks.before_server_stop do
   # Called once, at_exit
-  Rails.logger.info("Cleaning up and stopping server for end to end tests.")
+  puts "Cleaning up and stopping server for end to end tests."
   Rake::Task["search:destroy"].invoke
   Rake::Task["db:truncate_all"].invoke
-  Rails.logger.info("The end to end test server has shutdown gracefully.")
+  puts "The end to end test server has shutdown gracefully."
 end
+
+# rubocop:enable Rails/Output
