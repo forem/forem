@@ -37,6 +37,6 @@ class DataUpdateWorker
       "time=#{Time.current.rfc3339}, script=#{file_name}, status=#{status}",
     )
 
-    DatadogStatsClient.increment("data_update_scripts.status", tags: ["status:#{status}", "script_name:#{file_name}"])
+    ForemStatsClient.increment("data_update_scripts.status", tags: ["status:#{status}", "script_name:#{file_name}"])
   end
 end
