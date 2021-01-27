@@ -35,5 +35,5 @@ export function usePasteImage({ onPaste }) {
     };
   }, [element, onPaste]);
 
-  return { setElement };
+  return setElement;
 }
