@@ -18,7 +18,6 @@ describe('User Login', () => {
     cy.findByTestId('login-form').as('loginForm');
 
     cy.get('@user').then((user) => {
-      // Enter credentials for the initial administrator user
       cy.get('@loginForm').findByText('Email').type(user.email);
       cy.get('@loginForm').findByText('Password').type(user.password);
     });
