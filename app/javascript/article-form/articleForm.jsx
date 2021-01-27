@@ -370,11 +370,7 @@ export default class ArticleForm extends Component {
               <Button className="mr-2" variant="danger" url="/" tagName="a">
                 Yes, leave the page
               </Button>
-              <Button
-                aria-label="Cancel"
-                variant="secondary"
-                onClick={this.toggleModal}
-              >
+              <Button variant="secondary" onClick={this.toggleModal}>
                 No, keep editing
               </Button>
             </div>
