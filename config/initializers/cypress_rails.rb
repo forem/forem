@@ -24,7 +24,7 @@ CypressRails.hooks.before_server_stop do
   puts "Cleaning up and stopping server for end to end tests."
   Rake::Task["search:destroy"].invoke
   Rake::Task["db:truncate_all"].invoke
-  puts "The end to end test server has shutdown gracefully."
+  puts "The end to end test server shutdown gracefully."
 end
 
 # rubocop:enable Rails/Output
