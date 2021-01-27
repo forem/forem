@@ -57,7 +57,7 @@ RSpec.describe "Compare ES search to PG search for ReadingList", type: :feature 
       es_results = es_described_class.search_documents(user: user, params: { search_fields: "tuesday" })
       pg_results = pg_described_class.search_documents(user, term: "tuesday")
 
-      expect(pg_results.length).to eq(es_results.length)
+      expect(pg_results["reactions"].length).to eq(es_results["reactions"].length)
 
       # NOTE: temporarily excluding the comparison between `highlight` because ES is more sophisticated,
       # it can search against different fields separately, PG can't. I reckon we don't need this feature.
@@ -81,6 +81,81 @@ RSpec.describe "Compare ES search to PG search for ReadingList", type: :feature 
       es_highlight = es_results["reactions"].first.dig("reactable", "highlight", "body_text").first
       pg_highlight = pg_results["reactions"].first.dig("reactable", "highlight")
       expect(pg_highlight).to match(es_highlight)
+    end
+
+    context "with tag filters" do
+      let(:tag_one) { create(:tag) }
+      let(:tag_two) { create(:tag) }
+
+      it "filters by tag name" do
+        article1.tags << tag_one
+        article2.tags << tag_two
+        es_reindex([article1, article2])
+
+        tag_names = [tag_one.name]
+
+        es_results = es_described_class.search_documents(user: user, params: { tag_names: tag_names })
+        pg_results = pg_described_class.search_documents(user, tags: tag_names)
+
+        expect(pg_results["total"]).to eq(es_results["total"])
+        expect(pg_results["reactions"].map { |doc| doc["id"] }).to eq(es_results["reactions"].map { |doc| doc["id"] })
+      end
+
+      it "filters by any of the multiple tags by default" do
+        article1.tags << tag_one
+        article2.tags << tag_two
+        es_reindex([article1, article2])
+
+        tag_names = [tag_one.name, tag_two.name]
+
+        es_results = es_described_class.search_documents(user: user, params: { tag_names: tag_names })
+        pg_results = pg_described_class.search_documents(user, tags: tag_names)
+
+        expect(pg_results["total"]).to eq(es_results["total"])
+        expect(pg_results["reactions"].map { |doc| doc["id"] }).to eq(es_results["reactions"].map { |doc| doc["id"] })
+      end
+
+      it "filters by all of the multiple tags" do
+        article1.tags << tag_one
+        article2.tags << tag_one
+        article2.tags << tag_two
+        es_reindex([article1, article2])
+
+        tag_names = [tag_one.name, tag_two.name]
+
+        es_results = es_described_class.search_documents(user: user,
+                                                         params: { tag_names: tag_names, tag_boolean_mode: "all" })
+        pg_results = pg_described_class.search_documents(user, tags: tag_names, tags_mode: :all)
+
+        expect(pg_results["total"]).to eq(es_results["total"])
+        expect(pg_results["reactions"].map { |doc| doc["id"] }).to eq(es_results["reactions"].map { |doc| doc["id"] })
+      end
+
+      it "searches and filters by tag name" do
+        # we use the same text so they'll all be picked up by the same search key
+        article1.update(body_markdown: "Ruby Tuesday")
+        article2.update(body_markdown: "Ruby Tuesday")
+
+        # we add different tags so only one will be filtered down
+        article1.tags << tag_one
+        article2.tags << tag_two
+
+        es_reindex([article0, article1, article2])
+
+        tag_names = [tag_one.name]
+
+        # search here should only return `article1` as it's the only one that corresponds to the tag filter and the term
+        es_results = es_described_class.search_documents(user: user,
+                                                         params: { search_fields: "tuesday", tag_names: tag_names })
+        pg_results = pg_described_class.search_documents(user, term: "tuesday", tags: tag_names)
+
+        expect(pg_results["total"]).to eq(es_results["total"])
+
+        pg_doc_ids = pg_results["reactions"].map { |doc| doc["id"] }
+        es_doc_ids = es_results["reactions"].map { |doc| doc["id"] }
+        expect(pg_doc_ids).to eq([article1.id])
+        expect(pg_doc_ids).to eq(es_doc_ids)
+      end
     end
   end
 end

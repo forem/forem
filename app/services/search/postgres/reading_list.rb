@@ -3,17 +3,23 @@ module Search
     class ReadingList
       DEFAULT_STATUSES = %w[valid confirmed].freeze
 
-      def self.search_documents(user, term: nil, status: nil, page: 1, per_page: 60)
+      def self.search_documents(user, term: nil, status: nil, tags: nil, tags_mode: :any, page: 1, per_page: 60)
         status ||= DEFAULT_STATUSES
         page = (page || 1).to_i
         per_page = [(per_page || 60).to_i, 100].min
+        tagged_with_any = tags_mode.to_sym == :any
 
         reading_list_article_ids = user.reactions.readinglist.where(status: status)
           .order(created_at: :desc)
           .pluck(:reactable_id, :id)
 
         article_ids = reading_list_article_ids.map { |article_id, _reaction_id| article_id }
+
         articles = if term.present?
+                     # NOTE: [@rhymes] I'm not sure how to combine `pg_search`'s multisearch
+                     # with the `.tagged_with()` scope. I could hack it by manually filtering articles based on their
+                     # `cached_tag_list` but then we'd break pagination, as the filtering needs to happen before
+                     # results are split in pages
                      results = Search::Multisearch.call(term)
                        .with_pg_search_highlight
                        .with_pg_search_rank
@@ -30,7 +36,9 @@ module Search
                      end
                    else
                      # TODO: [@rhymes] use .select() to avoid loading unnecessary fields
-                     Article.published.where(id: article_ids).page(page).per(per_page)
+                     relation = Article.published.where(id: article_ids)
+                     relation = relation.tagged_with(tags, any: tagged_with_any) if tags
+                     relation.page(page).per(per_page)
                    end
 
         articles = articles.index_by(&:id)
