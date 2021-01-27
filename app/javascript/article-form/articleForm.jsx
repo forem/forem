@@ -366,8 +366,8 @@ export default class ArticleForm extends Component {
               You've made changes to your post. Do you want to navigate to leave
               this page?
             </p>
-            <div className="pt-4 flex gap-2">
-              <Button variant="danger" url="/" tagName="a">
+            <div className="pt-4">
+              <Button className="mr-2" variant="danger" url="/" tagName="a">
                 Yes, leave the page
               </Button>
               <Button
