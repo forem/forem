@@ -59,7 +59,7 @@ RSpec.describe "Authenticating with GitHub" do
       before do
         omniauth_setup_invalid_credentials(:github)
 
-        allow(DatadogStatsClient).to receive(:increment)
+        allow(ForemStatsClient).to receive(:increment)
       end
 
       after do
@@ -92,7 +92,7 @@ RSpec.describe "Authenticating with GitHub" do
         click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "github", params)
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -108,7 +108,7 @@ RSpec.describe "Authenticating with GitHub" do
         click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "github", params)
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
@@ -121,7 +121,7 @@ RSpec.describe "Authenticating with GitHub" do
         click_on(sign_in_link, match: :first)
 
         args = omniauth_failure_args(error, "github", params)
-        expect(DatadogStatsClient).to have_received(:increment).with(
+        expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
       end
