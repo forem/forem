@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { h, Fragment } from 'preact';
 import { useLayoutEffect, useRef } from 'preact/hooks';
 import { createFocusTrap } from 'focus-trap';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
@@ -15,7 +14,7 @@ const FocusTrap = ({ selector, children }) => {
     };
   });
 
-  return <Fragment>{children}</Fragment>;
+  return children;
 };
 
 FocusTrap.defaultProps = {
