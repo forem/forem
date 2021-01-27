@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import Focustrap from '../shared/components/focusTrap';
+import FocusTrap from '../shared/components/focusTrap';
 import IntroSlide from './components/IntroSlide';
 import EmailPreferencesForm from './components/EmailPreferencesForm';
 import FollowTags from './components/FollowTags';
@@ -70,7 +70,7 @@ export default class Onboarding extends Component {
     const { currentSlide } = this.state;
     const { communityConfig } = this.props;
     return (
-      <Focustrap>
+      <FocusTrap>
         <main
           className="onboarding-body"
           style={
@@ -81,7 +81,7 @@ export default class Onboarding extends Component {
         >
           {this.slides[currentSlide]}
         </main>
-      </Focustrap>
+      </FocusTrap>
     );
   }
 }
