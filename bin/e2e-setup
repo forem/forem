@@ -1,5 +1,4 @@
-if [ -z "$E2E" ]
-  then
+if [ -z "$E2E" ]; then
   echo "Setting up the end to end (E2E) test database did not run. You are not in an E2E test environment.";
   exit 1;
 fi

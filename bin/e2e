@@ -2,8 +2,7 @@
 
 read -p "Do you need to set up your end to end (E2E) testing database? Answer yes if this is your first time running E2E tests on your local machine or you need to recreate your E2E test database. (y/n) " -n 1 -r
 
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
+if [[ $REPLY =~ ^[Yy]$ ]]; then
   printf "\n\nSetting up the E2E database before running E2E tests...\n\n"
   RAILS_ENV=test E2E=true bin/e2e-setup
 fi
