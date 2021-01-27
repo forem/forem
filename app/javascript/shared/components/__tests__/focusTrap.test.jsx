@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, waitFor } from '@testing-library/preact';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
@@ -20,7 +20,8 @@ describe('<FocusTrap />', () => {
     );
 
     const firstInput = getByTestId('firstInput');
-    firstInput.focus();
+
+    await waitFor(() => expect(firstInput).toHaveFocus());
     userEvent.tab();
     userEvent.tab();
 
