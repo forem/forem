@@ -26,7 +26,9 @@ module GithubRepos
           stargazers_count: fetched_repo.stargazers_count,
           info_hash: fetched_repo.to_hash,
         )
-        repo.user&.touch(:github_repos_updated_at)
+        if repo.user && repo.user.github_repos_updated_at < 30.minutes.ago
+          repo.user.touch(:github_repos_updated_at)
+        end
       rescue Github::Errors::NotFound,
              Github::Errors::Unauthorized,
              Github::Errors::AccountSuspended,
