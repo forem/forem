@@ -57,7 +57,7 @@ export const EditorBody = ({
       handleImageSuccess(textAreaRef),
       handleImageFailure,
     )
-  }).setElement;
+  });
 
   useEffect(() => {
     if (textAreaRef.current) {
