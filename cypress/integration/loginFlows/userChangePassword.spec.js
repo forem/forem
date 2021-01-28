@@ -1,33 +1,21 @@
 describe('User Change Password', () => {
   beforeEach(() => {
     cy.testSetup();
+    cy.fixture('users/changePasswordUser.json').as('user');
+
+    cy.get('@user').then((user) => {
+      cy.loginUser(user);
+
+      cy.visit('/settings/account');
+    });
   });
 
   it('should change the password of a user', () => {
     cy.fixture('users/changePasswordUser.json').as('user');
 
-    // Go to home page
-    cy.visit('/enter');
-
-    cy.findByTestId('login-form').as('loginForm');
-
-    cy.get('@user').then((user) => {
-      cy.get('@loginForm')
-        .findByText(/^Email$/)
-        .type(user.email);
-      cy.get('@loginForm')
-        .findByText(/^Password$/)
-        .type(user.password);
-    });
-
-    // Submit the form
-    cy.get('@loginForm').findByText('Continue').click();
-
-    cy.visit('/settings/account');
+    const newPassword = 'drowssap';
 
     cy.findByTestId('update-password-form').as('updatePasswordForm');
-
-    const newPassword = 'drowssap';
 
     cy.get('@user').then((user) => {
       cy.get('@updatePasswordForm')
@@ -39,14 +27,12 @@ describe('User Change Password', () => {
       cy.get('@updatePasswordForm')
         .findByText(/^Confirm new password$/)
         .type(newPassword);
-    });
 
-    // Submit the form
-    cy.get('@updatePasswordForm').findByText('Set New Password').click();
+      // Submit the form
+      cy.get('@updatePasswordForm').findByText('Set New Password').click();
 
-    cy.findByTestId('login-form').as('loginForm');
+      cy.findByTestId('login-form').as('loginForm');
 
-    cy.get('@user').then((user) => {
       cy.get('@loginForm')
         .findByText(/^Email$/)
         .type(user.email);
@@ -65,28 +51,9 @@ describe('User Change Password', () => {
   it('should give an error if the new password/confirm new password fields do not match when changing the password of a user', () => {
     cy.fixture('users/changePasswordUser.json').as('user');
 
-    // Go to home page
-    cy.visit('/enter');
-
-    cy.findByTestId('login-form').as('loginForm');
-
     cy.get('@user').then((user) => {
-      cy.get('@loginForm')
-        .findByText(/^Email$/)
-        .type(user.email);
-      cy.get('@loginForm')
-        .findByText(/^Password$/)
-        .type(user.password);
-    });
+      cy.findByTestId('update-password-form').as('updatePasswordForm');
 
-    // Submit the form
-    cy.get('@loginForm').findByText('Continue').click();
-
-    cy.visit('/settings/account');
-
-    cy.findByTestId('update-password-form').as('updatePasswordForm');
-
-    cy.get('@user').then((user) => {
       cy.get('@updatePasswordForm')
         .findByText(/^Current Password$/i)
         .type(user.password);

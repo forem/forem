@@ -30,3 +30,22 @@ Cypress.Commands.add('testSetup', () => {
   // Required for the moment because of https://github.com/cypress-io/cypress/issues/781
   cy.clearCookies();
 });
+
+/**
+ * Logs in a user with the given email and password.
+ *
+ * @param credentials
+ * @param credentials.email {string} An email address
+ * @param credentials.password {string} A password
+ *
+ */
+Cypress.Commands.add('loginUser', ({ email, password }) => {
+  const encodedEmail = encodeURIComponent(email);
+  const encodedPassword = encodeURIComponent(password);
+
+  cy.request(
+    'POST',
+    '/users/sign_in',
+    `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
+  );
+});
