@@ -7,6 +7,9 @@ cache:
     - vendor/bundle
     - node_modules
     - ~/.cache/Cypress
+before_cache:
+  - rm -rf node_modules/canvas
+  - rm -rf node_modules/@storybook
 rvm:
   - 2.7.2
 addons:
