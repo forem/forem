@@ -396,7 +396,7 @@ GEM
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
     ipaddress (0.8.3)
-    jbuilder (2.11.1)
+    jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     jquery-fileupload-rails (0.4.7)
       actionpack (>= 3.1)
