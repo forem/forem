@@ -7,19 +7,17 @@ export default class DataUpdateScriptController extends Controller {
     const id         = event.target.dataset.value;
     let statusColumn = document.getElementById(`data_update_script_${id}_status`);
     let runAtColumn  = document.getElementById(`data_update_script_${id}_run_at`);
-    let button       = document.getElementById(`data_update_script_${id}_button`);
-
-    this.displayLoadingIndicators(statusColumn, runAtColumn, button);
-    this.forceRunScript(id, statusColumn, runAtColumn, button);
+    
+    this.displayLoadingIndicators(statusColumn, runAtColumn);
+    this.forceRunScript(id, statusColumn, runAtColumn);
   }
 
-  displayLoadingIndicators(statusColumn, runAtColumn, button) {
+  displayLoadingIndicators(statusColumn, runAtColumn) {
     statusColumn.innerHTML = "loading..";
     runAtColumn.innerHTML  = "loading..";
-    button.innerHTML       = "loading..";
   }
 
-  forceRunScript(id, statusColumn, runAtColumn, button) {
+  forceRunScript(id, statusColumn, runAtColumn) {
     fetch(`/admin/data_update_scripts/${id}/force_run`, {
       method: 'POST',
       headers: {
@@ -29,7 +27,7 @@ export default class DataUpdateScriptController extends Controller {
     })
     .then(response => {
       if(response.ok) {
-        this.pollForScriptResponse(id, statusColumn, runAtColumn, button);
+        this.pollForScriptResponse(id, statusColumn, runAtColumn);
       } else {
         response.json().then((response) => {
           statusColumn.innerHTML = response.error;
@@ -40,7 +38,7 @@ export default class DataUpdateScriptController extends Controller {
     })
   }
 
-  pollForScriptResponse(id, statusColumn, runAtColumn, button) {
+  pollForScriptResponse(id, statusColumn, runAtColumn) {
     let counter = 0;
     let pollForStatus = setInterval(() => {
       counter++;
@@ -52,10 +50,8 @@ export default class DataUpdateScriptController extends Controller {
           }
           runAtColumn.innerHTML = updatedDataScript.run_at;
 
-          if(updatedDataScript.status !== "succeeded") {
-            button.innerHTML      = `<button onclick=forceRun(${updatedDataScript.id}); return false; type='button' classname='crayons-btn crayons-btn--secondary'>Re run</button>`;
-          } else {
-            button.innerHTML = "";
+          if(updatedDataScript.status === "succeeded") {
+            document.getElementById(`data_update_script_${id}_button`).remove();
           }
 
           clearInterval(pollForStatus);
@@ -66,7 +62,6 @@ export default class DataUpdateScriptController extends Controller {
         // this should maybe be a flash notice
         statusColumn.innerHTML = "Please try again later.";
         runAtColumn.innerHTML = "Please try again later.";
-        button.innerHTML = "Please try again later."
       }
     }, 1000)
   }
