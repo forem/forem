@@ -175,7 +175,7 @@ class FollowUsers extends Component {
               </div>
             </header>
 
-            <div data-testid="onboarding-users">
+            <fieldset data-testid="onboarding-users">
               {users.map((user) => {
                 const selected = selectedUsers.includes(user);
 
@@ -203,19 +203,27 @@ class FollowUsers extends Component {
                         {he.unescape(user.summary || '')}
                       </p>
                     </div>
-                    <button
-                      data-testid="onboarding-user-following-status"
-                      type="button"
-                      className="user-following-status"
-                      aria-pressed={selected}
-                      aria-label={`Follow ${user.name}`}
-                    >
-                      {selected ? 'Following' : 'Follow'}
-                    </button>
+                    <label htmlFor={user.name} className="relative">
+                      <input
+                        type="checkbox"
+                        checked={selected}
+                        className="user-following-status invisible absolute top-0 bottom-0 right-0 left-0"
+                        id={user.name}
+                      />
+                      <div
+                        tabIndex="0"
+                        data-testid="onboarding-user-following-status"
+                        aria-label={`Follow ${user.name}`}
+                        aria-checked={selected}
+                        role="checkbox"
+                      >
+                        {selected ? 'Following' : 'Follow'}
+                      </div>
+                    </label>
                   </button>
                 );
               })}
-            </div>
+            </fieldset>
           </div>
         </div>
       </div>

@@ -567,8 +567,17 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     margin: 0;
   }
 
-  .user-following-status {
+  input[type='checkbox'].user-following-status + div {
     margin-left: 32px;
+  }
+
+  input[type='checkbox']:not(:checked).user-following-status + div {
+    @extend .crayons-btn;
+    @extend .crayons-btn--outlined;
+  }
+
+  input[type='checkbox']:checked.user-following-status + div {
+    @extend .crayons-btn;
   }
 }
 
