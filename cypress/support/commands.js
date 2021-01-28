@@ -24,11 +24,23 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+/**
+ * Runs necessary test setup to run a clean test.
+ */
 Cypress.Commands.add('testSetup', () => {
-  cy.request('/cypress_rails_reset_state');
-
   // Required for the moment because of https://github.com/cypress-io/cypress/issues/781
   cy.clearCookies();
+
+  cy.getCookies().then((cookie) => {
+    if (cookie.length) {
+      // Instead of always waiting, only wait if the cookies aren't
+      // cleared yet and attempt to clear again.
+      cy.wait(1); // eslint-disable-line cypress/no-unnecessary-waiting
+      cy.clearCookies();
+    }
+  });
+
+  cy.request('/cypress_rails_reset_state');
 });
 
 /**
