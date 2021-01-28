@@ -203,12 +203,11 @@ class FollowUsers extends Component {
                         {he.unescape(user.summary || '')}
                       </p>
                     </div>
-                    <label htmlFor={user.name} className="relative">
+                    <label className="relative">
                       <input
                         type="checkbox"
                         checked={selected}
                         className="user-following-status invisible absolute top-0 bottom-0 right-0 left-0"
-                        id={user.name}
                       />
                       <div
                         tabIndex="0"
