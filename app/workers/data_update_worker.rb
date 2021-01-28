@@ -2,12 +2,13 @@ class DataUpdateWorker
   include Sidekiq::Worker
   sidekiq_options queue: :high_priority, retry: 5
 
-  def perform(data_update_script = nil)
+  def perform(id = nil)
+    data_update_script = DataUpdateScript.find(id)
+
     if data_update_script
       data_update_script.mark_as_run!
       log_status(data_update_script)
       run_script(data_update_script)
-
     else
       DataUpdateScript.scripts_to_run.each do |script|
         script.mark_as_run!

@@ -12,8 +12,7 @@ module Admin
     end
 
     def force_run
-      script = DataUpdateScript.find(params[:id])
-      DataUpdateWorker.perform_async(script)
+      DataUpdateWorker.perform_async(params[:id])
     rescue StandardError => e
       render json: { error: "#{e.class}: #{e.message}" }, status: :unprocessable_entity
     end
