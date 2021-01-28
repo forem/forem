@@ -3,45 +3,44 @@ import { Controller } from 'stimulus';
 export default class DataUpdateScriptController extends Controller {
 
   forceRun() {
-    event.preventDefault()
-
+    event.preventDefault();
     const id         = event.target.dataset.value;
     let statusColumn = document.getElementById(`data_update_script_${id}_status`);
     let runAtColumn  = document.getElementById(`data_update_script_${id}_run_at`);
     let button       = document.getElementById(`data_update_script_${id}_button`);
 
-    this.showLoadingIndicators(statusColumn, runAtColumn, button);
-    this.kickoffSidekiqWorker(id);
-    this.pollForResponse(id, statusColumn, runAtColumn, button);
+    this.displayLoadingIndicators(statusColumn, runAtColumn, button);
+    this.forceRunScript(id, statusColumn, runAtColumn, button);
   }
 
-  showLoadingIndicators(statusColumn, runAtColumn, button) {
+  displayLoadingIndicators(statusColumn, runAtColumn, button) {
     statusColumn.innerHTML = "loading..";
     runAtColumn.innerHTML  = "loading..";
     button.innerHTML       = "loading..";
   }
 
-  kickoffSidekiqWorker(id) {
-    const formData = new FormData();
-    formData.append('id', id);
-
+  forceRunScript(id, statusColumn, runAtColumn, button) {
     fetch(`/admin/data_update_scripts/${id}/force_run`, {
       method: 'POST',
       headers: {
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
       },
-      body: formData,
       credentials: 'same-origin'
     })
-    // .then(response => response.json()
-    //   .then(json => {
-    //     // handle the sidekiq worker post response
-    //   })
-    // )
-
+    .then(response => {
+      if(response.ok) {
+        this.pollForScriptResponse(id, statusColumn, runAtColumn, button);
+      } else {
+        response.json().then((response) => {
+          statusColumn.innerHTML = response.error;
+          runAtColumn.innerHTML = "-";
+          button.innerHTML = "-";
+        });
+      }
+    })
   }
 
-  pollForResponse(id, statusColumn, runAtColumn, button) {
+  pollForScriptResponse(id, statusColumn, runAtColumn, button) {
     let counter = 0;
     let pollForStatus = setInterval(() => {
       counter++;
@@ -55,13 +54,19 @@ export default class DataUpdateScriptController extends Controller {
 
           if(updatedDataScript.status !== "succeeded") {
             button.innerHTML      = `<button onclick=forceRun(${updatedDataScript.id}); return false; type='button' classname='crayons-btn crayons-btn--secondary'>Re run</button>`;
+          } else {
+            button.innerHTML = "";
           }
 
           clearInterval(pollForStatus);
         }
       });
-      if ( counter > 15 ) {
+      if ( counter > 20 ) {
         clearInterval(pollForStatus);
+        // this should maybe be a flash notice
+        statusColumn.innerHTML = "Please try again later.";
+        runAtColumn.innerHTML = "Please try again later.";
+        button.innerHTML = "Please try again later."
       }
     }, 1000)
   }
